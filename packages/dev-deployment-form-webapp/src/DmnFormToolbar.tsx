@@ -46,6 +46,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 interface Props {
   modelName?: string;
+  baseUrl: string;
 }
 
 export function DmnFormToolbar(props: Props) {
@@ -57,8 +58,8 @@ export function DmnFormToolbar(props: Props) {
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
 
   const onOpenSwaggerUI = useCallback(() => {
-    window.open(routes.swaggerUi.path({}, app?.data?.baseUrl), "_blank");
-  }, [app?.data?.baseUrl]);
+    window.open(routes.swaggerUi.path({}, props.baseUrl), "_blank");
+  }, [props.baseUrl]);
 
   const openForm = useCallback(
     (modelName: string) => {
@@ -68,19 +69,6 @@ export function DmnFormToolbar(props: Props) {
     },
     [history]
   );
-
-  // const modelName = useMemo(() => {
-  //   const fullFilename = basename(props.modelName);
-  //   const maxSize = 25;
-  //   const extension = fullFilename.substring(fullFilename.lastIndexOf(".") + 1);
-  //   const name = fullFilename.replace(`.${extension}`, "");
-
-  //   if (name.length < maxSize) {
-  //     return fullFilename;
-  //   }
-
-  //   return `${name.substring(0, maxSize)}... .${extension}`;
-  // }, [props.uri]);
 
   const disclaimer = useMemo(() => {
     return (

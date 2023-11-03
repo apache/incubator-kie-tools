@@ -23,4 +23,4 @@ import * as ReactDOM from "react-dom";
 import { DmnFormApp } from "./DmnFormApp";
 import "../static/resources/style.css";
 
-ReactDOM.render(<DmnFormApp />, document.getElementById("app")!);
+ReactDOM.render(<DmnFormApp baseUrl=".." />, document.getElementById("app")!);

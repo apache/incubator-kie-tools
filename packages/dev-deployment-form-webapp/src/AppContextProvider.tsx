@@ -23,6 +23,7 @@ import { AppData, fetchAppData } from "./DmnDevDeploymentFormWebAppDataApi";
 
 interface Props {
   children: ReactNode;
+  baseUrl: string;
 }
 
 export function AppContextProvider(props: Props) {
@@ -30,11 +31,11 @@ export function AppContextProvider(props: Props) {
   const [data, setData] = useState<AppData>();
 
   useEffect(() => {
-    fetchAppData()
+    fetchAppData(props.baseUrl)
       .then((data: AppData) => setData(data))
       .catch((error: any) => console.error(error))
       .finally(() => setFetchDone(true));
-  }, []);
+  }, [props]);
 
   return <AppContext.Provider value={{ fetchDone, data }}>{props.children}</AppContext.Provider>;
 }

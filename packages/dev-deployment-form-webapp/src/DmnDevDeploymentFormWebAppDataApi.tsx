@@ -26,7 +26,6 @@ export interface FormData {
 }
 
 export interface AppData {
-  baseUrl: string;
   forms: FormData[];
 }
 
@@ -36,8 +35,9 @@ function fromiAsciiSpacing(value: string) {
   return value.replace(new RegExp("_32", "g"), " ").replace(new RegExp("__", "g"), "_");
 }
 
-export async function fetchAppData(): Promise<AppData> {
-  const response = await fetch(routes.dmnDefinitionsJson.path({}));
+export async function fetchAppData(baseUrl: string): Promise<AppData> {
+  console.log({ baseUrl });
+  const response = await fetch(routes.dmnDefinitionsJson.path({}, baseUrl));
   const dmnDefinitionsJson = (await response.json()) as ExtendedServicesDmnJsonSchema;
 
   if (!dmnDefinitionsJson.definitions) {
@@ -64,7 +64,6 @@ export async function fetchAppData(): Promise<AppData> {
     });
 
   return {
-    baseUrl: "..",
     forms,
   };
 }

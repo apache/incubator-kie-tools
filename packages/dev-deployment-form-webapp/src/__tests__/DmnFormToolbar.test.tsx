@@ -27,29 +27,27 @@ describe("DmnFormToolbar", () => {
     const uri = "/a_really_really_really_really_large_filename_for_my_model.dmn";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        usingTestingAppContext(<DmnFormToolbar modelName={"myModel"} />, {
+        usingTestingAppContext(<DmnFormToolbar modelName={"myModel"} baseUrl=".." />, {
           data: {
-            baseUrl: "",
             forms: [{ modelName: "myModel", schema: {} }],
           },
         }).wrapper
       ).wrapper
     );
-    expect(getByTestId("text-filename")).toHaveTextContent("a_really_really_really_re... .dmn");
+    expect(getByTestId("text-filename")).toHaveTextContent("myModel");
   });
 
   it("should not truncate the filename when it is small enough", () => {
     const uri = "/my_model.dmn";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        usingTestingAppContext(<DmnFormToolbar modelName={"myModel"} />, {
+        usingTestingAppContext(<DmnFormToolbar modelName={"myModel"} baseUrl=".." />, {
           data: {
-            baseUrl: "",
             forms: [{ modelName: "myModel", schema: {} }],
           },
         }).wrapper
       ).wrapper
     );
-    expect(getByTestId("text-filename")).toHaveTextContent("my_model.dmn");
+    expect(getByTestId("text-filename")).toHaveTextContent("myModel");
   });
 });

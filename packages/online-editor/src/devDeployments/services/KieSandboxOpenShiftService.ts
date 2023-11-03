@@ -183,7 +183,6 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
         apiKey,
       });
     } catch (e) {
-      console.log({ resources });
       console.error(e);
       if (resources.length) {
         this.deleteDevDeployment(resources);

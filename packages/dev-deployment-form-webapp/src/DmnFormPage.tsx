@@ -38,6 +38,7 @@ import { useApp } from "./AppContext";
 
 interface Props {
   formData: FormData;
+  baseUrl: string;
 }
 
 enum AlertTypes {
@@ -75,7 +76,6 @@ export function DmnFormPage(props: Props) {
             }
             return {
               ...getDefaultValues(resolvedJsonSchema),
-              // ...resolvedJsonSchema.definitions!['InputSet']['properties'],
               ...previousFormInputs,
             };
           });
@@ -90,7 +90,7 @@ export function DmnFormPage(props: Props) {
   const onSubmit = useCallback(async () => {
     try {
       const formOutputs = await fetchDmnResult({
-        baseUrl: app?.data?.baseUrl,
+        baseUrl: props.baseUrl,
         modelName: props.formData.modelName,
         inputs: formInputs,
       });
@@ -107,7 +107,7 @@ export function DmnFormPage(props: Props) {
       setOpenAlert(AlertTypes.ERROR);
       console.error(error);
     }
-  }, [formInputs, props.formData.modelName, app?.data?.baseUrl]);
+  }, [formInputs, props.formData.modelName, props.baseUrl]);
 
   const pageErrorMessage = useMemo(
     () => (
@@ -155,7 +155,10 @@ export function DmnFormPage(props: Props) {
   }, [onSubmit]);
 
   return (
-    <Page data-testid="dmn-form-page" header={<DmnFormToolbar modelName={props.formData.modelName} />}>
+    <Page
+      data-testid="dmn-form-page"
+      header={<DmnFormToolbar modelName={props.formData.modelName} baseUrl={props.baseUrl} />}
+    >
       {openAlert === AlertTypes.ERROR && (
         <div className={"kogito--alert-container"}>
           <Alert

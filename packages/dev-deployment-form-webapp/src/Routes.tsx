@@ -111,7 +111,7 @@ export const routes = {
 
   error: new Route<{}>(() => "/error"),
 
-  dmnDefinitionsJson: new Route<{}>(() => "../dmnDefinitions.json"),
+  dmnDefinitionsJson: new Route<{}>((_, baseUrl) => `${baseUrl}/dmnDefinitions.json`),
 
   swaggerUi: new Route<{}>((_, baseUrl) => `${baseUrl}/q/swagger-ui`),
 

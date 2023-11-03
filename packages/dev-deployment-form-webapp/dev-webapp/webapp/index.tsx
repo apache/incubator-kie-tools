@@ -35,27 +35,27 @@ export const App: React.FunctionComponent = () => {
               Home
             </Button>
           </Link>
-          <Link to="/form/insurance_pricing.dmn">
+          <Link to="/form/insurance_pricing">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Insurance Pricing
             </Button>
           </Link>
-          <Link to="/form/loan_pre_qualification.dmn">
+          <Link to="/form/loan_pre_qualification">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Loan Pre Qualification
             </Button>
           </Link>
-          <Link to="/form/flight_rebooking.dmn">
+          <Link to="/form/flight_rebooking">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Flight Rebooking
             </Button>
           </Link>
-          <Link to="/form/recursive.dmn">
+          <Link to="/form/recursive">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Recursive
             </Button>
           </Link>
-          <Link to="/form/many_inputs.dmn">
+          <Link to="/form/many_inputs">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Many Inputs
             </Button>
@@ -65,7 +65,7 @@ export const App: React.FunctionComponent = () => {
         <div style={{ margin: "10px", border: "1px solid" }}>
           <Switch>
             <Route path="/form/">
-              <DmnFormApp />
+              <DmnFormApp baseUrl={`http://localhost:9009`} />
             </Route>
             <Route path="/">
               <Home />
