@@ -204,7 +204,9 @@ async function main() {
           ...(extensionElement?.["xsd:choice"]?.["xsd:sequence"]?.["xsd:element"] ?? []).map((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })
           ),
-          ...(extensionElement && !isComplexContent ? [xsdExtensionSimpleContentToXptcElement(extensionElement)] : []),
+          ...(extensionElement && !isComplexContent
+            ? [xsdExtensionSimpleContentToXptcElement(extensionElement!["@_base"])]
+            : []),
         ],
         attributes: [
           ...(xsdCt["xsd:attribute"] ?? []).map((a) => xsdAttributeToXptcAttribute(a)),
@@ -1067,13 +1069,13 @@ function xsdElementToXptcElement(
   throw new Error(`Unknown xsd:element structure. ${JSON.stringify(xsdElement)}`);
 }
 
-function xsdExtensionSimpleContentToXptcElement(extensionElement: XSDExtension): Unpacked<XptcComplexType["elements"]> {
+function xsdExtensionSimpleContentToXptcElement(typeName: string): Unpacked<XptcComplexType["elements"]> {
   return {
     isArray: false,
     isOptional: false,
     name: "__$$text",
     kind: "ofNamedType",
-    typeName: extensionElement!["@_base"],
+    typeName: typeName,
   };
 }
 
