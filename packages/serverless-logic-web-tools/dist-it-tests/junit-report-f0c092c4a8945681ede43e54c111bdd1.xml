@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Serverless Logic Web Tools" time="17.170" tests="3" failures="0">
+  <testsuite name="" timestamp="2023-01-24T15:02:03" tests="0" file="e2e/TrySample.cy.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Root Suite.Serverless Logic Web Tools - Try samples test" timestamp="2023-01-24T15:02:03" tests="3" time="17.154" failures="0">
+    <testcase name="should check all samples are present" time="3.625" classname="Serverless Logic Web Tools - Try samples test should check all samples are present">
+    </testcase>
+    <testcase name="should check greetings sample" time="5.613" classname="Serverless Logic Web Tools - Try samples test should check greetings sample">
+    </testcase>
+    <testcase name="should check swf-report example of dashboard" time="7.744" classname="Serverless Logic Web Tools - Try samples test should check swf-report example of dashboard">
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -45,6 +45,9 @@ spec:
       labels:
         app: \${{ devDeployment.uniqueName }}
         deploymentconfig: \${{ devDeployment.uniqueName }}
+        app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+        \${{ devDeployment.labels.createdBy }}: kie-tools
+        \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
     spec:
       containers:
         - name: \${{ devDeployment.uniqueName }}
@@ -57,9 +60,9 @@ spec:
             - name: BASE_URL
               value: http://localhost/\${{ devDeployment.uniqueName }}
             - name: QUARKUS_PLATFORM_VERSION
-              value: 2.16.7.Final
+              value: ${args.quarkusPlatformVersion}
             - name: KOGITO_RUNTIME_VERSION
-              value: 1.40.0.Final
+              value: ${args.kogitoRuntimeVersion}
             - name: ROOT_PATH
               value: \${{ devDeployment.uniqueName }}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH

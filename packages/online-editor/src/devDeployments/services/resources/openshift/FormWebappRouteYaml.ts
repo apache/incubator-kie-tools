@@ -26,7 +26,7 @@ metadata:
   name: \${{ devDeployment.uniqueName }}-form-webapp
   namespace: \${{ devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.uniqueName }}-form-webapp
+    app: \${{ devDeployment.uniqueName }}
     app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-form-webapp
     app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-form-webapp
     app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-form-webapp

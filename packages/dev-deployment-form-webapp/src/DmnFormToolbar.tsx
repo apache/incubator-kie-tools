@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import React, { useCallback, useMemo, useState } from "react";
+import * as React from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import {

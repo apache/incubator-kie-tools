@@ -44,15 +44,39 @@ export async function fetchAppData(baseUrl: string): Promise<AppData> {
     throw new Error("No DMN definitions available.");
   }
 
-  const forms = Object.keys(dmnDefinitionsJson.definitions)
-    .filter((key: string) => key.startsWith("InputSet"))
-    .map((asciiSpacedInputSetRef) => {
+  const getModelNameFromOpenApiSpec = async () => {
+    const response = await fetch(routes.openApiJson.path({}));
+    const data = await response.json();
+    const paths = Object.keys(data.paths);
+    const modelName = paths[0].replace("/", "").replace("/dmnresult", "");
+    return modelName;
+  };
+
+  const inputSets = Object.keys(dmnDefinitionsJson.definitions).filter((key: string) => key.startsWith("InputSet"));
+
+  let forms = [];
+
+  if (inputSets.length === 1) {
+    const fullDmnDefinitions = {
+      $ref: "#/definitions/InputSet",
+      ...dmnDefinitionsJson,
+    };
+    const modelName = await getModelNameFromOpenApiSpec();
+    const inputRef = fullDmnDefinitions["$ref"]!.replace("#/definitions/", "");
+    const schema = JSON.parse(JSON.stringify(fullDmnDefinitions).replace(new RegExp(inputRef, "g"), "InputSet"));
+    forms = [
+      {
+        modelName,
+        schema,
+      },
+    ];
+  } else {
+    forms = inputSets.map((asciiSpacedInputSetRef) => {
       const modelName = fromiAsciiSpacing(asciiSpacedInputSetRef.replace("InputSet", ""));
       const fullDmnDefinitions = {
         $ref: `#/definitions/${asciiSpacedInputSetRef}`,
         ...dmnDefinitionsJson,
       };
-
       // The input set property associated with a model is InputSetX, where X is the model name (with some character substitutions).
       // So replace all occurrences of InputSetX -> InputSet to keep compatibility with the current DmnForm.
       const inputRef = fullDmnDefinitions["$ref"]!.replace("#/definitions/", "");
@@ -62,6 +86,7 @@ export async function fetchAppData(baseUrl: string): Promise<AppData> {
         schema,
       };
     });
+  }
 
   return {
     forms,

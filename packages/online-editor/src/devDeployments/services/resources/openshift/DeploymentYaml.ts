@@ -45,6 +45,8 @@ spec:
       labels:
         app: \${{ devDeployment.uniqueName }}
         deploymentconfig: \${{ devDeployment.uniqueName }}
+        \${{ devDeployment.labels.createdBy }}: kie-tools
+        \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
     spec:
       containers:
         - name: \${{ devDeployment.uniqueName }}
@@ -55,9 +57,9 @@ spec:
               protocol: TCP
           env:
             - name: QUARKUS_PLATFORM_VERSION
-              value: 2.16.7.Final
+              value: ${args.quarkusPlatformVersion}
             - name: KOGITO_RUNTIME_VERSION
-              value: 1.40.0.Final
+              value: ${args.kogitoRuntimeVersion}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
               value: \${{ devDeployment.uploadService.apiKey }}
 `;

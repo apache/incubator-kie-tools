@@ -32,6 +32,7 @@ import { useDevDeployments } from "./DevDeploymentsContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/resources/common";
 import { KieSandboxDeployment } from "./services/types";
+import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 
 interface Props {
   id: number;
@@ -42,26 +43,22 @@ interface Props {
 export function DevDeploymentsDropdownItem(props: Props) {
   const { i18n } = useOnlineI18n();
   const devDeployments = useDevDeployments();
+  const workspacesDescriptorsPromise = useWorkspaceDescriptorsPromise();
 
   const deploymentName = useMemo(() => {
-    return props.deployment.name;
-    // const maxSize = 30;
+    const maxSize = 30;
 
-    // let name = props.deployment.workspaceName;
-    // let extension = "";
+    const workspaceDescriptor = workspacesDescriptorsPromise.data?.find(
+      (descriptor) => descriptor.workspaceId === props.deployment.workspaceId
+    );
+    const name = workspaceDescriptor?.name ?? props.deployment.name;
 
-    // if (!name) {
-    //   const originalFilename = basename(props.deployment.uri);
-    //   extension = ` ${originalFilename.substring(originalFilename.lastIndexOf("."))}`;
-    //   name = originalFilename.replace(extension, "");
-    // }
+    if (name.length < maxSize) {
+      return name;
+    }
 
-    // if (name.length < maxSize) {
-    //   return name;
-    // }
-
-    // return `${name.substring(0, maxSize)}...${extension}`;
-  }, [props.deployment]);
+    return `${name.substring(0, maxSize)}`;
+  }, [props.deployment.name, props.deployment.workspaceId, workspacesDescriptorsPromise.data]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === DeploymentState.UP) {
