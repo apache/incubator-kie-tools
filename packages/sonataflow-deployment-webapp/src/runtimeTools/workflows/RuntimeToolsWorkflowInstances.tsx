@@ -28,6 +28,7 @@ import { useApp } from "../../context/AppContext";
 import { WorkflowListState } from "./WorkflowList/WorkflowListGatewayApi";
 import WorkflowListContainer from "./WorkflowListContainer/WorkflowListContainer";
 import { BasePage } from "../../pages/BasePage";
+import { SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL } from "../../AppConstants";
 
 const PAGE_TITLE = "Workflow Instances";
 
@@ -45,11 +46,7 @@ const DataIndexNotAvailable = () => (
               Start by setting the Data Index in the config file.
               <br />
               Read more on &nbsp;
-              <a
-                href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/data-index/data-index-core-concepts.html"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL} target="_blank" rel="noopener noreferrer">
                 SonataFlow Guides.
               </a>
             </Text>
