@@ -33,6 +33,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "manifest.dev.json",
       description: "",
     },
+    SWF_CHROME_EXTENSION__e2eTestingToken: {
+      default: "",
+      description: "",
+    },
   }),
   get env() {
     return {
@@ -44,6 +48,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         routerTargetOrigin: getOrDefault(this.vars.SWF_CHROME_EXTENSION__routerTargetOrigin),
         routerRelativePath: getOrDefault(this.vars.SWF_CHROME_EXTENSION__routerRelativePath),
         manifestFile: getOrDefault(this.vars.SWF_CHROME_EXTENSION__manifestFile),
+        e2eTestingToken: getOrDefault(this.vars.SWF_CHROME_EXTENSION__e2eTestingToken),
       },
     };
   },
