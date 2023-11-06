@@ -89,7 +89,7 @@ export function WorkflowFormPage(props: { workflowId: string }) {
         },
       });
     },
-    [openWorkflowInstance]
+    []
   );
 
   const onSubmitSuccess = useCallback(
@@ -104,7 +104,7 @@ export function WorkflowFormPage(props: { workflowId: string }) {
         },
       ]);
     },
-    [showNotification]
+    [showNotification, openWorkflowInstance]
   );
 
   const onSubmitError = useCallback(
