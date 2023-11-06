@@ -18,6 +18,8 @@
  */
 
 module.exports = {
+  bail: 1,
+  verbose: true,
   setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules", "src"],

@@ -18,6 +18,8 @@
  */
 
 module.exports = {
+  bail: 1,
+  verbose: true,
   moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   moduleNameMapper: {

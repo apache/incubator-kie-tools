@@ -18,6 +18,8 @@
  */
 
 module.exports = {
+  bail: 1,
+  verbose: true,
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules", "src"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],

@@ -18,6 +18,8 @@
  */
 
 module.exports = {
+  bail: 1,
+  verbose: true,
   globals: {
     "ts-jest": {
       tsconfig: "<rootDir>/tsconfig.esm.json",
