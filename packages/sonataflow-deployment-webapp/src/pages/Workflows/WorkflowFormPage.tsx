@@ -41,12 +41,14 @@ import { WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImp
 import { routes } from "../../routes";
 import { BasePage } from "../BasePage";
 import { ErrorKind, ErrorPage } from "../ErrorPage";
+import { useApp } from "../../context/AppContext";
 
 export function WorkflowFormPage(props: { workflowId: string }) {
   const [notification, setNotification] = useState<Notification>();
   const [workflowResponse, setWorkflowResponse] = useState<WorkflowResponse>();
   const openApi = useOpenApi();
   const [customFormSchema, setCustomFormSchema] = useState<Record<string, any>>();
+  const app = useApp();
   const history = useHistory();
   const gatewayApi = useMemo(
     () =>
@@ -62,6 +64,10 @@ export function WorkflowFormPage(props: { workflowId: string }) {
     }),
     [props.workflowId]
   );
+
+  const goToWorkflowList = useCallback(() => {
+    history.push(routes.workflows.home.path({}));
+  }, [history]);
 
   const openWorkflowInstance = useCallback(
     (id: string) => {
@@ -95,16 +101,24 @@ export function WorkflowFormPage(props: { workflowId: string }) {
   const onSubmitSuccess = useCallback(
     (message: string, id: string): void => {
       showNotification("success", message, undefined, [
-        {
-          label: "View details",
-          onClick: () => {
-            setNotification(undefined);
-            openWorkflowInstance(id);
-          },
-        },
+        !app.dataIndexAvailable
+          ? {
+              label: "Go to workflow list",
+              onClick: () => {
+                setNotification(undefined);
+                goToWorkflowList();
+              },
+            }
+          : {
+              label: "View details",
+              onClick: () => {
+                setNotification(undefined);
+                openWorkflowInstance(id);
+              },
+            },
       ]);
     },
-    [showNotification, openWorkflowInstance]
+    [showNotification, openWorkflowInstance, goToWorkflowList, app]
   );
 
   const onSubmitError = useCallback(
