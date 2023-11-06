@@ -24,6 +24,7 @@ import * as ReactTable from "react-table";
 
 import {
   SceSim__FactMappingType,
+  SceSim__ScenarioType,
   SceSim__simulationType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
@@ -52,45 +53,45 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
     let descriptionFactMapping: SceSim__FactMappingType | undefined;
 
     (simulationData?.scesimModelDescriptor?.factMappings?.FactMapping ?? []).forEach((factMapping) => {
-      if (factMapping.expressionIdentifier.type === "GIVEN") {
+      if (factMapping.expressionIdentifier.type?.__$$text === "GIVEN") {
         givenFactMappingToFactMap.set(
-          { factName: factMapping.factAlias, factType: factMapping.factIdentifier!.className! },
+          { factName: factMapping.factAlias.__$$text, factType: factMapping.factIdentifier!.className!.__$$text },
           [
             ...(givenFactMappingToFactMap.get({
-              factName: factMapping.factAlias,
-              factType: factMapping.factIdentifier!.className!,
+              factName: factMapping.factAlias.__$$text,
+              factType: factMapping.factIdentifier!.className!.__$$text,
             }) ?? []),
             factMapping,
           ]
         );
-      } else if (factMapping.expressionIdentifier.type === "EXPECT") {
+      } else if (factMapping.expressionIdentifier.type!.__$$text === "EXPECT") {
         expectFactMappingToFactMap.set(
-          { factName: factMapping.factAlias, factType: factMapping.factIdentifier!.className! },
+          { factName: factMapping.factAlias.__$$text, factType: factMapping.factIdentifier!.className!.__$$text },
           [
             ...(expectFactMappingToFactMap.get({
-              factName: factMapping.factAlias,
-              factType: factMapping.factIdentifier!.className!,
+              factName: factMapping.factAlias.__$$text,
+              factType: factMapping.factIdentifier!.className!.__$$text,
             }) ?? []),
             factMapping,
           ]
         );
       } else if (
-        factMapping.expressionIdentifier.type === "OTHER" &&
-        factMapping.expressionIdentifier.name === "Description"
+        factMapping.expressionIdentifier.type!.__$$text === "OTHER" &&
+        factMapping.expressionIdentifier.name!.__$$text === "Description"
       ) {
         descriptionFactMapping = factMapping;
       }
     });
 
     const descriptionSection = {
-      groupType: descriptionFactMapping!.expressionIdentifier.type,
-      id: descriptionFactMapping!.factAlias + descriptionFactMapping!.expressionIdentifier.type,
-      //accessor: descriptionFactMapping!.expressionIdentifier.type,
-      label: descriptionFactMapping!.factAlias,
+      groupType: descriptionFactMapping!.expressionIdentifier.type!.__$$text,
+      id: descriptionFactMapping!.factAlias.__$$text + descriptionFactMapping!.expressionIdentifier.type!.__$$text,
+      accessor: descriptionFactMapping!.expressionIdentifier.type!.__$$text,
+      label: descriptionFactMapping!.factAlias.__$$text,
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
-      width: descriptionFactMapping!.columnWidth ?? 300,
-      minWidth: descriptionFactMapping!.columnWidth ?? 300,
+      width: descriptionFactMapping!.columnWidth?.__$$text ?? 300,
+      minWidth: descriptionFactMapping!.columnWidth?.__$$text ?? 300,
     };
 
     const givenSection = {
@@ -106,19 +107,19 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
           accessor: entry[0].factName + "GIVEN",
           label: entry[0].factName,
           id: entry[0].factName + "GIVEN",
-          dataType: entry[0].factType,
+          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : "",
           groupType: "GIVEN",
           cssClasses: "decision-table--input",
           isRowIndexColumn: false,
           columns: entry[1].map((factMapping) => {
             return {
-              accessor: factMapping.factAlias,
-              label: factMapping.expressionAlias,
-              id: factMapping.factAlias + factMapping.expressionAlias + "GIVEN",
-              dataType: factMapping.className,
-              width: factMapping.columnWidth,
-              minWidth: 100,
-              groupType: factMapping.expressionIdentifier.type,
+              accessor: factMapping.factAlias!.__$$text,
+              label: factMapping.expressionAlias!.__$$text,
+              id: factMapping.factAlias + factMapping.expressionAlias!.__$$text + "GIVEN",
+              dataType: factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "",
+              width: factMapping.columnWidth?.__$$text ?? 150,
+              minWidth: 150,
+              groupType: factMapping.expressionIdentifier.type!.__$$text,
               cssClasses: "decision-table--input",
               isRowIndexColumn: false,
             };
@@ -139,19 +140,19 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
           accessor: entry[0].factName,
           label: entry[0].factName,
           id: entry[0].factName,
-          dataType: entry[0].factType,
+          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : "",
           groupType: "EXPECT",
           cssClasses: "decision-table--input",
           isRowIndexColumn: false,
           columns: entry[1].map((factMapping) => {
             return {
-              accessor: factMapping.factAlias,
-              label: factMapping.expressionAlias,
-              id: factMapping.factAlias + factMapping.expressionAlias,
-              dataType: factMapping.className,
-              width: factMapping.columnWidth,
-              minWidth: 100,
-              groupType: factMapping.expressionIdentifier.type,
+              accessor: factMapping.factAlias!.__$$text,
+              label: factMapping.expressionAlias!.__$$text,
+              id: factMapping.factAlias.__$$text + factMapping.expressionAlias!.__$$text,
+              dataType: factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "",
+              width: factMapping.columnWidth?.__$$text ?? 150,
+              minWidth: 150,
+              groupType: factMapping.expressionIdentifier.type!.__$$text,
               cssClasses: "decision-table--input",
               isRowIndexColumn: false,
             };
@@ -160,13 +161,17 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
       }),
     };
 
+    console.log(descriptionSection);
+
+    console.log(givenSection);
+
     return [descriptionSection, givenSection, expectSection];
   }, [simulationData.scesimModelDescriptor.factMappings]);
 
-  const simulationRows = useMemo(
-    () =>
-      (simulationData.scesimData.Scenario ?? []).map((rule) => {
-        /*const ruleRow = [...rule.inputEntries, ...rule.outputEntries, ...rule.annotationEntries];
+  const simulationRows = useMemo(() => {
+    console.log("ciao");
+    (simulationData.scesimData.Scenario ?? []).map((scenario) => {
+      /*const ruleRow = [...rule.inputEntries, ...rule.outputEntries, ...rule.annotationEntries];
         const tableRow = getColumnsAtLastLevel(beeTableColumns).reduce(
           (tableRow: ROWTYPE, column, columnIndex) => {
             tableRow[column.accessor] = ruleRow[columnIndex] ?? "";
@@ -175,9 +180,8 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
           { id: rule.id }
         );
         return tableRow; */
-      }),
-    [simulationData]
-  );
+    });
+  }, [simulationData]);
 
   return (
     <StandaloneBeeTable
