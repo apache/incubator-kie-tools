@@ -169,7 +169,7 @@ export function WorkflowFormPage(props: { workflowId: string }) {
 
   return (
     <BasePage>
-      <PageSection variant={"light"} title="Start New Workflow">
+      <PageSection variant={"light"}>
         <TextContent>
           <Text component={TextVariants.h1}>Start New Workflow</Text>
         </TextContent>
