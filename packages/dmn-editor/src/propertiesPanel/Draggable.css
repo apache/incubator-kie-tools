@@ -5,7 +5,7 @@
 }
 
 .kie-dmn-editor--draggable-row-hovered {
-  background-color: rgba(128, 128, 128, 0.05);
+  backdrop-filter: brightness(90%);
 }
 
 .kie-dmn-editor--draggable-row-is-dragging {
@@ -31,7 +31,7 @@
 }
 
 .kie-dmn-editor--draggable-icon-handler-hovered {
-  color: rgba(128, 128, 128, 0.62);
+  color: gray;
 }
 
 .kie-dmn-editor--draggable-children {
