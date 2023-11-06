@@ -46,15 +46,25 @@ function KogitoMenuPortal(props: { id: string }) {
   const githubApi = useGitHubApi();
   const globals = useGlobals();
 
-  return (
-    <>
-      {githubApi.userIsLoggedIn() &&
-        ReactDOM.createPortal(
+  if (githubApi.userIsLoggedIn()) {
+    return (
+      <>
+        {ReactDOM.createPortal(
           <KogitoMenu />,
           kogitoMenuContainer(props.id, globals.dependencies.all.notificationIndicator()!.parentElement!)
         )}
-    </>
-  );
+      </>
+    );
+  } else {
+    return (
+      <>
+        {ReactDOM.createPortal(
+          <KogitoMenu />,
+          kogitoMenuContainer(props.id, globals.dependencies.all.notLoggedInNotificationIndicator()!)
+        )}
+      </>
+    );
+  }
 }
 
 export const Main: React.FunctionComponent<Globals> = (props) => {
