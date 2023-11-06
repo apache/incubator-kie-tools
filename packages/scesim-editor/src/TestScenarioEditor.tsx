@@ -159,10 +159,7 @@ function TestScenarioCreationPanel({
             value={assetType}
             id="asset-type-select"
             name="asset-type-select"
-            onChange={(value: string) => {
-              console.log(assetType);
-              setAssetType(value);
-            }}
+            onChange={(value: string) => setAssetType(value)}
           >
             {assetsOption.map((option, index) => (
               <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
@@ -281,6 +278,9 @@ function TestScenarioMainPanel({
     /* The first two FactMapping are related to the "Number" and "Description" columns. 
        If those columns only are present, no Data Objects can be detected in the scesim file */
     for (let i = 2; i < factsMappings.length; i++) {
+      if (factsMappings[i].className!.__$$text === "java.lang.Void") {
+        continue;
+      }
       const dataObject = dataObjects.find((value) => value.id === factsMappings[i]["factAlias"].__$$text);
       if (dataObject) {
         if (!dataObject.children?.some((value) => value.id === factsMappings[i]["expressionAlias"]?.__$$text)) {
