@@ -46,8 +46,6 @@ export const domParser = {
   },
 };
 
-const TEXT_VALUE_FIELD_NAME = "__$$text";
-
 /**
  * Returns a bi-directional map with the namespace aliases declared at the root element of a XML document pointing to their URIs and vice-versa. In this map, namespace aliases are suffixed with `:`.
  * E.g. "dmn:" => "https://www.omg.org/spec/DMN/20211108/MODEL/"
@@ -150,26 +148,21 @@ export function parse(args: {
           ? args.meta[elemPropType.type] // If we can't find this type with the `elements` mapping, we try directly from `meta`.
           : undefined); // If the current element is not known, we simply ignore its type and go with the defaults.
 
+      // If the elemNode's meta type has a __$$text property, this is the one we use to parse its value.
+      // All other properties on `elemType` are certainly attributes, which are handlded below.
+      const t = elemType?.["__$$text"]?.type ?? elemPropType?.type;
+
       let elemValue: any = {};
-      if (elemPropType?.type === "string") {
-        elemValue[TEXT_VALUE_FIELD_NAME] = elemNode.textContent ?? "";
-      } else if (elemPropType?.type === "boolean") {
-        elemValue[TEXT_VALUE_FIELD_NAME] = parseBoolean(elemNode.textContent ?? "");
-      } else if (elemPropType?.type === "float") {
-        elemValue[TEXT_VALUE_FIELD_NAME] = parseFloat(elemNode.textContent ?? "");
-      } else if (elemPropType?.type === "integer") {
-        elemValue[TEXT_VALUE_FIELD_NAME] = parseFloat(elemNode.textContent ?? "");
+      if (t === "string") {
+        elemValue["__$$text"] = elemNode.textContent ?? "";
+      } else if (t === "boolean") {
+        elemValue["__$$text"] = parseBoolean(elemNode.textContent ?? "");
+      } else if (t === "float") {
+        elemValue["__$$text"] = parseFloat(elemNode.textContent ?? "");
+      } else if (t === "integer") {
+        elemValue["__$$text"] = parseFloat(elemNode.textContent ?? "");
       } else {
         elemValue = parse({ ...args, node: elemNode, nodeType: elemType });
-        /* If the element is not a simple type and it has a single child node of TEXT_NODE type
-         * and it has at least one attribute, that is a Complex type with Simple Content
-         * eg:  <tagName attrName="a-value">myValue<tagName>
-         */
-        const hasSingleTextNodeChildren = elemNode.childNodes.length === 1 && elemNode.childNodes[0].nodeType === 3;
-        const hasAttributes = (elemNode as Element).attributes.length > 0;
-        if (hasSingleTextNodeChildren && hasAttributes) {
-          elemValue[TEXT_VALUE_FIELD_NAME] = elemNode.textContent;
-        }
         if (subsedName !== nsedName) {
           // substitution occurred, need to save the original, normalized element name
           elemValue["__$$element"] = nsedName;
@@ -341,11 +334,15 @@ function applyEntities(value: any) {
 
 function buildAttrs(json: any) {
   let isEmpty = true;
+  let hasText = false;
   let attrs = " ";
 
   for (const propName in json) {
     if (propName[0] === "@") {
       attrs += `${propName.substring(2)}="${applyEntities(json[propName])}" `;
+    } else if (propName === "__$$text") {
+      hasText = true;
+      isEmpty = false;
     } else if (propName !== "__$$element") {
       isEmpty = false;
     }
@@ -355,7 +352,7 @@ function buildAttrs(json: any) {
     isEmpty = false;
   }
 
-  return { attrs: attrs.substring(0, attrs.length - 1), isEmpty };
+  return { attrs: attrs.substring(0, attrs.length - 1), isEmpty, hasText };
 }
 
 export function build(args: {
@@ -383,8 +380,10 @@ export function build(args: {
     // ignore this. this is supposed to be on array elements only.
     else if (propName === "__$$element") {
       continue;
-    } else if (propName === "__$$text") {
-      xml += applyEntities(propValue);
+    }
+    // ignore this. text content is treated inside the "array" and "nested element" sections.
+    else if (propName === "__$$text") {
+      continue;
     }
     // pi tag
     else if (propName[0] === "?") {
@@ -404,13 +403,13 @@ export function build(args: {
     else if (Array.isArray(propValue)) {
       for (const item of propValue) {
         const elementName = applyInstanceNs({ ns, instanceNs, propName: item["__$$element"] ?? propName });
-        const { attrs, isEmpty } = buildAttrs(item);
+        const { attrs, isEmpty, hasText } = buildAttrs(item);
         xml += `${indent}<${elementName}${attrs}`;
         if (isEmpty) {
           xml += " />\n";
         } else if (typeof item === "object") {
-          if (item[TEXT_VALUE_FIELD_NAME]) {
-            xml += `>${applyEntities(item)}</${elementName}>\n`;
+          if (hasText) {
+            xml += `>${applyEntities(item["__$$text"])}</${elementName}>\n`;
           } else {
             xml += `>\n${build({ ...args, json: item, indent: `${indent}  ` })}`;
             xml += `${indent}</${elementName}>\n`;
@@ -422,13 +421,13 @@ export function build(args: {
     else {
       const item = propValue;
       const elementName = applyInstanceNs({ ns, instanceNs, propName: item["__$$element"] ?? propName });
-      const { attrs, isEmpty } = buildAttrs(item);
+      const { attrs, isEmpty, hasText } = buildAttrs(item);
       xml += `${indent}<${elementName}${attrs}`;
       if (isEmpty) {
         xml += " />\n";
       } else if (typeof item === "object") {
-        if (TEXT_VALUE_FIELD_NAME in item) {
-          xml += `>${build({ ...args, json: item })}</${elementName}>\n`;
+        if (hasText) {
+          xml += `>${applyEntities(item["__$$text"])}</${elementName}>\n`;
         } else {
           xml += `>\n${build({ ...args, json: item, indent: `${indent}  ` })}`;
           xml += `${indent}</${elementName}>\n`;
@@ -468,7 +467,7 @@ function applyInstanceNs({
 //////////////////
 
 export type NamespacedProperty<P extends string, K> = K extends string
-  ? K extends `@_${string}` | `${string}:${string}` // @_xxx are attributes, xxx:xxx are elements referencing other namespaces;
+  ? K extends `@_${string}` | `${string}:${string}` | "__$$text" | "__$$element" // @_xxx are attributes, xxx:xxx are elements referencing other namespaces; __$$element and __$$text are special properties with no domain-related characteristcs. Therefore, not namespace-able.
     ? K
     : `${P}:${K}`
   : never;
