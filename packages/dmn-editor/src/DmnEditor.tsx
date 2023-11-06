@@ -181,6 +181,11 @@ export const DmnEditorInternal = ({
     (e, tab) => {
       dmnEditorStoreApi.setState((state) => {
         state.navigation.tab = tab;
+        if (tab === DmnEditorTab.DATA_TYPES) {
+          // Keep the last selected if any. Default to first on list.
+          state.dataTypesEditor.activeItemDefinitionId =
+            state.dataTypesEditor.activeItemDefinitionId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
+        }
       });
     },
     [dmnEditorStoreApi]

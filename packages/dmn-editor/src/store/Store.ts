@@ -180,7 +180,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
         model,
       },
       dataTypesEditor: {
-        activeItemDefinitionId: model.definitions.itemDefinition?.[0]?.["@_id"],
+        activeItemDefinitionId: undefined,
         expandedItemComponentIds: [],
       },
       ...defaultStaticState(),
