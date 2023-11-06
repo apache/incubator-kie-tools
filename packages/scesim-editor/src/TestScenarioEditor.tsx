@@ -280,25 +280,25 @@ function TestScenarioMainPanel({
     /* The first two FactMapping are related to the "Number" and "Description" columns. 
        If those columns only are present, no Data Objects can be detected in the scesim file */
     for (let i = 2; i < factsMappings.length; i++) {
-      const dataObject = dataObjects.find((value) => value.id === factsMappings[i]["factAlias"]);
+      const dataObject = dataObjects.find((value) => value.id === factsMappings[i]["factAlias"].__$$text);
       if (dataObject) {
-        if (!dataObject.children?.some((value) => value.id === factsMappings[i]["expressionAlias"])) {
+        if (!dataObject.children?.some((value) => value.id === factsMappings[i]["expressionAlias"]?.__$$text)) {
           dataObject.children!.push({
-            id: factsMappings[i]["expressionAlias"]!,
-            name: factsMappings[i]["expressionAlias"]!,
-            customBadgeContent: factsMappings[i]["className"],
+            id: factsMappings[i]["expressionAlias"]!.__$$text,
+            name: factsMappings[i]["expressionAlias"]!.__$$text,
+            customBadgeContent: factsMappings[i]["className"].__$$text,
           });
         }
       } else {
         dataObjects.push({
-          id: factsMappings[i]["factAlias"],
-          name: factsMappings[i]["factAlias"],
-          customBadgeContent: factsMappings[i]["factIdentifier"]!["className"],
+          id: factsMappings[i]["factAlias"].__$$text,
+          name: factsMappings[i]["factAlias"].__$$text,
+          customBadgeContent: factsMappings[i]["factIdentifier"]!["className"]!.__$$text,
           children: [
             {
-              id: factsMappings[i]["expressionAlias"]!,
-              name: factsMappings[i]["expressionAlias"]!,
-              customBadgeContent: factsMappings[i]["className"],
+              id: factsMappings[i]["expressionAlias"]!.__$$text,
+              name: factsMappings[i]["expressionAlias"]!.__$$text,
+              customBadgeContent: factsMappings[i]["className"].__$$text,
             },
           ],
         });
@@ -310,7 +310,7 @@ function TestScenarioMainPanel({
 
   /** It determines the Alert State */
   useEffect(() => {
-    const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"]!;
+    const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text;
 
     let alertEnabled = false;
     let alertMessage = "";
@@ -347,13 +347,14 @@ function TestScenarioMainPanel({
                 onUpdateSettingField={updateSettingField}
                 selectedDock={dockPanel.selected}
                 testScenarioSettings={{
-                  assetType: scesimModel.ScenarioSimulationModel["settings"]!["type"]!,
-                  dmnName: scesimModel.ScenarioSimulationModel["settings"]!["dmnName"],
-                  dmnNamespace: scesimModel.ScenarioSimulationModel["settings"]!["dmnNamespace"],
-                  isStatelessSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["stateless"] ?? false,
-                  isTestSkipped: scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"] ?? false,
-                  kieSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["dmoSession"],
-                  ruleFlowGroup: scesimModel.ScenarioSimulationModel["settings"]!["ruleFlowGroup"],
+                  assetType: scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text,
+                  dmnName: scesimModel.ScenarioSimulationModel["settings"]!["dmnName"]?.__$$text,
+                  dmnNamespace: scesimModel.ScenarioSimulationModel["settings"]!["dmnNamespace"]?.__$$text,
+                  isStatelessSessionRule:
+                    scesimModel.ScenarioSimulationModel["settings"]!["stateless"]?.__$$text ?? false,
+                  isTestSkipped: scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"]?.__$$text ?? false,
+                  kieSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["dmoSession"]?.__$$text,
+                  ruleFlowGroup: scesimModel.ScenarioSimulationModel["settings"]!["ruleFlowGroup"]?.__$$text,
                 }}
               />
             }
@@ -493,12 +494,17 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
           ["settings"]: {
             ...prevState.ScenarioSimulationModel["settings"],
             ["dmoSession"]:
-              assetType === TestScenarioType[TestScenarioType.RULE] && kieSessionRule ? kieSessionRule : undefined,
+              assetType === TestScenarioType[TestScenarioType.RULE] && kieSessionRule
+                ? { __$$text: kieSessionRule }
+                : undefined,
             ["ruleFlowGroup"]:
-              assetType === TestScenarioType[TestScenarioType.RULE] && ruleFlowGroup ? ruleFlowGroup : undefined,
-            ["skipFromBuild"]: isTestSkipped,
-            ["stateless"]: assetType === TestScenarioType[TestScenarioType.RULE] ? isStatelessSessionRule : undefined,
-            ["type"]: assetType,
+              assetType === TestScenarioType[TestScenarioType.RULE] && ruleFlowGroup
+                ? { __$$text: ruleFlowGroup }
+                : undefined,
+            ["skipFromBuild"]: { __$$text: isTestSkipped },
+            ["stateless"]:
+              assetType === TestScenarioType[TestScenarioType.RULE] ? { __$$text: isStatelessSessionRule } : undefined,
+            ["type"]: { __$$text: assetType },
           },
         },
       })),
@@ -512,7 +518,7 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
           ...prevState.ScenarioSimulationModel,
           ["settings"]: {
             ...prevState.ScenarioSimulationModel["settings"],
-            [fieldName]: value,
+            [fieldName]: { __$$text: value },
           },
         },
       })),

@@ -90,11 +90,10 @@ function TestScenarioDrawerPanel({
               return <TestScenarioDrawerCheatSheetPanel assetType={testScenarioSettings.assetType} />;
             case TestScenarioEditorDock.DATA_OBJECT:
               return (
-                // <TestScenarioDrawerDataObjectsPanel
-                //   assetType={testScenarioSettings.assetType}
-                //   dataObjects={dataObjects}
-                // />
-                <div></div>
+                <TestScenarioDrawerDataObjectsPanel
+                  assetType={testScenarioSettings.assetType}
+                  dataObjects={dataObjects}
+                />
               );
             case TestScenarioEditorDock.SETTINGS:
               return (
