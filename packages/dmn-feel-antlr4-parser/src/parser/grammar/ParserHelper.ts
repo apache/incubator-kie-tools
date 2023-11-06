@@ -30,6 +30,7 @@ import { ReservedWords } from "../ReservedWords";
 import { FeelSyntacticSymbolNature } from "../FeelSyntacticSymbolNature";
 import { MapBackedType } from "./MapBackedType";
 import { FeelSymbol } from "../FeelSymbol";
+import { Variable } from "../Variable";
 
 export class ParserHelper {
   private dynamicResolution = 0;
@@ -101,11 +102,17 @@ export class ParserHelper {
     return key;
   }
 
-  defineVariable(variable: string | ParserRuleContext, type?: Type, variableType?: FeelSyntacticSymbolNature) {
+  defineVariable(
+    variable: string | ParserRuleContext,
+    type?: Type,
+    variableType?: FeelSyntacticSymbolNature,
+    variableSource?: Variable
+  ) {
     const variableSymbol = new VariableSymbol(
       variable instanceof ParserRuleContext ? this.getName(variable) : variable,
       type,
-      variableType
+      variableType,
+      variableSource
     );
 
     if (variableSymbol.getId()) {

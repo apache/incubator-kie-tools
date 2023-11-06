@@ -19,26 +19,34 @@
 
 import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 import { FeelSymbol } from "./FeelSymbol";
+import { Variable } from "./Variable";
 
 export class FeelVariable {
   private readonly _text: string;
-  private readonly _startIndex: number;
+  private _startIndex: number;
   private readonly _feelSymbolNature: FeelSyntacticSymbolNature;
   private readonly _length: number;
   private readonly _scopeSymbols: FeelSymbol[];
+  private readonly _source: Variable | undefined;
 
   constructor(
     startIndex: number,
     length: number,
     symbolType: FeelSyntacticSymbolNature,
     text: string,
-    scopeSymbols?: FeelSymbol[]
+    scopeSymbols?: FeelSymbol[],
+    source?: Variable
   ) {
     this._startIndex = startIndex;
     this._length = length;
     this._feelSymbolNature = symbolType;
     this._text = text;
     this._scopeSymbols = scopeSymbols ?? [];
+    this._source = source;
+  }
+
+  get source(): Variable | undefined {
+    return this._source;
   }
 
   get text(): string {
@@ -47,6 +55,10 @@ export class FeelVariable {
 
   get startIndex(): number {
     return this._startIndex;
+  }
+
+  set startIndex(value: number) {
+    this._startIndex = value;
   }
 
   get feelSymbolNature(): FeelSyntacticSymbolNature {

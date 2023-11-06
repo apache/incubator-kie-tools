@@ -3212,6 +3212,9 @@ importers:
       "@kie-tools/boxed-expression-component":
         specifier: workspace:*
         version: link:../boxed-expression-component
+      "@kie-tools/dmn-feel-antlr4-parser":
+        specifier: workspace:*
+        version: link:../dmn-feel-antlr4-parser
       "@kie-tools/dmn-marshaller":
         specifier: workspace:*
         version: link:../dmn-marshaller

@@ -67,14 +67,26 @@ import {
 } from "@kie-tools/pmml-editor-marshaller/dist/marshaller/model/pmml4_4";
 import { PMMLFieldData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLFieldData";
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dispatch = useDmnEditorStore((s) => s.dispatch);
   const boxedExpressionEditor = useDmnEditorStore((s) => s.boxedExpressionEditor);
-
+  const { externalDmnsByNamespace } = useDmnEditorDerivedStore();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const feelVariables = useMemo(() => {
+    const externalModels = new Map<string, DmnLatestModel>();
+
+    for (const [key, externalDmn] of externalDmnsByNamespace) {
+      externalModels.set(key, externalDmn.model);
+    }
+
+    return new FeelVariables(thisDmn.model.definitions, externalModels);
+  }, [externalDmnsByNamespace, thisDmn.model.definitions]);
 
   const widthsById = useMemo(() => {
     return (
@@ -307,6 +319,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
               setExpressionDefinition={setExpression}
               dataTypes={dataTypes}
               scrollableParentRef={container}
+              variables={feelVariables}
             />
           </div>
         )}
