@@ -161,7 +161,7 @@ After the installation, you can optionally add a file at `/src/main/resources/ME
 {
   "appName": "SonataFlow Deployment",
   "showDisclaimer": true,
-  "dataIndexExternalUrl": ""
+  "dataIndexUrl": ""
 }
 ```
 
@@ -169,4 +169,4 @@ Please replace:
 
 - `appName` with the desired name for the app
 - `showDisclaimer` show/hide the development disclamer
-- `dataIndexExternalUrl` optional url to your SonataFlow Data Index Service. If not set the app will try to use the embedded Data Index Service.
+- `dataIndexUrl` optional url to your SonataFlow Data Index Service. If not set the app will try to use the embedded Data Index Service.

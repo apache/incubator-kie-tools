@@ -26,7 +26,7 @@ import { AppContext } from "./AppContext";
 export function AppContextProvider(props: PropsWithChildren<{}>) {
   const appDataPromise = useAppDataPromise();
   const [data, setData] = useState<AppData>(DEFAULT_APPDATA_VALUES);
-  const [dataIndexAvailable, setDataIndexAvailable] = useState(true);
+  const [dataIndexAvailable, setDataIndexAvailable] = useState<boolean>();
 
   useEffect(() => {
     if (!appDataPromise.data) {
@@ -36,7 +36,7 @@ export function AppContextProvider(props: PropsWithChildren<{}>) {
     const appData = {
       appName: appDataPromise.data.appName || DEFAULT_APPDATA_VALUES.appName,
       showDisclaimer: appDataPromise.data.showDisclaimer ?? DEFAULT_APPDATA_VALUES.showDisclaimer,
-      dataIndexUrl: appDataPromise.data.dataIndexExternalUrl || DEFAULT_APPDATA_VALUES.dataIndexUrl,
+      dataIndexUrl: appDataPromise.data.dataIndexUrl || DEFAULT_APPDATA_VALUES.dataIndexUrl,
     };
 
     setData(appData);

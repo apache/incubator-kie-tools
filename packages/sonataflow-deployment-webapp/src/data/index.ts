@@ -22,7 +22,6 @@ import { routes } from "../routes";
 export interface AppData {
   appName: string;
   showDisclaimer: boolean;
-  dataIndexExternalUrl?: string;
   dataIndexUrl: string;
 }
 

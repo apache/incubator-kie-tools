@@ -77,7 +77,11 @@ export function RuntimeToolsWorkflowInstances() {
       </PageSection>
 
       <PageSection isFilled aria-label="workflow-instances-section">
-        {!app.dataIndexAvailable ? <DataIndexNotAvailable /> : <WorkflowListContainer initialState={initialState} />}
+        {app.dataIndexAvailable === false ? (
+          <DataIndexNotAvailable />
+        ) : (
+          <WorkflowListContainer initialState={initialState} />
+        )}
       </PageSection>
     </BasePage>
   );
