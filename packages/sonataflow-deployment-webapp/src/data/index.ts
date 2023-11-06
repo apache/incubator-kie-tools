@@ -35,12 +35,16 @@ export async function verifyDataIndex(dataIndexUrl?: string): Promise<boolean> {
     return false;
   }
 
-  const response = await fetch(dataIndexUrl, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: '{"query":""}',
-  });
-  return response.status === 200;
+  try {
+    const response = await fetch(dataIndexUrl, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: '{"query":""}',
+    });
+    return response.status === 200;
+  } catch (e) {
+    return false;
+  }
 }
