@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
+import React, { useMemo } from "react";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -28,39 +28,54 @@ import { useApp } from "../../context/AppContext";
 import { WorkflowListState } from "./WorkflowList/WorkflowListGatewayApi";
 import WorkflowListContainer from "./WorkflowListContainer/WorkflowListContainer";
 import { BasePage } from "../../pages/BasePage";
-import { SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL } from "../../AppConstants";
+import {
+  APPDATA_JSON_FILENAME,
+  DEFAULT_APPDATA_VALUES,
+  SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL,
+} from "../../AppConstants";
 
 const PAGE_TITLE = "Workflow Instances";
-
-const DataIndexNotAvailable = () => (
-  <PageSection variant="light">
-    <Bullseye>
-      <EmptyState>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel="h4" size="lg">
-          {`Data Index service not available`}
-        </Title>
-        <EmptyStateBody>
-          <TextContent>
-            <Text>
-              Start by setting the Data Index in the config file.
-              <br />
-              Read more on &nbsp;
-              <a href={SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL} target="_blank" rel="noopener noreferrer">
-                SonataFlow Guides.
-              </a>
-            </Text>
-          </TextContent>
-        </EmptyStateBody>
-      </EmptyState>
-    </Bullseye>
-  </PageSection>
-);
 
 export function RuntimeToolsWorkflowInstances() {
   const history = useHistory();
   const app = useApp();
   const initialState: WorkflowListState = history.location && (history.location.state as WorkflowListState);
+
+  const dataIndexNotAvailable = useMemo(
+    () => (
+      <PageSection variant="light">
+        <Bullseye>
+          <EmptyState>
+            <EmptyStateIcon icon={CubesIcon} />
+            <Title headingLevel="h4" size="lg">
+              {`Data Index service not available`}
+            </Title>
+            <EmptyStateBody>
+              <TextContent>
+                <Text>
+                  {app.data.dataIndexUrl !== DEFAULT_APPDATA_VALUES.dataIndexUrl ? (
+                    <>
+                      The &ldquo;dataIndexUrl&rdquo; property in {APPDATA_JSON_FILENAME} is:
+                      <br /> {app.data.dataIndexUrl}
+                      <br />
+                    </>
+                  ) : (
+                    `Start by setting the Data Index in the config file.`
+                  )}
+                  <br />
+                  Read more on &nbsp;
+                  <a href={SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL} target="_blank" rel="noopener noreferrer">
+                    SonataFlow Guides.
+                  </a>
+                </Text>
+              </TextContent>
+            </EmptyStateBody>
+          </EmptyState>
+        </Bullseye>
+      </PageSection>
+    ),
+    [app]
+  );
 
   return (
     <BasePage>
@@ -75,7 +90,7 @@ export function RuntimeToolsWorkflowInstances() {
 
       <PageSection isFilled aria-label="workflow-instances-section">
         {app.dataIndexAvailable === false ? (
-          <DataIndexNotAvailable />
+          dataIndexNotAvailable
         ) : (
           <WorkflowListContainer initialState={initialState} />
         )}
