@@ -69,7 +69,8 @@ const namespaceForNewImportsByFileExtension: Record<string, string> = {
 
 export function IncludedModels() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const thisDmnsImports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmnsImports = useMemo(() => thisDmn.model.definitions.import ?? [], [thisDmn.model.definitions.import]);
 
   const { externalContextDescription, externalContextName } = useDmnEditor();
   const { importsByNamespace, allFeelVariableUniqueNames } = useDmnEditorDerivedStore();

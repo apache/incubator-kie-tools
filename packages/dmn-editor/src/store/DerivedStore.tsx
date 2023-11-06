@@ -51,7 +51,7 @@ export function useDmnEditorDerivedStore() {
 export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChildren<{}>) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const thisDmn = useDmnEditorStore((s) => s.dmn);
-  const thisDmnsImports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
+  const thisDmnsImports = useMemo(() => thisDmn.model.definitions.import ?? [], [thisDmn.model.definitions.import]);
 
   const thisDmnsImportsByNamespace = useMemo(() => {
     const ret = new Map<string, DMN15__tImport>();
