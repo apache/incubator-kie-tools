@@ -18,7 +18,11 @@
  */
 import React from "react";
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
+import {
+  Action,
+  FormNotification,
+  Notification,
+} from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { WorkflowFormDriver } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api/WorkflowFormDriver";
 import CustomWorkflowForm from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/envelope/components/CustomWorkflowForm/CustomWorkflowForm";
 import WorkflowForm from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/envelope/components/WorkflowForm/WorkflowForm";
@@ -59,36 +63,46 @@ export function WorkflowFormPage(props: { workflowId: string }) {
     [props.workflowId]
   );
 
-  const goToWorkflowList = useCallback(() => {
-    history.push(routes.workflows.home.path({}));
-  }, [history]);
+  const openWorkflowInstance = useCallback(
+    (id: string) => {
+      history.push({
+        pathname: routes.runtimeTools.workflowDetails.path({ workflowId: id }),
+      });
+    },
+    [history]
+  );
 
   const showNotification = useCallback(
-    (notificationType: "error" | "success", submitMessage: string, notificationDetails?: string) => {
+    (
+      notificationType: "error" | "success",
+      submitMessage: string,
+      notificationDetails?: string,
+      customActions?: Action[]
+    ) => {
       setNotification({
         type: notificationType,
         message: submitMessage,
         details: notificationDetails,
-        customActions: [
-          {
-            label: "Go to workflow list",
-            onClick: () => {
-              setNotification(undefined);
-              goToWorkflowList();
-            },
-          },
-        ],
+        customActions,
         close: () => {
           setNotification(undefined);
         },
       });
     },
-    [goToWorkflowList]
+    [openWorkflowInstance]
   );
 
   const onSubmitSuccess = useCallback(
-    (message: string): void => {
-      showNotification("success", message);
+    (message: string, id: string): void => {
+      showNotification("success", message, undefined, [
+        {
+          label: "View details",
+          onClick: () => {
+            setNotification(undefined);
+            openWorkflowInstance(id);
+          },
+        },
+      ]);
     },
     [showNotification]
   );
@@ -111,7 +125,7 @@ export function WorkflowFormPage(props: { workflowId: string }) {
         return gatewayApi
           ?.startWorkflow(endpoint, data)
           .then((response: WorkflowResponse) => {
-            onSubmitSuccess(`A workflow with id ${response.id} was triggered successfully.`);
+            onSubmitSuccess(`A workflow with id ${response.id} was started successfully.`, response.id);
             setWorkflowResponse(response);
           })
           .catch((error) => {
