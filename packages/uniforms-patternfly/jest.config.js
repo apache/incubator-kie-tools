@@ -18,8 +18,7 @@
  */
 
 module.exports = {
-  bail: 1,
-  verbose: true,
+  testEnvironment: "jsdom",
   globals: {
     "ts-jest": {
       tsconfig: "<rootDir>/tsconfig.esm.json",

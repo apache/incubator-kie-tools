@@ -18,8 +18,7 @@
  */
 
 module.exports = {
-  bail: 1,
-  verbose: true,
+  testEnvironment: "jsdom",
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules", "src", "<rootDir>"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],

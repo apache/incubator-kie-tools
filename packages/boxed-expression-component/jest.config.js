@@ -18,8 +18,7 @@
  */
 
 module.exports = {
-  bail: 1,
-  verbose: true,
+  testEnvironment: "jsdom",
   moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   moduleNameMapper: {

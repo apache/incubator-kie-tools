@@ -45,6 +45,7 @@
     "@types/jest-when": "^3.5.4",
     "copy-webpack-plugin": "^11.0.0",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "29.7.0",
     "jest-when": "^3.6.0",
     "monaco-editor": "^0.39.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
