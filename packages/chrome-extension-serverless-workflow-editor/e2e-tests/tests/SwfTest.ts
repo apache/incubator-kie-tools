@@ -21,14 +21,28 @@ import Tools from "@kie-tools/chrome-extension-test-helper/dist/utils/Tools";
 import GitHubListItem from "@kie-tools/chrome-extension-test-helper/dist/framework/github-file-list/GitHubListItem";
 import GitHubListPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-file-list/GitHubListPage";
 import GitHubEditorPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-editor/GitHubEditorPage";
+import GitHubRepoPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-repo/GitHubRepoPage";
 import SwfEditor from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/swf/SwfEditor";
+
+// @ts-ignore
+import { env } from "../../env";
 
 const TEST_NAME = "SwfTest";
 
 let tools: Tools;
 
+const buildEnv: any = env;
+
 beforeEach(async () => {
   tools = await Tools.init(TEST_NAME);
+
+  if (buildEnv.swfChromeExtension.e2eTestingToken !== "") {
+    const gitHubRepoPage: GitHubRepoPage = await tools.openPage(
+      GitHubRepoPage,
+      "https://github.com/kiegroup/kie-tools"
+    );
+    await gitHubRepoPage.addToken(buildEnv.swfChromeExtension.e2eTestingToken);
+  }
 });
 
 test(TEST_NAME, async () => {

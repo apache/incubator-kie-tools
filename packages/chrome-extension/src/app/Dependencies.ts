@@ -74,6 +74,9 @@ export class Dependencies {
       return (document.querySelector(".notification-indicator") ??
         document.querySelector(".AppHeader-search")) as HTMLElement | null;
     },
+    notLoggedInNotificationIndicator: () => {
+      return document.querySelector("#repository-details-container") as HTMLInputElement | null;
+    },
     body: () => {
       return document.body;
     },

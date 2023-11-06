@@ -20,14 +20,28 @@
 import SwfEditor from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/swf/SwfEditor";
 import FullScreenPage from "@kie-tools/chrome-extension-test-helper/dist/framework/fullscreen-editor/FullScreenPage";
 import GitHubEditorPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-editor/GitHubEditorPage";
+import GitHubRepoPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-repo/GitHubRepoPage";
 import Tools from "@kie-tools/chrome-extension-test-helper/dist/utils/Tools";
+
+// @ts-ignore
+import { env } from "../../env";
 
 const TEST_NAME = "SwfFullScreenTest";
 
 let tools: Tools;
 
+const buildEnv: any = env;
+
 beforeEach(async () => {
   tools = await Tools.init(TEST_NAME);
+
+  if (buildEnv.swfChromeExtension.e2eTestingToken !== "") {
+    const gitHubRepoPage: GitHubRepoPage = await tools.openPage(
+      GitHubRepoPage,
+      "https://github.com/kiegroup/kie-tools"
+    );
+    await gitHubRepoPage.addToken(buildEnv.swfChromeExtension.e2eTestingToken);
+  }
 });
 
 test(TEST_NAME, async () => {
