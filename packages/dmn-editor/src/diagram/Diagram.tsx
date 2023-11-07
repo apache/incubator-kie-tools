@@ -16,7 +16,7 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
+import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
@@ -42,10 +42,7 @@ import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
 import { deleteEdge } from "../mutations/deleteEdge";
 import { deleteNode } from "../mutations/deleteNode";
-import {
-  repopulateInputDataAndDecisionsOnAllDecisionServices,
-  repopulateInputDataAndDecisionsOnDecisionService,
-} from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
+import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
@@ -89,8 +86,8 @@ import {
   TextAnnotationNode,
   UnknownNode,
 } from "./nodes/Nodes";
-import BlueprintIcon from "@patternfly/react-icons/dist/esm/icons/blueprint-icon";
-import MousePointerIcon from "@patternfly/react-icons/dist/esm/icons/mouse-pointer-icon";
+import { BlueprintIcon } from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
+import { MousePointerIcon } from "@patternfly/react-icons/dist/js/icons/mouse-pointer-icon";
 import { updateExpression } from "../mutations/updateExpression";
 import { getDefaultExpressionDefinitionByLogicType } from "../boxedExpressions/getDefaultExpressionDefinitionByLogicType";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";

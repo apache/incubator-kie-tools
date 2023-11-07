@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Alert, AlertVariant } from "@patternfly/react-core/dist/esm/components/Alert/Alert";
+import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../store/Store";
 import { useMemo } from "react";

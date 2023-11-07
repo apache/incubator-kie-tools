@@ -8,10 +8,10 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { SyncAltIcon } from "@patternfly/react-icons/dist/esm/icons/sync-alt-icon";
+import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { TimesIcon } from "@patternfly/react-icons/dist/esm/icons/times-icon";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 
 export function GlobalDiagramProperties() {

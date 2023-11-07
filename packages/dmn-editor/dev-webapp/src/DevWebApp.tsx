@@ -164,7 +164,13 @@ export function DevWebApp() {
           <a ref={downloadRef} />
         </PageSection>
         <hr />
-        <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true} aria-label={"editor"}>
+        <PageSection
+          variant={"light"}
+          isFilled={true}
+          hasOverflowScroll={true}
+          aria-label={"editor"}
+          padding={{ default: "noPadding" }}
+        >
           <DmnEditor.DmnEditor
             ref={ref}
             model={currentModel}

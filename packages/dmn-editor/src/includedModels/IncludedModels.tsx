@@ -297,25 +297,28 @@ export function IncludedModels() {
         )) || <>Loading...</>}
       </Modal>
       {thisDmnsImports.length > 0 && (
-        <PageSection>
-          <Button onClick={openModal} variant={ButtonVariant.primary}>
-            Include model
-          </Button>
-          <br />
-          <br />
-          <Divider inset={{ default: "insetMd" }} />
-          <br />
-          <Gallery hasGutter={true}>
-            {thisDmnsImports.flatMap((i, index) => {
-              const externalModel = externalModelsByNamespace?.[i["@_namespace"]];
-              return !externalModel ? (
-                []
-              ) : (
-                <IncludedModelCard key={i["@_id"]} _import={i} index={index} externalModel={externalModel} />
-              );
-            })}
-          </Gallery>
-        </PageSection>
+        <>
+          {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
+          <PageSection style={{ padding: "24px" }}>
+            <Button onClick={openModal} variant={ButtonVariant.primary}>
+              Include model
+            </Button>
+            <br />
+            <br />
+            <Divider inset={{ default: "insetMd" }} />
+            <br />
+            <Gallery hasGutter={true}>
+              {thisDmnsImports.flatMap((i, index) => {
+                const externalModel = externalModelsByNamespace?.[i["@_namespace"]];
+                return !externalModel ? (
+                  []
+                ) : (
+                  <IncludedModelCard key={i["@_id"]} _import={i} index={index} externalModel={externalModel} />
+                );
+              })}
+            </Gallery>
+          </PageSection>
+        </>
       )}
       {thisDmnsImports.length <= 0 && (
         <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>

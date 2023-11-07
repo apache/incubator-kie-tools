@@ -245,7 +245,8 @@ export function DataTypePanel({
           </FlexItem>
         </Flex>
       </div>
-      <PageSection>
+      {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
+      <PageSection style={{ padding: "24px" }}>
         <TextArea
           isDisabled={isReadonly}
           key={dataType.itemDefinition["@_id"]}
