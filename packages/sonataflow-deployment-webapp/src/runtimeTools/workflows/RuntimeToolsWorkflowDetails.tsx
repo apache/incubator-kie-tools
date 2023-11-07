@@ -29,6 +29,7 @@ import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/componen
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { BasePage } from "../../pages/BasePage";
+import { useApp } from "../../context/AppContext";
 
 const PAGE_TITLE = "Workflow Details";
 
@@ -37,6 +38,7 @@ interface WorkflowListContainerProps {
 }
 export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
   const gatewayApi: WorkflowDetailsGatewayApi = useWorkflowDetailsGatewayApi();
+  const app = useApp();
 
   const [workflowInstance, setWorkflowInstance] = useState<WorkflowInstance>({} as WorkflowInstance);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -71,6 +73,8 @@ export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
             <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
             <Text component={TextVariants.p}>
               Explore the execution status, details, timeline and variables of a workflow instance.
+              <br />
+              Your Data Index URL is: {app.fullDataIndexUrl}
             </Text>
           </TextContent>
         </PageSection>

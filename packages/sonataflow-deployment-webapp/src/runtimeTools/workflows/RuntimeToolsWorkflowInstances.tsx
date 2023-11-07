@@ -28,11 +28,7 @@ import { useApp } from "../../context/AppContext";
 import { WorkflowListState } from "./WorkflowList/WorkflowListGatewayApi";
 import WorkflowListContainer from "./WorkflowListContainer/WorkflowListContainer";
 import { BasePage } from "../../pages/BasePage";
-import {
-  APPDATA_JSON_FILENAME,
-  DEFAULT_APPDATA_VALUES,
-  SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL,
-} from "../../AppConstants";
+import { APPDATA_JSON_FILENAME, SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL } from "../../AppConstants";
 
 const PAGE_TITLE = "Workflow Instances";
 
@@ -53,7 +49,7 @@ export function RuntimeToolsWorkflowInstances() {
             <EmptyStateBody>
               <TextContent>
                 <Text>
-                  {app.data.dataIndexUrl !== DEFAULT_APPDATA_VALUES.dataIndexUrl ? (
+                  {!app.isDataIndexEmbedded ? (
                     <>
                       The &ldquo;dataIndexUrl&rdquo; property in {APPDATA_JSON_FILENAME} is:
                       <br /> {app.data.dataIndexUrl}
@@ -84,6 +80,8 @@ export function RuntimeToolsWorkflowInstances() {
           <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
           <Text component={TextVariants.p}>
             List and view workflows from the Data Index linked in your Runtime Tools settings.
+            <br />
+            Your Data Index URL is: {app.fullDataIndexUrl}
           </Text>
         </TextContent>
       </PageSection>
