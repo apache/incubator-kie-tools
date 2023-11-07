@@ -67,7 +67,6 @@ export class DmnEditorInterface implements Editor {
     return (
       <DmnEditorRoot
         exposing={(s) => (this.self = s)}
-        onReady={() => this.envelopeContext.channelApi.notifications.kogitoEditor_ready.send()}
         onNewEdit={(e) => this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send(e)}
         onRequestFileList={(r) => this.envelopeContext.channelApi.requests.kogitoWorkspace_resourceListRequest(r)}
         onRequestFileContent={(r) => this.envelopeContext.channelApi.requests.kogitoWorkspace_resourceContentRequest(r)}
