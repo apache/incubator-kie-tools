@@ -20,6 +20,9 @@
 **/.settings/
 package-lock.json
 
+## go
+**/dist-it-tests/
+
 ## chrome-extension-pack-kogito-kie-editors
 **/logs/
 **/screenshots/
