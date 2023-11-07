@@ -49,7 +49,7 @@ export type DataTypeTreeViewDataItem = {};
 export type DataTypeIndex = Map<string, DataType>;
 
 export type AddItemComponent = (id: string, how: "unshift" | "push", partial?: Partial<DMN15__tItemDefinition>) => void;
-export type AddTopLevelItemDefinition = (partial?: Partial<DMN15__tItemDefinition>) => void;
+export type AddTopLevelItemDefinition = (partial: Partial<DMN15__tItemDefinition>) => void;
 
 export type EditItemDefinition = (
   id: string,
@@ -135,7 +135,7 @@ export function DataTypes() {
 
   return (
     <>
-      {(dataTypesTree.length <= 0 && <DataTypesEmptyState onAdd={addTopLevelItemDefinition} />) || (
+      {(dataTypesTree.length <= 0 && <DataTypesEmptyState onAdd={() => addTopLevelItemDefinition({})} />) || (
         <Drawer isExpanded={true} isInline={true} position={"left"} className={"kie-dmn-editor--data-types-container"}>
           <DrawerContent
             panelContent={
@@ -162,7 +162,7 @@ export function DataTypes() {
                             <DropdownToggleAction
                               key="add-data-type-action"
                               aria-label="Add Data Type"
-                              onClick={() => addTopLevelItemDefinition()}
+                              onClick={() => addTopLevelItemDefinition({})}
                             >
                               <PlusCircleIcon />
                             </DropdownToggleAction>,
