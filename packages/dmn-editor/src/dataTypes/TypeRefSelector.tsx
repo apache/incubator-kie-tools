@@ -106,6 +106,7 @@ export function TypeRefSelector(props: {
             {customDataTypes.map((dt) => (
               <SelectOption key={dt.feelName} value={dt.feelName}>
                 {dt.feelName}
+                &nbsp;
                 <TypeRefLabel
                   typeRef={dt.itemDefinition.typeRef}
                   relativeToNamespace={dt.namespace}
@@ -120,6 +121,7 @@ export function TypeRefSelector(props: {
             {externalDataTypes.map((dt) => (
               <SelectOption key={dt.feelName} value={dt.feelName}>
                 {dt.feelName}
+                &nbsp;
                 <TypeRefLabel
                   typeRef={dt.itemDefinition.typeRef}
                   relativeToNamespace={dt.namespace}

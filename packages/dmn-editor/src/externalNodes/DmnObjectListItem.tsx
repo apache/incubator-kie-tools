@@ -45,14 +45,17 @@ export function DmnObjectListItem({
       }`}</div>
       <div>
         {dmnObject.__$$element !== "knowledgeSource" ? (
-          <TypeRefLabel
-            typeRef={dmnObject.variable?.["@_typeRef"]}
-            relativeToNamespace={namespace}
-            isCollection={
-              allTopLevelDataTypesByFeelName.get(dmnObject.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined)
-                ?.itemDefinition["@_isCollection"]
-            }
-          />
+          <>
+            &nbsp;
+            <TypeRefLabel
+              typeRef={dmnObject.variable?.["@_typeRef"]}
+              relativeToNamespace={namespace}
+              isCollection={
+                allTopLevelDataTypesByFeelName.get(dmnObject.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined)
+                  ?.itemDefinition["@_isCollection"]
+              }
+            />
+          </>
         ) : (
           <></>
         )}

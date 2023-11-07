@@ -68,9 +68,8 @@ export function TypeRefLabel({
   return (
     <span className={"kie-dmn-editor--data-type-label"}>
       <i>
-        {typeRef && (
+        {(typeRef && (
           <>
-            <span>{`(`}</span>
             {`${feelName ?? DmnBuiltInDataType.Undefined}`}
             {isCollection && (
               <>
@@ -78,9 +77,8 @@ export function TypeRefLabel({
                 {`[]`}
               </>
             )}
-            <span>{`)`}</span>
           </>
-        )}
+        )) || <>{isCollection && <>{`[]`}</>}</>}
       </i>
     </span>
   );

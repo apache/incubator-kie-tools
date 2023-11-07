@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback } from "react";
-import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DmnEditorTab, useDmnEditorStoreApi } from "../store/Store";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
@@ -25,7 +25,6 @@ export const MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS =
   "kie-dmn-editor--external-node-from-included-models";
 
 export function ExternalNodesPanel() {
-  const thisDmn = useDmnEditorStore((s) => s.dmn);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { dmnShapesByHref, externalDmnsByNamespace, importsByNamespace } = useDmnEditorDerivedStore();
 
@@ -85,41 +84,39 @@ export function ExternalNodesPanel() {
                 </i>
               </small>
             </div>
-            {externalDmnDefinitions.drgElement?.map((dmnObject) => {
-              return (
-                <div
-                  key={dmnObject["@_id"]}
-                  className={"kie-dmn-editor--external-nodes-list-item"}
-                  draggable={true}
-                  onDragStart={(event) =>
-                    onDragStart(event, {
-                      externalDrgElementNamespace: namespace,
-                      externalDrgElementId: dmnObject["@_id"]!,
-                    })
-                  }
+            {externalDmnDefinitions.drgElement?.map((dmnObject) => (
+              <div
+                key={dmnObject["@_id"]}
+                className={"kie-dmn-editor--external-nodes-list-item"}
+                draggable={true}
+                onDragStart={(event) =>
+                  onDragStart(event, {
+                    externalDrgElementNamespace: namespace,
+                    externalDrgElementId: dmnObject["@_id"]!,
+                  })
+                }
+              >
+                <Flex
+                  alignItems={{ default: "alignItemsCenter" }}
+                  justifyContent={{ default: "justifyContentFlexStart" }}
+                  spaceItems={{ default: "spaceItemsNone" }}
                 >
-                  <Flex
-                    alignItems={{ default: "alignItemsCenter" }}
-                    justifyContent={{ default: "justifyContentFlexStart" }}
-                    spaceItems={{ default: "spaceItemsNone" }}
-                  >
-                    <DmnObjectListItem
-                      dmnObjectHref={buildXmlHref({ namespace, id: dmnObject["@_id"]! })}
-                      dmnObject={dmnObject}
-                      namespace={namespace}
-                      relativeToNamespace={namespace}
-                    />
-                    {dmnShapesByHref.has(buildXmlHref({ namespace, id: dmnObject["@_id"]! })) ? (
-                      <small>
-                        <div>&nbsp;&nbsp;✓</div>
-                      </small>
-                    ) : (
-                      <></>
-                    )}
-                  </Flex>
-                </div>
-              );
-            })}
+                  <DmnObjectListItem
+                    dmnObjectHref={buildXmlHref({ namespace, id: dmnObject["@_id"]! })}
+                    dmnObject={dmnObject}
+                    namespace={namespace}
+                    relativeToNamespace={namespace}
+                  />
+                  {dmnShapesByHref.has(buildXmlHref({ namespace, id: dmnObject["@_id"]! })) ? (
+                    <small>
+                      <div>&nbsp;&nbsp;✓</div>
+                    </small>
+                  ) : (
+                    <></>
+                  )}
+                </Flex>
+              </div>
+            ))}
           </div>
         );
       })}
