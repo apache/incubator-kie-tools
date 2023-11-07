@@ -186,15 +186,7 @@ export function ItemComponentsTable({
         </FlexItem>
       </Flex>
       {flatTree.length <= 0 && (
-        <div
-          style={{
-            margin: "8px 24px 0 0",
-            padding: "24px",
-            background: "#eee",
-            borderRadius: "24px",
-            textAlign: "center",
-          }}
-        >
+        <div className={"kie-dmn-editor--data-type-properties-table--empty-state"}>
           {isReadonly ? "None" : "None yet"}
         </div>
       )}

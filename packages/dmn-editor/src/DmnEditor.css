@@ -677,6 +677,13 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
   align-items: center;
   justify-content: flex-end;
 }
+.kie-dmn-editor--data-type-properties-table--empty-state {
+  margin: 8px 24px 0 0;
+  padding: 24px;
+  background: #eee;
+  border-radius: 24px;
+  text-align: center;
+}
 .kie-dmn-editor--data-type-properties-table td,
 th {
   padding: 12px;
