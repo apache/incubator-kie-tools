@@ -61,7 +61,6 @@ export function TypeRefSelector(props: {
       justifyContent={{ default: "justifyContentFlexStart" }}
       flexWrap={{ default: "nowrap" }}
       spaceItems={{ default: "spaceItemsNone" }}
-      style={{ position: "relative" }}
     >
       {selectedDataType?.itemDefinition && (
         <Tooltip content="Jump to definition" appendTo={() => document.getElementById(id)!}>
