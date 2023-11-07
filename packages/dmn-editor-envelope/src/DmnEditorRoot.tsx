@@ -229,6 +229,7 @@ function ExternalModelsManager({
     };
   }, []);
 
+  // This effect actually populates `externalModelsByNamespace` through the `onChange` call.
   useEffect(() => {
     let canceled = false;
 

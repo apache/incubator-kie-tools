@@ -275,7 +275,7 @@ export function EditorToolbarWithWorkspace(
           </Flex>
         )}
       </PageSection>
-      <PageSection type={"nav"} variant={"light"} style={{ paddingTop: 0, paddingBottom: "16px" }}>
+      <PageSection type={"nav"} variant={"light"} style={{ paddingTop: 0, paddingBottom: 0 }}>
         <Flex
           justifyContent={{ default: "justifyContentSpaceBetween" }}
           alignItems={{ default: "alignItemsCenter" }}

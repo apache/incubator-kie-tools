@@ -103,7 +103,7 @@ export function DataTypes() {
       dmnEditorStoreApi.setState((state) => {
         const newItemDefinition = getNewItemDefinition(partial);
         state.dmn.model.definitions.itemDefinition ??= [];
-        state.dmn.model.definitions.itemDefinition?.unshift(newItemDefinition);
+        state.dmn.model.definitions.itemDefinition.unshift(newItemDefinition);
         state.dataTypesEditor.activeItemDefinitionId = newItemDefinition["@_id"];
       });
     },
