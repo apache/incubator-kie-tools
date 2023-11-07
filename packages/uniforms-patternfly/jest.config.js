@@ -19,11 +19,6 @@
 
 module.exports = {
   testEnvironment: "jsdom",
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.esm.json",
-    },
-  },
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
   moduleDirectories: ["node_modules"],
