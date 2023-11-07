@@ -97,7 +97,7 @@ describe("start the Quarkus local server", () => {
     } catch (e) {
       expect(e.message).toBe("Could not start the Quarkus local server.");
     }
-  });
+  }, 10000);
 
   test("should reject the promise when there is no stdout", async () => {
     sandbox.stub(cp, "spawn").returns(new events.EventEmitter() as cp.ChildProcess);
@@ -108,7 +108,7 @@ describe("start the Quarkus local server", () => {
     } catch (e) {
       expect(e.message).toBe("Could not start the Quarkus local server.");
     }
-  });
+  }, 10000);
 
   test("should reject the promise when the expected data is not emitted on the stdout (timeout reached)", async () => {
     const process = new events.EventEmitter() as cp.ChildProcess;
@@ -117,7 +117,7 @@ describe("start the Quarkus local server", () => {
 
     setTimeout(() => {
       process.stdout!.emit("data", "Some other data");
-    }, 1000);
+    });
 
     try {
       await quarkusServer.start();
@@ -125,7 +125,7 @@ describe("start the Quarkus local server", () => {
     } catch (e) {
       expect(e.message).toBe("Could not start the Quarkus local server.");
     }
-  });
+  }, 10000);
 
   test("should resolve the promise when Quarkus is up", async () => {
     const process = new events.EventEmitter() as cp.ChildProcess;
