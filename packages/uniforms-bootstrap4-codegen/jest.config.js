@@ -32,8 +32,8 @@ module.exports = {
         tsconfig: "<rootDir>/tsconfig.json",
       },
     ],
-    "^.+\\.template?$": "jest-raw-loader",
-    "^.+\\.txt?$": "jest-raw-loader",
+    "^.+\\.template?$": "<rootDir>/src/__tests__/utils/rawJestTransformer.mjs",
+    "^.+\\.txt?$": "<rootDir>/src/__tests__/utils/rawJestTransformer.mjs",
   },
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
