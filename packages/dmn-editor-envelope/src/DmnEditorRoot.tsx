@@ -40,7 +40,7 @@ export type DmnEditorRootProps = {
 };
 
 export type DmnEditorRootState = {
-  marshaller: DmnMarshaller<typeof DMN_LATEST_VERSION>;
+  marshaller: DmnMarshaller<typeof DMN_LATEST_VERSION> | undefined;
   stack: DmnLatestModel[];
   pointer: number;
   path: string | undefined;
@@ -51,18 +51,13 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   constructor(props: DmnEditorRootProps) {
     super(props);
     props.exposing(this);
-    const marshaller = getMarshaller(EMPTY_DMN(), { upgradeTo: "latest" });
     this.state = {
       externalModelsByNamespace: {},
-      marshaller,
-      stack: [marshaller.parser.parse()],
-      pointer: 0,
+      marshaller: undefined,
+      stack: [],
+      pointer: -1,
       path: undefined,
     };
-  }
-
-  public componentDidMount() {
-    this.props.onReady();
   }
 
   // Exposed API
@@ -76,6 +71,12 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   }
 
   public async getContent(): Promise<string> {
+    if (!this.state.marshaller || !this.model) {
+      throw new Error(
+        `DMN EDITOR ROOT: Content has not been set yet. Throwing an error to prevent returning a "default" content.`
+      );
+    }
+
     return this.state.marshaller.builder.build(this.model);
   }
 
@@ -108,7 +109,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
   // Internal methods
 
-  public get model() {
+  public get model(): DmnLatestModel | undefined {
     return this.state.stack[this.state.pointer];
   }
 
@@ -165,27 +166,31 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   public render() {
     return (
       <>
-        <DmnEditor.DmnEditor
-          originalVersion={this.state.marshaller.originalVersion}
-          model={this.model}
-          externalModelsByNamespace={this.state.externalModelsByNamespace}
-          evaluationResults={[]}
-          validationMessages={[]}
-          externalContextName={""}
-          externalContextDescription={""}
-          issueTrackerHref={""}
-          onModelChange={this.onModelChange}
-          onRequestExternalModelByPath={this.onRequestExternalModelByPath}
-          onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
-          onRequestToJumpToPath={this.props.onOpenFile}
-        />
-        <ExternalModelsManager
-          thisDmnsPath={this.state.path}
-          model={this.model}
-          onChange={this.setExternalModelsByNamespace}
-          onRequestFileList={this.props.onRequestFileList}
-          onRequestFileContent={this.props.onRequestFileContent}
-        />
+        {this.model && this.state.marshaller && (
+          <>
+            <DmnEditor.DmnEditor
+              originalVersion={this.state.marshaller.originalVersion}
+              model={this.model}
+              externalModelsByNamespace={this.state.externalModelsByNamespace}
+              evaluationResults={[]}
+              validationMessages={[]}
+              externalContextName={""}
+              externalContextDescription={""}
+              issueTrackerHref={""}
+              onModelChange={this.onModelChange}
+              onRequestExternalModelByPath={this.onRequestExternalModelByPath}
+              onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
+              onRequestToJumpToPath={this.props.onOpenFile}
+            />
+            <ExternalModelsManager
+              thisDmnsPath={this.state.path}
+              model={this.model}
+              onChange={this.setExternalModelsByNamespace}
+              onRequestFileList={this.props.onRequestFileList}
+              onRequestFileContent={this.props.onRequestFileContent}
+            />
+          </>
+        )}
       </>
     );
   }
