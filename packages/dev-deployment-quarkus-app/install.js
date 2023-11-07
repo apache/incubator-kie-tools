@@ -17,7 +17,7 @@
  * under the License.
  */
 
-const buildEnv = require(`${__dirname}/env`);
+const buildEnv = require("./env");
 const { setup } = require("@kie-tools/maven-config-setup-helper");
 
 setup(`

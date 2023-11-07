@@ -78,21 +78,6 @@ func main() {
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Created directory '%s'.\n", unzipAtArgString)
 	}
 
-	// router := mux.NewRouter()
-
-	// // CORS middleware
-	// router.Use(func(next http.Handler) http.Handler {
-	// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 		// Set CORS headers
-	// 		w.Header().Set("Access-Control-Allow-Origin", "*")
-	// 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	// 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	// 		// Continue with the request
-	// 		next.ServeHTTP(w, r)
-	// 	})
-	// })
-
 	// All validations passed. Start the program.
 
 	httpServerBgContext, cancelHttpServerBgContext := context.WithCancel(context.Background())

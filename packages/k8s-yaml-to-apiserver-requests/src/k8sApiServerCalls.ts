@@ -53,7 +53,6 @@ export async function callK8sApiServer(args: {
 
   const results = [];
   for (const apiCall of apiCalls) {
-    // FIXME: Interpolate :namespace with actual namespace.
     const endpointUrl = new URL(apiCall.rawEndpoint);
     const interpolatedPathname = endpointUrl.pathname.replace(
       ":namespace",
@@ -72,13 +71,6 @@ export async function callK8sApiServer(args: {
         body: jsYaml.dump(apiCall.yaml),
       }).then((response) => response.json())
     );
-    // .then((res) => {
-    //   console.info(`STATUS: ${res.status} - ${res.statusText}`);
-    //   res.text();
-    // })
-    // .then((text) => {
-    //   console.info(text);
-    // });
   }
   console.info("Done.");
 
