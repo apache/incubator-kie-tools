@@ -46,6 +46,9 @@ export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
     gatewayApi
       .workflowDetailsQuery(props.workflowId)
       .then((response) => {
+        if (!response) {
+          return setFetchError(`There was an error opening the instance with id "${props.workflowId}".`);
+        }
         setWorkflowInstance(response);
       })
       .catch((error) => {
