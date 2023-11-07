@@ -97,6 +97,8 @@ export function Draggable(props: {
   index: number;
   children: (hovered: boolean) => React.ReactNode;
   style?: React.CSSProperties;
+  handlerStyle?: React.CSSProperties;
+  childrenStyle?: React.CSSProperties;
 }) {
   const { source, dragging, origin, leftOrigin, onDragStart, onDragOver, onDragEnd, onDragEnter, onDragLeave } =
     useDraggableContext();
@@ -136,20 +138,21 @@ export function Draggable(props: {
       onPointerLeave={() => setHover(false)}
       onPointerOver={() => setHover(true)}
     >
-      {
-        <Icon
-          className={"kie-dmn-editor--draggable-icon"}
-          onPointerEnter={() => setDraggable(true)}
-          onPointerLeave={() => setDraggable(false)}
-        >
-          <GripVerticalIcon
-            className={
-              hovered ? "kie-dmn-editor--draggable-icon-handler-hovered" : "kie-dmn-editor--draggable-icon-handler"
-            }
-          />
-        </Icon>
-      }
-      <div className={"kie-dmn-editor--draggable-children"}>{props.children(hovered)}</div>
+      <Icon
+        className={"kie-dmn-editor--draggable-icon"}
+        onPointerEnter={() => setDraggable(true)}
+        onPointerLeave={() => setDraggable(false)}
+        style={props.handlerStyle}
+      >
+        <GripVerticalIcon
+          className={
+            hovered ? "kie-dmn-editor--draggable-icon-handler-hovered" : "kie-dmn-editor--draggable-icon-handler"
+          }
+        />
+      </Icon>
+      <div className={"kie-dmn-editor--draggable-children"} style={props.childrenStyle}>
+        {props.children(hovered)}
+      </div>
     </div>
   );
 }

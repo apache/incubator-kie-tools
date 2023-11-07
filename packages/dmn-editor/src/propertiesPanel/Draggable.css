@@ -13,16 +13,11 @@
 }
 
 .kie-dmn-editor--draggable-icon {
-  margin-top: 4px;
-  margin-right: 8px;
-  padding-left: 24px;
-  padding-right: 8px;
+  align-self: center;
   cursor: grab;
 }
 
 .kie-dmn-editor--draggable-icon:active {
-  margin-top: 4px;
-  margin-right: 8px;
   cursor: grabbing;
 }
 

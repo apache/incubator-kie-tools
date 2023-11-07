@@ -163,7 +163,14 @@ export function DocumentationLinksFormGroup({
                 id={valuesUuid?.[index] ?? generateUuid()}
                 className={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
               >
-                <Draggable index={index}>
+                <Draggable
+                  index={index}
+                  handlerStyle={
+                    expandedUrls[index]
+                      ? { alignSelf: "flex-start", paddingTop: "8px", paddingLeft: "24px", paddingRight: "8px" }
+                      : { paddingLeft: "24px", paddingRight: "8px" }
+                  }
+                >
                   {(hovered) => (
                     <DocumentationLinksInput
                       title={kieAttachment["@_name"] ?? ""}
@@ -279,10 +286,6 @@ function DocumentationLinksInput({
     [parseUrl]
   );
 
-  const toogleIconTooltip = useMemo(
-    () => <Text component={TextVariants.p}>{isUrlExpanded ? "Close" : "Edit"}</Text>,
-    [isUrlExpanded]
-  );
   const urlDescriptionTooltip = useMemo(() => {
     return url !== "" ? (
       <Text component={TextVariants.p}>{url}</Text>
@@ -295,15 +298,13 @@ function DocumentationLinksInput({
   return (
     <React.Fragment>
       <div className={"kie-dmn-editor--documentation-link--row"}>
-        <Tooltip content={toogleIconTooltip}>
-          <Button
-            variant={ButtonVariant.plain}
-            className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
-            onClick={() => toogleExpanded(title, url)}
-          >
-            {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
-          </Button>
-        </Tooltip>
+        <Button
+          variant={ButtonVariant.plain}
+          className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
+          onClick={() => toogleExpanded(title, url)}
+        >
+          {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
+        </Button>
         <div className={"kie-dmn-editor--documentation-link--row-item"}>
           {!isUrlExpanded ? (
             <>
