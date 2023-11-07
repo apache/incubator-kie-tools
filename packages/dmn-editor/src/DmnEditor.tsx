@@ -127,6 +127,7 @@ export const DmnEditorInternal = ({
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { isDiagramEditingInProgress } = useDmnEditorDerivedStore();
+  const { dmnModelBeforeEditingRef } = useDmnEditor();
 
   // Allow imperativelly controlling the Editor.
   useImperativeHandle(
@@ -145,10 +146,10 @@ export const DmnEditorInternal = ({
         return;
       }
       state.dmn.model = model;
+      dmnModelBeforeEditingRef.current = model;
     });
   }, [dmnEditorStoreApi, dispatch.dmn, model]);
 
-  const { dmnModelBeforeEditingRef } = useDmnEditor();
   useStateAsItWasBeforeConditionBecameTrue(
     dmn.model,
     isDiagramEditingInProgress,
