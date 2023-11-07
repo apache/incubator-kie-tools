@@ -3393,6 +3393,12 @@ importers:
       "@kie-tools/dmn-marshaller":
         specifier: workspace:*
         version: link:../dmn-marshaller
+      "@kie-tools/pmml-editor-marshaller":
+        specifier: workspace:*
+        version: link:../pmml-editor-marshaller
+      "@kie-tools/xml-parser-ts":
+        specifier: workspace:*
+        version: link:../xml-parser-ts
       react:
         specifier: ^17.0.2
         version: 17.0.2
