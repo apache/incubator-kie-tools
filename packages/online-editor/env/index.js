@@ -82,7 +82,7 @@ module.exports = composeEnv(
         description: "Image registry to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageAccount: {
-        default: "thiagoelg",
+        default: "kiegroup",
         description: "Image account to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageName: {
@@ -98,7 +98,7 @@ module.exports = composeEnv(
         description: "Image registry to be used by Dev deployments to display a form for deployed models.",
       },
       ONLINE_EDITOR__devDeploymentFormWebappImageAccount: {
-        default: "thiagoelg",
+        default: "kiegroup",
         description: "Image account to be used by Dev deployments to display a form for deployed models.",
       },
       ONLINE_EDITOR__devDeploymentFormWebappImageName: {
@@ -110,7 +110,7 @@ module.exports = composeEnv(
         description: "Image tag to be used by Dev deployments to display a form for deployed models.",
       },
       ONLINE_EDITOR__devDeploymentImagePullPolicy: {
-        default: "Always",
+        default: "IfNotPresent",
         description: "The image pull policy. Can be 'Always', 'IfNotPresent', or 'Never'.",
       },
       ONLINE_EDITOR_DEV__port: {

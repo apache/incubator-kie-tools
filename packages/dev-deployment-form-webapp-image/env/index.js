@@ -23,7 +23,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image registry.",
     },
     DEV_DEPLOYMENT_FORM_WEBAPP_IMAGE__account: {
-      default: "thiagoelg",
+      default: "kiegroup",
       description: "The image registry account.",
     },
     DEV_DEPLOYMENT_FORM_WEBAPP_IMAGE__name: {

@@ -47,6 +47,7 @@ import {
   KubernetesConnectionStatus,
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",
@@ -86,23 +87,32 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     return isTokenValid(props.connection.token);
   }, [props.connection.token]);
 
-  useEffect(() => {
-    setConnectionValidated(isKubernetesConnectionValid(props.connection));
-  }, [props.connection]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        setConnectLoading(true);
+        if (!props.kieSandboxOpenShiftService) {
+          setConnectionValidated(false);
+          setConnectLoading(false);
+          return;
+        }
+
+        props.kieSandboxOpenShiftService.isConnectionEstablished().then((connectionStatus) => {
+          if (canceled.get()) {
+            setConnectLoading(false);
+            return;
+          }
+          setConnectionValidated(connectionStatus === KubernetesConnectionStatus.CONNECTED);
+          setConnectLoading(false);
+        });
+      },
+      [props.kieSandboxOpenShiftService]
+    )
+  );
 
   const onCancel = useCallback(() => {
     props.setMode(OpenShiftSettingsTabMode.SIMPLE);
   }, [props]);
-
-  const resetConnection = useCallback(
-    (connection: KubernetesConnection) => {
-      setConnectionValidated(false);
-      setConnecting(false);
-      setConnectLoading(false);
-      props.setConnection(connection);
-    },
-    [props]
-  );
 
   const onNamespaceInputChanged = useCallback(
     (newValue: string) => {
@@ -128,20 +138,6 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   const onInsecurelyDisableTlsCertificateValidationChange = useCallback(
     (checked: boolean) => {
       props.setConnection({ ...props.connection, insecurelyDisableTlsCertificateValidation: checked });
-    },
-    [props]
-  );
-
-  const onStepChanged = useCallback(
-    async ({ id }) => {
-      if (id === WizardStepIds.CONNECT) {
-        setConnectLoading(true);
-        setConnectionValidated(
-          (props.kieSandboxOpenShiftService && (await props.kieSandboxOpenShiftService.isConnectionEstablished())) ===
-            KubernetesConnectionStatus.CONNECTED
-        );
-        setConnectLoading(false);
-      }
     },
     [props]
   );
@@ -372,7 +368,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
         name: i18n.devDeployments.openShiftConfigWizard.steps.final.name,
         component: (
           <>
-            {isConnectLoading && (
+            {(isConnectLoading || isConnecting || props.isLoadingService) && (
               <div className="kogito--editor__dev-deployments-wizard-loading-spinner">
                 <Spinner isSVG size="xl" />
               </div>
@@ -394,7 +390,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                 </Text>
               </div>
             )}
-            {!isConnectLoading && !isConnectionValidated && (
+            {!isConnectLoading && !isConnectionValidated && !props.isLoadingService && (
               <div>
                 <Alert
                   variant={"danger"}
@@ -445,10 +441,10 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       },
     ],
     [
-      i18n.devDeployments,
-      i18n.terms,
+      i18n,
       isNamespaceValidated,
       props.connection,
+      props.isLoadingService,
       onNamespaceInputChanged,
       onClearNamespace,
       isHostValidated,
@@ -458,6 +454,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       onTokenInputChanged,
       onClearToken,
       onInsecurelyDisableTlsCertificateValidationChange,
+      isConnecting,
       isConnectLoading,
       isConnectionValidated,
     ]
@@ -467,7 +464,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     () => (
       <WizardFooter>
         <WizardContextConsumer>
-          {({ activeStep, goToStepByName, goToStepById, onNext, onBack }) => {
+          {({ activeStep, onNext, onBack }) => {
             if (activeStep.name !== i18n.devDeployments.openShiftConfigWizard.steps.final.name) {
               return (
                 <>
@@ -512,8 +509,8 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
         </WizardContextConsumer>
       </WizardFooter>
     ),
-    [i18n, isConnectionValidated, isConnecting, onCancel, onSave]
+    [i18n, onSave, isConnectionValidated, isConnecting, props.isLoadingService, onCancel]
   );
 
-  return <Wizard steps={wizardSteps} footer={wizardFooter} onNext={onStepChanged} onGoToStep={onStepChanged} />;
+  return <Wizard steps={wizardSteps} footer={wizardFooter} />;
 }

@@ -36,7 +36,6 @@ function fromiAsciiSpacing(value: string) {
 }
 
 export async function fetchAppData(baseUrl: string): Promise<AppData> {
-  console.log({ baseUrl });
   const response = await fetch(routes.dmnDefinitionsJson.path({}, baseUrl));
   const dmnDefinitionsJson = (await response.json()) as ExtendedServicesDmnJsonSchema;
 
@@ -48,7 +47,20 @@ export async function fetchAppData(baseUrl: string): Promise<AppData> {
     const response = await fetch(routes.openApiJson.path({}));
     const data = await response.json();
     const paths = Object.keys(data.paths);
-    const modelName = paths[0].replace("/", "").replace("/dmnresult", "");
+
+    // Remove first '/' and final '/dmnresult'
+    const dmnResultPath = paths
+      .find((path) => path.includes("dmnresult"))!
+      .replace("/", "")
+      .replace("/dmnresult", "");
+
+    // If the model api is in a subpath, get the model name from the last portion of the path,
+    // else, what remains is the model name
+    let modelName = dmnResultPath;
+    if (modelName?.includes("/")) {
+      modelName = modelName.substring(modelName.indexOf("/") + 1);
+    }
+
     return modelName;
   };
 
