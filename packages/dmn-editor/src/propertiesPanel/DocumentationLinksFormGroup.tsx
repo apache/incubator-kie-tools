@@ -148,13 +148,13 @@ export function DocumentationLinksFormGroup({
           <label className={"pf-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
             <span className={"pf-c-form__label-text"}>Documentation links</span>
           </label>
-          <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onNew} />
+          {!isReadonly && <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onNew} />}
         </div>
       }
     >
       <ul id={"documentation-links-list"}>
         {(values ?? []).length === 0 ? (
-          <li className={"kie-dmn-editor--documentation-link--none-yet"}>None yet</li>
+          <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadonly ? "None" : "None yet"}</li>
         ) : (
           <DraggableContextProvider reorder={reorder}>
             {values?.map((kieAttachment, index) => (

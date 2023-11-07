@@ -195,7 +195,7 @@ export function ItemComponentsTable({
             textAlign: "center",
           }}
         >
-          None yet
+          {isReadonly ? "None" : "None yet"}
         </div>
       )}
       {flatTree.length > 0 && (
