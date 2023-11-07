@@ -11,7 +11,7 @@ exports[`YAMLValidation tests not valid YAML 2`] = `
         "https://serverlessworkflow.io/schemas/0.8/workflow.json",
       ],
     },
-    "message": "Incorrect type. Expected \\"array\\".",
+    "message": "Incorrect type. Expected "array".",
     "range": {
       "end": {
         "character": 25,
