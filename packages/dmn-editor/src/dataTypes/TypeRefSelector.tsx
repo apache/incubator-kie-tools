@@ -1,8 +1,8 @@
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { TypeRefLabel } from "./TypeRefLabel";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
@@ -53,14 +53,18 @@ export function TypeRefSelector(props: {
 
   const exists = selectedDataType || (props.typeRef && builtInFeelTypeNames.has(props.typeRef));
 
+  const id = generateUuid();
+
   return (
     <Flex
+      id={id}
       justifyContent={{ default: "justifyContentFlexStart" }}
       flexWrap={{ default: "nowrap" }}
       spaceItems={{ default: "spaceItemsNone" }}
+      style={{ position: "relative" }}
     >
       {selectedDataType?.itemDefinition && (
-        <Tooltip content="Jump to definition">
+        <Tooltip content="Jump to definition" appendTo={() => document.getElementById(id)!}>
           <Button
             className={"kie-dmn-editor--data-type-jump-to-definition"}
             variant={ButtonVariant.control}
