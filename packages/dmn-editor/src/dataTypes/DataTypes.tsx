@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
   Drawer,
   DrawerContent,

@@ -27,6 +27,10 @@ export function ConstraintsRange({
 
   const onInternalChange = useCallback(
     (args?: { start?: string; end?: string; includeStart?: boolean; includeEnd?: boolean }) => {
+      if ((args?.start === undefined || args?.start === "") && (args?.end === undefined || args?.end === "")) {
+        onChange("");
+      }
+
       if ((args?.start !== undefined && args.start === "") || (args?.end !== undefined && args.end === "")) {
         return;
       }
@@ -143,7 +147,7 @@ export function ConstraintsRange({
           >
             <button
               id={"start"}
-              disabled={isDisabled}
+              disabled={isReadonly || isDisabled}
               onClick={() => onIncludeStartToogle()}
               style={{
                 borderRadius: "100%",
@@ -163,7 +167,7 @@ export function ConstraintsRange({
             type={inputType}
             value={start}
             onChange={onStartChange}
-            isDisabled={isDisabled}
+            isDisabled={isReadonly || isDisabled}
             onBlur={() => onInternalChange()}
           />
         </div>
@@ -190,7 +194,7 @@ export function ConstraintsRange({
           >
             <button
               id={"end"}
-              disabled={isDisabled}
+              disabled={isReadonly || isDisabled}
               onClick={() => onIncludeEndToogle()}
               style={{
                 borderRadius: "100%",
@@ -210,7 +214,7 @@ export function ConstraintsRange({
             type={inputType}
             value={end}
             onChange={onEndChange}
-            isDisabled={isDisabled}
+            isDisabled={isReadonly || isDisabled}
             onBlur={() => onInternalChange()}
           />
         </div>

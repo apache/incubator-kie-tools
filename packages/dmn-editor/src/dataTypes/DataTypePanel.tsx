@@ -52,6 +52,7 @@ export function DataTypePanel({
         if (isChecked) {
           itemDefinition.typeRef = undefined;
           itemDefinition.itemComponent = [];
+          itemDefinition.typeConstraint = undefined;
         } else {
           itemDefinition.typeRef = DmnBuiltInDataType.Any;
           itemDefinition.itemComponent = undefined;
@@ -69,6 +70,7 @@ export function DataTypePanel({
 
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
         itemDefinition["@_isCollection"] = isChecked;
+        itemDefinition.typeConstraint = undefined;
       });
     },
     [dataType.itemDefinition, editItemDefinition, isReadonly]
@@ -82,6 +84,7 @@ export function DataTypePanel({
 
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
         itemDefinition.typeRef = typeRef;
+        itemDefinition.typeConstraint = undefined;
       });
     },
     [dataType.itemDefinition, editItemDefinition, isReadonly]
@@ -280,6 +283,9 @@ export function DataTypePanel({
             />
             <br />
             <br />
+            <Title size={"md"} headingLevel="h4">
+              Constraints
+            </Title>
             <Constraints
               isReadonly={isReadonly}
               itemDefinition={dataType.itemDefinition}

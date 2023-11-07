@@ -16,10 +16,8 @@ export function ConstraintsExpression({
   const [preview, setPreview] = useState(value ?? "");
   const onFeelChange = useCallback(
     (content, preview) => {
-      if (content !== "") {
-        onChange?.(content);
-        setPreview(preview);
-      }
+      onChange?.(content);
+      setPreview(preview);
     },
     [onChange]
   );
@@ -43,12 +41,15 @@ export function ConstraintsExpression({
         {isReadonly ? "Equivalent expression:" : "Expression:"}
       </Title>
       <div style={{ flexGrow: 1, flexShrink: 0 }}>
-        {isReadonly && (
-          <span className="editable-cell-value pf-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
-        )}
+        {isReadonly &&
+          (value ? (
+            <span className="editable-cell-value pf-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
+          ) : (
+            <p style={{ fontStyle: "italic" }}>{`<Empty expression>`}</p>
+          ))}
         <FeelInput
           value={value}
-          onChange={(event, value, preview) => onFeelChange(value, preview)}
+          onChange={(_, value, preview) => onFeelChange(value, preview)}
           onPreviewChanged={setPreview}
           enabled={!isReadonly}
           options={monacoOptions as any}

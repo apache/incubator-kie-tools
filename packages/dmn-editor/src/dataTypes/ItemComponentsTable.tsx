@@ -331,6 +331,7 @@ export function ItemComponentsTable({
                               if (isChecked) {
                                 itemDefinition.typeRef = undefined;
                                 itemDefinition.itemComponent = [];
+                                itemDefinition.typeConstraint = undefined;
                               } else {
                                 itemDefinition.typeRef = DmnBuiltInDataType.Any;
                                 itemDefinition.itemComponent = undefined;
@@ -347,6 +348,7 @@ export function ItemComponentsTable({
                             onChange={(newDataType) => {
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                                 itemDefinition.typeRef = newDataType;
+                                itemDefinition.typeConstraint = undefined;
                               });
                             }}
                           />
@@ -359,12 +361,13 @@ export function ItemComponentsTable({
                           onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               itemDefinition["@_isCollection"] = isChecked;
+                              itemDefinition.typeConstraint = undefined;
                             });
                           }}
                         />
                       </td>
                       <td>
-                        {canHaveConstraints(dt.itemDefinition) && (
+                        {canHaveConstraints(dt.itemDefinition) ? (
                           <Button
                             variant={ButtonVariant.link}
                             onClick={() => {
@@ -375,6 +378,8 @@ export function ItemComponentsTable({
                           >
                             {constraintLabel()}
                           </Button>
+                        ) : (
+                          <p style={{ paddingLeft: "16px", paddingRight: "16px" }}>-</p>
                         )}
                       </td>
                       <td>

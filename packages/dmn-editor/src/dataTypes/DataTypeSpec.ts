@@ -17,6 +17,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DMN15_SPEC } from "../Dmn15Spec";
 import { DataTypeIndex } from "./DataTypes";
+import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 
 export function findDataTypeById({
   definitions,
@@ -59,18 +60,19 @@ export function isStruct(itemDefinition: DMN15__tItemDefinition) {
   return !itemDefinition.typeRef && !!itemDefinition.itemComponent;
 }
 
-const constrainableBuiltInFeelTypes = new Map<DmnBuiltInDataType, string[]>([
+export const constrainableBuiltInFeelTypes = new Map<DmnBuiltInDataType, KIE__tConstraintType[]>([
   [DmnBuiltInDataType.Any, ["expression"]],
   [DmnBuiltInDataType.Boolean, []],
   [DmnBuiltInDataType.Context, []],
-  [DmnBuiltInDataType.Number, ["expression", "enum", "range"]],
-  [DmnBuiltInDataType.String, ["expression", "enum", "range"]],
-  [DmnBuiltInDataType.DateTimeDuration, ["expression", "enum", "range"]],
-  [DmnBuiltInDataType.YearsMonthsDuration, ["expression", "enum", "range"]],
-  [DmnBuiltInDataType.Date, ["expression", "enum", "range"]],
-  [DmnBuiltInDataType.Time, ["expression", "enum", "range"]],
-  [DmnBuiltInDataType.DateTime, ["expression", "enum", "range"]],
+  [DmnBuiltInDataType.Number, ["expression", "enumeration", "range"]],
+  [DmnBuiltInDataType.String, ["expression", "enumeration", "range"]],
+  [DmnBuiltInDataType.DateTimeDuration, ["expression", "enumeration", "range"]],
+  [DmnBuiltInDataType.YearsMonthsDuration, ["expression", "enumeration", "range"]],
+  [DmnBuiltInDataType.Date, ["expression", "enumeration", "range"]],
+  [DmnBuiltInDataType.Time, ["expression", "enumeration", "range"]],
+  [DmnBuiltInDataType.DateTime, ["expression", "enumeration", "range"]],
 ]);
+
 export function canHaveConstraints(itemDefinition: DMN15__tItemDefinition) {
   return (
     !isStruct(itemDefinition) &&

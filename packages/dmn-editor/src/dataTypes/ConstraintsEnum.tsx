@@ -58,7 +58,7 @@ export function ConstraintsEnum({
                     <li style={{ marginLeft: "10px" }}>
                       <EnumElement
                         id={`enum-element-${index}`}
-                        isDisabled={isDisabled}
+                        isDisabled={isReadonly || isDisabled}
                         inputType={inputType}
                         initialValue={value}
                         onChange={(newValue) => onInternalChange(newValue, index)}
@@ -76,7 +76,7 @@ export function ConstraintsEnum({
                   <li style={{ marginLeft: "10px", flexGrow: 1 }}>
                     <EnumElement
                       id={`enum-element-${enumValues.length}`}
-                      isDisabled={isDisabled}
+                      isDisabled={isReadonly || isDisabled}
                       inputType={inputType}
                       initialValue={""}
                       onChange={(newValue) => {

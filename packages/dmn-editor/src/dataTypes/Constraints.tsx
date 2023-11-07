@@ -9,10 +9,11 @@ import { ConstraintsRange, isRange } from "./ConstraintsRange";
 import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { EditItemDefinition } from "./DataTypes";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
+import { canHaveConstraints, constrainableBuiltInFeelTypes } from "./DataTypeSpec";
 
 enum ConstraintsType {
   ENUMERATION = "Enumeration",
-  EXPRESSIONS = "Expression",
+  EXPRESSION = "Expression",
   RANGE = "Range",
   NONE = "None",
 }
@@ -27,10 +28,6 @@ export function Constraints({
   editItemDefinition: EditItemDefinition;
 }) {
   const [selected, setSelected] = useState<ConstraintsType>(ConstraintsType.NONE);
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const [isEnumDisabled, setEnumDisabled] = useState(false);
-  const [isRangeDisabled, setRangeDisabled] = useState(false);
-  const [typeCheck, setTypeCheck] = useState<(value: string) => boolean>(() => (value: string) => false);
 
   const type = useMemo(() => itemDefinition?.typeRef, [itemDefinition?.typeRef]);
   const value = useMemo(() => itemDefinition?.typeConstraint, [itemDefinition?.typeConstraint]);
@@ -64,29 +61,32 @@ export function Constraints({
     [itemDefinition, editItemDefinition, isReadonly]
   );
 
-  const equivalentInternalConstraintType: (constraintType: KIE__tConstraintType | undefined) => ConstraintsType =
-    useCallback((constraintType) => {
+  const kieContraintTypeToEnum: (constraintType: KIE__tConstraintType | undefined) => ConstraintsType = useCallback(
+    (constraintType) => {
       switch (constraintType) {
         case "enumeration":
           return ConstraintsType.ENUMERATION;
         case "expression":
-          return ConstraintsType.EXPRESSIONS;
+          return ConstraintsType.EXPRESSION;
         case "range":
           return ConstraintsType.RANGE;
         default:
           return ConstraintsType.NONE;
       }
-    }, []);
+    },
+    []
+  );
 
-  const equivalentKieConstraintType: (selection: ConstraintsType) => KIE__tConstraintType | undefined = useCallback(
+  const enumToKieConstraintType: (selection: ConstraintsType) => KIE__tConstraintType | undefined = useCallback(
     (selection) => {
       switch (selection) {
         case ConstraintsType.ENUMERATION:
           return "enumeration";
-        case ConstraintsType.EXPRESSIONS:
+        case ConstraintsType.EXPRESSION:
           return "expression";
         case ConstraintsType.RANGE:
           return "range";
+        case ConstraintsType.NONE:
         default:
           return undefined;
       }
@@ -94,10 +94,47 @@ export function Constraints({
     []
   );
 
+  const isConstraintEnabled = useMemo(() => {
+    const enabledConstraints = constrainableBuiltInFeelTypes.get(type as DmnBuiltInDataType);
+    return {
+      enumeration: (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.ENUMERATION)!),
+      range: (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.RANGE)!),
+      expression: (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.EXPRESSION)!),
+    };
+  }, [enumToKieConstraintType, type]);
+
+  const typeCheck = useMemo(() => {
+    if (type === DmnBuiltInDataType.Any) {
+      return (value: string) => false;
+    }
+    if (type === DmnBuiltInDataType.Date) {
+      return (value: string) => false;
+    }
+    if (type === DmnBuiltInDataType.DateTime) {
+      return (value: string) => false;
+    }
+    if (type === DmnBuiltInDataType.DateTimeDuration) {
+      return (value: string) => false;
+    }
+    if (type === DmnBuiltInDataType.Number) {
+      return (value: string) => !isNaN(parseFloat(value));
+    }
+    if (type === DmnBuiltInDataType.String) {
+      return (value: string) => false;
+    }
+    if (type === DmnBuiltInDataType.Time) {
+      return (value: string) => false;
+    }
+    if (type === DmnBuiltInDataType.YearsMonthsDuration) {
+      return (value: string) => false;
+    }
+    return (value: string) => false;
+  }, [type]);
+
   // Start in the previous constraint type
   useEffect(() => {
-    setSelected(equivalentInternalConstraintType(value?.["@_kie:constraintType"]));
-  }, [equivalentInternalConstraintType, value]);
+    setSelected(kieContraintTypeToEnum(value?.["@_kie:constraintType"]));
+  }, [kieContraintTypeToEnum, value]);
 
   const inputType: "text" | "number" = useMemo(() => {
     switch (type) {
@@ -106,54 +143,15 @@ export function Constraints({
       case DmnBuiltInDataType.Any:
       case DmnBuiltInDataType.Boolean:
       case DmnBuiltInDataType.Context:
+      case DmnBuiltInDataType.String:
         return "text";
       case DmnBuiltInDataType.Date:
       case DmnBuiltInDataType.DateTime:
       case DmnBuiltInDataType.DateTimeDuration:
-      case DmnBuiltInDataType.String:
       case DmnBuiltInDataType.Time:
       case DmnBuiltInDataType.YearsMonthsDuration:
       default:
         return "text";
-    }
-  }, [type]);
-
-  useEffect(() => {
-    if (type === DmnBuiltInDataType.Boolean || type === DmnBuiltInDataType.Context) {
-      setIsDisabled(true);
-      return;
-    }
-
-    setIsDisabled(false);
-    if (type === DmnBuiltInDataType.Any) {
-      setRangeDisabled(true);
-      setEnumDisabled(true);
-      return;
-    }
-
-    setRangeDisabled(false);
-    setEnumDisabled(false);
-    if (type === DmnBuiltInDataType.Date) {
-      return;
-    }
-    if (type === DmnBuiltInDataType.DateTime) {
-      return;
-    }
-    if (type === DmnBuiltInDataType.DateTimeDuration) {
-      return;
-    }
-    if (type === DmnBuiltInDataType.Number) {
-      setTypeCheck(() => (value: string) => !isNaN(parseFloat(value)));
-      return;
-    }
-    if (type === DmnBuiltInDataType.String) {
-      return;
-    }
-    if (type === DmnBuiltInDataType.Time) {
-      return;
-    }
-    if (type === DmnBuiltInDataType.YearsMonthsDuration) {
-      return;
     }
   }, [type]);
 
@@ -175,23 +173,23 @@ export function Constraints({
       }
 
       if (selection === ConstraintsType.ENUMERATION && isEnum(value.text, typeCheck)) {
-        onInternalChange(value.text, equivalentKieConstraintType(ConstraintsType.ENUMERATION));
+        onInternalChange(value.text, enumToKieConstraintType(ConstraintsType.ENUMERATION));
         return;
       }
 
       if (selection === ConstraintsType.RANGE && isRange(value.text, typeCheck)) {
-        onInternalChange(value.text, equivalentKieConstraintType(ConstraintsType.RANGE));
+        onInternalChange(value.text, enumToKieConstraintType(ConstraintsType.RANGE));
         return;
       }
 
-      if (selection === ConstraintsType.EXPRESSIONS) {
-        onInternalChange(value.text, equivalentKieConstraintType(ConstraintsType.EXPRESSIONS));
+      if (selection === ConstraintsType.EXPRESSION) {
+        onInternalChange(value.text, enumToKieConstraintType(ConstraintsType.EXPRESSION));
         return;
       }
 
-      onInternalChange(value.text, equivalentKieConstraintType(selected));
+      onInternalChange(value.text, enumToKieConstraintType(selected));
     },
-    [equivalentKieConstraintType, onInternalChange, typeCheck, value, selected]
+    [enumToKieConstraintType, onInternalChange, typeCheck, value, selected]
   );
 
   const constraintType = useMemo(() => {
@@ -202,9 +200,9 @@ export function Constraints({
           inputType={inputType}
           value={value?.text}
           onChange={(newValue: string) =>
-            onInternalChange(newValue, equivalentKieConstraintType(ConstraintsType.ENUMERATION))
+            onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.ENUMERATION))
           }
-          isDisabled={isEnumDisabled}
+          isDisabled={!isConstraintEnabled.enumeration}
         />
       );
     } else if (selected === ConstraintsType.RANGE) {
@@ -213,41 +211,26 @@ export function Constraints({
           isReadonly={isReadonly}
           inputType={inputType}
           value={value?.text}
-          onChange={(newValue: string) =>
-            onInternalChange(newValue, equivalentKieConstraintType(ConstraintsType.RANGE))
-          }
-          isDisabled={isRangeDisabled}
+          onChange={(newValue: string) => onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.RANGE))}
+          isDisabled={!isConstraintEnabled.range}
         />
       );
-    } else if (selected === ConstraintsType.EXPRESSIONS) {
+    } else if (selected === ConstraintsType.EXPRESSION) {
       return (
         <ConstraintsExpression
           isReadonly={isReadonly}
           value={value?.text}
           onChange={(newValue: string) =>
-            onInternalChange(newValue, equivalentKieConstraintType(ConstraintsType.EXPRESSIONS))
+            onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.EXPRESSION))
           }
         />
       );
     }
-  }, [
-    equivalentKieConstraintType,
-    inputType,
-    isEnumDisabled,
-    isRangeDisabled,
-    isReadonly,
-    onInternalChange,
-    selected,
-    value?.text,
-  ]);
+  }, [enumToKieConstraintType, inputType, isConstraintEnabled, isReadonly, onInternalChange, selected, value?.text]);
 
   return (
     <>
-      <Title size={"md"} headingLevel="h4">
-        Constraints
-      </Title>
-      <br />
-      {isDisabled ? (
+      {!canHaveConstraints(itemDefinition) ? (
         <p
           style={{
             padding: "10px",
@@ -267,26 +250,28 @@ export function Constraints({
                 buttonId={ConstraintsType.NONE}
                 isSelected={selected === ConstraintsType.NONE}
                 onChange={onToggleGroupChange}
+                isDisabled={isReadonly}
               />
               <ToggleGroupItem
                 text={ConstraintsType.ENUMERATION}
                 buttonId={ConstraintsType.ENUMERATION}
                 isSelected={selected === ConstraintsType.ENUMERATION}
                 onChange={onToggleGroupChange}
-                isDisabled={isEnumDisabled}
+                isDisabled={isReadonly || !isConstraintEnabled.enumeration}
               />
               <ToggleGroupItem
-                text={ConstraintsType.EXPRESSIONS}
-                buttonId={ConstraintsType.EXPRESSIONS}
-                isSelected={selected === ConstraintsType.EXPRESSIONS}
+                text={ConstraintsType.EXPRESSION}
+                buttonId={ConstraintsType.EXPRESSION}
+                isSelected={selected === ConstraintsType.EXPRESSION}
                 onChange={onToggleGroupChange}
+                isDisabled={isReadonly}
               />
               <ToggleGroupItem
                 text={ConstraintsType.RANGE}
                 buttonId={ConstraintsType.RANGE}
                 isSelected={selected === ConstraintsType.RANGE}
                 onChange={onToggleGroupChange}
-                isDisabled={isRangeDisabled}
+                isDisabled={isReadonly || !isConstraintEnabled.range}
               />
             </ToggleGroup>
           </div>
