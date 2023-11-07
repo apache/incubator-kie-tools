@@ -19,6 +19,8 @@ import {
 import { ImportIcon } from "@patternfly/react-icons/dist/js/icons/import-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
+import { EditIcon } from "@patternfly/react-icons/dist/js/icons/edit-icon";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { DataType, EditItemDefinition, AddItemComponent, DataTypeIndex } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { isStruct, canHaveConstraints, getNewItemDefinition } from "./DataTypeSpec";
@@ -204,8 +206,7 @@ export function ItemComponentsTable({
               <th style={{ minWidth: "140px", maxWidth: "140px" }}>Is struct?</th>
               <th style={{ minWidth: "280px", width: "33%" }}>Type</th>
               <th style={{ minWidth: "140px", maxWidth: "140px" }}>Is collection?</th>
-              <th style={{ minWidth: "160px", maxWidth: "160px" }}>{/** Constraints */}</th>
-              <th style={{ minWidth: "160px", maxWidth: "160px" }}>{/** Remove */}</th>
+              <th style={{ minWidth: "160px", maxWidth: "160px" }}>Constraints</th>
               <th>{/** Actions */}</th>
             </tr>
           </thead>
@@ -235,6 +236,19 @@ export function ItemComponentsTable({
               const brigthnessPercentage =
                 STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE -
                 level * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
+
+              const constraintLabel = () => {
+                if (dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "enumeration") {
+                  return <>Enumeration</>;
+                }
+                if (dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "expression") {
+                  return <>Expression</>;
+                }
+                if (dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "range") {
+                  return <>Range</>;
+                }
+                return <>None</>;
+              };
 
               return (
                 <React.Fragment key={dt.itemDefinition["@_id"]}>
@@ -359,22 +373,7 @@ export function ItemComponentsTable({
                               });
                             }}
                           >
-                            <LinkIcon />
-                            &nbsp;&nbsp;Constraints
-                          </Button>
-                        )}
-                      </td>
-                      <td>
-                        {!isReadonly && (
-                          <Button
-                            variant={ButtonVariant.link}
-                            onClick={() => {
-                              editItemDefinition(dt.parentId!, (itemDefinition) => {
-                                itemDefinition.itemComponent?.splice(dt.index, 1);
-                              });
-                            }}
-                          >
-                            Remove
+                            {constraintLabel()}
                           </Button>
                         )}
                       </td>
@@ -392,6 +391,18 @@ export function ItemComponentsTable({
                           isPlain={true}
                           position={"right"}
                           dropdownItems={[
+                            <DropdownItem
+                              key={"view-type"}
+                              icon={<EditIcon />}
+                              onClick={() => {
+                                dmnEditorStoreApi.setState((state) => {
+                                  state.dataTypesEditor.activeItemDefinitionId = dt.itemDefinition["@_id"]!;
+                                });
+                              }}
+                            >
+                              View
+                            </DropdownItem>,
+                            <DropdownSeparator key="view-separator" />,
                             <DropdownItem
                               key={"extract-to-top-level"}
                               icon={<ImportIcon style={{ transform: "scale(-1, -1)" }} />}
@@ -431,9 +442,9 @@ export function ItemComponentsTable({
                             >
                               Extract data type
                             </DropdownItem>,
-                            <DropdownSeparator key="separator-1" />,
+                            <DropdownSeparator key="extract-data-type-separator" />,
                             <DropdownItem
-                              key={"copy"}
+                              key={"copy-item"}
                               icon={<CopyIcon />}
                               onClick={() => {
                                 const clipboard = buildClipboardFromDataType(dt, thisDmnsNamespace);
@@ -445,6 +456,7 @@ export function ItemComponentsTable({
                             <React.Fragment key={"cut-fragment"}>
                               {!isReadonly && (
                                 <DropdownItem
+                                  key={"cut-item"}
                                   icon={<CutIcon />}
                                   onClick={() => {
                                     const clipboard = buildClipboardFromDataType(dt, thisDmnsNamespace);
@@ -459,39 +471,58 @@ export function ItemComponentsTable({
                                 </DropdownItem>
                               )}
                             </React.Fragment>,
-                            <DropdownSeparator key="separator-2" />,
-                            <React.Fragment key={"paste-fragment"}>
-                              {!isReadonly && isStruct(dt.itemDefinition) && (
+                            <React.Fragment key={"remove-fragment"}>
+                              {!isReadonly && (
                                 <DropdownItem
-                                  icon={<PasteIcon />}
+                                  key={"remove-item"}
+                                  icon={<TimesIcon />}
                                   onClick={() => {
-                                    navigator.clipboard.readText().then((text) => {
-                                      const clipboard = getClipboard<DmnEditorDataTypesClipboard>(
-                                        text,
-                                        DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE
-                                      );
-                                      if (!clipboard) {
-                                        return;
-                                      }
-
-                                      getNewDmnIdRandomizer()
-                                        .ack({
-                                          json: clipboard.itemDefinitions,
-                                          type: "DMN15__tDefinitions",
-                                          attr: "itemDefinition",
-                                        })
-                                        .randomize();
-
-                                      for (const itemDefinition of clipboard.itemDefinitions) {
-                                        addItemComponent(dt.itemDefinition["@_id"]!, "unshift", itemDefinition);
-                                      }
+                                    editItemDefinition(dt.parentId!, (itemDefinition) => {
+                                      itemDefinition.itemComponent?.splice(dt.index, 1);
                                     });
                                   }}
                                 >
-                                  Paste property
+                                  Remove
                                 </DropdownItem>
                               )}
                             </React.Fragment>,
+                            !isReadonly && isStruct(dt.itemDefinition) ? (
+                              <React.Fragment key="paste-property-fragment">
+                                <DropdownSeparator />
+                                <React.Fragment>
+                                  <DropdownItem
+                                    icon={<PasteIcon />}
+                                    onClick={() => {
+                                      navigator.clipboard.readText().then((text) => {
+                                        const clipboard = getClipboard<DmnEditorDataTypesClipboard>(
+                                          text,
+                                          DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE
+                                        );
+                                        if (!clipboard) {
+                                          return;
+                                        }
+
+                                        getNewDmnIdRandomizer()
+                                          .ack({
+                                            json: clipboard.itemDefinitions,
+                                            type: "DMN15__tDefinitions",
+                                            attr: "itemDefinition",
+                                          })
+                                          .randomize();
+
+                                        for (const itemDefinition of clipboard.itemDefinitions) {
+                                          addItemComponent(dt.itemDefinition["@_id"]!, "unshift", itemDefinition);
+                                        }
+                                      });
+                                    }}
+                                  >
+                                    Paste property
+                                  </DropdownItem>
+                                </React.Fragment>
+                              </React.Fragment>
+                            ) : (
+                              <React.Fragment key="paste-property-empty-fragment"></React.Fragment>
+                            ),
                           ]}
                         />
                       </td>

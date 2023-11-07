@@ -1,17 +1,12 @@
 import * as React from "react";
 import { useMemo, useState, useCallback, useRef } from "react";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
-import { FeelInput } from "@kie-tools/feel-input-component/dist";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ConstraintsExpression } from "./ConstraintsExpression";
-import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { Draggable, DraggableContextProvider } from "../propertiesPanel/Draggable";
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { List, ListComponent, ListItem, OrderType } from "@patternfly/react-core/dist/js/components/List";
 
 export const ENUM_SEPARATOR = ",";
 
@@ -25,7 +20,7 @@ export function ConstraintsEnum({
   isReadonly: boolean;
   inputType: "text" | "number";
   value?: string;
-  onChange: (newValue: string | undefined, origin: KIE__tConstraintType) => void;
+  onChange: (newValue: string | undefined) => void;
   isDisabled: boolean;
 }) {
   const [addNew, setAddNew] = useState<boolean>(false);
@@ -38,7 +33,7 @@ export function ConstraintsEnum({
       }
       const newEnumValues = [...(enumValues ?? [])];
       newEnumValues[index] = newValue;
-      onChange(newEnumValues.join(`${ENUM_SEPARATOR} `), "enumeration");
+      onChange(newEnumValues.join(`${ENUM_SEPARATOR} `));
     },
     [enumValues, onChange]
   );
@@ -48,22 +43,7 @@ export function ConstraintsEnum({
   }, []);
 
   const reorder = useCallback((source: number, dest: number) => {
-    // const reordened = [...(values ?? [])];
-    // const [removed] = reordened.splice(source, 1);
-    // reordened.splice(dest, 0, removed);
-    // setExpandedUrls((prev) => {
-    //   const newUrlExpanded = [...prev];
-    //   const [removed] = newUrlExpanded.splice(source, 1);
-    //   newUrlExpanded.splice(dest, 0, removed);
-    //   return newUrlExpanded;
-    // });
-    // setValuesUuid((prev) => {
-    //   const reordenedUuid = [...prev];
-    //   const [removedUuid] = reordenedUuid.splice(source, 1);
-    //   reordenedUuid.splice(dest, 0, removedUuid);
-    //   return reordenedUuid;
-    // });
-    // onInternalChange(reordened);
+    // should reorder
   }, []);
 
   return (
@@ -77,6 +57,7 @@ export function ConstraintsEnum({
                   {(hovered) => (
                     <li style={{ marginLeft: "10px" }}>
                       <EnumElement
+                        id={`enum-element-${index}`}
                         isDisabled={isDisabled}
                         inputType={inputType}
                         initialValue={value}
@@ -92,8 +73,9 @@ export function ConstraintsEnum({
               {addNew && (
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                   <span style={{ width: "40px", height: "18px " }}>&nbsp;</span>
-                  <li style={{ marginLeft: "10px" }}>
+                  <li style={{ marginLeft: "10px", flexGrow: 1 }}>
                     <EnumElement
+                      id={`enum-element-${enumValues.length}`}
                       isDisabled={isDisabled}
                       inputType={inputType}
                       initialValue={""}
@@ -121,6 +103,7 @@ export function ConstraintsEnum({
 }
 
 function EnumElement({
+  id,
   inputType,
   isDisabled,
   initialValue,
@@ -128,6 +111,7 @@ function EnumElement({
   onChange,
   onRemove,
 }: {
+  id: string;
   inputType: "text" | "number";
   isDisabled: boolean;
   initialValue: string;
@@ -151,6 +135,7 @@ function EnumElement({
   return (
     <div style={{ display: "flex", flexDirection: "row", flexGrow: 1 }}>
       <TextInput
+        id={id}
         style={{ borderColor: "transparent", backgroundColor: "transparent" }}
         autoFocus={true}
         type={inputType}
@@ -169,4 +154,14 @@ function EnumElement({
       {hovered && <Tooltip content={"Remove"} reference={removeButtonRef} />}
     </div>
   );
+}
+
+export function isEnum(value: string, typeCheck: (e: string) => boolean): string[] | undefined {
+  const enumValues = value.split(ENUM_SEPARATOR).map((e) => e.trim());
+
+  if (enumValues.reduce((isEnum, value) => isEnum && typeCheck(value), true)) {
+    return enumValues;
+  }
+
+  return undefined;
 }

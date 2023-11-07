@@ -1,16 +1,10 @@
 import * as React from "react";
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
-import { FeelInput } from "@kie-tools/feel-input-component/dist";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ConstraintsExpression } from "./ConstraintsExpression";
-import {
-  DMN15__tItemDefinition,
-  DMN15__tUnaryTests,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { ConstraintsEnum, ENUM_SEPARATOR } from "./ConstraintsEnum";
+import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { ConstraintsEnum, isEnum } from "./ConstraintsEnum";
 import { ConstraintsRange, isRange } from "./ConstraintsRange";
 import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { EditItemDefinition } from "./DataTypes";
@@ -36,6 +30,7 @@ export function Constraints({
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [isEnumDisabled, setEnumDisabled] = useState(false);
   const [isRangeDisabled, setRangeDisabled] = useState(false);
+  const [typeCheck, setTypeCheck] = useState<(value: string) => boolean>(() => (value: string) => false);
 
   const type = useMemo(() => itemDefinition?.typeRef, [itemDefinition?.typeRef]);
   const value = useMemo(() => itemDefinition?.typeConstraint, [itemDefinition?.typeConstraint]);
@@ -123,13 +118,6 @@ export function Constraints({
     }
   }, [type]);
 
-  /**
-   * parse the value
-   *
-   * undefined -> undefined
-   * <word>,<word>,<word> -> enum
-   * [/( ... )/] -> range
-   */
   useEffect(() => {
     if (type === DmnBuiltInDataType.Boolean || type === DmnBuiltInDataType.Context) {
       setIsDisabled(true);
@@ -155,6 +143,7 @@ export function Constraints({
       return;
     }
     if (type === DmnBuiltInDataType.Number) {
+      setTypeCheck(() => (value: string) => !isNaN(parseFloat(value)));
       return;
     }
     if (type === DmnBuiltInDataType.String) {
@@ -166,11 +155,11 @@ export function Constraints({
     if (type === DmnBuiltInDataType.YearsMonthsDuration) {
       return;
     }
-  }, [type, value]);
+  }, [type]);
 
   const onToggleGroupChange = useCallback(
-    (selected, event) => {
-      if (!selected) {
+    (newSelection, event) => {
+      if (!newSelection) {
         return;
       }
       const selection = event.currentTarget.id as ConstraintsType;
@@ -181,24 +170,28 @@ export function Constraints({
         return;
       }
 
-      onInternalChange(value?.text, equivalentKieConstraintType(selection));
-    },
-    [equivalentKieConstraintType, onInternalChange, value?.text]
-  );
+      if (value === undefined || value.text === "") {
+        return;
+      }
 
-  const onExpressionChange = useCallback(
-    (newValue: string, origin: KIE__tConstraintType) => {
-      if (selected === ConstraintsType.ENUMERATION) {
-        onInternalChange(newValue, "enumeration");
+      if (selection === ConstraintsType.ENUMERATION && isEnum(value.text, typeCheck)) {
+        onInternalChange(value.text, equivalentKieConstraintType(ConstraintsType.ENUMERATION));
         return;
       }
-      if (selected === ConstraintsType.RANGE) {
-        onInternalChange(newValue, "range");
+
+      if (selection === ConstraintsType.RANGE && isRange(value.text, typeCheck)) {
+        onInternalChange(value.text, equivalentKieConstraintType(ConstraintsType.RANGE));
         return;
       }
-      onInternalChange(newValue, origin);
+
+      if (selection === ConstraintsType.EXPRESSIONS) {
+        onInternalChange(value.text, equivalentKieConstraintType(ConstraintsType.EXPRESSIONS));
+        return;
+      }
+
+      onInternalChange(value.text, equivalentKieConstraintType(selected));
     },
-    [onInternalChange, selected]
+    [equivalentKieConstraintType, onInternalChange, typeCheck, value, selected]
   );
 
   const constraintType = useMemo(() => {
@@ -208,7 +201,9 @@ export function Constraints({
           isReadonly={isReadonly}
           inputType={inputType}
           value={value?.text}
-          onChange={onInternalChange}
+          onChange={(newValue: string) =>
+            onInternalChange(newValue, equivalentKieConstraintType(ConstraintsType.ENUMERATION))
+          }
           isDisabled={isEnumDisabled}
         />
       );
@@ -218,19 +213,29 @@ export function Constraints({
           isReadonly={isReadonly}
           inputType={inputType}
           value={value?.text}
-          onChange={onInternalChange}
+          onChange={(newValue: string) =>
+            onInternalChange(newValue, equivalentKieConstraintType(ConstraintsType.RANGE))
+          }
           isDisabled={isRangeDisabled}
         />
       );
     } else if (selected === ConstraintsType.EXPRESSIONS) {
-      return <ConstraintsExpression isReadonly={isReadonly} value={value?.text ?? ""} onChange={onExpressionChange} />;
+      return (
+        <ConstraintsExpression
+          isReadonly={isReadonly}
+          value={value?.text}
+          onChange={(newValue: string) =>
+            onInternalChange(newValue, equivalentKieConstraintType(ConstraintsType.EXPRESSIONS))
+          }
+        />
+      );
     }
   }, [
+    equivalentKieConstraintType,
     inputType,
     isEnumDisabled,
     isRangeDisabled,
     isReadonly,
-    onExpressionChange,
     onInternalChange,
     selected,
     value?.text,
@@ -286,9 +291,7 @@ export function Constraints({
             </ToggleGroup>
           </div>
 
-          {selected !== ConstraintsType.NONE && (
-            <div style={{ paddingTop: "10px", height: "60px" }}>{constraintType}</div>
-          )}
+          {selected !== ConstraintsType.NONE && <div style={{ paddingTop: "10px" }}>{constraintType}</div>}
         </div>
       )}
     </>
