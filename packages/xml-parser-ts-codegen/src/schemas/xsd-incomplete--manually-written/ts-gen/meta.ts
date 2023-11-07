@@ -59,11 +59,15 @@ export const meta = {
   complexType: {
     "@_abstract": { type: "boolean", isArray: false, isOptional: true },
     "xsd:complexContent": { type: "complexContent", isArray: false, isOptional: true },
+    "xsd:simpleContent": { type: "simpleContent", isArray: false, isOptional: true },
     "xsd:sequence": { type: "sequence", isArray: false, isOptional: true },
     "xsd:all": { type: "all", isArray: false, isOptional: true },
     "xsd:attribute": { type: "attribute", isArray: true, isOptional: false },
   },
   complexContent: {
+    "xsd:extension": { type: "extension", isArray: false, isOptional: false },
+  },
+  simpleContent: {
     "xsd:extension": { type: "extension", isArray: false, isOptional: false },
   },
   extension: {

@@ -23,6 +23,7 @@ import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
 const files = [
   { path: "../tests-data--manual/simple.scesim", version: "1.8" },
+  { path: "../tests-data--manual/OldEnoughTest.scesim", version: "1.8" },
   { path: "../tests-data--manual/TrafficViolationTest.scesim", version: "1.8" },
 ];
 
