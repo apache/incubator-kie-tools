@@ -87,6 +87,9 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
   const { nodes, edges, nodesById, edgesById, selectedNodeTypes, selectedNodesById, selectedEdgesById } =
     useMemo(() => {
       // console.time("nodes");
+
+      const __DRG_ELEMENTS_WITHOUT_VISUAL_REPRESENTATION: string[] = [];
+
       const selectedNodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
       const selectedEdgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
       const selectedNodeTypes = new Set<NodeType>();
@@ -101,26 +104,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         selectedEdges: new Set(diagram._selectedEdges),
       };
 
-      function getEdgeData({
-        id,
-        sourceId,
-        targetId,
-        dmnObject,
-      }: {
-        dmnObject: DmnDiagramEdgeData["dmnObject"];
-        id: string;
-        sourceId: string;
-        targetId: string;
-      }): DmnDiagramEdgeData {
-        return {
-          dmnObject,
-          dmnEdge: id ? dmnEdgesByDmnElementRef.get(id) : undefined,
-          dmnShapeSource: dmnShapesByHref.get(sourceId),
-          dmnShapeTarget: dmnShapesByHref.get(targetId),
-        };
-      }
-
-      function newEdge({
+      function ackEdge({
         id,
         type,
         dmnObject,
@@ -133,8 +117,15 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         source: string;
         target: string;
       }): RF.Edge<DmnDiagramEdgeData> {
+        const data = {
+          dmnObject,
+          dmnEdge: id ? dmnEdgesByDmnElementRef.get(id) : undefined,
+          dmnShapeSource: dmnShapesByHref.get(source),
+          dmnShapeTarget: dmnShapesByHref.get(target),
+        };
+
         const edge: RF.Edge<DmnDiagramEdgeData> = {
-          data: getEdgeData({ id, sourceId: source, targetId: target, dmnObject }),
+          data,
           id,
           type,
           source,
@@ -156,7 +147,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
           if (dmnObject.__$$element === "decision") {
             acc.push(
               ...(dmnObject.informationRequirement ?? []).map((ir, index) =>
-                newEdge({
+                ackEdge({
                   id: ir["@_id"] ?? "",
                   dmnObject: {
                     type: dmnObject.__$$element,
@@ -175,7 +166,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
           if (dmnObject.__$$element === "decision" || dmnObject.__$$element === "businessKnowledgeModel") {
             acc.push(
               ...(dmnObject.knowledgeRequirement ?? []).map((kr, index) =>
-                newEdge({
+                ackEdge({
                   id: kr["@_id"] ?? "",
                   dmnObject: {
                     type: dmnObject.__$$element,
@@ -198,7 +189,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
           ) {
             acc.push(
               ...(dmnObject.authorityRequirement ?? []).map((ar, index) =>
-                newEdge({
+                ackEdge({
                   id: ar["@_id"] ?? "",
                   dmnObject: {
                     type: dmnObject.__$$element,
@@ -219,7 +210,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         ...(thisDmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) =>
           dmnObject.__$$element === "association"
             ? [
-                newEdge({
+                ackEdge({
                   id: dmnObject["@_id"] ?? "",
                   dmnObject: {
                     type: dmnObject.__$$element,
@@ -255,7 +246,13 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
 
         const id = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectQName.localPart });
 
-        const { dmnElementRefQName, ...shape } = dmnShapesByHref.get(id)!;
+        const _shape = dmnShapesByHref.get(id);
+        if (!_shape) {
+          __DRG_ELEMENTS_WITHOUT_VISUAL_REPRESENTATION.push(id);
+          return undefined;
+        }
+
+        const { dmnElementRefQName, ...shape } = _shape;
 
         const data: DmnDiagramNodeData = {
           dmnObjectNamespace,
