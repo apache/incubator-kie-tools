@@ -325,7 +325,7 @@ export class VariablesRepository {
     return {
       name: itemDefinition["@_name"],
       properties: new Map<string, DataType>(),
-      typeRef: itemDefinition["typeRef"] ?? itemDefinition["@_name"],
+      typeRef: itemDefinition["typeRef"]?.__$$text ?? itemDefinition["@_name"],
     };
   }
 
@@ -333,7 +333,7 @@ export class VariablesRepository {
     return {
       name: itemComponent["@_name"],
       properties: this.buildProperties(itemComponent),
-      typeRef: itemComponent["typeRef"] ?? itemComponent["@_name"],
+      typeRef: itemComponent["typeRef"]?.__$$text ?? itemComponent["@_name"],
     };
   }
 
@@ -344,7 +344,7 @@ export class VariablesRepository {
       const rootProperty = {
         name: def["@_name"],
         properties: this.buildProperties(def),
-        typeRef: def["typeRef"] ?? def["@_name"],
+        typeRef: def["typeRef"]?.__$$text ?? def["@_name"],
       };
 
       properties.set(rootProperty.name, rootProperty);
