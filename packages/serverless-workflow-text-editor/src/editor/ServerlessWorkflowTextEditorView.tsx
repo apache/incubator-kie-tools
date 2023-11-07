@@ -87,4 +87,8 @@ export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextE
   public moveCursorToPosition(position: Position): void {
     this.editorRef.current?.moveCursorToPosition(position);
   }
+
+  public updateContent(newContent: string, nodeName: string): void {
+    this.editorRef.current?.updateContent(newContent, nodeName);
+  }
 }

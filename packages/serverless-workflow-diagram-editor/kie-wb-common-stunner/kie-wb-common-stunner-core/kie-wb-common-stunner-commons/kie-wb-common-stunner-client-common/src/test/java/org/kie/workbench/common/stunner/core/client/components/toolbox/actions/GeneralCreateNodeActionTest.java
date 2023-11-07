@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvas
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.UpdateExternalContentEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils.Orientation;
@@ -67,6 +68,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -89,6 +91,9 @@ public class GeneralCreateNodeActionTest {
 
     @Mock
     private EventSourceMock<CanvasSelectionEvent> selectionEvent;
+
+    @Mock
+    private EventSourceMock<UpdateExternalContentEvent> updateEvent;
 
     @Mock
     private EventSourceMock<InlineTextEditEvent> inlineTextEditEvent;
@@ -131,13 +136,9 @@ public class GeneralCreateNodeActionTest {
         canvasCommandFactories = new ManagedInstanceStub<>(canvasCommandFactory);
         createNodeAction = new GeneralCreateNodeAction(definitionUtils,
                                                        clientFactoryManager,
-                                                       canvasLayoutUtils,
-                                                       selectionEvent,
-                                                       inlineTextEditEvent,
+                                                       updateEvent,
                                                        sessionCommandManager,
-                                                       canvasCommandFactories) {
-
-        };
+                                                       canvasCommandFactories) {};
 
         JsWindow.editor = new JsStunnerEditor();
         JsWindow.editor.definitions = jsDefinitionManager;
@@ -214,16 +215,14 @@ public class GeneralCreateNodeActionTest {
         Assertions.assertThat(connectorEdge).isEqualTo(setTargetNodeCommand.getEdge());
         Assertions.assertThat(targetNode).isEqualTo(setTargetNodeCommand.getNode());
         Assertions.assertThat(targetNode).isEqualTo(updateElementPositionCommand.getElement());
-        Assertions.assertThat(new Point2D(10d, 200d)).isEqualTo(updateElementPositionCommand.getLocation());
+        Assertions.assertThat(new Point2D(10d, 0d)).isEqualTo(updateElementPositionCommand.getLocation());
 
-        final ArgumentCaptor<CanvasSelectionEvent> eventArgumentCaptor = ArgumentCaptor.forClass(CanvasSelectionEvent.class);
-        verify(selectionEvent).fire(eventArgumentCaptor.capture());
+        final ArgumentCaptor<UpdateExternalContentEvent> eventArgumentCaptor = ArgumentCaptor.forClass(UpdateExternalContentEvent.class);
+        verify(updateEvent).fire(eventArgumentCaptor.capture());
 
-        final ArgumentCaptor<InlineTextEditEvent> inlineTextEditEventEventArgumentCapture = ArgumentCaptor.forClass(InlineTextEditEvent.class);
-        verify(inlineTextEditEvent).fire(inlineTextEditEventEventArgumentCapture.capture());
-
-        final CanvasSelectionEvent eCaptured = eventArgumentCaptor.getValue();
-        Assertions.assertThat(targetNodeUuid).isEqualTo(eCaptured.getIdentifiers().iterator().next());
+        final UpdateExternalContentEvent eCaptured = eventArgumentCaptor.getValue();
+        Assertions.assertThat(targetNodeUuid).isEqualTo(eCaptured.getNodeUuid());
+        assertNull(eCaptured.getNodeName());
 
         Assertions.assertThat(addConnectorCommand.getConnection()).isInstanceOf(MagnetConnection.class);
         Assertions.assertThat(((MagnetConnection) addConnectorCommand.getConnection()).getMagnetIndex().getAsInt())

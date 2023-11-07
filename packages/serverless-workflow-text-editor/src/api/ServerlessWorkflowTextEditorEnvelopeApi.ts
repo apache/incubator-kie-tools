@@ -29,4 +29,6 @@ export interface ServerlessWorkflowTextEditorEnvelopeApi extends KogitoEditorEnv
    * @returns
    */
   kogitoSwfTextEditor__moveCursorToPosition(position: Position): void;
+
+  kogitoSwfTextEditor__updateContent(args: { newContent: string; nodeName: string; documentUri?: string }): void;
 }
