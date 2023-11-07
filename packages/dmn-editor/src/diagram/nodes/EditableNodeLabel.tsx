@@ -67,7 +67,13 @@ export function EditableNodeLabel({
     setInternalValue(value);
   }, [value]);
 
-  const [shouldCommit, setShouldCommit] = useState(false);
+  // If `shouldCommitOnBlur` is true, pressing `Esc` will override this.
+  // If `shouldCommitOnBlur` is false, pressing `Enter` will override this.
+  const _shouldCommitOnBlur = shouldCommitOnBlur ?? false; // Defaults to false
+  const [shouldCommit, setShouldCommit] = useState(_shouldCommitOnBlur);
+  useEffect(() => {
+    setShouldCommit(_shouldCommitOnBlur); // Keeps the internal state aligned with the prop.
+  }, [_shouldCommitOnBlur]);
 
   const restoreFocus = useCallback(() => {
     // We only restore the focus to the previously focused element if we're still holding focus. If focus has changed, we let it be.
@@ -88,7 +94,7 @@ export function EditableNodeLabel({
 
   const onBlur = useCallback(() => {
     setEditing(false);
-    setShouldCommit(shouldCommitOnBlur ?? false);
+    setShouldCommit(_shouldCommitOnBlur); // Only gets propagated after this function ends. `shouldCommit` is unchanged after this line.
     restoreFocus();
 
     if (isValid && internalValue !== value && shouldCommit) {
@@ -97,7 +103,7 @@ export function EditableNodeLabel({
       console.debug(`Label change cancelled for node with label ${value}`);
       setInternalValue(value);
     }
-  }, [internalValue, onChange, restoreFocus, shouldCommitOnBlur, setEditing, shouldCommit, isValid, value]);
+  }, [internalValue, onChange, restoreFocus, _shouldCommitOnBlur, setEditing, shouldCommit, isValid, value]);
 
   // Finish editing on `Enter` pressed.
   const onKeyDown = useCallback(

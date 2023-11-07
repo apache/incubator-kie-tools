@@ -137,6 +137,7 @@ export const InputDataNode = React.memo(
             value={inputData["@_label"] ?? inputData["@_name"]}
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
+            shouldCommitOnBlur={true}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -236,6 +237,7 @@ export const DecisionNode = React.memo(
             value={decision["@_label"] ?? decision["@_name"]}
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
+            shouldCommitOnBlur={true}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -335,6 +337,7 @@ export const BkmNode = React.memo(
             value={bkm["@_label"] ?? bkm["@_name"]}
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
+            shouldCommitOnBlur={true}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -423,6 +426,7 @@ export const KnowledgeSourceNode = React.memo(
             onChange={setName}
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
+            shouldCommitOnBlur={true}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -505,6 +509,7 @@ export const TextAnnotationNode = React.memo(
             onChange={setText}
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
+            shouldCommitOnBlur={true}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -663,6 +668,7 @@ export const DecisionServiceNode = React.memo(
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
+            shouldCommitOnBlur={true}
           />
           {selected && !dragging && !shape["@_isCollapsed"] && (
             <NodeResizerHandle
@@ -769,6 +775,7 @@ export const GroupNode = React.memo(
             onChange={setName}
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
+            shouldCommitOnBlur={true}
           />
           {selected && !dragging && (
             <NodeResizerHandle
@@ -824,6 +831,7 @@ export const UnknownNode = React.memo(
             onChange={() => {}}
             skipValidation={false}
             allUniqueNames={new Map()}
+            shouldCommitOnBlur={true}
           />
           {selected && !dragging && (
             <NodeResizerHandle

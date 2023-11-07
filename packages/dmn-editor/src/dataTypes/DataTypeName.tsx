@@ -60,6 +60,8 @@ export function DataTypeName({
     [allDataTypesById, dmnEditorStoreApi, isReadonly, itemDefinition]
   );
 
+  const _shouldCommitOnBlur = shouldCommitOnBlur ?? true; // Defaults to true
+
   return (
     <>
       {editMode === "hover" && (
@@ -67,7 +69,7 @@ export function DataTypeName({
           isPlain={true}
           isReadonly={isReadonly}
           id={itemDefinition["@_id"]!}
-          shouldCommitOnBlur={shouldCommitOnBlur ?? true}
+          shouldCommitOnBlur={_shouldCommitOnBlur}
           name={feelQNameToDisplay.full}
           onRenamed={onRenamed}
           allUniqueNames={allUniqueNames}
@@ -91,7 +93,7 @@ export function DataTypeName({
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             onChange={onRenamed}
-            shouldCommitOnBlur={shouldCommitOnBlur ?? true}
+            shouldCommitOnBlur={shouldCommitOnBlur}
             value={itemDefinition["@_name"]}
             key={itemDefinition["@_id"]}
             position={"top-left"}
