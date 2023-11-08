@@ -27,12 +27,8 @@ export function getServerlessWorkflowLanguageData(resourcesPathPrefix: string): 
     gwtModuleName: editors.swf.name,
     resources: [
       {
-        type: "css",
-        paths: [`${resourcesPathPrefix}/${editors.swf.name}/css/patternfly.min.css`],
-      },
-      {
         type: "js",
-        paths: [`${resourcesPathPrefix}/${editors.swf.name}/${editors.swf.name}.nocache.js`],
+        paths: [`${resourcesPathPrefix}/${editors.swf.name}/${editors.swf.name}.js`],
       },
     ],
   };

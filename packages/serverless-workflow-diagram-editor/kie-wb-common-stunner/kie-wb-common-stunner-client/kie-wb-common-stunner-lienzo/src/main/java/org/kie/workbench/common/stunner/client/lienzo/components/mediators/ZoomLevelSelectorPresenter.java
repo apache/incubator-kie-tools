@@ -22,10 +22,6 @@ package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
 import java.util.function.Supplier;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
@@ -34,8 +30,11 @@ import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.MouseEventUtil;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
+import io.crysknife.client.IsElement;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
 import org.gwtproject.timer.client.Timer;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;

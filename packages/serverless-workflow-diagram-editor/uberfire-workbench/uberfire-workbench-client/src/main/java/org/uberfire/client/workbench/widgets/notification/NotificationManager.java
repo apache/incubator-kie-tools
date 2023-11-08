@@ -24,14 +24,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.SyncBeanDef;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -45,13 +44,13 @@ public class NotificationManager {
 
     private final Map<PlaceRequest, View> notificationsContainerViewMap = new HashMap<>();
     private final PlaceRequest rootPlaceRequest = new DefaultPlaceRequest("org.uberfire.client.workbench.widgets.notifications.root");
-    private SyncBeanManager iocManager;
+    private BeanManager iocManager;
 
     public NotificationManager() {
     }
 
     @Inject
-    public NotificationManager(final SyncBeanManager iocManager) {
+    public NotificationManager(final BeanManager iocManager) {
         this.iocManager = iocManager;
     }
 

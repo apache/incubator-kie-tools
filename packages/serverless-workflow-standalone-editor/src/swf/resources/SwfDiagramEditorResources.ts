@@ -60,17 +60,7 @@ export class ServerlessWorkflowDiagramEditorResources extends BaseEditorResource
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
-    return [
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/jquery-ui/jquery-ui.min.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/bootstrap-daterangepicker/daterangepicker.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/bootstrap-select/css/bootstrap-select.min.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/uberfire-patternfly.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/css/patternfly-additions.min.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-datepicker3-1.6.4.min.cache.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/css/animate-3.5.2.min.cache.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-notify-custom.min.cache.css` },
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/css/card-1.0.1.cache.css` },
-    ];
+    return [];
   }
 
   public getFontResources(resourcesPathPrefix: string, gwtModuleName: string) {

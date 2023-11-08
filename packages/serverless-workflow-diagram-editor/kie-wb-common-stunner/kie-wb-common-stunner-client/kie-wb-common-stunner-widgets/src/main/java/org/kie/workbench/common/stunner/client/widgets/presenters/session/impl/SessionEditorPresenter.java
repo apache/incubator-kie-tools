@@ -20,12 +20,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionLostFocusEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
@@ -95,7 +94,7 @@ public class SessionEditorPresenter<S extends EditorSession>
         sessionDiagramOpenedEvent.fire(new SessionDiagramOpenedEvent(session));
     }
 
-    
+
     void commandUndoExecutedFired(@Observes final CanvasCommandUndoneEvent event) {
         refreshOnEvent(event);
     }

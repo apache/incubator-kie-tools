@@ -22,7 +22,6 @@ package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
 import java.util.Collections;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +62,7 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.stubs.ManagedInstanceStub;
 
@@ -75,7 +75,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class GeneralCreateNodeActionTest {
 
     @Mock
@@ -121,7 +121,6 @@ public class GeneralCreateNodeActionTest {
 
     @Before
     public void setUp() throws Exception {
-        doReturn(canvas).when(canvasHandler).getCanvas();
         doReturn(canvas).when(canvasHandler).getAbstractCanvas();
         doReturn(diagram).when(canvasHandler).getDiagram();
         doReturn(metadata).when(diagram).getMetadata();
@@ -139,8 +138,8 @@ public class GeneralCreateNodeActionTest {
 
         };
 
-        JsWindow.editor = new JsStunnerEditor();
-        JsWindow.editor.definitions = jsDefinitionManager;
+        JsWindow.setEditor(new JsStunnerEditor());
+        JsWindow.getEditor().setDefinitions(jsDefinitionManager);
     }
 
     @Test
@@ -179,14 +178,7 @@ public class GeneralCreateNodeActionTest {
         final Edge connectorEdge = mock(Edge.class);
         doReturn(connectorEdge).when(connectorElement).asEdge();
 
-        when(JsWindow.editor.definitions.getName(any())).thenReturn("State");
-
-        when(canvasLayoutUtils.getNext(eq(canvasHandler),
-                                       eq(sourceNode),
-                                       eq(targetNode),
-                                       eq(CanvasLayoutUtils.DEFAULT_NEW_NODE_ORIENTATION)))
-                .thenReturn(new Point2D(100d,
-                                        500d));
+        when(JsWindow.getEditor().getDefinitions().getName(any())).thenReturn("State");
 
         createNodeAction.executeAction(canvasHandler,
                                        sourceNodeId,

@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.image;
 
 import com.ait.lienzo.tools.client.collection.NFastStringMap;
-import com.google.gwt.resources.client.ImageResource;
+import org.treblereel.j2cl.processors.common.resources.ImageResource;
 
 public final class ImageCache {
 
@@ -71,7 +71,7 @@ public final class ImageCache {
         }
         m_counting++;
 
-        JsImageBitmap.loadImageBitmap(resource.getSafeUri().asString(), new JsImageBitmapCallback() {
+        JsImageBitmap.loadImageBitmap(resource.getSrc(), new JsImageBitmapCallback() {
             @Override
             public void onSuccess(JsImageBitmap image) {
                 done(key, resource.getName(), image, "success");

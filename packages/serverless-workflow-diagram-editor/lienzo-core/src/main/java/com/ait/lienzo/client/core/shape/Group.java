@@ -20,9 +20,7 @@ import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
-import jsinterop.annotations.JsType;
 
-@JsType
 public class Group extends GroupOf<IPrimitive<?>, Group> {
 
     public Group() {

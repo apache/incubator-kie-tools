@@ -8,11 +8,10 @@ It results in a client side web application that can be just deployed in any web
 
 - Build Stunner and its dependencies:
   - Change to the `kie-tools/packages/serverless-workflow-diagram-editor/` root folder
-  - run `mvn clean install -DskipTests -Dgwt.compiler.skip=true`
+  - run `mvn clean install -DskipTests`
 - Build the webapp:
-  - Change to the `kie-tools/packages/serverless-workflow-diagram-editor/sw-editor` root folder
-  - Dev: `mvn -T 8C clean install -DskipTests=true -Ddev`
-  - Dev+SourceMaps: `mvn -T 8C clean install -DskipTests=true -Dsources`
+  - Change to the `kie-tools/packages/serverless-workflow-diagram-editor/` root folder
+  - Dev: `mvn -T 8C clean install -DskipTests=true`
   - Production: `mvn -T 8C clean install -DskipTests=true`
 
 ## Running in an application server
@@ -24,37 +23,17 @@ Following commands assume the use of Widfly:
 - Run the Wildfly instance: `./$WILDFLY_ROOT/bin/standalone.sh`
 - Navigate to `http://localhost:8080/test.html`
 
-## Running in SDM
+## Running in DevMode
 
-Change to the `kie-tools/packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app` root folder
+Change to the `kie-tools/packages/serverless-workflow-diagram-editor/` root folder
 
-Start GWT super dev mode by: `mvn gwt:run`
+- set compilationLevel of j2cl-maven-plugin to `BUNDLE_JAR` in `kie-tools/packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/pom.xml`
+- run `mvn clean com.vertispan.j2cl:j2cl-maven-plugin:watch` in the `kie-tools/packages/serverless-workflow-diagram-editor` root folder
+- once the build is finished (there will be `Build Complete: ready for browser refresh` in the terminal window), open another terminal in `kie-tools/packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor` folder
+- start a local web server by: `python -m SimpleHTTPServer 8001` or `http-server -p 8001` or any other web server
+- Navigate to `http://localhost:8001/test.html`
 
-## Running in IntelliJ
-
-Create a new Run/Debug GWT configuration as:
-
-Module: `sw-editor-kogito-app`
-
-GWT Module: `org.kie.workbench.common.stunner.sw.KogitoSWEditor`
-
-User Super Dev Mode: `true`
-
-VM Options:
-
-        -Xmx8G
-        -Xms1024m
-        -Xss1M
-        -Derrai.dynamic_validation.enabled=true
-        -Derrai.ioc.jsinterop.support=true
-
-Dev Mode Parameters:
-
-        -generateJsInteropExports
-        -style PRETTY // This parameter is optional
-        -logLevel [ERROR, WARN, INFO, TRACE, DEBUG, SPAM, or ALL] // This parameter is optional
-
-Start page: `test.html`
+In any question, please follow the j2cl-maven-plugin documentation
 
 ## Usage
 

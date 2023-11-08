@@ -6,27 +6,26 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
 package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 
-import javax.inject.Inject;
-
 import elemental2.dom.HTMLDivElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.translation.client.TranslationService;
+import jakarta.inject.Inject;
 import org.gwtproject.core.client.Scheduler;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.uberfire.mvp.Command;
 
 public abstract class AbstractInlineTextEditorBoxView<T extends InlineEditorBoxView.Presenter> implements IsElement {
