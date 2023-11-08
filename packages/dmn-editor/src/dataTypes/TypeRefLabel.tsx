@@ -39,18 +39,25 @@ export function TypeRefLabel({
     });
 
     // DMN typeRefs are *NOT* XML QNames, but we use them to make it easier to build the FEEL QName.
-    const xmlQName = buildXmlQName({
-      type: "xml-qname",
-      prefix: xmlNamespaceName,
-      localPart: parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef,
-    });
+    const xmlQName = parseXmlQName(
+      buildXmlQName({
+        type: "xml-qname",
+        prefix: xmlNamespaceName,
+        localPart: parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef,
+      })
+    );
+
+    // This is a special case for some DMNs which still declare typeRefs as XML QNames. We leave them unaltered.
+    if (xmlQName.prefix) {
+      return typeRef;
+    }
 
     const fullFeelQName = buildFeelQNameFromXmlQName({
       importsByNamespace,
       relativeToNamespace: thisDmn.model.definitions["@_namespace"],
       model: thisDmn.model.definitions,
       namedElement: { "@_name": parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef },
-      namedElementQName: parseXmlQName(xmlQName),
+      namedElementQName: xmlQName,
     }).full;
 
     if (parsedFeelQName.importName) {
