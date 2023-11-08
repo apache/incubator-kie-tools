@@ -45,7 +45,7 @@ describe("checks tests", function () {
   it("Check Project structure with invalid path", () => {
     fsExistsSyncMock.mockReturnValueOnce(false);
 
-    expect(() => checkKogitoProjectStructure(sourcePath)).toThrowError(ERROR_INVALID_FOLDER);
+    expect(() => checkKogitoProjectStructure(sourcePath)).toThrow(ERROR_INVALID_FOLDER);
   });
 
   it("Check Project structure not a directory", () => {
@@ -53,7 +53,7 @@ describe("checks tests", function () {
     fsStatSyncMock.mockReturnValueOnce({
       isDirectory: () => false,
     });
-    expect(() => checkKogitoProjectStructure(sourcePath)).toThrowError(ERROR_NOT_DIRECTORY);
+    expect(() => checkKogitoProjectStructure(sourcePath)).toThrow(ERROR_NOT_DIRECTORY);
   });
 
   it("Check Project structure not a mvn project", () => {
@@ -62,7 +62,7 @@ describe("checks tests", function () {
     fsStatSyncMock.mockReturnValueOnce({
       isDirectory: () => true,
     });
-    expect(() => checkKogitoProjectStructure(sourcePath)).toThrowError(ERROR_NOT_MVN_PROJECT);
+    expect(() => checkKogitoProjectStructure(sourcePath)).toThrow(ERROR_NOT_MVN_PROJECT);
   });
 
   it("Check Project contains forms", () => {

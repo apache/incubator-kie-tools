@@ -142,7 +142,7 @@ describe("receive", () => {
       apiImpl
     );
 
-    expect(receive).not.toBeCalled();
+    expect(receive).not.toHaveBeenCalled();
   });
 
   test("any request with targetEnvelopeId", () => {
@@ -160,7 +160,7 @@ describe("receive", () => {
       apiImpl
     );
 
-    expect(receive).not.toBeCalled();
+    expect(receive).not.toHaveBeenCalled();
   });
 
   test("any request with the same targetEnvelopeServerId", async () => {
@@ -179,7 +179,7 @@ describe("receive", () => {
     await delay(0);
 
     expect(sentMessages.length).toStrictEqual(1);
-    expect(apiImpl.someRequest).toBeCalledWith("param1");
+    expect(apiImpl.someRequest).toHaveBeenCalledWith("param1");
   });
 
   test("any notification with different targetEnvelopeServerId", () => {
@@ -194,7 +194,7 @@ describe("receive", () => {
       apiImpl
     );
 
-    expect(apiImpl.setText).not.toBeCalled();
+    expect(apiImpl.setText).not.toHaveBeenCalled();
   });
 
   test("any notification with the same targetEnvelopeServerId", () => {
@@ -209,7 +209,7 @@ describe("receive", () => {
       apiImpl
     );
 
-    expect(apiImpl.setText).toBeCalledWith("some text");
+    expect(apiImpl.setText).toHaveBeenCalledWith("some text");
   });
 
   test("any request from another EnvelopeServer", async () => {

@@ -100,7 +100,7 @@ describe("SwfJsonOffsets tests", () => {
       expect(getJsonStateNameFromOffset({ content, offset: 999999 })).toBeUndefined();
       expect(() => {
         getJsonStateNameFromOffset({ content, offset: 100 });
-      }).not.toThrowError();
+      }).not.toThrow();
       expect(getJsonStateNameFromOffset({ content, offset: 100 })).toBeUndefined();
     });
 

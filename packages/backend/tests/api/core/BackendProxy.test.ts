@@ -37,7 +37,7 @@ describe("stop services", () => {
     const stopFn = jest.spyOn(backendManager, "stop");
     backendProxy.registerBackendManager(backendManager);
     backendProxy.stopServices();
-    expect(stopFn).toBeCalled();
+    expect(stopFn).toHaveBeenCalled();
   });
 });
 
@@ -65,7 +65,7 @@ describe("access a capability", () => {
     backendProxy.registerBackendManager(backendManager);
 
     const response = await backendProxy.withCapability(testServiceId, testCallback);
-    expect(testCallback).toBeCalled();
+    expect(testCallback).toHaveBeenCalled();
     expect(response.status).toBe(CapabilityResponseStatus.OK);
     expect(response.body).toBe(responseContent);
   });

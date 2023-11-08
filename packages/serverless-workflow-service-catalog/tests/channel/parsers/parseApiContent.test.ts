@@ -68,6 +68,6 @@ describe("parserApiContent tests", () => {
 
     expect(() => {
       parseContent("wrong.json");
-    }).toThrowError("'wrong.json' is not a supported spec file");
+    }).toThrow("'wrong.json' is not a supported spec file");
   });
 });

@@ -43,13 +43,13 @@ describe("satisfy requirements of the Quarkus local server", () => {
 
   test("should check if path provided in the constructor exists", async () => {
     await service.satisfyRequirements();
-    expect(mockFs.existsSync).toBeCalledWith(testJarFile);
+    expect(mockFs.existsSync).toHaveBeenCalledWith(testJarFile);
   });
 
   test("should return FALSE when the runner jar file is missing", async () => {
     mockFs.existsSync.mockReturnValueOnce(false);
     await expect(service.satisfyRequirements()).resolves.toBeFalsy();
-    expect(mockIsJavaAvailableFn).not.toBeCalled();
+    expect(mockIsJavaAvailableFn).not.toHaveBeenCalled();
   });
 
   test("should return FALSE when java is missing", async () => {
@@ -155,13 +155,13 @@ describe("stop the Quarkus local server", () => {
 
   test("should do nothing since there is no active process", async () => {
     quarkusServer.stop();
-    expect(mockKillProcessFn).not.toBeCalled();
+    expect(mockKillProcessFn).not.toHaveBeenCalled();
   });
 
   test("should kill the process", async () => {
     await startQuarkusServerTest(quarkusServer);
     quarkusServer.stop();
-    expect(mockKillProcessFn).toBeCalled();
+    expect(mockKillProcessFn).toHaveBeenCalled();
   });
 
   async function startQuarkusServerTest(server: QuarkusLocalServer): Promise<void> {
