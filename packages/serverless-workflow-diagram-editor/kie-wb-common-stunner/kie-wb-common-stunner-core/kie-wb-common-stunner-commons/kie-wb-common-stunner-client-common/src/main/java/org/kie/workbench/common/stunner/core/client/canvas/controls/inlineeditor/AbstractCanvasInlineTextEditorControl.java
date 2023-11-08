@@ -20,14 +20,13 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
-import javax.enterprise.event.Observes;
-
-import com.google.gwt.touch.client.Point;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import jakarta.enterprise.event.Observes;
 import org.gwtproject.core.client.Scheduler;
-import org.jboss.errai.ui.client.local.api.IsElement;
+import org.gwtproject.touch.client.Point;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;

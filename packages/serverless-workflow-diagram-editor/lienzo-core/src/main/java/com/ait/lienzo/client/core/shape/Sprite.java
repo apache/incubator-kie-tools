@@ -31,8 +31,8 @@ import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.Timer;
-import com.google.gwt.resources.client.ImageResource;
 import jsinterop.annotations.JsProperty;
+import org.treblereel.j2cl.processors.common.resources.ImageResource;
 
 public class Sprite extends Shape<Sprite> {
 
@@ -81,9 +81,9 @@ public class Sprite extends Shape<Sprite> {
     public Sprite(final ImageResource resource, double rate, SpriteBehaviorMap bmap, String behavior) {
         super(ShapeType.SPRITE);
 
-        setURL(resource.getSafeUri().asString()).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
+        setURL(resource.getSrc()).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
 
-        loadImageBitmap(resource.getSafeUri().asString());
+        loadImageBitmap(resource.getSrc());
     }
 
     public Sprite(JsImageBitmap sprite, double rate, SpriteBehaviorMap bmap, String behavior) {

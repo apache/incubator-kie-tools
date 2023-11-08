@@ -1,21 +1,21 @@
 package org.kie.workbench.common.stunner.sw.marshall.yaml;
 
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLDeserializationException;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.StringYAMLDeserializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.array.ArrayYAMLDeserializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.StringYAMLSerializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.array.ArrayYAMLSerializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.NodeType;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 import org.kie.workbench.common.stunner.sw.definition.Function;
 import org.kie.workbench.common.stunner.sw.definition.Function_YamlDeserializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.Function_YamlSerializerImpl;
+import org.treblereel.gwt.yaml.api.YAMLDeserializer;
+import org.treblereel.gwt.yaml.api.YAMLSerializer;
+import org.treblereel.gwt.yaml.api.exception.YAMLDeserializationException;
+import org.treblereel.gwt.yaml.api.internal.deser.StringYAMLDeserializer;
+import org.treblereel.gwt.yaml.api.internal.deser.YAMLDeserializationContext;
+import org.treblereel.gwt.yaml.api.internal.deser.array.ArrayYAMLDeserializer;
+import org.treblereel.gwt.yaml.api.internal.ser.StringYAMLSerializer;
+import org.treblereel.gwt.yaml.api.internal.ser.YAMLSerializationContext;
+import org.treblereel.gwt.yaml.api.internal.ser.array.ArrayYAMLSerializer;
+import org.treblereel.gwt.yaml.api.node.NodeType;
+import org.treblereel.gwt.yaml.api.node.YamlMapping;
+import org.treblereel.gwt.yaml.api.node.YamlNode;
+import org.treblereel.gwt.yaml.api.node.YamlSequence;
 
 public class WorkflowFunctionsYamlSerializer implements YAMLDeserializer, YAMLSerializer {
 
@@ -66,4 +66,3 @@ public class WorkflowFunctionsYamlSerializer implements YAMLDeserializer, YAMLSe
         throw new RuntimeException("Not implemented");
     }
 }
-

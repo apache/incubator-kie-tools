@@ -703,7 +703,7 @@
       { "source": "@kie-tools/kie-sandbox-distribution", "target": "@kie-tools/kie-sandbox-image", "weight": 1 },
       {
         "source": "@kie-tools/kie-sandbox-extended-services-image",
-        "target": "@kie-tools/extended-services",
+        "target": "@kie-tools/extended-services-java",
         "weight": 1
       },
       { "source": "@kie-tools/kie-sandbox-extended-services-image", "target": "@kie-tools/image-builder", "weight": 1 },

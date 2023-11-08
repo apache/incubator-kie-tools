@@ -24,35 +24,32 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.SyncBeanDef;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.EditorActivity;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.util.JSFunctions;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-@EntryPoint
+@ApplicationScoped
 public class WorkbenchEntryPoint {
 
     @Inject
-    private SyncBeanManager iocManager;
+    private BeanManager iocManager;
 
     private final Map<String, Activity> idActivityMap = new HashMap<>();
 
     private final HTMLElement mainContainer = (HTMLElement) DomGlobal.document.createElement("div");
 
-    @AfterInitialization
-    private void afterInitialization() {
-        WorkbenchResources.INSTANCE.CSS().ensureInjected();
+    public void afterInitialization() {
+        WorkbenchResources.INSTANCE.CSS().insureInjectedAsStyle();
         setupRootContainer();
         JSFunctions.notifyJSReady();
     }
@@ -85,7 +82,7 @@ public class WorkbenchEntryPoint {
     private <T extends Activity> SyncBeanDef<T> getBean(Class<T> type, final String name) {
         final Optional<SyncBeanDef<T>> optionalActivity = iocManager.lookupBeans(type)
                 .stream()
-                .filter(bean -> bean.isActivated() && (name == null || bean.getName().equals(name)))
+                .filter(bean -> (name == null || bean.getName().equals(name)))
                 .findFirst();
 
         if (!optionalActivity.isPresent()) {

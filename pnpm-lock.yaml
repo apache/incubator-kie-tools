@@ -5491,9 +5491,9 @@ importers:
 
   packages/kie-sandbox-extended-services-image:
     dependencies:
-      "@kie-tools/extended-services":
+      "@kie-tools/extended-services-java":
         specifier: workspace:*
-        version: link:../extended-services
+        version: link:../extended-services-java
     devDependencies:
       "@kie-tools/image-builder":
         specifier: workspace:*
@@ -7670,9 +7670,15 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      adm-zip:
+        specifier: ^0.5.10
+        version: 0.5.10
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
+      mvn-artifact-download:
+        specifier: 6.1.1
+        version: 6.1.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -8468,6 +8474,12 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/keyboard-shortcuts":
+        specifier: workspace:*
+        version: link:../keyboard-shortcuts
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
@@ -8492,9 +8504,24 @@ importers:
       "@kie-tools/runtime-tools-gateway-api":
         specifier: workspace:*
         version: link:../runtime-tools-gateway-api
+      "@kie-tools/serverless-workflow-combined-editor":
+        specifier: workspace:*
+        version: link:../serverless-workflow-combined-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-assets
+      "@kie-tools/serverless-workflow-diagram-editor-envelope":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-text-editor":
+        specifier: workspace:*
+        version: link:../serverless-workflow-text-editor
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@patternfly/patternfly":
+        specifier: ^4.224.2
+        version: 4.224.2
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.12(react-dom@17.0.2)(react@17.0.2)
@@ -8519,6 +8546,15 @@ importers:
       "@types/react-router-dom":
         specifier: ^5.1.7
         version: 5.1.7
+      apollo-cache-inmemory:
+        specifier: 1.6.6
+        version: 1.6.6(graphql@14.3.1)
+      apollo-client:
+        specifier: 2.6.10
+        version: 2.6.10(graphql@14.3.1)
+      apollo-link-http:
+        specifier: 1.5.17
+        version: 1.5.17(graphql@14.3.1)
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
@@ -20286,7 +20322,6 @@ packages:
   /@patternfly/patternfly@4.224.2:
     resolution:
       { integrity: sha512-HGNV26uyHSIECuhjPg/WGn0mXbAotcs6ODfhAOkfYjIgGylddgiwElxUe1rpEHV5mQJJ2rMn4OdeJIIpzRX61g== }
-    dev: false
 
   /@patternfly/quickstarts@2.4.0(@patternfly/react-core@4.276.6)(react-dom@17.0.2)(react@17.0.2)(showdown@2.1.0):
     resolution:
@@ -25530,7 +25565,6 @@ packages:
     dependencies:
       "@types/node": 18.17.18
       tslib: 1.14.1
-    dev: false
 
   /@wry/equality@0.1.11:
     resolution:
@@ -26027,6 +26061,12 @@ packages:
       regex-parser: 2.2.11
     dev: true
 
+  /adm-zip@0.5.10:
+    resolution:
+      { integrity: sha512-x0HvcHqVJNTPk/Bw8JbLWlWoo6Wwnsug0fnYYro1HBrjxZ3G7/AZk7Ahv8JwDe1uIcz8eBqvu86FuF1POiG7vQ== }
+    engines: { node: ">=6.0" }
+    dev: true
+
   /agent-base@4.3.0:
     resolution:
       { integrity: sha512-salcGninV0nPrwpGNn4VTXBb1SOuXQBiqbrNXoeizJsHrsL6ERFM2Ne3JUSBWRE6aeNJI2ROP/WEEIDUiDe3cg== }
@@ -26295,7 +26335,6 @@ packages:
       optimism: 0.10.3
       ts-invariant: 0.4.4
       tslib: 1.14.1
-    dev: false
 
   /apollo-cache@1.3.5(graphql@14.3.1):
     resolution:
@@ -26344,7 +26383,6 @@ packages:
       graphql: 14.3.1
       ts-invariant: 0.4.4
       tslib: 1.14.1
-    dev: false
 
   /apollo-link-http@1.5.17(graphql@14.3.1):
     resolution:
@@ -26356,7 +26394,6 @@ packages:
       apollo-link-http-common: 0.2.16(graphql@14.3.1)
       graphql: 14.3.1
       tslib: 1.14.1
-    dev: false
 
   /apollo-link@1.2.14(graphql@14.3.1):
     resolution:
@@ -37614,6 +37651,43 @@ packages:
     resolution:
       { integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA== }
 
+  /mvn-artifact-download@6.1.1:
+    resolution:
+      { integrity: sha512-BG7eFGeGSjoPon4MC7It5k/m+mvXJ9lxABzdWq16mIkePPsGWlILWv+zbinyhYHixT/RWDg4wIjIeH7vpdJmRg== }
+    engines: { node: ">=12" }
+    dependencies:
+      mvn-artifact-filename: 6.1.0
+      mvn-artifact-name-parser: 6.1.0
+      mvn-artifact-url: 6.1.0
+      node-fetch: 2.6.11
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
+  /mvn-artifact-filename@6.1.0:
+    resolution:
+      { integrity: sha512-LmRzDDZw5cmI2kYCNMdfwf9KBS+HVolU9xV4+xhZ5WRAGF6xpsVRxq5+e+5/GOZB+534b1qBXxLhGafbyBdIDw== }
+    engines: { node: ">=12" }
+    dev: true
+
+  /mvn-artifact-name-parser@6.1.0:
+    resolution:
+      { integrity: sha512-H82T18s4tS8Go4knZWPL9RcBv9vjKpN9bJMbuvWJWFmZ1fvEgKOFQ28E0FU1Z0xd8VGq7GAGLlDoE94qJdOPiA== }
+    engines: { node: ">=12" }
+    dev: true
+
+  /mvn-artifact-url@6.1.0:
+    resolution:
+      { integrity: sha512-G7U7LUtrCRporzsu5VXhgGUE5B9VtCh8iqeLOKxOZALbeELzF8ftj3aSpkR+5fBRBVRwvUC2rQpiwU9cBFYRFQ== }
+    engines: { node: ">=12" }
+    dependencies:
+      mvn-artifact-filename: 6.1.0
+      node-fetch: 2.6.11
+      xml2js: 0.5.0
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
   /nanoid@3.2.0:
     resolution:
       { integrity: sha512-fmsZYa9lpn69Ad5eDn7FMcnnSR+8R34W9qJEijxYhTbfOWzr22n1QxCMzXLK+ODyW2973V3Fux959iQoUxzUIA== }
@@ -38426,7 +38500,6 @@ packages:
       { integrity: sha512-9A5pqGoQk49H6Vhjb9kPgAeeECfUDF6aIICbMDL23kDLStBn1MWk3YvcZ4xWF9CsSf6XEgvRLkXy4xof/56vVw== }
     dependencies:
       "@wry/context": 0.4.4
-    dev: false
 
   /optionator@0.8.3:
     resolution:
@@ -45689,7 +45762,7 @@ packages:
       mime-types: 2.1.34
       neo-async: 2.6.2
       schema-utils: 3.3.0
-      tapable: 2.2.1
+      tapable: 2.2.0
       terser-webpack-plugin: 5.3.9(@swc/core@1.3.71)(esbuild@0.18.17)(webpack@5.88.2)
       watchpack: 2.4.0
       webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
@@ -45731,7 +45804,7 @@ packages:
       mime-types: 2.1.34
       neo-async: 2.6.2
       schema-utils: 3.3.0
-      tapable: 2.2.1
+      tapable: 2.2.0
       terser-webpack-plugin: 5.3.9(webpack@5.88.2)
       watchpack: 2.4.0
       webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)

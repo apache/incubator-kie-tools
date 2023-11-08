@@ -35,13 +35,13 @@ import { useOpenApi } from "../../context/OpenApiContext";
 import { BasePage } from "../BasePage";
 import { Link } from "react-router-dom";
 import { routes } from "../../routes";
-import { ErrorPage } from "../ErrorPage";
+import { ErrorKind, ErrorPage } from "../ErrorPage";
 
 export function Workflows() {
   const openApi = useOpenApi();
 
   if (openApi.openApiPromise.status === PromiseStateStatus.REJECTED) {
-    return <ErrorPage kind="OpenApi" errors={["OpenAPI service not available"]} />;
+    return <ErrorPage kind={ErrorKind.OPENAPI} errors={["OpenAPI service not available"]} />;
   }
 
   return (

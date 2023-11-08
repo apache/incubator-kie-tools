@@ -1,0 +1,11 @@
+goog.exportProperty(GWTEditor.prototype, "onOpen", GWTEditor.prototype.onOpen);
+goog.exportProperty(GWTEditor.prototype, "setContent", GWTEditor.prototype.setContent);
+goog.exportProperty(GWTEditor.prototype, "selectStateByName", GWTEditor.prototype.selectStateByName);
+goog.exportProperty(GWTEditor.prototype, "getContent", GWTEditor.prototype.getContent);
+goog.exportProperty(GWTEditor.prototype, "getContentYAML", GWTEditor.prototype.getContentYAML);
+goog.exportProperty(GWTEditor.prototype, "getContentJSON", GWTEditor.prototype.getContentJSON);
+goog.exportProperty(GWTEditor.prototype, "getPreview", GWTEditor.prototype.getPreview);
+goog.exportProperty(GWTEditor.prototype, "validate", GWTEditor.prototype.validate);
+goog.exportProperty(GWTEditor.prototype, "undo", GWTEditor.prototype.undo);
+goog.exportProperty(GWTEditor.prototype, "redo", GWTEditor.prototype.redo);
+goog.exportProperty(GWTEditor.prototype, "searchDomainObject", GWTEditor.prototype.searchDomainObject);

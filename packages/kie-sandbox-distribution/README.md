@@ -17,7 +17,7 @@ This package contains the `docker-compose` file to run KIE Sandbox and all relat
 - For local builds, Run the following in the root folder of the repository to build the package:
 
   ```bash
-  pnpm -F @kie-tools/kie-sandbox-image... build:prod
+  pnpm -F @kie-tools/kie-sandbox-distribution... build:prod
   ```
 
 - Then check if the image is correctly stored:

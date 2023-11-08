@@ -16,8 +16,11 @@ describe("Test built images individually", async () => {
   it("extended-services homepage", async () => {
     expect(await (await fetch(extendedServicesUrl)).text()).toMatchSnapshot();
   });
-  it("extended-services ping", async () => {
-    expect(await (await fetch(`${extendedServicesUrl}/ping`)).json()).toHaveProperty("proxy");
+  it("extended-services-java ping", async () => {
+    const response = await (await fetch(`${extendedServicesUrl}/ping`)).json();
+    expect(response).toHaveProperty("version");
+    expect(response).toHaveProperty("started");
+    expect(response.started).toBe(true);
   });
   it("kie-sandbox homepage", async () => {
     expect(await (await fetch(kieSandboxUrl)).text()).toContain('<script src="index.js"></script>');
