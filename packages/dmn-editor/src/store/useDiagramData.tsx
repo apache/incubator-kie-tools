@@ -431,7 +431,10 @@ export function assignClassesToHighlightedHierarchyNodes(
   edges: RF.Edge[]
 ) {
   const nodeVisitor: NodeVisitor = (nodeId, traversalDirection) => {
-    nodes.get(nodeId)!.className = `hierarchy ${traversalDirection}`;
+    const node = nodes.get(nodeId);
+    if (node) {
+      node.className = `hierarchy ${traversalDirection}`;
+    }
   };
 
   const edgeVisitor: EdgeVisitor = (edge, traversalDirection) => {
