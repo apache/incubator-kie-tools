@@ -23,6 +23,7 @@ module.exports = {
   moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
+  transformIgnorePatterns: [],
   transform: {
     "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
     "^.+\\.tsx?$": [
