@@ -35,6 +35,14 @@ export default class Clipboard {
     return await this.getTextFromHelperInput();
   }
 
+  /**
+   * Set the clipboard content.
+   * @param textToClipboard Text to set as the content of the clipboard.
+   */
+  public async setContent(textToClipboard: string): Promise<void> {
+    await this.driver.executeScript("navigator.clipboard.writeText('" + textToClipboard + "');");
+  }
+
   private async getTextFromHelperInput(): Promise<string> {
     const GET_TEXT_FROM_INPUT_CMD: string =
       "input=document.getElementById('copyPaste');" +
@@ -55,7 +63,11 @@ export default class Clipboard {
     );
   }
 
-  private getCtrvKeys(): string {
+  /**
+   * Return Ctrl + v command for specific OS.
+   * @returns Ctrl + v command.
+   */
+  public getCtrvKeys(): string {
     // "darwin" is  MacOS
     if (platform() === "darwin") {
       return Key.SHIFT + Key.INSERT;

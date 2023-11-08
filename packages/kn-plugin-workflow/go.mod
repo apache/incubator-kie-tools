@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/beevik/etree v1.2.0
-	github.com/docker/docker v24.0.6+incompatible
+	github.com/docker/docker v24.0.7+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/jstemmer/go-junit-report/v2 v2.0.0
 	github.com/kiegroup/kogito-serverless-operator/workflowproj v1.44.1

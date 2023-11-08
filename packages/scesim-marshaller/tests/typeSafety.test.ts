@@ -22,7 +22,11 @@ import * as path from "path";
 import * as child_process from "child_process";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
-const files = ["../tests-data--manual/TrafficViolationTest.scesim", "../tests-data--manual/simple.scesim"];
+const files = [
+  "../tests-data--manual/OldEnoughTest.scesim",
+  "../tests-data--manual/TrafficViolationTest.scesim",
+  "../tests-data--manual/simple.scesim",
+];
 
 const tmpDir = path.join(__dirname, "..", "dist-tests", "scesim-marshaller-type-safety-tests");
 

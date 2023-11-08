@@ -45,6 +45,20 @@ export function BasePageNav() {
         </NavItem>
 
         <NavItem
+          itemId={0}
+          key={"RuntimeToolsWorkflowInstances-nav"}
+          isActive={
+            location.pathname === routes.runtimeTools.workflowInstances.path({}) ||
+            matchPath(location.pathname, {
+              path: routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" }),
+            })?.isExact
+          }
+          ouiaId="runtime-tools-workflow-instances-nav"
+        >
+          <Link to={routes.runtimeTools.workflowInstances.path({})}>Workflow Instances</Link>
+        </NavItem>
+
+        <NavItem
           itemId={3}
           key={"OpenApi-nav"}
           onClick={() => handleDownloadClick(routes.openApiJson.path({}), "openapi.json")}
