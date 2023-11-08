@@ -589,6 +589,11 @@ export const DecisionServiceNode = React.memo(
 
     const dividerLineRef = useRef<SVGPathElement>(null);
 
+    const isExternal = !!dmnObjectQName.prefix;
+
+    // External Decision Service nodes are always collapsed.
+    const isCollapsed = isExternal || shape["@_isCollapsed"];
+
     useEffect(() => {
       if (!dividerLineRef.current) {
         return;
@@ -636,7 +641,7 @@ export const DecisionServiceNode = React.memo(
             y={0}
             strokeWidth={3}
             isReadonly={false}
-            isCollapsed={shape["@_isCollapsed"]}
+            isCollapsed={isCollapsed}
             showSectionLabels={diagram.dropTargetNode?.id === id}
             dividerLineLocalY={getDecisionServiceDividerLineLocalY(shape)}
           />
@@ -670,7 +675,7 @@ export const DecisionServiceNode = React.memo(
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
           />
-          {selected && !dragging && !shape["@_isCollapsed"] && (
+          {selected && !dragging && !isCollapsed && (
             <NodeResizerHandle
               nodeType={type as NodeType}
               snapGrid={diagram.snapGrid}
@@ -678,7 +683,7 @@ export const DecisionServiceNode = React.memo(
               nodeShapeIndex={shape.index}
             />
           )}
-          {shape["@_isCollapsed"] && <div className={"kie-dmn-editor--decision-service-collapsed-button"}>+</div>}
+          {isCollapsed && <div className={"kie-dmn-editor--decision-service-collapsed-button"}>+</div>}
           <DataTypeNodePanel
             isVisible={!isTargeted && selected && !dragging}
             variable={decisionService.variable}

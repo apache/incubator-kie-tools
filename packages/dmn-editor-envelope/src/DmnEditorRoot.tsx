@@ -225,13 +225,18 @@ function ExternalModelsManager({
   // The consequence of this "hack" is some extra reloads.
   useEffect(() => {
     const bc = new BroadcastChannel("workspaces_files");
-    bc.onmessage = () => {
+    bc.onmessage = ({ data }) => {
+      // Changes to `thisDmn` shouldn't update its references to external models.
+      if (data?.relativePath === thisDmnsPath) {
+        return;
+      }
+
       setExternalUpdatesCount((prev) => prev + 1);
     };
     return () => {
       bc.close();
     };
-  }, []);
+  }, [thisDmnsPath]);
 
   // This effect actually populates `externalModelsByNamespace` through the `onChange` call.
   useEffect(() => {
