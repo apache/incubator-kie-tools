@@ -16,35 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+import React from "react";
+import { Route, Switch } from "react-router-dom";
+import { RuntimeToolsWorkflowInstances } from "../runtimeTools/workflows/RuntimeToolsWorkflowInstances";
 import { routes } from "../routes";
+import { RuntimeToolsWorkflowDetails } from "../runtimeTools/workflows/RuntimeToolsWorkflowDetails";
 
-export interface AppData {
-  appName: string;
-  showDisclaimer: boolean;
-  dataIndexUrl: string;
-}
-
-export async function fetchAppData(): Promise<AppData> {
-  const response = await fetch(routes.dataJson.path({}));
-  return (await response.json()) as AppData;
-}
-
-export async function verifyDataIndex(dataIndexUrl?: string): Promise<boolean> {
-  if (!dataIndexUrl) {
-    return false;
-  }
-
-  try {
-    const response = await fetch(dataIndexUrl, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: '{"query":""}',
-    });
-    return response.status === 200;
-  } catch (e) {
-    return false;
-  }
+export function RuntimeToolsRoutesSwitch() {
+  return (
+    <Switch>
+      <Route path={routes.runtimeTools.workflowInstances.path({})}>
+        <RuntimeToolsWorkflowInstances />
+      </Route>
+      <Route path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}>
+        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
+      </Route>
+    </Switch>
+  );
 }

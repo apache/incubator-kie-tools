@@ -17,34 +17,11 @@
  * under the License.
  */
 
-import { routes } from "../routes";
+import React, { useContext } from "react";
+import { WorkflowListGatewayApi } from "./WorkflowListGatewayApi";
 
-export interface AppData {
-  appName: string;
-  showDisclaimer: boolean;
-  dataIndexUrl: string;
-}
+export const WorkflowListContext = React.createContext<WorkflowListGatewayApi>({} as any);
 
-export async function fetchAppData(): Promise<AppData> {
-  const response = await fetch(routes.dataJson.path({}));
-  return (await response.json()) as AppData;
-}
-
-export async function verifyDataIndex(dataIndexUrl?: string): Promise<boolean> {
-  if (!dataIndexUrl) {
-    return false;
-  }
-
-  try {
-    const response = await fetch(dataIndexUrl, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: '{"query":""}',
-    });
-    return response.status === 200;
-  } catch (e) {
-    return false;
-  }
+export function useWorkflowListGatewayApi() {
+  return useContext(WorkflowListContext);
 }
