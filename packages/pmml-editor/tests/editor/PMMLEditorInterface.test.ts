@@ -61,11 +61,11 @@ describe("PMMLEditorInterface", () => {
   });
 
   test("setContent", async () => {
-    jest.spyOn(editor, "setContent");
+    jest.spyOn(editor, "setContent").mockReturnValue(Promise.resolve());
 
     await editorInterface.setContent("path", "content");
 
-    expect(editor.setContent).toHaveBeenCalledTimes(0);
+    expect(editor.setContent).toHaveBeenCalledTimes(1);
   });
 
   test("getPreview", () => {
