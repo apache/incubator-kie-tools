@@ -5,14 +5,17 @@ import { FeelInput } from "@kie-tools/feel-input-component/dist";
 import "./ConstraintsExpression.css";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function ConstraintsExpression({
   isReadonly,
   value,
+  type,
   onChange,
 }: {
   isReadonly: boolean;
   value?: string;
+  type: DmnBuiltInDataType;
   onChange?: (newValue: string | undefined) => void;
 }) {
   const [preview, setPreview] = useState(value ?? "");
@@ -36,6 +39,27 @@ export function ConstraintsExpression({
     }),
     []
   );
+
+  const informativeText = useMemo(() => {
+    switch (type) {
+      case DmnBuiltInDataType.Date:
+        return `Example expression for a "date" data type: [date("2000-01-01")..date("2020-01-01"))`;
+      case DmnBuiltInDataType.DateTime:
+        return `Example expression for a "date and time" data type: [date and time("2000-01-01T00:00")..date and time("2020-01-01T23:59"))`;
+      case DmnBuiltInDataType.DateTimeDuration:
+        return `Example expression for a "date and time duration" data type: [duration("PT10S")..duration("PT30M"))`;
+      case DmnBuiltInDataType.Number:
+        return `Example expression for a "number" data type: [0..100)`;
+      case DmnBuiltInDataType.String:
+        return `Example expression for a "string" data type: "apple", "orange", "pineapple"`;
+      case DmnBuiltInDataType.Time:
+        return `Example expression for a "time" data type: [time("00:00")..time("23:59"))`;
+      case DmnBuiltInDataType.YearsMonthsDuration:
+        return `Example expression for a "years and months duration" data type: [duration("P10M")..duration("P2Y"))`;
+      default:
+        return `Enter a valid expression`;
+    }
+  }, [type]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%", gap: "10px" }}>
@@ -64,12 +88,13 @@ export function ConstraintsExpression({
         />
       </div>
       <HelperText>
+        {!isReadonly && <HelperTextItem>{informativeText}</HelperTextItem>}
         <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
           Check the{" "}
           <a target={"_blank"} href={"https://kiegroup.github.io/dmn-feel-handbook/#feel-values"}>
             FEEL handbook
           </a>{" "}
-          to help you on creating your expressions
+          to help you on creating your expressions.
         </HelperTextItem>
       </HelperText>
     </div>

@@ -103,32 +103,59 @@ export function Constraints({
     };
   }, [enumToKieConstraintType, type]);
 
-  const typeCheck = useMemo(() => {
+  const typeHelper = useMemo(() => {
     if (type === DmnBuiltInDataType.Any) {
-      return (value: string) => false;
+      return {
+        check: (value: string) => false,
+        parser: (value: string) => {},
+      };
     }
     if (type === DmnBuiltInDataType.Date) {
-      return (value: string) => false;
+      return {
+        check: (value: string) => false,
+        parser: (value: string) => {},
+      };
     }
     if (type === DmnBuiltInDataType.DateTime) {
-      return (value: string) => false;
+      return {
+        check: (value: string) => false,
+        parser: (value: string) => {},
+      };
     }
     if (type === DmnBuiltInDataType.DateTimeDuration) {
-      return (value: string) => false;
+      return {
+        check: (value: string) => false,
+        parser: (value: string) => {},
+      };
     }
     if (type === DmnBuiltInDataType.Number) {
-      return (value: string) => !isNaN(parseFloat(value));
+      return {
+        check: (value: string) => !isNaN(parseFloat(value)),
+        parser: (value: string) => parseFloat(value),
+      };
     }
     if (type === DmnBuiltInDataType.String) {
-      return (value: string) => false;
+      return {
+        check: (value: string) => false,
+        parser: (value: string) => {},
+      };
     }
     if (type === DmnBuiltInDataType.Time) {
-      return (value: string) => false;
+      return {
+        check: (value: string) => false,
+        parser: (value: string) => {},
+      };
     }
     if (type === DmnBuiltInDataType.YearsMonthsDuration) {
-      return (value: string) => false;
+      return {
+        check: (value: string) => false,
+        parser: (value: string) => {},
+      };
     }
-    return (value: string) => false;
+    return {
+      check: (value: string) => false,
+      parser: (value: string) => {},
+    };
   }, [type]);
 
   // Start in the previous constraint type
@@ -172,12 +199,12 @@ export function Constraints({
         return;
       }
 
-      if (selection === ConstraintsType.ENUMERATION && isEnum(value.text?.__$$text, typeCheck)) {
+      if (selection === ConstraintsType.ENUMERATION && isEnum(value.text?.__$$text, typeHelper.check)) {
         onInternalChange(value.text?.__$$text, enumToKieConstraintType(ConstraintsType.ENUMERATION));
         return;
       }
 
-      if (selection === ConstraintsType.RANGE && isRange(value.text?.__$$text, typeCheck)) {
+      if (selection === ConstraintsType.RANGE && isRange(value.text?.__$$text, typeHelper.check)) {
         onInternalChange(value.text?.__$$text, enumToKieConstraintType(ConstraintsType.RANGE));
         return;
       }
@@ -189,7 +216,7 @@ export function Constraints({
 
       onInternalChange(value.text?.__$$text, enumToKieConstraintType(selected));
     },
-    [enumToKieConstraintType, onInternalChange, typeCheck, value, selected]
+    [enumToKieConstraintType, onInternalChange, typeHelper.check, value, selected]
   );
 
   const constraintType = useMemo(() => {
@@ -212,6 +239,8 @@ export function Constraints({
           isReadonly={isReadonly}
           inputType={inputType}
           value={value?.text?.__$$text}
+          type={type as DmnBuiltInDataType}
+          typeParser={typeHelper.parser}
           onChange={(newValue: string) =>
             onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.ENUMERATION))
           }
@@ -225,6 +254,8 @@ export function Constraints({
           isReadonly={isReadonly}
           inputType={inputType}
           value={value?.text?.__$$text}
+          type={type as DmnBuiltInDataType}
+          typeParser={typeHelper.parser}
           onChange={(newValue: string) => onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.RANGE))}
           isDisabled={!isConstraintEnabled.range}
         />
@@ -235,13 +266,25 @@ export function Constraints({
         <ConstraintsExpression
           isReadonly={isReadonly}
           value={value?.text?.__$$text}
+          type={type as DmnBuiltInDataType}
           onChange={(newValue: string) =>
             onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.EXPRESSION))
           }
         />
       );
     }
-  }, [enumToKieConstraintType, inputType, isConstraintEnabled, isReadonly, onInternalChange, selected, value?.text]);
+  }, [
+    enumToKieConstraintType,
+    inputType,
+    isConstraintEnabled.enumeration,
+    isConstraintEnabled.range,
+    isReadonly,
+    onInternalChange,
+    selected,
+    type,
+    typeHelper.parser,
+    value?.text,
+  ]);
 
   return (
     <>

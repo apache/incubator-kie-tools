@@ -1,22 +1,28 @@
 import * as React from "react";
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 
 export function ConstraintsRange({
   isReadonly,
   inputType,
   value,
+  type,
+  typeParser,
   onChange,
   isDisabled,
 }: {
   isReadonly: boolean;
   inputType: "text" | "number";
   value?: string;
+  type: DmnBuiltInDataType;
+  typeParser: (value: string) => any;
   onChange: (newValue: string | undefined) => void;
   isDisabled: boolean;
 }) {
@@ -25,12 +31,34 @@ export function ConstraintsRange({
   const [includeStart, setIncludeStart] = useState(true);
   const [includeEnd, setIncludeEnd] = useState(false);
 
+  const isStartValid = useCallback(
+    (args: { includeEnd: boolean; start: string; end: string }) => {
+      return args.end !== ""
+        ? args.includeEnd
+          ? typeParser(args.end) >= typeParser(args.start)
+          : typeParser(args.end) > typeParser(args.start)
+        : true;
+    },
+    [typeParser]
+  );
+
+  const isEndValid = useCallback(
+    (args: { includeEnd: boolean; start: string; end: string }) => {
+      return args.start !== ""
+        ? args.includeEnd
+          ? typeParser(args.end) >= typeParser(args.start)
+          : typeParser(args.end) > typeParser(args.start)
+        : true;
+    },
+    [typeParser]
+  );
+
   const onInternalChange = useCallback(
     (args?: { start?: string; end?: string; includeStart?: boolean; includeEnd?: boolean }) => {
       if (
         args !== undefined &&
-        (args?.start === undefined || args?.start === "") &&
-        (args?.end === undefined || args?.end === "")
+        (args?.start === undefined || args.start === "") &&
+        (args?.end === undefined || args.end === "")
       ) {
         onChange("");
       }
@@ -43,29 +71,29 @@ export function ConstraintsRange({
         return;
       }
 
-      onChange(
-        `${args?.includeStart ?? includeStart ? "[" : "("}${args?.start ?? start}..${args?.end ?? end}${
-          args?.includeEnd ?? includeEnd ? "]" : ")"
-        }`
-      );
+      if (
+        isStartValid({
+          includeEnd: args?.includeEnd ?? includeEnd,
+          start: args?.start ?? start,
+          end: args?.end ?? end,
+        }) &&
+        isEndValid({
+          includeEnd: args?.includeEnd ?? includeEnd,
+          start: args?.start ?? start,
+          end: args?.end ?? end,
+        })
+      ) {
+        onChange(
+          `${args?.includeStart ?? includeStart ? "[" : "("}${args?.start ?? start}..${args?.end ?? end}${
+            args?.includeEnd ?? includeEnd ? "]" : ")"
+          }`
+        );
+      } else {
+        onChange("");
+      }
     },
-    [end, includeEnd, includeStart, onChange, start]
+    [end, includeEnd, includeStart, isEndValid, isStartValid, onChange, start]
   );
-
-  // Keep it in sync with the ConstraintExpression
-  useEffect(() => {
-    const rangeValues = value?.split("..");
-    if (rangeValues?.length === 2) {
-      if (hasRangeStartStructure(rangeValues[0])) {
-        setStart(rangeValues[0]?.slice(1) ?? "");
-      }
-      if (hasRangeEndStructure(rangeValues[1])) {
-        setEnd(rangeValues[1]?.slice(0, -1) ?? "");
-      }
-      setIncludeStart(value?.startsWith("[") ?? false);
-      setIncludeEnd(value?.endsWith("]") ?? false);
-    }
-  }, [value]);
 
   const onStartChange = useCallback(
     (newStartValue: string) => {
@@ -175,7 +203,7 @@ export function ConstraintsRange({
             isDisabled={isReadonly || isDisabled}
             onBlur={() => onInternalChange()}
             autoFocus={start === ""}
-            style={{ outline: "none" }}
+            style={{ outline: "none", ...(isStartValid({ includeEnd, start, end }) ? {} : invalidInlineFeelNameStyle) }}
           />
         </div>
         <div style={{ gridArea: "startDescription" }}>
@@ -234,7 +262,7 @@ export function ConstraintsRange({
             isDisabled={isReadonly || isDisabled}
             onBlur={() => onInternalChange()}
             autoFocus={start !== ""}
-            style={{ outline: "none" }}
+            style={{ outline: "none", ...(isEndValid({ includeEnd, start, end }) ? {} : invalidInlineFeelNameStyle) }}
           />
         </div>
         <div style={{ gridArea: "endDescription" }}>
@@ -248,7 +276,7 @@ export function ConstraintsRange({
         </div>
       </div>
       <br />
-      <ConstraintsExpression isReadonly={true} value={value ?? ""} />
+      <ConstraintsExpression isReadonly={true} value={value ?? ""} type={type} />
     </div>
   );
 }
