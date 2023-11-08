@@ -26,34 +26,42 @@ export function useDraggableContext() {
 export function DraggableContextProvider({
   children,
   reorder,
-}: React.PropsWithChildren<{ reorder: (source: number, dest: number) => void }>) {
+  onDragEnd,
+}: React.PropsWithChildren<{
+  reorder: (source: number, dest: number) => void;
+  onDragEnd?: (source: number, dest: number) => void;
+}>) {
   const [source, setSource] = useState<number>(-1);
   const [dest, setDest] = useState<number>(-1);
   const [dragging, setDragging] = useState<boolean>(false);
   const [origin, setOrigin] = useState(-1);
   const [leftOrigin, setLeftOrigin] = useState(false);
 
-  const onDragStart = useCallback((index: number) => {
+  const onInternalDragStart = useCallback((index: number) => {
     setDragging(true);
     setSource(index);
     setOrigin(index);
     setLeftOrigin(false);
   }, []);
 
-  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>, index: number) => {
+  const onInternalDragOver = useCallback((e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.preventDefault();
     setDest(index);
   }, []);
 
-  const onDragEnd = useCallback((index: number) => {
-    setDragging(false);
-    setSource(-1);
-    setDest(-1);
-    setOrigin(-1);
-    setLeftOrigin(false);
-  }, []);
+  const onInternalDragEnd = useCallback(
+    (index: number) => {
+      onDragEnd?.(origin, dest);
+      setDragging(false);
+      setSource(-1);
+      setDest(-1);
+      setOrigin(-1);
+      setLeftOrigin(false);
+    },
+    [dest, onDragEnd, origin]
+  );
 
-  const onDragEnter = useCallback(
+  const onInternalDragEnter = useCallback(
     (index: number) => {
       if (index === dest && index !== source) {
         reorder(source, dest);
@@ -64,7 +72,7 @@ export function DraggableContextProvider({
     [dest, reorder, source]
   );
 
-  const onDragLeave = useCallback(
+  const onInternalDragLeave = useCallback(
     (index: number) => {
       if (!leftOrigin && index !== source) {
         setLeftOrigin(true);
@@ -81,11 +89,11 @@ export function DraggableContextProvider({
         dragging,
         origin,
         leftOrigin,
-        onDragStart,
-        onDragOver,
-        onDragEnd,
-        onDragEnter,
-        onDragLeave,
+        onDragStart: onInternalDragStart,
+        onDragOver: onInternalDragOver,
+        onDragEnd: onInternalDragEnd,
+        onDragEnter: onInternalDragEnter,
+        onDragLeave: onInternalDragLeave,
       }}
     >
       {children}

@@ -116,30 +116,31 @@ export function DocumentationLinksFormGroup({
     });
   }, []);
 
-  const reorder = useCallback(
+  const onDragEnd = useCallback(
     (source: number, dest: number) => {
       const reordened = [...(values ?? [])];
       const [removed] = reordened.splice(source, 1);
       reordened.splice(dest, 0, removed);
-
-      setExpandedUrls((prev) => {
-        const newUrlExpanded = [...prev];
-        const [removed] = newUrlExpanded.splice(source, 1);
-        newUrlExpanded.splice(dest, 0, removed);
-        return newUrlExpanded;
-      });
-
-      setValuesUuid((prev) => {
-        const reordenedUuid = [...prev];
-        const [removedUuid] = reordenedUuid.splice(source, 1);
-        reordenedUuid.splice(dest, 0, removedUuid);
-        return reordenedUuid;
-      });
-
       onInternalChange(reordened);
     },
     [onInternalChange, values]
   );
+
+  const reorder = useCallback((source: number, dest: number) => {
+    setExpandedUrls((prev) => {
+      const newUrlExpanded = [...prev];
+      const [removed] = newUrlExpanded.splice(source, 1);
+      newUrlExpanded.splice(dest, 0, removed);
+      return newUrlExpanded;
+    });
+
+    setValuesUuid((prev) => {
+      const reordenedUuid = [...prev];
+      const [removedUuid] = reordenedUuid.splice(source, 1);
+      reordenedUuid.splice(dest, 0, removedUuid);
+      return reordenedUuid;
+    });
+  }, []);
 
   return (
     <FormGroup
@@ -156,7 +157,7 @@ export function DocumentationLinksFormGroup({
         {(values ?? []).length === 0 ? (
           <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadonly ? "None" : "None yet"}</li>
         ) : (
-          <DraggableContextProvider reorder={reorder}>
+          <DraggableContextProvider reorder={reorder} onDragEnd={onDragEnd}>
             {values?.map((kieAttachment, index) => (
               <li
                 key={valuesUuid?.[index] ?? generateUuid()}
