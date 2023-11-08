@@ -253,18 +253,18 @@ export function Constraints({
                 isDisabled={isReadonly}
               />
               <ToggleGroupItem
-                text={ConstraintsType.ENUMERATION}
-                buttonId={ConstraintsType.ENUMERATION}
-                isSelected={selected === ConstraintsType.ENUMERATION}
-                onChange={onToggleGroupChange}
-                isDisabled={isReadonly || !isConstraintEnabled.enumeration}
-              />
-              <ToggleGroupItem
                 text={ConstraintsType.EXPRESSION}
                 buttonId={ConstraintsType.EXPRESSION}
                 isSelected={selected === ConstraintsType.EXPRESSION}
                 onChange={onToggleGroupChange}
                 isDisabled={isReadonly}
+              />
+              <ToggleGroupItem
+                text={ConstraintsType.ENUMERATION}
+                buttonId={ConstraintsType.ENUMERATION}
+                isSelected={selected === ConstraintsType.ENUMERATION}
+                onChange={onToggleGroupChange}
+                isDisabled={isReadonly || !isConstraintEnabled.enumeration}
               />
               <ToggleGroupItem
                 text={ConstraintsType.RANGE}

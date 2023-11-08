@@ -23,8 +23,8 @@ export function ConstraintsEnum({
   onChange: (newValue: string | undefined) => void;
   isDisabled: boolean;
 }) {
-  const [addNew, setAddNew] = useState<boolean>(false);
   const enumValues = useMemo(() => value?.split(ENUM_SEPARATOR)?.map((e) => e.trim()) ?? [], [value]);
+  const [addNew, setAddNew] = useState<boolean>(() => ((enumValues ?? []).length === 0 ? true : false));
 
   const onInternalChange = useCallback(
     (newValue: string, index: number) => {
@@ -42,20 +42,42 @@ export function ConstraintsEnum({
     setAddNew(true);
   }, []);
 
+  const onRemove = useCallback(() => {
+    // should remove
+  }, []);
+
   const reorder = useCallback((source: number, dest: number) => {
     // should reorder
   }, []);
 
   return (
-    <>
-      <>
+    <div>
+      <p style={{ paddingTop: "10px" }}>
+        The enumeration constraint creates an expression that will limit the value to be equal to one of the given
+        values.
+      </p>
+      <br />
+      <div>
         <DraggableContextProvider reorder={reorder}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              border: "solid 1px lightgray",
+              borderRadius: "4px",
+            }}
+          >
             <ol>
               {enumValues?.map((value, index) => (
-                <Draggable key={index} index={index} style={{ alignItems: "center" }}>
+                <Draggable
+                  key={index}
+                  index={index}
+                  style={{ alignItems: "center" }}
+                  handlerStyle={{ margin: "0px 10px" }}
+                >
                   {(hovered) => (
-                    <li style={{ marginLeft: "10px" }}>
+                    <li style={{ marginLeft: "20px" }}>
                       <EnumElement
                         id={`enum-element-${index}`}
                         isDisabled={isReadonly || isDisabled}
@@ -63,7 +85,7 @@ export function ConstraintsEnum({
                         initialValue={value}
                         onChange={(newValue) => onInternalChange(newValue, index)}
                         hovered={hovered}
-                        onRemove={() => {}}
+                        onRemove={onRemove}
                       />
                     </li>
                   )}
@@ -72,8 +94,8 @@ export function ConstraintsEnum({
 
               {addNew && (
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                  <span style={{ width: "40px", height: "18px " }}>&nbsp;</span>
-                  <li style={{ marginLeft: "10px", flexGrow: 1 }}>
+                  <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
+                  <li style={{ marginLeft: "20px", flexGrow: 1 }}>
                     <EnumElement
                       id={`enum-element-${enumValues.length}`}
                       isDisabled={isReadonly || isDisabled}
@@ -92,13 +114,19 @@ export function ConstraintsEnum({
             </ol>
           </div>
         </DraggableContextProvider>
-      </>
-      <Button onClick={() => onAddNew()} variant={ButtonVariant.link} icon={<PlusCircleIcon />}>
-        Add new
+      </div>
+      <Button
+        onClick={() => onAddNew()}
+        variant={ButtonVariant.link}
+        icon={<PlusCircleIcon />}
+        style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
+      >
+        Add new value
       </Button>
       <br />
+      <br />
       <ConstraintsExpression isReadonly={true} value={value ?? ""} />
-    </>
+    </div>
   );
 }
 
@@ -136,7 +164,7 @@ function EnumElement({
     <div style={{ display: "flex", flexDirection: "row", flexGrow: 1 }}>
       <TextInput
         id={id}
-        style={{ borderColor: "transparent", backgroundColor: "transparent" }}
+        style={{ borderColor: "transparent", backgroundColor: "transparent", outline: "none" }}
         autoFocus={true}
         type={inputType}
         value={value.trim()}

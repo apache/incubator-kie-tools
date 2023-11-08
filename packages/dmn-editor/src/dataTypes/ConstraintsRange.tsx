@@ -27,7 +27,11 @@ export function ConstraintsRange({
 
   const onInternalChange = useCallback(
     (args?: { start?: string; end?: string; includeStart?: boolean; includeEnd?: boolean }) => {
-      if ((args?.start === undefined || args?.start === "") && (args?.end === undefined || args?.end === "")) {
+      if (
+        args !== undefined &&
+        (args?.start === undefined || args?.start === "") &&
+        (args?.end === undefined || args?.end === "")
+      ) {
         onChange("");
       }
 
@@ -169,6 +173,7 @@ export function ConstraintsRange({
             onChange={onStartChange}
             isDisabled={isReadonly || isDisabled}
             onBlur={() => onInternalChange()}
+            autoFocus={start === ""}
           />
         </div>
         <div style={{ gridArea: "startDescription" }}>
@@ -216,6 +221,7 @@ export function ConstraintsRange({
             onChange={onEndChange}
             isDisabled={isReadonly || isDisabled}
             onBlur={() => onInternalChange()}
+            autoFocus={start !== ""}
           />
         </div>
         <div style={{ gridArea: "endDescription" }}>
