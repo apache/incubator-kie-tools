@@ -19,28 +19,9 @@
 
 package org.kie.tools;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.junit.jupiter.api.Test;
-import javax.inject.Inject;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@QuarkusTest
-public class ProxyConfigTest {
-
-    @ConfigProperty(name = "quarkus.http.host")
-    String expectedIp;
-    @ConfigProperty(name = "quarkus.http.port")
-    String expectedPort;
-    boolean expectedInsecureSkipVerify = false;
-    
-    @Inject
-    ProxyConfig proxyConfig;
-
-    @Test
-    public void testProxyConfig() {
-        assertEquals(expectedIp, proxyConfig.getIP());
-        assertEquals(expectedPort, proxyConfig.getPort());
-        assertEquals(expectedInsecureSkipVerify, proxyConfig.getInsecureSkipVerify());
-    }
+public class AbstractPingTest {
+    @ConfigProperty(name = "extendedServicesJava.version")
+    String expectedVersion;
+    final boolean expectedStarted = true;
 }

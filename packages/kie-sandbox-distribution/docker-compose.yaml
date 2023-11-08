@@ -10,11 +10,11 @@ services:
       KIE_SANDBOX_CORS_PROXY_URL: "http://localhost:${KIE_SANDBOX_DISTRIBUTION__corsProxyExposedPort}"
 
     depends_on:
-      - extended_services
+      - extended_services_java
       - cors_proxy
 
-  extended_services:
-    container_name: extended_services
+  extended_services_java:
+    container_name: extended_services_java
     image: "${KIE_SANDBOX_DISTRIBUTION__extendedServicesImageRegistry}/${KIE_SANDBOX_DISTRIBUTION__extendedServicesImageAccount}/${KIE_SANDBOX_DISTRIBUTION__extendedServicesImageName}:${KIE_SANDBOX_DISTRIBUTION__extendedServicesImageTag}"
     ports:
       - ${KIE_SANDBOX_DISTRIBUTION__extendedServicesExposedPort}:${KIE_SANDBOX_DISTRIBUTION__extendedServicesContainerPort}

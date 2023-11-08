@@ -5163,9 +5163,9 @@ importers:
 
   packages/kie-sandbox-extended-services-image:
     dependencies:
-      "@kie-tools/extended-services":
+      "@kie-tools/extended-services-java":
         specifier: workspace:*
-        version: link:../extended-services
+        version: link:../extended-services-java
     devDependencies:
       "@kie-tools/image-builder":
         specifier: workspace:*
