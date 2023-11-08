@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"html"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -182,7 +183,7 @@ func main() {
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Reading zipped file '%s' failed:\n", zipFile.Name)
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte("500: Reading zipped file. " + zipFile.Name))
+				w.Write([]byte("500: Reading zipped file. " + html.EscapeString(zipFile.Name)))
 
 				shutdownWithErrorOnFileUpload(handler.Filename)
 				return
@@ -193,7 +194,7 @@ func main() {
 			if !strings.HasPrefix(extractedZippedFilePath, filepath.Clean(unzipAtPath)+string(os.PathSeparator)) {
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Illegal zipped file path '%s'.\n", zipFile.Name)
 				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte("500: Illegal zipped file path. " + extractedZippedFilePath))
+				w.Write([]byte("500: Illegal zipped file path. " + html.EscapeString(extractedZippedFilePath)))
 
 				shutdownWithErrorOnFileUpload(handler.Filename)
 				return
@@ -204,7 +205,7 @@ func main() {
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Creating directory '%s' failed:\n", filepath.Dir(extractedZippedFilePath))
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte("500: Creating directory failed. " + filepath.Dir(extractedZippedFilePath)))
+				w.Write([]byte("500: Creating directory failed. " + html.EscapeString(filepath.Dir(extractedZippedFilePath))))
 
 				shutdownWithErrorOnFileUpload(handler.Filename)
 				return
@@ -217,7 +218,7 @@ func main() {
 					fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Creating file '%s' failed:\n", extractedZippedFilePath)
 					fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte("500: Creating file failed. " + extractedZippedFilePath))
+					w.Write([]byte("500: Creating file failed. " + html.EscapeString(extractedZippedFilePath)))
 
 					shutdownWithErrorOnFileUpload(handler.Filename)
 					return
@@ -226,7 +227,7 @@ func main() {
 					fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Writing file '%s' failed:\n", extractedZippedFilePath)
 					fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte("500: Writing file failed. " + extractedZippedFilePath))
+					w.Write([]byte("500: Writing file failed. " + html.EscapeString(extractedZippedFilePath)))
 
 					shutdownWithErrorOnFileUpload(handler.Filename)
 					return
@@ -239,8 +240,8 @@ func main() {
 
 		// Return that we have successfully uploaded the zip file
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(fmt.Sprintf("200: Successfully extracted '%s' to '%s'.\n", handler.Filename, unzipAtPath)))
-		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Successfully extracted '%s' to '%s'.\n", handler.Filename, unzipAtPath)
+		w.Write([]byte(fmt.Sprintf("200: Successfully extracted '%s' to '%s'.\n", html.EscapeString(handler.Filename), html.EscapeString(unzipAtPath))))
+		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Successfully extracted '%s' to '%s'.\n", html.EscapeString(handler.Filename), html.EscapeString(unzipAtPath))
 
 		// End the program gracefully.
 		cancelHttpServerBgContext()
