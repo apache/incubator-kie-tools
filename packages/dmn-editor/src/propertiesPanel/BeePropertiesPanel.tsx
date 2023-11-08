@@ -27,27 +27,29 @@ export function BeePropertiesPanel() {
 
   return (
     <>
-      <DrawerPanelContent
-        isResizable={true}
-        minSize={"300px"}
-        defaultSize={"500px"}
-        onKeyDown={(e) => e.stopPropagation()} // This prevents ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
-      >
-        <DrawerHead>
-          {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node!.id} />}
-          {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && <div>{`Nothing to show`}</div>}
-          {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && <div>{selectedObjectId}</div>}
-          <DrawerActions>
-            <DrawerCloseButton
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  state.boxedExpressionEditor.propertiesPanel.isOpen = false;
-                });
-              }}
-            />
-          </DrawerActions>
-        </DrawerHead>
-      </DrawerPanelContent>
+      {node && (
+        <DrawerPanelContent
+          isResizable={true}
+          minSize={"300px"}
+          defaultSize={"500px"}
+          onKeyDown={(e) => e.stopPropagation()} // This prevents ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+        >
+          <DrawerHead>
+            {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node.id} />}
+            {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && <div>{`Nothing to show`}</div>}
+            {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && <div>{selectedObjectId}</div>}
+            <DrawerActions>
+              <DrawerCloseButton
+                onClick={() => {
+                  dmnEditorStoreApi.setState((state) => {
+                    state.boxedExpressionEditor.propertiesPanel.isOpen = false;
+                  });
+                }}
+              />
+            </DrawerActions>
+          </DrawerHead>
+        </DrawerPanelContent>
+      )}
     </>
   );
 }
