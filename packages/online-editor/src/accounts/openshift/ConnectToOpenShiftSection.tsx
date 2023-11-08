@@ -56,6 +56,7 @@ export function ConnectToOpenShiftSection() {
         try {
           const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
             connection,
+            proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
           });
           setKieSandboxOpenShiftService(
             new KieSandboxOpenShiftService({

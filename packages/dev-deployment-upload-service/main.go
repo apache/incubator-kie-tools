@@ -4,7 +4,6 @@ import (
 	"archive/zip"
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"html"
 	"io/ioutil"
@@ -56,8 +55,6 @@ func main() {
 		fmt.Fprintf(os.Stderr, LOG_PREFIX+"\n")
 		printUsage()
 		os.Exit(1)
-	} else {
-		// All good.
 	}
 
 	// Validate --port
@@ -84,7 +81,7 @@ func main() {
 	httpServerBgContext, cancelHttpServerBgContext := context.WithCancel(context.Background())
 	httpServerBgGroup, httpServerBgGroupContext := errgroup.WithContext(httpServerBgContext)
 	shutdownWithErrorOnFileUpload := func(filename string) {
-		httpServerBgGroup.Go(func() error { return errors.New(fmt.Sprintf("Uploading '%s' failed.", filename)) })
+		httpServerBgGroup.Go(func() error { return fmt.Errorf("uploading '%s' failed", filename) })
 	}
 
 	rootPath := rootPathArgString
@@ -113,6 +110,12 @@ func main() {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if req.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
 		apiKey := req.URL.Query().Get("apiKey")
 		if apiKey != apiKeyArgString {
 			fmt.Fprintf(os.Stdout, LOG_PREFIX+"⚠️  Attempted to upload with the wrong API Key: '%s'.\n", apiKey)

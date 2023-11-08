@@ -24,6 +24,19 @@ import yargs from "yargs/yargs";
 import { terminalWidth, exit } from "yargs";
 import { hideBin } from "yargs/helpers";
 
+type ArgsType = {
+  engine: string;
+  context: string;
+  containerfile: string;
+  registry?: string;
+  account?: string;
+  name: string;
+  tags: string[];
+  push: boolean;
+  buildArg: string[];
+  arch: string;
+};
+
 function shell() {
   return process.platform === "win32" ? { shell: "powershell.exe" } : {};
 }
@@ -38,6 +51,136 @@ function evalStringArg<T>(arg: never | string | number) {
   }
 
   return ret as T;
+}
+
+function getImageFullNames(args: ArgsType) {
+  const imageFullNameWithoutTags = `${args.registry ? `${args.registry}/` : ""}${
+    args.account ? `${args.account}/` : ""
+  }${args.name}`;
+
+  return args.tags.map((tag) => `${imageFullNameWithoutTags}:${tag}`);
+}
+
+function createAndUseDockerBuilder() {
+  try {
+    console.info("-> Checking for existing kie-tools-builder...");
+    execSync("docker buildx inspect kie-tools-builder", { stdio: "inherit" });
+    console.info("-> kie-tools-builder found, using it.");
+    execSync("docker buildx use kie-tools-builder", { stdio: "inherit" });
+  } catch (e) {
+    console.info("- kie-tools-builder not found, creating it.");
+    execSync("docker buildx create --name kie-tools-builder --driver docker-container --bootstrap --use", {
+      stdio: "inherit",
+    });
+  }
+}
+
+function checkBuildEngine(args: ArgsType) {
+  try {
+    execSync(`command ${process.platform === "win32" ? "" : "-v"} ${args.engine}`, {
+      stdio: "inherit",
+      ...shell(),
+    });
+  } catch (e) {
+    console.log(`Build engine "${args.engine}" not available. Skipping build!`);
+    return;
+  }
+}
+
+function buildArchImage(args: ArgsType & { arch: "arm64" | "amd64" }, imageFullNames: string[]) {
+  const platform = {
+    arm64: "linux/arm64",
+    amd64: "linux/amd64",
+  }[args.arch];
+
+  createAndUseDockerBuilder();
+
+  const buildPlatformCommand = `docker buildx build --load --platform ${platform} ${
+    args.push ? "--push" : ""
+  } ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")} ${args.buildArg
+    .map((arg: string) => `--build-arg ${arg}`)
+    .join(" ")} ${args.context} -f ${args.containerfile}`;
+
+  execSync(buildPlatformCommand, { stdio: "inherit" });
+}
+
+function buildNativeImage(args: ArgsType, imageFullNames: string[]) {
+  const buildNativeCommand = `${args.engine} build ${args.push ? "--push" : ""} ${imageFullNames
+    .map((fullName) => `-t ${fullName}`)
+    .join(" ")} ${args.buildArg.map((arg: string) => `--build-arg ${arg}`).join(" ")} ${args.context} -f ${
+    args.containerfile
+  }`;
+
+  execSync(buildNativeCommand, { stdio: "inherit" });
+}
+
+function checkNotNativeArch(arch: ArgsType["arch"]): arch is "arm64" | "amd64" {
+  return arch !== "native";
+}
+
+function buildImage(args: ArgsType, imageFullNames: string[]) {
+  checkBuildEngine(args);
+
+  const arch = args.arch;
+
+  if (checkNotNativeArch(arch)) {
+    buildArchImage({ ...args, arch }, imageFullNames);
+  } else {
+    buildNativeImage(args, imageFullNames);
+  }
+}
+
+function createOpenShiftImageStream(imageName: string) {
+  const contents = `<<EOF
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: ${imageName}
+spec:
+  lookupPolicy:
+    local: true
+EOF
+  `;
+
+  execSync(`oc apply -f - ${contents}`, { stdio: "inherit" });
+}
+
+function createOpenShfitBuildConfig(imageName: string, tag: string, containerfile: string, buildArgs: string[]) {
+  const contents = `<<EOF
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: ${imageName}
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: ${imageName}:${tag}
+  strategy:
+    dockerStrategy:
+      dockerfilePath: ${containerfile}
+      ${
+        buildArgs?.length > 0
+          ? `buildArgs: ${buildArgs
+              .map((arg) => {
+                const [key, value] = arg.split("=");
+                return `
+       - name: ${key}
+         value: ${value}`;
+              })
+              .join("")}`
+          : ""
+      }
+  source:
+    type: Binary
+    binary: {}
+  resources:
+    limits:
+      memory: 4Gi
+EOF
+  `;
+
+  execSync(`oc apply -f - ${contents}`, { stdio: "inherit" });
 }
 
 async function main() {
@@ -186,7 +329,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
             );
           }
           const imageFullNames = getImageFullNames(args);
-          buildImage(args, imageFullNames, args.arch);
+          buildImage(args, imageFullNames);
         }
       )
       .command(
@@ -214,7 +357,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
           }
 
           const imageFullNames = getImageFullNames(args);
-          buildImage(args, imageFullNames, "amd64");
+          buildImage({ ...args, arch: "amd64" }, imageFullNames);
           imageFullNames.forEach((imageName) => {
             execSync(`minikube image load ${imageName}`, { stdio: "inherit" });
           });
@@ -264,7 +407,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
           }
 
           const imageFullNames = getImageFullNames(args);
-          buildImage(args, imageFullNames, "amd64");
+          buildImage({ ...args, arch: "amd64" }, imageFullNames);
           imageFullNames.forEach((imageName) => {
             execSync(`kind load docker-image ${imageName} --name ${args.kindClusterName}`, { stdio: "inherit" });
           });
@@ -306,130 +449,6 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
       )
       .alias("h", "help")
       .parse();
-
-    const createAndUseDockerBuilder = () => {
-      try {
-        console.info("-> Checking for existing kie-tools-builder...");
-        execSync("docker buildx inspect kie-tools-builder", { stdio: "inherit" });
-        console.info("-> kie-tools-builder found, using it.");
-        execSync("docker buildx use kie-tools-builder", { stdio: "inherit" });
-      } catch (e) {
-        console.info("- kie-tools-builder not found, creating it.");
-        execSync("docker buildx create --name kie-tools-builder --driver docker-container --bootstrap --use", {
-          stdio: "inherit",
-        });
-      }
-    };
-
-    const checkBuildEngine = (args: typeof argv) => {
-      try {
-        execSync(`command ${process.platform === "win32" ? "" : "-v"} ${args.engine}`, {
-          stdio: "inherit",
-          ...shell(),
-        });
-      } catch (e) {
-        console.log(`Build engine "${args.engine}" not available. Skipping build!`);
-        return;
-      }
-    };
-
-    const getImageFullNames = (args: typeof argv) => {
-      const imageFullNameWithoutTags = `${args.registry ? `${args.registry}/` : ""}${
-        args.account ? `${args.account}/` : ""
-      }${args.name}`;
-
-      return args.tags.map((tag) => `${imageFullNameWithoutTags}:${tag}`);
-    };
-
-    const buildArchImage = (args: typeof argv, imageFullNames: string[], arch: "amd64" | "arm64") => {
-      const platform = {
-        arm64: "linux/arm64",
-        amd64: "linux/amd64",
-      }[arch];
-
-      createAndUseDockerBuilder();
-
-      const buildPlatformCommand = `docker buildx build --load --platform ${platform} ${
-        args.push ? "--push" : ""
-      } ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")} ${args.buildArg
-        .map((arg: string) => `--build-arg ${arg}`)
-        .join(" ")} ${args.context} -f ${args.containerfile}`;
-
-      execSync(buildPlatformCommand, { stdio: "inherit" });
-    };
-
-    const buildNativeImage = (args: typeof argv, imageFullNames: string[]) => {
-      const buildNativeCommand = `${args.engine} build ${args.push ? "--push" : ""} ${imageFullNames
-        .map((fullName) => `-t ${fullName}`)
-        .join(" ")} ${args.buildArg.map((arg: string) => `--build-arg ${arg}`).join(" ")} ${args.context} -f ${
-        args.containerfile
-      }`;
-
-      execSync(buildNativeCommand, { stdio: "inherit" });
-    };
-
-    const buildImage = (args: typeof argv, imageFullNames: string[], arch: (typeof argv)["arch"]) => {
-      checkBuildEngine(args);
-
-      if (args.arch !== "native") {
-        buildArchImage(args, imageFullNames, arch as "amd64" | "arm64");
-      } else {
-        buildNativeImage(args, imageFullNames);
-      }
-    };
-
-    const createOpenShiftImageStream = (imageName: string) => {
-      const contents = `<<EOF
-    apiVersion: image.openshift.io/v1
-    kind: ImageStream
-    metadata:
-      name: ${imageName}
-    spec:
-      lookupPolicy:
-        local: true
-    EOF
-      `;
-
-      execSync(`oc apply -f - ${contents}`, { stdio: "inherit" });
-    };
-
-    const createOpenShfitBuildConfig = (imageName: string, tag: string, containerfile: string, buildArgs: string[]) => {
-      const contents = `<<EOF
-    apiVersion: build.openshift.io/v1
-    kind: BuildConfig
-    metadata:
-      name: ${imageName}
-    spec:
-      output:
-        to:
-          kind: ImageStreamTag
-          name: ${imageName}:${tag}
-      strategy:
-        dockerStrategy:
-          dockerfilePath: ${containerfile}
-          ${
-            buildArgs?.length > 0
-              ? `buildArgs: ${buildArgs
-                  .map((arg) => {
-                    const [key, value] = arg.split("=");
-                    return `
-           - name: ${key}
-             value: ${value}`;
-                  })
-                  .join("")}`
-              : ""
-          }
-      source:
-        type: Binary
-        binary: {}
-      resources:
-        limits:
-          memory: 4Gi
-    EOF
-      `;
-
-      execSync(`oc apply -f - ${contents}`, { stdio: "inherit" });
-    };
   } catch (e) {
     prettyPrintError(e);
     exit(1, e);
