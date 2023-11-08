@@ -28,7 +28,7 @@ import { useApp } from "../../context/AppContext";
 import { WorkflowListState } from "./WorkflowList/WorkflowListGatewayApi";
 import WorkflowListContainer from "./WorkflowListContainer/WorkflowListContainer";
 import { BasePage } from "../../pages/BasePage";
-import { APPDATA_JSON_FILENAME, SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL } from "../../AppConstants";
+import { SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL } from "../../AppConstants";
 
 const PAGE_TITLE = "Workflow Instances";
 
@@ -49,16 +49,6 @@ export function RuntimeToolsWorkflowInstances() {
             <EmptyStateBody>
               <TextContent>
                 <Text>
-                  {!app.isDataIndexEmbedded ? (
-                    <>
-                      The &ldquo;dataIndexUrl&rdquo; property in {APPDATA_JSON_FILENAME} is:
-                      <br /> {app.data.dataIndexUrl}
-                      <br />
-                    </>
-                  ) : (
-                    `Start by setting the Data Index in the config file.`
-                  )}
-                  <br />
                   Read more on &nbsp;
                   <a href={SONATAFLOW_DEPLOYMENT_DATAINDEX_DOCUMENTATION_URL} target="_blank" rel="noopener noreferrer">
                     SonataFlow Guides.
@@ -70,7 +60,7 @@ export function RuntimeToolsWorkflowInstances() {
         </Bullseye>
       </PageSection>
     ),
-    [app]
+    []
   );
 
   return (
