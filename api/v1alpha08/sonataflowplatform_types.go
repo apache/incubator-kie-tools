@@ -36,6 +36,11 @@ type SonataFlowPlatformSpec struct {
 	// +optional
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="DevMode"
 	DevMode DevModePlatformSpec `json:"devMode,omitempty"`
+	// Services attributes for deploying supporting applications like Data Index.
+	// Only workflows with the proper annotation will be configured to use these service(s).
+	// `sonataflow.org/profile: prod`
+	// +optional
+	Services ServicesPlatformSpec `json:"services,omitempty"`
 }
 
 // PlatformCluster is the kind of orchestration cluster the platform is installed into

@@ -25,6 +25,7 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 )
@@ -46,7 +47,8 @@ func (d *deploymentHandler) handle(ctx context.Context, workflow *operatorapi.So
 }
 
 func (d *deploymentHandler) handleWithImage(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
-	propsCM, _, err := d.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(workflow))
+	pl, _ := platform.GetActivePlatform(ctx, d.C, workflow.Namespace)
+	propsCM, _, err := d.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(workflow, pl))
 	if err != nil {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the properties config map")
 		_, err = d.PerformStatusUpdate(ctx, workflow)

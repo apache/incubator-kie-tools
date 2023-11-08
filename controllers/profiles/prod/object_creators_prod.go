@@ -39,7 +39,7 @@ const (
 // See: https://docs.openshift.com/container-platform/4.13/openshift_images/triggering-updates-on-imagestream-changes.html
 func addOpenShiftImageTriggerDeploymentMutateVisitor(workflow *v1alpha08.SonataFlow, image string) common.MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
-		if workflow.HasFlowContainerImage() {
+		if workflow.HasContainerSpecImage() {
 			// noop since we don't need to build anything
 			return func() error {
 				return nil

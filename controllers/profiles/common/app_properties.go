@@ -21,6 +21,7 @@ import (
 	"k8s.io/klog/v2"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 )
 
@@ -28,9 +29,17 @@ const (
 	ConfigMapWorkflowPropsVolumeName = "workflow-properties"
 	kogitoServiceUrlProperty         = "kogito.service.url"
 	kogitoServiceUrlProtocol         = "http"
+	dataIndexServiceUrlProperty      = "mp.messaging.outgoing.kogito-processinstances-events.url"
+	dataIndexServiceUrlProtocol      = "http"
+
+	DataIndexImageBase = "quay.io/kiegroup/kogito-data-index-"
+	DataIndexName      = "data-index-service"
+
+	PersistenceTypeEphemeral   = "ephemeral"
+	PersistenceTypePostgressql = "postgresql"
 )
 
-var immutableApplicationProperties = "quarkus.http.port=" + defaultHTTPWorkflowPortIntStr.String() + "\n" +
+var immutableApplicationProperties = "quarkus.http.port=" + DefaultHTTPWorkflowPortIntStr.String() + "\n" +
 	"quarkus.http.host=0.0.0.0\n" +
 	// We disable the Knative health checks to not block the dev pod to run if Knative objects are not available
 	// See: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/eventing/consume-produce-events-with-knative-eventing.html#ref-knative-eventing-add-on-source-configuration
@@ -47,6 +56,7 @@ type AppPropertyHandler interface {
 
 type appPropertyHandler struct {
 	workflow                 *operatorapi.SonataFlow
+	platform                 *operatorapi.SonataFlowPlatform
 	userProperties           string
 	defaultMutableProperties string
 }
@@ -98,23 +108,47 @@ func (a *appPropertyHandler) withKogitoServiceUrl() AppPropertyHandler {
 	return a.addDefaultMutableProperty(kogitoServiceUrlProperty, kogitoServiceUrl)
 }
 
+// withDataIndexServiceUrl adds the property dataIndexServiceUrlProperty to the application properties.
+// See Service Discovery https://kubernetes.io/docs/concepts/services-networking/service/#dns
+func (a *appPropertyHandler) withDataIndexServiceUrl() AppPropertyHandler {
+	if profiles.IsProdProfile(a.workflow) && dataIndexEnabled(a.platform) {
+		a.addDefaultMutableProperty(
+			dataIndexServiceUrlProperty,
+			fmt.Sprintf("%s://%s.%s/processes", dataIndexServiceUrlProtocol, GetDataIndexName(a.platform), a.platform.Namespace),
+		)
+	}
+
+	return a
+}
+
 func (a *appPropertyHandler) addDefaultMutableProperty(name string, value string) AppPropertyHandler {
 	a.defaultMutableProperties = a.defaultMutableProperties + fmt.Sprintf("%s=%s\n", name, value)
 	return a
 }
 
+func dataIndexEnabled(platform *operatorapi.SonataFlowPlatform) bool {
+	return platform != nil && platform.Spec.Services.DataIndex != nil &&
+		platform.Spec.Services.DataIndex.Enabled != nil && *platform.Spec.Services.DataIndex.Enabled
+}
+
 // NewAppPropertyHandler creates the default workflow configurations property handler
 // The set of properties is initialized with the operator provided immutable properties.
 // The set of defaultMutableProperties is initialized with the operator provided properties that the user might override.
-func NewAppPropertyHandler(workflow *operatorapi.SonataFlow) AppPropertyHandler {
+func NewAppPropertyHandler(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) AppPropertyHandler {
 	handler := &appPropertyHandler{
 		workflow: workflow,
+		platform: platform,
 	}
+	handler.withDataIndexServiceUrl()
 	return handler.withKogitoServiceUrl()
 }
 
 // ImmutableApplicationProperties immutable default application properties that can be used with any workflow based on Quarkus.
 // Alias for NewAppPropertyHandler(workflow).Build()
-func ImmutableApplicationProperties(workflow *operatorapi.SonataFlow) string {
-	return NewAppPropertyHandler(workflow).Build()
+func ImmutableApplicationProperties(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) string {
+	return NewAppPropertyHandler(workflow, platform).Build()
+}
+
+func GetDataIndexName(platform *operatorapi.SonataFlowPlatform) string {
+	return platform.Name + "-" + DataIndexName
 }

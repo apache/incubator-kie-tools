@@ -62,7 +62,13 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 	}
 	objs = append(objs, flowDefCM)
 
-	propsCM, _, err := e.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(workflow))
+	devBaseContainerImage := workflowdef.GetDefaultWorkflowDevModeImageTag()
+	// check if the Platform available
+	pl, err := platform.GetActivePlatform(ctx, e.C, workflow.Namespace)
+	if err == nil && len(pl.Spec.DevMode.BaseImage) > 0 {
+		devBaseContainerImage = pl.Spec.DevMode.BaseImage
+	}
+	propsCM, _, err := e.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(workflow, pl))
 	if err != nil {
 		return ctrl.Result{Requeue: false}, objs, err
 	}
@@ -75,13 +81,6 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 			return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, err
 		}
 		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, nil
-	}
-
-	devBaseContainerImage := workflowdef.GetDefaultWorkflowDevModeImageTag()
-	pl, err := platform.GetActivePlatform(ctx, e.C, workflow.Namespace)
-	// check if the Platform available
-	if err == nil && len(pl.Spec.DevMode.BaseImage) > 0 {
-		devBaseContainerImage = pl.Spec.DevMode.BaseImage
 	}
 
 	deployment, _, err := e.ensurers.deployment.Ensure(ctx, workflow,

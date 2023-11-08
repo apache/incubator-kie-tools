@@ -19,13 +19,13 @@ import (
 	"fmt"
 	"time"
 
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/klog/v2"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
@@ -45,7 +45,7 @@ import (
 type SonataFlowPlatformReconciler struct {
 	// This Client, initialized using mgr.Client() above, is a split Client
 	// that reads objects from the cache and writes to the API server
-	client.Client
+	ctrl.Client
 	// Non-caching Client
 	Reader   ctrl.Reader
 	Scheme   *runtime.Scheme
@@ -99,6 +99,7 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 	}
 	actions := []platform.Action{
 		platform.NewInitializeAction(),
+		platform.NewServiceAction(),
 		platform.NewWarmAction(r.Reader),
 		platform.NewCreateAction(),
 		platform.NewMonitorAction(),
@@ -162,5 +163,8 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 func (r *SonataFlowPlatformReconciler) SetupWithManager(mgr ctrlrun.Manager) error {
 	return ctrlrun.NewControllerManagedBy(mgr).
 		For(&operatorapi.SonataFlowPlatform{}).
+		Owns(&appsv1.Deployment{}).
+		Owns(&corev1.Service{}).
+		Owns(&corev1.ConfigMap{}).
 		Complete(r)
 }

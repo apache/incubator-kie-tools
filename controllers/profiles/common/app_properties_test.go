@@ -21,12 +21,14 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 )
 
 func Test_appPropertyHandler_WithKogitoServiceUrl(t *testing.T) {
 	workflow := test.GetBaseSonataFlow("default")
-	props := ImmutableApplicationProperties(workflow)
+	props := ImmutableApplicationProperties(workflow, nil)
 	assert.Contains(t, props, kogitoServiceUrlProperty)
 	assert.Contains(t, props, "http://"+workflow.Name+"."+workflow.Namespace)
 }
@@ -35,7 +37,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithNoUserOverrides(t *testing.T)
 	//just add some user provided properties, no overrides.
 	userProperties := "property1=value1\nproperty2=value2"
 	workflow := test.GetBaseSonataFlow("default")
-	props := NewAppPropertyHandler(workflow).WithUserProperties(userProperties).Build()
+	props := NewAppPropertyHandler(workflow, nil).WithUserProperties(userProperties).Build()
 	generatedProps, propsErr := properties.LoadString(props)
 	assert.NoError(t, propsErr)
 	assert.Equal(t, 8, len(generatedProps.Keys()))
@@ -49,11 +51,23 @@ func Test_appPropertyHandler_WithUserPropertiesWithNoUserOverrides(t *testing.T)
 	assert.Equal(t, "false", generatedProps.GetString("quarkus.kogito.devservices.enabled", ""))
 }
 
-func Test_appPropertyHandler_WithUserPropertiesWithUserOverrides(t *testing.T) {
+func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	//try to override kogito.service.url and quarkus.http.port
 	userProperties := "property1=value1\nproperty2=value2\nquarkus.http.port=9090\nkogito.service.url=http://myUrl.override.com\nquarkus.http.port=9090"
-	workflow := test.GetBaseSonataFlow("default")
-	props := NewAppPropertyHandler(workflow).WithUserProperties(userProperties).Build()
+	ns := "default"
+	workflow := test.GetBaseSonataFlow(ns)
+	enabled := true
+	platform := test.GetBasePlatform()
+	platform.Namespace = ns
+	platform.Spec = v1alpha08.SonataFlowPlatformSpec{
+		Services: v1alpha08.ServicesPlatformSpec{
+			DataIndex: &v1alpha08.ServiceSpec{
+				Enabled: &enabled,
+			},
+		},
+	}
+
+	props := NewAppPropertyHandler(workflow, platform).WithUserProperties(userProperties).Build()
 	generatedProps, propsErr := properties.LoadString(props)
 	assert.NoError(t, propsErr)
 	assert.Equal(t, 8, len(generatedProps.Keys()))
@@ -67,4 +81,21 @@ func Test_appPropertyHandler_WithUserPropertiesWithUserOverrides(t *testing.T) {
 	assert.Equal(t, "false", generatedProps.GetString("org.kie.kogito.addons.knative.eventing.health-enabled", ""))
 	assert.Equal(t, "false", generatedProps.GetString("quarkus.devservices.enabled", ""))
 	assert.Equal(t, "false", generatedProps.GetString("quarkus.kogito.devservices.enabled", ""))
+	assert.Equal(t, "", generatedProps.GetString(dataIndexServiceUrlProperty, ""))
+
+	// prod profile enables config of outgoing events url
+	workflow.SetAnnotations(map[string]string{metadata.Profile: string(metadata.ProdProfile)})
+	props = NewAppPropertyHandler(workflow, platform).WithUserProperties(userProperties).Build()
+	generatedProps, propsErr = properties.LoadString(props)
+	assert.NoError(t, propsErr)
+	assert.Equal(t, 9, len(generatedProps.Keys()))
+	assert.Equal(t, "http://"+platform.Name+"-data-index-service."+platform.Namespace+"/processes", generatedProps.GetString(dataIndexServiceUrlProperty, ""))
+
+	// disabling data index bypasses config of outgoing events url
+	platform.Spec.Services.DataIndex.Enabled = nil
+	props = NewAppPropertyHandler(workflow, platform).WithUserProperties(userProperties).Build()
+	generatedProps, propsErr = properties.LoadString(props)
+	assert.NoError(t, propsErr)
+	assert.Equal(t, 8, len(generatedProps.Keys()))
+	assert.Equal(t, "", generatedProps.GetString(dataIndexServiceUrlProperty, ""))
 }

@@ -23,6 +23,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils/openshift"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
@@ -33,16 +34,15 @@ import (
 type ObjectCreator func(workflow *operatorapi.SonataFlow) (client.Object, error)
 
 const (
-	DefaultHTTPWorkflowPortInt  = 8080
-	DefaultHTTPWorkflowPortName = "http"
-	defaultHTTPServicePort      = 80
+	DefaultHTTPWorkflowPortInt = 8080
+	defaultHTTPServicePort     = 80
 
 	// Quarkus Health Check Probe configuration.
 	// See: https://quarkus.io/guides/smallrye-health#running-the-health-check
 
 	quarkusHealthPathStarted = "/q/health/started"
-	quarkusHealthPathReady   = "/q/health/ready"
-	quarkusHealthPathLive    = "/q/health/live"
+	QuarkusHealthPathReady   = "/q/health/ready"
+	QuarkusHealthPathLive    = "/q/health/live"
 
 	// Default deployment health check configuration
 	// See: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
@@ -53,7 +53,7 @@ const (
 	healthStartedInitialDelaySeconds = 10
 )
 
-var defaultHTTPWorkflowPortIntStr = intstr.FromInt(DefaultHTTPWorkflowPortInt)
+var DefaultHTTPWorkflowPortIntStr = intstr.FromInt(DefaultHTTPWorkflowPortInt)
 
 // DeploymentCreator is an objectCreator for a base Kubernetes Deployments for profiles that need to deploy the workflow on a vanilla deployment.
 // It serves as a basis for a basic Quarkus Java application, expected to listen on http 8080.
@@ -80,7 +80,7 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) 
 		},
 	}
 
-	if err := mergo.Merge(&deployment.Spec.Template.Spec, workflow.Spec.PodTemplate.FlowPodSpec.ToPodSpec(), mergo.WithOverride); err != nil {
+	if err := mergo.Merge(&deployment.Spec.Template.Spec, workflow.Spec.PodTemplate.PodSpec.ToPodSpec(), mergo.WithOverride); err != nil {
 		return nil, err
 	}
 
@@ -104,7 +104,7 @@ func getReplicasOrDefault(workflow *operatorapi.SonataFlow) *int32 {
 func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, error) {
 	defaultContainerPort := corev1.ContainerPort{
 		ContainerPort: DefaultHTTPWorkflowPortInt,
-		Name:          DefaultHTTPWorkflowPortName,
+		Name:          utils.HttpScheme,
 		Protocol:      corev1.ProtocolTCP,
 	}
 	defaultFlowContainer := corev1.Container{
@@ -114,8 +114,8 @@ func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, erro
 		LivenessProbe: &corev1.Probe{
 			ProbeHandler: corev1.ProbeHandler{
 				HTTPGet: &corev1.HTTPGetAction{
-					Path: quarkusHealthPathLive,
-					Port: defaultHTTPWorkflowPortIntStr,
+					Path: QuarkusHealthPathLive,
+					Port: DefaultHTTPWorkflowPortIntStr,
 				},
 			},
 			TimeoutSeconds: healthTimeoutSeconds,
@@ -123,8 +123,8 @@ func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, erro
 		ReadinessProbe: &corev1.Probe{
 			ProbeHandler: corev1.ProbeHandler{
 				HTTPGet: &corev1.HTTPGetAction{
-					Path: quarkusHealthPathReady,
-					Port: defaultHTTPWorkflowPortIntStr,
+					Path: QuarkusHealthPathReady,
+					Port: DefaultHTTPWorkflowPortIntStr,
 				},
 			},
 			TimeoutSeconds: healthTimeoutSeconds,
@@ -133,7 +133,7 @@ func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, erro
 			ProbeHandler: corev1.ProbeHandler{
 				HTTPGet: &corev1.HTTPGetAction{
 					Path: quarkusHealthPathStarted,
-					Port: defaultHTTPWorkflowPortIntStr,
+					Port: DefaultHTTPWorkflowPortIntStr,
 				},
 			},
 			InitialDelaySeconds: healthStartedInitialDelaySeconds,
@@ -152,7 +152,7 @@ func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, erro
 	defaultFlowContainer.Name = operatorapi.DefaultContainerName
 	portIdx := -1
 	for i := range defaultFlowContainer.Ports {
-		if defaultFlowContainer.Ports[i].Name == DefaultHTTPWorkflowPortName ||
+		if defaultFlowContainer.Ports[i].Name == utils.HttpScheme ||
 			defaultFlowContainer.Ports[i].ContainerPort == DefaultHTTPWorkflowPortInt {
 			portIdx = i
 			break
@@ -183,7 +183,7 @@ func ServiceCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 			Ports: []corev1.ServicePort{{
 				Protocol:   corev1.ProtocolTCP,
 				Port:       defaultHTTPServicePort,
-				TargetPort: defaultHTTPWorkflowPortIntStr,
+				TargetPort: DefaultHTTPWorkflowPortIntStr,
 			}},
 		},
 	}
@@ -201,5 +201,5 @@ func OpenShiftRouteCreator(workflow *operatorapi.SonataFlow) (client.Object, err
 
 // WorkflowPropsConfigMapCreator creates a ConfigMap to hold the external application properties
 func WorkflowPropsConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
-	return workflowproj.CreateNewAppPropsConfigMap(workflow, ImmutableApplicationProperties(workflow)), nil
+	return workflowproj.CreateNewAppPropsConfigMap(workflow, ImmutableApplicationProperties(workflow, nil)), nil
 }

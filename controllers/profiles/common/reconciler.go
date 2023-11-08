@@ -65,7 +65,7 @@ func NewBaseProfileReconciler(support *StateSupport, stateMachine *Reconciliatio
 }
 
 // Reconcile does the actual reconciliation algorithm based on a set of ReconciliationState
-func (b BaseReconciler) Reconcile(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
+func (b *BaseReconciler) Reconcile(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
 	workflow.Status.Manager().InitializeConditions()
 	result, objects, err := b.reconciliationStateMachine.do(ctx, workflow)
 	if err != nil {

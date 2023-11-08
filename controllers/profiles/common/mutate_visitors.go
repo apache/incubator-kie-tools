@@ -31,7 +31,7 @@ import (
 func ImageDeploymentMutateVisitor(workflow *operatorapi.SonataFlow, image string) MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		// noop since we already have an image in the flow container defined by the user.
-		if workflow.HasFlowContainerImage() {
+		if workflow.HasContainerSpecImage() {
 			return func() error {
 				return nil
 			}
@@ -94,7 +94,7 @@ func ServiceMutateVisitor(workflow *operatorapi.SonataFlow) MutateVisitor {
 	}
 }
 
-func WorkflowPropertiesMutateVisitor(workflow *operatorapi.SonataFlow) MutateVisitor {
+func WorkflowPropertiesMutateVisitor(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			if kubeutil.IsObjectNew(object) {
@@ -105,13 +105,13 @@ func WorkflowPropertiesMutateVisitor(workflow *operatorapi.SonataFlow) MutateVis
 			_, hasKey := cm.Data[workflowproj.ApplicationPropertiesFileName]
 			if !hasKey {
 				cm.Data = make(map[string]string, 1)
-				cm.Data[workflowproj.ApplicationPropertiesFileName] = ImmutableApplicationProperties(workflow)
+				cm.Data[workflowproj.ApplicationPropertiesFileName] = ImmutableApplicationProperties(workflow, platform)
 				return nil
 			}
 
 			// In the future, if this needs change, instead we can receive an AppPropertyHandler in this mutator
 			cm.Data[workflowproj.ApplicationPropertiesFileName] =
-				NewAppPropertyHandler(workflow).
+				NewAppPropertyHandler(workflow, platform).
 					WithUserProperties(cm.Data[workflowproj.ApplicationPropertiesFileName]).
 					Build()
 

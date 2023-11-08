@@ -103,6 +103,10 @@ spec:
           no build required)
         displayName: DevMode
         path: devMode
+      - description: PodTemplate describes the deployment details of this platform
+          service instance.
+        displayName: podTemplate
+        path: services.dataIndex.podTemplate
       statusDescriptors:
       - description: Cluster what kind of cluster you're running (ie, plain Kubernetes
           or OpenShift)

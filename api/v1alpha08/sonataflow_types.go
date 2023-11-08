@@ -26,8 +26,8 @@ import (
 
 const DefaultContainerName = "workflow"
 
-// FlowContainer is the container for the internal workflow deployment based on the default Kubernetes Container API
-type FlowContainer struct {
+// ContainerSpec is the container for the internal deployments based on the default Kubernetes Container API
+type ContainerSpec struct {
 	// Container image name.
 	// More info: https://kubernetes.io/docs/concepts/containers/images
 	// This field is optional to allow higher level config management to default or override
@@ -183,7 +183,7 @@ type FlowContainer struct {
 }
 
 // ToContainer converts to Kubernetes Container API.
-func (f *FlowContainer) ToContainer() corev1.Container {
+func (f *ContainerSpec) ToContainer() corev1.Container {
 	return corev1.Container{
 		Name:                     DefaultContainerName,
 		Image:                    f.Image,
@@ -210,8 +210,8 @@ func (f *FlowContainer) ToContainer() corev1.Container {
 	}
 }
 
-// FlowPodSpec describes the PodSpec for the internal workflow deployment based on the default Kubernetes PodSpec API
-type FlowPodSpec struct {
+// PodSpec describes the PodSpec for the internal deployments based on the default Kubernetes PodSpec API
+type PodSpec struct {
 	// List of volumes that can be mounted by containers belonging to the pod.
 	// More info: https://kubernetes.io/docs/concepts/storage/volumes
 	// +optional
@@ -497,7 +497,7 @@ type FlowPodSpec struct {
 	ResourceClaims []corev1.PodResourceClaim `json:"resourceClaims,omitempty" patchStrategy:"merge,retainKeys" patchMergeKey:"name" protobuf:"bytes,39,rep,name=resourceClaims"`
 }
 
-func (f *FlowPodSpec) ToPodSpec() corev1.PodSpec {
+func (f *PodSpec) ToPodSpec() corev1.PodSpec {
 	return corev1.PodSpec{
 		Volumes:                       f.Volumes,
 		InitContainers:                f.InitContainers,
@@ -539,17 +539,17 @@ func (f *FlowPodSpec) ToPodSpec() corev1.PodSpec {
 	}
 }
 
-// FlowPodTemplateSpec describes the desired custom Kubernetes PodTemplate definition for the deployed flow.
+// PodTemplateSpec describes the desired custom Kubernetes PodTemplate definition for the deployed flow or service.
 //
-// The FlowContainer describes the container where the actual flow is running. It will override any default definitions.
+// The ContainerSpec describes the container where the actual flow or service is running. It will override any default definitions.
 // For example, to override the image one can use `.spec.podTemplate.container.image = my/image:tag`.
-type FlowPodTemplateSpec struct {
-	// Container is the Kubernetes container where the workflow application should run.
+type PodTemplateSpec struct {
+	// Container is the Kubernetes container where the application should run.
 	// One can change this attribute in order to override the defaults provided by the operator.
 	// +optional
-	Container FlowContainer `json:"container,omitempty"`
+	Container ContainerSpec `json:"container,omitempty"`
 	// +optional
-	FlowPodSpec `json:",inline"`
+	PodSpec `json:",inline"`
 	// +optional
 	Replicas *int32 `json:"replicas,omitempty"`
 }
@@ -651,7 +651,7 @@ type SonataFlowSpec struct {
 	Resources WorkflowResources `json:"resources,omitempty"`
 	// PodTemplate describes the deployment details of this SonataFlow instance.
 	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="podTemplate"
-	PodTemplate FlowPodTemplateSpec `json:"podTemplate,omitempty"`
+	PodTemplate PodTemplateSpec `json:"podTemplate,omitempty"`
 }
 
 // SonataFlowStatus defines the observed state of SonataFlow
@@ -750,7 +750,7 @@ type SonataFlow struct {
 	Status SonataFlowStatus `json:"status,omitempty"`
 }
 
-func (s *SonataFlow) HasFlowContainerImage() bool {
+func (s *SonataFlow) HasContainerSpecImage() bool {
 	return len(s.Spec.PodTemplate.Container.Image) > 0
 }
 

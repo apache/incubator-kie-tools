@@ -76,3 +76,12 @@ func IsDevProfile(workflow *operatorapi.SonataFlow) bool {
 	}
 	return metadata.ProfileType(profile) == metadata.DevProfile
 }
+
+// IsProdProfile detects if the workflow is using the Prod profile or not
+func IsProdProfile(workflow *operatorapi.SonataFlow) bool {
+	profile := workflow.Annotations[metadata.Profile]
+	if len(profile) == 0 {
+		return false
+	}
+	return metadata.ProfileType(profile) == metadata.ProdProfile
+}

@@ -24,7 +24,8 @@ import (
 
 const (
 	// DebugV is the default verbosity for the debugger logger
-	DebugV = 2
+	DebugV     = 2
+	HttpScheme = "http"
 )
 
 // GetOperatorIDAnnotation to safely get the operator id annotation value.

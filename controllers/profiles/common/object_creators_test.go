@@ -23,6 +23,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
@@ -38,7 +39,7 @@ func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 	cm.SetResourceVersion("1")
 	reflectCm := cm.(*corev1.ConfigMap)
 
-	visitor := WorkflowPropertiesMutateVisitor(workflow)
+	visitor := WorkflowPropertiesMutateVisitor(workflow, nil)
 	mutateFn := visitor(cm)
 
 	assert.NoError(t, mutateFn())
@@ -71,7 +72,7 @@ func Test_ensureWorkflowPropertiesConfigMapMutator_DollarReplacement(t *testing.
 			workflowproj.ApplicationPropertiesFileName: "mp.messaging.outgoing.kogito_outgoing_stream.url=${kubernetes:services.v1/event-listener}",
 		},
 	}
-	mutateVisitorFn := WorkflowPropertiesMutateVisitor(workflow)
+	mutateVisitorFn := WorkflowPropertiesMutateVisitor(workflow, nil)
 
 	err := mutateVisitorFn(existingCM)()
 	assert.NoError(t, err)
@@ -80,13 +81,13 @@ func Test_ensureWorkflowPropertiesConfigMapMutator_DollarReplacement(t *testing.
 
 func TestMergePodSpec(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
-	workflow.Spec.PodTemplate = v1alpha08.FlowPodTemplateSpec{
-		Container: v1alpha08.FlowContainer{
+	workflow.Spec.PodTemplate = v1alpha08.PodTemplateSpec{
+		Container: v1alpha08.ContainerSpec{
 			// this one we can override
 			Image: "quay.io/example/my-workflow:1.0.0",
 			Ports: []corev1.ContainerPort{
 				// let's override a immutable attribute
-				{Name: DefaultHTTPWorkflowPortName, ContainerPort: 9090},
+				{Name: utils.HttpScheme, ContainerPort: 9090},
 			},
 			Env: []corev1.EnvVar{
 				// We should be able to override this too
@@ -96,7 +97,7 @@ func TestMergePodSpec(t *testing.T) {
 				{Name: "myvolume", ReadOnly: true, MountPath: "/tmp/any/path"},
 			},
 		},
-		FlowPodSpec: v1alpha08.FlowPodSpec{
+		PodSpec: v1alpha08.PodSpec{
 			ServiceAccountName: "superuser",
 			Containers: []corev1.Container{
 				{
@@ -133,15 +134,15 @@ func TestMergePodSpec(t *testing.T) {
 
 func TestMergePodSpec_OverrideContainers(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
-	workflow.Spec.PodTemplate = v1alpha08.FlowPodTemplateSpec{
-		FlowPodSpec: v1alpha08.FlowPodSpec{
+	workflow.Spec.PodTemplate = v1alpha08.PodTemplateSpec{
+		PodSpec: v1alpha08.PodSpec{
 			// Try to override the workflow container via the podspec
 			Containers: []corev1.Container{
 				{
 					Name:  v1alpha08.DefaultContainerName,
 					Image: "quay.io/example/my-workflow:1.0.0",
 					Ports: []corev1.ContainerPort{
-						{Name: DefaultHTTPWorkflowPortName, ContainerPort: 9090},
+						{Name: utils.HttpScheme, ContainerPort: 9090},
 					},
 					Env: []corev1.EnvVar{
 						{Name: "ENV1", Value: "VALUE_CUSTOM"},

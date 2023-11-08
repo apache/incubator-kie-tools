@@ -2987,9 +2987,9 @@ spec:
                       service account token should be automatically mounted.
                     type: boolean
                   container:
-                    description: Container is the Kubernetes container where the workflow
-                      application should run. One can change this attribute in order
-                      to override the defaults provided by the operator.
+                    description: Container is the Kubernetes container where the application
+                      should run. One can change this attribute in order to override
+                      the defaults provided by the operator.
                     properties:
                       args:
                         description: 'Arguments to the entrypoint. The container image''s

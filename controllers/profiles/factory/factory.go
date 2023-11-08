@@ -43,7 +43,7 @@ func profileBuilder(workflow *operatorapi.SonataFlow) reconcilerBuilder {
 	if len(profile) == 0 {
 		profile = defaultProfile.String()
 	}
-	if profile == metadata.ProdProfile.String() && workflow.HasFlowContainerImage() {
+	if profile == metadata.ProdProfile.String() && workflow.HasContainerSpecImage() {
 		return profileBuilders[opsProfile]
 	}
 	if _, ok := profileBuilders[metadata.ProfileType(profile)]; !ok {
