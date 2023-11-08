@@ -307,7 +307,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
       .alias("h", "help")
       .parse();
 
-    function createAndUseDockerBuilder() {
+    const createAndUseDockerBuilder = () => {
       try {
         console.info("-> Checking for existing kie-tools-builder...");
         execSync("docker buildx inspect kie-tools-builder", { stdio: "inherit" });
@@ -319,9 +319,9 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
           stdio: "inherit",
         });
       }
-    }
+    };
 
-    function checkBuildEngine(args: typeof argv) {
+    const checkBuildEngine = (args: typeof argv) => {
       try {
         execSync(`command ${process.platform === "win32" ? "" : "-v"} ${args.engine}`, {
           stdio: "inherit",
@@ -331,18 +331,18 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
         console.log(`Build engine "${args.engine}" not available. Skipping build!`);
         return;
       }
-    }
+    };
 
-    function getImageFullNames(args: typeof argv) {
+    const getImageFullNames = (args: typeof argv) => {
       const imageFullNameWithoutTags = `${args.registry ? `${args.registry}/` : ""}${
         args.account ? `${args.account}/` : ""
       }${args.name}`;
 
       return args.tags.map((tag) => `${imageFullNameWithoutTags}:${tag}`);
-    }
+    };
 
-    function buildArchImage(args: typeof argv, imageFullNames: string[], arch: "amd64" | "arm64") {
-      let platform = {
+    const buildArchImage = (args: typeof argv, imageFullNames: string[], arch: "amd64" | "arm64") => {
+      const platform = {
         arm64: "linux/arm64",
         amd64: "linux/amd64",
       }[arch];
@@ -356,9 +356,9 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
         .join(" ")} ${args.context} -f ${args.containerfile}`;
 
       execSync(buildPlatformCommand, { stdio: "inherit" });
-    }
+    };
 
-    function buildNativeImage(args: typeof argv, imageFullNames: string[]) {
+    const buildNativeImage = (args: typeof argv, imageFullNames: string[]) => {
       const buildNativeCommand = `${args.engine} build ${args.push ? "--push" : ""} ${imageFullNames
         .map((fullName) => `-t ${fullName}`)
         .join(" ")} ${args.buildArg.map((arg: string) => `--build-arg ${arg}`).join(" ")} ${args.context} -f ${
@@ -366,9 +366,9 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
       }`;
 
       execSync(buildNativeCommand, { stdio: "inherit" });
-    }
+    };
 
-    function buildImage(args: typeof argv, imageFullNames: string[], arch: typeof argv["arch"]) {
+    const buildImage = (args: typeof argv, imageFullNames: string[], arch: (typeof argv)["arch"]) => {
       checkBuildEngine(args);
 
       if (args.arch !== "native") {
@@ -376,9 +376,9 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
       } else {
         buildNativeImage(args, imageFullNames);
       }
-    }
+    };
 
-    function createOpenShiftImageStream(imageName: string) {
+    const createOpenShiftImageStream = (imageName: string) => {
       const contents = `<<EOF
     apiVersion: image.openshift.io/v1
     kind: ImageStream
@@ -391,9 +391,9 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
       `;
 
       execSync(`oc apply -f - ${contents}`, { stdio: "inherit" });
-    }
+    };
 
-    function createOpenShfitBuildConfig(imageName: string, tag: string, containerfile: string, buildArgs: string[]) {
+    const createOpenShfitBuildConfig = (imageName: string, tag: string, containerfile: string, buildArgs: string[]) => {
       const contents = `<<EOF
     apiVersion: build.openshift.io/v1
     kind: BuildConfig
@@ -429,7 +429,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
       `;
 
       execSync(`oc apply -f - ${contents}`, { stdio: "inherit" });
-    }
+    };
   } catch (e) {
     prettyPrintError(e);
     exit(1, e);
