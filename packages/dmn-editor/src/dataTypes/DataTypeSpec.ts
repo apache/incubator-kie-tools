@@ -76,7 +76,7 @@ export const constrainableBuiltInFeelTypes = new Map<DmnBuiltInDataType, KIE__tC
 export function canHaveConstraints(itemDefinition: DMN15__tItemDefinition) {
   return (
     !isStruct(itemDefinition) &&
-    (constrainableBuiltInFeelTypes.get(itemDefinition.typeRef as DmnBuiltInDataType)?.length ?? 0) > 0
+    (constrainableBuiltInFeelTypes.get(itemDefinition.typeRef?.__$$text as DmnBuiltInDataType)?.length ?? 0) > 0
   );
 }
 

@@ -35,8 +35,8 @@ export function renameItemDefinition({
   // Is top-level itemDefinition
   if (!dataType?.parentId) {
     traverseItemDefinitions(definitions.itemDefinition ?? [], (item) => {
-      if (item.typeRef === itemDefinition["@_name"]) {
-        item.typeRef = trimmedNewName;
+      if (item.typeRef?.__$$text === itemDefinition["@_name"]) {
+        item.typeRef = { __$$text: trimmedNewName };
       }
     });
 

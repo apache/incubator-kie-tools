@@ -76,10 +76,10 @@ export function GlobalDiagramProperties() {
                   style={{ resize: "vertical", minHeight: "40px" }}
                   rows={6}
                   placeholder={"Enter a description..."}
-                  value={thisDmn.model.definitions["description"]}
+                  value={thisDmn.model.definitions.description?.__$$text}
                   onChange={(newDescription) =>
                     dmnEditorStoreApi.setState((state) => {
-                      state.dmn.model.definitions.description = newDescription;
+                      state.dmn.model.definitions.description = { __$$text: newDescription };
                     })
                   }
                 />

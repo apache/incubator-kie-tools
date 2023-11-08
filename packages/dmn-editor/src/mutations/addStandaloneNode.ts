@@ -85,7 +85,7 @@ export function addStandaloneNode({
           {
             "@_id": newNodeId,
             __$$element: "textAnnotation" as const,
-            text: "New text annotation",
+            text: { __$$text: "New text annotation" },
           },
         ],
         [NODE_TYPES.group]: [

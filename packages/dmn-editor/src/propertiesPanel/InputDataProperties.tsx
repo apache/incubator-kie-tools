@@ -63,10 +63,12 @@ export function InputDataProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadonly}
-          value={inputData.description}
+          value={inputData.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).description = newDescription;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).description = {
+                __$$text: newDescription,
+              };
             });
           }}
           placeholder={"Enter a description..."}

@@ -102,10 +102,12 @@ export function DecisionServiceProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadonly}
-          value={decisionService.description}
+          value={decisionService.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).description = newDescription;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).description = {
+                __$$text: newDescription,
+              };
             });
           }}
           placeholder={"Enter a description..."}

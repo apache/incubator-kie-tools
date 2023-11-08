@@ -36,10 +36,12 @@ export function GroupProperties({ group, index }: { group: DMN15__tGroup; index:
           aria-label={"Description"}
           type={"text"}
           isDisabled={false}
-          value={group.description}
+          value={group.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.artifact![index] as DMN15__tGroup).description = newDescription;
+              (state.dmn.model.definitions.artifact![index] as DMN15__tGroup).description = {
+                __$$text: newDescription,
+              };
             });
           }}
           placeholder={"Enter a description..."}

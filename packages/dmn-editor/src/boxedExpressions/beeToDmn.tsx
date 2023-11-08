@@ -83,7 +83,7 @@ export function beeToDmn(
             inputExpression: {
               "@_id": s.idLiteralExpression,
               "@_typeRef": s.dataType,
-              text: s.name, // This is really bad... `s.name` is actually an expression. Will be addressed by https://github.com/apache/incubator-kie-issues/issues/455
+              text: { __$$text: s.name }, // This is really bad... `s.name` is actually an expression. Will be addressed by https://github.com/apache/incubator-kie-issues/issues/455
             },
           };
         }),
@@ -110,9 +110,9 @@ export function beeToDmn(
         rule: (expression.rules ?? []).map((r) => {
           return {
             "@_id": r.id,
-            inputEntry: r.inputEntries.map((i) => ({ "@_id": i.id, text: i.content })),
-            outputEntry: r.outputEntries.map((s) => ({ "@_id": s.id, text: s.content })),
-            annotationEntry: r.annotationEntries.map((a) => ({ text: a })),
+            inputEntry: r.inputEntries.map((i) => ({ "@_id": i.id, text: { __$$text: i.content } })),
+            outputEntry: r.outputEntries.map((s) => ({ "@_id": s.id, text: { __$$text: s.content } })),
+            annotationEntry: r.annotationEntries.map((a) => ({ text: { __$$text: a } })),
           };
         }),
       };
@@ -142,12 +142,12 @@ export function beeToDmn(
                   contextEntry: [
                     {
                       "@_id": expression.classFieldId,
-                      expression: { __$$element: "literalExpression", text: expression.className },
+                      expression: { __$$element: "literalExpression", text: { __$$text: expression.className! } },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName },
                     },
                     {
                       "@_id": expression.methodFieldId,
-                      expression: { __$$element: "literalExpression", text: expression.methodName },
+                      expression: { __$$element: "literalExpression", text: { __$$text: expression.methodName! } },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName },
                     },
                   ],
@@ -160,12 +160,12 @@ export function beeToDmn(
                   contextEntry: [
                     {
                       "@_id": expression.documentFieldId,
-                      expression: { __$$element: "literalExpression", text: expression.document },
+                      expression: { __$$element: "literalExpression", text: { __$$text: expression.document! } },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName },
                     },
                     {
                       "@_id": expression.modelFieldId,
-                      expression: { __$$element: "literalExpression", text: expression.model },
+                      expression: { __$$element: "literalExpression", text: { __$$text: expression.model! } },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName },
                     },
                   ],
@@ -184,7 +184,7 @@ export function beeToDmn(
         expression: {
           __$$element: "literalExpression",
           "@_id": expression.invokedFunction.id,
-          text: expression.invokedFunction.name,
+          text: { __$$text: expression.invokedFunction.name },
         },
         binding: expression.bindingEntries.map((e) => {
           __widths.set(expression.id, expression.entryInfoWidth ? [expression.entryInfoWidth] : []);
@@ -214,7 +214,7 @@ export function beeToDmn(
         "@_id": expression.id,
         "@_label": expression.name,
         "@_typeRef": expression.dataType,
-        text: expression.content,
+        text: { __$$text: expression.content! },
       };
     case ExpressionDefinitionLogicType.Relation:
       __widths.set(expression.id, [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH]);
@@ -228,7 +228,7 @@ export function beeToDmn(
             "@_id": r.id,
             expression: r.cells.map((cell) => ({
               __$$element: "literalExpression",
-              text: cell.content,
+              text: { __$$text: cell.content },
               id: cell.id,
             })),
           };

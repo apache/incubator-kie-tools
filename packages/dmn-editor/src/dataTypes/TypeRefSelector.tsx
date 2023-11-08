@@ -111,7 +111,7 @@ export function TypeRefSelector(props: {
                 {dt.feelName}
                 &nbsp;
                 <TypeRefLabel
-                  typeRef={dt.itemDefinition.typeRef}
+                  typeRef={dt.itemDefinition.typeRef?.__$$text}
                   relativeToNamespace={dt.namespace}
                   isCollection={dt.itemDefinition?.["@_isCollection"]}
                 />
@@ -126,7 +126,7 @@ export function TypeRefSelector(props: {
                 {dt.feelName}
                 &nbsp;
                 <TypeRefLabel
-                  typeRef={dt.itemDefinition.typeRef}
+                  typeRef={dt.itemDefinition.typeRef?.__$$text}
                   relativeToNamespace={dt.namespace}
                   isCollection={dt.itemDefinition?.["@_isCollection"]}
                 />

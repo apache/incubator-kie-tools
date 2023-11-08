@@ -325,7 +325,7 @@ export function ItemComponentsTable({
                                 itemDefinition.itemComponent = [];
                                 itemDefinition.typeConstraint = undefined;
                               } else {
-                                itemDefinition.typeRef = DmnBuiltInDataType.Any;
+                                itemDefinition.typeRef = { __$$text: DmnBuiltInDataType.Any };
                                 itemDefinition.itemComponent = undefined;
                               }
                             });
@@ -336,10 +336,10 @@ export function ItemComponentsTable({
                         {!isStruct(dt.itemDefinition) && (
                           <TypeRefSelector
                             isDisabled={isReadonly}
-                            typeRef={dt.itemDefinition.typeRef}
+                            typeRef={dt.itemDefinition.typeRef?.__$$text}
                             onChange={(newDataType) => {
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
-                                itemDefinition.typeRef = newDataType;
+                                itemDefinition.typeRef = { __$$text: newDataType };
                                 itemDefinition.typeConstraint = undefined;
                               });
                             }}

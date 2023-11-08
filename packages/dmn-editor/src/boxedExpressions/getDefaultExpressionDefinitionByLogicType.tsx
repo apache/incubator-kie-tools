@@ -100,7 +100,7 @@ export function getDefaultExpressionDefinitionByLogicType({
             const name = ic["@_name"];
             const typeRef = isStruct(ic)
               ? DmnBuiltInDataType.Any
-              : (ic.typeRef as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+              : (ic.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
             maxWidthBasedOnEntryNames = Math.max(
               maxWidthBasedOnEntryNames,
               getDefaultColumnWidth?.({ name, typeRef }) ?? CONTEXT_ENTRY_INFO_MIN_WIDTH
@@ -199,7 +199,7 @@ export function getDefaultExpressionDefinitionByLogicType({
               const name = ic["@_name"];
               const typeRef = isStruct(ic)
                 ? DmnBuiltInDataType.Any
-                : (ic.typeRef as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+                : (ic.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
               return {
                 id: generateUuid(),
                 name,
@@ -254,7 +254,7 @@ export function getDefaultExpressionDefinitionByLogicType({
             const name = ic["@_name"];
             const typeRef = isStruct(ic)
               ? DmnBuiltInDataType.Any
-              : (ic.typeRef as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+              : (ic.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
             return {
               id: generateUuid(),
               name,

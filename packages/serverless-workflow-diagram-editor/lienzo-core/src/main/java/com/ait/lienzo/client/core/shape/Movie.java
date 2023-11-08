@@ -41,9 +41,6 @@ import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.MediaElement;
-import com.google.gwt.safehtml.shared.UriUtils;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLVideoElement;
@@ -51,6 +48,8 @@ import elemental2.dom.MediaError;
 import elemental2.dom.TextMetrics;
 import jsinterop.annotations.JsProperty;
 import jsinterop.base.Js;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.safehtml.shared.UriUtils;
 
 /**
  * Movie provides a mechanism for viewing and controlling videos in a Canvas.
@@ -180,7 +179,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie> {
 
             m_video.playbackRate = getPlaybackRate();
 
-            Js.asPropertyMap(m_video).set("preLoad", MediaElement.PRELOAD_AUTO);
+            Js.asPropertyMap(m_video).set("preLoad",  "auto");
 
             if (getVolume() >= 0) {
                 m_video.volume = getVolume();

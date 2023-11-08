@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -24,8 +24,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -43,7 +41,6 @@ import org.kie.workbench.common.stunner.core.util.UUID;
  * Creates/defines a new parent-child relationship (edge + Child content type)  from the given nodes.
  * All nodes must already be crated and present on the graph storage.
  */
-@Portable
 public class SetChildrenCommand extends AbstractGraphCommand {
 
     private final String parentUUID;
@@ -51,8 +48,8 @@ public class SetChildrenCommand extends AbstractGraphCommand {
     private transient Node<?, Edge> parent;
     private transient Collection<Node<?, Edge>> candidates;
 
-    public SetChildrenCommand(final @MapsTo("parentUUID") String parentUUID,
-                              final @MapsTo("candidateUUIDs") String[] candidateUUIDs) {
+    public SetChildrenCommand(final String parentUUID,
+                              final String[] candidateUUIDs) {
         this.parentUUID = checkNotNull("parentUUID", parentUUID);
         this.candidateUUIDs = checkNotNull("candidateUUIDs", candidateUUIDs);
     }

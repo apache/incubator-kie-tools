@@ -20,34 +20,26 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class CreateConnectorToolboxActionTest {
 
     private static final String NODE_UUID = "node1";
@@ -73,25 +65,10 @@ public class CreateConnectorToolboxActionTest {
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
-    private AbstractCanvas canvas;
-
-    @Mock
     private Diagram diagram;
 
     @Mock
     private Metadata metadata;
-
-    @Mock
-    private Graph graph;
-
-    @Mock
-    private Node<View<?>, Edge> element;
-
-    @Mock
-    private Edge<ViewConnector<?>, Node> edge;
-
-    @Mock
-    private Node<View<?>, Edge> targetNode;
 
     private CreateConnectorToolboxAction tested;
 
@@ -99,22 +76,9 @@ public class CreateConnectorToolboxActionTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getShapeFactory(eq(SSID_UUID))).thenReturn(shapeFactory);
-        when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getShapeSetId()).thenReturn(SSID_UUID);
-        when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
-        when(element.getUUID()).thenReturn(NODE_UUID);
-        when(element.asNode()).thenReturn(element);
-        when(edge.getUUID()).thenReturn(EDGE_UUID);
-        when(edge.asEdge()).thenReturn(edge);
-        when(targetNode.getUUID()).thenReturn(TARGET_NODE_UUID);
-        when(targetNode.asNode()).thenReturn(targetNode);
-        when(clientFactoryManager.newElement(anyString(),
-                                             eq(EDGE_ID)))
-                .thenReturn((Element) edge);
-
         this.tested = new CreateConnectorToolboxAction(definitionUtils,
                                                        clientFactoryManager,
                                                        translationService,

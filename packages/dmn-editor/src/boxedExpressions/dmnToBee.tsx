@@ -35,7 +35,7 @@ export function dmnToBee(
       name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.Literal,
       dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
-      content: expr.text,
+      content: expr.text?.__$$text,
       width: widthsById.get(expr["@_id"]!)?.[0],
     };
   } else if (expr.__$$element === "decisionTable") {
@@ -53,7 +53,7 @@ export function dmnToBee(
       input: (expr.input ?? []).map((input, i) => ({
         idLiteralExpression: input.inputExpression["@_id"]!,
         id: input["@_id"]!,
-        name: input["@_label"] ?? input.inputExpression["@_label"] ?? input.inputExpression.text ?? "",
+        name: input["@_label"] ?? input.inputExpression["@_label"] ?? input.inputExpression.text?.__$$text ?? "",
         dataType: (input.inputExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
         width: widthsById.get(expr["@_id"]!)?.[1 + i],
       })),
@@ -69,9 +69,9 @@ export function dmnToBee(
       })),
       rules: (expr.rule ?? []).map((r) => ({
         id: r["@_id"]!,
-        inputEntries: (r.inputEntry ?? []).map((i) => ({ id: i["@_id"]!, content: i.text ?? "" })),
-        outputEntries: (r.outputEntry ?? []).map((o) => ({ id: o["@_id"]!, content: o.text ?? "" })),
-        annotationEntries: (r.annotationEntry ?? []).map((a) => a.text ?? ""),
+        inputEntries: (r.inputEntry ?? []).map((i) => ({ id: i["@_id"]!, content: i.text?.__$$text ?? "" })),
+        outputEntries: (r.outputEntry ?? []).map((o) => ({ id: o["@_id"]!, content: o.text?.__$$text ?? "" })),
+        annotationEntries: (r.annotationEntry ?? []).map((a) => a.text?.__$$text ?? ""),
       })),
     };
   } else if (expr.__$$element === "relation") {
@@ -85,7 +85,7 @@ export function dmnToBee(
         // Assuming only literalExpressions are supported. Any other type of expression won't work for Relations.
         cells: ((row.expression as DMN15__tLiteralExpression[]) ?? []).map((s) => ({
           id: s["@_id"]!,
-          content: s.text ?? "",
+          content: s.text?.__$$text ?? "",
         })),
       })),
       columns: (expr.column ?? []).map((c, i) => ({
@@ -149,7 +149,7 @@ export function dmnToBee(
       entryInfoWidth: widthsById.get(expr["@_id"] ?? "")?.[0],
       invokedFunction: {
         id: calledFunction["@_id"]!,
-        name: calledFunction.text!,
+        name: calledFunction.text?.__$$text ?? "",
       },
       bindingEntries: (expr.binding ?? []).map((b) => ({
         entryInfo: {
@@ -207,9 +207,9 @@ export function dmnToBee(
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Java,
-          className: (clazz?.expression as DMN15__tLiteralExpression | undefined)?.text,
+          className: (clazz?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
           classFieldId: clazz?.expression?.["@_id"],
-          methodName: (method?.expression as DMN15__tLiteralExpression | undefined)?.text,
+          methodName: (method?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
           methodFieldId: method?.expression?.["@_id"],
           classAndMethodNamesWidth: widthsById.get(expr["@_id"] ?? "")?.[1],
         };
@@ -226,9 +226,9 @@ export function dmnToBee(
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Pmml,
-          document: (document?.expression as DMN15__tLiteralExpression | undefined)?.text,
+          document: (document?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
           documentFieldId: document?.expression?.["@_id"],
-          model: (model?.expression as DMN15__tLiteralExpression | undefined)?.text,
+          model: (model?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
           modelFieldId: model?.expression?.["@_id"],
         };
       }

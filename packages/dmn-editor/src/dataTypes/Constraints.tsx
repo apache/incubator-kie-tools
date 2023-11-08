@@ -29,7 +29,7 @@ export function Constraints({
 }) {
   const [selected, setSelected] = useState<ConstraintsType>(ConstraintsType.NONE);
 
-  const type = useMemo(() => itemDefinition?.typeRef, [itemDefinition?.typeRef]);
+  const type = useMemo(() => itemDefinition?.typeRef?.__$$text, [itemDefinition?.typeRef?.__$$text]);
   const value = useMemo(() => itemDefinition?.typeConstraint, [itemDefinition?.typeConstraint]);
 
   const onInternalChange = useCallback(
@@ -45,14 +45,14 @@ export function Constraints({
         }
 
         if (
-          newConstraint === itemDefinition.typeConstraint?.text &&
+          newConstraint === itemDefinition.typeConstraint?.text?.__$$text &&
           origin === itemDefinition.typeConstraint["@_kie:constraintType"]
         ) {
           return;
         }
 
         itemDefinition.typeConstraint = {
-          text: newConstraint,
+          text: { __$$text: newConstraint },
           "@_id": itemDefinition?.["@_id"],
           "@_kie:constraintType": origin,
         };
@@ -168,26 +168,26 @@ export function Constraints({
         return;
       }
 
-      if (value === undefined || value.text === "") {
+      if (value === undefined || value.text?.__$$text === "") {
         return;
       }
 
-      if (selection === ConstraintsType.ENUMERATION && isEnum(value.text, typeCheck)) {
-        onInternalChange(value.text, enumToKieConstraintType(ConstraintsType.ENUMERATION));
+      if (selection === ConstraintsType.ENUMERATION && isEnum(value.text?.__$$text, typeCheck)) {
+        onInternalChange(value.text?.__$$text, enumToKieConstraintType(ConstraintsType.ENUMERATION));
         return;
       }
 
-      if (selection === ConstraintsType.RANGE && isRange(value.text, typeCheck)) {
-        onInternalChange(value.text, enumToKieConstraintType(ConstraintsType.RANGE));
+      if (selection === ConstraintsType.RANGE && isRange(value.text?.__$$text, typeCheck)) {
+        onInternalChange(value.text?.__$$text, enumToKieConstraintType(ConstraintsType.RANGE));
         return;
       }
 
       if (selection === ConstraintsType.EXPRESSION) {
-        onInternalChange(value.text, enumToKieConstraintType(ConstraintsType.EXPRESSION));
+        onInternalChange(value.text?.__$$text, enumToKieConstraintType(ConstraintsType.EXPRESSION));
         return;
       }
 
-      onInternalChange(value.text, enumToKieConstraintType(selected));
+      onInternalChange(value.text?.__$$text, enumToKieConstraintType(selected));
     },
     [enumToKieConstraintType, onInternalChange, typeCheck, value, selected]
   );
@@ -211,7 +211,7 @@ export function Constraints({
         <ConstraintsEnum
           isReadonly={isReadonly}
           inputType={inputType}
-          value={value?.text}
+          value={value?.text?.__$$text}
           onChange={(newValue: string) =>
             onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.ENUMERATION))
           }
@@ -224,7 +224,7 @@ export function Constraints({
         <ConstraintsRange
           isReadonly={isReadonly}
           inputType={inputType}
-          value={value?.text}
+          value={value?.text?.__$$text}
           onChange={(newValue: string) => onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.RANGE))}
           isDisabled={!isConstraintEnabled.range}
         />
@@ -234,7 +234,7 @@ export function Constraints({
       return (
         <ConstraintsExpression
           isReadonly={isReadonly}
-          value={value?.text}
+          value={value?.text?.__$$text}
           onChange={(newValue: string) =>
             onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.EXPRESSION))
           }

@@ -69,11 +69,12 @@ export function BkmProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadonly}
-          value={bkm.description}
+          value={bkm.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).description =
-                newDescription;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).description = {
+                __$$text: newDescription,
+              };
             });
           }}
           placeholder={"Enter a description..."}

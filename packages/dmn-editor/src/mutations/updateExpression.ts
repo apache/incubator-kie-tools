@@ -53,13 +53,19 @@ export function updateExpression({
 
   const { widthsExtension, widths } = addOrGetDefaultDiagram({ definitions });
   const componentWidthsMap = widths.reduce(
-    (acc, e) => (e["@_dmnElementRef"] ? acc.set(e["@_dmnElementRef"], e["kie:width"] ?? []) : acc),
+    (acc, e) =>
+      e["@_dmnElementRef"]
+        ? acc.set(
+            e["@_dmnElementRef"],
+            (e["kie:width"] ?? []).map((vv) => vv.__$$text)
+          )
+        : acc,
     new Map<string, number[]>()
   );
 
   updatedWidthsMap.forEach((v, k) => componentWidthsMap.set(k, v));
   widthsExtension["kie:ComponentWidths"] = [...componentWidthsMap.entries()].map(([k, v]) => ({
     "@_dmnElementRef": k,
-    "kie:width": v,
+    "kie:width": v.map((vv) => ({ __$$text: vv })),
   }));
 }

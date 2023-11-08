@@ -54,10 +54,12 @@ export function KnowledgeSourceProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadonly}
-          value={knowledgeSource.description}
+          value={knowledgeSource.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).description = newDescription;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).description = {
+                __$$text: newDescription,
+              };
             });
           }}
           placeholder={"Enter a description..."}
@@ -77,10 +79,10 @@ export function KnowledgeSourceProperties({
           aria-label={"Source type"}
           type={"text"}
           isDisabled={isReadonly}
-          value={knowledgeSource.type}
+          value={knowledgeSource.type?.__$$text}
           onChange={(newType) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).type = newType;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).type = { __$$text: newType };
             });
           }}
           placeholder={"Enter source type..."}

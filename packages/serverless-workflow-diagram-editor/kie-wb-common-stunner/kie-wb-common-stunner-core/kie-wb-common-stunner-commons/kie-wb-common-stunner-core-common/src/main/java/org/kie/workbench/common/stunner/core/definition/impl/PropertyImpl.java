@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -22,11 +22,8 @@ package org.kie.workbench.common.stunner.core.definition.impl;
 
 import java.util.Objects;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 
-@Portable
 public class PropertyImpl<C> {
 
     private final String id;
@@ -38,14 +35,14 @@ public class PropertyImpl<C> {
     protected C value;
     private final PropertyType type;
 
-    public PropertyImpl(final @MapsTo("id") String id,
-                        final @MapsTo("caption") String caption,
-                        final @MapsTo("description") String description,
-                        final @MapsTo("isReadOnly") boolean isReadOnly,
-                        final @MapsTo("isOptional") boolean isOptional,
-                        final @MapsTo("defaultValue") C defaultValue,
-                        final @MapsTo("value") C value,
-                        final @MapsTo("type") PropertyType type) {
+    public PropertyImpl(final String id,
+                        final String caption,
+                        final String description,
+                        final boolean isReadOnly,
+                        final boolean isOptional,
+                        final C defaultValue,
+                        final C value,
+                        final PropertyType type) {
         this.id = checkNotNull("id", id);
         this.caption = checkNotNull("caption", caption);
         this.description = checkNotNull("description", description);

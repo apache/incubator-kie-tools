@@ -54,7 +54,7 @@ export function DataTypePanel({
           itemDefinition.itemComponent = [];
           itemDefinition.typeConstraint = undefined;
         } else {
-          itemDefinition.typeRef = DmnBuiltInDataType.Any;
+          itemDefinition.typeRef = { __$$text: DmnBuiltInDataType.Any };
           itemDefinition.itemComponent = undefined;
         }
       });
@@ -83,7 +83,7 @@ export function DataTypePanel({
       }
 
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
-        itemDefinition.typeRef = typeRef;
+        itemDefinition.typeRef = { __$$text: typeRef };
         itemDefinition.typeConstraint = undefined;
       });
     },
@@ -97,7 +97,7 @@ export function DataTypePanel({
       }
 
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
-        itemDefinition.description = newDescription;
+        itemDefinition.description = { __$$text: newDescription };
       });
     },
     [dataType.itemDefinition, editItemDefinition, isReadonly]
@@ -250,7 +250,7 @@ export function DataTypePanel({
         <TextArea
           isDisabled={isReadonly}
           key={dataType.itemDefinition["@_id"]}
-          value={dataType.itemDefinition.description}
+          value={dataType.itemDefinition.description?.__$$text}
           onChange={changeDescription}
           placeholder={"Enter a description..."}
           resizeOrientation={"vertical"}
@@ -279,7 +279,7 @@ export function DataTypePanel({
             </Title>
             <TypeRefSelector
               isDisabled={isReadonly}
-              typeRef={dataType.itemDefinition.typeRef}
+              typeRef={dataType.itemDefinition.typeRef?.__$$text}
               onChange={changeTypeRef}
             />
             <br />

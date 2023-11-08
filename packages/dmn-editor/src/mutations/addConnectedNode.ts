@@ -108,7 +108,7 @@ export function addConnectedNode({
           {
             "@_id": newDmnObjectId,
             __$$element: "textAnnotation" as const,
-            text: "New text annotation",
+            text: { __$$text: "New text annotation" },
           },
           {
             "@_id": newEdgeId,

@@ -32,8 +32,7 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.tools.client.StringOps;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import org.gwtproject.core.client.Scheduler;
 
 public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePrimitive<ToolTip> {
 
@@ -73,7 +72,7 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
     private String m_lablValue;
 
-    private RepeatingCommand m_autoHider;
+    private Scheduler.RepeatingCommand m_autoHider;
 
     private static final Shadow SHADOW = new Shadow(ColorName.BLACK.getColor().setA(0.80), 10, 3, 3);
 
@@ -220,7 +219,7 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
         setY(y - rh);
 
         if ((!force) && (getAutoHideTime() > 0)) {
-            m_autoHider = new RepeatingCommand() {
+            m_autoHider = new Scheduler.RepeatingCommand() {
                 @Override
                 public boolean execute() {
                     if ((this == m_autoHider) && (isShowing())) {

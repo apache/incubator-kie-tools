@@ -30,13 +30,15 @@ export function renameImport({
 
   traverseItemDefinitions(definitions.itemDefinition ?? [], (item) => {
     if (item.typeRef) {
-      const feelQName = parseFeelQName(item.typeRef);
-      if (allTopLevelDataTypesByFeelName.get(item.typeRef)?.namespace === _import["@_namespace"]) {
-        item.typeRef = buildFeelQName({
-          type: "feel-qname",
-          importName: trimmedNewName,
-          localPart: feelQName.localPart,
-        });
+      const feelQName = parseFeelQName(item.typeRef.__$$text);
+      if (allTopLevelDataTypesByFeelName.get(item.typeRef.__$$text)?.namespace === _import["@_namespace"]) {
+        item.typeRef = {
+          __$$text: buildFeelQName({
+            type: "feel-qname",
+            importName: trimmedNewName,
+            localPart: feelQName.localPart,
+          }),
+        };
       }
     }
   });
@@ -71,8 +73,8 @@ export function renameImport({
               );
 
               const pmmlDocumentLiteralExpression = pmmlDocument?.expression as DMN15__tLiteralExpression | undefined;
-              if (pmmlDocumentLiteralExpression?.text === _import["@_name"]) {
-                pmmlDocumentLiteralExpression.text = trimmedNewName;
+              if (pmmlDocumentLiteralExpression?.text?.__$$text === _import["@_name"]) {
+                pmmlDocumentLiteralExpression.text = { __$$text: trimmedNewName };
               }
             }
           }

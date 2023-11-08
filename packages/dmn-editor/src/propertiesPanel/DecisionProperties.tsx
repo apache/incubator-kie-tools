@@ -65,10 +65,12 @@ export function DecisionProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadonly}
-          value={decision.description}
+          value={decision.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).description = newDescription;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).description = {
+                __$$text: newDescription,
+              };
             });
           }}
           placeholder={"Enter a description..."}
@@ -88,10 +90,10 @@ export function DecisionProperties({
           aria-label={"Question"}
           type={"text"}
           isDisabled={isReadonly}
-          value={decision.question}
+          value={decision.question?.__$$text}
           onChange={(newQuestion) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).question = newQuestion;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).question = { __$$text: newQuestion };
             });
           }}
           placeholder={"Enter a question..."}
@@ -105,10 +107,12 @@ export function DecisionProperties({
           aria-label={"Allowed answers"}
           type={"text"}
           isDisabled={isReadonly}
-          value={decision.allowedAnswers}
+          value={decision.allowedAnswers?.__$$text}
           onChange={(newAllowedAnswers) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).allowedAnswers = newAllowedAnswers;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).allowedAnswers = {
+                __$$text: newAllowedAnswers,
+              };
             });
           }}
           placeholder={"Enter allowed answers..."}

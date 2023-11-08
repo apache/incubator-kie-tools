@@ -47,5 +47,5 @@ export function updateTextAnnotation({
   newText: string;
   index: number;
 }) {
-  (definitions.artifact![index] as DMN15__tTextAnnotation).text = newText;
+  (definitions.artifact![index] as DMN15__tTextAnnotation).text = { __$$text: newText };
 }

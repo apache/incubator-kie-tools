@@ -25,9 +25,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.style.Style;
 import elemental2.dom.CSSProperties;
@@ -36,6 +33,8 @@ import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import org.gwtproject.timer.client.Timer;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;

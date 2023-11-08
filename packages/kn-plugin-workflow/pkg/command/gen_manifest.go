@@ -34,17 +34,17 @@ func NewGenManifest() *cobra.Command {
 		Use:   "gen-manifest",
 		Short: "GenerateOperator manifests",
 		Long: `
-	 Generate a list of Operator manifests for a SonataFlow project.
-	by default, the manifests are generated in the ./manifests directory,
+	Generate a list of Operator manifests for a SonataFlow project.
+	By default, the manifests are generated in the ./manifests directory,
 	but they can be configured by --manifestPath flag.
 		 `,
 		Example: `
-	 # Shows the plugin version
-	 {{.Name}} gen-manifest
+	# Persist the generated Operator manifests on a default path (./manifests)
+	{{.Name}} gen-manifest
 	# Persist the generated Operator manifests on a specific path 
 	{{.Name}} gen-manifest --manifestPath=<full_directory_path>
 	# Specify a custom support files folder. 
-	{{.Name}} gen-manifest --supportFiles=<full_directory_path>
+	{{.Name}} gen-manifest --supportFilesFolder=<full_directory_path>
 			 `,
 		PreRunE:    common.BindEnv("namespace", "manifestPath", "supportFilesFolder"),
 		SuggestFor: []string{"gen-manifests", "generate-manifest"}, //nolint:misspell

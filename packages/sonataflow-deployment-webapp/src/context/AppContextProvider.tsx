@@ -19,31 +19,48 @@
 
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { DEFAULT_APPDATA_VALUES } from "../AppConstants";
-import { AppData } from "../data";
+import { AppData, verifyDataIndex } from "../data";
 import { useAppDataPromise } from "../hooks/useAppDataPromise";
 import { AppContext } from "./AppContext";
 
 export function AppContextProvider(props: PropsWithChildren<{}>) {
   const appDataPromise = useAppDataPromise();
   const [data, setData] = useState<AppData>(DEFAULT_APPDATA_VALUES);
+  const [dataIndexAvailable, setDataIndexAvailable] = useState<boolean>();
 
   useEffect(() => {
     if (!appDataPromise.data) {
       return;
     }
 
-    setData(appDataPromise.data);
+    const appData = {
+      appName: appDataPromise.data.appName || DEFAULT_APPDATA_VALUES.appName,
+      showDisclaimer: appDataPromise.data.showDisclaimer ?? DEFAULT_APPDATA_VALUES.showDisclaimer,
+      dataIndexUrl: appDataPromise.data.dataIndexUrl || DEFAULT_APPDATA_VALUES.dataIndexUrl,
+    };
+
+    setData(appData);
 
     document.title = appDataPromise.data.appName;
+
+    verifyDataIndex(appData.dataIndexUrl).then(setDataIndexAvailable);
   }, [appDataPromise.data]);
 
-  const value = useMemo(
-    () => ({
+  const value = useMemo(() => {
+    const isDataIndexUrlRelativePath = /^\/\w+/.test(data.dataIndexUrl);
+    const isDataIndexEmbedded =
+      data.dataIndexUrl === DEFAULT_APPDATA_VALUES.dataIndexUrl ||
+      data.dataIndexUrl.startsWith(window.location.origin) ||
+      isDataIndexUrlRelativePath;
+
+    return {
       appDataPromise,
       data,
-    }),
-    [data, appDataPromise]
-  );
+      dataIndexAvailable,
+      isDataIndexEmbedded,
+      fullDataIndexUrl: (isDataIndexEmbedded ? window.location.origin : "") + data.dataIndexUrl,
+    };
+  }, [data, appDataPromise, dataIndexAvailable]);
 
   return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;
 }

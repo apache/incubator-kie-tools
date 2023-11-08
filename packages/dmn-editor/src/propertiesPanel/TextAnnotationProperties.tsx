@@ -38,7 +38,7 @@ export function TextAnnotationProperties({
           aria-label={"Text"}
           type={"text"}
           isDisabled={false}
-          value={textAnnotation.text}
+          value={textAnnotation.text?.__$$text}
           onChange={(newText) => {
             setState((state) => {
               updateTextAnnotation({
@@ -59,10 +59,12 @@ export function TextAnnotationProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={false}
-          value={textAnnotation.description}
+          value={textAnnotation.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.artifact![index] as DMN15__tTextAnnotation).description = newDescription;
+              (state.dmn.model.definitions.artifact![index] as DMN15__tTextAnnotation).description = {
+                __$$text: newDescription,
+              };
             });
           }}
           placeholder={"Enter a description..."}

@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -23,8 +23,6 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import java.util.ArrayList;
 import java.util.List;
 
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
@@ -43,6 +41,10 @@ import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
+import org.kie.workbench.common.stunner.sw.definition.HasCompensatedBy;
+import org.kie.workbench.common.stunner.sw.definition.HasEnd;
+import org.kie.workbench.common.stunner.sw.definition.HasErrors;
+import org.kie.workbench.common.stunner.sw.definition.HasTransition;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.State;
@@ -76,8 +78,7 @@ public interface StateMarshalling {
                 context.sourceNode = stateNode;
 
                 // Parse end.
-                JsPropertyMap<Object> map = Js.asPropertyMap(state);
-                if (map.has("end") && DefinitionTypeUtils.toEnd(map.get("end"))) {
+                if (state instanceof HasEnd && DefinitionTypeUtils.toEnd((((HasEnd<?>) state).getEnd()))) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -88,8 +89,8 @@ public interface StateMarshalling {
                 }
 
                 // Parse transition.
-                if (map.has("transition")) {
-                    String transition = getTransition(map.get("transition"));
+                if (state instanceof HasTransition) {
+                    String transition = getTransition(((HasTransition<?>) state).getTransition());
                     if (isValidString(transition)) {
                         final Transition t = new Transition();
                         t.setTo(transition);
@@ -97,8 +98,8 @@ public interface StateMarshalling {
                     }
                 }
 
-                if (map.has("compensatedBy")) {
-                    String compensatedBy = (String) map.get("compensatedBy");
+                if (state instanceof HasCompensatedBy) {
+                    String compensatedBy = ((HasCompensatedBy<?>) state).getCompensatedBy();
                     // Parse compensation transition.
                     if (isValidString(compensatedBy)) {
                         CompensationTransition compensationTransition = new CompensationTransition();
@@ -107,9 +108,9 @@ public interface StateMarshalling {
                     }
                 }
 
-                if (map.has("onErrors")) {
+                if (state instanceof HasErrors) {
                     // Parse on-errors.
-                    ErrorTransition[] onErrors = (ErrorTransition[]) map.get("onErrors");
+                    ErrorTransition[] onErrors = ((HasErrors<?>)state).getOnErrors();
                     if (null != onErrors && onErrors.length > 0) {
                         for (int i = 0; i < onErrors.length; i++) {
                             ErrorTransition onError = onErrors[i];
@@ -143,9 +144,8 @@ public interface StateMarshalling {
                     }
                 }
 
-                JsPropertyMap<Object> map = Js.asPropertyMap(state);
-                if (map.has("onErrors")) {
-                    map.set("onErrors", errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
+                if (state instanceof HasErrors) {
+                    ((HasErrors<?>) state).setOnErrors(errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
                 }
                 return state;
             };

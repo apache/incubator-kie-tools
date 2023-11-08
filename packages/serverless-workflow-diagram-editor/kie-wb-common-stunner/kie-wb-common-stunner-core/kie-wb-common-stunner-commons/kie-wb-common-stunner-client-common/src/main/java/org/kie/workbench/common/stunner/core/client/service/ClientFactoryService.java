@@ -6,29 +6,26 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
 package org.kie.workbench.common.stunner.core.client.service;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.errai.common.client.api.Caller;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.service.FactoryService;
 
 /**
  * Provides the client side and remote caller for the factory manager and services.
@@ -40,17 +37,14 @@ import org.kie.workbench.common.stunner.core.service.FactoryService;
 public class ClientFactoryService {
 
     ClientFactoryManager clientFactoryManager;
-    Caller<FactoryService> factoryServiceCaller;
 
     protected ClientFactoryService() {
         super();
     }
 
     @Inject
-    public ClientFactoryService(final ClientFactoryManager clientFactoryManager,
-                                final Caller<FactoryService> factoryServiceCaller) {
+    public ClientFactoryService(final ClientFactoryManager clientFactoryManager) {
         this.clientFactoryManager = clientFactoryManager;
-        this.factoryServiceCaller = factoryServiceCaller;
     }
 
     public <T> void newDefinition(final String definitionId,
@@ -58,12 +52,6 @@ public class ClientFactoryService {
         final T def = clientFactoryManager.newDefinition(definitionId);
         if (null != def) {
             callback.onSuccess(def);
-        } else {
-            factoryServiceCaller.call((T t) -> callback.onSuccess(t),
-                                      (message, throwable) -> {
-                                          callback.onError(new ClientRuntimeError(throwable));
-                                          return false;
-                                      }).newDefinition(definitionId);
         }
     }
 
@@ -74,13 +62,6 @@ public class ClientFactoryService {
                                                                 definitionId);
         if (null != element) {
             callback.onSuccess(element);
-        } else {
-            factoryServiceCaller.call((Element t) -> callback.onSuccess(t),
-                                      (message, throwable) -> {
-                                          callback.onError(new ClientRuntimeError(throwable));
-                                          return false;
-                                      }).newElement(uuid,
-                                                    definitionId);
         }
     }
 
@@ -93,14 +74,6 @@ public class ClientFactoryService {
                                                           metadata);
         if (null != diagram) {
             callback.onSuccess(diagram);
-        } else {
-            factoryServiceCaller.call((D d) -> callback.onSuccess(d),
-                                      (message, throwable) -> {
-                                          callback.onError(new ClientRuntimeError(throwable));
-                                          return false;
-                                      }).newDiagram(uuid,
-                                                    id,
-                                                    metadata);
         }
     }
 

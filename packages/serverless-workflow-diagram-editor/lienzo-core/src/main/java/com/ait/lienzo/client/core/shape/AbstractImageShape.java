@@ -23,10 +23,10 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.UriUtils;
 import elemental2.dom.ImageData;
 import jsinterop.annotations.JsProperty;
+import org.gwtproject.safehtml.shared.UriUtils;
+import org.treblereel.j2cl.processors.common.resources.ImageResource;
 
 public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extends Shape<T> {
 
@@ -53,7 +53,7 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
     }
 
     protected AbstractImageShape(final ShapeType type, final ImageResource resource, final boolean listening, final ImageSelectionMode mode) {
-        this(type, resource.getSafeUri().asString(), listening, mode);
+        this(type, resource.getSrc(), listening, mode);
     }
 
     public final ImageProxy<T> getImageProxy() {
