@@ -193,6 +193,19 @@ export function Constraints({
   );
 
   const constraintType = useMemo(() => {
+    if (selected === ConstraintsType.NONE) {
+      return (
+        <p
+          style={{
+            padding: "10px",
+            background: "#eee",
+            borderRadius: "10px",
+          }}
+        >
+          {`Type without constraints.`}
+        </p>
+      );
+    }
     if (selected === ConstraintsType.ENUMERATION) {
       return (
         <ConstraintsEnum
@@ -205,7 +218,8 @@ export function Constraints({
           isDisabled={!isConstraintEnabled.enumeration}
         />
       );
-    } else if (selected === ConstraintsType.RANGE) {
+    }
+    if (selected === ConstraintsType.RANGE) {
       return (
         <ConstraintsRange
           isReadonly={isReadonly}
@@ -215,7 +229,8 @@ export function Constraints({
           isDisabled={!isConstraintEnabled.range}
         />
       );
-    } else if (selected === ConstraintsType.EXPRESSION) {
+    }
+    if (selected === ConstraintsType.EXPRESSION) {
       return (
         <ConstraintsExpression
           isReadonly={isReadonly}
@@ -276,7 +291,7 @@ export function Constraints({
             </ToggleGroup>
           </div>
 
-          {selected !== ConstraintsType.NONE && <div style={{ paddingTop: "10px" }}>{constraintType}</div>}
+          <div style={{ paddingTop: "10px" }}>{constraintType}</div>
         </div>
       )}
     </>

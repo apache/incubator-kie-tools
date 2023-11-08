@@ -121,7 +121,7 @@ export function ConstraintsRange({
         </p>
         <HelperText>
           <HelperTextItem style={{ paddingTop: "10px" }} variant="indeterminate" icon={<InfoIcon />}>
-            This type of constraint strictly has a starting and ending value, and both can be included in the range.
+            This type of constraint strictly has a starting and ending value, which can be opened or closed.
           </HelperTextItem>
         </HelperText>
       </div>
@@ -155,11 +155,12 @@ export function ConstraintsRange({
               onClick={() => onIncludeStartToogle()}
               style={{
                 borderRadius: "100%",
-                borderColor: "gray",
+                borderColor: "rgb(90 90 90)",
                 borderStyle: "solid",
+                borderWidth: "2px",
                 width: "20px",
                 height: "20px",
-                backgroundColor: includeStart ? "black" : "transparent",
+                backgroundColor: includeStart ? "rgb(90 90 90)" : "transparent",
               }}
             />
           </Tooltip>
@@ -174,6 +175,7 @@ export function ConstraintsRange({
             isDisabled={isReadonly || isDisabled}
             onBlur={() => onInternalChange()}
             autoFocus={start === ""}
+            style={{ outline: "none" }}
           />
         </div>
         <div style={{ gridArea: "startDescription" }}>
@@ -187,7 +189,16 @@ export function ConstraintsRange({
         </div>
 
         <div style={{ gridArea: "arrow", justifySelf: "center", alignSelf: "center", height: "100%" }}>
-          <div style={{ borderLeftStyle: "solid", borderLeftColor: "gray", borderLeftWidth: "1px", height: "100%" }} />
+          <div
+            style={{
+              borderLeftStyle: "solid",
+              borderLeftColor: "rgb(90 90 90)",
+              borderLeftWidth: "2px",
+              height: "calc(100% + 18px)",
+              marginTop: "-10px",
+              marginBottom: "-8px",
+            }}
+          />
         </div>
 
         <div style={{ gridArea: "end" }}>
@@ -203,11 +214,12 @@ export function ConstraintsRange({
               onClick={() => onIncludeEndToogle()}
               style={{
                 borderRadius: "100%",
-                borderColor: "gray",
+                borderColor: "rgb(90 90 90)",
                 borderStyle: "solid",
+                borderWidth: "2px",
                 width: "20px",
                 height: "20px",
-                backgroundColor: includeEnd ? "black" : "transparent",
+                backgroundColor: includeEnd ? "rgb(90 90 90)" : "transparent",
               }}
             />
           </Tooltip>
@@ -222,6 +234,7 @@ export function ConstraintsRange({
             isDisabled={isReadonly || isDisabled}
             onBlur={() => onInternalChange()}
             autoFocus={start !== ""}
+            style={{ outline: "none" }}
           />
         </div>
         <div style={{ gridArea: "endDescription" }}>

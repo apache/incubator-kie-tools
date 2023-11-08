@@ -7,6 +7,7 @@ import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-ic
 import { Draggable, DraggableContextProvider } from "../propertiesPanel/Draggable";
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export const ENUM_SEPARATOR = ",";
 
@@ -24,6 +25,7 @@ export function ConstraintsEnum({
   isDisabled: boolean;
 }) {
   const enumValues = useMemo(() => value?.split(ENUM_SEPARATOR)?.map((e) => e.trim()) ?? [], [value]);
+  const [valuesUuid, setValuesUuid] = useState((enumValues ?? [])?.map((_) => generateUuid()));
   const [addNew, setAddNew] = useState<boolean>(() => ((enumValues ?? []).length === 0 ? true : false));
 
   const onInternalChange = useCallback(
@@ -31,6 +33,16 @@ export function ConstraintsEnum({
       if (newValue === "") {
         return;
       }
+
+      setValuesUuid((prev) => {
+        if (prev[index] === undefined) {
+          const newValuesUuid = [...prev];
+          newValuesUuid[index] = generateUuid();
+          return newValuesUuid;
+        }
+        return prev;
+      });
+
       const newEnumValues = [...(enumValues ?? [])];
       newEnumValues[index] = newValue;
       onChange(newEnumValues.join(`${ENUM_SEPARATOR} `));
@@ -42,12 +54,39 @@ export function ConstraintsEnum({
     setAddNew(true);
   }, []);
 
-  const onRemove = useCallback(() => {
-    // should remove
-  }, []);
+  const onRemove = useCallback(
+    (index: number) => {
+      const newValues = [...(enumValues ?? [])];
+      newValues.splice(index, 1);
+
+      setValuesUuid((prev) => {
+        const newUuids = [...prev];
+        newUuids.splice(index, 1);
+        return newUuids;
+      });
+
+      onChange(newValues.join(`${ENUM_SEPARATOR} `));
+    },
+    [enumValues, onChange]
+  );
+
+  const onDragEnd = useCallback(
+    (source: number, dest: number) => {
+      const reordened = [...(enumValues ?? [])];
+      const [removed] = reordened.splice(source, 1);
+      reordened.splice(dest, 0, removed);
+      onChange(reordened.join(`${ENUM_SEPARATOR} `));
+    },
+    [enumValues, onChange]
+  );
 
   const reorder = useCallback((source: number, dest: number) => {
-    // should reorder
+    setValuesUuid((prev) => {
+      const reordenedUuid = [...prev];
+      const [removedUuid] = reordenedUuid.splice(source, 1);
+      reordenedUuid.splice(dest, 0, removedUuid);
+      return reordenedUuid;
+    });
   }, []);
 
   return (
@@ -58,7 +97,7 @@ export function ConstraintsEnum({
       </p>
       <br />
       <div>
-        <DraggableContextProvider reorder={reorder}>
+        <DraggableContextProvider reorder={reorder} onDragEnd={onDragEnd}>
           <div
             style={{
               display: "flex",
@@ -68,16 +107,16 @@ export function ConstraintsEnum({
               borderRadius: "4px",
             }}
           >
-            <ol>
+            <ul>
               {enumValues?.map((value, index) => (
                 <Draggable
-                  key={index}
+                  key={valuesUuid[index]}
                   index={index}
                   style={{ alignItems: "center" }}
                   handlerStyle={{ margin: "0px 10px" }}
                 >
                   {(hovered) => (
-                    <li style={{ marginLeft: "20px" }}>
+                    <li style={{ marginLeft: "20px", listStyleType: "initial" }}>
                       <EnumElement
                         id={`enum-element-${index}`}
                         isDisabled={isReadonly || isDisabled}
@@ -85,7 +124,7 @@ export function ConstraintsEnum({
                         initialValue={value}
                         onChange={(newValue) => onInternalChange(newValue, index)}
                         hovered={hovered}
-                        onRemove={onRemove}
+                        onRemove={() => onRemove(index)}
                       />
                     </li>
                   )}
@@ -95,7 +134,7 @@ export function ConstraintsEnum({
               {addNew && (
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                   <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
-                  <li style={{ marginLeft: "20px", flexGrow: 1 }}>
+                  <li style={{ marginLeft: "20px", flexGrow: 1, listStyleType: "initial" }}>
                     <EnumElement
                       id={`enum-element-${enumValues.length}`}
                       isDisabled={isReadonly || isDisabled}
@@ -111,7 +150,7 @@ export function ConstraintsEnum({
                   </li>
                 </div>
               )}
-            </ol>
+            </ul>
           </div>
         </DraggableContextProvider>
       </div>

@@ -19,8 +19,8 @@ import {
 import { ImportIcon } from "@patternfly/react-icons/dist/js/icons/import-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
-import { EditIcon } from "@patternfly/react-icons/dist/js/icons/edit-icon";
-import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { DataType, EditItemDefinition, AddItemComponent, DataTypeIndex } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { isStruct, canHaveConstraints, getNewItemDefinition } from "./DataTypeSpec";
@@ -390,7 +390,7 @@ export function ItemComponentsTable({
                           dropdownItems={[
                             <DropdownItem
                               key={"view-type"}
-                              icon={<EditIcon />}
+                              icon={<EyeIcon />}
                               onClick={() => {
                                 dmnEditorStoreApi.setState((state) => {
                                   state.dataTypesEditor.activeItemDefinitionId = dt.itemDefinition["@_id"]!;
@@ -472,7 +472,7 @@ export function ItemComponentsTable({
                               {!isReadonly && (
                                 <DropdownItem
                                   key={"remove-item"}
-                                  icon={<TimesIcon />}
+                                  icon={<TrashIcon />}
                                   onClick={() => {
                                     editItemDefinition(dt.parentId!, (itemDefinition) => {
                                       itemDefinition.itemComponent?.splice(dt.index, 1);
