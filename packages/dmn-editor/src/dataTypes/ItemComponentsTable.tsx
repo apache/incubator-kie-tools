@@ -198,7 +198,7 @@ export function ItemComponentsTable({
               <th style={{ minWidth: "140px", maxWidth: "140px" }}>Is struct?</th>
               <th style={{ minWidth: "280px", width: "33%" }}>Type</th>
               <th style={{ minWidth: "140px", maxWidth: "140px" }}>Is collection?</th>
-              <th style={{ minWidth: "160px", maxWidth: "160px" }}>Constraints</th>
+              <th style={{ minWidth: "200px", maxWidth: "200px" }}>Constraints</th>
               <th>{/** Actions */}</th>
             </tr>
           </thead>
