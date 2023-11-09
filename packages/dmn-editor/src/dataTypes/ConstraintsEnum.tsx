@@ -7,7 +7,6 @@ import { Draggable, DraggableContextProvider } from "../propertiesPanel/Draggabl
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { TypeHelper } from "./Constraints";
 
 export const ENUM_SEPARATOR = ",";
@@ -15,23 +14,31 @@ export const ENUM_SEPARATOR = ",";
 export function ConstraintsEnum({
   isReadonly,
   value,
+  savedValue,
   type,
   typeHelper,
   onChange,
   isDisabled,
+  setConstraintValidity,
 }: {
   isReadonly: boolean;
   value?: string;
+  savedValue?: string;
   type: DmnBuiltInDataType;
   typeHelper: TypeHelper;
   onChange: (newValue: string | undefined) => void;
   isDisabled: boolean;
+  setConstraintValidity: (isValid: boolean) => void;
 }) {
   const enumValues = useMemo(() => value?.split(ENUM_SEPARATOR)?.map((e) => e.trim()) ?? [], [value]);
   const [addNew, setAddNew] = useState<boolean>(() => ((enumValues ?? []).length === 0 ? true : false));
   const actualEnumValues = useRef([...enumValues]);
   const [valuesUuid, setValuesUuid] = useState((actualEnumValues.current ?? [])?.map((_) => generateUuid()));
-  const [isItemValid, setItemValid] = useState<boolean[]>([true]);
+  const [isItemValid, setItemValid] = useState<boolean[]>(() => {
+    return actualEnumValues.current.map((value, i, array) => {
+      return array.filter((e) => e === value).length <= 1;
+    });
+  });
   const [focusOwner, setFocusOwner] = useState("");
 
   const isEnumerationValid = useCallback(() => {
@@ -79,11 +86,10 @@ export function ConstraintsEnum({
         return newUuids;
       });
 
-      if (isEnumerationValid()) {
-        onChange(actualEnumValues.current.join(`${ENUM_SEPARATOR} `));
-      }
+      onChange(actualEnumValues.current.join(`${ENUM_SEPARATOR} `));
+      setConstraintValidity(isEnumerationValid());
     },
-    [isEnumerationValid, onChange]
+    [isEnumerationValid, onChange, setConstraintValidity]
   );
 
   const onDragEnd = useCallback(
@@ -117,11 +123,8 @@ export function ConstraintsEnum({
         }
         return prev;
       });
-      if (isEnumerationValid()) {
-        onInternalChange(newValue);
-      } else {
-        onChange("");
-      }
+      onInternalChange(newValue);
+      setConstraintValidity(isEnumerationValid());
       setItemValid((prev) => {
         const newIsItemValid = [...prev];
         newIsItemValid[actualEnumValues.current.length - 1] =
@@ -130,17 +133,15 @@ export function ConstraintsEnum({
         return newIsItemValid;
       });
     },
-    [isEnumerationValid, onChange, onInternalChange, typeHelper]
+    [isEnumerationValid, onInternalChange, setConstraintValidity, typeHelper]
   );
 
   const onChangeItem = useCallback(
     (newValue, index) => {
       actualEnumValues.current[index] = typeHelper.transform(newValue);
-      if (isEnumerationValid()) {
-        onInternalChange(newValue);
-      } else {
-        onChange("");
-      }
+      onInternalChange(newValue);
+      setConstraintValidity(isEnumerationValid());
+
       setItemValid((prev) => {
         const newIsItemValid = [...prev];
         newIsItemValid[index] =
@@ -148,7 +149,7 @@ export function ConstraintsEnum({
         return newIsItemValid;
       });
     },
-    [isEnumerationValid, onChange, onInternalChange, typeHelper]
+    [isEnumerationValid, onInternalChange, setConstraintValidity, typeHelper]
   );
 
   return (
@@ -231,7 +232,7 @@ export function ConstraintsEnum({
       </Button>
       <br />
       <br />
-      <ConstraintsExpression isReadonly={true} value={value ?? ""} type={type} />
+      <ConstraintsExpression isReadonly={true} value={savedValue ?? ""} type={type} />
     </div>
   );
 }

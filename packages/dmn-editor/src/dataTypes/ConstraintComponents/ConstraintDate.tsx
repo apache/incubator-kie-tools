@@ -8,7 +8,7 @@ export function ConstraintDate(props: ConstraintProps) {
   return (
     <>
       <DatePicker
-        className={"kie-dmn-editor--constraint-date"}
+        className={"kie-dmn-editor--constraint-date kie-dmn-editor--constraint-input"}
         inputProps={{ className: "kie-dmn-editor--constraint-input" }}
       />
     </>

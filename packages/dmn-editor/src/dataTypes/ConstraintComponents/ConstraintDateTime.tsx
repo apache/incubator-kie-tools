@@ -9,7 +9,7 @@ export function ConstraintDateTime(props: ConstraintProps) {
     <>
       <div style={{ display: "flex", flexDirection: "row" }}>
         <DatePicker
-          className={"kie-dmn-editor--constraint-date"}
+          className={"kie-dmn-editor--constraint-date kie-dmn-editor--constraint-input"}
           inputProps={{ className: "kie-dmn-editor--constraint-input" }}
         />
         <TimePicker is24Hour={true} inputProps={{ className: "kie-dmn-editor--constraint-input" }} />

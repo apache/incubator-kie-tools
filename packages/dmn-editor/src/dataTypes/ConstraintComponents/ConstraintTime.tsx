@@ -6,7 +6,11 @@ import { ConstraintProps } from "./Constraint";
 export function ConstraintTime(props: ConstraintProps) {
   return (
     <>
-      <TimePicker is24Hour={true} inputProps={{ className: "kie-dmn-editor--constraint-input" }} />
+      <TimePicker
+        className={"kie-dmn-editor--constraint-input"}
+        is24Hour={true}
+        inputProps={{ className: "kie-dmn-editor--constraint-input" }}
+      />
     </>
   );
 }

@@ -1,13 +1,11 @@
 import * as React from "react";
-import { useMemo, useState, useCallback } from "react";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { TypeHelper } from "./Constraints";
 
 const CONSTRAINT_START_ID = "start";
@@ -16,20 +14,24 @@ const CONSTRAINT_END_ID = "end";
 export function ConstraintsRange({
   isReadonly,
   value,
+  savedValue,
   type,
   typeHelper,
   onChange,
   isDisabled,
+  setConstraintValidity,
 }: {
   isReadonly: boolean;
   value?: string;
+  savedValue?: string;
   type: DmnBuiltInDataType;
   typeHelper: TypeHelper;
   onChange: (newValue: string | undefined) => void;
   isDisabled: boolean;
+  setConstraintValidity: (isValid: boolean) => void;
 }) {
-  const [start, setStart] = useState("");
-  const [end, setEnd] = useState("");
+  const [start, setStart] = useState(isRange(value ?? "", typeHelper.check)?.[0] ?? "");
+  const [end, setEnd] = useState(isRange(value ?? "", typeHelper.check)?.[1] ?? "");
   const [includeStart, setIncludeStart] = useState(true);
   const [includeEnd, setIncludeEnd] = useState(false);
 
@@ -73,28 +75,25 @@ export function ConstraintsRange({
         return;
       }
 
-      if (
+      setConstraintValidity(
         isStartValid({
           includeEnd: args?.includeEnd ?? includeEnd,
           start: args?.start ?? start,
           end: args?.end ?? end,
         }) &&
-        isEndValid({
-          includeEnd: args?.includeEnd ?? includeEnd,
-          start: args?.start ?? start,
-          end: args?.end ?? end,
-        })
-      ) {
-        onChange(
-          `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
-            args?.start ?? start
-          )}..${typeHelper.transform(args?.end ?? end)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`
-        );
-      } else {
-        onChange("");
-      }
+          isEndValid({
+            includeEnd: args?.includeEnd ?? includeEnd,
+            start: args?.start ?? start,
+            end: args?.end ?? end,
+          })
+      );
+      onChange(
+        `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
+          args?.start ?? start
+        )}..${typeHelper.transform(args?.end ?? end)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`
+      );
     },
-    [end, includeEnd, includeStart, isEndValid, isStartValid, onChange, start, typeHelper]
+    [end, includeEnd, includeStart, isEndValid, isStartValid, onChange, setConstraintValidity, start, typeHelper]
   );
 
   const onStartChange = useCallback(
@@ -280,7 +279,7 @@ export function ConstraintsRange({
         </div>
       </div>
       <br />
-      <ConstraintsExpression isReadonly={true} value={value ?? ""} type={type} />
+      <ConstraintsExpression isReadonly={true} value={savedValue ?? ""} type={type} />
     </div>
   );
 }
