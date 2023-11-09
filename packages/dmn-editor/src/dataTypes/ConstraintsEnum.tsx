@@ -33,6 +33,7 @@ export function ConstraintsEnum({
   const [addNew, setAddNew] = useState<boolean>(() => ((enumValues ?? []).length === 0 ? true : false));
   const actualEnumValues = useRef([...enumValues]);
   const [valuesUuid, setValuesUuid] = useState((actualEnumValues.current ?? [])?.map((_) => generateUuid()));
+  const [isItemValid, setItemValid] = useState<boolean[]>([true]);
 
   const isEnumerationValid = useCallback(() => {
     return new Set(actualEnumValues.current).size === actualEnumValues.current.length;
@@ -57,6 +58,11 @@ export function ConstraintsEnum({
         return newValuesUuid;
       }
       return prev;
+    });
+    setItemValid((prev) => {
+      const newIsItemValid = [...prev];
+      newIsItemValid[actualEnumValues.current.length] = true;
+      return newIsItemValid;
     });
   }, []);
 
@@ -99,6 +105,52 @@ export function ConstraintsEnum({
     });
   }, []);
 
+  const onChangeNew = useCallback(
+    (newValue: string) => {
+      setAddNew(false);
+      actualEnumValues.current[actualEnumValues.current.length] = newValue;
+      setValuesUuid((prev) => {
+        if (prev[actualEnumValues.current.length - 1] === undefined) {
+          const newValuesUuid = [...prev];
+          newValuesUuid[actualEnumValues.current.length - 1] = generateUuid();
+          return newValuesUuid;
+        }
+        return prev;
+      });
+      if (isEnumerationValid()) {
+        onInternalChange(newValue);
+      } else {
+        onChange("");
+      }
+      setItemValid((prev) => {
+        const newIsItemValid = [...prev];
+        newIsItemValid[actualEnumValues.current.length - 1] =
+          actualEnumValues.current.filter((e) => e === actualEnumValues.current[actualEnumValues.current.length - 1])
+            .length <= 1;
+        return newIsItemValid;
+      });
+    },
+    [isEnumerationValid, onChange, onInternalChange]
+  );
+
+  const onChangeItem = useCallback(
+    (newValue, index) => {
+      actualEnumValues.current[index] = newValue;
+      if (isEnumerationValid()) {
+        onInternalChange(newValue);
+      } else {
+        onChange("");
+      }
+      setItemValid((prev) => {
+        const newIsItemValid = [...prev];
+        newIsItemValid[index] =
+          actualEnumValues.current.filter((e) => e === actualEnumValues.current[index]).length <= 1;
+        return newIsItemValid;
+      });
+    },
+    [isEnumerationValid, onChange, onInternalChange]
+  );
+
   return (
     <div>
       <p style={{ paddingTop: "10px" }}>
@@ -133,17 +185,10 @@ export function ConstraintsEnum({
                           isDisabled={isReadonly || isDisabled}
                           inputType={inputType}
                           initialValue={value}
-                          onChange={(newValue) => {
-                            actualEnumValues.current[index] = newValue;
-                            if (isEnumerationValid()) {
-                              onInternalChange(newValue);
-                            } else {
-                              onChange("");
-                            }
-                          }}
+                          onChange={(newValue) => onChangeItem(newValue, index)}
                           hovered={hovered}
                           onRemove={() => onRemove(index)}
-                          isValid={isEnumerationValid()}
+                          isValid={isItemValid[index]}
                         />
                       </li>
                     );
@@ -160,23 +205,7 @@ export function ConstraintsEnum({
                       isDisabled={isReadonly || isDisabled}
                       inputType={inputType}
                       initialValue={""}
-                      onChange={(newValue) => {
-                        setAddNew(false);
-                        actualEnumValues.current[actualEnumValues.current.length] = newValue;
-                        setValuesUuid((prev) => {
-                          if (prev[actualEnumValues.current.length - 1] === undefined) {
-                            const newValuesUuid = [...prev];
-                            newValuesUuid[actualEnumValues.current.length - 1] = generateUuid();
-                            return newValuesUuid;
-                          }
-                          return prev;
-                        });
-                        if (isEnumerationValid()) {
-                          onInternalChange(newValue);
-                        } else {
-                          onChange("");
-                        }
-                      }}
+                      onChange={onChangeNew}
                       hovered={true}
                       onRemove={() => setAddNew(false)}
                       isValid={true}
