@@ -1,13 +1,6 @@
 import * as React from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import {
-  ns as dmn10ns,
-  ns as dmn11ns,
-  ns as dmn12ns,
-  ns as dmn13ns,
-  ns as dmn14ns,
-  ns as dmn15ns,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardFooter, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
@@ -32,35 +25,14 @@ import { deleteImport } from "../mutations/deleteImport";
 import { renameImport } from "../mutations/renameImport";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { PMML_NAMESPACE, UNKNOWN_NAMESPACE } from "../store/useDiagramData";
-import { buildXmlHref } from "../xml/xmlHrefs";
+import { KIE_UNKNOWN_NAMESPACE } from "../kie/kie";
 import { ExternalModelLabel } from "./ExternalModelLabel";
 import { useExternalModels } from "./DmnEditorDependenciesContext";
+import { allPmmlImportNamespaces, getPmmlNamespace } from "../pmml/pmml";
+import { allDmnImportNamespaces } from "../Dmn15Spec";
+import { getNamespaceOfDmnImport } from "./importNamespaces";
 
 const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
-
-export const allDmnImportNamespaces = new Set([
-  dmn15ns.get("")!,
-  dmn14ns.get("")!,
-  dmn13ns.get("")!,
-  dmn12ns.get("")!,
-  dmn11ns.get("")!,
-  dmn10ns.get("")!,
-]);
-
-export const allPmmlImportNamespaces = new Set([
-  "https://www.dmg.org/PMML-4_4",
-  "https://www.dmg.org/PMML-4_3",
-  "https://www.dmg.org/PMML-4_2",
-  "https://www.dmg.org/PMML-4_1",
-  "https://www.dmg.org/PMML-4_0",
-  "https://www.dmg.org/PMML-3_2",
-  "https://www.dmg.org/PMML-3_1",
-  "https://www.dmg.org/PMML-3_0",
-  "https://www.dmg.org/PMML-2_1",
-  "https://www.dmg.org/PMML-2_0",
-  "https://www.dmg.org/PMML-1_1",
-]);
 
 const namespaceForNewImportsByFileExtension: Record<string, string> = {
   ".dmn": dmn15ns.get("")!,
@@ -128,8 +100,8 @@ export function IncludedModels() {
       selectedModel.type === "dmn"
         ? selectedModel.model.definitions["@_namespace"]!
         : selectedModel.type === "pmml"
-        ? buildXmlHref({ namespace: PMML_NAMESPACE, id: selectedModel.path })
-        : UNKNOWN_NAMESPACE;
+        ? getPmmlNamespace({ fileRelativePath: selectedModel.relativePath })
+        : KIE_UNKNOWN_NAMESPACE;
 
     setModalOpen(false);
     dmnEditorStoreApi.setState((state) => {
@@ -162,7 +134,7 @@ export function IncludedModels() {
           console.warn(`DMN EDITOR: Could not find model with namespace '${namespace}'. Ignoring.`);
           return acc;
         } else {
-          return acc.set(externalModel.path, externalModel);
+          return acc.set(externalModel.relativePath, externalModel);
         }
       }, new Map<string, ExternalModel>()),
     [externalModelsByNamespace]
@@ -179,7 +151,7 @@ export function IncludedModels() {
           !externalModel ||
           (externalModel.type === "dmn" && !importsByNamespace.get(externalModel.model.definitions["@_namespace"])) ||
           (externalModel.type === "pmml" &&
-            !importsByNamespace.get(buildXmlHref({ namespace: PMML_NAMESPACE, id: externalModel.path })))
+            !importsByNamespace.get(getPmmlNamespace({ fileRelativePath: externalModel.relativePath })))
         );
       }),
     [externalModelsByPath, importsByNamespace, modelPaths]
@@ -309,7 +281,8 @@ export function IncludedModels() {
             <br />
             <Gallery hasGutter={true}>
               {thisDmnsImports.flatMap((i, index) => {
-                const externalModel = externalModelsByNamespace?.[i["@_namespace"]];
+                const externalModel = externalModelsByNamespace?.[getNamespaceOfDmnImport({ dmnImport: i })];
+
                 return !externalModel ? (
                   []
                 ) : (
@@ -420,17 +393,17 @@ function IncludedModelCard({
         <br />
         <br />
         <small>
-          {(onRequestToJumpToPath && externalModel.path && (
+          {(onRequestToJumpToPath && externalModel.relativePath && (
             <Button
               variant={ButtonVariant.link}
               style={{ paddingLeft: 0, whiteSpace: "break-spaces", textAlign: "left" }}
               onClick={() => {
-                onRequestToJumpToPath?.(externalModel.path);
+                onRequestToJumpToPath?.(externalModel.relativePath);
               }}
             >
-              <i>{externalModel.path}</i>
+              <i>{externalModel.relativePath}</i>
             </Button>
-          )) || <i>{externalModel.path ?? "WARNING: Path couldn't be determined."}</i>}
+          )) || <i>{externalModel.relativePath ?? "WARNING: Path couldn't be determined."}</i>}
         </small>
       </CardBody>
       <CardFooter>

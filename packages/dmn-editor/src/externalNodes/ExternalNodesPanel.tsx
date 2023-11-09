@@ -80,7 +80,7 @@ export function ExternalNodesPanel() {
               <b>{`${externalDmnDefinitions["@_name"]}`}</b> {`(${_import["@_name"]})`}
               <small>
                 <i>
-                  <Truncate content={externalDmnsByNamespace.get(namespace)?.path ?? ""} />
+                  <Truncate content={externalDmnsByNamespace.get(namespace)?.relativePath ?? ""} />
                 </i>
               </small>
             </div>

@@ -1,3 +1,10 @@
+import { ns as dmn10ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_0/ts-gen/meta";
+import { ns as dmn11ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_1/ts-gen/meta";
+import { ns as dmn12ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/meta";
+import { ns as dmn13ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_3/ts-gen/meta";
+import { ns as dmn14ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/meta";
+import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+
 // Those two below are defined by the spec. See S-FEEL grammar. Rule 22: "name".
 const feelNameStart =
   /^[?A-Z_a-z\uC0-\uD6\uD8-\uF6\uF8-\u2FF\u370-\u37D\u37F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\u10000-\uEFFFF].*$/;
@@ -65,3 +72,14 @@ export const DMN15_SPEC = {
     },
   },
 };
+
+export const allDmnImportNamespaces = new Set([
+  dmn10ns.get("")!,
+  dmn11ns.get("")!,
+  dmn12ns.get("")!,
+  dmn13ns.get("")!,
+  dmn14ns.get("")!,
+  dmn15ns.get("")!,
+]);
+
+export const KIE_DMN_UNKNOWN_NAMESPACE = "https://kie.org/dmn/unknown";

@@ -13,11 +13,11 @@ import {
 import { DMN15_SPEC } from "@kie-tools/dmn-editor/dist/Dmn15Spec";
 import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller } from "@kie-tools/dmn-marshaller";
 import { domParser } from "@kie-tools/xml-parser-ts";
-import { buildXmlHref } from "@kie-tools/dmn-editor/dist/xml/xmlHrefs";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { useEffect, useMemo, useState } from "react";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
-import { PMML_NAMESPACE } from "@kie-tools/dmn-editor/dist/store/useDiagramData";
+import { getPmmlNamespace } from "@kie-tools/dmn-editor/dist/pmml/pmml";
+import { getNamespaceOfDmnImport } from "@kie-tools/dmn-editor/dist/includedModels/importNamespaces";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 
@@ -42,7 +42,7 @@ export type DmnEditorRootState = {
   marshaller: DmnMarshaller<typeof DMN_LATEST_VERSION> | undefined;
   stack: DmnLatestModel[];
   pointer: number;
-  path: string | undefined;
+  absolutePath: string | undefined;
   externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
 };
 
@@ -55,7 +55,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       marshaller: undefined,
       stack: [],
       pointer: -1,
-      path: undefined,
+      absolutePath: undefined,
     };
   }
 
@@ -79,15 +79,15 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     return this.state.marshaller.builder.build(this.model);
   }
 
-  public async setContent(path: string, content: string): Promise<void> {
+  public async setContent(absolutePath: string, content: string): Promise<void> {
     this.setState((prev) => {
       const newMarshaller = getMarshaller(content || EMPTY_DMN(), { upgradeTo: "latest" });
 
       // External change to the same file.
-      if (prev.path === path) {
+      if (prev.absolutePath === absolutePath) {
         const newStack = prev.stack.slice(0, prev.pointer + 1);
         return {
-          path,
+          absolutePath,
           marshaller: newMarshaller,
           stack: [...newStack, newMarshaller.parser.parse()],
           pointer: newStack.length,
@@ -97,7 +97,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       // Different file opened. Need to reset everything.
       else {
         return {
-          path,
+          absolutePath,
           marshaller: newMarshaller,
           stack: [newMarshaller.parser.parse()],
           pointer: 0,
@@ -126,40 +126,55 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
           pointer: newStack.length,
         };
       },
-      () => this.props.onNewEdit({ id: `${this.state.path}__${generateUuid()}` })
+      () => this.props.onNewEdit({ id: `${this.state.absolutePath}__${generateUuid()}` })
     );
   };
 
   private onRequestExternalModelsAvailableToInclude: DmnEditor.OnRequestExternalModelsAvailableToInclude = async () => {
+    if (!this.state.absolutePath) {
+      return [];
+    }
+
     const list = await this.props.onRequestFileList({
       pattern: EXTERNAL_MODELS_SEARCH_GLOB_PATTERN,
       opts: { type: SearchType.TRAVERSAL },
     });
 
-    return list.paths.filter((path) => {
-      return path !== this.state.path;
-    });
+    return list.paths.flatMap((p) =>
+      // Ignore thisDmn's file absolutePath
+      p === this.state.absolutePath ? [] : __path.relative(__path.dirname(this.state.absolutePath!), p)
+    );
   };
 
-  private onRequestExternalModelByPath: DmnEditor.OnRequestExternalModelByPath = async (path) => {
-    const resource = await this.props.onRequestFileContent({ path, opts: { type: ContentType.TEXT } });
-    const ext = __path.extname(path).replace(".", "");
-    if (ext === "dmn") {
+  private onRequestExternalModelByPath: DmnEditor.OnRequestExternalModelByPath = async (relativePath) => {
+    const absolutePath = __path.resolve(__path.dirname(this.state.absolutePath!), relativePath);
+    const resource = await this.props.onRequestFileContent({ path: absolutePath, opts: { type: ContentType.TEXT } });
+
+    const ext = __path.extname(relativePath);
+    if (ext === ".dmn") {
       return {
-        path,
+        relativePath,
         type: "dmn",
         model: getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse(),
         svg: "",
       };
-    } else if (ext === "pmml") {
+    } else if (ext === ".pmml") {
       return {
-        path,
+        relativePath,
         type: "pmml",
         model: XML2PMML(resource?.content ?? ""),
       };
     } else {
       throw new Error(`Unknown extension '${ext}'.`);
     }
+  };
+
+  private onOpenFileFromRelativePath = (relativePath: string) => {
+    if (!this.state.absolutePath) {
+      return;
+    }
+
+    this.props.onOpenFile(__path.relative("/", __path.resolve(__path.dirname(this.state.absolutePath!), relativePath)));
   };
 
   public render() {
@@ -179,10 +194,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               onModelChange={this.onModelChange}
               onRequestExternalModelByPath={this.onRequestExternalModelByPath}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
-              onRequestToJumpToPath={this.props.onOpenFile}
+              onRequestToJumpToPath={this.onOpenFileFromRelativePath}
             />
             <ExternalModelsManager
-              thisDmnsPath={this.state.path}
+              thisDmnsAbsolutePath={this.state.absolutePath}
               model={this.model}
               onChange={this.setExternalModelsByNamespace}
               onRequestFileList={this.props.onRequestFileList}
@@ -198,20 +213,23 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 const NAMESPACES_EFFECT_SEPARATOR = " , ";
 
 function ExternalModelsManager({
-  thisDmnsPath,
+  thisDmnsAbsolutePath,
   model,
   onChange,
   onRequestFileContent,
   onRequestFileList,
 }: {
-  thisDmnsPath: string | undefined;
+  thisDmnsAbsolutePath: string | undefined;
   model: DmnLatestModel;
   onChange: (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => void;
   onRequestFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onRequestFileList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
 }) {
   const namespaces = useMemo(
-    () => (model.definitions.import ?? []).map((i) => i["@_namespace"]).join(NAMESPACES_EFFECT_SEPARATOR),
+    () =>
+      (model.definitions.import ?? [])
+        .map((i) => getNamespaceOfDmnImport({ dmnImport: i }))
+        .join(NAMESPACES_EFFECT_SEPARATOR),
     [model.definitions.import]
   );
 
@@ -227,7 +245,7 @@ function ExternalModelsManager({
     const bc = new BroadcastChannel("workspaces_files");
     bc.onmessage = ({ data }) => {
       // Changes to `thisDmn` shouldn't update its references to external models.
-      if (data?.relativePath === thisDmnsPath) {
+      if (data?.relativePath === thisDmnsAbsolutePath) {
         return;
       }
 
@@ -236,22 +254,26 @@ function ExternalModelsManager({
     return () => {
       bc.close();
     };
-  }, [thisDmnsPath]);
+  }, [thisDmnsAbsolutePath]);
 
   // This effect actually populates `externalModelsByNamespace` through the `onChange` call.
   useEffect(() => {
     let canceled = false;
 
+    if (!thisDmnsAbsolutePath) {
+      return;
+    }
+
     onRequestFileList({ pattern: EXTERNAL_MODELS_SEARCH_GLOB_PATTERN, opts: { type: SearchType.TRAVERSAL } })
       .then((list) => {
         const resources: Array<Promise<ResourceContent | undefined>> = [];
         for (let i = 0; i < list.paths.length; i++) {
-          const path = list.paths[i];
-          if (path === thisDmnsPath) {
+          const absolutePath = list.paths[i];
+          if (absolutePath === thisDmnsAbsolutePath) {
             continue;
           }
 
-          resources.push(onRequestFileContent({ path, opts: { type: ContentType.TEXT } }));
+          resources.push(onRequestFileContent({ path: absolutePath, opts: { type: ContentType.TEXT } }));
         }
         return Promise.all(resources);
       })
@@ -263,24 +285,35 @@ function ExternalModelsManager({
         for (let i = 0; i < resources.length; i++) {
           const r = resources[i];
           const content = r?.content ?? "";
-          const path = r?.path ?? "";
-          const ext = __path.extname(path).replace(".", "");
+          const absolutePath = r?.path ?? "";
+          const relativePath = __path.relative(__path.dirname(thisDmnsAbsolutePath), absolutePath);
 
-          if (ext === "dmn") {
+          const ext = __path.extname(relativePath);
+          if (ext === ".dmn") {
             const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
             if (namespace && namespacesSet.has(namespace)) {
+              // Check for multiplicity of namespaces on DMN models
+              if (index[namespace]) {
+                console.warn(
+                  `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${relativePath}' and '${
+                    index[namespace]!.relativePath
+                  }'. The latter will be considered.`
+                );
+              }
+
               index[namespace] = {
-                path,
+                relativePath,
                 model: getMarshaller(content, { upgradeTo: "latest" }).parser.parse(),
                 type: "dmn",
                 svg: "",
               };
             }
-          } else if (ext === "pmml") {
-            const namespace = buildXmlHref({ namespace: PMML_NAMESPACE, id: path });
+          } else if (ext === ".pmml") {
+            const namespace = getPmmlNamespace({ fileRelativePath: relativePath });
             if (namespace && namespacesSet.has(namespace)) {
+              // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
               index[namespace] = {
-                path,
+                relativePath,
                 model: XML2PMML(content),
                 type: "pmml",
               };
@@ -298,7 +331,7 @@ function ExternalModelsManager({
     return () => {
       canceled = true;
     };
-  }, [namespaces, onChange, onRequestFileContent, onRequestFileList, thisDmnsPath, externalUpdatesCount]);
+  }, [namespaces, onChange, onRequestFileContent, onRequestFileList, thisDmnsAbsolutePath, externalUpdatesCount]);
 
   return <></>;
 }

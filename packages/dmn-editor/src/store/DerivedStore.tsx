@@ -81,6 +81,8 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
           acc.dmns.set(_import["@_namespace"], externalModel);
         } else if (externalModel.type === "pmml") {
           acc.pmmls.set(_import["@_namespace"], externalModel);
+        } else {
+          console.warn("DMN EDITOR: Unknown external model type", externalModel);
         }
 
         return acc;

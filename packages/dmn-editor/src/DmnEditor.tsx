@@ -55,10 +55,10 @@ export type ExternalModelsIndex = Record<string, ExternalModel | undefined>;
 export type ExternalModel = ({ type: "dmn" } & ExternalDmn) | ({ type: "pmml" } & ExternalPmml);
 
 export type ExternalDmnsIndex = Map<string, ExternalDmn>;
-export type ExternalDmn = { model: DmnLatestModel; path: string; svg: string };
+export type ExternalDmn = { model: DmnLatestModel; relativePath: string; svg: string };
 
 export type ExternalPmmlsIndex = Map<string, ExternalPmml>;
-export type ExternalPmml = { model: PMML; path: string };
+export type ExternalPmml = { model: PMML; relativePath: string };
 
 export type DmnEditorProps = {
   /**

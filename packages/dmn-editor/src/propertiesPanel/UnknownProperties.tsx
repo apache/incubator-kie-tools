@@ -46,7 +46,7 @@ export function UnknownProperties(props: { shape: DMNDI15__DMNShape; dmnElementR
               <Button
                 style={{ paddingLeft: 0 }}
                 variant={ButtonVariant.link}
-                onClick={() => onRequestToJumpToPath?.(externalDmn.path)}
+                onClick={() => onRequestToJumpToPath?.(externalDmn.relativePath)}
               >{`Go to '${externalDmn.model.definitions["@_name"]}'`}</Button>
             </>
           )}

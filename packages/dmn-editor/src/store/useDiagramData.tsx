@@ -21,16 +21,13 @@ import { ExternalDmnsIndex } from "../DmnEditor";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { Unpacked } from "../tsExt/tsExt";
 import { NodeVisitor, EdgeVisitor, getAdjMatrix, traverse } from "../diagram/graph/graph";
+import { KIE_DMN_UNKNOWN_NAMESPACE } from "../Dmn15Spec";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
   hierarchyDown: "#003fa4",
   selected: "#006ba4",
 };
-
-export const UNKNOWN_DMN_NAMESPACE = "https://kie.org/dmn/unknown";
-export const UNKNOWN_NAMESPACE = "https://kie.org/dmn/unknown";
-export const PMML_NAMESPACE = "https://kie.org/pmml";
 
 export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
   ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag =
@@ -65,7 +62,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
           const dmnElementRefQName = parseXmlQName(e["@_dmnElementRef"]);
           if (dmnElementRefQName.prefix) {
             const namespace =
-              thisDmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`] ?? UNKNOWN_DMN_NAMESPACE;
+              thisDmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`] ?? KIE_DMN_UNKNOWN_NAMESPACE;
             href = buildXmlHref({ namespace, id: dmnElementRefQName.localPart });
             hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects.push(href);
           } else {
@@ -241,7 +238,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         // If the QName is composite, we try and get the namespace from the XML namespace declarations. If it's not found, we use `UNKNOWN_DMN_NAMESPACE`
         // If the QName is simple, we simply say that the namespace is undefined, which is the same as the default namespace.
         const dmnObjectNamespace = dmnObjectQName.prefix
-          ? thisDmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`] ?? UNKNOWN_DMN_NAMESPACE
+          ? thisDmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`] ?? KIE_DMN_UNKNOWN_NAMESPACE
           : undefined;
 
         const id = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectQName.localPart });
