@@ -10,7 +10,7 @@ export function DmnVersionLabel(props: { version: string }) {
   const label = useMemo(
     () => (
       <Label
-        style={{ cursor: "pointer", position: "absolute", bottom: "8px", left: "8px", zIndex: 100 }}
+        style={{ cursor: "pointer", position: "absolute", bottom: "8px", left: "36px", zIndex: 100 }}
       >{`DMN ${DMN_LATEST_VERSION}`}</Label>
     ),
     []
@@ -30,7 +30,7 @@ export function DmnVersionLabel(props: { version: string }) {
           This DMN was originally imported as DMN {props.version}, but was converted to DMN {DMN_LATEST_VERSION} to
           enable new features.
           <a href={latestChangelogHref} target={"_blank"}>
-            {`See what's new on DMN ${DMN_LATEST_VERSION}`}.
+            &nbsp;{`See what's new on DMN ${DMN_LATEST_VERSION}`}.
           </a>
         </div>
       }
