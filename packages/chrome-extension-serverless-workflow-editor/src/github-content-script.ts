@@ -17,11 +17,46 @@
  * under the License.
  */
 
-import { ChromeRouter } from "./ChromeRouter";
 import { startExtension } from "@kie-tools-core/chrome-extension";
+import { FileInfo } from "@kie-tools-core/chrome-extension/dist/app/components/single/singleEditorView";
+import { Dependencies } from "@kie-tools-core/chrome-extension/dist/app/Dependencies";
+import { GitHubPageType } from "@kie-tools-core/chrome-extension/dist/app/github/GitHubPageType";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
+import { EmbeddedEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
+import { SwfCombinedEditorChannelApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/channel";
+import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
+import { ChromeRouter } from "./ChromeRouter";
+import { ChromeExtensionSwfLanguageService } from "./languageService/ChromeExtensionSwfLanguageService";
+import { extractFileExtension, removeDirectories } from "./utils";
 
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
+
+function getCustomChannelApiImpl(args: { pageType: GitHubPageType; fileInfo: FileInfo }) {
+  if (args.pageType === GitHubPageType.EDIT) {
+    const dependencies = new Dependencies();
+    const embeddedEditorFile: EmbeddedEditorFile = {
+      path: args.fileInfo.path,
+      getFileContents: () => {
+        return Promise.resolve(dependencies.all.edit__githubTextAreaWithFileContents()?.textContent ?? "");
+      },
+      isReadOnly: false,
+      fileExtension: `sw.${extractFileExtension(args.fileInfo.path)}`,
+      fileName: `${removeDirectories(args.fileInfo.path)}`,
+    };
+    const channelApiImpl = new EmbeddedEditorChannelApiImpl(new StateControl(), embeddedEditorFile, "en", {});
+
+    const chromeExtensionSwfLanguageService = new ChromeExtensionSwfLanguageService();
+    const languageService = chromeExtensionSwfLanguageService.getLs(args.fileInfo.path);
+    return new SwfCombinedEditorChannelApiImpl({
+      defaultApiImpl: channelApiImpl,
+      swfLanguageServiceChannelApiImpl: new SwfLanguageServiceChannelApiImpl(languageService),
+    });
+  }
+
+  return;
+}
+
 startExtension({
   name: "Kogito :: Serverless workflow editor",
   extensionIconUrl: chrome.runtime.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
@@ -37,4 +72,5 @@ startExtension({
       },
     }),
   ]),
+  getCustomChannelApiImpl,
 });

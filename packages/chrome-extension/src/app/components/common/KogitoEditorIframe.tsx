@@ -43,7 +43,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
 ) => {
   const githubApi = useGitHubApi();
   const { editor, editorRef } = useEditorRef();
-  const { envelopeLocator, resourceContentServiceFactory } = useGlobals();
+  const { envelopeLocator, resourceContentServiceFactory, customChannelApiImpl } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
   const { locale } = useChromeExtensionI18n();
   const wasOnTextMode = usePrevious(textMode);
@@ -126,6 +126,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
           kogitoEditor_setContentError={props.onSetContentError}
           editorEnvelopeLocator={envelopeLocator}
           locale={locale}
+          customChannelApiImpl={customChannelApiImpl}
         />
       </div>
     </>

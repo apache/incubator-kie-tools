@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { Logger } from "../../../Logger";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
@@ -33,6 +33,7 @@ export interface GlobalContextType {
   extensionIconUrl: string;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
+  customChannelApiImpl?: KogitoEditorChannelApi;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);
