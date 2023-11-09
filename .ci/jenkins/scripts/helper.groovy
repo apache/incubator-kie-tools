@@ -51,7 +51,7 @@ void checkoutRepo(String repoName = '', String directory = '') {
         deleteDir()
         checkout(githubscm.resolveRepository(repoName, getGitAuthor(), getBuildBranch(), false))
         // need to manually checkout branch since on a detached branch after checkout command
-        sh "git checkout ${getBuildBranch()}"
+        //sh "git checkout ${getBuildBranch()}"
     }
 
     if (directory) {

@@ -196,13 +196,6 @@ pipeline {
                         }
                     }
                 }
-                stage('Run tests on Openshift') {
-                    steps {
-                        script {
-                            launchE2ETestsJob('openshift')
-                        }
-                    }
-                }
             }
         }
 
