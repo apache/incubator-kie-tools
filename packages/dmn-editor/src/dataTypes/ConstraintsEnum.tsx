@@ -1,6 +1,5 @@
 import * as React from "react";
-import { useMemo, useState, useCallback, useRef, useEffect } from "react";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { useMemo, useState, useCallback, useRef } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
@@ -9,23 +8,22 @@ import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
+import { TypeHelper } from "./Constraints";
 
 export const ENUM_SEPARATOR = ",";
 
 export function ConstraintsEnum({
   isReadonly,
-  inputType,
   value,
   type,
-  typeParser,
+  typeHelper,
   onChange,
   isDisabled,
 }: {
   isReadonly: boolean;
-  inputType: "text" | "number";
   value?: string;
   type: DmnBuiltInDataType;
-  typeParser: (value: string) => any;
+  typeHelper: TypeHelper;
   onChange: (newValue: string | undefined) => void;
   isDisabled: boolean;
 }) {
@@ -34,6 +32,7 @@ export function ConstraintsEnum({
   const actualEnumValues = useRef([...enumValues]);
   const [valuesUuid, setValuesUuid] = useState((actualEnumValues.current ?? [])?.map((_) => generateUuid()));
   const [isItemValid, setItemValid] = useState<boolean[]>([true]);
+  const [focusOwner, setFocusOwner] = useState("");
 
   const isEnumerationValid = useCallback(() => {
     return new Set(actualEnumValues.current).size === actualEnumValues.current.length;
@@ -64,6 +63,7 @@ export function ConstraintsEnum({
       newIsItemValid[actualEnumValues.current.length] = true;
       return newIsItemValid;
     });
+    setFocusOwner("");
   }, []);
 
   const onRemove = useCallback(
@@ -108,7 +108,7 @@ export function ConstraintsEnum({
   const onChangeNew = useCallback(
     (newValue: string) => {
       setAddNew(false);
-      actualEnumValues.current[actualEnumValues.current.length] = newValue;
+      actualEnumValues.current[actualEnumValues.current.length] = typeHelper.transform(newValue);
       setValuesUuid((prev) => {
         if (prev[actualEnumValues.current.length - 1] === undefined) {
           const newValuesUuid = [...prev];
@@ -130,12 +130,12 @@ export function ConstraintsEnum({
         return newIsItemValid;
       });
     },
-    [isEnumerationValid, onChange, onInternalChange]
+    [isEnumerationValid, onChange, onInternalChange, typeHelper]
   );
 
   const onChangeItem = useCallback(
     (newValue, index) => {
-      actualEnumValues.current[index] = newValue;
+      actualEnumValues.current[index] = typeHelper.transform(newValue);
       if (isEnumerationValid()) {
         onInternalChange(newValue);
       } else {
@@ -148,7 +148,7 @@ export function ConstraintsEnum({
         return newIsItemValid;
       });
     },
-    [isEnumerationValid, onChange, onInternalChange]
+    [isEnumerationValid, onChange, onInternalChange, typeHelper]
   );
 
   return (
@@ -183,12 +183,14 @@ export function ConstraintsEnum({
                         <EnumElement
                           id={`enum-element-${index}`}
                           isDisabled={isReadonly || isDisabled}
-                          inputType={inputType}
-                          initialValue={value}
+                          initialValue={typeHelper.recover(value ?? "")}
                           onChange={(newValue) => onChangeItem(newValue, index)}
                           hovered={hovered}
                           onRemove={() => onRemove(index)}
                           isValid={isItemValid[index]}
+                          focusOwner={focusOwner}
+                          setFocusOwner={setFocusOwner}
+                          typeHelper={typeHelper}
                         />
                       </li>
                     );
@@ -203,12 +205,14 @@ export function ConstraintsEnum({
                     <EnumElement
                       id={`enum-element-${actualEnumValues.current.length}`}
                       isDisabled={isReadonly || isDisabled}
-                      inputType={inputType}
                       initialValue={""}
                       onChange={onChangeNew}
                       hovered={true}
                       onRemove={() => setAddNew(false)}
                       isValid={true}
+                      focusOwner={focusOwner}
+                      setFocusOwner={setFocusOwner}
+                      typeHelper={typeHelper}
                     />
                   </li>
                 </div>
@@ -234,20 +238,24 @@ export function ConstraintsEnum({
 
 function EnumElement({
   id,
-  inputType,
   isDisabled,
   initialValue,
   hovered,
   isValid,
+  typeHelper,
+  focusOwner,
+  setFocusOwner,
   onChange,
   onRemove,
 }: {
   id: string;
-  inputType: "text" | "number";
   isDisabled: boolean;
   initialValue: string;
   hovered: boolean;
   isValid: boolean;
+  typeHelper: TypeHelper;
+  focusOwner: string;
+  setFocusOwner: React.SetStateAction<React.Dispatch<string>>;
   onChange: (newValue: string) => void;
   onRemove: () => void;
 }) {
@@ -265,21 +273,23 @@ function EnumElement({
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", flexGrow: 1 }}>
-      <TextInput
-        id={id}
-        style={{
+    <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+      {typeHelper.component({
+        autoFocus: true,
+        onChange: onInternalChange,
+        id,
+        isDisabled,
+        style: {
           borderColor: "transparent",
           backgroundColor: "transparent",
           outline: "none",
-          ...(isValid ? {} : invalidInlineFeelNameStyle),
-        }}
-        autoFocus={true}
-        type={inputType}
-        value={value.trim()}
-        onChange={onInternalChange}
-        isDisabled={isDisabled}
-      />
+        },
+        value: value.trim(),
+        focusOwner,
+        setFocusOwner,
+        isValid,
+      })}
+
       <Button
         ref={removeButtonRef}
         style={{ opacity: hovered ? "100%" : "0" }}

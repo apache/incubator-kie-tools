@@ -1,0 +1,5 @@
+.kie-dmn-editor--constraint-date button::after {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent;
+}

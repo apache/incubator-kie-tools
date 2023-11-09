@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useMemo, useState, useCallback, useEffect } from "react";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
@@ -10,6 +9,24 @@ import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie
 import { EditItemDefinition } from "./DataTypes";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { canHaveConstraints, constrainableBuiltInFeelTypes } from "./DataTypeSpec";
+import moment from "moment";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker";
+import { DatePicker } from "@patternfly/react-core/dist/js/components/DatePicker";
+import { ConstraintDate } from "./ConstraintComponents/ConstraintDate";
+import { ConstraintDateTime } from "./ConstraintComponents/ConstraintDateTime";
+import { ConstraintDateTimeDuration } from "./ConstraintComponents/ConstraintDateTimeDuration";
+import { ConstraintTime } from "./ConstraintComponents/ConstraintTime";
+import { ConstraintYearsMonthsDuration } from "./ConstraintComponents/ConstraintYearsMonthsDuration";
+import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
+
+export type TypeHelper = {
+  check: (value: string) => boolean;
+  parse: (value: string) => any;
+  transform: (value: string) => string;
+  recover: (value: string) => string;
+  component: (props: any) => React.ReactNode | undefined;
+};
 
 enum ConstraintsType {
   ENUMERATION = "Enumeration",
@@ -29,7 +46,10 @@ export function Constraints({
 }) {
   const [selected, setSelected] = useState<ConstraintsType>(ConstraintsType.NONE);
 
-  const type = useMemo(() => itemDefinition?.typeRef?.__$$text, [itemDefinition?.typeRef?.__$$text]);
+  const type: DmnBuiltInDataType = useMemo(
+    () => (itemDefinition?.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+    [itemDefinition?.typeRef?.__$$text]
+  );
   const value = useMemo(() => itemDefinition?.typeConstraint, [itemDefinition?.typeConstraint]);
 
   const onInternalChange = useCallback(
@@ -104,57 +124,132 @@ export function Constraints({
   }, [enumToKieConstraintType, type]);
 
   const typeHelper = useMemo(() => {
-    if (type === DmnBuiltInDataType.Any) {
-      return {
-        check: (value: string) => false,
-        parser: (value: string) => {},
-      };
-    }
-    if (type === DmnBuiltInDataType.Date) {
-      return {
-        check: (value: string) => false,
-        parser: (value: string) => {},
-      };
-    }
-    if (type === DmnBuiltInDataType.DateTime) {
-      return {
-        check: (value: string) => false,
-        parser: (value: string) => {},
-      };
-    }
-    if (type === DmnBuiltInDataType.DateTimeDuration) {
-      return {
-        check: (value: string) => false,
-        parser: (value: string) => {},
-      };
-    }
-    if (type === DmnBuiltInDataType.Number) {
-      return {
-        check: (value: string) => !isNaN(parseFloat(value)),
-        parser: (value: string) => parseFloat(value),
-      };
-    }
-    if (type === DmnBuiltInDataType.String) {
-      return {
-        check: (value: string) => false,
-        parser: (value: string) => {},
-      };
-    }
-    if (type === DmnBuiltInDataType.Time) {
-      return {
-        check: (value: string) => false,
-        parser: (value: string) => {},
-      };
-    }
-    if (type === DmnBuiltInDataType.YearsMonthsDuration) {
-      return {
-        check: (value: string) => false,
-        parser: (value: string) => {},
-      };
-    }
     return {
-      check: (value: string) => false,
-      parser: (value: string) => {},
+      check: (value: string) => {
+        switch (type) {
+          case DmnBuiltInDataType.Any:
+          case DmnBuiltInDataType.String:
+            return typeof value === "string";
+          case DmnBuiltInDataType.Date:
+            return moment(value, "YYYY-MM-DD", true).isValid();
+          case DmnBuiltInDataType.DateTime:
+            return moment(value, "YYYY-MM-DDThh:mm", true).isValid();
+          case DmnBuiltInDataType.DateTimeDuration:
+          case DmnBuiltInDataType.YearsMonthsDuration:
+            return moment.duration(value).isValid();
+          case DmnBuiltInDataType.Number:
+            return !isNaN(parseFloat(value));
+          case DmnBuiltInDataType.Time:
+            return moment(value, "hh:mm", true).isValid();
+          default:
+            return false;
+        }
+      },
+      parse: (value: string) => {
+        switch (type) {
+          case DmnBuiltInDataType.Number:
+            return parseFloat(value);
+          case DmnBuiltInDataType.DateTimeDuration:
+          case DmnBuiltInDataType.YearsMonthsDuration:
+            return moment.duration(value);
+          case DmnBuiltInDataType.Any:
+          case DmnBuiltInDataType.Date:
+          case DmnBuiltInDataType.DateTime:
+          case DmnBuiltInDataType.String:
+          case DmnBuiltInDataType.Time:
+          default:
+            return value;
+        }
+      },
+      transform: (value: string) => {
+        switch (type) {
+          case DmnBuiltInDataType.Any:
+          case DmnBuiltInDataType.String:
+            return JSON.stringify(value);
+          case DmnBuiltInDataType.Date:
+            return `date("${value}")`;
+          case DmnBuiltInDataType.DateTime:
+            return `date and time("${value}")`;
+          case DmnBuiltInDataType.DateTimeDuration:
+          case DmnBuiltInDataType.YearsMonthsDuration:
+            return `duration("${value}")`;
+          case DmnBuiltInDataType.Number:
+            return value;
+          case DmnBuiltInDataType.Time:
+            return `time("${value}")`;
+          default:
+            return value;
+        }
+      },
+      recover: (value: string) => {
+        switch (type) {
+          case DmnBuiltInDataType.Any:
+          case DmnBuiltInDataType.String:
+            try {
+              return JSON.parse(value);
+            } catch (error) {
+              return value;
+            }
+          case DmnBuiltInDataType.Date:
+            return value.replace('date("', "").replace('")', "");
+          case DmnBuiltInDataType.DateTime:
+            return `date and time("${value}")`;
+          case DmnBuiltInDataType.DateTimeDuration:
+            return value.replace('duration("', "").replace('")', "");
+          case DmnBuiltInDataType.Number:
+            return value;
+          case DmnBuiltInDataType.Time:
+            return value.replace('time("', "").replace('")', "");
+          case DmnBuiltInDataType.YearsMonthsDuration:
+            return value.replace('duration("', "").replace('")', "");
+          default:
+            return value;
+        }
+      },
+      component: (props: any) => {
+        switch (type) {
+          case DmnBuiltInDataType.Date:
+            return <ConstraintDate {...props} />;
+          case DmnBuiltInDataType.DateTime:
+            return <ConstraintDateTime {...props} />;
+          case DmnBuiltInDataType.DateTimeDuration:
+            return <ConstraintDateTimeDuration {...props} />;
+          case DmnBuiltInDataType.Time:
+            return <ConstraintTime {...props} />;
+          case DmnBuiltInDataType.YearsMonthsDuration:
+            return <ConstraintYearsMonthsDuration {...props} />;
+          case DmnBuiltInDataType.Number:
+            return (
+              <TextInput
+                autoFocus={props.autoFocus}
+                onBlur={props.onBlur}
+                onChange={props.onChange}
+                id={props.id}
+                isDisabled={props.isDisabled}
+                placeholder={props.placeholder}
+                style={{ ...props.style, ...(props.isValid ? {} : invalidInlineFeelNameStyle) }}
+                type={"number"}
+                value={props.value}
+              />
+            );
+          case DmnBuiltInDataType.Any:
+          case DmnBuiltInDataType.String:
+          default:
+            return (
+              <TextInput
+                autoFocus={props.autoFocus}
+                onBlur={props.onBlur}
+                onChange={props.onChange}
+                id={props.id}
+                isDisabled={props.isDisabled}
+                placeholder={props.placeholder}
+                style={{ ...props.style, ...(props.isValid ? {} : invalidInlineFeelNameStyle) }}
+                type={"text"}
+                value={props.value}
+              />
+            );
+        }
+      },
     };
   }, [type]);
 
@@ -162,25 +257,6 @@ export function Constraints({
   useEffect(() => {
     setSelected(kieContraintTypeToEnum(value?.["@_kie:constraintType"]));
   }, [kieContraintTypeToEnum, value]);
-
-  const inputType: "text" | "number" = useMemo(() => {
-    switch (type) {
-      case DmnBuiltInDataType.Number:
-        return "number";
-      case DmnBuiltInDataType.Any:
-      case DmnBuiltInDataType.Boolean:
-      case DmnBuiltInDataType.Context:
-      case DmnBuiltInDataType.String:
-        return "text";
-      case DmnBuiltInDataType.Date:
-      case DmnBuiltInDataType.DateTime:
-      case DmnBuiltInDataType.DateTimeDuration:
-      case DmnBuiltInDataType.Time:
-      case DmnBuiltInDataType.YearsMonthsDuration:
-      default:
-        return "text";
-    }
-  }, [type]);
 
   const onToggleGroupChange = useCallback(
     (newSelection, event) => {
@@ -237,10 +313,9 @@ export function Constraints({
       return (
         <ConstraintsEnum
           isReadonly={isReadonly}
-          inputType={inputType}
           value={value?.text?.__$$text}
           type={type as DmnBuiltInDataType}
-          typeParser={typeHelper.parser}
+          typeHelper={typeHelper}
           onChange={(newValue: string) =>
             onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.ENUMERATION))
           }
@@ -252,10 +327,9 @@ export function Constraints({
       return (
         <ConstraintsRange
           isReadonly={isReadonly}
-          inputType={inputType}
           value={value?.text?.__$$text}
           type={type as DmnBuiltInDataType}
-          typeParser={typeHelper.parser}
+          typeHelper={typeHelper}
           onChange={(newValue: string) => onInternalChange(newValue, enumToKieConstraintType(ConstraintsType.RANGE))}
           isDisabled={!isConstraintEnabled.range}
         />
@@ -275,15 +349,14 @@ export function Constraints({
     }
   }, [
     enumToKieConstraintType,
-    inputType,
     isConstraintEnabled.enumeration,
     isConstraintEnabled.range,
     isReadonly,
     onInternalChange,
     selected,
     type,
-    typeHelper.parser,
-    value?.text,
+    typeHelper,
+    value?.text?.__$$text,
   ]);
 
   return (

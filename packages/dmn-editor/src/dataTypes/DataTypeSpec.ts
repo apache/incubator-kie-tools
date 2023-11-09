@@ -65,7 +65,7 @@ export const constrainableBuiltInFeelTypes = new Map<DmnBuiltInDataType, KIE__tC
   [DmnBuiltInDataType.Boolean, []],
   [DmnBuiltInDataType.Context, []],
   [DmnBuiltInDataType.Number, ["expression", "enumeration", "range"]],
-  [DmnBuiltInDataType.String, ["expression", "enumeration", "range"]],
+  [DmnBuiltInDataType.String, ["expression", "enumeration"]],
   [DmnBuiltInDataType.DateTimeDuration, ["expression", "enumeration", "range"]],
   [DmnBuiltInDataType.YearsMonthsDuration, ["expression", "enumeration", "range"]],
   [DmnBuiltInDataType.Date, ["expression", "enumeration", "range"]],

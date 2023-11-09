@@ -8,21 +8,23 @@ import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
+import { TypeHelper } from "./Constraints";
+
+const CONSTRAINT_START_ID = "start";
+const CONSTRAINT_END_ID = "end";
 
 export function ConstraintsRange({
   isReadonly,
-  inputType,
   value,
   type,
-  typeParser,
+  typeHelper,
   onChange,
   isDisabled,
 }: {
   isReadonly: boolean;
-  inputType: "text" | "number";
   value?: string;
   type: DmnBuiltInDataType;
-  typeParser: (value: string) => any;
+  typeHelper: TypeHelper;
   onChange: (newValue: string | undefined) => void;
   isDisabled: boolean;
 }) {
@@ -35,22 +37,22 @@ export function ConstraintsRange({
     (args: { includeEnd: boolean; start: string; end: string }) => {
       return args.end !== ""
         ? args.includeEnd
-          ? typeParser(args.end) >= typeParser(args.start)
-          : typeParser(args.end) > typeParser(args.start)
+          ? typeHelper.parse(args.end) >= typeHelper.parse(args.start)
+          : typeHelper.parse(args.end) > typeHelper.parse(args.start)
         : true;
     },
-    [typeParser]
+    [typeHelper]
   );
 
   const isEndValid = useCallback(
     (args: { includeEnd: boolean; start: string; end: string }) => {
       return args.start !== ""
         ? args.includeEnd
-          ? typeParser(args.end) >= typeParser(args.start)
-          : typeParser(args.end) > typeParser(args.start)
+          ? typeHelper.parse(args.end) >= typeHelper.parse(args.start)
+          : typeHelper.parse(args.end) > typeHelper.parse(args.start)
         : true;
     },
-    [typeParser]
+    [typeHelper]
   );
 
   const onInternalChange = useCallback(
@@ -84,15 +86,15 @@ export function ConstraintsRange({
         })
       ) {
         onChange(
-          `${args?.includeStart ?? includeStart ? "[" : "("}${args?.start ?? start}..${args?.end ?? end}${
-            args?.includeEnd ?? includeEnd ? "]" : ")"
-          }`
+          `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
+            args?.start ?? start
+          )}..${typeHelper.transform(args?.end ?? end)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`
         );
       } else {
         onChange("");
       }
     },
-    [end, includeEnd, includeStart, isEndValid, isStartValid, onChange, start]
+    [end, includeEnd, includeStart, isEndValid, isStartValid, onChange, start, typeHelper]
   );
 
   const onStartChange = useCallback(
@@ -126,20 +128,20 @@ export function ConstraintsRange({
   }, [onInternalChange]);
 
   const nextStartValue = useMemo(() => {
-    if (inputType === "number" && start !== "") {
+    if (typeof typeHelper.parse(value ?? "") === "number" && start !== "") {
       return `The next valid number is: (${start} + 2e-52).`;
     }
 
     return "";
-  }, [start, inputType]);
+  }, [start, typeHelper, value]);
 
   const previousEndValue = useMemo(() => {
-    if (inputType === "number" && end !== "") {
+    if (typeof typeHelper.parse(value ?? "") === "number" && end !== "") {
       return `The last valid number is: (${end} - 2e-52).`;
     }
 
     return "";
-  }, [end, inputType]);
+  }, [end, typeHelper, value]);
 
   return (
     <div>
@@ -178,7 +180,7 @@ export function ConstraintsRange({
             content={includeStart ? "Click to remove value from the range" : "Click to include value in the range"}
           >
             <button
-              id={"start"}
+              id={CONSTRAINT_START_ID}
               disabled={isReadonly || isDisabled}
               onClick={() => onIncludeStartToogle()}
               style={{
@@ -194,17 +196,19 @@ export function ConstraintsRange({
           </Tooltip>
         </div>
         <div style={{ gridArea: "startField" }}>
-          <TextInput
-            id={"start-value"}
-            placeholder={"Starts with"}
-            type={inputType}
-            value={start}
-            onChange={onStartChange}
-            isDisabled={isReadonly || isDisabled}
-            onBlur={() => onInternalChange()}
-            autoFocus={start === ""}
-            style={{ outline: "none", ...(isStartValid({ includeEnd, start, end }) ? {} : invalidInlineFeelNameStyle) }}
-          />
+          {typeHelper.component({
+            autoFocus: start === "",
+            onBlur: () => onInternalChange(),
+            onChange: onStartChange,
+            id: "start-value",
+            isDisabled: isReadonly || isDisabled,
+            placeholder: "Starts with",
+            style: {
+              outline: "none",
+            },
+            value: start,
+            isValid: isStartValid({ includeEnd, start, end }),
+          })}
         </div>
         <div style={{ gridArea: "startDescription" }}>
           <HelperText>
@@ -237,7 +241,7 @@ export function ConstraintsRange({
             content={includeEnd ? "Click to remove value from the range" : "Click to include value in the range"}
           >
             <button
-              id={"end"}
+              id={CONSTRAINT_END_ID}
               disabled={isReadonly || isDisabled}
               onClick={() => onIncludeEndToogle()}
               style={{
@@ -253,17 +257,17 @@ export function ConstraintsRange({
           </Tooltip>
         </div>
         <div style={{ gridArea: "endField" }}>
-          <TextInput
-            id={"end-value"}
-            placeholder={"Ends with"}
-            type={inputType}
-            value={end}
-            onChange={onEndChange}
-            isDisabled={isReadonly || isDisabled}
-            onBlur={() => onInternalChange()}
-            autoFocus={start !== ""}
-            style={{ outline: "none", ...(isEndValid({ includeEnd, start, end }) ? {} : invalidInlineFeelNameStyle) }}
-          />
+          {typeHelper.component({
+            autoFocus: start !== "",
+            onBlur: () => onInternalChange(),
+            onChange: onEndChange,
+            id: "end-value",
+            isDisabled: isReadonly || isDisabled,
+            placeholder: "Ends with",
+            style: { outline: "none" },
+            value: end,
+            isValid: isEndValid({ includeEnd, start, end }),
+          })}
         </div>
         <div style={{ gridArea: "endDescription" }}>
           <HelperText>
