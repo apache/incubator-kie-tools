@@ -48,8 +48,6 @@ pipeline {
                         assert helper.getBuildBranch() == util.getReleaseBranchFromVersion(helper.getProjectVersion())
                     }
 
-                    // Verify we have the connectivity to Openshift
-                    openshift.loginOpenshift()
                     // Login to final registry
                     helper.loginRegistry()
 
