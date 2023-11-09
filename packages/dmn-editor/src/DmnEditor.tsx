@@ -48,9 +48,10 @@ export type EvaluationResults = Record<string, any>;
 export type ValidationMessages = Record<string, any>;
 export type OnDmnModelChange = (model: DmnLatestModel) => void;
 
-export type OnRequestToJumpToPath = (path: string) => void;
+export type OnRequestToJumpToPath = (relativePath: string) => void;
+export type OnRequestToResolvePath = (relativePath: string) => string;
 export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
-export type OnRequestExternalModelByPath = (path: string) => Promise<ExternalModel | null>;
+export type OnRequestExternalModelByPath = (relativePath: string) => Promise<ExternalModel | null>;
 export type ExternalModelsIndex = Record<string, ExternalModel | undefined>;
 export type ExternalModel = ({ type: "dmn" } & ExternalDmn) | ({ type: "pmml" } & ExternalPmml);
 
@@ -115,6 +116,11 @@ export type DmnEditorProps = {
    * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
    */
   onRequestToJumpToPath?: OnRequestToJumpToPath;
+  /**
+   * All paths inside the DMN Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
+   * If undefined, the relative paths will be displayed.
+   */
+  onRequestToResolvePath?: OnRequestToResolvePath;
 };
 
 export const DmnEditorInternal = ({

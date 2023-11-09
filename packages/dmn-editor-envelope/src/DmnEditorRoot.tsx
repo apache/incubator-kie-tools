@@ -146,8 +146,12 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     );
   };
 
+  private onRequestToResolvePath = (relativePath: string) => {
+    return __path.relative("/", __path.resolve(__path.dirname(this.state.absolutePath!), relativePath));
+  };
+
   private onRequestExternalModelByPath: DmnEditor.OnRequestExternalModelByPath = async (relativePath) => {
-    const absolutePath = __path.resolve(__path.dirname(this.state.absolutePath!), relativePath);
+    const absolutePath = this.onRequestToResolvePath(relativePath);
     const resource = await this.props.onRequestFileContent({ path: absolutePath, opts: { type: ContentType.TEXT } });
 
     const ext = __path.extname(relativePath);
@@ -174,7 +178,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return;
     }
 
-    this.props.onOpenFile(__path.relative("/", __path.resolve(__path.dirname(this.state.absolutePath!), relativePath)));
+    this.props.onOpenFile(this.onRequestToResolvePath(relativePath));
   };
 
   public render() {
@@ -195,6 +199,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               onRequestExternalModelByPath={this.onRequestExternalModelByPath}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               onRequestToJumpToPath={this.onOpenFileFromRelativePath}
+              onRequestToResolvePath={this.onRequestToResolvePath}
             />
             <ExternalModelsManager
               thisDmnsAbsolutePath={this.state.absolutePath}

@@ -326,7 +326,7 @@ function IncludedModelCard({
   index: number;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { onRequestToJumpToPath } = useDmnEditor();
+  const { onRequestToJumpToPath, onRequestToResolvePath } = useDmnEditor();
 
   const remove = useCallback(
     (index: number) => {
@@ -366,6 +366,8 @@ function IncludedModelCard({
     }
   }, [externalModel.model, externalModel.type]);
 
+  const pathDisplayed = onRequestToResolvePath?.(externalModel.relativePath) ?? externalModel.relativePath;
+
   return (
     <Card isCompact={false}>
       <CardHeader>
@@ -393,17 +395,15 @@ function IncludedModelCard({
         <br />
         <br />
         <small>
-          {(onRequestToJumpToPath && externalModel.relativePath && (
-            <Button
-              variant={ButtonVariant.link}
-              style={{ paddingLeft: 0, whiteSpace: "break-spaces", textAlign: "left" }}
-              onClick={() => {
-                onRequestToJumpToPath?.(externalModel.relativePath);
-              }}
-            >
-              <i>{externalModel.relativePath}</i>
-            </Button>
-          )) || <i>{externalModel.relativePath ?? "WARNING: Path couldn't be determined."}</i>}
+          <Button
+            variant={ButtonVariant.link}
+            style={{ paddingLeft: 0, whiteSpace: "break-spaces", textAlign: "left" }}
+            onClick={() => {
+              onRequestToJumpToPath?.(externalModel.relativePath);
+            }}
+          >
+            <i>{pathDisplayed}</i>
+          </Button>
         </small>
       </CardBody>
       <CardFooter>
