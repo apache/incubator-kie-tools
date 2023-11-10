@@ -169,6 +169,11 @@ export function getParser<T extends object>(args: {
         }
       }
 
+      __json["?xml"] = {
+        "@_version": "1.0",
+        "@_encoding": "UTF-8",
+      };
+
       const xml = build({ json: __json, ns: args.ns, instanceNs, indent: "" });
       // console.timeEnd("building took");
       return xml;
@@ -445,7 +450,7 @@ export function build(args: {
     }
     // pi tag
     else if (propName[0] === "?") {
-      xml += `${indent}<${propName}${buildAttrs(propValue).attrs} ?>\n`;
+      xml = `${indent}<${propName}${buildAttrs(propValue).attrs} ?>\n` + xml; // PI Tags should always go at the top of the XML
     }
     // empty tag
     else if (propValue === undefined || propValue === null || propValue === "") {
