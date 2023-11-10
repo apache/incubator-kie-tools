@@ -3,7 +3,7 @@ import { useMemo, useState, useCallback, useRef } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { Draggable, DraggableContextProvider } from "../propertiesPanel/Draggable";
+import { Draggable, DraggableContextProvider, useDraggableContext } from "../propertiesPanel/Draggable";
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
@@ -19,55 +19,41 @@ export function ConstraintsEnum({
   typeHelper,
   onChange,
   isDisabled,
-  setConstraintValidity,
 }: {
   isReadonly: boolean;
   value?: string;
   savedValue?: string;
   type: DmnBuiltInDataType;
   typeHelper: TypeHelper;
-  onChange: (newValue: string | undefined) => void;
+  onChange: (args: { newValue?: string; isValid: boolean }) => void;
   isDisabled: boolean;
-  setConstraintValidity: (isValid: boolean) => void;
 }) {
-  const enumValues = useMemo(() => value?.split(ENUM_SEPARATOR)?.map((e) => e.trim()) ?? [], [value]);
-  const [addNew, setAddNew] = useState<boolean>(() => ((enumValues ?? []).length === 0 ? true : false));
-  const actualEnumValues = useRef([...enumValues]);
-  const [valuesUuid, setValuesUuid] = useState((actualEnumValues.current ?? [])?.map((_) => generateUuid()));
-  const [isItemValid, setItemValid] = useState<boolean[]>(() => {
-    return actualEnumValues.current.map((value, i, array) => {
-      return array.filter((e) => e === value).length <= 1;
-    });
-  });
+  const enumValues = useRef(isEnum(value ?? "", typeHelper.check) ?? []);
+  const [addNew, setAddNew] = useState<boolean>(() => ((enumValues.current ?? []).length === 0 ? true : false));
+  const [valuesUuid, setValuesUuid] = useState((enumValues.current ?? [])?.map((_) => generateUuid()));
+  const [isItemValid, setItemValid] = useState<boolean[]>(
+    enumValues.current.map((value, i, array) => array.filter((e) => e === value).length <= 1)
+  );
   const [focusOwner, setFocusOwner] = useState("");
 
+  // it must be a callback as we're using refs
   const isEnumerationValid = useCallback(() => {
-    return new Set(actualEnumValues.current).size === actualEnumValues.current.length;
+    return new Set(enumValues.current).size === enumValues.current.length;
   }, []);
-
-  const onInternalChange = useCallback(
-    (newValue: string) => {
-      if (newValue === "") {
-        return;
-      }
-      onChange(actualEnumValues.current.join(`${ENUM_SEPARATOR} `));
-    },
-    [onChange]
-  );
 
   const onAddNew = useCallback(() => {
     setAddNew(true);
     setValuesUuid((prev) => {
-      if (prev[actualEnumValues.current.length] === undefined) {
+      if (prev[enumValues.current.length] === undefined) {
         const newValuesUuid = [...prev];
-        newValuesUuid[actualEnumValues.current.length] = generateUuid();
+        newValuesUuid[enumValues.current.length] = generateUuid();
         return newValuesUuid;
       }
       return prev;
     });
     setItemValid((prev) => {
       const newIsItemValid = [...prev];
-      newIsItemValid[actualEnumValues.current.length] = true;
+      newIsItemValid[enumValues.current.length] = true;
       return newIsItemValid;
     });
     setFocusOwner("");
@@ -75,8 +61,8 @@ export function ConstraintsEnum({
 
   const onRemove = useCallback(
     (index: number) => {
-      actualEnumValues.current.splice(index, 1);
-      if (actualEnumValues.current.length === 0) {
+      enumValues.current.splice(index, 1);
+      if (enumValues.current.length === 0) {
         setAddNew(true);
       }
 
@@ -86,20 +72,19 @@ export function ConstraintsEnum({
         return newUuids;
       });
 
-      onChange(actualEnumValues.current.join(`${ENUM_SEPARATOR} `));
-      setConstraintValidity(isEnumerationValid());
+      onChange({ newValue: enumValues.current.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid() });
     },
-    [isEnumerationValid, onChange, setConstraintValidity]
+    [isEnumerationValid, onChange]
   );
 
   const onDragEnd = useCallback(
     (source: number, dest: number) => {
-      const reordened = [...(actualEnumValues.current ?? [])];
+      const reordened = [...(enumValues.current ?? [])];
       const [removed] = reordened.splice(source, 1);
       reordened.splice(dest, 0, removed);
-      onChange(reordened.join(`${ENUM_SEPARATOR} `));
+      onChange({ newValue: reordened.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid() });
     },
-    [onChange]
+    [isEnumerationValid, onChange]
   );
 
   const reorder = useCallback((source: number, dest: number) => {
@@ -114,42 +99,28 @@ export function ConstraintsEnum({
   const onChangeNew = useCallback(
     (newValue: string) => {
       setAddNew(false);
-      actualEnumValues.current[actualEnumValues.current.length] = typeHelper.transform(newValue);
+      enumValues.current[enumValues.current.length] = typeHelper.transform(newValue);
       setValuesUuid((prev) => {
-        if (prev[actualEnumValues.current.length - 1] === undefined) {
+        if (prev[enumValues.current.length - 1] === undefined) {
           const newValuesUuid = [...prev];
-          newValuesUuid[actualEnumValues.current.length - 1] = generateUuid();
+          newValuesUuid[enumValues.current.length - 1] = generateUuid();
           return newValuesUuid;
         }
         return prev;
       });
-      onInternalChange(newValue);
-      setConstraintValidity(isEnumerationValid());
-      setItemValid((prev) => {
-        const newIsItemValid = [...prev];
-        newIsItemValid[actualEnumValues.current.length - 1] =
-          actualEnumValues.current.filter((e) => e === actualEnumValues.current[actualEnumValues.current.length - 1])
-            .length <= 1;
-        return newIsItemValid;
-      });
+      onChange({ newValue: enumValues.current.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid() });
+      setItemValid(enumValues.current.map((value, i, array) => array.filter((e) => e === value).length <= 1));
     },
-    [isEnumerationValid, onInternalChange, setConstraintValidity, typeHelper]
+    [isEnumerationValid, onChange, typeHelper]
   );
 
   const onChangeItem = useCallback(
     (newValue, index) => {
-      actualEnumValues.current[index] = typeHelper.transform(newValue);
-      onInternalChange(newValue);
-      setConstraintValidity(isEnumerationValid());
-
-      setItemValid((prev) => {
-        const newIsItemValid = [...prev];
-        newIsItemValid[index] =
-          actualEnumValues.current.filter((e) => e === actualEnumValues.current[index]).length <= 1;
-        return newIsItemValid;
-      });
+      enumValues.current[index] = typeHelper.transform(newValue);
+      onChange({ newValue: enumValues.current.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid() });
+      setItemValid(enumValues.current.map((value, i, array) => array.filter((e) => e === value).length <= 1));
     },
-    [isEnumerationValid, onInternalChange, setConstraintValidity, typeHelper]
+    [isEnumerationValid, onChange, typeHelper]
   );
 
   return (
@@ -171,31 +142,26 @@ export function ConstraintsEnum({
             }}
           >
             <ul>
-              {actualEnumValues.current?.map((value, index) => (
+              {enumValues.current?.map((value, index) => (
                 <Draggable
                   key={valuesUuid[index]}
                   index={index}
                   style={{ alignItems: "center" }}
                   handlerStyle={{ margin: "0px 10px" }}
                 >
-                  {(hovered) => {
-                    return (
-                      <li style={{ marginLeft: "20px", listStyleType: "initial" }}>
-                        <EnumElement
-                          id={`enum-element-${index}`}
-                          isDisabled={isReadonly || isDisabled}
-                          initialValue={typeHelper.recover(value ?? "")}
-                          onChange={(newValue) => onChangeItem(newValue, index)}
-                          hovered={hovered}
-                          onRemove={() => onRemove(index)}
-                          isValid={isItemValid[index]}
-                          focusOwner={focusOwner}
-                          setFocusOwner={setFocusOwner}
-                          typeHelper={typeHelper}
-                        />
-                      </li>
-                    );
-                  }}
+                  <li style={{ marginLeft: "20px", listStyleType: "initial" }}>
+                    <EnumElement
+                      id={`enum-element-${index}`}
+                      isDisabled={isReadonly || isDisabled}
+                      initialValue={typeHelper.recover(value ?? "")}
+                      onChange={(newValue) => onChangeItem(newValue, index)}
+                      onRemove={() => onRemove(index)}
+                      isValid={isItemValid[index]}
+                      focusOwner={focusOwner}
+                      setFocusOwner={setFocusOwner}
+                      typeHelper={typeHelper}
+                    />
+                  </li>
                 </Draggable>
               ))}
 
@@ -204,11 +170,10 @@ export function ConstraintsEnum({
                   <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
                   <li style={{ marginLeft: "20px", flexGrow: 1, listStyleType: "initial" }}>
                     <EnumElement
-                      id={`enum-element-${actualEnumValues.current.length}`}
+                      id={`enum-element-${enumValues.current.length}`}
                       isDisabled={isReadonly || isDisabled}
                       initialValue={""}
                       onChange={onChangeNew}
-                      hovered={true}
                       onRemove={() => setAddNew(false)}
                       isValid={true}
                       focusOwner={focusOwner}
@@ -241,7 +206,6 @@ function EnumElement({
   id,
   isDisabled,
   initialValue,
-  hovered,
   isValid,
   typeHelper,
   focusOwner,
@@ -252,7 +216,6 @@ function EnumElement({
   id: string;
   isDisabled: boolean;
   initialValue: string;
-  hovered: boolean;
   isValid: boolean;
   typeHelper: TypeHelper;
   focusOwner: string;
@@ -262,6 +225,7 @@ function EnumElement({
 }) {
   const [value, setValue] = useState<string>(initialValue);
   const removeButtonRef = useRef(null);
+  const { hovered } = useDraggableContext();
 
   const onInternalChange = useCallback(
     (newValue: string) => {
@@ -304,7 +268,7 @@ function EnumElement({
   );
 }
 
-export function isEnum(value: string, typeCheck: (e: string) => boolean): string[] | undefined {
+export function isEnum(value: string, typeCheck: (value: string) => boolean): string[] | undefined {
   const enumValues = value.split(ENUM_SEPARATOR).map((e) => e.trim());
 
   if (enumValues.reduce((isEnum, value) => isEnum && typeCheck(value), true)) {

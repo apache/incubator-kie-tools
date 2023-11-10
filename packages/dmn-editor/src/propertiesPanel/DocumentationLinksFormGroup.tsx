@@ -13,7 +13,7 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { Draggable, DraggableContextProvider } from "./Draggable";
+import { Draggable, DraggableContextProvider, useDraggableContext } from "./Draggable";
 import { useDmnEditorStoreApi } from "../store/Store";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
@@ -172,18 +172,15 @@ export function DocumentationLinksFormGroup({
                       : { paddingLeft: "24px", paddingRight: "8px" }
                   }
                 >
-                  {(hovered) => (
-                    <DocumentationLinksInput
-                      title={kieAttachment["@_name"] ?? ""}
-                      url={kieAttachment["@_url"] ?? ""}
-                      isReadonly={isReadonly}
-                      hovered={hovered}
-                      onChange={(newUrlTitle, newUrl) => onChangeKieAttachment({ newUrlTitle, newUrl, index })}
-                      onRemove={() => onRemove(index)}
-                      isUrlExpanded={expandedUrls[index]}
-                      setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
-                    />
-                  )}
+                  <DocumentationLinksInput
+                    title={kieAttachment["@_name"] ?? ""}
+                    url={kieAttachment["@_url"] ?? ""}
+                    isReadonly={isReadonly}
+                    onChange={(newUrlTitle, newUrl) => onChangeKieAttachment({ newUrlTitle, newUrl, index })}
+                    onRemove={() => onRemove(index)}
+                    isUrlExpanded={expandedUrls[index]}
+                    setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
+                  />
                 </Draggable>
               </li>
             ))}
@@ -199,7 +196,6 @@ function DocumentationLinksInput({
   url,
   isReadonly,
   isUrlExpanded,
-  hovered,
   onChange,
   onRemove,
   setUrlExpanded,
@@ -208,7 +204,6 @@ function DocumentationLinksInput({
   url: string;
   isReadonly: boolean;
   isUrlExpanded: boolean;
-  hovered: boolean;
   onChange: (newUrlTitle: string, newUrl: string) => void;
   onRemove: () => void;
   setUrlExpanded: (isExpanded: boolean) => void;
@@ -217,6 +212,7 @@ function DocumentationLinksInput({
   const uuid = useMemo(() => generateUuid(), []);
   const [titleIsUrl, setTitleIsUrl] = useState(false);
   const updatedOnToogle = useRef(false);
+  const { hovered } = useDraggableContext();
 
   const parseUrl = useCallback((newUrl: string) => {
     try {

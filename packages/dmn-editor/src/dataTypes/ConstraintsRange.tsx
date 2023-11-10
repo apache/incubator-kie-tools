@@ -19,16 +19,14 @@ export function ConstraintsRange({
   typeHelper,
   onChange,
   isDisabled,
-  setConstraintValidity,
 }: {
   isReadonly: boolean;
   value?: string;
   savedValue?: string;
   type: DmnBuiltInDataType;
   typeHelper: TypeHelper;
-  onChange: (newValue: string | undefined) => void;
+  onChange: (args: { newValue: string; isValid: boolean }) => void;
   isDisabled: boolean;
-  setConstraintValidity: (isValid: boolean) => void;
 }) {
   const [start, setStart] = useState(isRange(value ?? "", typeHelper.check)?.[0] ?? "");
   const [end, setEnd] = useState(isRange(value ?? "", typeHelper.check)?.[1] ?? "");
@@ -64,7 +62,7 @@ export function ConstraintsRange({
         (args?.start === undefined || args.start === "") &&
         (args?.end === undefined || args.end === "")
       ) {
-        onChange("");
+        onChange({ newValue: "", isValid: true });
       }
 
       if ((args?.start !== undefined && args.start === "") || (args?.end !== undefined && args.end === "")) {
@@ -75,25 +73,24 @@ export function ConstraintsRange({
         return;
       }
 
-      setConstraintValidity(
-        isStartValid({
-          includeEnd: args?.includeEnd ?? includeEnd,
-          start: args?.start ?? start,
-          end: args?.end ?? end,
-        }) &&
+      onChange({
+        newValue: `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
+          args?.start ?? start
+        )}..${typeHelper.transform(args?.end ?? end)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`,
+        isValid:
+          isStartValid({
+            includeEnd: args?.includeEnd ?? includeEnd,
+            start: args?.start ?? start,
+            end: args?.end ?? end,
+          }) &&
           isEndValid({
             includeEnd: args?.includeEnd ?? includeEnd,
             start: args?.start ?? start,
             end: args?.end ?? end,
-          })
-      );
-      onChange(
-        `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
-          args?.start ?? start
-        )}..${typeHelper.transform(args?.end ?? end)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`
-      );
+          }),
+      });
     },
-    [end, includeEnd, includeStart, isEndValid, isStartValid, onChange, setConstraintValidity, start, typeHelper]
+    [end, includeEnd, includeStart, isEndValid, isStartValid, onChange, start, typeHelper]
   );
 
   const onStartChange = useCallback(
@@ -296,7 +293,7 @@ export function hasRangeStructure(value: string): boolean {
   return hasRangeStartStructure(value) && hasRangeEndStructure(value) && value.split(".").length - 1 === 2;
 }
 
-export function isRange(value: string, typeCheck: (e: string) => boolean): [string, string] | undefined {
+export function isRange(value: string, typeCheck: (value: string) => boolean): [string, string] | undefined {
   if (!hasRangeStructure(value)) {
     return undefined;
   }

@@ -10,11 +10,15 @@ export interface DraggableContext {
   dragging: boolean;
   origin: number;
   leftOrigin: boolean;
+  hovered: boolean;
   onDragStart: (index: number) => void;
   onDragOver: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
   onDragEnd: (index: number) => void;
   onDragEnter: (index: number) => void;
   onDragLeave: (index: number) => void;
+  onPointerEnter: () => void;
+  onPointerLeave: () => void;
+  onPointerOver: () => void;
 }
 
 export const DraggableContext = React.createContext<DraggableContext>({} as any);
@@ -36,6 +40,9 @@ export function DraggableContextProvider({
   const [dragging, setDragging] = useState<boolean>(false);
   const [origin, setOrigin] = useState(-1);
   const [leftOrigin, setLeftOrigin] = useState(false);
+  const [hover, setHover] = useState(false);
+
+  const hovered = useMemo(() => source === -1 && origin === -1 && hover, [origin, hover, source]);
 
   const onInternalDragStart = useCallback((index: number) => {
     setDragging(true);
@@ -57,6 +64,7 @@ export function DraggableContextProvider({
       setDest(-1);
       setOrigin(-1);
       setLeftOrigin(false);
+      setHover(false);
     },
     [dest, onDragEnd, origin]
   );
@@ -81,6 +89,18 @@ export function DraggableContextProvider({
     [leftOrigin, source]
   );
 
+  const onInternalPointerEnter = useCallback(() => {
+    setHover(true);
+  }, []);
+
+  const onInternalPointerLeave = useCallback(() => {
+    setHover(false);
+  }, []);
+
+  const onInternalPointerOver = useCallback(() => {
+    setHover(true);
+  }, []);
+
   return (
     <DraggableContext.Provider
       value={{
@@ -89,11 +109,15 @@ export function DraggableContextProvider({
         dragging,
         origin,
         leftOrigin,
+        hovered,
         onDragStart: onInternalDragStart,
         onDragOver: onInternalDragOver,
         onDragEnd: onInternalDragEnd,
         onDragEnter: onInternalDragEnter,
         onDragLeave: onInternalDragLeave,
+        onPointerEnter: onInternalPointerEnter,
+        onPointerLeave: onInternalPointerLeave,
+        onPointerOver: onInternalPointerOver,
       }}
     >
       {children}
@@ -103,17 +127,26 @@ export function DraggableContextProvider({
 
 export function Draggable(props: {
   index: number;
-  children: (hovered: boolean) => React.ReactNode;
+  children: React.ReactNode;
   style?: React.CSSProperties;
   handlerStyle?: React.CSSProperties;
   childrenStyle?: React.CSSProperties;
 }) {
-  const { source, dragging, origin, leftOrigin, onDragStart, onDragOver, onDragEnd, onDragEnter, onDragLeave } =
-    useDraggableContext();
+  const {
+    source,
+    dragging,
+    leftOrigin,
+    hovered,
+    onDragStart,
+    onDragOver,
+    onDragEnd,
+    onDragEnter,
+    onDragLeave,
+    onPointerEnter,
+    onPointerLeave,
+    onPointerOver,
+  } = useDraggableContext();
   const [draggable, setDraggable] = useState(false);
-  const [hover, setHover] = useState(false);
-
-  const hovered = useMemo(() => source === -1 && origin === -1 && hover, [origin, hover, source]);
 
   const rowClassName = useMemo(() => {
     let className = "kie-dmn-editor--draggable-row";
@@ -138,13 +171,12 @@ export function Draggable(props: {
       onDragOver={(e) => onDragOver(e, props.index)}
       onDragEnd={() => {
         onDragEnd(props.index);
-        setHover(false);
       }}
       onDragLeave={() => onDragLeave(props.index)}
       onDragEnter={() => onDragEnter(props.index)}
-      onPointerEnter={() => setHover(true)}
-      onPointerLeave={() => setHover(false)}
-      onPointerOver={() => setHover(true)}
+      onPointerEnter={onPointerEnter}
+      onPointerLeave={onPointerLeave}
+      onPointerOver={onPointerOver}
     >
       <Icon
         className={"kie-dmn-editor--draggable-icon"}
@@ -159,7 +191,7 @@ export function Draggable(props: {
         />
       </Icon>
       <div className={"kie-dmn-editor--draggable-children"} style={props.childrenStyle}>
-        {props.children(hovered)}
+        {props.children}
       </div>
     </div>
   );

@@ -3,10 +3,10 @@ import { useState, useCallback, useEffect } from "react";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
-import moment from "moment";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 
 export function ConstraintDateTimeDuration({
+  id,
   value,
   onChange,
   focusOwner,
@@ -14,20 +14,13 @@ export function ConstraintDateTimeDuration({
   isValid,
   isDisabled,
 }: ConstraintProps) {
-  const [days, setDays] = useState<string>("");
-  const [hours, setHours] = useState<string>("");
-  const [minutes, setMinutes] = useState<string>("");
-  const [seconds, setSeconds] = useState<string>("");
+  const [days, setDays] = useState<string>(getDaysDuration(value));
+  const [hours, setHours] = useState<string>(getHoursDuration(value));
+  const [minutes, setMinutes] = useState<string>(getMinutesDuration(value));
+  const [seconds, setSeconds] = useState<string>(getSecondsDuration(value));
 
   // It should run on the first render;
   useEffect(() => {
-    const duration = moment.duration(value);
-    if (duration.isValid()) {
-      setDays(getDaysDuration(value));
-      setHours(getHoursDuration(value));
-      setMinutes(getMinutesDuration(value));
-      setSeconds(getSecondsDuration(value));
-    }
     if (focusOwner) {
       document.getElementById(focusOwner)?.focus();
     }
@@ -88,7 +81,7 @@ export function ConstraintDateTimeDuration({
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
           <p>D:</p>
           <TextInput
-            id={"days"}
+            id={`${id}-constraint-days`}
             type={"number"}
             placeholder={"Days"}
             className={"kie-dmn-editor--constraint-input"}
@@ -102,7 +95,7 @@ export function ConstraintDateTimeDuration({
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
           <p>H:</p>
           <TextInput
-            id={"hours"}
+            id={`${id}-constraint-hours`}
             type={"number"}
             placeholder={"Hours"}
             className={"kie-dmn-editor--constraint-input"}
@@ -115,7 +108,7 @@ export function ConstraintDateTimeDuration({
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
           <p>M:</p>
           <TextInput
-            id={"minutes"}
+            id={`${id}-constraint-minutes`}
             type={"number"}
             placeholder={"Minutes"}
             className={"kie-dmn-editor--constraint-input"}
@@ -128,7 +121,7 @@ export function ConstraintDateTimeDuration({
         <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
           <p>S:</p>
           <TextInput
-            id={"seconds"}
+            id={`${id}-constraint-seconds`}
             type={"number"}
             placeholder={"Seconds"}
             className={"kie-dmn-editor--constraint-input"}
@@ -145,7 +138,7 @@ export function ConstraintDateTimeDuration({
 
 function getDaysDuration(value: string) {
   const days = value.replace("P", "").split("T")[0];
-  if (days.length > 1) {
+  if (days.length >= 1) {
     const daysValue = days.replace("D", "");
     return !isNaN(parseInt(daysValue)) ? daysValue : "";
   }
@@ -156,7 +149,7 @@ function getHoursDuration(value: string) {
   const time = value.replace("P", "").split("T")[1];
   if (time && time.length > 1) {
     const hoursValue = time.split("H")[0];
-    if (hoursValue.length > 1) {
+    if (hoursValue.length >= 1) {
       return !isNaN(parseInt(hoursValue)) ? hoursValue : "";
     }
   }
@@ -166,10 +159,13 @@ function getHoursDuration(value: string) {
 function getMinutesDuration(value: string) {
   const time = value.replace("P", "").split("T")[1];
   if (time && time.length > 1) {
-    const minutes = time.split("H")[1];
-    if (minutes && minutes.length > 1) {
-      const minutesValue = minutes.replace("M", "");
-      return !isNaN(parseInt(minutesValue)) ? minutesValue : "";
+    const minutes = time.split("M")[0];
+    if (minutes.length >= 1) {
+      if (minutes.includes("H")) {
+        const minutesValue = minutes.split("H")[1];
+        return !isNaN(parseInt(minutesValue)) ? minutesValue : "";
+      }
+      return !isNaN(parseInt(minutes)) ? minutes : "";
     }
   }
   return "";
@@ -178,10 +174,17 @@ function getMinutesDuration(value: string) {
 function getSecondsDuration(value: string) {
   const time = value.replace("P", "").split("T")[1];
   if (time && time.length > 1) {
-    const seconds = time.split("M")[1];
-    if (seconds && seconds.length > 1) {
-      const secondsValue = seconds.replace("S", "");
-      return !isNaN(parseInt(secondsValue)) ? secondsValue : "";
+    const seconds = time.split("S")[0];
+    if (seconds.length >= 1) {
+      if (seconds.includes("M")) {
+        const secondsValue = seconds.split("M")[1];
+        return !isNaN(parseInt(secondsValue)) ? secondsValue : "";
+      }
+      if (seconds.includes("H")) {
+        const secondsValue = seconds.split("H")[1];
+        return !isNaN(parseInt(secondsValue)) ? secondsValue : "";
+      }
+      return !isNaN(parseInt(seconds)) ? seconds : "";
     }
   }
   return "";

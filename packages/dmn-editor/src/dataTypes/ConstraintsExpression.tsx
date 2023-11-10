@@ -16,12 +16,12 @@ export function ConstraintsExpression({
   isReadonly: boolean;
   value?: string;
   type: DmnBuiltInDataType;
-  onChange?: (newValue: string | undefined) => void;
+  onChange?: (args: { newValue?: string; isValid: boolean }) => void;
 }) {
   const [preview, setPreview] = useState(value ?? "");
   const onFeelChange = useCallback(
-    (content, preview) => {
-      onChange?.(content);
+    (_, content, preview) => {
+      onChange?.({ newValue: content, isValid: true });
       setPreview(preview);
     },
     [onChange]
@@ -81,7 +81,7 @@ export function ConstraintsExpression({
           ))}
         <FeelInput
           value={value}
-          onChange={(_, value, preview) => onFeelChange(value, preview)}
+          onChange={onFeelChange}
           onPreviewChanged={setPreview}
           enabled={!isReadonly}
           options={monacoOptions as any}

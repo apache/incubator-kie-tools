@@ -3,7 +3,6 @@ import { useCallback, useState, useEffect } from "react";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
-import moment from "moment";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 
 export function ConstraintYearsMonthsDuration({
@@ -15,16 +14,11 @@ export function ConstraintYearsMonthsDuration({
   isValid,
   isDisabled,
 }: ConstraintProps) {
-  const [years, setYears] = useState<string>("");
-  const [months, setMonths] = useState<string>("");
+  const [years, setYears] = useState<string>(getYearsDuration(value));
+  const [months, setMonths] = useState<string>(getMonthsDuration(value));
 
   // It should run on the first render;
   useEffect(() => {
-    const duration = moment.duration(value);
-    if (duration.isValid()) {
-      setYears(getYearsDuration(value));
-      setMonths(getMonthsDuration(value));
-    }
     if (focusOwner) {
       document.getElementById(focusOwner)?.focus();
     }
@@ -96,7 +90,7 @@ export function ConstraintYearsMonthsDuration({
 
 function getYearsDuration(value: string) {
   const years = value.replace("P", "").split("Y")[0];
-  if (years.length > 1) {
+  if (years.length >= 1) {
     return !isNaN(parseInt(years)) ? years : "";
   }
   return "";
@@ -104,7 +98,7 @@ function getYearsDuration(value: string) {
 
 function getMonthsDuration(value: string) {
   const months = value.replace("P", "").split("Y")[1];
-  if (months && months.length > 1) {
+  if (months && months.length >= 1) {
     const monthsValue = months.replace("M", "");
     return !isNaN(parseInt(monthsValue)) ? monthsValue : "";
   }
