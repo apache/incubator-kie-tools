@@ -4,6 +4,8 @@ helper = null
 
 commitDone = false
 
+def localRegistryUrl = '';
+
 pipeline {
     agent {
         docker { 
@@ -52,10 +54,11 @@ pipeline {
                     helper.loginRegistry()
 
                     // Prepare for multiplatform build
-                    String localRegistry = cloud.startLocalRegistry()
+                    int freePort = cloud.findFreePort()
+                    String localRegistryUrl = cloud.startLocalRegistry(freePort)
 
                     // TODO docker buildx could be preinstalled onto the docker image
-                    cloud.prepareForDockerMultiplatformBuild([localRegistry],[cloud.getDockerIOMirrorRegistryConfig()], false)
+                    cloud.prepareForDockerMultiplatformBuild([localRegistryUrl],[cloud.getDockerIOMirrorRegistryConfig()], false)
                     cloud.installSkopeo()
                 }
             }
@@ -261,7 +264,7 @@ String getBuiltImage() {
 }
 
 String getTempBuiltImageTag() {
-    return "localhost:5000/kogito-serverless-operator:${getOperatorVersion()}"
+    return "${localRegistryUrl}/kogito-serverless-operator:${getOperatorVersion()}"
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
