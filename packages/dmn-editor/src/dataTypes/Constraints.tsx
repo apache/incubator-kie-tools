@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
@@ -231,20 +231,6 @@ export function Constraints({
       },
     };
   }, [typeRef]);
-
-  // useEffect(() => {
-  //   setConstraintValue((prev) => {
-  //     if (
-  //       (selectedConstraint === ConstraintsType.ENUMERATION && isEnum(prev.value ?? "", typeHelper.check)) ||
-  //       (selectedConstraint === ConstraintsType.RANGE && isRange(prev.value ?? "", typeHelper.check)) ||
-  //       selectedConstraint === ConstraintsType.EXPRESSION
-  //     ) {
-  //       return prev;
-  //     }
-  //     setSelectConstraint(ConstraintsType.NONE);
-  //     return { value: undefined, isValid: true };
-  //   });
-  // }, [selectedConstraint, typeHelper, typeRef]);
 
   const enumToKieConstraintType: (selection: ConstraintsType) => KIE__tConstraintType | undefined = useCallback(
     (selection) => {

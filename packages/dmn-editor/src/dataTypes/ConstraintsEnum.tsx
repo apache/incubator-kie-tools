@@ -21,7 +21,7 @@ export function ConstraintsEnum({
   isDisabled,
 }: ConstraintComponentProps) {
   const enumValues = useMemo(() => isEnum(value, typeHelper.check) ?? [], [typeHelper.check, value]);
-  const [addNew, setAddNew] = useState<boolean>(() => ((enumValues ?? []).length === 0 ? true : false));
+  const [addNew, setAddNew] = useState<boolean>(() => (enumValues.length === 0 ? true : false));
   const [valuesUuid, setValuesUuid] = useState((enumValues ?? [])?.map((_) => generateUuid()));
   const [isItemValid, setItemValid] = useState<boolean[]>(
     enumValues.map((value, i, array) => array.filter((e) => e === value).length <= 1)
@@ -161,7 +161,7 @@ export function ConstraintsEnum({
                   </li>
                 </Draggable>
               ))}
-              {addNew && (
+              {(addNew || enumValues.length === 0) && (
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                   <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
                   <li style={{ marginLeft: "20px", flexGrow: 1, listStyleType: "initial" }}>

@@ -22,8 +22,11 @@ export function ConstraintsRange({
   const [start, setStart] = useState(isRange(value ?? "", typeHelper.check)?.[0] ?? "");
   const [end, setEnd] = useState(isRange(value ?? "", typeHelper.check)?.[1] ?? "");
   const [includeStart, setIncludeStart] = useState(() => {
-    if (hasRangeStartStructure(value ?? "")) {
-      if ((value ?? "").slice(1) === "[") {
+    if (value === undefined) {
+      return true;
+    }
+    if (hasRangeStartStructure(value)) {
+      if (value.charAt(0) === "[") {
         return true;
       }
       return false;
@@ -31,8 +34,11 @@ export function ConstraintsRange({
     return true;
   });
   const [includeEnd, setIncludeEnd] = useState(() => {
-    if (hasRangeEndStructure(value ?? "")) {
-      if ((value ?? "").slice(1) === "]") {
+    if (value === undefined) {
+      return false;
+    }
+    if (hasRangeEndStructure(value)) {
+      if (value.charAt(value.length - 1) === "]") {
         return true;
       }
       return false;
