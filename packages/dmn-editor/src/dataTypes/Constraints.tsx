@@ -17,6 +17,7 @@ import { ConstraintDateTimeDuration } from "./ConstraintComponents/ConstraintDat
 import { ConstraintTime } from "./ConstraintComponents/ConstraintTime";
 import { ConstraintYearsMonthsDuration } from "./ConstraintComponents/ConstraintYearsMonthsDuration";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
+import { ConstraintProps } from "./ConstraintComponents/Constraint";
 
 const REGEX_DURATION_ISO_8601 = /^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?$/;
 
@@ -154,10 +155,9 @@ export function Constraints({
             return moment(recoveredValue, "YYYY-MM-DDThh:mm", true).isValid();
           case DmnBuiltInDataType.DateTimeDuration:
           case DmnBuiltInDataType.YearsMonthsDuration:
-            const test = REGEX_DURATION_ISO_8601.test(recoveredValue);
-            return test;
+            return REGEX_DURATION_ISO_8601.test(recoveredValue) || value === "";
           case DmnBuiltInDataType.Number:
-            return !isNaN(parseFloat(recoveredValue));
+            return !isNaN(parseFloat(recoveredValue)) || value === "";
           case DmnBuiltInDataType.Time:
             return moment(recoveredValue, "hh:mm", true).isValid();
           default:
@@ -230,7 +230,7 @@ export function Constraints({
             return value;
         }
       },
-      component: (props: any) => {
+      component: (props: ConstraintProps) => {
         switch (typeRef) {
           case DmnBuiltInDataType.Date:
             return <ConstraintDate {...props} />;
@@ -329,20 +329,7 @@ export function Constraints({
   );
 
   const constraintComponent = useMemo(() => {
-    if (selected === ConstraintsType.NONE) {
-      return (
-        <p
-          style={{
-            padding: "10px",
-            background: "#eee",
-            borderRadius: "10px",
-          }}
-        >
-          {`Type without constraints.`}
-        </p>
-      );
-    }
-    if (selected === ConstraintsType.ENUMERATION) {
+    if (selected === ConstraintsType.ENUMERATION && isEnum(constraint.value ?? "", typeHelper.check)) {
       return (
         <ConstraintsEnum
           isReadonly={isReadonly}
@@ -362,7 +349,7 @@ export function Constraints({
         />
       );
     }
-    if (selected === ConstraintsType.RANGE) {
+    if (selected === ConstraintsType.RANGE && isRange(constraint.value ?? "", typeHelper.check)) {
       return (
         <ConstraintsRange
           isReadonly={isReadonly}
@@ -399,11 +386,23 @@ export function Constraints({
         />
       );
     }
+
+    return (
+      <p
+        style={{
+          padding: "10px",
+          background: "#eee",
+          borderRadius: "10px",
+        }}
+      >
+        {`Type without constraints.`}
+      </p>
+    );
   }, [
     isConstraintEnabled.enumeration,
     isConstraintEnabled.range,
     isReadonly,
-    constraint,
+    constraint.value,
     onInternalChange,
     savedTypeConstraint?.text.__$$text,
     selected,
