@@ -23,7 +23,9 @@ export function DrdSelectorPanel() {
           variant={ButtonVariant.link}
           onClick={() => {
             dmnEditorStoreApi.setState((state) => {
-              const newIndex = (state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.length ?? -1) + 1;
+              const allDrds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+              const newIndex = allDrds.length;
+
               addOrGetDrd({
                 definitions: state.dmn.model.definitions,
                 drdIndex: newIndex,
@@ -38,9 +40,8 @@ export function DrdSelectorPanel() {
       <Divider style={{ marginBottom: "8px" }} />
       <div className={"kie-dmn-editor--drd-list"}>
         {thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.map((drd, i) => (
-          <>
+          <React.Fragment key={drd["@_id"] ?? i}>
             <button
-              key={drd["@_id"] ?? i}
               className={i === diagram.drdIndex ? "active" : undefined}
               onClick={() => {
                 dmnEditorStoreApi.setState((state) => {
@@ -52,7 +53,7 @@ export function DrdSelectorPanel() {
               {drd["@_name"] || getDefaultDrdName({ drdIndex: i })}
             </button>
             <br />
-          </>
+          </React.Fragment>
         ))}
       </div>
     </>
