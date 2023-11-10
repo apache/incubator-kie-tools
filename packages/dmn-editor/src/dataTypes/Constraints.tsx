@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
@@ -65,7 +65,7 @@ export function Constraints({
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
 }) {
-  const [constraint, setConstraintValue] = useState({
+  const [internalConstraintValue, setInternalConstraintValue] = useState({
     value: itemDefinition?.typeConstraint?.text.__$$text,
     isValid: true,
   });
@@ -90,6 +90,15 @@ export function Constraints({
     }
   });
 
+  useEffect(() => {
+    setInternalConstraintValue((prev) => {
+      if (constraintValue === undefined && prev.isValid === true) {
+        return { value: undefined, isValid: true };
+      }
+      return prev;
+    });
+  }, [constraintValue]);
+
   const typeRef: DmnBuiltInDataType = useMemo(
     () => (itemDefinition?.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
     [itemDefinition?.typeRef?.__$$text]
@@ -106,13 +115,13 @@ export function Constraints({
           case DmnBuiltInDataType.Date:
             return moment(recoveredValue, "YYYY-MM-DD", true).isValid() || value === "";
           case DmnBuiltInDataType.DateTime:
-            return moment(recoveredValue, "YYYY-MM-DDThh:mm", true).isValid() || value === "";
+            return moment(recoveredValue, "YYYY-MM-DDTHH:mm", true).isValid() || value === "";
           case DmnBuiltInDataType.DateTimeDuration:
             return REGEX_DATE_TIME_DURATION.test(recoveredValue) || value === "";
           case DmnBuiltInDataType.Number:
             return !isNaN(parseFloat(recoveredValue)) || value === "";
           case DmnBuiltInDataType.Time:
-            return moment(recoveredValue, "hh:mm", true).isValid() || value === "";
+            return moment(recoveredValue, "HH:mm", true).isValid() || value === "";
           case DmnBuiltInDataType.YearsMonthsDuration:
             return REGEX_YEARS_MONTH_DURATION.test(recoveredValue) || value === "";
           default:
@@ -253,7 +262,7 @@ export function Constraints({
   const onInternalChange = useCallback(
     (args: { constraintType: ConstraintsType; isValid: boolean; value?: string }) => {
       const kieConstraintType = enumToKieConstraintType(args.constraintType);
-      setConstraintValue({ value: args.value, isValid: args.isValid });
+      setInternalConstraintValue({ value: args.value, isValid: args.isValid });
 
       if (isReadonly) {
         return;
@@ -308,24 +317,24 @@ export function Constraints({
         return;
       }
 
-      if (constraint.value === undefined || constraint.value === "") {
+      if (internalConstraintValue.value === undefined || internalConstraintValue.value === "") {
         return;
       }
 
-      if (selection === ConstraintsType.ENUMERATION && isEnum(constraint.value ?? "", typeHelper.check)) {
+      if (selection === ConstraintsType.ENUMERATION && isEnum(internalConstraintValue.value ?? "", typeHelper.check)) {
         onInternalChange({
           constraintType: ConstraintsType.ENUMERATION,
-          value: constraint.value,
-          isValid: constraint.isValid,
+          value: internalConstraintValue.value,
+          isValid: internalConstraintValue.isValid,
         });
         return;
       }
 
-      if (selection === ConstraintsType.RANGE && isRange(constraint.value ?? "", typeHelper.check)) {
+      if (selection === ConstraintsType.RANGE && isRange(internalConstraintValue.value ?? "", typeHelper.check)) {
         onInternalChange({
           constraintType: ConstraintsType.RANGE,
-          value: constraint.value,
-          isValid: constraint.isValid,
+          value: internalConstraintValue.value,
+          isValid: internalConstraintValue.isValid,
         });
         return;
       }
@@ -333,13 +342,13 @@ export function Constraints({
       if (selection === ConstraintsType.EXPRESSION) {
         onInternalChange({
           constraintType: ConstraintsType.EXPRESSION,
-          value: constraint.value,
-          isValid: constraint.isValid,
+          value: internalConstraintValue.value,
+          isValid: internalConstraintValue.isValid,
         });
         return;
       }
     },
-    [constraint, onInternalChange, typeHelper.check]
+    [internalConstraintValue, onInternalChange, typeHelper.check]
   );
 
   const constraintComponent = useMemo(() => {
@@ -349,8 +358,8 @@ export function Constraints({
           isReadonly={isReadonly}
           type={typeRef}
           typeHelper={typeHelper}
-          value={isEnum(constraint.value, typeHelper.check) ? constraint.value : undefined}
-          onChange={setConstraintValue}
+          value={isEnum(internalConstraintValue.value, typeHelper.check) ? internalConstraintValue.value : undefined}
+          onChange={setInternalConstraintValue}
           savedValue={constraintValue}
           onSave={(args: { value?: string; isValid: boolean }) => {
             onInternalChange({
@@ -370,8 +379,8 @@ export function Constraints({
           savedValue={constraintValue}
           type={typeRef}
           typeHelper={typeHelper}
-          value={isRange(constraint.value, typeHelper.check) ? constraint.value : undefined}
-          onChange={setConstraintValue}
+          value={isRange(internalConstraintValue.value, typeHelper.check) ? internalConstraintValue.value : undefined}
+          onChange={setInternalConstraintValue}
           onSave={(args: { value?: string; isValid: boolean }) => {
             onInternalChange({
               constraintType: ConstraintsType.RANGE,
@@ -388,8 +397,8 @@ export function Constraints({
         <ConstraintsExpression
           isReadonly={isReadonly}
           type={typeRef}
-          value={constraint.value}
-          onChange={setConstraintValue}
+          value={internalConstraintValue.value}
+          onChange={setInternalConstraintValue}
           savedValue={constraintValue}
           onSave={(args: { value?: string; isValid: boolean }) => {
             onInternalChange({
@@ -415,7 +424,7 @@ export function Constraints({
       </p>
     );
   }, [
-    constraint.value,
+    internalConstraintValue.value,
     constraintValue,
     isConstraintEnabled.enumeration,
     isConstraintEnabled.range,

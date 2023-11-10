@@ -13,14 +13,7 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import {
-  Draggable,
-  DraggableContext,
-  DraggableContextProvider,
-  useDraggableContext,
-  useDraggableItemContext,
-} from "./Draggable";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { Draggable, DraggableContextProvider, useDraggableItemContext } from "./Draggable";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
 const PLACEHOLDER_URL = "http://";

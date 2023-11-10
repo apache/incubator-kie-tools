@@ -1,16 +1,16 @@
-.kie-dmn-editor--constraint-date button::after {
+.kie-dmn-editor--constraint-time button::after {
   outline: none;
   border-color: transparent;
   background-color: transparent;
 }
 
-.kie-dmn-editor--constraint-date > div > div > button {
+.kie-dmn-editor--constraint-time > div > div > button {
   outline: none;
   border-color: transparent;
   background-color: transparent !important;
 }
 
-.kie-dmn-editor--constraint-date > div > div {
+.kie-dmn-editor--constraint-time > div > div {
   outline: none;
   border-color: transparent;
   background-color: transparent;

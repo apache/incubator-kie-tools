@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
@@ -19,9 +19,21 @@ export function ConstraintsRange({
   onSave,
   isDisabled,
 }: ConstraintComponentProps) {
-  const [start, setStart] = useState(isRange(value ?? "", typeHelper.check)?.[0] ?? "");
-  const [end, setEnd] = useState(isRange(value ?? "", typeHelper.check)?.[1] ?? "");
-  const [includeStart, setIncludeStart] = useState(() => {
+  const updateStart = useCallback(
+    (value?: string): string => {
+      return typeHelper.recover(isRange(value ?? "", typeHelper.check)?.[0] ?? "");
+    },
+    [typeHelper]
+  );
+
+  const updateEnd = useCallback(
+    (value?: string): string => {
+      return typeHelper.recover(isRange(value ?? "", typeHelper.check)?.[1] ?? "");
+    },
+    [typeHelper]
+  );
+
+  const updateIncludeStart = useCallback((value?: string): boolean => {
     if (value === undefined) {
       return true;
     }
@@ -32,8 +44,9 @@ export function ConstraintsRange({
       return false;
     }
     return true;
-  });
-  const [includeEnd, setIncludeEnd] = useState(() => {
+  }, []);
+
+  const updateIncludeEnd = useCallback((value?: string): boolean => {
     if (value === undefined) {
       return false;
     }
@@ -44,7 +57,19 @@ export function ConstraintsRange({
       return false;
     }
     return false;
-  });
+  }, []);
+
+  const [start, setStart] = useState(updateStart(value));
+  const [end, setEnd] = useState(updateEnd(value));
+  const [includeStart, setIncludeStart] = useState(updateIncludeStart(value));
+  const [includeEnd, setIncludeEnd] = useState(updateIncludeEnd(value));
+
+  useEffect(() => {
+    setStart(updateStart(value));
+    setEnd(updateEnd(value));
+    setIncludeStart(updateIncludeStart(value));
+    setIncludeEnd(updateIncludeEnd(value));
+  }, [updateIncludeEnd, updateIncludeStart, updateStart, updateEnd, value]);
 
   const isStartValid = useCallback(
     (args: { includeEnd: boolean; start: string; end: string }) => {

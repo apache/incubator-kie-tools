@@ -4,8 +4,9 @@ import { DatePicker } from "@patternfly/react-core/dist/js/components/DatePicker
 import "./Constraint.css";
 import "./ConstraintDate.css";
 import { ConstraintProps } from "./Constraint";
+import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 
-export function ConstraintDate({ value, onChange }: ConstraintProps) {
+export function ConstraintDate({ value, onChange, isValid }: ConstraintProps) {
   return (
     <>
       <DatePicker
@@ -13,6 +14,7 @@ export function ConstraintDate({ value, onChange }: ConstraintProps) {
         inputProps={{ className: "kie-dmn-editor--constraint-input" }}
         value={value}
         onChange={(e, value) => onChange(value)}
+        style={isValid ? {} : invalidInlineFeelNameStyle}
       />
     </>
   );
