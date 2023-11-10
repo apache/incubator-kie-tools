@@ -125,13 +125,6 @@ export function ExternalNodesPanel() {
                           namespace={namespace}
                           relativeToNamespace={namespace}
                         />
-                        {isAlreadyIncluded ? (
-                          <small>
-                            <div>&nbsp;&nbsp;✓</div>
-                          </small>
-                        ) : (
-                          <></>
-                        )}
                       </Flex>
                     </div>
                   );

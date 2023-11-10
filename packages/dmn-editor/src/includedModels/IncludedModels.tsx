@@ -3,7 +3,7 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Card, CardBody, CardFooter, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardActions, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -31,6 +31,9 @@ import { useExternalModels } from "./DmnEditorDependenciesContext";
 import { allPmmlImportNamespaces, getPmmlNamespace } from "../pmml/pmml";
 import { allDmnImportNamespaces } from "../Dmn15Spec";
 import { getNamespaceOfDmnImport } from "./importNamespaces";
+import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
+import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -114,6 +117,10 @@ export function IncludedModels() {
         },
       });
     });
+
+    setTimeout(() => {
+      setSelectedModel(undefined);
+    }, 5000); // Give it time for the `externalModelsByNamespace` object to be reassembled externally.
 
     cancel();
   }, [selectedPath, selectedModel, importName, allFeelVariableUniqueNames, dmnEditorStoreApi, cancel]);
@@ -279,14 +286,22 @@ export function IncludedModels() {
             <br />
             <Divider inset={{ default: "insetMd" }} />
             <br />
-            <Gallery hasGutter={true}>
+            <Gallery hasGutter={true} minWidths={{ xl: "calc(25% - 1rem)", md: "calc(33% - 1rem)", sm: "100%" }}>
               {thisDmnsImports.flatMap((i, index) => {
-                const externalModel = externalModelsByNamespace?.[getNamespaceOfDmnImport({ dmnImport: i })];
+                const externalModel =
+                  externalModelsByNamespace?.[getNamespaceOfDmnImport({ dmnImport: i })] ??
+                  (!isModalOpen && index === thisDmnsImports.length - 1 ? selectedModel : undefined); // Use the selected model to avoid showing the "unknown included model" card.
 
                 return !externalModel ? (
-                  []
+                  <UnknownIncludedModelCard key={i["@_id"]} _import={i} index={index} isReadonly={false} />
                 ) : (
-                  <IncludedModelCard key={i["@_id"]} _import={i} index={index} externalModel={externalModel} />
+                  <IncludedModelCard
+                    key={i["@_id"]}
+                    _import={i}
+                    index={index}
+                    externalModel={externalModel}
+                    isReadonly={false}
+                  />
                 );
               })}
             </Gallery>
@@ -320,10 +335,12 @@ function IncludedModelCard({
   _import,
   index,
   externalModel,
+  isReadonly,
 }: {
   _import: DMN15__tImport;
   externalModel: ExternalModel;
   index: number;
+  isReadonly: boolean;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { onRequestToJumpToPath, onRequestToResolvePath } = useDmnEditor();
@@ -368,9 +385,40 @@ function IncludedModelCard({
 
   const pathDisplayed = onRequestToResolvePath?.(externalModel.relativePath) ?? externalModel.relativePath;
 
+  const [isCardActionsOpen, setCardActionsOpen] = useState(false);
+
   return (
-    <Card isCompact={false}>
+    <Card isHoverable={true} isCompact={false}>
       <CardHeader>
+        <CardActions>
+          <Dropdown
+            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setCardActionsOpen} />}
+            onSelect={() => setCardActionsOpen(false)}
+            isOpen={isCardActionsOpen}
+            menuAppendTo={document.body}
+            isPlain={true}
+            position={"right"}
+            dropdownItems={[
+              <React.Fragment key={"remove-fragment"}>
+                {!isReadonly && (
+                  <DropdownItem
+                    style={{ minWidth: "240px" }}
+                    icon={<TrashIcon />}
+                    onClick={() => {
+                      if (isReadonly) {
+                        return;
+                      }
+
+                      remove(index);
+                    }}
+                  >
+                    Remove
+                  </DropdownItem>
+                )}
+              </React.Fragment>,
+            ]}
+          />
+        </CardActions>
         <CardTitle>
           <InlineFeelNameInput
             placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
@@ -406,13 +454,116 @@ function IncludedModelCard({
           </Button>
         </small>
       </CardBody>
-      <CardFooter>
-        <br />
-        <br />
-        <Button variant={ButtonVariant.link} onClick={() => remove(index)} style={{ padding: 0 }}>
-          Remove
-        </Button>
-      </CardFooter>
+    </Card>
+  );
+}
+
+function UnknownIncludedModelCard({
+  _import,
+  index,
+  isReadonly,
+}: {
+  _import: DMN15__tImport;
+  index: number;
+  isReadonly: boolean;
+}) {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const remove = useCallback(
+    (index: number) => {
+      dmnEditorStoreApi.setState((state) => {
+        deleteImport({ definitions: state.dmn.model.definitions, index });
+      });
+    },
+    [dmnEditorStoreApi]
+  );
+
+  const { allFeelVariableUniqueNames, allTopLevelDataTypesByFeelName } = useDmnEditorDerivedStore();
+
+  const rename = useCallback<OnInlineFeelNameRenamed>(
+    (newName) => {
+      dmnEditorStoreApi.setState((state) => {
+        renameImport({ definitions: state.dmn.model.definitions, index, newName, allTopLevelDataTypesByFeelName });
+      });
+    },
+    [allTopLevelDataTypesByFeelName, dmnEditorStoreApi, index]
+  );
+
+  const extension = useMemo(() => {
+    if (allDmnImportNamespaces.has(_import["@_importType"])) {
+      return "dmn";
+    } else if (allPmmlImportNamespaces.has(_import["@_importType"])) {
+      return "pmml";
+    } else {
+      return "Unknwon";
+    }
+  }, [_import]);
+
+  const [isCardActionsOpen, setCardActionsOpen] = useState(false);
+
+  return (
+    <Card isHoverable={true} isCompact={false}>
+      <CardHeader>
+        <CardActions>
+          <Dropdown
+            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setCardActionsOpen} />}
+            onSelect={() => setCardActionsOpen(false)}
+            isOpen={isCardActionsOpen}
+            menuAppendTo={document.body}
+            isPlain={true}
+            position={"right"}
+            dropdownItems={[
+              <React.Fragment key={"remove-fragment"}>
+                {!isReadonly && (
+                  <DropdownItem
+                    style={{ minWidth: "240px" }}
+                    icon={<TrashIcon />}
+                    onClick={() => {
+                      if (isReadonly) {
+                        return;
+                      }
+
+                      remove(index);
+                    }}
+                  >
+                    Remove
+                  </DropdownItem>
+                )}
+              </React.Fragment>,
+            ]}
+          />
+        </CardActions>
+        <CardTitle>
+          <InlineFeelNameInput
+            placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
+            isPlain={true}
+            allUniqueNames={allFeelVariableUniqueNames}
+            id={_import["@_id"]!}
+            name={_import["@_name"]}
+            isReadonly={false}
+            shouldCommitOnBlur={true}
+            onRenamed={rename}
+            validate={DMN15_SPEC.IMPORT.name.isValid}
+          />
+          <br />
+          <br />
+          <ExternalModelLabel extension={extension} />
+          <br />
+          <br />
+        </CardTitle>
+      </CardHeader>
+      <CardBody>
+        <Alert title={"External model not found."} isInline={true} variant={AlertVariant.danger}>
+          <Divider style={{ marginTop: "16px" }} />
+          <br />
+          <p>
+            <b>Namespace:</b>&nbsp;{_import["@_namespace"]}
+          </p>
+          <p>
+            <b>URI:</b>&nbsp;{_import["@_locationURI"] ?? <i>None</i>}
+          </p>
+        </Alert>
+      </CardBody>
     </Card>
   );
 }

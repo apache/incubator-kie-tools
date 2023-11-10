@@ -22,6 +22,14 @@ export const avaiableModels: DmnEditor.ExternalModel[] = [
     relativePath: "dev-webapp/available-models-to-include/sumDiffDs.dmn",
   },
   {
+    type: "dmn",
+    model: getMarshaller(`<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/">`, {
+      upgradeTo: "latest",
+    }).parser.parse(),
+    svg: "",
+    relativePath: "dev-webapp/available-models-to-include/empty.dmn",
+  },
+  {
     type: "pmml",
     model: testTreePmmlModel,
     relativePath: "dev-webapp/available-models-to-include/testTree.pmml",
