@@ -87,9 +87,9 @@ export function InlineFeelNameInput({
         ...(isValid ? {} : invalidInlineFeelNameStyle),
         ..._style,
       }}
-      size={1 + Math.max(0, _placeholder?.length ?? 0, name.length)}
+      size={2 + Math.max(0, _placeholder?.length ?? 0, name.length)}
       onInput={(e) => {
-        (e.target as any).size = 1 + Math.max(0, _placeholder?.length ?? 0, (e.target as any).value.length ?? 0);
+        (e.target as any).size = 2 + Math.max(0, _placeholder?.length ?? 0, (e.target as any).value.length ?? 0);
       }}
       disabled={isReadonly}
       placeholder={_placeholder}
