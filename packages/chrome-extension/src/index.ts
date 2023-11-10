@@ -48,10 +48,7 @@ export function startExtension(args: {
   githubAuthTokenCookieName: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   externalEditorManager?: ExternalEditorManager;
-  getCustomChannelApiImpl?: (args: {
-    pageType: GitHubPageType;
-    fileInfo: FileInfo;
-  }) => KogitoEditorChannelApi | undefined;
+  getCustomChannelApiImpl?: (pageType: GitHubPageType, fileInfo: FileInfo) => KogitoEditorChannelApi | undefined;
 }) {
   const logger = new Logger(args.name);
   const resourceContentServiceFactory = new ResourceContentServiceFactory();
@@ -70,7 +67,7 @@ export function startExtension(args: {
       editorEnvelopeLocator: args.editorEnvelopeLocator,
       resourceContentServiceFactory: resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager,
-      customChannelApiImpl: args.getCustomChannelApiImpl?.({ pageType, fileInfo }),
+      customChannelApiImpl: args.getCustomChannelApiImpl?.(pageType, fileInfo),
     });
   };
 

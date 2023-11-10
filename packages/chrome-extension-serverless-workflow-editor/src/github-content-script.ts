@@ -33,26 +33,29 @@ import { extractFileExtension, removeDirectories } from "./utils";
 
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 
-function getCustomChannelApiImpl(args: { pageType: GitHubPageType; fileInfo: FileInfo }) {
-  if (!getFileLanguage(args.fileInfo.path) || args.pageType !== GitHubPageType.EDIT) {
+function getCustomChannelApiImpl(
+  pageType: GitHubPageType,
+  fileInfo: FileInfo
+): SwfCombinedEditorChannelApiImpl | undefined {
+  if (!getFileLanguage(fileInfo.path) || pageType !== GitHubPageType.EDIT) {
     return;
   }
 
   const dependencies = new Dependencies();
 
   const embeddedEditorFile: EmbeddedEditorFile = {
-    path: args.fileInfo.path,
+    path: fileInfo.path,
     getFileContents: () => {
       return Promise.resolve(dependencies.all.edit__githubTextAreaWithFileContents()?.textContent ?? "");
     },
     isReadOnly: false,
-    fileExtension: `sw.${extractFileExtension(args.fileInfo.path)}`,
-    fileName: `${removeDirectories(args.fileInfo.path)}`,
+    fileExtension: `sw.${extractFileExtension(fileInfo.path)}`,
+    fileName: `${removeDirectories(fileInfo.path)}`,
   };
   const channelApiImpl = new EmbeddedEditorChannelApiImpl(new StateControl(), embeddedEditorFile, "en", {});
 
   const chromeExtensionSwfLanguageService = new ChromeExtensionSwfLanguageService();
-  const languageService = chromeExtensionSwfLanguageService.getLs(args.fileInfo.path);
+  const languageService = chromeExtensionSwfLanguageService.getLs(fileInfo.path);
   return new SwfCombinedEditorChannelApiImpl({
     defaultApiImpl: channelApiImpl,
     swfLanguageServiceChannelApiImpl: new SwfLanguageServiceChannelApiImpl(languageService),
