@@ -65,7 +65,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
   return (
     <>
-      <RF.Panel position={"top-left"} style={{ pointerEvents: "none" }}>
+      <RF.Panel position={"top-left"}>
         <aside className={"kie-dmn-editor--drd-selector"}>
           <InlineFeelNameInput
             validate={() => true}
@@ -115,6 +115,8 @@ export function Palette({ pulse }: { pulse: boolean }) {
             </button>
           </Popover>
         </aside>
+      </RF.Panel>
+      <RF.Panel position={"top-left"} style={{ marginTop: "78px" }}>
         <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
           <div
             title="Input Data"
