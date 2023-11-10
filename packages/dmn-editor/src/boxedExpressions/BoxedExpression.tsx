@@ -147,12 +147,13 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
         updateExpression({
           definitions: state.dmn.model.definitions,
+          drdIndex: diagram.drdIndex,
           expression: newExpression,
           drgElementIndex: expression?.drgElementIndex ?? 0,
         });
       });
     },
-    [dmnEditorStoreApi, expression]
+    [diagram.drdIndex, dmnEditorStoreApi, expression?.beeExpression, expression?.drgElementIndex]
   );
 
   const isResetSupportedOnRootExpression = useMemo(() => {

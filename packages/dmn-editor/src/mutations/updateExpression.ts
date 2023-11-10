@@ -9,10 +9,12 @@ import { renameDrgElement } from "./renameNode";
 
 export function updateExpression({
   definitions,
+  drdIndex,
   expression,
   drgElementIndex,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   expression: ExpressionDefinition;
   drgElementIndex: number;
 }): void {
@@ -50,7 +52,7 @@ export function updateExpression({
     throw new Error("Can't update expression for drgElement that is not a Decision or a BKM.");
   }
 
-  const { widthsExtension, widths } = addOrGetDrd({ definitions });
+  const { widthsExtension, widths } = addOrGetDrd({ definitions, drdIndex });
   const componentWidthsMap = widths.reduce(
     (acc, e) =>
       e["@_dmnElementRef"]

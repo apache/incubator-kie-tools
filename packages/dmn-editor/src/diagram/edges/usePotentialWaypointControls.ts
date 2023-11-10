@@ -19,8 +19,9 @@ export function usePotentialWaypointControls(
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const reactFlowInstance = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
-  const [potentialWaypoint, setPotentialWaypoint] =
-    useState<ReturnType<typeof approximateClosestPoint> | undefined>(undefined);
+  const [potentialWaypoint, setPotentialWaypoint] = useState<ReturnType<typeof approximateClosestPoint> | undefined>(
+    undefined
+  );
 
   const { container } = useDmnEditorDiagramContainer();
 
@@ -80,12 +81,21 @@ export function usePotentialWaypointControls(
     dmnEditorStoreApi.setState((state) => {
       addEdgeWaypoint({
         definitions: state.dmn.model.definitions,
+        drdIndex: diagram.drdIndex,
         beforeIndex: i - 1,
         edgeIndex,
         waypoint: snappedPotentialWaypoint,
       });
     });
-  }, [dmnEditorStoreApi, edgeIndex, isExistingWaypoint, potentialWaypoint, snappedPotentialWaypoint, waypoints]);
+  }, [
+    diagram.drdIndex,
+    dmnEditorStoreApi,
+    edgeIndex,
+    isExistingWaypoint,
+    potentialWaypoint,
+    snappedPotentialWaypoint,
+    waypoints,
+  ]);
 
   const isDraggingWaypoint = !!diagram.draggingWaypoints.find((e) => e === edgeId);
 

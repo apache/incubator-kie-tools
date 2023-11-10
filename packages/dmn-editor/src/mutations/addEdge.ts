@@ -17,20 +17,19 @@ import { getDiscreteAutoPositioningEdgeIdMarker, getPointForHandle } from "../di
 import { getRequirementsFromEdge } from "./addConnectedNode";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { Unpacked } from "../tsExt/tsExt";
-import {
-  repopulateInputDataAndDecisionsOnAllDecisionServices,
-  repopulateInputDataAndDecisionsOnDecisionService,
-} from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 
 export function addEdge({
   definitions,
+  drdIndex,
   sourceNode,
   targetNode,
   edge,
   keepWaypoints,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   sourceNode: {
     type: NodeType;
     data: DmnDiagramNodeData;
@@ -129,7 +128,7 @@ export function addEdge({
     }
   }
 
-  const { diagramElements } = addOrGetDrd({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
   // Remove existing
   const removedDmnEdge: DMNDI15__DMNEdge | undefined = removeFirstMatchIfPresent(

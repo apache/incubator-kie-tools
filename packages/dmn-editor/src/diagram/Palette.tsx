@@ -48,6 +48,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
       const { href: newNodeId } = addStandaloneNode({
         definitions: state.dmn.model.definitions,
+        drdIndex: diagram.drdIndex,
         newNode: {
           type: NODE_TYPES.group,
           bounds: getBounds({
@@ -59,7 +60,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
       state.dispatch.diagram.setNodeStatus(state, newNodeId, { selected: true });
     });
-  }, [dmnEditorStoreApi, rfStoreApi]);
+  }, [diagram.drdIndex, dmnEditorStoreApi, rfStoreApi]);
 
   const drd = thisDmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex];
 

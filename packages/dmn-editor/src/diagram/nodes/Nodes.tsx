@@ -610,6 +610,7 @@ export const DecisionServiceNode = React.memo(
           dmnEditorStoreApi.setState((state) => {
             updateDecisionServiceDividerLine({
               definitions: state.dmn.model.definitions,
+              drdIndex: diagram.drdIndex,
               dmnShapesByHref,
               drgElementIndex: index,
               shapeIndex: shape.index,
@@ -628,7 +629,16 @@ export const DecisionServiceNode = React.memo(
       return () => {
         selection.on(".drag", null);
       };
-    }, [decisionService, diagram.snapGrid, dmnEditorStoreApi, dmnShapesByHref, id, index, shape.index]);
+    }, [
+      decisionService,
+      diagram.drdIndex,
+      diagram.snapGrid,
+      dmnEditorStoreApi,
+      dmnShapesByHref,
+      id,
+      index,
+      shape.index,
+    ]);
 
     return (
       <>

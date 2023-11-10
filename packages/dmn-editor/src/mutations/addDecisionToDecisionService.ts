@@ -7,10 +7,12 @@ export function addDecisionToDecisionService({
   definitions,
   decisionId,
   decisionServiceId,
+  drdIndex,
 }: {
   definitions: DMN15__tDefinitions;
   decisionId: string;
   decisionServiceId: string;
+  drdIndex: number;
 }) {
   console.debug(`DMN MUTATION: Adding Decision '${decisionId}' to Decision Service '${decisionServiceId}'`);
 
@@ -24,7 +26,7 @@ export function addDecisionToDecisionService({
     throw new Error(`DRG Element with id '${decisionServiceId}' is either not a Decision Service or doesn't exist.`);
   }
 
-  const diagram = addOrGetDrd({ definitions });
+  const diagram = addOrGetDrd({ definitions, drdIndex });
   const decisionShape = diagram.diagramElements.find(
     (s) => s["@_dmnElementRef"] === decisionId && s.__$$element === "dmndi:DMNShape"
   ) as DMNDI15__DMNShape;

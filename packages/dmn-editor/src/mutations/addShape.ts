@@ -7,14 +7,16 @@ import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServic
 
 export function addShape({
   definitions,
+  drdIndex,
   nodeType,
   shape,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   nodeType: NodeType;
   shape: WithoutIdXmlAttributes<DMNDI15__DMNShape>;
 }) {
-  const { diagramElements } = addOrGetDrd({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
   diagramElements.push({
     __$$element: "dmndi:DMNShape",
     "@_id": generateUuid(),

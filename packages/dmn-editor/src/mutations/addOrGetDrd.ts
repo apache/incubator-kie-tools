@@ -4,7 +4,7 @@ export function getDefaultDrdName({ drdIndex }: { drdIndex: number }) {
   return drdIndex === 0 ? "Default DRD" : "Unnamed DRD";
 }
 
-export function addOrGetDrd({ definitions, drdIndex }: { definitions: DMN15__tDefinitions; drdIndex?: number }) {
+export function addOrGetDrd({ definitions, drdIndex }: { definitions: DMN15__tDefinitions; drdIndex: number }) {
   const _drdIndex = drdIndex ?? 0;
   const defaultName = getDefaultDrdName({ drdIndex: _drdIndex });
 
@@ -13,7 +13,7 @@ export function addOrGetDrd({ definitions, drdIndex }: { definitions: DMN15__tDe
   definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
   definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][_drdIndex] ??= {};
 
-  const defaultDiagram = definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0];
+  const defaultDiagram = definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][_drdIndex];
   defaultDiagram["@_name"] ??= defaultName;
   defaultDiagram["@_useAlternativeInputDataShape"] ??= false;
   defaultDiagram["dmndi:DMNDiagramElement"] ??= [];

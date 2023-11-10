@@ -15,6 +15,7 @@ export const DECISION_SERVICE_DIVIDER_LINE_PADDING = 100;
 
 export function updateDecisionServiceDividerLine({
   definitions,
+  drdIndex,
   dmnShapesByHref,
   shapeIndex,
   localYPosition,
@@ -22,13 +23,14 @@ export function updateDecisionServiceDividerLine({
   snapGrid,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
   shapeIndex: number;
   localYPosition: number;
   drgElementIndex: number;
   snapGrid: SnapGrid;
 }) {
-  const { diagramElements } = addOrGetDrd({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
   const shape = diagramElements?.[shapeIndex] as DMNDI15__DMNShape | undefined;
   const shapeBounds = shape?.["dc:Bounds"];

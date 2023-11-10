@@ -3,14 +3,16 @@ import { addOrGetDrd } from "./addOrGetDrd";
 
 export function deleteEdgeWaypoint({
   definitions,
+  drdIndex,
   edgeIndex,
   waypointIndex,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   edgeIndex: number;
   waypointIndex: number;
 }) {
-  const { diagramElements } = addOrGetDrd({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
   const diagramElement = diagramElements[edgeIndex];
   if (diagramElement.__$$element !== "dmndi:DMNEdge") {

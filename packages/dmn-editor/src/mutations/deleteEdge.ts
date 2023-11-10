@@ -6,19 +6,18 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
-import {
-  repopulateInputDataAndDecisionsOnAllDecisionServices,
-  repopulateInputDataAndDecisionsOnDecisionService,
-} from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 
 export function deleteEdge({
   definitions,
+  drdIndex,
   edge,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
 }) {
-  const { diagramElements } = addOrGetDrd({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
   const dmnObjects: DMN15__tDefinitions["artifact"] | DMN15__tDefinitions["drgElement"] =
     switchExpression(edge?.dmnObject.type, {

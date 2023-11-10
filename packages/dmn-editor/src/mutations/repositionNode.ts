@@ -11,6 +11,7 @@ import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServic
 
 export function repositionNode({
   definitions,
+  drdIndex,
   controlWaypointsByEdge,
   change,
 }: {
@@ -20,6 +21,7 @@ export function repositionNode({
    */
   controlWaypointsByEdge: Map<number, Set<number>>;
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   change: {
     nodeType: NodeType;
     shapeIndex: number;
@@ -37,7 +39,7 @@ export function repositionNode({
       }
   );
 }) {
-  const { diagramElements } = addOrGetDrd({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
   const shape = diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined;
   const shapeBounds = shape?.["dc:Bounds"];

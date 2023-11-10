@@ -6,17 +6,16 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
-import {
-  repopulateInputDataAndDecisionsOnAllDecisionServices,
-  repopulateInputDataAndDecisionsOnDecisionService,
-} from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { buildXmlHref } from "../xml/xmlHrefs";
 
 export function addStandaloneNode({
   definitions,
+  drdIndex,
   newNode,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   newNode: { type: NodeType; bounds: DC__Bounds };
 }) {
   const newNodeId = generateUuid();
@@ -102,7 +101,7 @@ export function addStandaloneNode({
   }
 
   // Add the new node shape
-  const { diagramElements } = getDefaultDiagram({ definitions });
+  const { diagramElements } = getDefaultDiagram({ definitions, drdIndex });
   const shapeId = generateUuid();
   diagramElements?.push({
     __$$element: "dmndi:DMNShape",

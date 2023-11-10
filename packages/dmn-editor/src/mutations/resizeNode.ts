@@ -16,11 +16,13 @@ import { addOrGetDrd } from "./addOrGetDrd";
 
 export function resizeNode({
   definitions,
+  drdIndex,
   dmnShapesByHref,
   snapGrid,
   change,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
   snapGrid: SnapGrid;
   change: {
@@ -35,7 +37,7 @@ export function resizeNode({
 }) {
   const edgeIndexesAlreadyUpdated = new Set<number>();
 
-  const { diagramElements } = addOrGetDrd({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
   const shape = diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined;
   const shapeBounds = shape?.["dc:Bounds"];

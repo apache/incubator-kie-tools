@@ -66,6 +66,7 @@ export function Waypoint({
         setState((state) => {
           repositionEdgeWaypoint({
             definitions: state.dmn.model.definitions,
+            drdIndex: diagram.drdIndex,
             edgeIndex,
             waypointIndex: index,
             waypoint: snapPoint(diagram.snapGrid, { "@_x": e.x, "@_y": e.y }),
@@ -81,7 +82,7 @@ export function Waypoint({
     return () => {
       selection.on(".drag", null);
     };
-  }, [diagram.snapGrid, dispatch.diagram, edgeId, edgeIndex, index, onDragStop, setState]);
+  }, [diagram.drdIndex, diagram.snapGrid, dispatch.diagram, edgeId, edgeIndex, index, onDragStop, setState]);
 
   return (
     <circle
@@ -97,6 +98,7 @@ export function Waypoint({
         setState((state) => {
           deleteEdgeWaypoint({
             definitions: state.dmn.model.definitions,
+            drdIndex: diagram.drdIndex,
             edgeIndex,
             waypointIndex: index,
           });

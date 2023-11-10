@@ -16,19 +16,18 @@ import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
-import {
-  repopulateInputDataAndDecisionsOnAllDecisionServices,
-  repopulateInputDataAndDecisionsOnDecisionService,
-} from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { buildXmlHref } from "../xml/xmlHrefs";
 
 export function addConnectedNode({
   definitions,
+  drdIndex,
   sourceNode,
   newNode,
   edge,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   sourceNode: { type: NodeType; href: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
   edge: EdgeType;
@@ -132,7 +131,7 @@ export function addConnectedNode({
   }
 
   const newShapeId = generateUuid();
-  const { diagramElements } = addOrGetDrd({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
   // Add the new node shape
   diagramElements?.push({
     __$$element: "dmndi:DMNShape",

@@ -1,25 +1,24 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeNature } from "./NodeNature";
 import { addOrGetDrd } from "./addOrGetDrd";
-import {
-  repopulateInputDataAndDecisionsOnAllDecisionServices,
-  repopulateInputDataAndDecisionsOnDecisionService,
-} from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 export function deleteNode({
   definitions,
+  drdIndex,
   nodeNature,
   dmnObjectId,
   dmnObjectQName,
 }: {
   definitions: DMN15__tDefinitions;
+  drdIndex: number;
   nodeNature: NodeNature;
   dmnObjectId: string | undefined;
   dmnObjectQName: XmlQName;
 }) {
-  const { diagramElements, widthsExtension } = addOrGetDrd({ definitions });
+  const { diagramElements, widthsExtension } = addOrGetDrd({ definitions, drdIndex });
 
   // Edges need to be deleted by a separate call to `deleteEdge` prior to this.
 
