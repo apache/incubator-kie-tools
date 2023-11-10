@@ -20,17 +20,16 @@
 
 package org.kie.workbench.common.stunner.client.widgets.editor;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import elemental2.dom.CSSProperties;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
+import io.crysknife.client.ManagedInstance;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 import org.gwtbootstrap3.extras.animate.client.ui.Animate;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.gwtproject.timer.client.Timer;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.client.widgets.canvas.PreviewLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
@@ -167,7 +166,7 @@ public class PreviewWindow {
         style.borderColor = "#808080";
     }
 
-    void onTogglePreviewEvent(@Observes TogglePreviewEvent event) {
+    public void onTogglePreviewEvent(@Observes TogglePreviewEvent event) {
         if (null != previewRoot && previewRoot.isVisible()) {
             switch (event.getEventType()) {
                 case TOGGLE:

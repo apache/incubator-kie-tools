@@ -31,12 +31,12 @@ import {
 } from "@patternfly/react-table/dist/js/components/Table";
 import isEmpty from "lodash/isEmpty";
 import filter from "lodash/filter";
+import get from "lodash/get";
 import sample from "lodash/sample";
 import keys from "lodash/keys";
 import reduce from "lodash/reduce";
 import isFunction from "lodash/isFunction";
 import { v4 as uuidv4 } from "uuid";
-import jp from "jsonpath";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 import { KogitoSpinner } from "../KogitoSpinner/KogitoSpinner";
 import { KogitoEmptyState, KogitoEmptyStateType } from "../KogitoEmptyState/KogitoEmptyState";
@@ -59,9 +59,9 @@ interface IOwnProps {
   onSorting?: (index: number, direction: string) => void;
 }
 
-const getCellData = (dataObj: Record<string, unknown>, path: string): string => {
+const getCellData = (dataObj: Record<string, any>, path: string): string => {
   if (dataObj && path) {
-    return !isEmpty(jp.value(dataObj, path)) ? jp.value(dataObj, path) : "N/A";
+    return get(dataObj, path) ?? "N/A";
   } else {
     return "N/A";
   }
@@ -87,9 +87,7 @@ const getColumns = (data: any[], columns: DataTableColumn[]) => {
             transforms: column.isSortable ? [sortable] : undefined,
           } as ICell;
         })
-      : filter(keys(sample(data)), (key) => key !== "__typename").map(
-          (key) => ({ title: key, data: `$.${key}` } as ICell)
-        );
+      : filter(keys(sample(data)), (key) => key !== "__typename").map((key) => ({ title: key, data: key } as ICell));
   } else if (columns) {
     return filter(columns, (column) => !isEmpty(column.path)).map((column) => {
       return {

@@ -103,6 +103,7 @@
       { "id": "@kie-tools/extended-services-api" },
       { "id": "dmn-vscode-extension" },
       { "id": "@kie-tools/extended-services" },
+      { "id": "@kie-tools/extended-services-java" },
       { "id": "@kie-tools/form-generation-tool" },
       { "id": "@kie-tools/uniforms-bootstrap4-codegen" },
       { "id": "@kie-tools/uniforms-patternfly-codegen" },
@@ -639,6 +640,8 @@
       },
       { "source": "dmn-vscode-extension", "target": "@kie-tools/stunner-editors", "weight": 1 },
       { "source": "@kie-tools/extended-services", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/extended-services-java", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/extended-services-java", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-bootstrap4-codegen", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-patternfly-codegen", "weight": 1 },
       { "source": "@kie-tools/uniforms-bootstrap4-codegen", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -689,7 +692,7 @@
       { "source": "@kie-tools/kie-sandbox-distribution", "target": "@kie-tools/kie-sandbox-image", "weight": 1 },
       {
         "source": "@kie-tools/kie-sandbox-extended-services-image",
-        "target": "@kie-tools/extended-services",
+        "target": "@kie-tools/extended-services-java",
         "weight": 1
       },
       { "source": "@kie-tools/kie-sandbox-extended-services-image", "target": "@kie-tools/image-builder", "weight": 1 },
@@ -959,6 +962,7 @@
     ["@kie-tools/eslint", "packages/eslint"],
     ["@kie-tools/extended-services", "packages/extended-services"],
     ["@kie-tools/extended-services-api", "packages/extended-services-api"],
+    ["@kie-tools/extended-services-java", "packages/extended-services-java"],
     ["@kie-tools/feel-input-component", "packages/feel-input-component"],
     ["@kie-tools/form", "packages/form"],
     ["@kie-tools/form-dmn", "packages/form-dmn"],

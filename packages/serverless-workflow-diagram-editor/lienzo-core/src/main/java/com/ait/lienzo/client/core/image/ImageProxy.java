@@ -29,8 +29,8 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
-import com.google.gwt.resources.client.ImageResource;
 import elemental2.dom.ImageData;
+import org.treblereel.j2cl.processors.common.resources.ImageResource;
 
 /**
  * ImageProxy is used by {@link AbstractImageShape} to load and draw the image.
@@ -135,7 +135,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
         m_dest_high = m_obounds.getDestHigh();
 
-        loadImageBitmap(resource.getSafeUri().asString());
+        loadImageBitmap(resource.getSrc());
     }
 
     private void loadImageBitmap(final String url) {

@@ -15,11 +15,11 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.2
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.3
 
 COPY entrypoint.sh dist-dev/image-env-to-json-standalone dist-dev/EnvJson.schema.json /tmp/
 
-RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.53-11.el9_2.5.x86_64 \
+RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.57-5.el9.x86_64 \
   && microdnf --disableplugin=subscription-manager clean all \
   && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf \

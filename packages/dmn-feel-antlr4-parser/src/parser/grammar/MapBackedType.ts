@@ -20,6 +20,7 @@
 import { Type } from "./Type";
 
 export class MapBackedType implements Type {
+  private readonly _typeRef: string;
   private readonly _name: string;
   private readonly _properties: Map<string, Type>;
 
@@ -31,7 +32,12 @@ export class MapBackedType implements Type {
     return this._properties;
   }
 
-  constructor(name: string) {
+  get typeRef(): string {
+    return this._typeRef;
+  }
+
+  constructor(name: string, typeRef: string) {
+    this._typeRef = typeRef;
     this._name = name;
     this._properties = new Map<string, Type>();
   }

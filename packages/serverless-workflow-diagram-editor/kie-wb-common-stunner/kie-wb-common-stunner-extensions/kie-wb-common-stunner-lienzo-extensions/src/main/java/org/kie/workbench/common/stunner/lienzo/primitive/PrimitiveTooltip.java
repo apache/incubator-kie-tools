@@ -101,7 +101,6 @@ public class PrimitiveTooltip extends PrimitivePopup {
                                                        direction);
         final double w = dw + (isWest(direction) ? TRIANGLE_SIZE * 2 : 0);
         final double h = dh + (isNorth(direction) ? TRIANGLE_SIZE * 2 : 0);
-        ;
         final Group g = new Group();
         g.add(decorator);
         g.add(descText);
