@@ -28,6 +28,7 @@ import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
 import { useChromeExtensionI18n } from "../../i18n";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 interface Props {
   openFileExtension: string;
@@ -43,10 +44,17 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
 ) => {
   const githubApi = useGitHubApi();
   const { editor, editorRef } = useEditorRef();
-  const { envelopeLocator, resourceContentServiceFactory, customChannelApiImpl } = useGlobals();
+  const {
+    envelopeLocator,
+    resourceContentServiceFactory,
+    customChannelApiImpl,
+    stateControl: globalStateControl,
+  } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
   const { locale } = useChromeExtensionI18n();
   const wasOnTextMode = usePrevious(textMode);
+
+  const stateControl = useMemo(() => globalStateControl || new StateControl(), [globalStateControl]);
 
   const resourceContentService = useMemo(() => {
     return resourceContentServiceFactory.createNew(githubApi.octokit(), repoInfo);
@@ -127,6 +135,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
           editorEnvelopeLocator={envelopeLocator}
           locale={locale}
           customChannelApiImpl={customChannelApiImpl}
+          stateControl={stateControl}
         />
       </div>
     </>

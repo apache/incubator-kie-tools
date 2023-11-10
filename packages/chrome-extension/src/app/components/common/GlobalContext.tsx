@@ -23,6 +23,7 @@ import { Logger } from "../../../Logger";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { Dependencies } from "../../Dependencies";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 export interface GlobalContextType {
   id: string;
@@ -33,6 +34,7 @@ export interface GlobalContextType {
   extensionIconUrl: string;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
+  stateControl?: StateControl;
   customChannelApiImpl?: KogitoEditorChannelApi;
 }
 

@@ -30,6 +30,7 @@ import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { EditorEnvelopeLocator, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { chromeExtensionI18nDictionaries, chromeExtensionI18nDefaults, ChromeExtensionI18nContext } from "../../i18n";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 export interface Globals {
   id: string;
@@ -41,6 +42,7 @@ export interface Globals {
   resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
   customChannelApiImpl?: KogitoEditorChannelApi;
+  stateControl?: StateControl;
 }
 
 function KogitoMenuPortal(props: { id: string }) {
@@ -87,6 +89,7 @@ export const Main: React.FunctionComponent<Globals> = (props) => {
           resourceContentServiceFactory: props.resourceContentServiceFactory,
           externalEditorManager: props.externalEditorManager,
           customChannelApiImpl: props.customChannelApiImpl,
+          stateControl: props.stateControl,
         }}
       >
         <GitHubContextProvider>

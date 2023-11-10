@@ -35,7 +35,8 @@ const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 
 function getCustomChannelApiImpl(
   pageType: GitHubPageType,
-  fileInfo: FileInfo
+  fileInfo: FileInfo,
+  stateControl: StateControl
 ): SwfCombinedEditorChannelApiImpl | undefined {
   if (!getFileLanguage(fileInfo.path) || pageType !== GitHubPageType.EDIT) {
     return;
@@ -52,7 +53,7 @@ function getCustomChannelApiImpl(
     fileExtension: `sw.${extractFileExtension(fileInfo.path)}`,
     fileName: `${removeDirectories(fileInfo.path)}`,
   };
-  const channelApiImpl = new EmbeddedEditorChannelApiImpl(new StateControl(), embeddedEditorFile, "en", {});
+  const channelApiImpl = new EmbeddedEditorChannelApiImpl(stateControl, embeddedEditorFile, "en", {});
 
   const chromeExtensionSwfLanguageService = new ChromeExtensionSwfLanguageService();
   const languageService = chromeExtensionSwfLanguageService.getLs(fileInfo.path);

@@ -31,6 +31,7 @@ import { Globals } from "./app/components/common/Main";
 import { ExternalEditorManager } from "./ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
 import { renderOpenRepoInExternalEditorApp } from "./app/components/openRepoInExternalEditor/openRepoInExternalEditorApp";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 /**
  * Starts a Kogito extension.
@@ -48,7 +49,11 @@ export function startExtension(args: {
   githubAuthTokenCookieName: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   externalEditorManager?: ExternalEditorManager;
-  getCustomChannelApiImpl?: (pageType: GitHubPageType, fileInfo: FileInfo) => KogitoEditorChannelApi | undefined;
+  getCustomChannelApiImpl?: (
+    pageType: GitHubPageType,
+    fileInfo: FileInfo,
+    stateControl: StateControl
+  ) => KogitoEditorChannelApi | undefined;
 }) {
   const logger = new Logger(args.name);
   const resourceContentServiceFactory = new ResourceContentServiceFactory();
@@ -57,6 +62,7 @@ export function startExtension(args: {
   const runInit = () => {
     const pageType = discoverCurrentGitHubPageType();
     const fileInfo = extractFileInfoFromUrl();
+    const stateControl = new StateControl();
 
     init({
       id: chrome.runtime.id,
@@ -67,7 +73,8 @@ export function startExtension(args: {
       editorEnvelopeLocator: args.editorEnvelopeLocator,
       resourceContentServiceFactory: resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager,
-      customChannelApiImpl: args.getCustomChannelApiImpl?.(pageType, fileInfo),
+      stateControl,
+      customChannelApiImpl: args.getCustomChannelApiImpl?.(pageType, fileInfo, stateControl),
     });
   };
 
