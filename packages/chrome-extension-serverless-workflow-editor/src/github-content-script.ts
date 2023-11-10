@@ -25,6 +25,7 @@ import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@ki
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
 import { SwfCombinedEditorChannelApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/channel";
+import { getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
 import { ChromeRouter } from "./ChromeRouter";
 import { ChromeExtensionSwfLanguageService } from "./languageService/ChromeExtensionSwfLanguageService";
@@ -33,28 +34,29 @@ import { extractFileExtension, removeDirectories } from "./utils";
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 
 function getCustomChannelApiImpl(args: { pageType: GitHubPageType; fileInfo: FileInfo }) {
-  if (args.pageType === GitHubPageType.EDIT) {
-    const dependencies = new Dependencies();
-    const embeddedEditorFile: EmbeddedEditorFile = {
-      path: args.fileInfo.path,
-      getFileContents: () => {
-        return Promise.resolve(dependencies.all.edit__githubTextAreaWithFileContents()?.textContent ?? "");
-      },
-      isReadOnly: false,
-      fileExtension: `sw.${extractFileExtension(args.fileInfo.path)}`,
-      fileName: `${removeDirectories(args.fileInfo.path)}`,
-    };
-    const channelApiImpl = new EmbeddedEditorChannelApiImpl(new StateControl(), embeddedEditorFile, "en", {});
-
-    const chromeExtensionSwfLanguageService = new ChromeExtensionSwfLanguageService();
-    const languageService = chromeExtensionSwfLanguageService.getLs(args.fileInfo.path);
-    return new SwfCombinedEditorChannelApiImpl({
-      defaultApiImpl: channelApiImpl,
-      swfLanguageServiceChannelApiImpl: new SwfLanguageServiceChannelApiImpl(languageService),
-    });
+  if (!getFileLanguage(args.fileInfo.path) || args.pageType !== GitHubPageType.EDIT) {
+    return;
   }
 
-  return;
+  const dependencies = new Dependencies();
+
+  const embeddedEditorFile: EmbeddedEditorFile = {
+    path: args.fileInfo.path,
+    getFileContents: () => {
+      return Promise.resolve(dependencies.all.edit__githubTextAreaWithFileContents()?.textContent ?? "");
+    },
+    isReadOnly: false,
+    fileExtension: `sw.${extractFileExtension(args.fileInfo.path)}`,
+    fileName: `${removeDirectories(args.fileInfo.path)}`,
+  };
+  const channelApiImpl = new EmbeddedEditorChannelApiImpl(new StateControl(), embeddedEditorFile, "en", {});
+
+  const chromeExtensionSwfLanguageService = new ChromeExtensionSwfLanguageService();
+  const languageService = chromeExtensionSwfLanguageService.getLs(args.fileInfo.path);
+  return new SwfCombinedEditorChannelApiImpl({
+    defaultApiImpl: channelApiImpl,
+    swfLanguageServiceChannelApiImpl: new SwfLanguageServiceChannelApiImpl(languageService),
+  });
 }
 
 startExtension({
