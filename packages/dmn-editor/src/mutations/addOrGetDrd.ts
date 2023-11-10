@@ -5,15 +5,14 @@ export function getDefaultDrdName({ drdIndex }: { drdIndex: number }) {
 }
 
 export function addOrGetDrd({ definitions, drdIndex }: { definitions: DMN15__tDefinitions; drdIndex: number }) {
-  const _drdIndex = drdIndex ?? 0;
-  const defaultName = getDefaultDrdName({ drdIndex: _drdIndex });
+  const defaultName = getDefaultDrdName({ drdIndex });
 
   // diagram
   definitions["dmndi:DMNDI"] ??= {};
   definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][_drdIndex] ??= {};
+  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][drdIndex] ??= {};
 
-  const defaultDiagram = definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][_drdIndex];
+  const defaultDiagram = definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][drdIndex];
   defaultDiagram["@_name"] ??= defaultName;
   defaultDiagram["@_useAlternativeInputDataShape"] ??= false;
   defaultDiagram["dmndi:DMNDiagramElement"] ??= [];
