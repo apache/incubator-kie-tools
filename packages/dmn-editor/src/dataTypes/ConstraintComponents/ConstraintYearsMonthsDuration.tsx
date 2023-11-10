@@ -5,6 +5,8 @@ import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 
+export const REGEX_YEARS_MONTH_DURATION = /^P(?!$)(\d+Y)?(\d+M)?$/;
+
 export function ConstraintYearsMonthsDuration({
   id,
   value,

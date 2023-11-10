@@ -6,6 +6,7 @@ import "./ConstraintsExpression.css";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { TypeHelper } from "./Constraints";
 
 export function ConstraintsExpression({
   isReadonly,
@@ -15,13 +16,22 @@ export function ConstraintsExpression({
 }: {
   isReadonly: boolean;
   value?: string;
+  savedValue?: string;
   type: DmnBuiltInDataType;
-  onChange?: (args: { newValue?: string; isValid: boolean }) => void;
+  typeHelper?: TypeHelper;
+  onChange?: React.Dispatch<
+    React.SetStateAction<{
+      value: string | undefined;
+      isValid: boolean;
+    }>
+  >;
+  onSave?: (args: { value?: string; isValid: boolean }) => void;
+  isDisabled?: boolean;
 }) {
   const [preview, setPreview] = useState(value ?? "");
   const onFeelChange = useCallback(
     (_, content, preview) => {
-      onChange?.({ newValue: content, isValid: true });
+      onChange?.((prev) => ({ value: content, isValid: prev.isValid }));
       setPreview(preview);
     },
     [onChange]

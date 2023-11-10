@@ -1,12 +1,11 @@
 import * as React from "react";
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { TypeHelper } from "./Constraints";
+import { ConstraintComponentProps } from "./Constraints";
 
 const CONSTRAINT_START_ID = "start";
 const CONSTRAINT_END_ID = "end";
@@ -17,21 +16,29 @@ export function ConstraintsRange({
   savedValue,
   type,
   typeHelper,
-  onChange,
+  onSave,
   isDisabled,
-}: {
-  isReadonly: boolean;
-  value?: string;
-  savedValue?: string;
-  type: DmnBuiltInDataType;
-  typeHelper: TypeHelper;
-  onChange: (args: { newValue: string; isValid: boolean }) => void;
-  isDisabled: boolean;
-}) {
+}: ConstraintComponentProps) {
   const [start, setStart] = useState(isRange(value ?? "", typeHelper.check)?.[0] ?? "");
   const [end, setEnd] = useState(isRange(value ?? "", typeHelper.check)?.[1] ?? "");
-  const [includeStart, setIncludeStart] = useState(true);
-  const [includeEnd, setIncludeEnd] = useState(false);
+  const [includeStart, setIncludeStart] = useState(() => {
+    if (hasRangeStartStructure(value ?? "")) {
+      if ((value ?? "").slice(1) === "[") {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  });
+  const [includeEnd, setIncludeEnd] = useState(() => {
+    if (hasRangeEndStructure(value ?? "")) {
+      if ((value ?? "").slice(1) === "]") {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  });
 
   const isStartValid = useCallback(
     (args: { includeEnd: boolean; start: string; end: string }) => {
@@ -62,7 +69,7 @@ export function ConstraintsRange({
         (args?.start === undefined || args.start === "") &&
         (args?.end === undefined || args.end === "")
       ) {
-        onChange({ newValue: "", isValid: true });
+        onSave({ value: "", isValid: true });
       }
 
       if ((args?.start !== undefined && args.start === "") || (args?.end !== undefined && args.end === "")) {
@@ -73,8 +80,8 @@ export function ConstraintsRange({
         return;
       }
 
-      onChange({
-        newValue: `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
+      onSave({
+        value: `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
           args?.start ?? start
         )}..${typeHelper.transform(args?.end ?? end)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`,
         isValid:
@@ -90,7 +97,7 @@ export function ConstraintsRange({
           }),
       });
     },
-    [end, includeEnd, includeStart, isEndValid, isStartValid, onChange, start, typeHelper]
+    [end, includeEnd, includeStart, isEndValid, isStartValid, onSave, start, typeHelper]
   );
 
   const onStartChange = useCallback(
@@ -282,24 +289,28 @@ export function ConstraintsRange({
 }
 
 export function hasRangeStartStructure(value: string): boolean {
-  return value.startsWith("(") || value.startsWith("[");
+  return value.startsWith("(") || value.startsWith("[") || value.startsWith("]");
 }
 
 export function hasRangeEndStructure(value: string): boolean {
-  return value.endsWith(")") || value.endsWith("]");
+  return value.endsWith(")") || value.endsWith("]") || value.startsWith("[");
 }
 
 export function hasRangeStructure(value: string): boolean {
   return hasRangeStartStructure(value) && hasRangeEndStructure(value) && value.split(".").length - 1 === 2;
 }
 
-export function isRange(value: string, typeCheck: (value: string) => boolean): [string, string] | undefined {
+export function isRange(value?: string, typeCheck?: (value: string) => boolean): [string, string] | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
   if (!hasRangeStructure(value)) {
     return undefined;
   }
 
   const rangeValues = value.split("..");
-  if (rangeValues.length === 2 && typeCheck(rangeValues[0].slice(1)) && typeCheck(rangeValues[1].slice(0, -1))) {
+  if (rangeValues.length === 2 && typeCheck?.(rangeValues[0].slice(1)) && typeCheck?.(rangeValues[1].slice(0, -1))) {
     return [rangeValues[0].slice(1), rangeValues[1].slice(0, -1)];
   }
 

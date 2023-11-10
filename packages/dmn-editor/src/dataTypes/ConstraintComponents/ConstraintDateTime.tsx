@@ -4,7 +4,7 @@ import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
 
-export function ConstraintDateTime(props: ConstraintProps) {
+export function ConstraintDateTime({ value, onChange }: ConstraintProps) {
   return (
     <>
       <div style={{ display: "flex", flexDirection: "row" }}>

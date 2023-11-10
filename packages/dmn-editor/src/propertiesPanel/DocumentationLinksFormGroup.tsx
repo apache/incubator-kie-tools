@@ -13,7 +13,13 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { Draggable, DraggableContextProvider, useDraggableContext } from "./Draggable";
+import {
+  Draggable,
+  DraggableContext,
+  DraggableContextProvider,
+  useDraggableContext,
+  useDraggableItemContext,
+} from "./Draggable";
 import { useDmnEditorStoreApi } from "../store/Store";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
@@ -212,7 +218,7 @@ function DocumentationLinksInput({
   const uuid = useMemo(() => generateUuid(), []);
   const [titleIsUrl, setTitleIsUrl] = useState(false);
   const updatedOnToogle = useRef(false);
-  const { hovered } = useDraggableContext();
+  const { hovered } = useDraggableItemContext();
 
   const parseUrl = useCallback((newUrl: string) => {
     try {

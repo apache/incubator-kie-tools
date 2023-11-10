@@ -5,6 +5,8 @@ import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 
+export const REGEX_DATE_TIME_DURATION = /^P(?!$)(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?$/;
+
 export function ConstraintDateTimeDuration({
   id,
   value,

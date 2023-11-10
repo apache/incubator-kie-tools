@@ -1,13 +1,13 @@
 import * as React from "react";
-import { useMemo, useState, useCallback, useRef, useEffect } from "react";
+import { useMemo, useState, useCallback, useRef } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { Draggable, DraggableContextProvider, useDraggableContext } from "../propertiesPanel/Draggable";
+import { Draggable, DraggableContextProvider, useDraggableItemContext } from "../propertiesPanel/Draggable";
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { TypeHelper } from "./Constraints";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { ConstraintComponentProps, TypeHelper } from "./Constraints";
 
 export const ENUM_SEPARATOR = ",";
 
@@ -17,18 +17,10 @@ export function ConstraintsEnum({
   savedValue,
   type,
   typeHelper,
-  onChange,
+  onSave,
   isDisabled,
-}: {
-  isReadonly: boolean;
-  value?: string;
-  savedValue?: string;
-  type: DmnBuiltInDataType;
-  typeHelper: TypeHelper;
-  onChange: (args: { newValue?: string; isValid: boolean }) => void;
-  isDisabled: boolean;
-}) {
-  const [enumValues, setEnumValues] = useState(isEnum(value ?? "", typeHelper.check) ?? []);
+}: ConstraintComponentProps) {
+  const enumValues = useMemo(() => isEnum(value, typeHelper.check) ?? [], [typeHelper.check, value]);
   const [addNew, setAddNew] = useState<boolean>(() => ((enumValues ?? []).length === 0 ? true : false));
   const [valuesUuid, setValuesUuid] = useState((enumValues ?? [])?.map((_) => generateUuid()));
   const [isItemValid, setItemValid] = useState<boolean[]>(
@@ -36,15 +28,11 @@ export function ConstraintsEnum({
   );
   const [focusOwner, setFocusOwner] = useState("");
 
-  const isEnumerationValid = useMemo(() => {
+  const isEnumerationValid = useCallback((enumValues: string[]) => {
     return new Set(enumValues).size === enumValues.length;
-  }, [enumValues]);
+  }, []);
 
-  useEffect(() => {
-    onChange({ newValue: enumValues.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid });
-  }, [enumValues, isEnumerationValid, onChange]);
-
-  const onAddNew = useCallback(() => {
+  const onAdd = useCallback(() => {
     setAddNew(true);
     setValuesUuid((prev) => {
       if (prev[enumValues.length] === undefined) {
@@ -55,16 +43,19 @@ export function ConstraintsEnum({
       return prev;
     });
     setItemValid((prev) => {
-      const newIsItemValid = [...prev];
-      newIsItemValid[enumValues.length] = true;
-      return newIsItemValid;
+      if (prev[enumValues.length] === undefined) {
+        const newIsItemValid = [...prev];
+        newIsItemValid[enumValues.length] = true;
+        return newIsItemValid;
+      }
+      return prev;
     });
     setFocusOwner("");
   }, [enumValues.length]);
 
-  const onRemove = useCallback((index: number) => {
-    setEnumValues((prev) => {
-      const newValues = [...prev];
+  const onRemove = useCallback(
+    (index: number) => {
+      const newValues = [...enumValues];
       newValues.splice(index, 1);
       if (newValues.length === 0) {
         setAddNew(true);
@@ -75,21 +66,19 @@ export function ConstraintsEnum({
         newUuids.splice(index, 1);
         return newUuids;
       });
-
-      return newValues;
-    });
-  }, []);
+      onSave({ value: newValues.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid(newValues) });
+    },
+    [enumValues, isEnumerationValid, onSave]
+  );
 
   const onDragEnd = useCallback(
     (source: number, dest: number) => {
-      setEnumValues((prev) => {
-        const reordened = [...(enumValues ?? [])];
-        const [removed] = reordened.splice(source, 1);
-        reordened.splice(dest, 0, removed);
-        return reordened;
-      });
+      const reordened = [...enumValues];
+      const [removed] = reordened.splice(source, 1);
+      reordened.splice(dest, 0, removed);
+      onSave({ value: reordened.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid(reordened) });
     },
-    [enumValues]
+    [enumValues, isEnumerationValid, onSave]
   );
 
   const reorder = useCallback((source: number, dest: number) => {
@@ -103,36 +92,32 @@ export function ConstraintsEnum({
 
   const onChangeNew = useCallback(
     (newValue: string) => {
-      setEnumValues((prev) => {
-        setAddNew(false);
-        const newValues = [...prev];
-        newValues[prev.length] = typeHelper.transform(newValue);
+      setAddNew(false);
+      const newValues = [...enumValues];
+      newValues[newValues.length] = typeHelper.transform(newValue);
 
-        setValuesUuid((prev) => {
-          if (prev[newValues.length - 1] === undefined) {
-            const newValuesUuid = [...prev];
-            newValuesUuid[newValues.length - 1] = generateUuid();
-            return newValuesUuid;
-          }
-          return prev;
-        });
-        setItemValid(newValues.map((value, i, array) => array.filter((e) => e === value).length <= 1));
-        return newValues;
+      setValuesUuid((prev) => {
+        if (prev[newValues.length - 1] === undefined) {
+          const newValuesUuid = [...prev];
+          newValuesUuid[newValues.length - 1] = generateUuid();
+          return newValuesUuid;
+        }
+        return prev;
       });
+      setItemValid(newValues.map((value, i, array) => array.filter((e) => e === value).length <= 1));
+      onSave({ value: newValues.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid(newValues) });
     },
-    [typeHelper]
+    [enumValues, isEnumerationValid, onSave, typeHelper]
   );
 
   const onChangeItem = useCallback(
     (newValue, index) => {
-      setEnumValues((prev) => {
-        const newValues = [...prev];
-        newValues[index] = typeHelper.transform(newValue);
-        setItemValid(newValues.map((value, i, array) => array.filter((e) => e === value).length <= 1));
-        return newValues;
-      });
+      const newValues = [...enumValues];
+      newValues[index] = typeHelper.transform(newValue);
+      setItemValid(newValues.map((value, i, array) => array.filter((e) => e === value).length <= 1));
+      onSave({ value: newValues.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid(newValues) });
     },
-    [typeHelper]
+    [enumValues, isEnumerationValid, onSave, typeHelper]
   );
 
   return (
@@ -176,7 +161,6 @@ export function ConstraintsEnum({
                   </li>
                 </Draggable>
               ))}
-
               {addNew && (
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                   <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
@@ -200,7 +184,7 @@ export function ConstraintsEnum({
         </DraggableContextProvider>
       </div>
       <Button
-        onClick={() => onAddNew()}
+        onClick={() => onAdd()}
         variant={ButtonVariant.link}
         icon={<PlusCircleIcon />}
         style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
@@ -237,7 +221,7 @@ function EnumElement({
 }) {
   const [value, setValue] = useState<string>(initialValue);
   const removeButtonRef = useRef(null);
-  const { hovered } = useDraggableContext();
+  const { hovered } = useDraggableItemContext();
 
   const onInternalChange = useCallback(
     (newValue: string) => {
@@ -280,10 +264,13 @@ function EnumElement({
   );
 }
 
-export function isEnum(value: string, typeCheck: (value: string) => boolean): string[] | undefined {
-  const enumValues = value.split(ENUM_SEPARATOR).map((e) => e.trim());
+export function isEnum(value?: string, typeCheck?: (value: string) => boolean): string[] | undefined {
+  if (value === undefined) {
+    return;
+  }
 
-  if (enumValues.reduce((isEnum, value) => isEnum && typeCheck(value), true)) {
+  const enumValues = value.split(ENUM_SEPARATOR).map((e) => e.trim());
+  if (enumValues.reduce((isEnum, value) => isEnum && typeCheck?.(value), true)) {
     return enumValues;
   }
 

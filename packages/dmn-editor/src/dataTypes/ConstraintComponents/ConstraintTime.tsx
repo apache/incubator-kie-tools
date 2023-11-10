@@ -3,13 +3,15 @@ import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
 
-export function ConstraintTime(props: ConstraintProps) {
+export function ConstraintTime({ value, onChange }: ConstraintProps) {
   return (
     <>
       <TimePicker
         className={"kie-dmn-editor--constraint-input"}
         is24Hour={true}
         inputProps={{ className: "kie-dmn-editor--constraint-input" }}
+        value={value}
+        onChange={(e, value) => onChange(value)}
       />
     </>
   );
