@@ -24,7 +24,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     EXTENDED_SERVICES_JAVA__host: {
       default: "0.0.0.0",
       description:
-        "Quarkus HTTP Host. Configures the IP address or host to which a Quarkus application binds for incoming HTTP requests,",
+        "Quarkus HTTP Host. Configures the IP address or host to which a Quarkus application binds for incoming HTTP requests.",
     },
     EXTENDED_SERVICES_JAVA__port: {
       default: "21345",
