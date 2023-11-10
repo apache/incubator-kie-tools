@@ -73,6 +73,7 @@ import {
 import {
   CONTAINER_NODES_DESIRABLE_PADDING,
   getBounds,
+  getBoundsCenterPoint,
   getContainmentRelationship,
   getHandlePosition,
   getNodeTypeFromDmnObject,
@@ -830,8 +831,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
       // --------- This is where we draw the line between the diagram and the model.
 
-      const lastWaypoint = oldEdge.data!.dmnEdge!["di:waypoint"]![oldEdge.data!.dmnEdge!["di:waypoint"]!.length - 1]!;
-      const firstWaypoint = oldEdge.data!.dmnEdge!["di:waypoint"]![0]!;
+      const lastWaypoint = oldEdge.data?.dmnEdge
+        ? oldEdge.data!.dmnEdge!["di:waypoint"]![oldEdge.data!.dmnEdge!["di:waypoint"]!.length - 1]!
+        : getBoundsCenterPoint(targetBounds);
+      const firstWaypoint = oldEdge.data?.dmnEdge
+        ? oldEdge.data!.dmnEdge!["di:waypoint"]![0]!
+        : getBoundsCenterPoint(sourceBounds);
 
       dmnEditorStoreApi.setState((state) => {
         const { newDmnEdge } = addEdge({

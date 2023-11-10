@@ -182,6 +182,10 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
     }
 
     if (copiedNodesById.has(edge.source) && copiedNodesById.has(edge.target)) {
+      if (!edge.data?.dmnEdge) {
+        return [];
+      }
+
       copiedEdgesById.set(edge.id, edge);
       const { index, ...dmnEdge } = edge.data!.dmnEdge!;
       if (edge.data?.dmnObject.requirementType === "association") {

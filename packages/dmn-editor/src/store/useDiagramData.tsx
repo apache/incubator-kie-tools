@@ -40,7 +40,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
     useMemo(() => {
       const dmnEdgesByDmnElementRef = new Map<string, DMNDI15__DMNEdge & { index: number }>();
       const dmnShapesByHref = new Map<string, DMNDI15__DMNShape & { index: number; dmnElementRefQName: XmlQName }>();
-      const hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects: string[] = [];
+      const hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects = new Set<string>();
 
       const diagramElements =
         thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["dmndi:DMNDiagramElement"] ??
@@ -64,7 +64,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
             const namespace =
               thisDmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`] ?? KIE_DMN_UNKNOWN_NAMESPACE;
             href = buildXmlHref({ namespace, id: dmnElementRefQName.localPart });
-            hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects.push(href);
+            hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects.add(href);
           } else {
             href = buildXmlHref({ id: dmnElementRefQName.localPart });
           }
@@ -321,20 +321,6 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         );
         localNodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
         localNodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
-
-        // ⬇ This code is if we want to use Reactflow's parenting mechanism.
-        //
-        // nodes[i].parentNode = parent["@_id"]!;
-        // We need to "recalculate" the node position here from scratch, as to avoid double-snapping.
-        // const parentShape = dmnShapesByHref.get(parent["@_id"]!)!;
-
-        // nodes[i].position = snapShapePosition(
-        //   diagram.snapGrid,
-        //   offsetShapePosition(nodes[i].data.shape, {
-        //     x: -(parentShape["dc:Bounds"]?.["@_x"] ?? 0),
-        //     y: -(parentShape["dc:Bounds"]?.["@_y"] ?? 0),
-        //   })
-        // );
       }
 
       if (localNodes[i].type === NODE_TYPES.group) {
@@ -344,8 +330,17 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
       }
     }
 
-    const externalNodes = hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects.flatMap((href) => {
-      const shape = dmnShapesByHref.get(href)!; // Shape needs to be present, as they're the source of `hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects`.
+    const externalNodes = [...dmnShapesByHref.entries()].flatMap(([href, shape]) => {
+      if (nodesById.get(href)) {
+        return [];
+      }
+
+      if (!nodesById.get(href) && !hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects.has(href)) {
+        // Unknown local node.
+        console.warn(`DMN DIAGRAM: Found a shape that references a local DRG element that doesn't exist.`, shape);
+        const newNode = ackNode(shape.dmnElementRefQName, null, -1);
+        return newNode ? [newNode] : [];
+      }
 
       const namespace = thisDmn.model.definitions[`@_xmlns:${shape.dmnElementRefQName.prefix}`];
       if (!namespace) {
