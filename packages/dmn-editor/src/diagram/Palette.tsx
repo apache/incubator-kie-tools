@@ -3,7 +3,7 @@ import * as React from "react";
 import { useCallback } from "react";
 import { NodeType } from "./connections/graphStructure";
 import { NODE_TYPES } from "./nodes/NodeTypes";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DiagramNodesPanel, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds } from "./maths/DmnMaths";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -21,6 +21,8 @@ import {
 import { DrdSelectorPanel } from "./DrdSelectorPanel";
 import { addOrGetDrd, getDefaultDrdName } from "../mutations/addOrGetDrd";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
+import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
+import { DrgNodesPanel } from "./DrgNodesPanel";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -181,24 +183,62 @@ export function Palette({ pulse }: { pulse: boolean }) {
           </div>
         </aside>
         <br />
-        <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
+        <aside className={"kie-dmn-editor--drg-panel-toggle"}>
           <Popover
-            className={"kie-dmn-editor--external-nodes-popover"}
-            key={`${diagram.externalNodesPanel.isOpen}`}
-            aria-label={"External Nodes Panel"}
-            isVisible={diagram.externalNodesPanel.isOpen}
+            className={"kie-dmn-editor--drg-popover"}
+            key={`${diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES}`}
+            aria-label={"DRG Panel"}
+            isVisible={diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES}
             shouldOpen={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.externalNodesPanel.isOpen = true;
+                state.diagram.openNodesPanel = DiagramNodesPanel.DRG_NODES;
               });
             }}
             shouldClose={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.externalNodesPanel.isOpen = false;
+                state.diagram.openNodesPanel === DiagramNodesPanel.NONE;
               });
             }}
             enableFlip={true}
-            position={"top-end"}
+            position={"right-start"}
+            hideOnOutsideClick={false}
+            bodyContent={<DrgNodesPanel />}
+          >
+            <button
+              title="DRG nodes"
+              className={"kie-dmn-editor--drg-panel-toggle-button"}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.openNodesPanel =
+                    state.diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES
+                      ? DiagramNodesPanel.NONE
+                      : DiagramNodesPanel.DRG_NODES;
+                });
+              }}
+            >
+              <BarsIcon size={"sm"} />
+            </button>
+          </Popover>
+        </aside>
+        <br />
+        <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
+          <Popover
+            className={"kie-dmn-editor--external-nodes-popover"}
+            key={`${diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES}`}
+            aria-label={"External Nodes Panel"}
+            isVisible={diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES}
+            shouldOpen={() => {
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.openNodesPanel = DiagramNodesPanel.EXTERNAL_NODES;
+              });
+            }}
+            shouldClose={() => {
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.openNodesPanel === DiagramNodesPanel.NONE;
+              });
+            }}
+            enableFlip={true}
+            position={"right-start"}
             hideOnOutsideClick={false}
             bodyContent={<ExternalNodesPanel />}
           >
@@ -207,7 +247,10 @@ export function Palette({ pulse }: { pulse: boolean }) {
               className={"kie-dmn-editor--external-nodes-panel-toggle-button"}
               onClick={() => {
                 dmnEditorStoreApi.setState((state) => {
-                  state.diagram.externalNodesPanel.isOpen = !state.diagram.externalNodesPanel.isOpen;
+                  state.diagram.openNodesPanel =
+                    state.diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES
+                      ? DiagramNodesPanel.NONE
+                      : DiagramNodesPanel.EXTERNAL_NODES;
                 });
               }}
             >

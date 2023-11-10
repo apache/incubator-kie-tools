@@ -26,6 +26,12 @@ export interface SnapGrid {
   y: number;
 }
 
+export enum DiagramNodesPanel {
+  NONE = "NONE",
+  DRG_NODES = "DRG_NODES",
+  EXTERNAL_NODES = "EXTERNAL_NODES",
+}
+
 export type DropTargetNode = undefined | RF.Node<DmnDiagramNodeData>;
 
 export interface State {
@@ -57,9 +63,7 @@ export interface State {
     overlaysPanel: {
       isOpen: boolean;
     };
-    externalNodesPanel: {
-      isOpen: boolean;
-    };
+    openNodesPanel: DiagramNodesPanel;
     drdSelector: {
       isOpen: boolean;
     };
@@ -157,9 +161,8 @@ export const defaultStaticState = () => ({
     overlaysPanel: {
       isOpen: false,
     },
-    externalNodesPanel: {
-      isOpen: false,
-    },
+
+    openNodesPanel: DiagramNodesPanel.NONE,
     drdSelector: {
       isOpen: false,
     },

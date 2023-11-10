@@ -3,7 +3,11 @@ import * as RF from "reactflow";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import { DC__Bounds, DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DC__Bounds,
+  DMN15__tDecisionService,
+  DMN15__tDefinitions,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
@@ -47,7 +51,7 @@ import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { StoreApiType, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DiagramNodesPanel, StoreApiType, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
@@ -93,6 +97,8 @@ import { getDefaultExpressionDefinitionByLogicType } from "../boxedExpressions/g
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
 import { buildHierarchy } from "./graph/graph";
+import { MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE } from "./DrgNodesPanel";
+import { Unpacked } from "../tsExt/tsExt";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -335,6 +341,33 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         });
 
         console.debug(`DMN DIAGRAM: Adding external node`, JSON.stringify(externalNode));
+      } else if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE)) {
+        const drgElement = JSON.parse(e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE)) as Unpacked<
+          DMN15__tDefinitions["drgElement"]
+        >;
+
+        const nodeType = getNodeTypeFromDmnObject(drgElement)!;
+        const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType](diagram.snapGrid);
+
+        dmnEditorStoreApi.setState((state) => {
+          addShape({
+            definitions: state.dmn.model.definitions,
+            drdIndex: diagram.drdIndex,
+            nodeType,
+            shape: {
+              "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
+              "@_isCollapsed": false,
+              "dc:Bounds": {
+                "@_x": dropPoint.x,
+                "@_y": dropPoint.y,
+                "@_width": defaultNodeDimensions["@_width"],
+                "@_height": defaultNodeDimensions["@_height"],
+              },
+            },
+          });
+        });
+
+        console.debug(`DMN DIAGRAM: Adding DRG node`, JSON.stringify(drgElement));
       }
     },
     [container, reactFlowInstance, dmnEditorStoreApi, diagram.drdIndex, diagram.snapGrid, externalDmnsByNamespace]
@@ -911,7 +944,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               console.debug("DMN DIAGRAM: Esc pressed. Closing all open panels.");
               state.diagram.propertiesPanel.isOpen = false;
               state.diagram.overlaysPanel.isOpen = false;
-              state.diagram.externalNodesPanel.isOpen = false;
+              state.diagram.openNodesPanel = DiagramNodesPanel.NONE;
               e.preventDefault();
             } else {
               // Let the

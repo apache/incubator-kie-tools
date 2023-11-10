@@ -38,18 +38,21 @@ export function DrdSelectorPanel() {
       <Divider style={{ marginBottom: "8px" }} />
       <div className={"kie-dmn-editor--drd-list"}>
         {thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.map((drd, i) => (
-          <button
-            key={drd["@_id"] ?? i}
-            className={i === diagram.drdIndex ? "active" : undefined}
-            onClick={() => {
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.drdIndex = i;
-                state.diagram.drdSelector.isOpen = false;
-              });
-            }}
-          >
-            {drd["@_name"] || getDefaultDrdName({ drdIndex: i })}
-          </button>
+          <>
+            <button
+              key={drd["@_id"] ?? i}
+              className={i === diagram.drdIndex ? "active" : undefined}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.drdIndex = i;
+                  state.diagram.drdSelector.isOpen = false;
+                });
+              }}
+            >
+              {drd["@_name"] || getDefaultDrdName({ drdIndex: i })}
+            </button>
+            <br />
+          </>
         ))}
       </div>
     </>
