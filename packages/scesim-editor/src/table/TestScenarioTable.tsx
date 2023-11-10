@@ -30,7 +30,7 @@ import {
 
 import { BeeTableHeaderVisibility } from "@kie-tools/boxed-expression-component/dist/api/BeeTable";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
-import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
+import { StandaloneBeeTable, getColumnsAtLastLevel } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
 
 import { useTestScenarioEditorI18n } from "../i18n";
 
@@ -85,8 +85,8 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
 
     const descriptionSection = {
       groupType: descriptionFactMapping!.expressionIdentifier.type!.__$$text,
-      id: descriptionFactMapping!.factAlias.__$$text + descriptionFactMapping!.expressionIdentifier.type!.__$$text,
-      accessor: descriptionFactMapping!.expressionIdentifier.type!.__$$text,
+      id: descriptionFactMapping!.expressionIdentifier.name!.__$$text,
+      accessor: descriptionFactMapping!.expressionIdentifier.name!.__$$text,
       label: descriptionFactMapping!.factAlias.__$$text,
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
@@ -113,9 +113,9 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
           isRowIndexColumn: false,
           columns: entry[1].map((factMapping) => {
             return {
-              accessor: factMapping.factAlias!.__$$text,
+              accessor: factMapping.expressionIdentifier.name!.__$$text,
               label: factMapping.expressionAlias!.__$$text,
-              id: factMapping.factAlias + factMapping.expressionAlias!.__$$text + "GIVEN",
+              id: factMapping.expressionIdentifier.name!.__$$text + "GIVEN",
               dataType: factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "",
               width: factMapping.columnWidth?.__$$text ?? 150,
               minWidth: 150,
@@ -146,9 +146,9 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
           isRowIndexColumn: false,
           columns: entry[1].map((factMapping) => {
             return {
-              accessor: factMapping.factAlias!.__$$text,
+              accessor: factMapping.expressionIdentifier.name!.__$$text,
               label: factMapping.expressionAlias!.__$$text,
-              id: factMapping.factAlias.__$$text + factMapping.expressionAlias!.__$$text,
+              id: factMapping.expressionIdentifier.name!.__$$text,
               dataType: factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "",
               width: factMapping.columnWidth?.__$$text ?? 150,
               minWidth: 150,
@@ -168,20 +168,33 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
     return [descriptionSection, givenSection, expectSection];
   }, [simulationData.scesimModelDescriptor.factMappings]);
 
-  const simulationRows = useMemo(() => {
-    console.log("ciao");
-    (simulationData.scesimData.Scenario ?? []).map((scenario) => {
-      /*const ruleRow = [...rule.inputEntries, ...rule.outputEntries, ...rule.annotationEntries];
-        const tableRow = getColumnsAtLastLevel(beeTableColumns).reduce(
-          (tableRow: ROWTYPE, column, columnIndex) => {
-            tableRow[column.accessor] = ruleRow[columnIndex] ?? "";
+  const simulationRows = useMemo(
+    () =>
+      (simulationData.scesimData.Scenario ?? []).map((scenario) => {
+        console.log("*=====*");
+        console.log(scenario);
+        const factMappingValues = scenario.factMappingValues.FactMappingValue ?? [];
+        console.log(factMappingValues);
+        console.log("*=====*");
+
+        const tableRow = getColumnsAtLastLevel(simulationColumns, 2).reduce(
+          (tableRow: ROWTYPE, column: ReactTable.Column<ROWTYPE>, columnIndex) => {
+            console.log("accessor:" + column.accessor);
+            console.log(tableRow[column.accessor as string]);
+            console.log(factMappingValues[columnIndex]);
+            console.log(columnIndex);
+            console.log("=====");
+
+            tableRow[column.accessor as string] = factMappingValues[columnIndex].rawValue?.__$$text ?? "";
             return tableRow;
-          },
-          { id: rule.id }
+          }
         );
-        return tableRow; */
-    });
-  }, [simulationData]);
+        return tableRow;
+      }),
+    [simulationColumns, simulationData.scesimData.Scenario]
+  );
+
+  console.log(simulationRows);
 
   return (
     <StandaloneBeeTable
@@ -191,10 +204,10 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
       getRowKey={undefined}
       tableId={undefined}
       isEditableHeader={true}
-      headerLevelCountForAppendingRowIndexColumn={1}
+      headerLevelCountForAppendingRowIndexColumn={2}
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
       operationConfig={undefined}
-      columns={simulationColumns}
+      columns={simulationColumns} //OK
       rows={[{}, {}]}
       isReadOnly={false} //OK
       enableKeyboardNavigation={true} //OK
