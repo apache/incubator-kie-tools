@@ -1,6 +1,6 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeNature } from "./NodeNature";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 import {
   repopulateInputDataAndDecisionsOnAllDecisionServices,
   repopulateInputDataAndDecisionsOnDecisionService,
@@ -19,7 +19,7 @@ export function deleteNode({
   dmnObjectId: string | undefined;
   dmnObjectQName: XmlQName;
 }) {
-  const { diagramElements, widthsExtension } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements, widthsExtension } = addOrGetDrd({ definitions });
 
   // Edges need to be deleted by a separate call to `deleteEdge` prior to this.
 

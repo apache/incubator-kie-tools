@@ -12,7 +12,7 @@ import { getHandlePosition } from "../diagram/maths/DmnMaths";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { SnapGrid } from "../store/Store";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 
 export function resizeNode({
   definitions,
@@ -35,7 +35,7 @@ export function resizeNode({
 }) {
   const edgeIndexesAlreadyUpdated = new Set<number>();
 
-  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions });
 
   const shape = diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined;
   const shapeBounds = shape?.["dc:Bounds"];

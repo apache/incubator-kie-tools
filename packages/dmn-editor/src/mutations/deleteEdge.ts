@@ -4,7 +4,7 @@ import {
   DMN15__tDefinitions,
   DMNDI15__DMNEdge,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import {
   repopulateInputDataAndDecisionsOnAllDecisionServices,
@@ -18,7 +18,7 @@ export function deleteEdge({
   definitions: DMN15__tDefinitions;
   edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
 }) {
-  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions });
 
   const dmnObjects: DMN15__tDefinitions["artifact"] | DMN15__tDefinitions["drgElement"] =
     switchExpression(edge?.dmnObject.type, {

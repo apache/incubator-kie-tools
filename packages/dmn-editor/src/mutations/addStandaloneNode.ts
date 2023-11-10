@@ -4,7 +4,7 @@ import { DC__Bounds, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { NodeNature, nodeNatures } from "./NodeNature";
-import { addOrGetDefaultDiagram as getDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 import {
   repopulateInputDataAndDecisionsOnAllDecisionServices,

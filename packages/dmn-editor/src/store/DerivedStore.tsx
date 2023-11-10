@@ -18,7 +18,6 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { UniqueNameIndex } from "../Dmn15Spec";
 import { ExternalPmmlsIndex, ExternalDmnsIndex } from "../DmnEditor";
-import { getAdjMatrix, traverse } from "../diagram/graph/graph";
 
 export type DerivedStore = {
   selectedNodeTypes: Set<NodeType>;
@@ -36,6 +35,7 @@ export type DerivedStore = {
   allTopLevelDataTypesByFeelName: DataTypeIndex;
   dmnEdgesByDmnElementRef: Map<string, DMNDI15__DMNEdge & { index: number }>;
   dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
+  drgElementsWithoutVisualRepresentationOnCurrentDrd: string[];
   allFeelVariableUniqueNames: UniqueNameIndex;
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex;
   externalDmnsByNamespace: ExternalDmnsIndex;
@@ -101,6 +101,7 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     selectedNodesById,
     selectedEdgesById,
     selectedNodeTypes,
+    drgElementsWithoutVisualRepresentationOnCurrentDrd,
   } = useDiagramData(externalDmnsByNamespace);
 
   const { dataTypesTree, allDataTypesById, allTopLevelDataTypesByFeelName } = useMemo(() => {
@@ -202,6 +203,7 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       allTopLevelItemDefinitionUniqueNames,
       externalDmnsByNamespace,
       externalPmmlsByNamespace,
+      drgElementsWithoutVisualRepresentationOnCurrentDrd,
     }),
     [
       selectedNodeTypes,
@@ -223,6 +225,7 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       allTopLevelItemDefinitionUniqueNames,
       externalDmnsByNamespace,
       externalPmmlsByNamespace,
+      drgElementsWithoutVisualRepresentationOnCurrentDrd,
     ]
   );
 

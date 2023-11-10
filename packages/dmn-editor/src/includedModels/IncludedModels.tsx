@@ -32,7 +32,7 @@ import { allPmmlImportNamespaces, getPmmlNamespace } from "../pmml/pmml";
 import { allDmnImportNamespaces } from "../Dmn15Spec";
 import { getNamespaceOfDmnImport } from "./importNamespaces";
 
-const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
+export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
 const namespaceForNewImportsByFileExtension: Record<string, string> = {
   ".dmn": dmn15ns.get("")!,

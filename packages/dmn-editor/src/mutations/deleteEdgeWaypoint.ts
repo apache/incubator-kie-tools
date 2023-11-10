@@ -1,5 +1,5 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 
 export function deleteEdgeWaypoint({
   definitions,
@@ -10,7 +10,7 @@ export function deleteEdgeWaypoint({
   edgeIndex: number;
   waypointIndex: number;
 }) {
-  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions });
 
   const diagramElement = diagramElements[edgeIndex];
   if (diagramElement.__$$element !== "dmndi:DMNEdge") {

@@ -1,5 +1,5 @@
 import { DC__Point, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 
 export function repositionEdgeWaypoint({
   definitions,
@@ -12,7 +12,7 @@ export function repositionEdgeWaypoint({
   waypointIndex: number;
   waypoint: DC__Point;
 }) {
-  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions });
 
   const diagramElement = diagramElements[edgeIndex];
   if (diagramElement.__$$element !== "dmndi:DMNEdge") {

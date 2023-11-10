@@ -1,5 +1,5 @@
 import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
@@ -14,7 +14,7 @@ export function addShape({
   nodeType: NodeType;
   shape: WithoutIdXmlAttributes<DMNDI15__DMNShape>;
 }) {
-  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions });
   diagramElements.push({
     __$$element: "dmndi:DMNShape",
     "@_id": generateUuid(),

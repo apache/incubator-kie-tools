@@ -60,6 +60,9 @@ export interface State {
     externalNodesPanel: {
       isOpen: boolean;
     };
+    drdSelector: {
+      isOpen: boolean;
+    };
     overlays: {
       enableNodeHierarchyHighlight: boolean;
       enableExecutionHitsHighlights: boolean;
@@ -155,6 +158,9 @@ export const defaultStaticState = () => ({
       isOpen: false,
     },
     externalNodesPanel: {
+      isOpen: false,
+    },
+    drdSelector: {
       isOpen: false,
     },
     overlays: {

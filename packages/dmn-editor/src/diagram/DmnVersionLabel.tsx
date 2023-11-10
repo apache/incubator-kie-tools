@@ -10,7 +10,7 @@ export function DmnVersionLabel(props: { version: string }) {
   const label = useMemo(
     () => (
       <Label
-        style={{ cursor: "pointer", position: "absolute", bottom: "8px", left: "36px", zIndex: 100 }}
+        style={{ cursor: "pointer", position: "absolute", bottom: "8px", left: "calc(50% - 34px)", zIndex: 100 }}
       >{`DMN ${DMN_LATEST_VERSION}`}</Label>
     ),
     []
@@ -22,6 +22,7 @@ export function DmnVersionLabel(props: { version: string }) {
 
   return (
     <Popover
+      className={"kie-dmn-editor--version-popover"}
       aria-label="DMN version popover"
       position={PopoverPosition.top}
       headerContent={<div>Version upgraded!</div>}

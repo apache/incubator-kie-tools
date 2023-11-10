@@ -172,6 +172,66 @@
 /* (end) textAnnotation, and unknown nodes */
 
 /* (begin) palette */
+.kie-dmn-editor--drd-selector-popover .pf-c-popover__body {
+  padding: 0;
+}
+.kie-dmn-editor--drd-selector {
+  margin-bottom: 24px;
+  padding: 3px 8px 3px 16px;
+  border-radius: 99999px;
+  background: white;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+}
+.kie-dmn-editor--drd-selector input {
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  max-width: 300px;
+  min-width: 50px;
+}
+.kie-dmn-editor--drd-selector:hover {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+  filter: brightness(95%);
+}
+.kie-dmn-editor--drd-selector button {
+  border: 0;
+  padding: 4px 16px;
+  border-radius: 8px;
+  background: white;
+}
+.kie-dmn-editor--drd-selector button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--drd-selector button:active {
+  filter: brightness(90%);
+}
+.kie-dmn-editor--drd-list button {
+  padding: 8px 16px;
+  margin: 4px 0;
+  margin-right: 16px;
+  border-radius: 12px;
+  text-align: left;
+  background: white;
+  border-radius: 8px;
+  border: 0;
+  max-width: 300px;
+  width: 100%;
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+}
+.kie-dmn-editor--drd-list button.active {
+  color: #0067cc;
+  filter: brightness(95%);
+}
+.kie-dmn-editor--drd-list button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--drd-list button:active {
+  filter: brightness(90%);
+}
 .kie-dmn-editor--palette {
   width: 42px;
   background: #fff;
@@ -254,7 +314,16 @@
 }
 /* (end) properties panel toggle */
 
+/* (begin) version popover */
+.kie-dmn-editor--version-popover .pf-c-popover__body {
+  padding: 0;
+}
+/* (end) version popover */
+
 /* (begin) overlays panel toggle */
+.kie-dmn-editor--overlay-panel-popover .pf-c-popover__body {
+  padding: 0;
+}
 .kie-dmn-editor--overlays-panel-toggle {
   margin-right: 16px;
   width: 42px;
@@ -289,6 +358,9 @@
 /* (end) overlays panel toggle */
 
 /* (begin) external nodes panel toggle */
+.kie-dmn-editor--external-nodes-popover .pf-c-popover__body {
+  padding: 0;
+}
 .kie-dmn-editor--external-nodes-panel-toggle {
   margin-right: 16px;
   width: 42px;

@@ -72,6 +72,8 @@ export function InlineFeelNameInput({
 
   const { style: _style, disabled, defaultValue, ..._inputProps } = inputProps;
 
+  const _placeholder = placeholder ?? "Enter a name...";
+
   return (
     <input
       spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.
@@ -85,8 +87,12 @@ export function InlineFeelNameInput({
         ...(isValid ? {} : invalidInlineFeelNameStyle),
         ..._style,
       }}
+      size={1 + Math.max(0, _placeholder?.length ?? 0, name.length)}
+      onInput={(e) => {
+        (e.target as any).size = 1 + Math.max(0, _placeholder?.length ?? 0, (e.target as any).value.length ?? 0);
+      }}
       disabled={isReadonly}
-      placeholder={placeholder ?? "Enter a name..."}
+      placeholder={_placeholder}
       onChange={(e) => updateIsValidFlag(e.currentTarget.value)}
       defaultValue={name}
       onFocus={(e) => {
@@ -94,15 +100,15 @@ export function InlineFeelNameInput({
       }}
       onKeyDown={(e) => {
         onKeyDown?.(e);
+        e.stopPropagation();
+
         if (e.key === "Enter") {
-          e.stopPropagation();
           e.preventDefault();
           const isValid = updateIsValidFlag(e.currentTarget.value);
           if (isValid || saveInvalidValue) {
             onRenamed(e.currentTarget.value);
           }
         } else if (e.key === "Escape") {
-          e.stopPropagation();
           e.preventDefault();
           e.currentTarget.value = name;
           updateIsValidFlag(e.currentTarget.value);

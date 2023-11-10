@@ -14,7 +14,7 @@ import { getBoundsCenterPoint } from "../diagram/maths/DmnMaths";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { NodeNature, nodeNatures } from "./NodeNature";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 import {
   repopulateInputDataAndDecisionsOnAllDecisionServices,
@@ -132,7 +132,7 @@ export function addConnectedNode({
   }
 
   const newShapeId = generateUuid();
-  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions });
   // Add the new node shape
   diagramElements?.push({
     __$$element: "dmndi:DMNShape",

@@ -15,6 +15,9 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { DmnObjectListItem } from "./DmnObjectListItem";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER } from "../includedModels/IncludedModels";
 
 export type ExternalNode = {
   externalDrgElementNamespace: string;
@@ -64,62 +67,80 @@ export function ExternalNodesPanel() {
           </EmptyState>
         </>
       )}
-      {[...externalDmnsByNamespace.entries()].flatMap(([namespace, externalDmn]) => {
-        const externalDmnDefinitions = externalDmn.model.definitions;
-        const _import = importsByNamespace.get(namespace);
-        if (!_import) {
-          console.debug(
-            `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referncing it.`
-          );
-          return [];
-        }
+      {externalDmnsByNamespace.size > 0 && (
+        <>
+          <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+            <TextContent>
+              <Text component="h3">External nodes</Text>
+            </TextContent>
+          </Flex>
+          <Divider style={{ marginBottom: "24px" }} />
+          {[...externalDmnsByNamespace.entries()].flatMap(([namespace, externalDmn]) => {
+            const externalDmnDefinitions = externalDmn.model.definitions;
+            const _import = importsByNamespace.get(namespace);
+            if (!_import) {
+              console.debug(
+                `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referncing it.`
+              );
+              return [];
+            }
 
-        return (
-          <div key={externalDmnDefinitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
-            <div className={"kie-dmn-editor--external-nodes-section-title"}>
-              <b>{`${externalDmnDefinitions["@_name"]}`}</b> {`(${_import["@_name"]})`}
-              <small>
-                <i>
-                  <Truncate content={externalDmnsByNamespace.get(namespace)?.relativePath ?? ""} />
-                </i>
-              </small>
-            </div>
-            {externalDmnDefinitions.drgElement?.map((dmnObject) => (
-              <div
-                key={dmnObject["@_id"]}
-                className={"kie-dmn-editor--external-nodes-list-item"}
-                draggable={true}
-                onDragStart={(event) =>
-                  onDragStart(event, {
-                    externalDrgElementNamespace: namespace,
-                    externalDrgElementId: dmnObject["@_id"]!,
-                  })
-                }
-              >
-                <Flex
-                  alignItems={{ default: "alignItemsCenter" }}
-                  justifyContent={{ default: "justifyContentFlexStart" }}
-                  spaceItems={{ default: "spaceItemsNone" }}
-                >
-                  <DmnObjectListItem
-                    dmnObjectHref={buildXmlHref({ namespace, id: dmnObject["@_id"]! })}
-                    dmnObject={dmnObject}
-                    namespace={namespace}
-                    relativeToNamespace={namespace}
-                  />
-                  {dmnShapesByHref.has(buildXmlHref({ namespace, id: dmnObject["@_id"]! })) ? (
-                    <small>
-                      <div>&nbsp;&nbsp;✓</div>
-                    </small>
-                  ) : (
-                    <></>
-                  )}
-                </Flex>
+            return (
+              <div key={externalDmnDefinitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
+                <div className={"kie-dmn-editor--external-nodes-section-title"}>
+                  <b>{`${externalDmnDefinitions["@_name"]}`}</b> {`(`}
+                  {_import["@_name"] || <i style={{ color: "gray" }}>{EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}</i>}
+                  {`)`}
+                  <small>
+                    <i>
+                      <Truncate content={externalDmnsByNamespace.get(namespace)?.relativePath ?? ""} />
+                    </i>
+                  </small>
+                </div>
+                {externalDmnDefinitions.drgElement?.map((dmnObject) => {
+                  const dmnObjectHref = buildXmlHref({ namespace, id: dmnObject["@_id"]! });
+                  const isAlreadyIncluded = dmnShapesByHref.has(dmnObjectHref);
+
+                  return (
+                    <div
+                      key={dmnObject["@_id"]}
+                      className={"kie-dmn-editor--external-nodes-list-item"}
+                      draggable={!isAlreadyIncluded}
+                      style={{ opacity: isAlreadyIncluded ? "0.4" : undefined }}
+                      onDragStart={(event) =>
+                        onDragStart(event, {
+                          externalDrgElementNamespace: namespace,
+                          externalDrgElementId: dmnObject["@_id"]!,
+                        })
+                      }
+                    >
+                      <Flex
+                        alignItems={{ default: "alignItemsCenter" }}
+                        justifyContent={{ default: "justifyContentFlexStart" }}
+                        spaceItems={{ default: "spaceItemsNone" }}
+                      >
+                        <DmnObjectListItem
+                          dmnObjectHref={dmnObjectHref}
+                          dmnObject={dmnObject}
+                          namespace={namespace}
+                          relativeToNamespace={namespace}
+                        />
+                        {isAlreadyIncluded ? (
+                          <small>
+                            <div>&nbsp;&nbsp;✓</div>
+                          </small>
+                        ) : (
+                          <></>
+                        )}
+                      </Flex>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
-        );
-      })}
+            );
+          })}
+        </>
+      )}
     </>
   );
 }

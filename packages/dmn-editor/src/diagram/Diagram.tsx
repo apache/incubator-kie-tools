@@ -36,7 +36,7 @@ import { nodeNatures } from "../mutations/NodeNature";
 import { addConnectedNode } from "../mutations/addConnectedNode";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { addEdge } from "../mutations/addEdge";
-import { addOrGetDefaultDiagram } from "../mutations/addOrGetDefaultDiagram";
+import { addOrGetDrd } from "../mutations/addOrGetDrd";
 import { addShape } from "../mutations/addShape";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
@@ -47,7 +47,7 @@ import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { StoreApiType, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
@@ -141,6 +141,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     isDiagramEditingInProgress,
     selectedNodeTypes,
     externalDmnsByNamespace,
+    drgElementsWithoutVisualRepresentationOnCurrentDrd,
   } = useDmnEditorDerivedStore();
 
   // State
@@ -911,130 +912,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const [showEmptyState, setShowEmptyState] = useState(true);
 
-  const isEmptyStateShowing = showEmptyState && nodes.length === 0;
+  const isEmptyStateShowing =
+    showEmptyState && nodes.length === 0 && drgElementsWithoutVisualRepresentationOnCurrentDrd.length === 0;
 
   return (
     <>
-      {isEmptyStateShowing && (
-        <Bullseye
-          style={{
-            position: "absolute",
-            width: "100%",
-            pointerEvents: "none",
-            zIndex: 1,
-            height: "auto",
-            marginTop: "120px",
-          }}
-        >
-          <div className={"kie-dmn-editor--diagram-empty-state"}>
-            <Button
-              style={{
-                position: "absolute",
-                top: "8px",
-                right: 0,
-              }}
-              variant={ButtonVariant.plain}
-              icon={<TimesIcon />}
-              onClick={() => setShowEmptyState(false)}
-            ></Button>
-
-            <EmptyState>
-              <EmptyStateIcon icon={MousePointerIcon} />
-              <Title size={"md"} headingLevel={"h4"}>
-                {`This DMN's Diagram is empty`}
-              </Title>
-              <EmptyStateBody>Start by dragging nodes from the Palette</EmptyStateBody>
-              <br />
-              <EmptyStateBody>or</EmptyStateBody>
-              <EmptyStatePrimary>
-                <Button
-                  variant={ButtonVariant.link}
-                  icon={<TableIcon />}
-                  onClick={() => {
-                    dmnEditorStoreApi.setState((state) => {
-                      const { href: decisionNodeHref } = addStandaloneNode({
-                        definitions: state.dmn.model.definitions,
-                        newNode: {
-                          type: NODE_TYPES.decision,
-                          bounds: {
-                            "@_x": 100,
-                            "@_y": 100,
-                            "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"],
-                            "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"],
-                          },
-                        },
-                      });
-
-                      updateExpression({
-                        definitions: state.dmn.model.definitions,
-                        drgElementIndex: (state.dmn.model.definitions.drgElement ?? []).length - 1, // We just added this. We *know* that the Decision is the last element here.
-                        expression: getDefaultExpressionDefinitionByLogicType({
-                          logicType: ExpressionDefinitionLogicType.DecisionTable,
-                          allTopLevelDataTypesByFeelName: new Map(),
-                          typeRef: DmnBuiltInDataType.Undefined,
-                          getDefaultColumnWidth,
-                        }),
-                      });
-
-                      state.dispatch.boxedExpressionEditor.open(state, parseXmlHref(decisionNodeHref).id);
-                    });
-                  }}
-                >
-                  New Decision Table...
-                </Button>
-                <br />
-                <Button
-                  variant={ButtonVariant.link}
-                  icon={<BlueprintIcon />}
-                  onClick={() => {
-                    dmnEditorStoreApi.setState((state) => {
-                      const inputDataNodeBounds: DC__Bounds = {
-                        "@_x": 100,
-                        "@_y": 300,
-                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](diagram.snapGrid)["@_width"],
-                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](diagram.snapGrid)["@_height"],
-                      };
-
-                      const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
-                        definitions: state.dmn.model.definitions,
-                        newNode: {
-                          type: NODE_TYPES.inputData,
-                          bounds: inputDataNodeBounds,
-                        },
-                      });
-
-                      const { href: decisionNodeHref } = addConnectedNode({
-                        definitions: state.dmn.model.definitions,
-                        edge: EDGE_TYPES.informationRequirement,
-                        sourceNode: {
-                          href: inputDataNodeHref,
-                          type: NODE_TYPES.inputData,
-                          bounds: inputDataNodeBounds,
-                          shapeId: inputDataShapeId,
-                        },
-                        newNode: {
-                          type: NODE_TYPES.decision,
-                          bounds: {
-                            "@_x": 100,
-                            "@_y": 100,
-                            "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"],
-                            "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"],
-                          },
-                        },
-                      });
-
-                      state.diagram._selectedNodes = [decisionNodeHref];
-                      state.diagram.propertiesPanel.isOpen = true;
-                    });
-                  }}
-                >
-                  New Decision with Input Data...
-                </Button>
-              </EmptyStatePrimary>
-            </EmptyState>
-          </div>
-        </Bullseye>
-      )}
+      {isEmptyStateShowing && <DmnDiagramEmptyState setShowEmptyState={setShowEmptyState} />}
       <DiagramContainerContextProvider container={container}>
         <EdgeMarkers />
         <RF.ReactFlow
@@ -1097,6 +980,136 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   );
 }
 
+function DmnDiagramEmptyState({
+  setShowEmptyState,
+}: {
+  setShowEmptyState: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const diagram = useDmnEditorStore((s) => s.diagram);
+
+  return (
+    <Bullseye
+      style={{
+        position: "absolute",
+        width: "100%",
+        pointerEvents: "none",
+        zIndex: 1,
+        height: "auto",
+        marginTop: "120px",
+      }}
+    >
+      <div className={"kie-dmn-editor--diagram-empty-state"}>
+        <Button
+          style={{
+            position: "absolute",
+            top: "8px",
+            right: 0,
+          }}
+          variant={ButtonVariant.plain}
+          icon={<TimesIcon />}
+          onClick={() => setShowEmptyState(false)}
+        ></Button>
+
+        <EmptyState>
+          <EmptyStateIcon icon={MousePointerIcon} />
+          <Title size={"md"} headingLevel={"h4"}>
+            {`This DMN's Diagram is empty`}
+          </Title>
+          <EmptyStateBody>Start by dragging nodes from the Palette</EmptyStateBody>
+          <br />
+          <EmptyStateBody>or</EmptyStateBody>
+          <EmptyStatePrimary>
+            <Button
+              variant={ButtonVariant.link}
+              icon={<TableIcon />}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  const { href: decisionNodeHref } = addStandaloneNode({
+                    definitions: state.dmn.model.definitions,
+                    newNode: {
+                      type: NODE_TYPES.decision,
+                      bounds: {
+                        "@_x": 100,
+                        "@_y": 100,
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"],
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"],
+                      },
+                    },
+                  });
+
+                  updateExpression({
+                    definitions: state.dmn.model.definitions,
+                    drgElementIndex: (state.dmn.model.definitions.drgElement ?? []).length - 1,
+                    expression: getDefaultExpressionDefinitionByLogicType({
+                      logicType: ExpressionDefinitionLogicType.DecisionTable,
+                      allTopLevelDataTypesByFeelName: new Map(),
+                      typeRef: DmnBuiltInDataType.Undefined,
+                      getDefaultColumnWidth,
+                    }),
+                  });
+
+                  state.dispatch.boxedExpressionEditor.open(state, parseXmlHref(decisionNodeHref).id);
+                });
+              }}
+            >
+              New Decision Table...
+            </Button>
+            <br />
+            <Button
+              variant={ButtonVariant.link}
+              icon={<BlueprintIcon />}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  const inputDataNodeBounds: DC__Bounds = {
+                    "@_x": 100,
+                    "@_y": 300,
+                    "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](diagram.snapGrid)["@_width"],
+                    "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](diagram.snapGrid)["@_height"],
+                  };
+
+                  const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
+                    definitions: state.dmn.model.definitions,
+                    newNode: {
+                      type: NODE_TYPES.inputData,
+                      bounds: inputDataNodeBounds,
+                    },
+                  });
+
+                  const { href: decisionNodeHref } = addConnectedNode({
+                    definitions: state.dmn.model.definitions,
+                    edge: EDGE_TYPES.informationRequirement,
+                    sourceNode: {
+                      href: inputDataNodeHref,
+                      type: NODE_TYPES.inputData,
+                      bounds: inputDataNodeBounds,
+                      shapeId: inputDataShapeId,
+                    },
+                    newNode: {
+                      type: NODE_TYPES.decision,
+                      bounds: {
+                        "@_x": 100,
+                        "@_y": 100,
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"],
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"],
+                      },
+                    },
+                  });
+
+                  state.diagram._selectedNodes = [decisionNodeHref];
+                  state.diagram.propertiesPanel.isOpen = true;
+                });
+              }}
+            >
+              New Decision with Input Data...
+            </Button>
+          </EmptyStatePrimary>
+        </EmptyState>
+      </div>
+    </Bullseye>
+  );
+}
+
 export function SetConnectionToReactFlowStore(props: {}) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const rfStoreApi = RF.useStoreApi();
@@ -1151,6 +1164,7 @@ export function TopRightCornerPanels() {
       <RF.Panel position={"top-right"} style={{ display: "flex" }}>
         <aside className={"kie-dmn-editor--overlays-panel-toggle"}>
           <Popover
+            className={"kie-dmn-editor--overlay-panel-popover"}
             key={`${diagram.overlaysPanel.isOpen}`}
             aria-label="Overlays Panel"
             position={"bottom-end"}
@@ -1391,7 +1405,7 @@ export function KeyboardShortcuts(props: {}) {
         state.dmn.model.definitions.artifact ??= [];
         state.dmn.model.definitions.artifact.push(...clipboard.artifacts);
 
-        const { diagramElements, widths } = addOrGetDefaultDiagram({ definitions: state.dmn.model.definitions });
+        const { diagramElements, widths } = addOrGetDrd({ definitions: state.dmn.model.definitions });
         diagramElements.push(...clipboard.shapes.map((s) => ({ ...s, __$$element: "dmndi:DMNShape" as const })));
         diagramElements.push(...clipboard.edges.map((s) => ({ ...s, __$$element: "dmndi:DMNEdge" as const })));
 

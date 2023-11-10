@@ -5,7 +5,7 @@ import {
   DMNDI15__DMNDecisionServiceDividerLine,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { SnapGrid } from "../store/Store";
@@ -28,7 +28,7 @@ export function updateDecisionServiceDividerLine({
   drgElementIndex: number;
   snapGrid: SnapGrid;
 }) {
-  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions });
 
   const shape = diagramElements?.[shapeIndex] as DMNDI15__DMNShape | undefined;
   const shapeBounds = shape?.["dc:Bounds"];

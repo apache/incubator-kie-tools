@@ -4,7 +4,7 @@ import {
   DMN15__tFunctionDefinition,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { beeToDmn } from "../boxedExpressions/beeToDmn";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 import { renameDrgElement } from "./renameNode";
 
 export function updateExpression({
@@ -20,7 +20,6 @@ export function updateExpression({
   const updatedExpression = beeToDmn(expression, updatedWidthsMap);
 
   const drgElement = definitions.drgElement?.[drgElementIndex];
-
   if (!drgElement) {
     throw new Error("Can't update expression for drgElement that doesn't exist.");
   }
@@ -51,7 +50,7 @@ export function updateExpression({
     throw new Error("Can't update expression for drgElement that is not a Decision or a BKM.");
   }
 
-  const { widthsExtension, widths } = addOrGetDefaultDiagram({ definitions });
+  const { widthsExtension, widths } = addOrGetDrd({ definitions });
   const componentWidthsMap = widths.reduce(
     (acc, e) =>
       e["@_dmnElementRef"]

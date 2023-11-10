@@ -1,6 +1,6 @@
 import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../diagram/maths/DmnMaths";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 
 export function addDecisionToDecisionService({
@@ -24,7 +24,7 @@ export function addDecisionToDecisionService({
     throw new Error(`DRG Element with id '${decisionServiceId}' is either not a Decision Service or doesn't exist.`);
   }
 
-  const diagram = addOrGetDefaultDiagram({ definitions });
+  const diagram = addOrGetDrd({ definitions });
   const decisionShape = diagram.diagramElements.find(
     (s) => s["@_dmnElementRef"] === decisionId && s.__$$element === "dmndi:DMNShape"
   ) as DMNDI15__DMNShape;

@@ -15,7 +15,7 @@ import { _checkIsValidConnection } from "../diagram/connections/isValidConnectio
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 import { getDiscreteAutoPositioningEdgeIdMarker, getPointForHandle } from "../diagram/maths/DmnMaths";
 import { getRequirementsFromEdge } from "./addConnectedNode";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { addOrGetDrd } from "./addOrGetDrd";
 import { Unpacked } from "../tsExt/tsExt";
 import {
   repopulateInputDataAndDecisionsOnAllDecisionServices,
@@ -129,7 +129,7 @@ export function addEdge({
     }
   }
 
-  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements } = addOrGetDrd({ definitions });
 
   // Remove existing
   const removedDmnEdge: DMNDI15__DMNEdge | undefined = removeFirstMatchIfPresent(

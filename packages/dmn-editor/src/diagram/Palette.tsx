@@ -18,6 +18,9 @@ import {
   KnowledgeSourceIcon,
   TextAnnotationIcon,
 } from "../icons/Icons";
+import { DrdSelectorPanel } from "./DrdSelectorPanel";
+import { addOrGetDrd, getDefaultDrdName } from "../mutations/addOrGetDrd";
+import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -29,6 +32,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const diagram = useDmnEditorStore((s) => s.diagram);
+  const thisDmn = useDmnEditorStore((s) => s.dmn.model);
   const rfStoreApi = RF.useStoreApi();
 
   const groupNodes = useCallback(() => {
@@ -57,9 +61,60 @@ export function Palette({ pulse }: { pulse: boolean }) {
     });
   }, [dmnEditorStoreApi, rfStoreApi]);
 
+  const drd = thisDmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex];
+
   return (
     <>
-      <RF.Panel position={"top-left"}>
+      <RF.Panel position={"top-left"} style={{ pointerEvents: "none" }}>
+        <aside className={"kie-dmn-editor--drd-selector"}>
+          <InlineFeelNameInput
+            validate={() => true}
+            allUniqueNames={new Map()}
+            name={drd?.["@_name"] ?? ""}
+            id={diagram.drdIndex + ""}
+            onRenamed={(newName) => {
+              dmnEditorStoreApi.setState((state) => {
+                const drd = addOrGetDrd({ definitions: state.dmn.model.definitions, drdIndex: diagram.drdIndex });
+                drd.diagram["@_name"] = newName;
+              });
+            }}
+            placeholder={getDefaultDrdName({ drdIndex: diagram.drdIndex })}
+            isReadonly={false}
+            isPlain={true}
+            shouldCommitOnBlur={true}
+          />
+          <Popover
+            className={"kie-dmn-editor--drd-selector-popover"}
+            key={`${diagram.drdSelector.isOpen}`}
+            aria-label={"DRD Selector Popover"}
+            isVisible={diagram.drdSelector.isOpen}
+            shouldOpen={() => {
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.drdSelector.isOpen = true;
+              });
+            }}
+            shouldClose={() => {
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.drdSelector.isOpen = false;
+              });
+            }}
+            enableFlip={true}
+            position={"right-start"}
+            hideOnOutsideClick={false}
+            bodyContent={<DrdSelectorPanel />}
+          >
+            <button
+              title="DRD selector"
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.drdSelector.isOpen = !state.diagram.drdSelector.isOpen;
+                });
+              }}
+            >
+              {`>`}
+            </button>
+          </Popover>
+        </aside>
         <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
           <div
             title="Input Data"
@@ -127,7 +182,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
           <Popover
             className={"kie-dmn-editor--external-nodes-popover"}
             key={`${diagram.externalNodesPanel.isOpen}`}
-            aria-label={"ExternalNodes Panel"}
+            aria-label={"External Nodes Panel"}
             isVisible={diagram.externalNodesPanel.isOpen}
             shouldOpen={() => {
               dmnEditorStoreApi.setState((state) => {
