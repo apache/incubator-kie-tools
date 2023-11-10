@@ -17,9 +17,16 @@
  * under the License.
  */
 
-const IS_HASH_ROUTER = true;
+import { APPDATA_JSON_FILENAME } from "../AppConstants";
 
-export enum QueryParams {}
+const IS_HASH_ROUTER = true;
+const WORKFLOWS_ROUTE = "/workflows";
+const RUNTIME_TOOLS_ROUTE = "/runtime-tools";
+
+export enum QueryParams {
+  FILTERS = "filters",
+  SORT_BY = "sortBy",
+}
 
 export enum PathParams {
   WORKFLOW_ID = "workflowId",
@@ -79,9 +86,9 @@ export interface QueryParamsImpl<Q extends string> {
   toString(): string;
 }
 
-const WORKFLOWS_ROUTE = "/workflows";
 export const routes = {
   home: new Route<{}>(() => "/"),
+  dataJsonError: new Route<{}>(() => "/data-json-error"),
 
   workflows: {
     home: new Route<{}>(() => WORKFLOWS_ROUTE),
@@ -91,6 +98,15 @@ export const routes = {
     cloudEvent: new Route<{}>(() => `/triggerCloudEvent`),
   },
 
-  dataJson: new Route<{}>(() => "/sonataflow-deployment-webapp-data.json"),
+  runtimeTools: {
+    home: new Route<{}>(() => RUNTIME_TOOLS_ROUTE),
+    workflowInstances: new Route<{}>(() => RUNTIME_TOOLS_ROUTE + `/workflow-instances`),
+    workflowDetails: new Route<{
+      queryParams: QueryParams.FILTERS | QueryParams.SORT_BY;
+      pathParams: PathParams.WORKFLOW_ID;
+    }>(({ workflowId }) => RUNTIME_TOOLS_ROUTE + `/workflow-details/${workflowId}`),
+  },
+
+  dataJson: new Route<{}>(() => "/" + APPDATA_JSON_FILENAME),
   openApiJson: new Route<{}>(() => "/q/openapi.json"),
 };

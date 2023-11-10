@@ -41,14 +41,6 @@
 
   <dependencies>
 
-    <!-- GWT. -->
-
-    <dependency>
-      <groupId>org.gwtproject</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Lienzo. -->
 
     <dependency>
@@ -95,14 +87,9 @@
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-common</artifactId>
-    </dependency>
       <dependency>
-          <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-          <artifactId>errai-ui</artifactId>
+          <groupId>io.crysknife</groupId>
+          <artifactId>crysknife-core</artifactId>
       </dependency>
 
   </dependencies>

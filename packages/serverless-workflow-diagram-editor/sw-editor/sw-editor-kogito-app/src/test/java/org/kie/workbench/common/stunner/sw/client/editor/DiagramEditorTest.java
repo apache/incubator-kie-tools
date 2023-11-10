@@ -25,8 +25,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.event.Event;
-
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.core.types.Transform;
@@ -37,6 +35,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.promise.Promise;
+import jakarta.enterprise.event.Event;
 import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
 import org.junit.Before;
 import org.junit.Test;

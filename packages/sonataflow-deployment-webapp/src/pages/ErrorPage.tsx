@@ -29,10 +29,17 @@ import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/ty
 import { routes } from "../routes";
 import { BasePage } from "./BasePage";
 
+export enum ErrorKind {
+  APPDATA_JSON = "AppDataJson",
+  OPENAPI = "OpenApi",
+  WORKFLOW = "Workflow",
+}
+
 export type ErrorPageProps = { errors: string[] } & (
-  | { kind: "OpenApi" }
+  | { kind: ErrorKind.APPDATA_JSON }
+  | { kind: ErrorKind.OPENAPI }
   | {
-      kind: "Workflow";
+      kind: ErrorKind.WORKFLOW;
       workflowId: WorkflowDefinition["workflowName"];
     }
 );
@@ -43,17 +50,17 @@ export function ErrorPage(props: ErrorPageProps) {
   const errorDetails = useMemo(() => props.errors.filter(Boolean).join("\n"), [props.errors]);
 
   const title = useMemo(() => {
-    if (props.kind === "Workflow") {
+    if (props.kind === ErrorKind.WORKFLOW) {
       return "Cannot open workflow";
     }
     return "Cannot open the requested page";
   }, [props.kind]);
 
   const description = useMemo(() => {
-    if (props.kind === "OpenApi") {
+    if (props.kind === ErrorKind.APPDATA_JSON || props.kind === ErrorKind.OPENAPI) {
       return `There was an error contacting the server.`;
     }
-    if (props.kind === "Workflow") {
+    if (props.kind === ErrorKind.WORKFLOW) {
       return `There was an error opening the workflow with name "${props.workflowId}".`;
     }
     return "There was an error opening the requested page.";

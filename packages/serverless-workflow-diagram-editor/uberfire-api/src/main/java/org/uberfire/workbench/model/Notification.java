@@ -6,25 +6,23 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
 package org.uberfire.workbench.model;
 
 import java.util.Date;
+import java.util.Objects;
 
-import org.jboss.errai.common.client.api.Assert;
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.NotificationEvent.NotificationType;
 
@@ -35,21 +33,20 @@ import org.uberfire.workbench.events.NotificationEvent.NotificationType;
  * {@link NotificationEvent} being fired as a CDI event.
  * @see NotificationEvent
  */
-@Portable
 public class Notification {
 
     private NotificationType type;
     private String message;
     private Date timestamp;
     private State state;
-    public Notification(@MapsTo("type") NotificationType type,
-                        @MapsTo("message") String message,
-                        @MapsTo("timestamp") Date timestamp,
-                        @MapsTo("state") State state) {
-        this.type = Assert.notNull(type);
-        this.message = Assert.notNull(message);
-        this.timestamp = Assert.notNull(timestamp);
-        this.state = Assert.notNull(state);
+    public Notification(NotificationType type,
+                        String message,
+                        Date timestamp,
+                        State state) {
+        this.type = Objects.requireNonNull(type);
+        this.message = Objects.requireNonNull(message);
+        this.timestamp = Objects.requireNonNull(timestamp);
+        this.state = Objects.requireNonNull(state);
     }
 
     public NotificationType getType() {

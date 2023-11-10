@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -22,14 +22,14 @@ package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 
 import java.util.function.BiFunction;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.client.local.api.IsElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.ui.common.client.injectors.StyleInjector;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
@@ -76,9 +76,13 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
         final int clipX = isHorizontal ? (strip.getWide() + strip.getPadding()) * index : 0;
         final int clipY = !isHorizontal ? (strip.getHigh() + strip.getPadding()) * index : 0;
         final WidgetElementRendererView view = views.get();
-        strip.getCss().getCssResource().ensureInjected();
+        inject(strip.getCss().getCssResource());
         view.setWidget(panelBuilder.apply(strip.getCss().getClassName(), new Integer[]{clipX, clipY * -1}));
         return view;
+    }
+
+    protected void inject(final String css) {
+        StyleInjector.fromString(css).inject();
     }
 
     @PreDestroy
@@ -86,7 +90,7 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
         views.destroyAll();
     }
 
-    private static HTMLDivElement buildPanel(final String className,
+    protected static HTMLDivElement buildPanel(final String className,
                                         final int clipX,
                                         final int clipY) {
         HTMLDivElement root = (HTMLDivElement) DomGlobal.document.createElement("div");

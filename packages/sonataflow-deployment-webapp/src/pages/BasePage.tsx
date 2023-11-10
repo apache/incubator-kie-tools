@@ -34,7 +34,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import * as React from "react";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useHistory } from "react-router";
 import { useApp } from "../context/AppContext";
 import { routes } from "../routes";
@@ -101,6 +101,12 @@ export function BasePage(props: { children?: React.ReactNode }) {
     ),
     [app.data.appName, history, app.appDataPromise.status, app.data.showDisclaimer]
   );
+
+  useEffect(() => {
+    if (app.appDataPromise.status === PromiseStateStatus.REJECTED) {
+      history.replace(routes.dataJsonError.path({}));
+    }
+  }, [history, app.appDataPromise]);
 
   return (
     <Page sidebar={<PageSidebar nav={<BasePageNav />} theme="dark" />} header={masthead} isManagedSidebar>

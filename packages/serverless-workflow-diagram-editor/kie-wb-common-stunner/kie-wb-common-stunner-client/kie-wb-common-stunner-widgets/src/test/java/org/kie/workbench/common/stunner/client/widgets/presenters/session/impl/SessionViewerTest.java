@@ -22,7 +22,7 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ui.client.local.api.IsElement;
+import io.crysknife.client.IsElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -22,11 +22,11 @@ package org.gwtbootstrap3.extras.animate.client.ui;
 
 import java.util.ArrayList;
 
-import com.google.gwt.dom.client.StyleInjector;
 import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
+import io.crysknife.ui.common.client.injectors.StyleInjector;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
@@ -283,7 +283,7 @@ public class Animate {
             styleSheet += "}";
 
             // inject new style
-            StyleInjector.injectAtEnd(styleSheet, true);
+            StyleInjector.fromString(styleSheet).inject();
 
             usedStyles.add(animation + " " + getStyleNameFromAnimation(animation, count, duration, delay));
 

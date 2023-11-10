@@ -7,15 +7,15 @@
   ~ to you under the Apache License, Version 2.0 (the
   ~ "License"); you may not use this file except in compliance
   ~ with the License.  You may obtain a copy of the License at
-  ~ 
+  ~
   ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~ 
+  ~
   ~ Unless required by applicable law or agreed to in writing,
   ~ software distributed under the License is distributed on an
   ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
   ~ KIND, either express or implied.  See the License for the
   ~ specific language governing permissions and limitations
-  ~ under the License.      
+  ~ under the License.
 -->
 <project
   xmlns="http://maven.apache.org/POM/4.0.0"
@@ -37,11 +37,6 @@
   <packaging>jar</packaging>
 
   <dependencies>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-    </dependency>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -79,14 +74,6 @@
       <artifactId>appformer-kogito-bridge</artifactId>
     </dependency>
 
-    <!-- GWT and GWT Extensions -->
-
-    <dependency>
-      <groupId>org.gwtproject</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Elemental2 -->
 
     <dependency>
@@ -99,24 +86,6 @@
       <artifactId>elemental2-promise</artifactId>
     </dependency>
 
-    <!-- Uberfire & Errai. -->
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-ioc</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-api</artifactId>
@@ -125,11 +94,6 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-client-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-ui</artifactId>
     </dependency>
 
     <dependency>
@@ -150,6 +114,12 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>sw-editor-api</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.treblereel.j2cl.processors</groupId>
+      <artifactId>processors</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- test -->

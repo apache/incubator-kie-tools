@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -22,12 +22,12 @@ package org.kie.workbench.common.stunner.core.client.api;
 
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import io.crysknife.annotation.CircularDependency;
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.SyncBeanDef;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.core.api.AbstractDefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -39,9 +39,10 @@ import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 
 @ApplicationScoped
+@CircularDependency
 public class ClientDefinitionManager extends AbstractDefinitionManager {
 
-    private final SyncBeanManager beanManager;
+    private final BeanManager beanManager;
 
     protected ClientDefinitionManager() {
         super();
@@ -49,7 +50,7 @@ public class ClientDefinitionManager extends AbstractDefinitionManager {
     }
 
     @Inject
-    public ClientDefinitionManager(final SyncBeanManager beanManager,
+    public ClientDefinitionManager(final BeanManager beanManager,
                                    final RegistryFactory registryFactory,
                                    final AdapterManager adapterManager,
                                    final CloneManager cloneManager) {

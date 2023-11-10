@@ -25,6 +25,7 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { env } = require("./env");
 const buildEnv = env;
 
@@ -32,6 +33,9 @@ module.exports = async (env) =>
   merge(common(env), {
     entry: {
       index: "./src/index.tsx",
+      "serverless-workflow-combined-editor-envelope": "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
+      "serverless-workflow-diagram-editor-envelope": "./src/envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
+      "serverless-workflow-text-editor-envelope": "./src/envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts",
     },
     optimization: {
       minimizer: [
@@ -52,6 +56,23 @@ module.exports = async (env) =>
           { from: "./static/resources", to: "./resources" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
           { from: "./static/sonataflow-deployment-webapp-data.json", to: "./sonataflow-deployment-webapp-data.json" },
+          {
+            from: "./static/envelope/serverless-workflow-combined-editor-envelope.html",
+            to: "./serverless-workflow-combined-editor-envelope.html",
+          },
+          {
+            from: "./static/envelope/serverless-workflow-diagram-editor-envelope.html",
+            to: "./serverless-workflow-diagram-editor-envelope.html",
+          },
+          {
+            from: swEditor.swEditorPath(),
+            to: "./diagram",
+            globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
+          {
+            from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
+            to: "./serverless-workflow-text-editor-envelope.html",
+          },
         ],
       }),
       new MonacoWebpackPlugin({
