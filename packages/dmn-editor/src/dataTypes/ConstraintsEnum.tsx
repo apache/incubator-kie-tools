@@ -219,25 +219,15 @@ function EnumElement({
   onChange: (newValue: string) => void;
   onRemove: () => void;
 }) {
-  const [value, setValue] = useState<string>(initialValue);
+  const value = useMemo<string>(() => initialValue, [initialValue]);
   const removeButtonRef = useRef(null);
   const { hovered } = useDraggableItemContext();
-
-  const onInternalChange = useCallback(
-    (newValue: string) => {
-      setValue(newValue);
-      if (newValue !== "") {
-        onChange(newValue);
-      }
-    },
-    [onChange]
-  );
 
   return (
     <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
       {typeHelper.component({
         autoFocus: true,
-        onChange: onInternalChange,
+        onChange: (newValue: string) => onChange(newValue),
         id,
         isDisabled,
         style: {
@@ -266,7 +256,11 @@ function EnumElement({
 
 export function isEnum(value?: string, typeCheck?: (value: string) => boolean): string[] | undefined {
   if (value === undefined) {
-    return;
+    return undefined;
+  }
+
+  if (value === "") {
+    return undefined;
   }
 
   const enumValues = value.split(ENUM_SEPARATOR).map((e) => e.trim());

@@ -34,6 +34,9 @@ import {
   getClipboard,
 } from "../clipboard/Clipboard";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { isEnum } from "./ConstraintsEnum";
+import { isRange } from "./ConstraintsRange";
+import { constraintTypeHelper } from "./Constraints";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -230,16 +233,39 @@ export function ItemComponentsTable({
                 level * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
 
               const constraintLabel = () => {
-                if (dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "enumeration") {
+                if (
+                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "enumeration" ||
+                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "enumeration"
+                ) {
                   return <>Enumeration</>;
                 }
-                if (dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "expression") {
+                if (
+                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "expression" ||
+                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "expression"
+                ) {
                   return <>Expression</>;
                 }
-                if (dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "range") {
+                if (
+                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "range" ||
+                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "range"
+                ) {
                   return <>Range</>;
                 }
-                return <>None</>;
+
+                const constraintValue =
+                  dt.itemDefinition.typeConstraint?.text.__$$text ?? dt.itemDefinition.allowedValues?.text.__$$text;
+                const typeRef = (dt.itemDefinition.typeRef?.__$$text ??
+                  DmnBuiltInDataType.Undefined) as DmnBuiltInDataType;
+                if (constraintValue === undefined) {
+                  return <>None</>;
+                }
+                if (isEnum(constraintValue, constraintTypeHelper(typeRef).check)) {
+                  return <>Enumeration</>;
+                }
+                if (isRange(constraintValue, constraintTypeHelper(typeRef).check)) {
+                  return <>Range</>;
+                }
+                return <>Expression</>;
               };
 
               return (
