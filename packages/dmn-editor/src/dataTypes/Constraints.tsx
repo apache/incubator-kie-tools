@@ -134,7 +134,7 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
         case DmnBuiltInDataType.Date:
           return value.replace('date("', "").replace('")', "");
         case DmnBuiltInDataType.DateTime:
-          return `date and time("${value}")`;
+          return value.replace('date and time("', "").replace('")', "");
         case DmnBuiltInDataType.DateTimeDuration:
           return value.replace('duration("', "").replace('")', "");
         case DmnBuiltInDataType.Number:
@@ -232,7 +232,7 @@ export function Constraints({
     [itemDefinition?.typeRef?.__$$text]
   );
 
-  const [selectedConstraint, setSelectConstraint] = useState<ConstraintsType>(() => {
+  const updateSelectedConstraint = useCallback(() => {
     if (kieConstraintType === "enumeration") {
       return ConstraintsType.ENUMERATION;
     }
@@ -252,7 +252,15 @@ export function Constraints({
       return ConstraintsType.RANGE;
     }
     return ConstraintsType.EXPRESSION;
-  });
+  }, [constraintValue, kieConstraintType, typeRef]);
+
+  const [selectedConstraint, setSelectConstraint] = useState<ConstraintsType>(updateSelectedConstraint());
+
+  useEffect(() => {
+    if (internalConstraintValue.isValid) {
+      setSelectConstraint(updateSelectedConstraint());
+    }
+  }, [internalConstraintValue.isValid, updateSelectedConstraint]);
 
   const enumToKieConstraintType: (selection: ConstraintsType) => KIE__tConstraintType | undefined = useCallback(
     (selection) => {

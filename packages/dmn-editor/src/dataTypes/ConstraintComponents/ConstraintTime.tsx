@@ -10,7 +10,6 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
     <div>
       <TimePicker
         className={"kie-dmn-editor--constraint-time kie-dmn-editor--constraint-input"}
-        is24Hour={true}
         inputProps={{ className: "kie-dmn-editor--constraint-input" }}
         value={value}
         onChange={(e, value) => onChange(value)}

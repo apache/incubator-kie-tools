@@ -31,7 +31,7 @@ export function ConstraintsExpression({
   const [preview, setPreview] = useState(value ?? "");
   const onFeelChange = useCallback(
     (_, content, preview) => {
-      onChange?.((prev) => ({ value: content, isValid: prev.isValid }));
+      onChange?.((prev) => ({ value: content.trim(), isValid: prev.isValid }));
       setPreview(preview);
     },
     [onChange]
