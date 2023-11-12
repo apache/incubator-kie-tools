@@ -23,7 +23,7 @@ export const avaiableModels: DmnEditor.ExternalModel[] = [
   },
   {
     type: "dmn",
-    model: getMarshaller(`<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/">`, {
+    model: getMarshaller(`<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" />`, {
       upgradeTo: "latest",
     }).parser.parse(),
     svg: "",
