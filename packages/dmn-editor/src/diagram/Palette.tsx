@@ -23,6 +23,7 @@ import { addOrGetDrd, getDefaultDrdName } from "../mutations/addOrGetDrd";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
 import { DrgNodesPanel } from "./DrgNodesPanel";
+import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -66,10 +67,13 @@ export function Palette({ pulse }: { pulse: boolean }) {
 
   const drd = thisDmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex];
 
+  const drdSelectorPopoverRef = React.useRef<HTMLDivElement>(null);
+
   return (
     <>
       <RF.Panel position={"top-left"}>
-        <aside className={"kie-dmn-editor--drd-selector"}>
+        <aside className={"kie-dmn-editor--drd-selector"} style={{ position: "relative" }}>
+          <div ref={drdSelectorPopoverRef} style={{ position: "absolute", left: "56px", height: "100%", zIndex: -1 }} />
           <InlineFeelNameInput
             validate={() => true}
             allUniqueNames={new Map()}
@@ -91,32 +95,26 @@ export function Palette({ pulse }: { pulse: boolean }) {
             key={`${diagram.drdSelector.isOpen}`}
             aria-label={"DRD Selector Popover"}
             isVisible={diagram.drdSelector.isOpen}
-            shouldOpen={() => {
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.drdSelector.isOpen = true;
-              });
-            }}
+            reference={() => drdSelectorPopoverRef.current!}
             shouldClose={() => {
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.drdSelector.isOpen = false;
               });
             }}
-            enableFlip={true}
-            position={"right-start"}
+            position={"bottom-start"}
             hideOnOutsideClick={false}
             bodyContent={<DrdSelectorPanel />}
+          />
+          <button
+            title="DRD selector"
+            onClick={() => {
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.drdSelector.isOpen = !state.diagram.drdSelector.isOpen;
+              });
+            }}
           >
-            <button
-              title="DRD selector"
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  state.diagram.drdSelector.isOpen = !state.diagram.drdSelector.isOpen;
-                });
-              }}
-            >
-              {`>`}
-            </button>
-          </Popover>
+            <CaretDownIcon />
+          </button>
         </aside>
       </RF.Panel>
       <RF.Panel position={"top-left"} style={{ marginTop: "78px" }}>
@@ -199,7 +197,6 @@ export function Palette({ pulse }: { pulse: boolean }) {
                 state.diagram.openNodesPanel === DiagramNodesPanel.NONE;
               });
             }}
-            enableFlip={true}
             position={"right-start"}
             hideOnOutsideClick={false}
             bodyContent={<DrgNodesPanel />}
@@ -237,7 +234,6 @@ export function Palette({ pulse }: { pulse: boolean }) {
                 state.diagram.openNodesPanel === DiagramNodesPanel.NONE;
               });
             }}
-            enableFlip={true}
             position={"right-start"}
             hideOnOutsideClick={false}
             bodyContent={<ExternalNodesPanel />}
