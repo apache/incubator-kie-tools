@@ -89,7 +89,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	generatedProps, propsErr = properties.LoadString(props)
 	assert.NoError(t, propsErr)
 	assert.Equal(t, 9, len(generatedProps.Keys()))
-	assert.Equal(t, "http://"+platform.Name+"-data-index-service."+platform.Namespace+"/processes", generatedProps.GetString(dataIndexServiceUrlProperty, ""))
+	assert.Equal(t, "http://"+platform.Name+"-"+DataIndexName+"."+platform.Namespace+"/processes", generatedProps.GetString(dataIndexServiceUrlProperty, ""))
 
 	// disabling data index bypasses config of outgoing events url
 	platform.Spec.Services.DataIndex.Enabled = nil
@@ -98,4 +98,15 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, propsErr)
 	assert.Equal(t, 8, len(generatedProps.Keys()))
 	assert.Equal(t, "", generatedProps.GetString(dataIndexServiceUrlProperty, ""))
+
+	// check that service app properties are being properly set
+	props = NewServiceAppPropertyHandler(platform).WithUserProperties(userProperties).Build()
+	generatedProps, propsErr = properties.LoadString(props)
+	assert.NoError(t, propsErr)
+	assert.Equal(t, 9, len(generatedProps.Keys()))
+	assert.Equal(t, "false", generatedProps.GetString(kafkaSmallRyeHealthProperty, ""))
+	assert.Equal(t, "value1", generatedProps.GetString("property1", ""))
+	assert.Equal(t, "value2", generatedProps.GetString("property2", ""))
+	//quarkus.http.port remains with the default value since it's immutable.
+	assert.Equal(t, "8080", generatedProps.GetString("quarkus.http.port", ""))
 }

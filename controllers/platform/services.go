@@ -106,10 +106,6 @@ func createDataIndexDeployment(ctx context.Context, client client.Client, platfo
 				Value: "http-events-support",
 			},
 			{
-				Name:  "QUARKUS_HTTP_PORT",
-				Value: "8080",
-			},
-			{
 				Name:  "QUARKUS_HTTP_CORS",
 				Value: "true",
 			},
@@ -171,7 +167,7 @@ func createDataIndexDeployment(ctx context.Context, client client.Client, platfo
 						VolumeSource: corev1.VolumeSource{
 							ConfigMap: &corev1.ConfigMapVolumeSource{
 								LocalObjectReference: corev1.LocalObjectReference{
-									Name: common.GetDataIndexName(platform),
+									Name: common.GetDataIndexCmName(platform),
 								},
 							},
 						},
@@ -331,11 +327,14 @@ func createDataIndexService(ctx context.Context, client client.Client, platform 
 func createDataIndexConfigMap(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform) error {
 	configMap := &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      common.GetDataIndexName(platform),
+			Name:      common.GetDataIndexCmName(platform),
 			Namespace: platform.Namespace,
 			Labels: map[string]string{
 				workflowproj.LabelApp: platform.Name,
 			},
+		},
+		Data: map[string]string{
+			workflowproj.ApplicationPropertiesFileName: common.NewServiceAppPropertyHandler(platform).Build(),
 		},
 	}
 	if err := controllerutil.SetControllerReference(platform, configMap, client.Scheme()); err != nil {
@@ -344,9 +343,10 @@ func createDataIndexConfigMap(ctx context.Context, client client.Client, platfor
 
 	// Create or Update the service
 	if op, err := controllerutil.CreateOrUpdate(ctx, client, configMap, func() error {
-		configMap.Data = map[string]string{
-			"application.properties": "quarkus.smallrye-health.check.\"io.quarkus.kafka.client.health.KafkaHealthCheck\".enabled=false\n",
-		}
+		configMap.Data[workflowproj.ApplicationPropertiesFileName] =
+			common.NewServiceAppPropertyHandler(platform).
+				WithUserProperties(configMap.Data[workflowproj.ApplicationPropertiesFileName]).
+				Build()
 
 		return nil
 	}); err != nil {

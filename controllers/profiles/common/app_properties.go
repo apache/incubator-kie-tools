@@ -30,6 +30,7 @@ const (
 	kogitoServiceUrlProperty         = "kogito.service.url"
 	kogitoServiceUrlProtocol         = "http"
 	dataIndexServiceUrlProperty      = "mp.messaging.outgoing.kogito-processinstances-events.url"
+	kafkaSmallRyeHealthProperty      = "quarkus.smallrye-health.check.\"io.quarkus.kafka.client.health.KafkaHealthCheck\".enabled"
 	dataIndexServiceUrlProtocol      = "http"
 
 	DataIndexImageBase = "quay.io/kiegroup/kogito-data-index-"
@@ -59,6 +60,7 @@ type appPropertyHandler struct {
 	platform                 *operatorapi.SonataFlowPlatform
 	userProperties           string
 	defaultMutableProperties string
+	isService                bool
 }
 
 func (a *appPropertyHandler) WithUserProperties(properties string) AppPropertyHandler {
@@ -76,7 +78,11 @@ func (a *appPropertyHandler) Build() string {
 	}
 	if propErr != nil {
 		// can't load user's properties, ignore it
-		klog.V(log.D).InfoS("Can't load user's property", "workflow", a.workflow.Name, "namespace", a.workflow.Namespace, "properties", a.userProperties)
+		if a.isService && a.platform != nil {
+			klog.V(log.D).InfoS("Can't load user's property", "platform", a.platform.Name, "namespace", a.platform.Namespace, "properties", a.userProperties)
+		} else {
+			klog.V(log.D).InfoS("Can't load user's property", "workflow", a.workflow.Name, "namespace", a.workflow.Namespace, "properties", a.userProperties)
+		}
 		props = properties.NewProperties()
 	}
 	// Disable expansions since it's not our responsibility
@@ -121,6 +127,16 @@ func (a *appPropertyHandler) withDataIndexServiceUrl() AppPropertyHandler {
 	return a
 }
 
+// withKafkaHealthCheckDisabled adds the property kafkaSmallRyeHealthProperty to the application properties.
+// See Service Discovery https://kubernetes.io/docs/concepts/services-networking/service/#dns
+func (a *appPropertyHandler) withKafkaHealthCheckDisabled() AppPropertyHandler {
+	a.addDefaultMutableProperty(
+		kafkaSmallRyeHealthProperty,
+		"false",
+	)
+	return a
+}
+
 func (a *appPropertyHandler) addDefaultMutableProperty(name string, value string) AppPropertyHandler {
 	a.defaultMutableProperties = a.defaultMutableProperties + fmt.Sprintf("%s=%s\n", name, value)
 	return a
@@ -143,6 +159,17 @@ func NewAppPropertyHandler(workflow *operatorapi.SonataFlow, platform *operatora
 	return handler.withKogitoServiceUrl()
 }
 
+// NewServicePropertyHandler creates the default service configurations property handler
+// The set of properties is initialized with the operator provided immutable properties.
+// The set of defaultMutableProperties is initialized with the operator provided properties that the user might override.
+func NewServiceAppPropertyHandler(platform *operatorapi.SonataFlowPlatform) AppPropertyHandler {
+	handler := &appPropertyHandler{
+		platform:  platform,
+		isService: true,
+	}
+	return handler.withKafkaHealthCheckDisabled()
+}
+
 // ImmutableApplicationProperties immutable default application properties that can be used with any workflow based on Quarkus.
 // Alias for NewAppPropertyHandler(workflow).Build()
 func ImmutableApplicationProperties(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) string {
@@ -151,4 +178,8 @@ func ImmutableApplicationProperties(workflow *operatorapi.SonataFlow, platform *
 
 func GetDataIndexName(platform *operatorapi.SonataFlowPlatform) string {
 	return platform.Name + "-" + DataIndexName
+}
+
+func GetDataIndexCmName(platform *operatorapi.SonataFlowPlatform) string {
+	return GetDataIndexName(platform) + "-props"
 }
