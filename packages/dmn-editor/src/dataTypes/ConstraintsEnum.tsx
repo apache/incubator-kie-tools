@@ -23,14 +23,11 @@ export function ConstraintsEnum({
   const enumValues = useMemo(() => isEnum(value, typeHelper.check) ?? [], [typeHelper.check, value]);
   const [addNew, setAddNew] = useState<boolean>(() => (enumValues.length === 0 ? true : false));
   const [valuesUuid, setValuesUuid] = useState((enumValues ?? [])?.map((_) => generateUuid()));
-  const [isItemValid, setItemValid] = useState<boolean[]>(
-    enumValues.map((value, i, array) => array.filter((e) => e === value).length <= 1)
+  const isItemValid = useMemo(
+    () => enumValues.map((value, i, array) => array.filter((e) => e === value).length <= 1),
+    [enumValues]
   );
   const [focusOwner, setFocusOwner] = useState("");
-
-  const isEnumerationValid = useCallback((enumValues: string[]) => {
-    return new Set(enumValues).size === enumValues.length;
-  }, []);
 
   const onAdd = useCallback(() => {
     setAddNew(true);
@@ -39,14 +36,6 @@ export function ConstraintsEnum({
         const newValuesUuid = [...prev];
         newValuesUuid[enumValues.length] = generateUuid();
         return newValuesUuid;
-      }
-      return prev;
-    });
-    setItemValid((prev) => {
-      if (prev[enumValues.length] === undefined) {
-        const newIsItemValid = [...prev];
-        newIsItemValid[enumValues.length] = true;
-        return newIsItemValid;
       }
       return prev;
     });
@@ -66,9 +55,9 @@ export function ConstraintsEnum({
         newUuids.splice(index, 1);
         return newUuids;
       });
-      onSave({ value: newValues.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid(newValues) });
+      onSave(newValues.join(`${ENUM_SEPARATOR} `));
     },
-    [enumValues, isEnumerationValid, onSave]
+    [enumValues, onSave]
   );
 
   const onDragEnd = useCallback(
@@ -76,9 +65,9 @@ export function ConstraintsEnum({
       const reordened = [...enumValues];
       const [removed] = reordened.splice(source, 1);
       reordened.splice(dest, 0, removed);
-      onSave({ value: reordened.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid(reordened) });
+      onSave(reordened.join(`${ENUM_SEPARATOR} `));
     },
-    [enumValues, isEnumerationValid, onSave]
+    [enumValues, onSave]
   );
 
   const reorder = useCallback((source: number, dest: number) => {
@@ -104,20 +93,18 @@ export function ConstraintsEnum({
         }
         return prev;
       });
-      setItemValid(newValues.map((value, i, array) => array.filter((e) => e === value).length <= 1));
-      onSave({ value: newValues.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid(newValues) });
+      onSave(newValues.join(`${ENUM_SEPARATOR} `));
     },
-    [enumValues, isEnumerationValid, onSave, typeHelper]
+    [enumValues, onSave, typeHelper]
   );
 
   const onChangeItem = useCallback(
     (newValue, index) => {
       const newValues = [...enumValues];
       newValues[index] = typeHelper.transform(newValue);
-      setItemValid(newValues.map((value, i, array) => array.filter((e) => e === value).length <= 1));
-      onSave({ value: newValues.join(`${ENUM_SEPARATOR} `), isValid: isEnumerationValid(newValues) });
+      onSave(newValues.join(`${ENUM_SEPARATOR} `));
     },
-    [enumValues, isEnumerationValid, onSave, typeHelper]
+    [enumValues, onSave, typeHelper]
   );
 
   return (

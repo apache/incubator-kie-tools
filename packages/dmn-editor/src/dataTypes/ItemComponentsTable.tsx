@@ -4,7 +4,6 @@ import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { CutIcon } from "@patternfly/react-icons/dist/js/icons/cut-icon";
 import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
-import { LinkIcon } from "@patternfly/react-icons/dist/js/icons/link-icon";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
@@ -366,7 +365,9 @@ export function ItemComponentsTable({
                             onChange={(newDataType) => {
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                                 itemDefinition.typeRef = { __$$text: newDataType };
-                                itemDefinition.typeConstraint = undefined;
+                                if (itemDefinition.typeRef?.__$$text !== newDataType) {
+                                  itemDefinition.typeConstraint = undefined;
+                                }
                               });
                             }}
                           />

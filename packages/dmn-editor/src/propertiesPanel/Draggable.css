@@ -5,7 +5,7 @@
 }
 
 .kie-dmn-editor--draggable-row-hovered {
-  backdrop-filter: brightness(90%);
+  background-color: rgb(220, 220, 220);
 }
 
 .kie-dmn-editor--draggable-row-is-dragging {

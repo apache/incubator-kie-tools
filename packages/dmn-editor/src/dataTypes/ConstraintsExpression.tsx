@@ -12,29 +12,23 @@ export function ConstraintsExpression({
   isReadonly,
   value,
   type,
-  onChange,
+  onSave,
 }: {
   isReadonly: boolean;
   value?: string;
   savedValue?: string;
   type: DmnBuiltInDataType;
   typeHelper?: TypeHelper;
-  onChange?: React.Dispatch<
-    React.SetStateAction<{
-      value: string | undefined;
-      isValid: boolean;
-    }>
-  >;
-  onSave?: (args: { value?: string; isValid: boolean }) => void;
+  onSave?: (value?: string) => void;
   isDisabled?: boolean;
 }) {
   const [preview, setPreview] = useState(value ?? "");
   const onFeelChange = useCallback(
     (_, content, preview) => {
-      onChange?.((prev) => ({ value: content.trim(), isValid: prev.isValid }));
+      onSave?.(content.trim());
       setPreview(preview);
     },
-    [onChange]
+    [onSave]
   );
 
   const monacoOptions = useMemo(

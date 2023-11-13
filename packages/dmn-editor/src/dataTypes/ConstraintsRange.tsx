@@ -59,16 +59,18 @@ export function ConstraintsRange({
     return false;
   }, []);
 
-  const [start, setStart] = useState(updateStart(value));
-  const [end, setEnd] = useState(updateEnd(value));
-  const [includeStart, setIncludeStart] = useState(updateIncludeStart(value));
-  const [includeEnd, setIncludeEnd] = useState(updateIncludeEnd(value));
+  const [start, setStart] = useState(() => updateStart(value));
+  const [end, setEnd] = useState(() => updateEnd(value));
+  const [includeStart, setIncludeStart] = useState(() => updateIncludeStart(value));
+  const [includeEnd, setIncludeEnd] = useState(() => updateIncludeEnd(value));
 
   useEffect(() => {
-    setStart(updateStart(value));
-    setEnd(updateEnd(value));
-    setIncludeStart(updateIncludeStart(value));
-    setIncludeEnd(updateIncludeEnd(value));
+    if (value !== undefined) {
+      setStart(updateStart(value));
+      setEnd(updateEnd(value));
+      setIncludeStart(updateIncludeStart(value));
+      setIncludeEnd(updateIncludeEnd(value));
+    }
   }, [updateIncludeEnd, updateIncludeStart, updateStart, updateEnd, value]);
 
   const isStartValid = useCallback(
@@ -100,7 +102,7 @@ export function ConstraintsRange({
         (args?.start === undefined || args.start === "") &&
         (args?.end === undefined || args.end === "")
       ) {
-        onSave({ value: "", isValid: true });
+        onSave("");
       }
 
       if ((args?.start !== undefined && args.start === "") || (args?.end !== undefined && args.end === "")) {
@@ -111,24 +113,13 @@ export function ConstraintsRange({
         return;
       }
 
-      onSave({
-        value: `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
+      onSave(
+        `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
           args?.start ?? start
-        )}..${typeHelper.transform(args?.end ?? end)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`,
-        isValid:
-          isStartValid({
-            includeEnd: args?.includeEnd ?? includeEnd,
-            start: args?.start ?? start,
-            end: args?.end ?? end,
-          }) &&
-          isEndValid({
-            includeEnd: args?.includeEnd ?? includeEnd,
-            start: args?.start ?? start,
-            end: args?.end ?? end,
-          }),
-      });
+        )}..${typeHelper.transform(args?.end ?? end)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`
+      );
     },
-    [end, includeEnd, includeStart, isEndValid, isStartValid, onSave, start, typeHelper]
+    [end, includeEnd, includeStart, onSave, start, typeHelper]
   );
 
   const onStartChange = useCallback(

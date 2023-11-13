@@ -28,6 +28,7 @@ import { UniqueNameIndex } from "../Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
 import { Constraints } from "./Constraints";
+import { original } from "immer";
 
 export function DataTypePanel({
   isReadonly,
@@ -84,7 +85,10 @@ export function DataTypePanel({
 
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
         itemDefinition.typeRef = { __$$text: typeRef };
-        itemDefinition.typeConstraint = undefined;
+        const originalItemDefinition = original(itemDefinition);
+        if (originalItemDefinition?.typeRef?.__$$text !== typeRef) {
+          itemDefinition.typeConstraint = undefined;
+        }
       });
     },
     [dataType.itemDefinition, editItemDefinition, isReadonly]

@@ -53,8 +53,12 @@ export function ConstraintDateTime({ value, onChange, isValid }: ConstraintProps
           is24Hour={true}
           className={"kie-dmn-editor--constraint-time kie-dmn-editor--constraint-input"}
           inputProps={{ className: "kie-dmn-editor--constraint-input" }}
-          value={time}
-          onChange={(e, value) => onChangeTime(value)}
+          time={time}
+          onChange={(e, value, hour, minute, seconds, isValid) => {
+            if (isValid) {
+              onChangeTime(value);
+            }
+          }}
           style={isValid ? {} : invalidInlineFeelNameStyle}
         />
       </div>
