@@ -115,7 +115,7 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
             return {
               accessor: factMapping.expressionIdentifier.name!.__$$text,
               label: factMapping.expressionAlias!.__$$text,
-              id: factMapping.expressionIdentifier.name!.__$$text + "GIVEN",
+              id: factMapping.expressionIdentifier.name!.__$$text,
               dataType: factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "",
               width: factMapping.columnWidth?.__$$text ?? 150,
               minWidth: 150,
@@ -170,31 +170,23 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
 
   const simulationRows = useMemo(
     () =>
-      (simulationData.scesimData.Scenario ?? []).map((scenario) => {
-        console.log("*=====*");
-        console.log(scenario);
+      (simulationData.scesimData.Scenario ?? []).map((scenario, index) => {
         const factMappingValues = scenario.factMappingValues.FactMappingValue ?? [];
-        console.log(factMappingValues);
-        console.log("*=====*");
 
         const tableRow = getColumnsAtLastLevel(simulationColumns, 2).reduce(
-          (tableRow: ROWTYPE, column: ReactTable.Column<ROWTYPE>, columnIndex) => {
-            console.log("accessor:" + column.accessor);
-            console.log(tableRow[column.accessor as string]);
-            console.log(factMappingValues[columnIndex]);
-            console.log(columnIndex);
-            console.log("=====");
-
-            tableRow[column.accessor as string] = factMappingValues[columnIndex].rawValue?.__$$text ?? "";
+          (tableRow: ROWTYPE, column: ReactTable.Column<ROWTYPE>) => {
+            const factMappingValue = factMappingValues.filter(
+              (fmv) => fmv.expressionIdentifier.name?.__$$text === column.accessor
+            );
+            tableRow[column.accessor as string] = factMappingValue[0].rawValue?.__$$text ?? "";
             return tableRow;
-          }
+          },
+          { id: index }
         );
         return tableRow;
       }),
     [simulationColumns, simulationData.scesimData.Scenario]
   );
-
-  console.log(simulationRows);
 
   return (
     <StandaloneBeeTable
@@ -208,7 +200,7 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
       operationConfig={undefined}
       columns={simulationColumns} //OK
-      rows={[{}, {}]}
+      rows={simulationRows} //OK
       isReadOnly={false} //OK
       enableKeyboardNavigation={true} //OK
       shouldRenderRowIndexColumn={true} //OK
