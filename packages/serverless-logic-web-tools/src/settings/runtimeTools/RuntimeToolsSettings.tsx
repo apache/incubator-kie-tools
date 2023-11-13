@@ -42,7 +42,7 @@ import {
   resetConfigCookie,
   saveConfigCookie,
 } from "./RuntimeToolsConfig";
-import { removeTrailingSlashFromUrl } from "../../utils";
+import { removeTrailingSlashFromUrl } from "../../url";
 
 const PAGE_TITLE = "Runtime Tools";
 

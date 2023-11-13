@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { removeTrailingSlashFromUrl } from "../../utils";
+import { removeTrailingSlashFromUrl } from "../../url";
 
 describe("removeTrailingSlash", () => {
   it.each([
