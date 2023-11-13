@@ -36,7 +36,14 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
-import { EMPTY_CONFIG, isRuntimeToolsConfigValid, resetConfigCookie, saveConfigCookie } from "./RuntimeToolsConfig";
+import {
+  EMPTY_CONFIG,
+  RuntimeToolsSettingsConfig,
+  isRuntimeToolsConfigValid,
+  resetConfigCookie,
+  saveConfigCookie,
+} from "./RuntimeToolsConfig";
+import { removeTrailingSlashFromUrl } from "../../utils";
 
 const PAGE_TITLE = "Runtime Tools";
 
@@ -79,8 +86,13 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
   }, [settingsDispatch.runtimeTools]);
 
   const onApply = useCallback(() => {
-    settingsDispatch.runtimeTools.setConfig(config);
-    saveConfigCookie(config);
+    const newConfig: RuntimeToolsSettingsConfig = {
+      dataIndexUrl: removeTrailingSlashFromUrl(config.dataIndexUrl),
+      kogitoServiceUrl: removeTrailingSlashFromUrl(config.kogitoServiceUrl),
+    };
+    setConfig(newConfig);
+    settingsDispatch.runtimeTools.setConfig(newConfig);
+    saveConfigCookie(newConfig);
   }, [config, settingsDispatch.runtimeTools]);
 
   return (
