@@ -27,10 +27,10 @@ jobs:
         if: runner.os == 'Windows'
         run: git config --system core.longpaths true
 
-      - name: "Checkout kogito-apps"
+      - name: "Checkout kie-kogito-apps"
         uses: actions/checkout@v3
         with:
-          repository: kiegroup/kogito-apps
+          repository: apache/incubator-kie-kogito-apps
           ref: ${{ github.event.inputs.kogito_runtime_version }}
 
       - name: "Set up Maven"
