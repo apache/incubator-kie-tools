@@ -1,17 +1,20 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/components/Dropdown";
@@ -58,6 +61,7 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   getPlacementRef: () => HTMLDivElement;
   isResetSupported: boolean;
   isNested: boolean;
+  parentElementId: string;
 }
 
 export function ExpressionDefinitionLogicTypeSelector({
@@ -67,6 +71,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   getPlacementRef,
   isResetSupported,
   isNested,
+  parentElementId,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
   const nonSelectableLogicTypes = useMemo(
     () =>
@@ -99,23 +104,23 @@ export function ExpressionDefinitionLogicTypeSelector({
       case ExpressionDefinitionLogicType.Literal:
         return <LiteralExpression {...expression} isNested={isNested} />;
       case ExpressionDefinitionLogicType.Relation:
-        return <RelationExpression {...expression} isNested={isNested} />;
+        return <RelationExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.Context:
-        return <ContextExpression {...expression} isNested={isNested} />;
+        return <ContextExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.DecisionTable:
-        return <DecisionTableExpression {...expression} isNested={isNested} />;
+        return <DecisionTableExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.Invocation:
-        return <InvocationExpression {...expression} isNested={isNested} />;
+        return <InvocationExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.List:
-        return <ListExpression {...expression} isNested={isNested} />;
+        return <ListExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.Function:
-        return <FunctionExpression {...expression} isNested={isNested} />;
+        return <FunctionExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.Undefined:
         return <></>; // Shouldn't ever reach this point, though
       default:
         assertUnreachable(logicType);
     }
-  }, [expression, isNested]);
+  }, [expression, isNested, parentElementId]);
 
   const getPopoverArrowPlacement = useCallback(() => {
     return getPlacementRef() as HTMLDivElement;
@@ -382,10 +387,12 @@ export function ExpressionDefinitionLogicTypeSelector({
             {showExpressionHeader && (
               <div className={"logic-type-selected-header"}>
                 <Dropdown
+                  data-testid={"logic-type-selected-header"}
                   isPlain={true}
                   isOpen={isDropdownOpen}
                   toggle={
                     <DropdownToggle
+                      data-testid={"logic-type-button-test-id"}
                       icon={<>{logicTypeIcon(expression.logicType)}</>}
                       style={{ padding: 0 }}
                       onToggle={setDropdownOpen}

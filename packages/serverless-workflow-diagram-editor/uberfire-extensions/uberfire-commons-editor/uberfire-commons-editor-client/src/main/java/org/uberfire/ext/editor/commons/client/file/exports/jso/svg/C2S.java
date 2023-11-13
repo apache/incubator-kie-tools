@@ -1,18 +1,22 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.uberfire.ext.editor.commons.client.file.exports.jso.svg;
 
@@ -37,10 +41,10 @@ import jsinterop.annotations.JsType;
  * @see <a href="https://github.com/gliffy/canvas2svg">https://github.com/gliffy/canvas2svg</a>
  */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-class C2S {
+public class C2S {
 
     @JsOverlay
-    protected static final C2S create(double width, double height, Object nativeContext) {
+    public static final C2S create(double width, double height, Object nativeContext) {
         C2SSettings settings = new C2SSettings();
         settings.setWidth(width);
         settings.setHeight(height);
@@ -60,7 +64,7 @@ class C2S {
                 .ifPresent(root -> root.setAttribute("viewBox", viewBox));
     }
 
-    protected C2S(C2SSettings options) {
+    public C2S(C2SSettings options) {
     }
 
     //----------------------------- C2S Methods  -----------------------------

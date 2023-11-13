@@ -1,17 +1,20 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import * as React from "react";
@@ -56,9 +59,15 @@ const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
-export function ContextExpression(contextExpression: ContextExpressionDefinition & { isNested: boolean }) {
+export function ContextExpression(
+  contextExpression: ContextExpressionDefinition & {
+    isNested: boolean;
+    parentElementId: string;
+  }
+) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { variables } = useBoxedExpressionEditor();
 
   const entryInfoWidth = useMemo(
     () => contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
@@ -157,7 +166,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         ],
       },
     ];
-  }, [contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
+  }, [contextExpression.id, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
 
   const onColumnUpdates = useCallback(
     ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
@@ -178,11 +187,14 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => {
       setExpression((prev: ContextExpressionDefinition) => {
         const contextEntries = [...prev.contextEntries];
+
+        variables?.repository.updateVariableType(newEntry.entryInfo.id, newEntry.entryInfo.dataType);
+        variables?.repository.renameVariable(newEntry.entryInfo.id, newEntry.entryInfo.name);
         contextEntries[rowIndex] = newEntry;
         return { ...prev, contextEntries };
       });
     },
-    [setExpression]
+    [setExpression, variables?.repository]
   );
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
@@ -259,11 +271,46 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     [contextExpression]
   );
 
+  const addVariable = useCallback(
+    (
+      args: {
+        beforeIndex: number;
+      },
+      newContextEntries: ContextExpressionDefinitionEntry[],
+      prev: ContextExpressionDefinition,
+      newVariable: ContextExpressionDefinitionEntry
+    ) => {
+      const parentIndex = args.beforeIndex - 1;
+      let parentId = contextExpression.parentElementId;
+      if (parentIndex >= 0 && parentIndex < newContextEntries.length) {
+        parentId = newContextEntries[parentIndex].entryInfo.id;
+      }
+
+      let childId: undefined | string;
+      if (args.beforeIndex < newContextEntries.length) {
+        childId = newContextEntries[args.beforeIndex].entryInfo.id;
+      } else {
+        childId = prev.result.id;
+      }
+
+      variables?.repository.addVariableToContext(
+        newVariable.entryInfo.id,
+        newVariable.entryInfo.name,
+        parentId,
+        childId
+      );
+    },
+    [contextExpression.parentElementId, variables?.repository]
+  );
+
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       setExpression((prev: ContextExpressionDefinition) => {
         const newContextEntries = [...(prev.contextEntries ?? [])];
-        newContextEntries.splice(args.beforeIndex, 0, getDefaultContextEntry());
+        const defaultContextEntry = getDefaultContextEntry();
+        addVariable(args, newContextEntries, prev, defaultContextEntry);
+
+        newContextEntries.splice(args.beforeIndex, 0, defaultContextEntry);
 
         return {
           ...prev,
@@ -271,13 +318,16 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         };
       });
     },
-    [getDefaultContextEntry, setExpression]
+    [addVariable, getDefaultContextEntry, setExpression]
   );
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
       setExpression((prev: ContextExpressionDefinition) => {
         const newContextEntries = [...(prev.contextEntries ?? [])];
+
+        variables?.repository.removeVariable(prev.contextEntries[args.rowIndex].entryInfo.id);
+
         newContextEntries.splice(args.rowIndex, 1);
         return {
           ...prev,
@@ -285,7 +335,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         };
       });
     },
-    [setExpression]
+    [setExpression, variables?.repository]
   );
 
   const onRowReset = useCallback(
@@ -370,6 +420,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={true}
           shouldShowColumnsInlineControls={false}
+          variables={variables}
         />
       </div>
     </NestedExpressionContainerContext.Provider>

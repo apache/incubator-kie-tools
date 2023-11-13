@@ -1,23 +1,27 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import * as React from "react";
 import * as ReactTable from "react-table";
 import { useCallback, useMemo } from "react";
 import {
+  BeeTableCellProps,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
@@ -46,10 +50,15 @@ import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 export type ROWTYPE = ContextExpressionDefinitionEntry;
 
-export function ListExpression(listExpression: ListExpressionDefinition & { isNested: boolean }) {
+export function ListExpression(
+  listExpression: ListExpressionDefinition & {
+    isNested: boolean;
+    parentElementId: string;
+  }
+) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { decisionNodeId } = useBoxedExpressionEditor();
+  const { decisionNodeId, variables } = useBoxedExpressionEditor();
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -116,7 +125,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
         width: undefined,
       },
     ],
-    [listExpression.dataType, listExpression.name]
+    [decisionNodeId, listExpression.dataType, listExpression.name]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
@@ -124,10 +133,10 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
   }, []);
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
-    () => ({
-      [decisionNodeId]: ListItemCell,
+    (): { [p: string]: ({ rowIndex, data, columnIndex }: BeeTableCellProps<ROWTYPE>) => JSX.Element } => ({
+      [decisionNodeId]: (props) => <ListItemCell parentElementId={listExpression.parentElementId} {...props} />,
     }),
-    []
+    [decisionNodeId, listExpression.parentElementId]
   );
 
   const getDefaultListItem = useCallback((dataType: DmnBuiltInDataType): ExpressionDefinition => {
@@ -142,11 +151,16 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     (args: { beforeIndex: number }) => {
       setExpression((prev: ListExpressionDefinition) => {
         const newItems = [...prev.items];
-        newItems.splice(args.beforeIndex, 0, getDefaultListItem(prev.dataType));
+
+        const newItem = getDefaultListItem(prev.dataType);
+
+        variables?.repository.addVariableToContext(newItem.id, newItem.id, listExpression.parentElementId);
+
+        newItems.splice(args.beforeIndex, 0, newItem);
         return { ...prev, items: newItems };
       });
     },
-    [getDefaultListItem, setExpression]
+    [getDefaultListItem, listExpression.parentElementId, setExpression, variables?.repository]
   );
 
   const onRowDeleted = useCallback(

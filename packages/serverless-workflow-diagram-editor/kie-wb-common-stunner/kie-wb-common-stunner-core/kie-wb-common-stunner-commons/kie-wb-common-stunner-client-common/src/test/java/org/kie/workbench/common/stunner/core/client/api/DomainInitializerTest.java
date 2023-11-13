@@ -1,18 +1,22 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.core.client.api;
 
@@ -25,13 +29,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
-import javax.inject.Qualifier;
-
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.ui.translation.client.TranslationService;
+import jakarta.inject.Qualifier;
 import jsinterop.base.JsPropertyMap;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +70,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -101,13 +104,12 @@ public class DomainInitializerTest {
 
     @Before
     public void setup() {
-        when(registryFactory.newAdapterRegistry()).thenCallRealMethod();
         when(registryFactory.newDefinitionSetRegistry()).thenCallRealMethod();
         doCallRealMethod().when(registryFactory).setAdapterManager(any());
 
-        SyncBeanManager beanManager = spy(new SyncBeanManagerImpl());
+        BeanManager beanManager = mock(BeanManager.class);
         BootstrapAdapterFactory bootstrapAdapterFactory = spy(new BootstrapAdapterFactory());
-        AdapterManagerImpl adapterManager = spy(new AdapterManagerImpl(registryFactory, bootstrapAdapterFactory));
+        AdapterManagerImpl adapterManager = spy(new AdapterManagerImpl(bootstrapAdapterFactory));
         registryFactory.setAdapterManager(adapterManager);
         registry = spy(registryFactory.newDefinitionSetRegistry());
         ClientDefinitionManager definitionManager = spy(new ClientDefinitionManager(beanManager, registryFactory, adapterManager, cloneManager));
@@ -130,8 +132,8 @@ public class DomainInitializerTest {
         tested.jsDefinitionSetAdapter = jsDefinitionSetAdapter;
         tested.rules = new HashSet<>();
 
-        JsWindow.editor = new JsStunnerEditor();
-        JsWindow.editor.definitions = jsDefinitionManager;
+        JsWindow.setEditor(new JsStunnerEditor());
+        JsWindow.getEditor().setDefinitions(jsDefinitionManager);
 
         when(adapterManager.forDefinitionSet()).thenReturn(new JsDefinitionSetAdapter());
     }
@@ -143,7 +145,7 @@ public class DomainInitializerTest {
 
         tested.initializeDefinitionSet(definitionSetTest);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeDefinitionSet(definitionSetTest);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeDefinitionSet(definitionSetTest);
         verify(((DynamicRegistry) registry), times(1)).register(definitionSetTest);
     }
 
@@ -159,7 +161,7 @@ public class DomainInitializerTest {
 
         tested.initializeDefinitionsField(definitionsField);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeDefinitionsField(definitionsField);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeDefinitionsField(definitionsField);
         assertTrue(jsDefinitionSetAdapter.getDefinitions(pojo).contains(definitionsField));
     }
 
@@ -175,7 +177,7 @@ public class DomainInitializerTest {
 
         tested.initializeDomainQualifier(testEditor);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeDomainQualifier(testEditor);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeDomainQualifier(testEditor);
         assertEquals(jsDefinitionSetAdapter.getQualifier(pojo), testEditor);
     }
 
@@ -187,7 +189,7 @@ public class DomainInitializerTest {
 
         tested.initializeCategory(type, category);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeCategory(type.getName(), category);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeCategory(type.getName(), category);
         assertEquals(jsDefinitionAdapter.getCategory(pojo), category);
         assertEquals(jsDefinitionAdapter.getId(pojo).type(), DomainInitializerTest.class.getName() + "$Start");
     }
@@ -212,7 +214,7 @@ public class DomainInitializerTest {
 
         tested.initializeLabels(Start.class, "rootNode", "start");
 
-        verify(JsWindow.editor.definitions, times(1)).initializeLabels(type.getName(), labels);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeLabels(type.getName(), labels);
         assertArrayEquals(jsDefinitionAdapter.getLabels(pojo), labels);
     }
 
@@ -225,7 +227,7 @@ public class DomainInitializerTest {
         tested.initializeDefinitionNameField(Start.class, field);
         final Optional<?> property = jsDefinitionAdapter.getProperty(pojo, field);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeDefinitionNameField(type.getName(), field);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeDefinitionNameField(type.getName(), field);
         assertTrue(property.isPresent());
         JsDefinitionProperty name = (JsDefinitionProperty) property.get();
         assertEquals(pojo, name.getPojo());
@@ -291,7 +293,7 @@ public class DomainInitializerTest {
         assertEquals(0, edgeOccurrences2.getMaxOccurrences());
 
         // Initialization
-        verify(JsWindow.editor.definitions, times(1)).initializeRules(any(RuleSetImpl.class));
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeRules(any(RuleSetImpl.class));
     }
 
     private Rule getRule(final String ruleName, final Collection<Rule> rules) {

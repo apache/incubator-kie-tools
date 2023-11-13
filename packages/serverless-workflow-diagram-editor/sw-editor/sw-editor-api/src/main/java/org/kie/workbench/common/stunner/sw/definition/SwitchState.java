@@ -1,37 +1,43 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.json.WorkflowTimeoutsJsonSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowTimeoutsYamlSerializer;
+import org.treblereel.gwt.json.mapper.annotation.JSONMapper;
+import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
+import org.treblereel.gwt.yaml.api.annotation.YamlPropertyOrder;
+import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
+import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JSONMapper
 @YAMLMapper
 @JsType
+@GWT3Export
 @YamlPropertyOrder({"name", "type", "dataConditions", "eventConditions", "transition", "end", "onErrors", "usedForCompensation", "compensatedBy", "dataConditions", "stateDataFilter", "timeouts", "eventTimeout", "metadata"})
-public class SwitchState extends State<SwitchState> {
+public class SwitchState extends State<SwitchState> implements HasErrors<SwitchState>, HasCompensatedBy<SwitchState>, HasMetadata<SwitchState> {
 
     public static final String TYPE_SWITCH = "switch";
 
@@ -103,19 +109,23 @@ public class SwitchState extends State<SwitchState> {
         this.stateDataFilter = stateDataFilter;
     }
 
+    @Override
     public Metadata getMetadata() {
         return metadata;
     }
 
+    @Override
     public SwitchState setMetadata(Metadata metadata) {
         this.metadata = metadata;
         return this;
     }
 
+    @Override
     public ErrorTransition[] getOnErrors() {
         return onErrors;
     }
 
+    @Override
     public SwitchState setOnErrors(ErrorTransition[] onErrors) {
         this.onErrors = onErrors;
         return this;
@@ -129,10 +139,12 @@ public class SwitchState extends State<SwitchState> {
         this.timeouts = timeouts;
     }
 
+    @Override
     public String getCompensatedBy() {
         return compensatedBy;
     }
 
+    @Override
     public SwitchState setCompensatedBy(String compensatedBy) {
         this.compensatedBy = compensatedBy;
         return this;

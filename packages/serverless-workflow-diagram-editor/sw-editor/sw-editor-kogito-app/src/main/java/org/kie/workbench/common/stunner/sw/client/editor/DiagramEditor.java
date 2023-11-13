@@ -1,18 +1,22 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 package org.kie.workbench.common.stunner.sw.client.editor;
 
 import java.util.ArrayList;
@@ -20,21 +24,20 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
+import io.crysknife.ui.translation.client.TranslationService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
@@ -72,6 +75,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.bridge.Notification;
 
 @ApplicationScoped
+@JsType
 public class DiagramEditor {
 
     public static final String EDITOR_ID = "SWDiagramEditor";
@@ -118,9 +122,6 @@ public class DiagramEditor {
         stunnerEditor.setReadOnly(true);
     }
 
-    public IsWidget asWidget() {
-        return stunnerEditor.getView();
-    }
 
     @SuppressWarnings("all")
     public Promise<String> getPreview() {
@@ -264,7 +265,7 @@ public class DiagramEditor {
     }
 
     JsCanvas getJsCanvas() {
-        return Js.uncheckedCast(JsWindow.editor.canvas);
+        return Js.uncheckedCast(JsWindow.getEditor().getCanvas());
     }
 
     @SuppressWarnings("all")

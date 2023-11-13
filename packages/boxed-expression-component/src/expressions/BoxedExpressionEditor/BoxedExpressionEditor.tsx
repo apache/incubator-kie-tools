@@ -1,17 +1,20 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
@@ -26,6 +29,7 @@ import {
 import { ExpressionDefinitionRoot } from "../ExpressionDefinitionRoot";
 import "./base-no-reset-wrapped.css";
 import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export interface BoxedExpressionEditorProps {
   /** The API methods which BoxedExpressionEditor component can use to dialog with GWT Layer */
@@ -43,6 +47,7 @@ export interface BoxedExpressionEditorProps {
   pmmlParams?: PmmlParam[];
   //
   scrollableParentRef: React.RefObject<HTMLElement>;
+  variables?: FeelVariables;
 }
 
 export function BoxedExpressionEditor({
@@ -54,6 +59,7 @@ export function BoxedExpressionEditor({
   isResetSupportedOnRootExpression,
   scrollableParentRef,
   pmmlParams,
+  variables,
 }: BoxedExpressionEditorProps) {
   return (
     <I18nDictionariesProvider
@@ -70,6 +76,7 @@ export function BoxedExpressionEditor({
         setExpressionDefinition={setExpressionDefinition}
         dataTypes={dataTypes}
         pmmlParams={pmmlParams}
+        variables={variables}
       >
         <ExpressionDefinitionRoot
           decisionNodeId={decisionNodeId}

@@ -1,0 +1,113 @@
+{/* prettier-ignore */}
+{/*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story, Canvas, Source } from "@storybook/blocks";
+import * as Invocation from "./Invocation.stories";
+
+<Meta title="MDX/Invocation" of={Invocation} />
+
+# Boxed Invocation
+
+The Boxed Invocation expression is used to invoke any function (e.g., business knowledge model,
+FEEL built-in function, boxed function expressions). It invokes a function by its name and passes its parameters
+in order. The parameters can be any type of expression [1].
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Invocation.MonthlyInstallment} />
+  <small>
+    <br />
+    <br />
+    <br />
+    This is an example of a "Monthly Installment" decision with the number type. It has a Boxed Invocation expression, invoking
+    an "Installment Calculation" function, and passing the "Rate", "Term" and "Amount" parameters which are Boxed Literal
+    expressions and those expressions return numbers.
+  </small>
+</div>
+
+The Boxed Invocation expression is mapped to the textual syntax, the above example can be translated to:
+
+<Source code={`Installment Calculation(Rate, Term, Amount)`} />
+
+It's important to notice this expression requires at least one parameter to be used,
+making it not possible to invoke a parameterless function, and to do so the textual syntax should be directly used [1]:
+
+<Source code={`function_name()`} />
+
+## Header
+
+If the Boxed Invocation is the root expression of a decision node, the header row will be split into two rows.
+The first will represent the decision name and type, and the second will represent the function name to be invoked.
+Now, if the Boxed Invocation is a nested expression, it will have only one row, which will be the function name
+to be invoked.
+
+> #### Decision header
+>
+> This row will be a single cell that has the decision name and its type, and by right-clicking on it a
+> context menu will open enabling you to edit its values.
+>
+> #### Function name header
+>
+> This row has a cell for the function name to be invoked and by right-clicking on it, it's possible to edit its name.
+
+## Parameters
+
+The parameter rows can't be less than one and don't have a maximum number. Each parameter has a name, and type and has
+a boxed expression associated with it. Right-clicking on the parameter name opens a context menu, enabling to edit its
+name and type.
+
+**Important**: It's not possible to have a parameterless function.
+
+## Controls
+
+### Parameters
+
+Left-clicking on a parameter cell will open the "Rows" context menu.
+It's possible to insert above, insert below, insert multiples, delete, and reset the parameter.
+
+Another way to add rows is by hovering the mouse on a parameter cell, which will appear as a plus sign
+on the top (insert above) or on the bottom (insert below) of the cell. The position of the plus sign will
+depend on the mouse's position. Right-clicking on it will add a new parameter above or below the actual parameter.
+
+## Examples
+
+<div style={{ display: "flex", flexDirection: "column" }}>
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Invocation.Base} />
+    <small>
+      <br />
+      <br />
+      An empty Boxed Invocation expression.
+    </small>
+  </div>
+
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Invocation.Nested} />
+    <small>
+      <br />
+      <br />
+      An empty Boxed Invocation expression nested on a Boxed Context expression.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=103)

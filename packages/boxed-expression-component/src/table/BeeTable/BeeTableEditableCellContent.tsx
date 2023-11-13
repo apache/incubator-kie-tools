@@ -1,17 +1,20 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
@@ -20,6 +23,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationKeysUtils } from "../../keysUtils";
 import "./BeeTableEditableCellContent.css";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 const CELL_LINE_HEIGHT = 20;
 
@@ -30,6 +34,7 @@ const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
   renderLineHighlight: "none",
   lineDecorationsWidth: 1,
   automaticLayout: true,
+  "semanticHighlighting.enabled": true,
 };
 
 enum Mode {
@@ -46,6 +51,8 @@ export interface BeeTableEditableCellContentProps {
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onFeelTabKeyDown?: (args: { isShiftPressed: boolean }) => void;
   onFeelEnterKeyDown?: (args: { isShiftPressed: boolean }) => void;
+  variables?: FeelVariables;
+  expressionId?: string;
 }
 
 export function BeeTableEditableCellContent({
@@ -57,6 +64,8 @@ export function BeeTableEditableCellContent({
   setEditing,
   onFeelTabKeyDown,
   onFeelEnterKeyDown,
+  variables,
+  expressionId,
 }: BeeTableEditableCellContentProps) {
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
   const [preview, setPreview] = useState<string>(value);
@@ -196,6 +205,8 @@ export function BeeTableEditableCellContent({
           onPreviewChanged={setPreview}
           options={MONACO_OPTIONS}
           onBlur={onFeelBlur}
+          feelVariables={variables}
+          expressionId={expressionId}
         />
       </div>
     </>

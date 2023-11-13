@@ -1,17 +1,20 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { generateForms } from "../../generation";
@@ -19,6 +22,7 @@ import * as fs from "../../generation/fs";
 import { FormAsset, FormGenerationTool, FormSchema } from "../../generation/types";
 import { ApplyForVisaSchema, ConfirmTravelSchema } from "./tools/uniforms/patternfly/mock";
 import { registerFormGenerationTool } from "../../generation/tools";
+import { inputSanitizationUtil } from "../../generation/tools/uniforms/utils/InputSanitizationUtil";
 
 jest.mock("../../generation/fs");
 
@@ -59,7 +63,7 @@ describe("formGenerationCommand tests", () => {
   it("Generate forms project with schemas", () => {
     const schemas: FormSchema[] = [
       {
-        name: "ApplyForVisa",
+        name: "Apply#For#Visa",
         schema: ApplyForVisaSchema,
       },
       {
@@ -80,15 +84,19 @@ describe("formGenerationCommand tests", () => {
     expect(storeFormAssetsMock).toBeCalledTimes(2);
 
     const applyForVisaAsset: FormAsset = storeFormAssetsMock.mock.calls[0][0];
-    expect(applyForVisaAsset.id).toEqual("ApplyForVisa");
-    expect(applyForVisaAsset.assetName).toEqual("ApplyForVisa.tsx");
-    expect(applyForVisaAsset.content).toContain("const Form__ApplyForVisa");
+    expect(applyForVisaAsset.id).toEqual("Apply#For#Visa");
+    expect(applyForVisaAsset.sanitizedId).toEqual("Apply_For_Visa");
+    expect(applyForVisaAsset.assetName).toEqual("Apply#For#Visa.tsx");
+    expect(applyForVisaAsset.sanitizedAssetName).toEqual("Apply_For_Visa.tsx");
+    expect(applyForVisaAsset.content).toContain("const Form__Apply_For_Visa");
     expect(storeFormAssetsMock.mock.calls[0][1]).toEqual(sourcePath);
     expect(storeFormAssetsMock.mock.calls[0][2]).toBeTruthy();
 
     const confirmTravelAsset: FormAsset = storeFormAssetsMock.mock.calls[1][0];
     expect(confirmTravelAsset.id).toEqual("ConfirmTravel");
+    expect(confirmTravelAsset.sanitizedId).toEqual("ConfirmTravel");
     expect(confirmTravelAsset.assetName).toEqual("ConfirmTravel.tsx");
+    expect(confirmTravelAsset.sanitizedAssetName).toEqual("ConfirmTravel.tsx");
     expect(confirmTravelAsset.content).toContain("const Form__ConfirmTravel");
     expect(storeFormAssetsMock.mock.calls[1][1]).toEqual(sourcePath);
     expect(storeFormAssetsMock.mock.calls[1][2]).toBeTruthy();
@@ -107,9 +115,11 @@ describe("formGenerationCommand tests", () => {
 
         return {
           id: schema.name,
+          sanitizedId: inputSanitizationUtil(schema.name),
           content: schema.name,
           type: "txt",
           assetName: `${schema.name}.txt`,
+          sanitizedAssetName: `${inputSanitizationUtil(schema.name)}.txt`,
           config: {
             schema: "",
             resources: { styles: {}, scripts: {} },

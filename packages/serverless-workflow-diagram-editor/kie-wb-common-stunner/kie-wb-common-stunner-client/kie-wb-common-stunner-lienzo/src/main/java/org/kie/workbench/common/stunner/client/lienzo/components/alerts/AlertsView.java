@@ -1,38 +1,40 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.client.lienzo.components.alerts;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Composite;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 @Dependent
 @Templated
 public class AlertsView
-        extends Composite
         implements Alerts.View {
 
     private final String HIDDEN = "hidden";
@@ -146,17 +148,17 @@ public class AlertsView
     }
 
     @EventHandler("infoButton")
-    void onShowInfos(ClickEvent event) {
+    void onShowInfos(@ForEvent("click") Event event) {
         presenter.onShowInfos();
     }
 
     @EventHandler("warningButton")
-    void onShowWarnings(ClickEvent event) {
+    void onShowWarnings(@ForEvent("click") Event event) {
         presenter.onShowWarnings();
     }
 
     @EventHandler("errorButton")
-    void onShowErrors(ClickEvent event) {
+    void onShowErrors(@ForEvent("click") Event event) {
         presenter.onShowErrors();
     }
 

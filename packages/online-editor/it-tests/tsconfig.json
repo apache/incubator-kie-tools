@@ -1,8 +1,0 @@
-{
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "sourceMap": false,
-    "types": ["cypress", "cypress-real-events"]
-  },
-  "include": ["support", "e2e"]
-}

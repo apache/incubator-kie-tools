@@ -1,34 +1,38 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.client.widgets.editor;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwt.core.client.JavaScriptException;
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import io.crysknife.client.ManagedInstance;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import jsinterop.base.Js;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
@@ -36,6 +40,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.api.JsCanvasWrapper;
 import org.kie.workbench.common.stunner.core.client.api.JsStunnerSession;
 import org.kie.workbench.common.stunner.core.client.api.JsWindow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -54,13 +59,16 @@ import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.widgets.client.errorpage.ErrorPage;
 
+import static elemental2.dom.CSSProperties.HeightUnionType;
+import static elemental2.dom.CSSProperties.WidthUnionType;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
+
 @Dependent
 public class StunnerEditor {
 
     private final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
     private final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
     private final ClientTranslationService translationService;
-    private final StunnerEditorView view;
     private final ErrorPage errorPage;
     private boolean hasErrors;
 
@@ -72,20 +80,18 @@ public class StunnerEditor {
 
     // CDI proxy.
     public StunnerEditor() {
-        this(null, null, null, null, null);
+        this(null, null, null, null);
     }
 
     @Inject
     public StunnerEditor(ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances,
                          ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances,
                          ClientTranslationService translationService,
-                         StunnerEditorView view,
                          ErrorPage errorPage) {
         this.editorSessionPresenterInstances = editorSessionPresenterInstances;
         this.viewerSessionPresenterInstances = viewerSessionPresenterInstances;
         this.translationService = translationService;
         this.isReadOnly = false;
-        this.view = view;
         this.errorPage = errorPage;
         this.parsingExceptionProcessor = e -> {
         };
@@ -115,9 +121,6 @@ public class StunnerEditor {
                 diagramPresenter = viewerSessionPresenterInstances.get();
             }
             diagramPresenter.displayNotifications(type -> true);
-            diagramPresenter.withPalette(false);
-            diagramPresenter.withToolbar(false);
-            view.setWidget(diagramPresenter.getView());
         }
         diagramPresenter.open(diagram, new SessionPresenter.SessionPresenterCallback() {
             @Override
@@ -154,12 +157,37 @@ public class StunnerEditor {
                 callback.onError(error);
             }
         });
+
+        setupRootContainer();
+    }
+
+    protected void setupRootContainer() {
+        HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
+        removeAllChildren(rootContainer);
+
+        rootContainer.appendChild(diagramPresenter.getView().getElement());
+        DomGlobal.window.addEventListener("resize", evt -> {
+            resizeTo(rootContainer, DomGlobal.window.innerWidth, DomGlobal.window.innerHeight);
+        });
+        resize(rootContainer);
+    }
+
+    private void resize(HTMLDivElement rootContainer) {
+        resizeTo(rootContainer, DomGlobal.document.body.clientWidth,
+                DomGlobal.document.body.clientHeight);
+    }
+
+    private void resizeTo(HTMLDivElement rootContainer, int width,
+                          int height) {
+        CSSStyleDeclaration style = rootContainer.style;
+        style.width = WidthUnionType.of(width + "px");
+        style.height = HeightUnionType.of(height + "px");
     }
 
     @SuppressWarnings("all")
     private void initializeJsSession(AbstractSession session) {
         JsStunnerSession jssession = new JsStunnerSession(session);
-        JsWindow.editor.session = jssession;
+        JsWindow.getEditor().setSession(jssession);
         initializeJsCanvas(session);
     }
 
@@ -174,8 +202,9 @@ public class StunnerEditor {
                 return canvas.getShape(uuid);
             }
         });
-        JsWindow.canvas = jsCanvas;
-        JsWindow.editor.canvas = jsCanvas;
+        JsCanvasWrapper jsCanvasWrapper = new JsCanvasWrapper().setWrapper(jsCanvas);
+        JsWindow.setCanvas(jsCanvasWrapper);
+        JsWindow.getEditor().setCanvas(jsCanvasWrapper);
     }
 
     public int getCurrentContentHash() {
@@ -194,7 +223,7 @@ public class StunnerEditor {
         if (throwable instanceof DiagramParsingException) {
             final DiagramParsingException diagramParsingException = (DiagramParsingException) throwable;
             parsingExceptionProcessor.accept(diagramParsingException);
-            JavaScriptException javaScriptException = Js.uncheckedCast(diagramParsingException.getCause());
+            Exception javaScriptException = Js.uncheckedCast(diagramParsingException.getCause());
             if (javaScriptException != null) {
                 message = error.getMessage() + "\r\n";
                 message += javaScriptException.getLocalizedMessage();
@@ -218,8 +247,14 @@ public class StunnerEditor {
                 (diagramPresenter.getView() != null)) {
             addError(message);
         } else {
-            view.setWidget(errorPage);
+            clearRootAndDrawError();
         }
+    }
+
+    protected void clearRootAndDrawError() {
+        HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
+        removeAllChildren(rootContainer);
+        rootContainer.appendChild(errorPage.getElement());
     }
 
     public StunnerEditor close() {
@@ -229,7 +264,6 @@ public class StunnerEditor {
             alertsControl = null;
             editorSessionPresenterInstances.destroyAll();
             viewerSessionPresenterInstances.destroyAll();
-            view.clear();
         }
         return this;
     }
@@ -259,10 +293,6 @@ public class StunnerEditor {
             return null;
         }
         return (ClientSession) diagramPresenter.getInstance();
-    }
-
-    public IsWidget getView() {
-        return view;
     }
 
     public boolean hasErrors() {

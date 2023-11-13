@@ -1,17 +1,20 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 package command
@@ -38,7 +41,7 @@ func NewDeployCommand() *cobra.Command {
 	# Deploy the workflow project from the current directory's project. 
 	# You must provide target namespace.
 	{{.Name}} deploy --namespace <your_namespace>
-	# Persist the generated Kubernetes manifests on a given path and deploy the 
+	# Persist the generated Operator manifests on a given path and deploy the 
 	# workflow from the current directory's project. 
 	{{.Name}} deploy --manifestPath=<full_directory_path>
     # Specify a custom support files folder. 
@@ -54,7 +57,7 @@ func NewDeployCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
-	cmd.Flags().StringP("manifestPath", "c", "", "Target directory of your generated Kubernetes manifests.")
+	cmd.Flags().StringP("manifestPath", "c", "", "Target directory of your generated Operator manifests.")
 	cmd.Flags().StringP("supportFilesFolder", "s", "", "Specify a custom support files folder")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)

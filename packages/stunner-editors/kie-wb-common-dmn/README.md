@@ -26,7 +26,7 @@ Please refer to the [Kogito's DMN Editor README](./kie-wb-common-dmn-webapp-kogi
 
 To run this module, for testing and debugging purposes, launch the `gwt` plugin; i.e. `mvn clean process-resources gwt:run`.
 
-This module contains also selenium integration tests. They use `headless`
+This module contains also selenium end-to-end tests. They use `headless`
 browser mode by default thus are not visible. To see the actual progress of tests include `-Dorg.kie.dmn.kogito.browser.headless=false` property into your
 `mvn` command.
 

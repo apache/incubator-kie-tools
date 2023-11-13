@@ -1,17 +1,20 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { Key, WebDriver, WebElement } from "selenium-webdriver";
@@ -30,6 +33,14 @@ export default class Clipboard {
     const input: WebElement = await this.addHelperInputToPage();
     await this.pasteContentToHelperInput(input);
     return await this.getTextFromHelperInput();
+  }
+
+  /**
+   * Set the clipboard content.
+   * @param textToClipboard Text to set as the content of the clipboard.
+   */
+  public async setContent(textToClipboard: string): Promise<void> {
+    await this.driver.executeScript("navigator.clipboard.writeText('" + textToClipboard + "');");
   }
 
   private async getTextFromHelperInput(): Promise<string> {
@@ -52,7 +63,11 @@ export default class Clipboard {
     );
   }
 
-  private getCtrvKeys(): string {
+  /**
+   * Return Ctrl + v command for specific OS.
+   * @returns Ctrl + v command.
+   */
+  public getCtrvKeys(): string {
     // "darwin" is  MacOS
     if (platform() === "darwin") {
       return Key.SHIFT + Key.INSERT;

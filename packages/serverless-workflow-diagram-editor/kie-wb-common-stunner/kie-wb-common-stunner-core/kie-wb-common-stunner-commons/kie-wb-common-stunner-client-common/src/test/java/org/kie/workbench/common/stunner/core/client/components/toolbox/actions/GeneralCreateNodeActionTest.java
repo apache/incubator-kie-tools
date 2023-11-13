@@ -1,24 +1,27 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
 import java.util.Collections;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +62,7 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.stubs.ManagedInstanceStub;
 
@@ -71,7 +75,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class GeneralCreateNodeActionTest {
 
     @Mock
@@ -117,7 +121,6 @@ public class GeneralCreateNodeActionTest {
 
     @Before
     public void setUp() throws Exception {
-        doReturn(canvas).when(canvasHandler).getCanvas();
         doReturn(canvas).when(canvasHandler).getAbstractCanvas();
         doReturn(diagram).when(canvasHandler).getDiagram();
         doReturn(metadata).when(diagram).getMetadata();
@@ -135,8 +138,8 @@ public class GeneralCreateNodeActionTest {
 
         };
 
-        JsWindow.editor = new JsStunnerEditor();
-        JsWindow.editor.definitions = jsDefinitionManager;
+        JsWindow.setEditor(new JsStunnerEditor());
+        JsWindow.getEditor().setDefinitions(jsDefinitionManager);
     }
 
     @Test
@@ -175,14 +178,7 @@ public class GeneralCreateNodeActionTest {
         final Edge connectorEdge = mock(Edge.class);
         doReturn(connectorEdge).when(connectorElement).asEdge();
 
-        when(JsWindow.editor.definitions.getName(any())).thenReturn("State");
-
-        when(canvasLayoutUtils.getNext(eq(canvasHandler),
-                                       eq(sourceNode),
-                                       eq(targetNode),
-                                       eq(CanvasLayoutUtils.DEFAULT_NEW_NODE_ORIENTATION)))
-                .thenReturn(new Point2D(100d,
-                                        500d));
+        when(JsWindow.getEditor().getDefinitions().getName(any())).thenReturn("State");
 
         createNodeAction.executeAction(canvasHandler,
                                        sourceNodeId,

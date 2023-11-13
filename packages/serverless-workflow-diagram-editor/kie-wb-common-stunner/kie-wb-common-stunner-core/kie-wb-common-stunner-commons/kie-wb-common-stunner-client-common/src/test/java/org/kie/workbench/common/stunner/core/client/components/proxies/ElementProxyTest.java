@@ -1,22 +1,25 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.core.client.components.proxies;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +35,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.stubs.ManagedInstanceStub;
 
@@ -46,7 +50,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ElementProxyTest {
 
     private static final String SHAPE_UUID = "proxyShape1";
@@ -84,7 +88,6 @@ public class ElementProxyTest {
         commandFactories = new ManagedInstanceStub<>(commandFactory);
         when(proxyShape.getUUID()).thenReturn(SHAPE_UUID);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         view = spy(new ElementProxyViewMock<>());
         tested = spy(new ElementProxy(commandManager, selectionEvent, commandFactories, definitionUtils, sessionManager)
                              .setCanvasHandler(canvasHandler)

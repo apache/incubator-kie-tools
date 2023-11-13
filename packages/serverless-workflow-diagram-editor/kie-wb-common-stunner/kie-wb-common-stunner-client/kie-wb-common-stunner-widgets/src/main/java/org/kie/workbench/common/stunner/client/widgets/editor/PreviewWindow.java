@@ -1,34 +1,35 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.client.widgets.editor;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.CSSProperties;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.DomGlobal;
+import io.crysknife.client.ManagedInstance;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 import org.gwtbootstrap3.extras.animate.client.ui.Animate;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.gwtproject.timer.client.Timer;
 import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.client.widgets.canvas.PreviewLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.FlowPanel;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
@@ -64,29 +66,26 @@ public class PreviewWindow {
         deleteWidget();
 
         previewRoot = new FlowPanel();
-        RootPanel.get().add(previewRoot);
+        DomGlobal.document.body.appendChild(previewRoot.getElement());
         previewRoot.add(previewWidget.getView());
 
         AbstractCanvasHandler abstractCanvasHandler = previewWidget.getHandler();
         AbstractCanvas abstractCanvas = abstractCanvasHandler.getAbstractCanvas();
         AbstractCanvas.CanvasView canvasView = abstractCanvas.getView();
         CanvasPanel canvasPanel = canvasView.getPanel();
-        Widget widget = canvasPanel.asWidget();
-        Element element = widget.getElement();
-
-        Style style = element.getStyle();
-        style.setBorderWidth(1, Style.Unit.PX);
-        style.setBorderStyle(Style.BorderStyle.SOLID);
-        style.setBorderColor("#808080");
+        CSSStyleDeclaration style = canvasPanel.getElement().style;
+        style.setProperty("border-width", "1px");
+        style.setProperty("border-style", "solid");
+        style.setProperty("border-color", "#808080");
     }
 
     private void close() {
         if (null != previewRoot && previewRoot.isVisible() && !closing) {
             closing = true;
-            Animate.animate(previewRoot,
-                    Animation.FADE_OUT,
-                    1,
-                    DURATION);
+            Animate.animate(previewRoot.getElement(),
+                            Animation.FADE_OUT,
+                            1,
+                            DURATION);
             final Timer hideTimer = new Timer() {
                 @Override
                 public void run() {
@@ -105,7 +104,7 @@ public class PreviewWindow {
 
     private void deleteWidget() {
         if (null != previewRoot) {
-            previewRoot.removeFromParent();
+            DomGlobal.document.body.removeChild(previewRoot.getElement());
             previewRoot = null;
         }
     }
@@ -122,21 +121,21 @@ public class PreviewWindow {
             previewWidget = sessionPreviews.get();
             previewWidget.open((AbstractSession) session,
                     new SessionViewer.SessionViewerCallback<Diagram>() {
-                        @Override
-                        public void afterCanvasInitialized() {
-                            addWidget();
-                            translate(x, y, width, height);
-                            Animate.animate(previewRoot,
-                                    Animation.FADE_IN,
-                                    1,
-                                    DURATION);
-                        }
+                            @Override
+                            public void afterCanvasInitialized() {
+                                addWidget();
+                                translate(x, y, width, height);
+                                Animate.animate(previewRoot.getElement(),
+                                        Animation.FADE_IN,
+                                         1,
+                                         DURATION);
+                                }
 
-                        @Override
-                        public void onError(final ClientRuntimeError error) {
-                            showError(error);
-                        }
-                    });
+                            @Override
+                            public void onError(final ClientRuntimeError error) {
+                                 showError(error);
+                                 }
+                            });
         }
     }
 
@@ -158,16 +157,16 @@ public class PreviewWindow {
         final double previewX = clientLeft + clientWidth - width - MARGIN;
         final double previewY = clientTop + clientHeight - height - MARGIN;
 
-        Style style = previewRoot.getElement().getStyle();
-        style.setPosition(Style.Position.ABSOLUTE);
-        style.setLeft(previewX, Style.Unit.PX);
-        style.setTop(previewY, Style.Unit.PX);
-        style.setBorderWidth(1, Style.Unit.PX);
-        style.setBorderStyle(Style.BorderStyle.SOLID);
-        style.setBorderColor("#808080");
+        CSSStyleDeclaration style = previewRoot.getElement().style;
+        style.position = "absolute";
+        style.left = previewX + "px";
+        style.top = previewY + "px";
+        style.borderWidth = CSSProperties.BorderWidthUnionType.of("1px");
+        style.borderStyle = "solid";
+        style.borderColor = "#808080";
     }
 
-    void onTogglePreviewEvent(@Observes TogglePreviewEvent event) {
+    public void onTogglePreviewEvent(@Observes TogglePreviewEvent event) {
         if (null != previewRoot && previewRoot.isVisible()) {
             switch (event.getEventType()) {
                 case TOGGLE:

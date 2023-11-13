@@ -1,18 +1,22 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.lienzo.primitive;
 
@@ -23,7 +27,7 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.Triangle;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.user.client.Timer;
+import org.gwtproject.timer.client.Timer;
 
 // TODO: Refactor/replace by the new tooltip implementation (org.kie.workbench.common.stunner.lienzo.toolbox.items.tooltip.Tooltip).
 public class PrimitiveTooltip extends PrimitivePopup {
@@ -97,7 +101,6 @@ public class PrimitiveTooltip extends PrimitivePopup {
                                                        direction);
         final double w = dw + (isWest(direction) ? TRIANGLE_SIZE * 2 : 0);
         final double h = dh + (isNorth(direction) ? TRIANGLE_SIZE * 2 : 0);
-        ;
         final Group g = new Group();
         g.add(decorator);
         g.add(descText);

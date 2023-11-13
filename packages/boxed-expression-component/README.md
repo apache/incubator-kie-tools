@@ -53,6 +53,8 @@ In the showcase project, these scripts are available:
 pnpm start
 # Compiles a production ready showcase application
 pnpm build
-# Run cypress 'BoxedExpressionEditor' tests. To update the Cypress Snapshot files, used for the regression, remove the related png and rerun the tests to regenerate it.
-pnpm test:it
+# Run PlayWright 'BoxedExpressionEditor' tests.
+pnpm test:e2e
+# To update the PlayWright Snapshot files, used for the regression:
+pnpm test:e2e:run -u
 ```

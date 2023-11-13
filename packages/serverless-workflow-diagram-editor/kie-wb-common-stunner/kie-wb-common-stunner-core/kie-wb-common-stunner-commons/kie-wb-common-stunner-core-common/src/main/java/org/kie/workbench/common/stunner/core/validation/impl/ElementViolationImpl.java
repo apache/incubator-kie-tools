@@ -1,18 +1,22 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.core.validation.impl;
 
@@ -22,16 +26,12 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 
-@Portable
 public final class ElementViolationImpl
         implements DiagramElementViolation<RuleViolation> {
 
@@ -41,11 +41,11 @@ public final class ElementViolationImpl
     private final Collection<DomainViolation> domainViolations;
     private final Type type;
 
-    ElementViolationImpl(final @MapsTo("uuid") String uuid,
-                         final @MapsTo("graphViolations") Collection<RuleViolation> graphViolations,
-                         final @MapsTo("modelViolations") Collection<ModelBeanViolation> modelViolations,
-                         final @MapsTo("domainViolations") Collection<DomainViolation> domainViolations,
-                         final @MapsTo("type") Type type) {
+    ElementViolationImpl(final String uuid,
+                         final Collection<RuleViolation> graphViolations,
+                         final Collection<ModelBeanViolation> modelViolations,
+                         final Collection<DomainViolation> domainViolations,
+                         final Type type) {
         this.uuid = uuid;
         this.graphViolations = graphViolations;
         this.modelViolations = modelViolations;
@@ -83,7 +83,6 @@ public final class ElementViolationImpl
         return type;
     }
 
-    @NonPortable
     public static class Builder {
 
         private String uuid;

@@ -81,6 +81,8 @@ jobs:
 
       - name: "FULL → Bootstrap"
         if: steps.setup_build_mode.outputs.mode == 'full'
+        env:
+          PLAYWRIGHT_BASE__installDeps: "true"
         uses: ./.github/actions/bootstrap
 
       - name: "FULL → Build (without some images)"
@@ -90,11 +92,11 @@ jobs:
           WEBPACK__tsLoaderTranspileOnly: "false"
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
+          KIE_TOOLS_BUILD__runEndToEndTests: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
-          KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: ${{ !github.event.pull_request }}
+          KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: ${{ !github.event.pull_request }}
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
@@ -102,7 +104,6 @@ jobs:
           pnpm 
           -F='!@kie-tools/serverless-logic-web-tools-swf-dev-mode-image' 
           -F='!@kie-tools/dmn-dev-deployment-base-image' 
-          -F='!@kie-tools/serverless-logic-web-tools-swf-builder-image' 
           -F='!@kie-tools/serverless-logic-web-tools-base-builder-image' 
           -F='!@kie-tools/dashbuilder-viewer-image' 
           -r --workspace-concurrency=1 build:prod
@@ -111,7 +112,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -128,7 +129,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -141,28 +142,11 @@ jobs:
           echo "Build @kie-tools/dmn-dev-deployment-base-image"
           pnpm -F @kie-tools/dmn-dev-deployment-base-image... --workspace-concurrency=1 build:prod
 
-      - name: "FULL → Build → serverless-logic-web-tools-swf-builder-image"
-        if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
-        env:
-          KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
-        run: |
-          echo "Clean up container image resources"
-          if command -v docker &> /dev/null; then
-            docker system prune -af
-          fi
-          if command -v podman &> /dev/null; then
-            podman system prune --all --force
-          fi
-          echo "Build @kie-tools/serverless-logic-web-tools-swf-builder-image"
-          pnpm -F @kie-tools/serverless-logic-web-tools-swf-builder-image... --workspace-concurrency=1 build:prod
-
       - name: "FULL → Build → serverless-logic-web-tools-base-builder-image"
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -179,7 +163,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -194,6 +178,8 @@ jobs:
 
       - name: "PARTIAL → Bootstrap"
         if: steps.setup_build_mode.outputs.mode == 'partial'
+        env:
+          PLAYWRIGHT_BASE__installDeps: "true"
         uses: ./.github/actions/bootstrap
         with:
           pnpm_filter_string: -F "...[${{ steps.checkout_pr.outputs.base_sha }}]..."
@@ -217,7 +203,7 @@ jobs:
           WEBPACK__minimize: "false"
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
+          KIE_TOOLS_BUILD__runEndToEndTests: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           DISPLAY: ":99.0"
@@ -232,7 +218,7 @@ jobs:
         env:
           KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS: |-
             ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
-            ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
+            ${{ steps.ci_patterns.outputs.end_to_end_tests_reports_patterns }}
         with:
           result-encoding: string
           script: |
@@ -255,7 +241,7 @@ jobs:
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/upload-ci-reports-and-artifacts
 
-      - name: "Upload integration tests results to Buildkite (`main` only)"
+      - name: "Upload end-to-end tests results to Buildkite (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
         shell: bash
         env:
@@ -263,9 +249,9 @@ jobs:
           BUILDKITE_BRANCH: ${{ github.ref_name }}
           BUILDKITE_MESSAGE: ${{ github.event.commits[0].message }}
         run: |
-          eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}"
+          eval "find -P * -type f ${{ steps.ci_patterns.outputs.end_to_end_tests_reports_patterns_for_find }}"
           echo "---------------------------- starting upload -----------------------"
-          eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}" | xargs -I{} curl -X POST \
+          eval "find -P * -type f ${{ steps.ci_patterns.outputs.end_to_end_tests_reports_patterns_for_find }}" | xargs -I{} curl -X POST \
             -H "Authorization: Token token=\"$BUILDKITE_ANALYTICS_TOKEN\"" \
             -F "format=junit" \
             -F "data=@{}" \

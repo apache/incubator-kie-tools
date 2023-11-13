@@ -1,17 +1,20 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import * as React from "react";
@@ -30,6 +33,11 @@ import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
 import { EditorContextProvider } from "./editor/hooks/EditorContext";
 import { WebToolsWorkspaceContextProvider } from "./workspace/hooks/WebToolsWorkspaceContextProvider";
 import { UpgradeContextProvider } from "./upgrade/UpgradeContext";
+import { WorkflowListContextProvider } from "./runtimeTools/workflows/WorkflowList";
+import { WorkflowDetailsContextProvider } from "./runtimeTools/workflows/WorkflowDetails";
+import { CloudEventFormContextProvider } from "./runtimeTools/workflows/CloudEventForm";
+import { WorkflowDefinitionListContextProvider } from "./runtimeTools/workflows/WorkflowDefinitionList";
+import { WorkflowFormContextProvider } from "./runtimeTools/workflows/WorkflowForm";
 
 export const App = () => (
   <HashRouter>
@@ -47,6 +55,12 @@ export const App = () => (
       [SampleContextProvider, {}],
       [NavigationContextProvider, {}],
       [EditorContextProvider, {}],
+      [WorkflowDefinitionListContextProvider, {}],
+      [WorkflowListContextProvider, {}],
+      [WorkflowDetailsContextProvider, {}],
+      [WorkflowFormContextProvider, {}],
+      [CloudEventFormContextProvider, {}],
+      // Insert new context providers from here to beginning, always before RoutesSwitch
       [RoutesSwitch, {}]
     )}
   </HashRouter>

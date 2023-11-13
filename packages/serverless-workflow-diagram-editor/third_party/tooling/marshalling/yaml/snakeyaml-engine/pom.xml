@@ -53,10 +53,6 @@
             <artifactId>elemental2-dom</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
-            <artifactId>stdlib</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.treblereel.gwt.nio</groupId>
             <artifactId>gwt-nio</artifactId>
         </dependency>

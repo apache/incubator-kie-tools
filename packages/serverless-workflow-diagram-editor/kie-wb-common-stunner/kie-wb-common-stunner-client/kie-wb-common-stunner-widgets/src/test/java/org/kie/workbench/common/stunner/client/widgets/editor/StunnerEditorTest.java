@@ -1,18 +1,22 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.client.widgets.editor;
 
@@ -20,8 +24,7 @@ import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +49,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.widgets.client.errorpage.ErrorPage;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -55,14 +59,16 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class StunnerEditorTest {
 
     @Mock
@@ -79,13 +85,7 @@ public class StunnerEditorTest {
     private ClientTranslationService translationService;
 
     @Mock
-    private StunnerEditorView view;
-
-    @Mock
     private ErrorPage errorPage;
-
-    @Mock
-    private SessionPresenter.View sessionPresenterView;
 
     @Mock
     private EditorSession editorSession;
@@ -115,8 +115,6 @@ public class StunnerEditorTest {
     public void setup() {
         when(sessionEditorPresenters.get()).thenReturn(sessionEditorPresenter);
         when(sessionViewerPresenters.get()).thenReturn(sessionViewerPresenter);
-        when(sessionEditorPresenter.getView()).thenReturn(sessionPresenterView);
-        when(sessionViewerPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionEditorPresenter.getInstance()).thenReturn(editorSession);
         when(sessionViewerPresenter.getInstance()).thenReturn(viewerSession);
         when(sessionEditorPresenter.getHandler()).thenReturn(canvasHandler);
@@ -133,29 +131,24 @@ public class StunnerEditorTest {
         when(viewerSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(viewerSession.getAlertsControl()).thenReturn(alertsControl);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
-        tested = new StunnerEditor(sessionEditorPresenters,
-                                   sessionViewerPresenters,
-                                   translationService,
-                                   view,
-                                   errorPage);
-        JsWindow.editor = new JsStunnerEditor();
+        tested = spy(new StunnerEditor(sessionEditorPresenters,
+                sessionViewerPresenters,
+                translationService,
+                errorPage));
+        doNothing().when(tested).setupRootContainer();
+        doNothing().when(tested).clearRootAndDrawError();
+        JsWindow.setEditor(new JsStunnerEditor());
+
     }
 
     @Test
     @SuppressWarnings("all")
     public void testOpenSuccess() {
-        doAnswer(invocation -> {
-            ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[0]).afterCanvasInitialized();
-            ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1]).onSuccess();
-            return null;
-        }).when(sessionEditorPresenter).open(eq(diagram), any(SessionPresenter.SessionPresenterCallback.class));
         tested.setReadOnly(false);
         openSuccess();
         assertEquals(editorSession, tested.getSession());
         verify(sessionEditorPresenters).get();
         verify(sessionViewerPresenters, never()).get();
-        verify(sessionEditorPresenter).withPalette(eq(false));
-        verify(sessionEditorPresenter).withToolbar(eq(false));
         assertFalse(tested.isReadOnly());
     }
 
@@ -166,8 +159,6 @@ public class StunnerEditorTest {
         assertEquals(viewerSession, tested.getSession());
         verify(sessionViewerPresenters).get();
         verify(sessionEditorPresenters, never()).get();
-        verify(sessionViewerPresenter).withPalette(eq(false));
-        verify(sessionViewerPresenter).withToolbar(eq(false));
         assertTrue(tested.isReadOnly());
     }
 
@@ -179,7 +170,6 @@ public class StunnerEditorTest {
         verify(sessionEditorPresenter, times(1)).destroy();
         verify(sessionEditorPresenters, times(1)).destroyAll();
         verify(sessionViewerPresenters, times(1)).destroyAll();
-        verify(view).clear();
         assertNull(tested.getPresenter());
     }
 

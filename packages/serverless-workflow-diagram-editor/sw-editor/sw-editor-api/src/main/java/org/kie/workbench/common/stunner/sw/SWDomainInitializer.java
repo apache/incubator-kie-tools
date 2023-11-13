@@ -1,63 +1,94 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 
 package org.kie.workbench.common.stunner.sw;
 
 import java.lang.annotation.Annotation;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.api.DomainInitializer;
+import org.kie.workbench.common.stunner.core.factory.definition.JsDefinitionFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.sw.definition.ActionDataFilters;
+import org.kie.workbench.common.stunner.sw.definition.ActionEventRef;
+import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
 import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
+import org.kie.workbench.common.stunner.sw.definition.CallEventAction;
 import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
 import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
+import org.kie.workbench.common.stunner.sw.definition.ContinueAs;
+import org.kie.workbench.common.stunner.sw.definition.Correlation;
+import org.kie.workbench.common.stunner.sw.definition.Data;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
+import org.kie.workbench.common.stunner.sw.definition.Event;
 import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.EventDataFilter;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.EventTimeout;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
+import org.kie.workbench.common.stunner.sw.definition.Function;
+import org.kie.workbench.common.stunner.sw.definition.FunctionRef;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.Metadata;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.ParallelState;
+import org.kie.workbench.common.stunner.sw.definition.ParallelStateBranch;
+import org.kie.workbench.common.stunner.sw.definition.ProducedEvent;
+import org.kie.workbench.common.stunner.sw.definition.Retry;
+import org.kie.workbench.common.stunner.sw.definition.Schedule;
+import org.kie.workbench.common.stunner.sw.definition.Sleep;
 import org.kie.workbench.common.stunner.sw.definition.SleepState;
 import org.kie.workbench.common.stunner.sw.definition.Start;
+import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateDataFilter;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd;
+import org.kie.workbench.common.stunner.sw.definition.StateTransition;
+import org.kie.workbench.common.stunner.sw.definition.SubFlowRef;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
+import org.kie.workbench.common.stunner.sw.definition.Timeout;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.kie.workbench.common.stunner.sw.definition.WorkflowExecTimeout;
+import org.kie.workbench.common.stunner.sw.definition.WorkflowTimeouts;
 
 @ApplicationScoped
 public class SWDomainInitializer {
 
     @Inject
     private DomainInitializer domainInitializer;
+
+    @Inject
+    private JsDefinitionFactory jsDefinitionFactory;
 
     public static final String CATEGORY_STATES = "SWStates";
     public static final String CATEGORY_EVENTS = "SWEvents";
@@ -527,5 +558,61 @@ public class SWDomainInitializer {
                 .setEdgeOccurrences(CompensationTransition.class, LABEL_CALLBACK_STATE, false, 0, 1)
 
                 .initializeRules();
+
+        initDefinitions();
+    }
+
+    private void initDefinitions() {
+        jsDefinitionFactory.register(ActionDataFilters.class, ActionDataFilters::new);
+        jsDefinitionFactory.register(ActionEventRef.class, ActionEventRef::new);
+        jsDefinitionFactory.register(ActionNode.class, ActionNode::new);
+        jsDefinitionFactory.register(ActionsContainer.class, ActionsContainer::new);
+        jsDefinitionFactory.register(ActionTransition.class, ActionTransition::new);
+        jsDefinitionFactory.register(CallbackState.class, CallbackState::new);
+        jsDefinitionFactory.register(CallEventAction.class, CallEventAction::new);
+        jsDefinitionFactory.register(CallFunctionAction.class, CallFunctionAction::new);
+        jsDefinitionFactory.register(CallSubflowAction.class, CallSubflowAction::new);
+        jsDefinitionFactory.register(CompensationTransition.class, CompensationTransition::new);
+        jsDefinitionFactory.register(ContinueAs.class, ContinueAs::new);
+        jsDefinitionFactory.register(Correlation.class, Correlation::new);
+        jsDefinitionFactory.register(Data.class, Data::new);
+        jsDefinitionFactory.register(DataConditionTransition.class, DataConditionTransition::new);
+        jsDefinitionFactory.register(DefaultConditionTransition.class, DefaultConditionTransition::new);
+        jsDefinitionFactory.register(End.class, End::new);
+        jsDefinitionFactory.register(Error.class, Error::new);
+        jsDefinitionFactory.register(ErrorTransition.class, ErrorTransition::new);
+        jsDefinitionFactory.register(Event.class, Event::new);
+        jsDefinitionFactory.register(EventConditionTransition.class, EventConditionTransition::new);
+        jsDefinitionFactory.register(EventDataFilter.class, EventDataFilter::new);
+        jsDefinitionFactory.register(EventRef.class, EventRef::new);
+        jsDefinitionFactory.register(EventState.class, EventState::new);
+        jsDefinitionFactory.register(EventTimeout.class, EventTimeout::new);
+        jsDefinitionFactory.register(ForEachState.class, ForEachState::new);
+        jsDefinitionFactory.register(Function.class, Function::new);
+        jsDefinitionFactory.register(FunctionRef.class, FunctionRef::new);
+        jsDefinitionFactory.register(InjectState.class, InjectState::new);
+        jsDefinitionFactory.register(OnEvent.class, OnEvent::new);
+        jsDefinitionFactory.register(OperationState.class, OperationState::new);
+        jsDefinitionFactory.register(ParallelState.class, ParallelState::new);
+        jsDefinitionFactory.register(ParallelStateBranch.class, ParallelStateBranch::new);
+        jsDefinitionFactory.register(ProducedEvent.class, ProducedEvent::new);
+        jsDefinitionFactory.register(Retry.class, Retry::new);
+        jsDefinitionFactory.register(Schedule.class, Schedule::new);
+        jsDefinitionFactory.register(Sleep.class, Sleep::new);
+        jsDefinitionFactory.register(SleepState.class, SleepState::new);
+        jsDefinitionFactory.register(Start.class, Start::new);
+        jsDefinitionFactory.register(StartDefinition.class, StartDefinition::new);
+        jsDefinitionFactory.register(StartTransition.class, StartTransition::new);
+        jsDefinitionFactory.register(State.class, State::new);
+        jsDefinitionFactory.register(StateDataFilter.class, StateDataFilter::new);
+        jsDefinitionFactory.register(StateEnd.class, StateEnd::new);
+        jsDefinitionFactory.register(StateTransition.class, StateTransition::new);
+        jsDefinitionFactory.register(SubFlowRef.class, SubFlowRef::new);
+        jsDefinitionFactory.register(SwitchState.class, SwitchState::new);
+        jsDefinitionFactory.register(Timeout.class, Timeout::new);
+        jsDefinitionFactory.register(Transition.class, Transition::new);
+        jsDefinitionFactory.register(Workflow.class, Workflow::new);
+        jsDefinitionFactory.register(WorkflowExecTimeout.class, WorkflowExecTimeout::new);
+        jsDefinitionFactory.register(WorkflowTimeouts.class, WorkflowTimeouts::new);
     }
 }

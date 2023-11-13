@@ -1,18 +1,22 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.core.marshaller;
 
@@ -21,12 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 
-@Portable
 public class MarshallingMessage implements DomainViolation {
 
     private final String elementUUID;
@@ -62,10 +63,10 @@ public class MarshallingMessage implements DomainViolation {
         return messageArguments;
     }
 
-    public MarshallingMessage(@MapsTo("elementUUID") String elementUUID, @MapsTo("code") int code,
-                              @MapsTo("type") Type type, @MapsTo("message") String message,
-                              @MapsTo("messageKey") String messageKey,
-                              @MapsTo("messageArguments") List<?> messageArguments) {
+    public MarshallingMessage(String elementUUID, int code,
+                              Type type, String message,
+                              String messageKey,
+                              List<?> messageArguments) {
         this.elementUUID = elementUUID;
         this.code = code;
         this.type = type;

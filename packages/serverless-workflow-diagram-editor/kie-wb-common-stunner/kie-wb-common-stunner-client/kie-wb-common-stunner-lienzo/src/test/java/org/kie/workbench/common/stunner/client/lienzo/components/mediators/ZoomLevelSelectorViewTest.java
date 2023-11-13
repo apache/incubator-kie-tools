@@ -1,33 +1,33 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import elemental2.dom.HTMLUListElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
+import elemental2.dom.KeyboardEvent;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.ui.translation.client.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -113,36 +113,36 @@ public class ZoomLevelSelectorViewTest {
     @Test
     public void testOnIncreaseLevel() {
         tested.init(presenter);
-        tested.onIncreaseLevel(mock(ClickEvent.class));
+        tested.onIncreaseLevel(mock(elemental2.dom.Event.class));
         verify(presenter, times(1)).onIncreaseLevel();
     }
 
     @Test
     public void testOnDecreaseLevel() {
         tested.init(presenter);
-        tested.onDecreaseLevel(mock(ClickEvent.class));
+        tested.onDecreaseLevel(mock(elemental2.dom.Event.class));
         verify(presenter, times(1)).onDecreaseLevel();
     }
 
     @Test
     public void testOnReset() {
         tested.init(presenter);
-        tested.onReset(mock(ClickEvent.class));
+        tested.onReset(mock(elemental2.dom.Event.class));
         verify(presenter, times(1)).onScaleToFitSize();
     }
 
     @Test
     public void testOnDropDownKeyEvents() {
         tested.init(presenter);
-        KeyDownEvent keyDownEvent = mock(KeyDownEvent.class);
+        KeyboardEvent keyDownEvent = mock(elemental2.dom.KeyboardEvent.class);
         tested.onDropDownKeyDown(keyDownEvent);
         verify(keyDownEvent, times(1)).preventDefault();
         verify(keyDownEvent, times(1)).stopPropagation();
-        KeyUpEvent keyUpEvent = mock(KeyUpEvent.class);
+        KeyboardEvent keyUpEvent = mock(KeyboardEvent.class);
         tested.onDropDownKeyUp(keyUpEvent);
         verify(keyUpEvent, times(1)).preventDefault();
         verify(keyUpEvent, times(1)).stopPropagation();
-        KeyPressEvent keyPressEvent = mock(KeyPressEvent.class);
+        KeyboardEvent keyPressEvent = mock(KeyboardEvent.class);
         tested.onDropDownKeyPress(keyPressEvent);
         verify(keyPressEvent, times(1)).preventDefault();
         verify(keyPressEvent, times(1)).stopPropagation();
@@ -151,7 +151,7 @@ public class ZoomLevelSelectorViewTest {
     @Test
     public void testAdd() {
         ZoomLevelSelectorItem item = mock(ZoomLevelSelectorItem.class);
-        HTMLElement itemElement = mock(HTMLElement.class);
+        HTMLLIElement itemElement = mock(HTMLLIElement.class);
         when(item.getElement()).thenReturn(itemElement);
         when(items.get()).thenReturn(item);
         Command c = mock(Command.class);

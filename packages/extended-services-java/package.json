@@ -1,0 +1,49 @@
+{
+  "private": true,
+  "name": "@kie-tools/extended-services-java",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "run-script-os",
+    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs \"",
+    "build:prod": "run-script-os",
+    "build:prod:linux:darwin": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env endToEndTests.run --not) && pnpm dist",
+    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env endToEndTests.run --not)\" && pnpm dist",
+    "copy:app": "run-script-os",
+    "copy:app:linux:darwin": "copyfiles -u 1 \"target/quarkus-app/**/*\" dist/",
+    "copy:app:win32": "copyfiles -u 1 \"target/quarkus-app/**\" dist/",
+    "dist": "rimraf dist && mkdir dist && pnpm copy:app && pnpm rename:app",
+    "install": "node install.js",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "rename:app": "run-script-os",
+    "rename:app:linux:darwin": "mv dist/quarkus-app dist/extended-services-java",
+    "rename:app:win32": "ren dist\\quarkus-app extended-services-java",
+    "start": "mvn quarkus:dev"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

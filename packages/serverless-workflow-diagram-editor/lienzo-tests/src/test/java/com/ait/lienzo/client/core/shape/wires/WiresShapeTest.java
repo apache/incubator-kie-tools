@@ -42,7 +42,6 @@ import com.ait.lienzo.tools.client.event.HandlerManager;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.HandlerRegistrationManager;
 import com.ait.lienzo.tools.client.event.INodeEvent;
-import com.google.gwt.event.dom.client.DomEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -212,8 +211,7 @@ public class WiresShapeTest {
 
         final HandlerRegistration registration = mock(HandlerRegistration.class);
         doAnswer((Answer<HandlerRegistration>) invocationOnMock -> {
-            final DomEvent.Type type = (DomEvent.Type) invocationOnMock.getArguments()[0];
-            if (WiresResizeEndEvent.TYPE.equals(type)) {
+            if (WiresResizeEndEvent.TYPE.equals(invocationOnMock.getArguments()[0])) {
                 final WiresResizeEndHandler handler = (WiresResizeEndHandler) invocationOnMock.getArguments()[1];
                 final WiresResizeEndEvent endEvent = mock(WiresResizeEndEvent.class);
                 handler.onShapeResizeEnd(endEvent);

@@ -1,18 +1,22 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
@@ -25,9 +29,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -45,10 +46,8 @@ import org.kie.workbench.common.stunner.core.graph.util.SafeDeleteNodeProcessor;
 /**
  * Deletes a node taking into account its ingoing / outgoing edges and safe remove all node's children as well, if any.
  */
-@Portable
 public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
-    @Portable
     public static final class Options {
 
         private final boolean shortcutCandidateConnectors;
@@ -66,8 +65,8 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
             return new Options(false, ids);
         }
 
-        public Options(final @MapsTo("shortcutCandidateConnectors") boolean shortcutCandidateConnectors,
-                       final @MapsTo("exclusions") Set<String> exclusions) {
+        public Options(final boolean shortcutCandidateConnectors,
+                       final Set<String> exclusions) {
             this.shortcutCandidateConnectors = shortcutCandidateConnectors;
             this.exclusions = exclusions;
         }
@@ -81,7 +80,6 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
         }
     }
 
-    @NonPortable
     public interface SafeDeleteNodeCommandCallback extends SafeDeleteNodeProcessor.Callback {
 
         void setEdgeTargetNode(final Node<? extends View<?>, Edge> targetNode,
@@ -93,8 +91,8 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     private transient Node<?, Edge> node;
     private transient Optional<SafeDeleteNodeCommandCallback> safeDeleteCallback;
 
-    public SafeDeleteNodeCommand(final @MapsTo("candidateUUID") String candidateUUID,
-                                 final @MapsTo("options") Options options) {
+    public SafeDeleteNodeCommand(final String candidateUUID,
+                                 final Options options) {
         this.candidateUUID = checkNotNull("candidateUUID", candidateUUID);
         this.options = checkNotNull("options", options);
         this.safeDeleteCallback = Optional.empty();

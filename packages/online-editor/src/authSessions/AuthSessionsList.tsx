@@ -1,17 +1,20 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import * as React from "react";
@@ -27,7 +30,7 @@ import {
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { AuthSessionLabel } from "./AuthSessionLabel";
 import { useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -43,10 +46,33 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { AuthSession, AuthSessionStatus } from "./AuthSessionApi";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
+import { useDevDeployments } from "../devDeployments/DevDeploymentsContext";
+import { KieSandboxDeployedModel } from "../devDeployments/services/types";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions } = useAuthSessions();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
+  const devDeployments = useDevDeployments();
+  const [devDeploymentsUsages, setDevDeploymentsUsages] = useState(new Map<string, KieSandboxDeployedModel[]>());
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        [...authSessions.values()].map((authSession) => {
+          if (authSession.type === "openshift" || authSession.type === "kubernetes") {
+            devDeployments.loadDeployments({ authSession }).then((deployments) => {
+              if (canceled.get()) {
+                return;
+              }
+              setDevDeploymentsUsages((prev) => new Map([...prev, [authSession.id, deployments]]));
+            });
+          }
+        });
+      },
+      [authSessions, devDeployments]
+    )
+  );
 
   const usagesByWorkspace = useMemo(() => {
     if (!workspaceDescriptorsPromise.data) {
@@ -82,7 +108,11 @@ export function AuthSessionsList(props: {}) {
             <AuthSessionCard
               key={authSession.id}
               authSession={authSession}
-              usages={usagesByWorkspace.get(authSession.id)}
+              usages={
+                authSession.type === "openshift" || authSession.type === "kubernetes"
+                  ? devDeploymentsUsages.get(authSession.id)
+                  : usagesByWorkspace.get(authSession.id)
+              }
             />
           );
         })}
@@ -91,7 +121,10 @@ export function AuthSessionsList(props: {}) {
   );
 }
 
-function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDescriptor[] | undefined }) {
+function AuthSessionCard(props: {
+  authSession: AuthSession;
+  usages: WorkspaceDescriptor[] | KieSandboxDeployedModel[] | undefined;
+}) {
   const authSessionsDispatch = useAuthSessionsDispatch();
   const [isExpanded, setExpanded] = useState(false);
   const { authSessionStatus } = useAuthSessions();
@@ -118,7 +151,9 @@ function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDes
           }}
         >
           <AuthSessionLabel authSession={props.authSession} />
-          {props.authSession.type === "git" && (
+          {(props.authSession.type === "git" ||
+            props.authSession.type === "openshift" ||
+            props.authSession.type === "kubernetes") && (
             <>
               &nbsp; &nbsp; &nbsp;
               <Label>
@@ -143,7 +178,10 @@ function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDes
   );
 }
 
-export function AuthSessionDescriptionList(props: { authSession: AuthSession; usages?: WorkspaceDescriptor[] }) {
+export function AuthSessionDescriptionList(props: {
+  authSession: AuthSession;
+  usages?: WorkspaceDescriptor[] | KieSandboxDeployedModel[];
+}) {
   return (
     <>
       {(props.authSession.type === "openshift" || props.authSession.type === "kubernetes") && (
@@ -177,6 +215,15 @@ export function AuthSessionDescriptionList(props: { authSession: AuthSession; us
                   </DescriptionListGroup>
                 )
               }
+
+              {props.usages && (
+                <>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Usages</DescriptionListTerm>
+                    <DescriptionListDescription>{props.usages.length}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                </>
+              )}
             </>
           </DescriptionList>
         </>

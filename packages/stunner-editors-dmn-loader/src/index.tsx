@@ -1,17 +1,20 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
@@ -30,6 +33,7 @@ import {
   ExpressionDefinition,
   PmmlParam,
 } from "@kie-tools/boxed-expression-component/dist/api";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export interface BoxedExpressionEditorWrapperProps {
   /** Identifier of the decision node, where the expression will be hold */
@@ -50,6 +54,8 @@ export interface BoxedExpressionEditorWrapperProps {
   pmmlParams?: PmmlParam[];
   /** BoxedExpressionWrapper root node */
   boxedExpressionEditorRootNode: Element | null;
+  /** The variables used in the current Boxed Expression Editor context */
+  variables?: FeelVariables;
 }
 
 const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEditorWrapperProps> = ({
@@ -59,6 +65,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   isResetSupportedOnRootExpression,
   pmmlParams,
   boxedExpressionEditorRootNode,
+  variables,
 }) => {
   const [expressionWrapper, setExpressionWrapper] = useState<{
     source: "gwt" | "react";
@@ -135,6 +142,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlParams={pmmlParams}
+      variables={variables}
     />
   );
 };
@@ -145,7 +153,8 @@ const renderBoxedExpressionEditor = (
   expressionDefinition: ExpressionDefinition,
   dataTypes: DmnDataType[],
   isResetSupportedOnRootExpression: boolean,
-  pmmlParams: PmmlParam[]
+  pmmlParams: PmmlParam[],
+  variables: FeelVariables
 ) => {
   const boxedExpressionEditorRootNode = document.querySelector(selector);
   ReactDOM.render(
@@ -156,6 +165,7 @@ const renderBoxedExpressionEditor = (
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlParams={pmmlParams}
       boxedExpressionEditorRootNode={boxedExpressionEditorRootNode}
+      variables={variables}
     />,
     boxedExpressionEditorRootNode
   );
@@ -190,4 +200,8 @@ const renderImportJavaClasses = (selector: string) => {
   ReactDOM.render(<ImportJavaClassesWrapper />, document.querySelector(selector));
 };
 
-export { renderBoxedExpressionEditor, renderImportJavaClasses, unmountBoxedExpressionEditor };
+const getVariables = (xml: string): FeelVariables => {
+  return new FeelVariables(xml);
+};
+
+export { renderBoxedExpressionEditor, renderImportJavaClasses, unmountBoxedExpressionEditor, getVariables };

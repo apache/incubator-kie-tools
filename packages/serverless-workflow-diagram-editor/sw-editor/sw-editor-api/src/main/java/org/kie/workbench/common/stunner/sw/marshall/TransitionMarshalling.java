@@ -1,23 +1,25 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
@@ -28,6 +30,9 @@ import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.HasCompensatedBy;
+import org.kie.workbench.common.stunner.sw.definition.HasEnd;
+import org.kie.workbench.common.stunner.sw.definition.HasTransition;
 import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.State;
@@ -69,29 +74,28 @@ public interface TransitionMarshalling {
 
                 State sourceState = getElementDefinition(sourceNode);
                 Object targetDef = getElementDefinition(targetNode);
-                JsPropertyMap<Object> map = Js.asPropertyMap(sourceState);
-                if (!(map.has("end"))) {
+
+                if (!(sourceState instanceof HasEnd)) {
                     return edge;
                 }
 
                 if (targetDef instanceof End) {
-                    map.set("transition", null);
-                    if (map.get("end") instanceof Boolean) {
-                        map.set("end", true);
+                    ((HasTransition<?>) sourceState).setTransition(null);
+                    if(((HasEnd<?>)sourceState).getEnd() instanceof Boolean) {
+                        ((HasEnd<?>)sourceState).setEnd(true);
                     } // else is Object
                 } else {
-                    if (null == map.get("transition") ||
-                            map.get("transition") instanceof String) {
-                        map.set("transition", getStateNodeName(targetNode));
+                    if (null == ((HasTransition<?>) sourceState).getTransition() ||
+                            ((HasTransition<?>) sourceState).getTransition() instanceof String) {
+                        ((HasTransition<?>) sourceState).setTransition(getStateNodeName(targetNode));
                     } else {
-                        ((StateTransition) map.get("transition")).setNextState(getStateNodeName(targetNode));
+                        ((StateTransition) ((HasTransition<?>) sourceState).getTransition()).setNextState(getStateNodeName(targetNode));
                     }
 
-                    if (map.get("end") instanceof Boolean) {
-                        map.set("end", false);
+                    if (((HasEnd<?>)sourceState).getEnd() instanceof Boolean) {
+                        ((HasEnd<?>)sourceState).setEnd(false);
                     }
                 }
-
                 return edge;
             };
 
@@ -113,11 +117,9 @@ public interface TransitionMarshalling {
                 if (null != sourceNode) {
                     Node targetNode = edge.getTargetNode();
                     ViewImpl view = (ViewImpl) sourceNode.getContent();
-                    JsPropertyMap<Object> map = Js.asPropertyMap(view.getDefinition());
-                    if (null != targetNode && view != null && map.has("compensatedBy")) {
+                    if (null != targetNode && view != null && (view.getDefinition() instanceof HasCompensatedBy<?>)) {
                         Object sourceState = getElementDefinition(sourceNode);
-                        JsPropertyMap<Object> sourceMap = Js.asPropertyMap(sourceState);
-                        sourceMap.set("compensatedBy", getStateNodeName(targetNode));
+                        ((HasCompensatedBy<?>) sourceState).setCompensatedBy(getStateNodeName(targetNode));
                     }
                 }
 

@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { assertUnreachable } from "../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
@@ -146,8 +165,6 @@ export function BeeTableCoordinatesContextProvider({
 }: React.PropsWithChildren<{ coordinates: BeeTableCellCoordinates }>) {
   const { activeCell, depth } = useBeeTableSelection();
 
-  //
-
   const { setMaxDepth: setParentMaxDepth } = useBeeTableCoordinatesDispatch();
   const [_maxDepth, _setMaxDepth] = useState<number>(depth);
 
@@ -165,8 +182,6 @@ export function BeeTableCoordinatesContextProvider({
     setMaxDepth((prev) => Math.max(prev, depth));
   }, [coordinates.columnIndex, coordinates.rowIndex, depth, setMaxDepth]);
 
-  //
-
   useEffect(() => {
     if (coincides(activeCell, coordinates)) {
       setCurrentDepth((prev) => ({
@@ -175,8 +190,6 @@ export function BeeTableCoordinatesContextProvider({
       }));
     }
   }, [_maxDepth, activeCell, coordinates, depth, setCurrentDepth]);
-
-  //
 
   const value = useMemo<BeeTableCoordinatesContextType>(() => {
     return {
@@ -203,8 +216,9 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
 
   const [_selection, _setSelection] = useState<BeeTableSelection>(NEUTRAL_SELECTION);
-  const [_currentDepth, _setCurrentDepth] =
-    useState<{ active: number | undefined; max: number }>(INITIAL_CURRENT_DEPTH);
+  const [_currentDepth, _setCurrentDepth] = useState<{ active: number | undefined; max: number }>(
+    INITIAL_CURRENT_DEPTH
+  );
 
   const {
     isSelectionHere: isParentSelectionThere,
@@ -989,21 +1003,30 @@ export function useBeeTableSelectableCell(
     `;
   }, [isActive, isEditing, isSelected, selectedPositions]);
 
+  const { selectionStart, selectionEnd } = useBeeTableSelection();
   const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
 
-      // That's the right-click case to open the Context Menu at the right place.
-      if (e.button !== 0 && isSelected) {
-        resetSelectionAt({
-          columnIndex,
-          rowIndex,
-          isEditing: false,
-          keepSelection: true,
-        });
-        return;
+      if (
+        isCellSelected(rowIndex, columnIndex, {
+          active: undefined,
+          selectionEnd: selectionEnd,
+          selectionStart: selectionStart,
+        })
+      ) {
+        // That's the right-click case to open the Context Menu at the right place.
+        if (e.button !== 0 && isSelected) {
+          resetSelectionAt({
+            columnIndex,
+            rowIndex,
+            isEditing: false,
+            keepSelection: true,
+          });
+          return;
+        }
       }
 
       if (!isActive && !isEditing) {
@@ -1015,7 +1038,17 @@ export function useBeeTableSelectableCell(
         });
       }
     },
-    [columnIndex, isActive, isEditing, isSelected, rowIndex, resetSelectionAt, setSelectionEnd]
+    [
+      rowIndex,
+      columnIndex,
+      selectionEnd,
+      selectionStart,
+      isActive,
+      isEditing,
+      isSelected,
+      resetSelectionAt,
+      setSelectionEnd,
+    ]
   );
 
   const onDoubleClick = useCallback(

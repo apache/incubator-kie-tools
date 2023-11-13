@@ -1,17 +1,20 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import patternflyBase from "@kie-tools-core/patternfly-base";
@@ -20,6 +23,7 @@ import * as swEditor from "@kie-tools/serverless-workflow-diagram-editor-assets"
 import CopyPlugin from "copy-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
+import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import * as path from "path";
 import { EnvironmentPlugin, ProvidePlugin } from "webpack";
 import { merge } from "webpack-merge";
@@ -163,6 +167,7 @@ export default async (env: any, argv: any) => {
               },
             ],
           }),
+          new NodePolyfillPlugin(),
         ],
         module: {
           rules: [
@@ -194,6 +199,9 @@ export default async (env: any, argv: any) => {
         static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
         compress: true,
         port: buildEnv.serverlessLogicWebTools.dev.port,
+        client: {
+          overlay: false,
+        },
       },
     },
   ];

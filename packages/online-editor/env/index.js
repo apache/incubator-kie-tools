@@ -1,17 +1,20 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 const { varsWithName, getOrDefault, composeEnv, str2bool } = require("@kie-tools-scripts/build-env");
@@ -19,7 +22,6 @@ const { varsWithName, getOrDefault, composeEnv, str2bool } = require("@kie-tools
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
 const corsProxyEnv = require("@kie-tools/cors-proxy/env");
-const devPort = 9001;
 
 module.exports = composeEnv(
   [
@@ -54,10 +56,6 @@ module.exports = composeEnv(
       ONLINE_EDITOR__gtmId: {
         default: undefined,
         description: "Google Tag Manager ID. Used for analytics.",
-      },
-      ONLINE_EDITOR__cypressUrl: {
-        default: `https://localhost:${devPort}/`,
-        description: "Cypress URL to be used on integrationt tests.",
       },
       ONLINE_EDITOR__corsProxyUrl: {
         default: `http://localhost:${corsProxyEnv.env.corsProxy.dev.port}`,
@@ -99,13 +97,21 @@ module.exports = composeEnv(
         default: "Always",
         description: "The image pull policy. Can be 'Always', 'IfNotPresent', or 'Never'.",
       },
+      ONLINE_EDITOR_DEV__port: {
+        default: 9001,
+        description: "The development web server port",
+      },
+      ONLINE_EDITOR_DEV__https: {
+        default: "true",
+        description: "Tells if the development web server should use https",
+      },
     }),
     get env() {
       return {
         onlineEditor: {
           dev: {
-            cypressUrl: getOrDefault(this.vars.ONLINE_EDITOR__cypressUrl),
-            port: devPort,
+            port: getOrDefault(this.vars.ONLINE_EDITOR_DEV__port),
+            https: str2bool(getOrDefault(this.vars.ONLINE_EDITOR_DEV__https)),
           },
           gtmId: getOrDefault(this.vars.ONLINE_EDITOR__gtmId),
           buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),

@@ -1,18 +1,22 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas;
 
@@ -21,9 +25,8 @@ import java.util.function.BiFunction;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,9 +61,9 @@ public class LienzoCanvasViewTest {
     @Mock
     private LienzoPanel panel;
     @Mock
-    private Style panelStyle;
-    @Mock
     private CanvasSettings settings;
+
+    private HTMLElement element;
 
     private LienzoCanvasView tested;
 
@@ -69,12 +72,9 @@ public class LienzoCanvasViewTest {
     @Before
     public void setUp() throws Exception {
         decoratorFactory = (integer, integer2) -> decorator;
+        element = new HTMLElement();
         when(lienzoLayer.getLienzoLayer()).thenReturn(layer);
-        Widget panelWidget = mock(Widget.class);
-        Element panelElement = mock(Element.class);
-        when(panel.asWidget()).thenReturn(panelWidget);
-        when(panelWidget.getElement()).thenReturn(panelElement);
-        when(panelElement.getStyle()).thenReturn(panelStyle);
+        when(panel.getElement()).thenReturn(element);
         when(lienzoLayer.getTopLayer()).thenReturn(topLayer);
         when(panel.show(lienzoLayer)).thenReturn(panel);
         this.tested = new LienzoCanvasViewStub(decoratorFactory);
@@ -82,10 +82,9 @@ public class LienzoCanvasViewTest {
 
     @Test
     public void testInitialize() {
-        assertEquals(tested, tested.initialize(panel,
-                                               settings));
+        assertEquals(tested, tested.initialize(panel, settings));
         verify(panel, times(1)).show(eq(lienzoLayer));
-        verify(panelStyle, times(1)).setBackgroundColor(eq(LienzoCanvasView.BG_COLOR));
+        assertEquals(LienzoCanvasView.BG_COLOR, element.style.backgroundColor);
         verify(topLayer, times(1)).add(eq(decorator));
     }
 
@@ -98,17 +97,17 @@ public class LienzoCanvasViewTest {
 
     @Test
     public void testCursor() {
-        Widget widget = mock(Widget.class);
-        Element element = mock(Element.class);
-        Style style = mock(Style.class);
-        when(panel.asWidget()).thenReturn(widget);
-        when(widget.getElement()).thenReturn(element);
-        when(element.getStyle()).thenReturn(style);
+        HTMLElement panelElement = mock(HTMLElement.class);
+        CSSStyleDeclaration style = mock(CSSStyleDeclaration.class);
+        panelElement.style = style;
+        when(panel.getElement()).thenReturn(panelElement);
+
         tested.initialize(panel, settings);
         tested.setCursor(AbstractCanvas.Cursors.GRAB);
 
         verify(style, times(1))
-                .setProperty(AbstractCanvasView.CURSOR, "grab");
+                .setProperty(AbstractCanvasView.CURSOR,
+                             AbstractCanvasView.toLienzoCursorKey(AbstractCanvas.Cursors.GRAB));
     }
 
     @Test

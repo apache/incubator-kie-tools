@@ -1,17 +1,20 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import * as React from "react";
@@ -41,7 +44,7 @@ type ROWTYPE = any;
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isNested: boolean }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { decisionNodeId } = useBoxedExpressionEditor();
+  const { decisionNodeId, variables } = useBoxedExpressionEditor();
 
   const getValue = useCallback(() => {
     return literalExpression.content ?? "";
@@ -172,7 +175,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         ],
       },
     ];
-  }, []);
+  }, [i18n.terms.copy, i18n.terms.cut, i18n.terms.paste, i18n.terms.reset, i18n.terms.selection]);
 
   const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
     if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
@@ -206,6 +209,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
+          variables={variables}
         ></BeeTable>
       </div>
     </div>

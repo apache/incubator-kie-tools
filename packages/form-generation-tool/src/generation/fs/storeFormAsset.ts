@@ -1,17 +1,20 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { FormAsset } from "../types";
@@ -30,7 +33,7 @@ export function getFormAssetPath(sourcePath: string, formAsset: string): string 
 }
 
 export function getFormConfigAssetPath(source: string, formAsset: FormAsset): string {
-  return getFormAssetPath(source, `${formAsset.id}${FORM_CONFIG_EXT}`);
+  return getFormAssetPath(source, `${formAsset.sanitizedId}${FORM_CONFIG_EXT}`);
 }
 
 export function storeFormAsset(formAsset: FormAsset, source: string, overwriteExisting: boolean) {
@@ -42,7 +45,7 @@ export function storeFormAsset(formAsset: FormAsset, source: string, overwriteEx
 
   const existingFormAssets = fs.readdirSync(storagePath).filter((file) => {
     const extension = path.extname(file);
-    return path.basename(file, extension) === formAsset.id;
+    return path.basename(file, extension) === formAsset.sanitizedId;
   });
 
   if (existingFormAssets.length > 0) {
@@ -50,12 +53,12 @@ export function storeFormAsset(formAsset: FormAsset, source: string, overwriteEx
       throw new Error(`Form already exists.`);
     }
 
-    console.log(`Form "${formAsset.id}" already exists. Proceeding to overwrite it.`);
+    console.log(`Form "${formAsset.sanitizedId}" already exists. Proceeding to overwrite it.`);
 
     existingFormAssets.forEach((file) => {
       fs.rmSync(getFormAssetPath(source, file));
     });
   }
-  fs.writeFileSync(getFormAssetPath(source, formAsset.assetName), formAsset.content);
+  fs.writeFileSync(getFormAssetPath(source, formAsset.sanitizedAssetName), formAsset.content);
   fs.writeFileSync(getFormConfigAssetPath(source, formAsset), JSON.stringify(formAsset.config, null, 4));
 }

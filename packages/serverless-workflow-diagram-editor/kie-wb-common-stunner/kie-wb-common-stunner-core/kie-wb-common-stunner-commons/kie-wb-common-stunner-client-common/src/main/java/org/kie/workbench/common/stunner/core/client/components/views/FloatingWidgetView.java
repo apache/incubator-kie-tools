@@ -1,40 +1,45 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
+
 
 package org.kie.workbench.common.stunner.core.client.components.views;
 
 import java.util.Objects;
 
-import javax.enterprise.context.Dependent;
-
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RootPanel;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.GWTHandlerRegistration;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import jakarta.enterprise.context.Dependent;
+import org.gwtproject.timer.client.Timer;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandlerRegistration;
 import org.uberfire.mvp.Command;
+
+import static elemental2.dom.CSSProperties.ZIndexUnionType;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 
 /**
  * Floating view implementation for generic GWT Widgets.
  */
 @Dependent
-public class FloatingWidgetView implements FloatingView<IsWidget> {
+public class FloatingWidgetView implements FloatingView<IsElement> {
 
     private double ox;
     private double oy;
@@ -45,8 +50,11 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     private int timeout = 800;
     private boolean visible;
     private Command hideCallback;
-    private final FlowPanel panel = new FlowPanel();
-    private final GWTHandlerRegistration handlerRegistrationManager = new GWTHandlerRegistration();
+    private final HTMLDivElement panel = (HTMLDivElement) DomGlobal.document.createElement("div");
+    private final NativeHandlerRegistration handlerRegistrationManager = new NativeHandlerRegistration();
+
+    private static final String MOUSE_OVER = "mouseover";
+    private static final String MOUSE_OUT = "mouseout";
 
     public FloatingWidgetView() {
         this.attached = false;
@@ -58,19 +66,19 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     }
 
     @Override
-    public void add(final IsWidget item) {
-        panel.add(item);
+    public void add(final IsElement item) {
+        panel.appendChild(item.getElement());
     }
 
     @Override
-    public FloatingView<IsWidget> setOffsetX(final double ox) {
+    public FloatingView<IsElement> setOffsetX(final double ox) {
         this.ox = ox;
         reposition();
         return this;
     }
 
     @Override
-    public FloatingView<IsWidget> setOffsetY(final double oy) {
+    public FloatingView<IsElement> setOffsetY(final double oy) {
         this.oy = oy;
         reposition();
         return this;
@@ -97,13 +105,13 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     }
 
     @Override
-    public FloatingView<IsWidget> clearTimeOut() {
+    public FloatingView<IsElement> clearTimeOut() {
         setTimeOut(-1);
         return this;
     }
 
     @Override
-    public FloatingView<IsWidget> setHideCallback(final Command hideCallback) {
+    public FloatingView<IsElement> setHideCallback(final Command hideCallback) {
         Objects.requireNonNull(hideCallback, "Parameter named 'hideCallback' should be not null!");
         this.hideCallback = hideCallback;
         return this;
@@ -111,7 +119,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public void clear() {
-        panel.clear();
+        removeAllChildren(panel);
     }
 
     @Override
@@ -137,20 +145,21 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     }
 
     protected void doShow() {
-        panel.getElement().getStyle().setDisplay(Style.Display.INLINE);
+        panel.style.display = "inline";
     }
 
     protected void doHide() {
-        panel.getElement().getStyle().setDisplay(Style.Display.NONE);
+        panel.style.display = "none";
         hideCallback.execute();
     }
 
     private void attach() {
         if (!attached) {
-            RootPanel.get().add(panel);
+            getRootPanel().appendChild(panel);
+            //RootPanel.get().add(panel);
             registerHoverEventHandlers();
-            panel.getElement().getStyle().setPosition(Style.Position.FIXED);
-            panel.getElement().getStyle().setZIndex(Integer.MAX_VALUE);
+            panel.style.position = "fixed";
+            panel.style.zIndex = ZIndexUnionType.of(Integer.MAX_VALUE);
             doHide();
             attached = true;
         }
@@ -166,17 +175,14 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     private void detach() {
         if (attached) {
-            handlerRegistrationManager.removeHandler();
-            RootPanel.get().remove(panel);
+            DomGlobal.document.body.removeChild(panel);
             attached = false;
         }
     }
 
     private void reposition() {
-        panel.getElement().getStyle().setLeft(ox + x,
-                                              Style.Unit.PX);
-        panel.getElement().getStyle().setTop(oy + y,
-                                             Style.Unit.PX);
+        panel.style.left = ox + x + "px";
+        panel.style.top = oy + y + "px";
     }
 
     private boolean isVisible() {
@@ -202,18 +208,24 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
         }
     }
 
-    protected FlowPanel getPanel() {
+    protected HTMLElement getPanel() {
         return panel;
     }
 
+    public HTMLElement getRootPanel() {
+        return DomGlobal.document.body;
+    }
+
     private void registerHoverEventHandlers() {
-        handlerRegistrationManager.register(
-                panel.addDomHandler(mouseOverEvent -> stopTimeout(),
-                                    MouseOverEvent.getType())
-        );
-        handlerRegistrationManager.register(
-                panel.addDomHandler(mouseOutEvent -> startTimeout(),
-                                    MouseOutEvent.getType())
-        );
+        final NativeHandler mouseOverHandler = new NativeHandler(MOUSE_OVER,
+                                                                 mouseOverEvent -> stopTimeout(),
+                                                                 panel).add();
+
+        final NativeHandler mouseOutHandler = new NativeHandler(MOUSE_OUT,
+                                                                mouseOutEvent -> startTimeout(),
+                                                                panel).add();
+
+        handlerRegistrationManager.register(mouseOverHandler);
+        handlerRegistrationManager.register(mouseOutHandler);
     }
 }
