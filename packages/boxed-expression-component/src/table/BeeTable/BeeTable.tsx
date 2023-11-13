@@ -21,7 +21,7 @@ import * as _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
-import { BeeTableHeaderVisibility, BeeTableProps } from "../../api";
+import { BeeTableHeaderVisibility, BeeTableProps, InsertRowColumnsDirection } from "../../api";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { NavigationKeysUtils } from "../../keysUtils";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
@@ -37,8 +37,8 @@ import { BeeTableDefaultCell } from "./BeeTableDefaultCell";
 import { BeeTableHeader } from "./BeeTableHeader";
 import {
   BeeTableSelectionContextProvider,
-  SelectionPart,
   SELECTION_MIN_ACTIVE_DEPTH,
+  SelectionPart,
   useBeeTableSelectionDispatch,
 } from "../../selection/BeeTableSelectionContext";
 import { BeeTableCellWidthsToFitDataContextProvider } from "../../resizing/BeeTableCellWidthToFitDataContext";
@@ -521,12 +521,12 @@ export function BeeTableInternal<R extends object>({
   );
 
   const onRowAdded2 = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
       if (onRowAdded) {
         onRowAdded(args);
         adaptSelection({
           atRowIndex: args.beforeIndex,
-          rowCountDelta: 1,
+          rowCountDelta: args.rowsCount,
           atColumnIndex: -1,
           columnCountDelta: 0,
         });
@@ -536,7 +536,12 @@ export function BeeTableInternal<R extends object>({
   );
 
   const onColumnAdded2 = useCallback(
-    (args: { beforeIndex: number; groupType: string }) => {
+    (args: {
+      beforeIndex: number;
+      groupType: string;
+      columnsCount: number;
+      insertDirection: InsertRowColumnsDirection;
+    }) => {
       if (onColumnAdded) {
         onColumnAdded(args);
         adaptSelection({
@@ -544,7 +549,7 @@ export function BeeTableInternal<R extends object>({
           rowCountDelta: 0,
           // The columnIndex here does not count the rowIndex columns, but the selection does. So + 1.
           atColumnIndex: args.beforeIndex + 1,
-          columnCountDelta: 1,
+          columnCountDelta: args.columnsCount,
         });
       }
     },

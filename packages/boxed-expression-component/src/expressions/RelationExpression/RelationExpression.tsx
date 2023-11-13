@@ -29,6 +29,7 @@ import {
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
+  InsertRowColumnsDirection,
   RelationExpressionDefinition,
   RelationExpressionDefinitionRow,
 } from "../../api";
@@ -237,15 +238,27 @@ export function RelationExpression(
   }, [relationExpression.parentElementId, variables?.repository]);
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
       setExpression((prev: RelationExpressionDefinition) => {
         const newRows = [...(prev.rows ?? [])];
-        newRows.splice(args.beforeIndex, 0, {
-          id: generateUuid(),
-          cells: Array.from(new Array(prev.columns?.length ?? 0)).map(() => {
-            return createCell();
-          }),
-        });
+        const newItems = [];
+
+        for (let i = 0; i < args.rowsCount; i++) {
+          newItems.push({
+            id: generateUuid(),
+            cells: Array.from(new Array(prev.columns?.length ?? 0)).map(() => {
+              return createCell();
+            }),
+          });
+        }
+
+        for (const newEntry of newItems) {
+          let index = args.beforeIndex;
+          newRows.splice(index, 0, newEntry);
+          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+            index++;
+          }
+        }
 
         return {
           ...prev,
@@ -257,15 +270,32 @@ export function RelationExpression(
   );
 
   const onColumnAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; columnsCount: number; insertDirection: InsertRowColumnsDirection }) => {
       setExpression((prev: RelationExpressionDefinition) => {
         const newColumns = [...(prev.columns ?? [])];
-        newColumns.splice(args.beforeIndex, 0, {
-          id: generateUuid(),
-          name: getNextAvailablePrefixedName(prev.columns?.map((c) => c.name) ?? [], "column"),
-          dataType: DmnBuiltInDataType.Undefined,
-          width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
-        });
+
+        const newItems = [];
+        const availableNames = prev.columns?.map((c) => c.name) ?? [];
+
+        for (let i = 0; i < args.columnsCount; i++) {
+          const name = getNextAvailablePrefixedName(availableNames, "column");
+          availableNames.push(name);
+
+          newItems.push({
+            id: generateUuid(),
+            name: name,
+            dataType: DmnBuiltInDataType.Undefined,
+            width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+          });
+        }
+
+        for (const newEntry of newItems) {
+          let index = args.beforeIndex;
+          newColumns.splice(index, 0, newEntry);
+          if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
+            index++;
+          }
+        }
 
         const newRows = [...(prev.rows ?? [])].map((row) => {
           const newCells = [...row.cells];

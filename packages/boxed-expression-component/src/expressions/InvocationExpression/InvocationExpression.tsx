@@ -31,6 +31,7 @@ import {
   ExpressionDefinitionLogicType,
   generateUuid,
   getNextAvailablePrefixedName,
+  InsertRowColumnsDirection,
   InvocationExpressionDefinition,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -289,10 +290,24 @@ export function InvocationExpression(
   );
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
+      const newEntries: ContextExpressionDefinitionEntry[] = [];
+      const names = (invocationExpression.bindingEntries ?? []).map((e) => e.entryInfo.name);
+      for (let i = 0; i < args.rowsCount; i++) {
+        const name = getNextAvailablePrefixedName(names, "p");
+        names.push(name);
+        newEntries.push(getDefaultArgumentEntry(name));
+      }
       setExpression((prev: InvocationExpressionDefinition) => {
         const newArgumentEntries = [...(prev.bindingEntries ?? [])];
-        newArgumentEntries.splice(args.beforeIndex, 0, getDefaultArgumentEntry());
+
+        for (const newEntry of newEntries) {
+          let index = args.beforeIndex;
+          newArgumentEntries.splice(index, 0, newEntry);
+          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+            index++;
+          }
+        }
 
         return {
           ...prev,

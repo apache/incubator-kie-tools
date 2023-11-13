@@ -77,7 +77,12 @@ export interface BeeTableProps<R extends object> {
   onRowDuplicated?: (args: { rowIndex: number }) => void;
   onRowReset?: (args: { rowIndex: number }) => void;
   onRowDeleted?: (args: { rowIndex: number }) => void;
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnAdded?: (args: {
+    beforeIndex: number;
+    groupType: string | undefined;
+    columnsCount: number;
+    insertDirection: InsertRowColumnsDirection;
+  }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
   shouldRenderRowIndexColumn: boolean;
   shouldShowRowsInlineControls: boolean;
@@ -135,3 +140,8 @@ export type BeeTableContextMenuAllowedOperationsConditions = {
   column: ReactTable.ColumnInstance<any> | undefined;
   columns: ReactTable.ColumnInstance<any>[] | undefined;
 };
+
+export enum InsertRowColumnsDirection {
+  AboveOrRight,
+  BelowOrLeft,
+}

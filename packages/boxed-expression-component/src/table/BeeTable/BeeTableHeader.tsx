@@ -21,7 +21,12 @@ import * as _ from "lodash";
 import * as React from "react";
 import { useCallback } from "react";
 import * as ReactTable from "react-table";
-import { DmnBuiltInDataType, BeeTableHeaderVisibility, ExpressionDefinition } from "../../api";
+import {
+  DmnBuiltInDataType,
+  BeeTableHeaderVisibility,
+  ExpressionDefinition,
+  InsertRowColumnsDirection,
+} from "../../api";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
@@ -64,7 +69,12 @@ export interface BeeTableHeaderProps<R extends object> {
   /** Option to enable or disable header edits */
   isEditableHeader: boolean;
   /** */
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnAdded?: (args: {
+    beforeIndex: number;
+    groupType: string | undefined;
+    columnsCount: number;
+    insertDirection: InsertRowColumnsDirection;
+  }) => void;
 
   shouldRenderRowIndexColumn: boolean;
 

@@ -32,6 +32,7 @@ import {
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
+  InsertRowColumnsDirection,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
@@ -489,21 +490,33 @@ export function DecisionTableExpression(
   );
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
         const newRules = [...(prev.rules ?? [])];
-        newRules.splice(args.beforeIndex, 0, {
-          id: generateUuid(),
-          inputEntries: Array.from(new Array(prev.input?.length ?? 0)).map(() => {
-            return createInputEntry();
-          }),
-          outputEntries: Array.from(new Array(prev.output?.length ?? 0)).map(() => {
-            return createOutputEntry();
-          }),
-          annotationEntries: Array.from(new Array(prev.annotations?.length ?? 0)).map(
-            () => DECISION_TABLE_ANNOTATION_DEFAULT_VALUE
-          ),
-        });
+        const newItems = [];
+
+        for (let i = 0; i < args.rowsCount; i++) {
+          newItems.push({
+            id: generateUuid(),
+            inputEntries: Array.from(new Array(prev.input?.length ?? 0)).map(() => {
+              return createInputEntry();
+            }),
+            outputEntries: Array.from(new Array(prev.output?.length ?? 0)).map(() => {
+              return createOutputEntry();
+            }),
+            annotationEntries: Array.from(new Array(prev.annotations?.length ?? 0)).map(
+              () => DECISION_TABLE_ANNOTATION_DEFAULT_VALUE
+            ),
+          });
+        }
+
+        for (const newEntry of newItems) {
+          let index = args.beforeIndex;
+          newRules.splice(index, 0, newEntry);
+          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+            index++;
+          }
+        }
 
         addVariables(newRules);
 
@@ -535,7 +548,12 @@ export function DecisionTableExpression(
   );
 
   const onColumnAdded = useCallback(
-    (args: { beforeIndex: number; groupType: DecisionTableColumnType | undefined }) => {
+    (args: {
+      beforeIndex: number;
+      groupType: DecisionTableColumnType | undefined;
+      columnsCount: number;
+      insertDirection: InsertRowColumnsDirection;
+    }) => {
       const groupType = args.groupType;
       if (!groupType) {
         throw new Error("Column without groupType for Decision table.");
@@ -548,23 +566,43 @@ export function DecisionTableExpression(
 
         switch (groupType) {
           case DecisionTableColumnType.InputClause:
+            const newInputClauses = [];
+
+            const currentNames = prev.input?.map((c) => c.name) ?? [];
+
+            for (let i = 0; i < args.columnsCount; i++) {
+              const name = getNextAvailablePrefixedName(currentNames, "input");
+              currentNames.push(name);
+
+              newInputClauses.push({
+                id: generateUuid(),
+                idLiteralExpression: generateUuid(),
+                name: name,
+                dataType: DmnBuiltInDataType.Undefined,
+                width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+              });
+            }
+
             const newInputs = [...(prev.input ?? [])];
-            newInputs.splice(sectionIndex, 0, {
-              id: generateUuid(),
-              idLiteralExpression: generateUuid(),
-              name: getNextAvailablePrefixedName(prev.input?.map((c) => c.name) ?? [], "input"),
-              dataType: DmnBuiltInDataType.Undefined,
-              width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
-            });
+
+            for (const newEntry of newInputClauses) {
+              let index = args.beforeIndex;
+              newInputs.splice(index, 0, newEntry);
+              if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
+                index++;
+              }
+            }
 
             newRules.forEach((r) => {
-              const inputEntry = createInputEntry();
-              variables?.repository.addVariableToContext(
-                inputEntry.id,
-                inputEntry.id,
-                decisionTableExpression.parentElementId
-              );
-              r.inputEntries.splice(sectionIndex, 0, inputEntry);
+              for (let i = 0; i < args.columnsCount; i++) {
+                const inputEntry = createInputEntry();
+                variables?.repository.addVariableToContext(
+                  inputEntry.id,
+                  inputEntry.id,
+                  decisionTableExpression.parentElementId
+                );
+                r.inputEntries.splice(sectionIndex, 0, inputEntry);
+              }
             });
 
             return {
@@ -572,23 +610,43 @@ export function DecisionTableExpression(
               input: newInputs,
               rules: newRules,
             };
+
           case DecisionTableColumnType.OutputClause:
+            const newOutputClauses = [];
+            const currentOutputNames = prev.output?.map((c) => c.name) ?? [];
+
+            for (let i = 0; i < args.columnsCount; i++) {
+              const name = getNextAvailablePrefixedName(currentOutputNames, "output");
+              currentOutputNames.push(name);
+
+              newOutputClauses.push({
+                id: generateUuid(),
+                name: name,
+                dataType: DmnBuiltInDataType.Undefined,
+                width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+              });
+            }
+
             const newOutputs = [...(prev.output ?? [])];
-            newOutputs.splice(sectionIndex, 0, {
-              id: generateUuid(),
-              name: getNextAvailablePrefixedName(prev.output?.map((c) => c.name) ?? [], "output"),
-              dataType: DmnBuiltInDataType.Undefined,
-              width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-            });
+
+            for (const newEntry of newOutputClauses) {
+              let index = args.beforeIndex;
+              newOutputs.splice(index, 0, newEntry);
+              if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
+                index++;
+              }
+            }
 
             newRules.forEach((r) => {
-              const outputEntry = createOutputEntry();
-              variables?.repository.addVariableToContext(
-                outputEntry.id,
-                outputEntry.id,
-                decisionTableExpression.parentElementId
-              );
-              r.outputEntries.splice(sectionIndex, 0, outputEntry);
+              for (let i = 0; i < args.columnsCount; i++) {
+                const outputEntry = createOutputEntry();
+                variables?.repository.addVariableToContext(
+                  outputEntry.id,
+                  outputEntry.id,
+                  decisionTableExpression.parentElementId
+                );
+                r.outputEntries.splice(sectionIndex, 0, outputEntry);
+              }
             });
 
             return {
@@ -596,28 +654,48 @@ export function DecisionTableExpression(
               output: newOutputs,
               rules: newRules,
             };
+
           case DecisionTableColumnType.Annotation:
             const newAnnotations = [...(prev.annotations ?? [])];
-            newAnnotations.splice(sectionIndex, 0, {
-              name: getNextAvailablePrefixedName(prev.annotations?.map((c) => c.name) ?? [], "annotation"),
-              width: DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-            });
+            const newAnnotationsItems = [];
+            const currentAnnotationNames = prev.annotations?.map((c) => c.name) ?? [];
 
-            newRules.forEach((r) =>
-              r.annotationEntries.splice(sectionIndex, 0, DECISION_TABLE_ANNOTATION_DEFAULT_VALUE)
-            );
+            for (let i = 0; i < args.columnsCount; i++) {
+              const name = getNextAvailablePrefixedName(currentAnnotationNames, "annotation");
+              currentAnnotationNames.push(name);
+
+              newAnnotationsItems.push({
+                name: name,
+                width: DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+              });
+            }
+
+            for (const newEntry of newAnnotationsItems) {
+              let index = args.beforeIndex;
+              newAnnotations.splice(index, 0, newEntry);
+              if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
+                index++;
+              }
+            }
+
+            newRules.forEach((r) => {
+              for (let i = 0; i < args.columnsCount; i++) {
+                r.annotationEntries.splice(sectionIndex, 0, DECISION_TABLE_ANNOTATION_DEFAULT_VALUE);
+              }
+            });
 
             return {
               ...prev,
               annotations: newAnnotations,
               rules: newRules,
             };
+
           default:
             assertUnreachable(groupType);
         }
       });
     },
-    [getSectionIndexForGroupType, setExpression]
+    [decisionTableExpression.parentElementId, getSectionIndexForGroupType, setExpression, variables?.repository]
   );
 
   const onColumnDeleted = useCallback(

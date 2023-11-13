@@ -32,6 +32,7 @@ import {
   ExpressionDefinitionLogicType,
   generateUuid,
   getNextAvailablePrefixedName,
+  InsertRowColumnsDirection,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -42,7 +43,7 @@ import {
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableSelectableCellRef, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
+import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -254,7 +255,7 @@ export function ContextExpression(
       return {
         entryInfo: {
           id: generateUuid(),
-          dataType: DmnBuiltInDataType.Undefined,
+          dataType: CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
           name:
             name ||
             getNextAvailablePrefixedName(
@@ -265,7 +266,7 @@ export function ContextExpression(
         entryExpression: {
           id: generateUuid(),
           logicType: ExpressionDefinitionLogicType.Undefined,
-          dataType: DmnBuiltInDataType.Undefined,
+          dataType: CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
         },
       };
     },
@@ -305,13 +306,28 @@ export function ContextExpression(
   );
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
       setExpression((prev: ContextExpressionDefinition) => {
         const newContextEntries = [...(prev.contextEntries ?? [])];
-        const defaultContextEntry = getDefaultContextEntry();
-        addVariable(args, newContextEntries, prev, defaultContextEntry);
 
-        newContextEntries.splice(args.beforeIndex, 0, defaultContextEntry);
+        const newEntries = [];
+        const names = contextExpression.contextEntries.map((e) => e.entryInfo.name);
+        for (let i = 0; i < args.rowsCount; i++) {
+          const name = getNextAvailablePrefixedName(names, "ContextEntry");
+          names.push(name);
+
+          const defaultContextEntry = getDefaultContextEntry(name);
+          addVariable(args, newContextEntries, prev, defaultContextEntry);
+          newEntries.push(defaultContextEntry);
+        }
+
+        for (const newEntry of newEntries) {
+          let index = args.beforeIndex;
+          newContextEntries.splice(index, 0, newEntry);
+          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+            index++;
+          }
+        }
 
         return {
           ...prev,
@@ -319,7 +335,7 @@ export function ContextExpression(
         };
       });
     },
-    [addVariable, getDefaultContextEntry, setExpression]
+    [addVariable, contextExpression.contextEntries, getDefaultContextEntry, setExpression]
   );
 
   const onRowDeleted = useCallback(

@@ -464,7 +464,9 @@ export class VariablesRepository {
   private addList(parent: VariableContext, element: DmnList) {
     if (element.expression) {
       for (const expression of element.expression) {
-        this.addInnerExpression(parent, expression);
+        if (expression) {
+          this.addInnerExpression(parent, expression);
+        }
       }
     }
   }

@@ -31,8 +31,13 @@ import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import BlueprintIcon from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { BeeTableContextMenuAllowedOperationsConditions, BeeTableOperation, BeeTableOperationConfig } from "../../api";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import {
+  BeeTableContextMenuAllowedOperationsConditions,
+  BeeTableOperation,
+  BeeTableOperationConfig,
+  InsertRowColumnsDirection,
+} from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
@@ -58,17 +63,17 @@ export interface BeeTableContextMenuHandlerProps {
   allowedOperations: (conditions: BeeTableContextMenuAllowedOperationsConditions) => BeeTableOperation[];
   reactTableInstance: ReactTable.TableInstance<any>;
   //
-  onRowAdded?: (args: { beforeIndex: number }) => void;
+  onRowAdded?: (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => void;
   onRowDuplicated?: (args: { rowIndex: number }) => void;
   onRowReset?: (args: { rowIndex: number }) => void;
   onRowDeleted?: (args: { rowIndex: number }) => void;
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnAdded?: (args: {
+    beforeIndex: number;
+    groupType: string | undefined;
+    columnsCount: number;
+    insertDirection: InsertRowColumnsDirection;
+  }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
-}
-
-export enum InsertRowColumnsDirection {
-  AboveOrRight,
-  BelowOrLeft,
 }
 
 /** The maximum numbers of rows or columns that can be inserted from the Insert menu. */
@@ -307,6 +312,8 @@ export function BeeTableContextMenuHandler({
           onColumnAdded?.({
             beforeIndex: columnIndex - 1,
             groupType: column?.groupType,
+            columnsCount: 1,
+            insertDirection: InsertRowColumnsDirection.BelowOrLeft,
           });
           console.debug(`Insert column left to ${columnIndex}`);
           break;
@@ -314,10 +321,27 @@ export function BeeTableContextMenuHandler({
           onColumnAdded?.({
             beforeIndex: columnIndex,
             groupType: column?.groupType,
+            columnsCount: 1,
+            insertDirection: InsertRowColumnsDirection.AboveOrRight,
           });
           console.debug(`Insert column right to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertN:
+          if (direction === InsertRowColumnsDirection.AboveOrRight) {
+            onColumnAdded?.({
+              beforeIndex: columnIndex,
+              groupType: column?.groupType,
+              columnsCount: insertMultipleRowColumnsValue,
+              insertDirection: InsertRowColumnsDirection.AboveOrRight,
+            });
+          } else {
+            onColumnAdded?.({
+              beforeIndex: columnIndex - 1,
+              groupType: column?.groupType,
+              columnsCount: insertMultipleRowColumnsValue,
+              insertDirection: InsertRowColumnsDirection.BelowOrLeft,
+            });
+          }
           console.debug(`Insert n columns to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnDelete:
@@ -328,14 +352,35 @@ export function BeeTableContextMenuHandler({
           console.debug(`Delete column ${columnIndex}`);
           break;
         case BeeTableOperation.RowInsertAbove:
-          onRowAdded?.({ beforeIndex: rowIndex });
+          onRowAdded?.({
+            beforeIndex: rowIndex,
+            rowsCount: 1,
+            insertDirection: InsertRowColumnsDirection.AboveOrRight,
+          });
           console.debug(`Insert row above to ${rowIndex}`);
           break;
         case BeeTableOperation.RowInsertBelow:
-          onRowAdded?.({ beforeIndex: rowIndex + 1 });
+          onRowAdded?.({
+            beforeIndex: rowIndex + 1,
+            rowsCount: 1,
+            insertDirection: InsertRowColumnsDirection.BelowOrLeft,
+          });
           console.debug(`Insert row below to ${rowIndex}`);
           break;
         case BeeTableOperation.RowInsertN:
+          if (direction === InsertRowColumnsDirection.AboveOrRight) {
+            onRowAdded?.({
+              beforeIndex: rowIndex,
+              rowsCount: insertMultipleRowColumnsValue,
+              insertDirection: InsertRowColumnsDirection.AboveOrRight,
+            });
+          } else {
+            onRowAdded?.({
+              beforeIndex: rowIndex + 1,
+              rowsCount: insertMultipleRowColumnsValue,
+              insertDirection: InsertRowColumnsDirection.BelowOrLeft,
+            });
+          }
           console.debug(`Insert n rows to ${columnIndex}`);
           break;
         case BeeTableOperation.RowDelete:
@@ -394,6 +439,8 @@ export function BeeTableContextMenuHandler({
       cut,
       paste,
       erase,
+      direction,
+      insertMultipleRowColumnsValue,
     ]
   );
 
@@ -500,26 +547,6 @@ export function BeeTableContextMenuHandler({
     );
   }
 
-  function insertMultipleRowColumns(operation: BeeTableOperation) {
-    if (operation === BeeTableOperation.ColumnInsertN) {
-      for (let i = 0; i < insertMultipleRowColumnsValue; i++) {
-        handleOperation(
-          direction === InsertRowColumnsDirection.AboveOrRight
-            ? BeeTableOperation.ColumnInsertRight
-            : BeeTableOperation.ColumnInsertLeft
-        );
-      }
-    } else if (operation === BeeTableOperation.RowInsertN) {
-      for (let i = 0; i < insertMultipleRowColumnsValue; i++) {
-        handleOperation(
-          direction === InsertRowColumnsDirection.AboveOrRight
-            ? BeeTableOperation.RowInsertAbove
-            : BeeTableOperation.RowInsertBelow
-        );
-      }
-    }
-  }
-
   function createDrillDownMenu(group: string, operation: BeeTableOperation) {
     return (
       <DrilldownMenu id={"insertNColumnsMenu" + operation.toString()}>
@@ -528,16 +555,12 @@ export function BeeTableContextMenuHandler({
         </MenuItem>
         <Divider />
         <MenuGroup label={group}>
-          <Flex
-            direction={{ default: "column" }}
-            style={{ padding: "16px" }}
-            onClick={(event) => event.stopPropagation()}
-          >
+          <Flex direction={{ default: "column" }} style={{ padding: "16px" }}>
             <Flex direction={{ default: "column" }} width={"300px"}>
-              <FlexItem>{insertRowColumnsNumberInput}</FlexItem>
+              <FlexItem onClick={(event) => event.stopPropagation()}>{insertRowColumnsNumberInput}</FlexItem>
             </Flex>
             <Flex direction={{ default: "row" }}>
-              <FlexItem>
+              <FlexItem onClick={(event) => event.stopPropagation()}>
                 <br />
                 <Radio
                   id={"insertRightAbove" + operation}
@@ -565,7 +588,7 @@ export function BeeTableContextMenuHandler({
             </Flex>
             <FlexItem align={{ default: "alignLeft" }}>
               <br />
-              <Button onClick={() => insertMultipleRowColumns(operation)}>Insert</Button>
+              <Button onClick={() => handleOperation(operation)}>Insert</Button>
             </FlexItem>
           </Flex>
         </MenuGroup>
