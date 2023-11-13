@@ -379,7 +379,10 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    <TestScenarioTable simulationData={scesimModel.ScenarioSimulationModel["simulation"]} />
+                    <TestScenarioTable
+                      assetType={scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text}
+                      simulationData={scesimModel.ScenarioSimulationModel["simulation"]}
+                    />
                   </Tab>
                   <Tab
                     eventKey={TestScenarioEditorTab.BACKGROUND}

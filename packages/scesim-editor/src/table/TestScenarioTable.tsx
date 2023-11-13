@@ -24,7 +24,6 @@ import * as ReactTable from "react-table";
 
 import {
   SceSim__FactMappingType,
-  SceSim__ScenarioType,
   SceSim__simulationType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
@@ -33,8 +32,15 @@ import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/
 import { StandaloneBeeTable, getColumnsAtLastLevel } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
 
 import { useTestScenarioEditorI18n } from "../i18n";
+import { TestScenarioType } from "../TestScenarioEditor";
 
-function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulationType }) {
+function TestScenarioTable({
+  assetType,
+  simulationData,
+}: {
+  assetType: string;
+  simulationData: SceSim__simulationType;
+}) {
   type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
   const { i18n } = useTestScenarioEditorI18n();
@@ -192,11 +198,8 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
     <StandaloneBeeTable
       scrollableParentRef={tableScrollableElementRef.current}
       allowedOperations={() => []}
-      getColumnKey={undefined}
-      getRowKey={undefined}
-      tableId={undefined}
-      isEditableHeader={true}
-      headerLevelCountForAppendingRowIndexColumn={2}
+      isEditableHeader={assetType === TestScenarioType[TestScenarioType.DMN]} //OK
+      headerLevelCountForAppendingRowIndexColumn={2} //OK
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
       operationConfig={undefined}
       columns={simulationColumns} //OK
