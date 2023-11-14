@@ -26,6 +26,7 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { env } = require("../env");
 const buildEnv = env;
+const gwtEditorMapping = require("@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api/GwtEditorMapping");
 
 module.exports = (env) =>
   merge(common(env), {
@@ -57,6 +58,12 @@ module.exports = (env) =>
             from: swEditor.swEditorPath(),
             to: "./diagram",
             globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
+          {
+            context: path.resolve(swEditor.swEditorPath(), gwtEditorMapping.editors.swf.name, "fonts"),
+            from: "fontawesome-webfont.*",
+            to: "./fonts",
+            force: true,
           },
           {
             from: path.resolve(__dirname, "./static/envelope/serverless-workflow-text-editor-envelope.html"),
