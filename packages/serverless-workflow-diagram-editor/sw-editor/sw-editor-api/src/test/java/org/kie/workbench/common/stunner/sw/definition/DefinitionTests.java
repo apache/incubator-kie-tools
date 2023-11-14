@@ -22,11 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.stream.Collectors;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.IOUtils;
 import org.junit.AssumptionViolatedException;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
@@ -72,16 +70,16 @@ public class DefinitionTests {
      * Selenium web driver
      */
     private WebDriver driver;
-
+/*
     @BeforeClass
     public static void setupClass() {
         WebDriverManager.firefoxdriver().useMirror().setup();
-    }
+    }*/
 
     @Before
     public void openSWEditor() {
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(HEADLESS);
+        //firefoxOptions.setHeadless(HEADLESS);
         driver = new FirefoxDriver(firefoxOptions);
 
         driver.manage().window().maximize();
@@ -336,6 +334,6 @@ public class DefinitionTests {
     }
 
     private WebDriverWait waitOperation() {
-        return new WebDriverWait(driver, Duration.ofSeconds(2).getSeconds());
+        return new WebDriverWait(driver, Duration.ofSeconds(2));
     }
 }

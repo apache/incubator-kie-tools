@@ -145,11 +145,6 @@
 			<artifactId>xmlunit-assertj</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.github.bonigarcia</groupId>
-			<artifactId>webdrivermanager</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<distributionManagement>

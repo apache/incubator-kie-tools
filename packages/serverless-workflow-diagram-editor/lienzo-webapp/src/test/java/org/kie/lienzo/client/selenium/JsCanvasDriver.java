@@ -19,7 +19,6 @@ package org.kie.lienzo.client.selenium;
 import java.io.File;
 import java.time.Duration;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -30,14 +29,13 @@ public class JsCanvasDriver extends JsCanvasExecutor {
 
     private static final String INDEX_HTML = "target/lienzo-webapp-0.0.0/LienzoShowcase.html";
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
-    private static final boolean HEADLESS = false;
 
     private final WebDriver driver;
     // TODO: Refactor/remove use of loadTimeMillis by using selenium until conditions
     private long loadTimeMillis = 1000;
 
     public static void init() {
-        WebDriverManager.firefoxdriver().useMirror().setup();
+        //WebDriverManager.firefoxdriver().useMirror().setup();
     }
 
     public static JsCanvasDriver devMode() {
@@ -52,7 +50,6 @@ public class JsCanvasDriver extends JsCanvasExecutor {
 
     public static JsCanvasDriver build(String url) {
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(HEADLESS);
         WebDriver driver = new FirefoxDriver(firefoxOptions);
         driver.manage().window().maximize();
         driver.get(url);
@@ -76,10 +73,10 @@ public class JsCanvasDriver extends JsCanvasExecutor {
     }
 
     private WebDriverWait waitOperation(long seconds) {
-        return new WebDriverWait(driver, Duration.ofSeconds(seconds).getSeconds());
+        return new WebDriverWait(driver, Duration.ofSeconds(seconds));
     }
 
     private WebDriverWait waitAppLoaded() {
-        return new WebDriverWait(driver, Duration.ofSeconds(5).getSeconds());
+        return new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 }
