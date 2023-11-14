@@ -3,7 +3,7 @@ import { useMemo, useState, useCallback, useRef } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { Draggable, DraggableContextProvider, useDraggableItemContext } from "../propertiesPanel/Draggable";
+import { Draggable, DraggableContextProvider, useDraggableItemContext } from "../draggable/Draggable";
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
