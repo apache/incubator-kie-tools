@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useCallback } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
@@ -24,6 +24,8 @@ import {
 } from "./ConstraintComponents/ConstraintYearsMonthsDuration";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { ConstraintProps } from "./ConstraintComponents/Constraint";
+import { useCallbackBeforeUnmount } from "../callbackBeforeUnmount/useCallbackBeforeUnmount";
+import { usePrevious } from "../DmnEditor";
 
 export type TypeHelper = {
   check: (value: string) => boolean;
@@ -225,6 +227,14 @@ export function Constraints({
     () => (itemDefinition?.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
     [itemDefinition?.typeRef?.__$$text]
   );
+  const isConstraintEnum = useMemo(
+    () => isEnum(constraintValue, constraintTypeHelper(typeRef).check),
+    [constraintValue, typeRef]
+  );
+  const isConstraintRange = useMemo(
+    () => isRange(constraintValue, constraintTypeHelper(typeRef).check),
+    [constraintValue, typeRef]
+  );
 
   const enumToKieConstraintType: (selection: ConstraintsType) => KIE__tConstraintType | undefined = useCallback(
     (selection) => {
@@ -253,7 +263,7 @@ export function Constraints({
   }, [enumToKieConstraintType, typeRef]);
 
   // Correctly set the selection on the first load
-  const [selectedConstraint, setSelectConstraint] = useState<ConstraintsType>(() => {
+  const selectedConstraint = useMemo<ConstraintsType>(() => {
     if (isConstraintEnabled.enumeration && kieConstraintType === "enumeration") {
       return ConstraintsType.ENUMERATION;
     }
@@ -269,36 +279,20 @@ export function Constraints({
     if (constraintValue === undefined) {
       return ConstraintsType.NONE;
     }
-    if (isConstraintEnabled.enumeration && isEnum(constraintValue, constraintTypeHelper(typeRef).check)) {
+    if (isConstraintEnabled.enumeration && isConstraintEnum) {
       return ConstraintsType.ENUMERATION;
     }
-    if (isConstraintEnabled.range && isRange(constraintValue, constraintTypeHelper(typeRef).check)) {
+    if (isConstraintEnabled.range && isConstraintRange) {
       return ConstraintsType.RANGE;
     }
     return ConstraintsType.EXPRESSION;
-  });
-
-  // Update the selection if the typeRef is updated
-  useEffect(() => {
-    if (kieConstraintType === undefined) {
-      return;
-    }
-    if (isConstraintEnabled.enumeration && kieConstraintType === "enumeration") {
-      setSelectConstraint(ConstraintsType.ENUMERATION);
-    }
-    if (isConstraintEnabled.range && kieConstraintType === "range") {
-      setSelectConstraint(ConstraintsType.RANGE);
-    }
-    if (isConstraintEnabled.expression && kieConstraintType === "expression") {
-      setSelectConstraint(ConstraintsType.EXPRESSION);
-    }
-    if (typeRef === DmnBuiltInDataType.Any) {
-      setSelectConstraint(ConstraintsType.EXPRESSION);
-    }
   }, [
+    constraintValue,
     isConstraintEnabled.enumeration,
     isConstraintEnabled.expression,
     isConstraintEnabled.range,
+    isConstraintEnum,
+    isConstraintRange,
     kieConstraintType,
     typeRef,
   ]);
@@ -313,7 +307,7 @@ export function Constraints({
       }
 
       editItemDefinition(itemDefinition["@_id"]!, (itemDefinition) => {
-        if (args.value === undefined || args.value === "") {
+        if (args.value === undefined) {
           itemDefinition.typeConstraint = undefined;
           return;
         }
@@ -342,13 +336,60 @@ export function Constraints({
     [editItemDefinition, enumToKieConstraintType, isReadonly, itemDefinition]
   );
 
+  // On the component unmount this hook will run
+  // In case the constraintValue is null or undefined it will erase the kie:constraintType
+  // In case the kie:constraintType is an enumeration and the valeu isn't a valid enumeration it will check if the
+  // previous selected constraint was a range. if it has a valid range it will change to a range, or it will change
+  // to an expression. It do the same for the range.
+  const previousSelectedConstraint = usePrevious(selectedConstraint);
+  useCallbackBeforeUnmount(
+    useCallback(() => {
+      if (constraintValue === undefined || constraintValue === "") {
+        onInternalChange({
+          constraintType: ConstraintsType.NONE,
+          value: undefined,
+        });
+      }
+      if (kieConstraintType === "enumeration" && !isConstraintEnum) {
+        if (previousSelectedConstraint === ConstraintsType.RANGE && !isConstraintRange) {
+          onInternalChange({
+            constraintType: ConstraintsType.EXPRESSION,
+            value: constraintValue,
+          });
+        }
+        onInternalChange({
+          constraintType: ConstraintsType.RANGE,
+          value: constraintValue,
+        });
+      }
+      if (kieConstraintType === "range" && !isConstraintRange) {
+        if (previousSelectedConstraint === ConstraintsType.ENUMERATION && !isConstraintEnum) {
+          onInternalChange({
+            constraintType: ConstraintsType.EXPRESSION,
+            value: constraintValue,
+          });
+        }
+        onInternalChange({
+          constraintType: ConstraintsType.ENUMERATION,
+          value: constraintValue,
+        });
+      }
+    }, [
+      constraintValue,
+      isConstraintEnum,
+      isConstraintRange,
+      kieConstraintType,
+      onInternalChange,
+      previousSelectedConstraint,
+    ])
+  );
+
   const onToggleGroupChange = useCallback(
     (newSelection, event) => {
       if (!newSelection) {
         return;
       }
       const selection = event.currentTarget.id as ConstraintsType;
-      setSelectConstraint(selection);
 
       if (selection === ConstraintsType.NONE) {
         onInternalChange({
@@ -358,25 +399,18 @@ export function Constraints({
         return;
       }
 
-      if (constraintValue === undefined || constraintValue === "") {
-        return;
-      }
-
-      if (
-        selection === ConstraintsType.ENUMERATION &&
-        isEnum(constraintValue ?? "", constraintTypeHelper(typeRef).check)
-      ) {
+      if (selection === ConstraintsType.ENUMERATION) {
         onInternalChange({
           constraintType: ConstraintsType.ENUMERATION,
-          value: constraintValue,
+          value: constraintValue ?? "",
         });
         return;
       }
 
-      if (selection === ConstraintsType.RANGE && isRange(constraintValue ?? "", constraintTypeHelper(typeRef).check)) {
+      if (selection === ConstraintsType.RANGE) {
         onInternalChange({
           constraintType: ConstraintsType.RANGE,
-          value: constraintValue,
+          value: constraintValue ?? "",
         });
         return;
       }
@@ -384,12 +418,12 @@ export function Constraints({
       if (selection === ConstraintsType.EXPRESSION) {
         onInternalChange({
           constraintType: ConstraintsType.EXPRESSION,
-          value: constraintValue,
+          value: constraintValue ?? "",
         });
         return;
       }
     },
-    [constraintValue, onInternalChange, typeRef]
+    [constraintValue, onInternalChange]
   );
 
   const constraintComponent = useMemo(() => {
@@ -399,7 +433,7 @@ export function Constraints({
           isReadonly={isReadonly}
           type={typeRef}
           typeHelper={constraintTypeHelper(typeRef)}
-          value={isEnum(constraintValue, constraintTypeHelper(typeRef).check) ? constraintValue : undefined}
+          value={isConstraintEnum ? constraintValue : undefined}
           savedValue={constraintValue}
           onSave={(value?: string) =>
             onInternalChange({
@@ -418,7 +452,7 @@ export function Constraints({
           savedValue={constraintValue}
           type={typeRef}
           typeHelper={constraintTypeHelper(typeRef)}
-          value={isRange(constraintValue, constraintTypeHelper(typeRef).check) ? constraintValue : undefined}
+          value={isConstraintRange ? constraintValue : undefined}
           onSave={(value?: string) =>
             onInternalChange({
               constraintType: ConstraintsType.RANGE,
@@ -462,6 +496,8 @@ export function Constraints({
     constraintValue,
     isConstraintEnabled.enumeration,
     isConstraintEnabled.range,
+    isConstraintEnum,
+    isConstraintRange,
     isReadonly,
     onInternalChange,
     selectedConstraint,
