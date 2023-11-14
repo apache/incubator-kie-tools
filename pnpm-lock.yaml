@@ -1276,6 +1276,12 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor-envelope":
         specifier: workspace:*
         version: link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-jq-expressions":
+        specifier: workspace:*
+        version: link:../serverless-workflow-jq-expressions
+      "@kie-tools/serverless-workflow-language-service":
+        specifier: workspace:*
+        version: link:../serverless-workflow-language-service
       "@kie-tools/serverless-workflow-text-editor":
         specifier: workspace:*
         version: link:../serverless-workflow-text-editor
@@ -1321,6 +1327,12 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      vscode-languageserver-textdocument:
+        specifier: ^1.0.4
+        version: 1.0.7
+      vscode-languageserver-types:
+        specifier: ^3.16.0
+        version: 3.17.2
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)

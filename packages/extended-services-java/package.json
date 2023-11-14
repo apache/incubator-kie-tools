@@ -17,8 +17,8 @@
   ],
   "scripts": {
     "build:dev": "run-script-os",
-    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs",
-    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs \"",
+    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs && pnpm dist",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs\" && pnpm dist",
     "build:prod": "run-script-os",
     "build:prod:linux:darwin": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env endToEndTests.run --not) && pnpm dist",
     "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env endToEndTests.run --not)\" && pnpm dist",

@@ -61,8 +61,10 @@ The service will be up at http://localhost:21345
 
 If you need to change port or Host/IP, use the following parameters:
 
+```bash
 EXTENDED_SERVICES_HOST (Defaults to 0.0.0.0)
 EXTENDED_SERVICES_PORT (Defaults to 21345)
+```
 
 For example:
 
