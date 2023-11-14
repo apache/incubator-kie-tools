@@ -55,7 +55,7 @@ pipeline {
 
                     // Prepare for multiplatform build
                     int freePort = cloud.findFreePort()
-                    String localRegistryUrl = cloud.startLocalRegistry(freePort)
+                    localRegistryUrl = cloud.startLocalRegistry(freePort)
 
                     // TODO docker buildx could be preinstalled onto the docker image
                     cloud.prepareForDockerMultiplatformBuild([localRegistryUrl],[cloud.getDockerIOMirrorRegistryConfig()], false)
