@@ -18,7 +18,6 @@ package org.kie.lienzo.client;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.lienzo.client.selenium.JsCanvasDriver;
 import org.kie.lienzo.client.selenium.JsCanvasWiresShapeExecutor;
@@ -35,11 +34,6 @@ import static org.kie.lienzo.client.BasicWiresExample.RED_RECTANGLE;
 public class BasicWiresExampleTest {
 
     private JsCanvasDriver lienzoDriver;
-
-    @BeforeClass
-    public static void setupClass() {
-        JsCanvasDriver.init();
-    }
 
     @Before
     public void openWebapp() {

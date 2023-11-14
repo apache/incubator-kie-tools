@@ -22,10 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.stream.Collectors;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.IOUtils;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -69,19 +68,16 @@ public class SWEditorSeleniumBase {
 
     protected JsCanvasHelper jsHelper;
 
-    @BeforeClass
-    public static void setupClass() {
-        WebDriverManager.chromedriver().useMirror().setup();
-    }
-
     @Before
     public void openSWEditor() {
         ChromeDriverService service = new ChromeDriverService.Builder()
                 .usingAnyFreePort()
                 .build();
-        ChromeOptions options = new ChromeOptions()
-                .setHeadless(HEADLESS);
+        ChromeOptions options = new ChromeOptions();
         driver = new ChromeDriver(service, options);
+        if (HEADLESS) {
+            options.addArguments("--headless=new");
+        }
 
         driver.manage().window().maximize();
 
@@ -95,6 +91,11 @@ public class SWEditorSeleniumBase {
                 .as("Diagram panel is a prerequisite for all tests. " +
                             "its absence is indicator of designer load fail.")
                 .isNotNull();
+    }
+
+    @After
+    public void close() {
+        driver.quit();
     }
 
     protected void waitCanvasPanel() {
@@ -142,6 +143,6 @@ public class SWEditorSeleniumBase {
     }
 
     protected WebDriverWait waitOperation() {
-        return new WebDriverWait(driver, Duration.ofSeconds(10).getSeconds());
+        return new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 }

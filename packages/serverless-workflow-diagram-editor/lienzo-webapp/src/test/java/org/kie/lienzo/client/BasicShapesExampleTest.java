@@ -18,7 +18,6 @@ package org.kie.lienzo.client;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.lienzo.client.selenium.JsCanvasDriver;
 import org.kie.lienzo.client.selenium.JsCanvasShapeExecutor;
@@ -31,11 +30,6 @@ public class BasicShapesExampleTest {
 
     private JsCanvasDriver lienzoDriver;
     private JsCanvasShapeExecutor rectangle;
-
-    @BeforeClass
-    public static void setupClass() {
-        JsCanvasDriver.init();
-    }
 
     @Before
     public void openWebapp() {
