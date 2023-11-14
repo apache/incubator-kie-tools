@@ -155,100 +155,111 @@ export function DataTypePanel({
 
   return (
     <>
-      <div className={"kie-dmn-editor--sticky-top-glass-header"} style={{ padding: "16px" }}>
-        <div className={"kie-dmn-editor--data-type-parents"}>
-          {parents.map((p) => (
-            <Button
-              key={p.itemDefinition["@_id"]!}
-              variant={ButtonVariant.link}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  state.dataTypesEditor.activeItemDefinitionId = p.itemDefinition["@_id"]!;
-                });
-              }}
-            >
-              {
-                buildFeelQNameFromNamespace({
-                  namedElement: p.itemDefinition,
-                  importsByNamespace,
-                  namespace: p!.namespace,
-                  relativeToNamespace: !p.parentId ? thisDmnsNamespace : p.namespace,
-                }).full
-              }
-            </Button>
-          ))}
-        </div>
-        <Flex>
-          {dataType.namespace !== thisDmnsNamespace && <Label>External</Label>}
-          <div className={"kie-dmn-editor--data-types-title"}>
-            <DataTypeName
-              relativeToNamespace={!dataType.parentId ? thisDmnsNamespace : dataType.namespace}
-              itemDefinition={dataType.itemDefinition}
-              isActive={false}
-              editMode={"hover"}
-              isReadonly={dataType.namespace !== thisDmnsNamespace}
-              allUniqueNames={allUniqueNames}
-            />
-          </div>
-          <FlexItem>
-            {/* <Button variant={ButtonVariant.link}>Back</Button>
+      <Flex
+        className={"kie-dmn-editor--sticky-top-glass-header kie-dmn-editor--data-type-panel-header"}
+        justifyContent={{ default: "justifyContentSpaceBetween" }}
+        alignItems={{ default: "alignItemsCenter" }}
+        direction={{ default: "row" }}
+      >
+        <FlexItem>
+          <Flex direction={{ default: "row" }}>
+            {parents.length > 0 && (
+              <FlexItem className={"kie-dmn-editor--data-type-parents"}>
+                {parents.map((p) => (
+                  <Button
+                    key={p.itemDefinition["@_id"]!}
+                    variant={ButtonVariant.link}
+                    onClick={() => {
+                      dmnEditorStoreApi.setState((state) => {
+                        state.dataTypesEditor.activeItemDefinitionId = p.itemDefinition["@_id"]!;
+                      });
+                    }}
+                  >
+                    {
+                      buildFeelQNameFromNamespace({
+                        namedElement: p.itemDefinition,
+                        importsByNamespace,
+                        namespace: p!.namespace,
+                        relativeToNamespace: !p.parentId ? thisDmnsNamespace : p.namespace,
+                      }).full
+                    }
+                  </Button>
+                ))}
+              </FlexItem>
+            )}
+            <FlexItem>{dataType.namespace !== thisDmnsNamespace && <Label>External</Label>}</FlexItem>
+            <FlexItem>
+              <div className={"kie-dmn-editor--data-types-title"}>
+                <DataTypeName
+                  relativeToNamespace={!dataType.parentId ? thisDmnsNamespace : dataType.namespace}
+                  itemDefinition={dataType.itemDefinition}
+                  isActive={false}
+                  editMode={"hover"}
+                  isReadonly={dataType.namespace !== thisDmnsNamespace}
+                  allUniqueNames={allUniqueNames}
+                />
+              </div>
+            </FlexItem>
+          </Flex>
+        </FlexItem>
+        <FlexItem>
+          {/* <Button variant={ButtonVariant.link}>Back</Button>
             <Button variant={ButtonVariant.link}>Forward</Button>
             <span>|</span>
             <Button variant={ButtonVariant.link}>View usages</Button> */}
-            <Dropdown
-              toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setTopLevelDropdownOpen} />}
-              onSelect={() => setTopLevelDropdownOpen(false)}
-              isOpen={topLevelDropdownOpen}
-              menuAppendTo={document.body}
-              isPlain={true}
-              position={"right"}
-              dropdownItems={[
-                <DropdownItem key={"id"} isDisabled={true} icon={<></>}>
-                  <div>
-                    <b>ID: </b>
-                    {dataType.itemDefinition["@_id"]}
-                  </div>
-                </DropdownItem>,
-                <DropdownSeparator key={"separator-1"} style={{ marginBottom: "8px" }} />,
-                <DropdownItem
-                  key={"copy"}
-                  icon={<CopyIcon />}
-                  onClick={() => {
-                    const clipboard = buildClipboardFromDataType(dataType, thisDmnsNamespace);
-                    navigator.clipboard.writeText(JSON.stringify(clipboard));
-                  }}
-                >
-                  Copy
-                </DropdownItem>,
-                <DropdownSeparator key="separator-2" />,
-                <React.Fragment key={"remove-fragment"}>
-                  {!isReadonly && (
-                    <DropdownItem
-                      style={{ minWidth: "240px" }}
-                      icon={<TrashIcon />}
-                      onClick={() => {
-                        if (isReadonly) {
-                          return;
-                        }
+          <Dropdown
+            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setTopLevelDropdownOpen} />}
+            onSelect={() => setTopLevelDropdownOpen(false)}
+            isOpen={topLevelDropdownOpen}
+            menuAppendTo={document.body}
+            isPlain={true}
+            position={"right"}
+            dropdownItems={[
+              <DropdownItem key={"id"} isDisabled={true} icon={<></>}>
+                <div>
+                  <b>ID: </b>
+                  {dataType.itemDefinition["@_id"]}
+                </div>
+              </DropdownItem>,
+              <DropdownSeparator key={"separator-1"} style={{ marginBottom: "8px" }} />,
+              <DropdownItem
+                key={"copy"}
+                icon={<CopyIcon />}
+                onClick={() => {
+                  const clipboard = buildClipboardFromDataType(dataType, thisDmnsNamespace);
+                  navigator.clipboard.writeText(JSON.stringify(clipboard));
+                }}
+              >
+                Copy
+              </DropdownItem>,
+              <DropdownSeparator key="separator-2" />,
+              <React.Fragment key={"remove-fragment"}>
+                {!isReadonly && (
+                  <DropdownItem
+                    style={{ minWidth: "240px" }}
+                    icon={<TrashIcon />}
+                    onClick={() => {
+                      if (isReadonly) {
+                        return;
+                      }
 
-                        editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
-                          items?.splice(dataType.index, 1);
-                        });
-                        dmnEditorStoreApi.setState((state) => {
-                          state.dataTypesEditor.activeItemDefinitionId =
-                            dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
-                        });
-                      }}
-                    >
-                      Remove
-                    </DropdownItem>
-                  )}
-                </React.Fragment>,
-              ]}
-            />
-          </FlexItem>
-        </Flex>
-      </div>
+                      editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
+                        items?.splice(dataType.index, 1);
+                      });
+                      dmnEditorStoreApi.setState((state) => {
+                        state.dataTypesEditor.activeItemDefinitionId =
+                          dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
+                      });
+                    }}
+                  >
+                    Remove
+                  </DropdownItem>
+                )}
+              </React.Fragment>,
+            ]}
+          />
+        </FlexItem>
+      </Flex>
       {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
       <PageSection style={{ padding: "24px" }}>
         <TextArea

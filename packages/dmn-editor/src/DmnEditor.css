@@ -282,11 +282,6 @@
 
 /* (begin) properties panel toggle */
 
-.kie-dmn-editor--bee-container .kie-dmn-editor--properties-panel-toggle {
-  position: absolute;
-  right: 15px;
-  top: 15px;
-}
 .kie-dmn-editor--properties-panel-toggle {
   width: 42px;
   background: #fff;
@@ -631,7 +626,10 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--boxed-expression-back {
   cursor: pointer;
   background: white;
-  margin: 24px 0 8px 0;
+  margin-left: -1px;
+  height: 40px;
+  width: 192px;
+  justify-content: center;
 }
 .kie-dmn-editor--boxed-expression-back > .pf-c-label__content::before {
   border: 1px solid black;
@@ -682,6 +680,13 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
   background: rgb(255, 255, 255, 60%);
   backdrop-filter: blur(4px);
   border-bottom: 1px solid lightgray;
+  height: 70px;
+}
+.kie-dmn-editor--boxed-expression-header {
+  padding-right: 16px;
+}
+.kie-dmn-editor--data-type-panel-header {
+  padding: 0 16px 0 16px;
 }
 /* (end) misc */
 

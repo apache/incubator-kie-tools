@@ -69,6 +69,7 @@ import { PMMLFieldData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLFi
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -238,7 +239,45 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   return (
     <>
       <>
-        <div className={"kie-dmn-editor--sticky-top-glass-header"} style={{ paddingBottom: "18px" }}>
+        <Flex
+          className={"kie-dmn-editor--sticky-top-glass-header kie-dmn-editor--boxed-expression-header"}
+          justifyContent={{ default: "justifyContentSpaceBetween" }}
+          alignItems={{ default: "alignItemsCenter" }}
+          direction={{ default: "row" }}
+        >
+          <FlexItem>
+            <Label
+              className={"kie-dmn-editor--boxed-expression-back"}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  dispatch.boxedExpressionEditor.close(state);
+                });
+              }}
+            >
+              <ArrowRightIcon style={{ transform: "scale(-1, -1)", marginRight: "12px" }} />
+              <p>Back to Diagram</p>
+            </Label>
+          </FlexItem>
+          <FlexItem>
+            <Flex
+              flexWrap={{ default: "nowrap" }}
+              justifyContent={{ default: "justifyContentSpaceBetween" }}
+              alignItems={{ default: "alignItemsCenter" }}
+            >
+              <FlexItem>
+                <div style={{ height: "40px", width: "40px" }}>
+                  <Icon />
+                </div>
+              </FlexItem>
+              <FlexItem>
+                <TextContent>
+                  <Text component={TextVariants.h2}>{expression?.drgElement["@_name"]}</Text>
+                </TextContent>
+              </FlexItem>
+              <FlexItem style={{ width: "105px" }} />
+            </Flex>
+          </FlexItem>
+
           {!boxedExpressionEditor.propertiesPanel.isOpen && (
             <aside className={"kie-dmn-editor--properties-panel-toggle"}>
               <button
@@ -254,39 +293,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
               </button>
             </aside>
           )}
-          <Flex
-            flexWrap={{ default: "nowrap" }}
-            justifyContent={{ default: "justifyContentSpaceBetween" }}
-            alignItems={{ default: "alignItemsCenter" }}
-          >
-            <Label
-              isCompact={true}
-              className={"kie-dmn-editor--boxed-expression-back"}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  dispatch.boxedExpressionEditor.close(state);
-                });
-              }}
-            >
-              Back to Diagram
-            </Label>
-            <FlexItem>
-              <Flex
-                justifyContent={{ default: "justifyContentFlexStart" }}
-                alignItems={{ default: "alignItemsCenter" }}
-                flexWrap={{ default: "nowrap" }}
-              >
-                <div style={{ height: "40px", width: "40px", margin: "0 0 -23px 0" }}>
-                  <Icon />
-                </div>
-                <TextContent style={{ marginBottom: "-20px" }}>
-                  <Text component={TextVariants.h2}>{expression?.drgElement["@_name"]}</Text>
-                </TextContent>
-              </Flex>
-            </FlexItem>
-            <FlexItem style={{ width: "105px" }} />
-          </Flex>
-        </div>
+        </Flex>
         {!expression && (
           <>
             <EmptyState>

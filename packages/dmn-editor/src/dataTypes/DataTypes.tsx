@@ -142,6 +142,7 @@ export function DataTypes() {
               <DrawerPanelContent isResizable={true} minSize={"300px"} defaultSize={"400px"}>
                 <Flex
                   justifyContent={{ default: "justifyContentSpaceBetween" }}
+                  alignItems={{ default: "alignItemsCenter" }}
                   className={"kie-dmn-editor--data-types-filter kie-dmn-editor--sticky-top-glass-header"}
                 >
                   <InputGroup>
