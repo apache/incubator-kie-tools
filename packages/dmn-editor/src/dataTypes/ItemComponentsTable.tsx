@@ -360,6 +360,7 @@ export function ItemComponentsTable({
                       <td>
                         {!isStruct(dt.itemDefinition) && (
                           <TypeRefSelector
+                            selectStyle={{ maxHeight: "600px", boxShadow: "none", overflowY: "scroll" }}
                             isDisabled={isReadonly}
                             typeRef={dt.itemDefinition.typeRef?.__$$text}
                             onChange={(newDataType) => {

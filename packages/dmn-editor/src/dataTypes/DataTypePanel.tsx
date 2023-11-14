@@ -296,7 +296,9 @@ export function DataTypePanel({
               isDisabled={isReadonly}
               typeRef={dataType.itemDefinition.typeRef?.__$$text}
               onChange={changeTypeRef}
+              selectStyle={{ maxHeight: "600px", boxShadow: "none", overflowY: "scroll" }}
             />
+
             <br />
             <br />
             <Title size={"md"} headingLevel="h4">

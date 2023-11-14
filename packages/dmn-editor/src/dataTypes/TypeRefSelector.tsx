@@ -15,11 +15,14 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
 
+export const typeRefSelectorLimitedSpaceStyle = { maxHeight: "600px", boxShadow: "none", overflowY: "scroll" };
+
 export function TypeRefSelector(props: {
   isDisabled?: boolean;
   typeRef: string | undefined;
   onChange: OnTypeRefChange;
   menuAppendTo?: "parent";
+  selectStyle?: React.CSSProperties;
 }) {
   const [isOpen, setOpen] = useState(false);
 
@@ -79,7 +82,7 @@ export function TypeRefSelector(props: {
         </Tooltip>
       )}
       <Select
-        style={{ flexGrow: 1 }}
+        style={{ flexGrow: 1, ...(props.selectStyle ? props.selectStyle : {}) }}
         className={!exists ? "kie-dmn-editor--type-ref-selector-invalid-value" : undefined}
         isDisabled={props.isDisabled}
         variant={SelectVariant.typeahead}

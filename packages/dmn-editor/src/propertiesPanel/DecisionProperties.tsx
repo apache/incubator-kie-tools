@@ -51,6 +51,7 @@ export function DecisionProperties({
 
       <FormGroup label="Data type">
         <TypeRefSelector
+          selectStyle={{ maxHeight: "600px", overflowY: "scroll" }}
           typeRef={decision.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((state) => {

@@ -50,6 +50,7 @@ export function InputDataProperties({
       </FormGroup>
       <FormGroup label="Data type">
         <TypeRefSelector
+          selectStyle={{ maxHeight: "600px", overflowY: "scroll" }}
           typeRef={inputData.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((state) => {

@@ -53,6 +53,7 @@ export function BkmProperties({
 
       <FormGroup label="Data type">
         <TypeRefSelector
+          selectStyle={{ maxHeight: "600px", overflowY: "scroll" }}
           typeRef={bkm.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((state) => {
