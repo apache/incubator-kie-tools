@@ -34,10 +34,6 @@ public class JsCanvasDriver extends JsCanvasExecutor {
     // TODO: Refactor/remove use of loadTimeMillis by using selenium until conditions
     private long loadTimeMillis = 1000;
 
-    public static void init() {
-        //WebDriverManager.firefoxdriver().useMirror().setup();
-    }
-
     public static JsCanvasDriver devMode() {
         JsCanvasDriver instance = build("http://127.0.0.1:8888/LienzoShowcase.html");
         instance.loadTimeMillis = 3000;

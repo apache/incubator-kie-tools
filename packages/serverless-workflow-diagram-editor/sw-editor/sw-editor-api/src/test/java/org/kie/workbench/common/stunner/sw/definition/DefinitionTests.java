@@ -70,16 +70,13 @@ public class DefinitionTests {
      * Selenium web driver
      */
     private WebDriver driver;
-/*
-    @BeforeClass
-    public static void setupClass() {
-        WebDriverManager.firefoxdriver().useMirror().setup();
-    }*/
 
     @Before
     public void openSWEditor() {
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        //firefoxOptions.setHeadless(HEADLESS);
+        if (HEADLESS) {
+            firefoxOptions.addArguments("--headless=new");
+        }
         driver = new FirefoxDriver(firefoxOptions);
 
         driver.manage().window().maximize();

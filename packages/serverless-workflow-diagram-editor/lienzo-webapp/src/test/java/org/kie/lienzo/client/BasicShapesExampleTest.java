@@ -32,11 +32,6 @@ public class BasicShapesExampleTest {
     private JsCanvasDriver lienzoDriver;
     private JsCanvasShapeExecutor rectangle;
 
-    @BeforeClass
-    public static void setupClass() {
-        JsCanvasDriver.init();
-    }
-
     @Before
     public void openWebapp() {
         // TODO lienzoDriver = JsCanvasDriver.build();

@@ -36,11 +36,6 @@ public class BasicWiresExampleTest {
 
     private JsCanvasDriver lienzoDriver;
 
-    @BeforeClass
-    public static void setupClass() {
-        JsCanvasDriver.init();
-    }
-
     @Before
     public void openWebapp() {
         // TODO lienzoDriver = JsCanvasDriver.build();
