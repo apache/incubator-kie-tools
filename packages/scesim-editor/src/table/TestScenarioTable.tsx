@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import * as ReactTable from "react-table";
 
@@ -27,7 +27,12 @@ import {
   SceSim__simulationType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
-import { BeeTableHeaderVisibility } from "@kie-tools/boxed-expression-component/dist/api/BeeTable";
+import {
+  BeeTableContextMenuAllowedOperationsConditions,
+  BeeTableHeaderVisibility,
+  BeeTableOperation,
+  BeeTableOperationConfig,
+} from "@kie-tools/boxed-expression-component/dist/api/BeeTable";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import { StandaloneBeeTable, getColumnsAtLastLevel } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
 
@@ -194,22 +199,119 @@ function TestScenarioTable({
     [simulationColumns, simulationData.scesimData.Scenario]
   );
 
+  // IN PROGRESS
+
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
+
+      const columnIndex = conditions.selection.selectionStart.columnIndex;
+
+      // const atLeastTwoColumnsOfTheSameGroupType = conditions.column?.groupType
+      //   ? _.groupBy(conditions.columns, (column) => column?.groupType)[conditions.column.groupType].length > 1
+      //   : true;
+
+      const columnCanBeDeleted =
+        columnIndex > 0 &&
+        //atLeastTwoColumnsOfTheSameGroupType &&
+        (conditions.columns?.length ?? 0) > 2 && // That's a regular column and the rowIndex column
+        (conditions.column?.columns?.length ?? 0) <= 0;
+
+      const columnOperations =
+        columnIndex === 0 // This is the rowIndex column
+          ? []
+          : [
+              BeeTableOperation.ColumnInsertLeft,
+              BeeTableOperation.ColumnInsertRight,
+              BeeTableOperation.ColumnInsertN,
+              ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+            ];
+
+      return [
+        ...columnOperations,
+        BeeTableOperation.SelectionCopy,
+        ...(conditions.selection.selectionStart.rowIndex >= 0 && columnIndex > 0
+          ? [BeeTableOperation.SelectionCut, BeeTableOperation.SelectionPaste, BeeTableOperation.SelectionReset]
+          : []),
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
+              ...(simulationRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    [simulationRows.length]
+  );
+
+  const generateOperationConfig = useCallback(
+    (groupName: string) => [
+      {
+        group: groupName,
+        items: [
+          { name: "insertLeft", type: BeeTableOperation.ColumnInsertLeft },
+          { name: "insertRight", type: BeeTableOperation.ColumnInsertRight },
+          { name: "i18n.insert", type: BeeTableOperation.ColumnInsertN },
+          { name: "delete", type: BeeTableOperation.ColumnDelete },
+        ],
+      },
+      {
+        group: "i18n.decisionRule",
+        items: [
+          { name: "insertAbove", type: BeeTableOperation.RowInsertAbove },
+          { name: "insertBelow", type: BeeTableOperation.RowInsertBelow },
+          { name: "insert", type: BeeTableOperation.RowInsertN },
+          { name: "rowOperations.delete", type: BeeTableOperation.RowDelete },
+          { name: "rowOperations.duplicate", type: BeeTableOperation.RowDuplicate },
+        ],
+      },
+      {
+        group: "selection",
+        items: [
+          { name: "i18n.terms.copy", type: BeeTableOperation.SelectionCopy },
+          { name: "i18n.terms.cut", type: BeeTableOperation.SelectionCut },
+          { name: "i18n.terms.paste", type: BeeTableOperation.SelectionPaste },
+          { name: "i18n.terms.reset", type: BeeTableOperation.SelectionReset },
+        ],
+      },
+    ],
+    [i18n]
+  );
+
+  const simulationOperationConfig = useMemo<BeeTableOperationConfig>(() => {
+    const config: BeeTableOperationConfig = {};
+    config["OTHER"] = generateOperationConfig("i18n.outputClause");
+    config["given"] = generateOperationConfig("inputClause");
+    config["expected"] = generateOperationConfig("i18n.outputClause");
+    return config;
+  }, [generateOperationConfig]);
+
+  console.log(simulationOperationConfig);
+
+  // IN PROGRESS
+
   return (
     <StandaloneBeeTable
-      scrollableParentRef={tableScrollableElementRef.current}
-      allowedOperations={() => []}
-      isEditableHeader={assetType === TestScenarioType[TestScenarioType.DMN]} //OK
-      headerLevelCountForAppendingRowIndexColumn={2} //OK
+      allowedOperations={allowedOperations}
+      columns={simulationColumns}
+      enableKeyboardNavigation={true}
+      headerLevelCountForAppendingRowIndexColumn={2}
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
-      operationConfig={undefined}
-      columns={simulationColumns} //OK
-      rows={simulationRows} //OK
-      isReadOnly={false} //OK
-      enableKeyboardNavigation={true} //OK
-      shouldRenderRowIndexColumn={true} //OK
-      shouldShowRowsInlineControls={true} //OK
-      shouldShowColumnsInlineControls={true} //OK
-      resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_ALWAYS} //OK
+      isEditableHeader={assetType === TestScenarioType[TestScenarioType.DMN]}
+      isReadOnly={false}
+      operationConfig={simulationOperationConfig}
+      resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
+      rows={simulationRows}
+      scrollableParentRef={tableScrollableElementRef.current}
+      shouldRenderRowIndexColumn={true}
+      shouldShowColumnsInlineControls={true}
+      shouldShowRowsInlineControls={true}
     />
   );
 }
