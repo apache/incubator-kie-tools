@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { K8sApiServerEndpointByResourceKind } from "./types";
+import { K8sApiServerEndpointByResourceKind, consoleDebugMessage } from "./common";
 
 type K8sApiResourceList = {
   resources: Array<{
@@ -54,9 +54,9 @@ export async function buildK8sApiServerEndpointsByResourceKind(kubeApiServerUrl:
 
       // That's just for debugging purposes (begin)
       if (map.get(apiResource.kind)?.get(apiGroupVersion)) {
-        console.info(`CONFLICT ON '${apiResource.kind}':`);
-        console.log(map.get(apiResource.kind)?.get(apiGroupVersion));
-        console.log(
+        consoleDebugMessage(`CONFLICT ON '${apiResource.kind}':`);
+        consoleDebugMessage(map.get(apiResource.kind)?.get(apiGroupVersion));
+        consoleDebugMessage(
           `${apiResource.namespaced}` === "true"
             ? {
                 url: { namespaced: namespacedUrl, global: globalUrl },
@@ -86,14 +86,14 @@ export async function buildK8sApiServerEndpointsByResourceKind(kubeApiServerUrl:
   }
 
   // Print k8s version
-  console.info("Fetching Kubernetes version...");
+  consoleDebugMessage("Fetching Kubernetes version...");
   const version = await (await fetch(`${kubeApiServerUrl}/version`, fetchOpts)).json();
-  console.info(version);
-  console.info("");
+  consoleDebugMessage(version);
+  consoleDebugMessage("");
 
   // Need to do this separately because the Core API (`/api/v1`) is not listed as part of `/apis`.
   const coreApiEndpoint = `${kubeApiServerUrl}/api/v1`;
-  console.info(`Fetching Resources of '${coreApiEndpoint}'`);
+  consoleDebugMessage(`Fetching Resources of '${coreApiEndpoint}'`);
   const coreApi: K8sApiResourceList = await (await fetch(`${coreApiEndpoint}`, fetchOpts)).json();
   ackApiResourceList(coreApi, `${coreApiEndpoint}`, "v1");
 
@@ -104,7 +104,7 @@ export async function buildK8sApiServerEndpointsByResourceKind(kubeApiServerUrl:
       .flatMap((group) => group.versions)
       .map(async (version) => {
         const endpoint = `${kubeApiServerUrl}/apis/${version.groupVersion}`;
-        console.info(`Fetching Resources of '${endpoint}'`);
+        consoleDebugMessage(`Fetching Resources of '${endpoint}'`);
         const apiResourceList: K8sApiResourceList = await (await fetch(`${endpoint}`, fetchOpts)).json();
 
         ackApiResourceList(apiResourceList, `${endpoint}`, version.groupVersion);

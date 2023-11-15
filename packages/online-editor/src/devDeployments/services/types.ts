@@ -27,6 +27,7 @@ export type KieSandboxDeployment = {
   state: DeploymentState;
   resources: K8sResourceYaml[];
   workspaceId: string;
+  workspaceName: string;
 };
 
 export type DevDeploymentTokens = {
@@ -53,6 +54,7 @@ export type LabelTokens = {
 
 export type AnnotationTokens = {
   workspaceId: string;
+  workspaceName: string;
 };
 
 export const defaultLabelTokens: LabelTokens = {
@@ -62,6 +64,7 @@ export const defaultLabelTokens: LabelTokens = {
 
 export const defaultAnnotationTokens: AnnotationTokens = {
   workspaceId: "tools.kie.org/workspace-id",
+  workspaceName: "tools.kie.org/workspace-name",
 } as const;
 
 export const CREATED_BY_KIE_TOOLS = "kie-tools";

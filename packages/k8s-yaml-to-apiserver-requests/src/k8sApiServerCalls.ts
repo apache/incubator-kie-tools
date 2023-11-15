@@ -18,7 +18,7 @@
  */
 
 import * as jsYaml from "js-yaml";
-import { K8sApiServerEndpointByResourceKind, K8sResourceYaml } from "./types";
+import { K8sApiServerEndpointByResourceKind, K8sResourceYaml, consoleDebugMessage } from "./common";
 
 export async function callK8sApiServer(args: {
   k8sApiServerEndpointsByResourceKind: K8sApiServerEndpointByResourceKind;
@@ -45,11 +45,11 @@ export async function callK8sApiServer(args: {
       rawEndpoint: rawEndpoint,
     };
   });
-  console.info("Done.");
-  console.info("");
+  consoleDebugMessage("Done.");
+  consoleDebugMessage("");
 
   // Simulate actual API calls
-  console.info("Start calling API endpoints for each parsed YAML...");
+  consoleDebugMessage("Start calling API endpoints for each parsed YAML...");
 
   const results = [];
   for (const apiCall of apiCalls) {
@@ -60,7 +60,7 @@ export async function callK8sApiServer(args: {
     );
     endpointUrl.pathname = interpolatedPathname;
 
-    console.info(`Creating '${apiCall.kind}' with POST ${endpointUrl.toString()}`);
+    consoleDebugMessage(`Creating '${apiCall.kind}' with POST ${endpointUrl.toString()}`);
     results.push(
       await fetch(endpointUrl.toString(), {
         headers: {
@@ -72,7 +72,7 @@ export async function callK8sApiServer(args: {
       }).then((response) => response.json())
     );
   }
-  console.info("Done.");
+  consoleDebugMessage("Done.");
 
   return results;
 }

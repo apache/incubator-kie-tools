@@ -35,6 +35,7 @@ metadata:
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
   annotations:
     \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
+    \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
   replicas: 1
   selector:
@@ -69,7 +70,7 @@ spec:
               value: \${{ devDeployment.uniqueName }}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
               value: \${{ devDeployment.uploadService.apiKey }}
-        - name: \${{ devDeployment.uniqueName }}-form-webapp
+        - name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
           image: ${args.formWebappImageUrl}
           imagePullPolicy: ${args.imagePullPolicy}
           ports:

@@ -30,6 +30,7 @@ import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/A
 import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { KubernetesService, isKubernetesConnectionValid } from "../../devDeployments/services/KubernetesService";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 export enum OpenShiftSettingsTabMode {
   SIMPLE,
@@ -49,31 +50,41 @@ export function ConnectToOpenShiftSection() {
   const [kieSandboxOpenShiftService, setKieSandboxOpenShiftService] = useState<KieSandboxOpenShiftService>();
   const [isLoadingService, setIsLoadingService] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      if (isKubernetesConnectionValid(connection)) {
-        setIsLoadingService(true);
-        try {
-          const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (isKubernetesConnectionValid(connection)) {
+          setIsLoadingService(true);
+          KubernetesService.getK8sApiServerEndpointsMap({
             connection,
             proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-          });
-          setKieSandboxOpenShiftService(
-            new KieSandboxOpenShiftService({
-              connection,
-              k8sApiServerEndpointsByResourceKind,
-              proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+          })
+            .then((k8sApiServerEndpointsByResourceKind) => {
+              if (canceled.get()) {
+                return;
+              }
+              setKieSandboxOpenShiftService(
+                new KieSandboxOpenShiftService({
+                  connection,
+                  k8sApiServerEndpointsByResourceKind,
+                  proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+                })
+              );
             })
-          );
-        } catch (e) {
-          console.error(e);
-          setKieSandboxOpenShiftService(undefined);
-          setStatus(OpenShiftInstanceStatus.DISCONNECTED);
+            .catch((e) => {
+              if (canceled.get()) {
+                return;
+              }
+              console.error(e);
+              setKieSandboxOpenShiftService(undefined);
+              setStatus(OpenShiftInstanceStatus.DISCONNECTED);
+            });
+          setIsLoadingService(false);
         }
-        setIsLoadingService(false);
-      }
-    })();
-  }, [connection, env.KIE_SANDBOX_CORS_PROXY_URL]);
+      },
+      [connection, env.KIE_SANDBOX_CORS_PROXY_URL]
+    )
+  );
 
   const successPrimaryAction = useMemo(() => {
     if (accounts.section !== AccountsSection.CONNECT_TO_OPENSHIFT || !newAuthSession) {

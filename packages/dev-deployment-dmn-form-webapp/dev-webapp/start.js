@@ -33,8 +33,8 @@ const mvn = spawn(
     "-Dmaven.test.skip",
     `-Dquarkus.platform.version=${buildEnv.quarkusPlatform.version}`,
     `-Dversion.org.kie.kogito=${buildEnv.kogitoRuntime.version}`,
-    `-Dquarkus.http.port=${buildEnv.dmnDevDeploymentFormWebapp.dev.quarkusPort}`,
-    `-Dkogito.service.url=http://localhost:${buildEnv.dmnDevDeploymentFormWebapp.dev.quarkusPort}`,
+    `-Dquarkus.http.port=${buildEnv.devDeploymentDmnFormWebapp.dev.quarkusPort}`,
+    `-Dkogito.service.url=http://localhost:${buildEnv.devDeploymentDmnFormWebapp.dev.quarkusPort}`,
     "-Dquarkus.http.root-path=/",
   ],
   { shell: true }

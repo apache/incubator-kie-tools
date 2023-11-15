@@ -24,6 +24,6 @@ ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8091
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH="/"
 
-COPY dist/linux/dev-deployment-upload-service /bin
+COPY ../dist/linux/dev-deployment-upload-service /bin
 
 CMD ["/bin/bash", "-c", "/bin/dev-deployment-upload-service && cd /tmp/unzip-at && echo 'Done!'"]

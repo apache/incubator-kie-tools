@@ -17,42 +17,50 @@
  * under the License.
  */
 
+const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { ProvidePlugin } = require("webpack");
-const { env } = require("./env");
+const { env } = require("../../env");
+const { ProvidePlugin, EnvironmentPlugin } = require("webpack");
 
 const buildEnv = env;
 
-module.exports = async (env) => {
-  return merge(common(env), {
+module.exports = (env) =>
+  merge(common(env), {
+    mode: "development",
     entry: {
-      index: "./src/index.tsx",
+      index: path.resolve(__dirname, "./index.tsx"),
+    },
+    output: {
+      path: path.resolve(__dirname, "../dist-dev"),
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        template: "./static/index.html",
-        inject: false,
-        minify: false,
-      }),
       new CopyPlugin({
-        patterns: [
-          { from: "./static/resources", to: "./resources" },
-          { from: "./static/images", to: "./images" },
-          { from: "./static/favicon.svg", to: "./favicon.svg" },
-        ],
+        patterns: [{ from: path.resolve(__dirname, "./static"), to: "./" }],
       }),
       new ProvidePlugin({
         process: require.resolve("process/browser.js"),
         Buffer: ["buffer", "Buffer"],
+      }),
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__quarkusPort: buildEnv.devDeploymentDmnFormWebapp.dev.quarkusPort,
       }),
     ],
 
     module: {
       rules: [...patternflyBase.webpackModuleRules],
     },
+    devServer: {
+      static: { directory: path.join(__dirname, "./dist") },
+      historyApiFallback: true,
+      compress: true,
+      port: buildEnv.devDeploymentDmnFormWebapp.dev.webpackPort,
+      open: false,
+      hot: true,
+      client: {
+        overlay: true,
+      },
+    },
   });
-};

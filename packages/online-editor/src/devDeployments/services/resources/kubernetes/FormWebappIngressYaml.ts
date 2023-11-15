@@ -23,13 +23,13 @@ export const formWebappIngressYaml = (args: ResourceArgs) => `
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}-form-webapp
+  name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
   namespace: \${{ devDeployment.kubernetes.namespace }}
   labels:
     app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-form-webapp
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-form-webapp
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
@@ -37,6 +37,8 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
+    \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
   rules:
     - http:
@@ -45,7 +47,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: \${{ devDeployment.uniqueName }}-form-webapp
+                name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
                 port:
                   number: 8081
 `;

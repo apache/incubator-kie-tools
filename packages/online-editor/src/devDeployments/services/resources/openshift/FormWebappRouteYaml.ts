@@ -23,24 +23,26 @@ export const formWebappRouteYaml = (args: ResourceArgs) => `
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}-form-webapp
+  name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
   namespace: \${{ devDeployment.kubernetes.namespace }}
   labels:
     app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-form-webapp
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-form-webapp
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
     type: sharded
   annotations:
     haproxy.router.openshift.io/rewrite-target: /
+    \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
+    \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
   subdomain: \${{ devDeployment.uniqueName }}
   path: /form-webapp
   to:
-    name: \${{ devDeployment.uniqueName }}-form-webapp
+    name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
     kind: Service
   port:
     targetPort: 8081

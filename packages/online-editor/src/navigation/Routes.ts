@@ -172,14 +172,6 @@ export const routes = {
           ),
         },
       },
-      uploadService: {
-        linux: new Route<{}>(() => `dev-deployments/upload-service/linux/dev-deployment-upload-service`),
-        darwin: {
-          amd64: new Route<{}>(() => `dev-deployments/upload-service/darwin/amd64/dev-deployment-upload-service`),
-          arm64: new Route<{}>(() => `dev-deployments/upload-service/darwin/arm64/dev-deployment-upload-service`),
-        },
-        win32: new Route<{}>(() => `dev-deployments/upload-service/win32/dev-deployment-upload-service`),
-      },
     },
   },
 };

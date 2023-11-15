@@ -150,6 +150,7 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
           creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
           state: this.extractDeploymentStateWithHealthStatus(deployment, healthStatus),
           workspaceId: deployment.metadata.annotations![defaultAnnotationTokens.workspaceId],
+          workspaceName: deployment.metadata.annotations![defaultAnnotationTokens.workspaceName],
           resources: [deployment, ...routesList, ...servicesList],
         };
       });

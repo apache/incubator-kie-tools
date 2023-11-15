@@ -17,18 +17,32 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+export type K8sResourceYamlMetadata = {
+  name?: string;
+  namespace?: string;
+};
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnDevDeploymentFormWebapp: {
-        dev: {
-          webpackPort: 9008,
-          quarkusPort: 9009,
-        },
-      },
-    };
-  },
-});
+export type K8sResourceYaml = {
+  apiVersion: string;
+  kind: string;
+  metadata?: K8sResourceYamlMetadata;
+};
+
+export type K8sApiServerEndpointByResourceKind = Map<
+  string,
+  Map<string, { url: { namespaced?: string; global: string }; path: { namespaced?: string; global: string } }>
+>;
+
+export function isValidK8sResource(content: any): content is K8sResourceYaml {
+  return (
+    "apiVersion" in content &&
+    typeof content.apiVersion == "string" &&
+    "kind" in content &&
+    typeof content.kind == "string" &&
+    (!("metadata" in content) || ("metadata" in content && typeof content === "object"))
+  );
+}
+
+export function consoleDebugMessage(message: any) {
+  console.debug("K8S YAML TO APISERVER:", message);
+}

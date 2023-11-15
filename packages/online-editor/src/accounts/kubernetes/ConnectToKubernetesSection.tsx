@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ConnectToKubernetesSimple } from "./ConnectToKubernetesSimple";
@@ -30,6 +30,7 @@ import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSa
 import { EMPTY_KUBERNETES_CONNECTION } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { ConnectToLocalKubernetesClusterWizard } from "./ConnectToLocalKubernetesClusterWizard";
 import { KubernetesService, isKubernetesConnectionValid } from "../../devDeployments/services/KubernetesService";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 export enum KubernetesSettingsTabMode {
   SIMPLE,
@@ -46,6 +47,37 @@ export function ConnectToKubernetesSection() {
   const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
   const [kieSandboxKubernetesService, setKieSandboxKubernetesService] = useState<KieSandboxKubernetesService>();
   const [isLoadingService, setIsLoadingService] = useState(false);
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (isKubernetesConnectionValid(connection)) {
+          setIsLoadingService(true);
+          KubernetesService.getK8sApiServerEndpointsMap({
+            connection,
+          })
+            .then((k8sApiServerEndpointsByResourceKind) => {
+              if (canceled.get()) {
+                return;
+              }
+              setKieSandboxKubernetesService(
+                new KieSandboxKubernetesService({ connection, k8sApiServerEndpointsByResourceKind })
+              );
+            })
+            .catch((e) => {
+              if (canceled.get()) {
+                return;
+              }
+              console.error(e);
+              setKieSandboxKubernetesService(undefined);
+              setStatus(KubernetesInstanceStatus.DISCONNECTED);
+            });
+          setIsLoadingService(false);
+        }
+      },
+      [connection]
+    )
+  );
 
   useEffect(() => {
     (async () => {

@@ -41,23 +41,23 @@ function getDevDeploymentBaseImageUrl() {
 }
 
 function getDevDeploymentFormWebappImageUrl() {
-  const formWebappImageRegistry = buildEnv.devDeployments.formWebappImage.registry;
-  const formWebappImageAccount = buildEnv.devDeployments.formWebappImage.account;
-  const formWebappImageName = buildEnv.devDeployments.formWebappImage.name;
-  const formWebappImageTag = buildEnv.devDeployments.formWebappImage.tag;
+  const dmnFormWebappImageRegistry = buildEnv.devDeployments.dmnFormWebappImage.registry;
+  const dmnFormWebappImageAccount = buildEnv.devDeployments.dmnFormWebappImage.account;
+  const dmnFormWebappImageName = buildEnv.devDeployments.dmnFormWebappImage.name;
+  const dmnFormWebappImageTag = buildEnv.devDeployments.dmnFormWebappImage.tag;
 
-  return formWebappImageRegistry && formWebappImageAccount
-    ? `${formWebappImageRegistry}/${formWebappImageAccount}/${formWebappImageName}:${formWebappImageTag}`
-    : `${formWebappImageName}:${formWebappImageTag}`;
+  return dmnFormWebappImageRegistry && dmnFormWebappImageAccount
+    ? `${dmnFormWebappImageRegistry}/${dmnFormWebappImageAccount}/${dmnFormWebappImageName}:${dmnFormWebappImageTag}`
+    : `${dmnFormWebappImageName}:${dmnFormWebappImageTag}`;
 }
 
 export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_VERSION: buildEnv.root.version,
   KIE_SANDBOX_CORS_PROXY_URL: buildEnv.onlineEditor.corsProxyUrl,
   KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.onlineEditor.extendedServicesUrl,
-  KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL: getDevDeploymentBaseImageUrl(),
-  KIE_SANDBOX_DMN_DEV_DEPLOYMENT_FORM_WEBAPP_IMAGE_URL: getDevDeploymentFormWebappImageUrl(),
-  KIE_SANDBOX_DMN_DEV_DEPLOYMENT_IMAGE_PULL_POLICY: buildEnv.devDeployments.imagePullPolicy,
+  KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL: getDevDeploymentBaseImageUrl(),
+  KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY: buildEnv.devDeployments.imagePullPolicy,
+  KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL: getDevDeploymentFormWebappImageUrl(),
   KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE: buildEnv.onlineEditor.requireCustomCommitMessage,
   KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL:
     buildEnv.onlineEditor.customCommitMessageValidationServiceUrl,

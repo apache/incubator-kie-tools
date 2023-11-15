@@ -18,27 +18,39 @@
  */
 
 import * as jsYaml from "js-yaml";
-import { K8sResourceYaml } from "./types";
-import { callK8sApiServer } from "./k8sApiServerCalls";
-import { buildK8sApiServerEndpointsByResourceKind } from "./k8sApiServerEndpointsByResourceKind";
+import { K8sResourceYaml } from "../src/common";
+import { callK8sApiServer } from "../src/k8sApiServerCalls";
+import { buildK8sApiServerEndpointsByResourceKind } from "../src/k8sApiServerEndpointsByResourceKind";
+import * as fs from "fs";
 
 async function main(args: {
   k8sApiServerUrl: string;
   k8sNamespace: string;
   k8sServiceAccountToken: string;
-  k8sYamlUrl: string;
+  k8sYamlFilepath: string;
 }) {
+  if (!args.k8sApiServerUrl || !args.k8sNamespace || !args.k8sServiceAccountToken || !args.k8sYamlFilepath) {
+    console.info(`USAGE:
+
+pnpm start <k8sApiServerUrl> <k8sNamespace> <k8sServiceAccountToken> <k8sYamlFilepath>
+
+EXAMPLE:
+
+pnpm start https://api.to.my.openshift.cluster.com:6443 my-project sha256~MGnPXMPsi1YJkCV6kr970gQYI6KtQWztIObm3jQxUJI ../myDeployment.yaml
+    `);
+    return;
+  }
   // PARAMETERS
 
   console.info(`Kubernetes API Server:\t ${args.k8sApiServerUrl}`);
   console.info(`Namespace:\t\t ${args.k8sNamespace}`);
   console.info(`Token:\t\t\t ${args.k8sServiceAccountToken}`);
-  console.info(`YAML URL:\t\t ${args.k8sYamlUrl}`);
+  console.info(`YAML Path:\t\t ${args.k8sYamlFilepath}`);
   console.info("");
 
   // Fetch the YAML file
-  const k8sYamlResourcesString = await (await fetch(args.k8sYamlUrl)).text();
-  console.info(`Done fetching YAML from '${args.k8sYamlUrl}'.`);
+  const k8sYamlResourcesString = fs.readFileSync(args.k8sYamlFilepath).toString();
+  console.info(`Done reading YAML from '${args.k8sYamlFilepath}'.`);
   console.info("");
 
   // Parse YAML (can be multiple, separated by `---`)
@@ -71,5 +83,5 @@ main({
   k8sApiServerUrl: process.argv[2],
   k8sNamespace: process.argv[3],
   k8sServiceAccountToken: process.argv[4],
-  k8sYamlUrl: process.argv[5],
+  k8sYamlFilepath: process.argv[5],
 });

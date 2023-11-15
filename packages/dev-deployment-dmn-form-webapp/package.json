@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/dev-deployment-form-webapp",
+  "name": "@kie-tools/dev-deployment-dmn-form-webapp",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",

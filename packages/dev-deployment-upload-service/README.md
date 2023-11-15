@@ -19,23 +19,35 @@ USAGE: `dev-deployment-upload-service`. Arguments are passed using env vars:
 For a Dev deployment that runs a Quarkus application, the intended use is:
 
 ```Dockerfile
-
 ...
 
 EXPOSE [port number]
 
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=[unzip dir path]
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=[port number]
-ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=[api key]
-ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH=[subpath]
 
 CMD ["/bin/bash", "-c", "dev-deployment-upload-service && cd [unzip dir path] && mvn quarkus:dev"]
 ```
 
-On KIE Sandbox Dev deployments Kubernetes/OpenShift YAMLs, you can use it like:
+Then, when running your image, pass the following environment variables as parameters:
+
+```
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=[api key]
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH=[subpath]
+```
+
+On KIE Sandbox Dev deployments Kubernetes/OpenShift YAMLs, you can pass them like:
 
 ```yaml
-# TODO
+...
+spec:
+  containers:
+    ...
+    env:
+      - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
+        value: 'dev'
+      - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH
+        value: '/'
 ```
 
 ### Develop:

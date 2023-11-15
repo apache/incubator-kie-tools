@@ -76,7 +76,7 @@ export function DevDeploymentsContextProvider(props: Props) {
 
   useEffect(() => {
     const newDevDeploymentsServices = new Map<string, KieSandboxDevDeploymentsService>();
-    authSessions.forEach(async (authSession) => {
+    authSessions.forEach((authSession) => {
       if (!authSession || !isCloudAuthSession(authSession)) {
         return;
       }
@@ -166,9 +166,9 @@ export function DevDeploymentsContextProvider(props: Props) {
           workspaceZipBlob: zipBlob,
           tokenMap,
           deploymentOptionContent: deploymentOption({
-            baseImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-            formWebappImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_FORM_WEBAPP_IMAGE_URL,
-            imagePullPolicy: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
+            baseImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+            formWebappImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL,
+            imagePullPolicy: env.KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
             quarkusPlatformVersion: process.env.WEBPACK_REPLACE__quarkusPlatformVersion!,
             kogitoRuntimeVersion: process.env.WEBPACK_REPLACE__kogitoRuntimeVersion!,
           }),

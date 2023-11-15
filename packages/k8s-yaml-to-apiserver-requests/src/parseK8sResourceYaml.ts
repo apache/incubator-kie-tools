@@ -18,7 +18,7 @@
  */
 
 import * as jsYaml from "js-yaml";
-import { K8sResourceYaml, isValidK8sResource } from "./types";
+import { K8sResourceYaml, isValidK8sResource } from "./common";
 
 export function parseK8sResourceYaml(yamls: string[]): K8sResourceYaml[] {
   const parsedResources: K8sResourceYaml[] = [];

@@ -93,21 +93,21 @@ module.exports = composeEnv(
         default: "daily-dev",
         description: "Image tag to be used by Dev deployments when deploying models.",
       },
-      ONLINE_EDITOR__devDeploymentFormWebappImageRegistry: {
+      ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry: {
         default: "quay.io",
-        description: "Image registry to be used by Dev deployments to display a form for deployed models.",
+        description: "Image registry to be used by Dev deployments to display a form for deployed DMN models.",
       },
-      ONLINE_EDITOR__devDeploymentFormWebappImageAccount: {
+      ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount: {
         default: "kiegroup",
-        description: "Image account to be used by Dev deployments to display a form for deployed models.",
+        description: "Image account to be used by Dev deployments to display a form for deployed DMN models.",
       },
-      ONLINE_EDITOR__devDeploymentFormWebappImageName: {
-        default: "dev-deployment-form-webapp-image",
-        description: "Image name to be used by Dev deployments to display a form for deployed models.",
+      ONLINE_EDITOR__devDeploymentDmnFormWebappImageName: {
+        default: "dev-deployment-dmn-form-webapp-image",
+        description: "Image name to be used by Dev deployments to display a form for deployed DMN models.",
       },
-      ONLINE_EDITOR__devDeploymentFormWebappImageTag: {
+      ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag: {
         default: "daily-dev",
-        description: "Image tag to be used by Dev deployments to display a form for deployed models.",
+        description: "Image tag to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentImagePullPolicy: {
         default: "IfNotPresent",
@@ -155,11 +155,11 @@ module.exports = composeEnv(
             account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageAccount),
             name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageName),
           },
-          formWebappImage: {
-            tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentFormWebappImageTag),
-            registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentFormWebappImageRegistry),
-            account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentFormWebappImageAccount),
-            name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentFormWebappImageName),
+          dmnFormWebappImage: {
+            tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag),
+            registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry),
+            account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount),
+            name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentDmnFormWebappImageName),
           },
         },
       };

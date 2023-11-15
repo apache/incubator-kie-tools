@@ -35,8 +35,6 @@ RUN ./mvnw clean package -B -ntp -Dmaven.test.skip -Dmaven.repo.local=/tmp/kogit
 
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=/tmp/kogito/quarkus-app/src/main/resources
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
-ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev
-ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH="/"
 
 EXPOSE 8080
 

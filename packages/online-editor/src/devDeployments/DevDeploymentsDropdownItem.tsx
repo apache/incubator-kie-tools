@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
@@ -32,7 +32,9 @@ import { useDevDeployments } from "./DevDeploymentsContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/resources/common";
 import { KieSandboxDeployment } from "./services/types";
-import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 interface Props {
   id: number;
@@ -40,25 +42,45 @@ interface Props {
   cloudAuthSession: AuthSession;
 }
 
+const MAX_DEPLOYMENT_NAME_LENGTH = 30;
+
 export function DevDeploymentsDropdownItem(props: Props) {
   const { i18n } = useOnlineI18n();
   const devDeployments = useDevDeployments();
-  const workspacesDescriptorsPromise = useWorkspaceDescriptorsPromise();
+  const workspaces = useWorkspaces();
+  const [currentWorkspaceName, setCurrentWorkspaceName] = useState<string>();
 
-  const deploymentName = useMemo(() => {
-    const maxSize = 30;
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        workspaces
+          .getWorkspace({ workspaceId: props.deployment.workspaceId })
+          .then((workspace) => {
+            if (canceled.get()) {
+              return;
+            }
+            if (workspace.name === NEW_WORKSPACE_DEFAULT_NAME) {
+              workspaces.getFiles({ workspaceId: props.deployment.workspaceId }).then((workspaceFiles) => {
+                if (canceled.get()) {
+                  return;
+                }
+                setCurrentWorkspaceName(workspaceFiles[0].name);
+                return;
+              });
+            } else {
+              setCurrentWorkspaceName(workspace.name);
+            }
+          })
+          .catch(() => setCurrentWorkspaceName(""));
+      },
+      [props.deployment.workspaceId, workspaces]
+    )
+  );
 
-    const workspaceDescriptor = workspacesDescriptorsPromise.data?.find(
-      (descriptor) => descriptor.workspaceId === props.deployment.workspaceId
-    );
-    const name = workspaceDescriptor?.name ?? props.deployment.name;
-
-    if (name.length < maxSize) {
-      return name;
-    }
-
-    return `${name.substring(0, maxSize)}`;
-  }, [props.deployment.name, props.deployment.workspaceId, workspacesDescriptorsPromise.data]);
+  const shouldDisplayNameChange = useMemo(
+    () => currentWorkspaceName && currentWorkspaceName !== props.deployment.workspaceName,
+    [currentWorkspaceName, props.deployment.workspaceName]
+  );
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === DeploymentState.UP) {
@@ -142,10 +164,28 @@ export function DevDeploymentsDropdownItem(props: Props) {
           id="dev-deployments-deployment-item-button"
           key={`dev-deployments-dropdown-item-${props.id}`}
           onClick={onItemClicked}
-          description={i18n.devDeployments.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
+          description={
+            <>
+              {props.deployment.name}
+              <br />
+              {i18n.devDeployments.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
+            </>
+          }
           icon={stateIcon}
+          tooltip={
+            shouldDisplayNameChange ? (
+              <>
+                Renamed to <b>{currentWorkspaceName}</b>
+              </>
+            ) : (
+              !currentWorkspaceName && <b>Workspace not found</b>
+            )
+          }
         >
-          {deploymentName}
+          {(props.deployment.workspaceName ?? currentWorkspaceName ?? props.deployment.name).substring(
+            0,
+            MAX_DEPLOYMENT_NAME_LENGTH
+          )}
         </DropdownItem>
       </FlexItem>
       <FlexItem alignSelf={{ default: "alignSelfCenter" }}>

@@ -31,6 +31,9 @@ export interface AppData {
 
 export type DmnDefinitionsJson = FormData;
 
+// Replace some Ascii characters from a string.
+// Quarkus will replace spaces with `_32` and underscores with `__`,
+// this function reverts that.
 function fromiAsciiSpacing(value: string) {
   return value.replace(new RegExp("_32", "g"), " ").replace(new RegExp("__", "g"), "_");
 }
