@@ -27,9 +27,10 @@ import { Dependencies } from "../../Dependencies";
 import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { chromeExtensionI18nDictionaries, chromeExtensionI18nDefaults, ChromeExtensionI18nContext } from "../../i18n";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 export interface Globals {
   id: string;
@@ -40,6 +41,8 @@ export interface Globals {
   extensionIconUrl: string;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
+  customChannelApiImpl?: KogitoEditorChannelApi;
+  stateControl?: StateControl;
 }
 
 function KogitoMenuPortal(props: { id: string }) {
@@ -85,6 +88,8 @@ export const Main: React.FunctionComponent<Globals> = (props) => {
           extensionIconUrl: props.extensionIconUrl,
           resourceContentServiceFactory: props.resourceContentServiceFactory,
           externalEditorManager: props.externalEditorManager,
+          customChannelApiImpl: props.customChannelApiImpl,
+          stateControl: props.stateControl,
         }}
       >
         <GitHubContextProvider>
