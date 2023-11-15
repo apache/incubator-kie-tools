@@ -101,6 +101,22 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     backgroundTabTitle: string;
     scenarioTabTitle: string;
   };
+  table: {
+    simulation: { singleEntry: string };
+    background: {};
+    copy: string;
+    cut: string;
+    delete: string;
+    duplicate: string;
+    insert: string;
+    insertAbove: string;
+    insertBelow: string;
+    insertLeft: string;
+    insertRight: string;
+    paste: string;
+    reset: string;
+    selection: string;
+  };
 }
 
 export default interface TestScenarioEditorI18n extends TestScenarioEditorDictionary, CommonI18n {}

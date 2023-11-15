@@ -118,6 +118,24 @@ export const en: TestScenarioEditorI18n = {
   },
   tab: {
     backgroundTabTitle: "Background",
-    scenarioTabTitle: "Test Scenario",
+    scenarioTabTitle: "Simulation",
+  },
+  table: {
+    simulation: {
+      singleEntry: "Scenario",
+    },
+    background: {},
+    copy: "Copy",
+    cut: "Cut",
+    delete: "Delete",
+    duplicate: "Duplicate",
+    insert: "Insert",
+    insertAbove: "Insert Above",
+    insertBelow: "Insert Below",
+    insertLeft: "Insert Left",
+    insertRight: "Insert Right",
+    paste: "Paste",
+    reset: "Reset",
+    selection: "Selection",
   },
 };
