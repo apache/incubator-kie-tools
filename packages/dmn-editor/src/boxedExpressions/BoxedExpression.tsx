@@ -278,21 +278,22 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
             </Flex>
           </FlexItem>
 
-          {!boxedExpressionEditor.propertiesPanel.isOpen && (
-            <aside className={"kie-dmn-editor--properties-panel-toggle"}>
-              <button
-                className={"kie-dmn-editor--properties-panel-toggle-button"}
-                onClick={() => {
-                  dmnEditorStoreApi.setState((state) => {
-                    state.boxedExpressionEditor.propertiesPanel.isOpen =
-                      !state.boxedExpressionEditor.propertiesPanel.isOpen;
-                  });
-                }}
-              >
-                <InfoIcon size={"sm"} />
-              </button>
-            </aside>
-          )}
+          <aside
+            className={"kie-dmn-editor--properties-panel-toggle"}
+            style={{ visibility: boxedExpressionEditor.propertiesPanel.isOpen ? "hidden" : undefined }}
+          >
+            <button
+              className={"kie-dmn-editor--properties-panel-toggle-button"}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.boxedExpressionEditor.propertiesPanel.isOpen =
+                    !state.boxedExpressionEditor.propertiesPanel.isOpen;
+                });
+              }}
+            >
+              <InfoIcon size={"sm"} />
+            </button>
+          </aside>
         </Flex>
         {!expression && (
           <>
