@@ -15,7 +15,14 @@
 package common
 
 import (
+	"context"
+	"fmt"
 	"testing"
+
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
 
 	"github.com/magiconair/properties"
 
@@ -25,6 +32,33 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 )
+
+const (
+	defaultNamespace  = "default-namespace"
+	namespace1        = "namespace1"
+	myService1        = "my-service1"
+	myService1Address = "http://10.110.90.1:80"
+	myService2        = "my-service2"
+	myService2Address = "http://10.110.90.2:80"
+	myService3        = "my-service3"
+	myService3Address = "http://10.110.90.3:80"
+)
+
+type mockCatalogService struct {
+}
+
+func (c *mockCatalogService) Query(ctx context.Context, uri discovery.ResourceUri, outputFormat string) (string, error) {
+	if uri.Scheme == discovery.KubernetesScheme && uri.Namespace == namespace1 && uri.Name == myService1 {
+		return myService1Address, nil
+	}
+	if uri.Scheme == discovery.KubernetesScheme && uri.Name == myService2 && uri.Namespace == defaultNamespace {
+		return myService2Address, nil
+	}
+	if uri.Scheme == discovery.KubernetesScheme && uri.Name == myService3 && uri.Namespace == defaultNamespace && uri.GetPort() == "http-port" {
+		return myService3Address, nil
+	}
+	return "", nil
+}
 
 func Test_appPropertyHandler_WithKogitoServiceUrl(t *testing.T) {
 	workflow := test.GetBaseSonataFlow("default")
@@ -109,4 +143,93 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.Equal(t, "value2", generatedProps.GetString("property2", ""))
 	//quarkus.http.port remains with the default value since it's immutable.
 	assert.Equal(t, "8080", generatedProps.GetString("quarkus.http.port", ""))
+}
+
+func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T) {
+	//just add some user provided properties, no overrides.
+	userProperties := "property1=value1\nproperty2=value2\n"
+	//add some user properties that requires service discovery
+	userProperties = userProperties + "service1=${kubernetes:services.v1/namespace1/my-service1}\n"
+	userProperties = userProperties + "service2=${kubernetes:services.v1/my-service2}\n"
+
+	workflow := test.GetBaseSonataFlow(defaultNamespace)
+	props := NewAppPropertyHandler(workflow, nil).
+		WithUserProperties(userProperties).
+		WithServiceDiscovery(context.TODO(), &mockCatalogService{}).
+		Build()
+	generatedProps, propsErr := properties.LoadString(props)
+	generatedProps.DisableExpansion = true
+	assert.NoError(t, propsErr)
+	assert.Equal(t, 12, len(generatedProps.Keys()))
+	assertHasProperty(t, generatedProps, "property1", "value1")
+	assertHasProperty(t, generatedProps, "property2", "value2")
+
+	assertHasProperty(t, generatedProps, "service1", "${kubernetes:services.v1/namespace1/my-service1}")
+	assertHasProperty(t, generatedProps, "service2", "${kubernetes:services.v1/my-service2}")
+	//org.kie.kogito.addons.discovery.kubernetes\:services.v1\/usecase1º/my-service1 below we use the unescaped vale because the properties.LoadString removes them.
+	assertHasProperty(t, generatedProps, "org.kie.kogito.addons.discovery.kubernetes:services.v1/namespace1/my-service1", myService1Address)
+	//org.kie.kogito.addons.discovery.kubernetes\:services.v1\/my-service2 below we use the unescaped vale because the properties.LoadString removes them.
+	assertHasProperty(t, generatedProps, "org.kie.kogito.addons.discovery.kubernetes:services.v1/my-service2", myService2Address)
+
+	assertHasProperty(t, generatedProps, "kogito.service.url", fmt.Sprintf("http://greeting.%s", defaultNamespace))
+	assertHasProperty(t, generatedProps, "quarkus.http.port", "8080")
+	assertHasProperty(t, generatedProps, "quarkus.http.host", "0.0.0.0")
+	assertHasProperty(t, generatedProps, "org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+	assertHasProperty(t, generatedProps, "quarkus.devservices.enabled", "false")
+	assertHasProperty(t, generatedProps, "quarkus.kogito.devservices.enabled", "false")
+}
+
+func Test_generateDiscoveryProperties(t *testing.T) {
+
+	catalogService := &mockCatalogService{}
+
+	propertiesContent := "property1=value1\n"
+	propertiesContent = propertiesContent + "property2=${value2}\n"
+	propertiesContent = propertiesContent + "service1=${kubernetes:services.v1/namespace1/my-service1}\n"
+	propertiesContent = propertiesContent + "service2=${kubernetes:services.v1/my-service2}\n"
+	propertiesContent = propertiesContent + "service3=${kubernetes:services.v1/my-service3?port=http-port}\n"
+
+	propertiesContent = propertiesContent + "non_service4=${kubernetes:--kaka}"
+
+	props := properties.MustLoadString(propertiesContent)
+	result := generateDiscoveryProperties(context.TODO(), catalogService, props, &operatorapi.SonataFlow{
+		ObjectMeta: metav1.ObjectMeta{Name: "helloworld", Namespace: defaultNamespace},
+	})
+
+	assert.Equal(t, result.Len(), 3)
+	assertHasProperty(t, result, "org.kie.kogito.addons.discovery.kubernetes\\:services.v1\\/namespace1\\/my-service1", myService1Address)
+	assertHasProperty(t, result, "org.kie.kogito.addons.discovery.kubernetes\\:services.v1\\/my-service2", myService2Address)
+	assertHasProperty(t, result, "org.kie.kogito.addons.discovery.kubernetes\\:services.v1\\/my-service3?port\\=http-port", myService3Address)
+}
+
+func assertHasProperty(t *testing.T, props *properties.Properties, expectedProperty string, expectedValue string) {
+	value, ok := props.Get(expectedProperty)
+	assert.True(t, ok, "Property %s, is not present as expected.", expectedProperty)
+	assert.Equal(t, expectedValue, value, "Expected value for property: %s, is: %s but current value is: %s", expectedProperty, expectedValue, value)
+}
+
+func Test_generateMicroprofileServiceCatalogProperty(t *testing.T) {
+
+	doTestGenerateMicroprofileServiceCatalogProperty(t, "kubernetes:services.v1/namespace1/financial-service",
+		"org.kie.kogito.addons.discovery.kubernetes\\:services.v1\\/namespace1\\/financial-service")
+
+	doTestGenerateMicroprofileServiceCatalogProperty(t, "kubernetes:services.v1/financial-service",
+		"org.kie.kogito.addons.discovery.kubernetes\\:services.v1\\/financial-service")
+
+	doTestGenerateMicroprofileServiceCatalogProperty(t, "kubernetes:pods.v1/namespace1/financial-service",
+		"org.kie.kogito.addons.discovery.kubernetes\\:pods.v1\\/namespace1\\/financial-service")
+
+	doTestGenerateMicroprofileServiceCatalogProperty(t, "kubernetes:pods.v1/financial-service",
+		"org.kie.kogito.addons.discovery.kubernetes\\:pods.v1\\/financial-service")
+
+	doTestGenerateMicroprofileServiceCatalogProperty(t, "kubernetes:deployments.v1.apps/namespace1/financial-service",
+		"org.kie.kogito.addons.discovery.kubernetes\\:deployments.v1.apps\\/namespace1\\/financial-service")
+
+	doTestGenerateMicroprofileServiceCatalogProperty(t, "kubernetes:deployments.v1.apps/financial-service",
+		"org.kie.kogito.addons.discovery.kubernetes\\:deployments.v1.apps\\/financial-service")
+}
+
+func doTestGenerateMicroprofileServiceCatalogProperty(t *testing.T, serviceUri string, expectedProperty string) {
+	mpProperty := generateMicroprofileServiceCatalogProperty(serviceUri)
+	assert.Equal(t, mpProperty, expectedProperty, "expected microprofile service catalog property for serviceUri: %s, is %s, but the returned value was: %s", serviceUri, expectedProperty, mpProperty)
 }

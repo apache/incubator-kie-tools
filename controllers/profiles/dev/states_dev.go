@@ -68,7 +68,7 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 	if err == nil && len(pl.Spec.DevMode.BaseImage) > 0 {
 		devBaseContainerImage = pl.Spec.DevMode.BaseImage
 	}
-	propsCM, _, err := e.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(workflow, pl))
+	propsCM, _, err := e.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(ctx, e.StateSupport.Catalog, workflow, pl))
 	if err != nil {
 		return ctrl.Result{Requeue: false}, objs, err
 	}

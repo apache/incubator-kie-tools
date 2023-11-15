@@ -15,7 +15,10 @@
 package prod
 
 import (
+	"fmt"
 	"time"
+
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -59,8 +62,10 @@ func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 // to have an immutable workflow image deployed
 func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
 	support := &common.StateSupport{
-		C: client,
+		C:       client,
+		Catalog: discovery.NewServiceCatalog(client),
 	}
+	fmt.Println(fmt.Sprintf("XXX Prod NewProfileReconciler"))
 	// the reconciliation state machine
 	stateMachine := common.NewReconciliationStateMachine(
 		&newBuilderState{StateSupport: support},
@@ -78,7 +83,8 @@ func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
 // the workflow application. It assumes that the image has been built somewhere else.
 func NewProfileForOpsReconciler(client client.Client) profiles.ProfileReconciler {
 	support := &common.StateSupport{
-		C: client,
+		C:       client,
+		Catalog: discovery.NewServiceCatalog(client),
 	}
 	// the reconciliation state machine
 	stateMachine := common.NewReconciliationStateMachine(

@@ -111,6 +111,21 @@ func GetContainerByName(name string, podSpec *v1.PodSpec) (*v1.Container, int) {
 	return nil, -1
 }
 
+// GetContainerPortByName returns a pointer to the ContainerPort within the given Container.
+// If none found, returns nil.
+// It also returns the position where the container port was found, -1 if none.
+func GetContainerPortByName(name string, container *v1.Container) (*v1.ContainerPort, int) {
+	if container == nil {
+		return nil, -1
+	}
+	for i, containerPort := range container.Ports {
+		if name == containerPort.Name {
+			return &containerPort, i
+		}
+	}
+	return nil, -1
+}
+
 // AddOrReplaceContainer replace the existing container or add if it doesn't exist in the .spec.containers attribute
 func AddOrReplaceContainer(containerName string, container v1.Container, podSpec *v1.PodSpec) {
 	_, idx := GetContainerByName(containerName, podSpec)

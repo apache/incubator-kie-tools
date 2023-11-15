@@ -18,6 +18,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
+
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -29,7 +31,8 @@ import (
 
 // StateSupport is the shared structure with common accessors used throughout the whole reconciliation profiles
 type StateSupport struct {
-	C client.Client
+	C       client.Client
+	Catalog discovery.ServiceCatalog
 }
 
 // PerformStatusUpdate updates the SonataFlow Status conditions

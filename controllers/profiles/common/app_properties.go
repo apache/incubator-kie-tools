@@ -15,9 +15,16 @@
 package common
 
 import (
+	"context"
 	"fmt"
 
+	"regexp"
+	"strings"
+
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
+
 	"github.com/magiconair/properties"
+
 	"k8s.io/klog/v2"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
@@ -38,6 +45,9 @@ const (
 
 	PersistenceTypeEphemeral   = "ephemeral"
 	PersistenceTypePostgressql = "postgresql"
+
+	microprofileServiceCatalogPropertyPrefix = "org.kie.kogito.addons.discovery."
+	discoveryLikePropertyPattern             = "^\\${(kubernetes|knative|openshift):(.*)}$"
 )
 
 var immutableApplicationProperties = "quarkus.http.port=" + DefaultHTTPWorkflowPortIntStr.String() + "\n" +
@@ -48,16 +58,21 @@ var immutableApplicationProperties = "quarkus.http.port=" + DefaultHTTPWorkflowP
 	"quarkus.devservices.enabled=false\n" +
 	"quarkus.kogito.devservices.enabled=false\n"
 
+var discoveryLikePropertyExpr = regexp.MustCompile(discoveryLikePropertyPattern)
+
 var _ AppPropertyHandler = &appPropertyHandler{}
 
 type AppPropertyHandler interface {
 	WithUserProperties(userProperties string) AppPropertyHandler
+	WithServiceDiscovery(ctx context.Context, catalog discovery.ServiceCatalog) AppPropertyHandler
 	Build() string
 }
 
 type appPropertyHandler struct {
 	workflow                 *operatorapi.SonataFlow
 	platform                 *operatorapi.SonataFlowPlatform
+	catalog                  discovery.ServiceCatalog
+	ctx                      context.Context
 	userProperties           string
 	defaultMutableProperties string
 	isService                bool
@@ -65,6 +80,12 @@ type appPropertyHandler struct {
 
 func (a *appPropertyHandler) WithUserProperties(properties string) AppPropertyHandler {
 	a.userProperties = properties
+	return a
+}
+
+func (a *appPropertyHandler) WithServiceDiscovery(ctx context.Context, catalog discovery.ServiceCatalog) AppPropertyHandler {
+	a.ctx = ctx
+	a.catalog = catalog
 	return a
 }
 
@@ -88,6 +109,16 @@ func (a *appPropertyHandler) Build() string {
 	// Disable expansions since it's not our responsibility
 	// Property expansion means resolving ${} within the properties and environment context. Quarkus will do that in runtime.
 	props.DisableExpansion = true
+
+	removeDiscoveryProperties(props)
+	if a.requireServiceDiscovery() {
+		// produce the MicroProfileConfigServiceCatalog properties for the service discovery property values if any.
+		discoveryProperties := generateDiscoveryProperties(a.ctx, a.catalog, props, a.workflow)
+		if discoveryProperties.Len() > 0 {
+			props.Merge(discoveryProperties)
+		}
+	}
+
 	defaultMutableProps := properties.MustLoadString(a.defaultMutableProperties)
 	for _, k := range defaultMutableProps.Keys() {
 		if _, ok := props.Get(k); ok {
@@ -182,4 +213,74 @@ func GetDataIndexName(platform *operatorapi.SonataFlowPlatform) string {
 
 func GetDataIndexCmName(platform *operatorapi.SonataFlowPlatform) string {
 	return GetDataIndexName(platform) + "-props"
+}
+
+func (a *appPropertyHandler) requireServiceDiscovery() bool {
+	return a.ctx != nil && a.catalog != nil
+}
+
+// generateDiscoveryProperties Given a user configured properties set, generates the MicroProfileConfigServiceCatalog
+// required properties to resolve the corresponding service addresses base on these properties.
+// e.g.
+// Given a user configured property like this:
+//
+//	quarkus.rest-client.acme_financial_service_yml.url=${kubernetes:services.v1/usecase1/financial-service?port=http-port}
+//
+// generates the following property:
+//
+//	org.kie.kogito.addons.discovery.kubernetes\:services.v1\/usecase1\/financial-service?port\=http-port=http://10.5.9.1:8080
+//
+// where http://10.5.9.1:8080 is the corresponding k8s cloud address for the service financial-service in the namespace usecase1.
+func generateDiscoveryProperties(ctx context.Context, catalog discovery.ServiceCatalog, props *properties.Properties,
+	workflow *operatorapi.SonataFlow) *properties.Properties {
+	klog.V(log.I).Infof("Generating service discovery properties for workflow: %s, and namespace: %s.", workflow.Name, workflow.Namespace)
+	result := properties.NewProperties()
+	props.DisableExpansion = true
+	for _, k := range props.Keys() {
+		value, _ := props.Get(k)
+		klog.V(log.I).Infof("Scanning property %s=%s for service discovery configuration.", k, value)
+		if !discoveryLikePropertyExpr.MatchString(value) {
+			klog.V(log.I).Infof("Skipping property %s=%s since it does not look like a service discovery configuration.", k, value)
+		} else {
+			klog.V(log.I).Infof("Property %s=%s looks like a service discovery configuration.", k, value)
+			plainUri := value[2 : len(value)-1]
+			if uri, err := discovery.ParseUri(plainUri); err != nil {
+				klog.V(log.I).Infof("Property %s=%s not correspond to a valid service discovery configuration, it will be excluded from service discovery.", k, value)
+			} else {
+				if len(uri.Namespace) == 0 {
+					klog.V(log.I).Infof("Current service discovery configuration has no configured namespace, workflow namespace: %s will be used instead.", workflow.Namespace)
+					uri.Namespace = workflow.Namespace
+				}
+				if address, err := catalog.Query(ctx, *uri, discovery.KubernetesDNSAddress); err != nil {
+					klog.V(log.E).ErrorS(err, "An error was produced during service address resolution.", "serviceUri", plainUri)
+				} else {
+					klog.V(log.I).Infof("Service: %s was resolved into the following address: %s.", plainUri, address)
+					mpProperty := generateMicroprofileServiceCatalogProperty(plainUri)
+					klog.V(log.I).Infof("Generating microprofile service catalog property %s=%s.", mpProperty, address)
+					result.MustSet(mpProperty, address)
+				}
+			}
+		}
+	}
+	return result
+}
+
+func removeDiscoveryProperties(props *properties.Properties) {
+	for _, k := range props.Keys() {
+		if strings.HasPrefix(k, microprofileServiceCatalogPropertyPrefix) {
+			props.Delete(k)
+		}
+	}
+}
+
+func generateMicroprofileServiceCatalogProperty(serviceUri string) string {
+	escapedServiceUri := escapeValue(serviceUri, ":")
+	escapedServiceUri = escapeValue(escapedServiceUri, "/")
+	escapedServiceUri = escapeValue(escapedServiceUri, "=")
+	property := microprofileServiceCatalogPropertyPrefix + escapedServiceUri
+	return property
+}
+
+func escapeValue(unescaped string, value string) string {
+	return strings.Replace(unescaped, value, fmt.Sprintf("\\%s", value), -1)
 }

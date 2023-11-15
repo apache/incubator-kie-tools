@@ -42,3 +42,18 @@ func RetrieveServiceURL(service *v1.Service) (*apis.URL, error) {
 		Path:   service.Name}
 	return apis.ParseURL(url.String())
 }
+
+// GetServicePortByName returns a pointer to the ServicePort within the given Service.
+// If none found, returns nil.
+// It also returns the position where the service port por was found, -1 if none.
+func GetServicePortByName(name string, service *v1.Service) (*v1.ServicePort, int) {
+	if service == nil {
+		return nil, -1
+	}
+	for i, servicePort := range service.Spec.Ports {
+		if name == servicePort.Name {
+			return &servicePort, i
+		}
+	}
+	return nil, -1
+}

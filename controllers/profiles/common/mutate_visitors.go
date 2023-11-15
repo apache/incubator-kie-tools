@@ -15,6 +15,9 @@
 package common
 
 import (
+	"context"
+
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
 	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -94,7 +97,8 @@ func ServiceMutateVisitor(workflow *operatorapi.SonataFlow) MutateVisitor {
 	}
 }
 
-func WorkflowPropertiesMutateVisitor(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) MutateVisitor {
+func WorkflowPropertiesMutateVisitor(ctx context.Context, catalog discovery.ServiceCatalog,
+	workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			if kubeutil.IsObjectNew(object) {
@@ -113,6 +117,7 @@ func WorkflowPropertiesMutateVisitor(workflow *operatorapi.SonataFlow, platform 
 			cm.Data[workflowproj.ApplicationPropertiesFileName] =
 				NewAppPropertyHandler(workflow, platform).
 					WithUserProperties(cm.Data[workflowproj.ApplicationPropertiesFileName]).
+					WithServiceDiscovery(ctx, catalog).
 					Build()
 
 			return nil
