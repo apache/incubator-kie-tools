@@ -109,11 +109,6 @@ export function ConstraintsEnum({
 
   return (
     <div>
-      <p style={{ paddingTop: "10px" }}>
-        The enumeration constraint creates an expression that will limit the value to be equal to one of the given
-        values.
-      </p>
-      <br />
       <div>
         <DraggableContextProvider reorder={reorder} onDragEnd={onDragEnd}>
           <div
@@ -176,7 +171,7 @@ export function ConstraintsEnum({
         icon={<PlusCircleIcon />}
         style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
       >
-        Add new value
+        Add value
       </Button>
       <br />
       <br />

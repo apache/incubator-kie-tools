@@ -44,32 +44,14 @@ export function ConstraintsExpression({
     []
   );
 
-  const informativeText = useMemo(() => {
-    switch (type) {
-      case DmnBuiltInDataType.Date:
-        return `Example expression for a "date" data type: [date("2000-01-01")..date("2020-01-01"))`;
-      case DmnBuiltInDataType.DateTime:
-        return `Example expression for a "date and time" data type: [date and time("2000-01-01T00:00")..date and time("2020-01-01T23:59"))`;
-      case DmnBuiltInDataType.DateTimeDuration:
-        return `Example expression for a "date and time duration" data type: [duration("PT10S")..duration("PT30M"))`;
-      case DmnBuiltInDataType.Number:
-        return `Example expression for a "number" data type: [0..100)`;
-      case DmnBuiltInDataType.String:
-        return `Example expression for a "string" data type: "apple", "orange", "pineapple"`;
-      case DmnBuiltInDataType.Time:
-        return `Example expression for a "time" data type: [time("00:00")..time("23:59"))`;
-      case DmnBuiltInDataType.YearsMonthsDuration:
-        return `Example expression for a "years and months duration" data type: [duration("P10M")..duration("P2Y"))`;
-      default:
-        return `Enter a valid expression`;
-    }
-  }, [type]);
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%", gap: "10px" }}>
-      <Title size={"md"} headingLevel="h5">
-        {isReadonly ? "Equivalent expression:" : "Expression:"}
-      </Title>
+    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+      {isReadonly && (
+        <Title size={"md"} headingLevel="h5" style={{ paddingBottom: "10px" }}>
+          Equivalent FEEL expression:
+        </Title>
+      )}
+
       <div
         style={
           !isReadonly
@@ -92,14 +74,15 @@ export function ConstraintsExpression({
         />
       </div>
       <HelperText>
-        {!isReadonly && <HelperTextItem>{informativeText}</HelperTextItem>}
-        <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
-          Check the{" "}
-          <a target={"_blank"} href={"https://kiegroup.github.io/dmn-feel-handbook/#feel-values"}>
-            FEEL handbook
-          </a>{" "}
-          to help you on creating your expressions.
-        </HelperTextItem>
+        {!isReadonly && (
+          <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
+            Check the{" "}
+            <a target={"_blank"} href={"https://kiegroup.github.io/dmn-feel-handbook/#feel-values"}>
+              FEEL handbook
+            </a>{" "}
+            to help you on creating your expressions.
+          </HelperTextItem>
+        )}
       </HelperText>
     </div>
   );

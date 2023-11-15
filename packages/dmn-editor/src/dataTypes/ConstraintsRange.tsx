@@ -170,17 +170,6 @@ export function ConstraintsRange({
 
   return (
     <div>
-      <div>
-        <p style={{ paddingTop: "10px" }}>
-          The range constraint creates an expression that will limit the value to be in a range.
-        </p>
-        <HelperText>
-          <HelperTextItem style={{ paddingTop: "10px" }} variant="indeterminate" icon={<InfoIcon />}>
-            This type of constraint strictly has a starting and ending value, which can be opened or closed.
-          </HelperTextItem>
-        </HelperText>
-      </div>
-      <br />
       <div
         style={{
           display: "grid",

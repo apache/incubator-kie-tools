@@ -484,12 +484,13 @@ export function Constraints({
     return (
       <p
         style={{
-          padding: "10px",
+          padding: "24px",
           background: "#eee",
           borderRadius: "10px",
+          textAlign: "center",
         }}
       >
-        {`Type without constraints.`}
+        {`All values are allowed`}
       </p>
     );
   }, [
@@ -552,7 +553,7 @@ export function Constraints({
             </ToggleGroup>
           </div>
 
-          <div style={{ paddingTop: "10px" }}>{constraintComponent}</div>
+          <div style={{ paddingTop: "20px" }}>{constraintComponent}</div>
         </div>
       )}
     </>
