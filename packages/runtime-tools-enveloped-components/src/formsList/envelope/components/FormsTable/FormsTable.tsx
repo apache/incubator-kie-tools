@@ -24,8 +24,8 @@ import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-componen
 import { FormInfo, FormsListDriver } from "../../../api";
 import { getFormNameColumn, getDateColumn, getFormTypeColumn } from "../FormsListUtils/FormsListUtils";
 import _ from "lodash";
-import { Bullseye } from "@patternfly/react-core";
-import { ISortBy } from "@patternfly/react-table";
+import { ISortBy } from "@patternfly/react-table/dist/js/components/Table";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 export interface FormsTableProps {
   driver: FormsListDriver;

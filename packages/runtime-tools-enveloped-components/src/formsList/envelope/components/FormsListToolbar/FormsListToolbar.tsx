@@ -18,22 +18,22 @@
  */
 
 import React, { useState } from "react";
+import _ from "lodash";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { FormFilter } from "../../../api";
 import {
-  Button,
+  Toolbar,
+  ToolbarContent,
   ToolbarFilter,
   ToolbarGroup,
   ToolbarItem,
   ToolbarToggleGroup,
-  Toolbar,
-  ToolbarContent,
-  TextInput,
-  InputGroup,
-  Tooltip,
-} from "@patternfly/react-core";
-import { FilterIcon, SyncIcon } from "@patternfly/react-icons";
-import _ from "lodash";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { FormFilter } from "../../../api";
+} from "@patternfly/react-core/dist/js/components/Toolbar";
+import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { FilterIcon, SyncIcon } from "@patternfly/react-icons/dist/js/icons";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 interface FormsListToolbarProps {
   filterFormNames: string[];
