@@ -133,7 +133,7 @@ export const DmnEditorInternal = ({
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { isDiagramEditingInProgress } = useDmnEditorDerivedStore();
-  const { dmnModelBeforeEditingRef } = useDmnEditor();
+  const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
 
   // Allow imperativelly controlling the Editor.
   useImperativeHandle(
@@ -240,7 +240,7 @@ export const DmnEditorInternal = ({
   const beePropertiesPanel = useMemo(() => <BeePropertiesPanel />, []);
 
   return (
-    <>
+    <div ref={dmnEditorRootElementRef} className={"kie-dmn-editor--root"}>
       <Tabs
         isFilled={true}
         activeKey={navigation.tab}
@@ -286,7 +286,7 @@ export const DmnEditorInternal = ({
           {navigation.tab === DmnEditorTab.INCLUDED_MODELS && <IncludedModels />}
         </Tab>
       </Tabs>
-    </>
+    </div>
   );
 };
 

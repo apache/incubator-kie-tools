@@ -1,8 +1,7 @@
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { TypeRefLabel } from "./TypeRefLabel";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
@@ -12,6 +11,7 @@ import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DataType } from "./DataTypes";
 import { builtInFeelTypeNames, builtInFeelTypes } from "./BuiltInFeelTypes";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { useInViewSelect } from "../responsiveness/useInViewSelect";
 
 export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
 export type OnCreateDataType = (newDataTypeName: string) => void;
@@ -19,12 +19,13 @@ export type OnCreateDataType = (newDataTypeName: string) => void;
 export const typeRefSelectorLimitedSpaceStyle = { maxHeight: "600px", boxShadow: "none", overflowY: "scroll" };
 
 export function TypeRefSelector(props: {
+  zoom?: number;
+  heightRef: React.RefObject<HTMLElement>;
   isDisabled?: boolean;
   typeRef: string | undefined;
   onChange: OnTypeRefChange;
   onCreate?: OnCreateDataType;
   menuAppendTo?: "parent";
-  selectStyle?: React.CSSProperties;
 }) {
   const [isOpen, setOpen] = useState(false);
 
@@ -60,6 +61,14 @@ export function TypeRefSelector(props: {
 
   const id = generateUuid();
 
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  const { maxHeight, direction } = useInViewSelect(
+    props.heightRef ?? { current: document.body },
+    toggleRef,
+    props.zoom ?? 1
+  );
+
   return (
     <Flex
       id={id}
@@ -84,7 +93,7 @@ export function TypeRefSelector(props: {
         </Tooltip>
       )}
       <Select
-        style={{ flexGrow: 1, ...(props.selectStyle ? props.selectStyle : {}) }}
+        toggleRef={toggleRef}
         className={!exists ? "kie-dmn-editor--type-ref-selector-invalid-value" : undefined}
         isDisabled={props.isDisabled}
         variant={SelectVariant.typeahead}
@@ -103,18 +112,20 @@ export function TypeRefSelector(props: {
         onCreateOption={props.onCreate}
         isGrouped={true}
         menuAppendTo={props.menuAppendTo ?? document.body}
+        maxHeight={maxHeight}
+        direction={direction}
+        onWheelCapture={(e) => e.stopPropagation()} // Necessary so that Reactflow doesn't mess with this event.
       >
-        <SelectGroup label="Built-in" key="builtin">
+        <SelectGroup label="Built-in" key="builtin" style={{ minWidth: "300px" }}>
           {builtInFeelTypes.map((dt) => (
             <SelectOption key={dt.name} value={dt.name}>
               {dt.name}
             </SelectOption>
           ))}
         </SelectGroup>
-        <Divider key={"d1"} />
-        {(customDataTypes.length > 0 && (
-          <SelectGroup label="Custom" key="custom">
-            {customDataTypes.map((dt) => (
+        <SelectGroup label="Custom" key="custom" style={{ minWidth: "300px" }}>
+          {(customDataTypes.length > 0 &&
+            customDataTypes.map((dt) => (
               <SelectOption key={dt.feelName} value={dt.feelName}>
                 {dt.feelName}
                 &nbsp;
@@ -124,12 +135,11 @@ export function TypeRefSelector(props: {
                   isCollection={dt.itemDefinition?.["@_isCollection"]}
                 />
               </SelectOption>
-            ))}
-          </SelectGroup>
-        )) || <React.Fragment key={"empty-custom"}></React.Fragment>}
-        {(externalDataTypes.length > 0 && (
-          <SelectGroup label="External">
-            {externalDataTypes.map((dt) => (
+            ))) || <SelectOption key={"None"} value={"None"} isDisabled={true} />}
+        </SelectGroup>
+        <SelectGroup label="External" key="external" style={{ minWidth: "300px" }}>
+          {(externalDataTypes.length > 0 &&
+            externalDataTypes.map((dt) => (
               <SelectOption key={dt.feelName} value={dt.feelName}>
                 {dt.feelName}
                 &nbsp;
@@ -139,9 +149,8 @@ export function TypeRefSelector(props: {
                   isCollection={dt.itemDefinition?.["@_isCollection"]}
                 />
               </SelectOption>
-            ))}
-          </SelectGroup>
-        )) || <React.Fragment key={"empty-external"}></React.Fragment>}
+            ))) || <SelectOption key={"None"} value={"None"} isDisabled={true} />}
+        </SelectGroup>
       </Select>
     </Flex>
   );

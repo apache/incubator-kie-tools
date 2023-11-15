@@ -24,6 +24,7 @@ export type DmnEditorContextType = Pick<
   | "onRequestToResolvePath"
 > & {
   dmnModelBeforeEditingRef: React.MutableRefObject<DmnModelBeforeEditing>;
+  dmnEditorRootElementRef: React.RefObject<HTMLDivElement>;
 };
 
 const DmnEditorContext = React.createContext<DmnEditorContextType>({} as any);
@@ -34,10 +35,12 @@ export function useDmnEditor() {
 
 export function DmnEditorContextProvider(props: React.PropsWithChildren<DmnEditorContextProviderProps>) {
   const dmnModelBeforeEditingRef = useRef<DmnModelBeforeEditing>(props.model);
+  const dmnEditorRootElementRef = useRef<HTMLDivElement>(null);
 
   const value = useMemo<DmnEditorContextType>(
     () => ({
       dmnModelBeforeEditingRef,
+      dmnEditorRootElementRef,
       externalContextDescription: props.externalContextDescription,
       externalContextName: props.externalContextName,
       issueTrackerHref: props.issueTrackerHref,

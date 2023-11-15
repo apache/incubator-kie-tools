@@ -9,6 +9,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { useDmnEditor } from "../DmnEditorContext";
 
 export function DecisionProperties({
   decision,
@@ -25,6 +26,8 @@ export function DecisionProperties({
   const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
 
   const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
+  const { dmnEditorRootElementRef } = useDmnEditor();
 
   return (
     <>
@@ -51,7 +54,7 @@ export function DecisionProperties({
 
       <FormGroup label="Data type">
         <TypeRefSelector
-          selectStyle={{ maxHeight: "600px", overflowY: "scroll" }}
+          heightRef={dmnEditorRootElementRef}
           typeRef={decision.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((state) => {

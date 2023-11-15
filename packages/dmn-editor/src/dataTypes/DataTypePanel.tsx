@@ -30,6 +30,7 @@ import { buildClipboardFromDataType } from "../clipboard/Clipboard";
 import { Constraints } from "./Constraints";
 import { original } from "immer";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
+import { useDmnEditor } from "../DmnEditorContext";
 
 export function DataTypePanel({
   isReadonly,
@@ -157,6 +158,8 @@ export function DataTypePanel({
           ),
     [allDataTypesById, allTopLevelItemDefinitionUniqueNames, dataType.parentId]
   );
+
+  const { dmnEditorRootElementRef } = useDmnEditor();
 
   return (
     <>
@@ -298,10 +301,10 @@ export function DataTypePanel({
               Type
             </Title>
             <TypeRefSelector
+              heightRef={dmnEditorRootElementRef}
               isDisabled={isReadonly}
               typeRef={dataType.itemDefinition.typeRef?.__$$text}
               onChange={changeTypeRef}
-              selectStyle={{ maxHeight: "600px", boxShadow: "none", overflowY: "scroll" }}
             />
 
             <br />

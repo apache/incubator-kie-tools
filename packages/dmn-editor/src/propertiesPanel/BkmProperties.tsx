@@ -9,6 +9,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { useDmnEditor } from "../DmnEditorContext";
 
 export function BkmProperties({
   bkm,
@@ -25,6 +26,7 @@ export function BkmProperties({
   const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
 
   const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+  const { dmnEditorRootElementRef } = useDmnEditor();
 
   bkm.extensionElements?.["kie:attachment"];
 
@@ -53,7 +55,7 @@ export function BkmProperties({
 
       <FormGroup label="Data type">
         <TypeRefSelector
-          selectStyle={{ maxHeight: "600px", overflowY: "scroll" }}
+          heightRef={dmnEditorRootElementRef}
           typeRef={bkm.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((state) => {

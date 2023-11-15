@@ -6,6 +6,7 @@ import {
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditorStore } from "../../store/Store";
 import { OnCreateDataType, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
+import { useDmnEditor } from "../../DmnEditorContext";
 
 function stopPropagation(e: React.MouseEvent | React.KeyboardEvent) {
   e.stopPropagation();
@@ -19,6 +20,8 @@ export function DataTypeNodePanel(props: {
   onCreate?: OnCreateDataType;
 }) {
   const diagram = useDmnEditorStore((s) => s.diagram);
+
+  const { dmnEditorRootElementRef } = useDmnEditor();
 
   return (
     <>
@@ -34,6 +37,8 @@ export function DataTypeNodePanel(props: {
         >
           <div>
             <TypeRefSelector
+              zoom={0.8}
+              heightRef={dmnEditorRootElementRef}
               typeRef={props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
               onChange={props.onChange}
               onCreate={props.onCreate}

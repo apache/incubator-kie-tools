@@ -1,4 +1,8 @@
 /* (begin) global */
+.kie-dmn-editor--root {
+  height: 100%;
+}
+
 .kie-dmn-editor--diagram-container {
   height: 100%;
   position: relative;
@@ -520,7 +524,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 
 /* (begin) node panels */
 
-/*    data type selector on inputData, decision, bkm, and decisionService nodes */
+/* data type selector on inputData, decision, bkm, and decisionService nodes */
 .kie-dmn-editor--data-type-node-panel {
   position: absolute;
   top: -46px;
@@ -1016,5 +1020,9 @@ th {
 .pf-c-truncate,
 .pf-c-truncate__start {
   min-width: 0 !important;
+}
+
+.pf-c-select__menu {
+  margin-top: 1px;
 }
 /*   ⬆ (end) pf4 overrides ⬆      */

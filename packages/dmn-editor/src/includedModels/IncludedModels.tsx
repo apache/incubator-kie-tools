@@ -15,7 +15,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { basename, dirname, extname } from "path";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ExternalModel } from "../DmnEditor";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15_SPEC } from "../Dmn15Spec";
@@ -34,6 +34,7 @@ import { getNamespaceOfDmnImport } from "./importNamespaces";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { useInViewSelect } from "../responsiveness/useInViewSelect";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -47,7 +48,7 @@ export function IncludedModels() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const thisDmnsImports = useMemo(() => thisDmn.model.definitions.import ?? [], [thisDmn.model.definitions.import]);
 
-  const { externalContextDescription, externalContextName } = useDmnEditor();
+  const { externalContextDescription, externalContextName, dmnEditorRootElementRef } = useDmnEditor();
   const { importsByNamespace, allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
   const { externalModelsByNamespace, onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } =
     useExternalModels();
@@ -167,6 +168,9 @@ export function IncludedModels() {
   const pmmlPathsNotYetIncluded = modelPathsNotYetIncluded?.filter((s) => s.endsWith(".pmml"));
   const dmnPathsNotYetIncluded = modelPathsNotYetIncluded?.filter((s) => s.endsWith(".dmn"));
 
+  const selectToggleRef = useRef<HTMLButtonElement>(null);
+  const inViewSelect = useInViewSelect(dmnEditorRootElementRef, selectToggleRef);
+
   return (
     <>
       <Modal
@@ -202,7 +206,10 @@ export function IncludedModels() {
                 <Form>
                   <FormGroup label={"Model"} isRequired={true}>
                     <Select
-                      menuAppendTo={document.body} //FIXME: Tiago --> Really? Maybe append to the Editor's container?
+                      toggleRef={selectToggleRef}
+                      maxHeight={inViewSelect.maxHeight}
+                      direction={inViewSelect.direction}
+                      menuAppendTo={document.body}
                       variant={SelectVariant.typeahead}
                       typeAheadAriaLabel={"Select a model to include..."}
                       placeholderText={"Select a model to include..."}

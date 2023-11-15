@@ -37,6 +37,7 @@ import { isEnum } from "./ConstraintsEnum";
 import { isRange } from "./ConstraintsRange";
 import { constraintTypeHelper } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
+import { useDmnEditor } from "../DmnEditorContext";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -115,6 +116,8 @@ export function ItemComponentsTable({
       state.dataTypesEditor.expandedItemComponentIds = [];
     });
   }, [dmnEditorStoreApi]);
+
+  const { dmnEditorRootElementRef } = useDmnEditor();
 
   return (
     <>
@@ -361,7 +364,7 @@ export function ItemComponentsTable({
                       <td>
                         {!isStruct(dt.itemDefinition) && (
                           <TypeRefSelector
-                            selectStyle={{ maxHeight: "600px", boxShadow: "none", overflowY: "scroll" }}
+                            heightRef={dmnEditorRootElementRef}
                             isDisabled={isReadonly}
                             typeRef={dt.itemDefinition.typeRef?.__$$text}
                             onChange={(newDataType) => {

@@ -17,6 +17,7 @@ import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { useDmnEditor } from "../DmnEditorContext";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -62,6 +63,8 @@ export function DecisionServiceProperties({
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
 
+  const { dmnEditorRootElementRef } = useDmnEditor();
+
   return (
     <>
       <FormGroup label="Name">
@@ -87,7 +90,7 @@ export function DecisionServiceProperties({
 
       <FormGroup label="Data type">
         <TypeRefSelector
-          selectStyle={{ maxHeight: "600px", overflowY: "scroll" }}
+          heightRef={dmnEditorRootElementRef}
           typeRef={decisionService.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((state) => {

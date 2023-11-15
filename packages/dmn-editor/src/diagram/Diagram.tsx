@@ -995,6 +995,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           zoomOnDoubleClick={false}
           elementsSelectable={true}
           panOnScroll={true}
+          zoomOnScroll={false}
+          preventScrolling={true}
           selectionOnDrag={true}
           panOnDrag={PAN_ON_DRAG}
           panActivationKeyCode={"Alt"}
