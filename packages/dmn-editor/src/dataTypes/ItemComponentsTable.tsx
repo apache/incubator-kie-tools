@@ -36,6 +36,7 @@ import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { isEnum } from "./ConstraintsEnum";
 import { isRange } from "./ConstraintsRange";
 import { constraintTypeHelper } from "./Constraints";
+import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -85,7 +86,7 @@ export function ItemComponentsTable({
           dataType[i].children ?? [],
           (dataType[i].itemDefinition.itemComponent ?? []).reduce<UniqueNameIndex>(
             (acc, s) => acc.set(s["@_name"], s["@_id"]!),
-            new Map()
+            new Map([...builtInFeelTypeNames].map((s) => [s, s]))
           )
         );
       }
@@ -95,7 +96,7 @@ export function ItemComponentsTable({
       dataTypes ?? [],
       (parent.itemDefinition.itemComponent ?? []).reduce<UniqueNameIndex>(
         (acc, s) => acc.set(s["@_name"], s["@_id"]!),
-        new Map()
+        new Map([...builtInFeelTypeNames].map((s) => [s, s]))
       )
     );
     return ret;

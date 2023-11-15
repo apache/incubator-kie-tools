@@ -29,6 +29,7 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
 import { Constraints } from "./Constraints";
 import { original } from "immer";
+import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 
 export function DataTypePanel({
   isReadonly,
@@ -127,7 +128,11 @@ export function DataTypePanel({
       }
 
       editItemDefinition(id, (itemDefinition) => {
-        const newItemDefinition = getNewItemDefinition({ "@_name": "New property", ...partial });
+        const newItemDefinition = getNewItemDefinition({
+          ...partial,
+          "@_name": "New property",
+          typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+        });
         itemDefinition.itemComponent ??= [];
         itemDefinition.itemComponent[how](newItemDefinition);
       });
@@ -148,7 +153,7 @@ export function DataTypePanel({
         ? allTopLevelItemDefinitionUniqueNames
         : (allDataTypesById.get(dataType.parentId)!.itemDefinition.itemComponent ?? []).reduce<UniqueNameIndex>(
             (acc, s) => acc.set(s["@_name"], s["@_id"]!),
-            new Map()
+            new Map([...builtInFeelTypeNames].map((s) => [s, s]))
           ),
     [allDataTypesById, allTopLevelItemDefinitionUniqueNames, dataType.parentId]
   );

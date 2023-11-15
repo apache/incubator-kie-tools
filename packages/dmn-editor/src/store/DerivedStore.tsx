@@ -18,6 +18,7 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { UniqueNameIndex } from "../Dmn15Spec";
 import { ExternalPmmlsIndex, ExternalDmnsIndex } from "../DmnEditor";
+import { builtInFeelTypeNames } from "../dataTypes/BuiltInFeelTypes";
 
 export type DerivedStore = {
   selectedNodeTypes: Set<NodeType>;
@@ -146,6 +147,10 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
 
     for (const [k, v] of allTopLevelDataTypesByFeelName.entries()) {
       ret.set(k, v.itemDefinition["@_id"]!);
+    }
+
+    for (const type of builtInFeelTypeNames) {
+      ret.set(type, type);
     }
 
     return ret;

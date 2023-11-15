@@ -2,7 +2,7 @@ import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-co
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TypeRefLabel } from "./TypeRefLabel";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
@@ -14,6 +14,7 @@ import { builtInFeelTypeNames, builtInFeelTypes } from "./BuiltInFeelTypes";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
+export type OnCreateDataType = (newDataTypeName: string) => void;
 
 export const typeRefSelectorLimitedSpaceStyle = { maxHeight: "600px", boxShadow: "none", overflowY: "scroll" };
 
@@ -21,6 +22,7 @@ export function TypeRefSelector(props: {
   isDisabled?: boolean;
   typeRef: string | undefined;
   onChange: OnTypeRefChange;
+  onCreate?: OnCreateDataType;
   menuAppendTo?: "parent";
   selectStyle?: React.CSSProperties;
 }) {
@@ -96,6 +98,9 @@ export function TypeRefSelector(props: {
         isOpen={isOpen}
         aria-labelledby={"Data types selector"}
         placeholderText={"Select a data type..."}
+        isCreatable={!!props.onCreate}
+        isCreateOptionOnTop={false}
+        onCreateOption={props.onCreate}
         isGrouped={true}
         menuAppendTo={props.menuAppendTo ?? document.body}
       >

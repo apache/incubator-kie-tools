@@ -35,6 +35,8 @@ import {
   getClipboard,
 } from "../clipboard/Clipboard";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export type DataType = {
   itemDefinition: DMN15__tItemDefinition;
@@ -101,9 +103,10 @@ export function DataTypes() {
   const addTopLevelItemDefinition = useCallback<AddTopLevelItemDefinition>(
     (partial) => {
       dmnEditorStoreApi.setState((state) => {
-        const newItemDefinition = getNewItemDefinition(partial);
-        state.dmn.model.definitions.itemDefinition ??= [];
-        state.dmn.model.definitions.itemDefinition.unshift(newItemDefinition);
+        const newItemDefinition = _addTopLevelItemDefinition({
+          definitions: state.dmn.model.definitions,
+          partial: { ...partial, typeRef: { __$$text: DmnBuiltInDataType.Undefined } },
+        });
         state.dataTypesEditor.activeItemDefinitionId = newItemDefinition["@_id"];
       });
     },

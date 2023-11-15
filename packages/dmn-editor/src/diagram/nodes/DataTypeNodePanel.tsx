@@ -5,7 +5,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditorStore } from "../../store/Store";
-import { OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
+import { OnCreateDataType, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
 
 function stopPropagation(e: React.MouseEvent | React.KeyboardEvent) {
   e.stopPropagation();
@@ -16,6 +16,7 @@ export function DataTypeNodePanel(props: {
   variable: DMN15__tInformationItem | undefined;
   shape: DMNDI15__DMNShape | undefined;
   onChange: OnTypeRefChange;
+  onCreate?: OnCreateDataType;
 }) {
   const diagram = useDmnEditorStore((s) => s.diagram);
 
@@ -35,6 +36,7 @@ export function DataTypeNodePanel(props: {
             <TypeRefSelector
               typeRef={props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
               onChange={props.onChange}
+              onCreate={props.onCreate}
               menuAppendTo={"parent"}
             />
           </div>

@@ -13,7 +13,7 @@ import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
-import { DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { DmnEditorTab, DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { snapShapeDimensions } from "../SnapGrid";
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS } from "./DefaultSizes";
 import { PositionalNodeHandles } from "../connections/PositionalNodeHandles";
@@ -41,11 +41,13 @@ import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { DmnDiagramEdgeData } from "../edges/Edges";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Unpacked } from "../../tsExt/tsExt";
-import { OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
+import { OnCreateDataType, OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
 import { MIN_NODE_SIZES } from "./DefaultSizes";
 import { select } from "d3-selection";
 import { drag } from "d3-drag";
 import { updateDecisionServiceDividerLine } from "../../mutations/updateDecisionServiceDividerLine";
+import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]> | null;
 
@@ -107,6 +109,8 @@ export const InputDataNode = React.memo(
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
+    const onCreateDataType = useDataTypeCreationCallbackForNodes(index);
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -151,6 +155,7 @@ export const InputDataNode = React.memo(
             isVisible={!isTargeted && isHovered}
             variable={inputData.variable}
             shape={shape}
+            onCreate={onCreateDataType}
             onChange={onTypeRefChange}
           />
         </div>
@@ -204,6 +209,8 @@ export const DecisionNode = React.memo(
 
     const isExternal = !!dmnObjectQName.prefix;
 
+    const onCreateDataType = useDataTypeCreationCallbackForNodes(index);
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -252,6 +259,7 @@ export const DecisionNode = React.memo(
             variable={decision.variable}
             shape={shape}
             onChange={onTypeRefChange}
+            onCreate={onCreateDataType}
           />
         </div>
       </>
@@ -304,6 +312,8 @@ export const BkmNode = React.memo(
 
     const isExternal = !!dmnObjectQName.prefix;
 
+    const onCreateDataType = useDataTypeCreationCallbackForNodes(index);
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -352,6 +362,7 @@ export const BkmNode = React.memo(
             variable={bkm.variable}
             shape={shape}
             onChange={onTypeRefChange}
+            onCreate={onCreateDataType}
           />
         </div>
       </>
@@ -594,6 +605,8 @@ export const DecisionServiceNode = React.memo(
     // External Decision Service nodes are always collapsed.
     const isCollapsed = isExternal || shape["@_isCollapsed"];
 
+    const onCreateDataType = useDataTypeCreationCallbackForNodes(index);
+
     useEffect(() => {
       if (!dividerLineRef.current) {
         return;
@@ -699,6 +712,7 @@ export const DecisionServiceNode = React.memo(
             variable={decisionService.variable}
             shape={shape}
             onChange={onTypeRefChange}
+            onCreate={onCreateDataType}
           />
         </div>
       </>
@@ -1008,4 +1022,23 @@ export function useNodeClassName(
   }
 
   return "normal";
+}
+
+export function useDataTypeCreationCallbackForNodes(index: number) {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  return useCallback<OnCreateDataType>(
+    (newDataTypeName) => {
+      dmnEditorStoreApi.setState((state) => {
+        (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newDataTypeName;
+        const newItemDefinition = addTopLevelItemDefinition({
+          definitions: state.dmn.model.definitions,
+          partial: { "@_name": newDataTypeName, typeRef: { __$$text: DmnBuiltInDataType.Undefined } },
+        });
+        state.dataTypesEditor.activeItemDefinitionId = newItemDefinition["@_id"];
+        state.navigation.tab = DmnEditorTab.DATA_TYPES;
+      });
+    },
+    [dmnEditorStoreApi, index]
+  );
 }

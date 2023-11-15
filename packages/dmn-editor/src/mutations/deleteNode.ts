@@ -48,9 +48,9 @@ export function deleteNode({
         .getOriginalIds();
 
       // Delete widths
-      widthsExtension["kie:ComponentWidths"] = widthsExtension["kie:ComponentWidths"]?.filter((w) => {
-        !deletedIdsOnDrgElementTree.has(w["@_dmnElementRef"]!);
-      });
+      widthsExtension["kie:ComponentWidths"] = widthsExtension["kie:ComponentWidths"]?.filter(
+        (w) => !deletedIdsOnDrgElementTree.has(w["@_dmnElementRef"]!)
+      );
     } else if (nodeNature === NodeNature.UNKNOWN) {
       // Ignore. There's no dmnObject here.
     } else {
