@@ -234,38 +234,50 @@ export function DataTypePanel({
   return (
     <>
       <Flex
-        className={"kie-dmn-editor--sticky-top-glass-header kie-dmn-editor--data-type-panel-header"}
+        className={`kie-dmn-editor--sticky-top-glass-header kie-dmn-editor--data-type-panel-header ${
+          parents.length > 0 || dataType.namespace !== thisDmnsNamespace
+            ? "kie-dmn-editor--data-type-panel-header-nested-or-external"
+            : ""
+        }`}
         justifyContent={{ default: "justifyContentSpaceBetween" }}
-        alignItems={{ default: "alignItemsCenter" }}
         direction={{ default: "row" }}
       >
         <FlexItem>
-          <Flex direction={{ default: "row" }}>
-            {parents.length > 0 && (
-              <FlexItem className={"kie-dmn-editor--data-type-parents"}>
-                {parents.map((p) => (
-                  <Button
-                    key={p.itemDefinition["@_id"]!}
-                    variant={ButtonVariant.link}
-                    onClick={() => {
-                      dmnEditorStoreApi.setState((state) => {
-                        state.dataTypesEditor.activeItemDefinitionId = p.itemDefinition["@_id"]!;
-                      });
-                    }}
-                  >
-                    {
-                      buildFeelQNameFromNamespace({
-                        namedElement: p.itemDefinition,
-                        importsByNamespace,
-                        namespace: p!.namespace,
-                        relativeToNamespace: !p.parentId ? thisDmnsNamespace : p.namespace,
-                      }).full
-                    }
-                  </Button>
-                ))}
-              </FlexItem>
-            )}
-            <FlexItem>{dataType.namespace !== thisDmnsNamespace && <Label>External</Label>}</FlexItem>
+          <Flex direction={{ default: "column" }}>
+            <FlexItem>
+              <Flex direction={{ default: "row" }}>
+                {dataType.namespace !== thisDmnsNamespace && (
+                  <FlexItem>
+                    <Label>External</Label>
+                  </FlexItem>
+                )}
+                {parents.length > 0 && (
+                  <FlexItem className={"kie-dmn-editor--data-type-parents"}>
+                    {parents.map((p) => (
+                      <Button
+                        key={p.itemDefinition["@_id"]!}
+                        variant={ButtonVariant.link}
+                        onClick={() => {
+                          dmnEditorStoreApi.setState((state) => {
+                            state.dataTypesEditor.activeItemDefinitionId = p.itemDefinition["@_id"]!;
+                          });
+                        }}
+                      >
+                        {
+                          buildFeelQNameFromNamespace({
+                            namedElement: p.itemDefinition,
+                            importsByNamespace,
+                            namespace: p!.namespace,
+                            relativeToNamespace: !p.parentId ? thisDmnsNamespace : p.namespace,
+                          }).full
+                        }
+                      </Button>
+                    ))}
+                  </FlexItem>
+                )}
+              </Flex>
+            </FlexItem>
+
             <FlexItem>
               <div className={"kie-dmn-editor--data-types-title"}>
                 <DataTypeName
