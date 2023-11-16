@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { DatePicker } from "@patternfly/react-core/dist/js/components/DatePicker";
 import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker";
 import "./Constraint.css";
@@ -9,6 +9,8 @@ import "./ConstraintDateTime.css";
 import { ConstraintProps } from "./Constraint";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { useDmnEditor } from "../../DmnEditorContext";
+import { useInViewSelect } from "../../responsiveness/useInViewSelect";
 
 const UTC_POSITEVE_TIMEZONES = [
   "+00:00",
@@ -101,6 +103,10 @@ export function ConstraintDateTime({ value, onChange, isValid }: ConstraintProps
     [onInternalChange]
   );
 
+  const { dmnEditorRootElementRef } = useDmnEditor();
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const inViewTimezoneSelect = useInViewSelect(dmnEditorRootElementRef, toggleRef);
+
   return (
     <>
       <div className={"kie-dmn-editor--constraint-date-time"}>
@@ -127,6 +133,7 @@ export function ConstraintDateTime({ value, onChange, isValid }: ConstraintProps
           includeSeconds={true}
         />
         <Select
+          toggleRef={toggleRef}
           className={`kie-dmn-editor--constraint-date-time-timezone ${
             isValid ? "" : "kie-dmn-editor--constraint-date-time-timezone-invalid"
           }`}
@@ -139,6 +146,8 @@ export function ConstraintDateTime({ value, onChange, isValid }: ConstraintProps
           isOpen={isSelectTimezoneOpen}
           isDisabled={false}
           isPlain={true}
+          maxHeight={inViewTimezoneSelect.maxHeight}
+          direction={inViewTimezoneSelect.direction}
         >
           {[...UTC_NEGATIVE_TIMEZONES, ...UTC_POSITEVE_TIMEZONES].map((timezone) => (
             <SelectOption key={timezone} value={timezone} />
