@@ -59,6 +59,9 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
         case DmnBuiltInDataType.Any:
           return true;
         case DmnBuiltInDataType.String:
+          if (recoveredValue === "") {
+            return true;
+          }
           if (constraintTypeHelper(DmnBuiltInDataType.Date).check(value)) {
             return false;
           }
@@ -140,12 +143,18 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
       }
       switch (typeRef) {
         case DmnBuiltInDataType.Any:
+          if (value === "") {
+            return "";
+          }
           try {
             return `${JSON.parse(value)}`;
           } catch (error) {
             return undefined;
           }
         case DmnBuiltInDataType.String:
+          if (value === "") {
+            return "";
+          }
           try {
             if (typeof JSON.parse(value) !== "string") {
               return undefined;

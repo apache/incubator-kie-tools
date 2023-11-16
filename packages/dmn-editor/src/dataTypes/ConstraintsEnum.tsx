@@ -114,6 +114,9 @@ export function ConstraintsEnum({
                 if (e.key === "Enter") {
                   onAdd();
                 }
+                if (e.key === ENUM_SEPARATOR) {
+                  e.preventDefault();
+                }
               }}
             />
           </li>
@@ -142,24 +145,6 @@ export function ConstraintsEnum({
               values={enumValues}
               draggableItem={draggableItem}
             />
-            {/* {(enumValues.length === 0) && (
-              <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
-                <li style={{ marginLeft: "20px", flexGrow: 1, listStyleType: "initial" }}>
-                  <EnumElement
-                    id={`enum-element-${enumValues.length}`}
-                    isDisabled={isReadonly || isDisabled}
-                    initialValue={""}
-                    onChange={onChangeNew}
-                    onRemove={() => setAdd(false)}
-                    isValid={true}
-                    focusOwner={focusOwner}
-                    setFocusOwner={setFocusOwner}
-                    typeHelper={typeHelper}
-                  />
-                </li>
-              </div>
-            )} */}
           </ul>
         </div>
       </div>

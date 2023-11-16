@@ -29,13 +29,13 @@ export function ConstraintDateTimeDuration({
 
   const onInternalChange = useCallback(
     (args: { days?: string; hours?: string; minutes?: string; seconds?: string }) => {
-      onChange(
-        `P${args.days ?? days ? (args.days ?? days) + "D" : ""}${
-          args.hours ?? (hours || args.minutes) ?? (minutes || args.seconds) ?? seconds ? "T" : ""
-        }${args.hours ?? hours ? (args.hours ?? hours) + "H" : ""}${
-          args.minutes ?? minutes ? (args.minutes ?? minutes) + "M" : ""
-        }${args.seconds ?? seconds ? (args.seconds ?? seconds) + "S" : ""}`
-      );
+      const d = args.days ?? days ? (args.days ?? days) + "D" : "";
+      const h = args.hours ?? hours ? (args.hours ?? hours) + "H" : "";
+      const m = args.minutes ?? minutes ? (args.minutes ?? minutes) + "M" : "";
+      const s = args.seconds ?? seconds ? (args.seconds ?? seconds) + "S" : "";
+      const t = h || m || s ? "T" : "";
+      const p = d || h || m || s ? "P" : "";
+      onChange(`${p}${d}${t}${h}${m}${s}`);
     },
     [days, hours, minutes, onChange, seconds]
   );
@@ -130,55 +130,63 @@ export function ConstraintDateTimeDuration({
 }
 
 function getDaysDuration(value: string) {
-  const days = value.replace("P", "").split("T")[0];
+  if (!value.includes("D")) {
+    return "";
+  }
+  const days = value.replace("P", "").split("D")[0];
   if (days.length >= 1) {
-    const daysValue = days.replace("D", "");
-    return !isNaN(parseInt(daysValue)) ? daysValue : "";
+    return !isNaN(parseInt(days)) ? days : "";
   }
   return "";
 }
 
 function getHoursDuration(value: string) {
-  const time = value.replace("P", "").split("T")[1];
-  if (time && time.length > 1) {
-    const hoursValue = time.split("H")[0];
-    if (hoursValue.length >= 1) {
-      return !isNaN(parseInt(hoursValue)) ? hoursValue : "";
-    }
+  if (!value.includes("T") || !value.includes("H")) {
+    return "";
+  }
+  let hours = value.replace("P", "").replace("T", "").split("H")[0];
+  if (hours.includes("D")) {
+    hours = hours.split("D")[1];
+  }
+  if (hours.length >= 1) {
+    return !isNaN(parseInt(hours)) ? hours : "";
   }
   return "";
 }
 
 function getMinutesDuration(value: string) {
-  const time = value.replace("P", "").split("T")[1];
-  if (time && time.length > 1) {
-    const minutes = time.split("M")[0];
-    if (minutes.length >= 1) {
-      if (minutes.includes("H")) {
-        const minutesValue = minutes.split("H")[1];
-        return !isNaN(parseInt(minutesValue)) ? minutesValue : "";
-      }
-      return !isNaN(parseInt(minutes)) ? minutes : "";
-    }
+  if (!value.includes("T") || !value.includes("M")) {
+    return "";
+  }
+  let hours = value.replace("P", "").replace("T", "").split("M")[0];
+  if (hours.includes("D")) {
+    hours = hours.split("D")[1];
+  }
+  if (hours.includes("H")) {
+    hours = hours.split("H")[1];
+  }
+  if (hours.length >= 1) {
+    return !isNaN(parseInt(hours)) ? hours : "";
   }
   return "";
 }
 
 function getSecondsDuration(value: string) {
-  const time = value.replace("P", "").split("T")[1];
-  if (time && time.length > 1) {
-    const seconds = time.split("S")[0];
-    if (seconds.length >= 1) {
-      if (seconds.includes("M")) {
-        const secondsValue = seconds.split("M")[1];
-        return !isNaN(parseInt(secondsValue)) ? secondsValue : "";
-      }
-      if (seconds.includes("H")) {
-        const secondsValue = seconds.split("H")[1];
-        return !isNaN(parseInt(secondsValue)) ? secondsValue : "";
-      }
-      return !isNaN(parseInt(seconds)) ? seconds : "";
-    }
+  if (!value.includes("T") || !value.includes("S")) {
+    return "";
+  }
+  let hours = value.replace("P", "").replace("T", "").split("S")[0];
+  if (hours.includes("D")) {
+    hours = hours.split("D")[1];
+  }
+  if (hours.includes("H")) {
+    hours = hours.split("H")[1];
+  }
+  if (hours.includes("M")) {
+    hours = hours.split("M")[1];
+  }
+  if (hours.length >= 1) {
+    return !isNaN(parseInt(hours)) ? hours : "";
   }
   return "";
 }

@@ -73,20 +73,18 @@ export function ConstraintsRange({
         return;
       }
 
-      // arg start is empty and end is empty
-      if ((args?.start === undefined || args.start === "") && (end === undefined || end === "")) {
-        onSave("");
-      }
+      const internalStart = args?.start ?? start;
+      const internalEnd = args?.end ?? end;
 
-      // arg end is empty and start is empty
-      if ((args?.end === undefined || args.end === "") && (start === undefined || start === "")) {
+      if (internalStart === "" && internalEnd === "") {
         onSave("");
+        return;
       }
 
       onSave(
         `${args?.includeStart ?? includeStart ? "[" : "("}${typeHelper.transform(
-          args?.start ?? start
-        )}..${typeHelper.transform(args?.end ?? end)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`
+          internalStart
+        )}..${typeHelper.transform(internalEnd)}${args?.includeEnd ?? includeEnd ? "]" : ")"}`
       );
     },
     [end, includeEnd, includeStart, onSave, start, typeHelper]

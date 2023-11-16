@@ -27,11 +27,10 @@ export function ConstraintYearsMonthsDuration({
 
   const onInternalChange = useCallback(
     (args: { years?: string; months?: string }) => {
-      onChange(
-        `P${args.years ?? years ? (args.years ?? years) + "Y" : ""}${
-          args.months ?? months ? (args.months ?? months) + "M" : ""
-        }`
-      );
+      const y = args.years ?? years ? (args.years ?? years) + "Y" : "";
+      const m = args.months ?? months ? (args.months ?? months) + "M" : "";
+      const p = y || m ? "P" : "";
+      onChange(`${p}${y}${m}`);
     },
     [months, onChange, years]
   );
@@ -88,6 +87,9 @@ export function ConstraintYearsMonthsDuration({
 }
 
 function getYearsDuration(value: string) {
+  if (!value.includes("Y")) {
+    return "";
+  }
   const years = value.replace("P", "").split("Y")[0];
   if (years.length >= 1) {
     return !isNaN(parseInt(years)) ? years : "";
@@ -96,10 +98,17 @@ function getYearsDuration(value: string) {
 }
 
 function getMonthsDuration(value: string) {
-  const months = value.replace("P", "").split("Y")[1];
-  if (months && months.length >= 1) {
-    const monthsValue = months.replace("M", "");
-    return !isNaN(parseInt(monthsValue)) ? monthsValue : "";
+  if (!value.includes("M")) {
+    return "";
+  }
+  let months = value.replace("P", "").split("M")[0];
+  // if has year, remove it
+  if (value.includes("Y")) {
+    months = months.split("Y")[1];
+  }
+  // checks if has a value, and if its a number
+  if (months.length >= 1) {
+    return !isNaN(parseInt(months)) ? months : "";
   }
   return "";
 }
