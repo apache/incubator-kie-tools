@@ -237,7 +237,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       !e.dataTransfer.types.find(
         (t) =>
           t === MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE ||
-          t === MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS
+          t === MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS ||
+          t === MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE
       )
     ) {
       return;
