@@ -84,7 +84,7 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
         case DmnBuiltInDataType.Number:
           return !isNaN(parseFloat(recoveredValue)) || value === "";
         case DmnBuiltInDataType.Time:
-          return moment(recoveredValue, "HH:mm:ss", true).isValid() || value === "";
+          return moment(recoveredValue, "HH:mm:ssZZ", true).isValid() || value === "";
         case DmnBuiltInDataType.YearsMonthsDuration:
           return REGEX_YEARS_MONTH_DURATION.test(recoveredValue) || value === "";
         default:
