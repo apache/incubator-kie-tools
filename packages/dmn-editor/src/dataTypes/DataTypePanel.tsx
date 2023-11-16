@@ -133,11 +133,7 @@ export function DataTypePanel({
       }
 
       editItemDefinition(id, (itemDefinition) => {
-        const newItemDefinition = getNewItemDefinition({
-          ...partial,
-          "@_name": "New property",
-          typeRef: { __$$text: DmnBuiltInDataType.Undefined },
-        });
+        const newItemDefinition = getNewItemDefinition(partial);
         itemDefinition.itemComponent ??= [];
         itemDefinition.itemComponent[how](newItemDefinition);
       });

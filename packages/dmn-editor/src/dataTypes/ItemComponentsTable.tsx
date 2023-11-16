@@ -131,7 +131,12 @@ export function ItemComponentsTable({
             {!isReadonly && (
               <Button
                 variant={ButtonVariant.link}
-                onClick={() => addItemComponent(parent.itemDefinition["@_id"]!, "unshift")}
+                onClick={() =>
+                  addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
+                    "@_name": "New property",
+                    typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                  })
+                }
               >
                 <PlusCircleIcon />
               </Button>
@@ -314,7 +319,10 @@ export function ItemComponentsTable({
                                 variant={ButtonVariant.link}
                                 style={{ padding: "0 8px 0 0" }}
                                 onClick={() => {
-                                  addItemComponent(dt.itemDefinition["@_id"]!, "unshift");
+                                  addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
+                                    "@_name": "New property",
+                                    typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                                  });
                                   dmnEditorStoreApi.setState((state) => {
                                     state.dataTypesEditor.expandedItemComponentIds.push(dt.itemDefinition["@_id"]!);
                                   });
@@ -562,7 +570,12 @@ export function ItemComponentsTable({
                 <td colSpan={5}>
                   <Button
                     variant={ButtonVariant.link}
-                    onClick={() => addItemComponent(parent.itemDefinition["@_id"]!, "push")}
+                    onClick={() =>
+                      addItemComponent(parent.itemDefinition["@_id"]!, "push", {
+                        "@_name": "New property",
+                        typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                      })
+                    }
                     style={{ paddingLeft: 0 }}
                   >
                     <PlusCircleIcon />

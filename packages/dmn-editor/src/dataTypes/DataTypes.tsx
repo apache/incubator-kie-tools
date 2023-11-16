@@ -139,7 +139,10 @@ export function DataTypes() {
   return (
     <>
       {(dataTypesTree.length <= 0 && (
-        <DataTypesEmptyState onAdd={() => addTopLevelItemDefinition({})} onPaste={pasteTopLevelItemDefinition} />
+        <DataTypesEmptyState
+          onAdd={() => addTopLevelItemDefinition({ typeRef: { __$$text: DmnBuiltInDataType.Undefined } })}
+          onPaste={pasteTopLevelItemDefinition}
+        />
       )) || (
         <Drawer isExpanded={true} isInline={true} position={"left"} className={"kie-dmn-editor--data-types-container"}>
           <DrawerContent
@@ -168,7 +171,9 @@ export function DataTypes() {
                             <DropdownToggleAction
                               key="add-data-type-action"
                               aria-label="Add Data Type"
-                              onClick={() => addTopLevelItemDefinition({})}
+                              onClick={() =>
+                                addTopLevelItemDefinition({ typeRef: { __$$text: DmnBuiltInDataType.Undefined } })
+                              }
                             >
                               <PlusCircleIcon />
                             </DropdownToggleAction>,
