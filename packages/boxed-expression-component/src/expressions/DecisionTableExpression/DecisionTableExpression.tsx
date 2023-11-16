@@ -571,7 +571,7 @@ export function DecisionTableExpression(
             const currentNames = prev.input?.map((c) => c.name) ?? [];
 
             for (let i = 0; i < args.columnsCount; i++) {
-              const name = getNextAvailablePrefixedName(currentNames, "input");
+              const name = getNextAvailablePrefixedName(currentNames, "Input");
               currentNames.push(name);
 
               newInputClauses.push({
@@ -616,7 +616,7 @@ export function DecisionTableExpression(
             const currentOutputNames = prev.output?.map((c) => c.name) ?? [];
 
             for (let i = 0; i < args.columnsCount; i++) {
-              const name = getNextAvailablePrefixedName(currentOutputNames, "output");
+              const name = getNextAvailablePrefixedName(currentOutputNames, "Output");
               currentOutputNames.push(name);
 
               newOutputClauses.push({
@@ -661,7 +661,7 @@ export function DecisionTableExpression(
             const currentAnnotationNames = prev.annotations?.map((c) => c.name) ?? [];
 
             for (let i = 0; i < args.columnsCount; i++) {
-              const name = getNextAvailablePrefixedName(currentAnnotationNames, "annotation");
+              const name = getNextAvailablePrefixedName(currentAnnotationNames, "Annotations");
               currentAnnotationNames.push(name);
 
               newAnnotationsItems.push({

@@ -208,6 +208,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
         return getDefaultExpressionDefinitionByLogicType({
           logicType: logicType as ExpressionDefinitionLogicType,
           typeRef: typeRef ?? DmnBuiltInDataType.Undefined,
+          expressionHolderName: expression?.drgElement?.["@_name"],
           allTopLevelDataTypesByFeelName,
           getDefaultColumnWidth,
           getInputs: () => {

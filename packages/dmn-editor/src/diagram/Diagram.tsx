@@ -1102,11 +1102,15 @@ function DmnDiagramEmptyState({
                     },
                   });
 
+                  const drgElementIndex = (state.dmn.model.definitions.drgElement ?? []).length - 1;
+                  const drgElement = state.dmn.model.definitions.drgElement?.[drgElementIndex];
+
                   updateExpression({
                     definitions: state.dmn.model.definitions,
                     drdIndex: diagram.drdIndex,
-                    drgElementIndex: (state.dmn.model.definitions.drgElement ?? []).length - 1,
+                    drgElementIndex,
                     expression: getDefaultExpressionDefinitionByLogicType({
+                      expressionHolderName: drgElement?.["@_name"],
                       logicType: ExpressionDefinitionLogicType.DecisionTable,
                       allTopLevelDataTypesByFeelName: new Map(),
                       typeRef: DmnBuiltInDataType.Undefined,

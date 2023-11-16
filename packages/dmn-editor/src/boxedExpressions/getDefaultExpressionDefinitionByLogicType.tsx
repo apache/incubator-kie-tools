@@ -39,11 +39,13 @@ export function getDefaultExpressionDefinitionByLogicType({
   logicType,
   typeRef,
   allTopLevelDataTypesByFeelName,
+  expressionHolderName,
   getInputs,
   getDefaultColumnWidth,
 }: {
   logicType: ExpressionDefinitionLogicType;
   typeRef: string;
+  expressionHolderName?: string;
   allTopLevelDataTypesByFeelName: DataTypeIndex;
   getInputs?: () => { name: string; typeRef: string | undefined }[] | undefined;
   getDefaultColumnWidth?: (args: { name: string; typeRef: string | undefined }) => number | undefined;
@@ -211,15 +213,12 @@ export function getDefaultExpressionDefinitionByLogicType({
     return relationExpression;
   } else if (logicType === ExpressionDefinitionLogicType.DecisionTable) {
     const singleOutputColumn = {
-      name: dataType?.itemDefinition["@_name"] ?? "output-1",
+      name: expressionHolderName || "Output 1",
       typeRef: (dataType?.feelName as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
     };
     const singleInputColumn = {
-      name: "input-1",
+      name: "Input 1",
       typeRef: DmnBuiltInDataType.Undefined,
-    };
-    const annotationColumn = {
-      name: "annotation-1",
     };
 
     const input = getInputs?.()?.map((input) => {
@@ -273,10 +272,8 @@ export function getDefaultExpressionDefinitionByLogicType({
       output,
       annotations: [
         {
-          name: annotationColumn.name,
-          width:
-            getDefaultColumnWidth?.({ name: annotationColumn.name, typeRef: undefined }) ??
-            DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+          name: "Annotations",
+          width: DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
         },
       ],
       rules: [
