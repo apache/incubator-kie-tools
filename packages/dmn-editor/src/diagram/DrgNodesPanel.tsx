@@ -4,18 +4,22 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { useDmnEditorStore } from "../store/Store";
+import { DiagramNodesPanel, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Unpacked } from "../tsExt/tsExt";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE = "kie-dmn-editor--drg-node";
 
 export function DrgNodesPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { dmnShapesByHref } = useDmnEditorDerivedStore();
+
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const [filter, setFilter] = useState("");
 
@@ -63,6 +67,16 @@ export function DrgNodesPanel() {
           <TextContent>
             <Text component="h3">DRG Nodes</Text>
           </TextContent>
+          <Button
+            variant={ButtonVariant.plain}
+            onClick={() =>
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.openNodesPanel = DiagramNodesPanel.NONE;
+              })
+            }
+          >
+            <TimesIcon />
+          </Button>
         </Flex>
 
         <SearchInput

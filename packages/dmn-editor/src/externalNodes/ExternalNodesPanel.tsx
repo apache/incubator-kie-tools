@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { DmnEditorTab, useDmnEditorStoreApi } from "../store/Store";
+import { DiagramNodesPanel, DmnEditorTab, useDmnEditorStoreApi } from "../store/Store";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
@@ -13,13 +13,13 @@ import {
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { DmnObjectListItem } from "./DmnObjectListItem";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER } from "../includedModels/IncludedModels";
 import { useDmnEditor } from "../DmnEditorContext";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 
 export type ExternalNode = {
   externalDrgElementNamespace: string;
@@ -79,6 +79,16 @@ export function ExternalNodesPanel() {
               <TextContent>
                 <Text component="h3">External nodes</Text>
               </TextContent>
+              <Button
+                variant={ButtonVariant.plain}
+                onClick={() =>
+                  dmnEditorStoreApi.setState((state) => {
+                    state.diagram.openNodesPanel = DiagramNodesPanel.NONE;
+                  })
+                }
+              >
+                <TimesIcon />
+              </Button>
             </Flex>
 
             <Divider style={{ marginBottom: "12px" }} />
