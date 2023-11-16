@@ -396,6 +396,7 @@
   overflow: auto;
   box-shadow: 0px 5px 10px 0px lightgray;
   background: white;
+  max-width: 400px;
   width: max-content;
 }
 .kie-dmn-editor--external-nodes-panel-toggle {
