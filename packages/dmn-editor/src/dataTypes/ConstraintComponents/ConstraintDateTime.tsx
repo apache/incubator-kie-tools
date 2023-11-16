@@ -1,16 +1,7 @@
 import * as React from "react";
-import { useCallback, useRef, useState } from "react";
-import { DatePicker } from "@patternfly/react-core/dist/js/components/DatePicker";
-import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker";
-import "./Constraint.css";
-import "./ConstraintDate.css";
-import "./ConstraintTime.css";
+import { useCallback, useState } from "react";
 import "./ConstraintDateTime.css";
 import { ConstraintProps } from "./Constraint";
-import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
-import { useDmnEditor } from "../../DmnEditorContext";
-import { useInViewSelect } from "../../responsiveness/useInViewSelect";
 import { ConstraintTime } from "./ConstraintTime";
 import { ConstraintDate } from "./ConstraintDate";
 

@@ -19,15 +19,14 @@ export const ENUM_SEPARATOR = ",";
 export function ConstraintsEnum({
   isReadonly,
   value,
-  savedValue,
+  expressionValue,
   type,
   typeHelper,
   onSave,
   isDisabled,
 }: ConstraintComponentProps) {
-  const enumValues = useMemo(() => isEnum(value, typeHelper.check) ?? [], [typeHelper.check, value]);
-  const [add, setAdd] = useState<boolean>(() => (enumValues.length === 0 ? true : false));
-  const [valuesUuid, setValuesUuid] = useState((enumValues ?? [])?.map((_) => generateUuid()));
+  const enumValues = useMemo(() => isEnum(value, typeHelper.check) ?? [""], [typeHelper.check, value]);
+  const [valuesUuid, setValuesUuid] = useState((enumValues ?? [""])?.map((_) => generateUuid()));
   const isItemValid = useMemo(
     () => enumValues.map((value, i, array) => array.filter((e) => e === value).length <= 1),
     [enumValues]
@@ -35,7 +34,6 @@ export function ConstraintsEnum({
   const [focusOwner, setFocusOwner] = useState("");
 
   const onAdd = useCallback(() => {
-    setAdd(true);
     setValuesUuid((prev) => {
       if (prev[enumValues.length] === undefined) {
         const newValuesUuid = [...prev];
@@ -44,16 +42,14 @@ export function ConstraintsEnum({
       }
       return prev;
     });
+    onSave(enumValues.join(`${ENUM_SEPARATOR} `) + ENUM_SEPARATOR);
     setFocusOwner("");
-  }, [enumValues.length]);
+  }, [onSave, enumValues]);
 
   const onRemove = useCallback(
     (index: number) => {
       const newValues = [...enumValues];
       newValues.splice(index, 1);
-      if (newValues.length === 0) {
-        setAdd(true);
-      }
 
       setValuesUuid((prev) => {
         const newUuids = [...prev];
@@ -85,25 +81,6 @@ export function ConstraintsEnum({
     });
   }, []);
 
-  const onChangeNew = useCallback(
-    (newValue: string) => {
-      setAdd(false);
-      const newValues = [...enumValues];
-      newValues[newValues.length] = typeHelper.transform(newValue);
-
-      setValuesUuid((prev) => {
-        if (prev[newValues.length - 1] === undefined) {
-          const newValuesUuid = [...prev];
-          newValuesUuid[newValues.length - 1] = generateUuid();
-          return newValuesUuid;
-        }
-        return prev;
-      });
-      onSave(newValues.join(`${ENUM_SEPARATOR} `));
-    },
-    [enumValues, onSave, typeHelper]
-  );
-
   const onChangeItem = useCallback(
     (newValue, index) => {
       const newValues = [...enumValues];
@@ -126,7 +103,7 @@ export function ConstraintsEnum({
             <EnumElement
               id={`enum-element-${index}`}
               isDisabled={isReadonly || isDisabled}
-              initialValue={typeHelper.recover(value ?? "")}
+              initialValue={typeHelper.recover(value) ?? ""}
               onChange={(newValue) => onChangeItem(newValue, index)}
               onRemove={() => onRemove(index)}
               isValid={isItemValid[index]}
@@ -135,7 +112,7 @@ export function ConstraintsEnum({
               typeHelper={typeHelper}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  setAdd(true);
+                  onAdd();
                 }
               }}
             />
@@ -143,7 +120,7 @@ export function ConstraintsEnum({
         </Draggable>
       );
     },
-    [focusOwner, isDisabled, isItemValid, isReadonly, onChangeItem, onRemove, typeHelper, valuesUuid]
+    [focusOwner, isDisabled, isItemValid, isReadonly, onAdd, onChangeItem, onRemove, typeHelper, valuesUuid]
   );
 
   return (
@@ -165,7 +142,7 @@ export function ConstraintsEnum({
               values={enumValues}
               draggableItem={draggableItem}
             />
-            {(add || enumValues.length === 0) && (
+            {/* {(enumValues.length === 0) && (
               <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                 <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
                 <li style={{ marginLeft: "20px", flexGrow: 1, listStyleType: "initial" }}>
@@ -182,7 +159,7 @@ export function ConstraintsEnum({
                   />
                 </li>
               </div>
-            )}
+            )} */}
           </ul>
         </div>
       </div>
@@ -196,7 +173,7 @@ export function ConstraintsEnum({
       </Button>
       <br />
       <br />
-      <ConstraintsExpression isReadonly={true} value={savedValue ?? ""} type={type} />
+      <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
     </div>
   );
 }
@@ -240,7 +217,7 @@ function EnumElement({
           backgroundColor: "transparent",
           outline: "none",
         },
-        value: value.trim(),
+        value,
         focusOwner,
         setFocusOwner,
         isValid,

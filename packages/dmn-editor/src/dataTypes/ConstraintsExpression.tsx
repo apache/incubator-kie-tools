@@ -11,7 +11,6 @@ import { TypeHelper } from "./Constraints";
 export function ConstraintsExpression({
   isReadonly,
   value,
-  type,
   onSave,
 }: {
   isReadonly: boolean;
@@ -23,6 +22,7 @@ export function ConstraintsExpression({
   isDisabled?: boolean;
 }) {
   const [preview, setPreview] = useState(value ?? "");
+  const [editingValue, setEditingValue] = useState(value);
   const onFeelChange = useCallback(
     (_, content, preview) => {
       onSave?.(content.trim());
@@ -66,7 +66,7 @@ export function ConstraintsExpression({
             <p style={{ fontStyle: "italic" }}>{`<None>`}</p>
           ))}
         <FeelInput
-          value={value}
+          value={isReadonly ? value : editingValue}
           onChange={onFeelChange}
           onPreviewChanged={setPreview}
           enabled={!isReadonly}

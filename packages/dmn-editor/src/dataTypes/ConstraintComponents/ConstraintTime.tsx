@@ -55,10 +55,13 @@ const UTC_NEGATIVE_TIMEZONES = [
 export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
   const [time, setTime] = useState(() => (value.includes("+") ? value.split("+")[0] : value.split("-")[0]));
   const [timezone, setTimezone] = useState<string>(() =>
-    value.includes("+") ? value.split("+")[1] : value.includes("-") ? value.split("-")[1] : UTC_POSITEVE_TIMEZONES[0]
+    value.includes("+")
+      ? `+${value.split("+")[1]}`
+      : value.includes("-")
+      ? `-${value.split("-")[1]}`
+      : UTC_POSITEVE_TIMEZONES[0]
   );
   const [isSelectTimezoneOpen, setSelectTimezoneOpen] = useState(false);
-
   const { dmnEditorRootElementRef } = useDmnEditor();
   const toggleRef = useRef<HTMLButtonElement>(null);
   const inViewTimezoneSelect = useInViewSelect(dmnEditorRootElementRef, toggleRef);

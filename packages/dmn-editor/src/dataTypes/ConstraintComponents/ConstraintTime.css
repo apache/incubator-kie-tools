@@ -20,6 +20,12 @@
   width: 120px;
 }
 
+.kie-dmn-editor--constraint-time-timezone > button {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent;
+}
+
 .kie-dmn-editor--constraint-time-timezone-invalid > button {
   color: red;
   text-decoration: red dotted underline;

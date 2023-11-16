@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useCallback } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
@@ -13,27 +13,18 @@ const CONSTRAINT_END_ID = "end";
 export function ConstraintsRange({
   isReadonly,
   value,
-  savedValue,
+  expressionValue,
   type,
   typeHelper,
   onSave,
   isDisabled,
 }: ConstraintComponentProps) {
-  const updateStart = useCallback(
-    (value?: string): string => {
-      return typeHelper.recover(isRange(value ?? "", typeHelper.check)?.[0] ?? "");
-    },
-    [typeHelper]
+  const start = useMemo(
+    () => typeHelper.recover(isRange(value ?? "", typeHelper.check)?.[0]) ?? "",
+    [typeHelper, value]
   );
-
-  const updateEnd = useCallback(
-    (value?: string): string => {
-      return typeHelper.recover(isRange(value ?? "", typeHelper.check)?.[1] ?? "");
-    },
-    [typeHelper]
-  );
-
-  const updateIncludeStart = useCallback((value?: string): boolean => {
+  const end = useMemo(() => typeHelper.recover(isRange(value ?? "", typeHelper.check)?.[1]) ?? "", [typeHelper, value]);
+  const includeStart = useMemo(() => {
     if (value === undefined) {
       return true;
     }
@@ -44,9 +35,8 @@ export function ConstraintsRange({
       return false;
     }
     return true;
-  }, []);
-
-  const updateIncludeEnd = useCallback((value?: string): boolean => {
+  }, [value]);
+  const includeEnd = useMemo(() => {
     if (value === undefined) {
       return false;
     }
@@ -57,19 +47,7 @@ export function ConstraintsRange({
       return false;
     }
     return false;
-  }, []);
-
-  const [start, setStart] = useState(() => updateStart(value));
-  const [end, setEnd] = useState(() => updateEnd(value));
-  const [includeStart, setIncludeStart] = useState(() => updateIncludeStart(value));
-  const [includeEnd, setIncludeEnd] = useState(() => updateIncludeEnd(value));
-
-  useEffect(() => {
-    setStart(updateStart(value));
-    setEnd(updateEnd(value));
-    setIncludeStart(updateIncludeStart(value));
-    setIncludeEnd(updateIncludeEnd(value));
-  }, [updateIncludeEnd, updateIncludeStart, updateStart, updateEnd, value]);
+  }, [value]);
 
   const isStartValid = useCallback(
     (args: { includeEnd: boolean; start: string; end: string }) => {
@@ -91,24 +69,18 @@ export function ConstraintsRange({
 
   const onInternalChange = useCallback(
     (args?: { start?: string; end?: string; includeStart?: boolean; includeEnd?: boolean }) => {
+      if (args === undefined) {
+        return;
+      }
+
       // arg start is empty and end is empty
-      if (args !== undefined && (args?.start === undefined || args.start === "") && (end === undefined || end === "")) {
+      if ((args?.start === undefined || args.start === "") && (end === undefined || end === "")) {
         onSave("");
       }
 
       // arg end is empty and start is empty
-      if (args !== undefined && (args?.end === undefined || args.end === "") && (start === undefined || start === "")) {
+      if ((args?.end === undefined || args.end === "") && (start === undefined || start === "")) {
         onSave("");
-      }
-
-      // arg start or arg end is empty
-      if ((args?.start !== undefined && args.start === "") || (args?.end !== undefined && args.end === "")) {
-        return;
-      }
-
-      // arg start and is empty and current is empty or arg end is empty and current is empty
-      if ((args?.start === undefined && start === "") || (args?.end === undefined && end === "")) {
-        return;
       }
 
       onSave(
@@ -122,7 +94,6 @@ export function ConstraintsRange({
 
   const onStartChange = useCallback(
     (newStartValue: string) => {
-      setStart(newStartValue);
       onInternalChange({ start: newStartValue });
     },
     [onInternalChange]
@@ -130,25 +101,18 @@ export function ConstraintsRange({
 
   const onEndChange = useCallback(
     (newEndValue: string) => {
-      setEnd(newEndValue);
       onInternalChange({ end: newEndValue });
     },
     [onInternalChange]
   );
 
   const onIncludeStartToogle = useCallback(() => {
-    setIncludeStart((prev) => {
-      onInternalChange({ includeStart: !prev });
-      return !prev;
-    });
-  }, [onInternalChange]);
+    onInternalChange({ includeStart: !includeStart });
+  }, [includeStart, onInternalChange]);
 
   const onIncludeEndToogle = useCallback(() => {
-    setIncludeEnd((prev) => {
-      onInternalChange({ includeEnd: !prev });
-      return !prev;
-    });
-  }, [onInternalChange]);
+    onInternalChange({ includeEnd: !includeEnd });
+  }, [includeEnd, onInternalChange]);
 
   const messages = useCallback(
     (value: string, operator: string) => {
@@ -174,14 +138,6 @@ export function ConstraintsRange({
     },
     [type]
   );
-
-  const nextStartValue = useMemo(() => {
-    return messages(start, "+");
-  }, [messages, start]);
-
-  const previousEndValue = useMemo(() => {
-    return messages(end, "-");
-  }, [messages, end]);
 
   return (
     <div>
@@ -244,7 +200,7 @@ export function ConstraintsRange({
             <HelperTextItem variant="indeterminate">
               {includeStart
                 ? "The starting value will be included in the range."
-                : `The starting value will not be included in the range. ${nextStartValue}`}
+                : `The starting value will not be included in the range. ${messages(start, "+")}`}
             </HelperTextItem>
           </HelperText>
         </div>
@@ -303,13 +259,13 @@ export function ConstraintsRange({
             <HelperTextItem variant="indeterminate">
               {includeEnd
                 ? "The ending value will be included in the range."
-                : `The ending value will not be included in the range. ${previousEndValue}`}
+                : `The ending value will not be included in the range. ${messages(end, "-")}`}
             </HelperTextItem>
           </HelperText>
         </div>
       </div>
       <br />
-      <ConstraintsExpression isReadonly={true} value={savedValue ?? ""} type={type} />
+      <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
     </div>
   );
 }
