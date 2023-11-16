@@ -105,7 +105,7 @@ export function DataTypes() {
       dmnEditorStoreApi.setState((state) => {
         const newItemDefinition = _addTopLevelItemDefinition({
           definitions: state.dmn.model.definitions,
-          partial: { ...partial, typeRef: { __$$text: DmnBuiltInDataType.Undefined } },
+          partial,
         });
         state.dataTypesEditor.activeItemDefinitionId = newItemDefinition["@_id"];
       });
@@ -138,7 +138,9 @@ export function DataTypes() {
 
   return (
     <>
-      {(dataTypesTree.length <= 0 && <DataTypesEmptyState onAdd={() => addTopLevelItemDefinition({})} />) || (
+      {(dataTypesTree.length <= 0 && (
+        <DataTypesEmptyState onAdd={() => addTopLevelItemDefinition({})} onPaste={pasteTopLevelItemDefinition} />
+      )) || (
         <Drawer isExpanded={true} isInline={true} position={"left"} className={"kie-dmn-editor--data-types-container"}>
           <DrawerContent
             panelContent={

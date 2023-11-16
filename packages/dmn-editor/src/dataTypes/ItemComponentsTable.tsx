@@ -38,6 +38,7 @@ import { isRange } from "./ConstraintsRange";
 import { constraintTypeHelper } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
+import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -439,7 +440,9 @@ export function ItemComponentsTable({
                                       "@_isCollection": false,
                                     });
 
-                                    const newItemDefinitionCopy = JSON.parse(JSON.stringify(newItemDefinition)); // Necessary because idRandomizer will mutate this object.
+                                    const newItemDefinitionCopy: DMN15__tItemDefinition = JSON.parse(
+                                      JSON.stringify(newItemDefinition)
+                                    ); // Necessary because idRandomizer will mutate this object.
 
                                     getNewDmnIdRandomizer()
                                       .ack({
@@ -454,7 +457,7 @@ export function ItemComponentsTable({
                                     // Creating a new type is fine, but only update the current type if it is not readOnly
                                     if (!isReadonly) {
                                       itemDefinition["@_id"] = generateUuid();
-                                      itemDefinition.typeRef = newItemDefinitionCopy["@_name"];
+                                      itemDefinition.typeRef = { __$$text: newItemDefinitionCopy["@_name"] };
                                       itemDefinition.itemComponent = undefined;
                                     }
                                   }

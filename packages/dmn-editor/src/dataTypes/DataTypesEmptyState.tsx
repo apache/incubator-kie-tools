@@ -6,11 +6,13 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStatePrimary,
+  EmptyStateSecondaryActions,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 
-export function DataTypesEmptyState({ onAdd }: { onAdd: () => void }) {
+export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onPaste: () => void }) {
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
@@ -27,6 +29,15 @@ export function DataTypesEmptyState({ onAdd }: { onAdd: () => void }) {
             Create a custom data type
           </Button>
         </EmptyStatePrimary>
+        <br />
+        <br />
+        or
+        <br />
+        <EmptyStateSecondaryActions>
+          <Button variant={ButtonVariant.link} onClick={onPaste} icon={<PasteIcon />}>
+            Paste data type
+          </Button>
+        </EmptyStateSecondaryActions>
       </EmptyState>
     </Flex>
   );
