@@ -59,7 +59,7 @@ export function DataTypePanel({
         if (isChecked) {
           itemDefinition.typeRef = undefined;
           itemDefinition.itemComponent = [];
-          itemDefinition.typeConstraint = undefined;
+          itemDefinition.allowedValues = undefined;
         } else {
           itemDefinition.typeRef = { __$$text: DmnBuiltInDataType.Any };
           itemDefinition.itemComponent = undefined;
@@ -77,7 +77,7 @@ export function DataTypePanel({
 
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
         itemDefinition["@_isCollection"] = isChecked;
-        itemDefinition.typeConstraint = undefined;
+        itemDefinition.allowedValues = undefined;
       });
     },
     [dataType.itemDefinition, editItemDefinition, isReadonly]
@@ -93,7 +93,7 @@ export function DataTypePanel({
         itemDefinition.typeRef = { __$$text: typeRef };
         const originalItemDefinition = original(itemDefinition);
         if (originalItemDefinition?.typeRef?.__$$text !== typeRef) {
-          itemDefinition.typeConstraint = undefined;
+          itemDefinition.allowedValues = undefined;
         }
       });
     },

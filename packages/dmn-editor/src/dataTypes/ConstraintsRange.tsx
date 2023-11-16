@@ -65,12 +65,10 @@ export function ConstraintsRange({
   const [includeEnd, setIncludeEnd] = useState(() => updateIncludeEnd(value));
 
   useEffect(() => {
-    if (value !== undefined) {
-      setStart(updateStart(value));
-      setEnd(updateEnd(value));
-      setIncludeStart(updateIncludeStart(value));
-      setIncludeEnd(updateIncludeEnd(value));
-    }
+    setStart(updateStart(value));
+    setEnd(updateEnd(value));
+    setIncludeStart(updateIncludeStart(value));
+    setIncludeEnd(updateIncludeEnd(value));
   }, [updateIncludeEnd, updateIncludeStart, updateStart, updateEnd, value]);
 
   const isStartValid = useCallback(

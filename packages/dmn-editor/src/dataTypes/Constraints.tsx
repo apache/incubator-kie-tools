@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useRef, useState, useLayoutEffect } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
@@ -24,8 +24,6 @@ import {
 } from "./ConstraintComponents/ConstraintYearsMonthsDuration";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { ConstraintProps } from "./ConstraintComponents/Constraint";
-import { useCallbackBeforeUnmount } from "../callbackBeforeUnmount/useCallbackBeforeUnmount";
-import { usePrevious } from "../DmnEditor";
 
 export type TypeHelper = {
   check: (value: string) => boolean;
@@ -214,15 +212,12 @@ export function Constraints({
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
 }) {
-  const typeConstraint = useMemo(
-    () => itemDefinition?.typeConstraint ?? itemDefinition?.allowedValues,
-    [itemDefinition?.allowedValues, itemDefinition?.typeConstraint]
-  );
+  const allowedValues = useMemo(() => itemDefinition?.allowedValues, [itemDefinition?.allowedValues]);
   const constraintValue = useMemo(
-    () => typeConstraint?.text.__$$text ?? typeConstraint?.text.__$$text,
-    [typeConstraint?.text.__$$text]
+    () => allowedValues?.text.__$$text ?? allowedValues?.text.__$$text,
+    [allowedValues?.text.__$$text]
   );
-  const kieConstraintType = useMemo(() => typeConstraint?.["@_kie:constraintType"], [typeConstraint]);
+  const kieConstraintType = useMemo(() => allowedValues?.["@_kie:constraintType"], [allowedValues]);
   const typeRef: DmnBuiltInDataType = useMemo(
     () => (itemDefinition?.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
     [itemDefinition?.typeRef?.__$$text]
@@ -263,7 +258,21 @@ export function Constraints({
   }, [enumToKieConstraintType, typeRef]);
 
   // Correctly set the selection on the first load
-  const selectedConstraint = useMemo<ConstraintsType>(() => {
+  // This ref is necessary to sync with external events.
+  // During the internal change it will set to false, as the selected constraint will already
+  // be updated. Everytime the constraintValue or kieConstraintType is updated, it will be reseted to true
+  // which will enable to update from external events.
+  const shouldUpdateSelection = useRef(false);
+  const [selectedConstraint, setSelectedConstraint] = useState<ConstraintsType>(() => {
+    if (kieConstraintType === undefined && constraintValue && isConstraintEnabled.enumeration && isConstraintEnum) {
+      return ConstraintsType.ENUMERATION;
+    }
+    if (kieConstraintType === undefined && constraintValue && isConstraintEnabled.range && isConstraintRange) {
+      return ConstraintsType.RANGE;
+    }
+    if (kieConstraintType === undefined && constraintValue) {
+      return ConstraintsType.EXPRESSION;
+    }
     if (isConstraintEnabled.enumeration && kieConstraintType === "enumeration") {
       return ConstraintsType.ENUMERATION;
     }
@@ -273,28 +282,30 @@ export function Constraints({
     if (isConstraintEnabled.expression && kieConstraintType === "expression") {
       return ConstraintsType.EXPRESSION;
     }
-    if (typeRef === DmnBuiltInDataType.Any) {
-      return ConstraintsType.EXPRESSION;
+    return ConstraintsType.NONE;
+  });
+
+  useLayoutEffect(() => {
+    if (!shouldUpdateSelection.current) {
+      shouldUpdateSelection.current = true;
+      return;
     }
-    if (constraintValue === undefined) {
-      return ConstraintsType.NONE;
+    if (isConstraintEnabled.enumeration && kieConstraintType === "enumeration") {
+      setSelectedConstraint(ConstraintsType.ENUMERATION);
     }
-    if (isConstraintEnabled.enumeration && isConstraintEnum) {
-      return ConstraintsType.ENUMERATION;
+    if (isConstraintEnabled.range && kieConstraintType === "range") {
+      setSelectedConstraint(ConstraintsType.RANGE);
     }
-    if (isConstraintEnabled.range && isConstraintRange) {
-      return ConstraintsType.RANGE;
+    if (isConstraintEnabled.expression && kieConstraintType === "expression") {
+      setSelectedConstraint(ConstraintsType.EXPRESSION);
     }
-    return ConstraintsType.EXPRESSION;
+    setSelectedConstraint(ConstraintsType.NONE);
   }, [
     constraintValue,
     isConstraintEnabled.enumeration,
     isConstraintEnabled.expression,
     isConstraintEnabled.range,
-    isConstraintEnum,
-    isConstraintRange,
     kieConstraintType,
-    typeRef,
   ]);
 
   // Updates the XML value only if the constraint is valid
@@ -307,26 +318,20 @@ export function Constraints({
       }
 
       editItemDefinition(itemDefinition["@_id"]!, (itemDefinition) => {
-        if (args.value === undefined) {
-          itemDefinition.typeConstraint = undefined;
-          return;
-        }
-
         if (
-          (args.value === itemDefinition.allowedValues?.text?.__$$text ||
-            args.value === itemDefinition.typeConstraint?.text?.__$$text) &&
-          (kieConstraintType === itemDefinition.allowedValues?.["@_kie:constraintType"] ||
-            kieConstraintType === itemDefinition.typeConstraint?.["@_kie:constraintType"])
+          args.value === itemDefinition.allowedValues?.text?.__$$text ||
+          (args.value === "" && itemDefinition.allowedValues?.text?.__$$text === undefined)
         ) {
           return;
         }
 
-        // If DMN has an allowedValues, erase it as it will be replaced by a typeConstraint.
-        if (itemDefinition.allowedValues?.text?.__$$text || itemDefinition.allowedValues?.["@_kie:constraintType"]) {
+        shouldUpdateSelection.current = false;
+        if (args.value === undefined || args.value === "") {
           itemDefinition.allowedValues = undefined;
+          return;
         }
 
-        itemDefinition.typeConstraint = {
+        itemDefinition.allowedValues = {
           text: { __$$text: args.value },
           "@_id": itemDefinition?.["@_id"],
           "@_kie:constraintType": kieConstraintType,
@@ -336,92 +341,59 @@ export function Constraints({
     [editItemDefinition, enumToKieConstraintType, isReadonly, itemDefinition]
   );
 
-  // On the component unmount this hook will run
-  // In case the constraintValue is null or undefined it will erase the kie:constraintType
-  // In case the kie:constraintType is an enumeration and the valeu isn't a valid enumeration it will check if the
-  // previous selected constraint was a range. if it has a valid range it will change to a range, or it will change
-  // to an expression. It do the same for the range.
-  const previousSelectedConstraint = usePrevious(selectedConstraint);
-  useCallbackBeforeUnmount(
-    useCallback(() => {
-      if (constraintValue === undefined || constraintValue === "") {
-        onInternalChange({
-          constraintType: ConstraintsType.NONE,
-          value: undefined,
-        });
-      }
-      if (kieConstraintType === "enumeration" && !isConstraintEnum) {
-        if (previousSelectedConstraint === ConstraintsType.RANGE && !isConstraintRange) {
-          onInternalChange({
-            constraintType: ConstraintsType.EXPRESSION,
-            value: constraintValue,
-          });
-        }
-        onInternalChange({
-          constraintType: ConstraintsType.RANGE,
-          value: constraintValue,
-        });
-      }
-      if (kieConstraintType === "range" && !isConstraintRange) {
-        if (previousSelectedConstraint === ConstraintsType.ENUMERATION && !isConstraintEnum) {
-          onInternalChange({
-            constraintType: ConstraintsType.EXPRESSION,
-            value: constraintValue,
-          });
-        }
-        onInternalChange({
-          constraintType: ConstraintsType.ENUMERATION,
-          value: constraintValue,
-        });
-      }
-    }, [
-      constraintValue,
-      isConstraintEnum,
-      isConstraintRange,
-      kieConstraintType,
-      onInternalChange,
-      previousSelectedConstraint,
-    ])
-  );
-
   const onToggleGroupChange = useCallback(
     (newSelection, event) => {
       if (!newSelection) {
         return;
       }
       const selection = event.currentTarget.id as ConstraintsType;
+      setSelectedConstraint((prevSelection) => {
+        if (selection === ConstraintsType.NONE) {
+          onInternalChange({
+            constraintType: ConstraintsType.NONE,
+            value: undefined,
+          });
+          return selection;
+        }
 
-      if (selection === ConstraintsType.NONE) {
-        onInternalChange({
-          constraintType: ConstraintsType.NONE,
-          value: undefined,
-        });
-        return;
-      }
+        if (prevSelection === ConstraintsType.EXPRESSION && selection === ConstraintsType.ENUMERATION) {
+          onInternalChange({
+            constraintType: ConstraintsType.ENUMERATION,
+            value: constraintValue ?? "",
+          });
+          return selection;
+        } else if (selection === ConstraintsType.ENUMERATION) {
+          onInternalChange({
+            constraintType: ConstraintsType.ENUMERATION,
+            value: undefined,
+          });
+          return selection;
+        }
 
-      if (selection === ConstraintsType.ENUMERATION) {
-        onInternalChange({
-          constraintType: ConstraintsType.ENUMERATION,
-          value: constraintValue ?? "",
-        });
-        return;
-      }
+        if (prevSelection === ConstraintsType.EXPRESSION && selection === ConstraintsType.RANGE) {
+          onInternalChange({
+            constraintType: ConstraintsType.RANGE,
+            value: constraintValue ?? "",
+          });
+          return selection;
+        } else if (selection === ConstraintsType.RANGE) {
+          onInternalChange({
+            constraintType: ConstraintsType.RANGE,
+            value: undefined,
+          });
+          return selection;
+        }
 
-      if (selection === ConstraintsType.RANGE) {
-        onInternalChange({
-          constraintType: ConstraintsType.RANGE,
-          value: constraintValue ?? "",
-        });
-        return;
-      }
+        if (selection === ConstraintsType.EXPRESSION) {
+          onInternalChange({
+            constraintType: ConstraintsType.EXPRESSION,
+            value: constraintValue ?? "",
+          });
+          return selection;
+        }
 
-      if (selection === ConstraintsType.EXPRESSION) {
-        onInternalChange({
-          constraintType: ConstraintsType.EXPRESSION,
-          value: constraintValue ?? "",
-        });
-        return;
-      }
+        return selection;
+      });
     },
     [constraintValue, onInternalChange]
   );

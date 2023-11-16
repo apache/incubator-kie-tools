@@ -238,27 +238,17 @@ export function ItemComponentsTable({
                 level * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
 
               const constraintLabel = () => {
-                if (
-                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "enumeration" ||
-                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "enumeration"
-                ) {
+                if (dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "enumeration") {
                   return <>Enumeration</>;
                 }
-                if (
-                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "expression" ||
-                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "expression"
-                ) {
+                if (dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "expression") {
                   return <>Expression</>;
                 }
-                if (
-                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "range" ||
-                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "range"
-                ) {
+                if (dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "range") {
                   return <>Range</>;
                 }
 
-                const constraintValue =
-                  dt.itemDefinition.typeConstraint?.text.__$$text ?? dt.itemDefinition.allowedValues?.text.__$$text;
+                const constraintValue = dt.itemDefinition.allowedValues?.text.__$$text;
                 const typeRef = (dt.itemDefinition.typeRef?.__$$text ??
                   DmnBuiltInDataType.Undefined) as DmnBuiltInDataType;
                 if (constraintValue === undefined) {
@@ -354,10 +344,10 @@ export function ItemComponentsTable({
                               if (isChecked) {
                                 itemDefinition.typeRef = undefined;
                                 itemDefinition.itemComponent = [];
-                                itemDefinition.typeConstraint = undefined;
+                                itemDefinition.allowedValues = undefined;
                               } else {
                                 itemDefinition.typeRef = { __$$text: DmnBuiltInDataType.Any };
-                                itemDefinition.itemComponent = undefined;
+                                itemDefinition.allowedValues = undefined;
                               }
                             });
                           }}
@@ -373,7 +363,7 @@ export function ItemComponentsTable({
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                                 itemDefinition.typeRef = { __$$text: newDataType };
                                 if (itemDefinition.typeRef?.__$$text !== newDataType) {
-                                  itemDefinition.typeConstraint = undefined;
+                                  itemDefinition.allowedValues = undefined;
                                 }
                               });
                             }}
@@ -387,7 +377,7 @@ export function ItemComponentsTable({
                           onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               itemDefinition["@_isCollection"] = isChecked;
-                              itemDefinition.typeConstraint = undefined;
+                              itemDefinition.allowedValues = undefined;
                             });
                           }}
                         />
