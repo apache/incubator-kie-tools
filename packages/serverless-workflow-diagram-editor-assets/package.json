@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
     "cpr": "^3.0.1",
     "rimraf": "^3.0.2"
   }

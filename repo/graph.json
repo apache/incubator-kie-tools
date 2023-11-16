@@ -61,7 +61,6 @@
       { "id": "@kie-tools/chrome-extension-test-helper" },
       { "id": "chrome-extension-serverless-workflow-editor" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-assets" },
-      { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-text-editor" },
       { "id": "@kie-tools/cors-proxy" },
       { "id": "@kie-tools/cors-proxy-api" },
@@ -139,6 +138,7 @@
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
+      { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
@@ -277,11 +277,6 @@
       },
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-combined-editor",
         "target": "@kie-tools/serverless-workflow-text-editor",
         "weight": 1
       },
@@ -381,8 +376,8 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-workflow-diagram-editor-envelope",
-        "target": "@kie-tools/kie-bc-editors",
+        "source": "@kie-tools/serverless-workflow-diagram-editor-assets",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
         "weight": 1
       },
       { "source": "@kie-tools/serverless-workflow-text-editor", "target": "@kie-tools-core/editor", "weight": 1 },
@@ -848,6 +843,11 @@
       },
       { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
       {
+        "source": "@kie-tools/serverless-workflow-diagram-editor-envelope",
+        "target": "@kie-tools/kie-bc-editors",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/serverless-workflow-language-service",
         "target": "@kie-tools/json-yaml-language-service",
         "weight": 1
@@ -868,11 +868,6 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
-      {
-        "source": "swf-vscode-extension",
-        "target": "@kie-tools/serverless-workflow-diagram-editor-envelope",
-        "weight": 1
-      },
       { "source": "swf-vscode-extension", "target": "@kie-tools/serverless-workflow-language-service", "weight": 1 },
       { "source": "swf-vscode-extension", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       {
