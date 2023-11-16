@@ -58,7 +58,9 @@ export function DecisionProperties({
           typeRef={decision.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).variable!["@_typeRef"] = newTypeRef;
+              const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
+              drgElement.variable ??= { "@_name": decision["@_name"] };
+              drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
         />

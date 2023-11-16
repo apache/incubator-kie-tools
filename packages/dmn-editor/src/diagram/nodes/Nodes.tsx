@@ -101,15 +101,17 @@ export const InputDataNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
+          drgElement.variable ??= { "@_name": inputData["@_name"] };
+          drgElement.variable["@_typeRef"] = newTypeRef;
         });
       },
-      [dmnEditorStoreApi, index]
+      [dmnEditorStoreApi, index, inputData]
     );
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
-    const onCreateDataType = useDataTypeCreationCallbackForNodes(index);
+    const onCreateDataType = useDataTypeCreationCallbackForNodes(index, inputData["@_name"]);
 
     return (
       <>
@@ -199,17 +201,19 @@ export const DecisionNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
+          drgElement.variable ??= { "@_name": decision["@_name"] };
+          drgElement.variable["@_typeRef"] = newTypeRef;
         });
       },
-      [dmnEditorStoreApi, index]
+      [decision, dmnEditorStoreApi, index]
     );
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
     const isExternal = !!dmnObjectQName.prefix;
 
-    const onCreateDataType = useDataTypeCreationCallbackForNodes(index);
+    const onCreateDataType = useDataTypeCreationCallbackForNodes(index, decision["@_name"]);
 
     return (
       <>
@@ -302,17 +306,19 @@ export const BkmNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
+          drgElement.variable ??= { "@_name": bkm["@_name"] };
+          drgElement.variable["@_typeRef"] = newTypeRef;
         });
       },
-      [dmnEditorStoreApi, index]
+      [bkm, dmnEditorStoreApi, index]
     );
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
     const isExternal = !!dmnObjectQName.prefix;
 
-    const onCreateDataType = useDataTypeCreationCallbackForNodes(index);
+    const onCreateDataType = useDataTypeCreationCallbackForNodes(index, bkm["@_name"]);
 
     return (
       <>
@@ -590,10 +596,12 @@ export const DecisionServiceNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
+          drgElement.variable ??= { "@_name": decisionService["@_name"] };
+          drgElement.variable["@_typeRef"] = newTypeRef;
         });
       },
-      [dmnEditorStoreApi, index]
+      [decisionService, dmnEditorStoreApi, index]
     );
 
     const { allFeelVariableUniqueNames, dmnShapesByHref } = useDmnEditorDerivedStore();
@@ -605,7 +613,7 @@ export const DecisionServiceNode = React.memo(
     // External Decision Service nodes are always collapsed.
     const isCollapsed = isExternal || shape["@_isCollapsed"];
 
-    const onCreateDataType = useDataTypeCreationCallbackForNodes(index);
+    const onCreateDataType = useDataTypeCreationCallbackForNodes(index, decisionService["@_name"]);
 
     useEffect(() => {
       if (!dividerLineRef.current) {
@@ -1024,13 +1032,15 @@ export function useNodeClassName(
   return "normal";
 }
 
-export function useDataTypeCreationCallbackForNodes(index: number) {
+export function useDataTypeCreationCallbackForNodes(index: number, drgElementName: string) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   return useCallback<OnCreateDataType>(
     (newDataTypeName) => {
       dmnEditorStoreApi.setState((state) => {
-        (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newDataTypeName;
+        const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
+        drgElement.variable ??= { "@_name": drgElementName };
+        drgElement.variable["@_typeRef"] = newDataTypeName;
         const newItemDefinition = addTopLevelItemDefinition({
           definitions: state.dmn.model.definitions,
           partial: { "@_name": newDataTypeName, typeRef: { __$$text: DmnBuiltInDataType.Undefined } },
@@ -1039,6 +1049,6 @@ export function useDataTypeCreationCallbackForNodes(index: number) {
         state.navigation.tab = DmnEditorTab.DATA_TYPES;
       });
     },
-    [dmnEditorStoreApi, index]
+    [dmnEditorStoreApi, drgElementName, index]
   );
 }

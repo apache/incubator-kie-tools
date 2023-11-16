@@ -1,6 +1,7 @@
 import * as React from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { ns as dmn12ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/meta";
 import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardActions, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
@@ -39,7 +40,7 @@ import { useInViewSelect } from "../responsiveness/useInViewSelect";
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
 const namespaceForNewImportsByFileExtension: Record<string, string> = {
-  ".dmn": dmn15ns.get("")!,
+  ".dmn": dmn12ns.get("")!, // FIXME: Tiago --> THIS SHOULD BE 1.5, BUT JIT EXECUTOR FAILS WITH IT. KEEPING 1.2 FOR NOW.
   ".pmml": "https://www.dmg.org/PMML-4_4",
 };
 
@@ -115,6 +116,7 @@ export function IncludedModels() {
           xmlns,
           namespace,
           name: importName,
+          locationURI: selectedModel.relativePath,
         },
       });
     });

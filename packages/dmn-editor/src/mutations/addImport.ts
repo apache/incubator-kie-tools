@@ -1,5 +1,5 @@
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tDefinitions, DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 
 export function addImport({
@@ -11,13 +11,15 @@ export function addImport({
     name: string;
     namespace: string;
     xmlns: string;
+    locationURI: string;
   };
 }) {
-  const newImport = {
+  const newImport: DMN15__tImport = {
     "@_id": generateUuid(),
     "@_name": includedModel.name.trim(),
     "@_importType": includedModel.xmlns,
     "@_namespace": includedModel.namespace,
+    "@_locationURI": includedModel.locationURI,
   };
 
   definitions.import ??= [];

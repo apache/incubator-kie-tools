@@ -20,6 +20,7 @@ export function renameDrgElement({
   drgElement["@_name"] = trimmedNewName;
 
   if (drgElement.__$$element !== "knowledgeSource") {
+    drgElement.variable ??= { "@_name": trimmedNewName };
     drgElement.variable!["@_name"] = trimmedNewName;
   }
 

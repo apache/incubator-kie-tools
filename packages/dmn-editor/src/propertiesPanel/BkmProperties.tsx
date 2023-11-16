@@ -59,9 +59,9 @@ export function BkmProperties({
           typeRef={bkm.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).variable![
-                "@_typeRef"
-              ] = newTypeRef;
+              const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel;
+              drgElement.variable ??= { "@_name": bkm["@_name"] };
+              drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
         />

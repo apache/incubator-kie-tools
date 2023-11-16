@@ -94,8 +94,9 @@ export function DecisionServiceProperties({
           typeRef={decisionService.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).variable!["@_typeRef"] =
-                newTypeRef;
+              const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService;
+              drgElement.variable ??= { "@_name": decisionService["@_name"] };
+              drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
         />
