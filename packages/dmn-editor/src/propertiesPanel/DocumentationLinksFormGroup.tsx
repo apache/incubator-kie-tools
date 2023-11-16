@@ -27,6 +27,7 @@ export function DocumentationLinksFormGroup({
   values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
+  const [autoFocusFirst, setAutoFocusFirst] = useState(true);
   // Start - Values Cache and UUID
   // A cache is created to keep this component updated even when the values prop is changed
   // by an outside event. If the values prop is changed new UUIDs are generated to force
@@ -52,7 +53,8 @@ export function DocumentationLinksFormGroup({
     [onChange]
   );
 
-  const onNew = useCallback(() => {
+  const onAdd = useCallback(() => {
+    setAutoFocusFirst(true);
     const newValues = [...(values ?? [])];
     newValues.unshift({ "@_name": "", "@_url": "" });
 
@@ -69,6 +71,7 @@ export function DocumentationLinksFormGroup({
 
   const onChangeKieAttachment = useCallback(
     (args: { index: number; newUrlTitle?: string; newUrl?: string }) => {
+      setAutoFocusFirst(false);
       if (isReadonly) {
         return;
       }
@@ -87,6 +90,7 @@ export function DocumentationLinksFormGroup({
 
   const onRemove = useCallback(
     (index: number) => {
+      setAutoFocusFirst(false);
       const newValues = [...(values ?? [])];
       newValues.splice(index, 1);
 
@@ -148,44 +152,42 @@ export function DocumentationLinksFormGroup({
           <label className={"pf-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
             <span className={"pf-c-form__label-text"}>Documentation links</span>
           </label>
-          {!isReadonly && <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onNew} />}
+          {!isReadonly && <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAdd} />}
         </div>
       }
     >
-      <ul id={"documentation-links-list"}>
-        {(values ?? []).length === 0 ? (
-          <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadonly ? "None" : "None yet"}</li>
-        ) : (
-          <DraggableContextProvider reorder={reorder} onDragEnd={onDragEnd}>
-            {values?.map((kieAttachment, index) => (
-              <li
-                key={valuesUuid?.[index] ?? generateUuid()}
-                id={valuesUuid?.[index] ?? generateUuid()}
-                className={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
-              >
-                <Draggable
-                  index={index}
-                  handlerStyle={
-                    expandedUrls[index]
-                      ? { alignSelf: "flex-start", paddingTop: "8px", paddingLeft: "24px", paddingRight: "8px" }
-                      : { paddingLeft: "24px", paddingRight: "8px" }
-                  }
-                >
-                  <DocumentationLinksInput
-                    title={kieAttachment["@_name"] ?? ""}
-                    url={kieAttachment["@_url"] ?? ""}
-                    isReadonly={isReadonly}
-                    onChange={(newUrlTitle, newUrl) => onChangeKieAttachment({ newUrlTitle, newUrl, index })}
-                    onRemove={() => onRemove(index)}
-                    isUrlExpanded={expandedUrls[index]}
-                    setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
-                  />
-                </Draggable>
-              </li>
-            ))}
-          </DraggableContextProvider>
+      <DraggableContextProvider
+        reorder={reorder}
+        onDragEnd={onDragEnd}
+        values={values}
+        itemComponent={(kieAttachment, index) => (
+          <Draggable
+            key={valuesUuid?.[index] ?? generateUuid()}
+            index={index}
+            rowClassName={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
+            handlerStyle={
+              expandedUrls[index]
+                ? { alignSelf: "flex-start", paddingTop: "8px", paddingLeft: "24px", paddingRight: "8px" }
+                : { paddingLeft: "24px", paddingRight: "8px" }
+            }
+          >
+            <DocumentationLinksInput
+              title={kieAttachment["@_name"] ?? ""}
+              url={kieAttachment["@_url"] ?? ""}
+              isReadonly={isReadonly}
+              onChange={(newUrlTitle, newUrl) => onChangeKieAttachment({ newUrlTitle, newUrl, index })}
+              onRemove={() => onRemove(index)}
+              isUrlExpanded={expandedUrls[index]}
+              setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
+              autoFocus={autoFocusFirst ? index === 0 : false}
+            />
+          </Draggable>
         )}
-      </ul>
+      >
+        {(values ?? []).length === 0 && (
+          <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadonly ? "None" : "None yet"}</li>
+        )}
+      </DraggableContextProvider>
     </FormGroup>
   );
 }
@@ -198,6 +200,7 @@ function DocumentationLinksInput({
   onChange,
   onRemove,
   setUrlExpanded,
+  autoFocus: parentAutoFocus,
 }: {
   title: string;
   url: string;
@@ -206,12 +209,14 @@ function DocumentationLinksInput({
   onChange: (newUrlTitle: string, newUrl: string) => void;
   onRemove: () => void;
   setUrlExpanded: (isExpanded: boolean) => void;
+  autoFocus: boolean;
 }) {
   const urlTitleRef = useRef<HTMLInputElement>(null);
   const uuid = useMemo(() => generateUuid(), []);
   const [titleIsUrl, setTitleIsUrl] = useState(false);
   const updatedOnToogle = useRef(false);
   const { hovered } = useDraggableItemContext();
+  const [autoFocus, setAutoFocus] = useState(false);
 
   const parseUrl = useCallback((newUrl: string) => {
     try {
@@ -242,11 +247,13 @@ function DocumentationLinksInput({
         updatedOnToogle.current = true;
         onChange(parsedUrl, parsedUrl);
         setUrlExpanded(false);
+        setAutoFocus(false);
       } else if (parsedUrl !== undefined && parsedUrl !== url && isUrlExpanded === true) {
         // valid parsed url and different than the current url
         updatedOnToogle.current = true;
         onChange(title, parsedUrl);
         setUrlExpanded(false);
+        setAutoFocus(false);
       } else if (url !== "" && parsedUrl === undefined && title === "") {
         // invalid parsed url and empty title
         updatedOnToogle.current = true;
@@ -255,6 +262,7 @@ function DocumentationLinksInput({
         // nothing should be done with an invalid url
       } else {
         setUrlExpanded(!isUrlExpanded);
+        setAutoFocus(!isUrlExpanded);
       }
     },
     [isUrlExpanded, titleIsUrl, parseUrl, setUrlExpanded, onChange]
@@ -338,7 +346,7 @@ function DocumentationLinksInput({
                 }}
                 allUniqueNames={allUniqueNames}
                 validate={validateTitle}
-                autoFocus={isUrlExpanded}
+                autoFocus={parentAutoFocus || autoFocus}
                 onKeyDown={(e) => {
                   if (e.code === "Enter") {
                     // onRenamed and onKeyDown are performed simultaneously, calling the toggleExpdaded callback

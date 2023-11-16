@@ -3,7 +3,12 @@ import { useMemo, useState, useCallback, useRef } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { Draggable, DraggableContextProvider, useDraggableItemContext } from "../draggable/Draggable";
+import {
+  Draggable,
+  DraggableContextProvider,
+  DraggableReorderFunction,
+  useDraggableItemContext,
+} from "../draggable/Draggable";
 import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
@@ -21,16 +26,18 @@ export function ConstraintsEnum({
   isDisabled,
 }: ConstraintComponentProps) {
   const enumValues = useMemo(() => isEnum(value, typeHelper.check) ?? [], [typeHelper.check, value]);
-  const [addNew, setAddNew] = useState<boolean>(() => (enumValues.length === 0 ? true : false));
+  const [add, setAdd] = useState<boolean>(() => (enumValues.length === 0 ? true : false));
   const [valuesUuid, setValuesUuid] = useState((enumValues ?? [])?.map((_) => generateUuid()));
   const isItemValid = useMemo(
     () => enumValues.map((value, i, array) => array.filter((e) => e === value).length <= 1),
     [enumValues]
   );
+  // const [enumValuesCopy, setEnumValuesCopy] = useState(() => enumValues);
+
   const [focusOwner, setFocusOwner] = useState("");
 
   const onAdd = useCallback(() => {
-    setAddNew(true);
+    setAdd(true);
     setValuesUuid((prev) => {
       if (prev[enumValues.length] === undefined) {
         const newValuesUuid = [...prev];
@@ -47,7 +54,7 @@ export function ConstraintsEnum({
       const newValues = [...enumValues];
       newValues.splice(index, 1);
       if (newValues.length === 0) {
-        setAddNew(true);
+        setAdd(true);
       }
 
       setValuesUuid((prev) => {
@@ -70,18 +77,19 @@ export function ConstraintsEnum({
     [enumValues, onSave]
   );
 
-  const reorder = useCallback((source: number, dest: number) => {
+  const reorder: DraggableReorderFunction = useCallback((source: number, dest: number) => {
     setValuesUuid((prev) => {
       const reordenedUuid = [...prev];
       const [removedUuid] = reordenedUuid.splice(source, 1);
       reordenedUuid.splice(dest, 0, removedUuid);
+
       return reordenedUuid;
     });
   }, []);
 
   const onChangeNew = useCallback(
     (newValue: string) => {
-      setAddNew(false);
+      setAdd(false);
       const newValues = [...enumValues];
       newValues[newValues.length] = typeHelper.transform(newValue);
 
@@ -110,60 +118,66 @@ export function ConstraintsEnum({
   return (
     <div>
       <div>
-        <DraggableContextProvider reorder={reorder} onDragEnd={onDragEnd}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-              border: "solid 1px lightgray",
-              borderRadius: "4px",
-            }}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            border: "solid 1px lightgray",
+            borderRadius: "4px",
+          }}
+        >
+          <DraggableContextProvider
+            reorder={reorder}
+            onDragEnd={onDragEnd}
+            values={enumValues}
+            itemComponent={(value: any, index: number) => (
+              <Draggable
+                key={valuesUuid[index]}
+                index={index}
+                style={{ alignItems: "center" }}
+                handlerStyle={{ margin: "0px 10px" }}
+                itemStyle={{ marginLeft: "20px", listStyleType: "initial" }}
+              >
+                <EnumElement
+                  id={`enum-element-${index}`}
+                  isDisabled={isReadonly || isDisabled}
+                  initialValue={typeHelper.recover(value ?? "")}
+                  onChange={(newValue) => onChangeItem(newValue, index)}
+                  onRemove={() => onRemove(index)}
+                  isValid={isItemValid[index]}
+                  focusOwner={focusOwner}
+                  setFocusOwner={setFocusOwner}
+                  typeHelper={typeHelper}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setAdd(true);
+                    }
+                  }}
+                />
+              </Draggable>
+            )}
           >
-            <ul>
-              {enumValues?.map((value, index) => (
-                <Draggable
-                  key={valuesUuid[index]}
-                  index={index}
-                  style={{ alignItems: "center" }}
-                  handlerStyle={{ margin: "0px 10px" }}
-                >
-                  <li style={{ marginLeft: "20px", listStyleType: "initial" }}>
-                    <EnumElement
-                      id={`enum-element-${index}`}
-                      isDisabled={isReadonly || isDisabled}
-                      initialValue={typeHelper.recover(value ?? "")}
-                      onChange={(newValue) => onChangeItem(newValue, index)}
-                      onRemove={() => onRemove(index)}
-                      isValid={isItemValid[index]}
-                      focusOwner={focusOwner}
-                      setFocusOwner={setFocusOwner}
-                      typeHelper={typeHelper}
-                    />
-                  </li>
-                </Draggable>
-              ))}
-              {(addNew || enumValues.length === 0) && (
-                <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                  <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
-                  <li style={{ marginLeft: "20px", flexGrow: 1, listStyleType: "initial" }}>
-                    <EnumElement
-                      id={`enum-element-${enumValues.length}`}
-                      isDisabled={isReadonly || isDisabled}
-                      initialValue={""}
-                      onChange={onChangeNew}
-                      onRemove={() => setAddNew(false)}
-                      isValid={true}
-                      focusOwner={focusOwner}
-                      setFocusOwner={setFocusOwner}
-                      typeHelper={typeHelper}
-                    />
-                  </li>
-                </div>
-              )}
-            </ul>
-          </div>
-        </DraggableContextProvider>
+            {(add || enumValues.length === 0) && (
+              <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
+                <li style={{ marginLeft: "20px", flexGrow: 1, listStyleType: "initial" }}>
+                  <EnumElement
+                    id={`enum-element-${enumValues.length}`}
+                    isDisabled={isReadonly || isDisabled}
+                    initialValue={""}
+                    onChange={onChangeNew}
+                    onRemove={() => setAdd(false)}
+                    isValid={true}
+                    focusOwner={focusOwner}
+                    setFocusOwner={setFocusOwner}
+                    typeHelper={typeHelper}
+                  />
+                </li>
+              </div>
+            )}
+          </DraggableContextProvider>
+        </div>
       </div>
       <Button
         onClick={() => onAdd()}
@@ -190,6 +204,7 @@ function EnumElement({
   setFocusOwner,
   onChange,
   onRemove,
+  onKeyDown,
 }: {
   id: string;
   isDisabled: boolean;
@@ -200,6 +215,7 @@ function EnumElement({
   setFocusOwner: React.SetStateAction<React.Dispatch<string>>;
   onChange: (newValue: string) => void;
   onRemove: () => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void;
 }) {
   const value = useMemo<string>(() => initialValue, [initialValue]);
   const removeButtonRef = useRef(null);
@@ -221,6 +237,7 @@ function EnumElement({
         focusOwner,
         setFocusOwner,
         isValid,
+        onKeyDown,
       })}
 
       <Button
