@@ -78,13 +78,13 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
         case DmnBuiltInDataType.Date:
           return moment(recoveredValue, "YYYY-MM-DD", true).isValid() || value === "";
         case DmnBuiltInDataType.DateTime:
-          return moment(recoveredValue, "YYYY-MM-DDTHH:mm", true).isValid() || value === "";
+          return moment(recoveredValue, "YYYY-MM-DDTHH:mm:ssZZ", true).isValid() || value === "";
         case DmnBuiltInDataType.DateTimeDuration:
           return REGEX_DATE_TIME_DURATION.test(recoveredValue) || value === "";
         case DmnBuiltInDataType.Number:
           return !isNaN(parseFloat(recoveredValue)) || value === "";
         case DmnBuiltInDataType.Time:
-          return moment(recoveredValue, "HH:mm", true).isValid() || value === "";
+          return moment(recoveredValue, "HH:mm:ss", true).isValid() || value === "";
         case DmnBuiltInDataType.YearsMonthsDuration:
           return REGEX_YEARS_MONTH_DURATION.test(recoveredValue) || value === "";
         default:
@@ -92,7 +92,7 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
       }
     },
     // parse the value to the type
-    // useful to make comparisons
+    // useful for comparisons
     parse: (value: string) => {
       const recoveredValue = constraintTypeHelper(typeRef).recover(value);
       switch (typeRef) {
@@ -101,8 +101,10 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
         case DmnBuiltInDataType.DateTimeDuration:
         case DmnBuiltInDataType.YearsMonthsDuration:
           return moment.duration(recoveredValue);
-        case DmnBuiltInDataType.Date:
         case DmnBuiltInDataType.DateTime:
+          const a = moment(recoveredValue).toDate();
+          return a;
+        case DmnBuiltInDataType.Date:
         case DmnBuiltInDataType.String:
         case DmnBuiltInDataType.Time:
         default:

@@ -3,7 +3,6 @@ import { useCallback, useState, useEffect } from "react";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
-import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 
 export const REGEX_YEARS_MONTH_DURATION = /^P(?!$)(\d+Y)?(\d+M)?$/;
 
@@ -64,8 +63,8 @@ export function ConstraintYearsMonthsDuration({
             id={`${id}-constraint-years`}
             type={"number"}
             placeholder={"Years"}
-            style={{ flex: "1 1 0px", ...(isValid ? {} : invalidInlineFeelNameStyle) }}
-            className={"kie-dmn-editor--constraint-input"}
+            style={{ flex: "1 1 0px" }}
+            className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={years}
             onChange={onYearsChange}
             autoFocus={true}
@@ -78,8 +77,8 @@ export function ConstraintYearsMonthsDuration({
             id={`${id}-constraint-months`}
             type={"number"}
             placeholder={"Months"}
-            style={{ flex: "1 1 0px", ...(isValid ? {} : invalidInlineFeelNameStyle) }}
-            className={"kie-dmn-editor--constraint-input"}
+            style={{ flex: "1 1 0px" }}
+            className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={months}
             onChange={onMonthsChange}
             isDisabled={isDisabled}

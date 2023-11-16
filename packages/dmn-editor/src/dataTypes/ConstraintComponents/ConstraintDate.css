@@ -15,3 +15,9 @@
   border-color: transparent;
   background-color: transparent;
 }
+
+.kie-dmn-editor--constraint-date-invalid > div > div > input {
+  color: red;
+  text-decoration: red dotted underline;
+  text-underline-position: under;
+}

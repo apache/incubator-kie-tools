@@ -3,7 +3,6 @@ import { useState, useCallback, useEffect } from "react";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
-import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 
 export const REGEX_DATE_TIME_DURATION = /^P(?!$)(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?$/;
 
@@ -86,10 +85,9 @@ export function ConstraintDateTimeDuration({
             id={`${id}-constraint-days`}
             type={"number"}
             placeholder={"Days"}
-            className={"kie-dmn-editor--constraint-input"}
+            className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={days}
             onChange={onDaysChange}
-            style={isValid ? {} : invalidInlineFeelNameStyle}
             isDisabled={isDisabled}
             autoFocus={true}
           />
@@ -100,10 +98,9 @@ export function ConstraintDateTimeDuration({
             id={`${id}-constraint-hours`}
             type={"number"}
             placeholder={"Hours"}
-            className={"kie-dmn-editor--constraint-input"}
+            className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={hours}
             onChange={onHoursChange}
-            style={isValid ? {} : invalidInlineFeelNameStyle}
             isDisabled={isDisabled}
           />
         </div>
@@ -113,10 +110,9 @@ export function ConstraintDateTimeDuration({
             id={`${id}-constraint-minutes`}
             type={"number"}
             placeholder={"Minutes"}
-            className={"kie-dmn-editor--constraint-input"}
+            className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={minutes}
             onChange={onMinutesChange}
-            style={isValid ? {} : invalidInlineFeelNameStyle}
             isDisabled={isDisabled}
           />
         </div>
@@ -126,10 +122,9 @@ export function ConstraintDateTimeDuration({
             id={`${id}-constraint-seconds`}
             type={"number"}
             placeholder={"Seconds"}
-            className={"kie-dmn-editor--constraint-input"}
+            className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={seconds}
             onChange={onSecondsChange}
-            style={isValid ? {} : invalidInlineFeelNameStyle}
             isDisabled={isDisabled}
           />
         </div>

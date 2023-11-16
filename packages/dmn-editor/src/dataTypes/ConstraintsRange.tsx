@@ -3,9 +3,9 @@ import { useMemo, useState, useCallback, useEffect } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
-import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { ConstraintComponentProps } from "./Constraints";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 const CONSTRAINT_START_ID = "start";
 const CONSTRAINT_END_ID = "end";
@@ -73,22 +73,18 @@ export function ConstraintsRange({
 
   const isStartValid = useCallback(
     (args: { includeEnd: boolean; start: string; end: string }) => {
-      return args.end !== ""
-        ? args.includeEnd
-          ? typeHelper.parse(args.end) >= typeHelper.parse(args.start)
-          : typeHelper.parse(args.end) > typeHelper.parse(args.start)
-        : true;
+      const parsedEnd = typeHelper.parse(args.end);
+      const parsedStart = typeHelper.parse(args.start);
+      return args.end !== "" ? (args.includeEnd ? parsedEnd >= parsedStart : parsedEnd > parsedStart) : true;
     },
     [typeHelper]
   );
 
   const isEndValid = useCallback(
     (args: { includeEnd: boolean; start: string; end: string }) => {
-      return args.start !== ""
-        ? args.includeEnd
-          ? typeHelper.parse(args.end) >= typeHelper.parse(args.start)
-          : typeHelper.parse(args.end) > typeHelper.parse(args.start)
-        : true;
+      const parsedEnd = typeHelper.parse(args.end);
+      const parsedStart = typeHelper.parse(args.start);
+      return args.start !== "" ? (args.includeEnd ? parsedEnd >= parsedStart : parsedEnd > parsedStart) : true;
     },
     [typeHelper]
   );
@@ -150,21 +146,38 @@ export function ConstraintsRange({
     });
   }, [onInternalChange]);
 
-  const nextStartValue = useMemo(() => {
-    if (typeof typeHelper.parse(value ?? "") === "number" && start !== "") {
-      return `The next valid number is: (${start} + 2e-52).`;
-    }
+  const messages = useCallback(
+    (value: string, operator: string) => {
+      if (type === DmnBuiltInDataType.Date && value !== "") {
+        return `The next valid number is: (${value} ${operator} 1 Day).`;
+      }
+      if (type === DmnBuiltInDataType.DateTime && value !== "") {
+        return `The next valid number is: (${value} ${operator} 1 Second).`;
+      }
+      if (type === DmnBuiltInDataType.DateTimeDuration && value !== "") {
+        return `The next valid number is: (${value} ${operator} 1 Second).`;
+      }
+      if (type === DmnBuiltInDataType.Number && value !== "") {
+        return `The next valid number is: (${value} ${operator} 2e-52).`;
+      }
+      if (type === DmnBuiltInDataType.Time && value !== "") {
+        return `The next valid number is: (${value} ${operator} 1 Second).`;
+      }
+      if (type === DmnBuiltInDataType.YearsMonthsDuration && value !== "") {
+        return `The next valid number is: (${value} ${operator} 1 Month).`;
+      }
+      return "";
+    },
+    [type]
+  );
 
-    return "";
-  }, [start, typeHelper, value]);
+  const nextStartValue = useMemo(() => {
+    return messages(start, "+");
+  }, [messages, start]);
 
   const previousEndValue = useMemo(() => {
-    if (typeof typeHelper.parse(value ?? "") === "number" && end !== "") {
-      return `The last valid number is: (${end} - 2e-52).`;
-    }
-
-    return "";
-  }, [end, typeHelper, value]);
+    return messages(end, "-");
+  }, [messages, end]);
 
   return (
     <div>
