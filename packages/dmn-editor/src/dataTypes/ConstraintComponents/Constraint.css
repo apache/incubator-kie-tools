@@ -9,3 +9,9 @@
   text-decoration: red dotted underline;
   text-underline-position: under;
 }
+
+.kie-dmn-editor--constraint-invalid {
+  color: red;
+  text-decoration: red dotted underline;
+  text-underline-position: under;
+}

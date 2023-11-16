@@ -1,13 +1,13 @@
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo } from "react";
 import "./ConstraintDateTime.css";
 import { ConstraintProps } from "./Constraint";
 import { ConstraintTime } from "./ConstraintTime";
 import { ConstraintDate } from "./ConstraintDate";
 
 export function ConstraintDateTime({ value, onChange, isValid, ...props }: ConstraintProps) {
-  const [date, setDate] = useState(() => value.split("T")?.[0] ?? "");
-  const [time, setTime] = useState(() => value.split("T")?.[1] ?? "");
+  const date = useMemo(() => value.split("T")?.[0] ?? "", [value]);
+  const time = useMemo(() => value.split("T")?.[1] ?? "", [value]);
 
   const onInternalChange = useCallback(
     (args: { date?: string; time?: string }) => {
@@ -22,7 +22,6 @@ export function ConstraintDateTime({ value, onChange, isValid, ...props }: Const
 
   const onChangeDate = useCallback(
     (value: string) => {
-      setDate(value);
       onInternalChange({ date: value });
     },
     [onInternalChange]
@@ -30,7 +29,6 @@ export function ConstraintDateTime({ value, onChange, isValid, ...props }: Const
 
   const onChangeTime = useCallback(
     (value: string) => {
-      setTime(value);
       onInternalChange({ time: value });
     },
     [onInternalChange]

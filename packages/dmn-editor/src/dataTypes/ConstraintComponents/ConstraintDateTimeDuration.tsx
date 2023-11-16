@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useCallback, useEffect } from "react";
+import { useMemo, useCallback, useEffect } from "react";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
@@ -15,10 +15,10 @@ export function ConstraintDateTimeDuration({
   isValid,
   isDisabled,
 }: ConstraintProps) {
-  const [days, setDays] = useState<string>(getDaysDuration(value));
-  const [hours, setHours] = useState<string>(getHoursDuration(value));
-  const [minutes, setMinutes] = useState<string>(getMinutesDuration(value));
-  const [seconds, setSeconds] = useState<string>(getSecondsDuration(value));
+  const days = useMemo<string>(() => getDaysDuration(value), [value]);
+  const hours = useMemo<string>(() => getHoursDuration(value), [value]);
+  const minutes = useMemo<string>(() => getMinutesDuration(value), [value]);
+  const seconds = useMemo<string>(() => getSecondsDuration(value), [value]);
 
   // It should run on the first render;
   useEffect(() => {
@@ -42,7 +42,6 @@ export function ConstraintDateTimeDuration({
 
   const onDaysChange = useCallback(
     (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
-      setDays(newValue);
       onInternalChange({ days: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },
@@ -51,7 +50,6 @@ export function ConstraintDateTimeDuration({
 
   const onHoursChange = useCallback(
     (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
-      setHours(newValue);
       onInternalChange({ hours: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },
@@ -60,7 +58,6 @@ export function ConstraintDateTimeDuration({
 
   const onMinutesChange = useCallback(
     (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
-      setMinutes(newValue);
       onInternalChange({ minutes: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },
@@ -69,7 +66,6 @@ export function ConstraintDateTimeDuration({
 
   const onSecondsChange = useCallback(
     (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
-      setSeconds(newValue);
       onInternalChange({ seconds: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },

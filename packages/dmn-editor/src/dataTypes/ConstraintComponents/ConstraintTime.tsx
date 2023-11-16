@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker";
 import "./Constraint.css";
 import "./ConstraintTime.css";
@@ -53,14 +53,16 @@ const UTC_NEGATIVE_TIMEZONES = [
 ];
 
 export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
-  const [time, setTime] = useState(() => (value.includes("+") ? value.split("+")[0] : value.split("-")[0]));
-  const [timezone, setTimezone] = useState<string>(() =>
-    value.includes("+")
+  const time = useMemo(() => {
+    return value.includes("+") ? value.split("+")[0] : value.split("-")[0];
+  }, [value]);
+  const timezone = useMemo<string>(() => {
+    return value.includes("+")
       ? `+${value.split("+")[1]}`
       : value.includes("-")
       ? `-${value.split("-")[1]}`
-      : UTC_POSITEVE_TIMEZONES[0]
-  );
+      : UTC_POSITEVE_TIMEZONES[0];
+  }, [value]);
   const [isSelectTimezoneOpen, setSelectTimezoneOpen] = useState(false);
   const { dmnEditorRootElementRef } = useDmnEditor();
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -79,7 +81,6 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
 
   const onChangeTime = useCallback(
     (value: string) => {
-      setTime(value);
       onInternalChange({ time: value });
     },
     [onInternalChange]
@@ -87,7 +88,6 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
 
   const onSelectTimezone = useCallback(
     (e, value) => {
-      setTimezone(value.toString());
       onInternalChange({ timezone: value.toString() });
     },
     [onInternalChange]

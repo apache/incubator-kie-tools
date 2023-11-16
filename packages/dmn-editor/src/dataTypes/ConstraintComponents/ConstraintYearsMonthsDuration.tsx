@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
@@ -15,8 +15,8 @@ export function ConstraintYearsMonthsDuration({
   isValid,
   isDisabled,
 }: ConstraintProps) {
-  const [years, setYears] = useState<string>(getYearsDuration(value));
-  const [months, setMonths] = useState<string>(getMonthsDuration(value));
+  const years = useMemo<string>(() => getYearsDuration(value), [value]);
+  const months = useMemo<string>(() => getMonthsDuration(value), [value]);
 
   // It should run on the first render;
   useEffect(() => {
@@ -38,7 +38,6 @@ export function ConstraintYearsMonthsDuration({
 
   const onYearsChange = useCallback(
     (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
-      setYears(newValue);
       onInternalChange({ years: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },
@@ -47,7 +46,6 @@ export function ConstraintYearsMonthsDuration({
 
   const onMonthsChange = useCallback(
     (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
-      setMonths(newValue);
       onInternalChange({ months: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },
