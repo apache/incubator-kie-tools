@@ -145,6 +145,37 @@ export function DocumentationLinksFormGroup({
     });
   }, []);
 
+  const draggableItem = useCallback(
+    (kieAttachment, index) => {
+      return (
+        <Draggable
+          key={valuesUuid?.[index] ?? generateUuid()}
+          index={index}
+          rowClassName={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
+          handlerStyle={
+            expandedUrls[index]
+              ? { alignSelf: "flex-start", paddingTop: "8px", paddingLeft: "24px", paddingRight: "8px" }
+              : { paddingLeft: "24px", paddingRight: "8px" }
+          }
+        >
+          <li>
+            <DocumentationLinksInput
+              title={kieAttachment["@_name"] ?? ""}
+              url={kieAttachment["@_url"] ?? ""}
+              isReadonly={isReadonly}
+              onChange={(newUrlTitle, newUrl) => onChangeKieAttachment({ newUrlTitle, newUrl, index })}
+              onRemove={() => onRemove(index)}
+              isUrlExpanded={expandedUrls[index]}
+              setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
+              autoFocus={autoFocusFirst ? index === 0 : false}
+            />
+          </li>
+        </Draggable>
+      );
+    },
+    [autoFocusFirst, expandedUrls, isReadonly, onChangeKieAttachment, onRemove, setUrlExpanded, valuesUuid]
+  );
+
   return (
     <FormGroup
       label={
@@ -156,38 +187,17 @@ export function DocumentationLinksFormGroup({
         </div>
       }
     >
-      <DraggableContextProvider
-        reorder={reorder}
-        onDragEnd={onDragEnd}
-        values={values}
-        itemComponent={(kieAttachment, index) => (
-          <Draggable
-            key={valuesUuid?.[index] ?? generateUuid()}
-            index={index}
-            rowClassName={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
-            handlerStyle={
-              expandedUrls[index]
-                ? { alignSelf: "flex-start", paddingTop: "8px", paddingLeft: "24px", paddingRight: "8px" }
-                : { paddingLeft: "24px", paddingRight: "8px" }
-            }
-          >
-            <DocumentationLinksInput
-              title={kieAttachment["@_name"] ?? ""}
-              url={kieAttachment["@_url"] ?? ""}
-              isReadonly={isReadonly}
-              onChange={(newUrlTitle, newUrl) => onChangeKieAttachment({ newUrlTitle, newUrl, index })}
-              onRemove={() => onRemove(index)}
-              isUrlExpanded={expandedUrls[index]}
-              setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
-              autoFocus={autoFocusFirst ? index === 0 : false}
-            />
-          </Draggable>
-        )}
-      >
+      <ul>
         {(values ?? []).length === 0 && (
           <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadonly ? "None" : "None yet"}</li>
         )}
-      </DraggableContextProvider>
+        <DraggableContextProvider
+          reorder={reorder}
+          onDragEnd={onDragEnd}
+          values={values}
+          draggableItem={draggableItem}
+        />
+      </ul>
     </FormGroup>
   );
 }

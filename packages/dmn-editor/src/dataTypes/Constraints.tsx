@@ -102,8 +102,7 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
         case DmnBuiltInDataType.YearsMonthsDuration:
           return moment.duration(recoveredValue);
         case DmnBuiltInDataType.DateTime:
-          const a = moment(recoveredValue).toDate();
-          return a;
+          return moment(recoveredValue).toDate();
         case DmnBuiltInDataType.Date:
         case DmnBuiltInDataType.String:
         case DmnBuiltInDataType.Time:

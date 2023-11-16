@@ -32,8 +32,6 @@ export function ConstraintsEnum({
     () => enumValues.map((value, i, array) => array.filter((e) => e === value).length <= 1),
     [enumValues]
   );
-  // const [enumValuesCopy, setEnumValuesCopy] = useState(() => enumValues);
-
   const [focusOwner, setFocusOwner] = useState("");
 
   const onAdd = useCallback(() => {
@@ -115,6 +113,39 @@ export function ConstraintsEnum({
     [enumValues, onSave, typeHelper]
   );
 
+  const draggableItem = useCallback(
+    (value, index) => {
+      return (
+        <Draggable
+          key={valuesUuid[index]}
+          index={index}
+          style={{ alignItems: "center" }}
+          handlerStyle={{ margin: "0px 10px" }}
+        >
+          <li style={{ marginLeft: "20px", listStyleType: "initial" }}>
+            <EnumElement
+              id={`enum-element-${index}`}
+              isDisabled={isReadonly || isDisabled}
+              initialValue={typeHelper.recover(value ?? "")}
+              onChange={(newValue) => onChangeItem(newValue, index)}
+              onRemove={() => onRemove(index)}
+              isValid={isItemValid[index]}
+              focusOwner={focusOwner}
+              setFocusOwner={setFocusOwner}
+              typeHelper={typeHelper}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setAdd(true);
+                }
+              }}
+            />
+          </li>
+        </Draggable>
+      );
+    },
+    [focusOwner, isDisabled, isItemValid, isReadonly, onChangeItem, onRemove, typeHelper, valuesUuid]
+  );
+
   return (
     <div>
       <div>
@@ -127,37 +158,13 @@ export function ConstraintsEnum({
             borderRadius: "4px",
           }}
         >
-          <DraggableContextProvider
-            reorder={reorder}
-            onDragEnd={onDragEnd}
-            values={enumValues}
-            itemComponent={(value: any, index: number) => (
-              <Draggable
-                key={valuesUuid[index]}
-                index={index}
-                style={{ alignItems: "center" }}
-                handlerStyle={{ margin: "0px 10px" }}
-                itemStyle={{ marginLeft: "20px", listStyleType: "initial" }}
-              >
-                <EnumElement
-                  id={`enum-element-${index}`}
-                  isDisabled={isReadonly || isDisabled}
-                  initialValue={typeHelper.recover(value ?? "")}
-                  onChange={(newValue) => onChangeItem(newValue, index)}
-                  onRemove={() => onRemove(index)}
-                  isValid={isItemValid[index]}
-                  focusOwner={focusOwner}
-                  setFocusOwner={setFocusOwner}
-                  typeHelper={typeHelper}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setAdd(true);
-                    }
-                  }}
-                />
-              </Draggable>
-            )}
-          >
+          <ul>
+            <DraggableContextProvider
+              reorder={reorder}
+              onDragEnd={onDragEnd}
+              values={enumValues}
+              draggableItem={draggableItem}
+            />
             {(add || enumValues.length === 0) && (
               <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                 <span style={{ width: "38px", height: "18px " }}>&nbsp;</span>
@@ -176,7 +183,7 @@ export function ConstraintsEnum({
                 </li>
               </div>
             )}
-          </DraggableContextProvider>
+          </ul>
         </div>
       </div>
       <Button

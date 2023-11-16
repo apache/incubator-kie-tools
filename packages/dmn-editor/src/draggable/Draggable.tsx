@@ -1,6 +1,6 @@
 import "./Draggable.css";
 import * as React from "react";
-import { useState, useCallback, useContext, useMemo, useRef } from "react";
+import { useState, useCallback, useContext, useMemo, useLayoutEffect } from "react";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import GripVerticalIcon from "@patternfly/react-icons/dist/js/icons/grip-vertical-icon";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
@@ -40,19 +40,16 @@ export function useDraggableItemContext() {
 export type DraggableReorderFunction = (source: number, dest: number) => void;
 
 export function DraggableContextProvider({
-  children,
   reorder,
   onDragEnd,
-  draggableListStyle,
   values,
-  itemComponent,
-}: React.PropsWithChildren<{
+  draggableItem,
+}: {
   reorder: DraggableReorderFunction;
   onDragEnd?: (source: number, dest: number) => void;
-  draggableListStyle?: React.CSSProperties;
   values?: any[];
-  itemComponent?: (value: any, index: number) => React.ReactNode;
-}>) {
+  draggableItem?: (value: any, index: number) => React.ReactNode;
+}) {
   const [source, setSource] = useState<number>(-1);
   const [dest, setDest] = useState<number>(-1);
   const [dragging, setDragging] = useState<boolean>(false);
@@ -61,9 +58,13 @@ export function DraggableContextProvider({
   const [valuesCopy, setValuesCopy] = useState(values ?? []);
   const [valuesKeys, setValuesKeys] = useState((values ?? [])?.map((_) => generateUuid()));
 
-  React.useLayoutEffect(() => {
-    setValuesCopy(values ?? []);
-    setValuesKeys((values ?? [])?.map((_) => generateUuid()));
+  useLayoutEffect(() => {
+    setValuesCopy((prev) => {
+      if (values?.length !== prev.length) {
+        setValuesKeys((values ?? [])?.map((_) => generateUuid()));
+      }
+      return values ?? [];
+    });
   }, [values]);
 
   const onInternalDragStart = useCallback((index: number) => {
@@ -145,12 +146,9 @@ export function DraggableContextProvider({
           onDragLeave: onInternalDragLeave,
         }}
       >
-        <ul style={draggableListStyle}>
-          {valuesCopy?.map((value, index) => (
-            <React.Fragment key={valuesKeys[index]}>{itemComponent?.(value, index)}</React.Fragment>
-          ))}
-          {children}
-        </ul>
+        {valuesCopy?.map((value, index) => (
+          <div key={valuesKeys[index]}>{draggableItem?.(value, index)}</div>
+        ))}
       </DraggableDispatchContext.Provider>
     </DraggableStateContext.Provider>
   );
@@ -222,11 +220,7 @@ export function Draggable(props: {
         style={props.childrenStyle}
         className={`kie-dmn-editor--draggable-children ${props.childrenClassName ? props.childrenClassName : ""}`}
       >
-        <DraggableItemContext.Provider value={{ hovered }}>
-          <li style={props.itemStyle} className={props.itemClassName}>
-            {props.children}
-          </li>
-        </DraggableItemContext.Provider>
+        <DraggableItemContext.Provider value={{ hovered }}>{props.children}</DraggableItemContext.Provider>
       </div>
     </div>
   );
