@@ -194,7 +194,12 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
         case DmnBuiltInDataType.Number:
           return (
             <TextInput
-              {...props}
+              autoFocus={props.autoFocus}
+              onChange={props.onChange}
+              id={props.id}
+              isDisabled={props.isDisabled}
+              value={props.value}
+              onKeyDown={props.onKeyDown}
               style={{ ...props.style, ...(props.isValid ? {} : invalidInlineFeelNameStyle) }}
               type={"number"}
             />
@@ -204,7 +209,12 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
         default:
           return (
             <TextInput
-              {...props}
+              autoFocus={props.autoFocus}
+              onChange={props.onChange}
+              id={props.id}
+              isDisabled={props.isDisabled}
+              value={props.value}
+              onKeyDown={props.onKeyDown}
               style={{ ...props.style, ...(props.isValid ? {} : invalidInlineFeelNameStyle) }}
               type={"text"}
             />

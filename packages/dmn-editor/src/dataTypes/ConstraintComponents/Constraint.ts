@@ -13,4 +13,5 @@ export interface ConstraintProps {
   setFocusOwner?: (id: string) => void;
   style?: React.CSSProperties;
   isValid: boolean;
+  onKeyDown: (e: React.KeyboardEvent) => void;
 }
