@@ -24,6 +24,8 @@ import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
 import { DrgNodesPanel } from "./DrgNodesPanel";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
+import { useInViewSelect } from "../responsiveness/useInViewSelect";
+import { useDmnEditor } from "../DmnEditorContext";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -33,6 +35,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
     event.dataTransfer.effectAllowed = "move";
   }, []);
 
+  const { dmnEditorRootElementRef } = useDmnEditor();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const diagram = useDmnEditorStore((s) => s.diagram);
   const thisDmn = useDmnEditorStore((s) => s.dmn.model);
@@ -68,6 +71,9 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const drd = thisDmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex];
 
   const drdSelectorPopoverRef = React.useRef<HTMLDivElement>(null);
+  const nodesPalletePopoverRef = React.useRef<HTMLDivElement>(null);
+
+  const { maxHeight } = useInViewSelect(dmnEditorRootElementRef, nodesPalletePopoverRef);
 
   return (
     <>
@@ -118,6 +124,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
         </aside>
       </RF.Panel>
       <RF.Panel position={"top-left"} style={{ marginTop: "78px" }}>
+        <div ref={nodesPalletePopoverRef} style={{ position: "absolute", left: 0, height: 0, zIndex: -1 }} />
         <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
           <div
             title="Input Data"
@@ -182,77 +189,52 @@ export function Palette({ pulse }: { pulse: boolean }) {
         </aside>
         <br />
         <aside className={"kie-dmn-editor--drg-panel-toggle"}>
-          <Popover
-            className={"kie-dmn-editor--drg-popover"}
-            key={`${diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES}`}
-            aria-label={"DRG Panel"}
-            isVisible={diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES}
-            shouldOpen={() => {
+          {diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES && (
+            <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
+              <DrgNodesPanel />
+            </div>
+          )}
+          <button
+            title="DRG nodes"
+            className={`kie-dmn-editor--drg-panel-toggle-button ${
+              diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES ? "active" : ""
+            }`}
+            onClick={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.openNodesPanel = DiagramNodesPanel.DRG_NODES;
+                state.diagram.openNodesPanel =
+                  state.diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES
+                    ? DiagramNodesPanel.NONE
+                    : DiagramNodesPanel.DRG_NODES;
               });
             }}
-            shouldClose={() => {
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.openNodesPanel === DiagramNodesPanel.NONE;
-              });
-            }}
-            position={"right-start"}
-            hideOnOutsideClick={false}
-            bodyContent={<DrgNodesPanel />}
           >
-            <button
-              title="DRG nodes"
-              className={"kie-dmn-editor--drg-panel-toggle-button"}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  state.diagram.openNodesPanel =
-                    state.diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES
-                      ? DiagramNodesPanel.NONE
-                      : DiagramNodesPanel.DRG_NODES;
-                });
-              }}
-            >
-              <BarsIcon size={"sm"} />
-            </button>
-          </Popover>
+            <BarsIcon size={"sm"} />
+          </button>
         </aside>
         <br />
         <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
-          <Popover
-            className={"kie-dmn-editor--external-nodes-popover"}
-            key={`${diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES}`}
-            aria-label={"External Nodes Panel"}
-            isVisible={diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES}
-            shouldOpen={() => {
+          {diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES && (
+            <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
+              <ExternalNodesPanel />
+            </div>
+          )}
+
+          <button
+            title="External nodes"
+            className={`kie-dmn-editor--external-nodes-panel-toggle-button ${
+              diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES ? "active" : ""
+            }`}
+            onClick={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.openNodesPanel = DiagramNodesPanel.EXTERNAL_NODES;
+                state.diagram.openNodesPanel =
+                  state.diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES
+                    ? DiagramNodesPanel.NONE
+                    : DiagramNodesPanel.EXTERNAL_NODES;
               });
             }}
-            shouldClose={() => {
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.openNodesPanel === DiagramNodesPanel.NONE;
-              });
-            }}
-            position={"right-start"}
-            hideOnOutsideClick={false}
-            bodyContent={<ExternalNodesPanel />}
           >
-            <button
-              title="External nodes"
-              className={"kie-dmn-editor--external-nodes-panel-toggle-button"}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  state.diagram.openNodesPanel =
-                    state.diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES
-                      ? DiagramNodesPanel.NONE
-                      : DiagramNodesPanel.EXTERNAL_NODES;
-                });
-              }}
-            >
-              <MigrationIcon size={"sm"} />
-            </button>
-          </Popover>
+            <MigrationIcon size={"sm"} />
+          </button>
         </aside>
       </RF.Panel>
     </>

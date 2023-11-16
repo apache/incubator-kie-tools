@@ -74,94 +74,92 @@ export function ExternalNodesPanel() {
       )}
       {externalDmnsByNamespace.size > 0 && (
         <>
-          <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-            <TextContent>
-              <Text component="h3">External nodes</Text>
-            </TextContent>
-          </Flex>
+          <div className="kie-dmn-editor--sticky-top-glass-header" style={{ padding: "12px" }}>
+            <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+              <TextContent>
+                <Text component="h3">External nodes</Text>
+              </TextContent>
+            </Flex>
 
-          <Divider style={{ marginBottom: "12px" }} />
+            <Divider style={{ marginBottom: "12px" }} />
 
-          <SearchInput
-            style={{ marginBottom: "12px", height: "36px" }}
-            onKeyDown={(e) => e.stopPropagation()}
-            autoFocus={true}
-            placeholder="Filter..."
-            value={filter}
-            onChange={(_event, value) => setFilter(value)}
-            onClear={() => setFilter("")}
-          />
+            <SearchInput
+              style={{ marginBottom: "12px", height: "36px" }}
+              onKeyDown={(e) => e.stopPropagation()}
+              autoFocus={true}
+              placeholder="Filter..."
+              value={filter}
+              onChange={(_event, value) => setFilter(value)}
+              onClear={() => setFilter("")}
+            />
+          </div>
 
-          <Divider style={{ marginBottom: "24px" }} />
-
-          {[...externalDmnsByNamespace.entries()].flatMap(([namespace, externalDmn]) => {
-            const externalDmnDefinitions = externalDmn.model.definitions;
-            const _import = importsByNamespace.get(namespace);
-            if (!_import) {
-              console.debug(
-                `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referncing it.`
-              );
-              return [];
-            }
-
-            const nodes = externalDmnDefinitions.drgElement
-              ?.filter((drgElement) => drgElement["@_name"].toLowerCase().includes(filter.toLowerCase()))
-              .map((drgElement) => {
-                const dmnObjectHref = buildXmlHref({ namespace, id: drgElement["@_id"]! });
-                const isAlreadyIncluded = dmnShapesByHref.has(dmnObjectHref);
-
-                return (
-                  <div
-                    key={drgElement["@_id"]}
-                    className={"kie-dmn-editor--external-nodes-list-item"}
-                    draggable={!isAlreadyIncluded}
-                    style={{ opacity: isAlreadyIncluded ? "0.4" : undefined }}
-                    onDragStart={(event) =>
-                      onDragStart(event, {
-                        externalDrgElementNamespace: namespace,
-                        externalDrgElementId: drgElement["@_id"]!,
-                      })
-                    }
-                  >
-                    <Flex
-                      alignItems={{ default: "alignItemsCenter" }}
-                      justifyContent={{ default: "justifyContentFlexStart" }}
-                      spaceItems={{ default: "spaceItemsNone" }}
-                    >
-                      <DmnObjectListItem
-                        dmnObjectHref={dmnObjectHref}
-                        dmnObject={drgElement}
-                        namespace={namespace}
-                        relativeToNamespace={namespace}
-                      />
-                    </Flex>
-                  </div>
+          <div style={{ padding: "12px" }}>
+            {[...externalDmnsByNamespace.entries()].flatMap(([namespace, externalDmn]) => {
+              const externalDmnDefinitions = externalDmn.model.definitions;
+              const _import = importsByNamespace.get(namespace);
+              if (!_import) {
+                console.debug(
+                  `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referncing it.`
                 );
-              });
+                return [];
+              }
 
-            if ((nodes?.length ?? 0) <= 0) {
-              return [];
-            }
+              const nodes = externalDmnDefinitions.drgElement
+                ?.filter((drgElement) => drgElement["@_name"].toLowerCase().includes(filter.toLowerCase()))
+                .map((drgElement) => {
+                  const dmnObjectHref = buildXmlHref({ namespace, id: drgElement["@_id"]! });
+                  const isAlreadyIncluded = dmnShapesByHref.has(dmnObjectHref);
 
-            return (
-              <div key={externalDmnDefinitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
-                <div className={"kie-dmn-editor--external-nodes-section-title"}>
-                  <b>{`${externalDmnDefinitions["@_name"]}`}</b> {`(`}
-                  {_import["@_name"] || <i style={{ color: "gray" }}>{EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}</i>}
-                  {`)`}
-                  <br />
-                  <small>
-                    <i>
-                      <Truncate
-                        content={onRequestToResolvePath?.(externalDmn.relativePath) ?? externalDmn.relativePath ?? ""}
-                      />
-                    </i>
-                  </small>
+                  return (
+                    <div
+                      key={drgElement["@_id"]}
+                      className={"kie-dmn-editor--external-nodes-list-item"}
+                      draggable={!isAlreadyIncluded}
+                      style={{ opacity: isAlreadyIncluded ? "0.4" : undefined }}
+                      onDragStart={(event) =>
+                        onDragStart(event, {
+                          externalDrgElementNamespace: namespace,
+                          externalDrgElementId: drgElement["@_id"]!,
+                        })
+                      }
+                    >
+                      <Flex
+                        alignItems={{ default: "alignItemsCenter" }}
+                        justifyContent={{ default: "justifyContentFlexStart" }}
+                        spaceItems={{ default: "spaceItemsNone" }}
+                      >
+                        <DmnObjectListItem
+                          dmnObjectHref={dmnObjectHref}
+                          dmnObject={drgElement}
+                          namespace={namespace}
+                          relativeToNamespace={namespace}
+                        />
+                      </Flex>
+                    </div>
+                  );
+                });
+
+              if ((nodes?.length ?? 0) <= 0) {
+                return [];
+              }
+
+              return (
+                <div key={externalDmnDefinitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
+                  <div className={"kie-dmn-editor--external-nodes-section-title"}>
+                    <b>{`${externalDmnDefinitions["@_name"]}`}</b> {`(`}
+                    {_import["@_name"] || <i style={{ color: "gray" }}>{EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}</i>}
+                    {`)`}
+                    <br />
+                    <small>
+                      <i>{onRequestToResolvePath?.(externalDmn.relativePath) ?? externalDmn.relativePath ?? ""}</i>
+                    </small>
+                  </div>
+                  {nodes}
                 </div>
-                {nodes}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </>
       )}
     </>

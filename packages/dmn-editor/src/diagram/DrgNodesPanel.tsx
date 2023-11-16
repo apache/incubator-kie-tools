@@ -58,27 +58,24 @@ export function DrgNodesPanel() {
 
   return (
     <>
-      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-        <TextContent>
-          <Text component="h3">DRG Nodes</Text>
-        </TextContent>
-      </Flex>
+      <div className="kie-dmn-editor--sticky-top-glass-header" style={{ padding: "12px" }}>
+        <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+          <TextContent>
+            <Text component="h3">DRG Nodes</Text>
+          </TextContent>
+        </Flex>
 
-      <Divider style={{ marginBottom: "12px" }} />
-
-      <SearchInput
-        style={{ marginBottom: "12px", height: "36px" }}
-        onKeyDown={(e) => e.stopPropagation()}
-        autoFocus={true}
-        placeholder="Filter..."
-        value={filter}
-        onChange={(_event, value) => setFilter(value)}
-        onClear={() => setFilter("")}
-      />
-
-      <Divider style={{ marginBottom: "24px" }} />
-
-      {nodes}
+        <SearchInput
+          style={{ marginBottom: "12px", height: "36px" }}
+          onKeyDown={(e) => e.stopPropagation()}
+          autoFocus={true}
+          placeholder="Filter..."
+          value={filter}
+          onChange={(_event, value) => setFilter(value)}
+          onClear={() => setFilter("")}
+        />
+      </div>
+      <div style={{ padding: "12px" }}>{nodes}</div>
     </>
   );
 }

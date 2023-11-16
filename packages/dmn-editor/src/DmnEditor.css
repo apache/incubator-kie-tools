@@ -355,10 +355,7 @@
 }
 /* (end) overlays panel toggle */
 
-/* (begin) drg panel toggle */
-.kie-dmn-editor--drg-popover .pf-c-popover__body {
-  padding: 0;
-}
+/* (begin) drg/external nodes panel toggle */
 .kie-dmn-editor--drg-panel-toggle {
   margin-right: 16px;
   width: 42px;
@@ -366,10 +363,11 @@
   border-radius: 40px;
   border: 1px solid black;
 }
+.kie-dmn-editor--external-nodes-panel-toggle:hover,
 .kie-dmn-editor--drg-panel-toggle:hover {
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
-
+.kie-dmn-editor--external-nodes-panel-toggle-button,
 .kie-dmn-editor--drg-panel-toggle-button {
   margin: 0;
   width: 40px;
@@ -379,17 +377,26 @@
   border: 0;
   background: white;
 }
+.kie-dmn-editor--external-nodes-panel-toggle-button:hover,
 .kie-dmn-editor--drg-panel-toggle-button:hover {
   filter: brightness(95%);
 }
+.kie-dmn-editor--external-nodes-panel-toggle-button:active,
 .kie-dmn-editor--drg-panel-toggle-button:active {
   filter: brightness(90%);
 }
-/* (end) drg panel toggle */
-
-/* (begin) external nodes panel toggle */
-.kie-dmn-editor--external-nodes-popover .pf-c-popover__body {
-  padding: 0;
+.kie-dmn-editor--external-nodes-panel-toggle-button.active,
+.kie-dmn-editor--drg-panel-toggle-button.active {
+  color: #006ba4;
+}
+.kie-dmn-editor--palette-nodes-popover {
+  position: absolute;
+  top: 0;
+  left: 58px;
+  overflow: auto;
+  box-shadow: 0px 5px 10px 0px lightgray;
+  background: white;
+  width: max-content;
 }
 .kie-dmn-editor--external-nodes-panel-toggle {
   margin-right: 16px;
@@ -398,29 +405,11 @@
   border-radius: 40px;
   border: 1px solid black;
 }
-.kie-dmn-editor--external-nodes-panel-toggle:hover {
-  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
-}
 .kie-dmn-editor--external-nodes-panel-toggle-button svg {
   transform: scale(1, -1); /* Flip the 'migration icon' vertically, to point to the Diagram */
 }
 
-.kie-dmn-editor--external-nodes-panel-toggle-button {
-  margin: 0;
-  width: 40px;
-  height: 40px;
-  max-width: 40px;
-  border-radius: 40px;
-  border: 0;
-  background: white;
-}
-.kie-dmn-editor--external-nodes-panel-toggle-button:hover {
-  filter: brightness(95%);
-}
-.kie-dmn-editor--external-nodes-panel-toggle-button:active {
-  filter: brightness(90%);
-}
-/* (end) external nodes panel toggle */
+/* (end) drg/external nodes panel toggle */
 
 /* nodes */
 .kie-dmn-editor--outgoing-stuff-node-panel {
@@ -684,10 +673,9 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
   background: rgb(255, 255, 255, 60%);
   backdrop-filter: blur(4px);
   border-bottom: 1px solid lightgray;
-  height: 80px;
 }
 .kie-dmn-editor--boxed-expression-header {
-  padding-right: 16px;
+  padding: 16px;
 }
 .kie-dmn-editor--data-type-panel-header {
   padding: 0 16px 0 16px;
