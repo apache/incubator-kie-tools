@@ -32,6 +32,8 @@ import { original } from "immer";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { buildFeelQName, parseFeelQName } from "../feel/parseFeelQName";
+import { getNamespaceOfDmnImport } from "../includedModels/importNamespaces";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function DataTypePanel({
   isReadonly,
@@ -164,6 +166,8 @@ export function DataTypePanel({
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
+  const { externalModelsByNamespace } = useExternalModels();
+
   const resolveTypeRef = useCallback(
     (typeRef: string | undefined) => {
       if (!typeRef) {
@@ -175,33 +179,52 @@ export function DataTypePanel({
         return typeRef;
       }
 
-      const parsedTypeRefFeelQName = parseFeelQName(typeRef);
-
-      // The absense of an `importName` from this FEEL QName means that the namespace is the same as `dataType.namespace`.
-      // If there is an `importName`, we need to try and resolve it with thiDmn's imported models. If it fails, the namespace is `KIE_DMN_UNKNOWN_NAMESPACE`.
-      const namespace =
-        (parsedTypeRefFeelQName.importName
-          ? thisDmn.model.definitions[`@_xmlns:${parsedTypeRefFeelQName.importName}`]
-          : dataType.namespace) ?? KIE_DMN_UNKNOWN_NAMESPACE;
-
       // If it's a local data type, it's not relative.
-      if (namespace === thisDmnsNamespace) {
+      if (dataType.namespace === thisDmnsNamespace) {
         return typeRef;
       }
 
-      const typeRefQName = buildFeelQName({
-        type: "feel-qname",
-        importName: importsByNamespace.get(namespace)?.["@_name"] ?? "?", // If the namespace is known to `thisDmn`, we'll have an importName, otherwise, we use `?`.
-        localPart: parsedTypeRefFeelQName.localPart,
-      });
+      const externalModel = externalModelsByNamespace?.[dataType.namespace];
+      if (externalModel?.type !== "dmn") {
+        throw new Error("DMN EDITOR: Can't find external DMN model for known external Data Type.");
+      }
 
-      return allTopLevelDataTypesByFeelName.get(typeRefQName)?.feelName ?? typeRefQName;
+      const parsedTypeRefFeelQName = parseFeelQName(typeRef);
+
+      const possibleNamespaces = [
+        ...(externalModel.model.definitions.import ?? []).flatMap((i) =>
+          i["@_name"] === (parsedTypeRefFeelQName.importName ?? "") ? i["@_namespace"] : []
+        ),
+        dataType.namespace, // Has to go last to override imports, as per the DMN specification.
+      ];
+
+      return possibleNamespaces.reduce(
+        (acc, namespace) => {
+          const thisDmnsImport = importsByNamespace.get(namespace);
+          if (!thisDmnsImport) {
+            return acc;
+          }
+
+          const typeRefQName = buildFeelQName({
+            type: "feel-qname",
+            importName: thisDmnsImport["@_name"],
+            localPart: parsedTypeRefFeelQName.localPart,
+          });
+
+          return allTopLevelDataTypesByFeelName.get(typeRefQName)?.feelName ?? acc;
+        },
+        buildFeelQName({
+          type: "feel-qname",
+          importName: "?",
+          localPart: parsedTypeRefFeelQName.localPart,
+        })
+      );
     },
     [
       allTopLevelDataTypesByFeelName,
       dataType.namespace,
+      externalModelsByNamespace,
       importsByNamespace,
-      thisDmn.model.definitions,
       thisDmnsNamespace,
     ]
   );
