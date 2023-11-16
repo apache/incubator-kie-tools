@@ -24,13 +24,14 @@ import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { UniqueNameIndex } from "../Dmn15Spec";
+import { KIE_DMN_UNKNOWN_NAMESPACE, UniqueNameIndex } from "../Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
 import { Constraints } from "./Constraints";
 import { original } from "immer";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
+import { buildFeelQName, parseFeelQName } from "../feel/parseFeelQName";
 
 export function DataTypePanel({
   isReadonly,
@@ -43,6 +44,7 @@ export function DataTypePanel({
   allDataTypesById: DataTypeIndex;
   editItemDefinition: EditItemDefinition;
 }) {
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
   const toggleStruct = useCallback(
@@ -146,7 +148,8 @@ export function DataTypePanel({
   const [dropdownOpenFor, setDropdownOpenFor] = useState<string | undefined>(undefined);
   const [topLevelDropdownOpen, setTopLevelDropdownOpen] = useState<boolean>(false);
 
-  const { importsByNamespace, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
+  const { importsByNamespace, allTopLevelItemDefinitionUniqueNames, allTopLevelDataTypesByFeelName } =
+    useDmnEditorDerivedStore();
 
   const allUniqueNames = useMemo(
     () =>
@@ -160,6 +163,50 @@ export function DataTypePanel({
   );
 
   const { dmnEditorRootElementRef } = useDmnEditor();
+
+  const resolveTypeRef = useCallback(
+    (typeRef: string | undefined) => {
+      if (!typeRef) {
+        return typeRef;
+      }
+
+      // Built-in types are not relative.
+      if (builtInFeelTypeNames.has(typeRef)) {
+        return typeRef;
+      }
+
+      const parsedTypeRefFeelQName = parseFeelQName(typeRef);
+
+      // The absense of an `importName` from this FEEL QName means that the namespace is the same as `dataType.namespace`.
+      // If there is an `importName`, we need to try and resolve it with thiDmn's imported models. If it fails, the namespace is `KIE_DMN_UNKNOWN_NAMESPACE`.
+      const namespace =
+        (parsedTypeRefFeelQName.importName
+          ? thisDmn.model.definitions[`@_xmlns:${parsedTypeRefFeelQName.importName}`]
+          : dataType.namespace) ?? KIE_DMN_UNKNOWN_NAMESPACE;
+
+      // If it's a local data type, it's not relative.
+      if (namespace === thisDmnsNamespace) {
+        return typeRef;
+      }
+
+      const typeRefQName = buildFeelQName({
+        type: "feel-qname",
+        importName: importsByNamespace.get(namespace)?.["@_name"] ?? "?", // If the namespace is known to `thisDmn`, we'll have an importName, otherwise, we use `?`.
+        localPart: parsedTypeRefFeelQName.localPart,
+      });
+
+      return allTopLevelDataTypesByFeelName.get(typeRefQName)?.feelName ?? typeRefQName;
+    },
+    [
+      allTopLevelDataTypesByFeelName,
+      dataType.namespace,
+      importsByNamespace,
+      thisDmn.model.definitions,
+      thisDmnsNamespace,
+    ]
+  );
+
+  const resolvedTypeRef = resolveTypeRef(dataType.itemDefinition.typeRef?.__$$text);
 
   return (
     <>
@@ -303,7 +350,7 @@ export function DataTypePanel({
             <TypeRefSelector
               heightRef={dmnEditorRootElementRef}
               isDisabled={isReadonly}
-              typeRef={dataType.itemDefinition.typeRef?.__$$text}
+              typeRef={resolvedTypeRef}
               onChange={changeTypeRef}
             />
 
@@ -328,6 +375,7 @@ export function DataTypePanel({
             editItemDefinition={editItemDefinition}
             dropdownOpenFor={dropdownOpenFor}
             setDropdownOpenFor={setDropdownOpenFor}
+            resolveTypeRef={resolveTypeRef}
           />
         )}
       </PageSection>

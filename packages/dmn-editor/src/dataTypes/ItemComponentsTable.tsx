@@ -57,6 +57,7 @@ export function ItemComponentsTable({
   dropdownOpenFor,
   allDataTypesById,
   setDropdownOpenFor,
+  resolveTypeRef,
 }: {
   isReadonly: boolean;
   parent: DataType;
@@ -65,6 +66,7 @@ export function ItemComponentsTable({
   allDataTypesById: DataTypeIndex;
   dropdownOpenFor: string | undefined;
   setDropdownOpenFor: React.Dispatch<React.SetStateAction<string | undefined>>;
+  resolveTypeRef: (typeRef: string | undefined) => string | undefined;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -366,7 +368,7 @@ export function ItemComponentsTable({
                           <TypeRefSelector
                             heightRef={dmnEditorRootElementRef}
                             isDisabled={isReadonly}
-                            typeRef={dt.itemDefinition.typeRef?.__$$text}
+                            typeRef={resolveTypeRef(dt.itemDefinition.typeRef?.__$$text)}
                             onChange={(newDataType) => {
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                                 itemDefinition.typeRef = { __$$text: newDataType };
