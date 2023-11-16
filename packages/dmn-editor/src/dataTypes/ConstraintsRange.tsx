@@ -91,18 +91,22 @@ export function ConstraintsRange({
 
   const onInternalChange = useCallback(
     (args?: { start?: string; end?: string; includeStart?: boolean; includeEnd?: boolean }) => {
-      if (
-        args !== undefined &&
-        (args?.start === undefined || args.start === "") &&
-        (args?.end === undefined || args.end === "")
-      ) {
+      // arg start is empty and end is empty
+      if (args !== undefined && (args?.start === undefined || args.start === "") && (end === undefined || end === "")) {
         onSave("");
       }
 
+      // arg end is empty and start is empty
+      if (args !== undefined && (args?.end === undefined || args.end === "") && (start === undefined || start === "")) {
+        onSave("");
+      }
+
+      // arg start or arg end is empty
       if ((args?.start !== undefined && args.start === "") || (args?.end !== undefined && args.end === "")) {
         return;
       }
 
+      // arg start and is empty and current is empty or arg end is empty and current is empty
       if ((args?.start === undefined && start === "") || (args?.end === undefined && end === "")) {
         return;
       }
