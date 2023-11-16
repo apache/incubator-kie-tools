@@ -39,16 +39,18 @@ export function useDraggableItemContext() {
 
 export type DraggableReorderFunction = (source: number, dest: number) => void;
 
-export function DraggableContextProvider({
+export function DragAndDrop({
   reorder,
   onDragEnd,
   values,
   draggableItem,
+  isDisabled,
 }: {
   reorder: DraggableReorderFunction;
   onDragEnd?: (source: number, dest: number) => void;
   values?: any[];
   draggableItem?: (value: any, index: number) => React.ReactNode;
+  isDisabled: boolean;
 }) {
   const [source, setSource] = useState<number>(-1);
   const [dest, setDest] = useState<number>(-1);
@@ -59,28 +61,46 @@ export function DraggableContextProvider({
   const [valuesKeys, setValuesKeys] = useState((values ?? [])?.map((_) => generateUuid()));
 
   useLayoutEffect(() => {
+    if (isDisabled) {
+      return;
+    }
     setValuesCopy((prev) => {
       if (values?.length !== prev.length) {
         setValuesKeys((values ?? [])?.map((_) => generateUuid()));
       }
       return values ?? [];
     });
-  }, [values]);
+  }, [values, isDisabled]);
 
-  const onInternalDragStart = useCallback((index: number) => {
-    setDragging(true);
-    setSource(index);
-    setOrigin(index);
-    setLeftOrigin(false);
-  }, []);
+  const onInternalDragStart = useCallback(
+    (index: number) => {
+      if (isDisabled) {
+        return;
+      }
+      setDragging(true);
+      setSource(index);
+      setOrigin(index);
+      setLeftOrigin(false);
+    },
+    [isDisabled]
+  );
 
-  const onInternalDragOver = useCallback((e: React.DragEvent<HTMLDivElement>, index: number) => {
-    e.preventDefault();
-    setDest(index);
-  }, []);
+  const onInternalDragOver = useCallback(
+    (e: React.DragEvent<HTMLDivElement>, index: number) => {
+      if (isDisabled) {
+        return;
+      }
+      e.preventDefault();
+      setDest(index);
+    },
+    [isDisabled]
+  );
 
   const onInternalDragEnd = useCallback(
     (index: number) => {
+      if (isDisabled) {
+        return;
+      }
       onDragEnd?.(origin, dest);
       setDragging(false);
       setSource(-1);
@@ -88,26 +108,35 @@ export function DraggableContextProvider({
       setOrigin(-1);
       setLeftOrigin(false);
     },
-    [dest, onDragEnd, origin]
+    [dest, onDragEnd, origin, isDisabled]
   );
 
-  const onInternalReorder = useCallback((source: number, dest: number) => {
-    setValuesCopy((prev) => {
-      const reordenedValues = [...prev];
-      const [removedValue] = reordenedValues.splice(source, 1);
-      reordenedValues.splice(dest, 0, removedValue);
-      return reordenedValues;
-    });
-    setValuesKeys((prev) => {
-      const reordenedKeys = [...prev];
-      const [removedKeys] = reordenedKeys.splice(source, 1);
-      reordenedKeys.splice(dest, 0, removedKeys);
-      return reordenedKeys;
-    });
-  }, []);
+  const onInternalReorder = useCallback(
+    (source: number, dest: number) => {
+      if (isDisabled) {
+        return;
+      }
+      setValuesCopy((prev) => {
+        const reordenedValues = [...prev];
+        const [removedValue] = reordenedValues.splice(source, 1);
+        reordenedValues.splice(dest, 0, removedValue);
+        return reordenedValues;
+      });
+      setValuesKeys((prev) => {
+        const reordenedKeys = [...prev];
+        const [removedKeys] = reordenedKeys.splice(source, 1);
+        reordenedKeys.splice(dest, 0, removedKeys);
+        return reordenedKeys;
+      });
+    },
+    [isDisabled]
+  );
 
   const onInternalDragEnter = useCallback(
     (index: number) => {
+      if (isDisabled) {
+        return;
+      }
       if (index === dest && index !== source) {
         reorder(source, dest);
         onInternalReorder(source, dest);
@@ -115,16 +144,19 @@ export function DraggableContextProvider({
         setDest(source);
       }
     },
-    [dest, reorder, source, onInternalReorder]
+    [dest, reorder, source, onInternalReorder, isDisabled]
   );
 
   const onInternalDragLeave = useCallback(
     (index: number) => {
+      if (isDisabled) {
+        return;
+      }
       if (!leftOrigin && index !== source) {
         setLeftOrigin(true);
       }
     },
-    [leftOrigin, source]
+    [leftOrigin, source, isDisabled]
   );
 
   return (

@@ -13,7 +13,7 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { Draggable, DraggableContextProvider, useDraggableItemContext } from "../draggable/Draggable";
+import { Draggable, DragAndDrop, useDraggableItemContext } from "../draggable/Draggable";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
 const PLACEHOLDER_URL = "http://";
@@ -191,11 +191,12 @@ export function DocumentationLinksFormGroup({
         {(values ?? []).length === 0 && (
           <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadonly ? "None" : "None yet"}</li>
         )}
-        <DraggableContextProvider
+        <DragAndDrop
           reorder={reorder}
           onDragEnd={onDragEnd}
           values={values}
           draggableItem={draggableItem}
+          isDisabled={isReadonly}
         />
       </ul>
     </FormGroup>
