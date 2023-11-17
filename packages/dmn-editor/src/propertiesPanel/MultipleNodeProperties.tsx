@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -9,11 +9,12 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
+import { ShapeOptions } from "./ShapeOptions";
 
-export function MultipleNodeProperties(props: { size: number; nodeIds: string[] }) {
+export function MultipleNodeProperties({ nodeIds }: { nodeIds: string[] }) {
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  dmnEditorStoreApi.getState();
+  const size = useMemo(() => nodeIds.length, [nodeIds.length]);
 
   return (
     <Form>
@@ -27,9 +28,9 @@ export function MultipleNodeProperties(props: { size: number; nodeIds: string[] 
               <TextContent>
                 <Text component={TextVariants.h4}>
                   <Truncate
-                    content={`Multiple nodes selected (${props.size})`}
+                    content={`Multiple nodes selected (${size})`}
                     position={"middle"}
-                    trailingNumChars={props.size.toString().length + 2}
+                    trailingNumChars={size.toString().length + 2}
                   />
                 </Text>
               </TextContent>
@@ -50,7 +51,13 @@ export function MultipleNodeProperties(props: { size: number; nodeIds: string[] 
         />
       </FormSection>
       <FormSection>
-        <FontOptions startExpanded={true} nodeIds={props.nodeIds} />
+        <FontOptions startExpanded={false} nodeIds={nodeIds} />
+        <ShapeOptions
+          startExpanded={false}
+          nodeIds={nodeIds}
+          isDimensioningEnabled={false}
+          isPositioningEnabled={false}
+        />
       </FormSection>
     </Form>
   );

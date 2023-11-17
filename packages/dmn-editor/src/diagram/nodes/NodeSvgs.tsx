@@ -1,12 +1,14 @@
 import * as React from "react";
 import * as RF from "reactflow";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
+import { DEFAULT_NODE_FILL, DEFAULT_NODE_STROKE_COLOR, DEFAULT_NODE_STROKE_WIDTH } from "./NodeStyle";
 
-export type NodeSvgProps = RF.Dimensions & RF.XYPosition & { strokeWidth?: number };
-
-const DEFAULT_NODE_FILL = "white";
-const DEFAULT_NODE_STROKE_WIDTH = 1.5;
-const DEFAULT_NODE_STROKE_COLOR = "black";
+export type NodeSvgProps = RF.Dimensions &
+  RF.XYPosition & {
+    fillColor?: string;
+    strokeColor?: string;
+    strokeWidth?: number;
+  };
 
 export const ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches = { flag: false };
 
@@ -56,8 +58,8 @@ export function InputDataNodeSvg(_props: NodeSvgProps) {
         y={y}
         width={width}
         height={height}
-        fill={DEFAULT_NODE_FILL}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
+        fill={_props.fillColor ?? DEFAULT_NODE_FILL}
+        stroke={_props.strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeLinejoin={"round"}
         strokeWidth={strokeWidth}
         rx={rx}
@@ -72,8 +74,8 @@ export function DecisionNodeSvg(_props: NodeSvgProps) {
     <g>
       <rect
         {...normalize(_props)}
-        fill={DEFAULT_NODE_FILL}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
+        fill={_props.fillColor ?? DEFAULT_NODE_FILL}
+        stroke={_props.strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeLinejoin={"round"}
       />
     </g>
@@ -88,8 +90,8 @@ export function BkmNodeSvg(_props: NodeSvgProps) {
       <polygon
         {...props}
         points={`${bevel},0 0,${bevel} 0,${height} ${width - bevel},${height} ${width},${height - bevel}, ${width},0`}
-        fill={DEFAULT_NODE_FILL}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
+        fill={_props.fillColor ?? DEFAULT_NODE_FILL}
+        stroke={_props.strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeWidth={strokeWidth}
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
@@ -110,9 +112,9 @@ export function KnowledgeSourceNodeSvg(_props: NodeSvgProps) {
       <path
         {...props}
         d={`${straightLines} ${bottomWave} Z`}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
+        fill={_props.fillColor ?? DEFAULT_NODE_FILL}
+        stroke={_props.strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeWidth={strokeWidth}
-        fill={DEFAULT_NODE_FILL}
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
@@ -156,7 +158,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
             d={`M0,0 L${width},0`}
             strokeLinejoin={"round"}
             strokeWidth={strokeWidth}
-            stroke={DEFAULT_NODE_STROKE_COLOR}
+            stroke={__props.strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
             transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
           />
         </>
@@ -170,7 +172,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
         height={height}
         strokeWidth={strokeWidth}
         fill={isCollapsed ? DEFAULT_NODE_FILL : "transparent"}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
+        stroke={__props.strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeLinejoin={"round"}
         rx={"40"}
         ry={"40"}
@@ -220,7 +222,7 @@ export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?
         x={x}
         y={y}
         d={`M20,0 L0,0 M0,0 L0,${height} M0,${height} L20,${height}`}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
+        stroke={_props.strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeWidth={strokeWidth}
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
@@ -235,9 +237,9 @@ export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?
 }
 
 export const GroupNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { strokeDasharray?: string }>(
-  (__props, ref) => {
-    const { strokeWidth, x, y, width, height, props } = normalize(__props);
-    const interactionRect = normalize({ ...__props, strokeWidth: DEFAULT_INTRACTION_WIDTH / 2 });
+  (_props, ref) => {
+    const { strokeWidth, x, y, width, height, props } = normalize(_props);
+    const interactionRect = normalize({ ..._props, strokeWidth: DEFAULT_INTRACTION_WIDTH / 2 });
     const strokeDasharray = props.strokeDasharray ?? "14,10,3,10";
     return (
       <g>
@@ -248,7 +250,7 @@ export const GroupNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { st
           width={width}
           height={height}
           fill={"transparent"}
-          stroke={DEFAULT_NODE_STROKE_COLOR}
+          stroke={_props.strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
           strokeLinejoin={"round"}
           strokeWidth={strokeWidth}
           strokeDasharray={strokeDasharray}

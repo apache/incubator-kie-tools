@@ -162,7 +162,12 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
         )}
 
         <FontOptions startExpanded={false} nodeIds={[node.id]} />
-        <ShapeOptions startExpanded={false} />
+        <ShapeOptions
+          startExpanded={false}
+          nodeIds={[node.id]}
+          isDimensioningEnabled={true}
+          isPositioningEnabled={true}
+        />
       </FormSection>
     </Form>
   );

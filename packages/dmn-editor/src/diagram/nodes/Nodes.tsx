@@ -118,7 +118,14 @@ export const InputDataNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <InputDataNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={shapeStyle.strokeWidth} />
+          <InputDataNodeSvg
+            {...nodeDimensions}
+            x={0}
+            y={0}
+            strokeWidth={shapeStyle.strokeWidth}
+            fillColor={shapeStyle.fillColor}
+            strokeColor={shapeStyle.strokeColor}
+          />
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
@@ -222,7 +229,14 @@ export const DecisionNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <DecisionNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={parentRfNode ? 3 : shapeStyle.strokeWidth} />
+          <DecisionNodeSvg
+            {...nodeDimensions}
+            x={0}
+            y={0}
+            strokeWidth={parentRfNode ? 3 : shapeStyle.strokeWidth}
+            fillColor={shapeStyle.fillColor}
+            strokeColor={shapeStyle.strokeColor}
+          />
         </svg>
 
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -329,7 +343,14 @@ export const BkmNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <BkmNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={shapeStyle.strokeWidth} />
+          <BkmNodeSvg
+            {...nodeDimensions}
+            x={0}
+            y={0}
+            strokeWidth={shapeStyle.strokeWidth}
+            fillColor={shapeStyle.fillColor}
+            strokeColor={shapeStyle.strokeColor}
+          />
         </svg>
 
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -421,7 +442,14 @@ export const KnowledgeSourceNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <KnowledgeSourceNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={shapeStyle.strokeWidth} />
+          <KnowledgeSourceNodeSvg
+            {...nodeDimensions}
+            x={0}
+            y={0}
+            strokeWidth={shapeStyle.strokeWidth}
+            fillColor={shapeStyle.fillColor}
+            strokeColor={shapeStyle.strokeColor}
+          />
         </svg>
 
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -479,7 +507,7 @@ export const TextAnnotationNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation & { __$$element: "textAnnotation" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const { fontStyle } = useNodeStyle(shape["di:Style"]);
+    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -506,7 +534,7 @@ export const TextAnnotationNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} />
+          <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} strokeColor={shapeStyle.strokeColor} />
         </svg>
 
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -585,7 +613,7 @@ export const DecisionServiceNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
-    const { fontStyle } = useNodeStyle(shape["di:Style"]);
+    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     // Select nodes representing output and encapsulated decisions contained by the Decision Service
     useEffect(() => {
@@ -684,6 +712,7 @@ export const DecisionServiceNode = React.memo(
             x={0}
             y={0}
             strokeWidth={3}
+            strokeColor={shapeStyle.strokeColor}
             isReadonly={false}
             isCollapsed={isCollapsed}
             showSectionLabels={diagram.dropTargetNode?.id === id}
@@ -773,7 +802,7 @@ export const GroupNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
-    const { fontStyle } = useNodeStyle(shape["di:Style"]);
+    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     // Select nodes that are visually entirely inside the group.
     useEffect(() => {
@@ -802,7 +831,14 @@ export const GroupNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <GroupNodeSvg ref={ref} {...nodeDimensions} x={0} y={0} strokeWidth={3} />
+          <GroupNodeSvg
+            ref={ref}
+            {...nodeDimensions}
+            x={0}
+            y={0}
+            strokeWidth={3}
+            strokeColor={shapeStyle.strokeColor}
+          />
         </svg>
 
         <div
