@@ -18,7 +18,6 @@
  */
 
 import React from "react";
-import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -26,17 +25,24 @@ import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/compo
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { AddCircleOIcon } from "@patternfly/react-icons/dist/js/icons/add-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
-import { EMPTY_CONFIG, isRuntimeToolsConfigValid, resetConfigCookie, saveConfigCookie } from "./RuntimeToolsConfig";
+import {
+  EMPTY_CONFIG,
+  RuntimeToolsSettingsConfig,
+  isRuntimeToolsConfigValid,
+  resetConfigCookie,
+  saveConfigCookie,
+} from "./RuntimeToolsConfig";
+import { removeTrailingSlashFromUrl } from "../../url";
 
 const PAGE_TITLE = "Runtime Tools";
 
@@ -45,7 +51,6 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.runtimeTools.config);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -79,8 +84,13 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
   }, [settingsDispatch.runtimeTools]);
 
   const onApply = useCallback(() => {
-    settingsDispatch.runtimeTools.setConfig(config);
-    saveConfigCookie(config);
+    const newConfig: RuntimeToolsSettingsConfig = {
+      dataIndexUrl: removeTrailingSlashFromUrl(config.dataIndexUrl),
+      kogitoServiceUrl: removeTrailingSlashFromUrl(config.kogitoServiceUrl),
+    };
+    setConfig(newConfig);
+    settingsDispatch.runtimeTools.setConfig(newConfig);
+    saveConfigCookie(newConfig);
   }, [config, settingsDispatch.runtimeTools]);
 
   return (

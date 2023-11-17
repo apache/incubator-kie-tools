@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kogito.core.internal;
 
 import org.osgi.framework.BundleActivator;
