@@ -30,7 +30,7 @@ const WEBSAFE_FONTS_LIST = [
 
 const DEFAULT_FONT_SIZE = 16;
 const MAX_FONT_SIZE = 72;
-const MIN_FONT_SIZE = 1;
+const MIN_FONT_SIZE = 0;
 
 enum FontStyleToggleOptions {
   BOLD = "bold",
@@ -103,7 +103,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   );
 
   const validateFontSize = useCallback((value?: number): number => {
-    if (value === undefined || value === 0) {
+    if (value === undefined) {
       return DEFAULT_FONT_SIZE;
     }
     if (value >= MAX_FONT_SIZE) {
