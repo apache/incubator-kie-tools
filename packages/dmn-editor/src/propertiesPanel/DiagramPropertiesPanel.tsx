@@ -20,7 +20,9 @@ export function DiagramPropertiesPanel() {
       <DrawerHead>
         {selectedNodesById.size <= 0 && <GlobalDiagramProperties />}
         {selectedNodesById.size === 1 && <SingleNodeProperties nodeId={[...selectedNodesById.keys()][0]} />}
-        {selectedNodesById.size > 1 && <MultipleNodeProperties size={selectedNodesById.size} />}
+        {selectedNodesById.size > 1 && (
+          <MultipleNodeProperties nodeIds={[...selectedNodesById.keys()]} size={selectedNodesById.size} />
+        )}
       </DrawerHead>
     </DrawerPanelContent>
   );

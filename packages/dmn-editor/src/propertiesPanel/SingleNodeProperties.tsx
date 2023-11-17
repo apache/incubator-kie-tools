@@ -22,7 +22,6 @@ import {
   DMN15__tInputData,
   DMN15__tKnowledgeSource,
   DMN15__tTextAnnotation,
-  DMNDI15__DMNStyle,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { NodeIcon } from "../icons/Icons";
@@ -162,7 +161,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
           </>
         )}
 
-        <FontOptions startExpanded={false} nodeId={node.id} />
+        <FontOptions startExpanded={false} nodeIds={[node.id]} />
         <ShapeOptions startExpanded={false} />
       </FormSection>
     </Form>

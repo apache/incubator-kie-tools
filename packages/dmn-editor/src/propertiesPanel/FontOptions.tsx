@@ -40,40 +40,42 @@ enum FontStyleToggleOptions {
   FONT_COLOR = "font-color",
 }
 
-export function FontOptions({ startExpanded, nodeId }: { startExpanded: boolean; nodeId: string }) {
+export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean; nodeIds: string[] }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const [isStyleSectionExpanded, setStyleSectionExpanded] = useState<boolean>(startExpanded);
 
   const { dmnShapesByHref } = useDmnEditorDerivedStore();
-  const shape = useMemo(() => dmnShapesByHref.get(nodeId), [dmnShapesByHref, nodeId]);
-  const shapeStyle = useMemo(() => shape?.["di:Style"], [shape]);
+  const shapes = useMemo(() => nodeIds.map((nodeId) => dmnShapesByHref.get(nodeId)), [dmnShapesByHref, nodeIds]);
+  const shapesStyle = useMemo(() => shapes.map((shape) => shape?.["di:Style"]), [shapes]);
 
-  const fontFamily = useMemo(() => shapeStyle?.["@_fontFamily"], [shapeStyle]);
-  const isFontBold = useMemo(() => shapeStyle?.["@_fontBold"] ?? false, [shapeStyle]);
-  const isFontItalic = useMemo(() => shapeStyle?.["@_fontItalic"] ?? false, [shapeStyle]);
-  const isFontUnderline = useMemo(() => shapeStyle?.["@_fontUnderline"], [shapeStyle]);
-  const isFontStrikeThrough = useMemo(() => shapeStyle?.["@_fontStrikeThrough"] ?? false, [shapeStyle]);
-  const fontSize = useMemo(() => shapeStyle?.["@_fontSize"] ?? DEFAULT_FONT_SIZE, [shapeStyle]);
+  const fontFamily = useMemo(() => shapesStyle[0]?.["@_fontFamily"], [shapesStyle]);
+  const isFontBold = useMemo(() => shapesStyle[0]?.["@_fontBold"] ?? false, [shapesStyle]);
+  const isFontItalic = useMemo(() => shapesStyle[0]?.["@_fontItalic"] ?? false, [shapesStyle]);
+  const isFontUnderline = useMemo(() => shapesStyle[0]?.["@_fontUnderline"], [shapesStyle]);
+  const isFontStrikeThrough = useMemo(() => shapesStyle[0]?.["@_fontStrikeThrough"] ?? false, [shapesStyle]);
+  const fontSize = useMemo(() => shapesStyle[0]?.["@_fontSize"] ?? DEFAULT_FONT_SIZE, [shapesStyle]);
   const fontColor = useMemo(() => {
-    const b = (shapeStyle?.["dmndi:FontColor"]?.["@_blue"] ?? 0).toString(16);
-    const g = (shapeStyle?.["dmndi:FontColor"]?.["@_green"] ?? 0).toString(16);
-    const r = (shapeStyle?.["dmndi:FontColor"]?.["@_red"] ?? 0).toString(16);
+    const b = (shapesStyle[0]?.["dmndi:FontColor"]?.["@_blue"] ?? 0).toString(16);
+    const g = (shapesStyle[0]?.["dmndi:FontColor"]?.["@_green"] ?? 0).toString(16);
+    const r = (shapesStyle[0]?.["dmndi:FontColor"]?.["@_red"] ?? 0).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
-  }, [shapeStyle]);
+  }, [shapesStyle]);
 
   const editShapeStyle = useCallback(
-    (callback: (shape: DMNDI15__DMNShape) => void) => {
+    (callback: (shape: DMNDI15__DMNShape[]) => void) => {
       dmnEditorStoreApi.setState((state) => {
         const { diagramElements } = addOrGetDrd({
           definitions: state.dmn.model.definitions,
           drdIndex: state.diagram.drdIndex,
         });
-        const _shape = diagramElements[shape?.index ?? 0];
-        _shape["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
-        callback(_shape);
+        const _shapes = shapes.map((shape) => diagramElements[shape?.index ?? 0]);
+        _shapes.forEach((_shape, i, _shapes) => {
+          _shapes[i]["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
+        });
+        callback(_shapes);
       });
     },
-    [dmnEditorStoreApi, shape?.index]
+    [dmnEditorStoreApi, shapes]
   );
 
   const { dmnEditorRootElementRef } = useDmnEditor();
@@ -84,13 +86,17 @@ export function FontOptions({ startExpanded, nodeId }: { startExpanded: boolean;
   const onSelectFont = useCallback(
     (e, value, isPlaceholder) => {
       if (isPlaceholder) {
-        editShapeStyle((shape) => {
-          shape!["di:Style"]!["@_fontFamily"] = undefined;
+        editShapeStyle((shapes) => {
+          shapes.forEach((shape, i, shapes) => {
+            shape["di:Style"]!["@_fontFamily"] ??= undefined;
+          });
         });
         return;
       }
-      editShapeStyle((shape) => {
-        shape!["di:Style"]!["@_fontFamily"] = value;
+      editShapeStyle((shapes) => {
+        shapes.forEach((shape, i, shapes) => {
+          shape["di:Style"]!["@_fontFamily"] = value;
+        });
       });
     },
     [editShapeStyle]
@@ -110,51 +116,65 @@ export function FontOptions({ startExpanded, nodeId }: { startExpanded: boolean;
   }, []);
 
   const onMinus = useCallback(() => {
-    editShapeStyle((shape) => {
-      shape!["di:Style"]!["@_fontSize"] = validateFontSize(
-        (shape!["di:Style"]?.["@_fontSize"] ?? DEFAULT_FONT_SIZE) - 1
-      );
+    editShapeStyle((shapes) => {
+      shapes.forEach((shape) => {
+        shape["di:Style"]!["@_fontSize"] = validateFontSize(
+          (shape!["di:Style"]?.["@_fontSize"] ?? DEFAULT_FONT_SIZE) - 1
+        );
+      });
     });
   }, [editShapeStyle, validateFontSize]);
 
   const onChange = useCallback(
     (event: React.FormEvent<HTMLInputElement>) => {
-      editShapeStyle((shape) => {
-        shape!["di:Style"]!["@_fontSize"] = +(event.target as HTMLInputElement).value;
+      editShapeStyle((shapes) => {
+        shapes.forEach((shape) => {
+          shape["di:Style"]!["@_fontSize"] = +(event.target as HTMLInputElement).value;
+        });
       });
     },
     [editShapeStyle]
   );
 
   const onPlus = useCallback(() => {
-    editShapeStyle((shape) => {
-      shape!["di:Style"]!["@_fontSize"] = validateFontSize(
-        (shape!["di:Style"]?.["@_fontSize"] ?? DEFAULT_FONT_SIZE) + 1
-      );
+    editShapeStyle((shapes) => {
+      shapes.forEach((shape) => {
+        shape["di:Style"]!["@_fontSize"] = validateFontSize(
+          (shape!["di:Style"]?.["@_fontSize"] ?? DEFAULT_FONT_SIZE) + 1
+        );
+      });
     });
   }, [editShapeStyle, validateFontSize]);
 
   const onChangeBold = useCallback(() => {
-    editShapeStyle((shape: DMNDI15__DMNShape) => {
-      shape!["di:Style"]!["@_fontBold"] = !shape?.["di:Style"]?.["@_fontBold"] ?? true;
+    editShapeStyle((shapes) => {
+      shapes.forEach((shape) => {
+        shape["di:Style"]!["@_fontBold"] = !shape?.["di:Style"]?.["@_fontBold"] ?? true;
+      });
     });
   }, [editShapeStyle]);
 
   const onChangeItalic = useCallback(() => {
-    editShapeStyle((shape: DMNDI15__DMNShape) => {
-      shape!["di:Style"]!["@_fontItalic"] = !shape?.["di:Style"]?.["@_fontItalic"] ?? true;
+    editShapeStyle((shapes) => {
+      shapes.forEach((shape) => {
+        shape["di:Style"]!["@_fontItalic"] = !shape?.["di:Style"]?.["@_fontItalic"] ?? true;
+      });
     });
   }, [editShapeStyle]);
 
   const onChangeUnderline = useCallback(() => {
-    editShapeStyle((shape: DMNDI15__DMNShape) => {
-      shape!["di:Style"]!["@_fontUnderline"] = !shape?.["di:Style"]?.["@_fontUnderline"] ?? true;
+    editShapeStyle((shapes) => {
+      shapes.forEach((shape) => {
+        shape["di:Style"]!["@_fontUnderline"] = !shape?.["di:Style"]?.["@_fontUnderline"] ?? true;
+      });
     });
   }, [editShapeStyle]);
 
   const onChangeStrikeThrough = useCallback(() => {
-    editShapeStyle((shape: DMNDI15__DMNShape) => {
-      shape!["di:Style"]!["@_fontStrikeThrough"] = !shape?.["di:Style"]?.["@_fontStrikeThrough"] ?? true;
+    editShapeStyle((shapes) => {
+      shapes.forEach((shape) => {
+        shape["di:Style"]!["@_fontStrikeThrough"] = !shape?.["di:Style"]?.["@_fontStrikeThrough"] ?? true;
+      });
     });
   }, [editShapeStyle]);
 
@@ -162,12 +182,14 @@ export function FontOptions({ startExpanded, nodeId }: { startExpanded: boolean;
 
   const onChangeColor = useCallback(
     (newColor: string) => {
-      editShapeStyle((shape: DMNDI15__DMNShape) => {
-        const withoutHash = newColor.replace("#", "");
-        shape!["di:Style"]!["dmndi:FontColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
-        shape!["di:Style"]!["dmndi:FontColor"]["@_red"] = parseInt(withoutHash.slice(0, 2), 16);
-        shape!["di:Style"]!["dmndi:FontColor"]["@_green"] = parseInt(withoutHash.slice(2, 4), 16);
-        shape!["di:Style"]!["dmndi:FontColor"]["@_blue"] = parseInt(withoutHash.slice(4, 6), 16);
+      const withoutHash = newColor.replace("#", "");
+      editShapeStyle((shapes) => {
+        shapes.forEach((shape) => {
+          shape!["di:Style"]!["dmndi:FontColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
+          shape!["di:Style"]!["dmndi:FontColor"]["@_red"] = parseInt(withoutHash.slice(0, 2), 16);
+          shape!["di:Style"]!["dmndi:FontColor"]["@_green"] = parseInt(withoutHash.slice(2, 4), 16);
+          shape!["di:Style"]!["dmndi:FontColor"]["@_blue"] = parseInt(withoutHash.slice(4, 6), 16);
+        });
       });
     },
     [editShapeStyle]

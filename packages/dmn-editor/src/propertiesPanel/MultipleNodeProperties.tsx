@@ -10,9 +10,10 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 
-export function MultipleNodeProperties(props: { size: number }) {
+export function MultipleNodeProperties(props: { size: number; nodeIds: string[] }) {
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  dmnEditorStoreApi.getState();
 
   return (
     <Form>
@@ -49,8 +50,7 @@ export function MultipleNodeProperties(props: { size: number }) {
         />
       </FormSection>
       <FormSection>
-        {/* TODO: LUIZ -> MULTIPLE NODES SHOULD NOT HAVE INDEX!! MAYBE LIST OF INDEXES? */}
-        <FontOptions startExpanded={true} nodeId={""} />
+        <FontOptions startExpanded={true} nodeIds={props.nodeIds} />
       </FormSection>
     </Form>
   );
