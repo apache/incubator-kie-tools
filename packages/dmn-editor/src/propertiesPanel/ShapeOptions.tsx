@@ -12,6 +12,8 @@ import { ArrowsAltVIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt
 import { ArrowsAltHIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt-h-icon";
 import { NODE_MIN_HEIGHT, NODE_MIN_WIDTH } from "../diagram/nodes/DefaultSizes";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import UndoAltIcon from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 
 export function ShapeOptions({
   startExpanded,
@@ -148,6 +150,21 @@ export function ShapeOptions({
     [editShapeStyle]
   );
 
+  const onReset = useCallback(() => {
+    editShapeStyle((shapes) => {
+      shapes.forEach((shape) => {
+        shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
+        shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = 0;
+        shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = 0;
+        shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = 0;
+        shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
+        shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = 255;
+        shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = 255;
+        shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = 255;
+      });
+    });
+  }, [editShapeStyle]);
+
   return (
     <>
       <PropertiesPanelHeader
@@ -167,7 +184,7 @@ export function ShapeOptions({
                 gridTemplateColumns: "auto auto auto auto",
                 gridTemplateRows: "auto",
                 gridTemplateAreas: `
-                'border-color-label border-color-value fill-color-label fill-color-value'
+                'border-color-label border-color-value fill-color-label fill-color-value color-reset'
             `,
                 columnGap: "5px",
                 alignItems: "center",
@@ -202,6 +219,14 @@ export function ShapeOptions({
                   placeholder={"Enter a color..."}
                 />
               </div>
+
+              <div style={{ gridArea: "color-reset", justifySelf: "flex-end" }}>
+                <Tooltip content={"Reset"}>
+                  <Button variant={ButtonVariant.plain} onClick={onReset}>
+                    <UndoAltIcon />
+                  </Button>
+                </Tooltip>
+              </div>
             </div>
           </FormGroup>
 
@@ -227,7 +252,6 @@ export function ShapeOptions({
                     value={boundWidth}
                     onChange={onChangeWidth}
                     placeholder={"Enter a value..."}
-                    // validated={boundWidth < NODE_MIN_WIDTH ? "warning" : "default"}
                   />
                 </div>
                 <div style={{ gridArea: "width-label" }}>
@@ -244,7 +268,6 @@ export function ShapeOptions({
                     value={boundHeight}
                     onChange={onChangeHeight}
                     placeholder={"Enter a value..."}
-                    // validated={boundHeight < NODE_MIN_HEIGHT ? "warning" : "default"}
                   />
                 </div>
                 <div style={{ gridArea: "heigth-label" }}>

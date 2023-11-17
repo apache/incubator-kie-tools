@@ -13,6 +13,9 @@ import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import "./FontOptions.css";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { UndoAltIcon } from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php
 // Array of [name, family]
@@ -195,6 +198,23 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
     [editShapeStyle]
   );
 
+  const onReset = useCallback(() => {
+    editShapeStyle((shapes) => {
+      shapes.forEach((shape) => {
+        shape["di:Style"]!["@_fontBold"] = undefined;
+        shape["di:Style"]!["@_fontItalic"] = undefined;
+        shape["di:Style"]!["@_fontUnderline"] = undefined;
+        shape["di:Style"]!["@_fontStrikeThrough"] = undefined;
+        shape["di:Style"]!["@_fontSize"] = undefined;
+        shape["di:Style"]!["@_fontFamily"] = undefined;
+        shape!["di:Style"]!["dmndi:FontColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
+        shape!["di:Style"]!["dmndi:FontColor"]["@_red"] = 0;
+        shape!["di:Style"]!["dmndi:FontColor"]["@_green"] = 0;
+        shape!["di:Style"]!["dmndi:FontColor"]["@_blue"] = 0;
+      });
+    });
+  }, [editShapeStyle]);
+
   return (
     <>
       <PropertiesPanelHeader
@@ -204,6 +224,13 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         isSectionExpanded={isStyleSectionExpanded} // TODO LUIZ: isStyleSectionExpanded
         toogleSectionExpanded={() => setStyleSectionExpanded((prev) => !prev)}
         title={"Font"}
+        action={
+          <Tooltip content={"Reset"}>
+            <Button variant={ButtonVariant.plain} onClick={() => onReset()} style={{ paddingBottom: 0, paddingTop: 0 }}>
+              <UndoAltIcon />
+            </Button>
+          </Tooltip>
+        }
       />
       {isStyleSectionExpanded && (
         <FormSection style={{ paddingLeft: "20px", marginTop: "0px" }}>
