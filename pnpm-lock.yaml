@@ -6648,6 +6648,12 @@ importers:
       "@patternfly/react-styles":
         specifier: ^4.92.6
         version: 4.92.6
+      "@patternfly/react-table":
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -6682,6 +6688,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@types/lodash":
+        specifier: ^4.14.168
+        version: 4.14.169
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21

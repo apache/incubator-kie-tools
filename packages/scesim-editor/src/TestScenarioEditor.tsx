@@ -229,11 +229,15 @@ function TestScenarioCreationPanel({
 }
 
 function TestScenarioMainPanel({
+  addNewSimulationRow,
   fileName,
+  deleteSimulationRow,
   scesimModel,
   updateSettingField,
 }: {
+  addNewSimulationRow: (args: { beforeIndex: number }) => void;
   fileName: string;
+  deleteSimulationRow: (args: { rowIndex: number }) => void;
   scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
   updateSettingField: (field: string, value: string) => void;
 }) {
@@ -379,10 +383,14 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    <TestScenarioTable
-                      assetType={scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text}
-                      simulationData={scesimModel.ScenarioSimulationModel["simulation"]}
-                    />
+                    <div className="kie-scesim-editor--table-container">
+                      <TestScenarioTable
+                        assetType={scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text}
+                        onRowAdded={addNewSimulationRow}
+                        onRowDeleted={deleteSimulationRow}
+                        simulationData={scesimModel.ScenarioSimulationModel["simulation"]}
+                      />
+                    </div>
                   </Tab>
                   <Tab
                     eventKey={TestScenarioEditorTab.BACKGROUND}
@@ -529,6 +537,66 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
     [setScesimModel]
   );
 
+  const addNewSimulationRow = useCallback(
+    (args: { beforeIndex: number }) => {
+      const item = {
+        factMappingValues: {
+          FactMappingValue: [
+            {
+              expressionIdentifier: { name: { __$$text: "ASD" }, type: { __$$text: "ASD" } },
+              factIdentifier: { name: { __$$text: "ASD" }, className: { __$$text: "ASD" } },
+              rawValue: { __$$text: "ASD" },
+            },
+          ],
+        },
+      };
+
+      setScesimModel((prevState) => {
+        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
+        newScenarios.splice(args.beforeIndex, 0, item);
+
+        return {
+          ...prevState,
+          ScenarioSimulationModel: {
+            ...prevState.ScenarioSimulationModel,
+            ["simulation"]: {
+              ...prevState.ScenarioSimulationModel["simulation"],
+              ["scesimData"]: {
+                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
+                ["Scenario"]: newScenarios,
+              },
+            },
+          },
+        };
+      });
+    },
+    [setScesimModel]
+  );
+
+  const deleteSimulationRow = useCallback(
+    (args: { rowIndex: number }) => {
+      setScesimModel((prevState) => {
+        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
+        newScenarios.splice(args.rowIndex, 1);
+
+        return {
+          ...prevState,
+          ScenarioSimulationModel: {
+            ...prevState.ScenarioSimulationModel,
+            ["simulation"]: {
+              ...prevState.ScenarioSimulationModel["simulation"],
+              ["scesimData"]: {
+                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
+                ["Scenario"]: newScenarios,
+              },
+            },
+          },
+        };
+      });
+    },
+    [setScesimModel]
+  );
+
   return (
     <>
       {(() => {
@@ -570,6 +638,8 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
           case TestScenarioFileStatus.VALID:
             return (
               <TestScenarioMainPanel
+                addNewSimulationRow={addNewSimulationRow}
+                deleteSimulationRow={deleteSimulationRow}
                 fileName={scesimFile.path}
                 scesimModel={scesimModel}
                 updateSettingField={updateSettingsField}

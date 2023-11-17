@@ -21,6 +21,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import * as ReactTable from "react-table";
+import _ from "lodash";
 
 import {
   SceSim__FactMappingType,
@@ -41,11 +42,21 @@ import { TestScenarioType } from "../TestScenarioEditor";
 
 function TestScenarioTable({
   assetType,
+  onRowAdded,
+  onRowDeleted,
   simulationData,
 }: {
   assetType: string;
+  onRowAdded: (args: { beforeIndex: number }) => void;
+  onRowDeleted: (args: { rowIndex: number }) => void;
   simulationData: SceSim__simulationType;
 }) {
+  enum SimulationTableColumnGroup {
+    Expect = "EXPECT",
+    Given = "GIVEN",
+    Other = "OTHER",
+  }
+
   type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
   const { i18n } = useTestScenarioEditorI18n();
@@ -53,18 +64,17 @@ function TestScenarioTable({
   const tableScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
 
   useEffect(() => {
-    tableScrollableElementRef.current.current =
-      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__content") ?? null;
+    tableScrollableElementRef.current.current = document.querySelector(".kie-scesim-editor--table-container") ?? null;
   }, []);
 
   const simulationColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    const givenFactMappingToFactMap: Map<{ factName: String; factType: String }, SceSim__FactMappingType[]> = new Map();
-    const expectFactMappingToFactMap: Map<{ factName: String; factType: String }, SceSim__FactMappingType[]> =
+    const givenFactMappingToFactMap: Map<{ factName: string; factType: string }, SceSim__FactMappingType[]> = new Map();
+    const expectFactMappingToFactMap: Map<{ factName: string; factType: string }, SceSim__FactMappingType[]> =
       new Map();
     let descriptionFactMapping: SceSim__FactMappingType | undefined;
 
     (simulationData?.scesimModelDescriptor?.factMappings?.FactMapping ?? []).forEach((factMapping) => {
-      if (factMapping.expressionIdentifier.type?.__$$text === "GIVEN") {
+      if (factMapping.expressionIdentifier.type?.__$$text === SimulationTableColumnGroup.Given) {
         givenFactMappingToFactMap.set(
           { factName: factMapping.factAlias.__$$text, factType: factMapping.factIdentifier!.className!.__$$text },
           [
@@ -75,7 +85,7 @@ function TestScenarioTable({
             factMapping,
           ]
         );
-      } else if (factMapping.expressionIdentifier.type!.__$$text === "EXPECT") {
+      } else if (factMapping.expressionIdentifier.type!.__$$text === SimulationTableColumnGroup.Expect) {
         expectFactMappingToFactMap.set(
           { factName: factMapping.factAlias.__$$text, factType: factMapping.factIdentifier!.className!.__$$text },
           [
@@ -87,52 +97,48 @@ function TestScenarioTable({
           ]
         );
       } else if (
-        factMapping.expressionIdentifier.type!.__$$text === "OTHER" &&
+        factMapping.expressionIdentifier.type!.__$$text === SimulationTableColumnGroup.Other &&
         factMapping.expressionIdentifier.name!.__$$text === "Description"
       ) {
         descriptionFactMapping = factMapping;
       }
     });
 
-    const descriptionSection = {
+    const descriptionSection: ReactTable.Column<ROWTYPE> = {
+      accessor: descriptionFactMapping!.expressionIdentifier.name!.__$$text,
       groupType: descriptionFactMapping!.expressionIdentifier.type!.__$$text,
       id: descriptionFactMapping!.expressionIdentifier.name!.__$$text,
-      accessor: descriptionFactMapping!.expressionIdentifier.name!.__$$text,
-      label: descriptionFactMapping!.factAlias.__$$text,
-      cssClasses: "decision-table--output",
       isRowIndexColumn: false,
-      width: descriptionFactMapping!.columnWidth?.__$$text ?? 300,
+      label: descriptionFactMapping!.factAlias.__$$text,
       minWidth: descriptionFactMapping!.columnWidth?.__$$text ?? 300,
+      width: descriptionFactMapping!.columnWidth?.__$$text ?? 300,
     };
 
     const givenSection = {
-      groupType: "given",
-      id: "GIVEN",
-      accessor: "GIVEN",
-      label: "GIVEN",
-      cssClasses: "decision-table--output",
+      accessor: SimulationTableColumnGroup.Given,
+      groupType: SimulationTableColumnGroup.Given,
+      id: SimulationTableColumnGroup.Given,
       isRowIndexColumn: false,
-      width: undefined,
+      label: SimulationTableColumnGroup.Given,
       columns: [...givenFactMappingToFactMap.entries()].map((entry) => {
         return {
-          accessor: entry[0].factName + "GIVEN",
-          label: entry[0].factName,
-          id: entry[0].factName + "GIVEN",
-          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : "",
-          groupType: "GIVEN",
-          cssClasses: "decision-table--input",
+          accessor: entry[0].factName,
+          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : undefined,
+          groupType: SimulationTableColumnGroup.Given,
+          id: entry[0].factName,
           isRowIndexColumn: false,
+          label: entry[0].factName,
           columns: entry[1].map((factMapping) => {
             return {
               accessor: factMapping.expressionIdentifier.name!.__$$text,
+              dataType:
+                factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : undefined,
+              groupType: factMapping.expressionIdentifier.type!.__$$text,
               label: factMapping.expressionAlias!.__$$text,
               id: factMapping.expressionIdentifier.name!.__$$text,
-              dataType: factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "",
-              width: factMapping.columnWidth?.__$$text ?? 150,
-              minWidth: 150,
-              groupType: factMapping.expressionIdentifier.type!.__$$text,
-              cssClasses: "decision-table--input",
               isRowIndexColumn: false,
+              minWidth: 150,
+              width: factMapping.columnWidth?.__$$text ?? 150,
             };
           }),
         };
@@ -140,44 +146,38 @@ function TestScenarioTable({
     };
 
     const expectSection = {
-      groupType: "expected",
-      id: "EXPECT",
-      accessor: "EXPECT",
-      label: "EXPECT",
+      accessor: SimulationTableColumnGroup.Expect,
+      groupType: SimulationTableColumnGroup.Expect,
+      id: SimulationTableColumnGroup.Expect,
       isRowIndexColumn: false,
-      width: undefined,
+      label: SimulationTableColumnGroup.Expect,
       columns: [...expectFactMappingToFactMap.entries()].map((entry) => {
         return {
           accessor: entry[0].factName,
-          label: entry[0].factName,
+          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : undefined,
+          groupType: SimulationTableColumnGroup.Expect,
           id: entry[0].factName,
-          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : "",
-          groupType: "EXPECT",
-          cssClasses: "decision-table--input",
           isRowIndexColumn: false,
+          label: entry[0].factName,
           columns: entry[1].map((factMapping) => {
             return {
               accessor: factMapping.expressionIdentifier.name!.__$$text,
-              label: factMapping.expressionAlias!.__$$text,
-              id: factMapping.expressionIdentifier.name!.__$$text,
-              dataType: factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "",
-              width: factMapping.columnWidth?.__$$text ?? 150,
-              minWidth: 150,
+              dataType:
+                factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : undefined,
               groupType: factMapping.expressionIdentifier.type!.__$$text,
-              cssClasses: "decision-table--input",
+              id: factMapping.expressionIdentifier.name!.__$$text,
               isRowIndexColumn: false,
+              label: factMapping.expressionAlias!.__$$text,
+              minWidth: 150,
+              width: factMapping.columnWidth?.__$$text ?? 150,
             };
           }),
         };
       }),
     };
 
-    console.log(descriptionSection);
-
-    console.log(givenSection);
-
     return [descriptionSection, givenSection, expectSection];
-  }, [simulationData.scesimModelDescriptor.factMappings]);
+  }, [SimulationTableColumnGroup, simulationData.scesimModelDescriptor.factMappings?.FactMapping]);
 
   const simulationRows = useMemo(
     () =>
@@ -189,7 +189,7 @@ function TestScenarioTable({
             const factMappingValue = factMappingValues.filter(
               (fmv) => fmv.expressionIdentifier.name?.__$$text === column.accessor
             );
-            tableRow[column.accessor as string] = factMappingValue[0].rawValue?.__$$text ?? "";
+            tableRow[column.accessor] = factMappingValue[0]?.rawValue?.__$$text ?? "";
             return tableRow;
           },
           { id: index }
@@ -199,8 +199,6 @@ function TestScenarioTable({
     [simulationColumns, simulationData.scesimData.Scenario]
   );
 
-  // IN PROGRESS
-
   const allowedOperations = useCallback(
     (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
       if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
@@ -209,18 +207,18 @@ function TestScenarioTable({
 
       const columnIndex = conditions.selection.selectionStart.columnIndex;
 
-      // const atLeastTwoColumnsOfTheSameGroupType = conditions.column?.groupType
-      //   ? _.groupBy(conditions.columns, (column) => column?.groupType)[conditions.column.groupType].length > 1
-      //   : true;
+      const atLeastTwoColumnsOfTheSameGroupType = conditions.column?.groupType
+        ? _.groupBy(conditions.columns, (column) => column?.groupType)[conditions.column.groupType].length > 1
+        : true;
 
       const columnCanBeDeleted =
         columnIndex > 0 &&
-        //atLeastTwoColumnsOfTheSameGroupType &&
+        atLeastTwoColumnsOfTheSameGroupType &&
         (conditions.columns?.length ?? 0) > 2 && // That's a regular column and the rowIndex column
         (conditions.column?.columns?.length ?? 0) <= 0;
 
       const columnOperations =
-        columnIndex === 0 // This is the rowIndex column
+        columnIndex in [0, 1] // This is the rowIndex column
           ? []
           : [
               BeeTableOperation.ColumnInsertLeft,
@@ -230,10 +228,14 @@ function TestScenarioTable({
             ];
 
       return [
-        ...columnOperations,
-        BeeTableOperation.SelectionCopy,
+        ...(columnIndex >= 0 && conditions.selection.selectionStart.rowIndex < 0 ? columnOperations : []),
         ...(conditions.selection.selectionStart.rowIndex >= 0 && columnIndex > 0
-          ? [BeeTableOperation.SelectionCut, BeeTableOperation.SelectionPaste, BeeTableOperation.SelectionReset]
+          ? [
+              BeeTableOperation.SelectionCopy,
+              BeeTableOperation.SelectionCut,
+              BeeTableOperation.SelectionPaste,
+              BeeTableOperation.SelectionReset,
+            ]
           : []),
         ...(conditions.selection.selectionStart.rowIndex >= 0
           ? [
@@ -255,29 +257,29 @@ function TestScenarioTable({
       {
         group: groupName,
         items: [
-          { name: "insertLeft", type: BeeTableOperation.ColumnInsertLeft },
-          { name: "insertRight", type: BeeTableOperation.ColumnInsertRight },
-          { name: "i18n.insert", type: BeeTableOperation.ColumnInsertN },
-          { name: "delete", type: BeeTableOperation.ColumnDelete },
+          { name: i18n.table.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
+          { name: i18n.table.insertRight, type: BeeTableOperation.ColumnInsertRight },
+          { name: i18n.table.insert, type: BeeTableOperation.ColumnInsertN },
+          { name: i18n.table.delete, type: BeeTableOperation.ColumnDelete },
         ],
       },
       {
-        group: "i18n.decisionRule",
+        group: i18n.table.simulation.singleEntry.toUpperCase(),
         items: [
-          { name: "insertAbove", type: BeeTableOperation.RowInsertAbove },
-          { name: "insertBelow", type: BeeTableOperation.RowInsertBelow },
-          { name: "insert", type: BeeTableOperation.RowInsertN },
-          { name: "rowOperations.delete", type: BeeTableOperation.RowDelete },
-          { name: "rowOperations.duplicate", type: BeeTableOperation.RowDuplicate },
+          { name: i18n.table.insertAbove, type: BeeTableOperation.RowInsertAbove },
+          { name: i18n.table.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.table.insert, type: BeeTableOperation.RowInsertN },
+          { name: i18n.table.delete, type: BeeTableOperation.RowDelete },
+          { name: i18n.table.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
       },
       {
-        group: "selection",
+        group: i18n.table.selection.toUpperCase(),
         items: [
-          { name: "i18n.terms.copy", type: BeeTableOperation.SelectionCopy },
-          { name: "i18n.terms.cut", type: BeeTableOperation.SelectionCut },
-          { name: "i18n.terms.paste", type: BeeTableOperation.SelectionPaste },
-          { name: "i18n.terms.reset", type: BeeTableOperation.SelectionReset },
+          { name: i18n.table.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.table.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.table.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.table.reset, type: BeeTableOperation.SelectionReset },
         ],
       },
     ],
@@ -286,15 +288,12 @@ function TestScenarioTable({
 
   const simulationOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     const config: BeeTableOperationConfig = {};
-    config["OTHER"] = generateOperationConfig("i18n.outputClause");
-    config["given"] = generateOperationConfig("inputClause");
-    config["expected"] = generateOperationConfig("i18n.outputClause");
+    config[""] = generateOperationConfig("");
+    config[SimulationTableColumnGroup.Expect] = generateOperationConfig(SimulationTableColumnGroup.Expect);
+    config[SimulationTableColumnGroup.Given] = generateOperationConfig(SimulationTableColumnGroup.Given);
+    config[SimulationTableColumnGroup.Other] = generateOperationConfig(SimulationTableColumnGroup.Other);
     return config;
-  }, [generateOperationConfig]);
-
-  console.log(simulationOperationConfig);
-
-  // IN PROGRESS
+  }, [SimulationTableColumnGroup, generateOperationConfig]);
 
   return (
     <StandaloneBeeTable
@@ -303,8 +302,10 @@ function TestScenarioTable({
       enableKeyboardNavigation={true}
       headerLevelCountForAppendingRowIndexColumn={2}
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
-      isEditableHeader={assetType === TestScenarioType[TestScenarioType.DMN]}
+      isEditableHeader={assetType === TestScenarioType[TestScenarioType.RULE]}
       isReadOnly={false}
+      onRowAdded={onRowAdded}
+      onRowDeleted={onRowDeleted}
       operationConfig={simulationOperationConfig}
       resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
       rows={simulationRows}
