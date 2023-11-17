@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { StyleOptions } from "./StyleOptions";
+import { FontOptions } from "./FontOptions";
 import { useDmnEditorStoreApi } from "../store/Store";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
@@ -49,7 +49,8 @@ export function MultipleNodeProperties(props: { size: number }) {
         />
       </FormSection>
       <FormSection>
-        <StyleOptions startExpanded={true} />
+        {/* TODO: LUIZ -> MULTIPLE NODES SHOULD NOT HAVE INDEX!! MAYBE LIST OF INDEXES? */}
+        <FontOptions startExpanded={true} nodeId={""} />
       </FormSection>
     </Form>
   );

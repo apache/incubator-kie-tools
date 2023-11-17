@@ -1,0 +1,55 @@
+.kie-dmn-editor--font-options-toggle-group {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item {
+  height: 40px;
+  width: 40px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item > button {
+  height: 40px;
+  width: 40px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item > button > span {
+  padding-top: 4px;
+  padding-left: 0px;
+  font-size: 16px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-italic > button {
+  height: 40px;
+  width: 40px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-italic > button > span {
+  padding-top: 4px;
+  padding-left: 1px;
+  font-size: 16px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-number-input {
+  height: 40px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-number-input button {
+  height: 40px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-number-input input {
+  height: 40px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-color-picker > button {
+  height: 40px;
+  width: 40px;
+  padding: 5px 0px 5px 12px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-color-picker > button > span {
+  font-size: 16px;
+}

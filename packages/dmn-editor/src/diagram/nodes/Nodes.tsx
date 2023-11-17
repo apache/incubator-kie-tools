@@ -48,6 +48,7 @@ import { drag } from "d3-drag";
 import { updateDecisionServiceDividerLine } from "../../mutations/updateDecisionServiceDividerLine";
 import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { useNodeStyle } from "./NodeStyle";
 
 export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]> | null;
 
@@ -76,6 +77,7 @@ export const InputDataNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tInputData & { __$$element: "inputData" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
+    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -116,7 +118,7 @@ export const InputDataNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <InputDataNodeSvg {...nodeDimensions} x={0} y={0} />
+          <InputDataNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={shapeStyle.strokeWidth} />
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
@@ -144,6 +146,7 @@ export const InputDataNode = React.memo(
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
+            fontStyle={fontStyle}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -177,6 +180,7 @@ export const DecisionNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision & { __$$element: "decision" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
+    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -218,7 +222,7 @@ export const DecisionNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <DecisionNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={parentRfNode ? 3 : undefined} />
+          <DecisionNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={parentRfNode ? 3 : shapeStyle.strokeWidth} />
         </svg>
 
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -249,6 +253,7 @@ export const DecisionNode = React.memo(
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
+            fontStyle={fontStyle}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -282,6 +287,7 @@ export const BkmNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
+    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -323,7 +329,7 @@ export const BkmNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <BkmNodeSvg {...nodeDimensions} x={0} y={0} />
+          <BkmNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={shapeStyle.strokeWidth} />
         </svg>
 
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -354,6 +360,7 @@ export const BkmNode = React.memo(
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
+            fontStyle={fontStyle}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -387,6 +394,7 @@ export const KnowledgeSourceNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tKnowledgeSource & { __$$element: "knowledgeSource" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
+    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -413,7 +421,7 @@ export const KnowledgeSourceNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <KnowledgeSourceNodeSvg {...nodeDimensions} x={0} y={0} />
+          <KnowledgeSourceNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={shapeStyle.strokeWidth} />
         </svg>
 
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -444,6 +452,7 @@ export const KnowledgeSourceNode = React.memo(
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
+            fontStyle={fontStyle}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -470,6 +479,7 @@ export const TextAnnotationNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation & { __$$element: "textAnnotation" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
+    const { fontStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -527,6 +537,7 @@ export const TextAnnotationNode = React.memo(
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
+            fontStyle={fontStyle}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -573,6 +584,8 @@ export const DecisionServiceNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
+
+    const { fontStyle } = useNodeStyle(shape["di:Style"]);
 
     // Select nodes representing output and encapsulated decisions contained by the Decision Service
     useEffect(() => {
@@ -705,6 +718,7 @@ export const DecisionServiceNode = React.memo(
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
+            fontStyle={fontStyle}
           />
           {selected && !dragging && !isCollapsed && (
             <NodeResizerHandle
@@ -758,6 +772,8 @@ export const GroupNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
+
+    const { fontStyle } = useNodeStyle(shape["di:Style"]);
 
     // Select nodes that are visually entirely inside the group.
     useEffect(() => {
@@ -813,6 +829,7 @@ export const GroupNode = React.memo(
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
+            fontStyle={fontStyle}
           />
           {selected && !dragging && (
             <NodeResizerHandle

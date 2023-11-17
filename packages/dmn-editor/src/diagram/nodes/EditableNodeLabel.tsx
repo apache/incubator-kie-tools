@@ -12,6 +12,7 @@ import { DMN15_SPEC } from "../../Dmn15Spec";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import "./EditableNodeLabel.css";
+import { DmnFontStyle } from "./NodeStyle";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -28,6 +29,7 @@ export function EditableNodeLabel({
   shouldCommitOnBlur,
   skipValidation,
   allUniqueNames,
+  fontStyle,
 }: {
   shouldCommitOnBlur?: boolean;
   grow?: boolean;
@@ -41,6 +43,7 @@ export function EditableNodeLabel({
   onChange: OnEditableNodeLabelChange;
   skipValidation?: boolean;
   allUniqueNames: UniqueNameIndex;
+  fontStyle?: React.CSSProperties;
 }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { importsByNamespace } = useDmnEditorDerivedStore();
@@ -178,6 +181,7 @@ export function EditableNodeLabel({
         <input
           spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.
           style={{
+            ...fontStyle,
             ...(isValid ? {} : invalidInlineFeelNameStyle),
           }}
           onMouseDownCapture={(e) => e.stopPropagation()} // Make sure mouse events stay inside the node.
@@ -192,6 +196,7 @@ export function EditableNodeLabel({
         <span
           style={{
             whiteSpace: "pre-wrap",
+            ...fontStyle,
             ...(isValid ? {} : invalidInlineFeelNameStyle),
           }}
         >

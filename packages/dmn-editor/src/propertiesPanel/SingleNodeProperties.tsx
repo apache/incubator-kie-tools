@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { StyleOptions } from "./StyleOptions";
+import { FontOptions } from "./FontOptions";
 import { ShapeOptions } from "./ShapeOptions";
 import { InputDataProperties } from "./InputDataProperties";
 import { DecisionProperties } from "./DecisionProperties";
@@ -22,6 +22,7 @@ import {
   DMN15__tInputData,
   DMN15__tKnowledgeSource,
   DMN15__tTextAnnotation,
+  DMNDI15__DMNStyle,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { NodeIcon } from "../icons/Icons";
@@ -98,6 +99,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
       >
         {isSectionExpanded && (
           <>
+            {/* TODO: LUIZ */}
             <FormSection style={{ paddingLeft: "20px" }}>
               {(() => {
                 switch (node.type) {
@@ -160,7 +162,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
           </>
         )}
 
-        <StyleOptions startExpanded={false} />
+        <FontOptions startExpanded={false} nodeId={node.id} />
         <ShapeOptions startExpanded={false} />
       </FormSection>
     </Form>
