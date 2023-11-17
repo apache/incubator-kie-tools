@@ -160,6 +160,51 @@ export function ShapeOptions({
       />
       {isShapeSectionExpanded && (
         <FormSection style={{ paddingLeft: "20px", marginTop: "0px" }}>
+          <FormGroup label={"Color"}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "auto auto auto auto",
+                gridTemplateRows: "auto",
+                gridTemplateAreas: `
+                'border-color-label border-color-value fill-color-label fill-color-value'
+            `,
+                columnGap: "5px",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ gridArea: "border-color-label" }}>
+                <p>Border</p>
+              </div>
+              <div style={{ gridArea: "border-color-value" }}>
+                <input
+                  aria-label={"Border color"}
+                  type={"color"}
+                  disabled={false}
+                  value={strokeColor}
+                  onChange={(e) => onChangeStrokeColor(e.currentTarget.value)}
+                  style={{ width: "25px", border: "none" }}
+                  placeholder={"Enter a color..."}
+                />
+              </div>
+
+              <div style={{ gridArea: "fill-color-label" }}>
+                <p>Fill</p>
+              </div>
+              <div style={{ gridArea: "fill-color-value" }}>
+                <input
+                  aria-label={"Fill color"}
+                  type={"color"}
+                  disabled={false}
+                  value={fillColor}
+                  onChange={(e) => onChangeFillColor(e.currentTarget.value)}
+                  style={{ width: "25px", border: "none" }}
+                  placeholder={"Enter a color..."}
+                />
+              </div>
+            </div>
+          </FormGroup>
+
           {isDimensioningEnabled && (
             <FormGroup label={"Dimension"}>
               <div
@@ -254,51 +299,6 @@ export function ShapeOptions({
               </div>
             </FormGroup>
           )}
-
-          <FormGroup label={"Color"}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "auto auto auto auto",
-                gridTemplateRows: "auto",
-                gridTemplateAreas: `
-                'border-color-label border-color-value fill-color-label fill-color-value'
-            `,
-                columnGap: "5px",
-                alignItems: "center",
-              }}
-            >
-              <div style={{ gridArea: "border-color-label" }}>
-                <p>Border</p>
-              </div>
-              <div style={{ gridArea: "border-color-value" }}>
-                <input
-                  aria-label={"Border color"}
-                  type={"color"}
-                  disabled={false}
-                  value={strokeColor}
-                  onChange={(e) => onChangeStrokeColor(e.currentTarget.value)}
-                  style={{ width: "25px", border: "none" }}
-                  placeholder={"Enter a color..."}
-                />
-              </div>
-
-              <div style={{ gridArea: "fill-color-label" }}>
-                <p>Fill</p>
-              </div>
-              <div style={{ gridArea: "fill-color-value" }}>
-                <input
-                  aria-label={"Fill color"}
-                  type={"color"}
-                  disabled={false}
-                  value={fillColor}
-                  onChange={(e) => onChangeFillColor(e.currentTarget.value)}
-                  style={{ width: "25px", border: "none" }}
-                  placeholder={"Enter a color..."}
-                />
-              </div>
-            </div>
-          </FormGroup>
         </FormSection>
       )}
     </>

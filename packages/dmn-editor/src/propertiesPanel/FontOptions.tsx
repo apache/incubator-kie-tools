@@ -208,22 +208,6 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
       {isStyleSectionExpanded && (
         <FormSection style={{ paddingLeft: "20px", marginTop: "0px" }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <Select
-              toggleRef={toggleRef}
-              variant={SelectVariant.single}
-              aria-label={"Select font style"}
-              isOpen={isFontFamilySelectOpen}
-              onSelect={onSelectFont}
-              onToggle={() => setFontFamilySelectOpen((prev) => !prev)}
-              selections={fontFamily ?? ""}
-              isDisabled={false}
-              maxHeight={inViewTimezoneSelect.maxHeight}
-              direction={inViewTimezoneSelect.direction}
-            >
-              {WEBSAFE_FONTS_LIST.map((fontName, index) => (
-                <SelectOption key={index} value={fontName} style={{ fontFamily: fontName }} />
-              ))}
-            </Select>
             <div className={"kie-dmn-editor--font-options-toggle-group"}>
               <NumberInput
                 aria-label={"Font size"}
@@ -302,6 +286,23 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                 />
               </ToggleGroup>
             </div>
+            <br />
+            <Select
+              toggleRef={toggleRef}
+              variant={SelectVariant.single}
+              aria-label={"Select font style"}
+              isOpen={isFontFamilySelectOpen}
+              onSelect={onSelectFont}
+              onToggle={() => setFontFamilySelectOpen((prev) => !prev)}
+              selections={fontFamily ?? ""}
+              isDisabled={false}
+              maxHeight={inViewTimezoneSelect.maxHeight}
+              direction={inViewTimezoneSelect.direction}
+            >
+              {WEBSAFE_FONTS_LIST.map((fontName, index) => (
+                <SelectOption key={index} value={fontName} style={{ fontFamily: fontName }} />
+              ))}
+            </Select>
           </div>
         </FormSection>
       )}
