@@ -6433,6 +6433,9 @@ importers:
       "@kie-tools/serverless-workflow-combined-editor":
         specifier: workspace:*
         version: link:../serverless-workflow-combined-editor
+      "@patternfly/react-code-editor":
+        specifier: ^4.82.113
+        version: 4.82.113(react-dom@17.0.2)(react-monaco-editor@0.49.0)(react@17.0.2)
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
@@ -6466,6 +6469,9 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
+      react-monaco-editor:
+        specifier: ^0.49.0
+        version: 0.49.0(@types/react@17.0.21)(monaco-editor@0.33.0)(react@17.0.2)
       react-pure-loaders:
         specifier: ^3.0.1
         version: 3.0.1(@emotion/core@11.0.0)(react@17.0.2)
@@ -15996,7 +16002,7 @@ packages:
       "@babel/helper-plugin-utils": 7.21.5
       "@babel/plugin-proposal-unicode-property-regex": 7.18.6(@babel/core@7.18.10)
       "@babel/plugin-transform-dotall-regex": 7.18.6(@babel/core@7.18.10)
-      "@babel/types": 7.21.5
+      "@babel/types": 7.23.0
       esutils: 2.0.3
     dev: true
 
@@ -18559,6 +18565,24 @@ packages:
       victory-tooltip: 36.6.8(react@17.0.2)
       victory-voronoi-container: 36.6.8(react@17.0.2)
       victory-zoom-container: 36.6.8(react@17.0.2)
+    dev: false
+
+  /@patternfly/react-code-editor@4.82.113(react-dom@17.0.2)(react-monaco-editor@0.49.0)(react@17.0.2):
+    resolution:
+      { integrity: sha512-iBwDTuUifwUwwL4wAzpI4KkB5fkCxiPVGlUypWumtNXweVf3x6PWpLCJM2H1rhNUddBRWIj5JOL3DYqPqYpbZg== }
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18
+      react-dom: ^16.8 || ^17 || ^18
+      react-monaco-editor: ^0.51.0
+    dependencies:
+      "@patternfly/react-core": 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-icons": 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-styles": 4.92.6
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+      react-dropzone: 11.7.1(react@17.0.2)
+      react-monaco-editor: 0.49.0(@types/react@17.0.21)(monaco-editor@0.33.0)(react@17.0.2)
+      tslib: 2.6.2
     dev: false
 
   /@patternfly/react-core@4.276.6(react-dom@17.0.2)(react@17.0.2):
@@ -35443,6 +35467,11 @@ packages:
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
+  /monaco-editor@0.33.0:
+    resolution:
+      { integrity: sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw== }
+    dev: false
+
   /monaco-editor@0.39.0:
     resolution:
       { integrity: sha512-zhbZ2Nx93tLR8aJmL2zI1mhJpsl87HMebNBM6R8z4pLfs8pj604pIVIVwyF1TivcfNtIPpMXL+nb3DsBmE/x6Q== }
@@ -38696,6 +38725,20 @@ packages:
       react: ^15.6.0 || ^16.0.0
     dependencies:
       moment: 2.29.4
+      prop-types: 15.8.1
+      react: 17.0.2
+    dev: false
+
+  /react-monaco-editor@0.49.0(@types/react@17.0.21)(monaco-editor@0.33.0)(react@17.0.2):
+    resolution:
+      { integrity: sha512-KZTNn1vJh1rlzIRPXjr/5HWYMPfbOoDhR+prCR7mIQCssjlkn8+SfpN4lNsiCTECo/UdpnyAdqgaIyY3yYjVeg== }
+    peerDependencies:
+      "@types/react": ^17.0.6
+      monaco-editor: ^0.33.0
+      react: ">=17 <= 18"
+    dependencies:
+      "@types/react": 17.0.21
+      monaco-editor: 0.33.0
       prop-types: 15.8.1
       react: 17.0.2
     dev: false
