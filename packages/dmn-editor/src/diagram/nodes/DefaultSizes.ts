@@ -136,8 +136,8 @@ export const DECISION_SERVICE_COLLAPSED_DIMENSIONS = {
   height: 100,
 };
 
-const NODE_MIN_WIDTH = 160;
-const NODE_MIN_HEIGHT = 80;
+export const NODE_MIN_WIDTH = 160;
+export const NODE_MIN_HEIGHT = 80;
 
 const MIN_SIZE_FOR_NODES = (grid: SnapGrid, width = NODE_MIN_WIDTH, height = NODE_MIN_HEIGHT) => {
   const snapped = snapPoint(grid, { "@_x": width, "@_y": height }, "ceil");

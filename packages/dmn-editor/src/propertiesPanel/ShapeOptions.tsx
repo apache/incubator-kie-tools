@@ -10,6 +10,8 @@ import { useDmnEditorStoreApi } from "../store/Store";
 import { addOrGetDrd } from "../mutations/addOrGetDrd";
 import { ArrowsAltVIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt-v-icon";
 import { ArrowsAltHIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt-h-icon";
+import { NODE_MIN_HEIGHT, NODE_MIN_WIDTH } from "../diagram/nodes/DefaultSizes";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 export function ShapeOptions({
   startExpanded,
@@ -180,10 +182,13 @@ export function ShapeOptions({
                     value={boundWidth}
                     onChange={onChangeWidth}
                     placeholder={"Enter a value..."}
+                    // validated={boundWidth < NODE_MIN_WIDTH ? "warning" : "default"}
                   />
                 </div>
                 <div style={{ gridArea: "width-label" }}>
-                  <ArrowsAltHIcon />
+                  <Tooltip content={"Width"}>
+                    <ArrowsAltHIcon aria-label={"Width"} />
+                  </Tooltip>
                 </div>
 
                 <div style={{ gridArea: "heigth-value" }}>
@@ -194,10 +199,13 @@ export function ShapeOptions({
                     value={boundHeight}
                     onChange={onChangeHeight}
                     placeholder={"Enter a value..."}
+                    // validated={boundHeight < NODE_MIN_HEIGHT ? "warning" : "default"}
                   />
                 </div>
                 <div style={{ gridArea: "heigth-label" }}>
-                  <ArrowsAltVIcon />
+                  <Tooltip content={"Height"}>
+                    <ArrowsAltVIcon aria-label={"Height"} />
+                  </Tooltip>
                 </div>
               </div>
             </FormGroup>
