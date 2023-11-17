@@ -16,21 +16,21 @@ import "./FontOptions.css";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php
 // Array of [name, family]
-const AVAILABLE_FONTS = [
-  ["Arial", "sans-serif"],
-  ["Verdana", "sans-serif"],
-  ["Tahoma", "sans-serif"],
-  ["Trebuchet MS", "sans-serif"],
-  ["Times New Roman", "serif"],
-  ["Georgia", "serif"],
-  ["Garamond", "serif"],
-  ["Courier New", "monospace"],
-  ["Brush Script MT", "cursive"],
+const WEBSAFE_FONTS_LIST = [
+  "Arial",
+  "Verdana",
+  "Tahoma",
+  "Trebuchet MS",
+  "Times New Roman",
+  "Georgia",
+  "Garamond",
+  "Courier New",
+  "Brush Script MT",
 ];
 
 const DEFAULT_FONT_SIZE = 16;
 const MAX_FONT_SIZE = 72;
-const MIN_FONT_SIZE = 8;
+const MIN_FONT_SIZE = 1;
 
 enum FontStyleToggleOptions {
   BOLD = "bold",
@@ -198,8 +198,8 @@ export function FontOptions({ startExpanded, nodeId }: { startExpanded: boolean;
               maxHeight={inViewTimezoneSelect.maxHeight}
               direction={inViewTimezoneSelect.direction}
             >
-              {AVAILABLE_FONTS.map(([name, family], index) => (
-                <SelectOption key={index} value={name} />
+              {WEBSAFE_FONTS_LIST.map((fontName, index) => (
+                <SelectOption key={index} value={fontName} style={{ fontFamily: fontName }} />
               ))}
             </Select>
             <div className={"kie-dmn-editor--font-options-toggle-group"}>
