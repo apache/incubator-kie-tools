@@ -51,9 +51,9 @@ export function MultipleNodeProperties({ nodeIds }: { nodeIds: string[] }) {
         />
       </FormSection>
       <FormSection>
-        <FontOptions startExpanded={false} nodeIds={nodeIds} />
+        <FontOptions startExpanded={true} nodeIds={nodeIds} />
         <ShapeOptions
-          startExpanded={false}
+          startExpanded={true}
           nodeIds={nodeIds}
           isDimensioningEnabled={false}
           isPositioningEnabled={false}
