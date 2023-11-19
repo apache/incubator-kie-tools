@@ -33,6 +33,7 @@ export function InputDataProperties({
     <>
       <FormGroup label="Name">
         <InlineFeelNameInput
+          enableAutoFocusing={false}
           isPlain={false}
           id={inputData["@_id"]!}
           name={inputData["@_name"]}

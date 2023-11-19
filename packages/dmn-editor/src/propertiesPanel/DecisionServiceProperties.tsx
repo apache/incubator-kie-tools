@@ -69,6 +69,7 @@ export function DecisionServiceProperties({
     <>
       <FormGroup label="Name">
         <InlineFeelNameInput
+          enableAutoFocusing={false}
           isPlain={false}
           id={decisionService["@_id"]!}
           name={decisionService["@_name"]}

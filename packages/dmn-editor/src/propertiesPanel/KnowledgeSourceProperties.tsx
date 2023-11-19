@@ -30,6 +30,7 @@ export function KnowledgeSourceProperties({
     <>
       <FormGroup label="Name">
         <InlineFeelNameInput
+          enableAutoFocusing={false}
           isPlain={false}
           id={knowledgeSource["@_id"]!}
           name={knowledgeSource["@_name"]}

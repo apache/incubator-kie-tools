@@ -24,6 +24,7 @@ export function InlineFeelNameInput({
   placeholder,
   onKeyDown,
   saveInvalidValue,
+  enableAutoFocusing,
   ...inputProps
 }: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
   id: string;
@@ -36,6 +37,7 @@ export function InlineFeelNameInput({
   placeholder?: string;
   saveInvalidValue?: boolean;
   validate?: typeof DMN15_SPEC.namedElement.isValidName;
+  enableAutoFocusing?: boolean;
 }) {
   const _validate = (validate ??= DMN15_SPEC.namedElement.isValidName);
 
@@ -43,7 +45,7 @@ export function InlineFeelNameInput({
 
   const previouslyFocusedElement = useRef<Element | undefined>();
 
-  useFocusableElement(inputRef, id);
+  useFocusableElement(inputRef, enableAutoFocusing ?? true ? id : undefined);
 
   const restoreFocus = useCallback(() => {
     // We only restore the focus to the previously focused element if we're still holding focus. If focus has changed, we let it be.

@@ -54,6 +54,7 @@ export function GlobalDiagramProperties() {
             <FormSection style={{ paddingLeft: "20px" }}>
               <FormGroup label="Name">
                 <InlineFeelNameInput
+                  enableAutoFocusing={false}
                   isPlain={false}
                   id={thisDmn.model.definitions["@_id"]!}
                   name={thisDmn.model.definitions["@_name"]}

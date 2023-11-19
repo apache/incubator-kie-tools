@@ -33,6 +33,7 @@ export function DecisionProperties({
     <>
       <FormGroup label="Name">
         <InlineFeelNameInput
+          enableAutoFocusing={false}
           isPlain={false}
           id={decision["@_id"]!}
           name={decision["@_name"]}

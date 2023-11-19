@@ -34,6 +34,7 @@ export function BkmProperties({
     <>
       <FormGroup label="Name">
         <InlineFeelNameInput
+          enableAutoFocusing={false}
           isPlain={false}
           id={bkm["@_id"]!}
           name={bkm["@_name"]}
