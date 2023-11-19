@@ -10,7 +10,7 @@ import {
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { State, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { DataTypesEmptyState } from "./DataTypesEmptyState";
 import { DataTypePanel } from "./DataTypePanel";
 import { findDataTypeById, getNewItemDefinition, isStruct } from "./DataTypeSpec";
@@ -59,7 +59,8 @@ export type EditItemDefinition = (
     itemDefinition: DMN15__tItemDefinition,
     items: DMN15__tItemDefinition[],
     index: number,
-    all: DMN15__tItemDefinition[]
+    all: DMN15__tItemDefinition[],
+    state: State
   ) => void
 ) => void;
 
@@ -94,7 +95,7 @@ export function DataTypes() {
         });
 
         state.dmn.model.definitions.itemDefinition ??= [];
-        consumer(itemDefinition, items, index, state.dmn.model.definitions.itemDefinition);
+        consumer(itemDefinition, items, index, state.dmn.model.definitions.itemDefinition, state);
       });
     },
     [allDataTypesById, dmnEditorStoreApi]
@@ -108,6 +109,7 @@ export function DataTypes() {
           partial,
         });
         state.dataTypesEditor.activeItemDefinitionId = newItemDefinition["@_id"];
+        state.focus.consumableId = newItemDefinition["@_id"];
       });
     },
     [dmnEditorStoreApi]
@@ -227,6 +229,7 @@ export function DataTypes() {
                             itemDefinition={itemDefinition}
                             isActive={isActive}
                             editMode={"double-click"}
+                            enableAutoFocusing={false} // Let the auto-focusing mechanism go for the title component
                             allUniqueNames={allTopLevelItemDefinitionUniqueNames}
                           />
                         )) || (

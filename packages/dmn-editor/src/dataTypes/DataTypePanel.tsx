@@ -132,10 +132,11 @@ export function DataTypePanel({
         return;
       }
 
-      editItemDefinition(id, (itemDefinition) => {
+      editItemDefinition(id, (itemDefinition, items, index, all, state) => {
         const newItemDefinition = getNewItemDefinition(partial);
         itemDefinition.itemComponent ??= [];
         itemDefinition.itemComponent[how](newItemDefinition);
+        state.focus.consumableId = newItemDefinition["@_id"];
       });
     },
     [editItemDefinition, isReadonly]

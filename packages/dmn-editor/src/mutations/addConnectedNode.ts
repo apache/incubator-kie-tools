@@ -157,7 +157,7 @@ export function addConnectedNode({
 
   repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
 
-  return { href: newDmnObjectHref };
+  return { id: newDmnObjectId, href: newDmnObjectHref };
 }
 
 export function getRequirementsFromEdge(

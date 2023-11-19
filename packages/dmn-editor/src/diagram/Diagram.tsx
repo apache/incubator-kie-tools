@@ -272,7 +272,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         // --------- This is where we draw the line between the diagram and the model.
 
         dmnEditorStoreApi.setState((state) => {
-          const { href: newNodeId } = addStandaloneNode({
+          const { id, href: newNodeId } = addStandaloneNode({
             definitions: state.dmn.model.definitions,
             drdIndex: diagram.drdIndex,
             newNode: {
@@ -286,6 +286,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             },
           });
           state.diagram._selectedNodes = [newNodeId];
+          state.focus.consumableId = id;
         });
       } else if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS)) {
         e.stopPropagation();
@@ -445,7 +446,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       // --------- This is where we draw the line between the diagram and the model.
 
       dmnEditorStoreApi.setState((state) => {
-        const { href: newDmnObejctHref } = addConnectedNode({
+        const { id, href: newDmnObejctHref } = addConnectedNode({
           definitions: state.dmn.model.definitions,
           drdIndex: diagram.drdIndex,
           edge,
@@ -467,6 +468,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         });
 
         state.diagram._selectedNodes = [newDmnObejctHref];
+        state.focus.consumableId = id;
       });
     },
     [

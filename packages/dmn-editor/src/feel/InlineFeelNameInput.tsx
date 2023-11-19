@@ -2,6 +2,7 @@ import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DMN15_SPEC } from "../Dmn15Spec";
 import { UniqueNameIndex } from "../Dmn15Spec";
+import { useFocusableElement } from "../focus/useFocusableElement";
 
 export type OnInlineFeelNameRenamed = (newName: string) => void;
 
@@ -41,6 +42,8 @@ export function InlineFeelNameInput({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const previouslyFocusedElement = useRef<Element | undefined>();
+
+  useFocusableElement(inputRef, id);
 
   const restoreFocus = useCallback(() => {
     // We only restore the focus to the previously focused element if we're still holding focus. If focus has changed, we let it be.

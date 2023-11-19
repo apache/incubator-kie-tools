@@ -37,6 +37,9 @@ export type DropTargetNode = undefined | RF.Node<DmnDiagramNodeData>;
 export interface State {
   dispatch: Dispatch;
   dmn: { model: DmnLatestModel };
+  focus: {
+    consumableId: string | undefined;
+  };
   boxedExpressionEditor: {
     activeDrgElementId: string | undefined;
     selectedObjectId: string | undefined;
@@ -187,6 +190,9 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
     immer<State>((set, get) => ({
       dmn: {
         model,
+      },
+      focus: {
+        consumableId: undefined,
       },
       dataTypesEditor: {
         activeItemDefinitionId: undefined,

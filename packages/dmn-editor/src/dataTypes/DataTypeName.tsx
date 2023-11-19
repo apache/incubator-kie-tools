@@ -19,6 +19,7 @@ export function DataTypeName({
   relativeToNamespace,
   shouldCommitOnBlur,
   allUniqueNames,
+  enableAutoFocusing,
 }: {
   isReadonly: boolean;
   editMode: "hover" | "double-click";
@@ -27,8 +28,11 @@ export function DataTypeName({
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;
   allUniqueNames: UniqueNameIndex;
+  enableAutoFocusing?: boolean;
 }) {
-  const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
+  const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
+    enableAutoFocusing ?? true ? itemDefinition["@_id"] : undefined
+  );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { allDataTypesById, importsByNamespace } = useDmnEditorDerivedStore();

@@ -12,11 +12,12 @@ import { DMN15_SPEC } from "../../Dmn15Spec";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import "./EditableNodeLabel.css";
-import { DmnFontStyle } from "./NodeStyle";
+import { useFocusableElement } from "../../focus/useFocusableElement";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
 export function EditableNodeLabel({
+  id,
   namedElement,
   namedElementQName,
   isEditing: _isEditing,
@@ -31,6 +32,7 @@ export function EditableNodeLabel({
   allUniqueNames,
   fontStyle,
 }: {
+  id?: string;
   shouldCommitOnBlur?: boolean;
   grow?: boolean;
   truncate?: boolean;
@@ -153,6 +155,21 @@ export function EditableNodeLabel({
 
   const ref = useRef<HTMLInputElement>(null);
 
+  useFocusableElement(
+    ref,
+    id ?? namedElement?.["@_id"],
+    useCallback(
+      (cb) => {
+        setEditing(true);
+
+        setTimeout(() => {
+          cb();
+        });
+      },
+      [setEditing]
+    )
+  );
+
   const positionClass = position ?? "center-center";
 
   const displayValue = useMemo(() => {
@@ -207,8 +224,9 @@ export function EditableNodeLabel({
   );
 }
 
-export function useEditableNodeLabel() {
-  const [isEditingLabel, setEditingLabel] = useState(false);
+export function useEditableNodeLabel(id: string | undefined) {
+  const focus = useDmnEditorStore((s) => s.focus);
+  const [isEditingLabel, setEditingLabel] = useState(focus.consumableId === id);
   const triggerEditing = useCallback<React.EventHandler<React.SyntheticEvent>>((e) => {
     e.stopPropagation();
     e.preventDefault();
