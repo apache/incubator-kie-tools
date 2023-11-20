@@ -825,14 +825,17 @@ export const GroupNode = React.memo(
     useEffect(() => {
       const onDoubleClick = () => {
         dmnEditorStoreApi.setState((state) => {
-          state.diagram._selectedNodes = reactFlow
-            .getNodes()
-            .flatMap((n) =>
-              getContainmentRelationship({ bounds: n.data.shape["dc:Bounds"]!, container: shape["dc:Bounds"]! })
-                .isInside
-                ? [n.id]
-                : []
-            );
+          state.diagram._selectedNodes = reactFlow.getNodes().flatMap((n) =>
+            getContainmentRelationship({
+              bounds: n.data.shape["dc:Bounds"]!,
+              container: shape["dc:Bounds"]!,
+              snapGrid: state.diagram.snapGrid,
+              containerMinSizes: MIN_NODE_SIZES[NODE_TYPES.group],
+              boundsMinSizes: MIN_NODE_SIZES[n.type as NodeType],
+            }).isInside
+              ? [n.id]
+              : []
+          );
         });
       };
 

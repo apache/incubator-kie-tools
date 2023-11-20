@@ -1,11 +1,19 @@
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { DC__Bounds, DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DC__Bounds,
+  DC__Dimension,
+  DC__Point,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as RF from "reactflow";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
 import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { NodeDmnObjects } from "../nodes/Nodes";
 import { getCenter } from "./Maths";
+import { SnapGrid } from "../../store/Store";
+import { snapBoundsDimensions, snapBoundsPosition, snapShapePosition } from "../SnapGrid";
+import { MIN_NODE_SIZES } from "../nodes/DefaultSizes";
 
 export const DEFAULT_INTRACTION_WIDTH = 40;
 export const CONTAINER_NODES_DESIRABLE_PADDING = 60;
@@ -166,19 +174,37 @@ export function getContainmentRelationship({
   bounds,
   container,
   divingLineLocalY,
+  snapGrid,
+  containerMinSizes,
+  boundsMinSizes,
 }: {
   bounds: DC__Bounds;
   container: DC__Bounds;
   divingLineLocalY?: number;
+  snapGrid: SnapGrid;
+  containerMinSizes: (snapGrid: SnapGrid) => DC__Dimension;
+  boundsMinSizes: (snapGrid: SnapGrid) => DC__Dimension;
 }): { isInside: true; section: "upper" | "lower" } | { isInside: false } {
-  const center = getBoundsCenterPoint(bounds);
+  const { x: cx, y: cy } = snapBoundsPosition(snapGrid, container);
+  const { width: cw, height: ch } = snapBoundsDimensions(snapGrid, container, containerMinSizes(snapGrid));
+  const { x: bx, y: by } = snapBoundsPosition(snapGrid, bounds);
+  const { width: bw, height: bh } = snapBoundsDimensions(snapGrid, bounds, boundsMinSizes(snapGrid));
+
+  const center = getBoundsCenterPoint({
+    "@_height": bh,
+    "@_width": bw,
+    "@_x": bx,
+    "@_y": by,
+  });
+
   const isInside =
-    bounds["@_x"] >= container["@_x"] &&
-    bounds["@_y"] >= container["@_y"] &&
-    bounds["@_x"] + bounds["@_width"] <= (container["@_x"] ?? 0) + (container["@_width"] ?? 0) &&
-    bounds["@_y"] + bounds["@_height"] <= (container["@_y"] ?? 0) + (container["@_height"] ?? 0);
+    bx >= cx && // force-line-break
+    by >= cy && // force-line-break
+    bx + bw <= cx + cw && // force-line-break
+    by + bh <= cy + ch;
+
   if (isInside) {
-    return { isInside: true, section: center["@_y"] > container["@_y"] + (divingLineLocalY ?? 0) ? "lower" : "upper" };
+    return { isInside: true, section: center["@_y"] > cy + (divingLineLocalY ?? 0) ? "lower" : "upper" };
   } else {
     return { isInside: false };
   }

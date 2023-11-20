@@ -5,6 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 
 import {
   DC__Bounds,
+  DC__Dimension,
   DMN15__tDecisionService,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -51,7 +52,7 @@ import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { DiagramNodesPanel, StoreApiType, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DiagramNodesPanel, SnapGrid, StoreApiType, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
@@ -191,7 +192,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       dmnEditorStoreApi.setState((state) => {
         addEdge({
           definitions: state.dmn.model.definitions,
-          drdIndex: diagram.drdIndex,
+          drdIndex: state.diagram.drdIndex,
           edge: {
             type: connection.sourceHandle as EdgeType,
             targetHandle: connection.targetHandle as PositionalNodeHandleId,
@@ -216,18 +217,24 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         });
       });
     },
-    [diagram.drdIndex, dmnEditorStoreApi, nodesById]
+    [dmnEditorStoreApi, nodesById]
   );
 
   const getFirstNodeFittingBounds = useCallback(
-    (nodeIdToIgnore: string, bounds: DC__Bounds) =>
+    (nodeIdToIgnore: string, bounds: DC__Bounds, minSizes: (snapGrid: SnapGrid) => DC__Dimension, snapGrid: SnapGrid) =>
       reactFlowInstance
         ?.getNodes()
         .reverse() // Respect the nodes z-index.
         .find(
           (node) =>
             node.id !== nodeIdToIgnore && // don't ever use the node being dragged
-            getContainmentRelationship({ bounds: bounds!, container: node.data.shape["dc:Bounds"]! }).isInside
+            getContainmentRelationship({
+              bounds: bounds!,
+              container: node.data.shape["dc:Bounds"]!,
+              snapGrid,
+              containerMinSizes: MIN_NODE_SIZES[node.type as NodeType],
+              boundsMinSizes: minSizes,
+            }).isInside
         ),
     [reactFlowInstance]
   );
@@ -274,14 +281,14 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         dmnEditorStoreApi.setState((state) => {
           const { id, href: newNodeId } = addStandaloneNode({
             definitions: state.dmn.model.definitions,
-            drdIndex: diagram.drdIndex,
+            drdIndex: state.diagram.drdIndex,
             newNode: {
               type: typeOfNewNodeFromPalette,
               bounds: {
                 "@_x": dropPoint.x,
                 "@_y": dropPoint.y,
-                "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_width"],
-                "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_height"],
+                "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](state.diagram.snapGrid)["@_width"],
+                "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](state.diagram.snapGrid)["@_height"],
               },
             },
           });
@@ -304,9 +311,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
 
         const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
-        const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType](diagram.snapGrid);
 
         dmnEditorStoreApi.setState((state) => {
+          const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType](state.diagram.snapGrid);
+
           const namespaceName = getXmlNamespaceDeclarationName({
             model: state.dmn.model.definitions,
             namespace: externalNode.externalDrgElementNamespace,
@@ -318,7 +326,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
           addShape({
             definitions: state.dmn.model.definitions,
-            drdIndex: diagram.drdIndex,
+            drdIndex: state.diagram.drdIndex,
             nodeType: externalNodeType,
             shape: {
               "@_dmnElementRef": buildXmlQName({
@@ -350,12 +358,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         >;
 
         const nodeType = getNodeTypeFromDmnObject(drgElement)!;
-        const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType](diagram.snapGrid);
 
         dmnEditorStoreApi.setState((state) => {
+          const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType](state.diagram.snapGrid);
           addShape({
             definitions: state.dmn.model.definitions,
-            drdIndex: diagram.drdIndex,
+            drdIndex: state.diagram.drdIndex,
             nodeType,
             shape: {
               "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
@@ -373,7 +381,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         console.debug(`DMN DIAGRAM: Adding DRG node`, JSON.stringify(drgElement));
       }
     },
-    [container, reactFlowInstance, dmnEditorStoreApi, diagram.drdIndex, diagram.snapGrid, externalDmnsByNamespace]
+    [container, reactFlowInstance, dmnEditorStoreApi, externalDmnsByNamespace]
   );
 
   useEffect(() => {
@@ -448,7 +456,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       dmnEditorStoreApi.setState((state) => {
         const { id, href: newDmnObejctHref } = addConnectedNode({
           definitions: state.dmn.model.definitions,
-          drdIndex: diagram.drdIndex,
+          drdIndex: state.diagram.drdIndex,
           edge,
           sourceNode: {
             href: sourceNode.id,
@@ -461,8 +469,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             bounds: {
               "@_x": dropPoint.x,
               "@_y": dropPoint.y,
-              "@_width": DEFAULT_NODE_SIZES[newNodeType](diagram.snapGrid)["@_width"],
-              "@_height": DEFAULT_NODE_SIZES[newNodeType](diagram.snapGrid)["@_height"],
+              "@_width": DEFAULT_NODE_SIZES[newNodeType](state.diagram.snapGrid)["@_width"],
+              "@_height": DEFAULT_NODE_SIZES[newNodeType](state.diagram.snapGrid)["@_height"],
             },
           },
         });
@@ -471,16 +479,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         state.focus.consumableId = id;
       });
     },
-    [
-      dmnEditorStoreApi,
-      container,
-      diagram.ongoingConnection,
-      diagram.drdIndex,
-      diagram.snapGrid,
-      reactFlowInstance,
-      nodesById,
-      dmnShapesByHref,
-    ]
+    [dmnEditorStoreApi, container, diagram.ongoingConnection, reactFlowInstance, nodesById, dmnShapesByHref]
   );
 
   const isValidConnection = useCallback<RF.IsValidConnection>(
@@ -531,9 +530,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 const node = nodesById.get(change.id)!;
                 // We only need to resize the node if its snapped dimensions change, as snapping is non-destructive.
                 const snappedShape = snapShapeDimensions(
-                  diagram.snapGrid,
+                  state.diagram.snapGrid,
                   node.data.shape,
-                  MIN_NODE_SIZES[node.type as NodeType](diagram.snapGrid)
+                  MIN_NODE_SIZES[node.type as NodeType](state.diagram.snapGrid)
                 );
                 if (
                   snappedShape.width !== change.dimensions.width ||
@@ -541,9 +540,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 ) {
                   resizeNode({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: diagram.drdIndex,
+                    drdIndex: state.diagram.drdIndex,
                     dmnShapesByHref,
-                    snapGrid: diagram.snapGrid,
+                    snapGrid: state.diagram.snapGrid,
                     change: {
                       isExternal: !!node.data.dmnObjectQName.prefix,
                       nodeType: node.type as NodeType,
@@ -571,7 +570,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 const node = nodesById.get(change.id)!;
                 const { delta } = repositionNode({
                   definitions: state.dmn.model.definitions,
-                  drdIndex: diagram.drdIndex,
+                  drdIndex: state.diagram.drdIndex,
                   controlWaypointsByEdge,
                   change: {
                     type: "absolute",
@@ -602,12 +601,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   for (let i = 0; i < nested.length; i++) {
                     const nestedNode = nodesById.get(nested[i]["@_href"])!;
                     const snappedNestedNodeShapeWithAppliedDelta = snapShapePosition(
-                      diagram.snapGrid,
+                      state.diagram.snapGrid,
                       offsetShapePosition(nestedNode.data.shape, delta)
                     );
                     repositionNode({
                       definitions: state.dmn.model.definitions,
-                      drdIndex: diagram.drdIndex,
+                      drdIndex: state.diagram.drdIndex,
                       controlWaypointsByEdge,
                       change: {
                         type: "absolute",
@@ -632,7 +631,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               const node = nodesById.get(change.id)!;
               deleteNode({
                 definitions: state.dmn.model.definitions,
-                drdIndex: diagram.drdIndex,
+                drdIndex: state.diagram.drdIndex,
                 dmnObjectQName: node.data.dmnObjectQName,
                 dmnObjectId: node.data.dmnObject?.["@_id"],
                 nodeNature: nodeNatures[node.type as NodeType],
@@ -657,16 +656,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
       });
     },
-    [
-      reactFlowInstance,
-      dmnEditorStoreApi,
-      nodesById,
-      diagram.drdIndex,
-      diagram.snapGrid,
-      dmnShapesByHref,
-      edges,
-      selectedEdgesById,
-    ]
+    [reactFlowInstance, dmnEditorStoreApi, nodesById, dmnShapesByHref, edges, selectedEdgesById]
   );
 
   const resetToBeforeEditingBegan = useCallback(() => {
@@ -684,13 +674,18 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     (e, node: RF.Node<DmnDiagramNodeData>) => {
       nodeIdBeingDraggedRef.current = node.id;
       dmnEditorStoreApi.setState((state) => {
-        state.diagram.dropTargetNode = getFirstNodeFittingBounds(node.id, {
-          // We can't use node.data.dmnObject because it hasn't been updated at this point yet.
-          "@_x": node.positionAbsolute?.x ?? 0,
-          "@_y": node.positionAbsolute?.y ?? 0,
-          "@_width": node.width ?? 0,
-          "@_height": node.height ?? 0,
-        });
+        state.diagram.dropTargetNode = getFirstNodeFittingBounds(
+          node.id,
+          {
+            // We can't use node.data.dmnObject because it hasn't been updated at this point yet.
+            "@_x": node.positionAbsolute?.x ?? 0,
+            "@_y": node.positionAbsolute?.y ?? 0,
+            "@_width": node.width ?? 0,
+            "@_height": node.height ?? 0,
+          },
+          MIN_NODE_SIZES[node.type as NodeType],
+          state.diagram.snapGrid
+        );
       });
     },
     [dmnEditorStoreApi, getFirstNodeFittingBounds]
@@ -758,9 +753,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             for (let i = 0; i < selectedNodes.length; i++) {
               addDecisionToDecisionService({
                 definitions: state.dmn.model.definitions,
-                drdIndex: diagram.drdIndex,
+                drdIndex: state.diagram.drdIndex,
                 decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
                 decisionServiceId: nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
+                snapGrid: state.diagram.snapGrid,
               });
             }
           } else {
@@ -775,7 +771,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       }
     },
     [
-      diagram.drdIndex,
       dmnEditorStoreApi,
       isDropTargetNodeValidForSelection,
       nodesById,
@@ -800,7 +795,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               if (edge?.data) {
                 deleteEdge({
                   definitions: state.dmn.model.definitions,
-                  drdIndex: diagram.drdIndex,
+                  drdIndex: state.diagram.drdIndex,
                   edge: { id: change.id, dmnObject: edge.data.dmnObject },
                 });
                 state.dispatch.diagram.setEdgeStatus(state, change.id, { selected: false, draggingWaypoint: false });
@@ -813,7 +808,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
       });
     },
-    [diagram.drdIndex, dmnEditorStoreApi, edgesById]
+    [dmnEditorStoreApi, edgesById]
   );
 
   const onEdgeUpdate = useCallback<RF.OnEdgeUpdateFunc<DmnDiagramEdgeData>>(
@@ -844,7 +839,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       dmnEditorStoreApi.setState((state) => {
         const { newDmnEdge } = addEdge({
           definitions: state.dmn.model.definitions,
-          drdIndex: diagram.drdIndex,
+          drdIndex: state.diagram.drdIndex,
           edge: {
             type: oldEdge.type as EdgeType,
             targetHandle: ((newConnection.targetHandle as PositionalNodeHandleId) ??
@@ -876,7 +871,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         if (newDmnEdge["@_dmnElementRef"] !== oldEdge.id) {
           const { dmnEdge: deletedDmnEdge } = deleteEdge({
             definitions: state.dmn.model.definitions,
-            drdIndex: diagram.drdIndex,
+            drdIndex: state.diagram.drdIndex,
             edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
           });
 
@@ -902,7 +897,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         state.diagram.edgeIdBeingUpdated = undefined;
       });
     },
-    [diagram.drdIndex, dmnEditorStoreApi, nodesById]
+    [dmnEditorStoreApi, nodesById]
   );
 
   const onEdgeUpdateStart = useCallback(
@@ -1052,7 +1047,6 @@ function DmnDiagramEmptyState({
   setShowEmptyState: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const diagram = useDmnEditorStore((s) => s.diagram);
 
   return (
     <Bullseye
@@ -1093,14 +1087,14 @@ function DmnDiagramEmptyState({
                 dmnEditorStoreApi.setState((state) => {
                   const { href: decisionNodeHref } = addStandaloneNode({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: diagram.drdIndex,
+                    drdIndex: state.diagram.drdIndex,
                     newNode: {
                       type: NODE_TYPES.decision,
                       bounds: {
                         "@_x": 100,
                         "@_y": 100,
-                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"],
-                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"],
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_width"],
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_height"],
                       },
                     },
                   });
@@ -1110,7 +1104,7 @@ function DmnDiagramEmptyState({
 
                   updateExpression({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: diagram.drdIndex,
+                    drdIndex: state.diagram.drdIndex,
                     drgElementIndex,
                     expression: getDefaultExpressionDefinitionByLogicType({
                       expressionHolderName: drgElement?.["@_name"],
@@ -1136,13 +1130,13 @@ function DmnDiagramEmptyState({
                   const inputDataNodeBounds: DC__Bounds = {
                     "@_x": 100,
                     "@_y": 300,
-                    "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](diagram.snapGrid)["@_width"],
-                    "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](diagram.snapGrid)["@_height"],
+                    "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](state.diagram.snapGrid)["@_width"],
+                    "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](state.diagram.snapGrid)["@_height"],
                   };
 
                   const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: diagram.drdIndex,
+                    drdIndex: state.diagram.drdIndex,
                     newNode: {
                       type: NODE_TYPES.inputData,
                       bounds: inputDataNodeBounds,
@@ -1151,7 +1145,7 @@ function DmnDiagramEmptyState({
 
                   const { href: decisionNodeHref } = addConnectedNode({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: diagram.drdIndex,
+                    drdIndex: state.diagram.drdIndex,
                     edge: EDGE_TYPES.informationRequirement,
                     sourceNode: {
                       href: inputDataNodeHref,
@@ -1164,8 +1158,8 @@ function DmnDiagramEmptyState({
                       bounds: {
                         "@_x": 100,
                         "@_y": 100,
-                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"],
-                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"],
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_width"],
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_height"],
                       },
                     },
                   });
@@ -1386,7 +1380,7 @@ export function KeyboardShortcuts(props: {}) {
         [...copiedEdgesById.values(), ...danglingEdgesById.values()].forEach((edge) => {
           deleteEdge({
             definitions: state.dmn.model.definitions,
-            drdIndex: diagram.drdIndex,
+            drdIndex: state.diagram.drdIndex,
             edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
           });
           state.dispatch.diagram.setEdgeStatus(state, edge.id, {
@@ -1403,7 +1397,7 @@ export function KeyboardShortcuts(props: {}) {
             if (copiedNodesById.has(node.id)) {
               deleteNode({
                 definitions: state.dmn.model.definitions,
-                drdIndex: diagram.drdIndex,
+                drdIndex: state.diagram.drdIndex,
                 dmnObjectQName: node.data.dmnObjectQName,
                 dmnObjectId: node.data.dmnObject?.["@_id"],
                 nodeNature: nodeNatures[node.type as NodeType],
@@ -1417,7 +1411,7 @@ export function KeyboardShortcuts(props: {}) {
           });
       });
     });
-  }, [cut, diagram.drdIndex, dmnEditorStoreApi, rfStoreApi]);
+  }, [cut, dmnEditorStoreApi, rfStoreApi]);
 
   const copy = RF.useKeyPress(["Meta+c"]);
   useEffect(() => {
@@ -1484,7 +1478,7 @@ export function KeyboardShortcuts(props: {}) {
 
         const { diagramElements, widths } = addOrGetDrd({
           definitions: state.dmn.model.definitions,
-          drdIndex: diagram.drdIndex,
+          drdIndex: state.diagram.drdIndex,
         });
         diagramElements.push(...clipboard.shapes.map((s) => ({ ...s, __$$element: "dmndi:DMNShape" as const })));
         diagramElements.push(...clipboard.edges.map((s) => ({ ...s, __$$element: "dmndi:DMNEdge" as const })));
@@ -1498,7 +1492,7 @@ export function KeyboardShortcuts(props: {}) {
         );
       });
     });
-  }, [diagram.drdIndex, dmnEditorStoreApi, paste]);
+  }, [dmnEditorStoreApi, paste]);
 
   const selectAll = RF.useKeyPress(["a", "Meta+a"]);
   useEffect(() => {
@@ -1548,7 +1542,7 @@ export function KeyboardShortcuts(props: {}) {
 
       const { href: newNodeId } = addStandaloneNode({
         definitions: state.dmn.model.definitions,
-        drdIndex: diagram.drdIndex,
+        drdIndex: state.diagram.drdIndex,
         newNode: {
           type: NODE_TYPES.group,
           bounds: getBounds({
@@ -1560,7 +1554,7 @@ export function KeyboardShortcuts(props: {}) {
 
       state.dispatch.diagram.setNodeStatus(state, newNodeId, { selected: true });
     });
-  }, [diagram.drdIndex, dmnEditorStoreApi, g, rf]);
+  }, [dmnEditorStoreApi, g, rf]);
 
   const h = RF.useKeyPress(["h"]);
   useEffect(() => {

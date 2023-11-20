@@ -2,17 +2,22 @@ import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshalle
 import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../diagram/maths/DmnMaths";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { SnapGrid } from "../store/Store";
+import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
+import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 
 export function addDecisionToDecisionService({
   definitions,
   decisionId,
   decisionServiceId,
   drdIndex,
+  snapGrid,
 }: {
   definitions: DMN15__tDefinitions;
   decisionId: string;
   decisionServiceId: string;
   drdIndex: number;
+  snapGrid: SnapGrid;
 }) {
   console.debug(`DMN MUTATION: Adding Decision '${decisionId}' to Decision Service '${decisionServiceId}'`);
 
@@ -35,7 +40,7 @@ export function addDecisionToDecisionService({
     (s) => s["@_dmnElementRef"] === decisionServiceId && s.__$$element === "dmndi:DMNShape"
   ) as DMNDI15__DMNShape;
 
-  const section = getSectionForDecisionInsideDecisionService({ decisionShape, decisionServiceShape });
+  const section = getSectionForDecisionInsideDecisionService({ decisionShape, decisionServiceShape, snapGrid });
   if (section === "encapsulated") {
     decisionService.encapsulatedDecision ??= [];
     decisionService.encapsulatedDecision.push({ "@_href": `#${decisionId}` });
@@ -52,9 +57,11 @@ export function addDecisionToDecisionService({
 export function getSectionForDecisionInsideDecisionService({
   decisionShape,
   decisionServiceShape,
+  snapGrid,
 }: {
   decisionShape: DMNDI15__DMNShape;
   decisionServiceShape: DMNDI15__DMNShape;
+  snapGrid: SnapGrid;
 }): "output" | "encapsulated" {
   if (!decisionShape?.["dc:Bounds"] || !decisionServiceShape?.["dc:Bounds"]) {
     throw new Error(
@@ -66,6 +73,9 @@ export function getSectionForDecisionInsideDecisionService({
     bounds: decisionShape["dc:Bounds"],
     container: decisionServiceShape["dc:Bounds"],
     divingLineLocalY: getDecisionServiceDividerLineLocalY(decisionServiceShape),
+    snapGrid,
+    containerMinSizes: MIN_NODE_SIZES[NODE_TYPES.decisionService],
+    boundsMinSizes: MIN_NODE_SIZES[NODE_TYPES.decision],
   });
 
   if (!contaimentRelationship.isInside) {

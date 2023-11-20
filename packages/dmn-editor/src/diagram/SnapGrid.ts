@@ -1,4 +1,5 @@
 import {
+  DC__Bounds,
   DC__Dimension,
   DC__Point,
   DMNDI15__DMNShape,
@@ -6,9 +7,13 @@ import {
 import { SnapGrid } from "../store/Store";
 
 export function snapShapePosition(snapGrid: SnapGrid, shape: DMNDI15__DMNShape) {
+  return snapBoundsPosition(snapGrid, shape["dc:Bounds"]);
+}
+
+export function snapBoundsPosition(snapGrid: SnapGrid, bounds: DC__Bounds | undefined) {
   return {
-    x: snap(snapGrid, "x", shape["dc:Bounds"]?.["@_x"]),
-    y: snap(snapGrid, "y", shape["dc:Bounds"]?.["@_y"]),
+    x: snap(snapGrid, "x", bounds?.["@_x"]),
+    y: snap(snapGrid, "y", bounds?.["@_y"]),
   };
 }
 
@@ -28,9 +33,13 @@ export function offsetShapePosition(shape: DMNDI15__DMNShape, offset: { x: numbe
 }
 
 export function snapShapeDimensions(grid: SnapGrid, shape: DMNDI15__DMNShape, minSizes: DC__Dimension) {
+  return snapBoundsDimensions(grid, shape["dc:Bounds"], minSizes);
+}
+
+export function snapBoundsDimensions(grid: SnapGrid, bounds: DC__Bounds | undefined, minSizes: DC__Dimension) {
   return {
-    width: Math.max(snap(grid, "x", shape["dc:Bounds"]?.["@_width"]), minSizes["@_width"]),
-    height: Math.max(snap(grid, "y", shape["dc:Bounds"]?.["@_height"]), minSizes["@_height"]),
+    width: Math.max(snap(grid, "x", bounds?.["@_width"]), minSizes["@_width"]),
+    height: Math.max(snap(grid, "y", bounds?.["@_height"]), minSizes["@_height"]),
   };
 }
 
