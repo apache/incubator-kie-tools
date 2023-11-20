@@ -87,7 +87,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "copyfiles": "^2.4.1",
     "cpr": "^3.0.1",
-    "cypress": "^13.2.0",
+    "cypress": "^13.5.1",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
