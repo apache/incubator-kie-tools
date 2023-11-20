@@ -3370,16 +3370,16 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       webpack:
-        specifier: ^5.36.2
+        specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
         version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
+        specifier: ^4.15.1
         version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
+        specifier: ^5.9.0
         version: 5.9.0
 
   packages/dmn-editor-envelope:
@@ -6165,8 +6165,8 @@ importers:
         specifier: ^3.0.11
         version: 3.0.11
       immer:
-        specifier: ^9.0.6
-        version: 9.0.7
+        specifier: 10.0.3
+        version: 10.0.3(patch_hash=utu5oov26wz5mjuays57tp3ybu)
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -11418,7 +11418,7 @@ packages:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.16.12
       "@babel/helper-validator-option": 7.21.0
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       semver: 6.3.1
     dev: true
 
@@ -11432,7 +11432,7 @@ packages:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.23.0
       "@babel/helper-validator-option": 7.21.0
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       semver: 6.3.1
     dev: true
 
@@ -25817,18 +25817,6 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /browserslist@4.21.5:
-    resolution:
-      { integrity: sha512-tUkiguQGW7S3IhB7N+c2MV/HZPSCPAAiYBZXLsBhFB/PCy6ZKKsZrmBayHV9fdGV/ARIfJ14NkxKzRDjvp7L6w== }
-    engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
-    hasBin: true
-    dependencies:
-      caniuse-lite: 1.0.30001486
-      electron-to-chromium: 1.4.388
-      node-releases: 2.0.10
-      update-browserslist-db: 1.0.11(browserslist@4.21.5)
-    dev: true
-
   /browserslist@4.22.1:
     resolution:
       { integrity: sha512-FEVc202+2iuClEhZhrWy6ZiAcRLvNMyYcxZ8raemul1DYVOVdFsbqckWLdsixQZCpJlwe77Z3UTalE7jsjnKfQ== }
@@ -26173,11 +26161,6 @@ packages:
     engines: { node: ">=10.13" }
     dependencies:
       path-temp: 2.0.0
-    dev: true
-
-  /caniuse-lite@1.0.30001486:
-    resolution:
-      { integrity: sha512-uv7/gXuHi10Whlj0pp5q/tsK/32J2QSqVRKQhs2j8VsDCjgyruAh/eEXHF822VqO9yT6iZKw3nRwZRSPBE9OQg== }
     dev: true
 
   /caniuse-lite@1.0.30001547:
@@ -26991,7 +26974,7 @@ packages:
       globby: 13.1.2
       normalize-path: 3.0.0
       schema-utils: 4.0.0
-      serialize-javascript: 6.0.0
+      serialize-javascript: 6.0.1
       webpack: 5.76.1(esbuild@0.15.5)
     dev: true
 
@@ -27028,7 +27011,7 @@ packages:
     resolution:
       { integrity: sha512-gbgX5AUvMb8gwxC7FLVWYT7Kkgu/y7+h/h1X43yJkNqhlK2fuYyQimqvKGNZFAY6CKii/GFKJ2cp/1/42TN36g== }
     dependencies:
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       semver: 7.0.0
     dev: true
 
@@ -28615,11 +28598,6 @@ packages:
     hasBin: true
     dependencies:
       jake: 10.8.7
-    dev: true
-
-  /electron-to-chromium@1.4.388:
-    resolution:
-      { integrity: sha512-xZ0y4zjWZgp65okzwwt00f2rYibkFPHUv9qBz+Vzn8cB9UXIo9Zc6Dw81LJYhhNt0G/vR1OJEfStZ49NKl0YxQ== }
     dev: true
 
   /electron-to-chromium@1.4.549:
@@ -32096,11 +32074,6 @@ packages:
       { integrity: sha512-pwupu3eWfouuaowscykeckFmVTpqbzW+rXFCX8rQLkZzM9ftBmU/++Ra+o+L27mz03zJTlyV4UUr+fdKNffo4A== }
     dev: false
     patched: true
-
-  /immer@9.0.7:
-    resolution:
-      { integrity: sha512-KGllzpbamZDvOIxnmJ0jI840g7Oikx58lBPWV0hUh7dtAyZpFqqrBZdKka5GlTwMTZ1Tjc/bKKW4VSFAt6BqMA== }
-    dev: false
 
   /immutable@3.7.6:
     resolution:
@@ -36189,11 +36162,6 @@ packages:
       util: 0.12.5
       vm-browserify: 1.1.2
       webpack: 5.88.2(webpack-cli@4.10.0)
-    dev: true
-
-  /node-releases@2.0.10:
-    resolution:
-      { integrity: sha512-5GFldHPXVG/YZmFzJvKK2zDSzPKhEp0+ZR5SVaoSag9fsL5YgHbUHDfnG5494ISANDcK4KwPXAx2xqVEydmd7w== }
     dev: true
 
   /node-releases@2.0.13:
@@ -42726,18 +42694,6 @@ packages:
       listenercount: 1.0.1
       readable-stream: 2.3.7
       setimmediate: 1.0.5
-    dev: true
-
-  /update-browserslist-db@1.0.11(browserslist@4.21.5):
-    resolution:
-      { integrity: sha512-dCwEFf0/oT85M1fHBg4F0jtLwJrutGoHSQXCh7u4o2t1drG+c0a9Flnqww6XUKSfQMPpJBRjU8d4RXB09qtvaA== }
-    hasBin: true
-    peerDependencies:
-      browserslist: ">= 4.21.0"
-    dependencies:
-      browserslist: 4.21.5
-      escalade: 3.1.1
-      picocolors: 1.0.0
     dev: true
 
   /update-browserslist-db@1.0.13(browserslist@4.22.1):
