@@ -76,6 +76,7 @@ export const InputDataNode = React.memo(
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tInputData & { __$$element: "inputData" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
+    const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
     const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
@@ -91,7 +92,7 @@ export const InputDataNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
 
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
@@ -188,6 +189,7 @@ export const DecisionNode = React.memo(
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision & { __$$element: "decision" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
+    const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
     const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
@@ -203,7 +205,7 @@ export const DecisionNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -225,8 +227,6 @@ export const DecisionNode = React.memo(
     );
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
-
-    const isExternal = !!dmnObjectQName.prefix;
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, decision["@_name"]);
 
@@ -304,6 +304,7 @@ export const BkmNode = React.memo(
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
+    const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
     const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
@@ -319,7 +320,7 @@ export const BkmNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -341,8 +342,6 @@ export const BkmNode = React.memo(
     );
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
-
-    const isExternal = !!dmnObjectQName.prefix;
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, bkm["@_name"]);
 
@@ -420,6 +419,7 @@ export const KnowledgeSourceNode = React.memo(
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tKnowledgeSource & { __$$element: "knowledgeSource" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
+    const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
     const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
@@ -435,7 +435,7 @@ export const KnowledgeSourceNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -514,6 +514,7 @@ export const TextAnnotationNode = React.memo(
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation & { __$$element: "textAnnotation" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
+    const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
     const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
@@ -529,7 +530,7 @@ export const TextAnnotationNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
     const setText = useCallback(
       (newText: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -602,6 +603,8 @@ export const DecisionServiceNode = React.memo(
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecisionService & { __$$element: "decisionService" }>>) => {
     const ref = useRef<SVGRectElement>(null);
+    const isExternal = !!dmnObjectQName.prefix;
+
     const isResizing = useNodeResizing(id);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
@@ -616,7 +619,7 @@ export const DecisionServiceNode = React.memo(
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
 
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -661,8 +664,6 @@ export const DecisionServiceNode = React.memo(
     const { allFeelVariableUniqueNames, dmnShapesByHref } = useDmnEditorDerivedStore();
 
     const dividerLineRef = useRef<SVGPathElement>(null);
-
-    const isExternal = !!dmnObjectQName.prefix;
 
     // External Decision Service nodes are always collapsed.
     const isCollapsed = isExternal || shape["@_isCollapsed"];
@@ -775,8 +776,8 @@ export const DecisionServiceNode = React.memo(
             isVisible={!isTargeted && selected && !dragging}
             variable={decisionService.variable}
             shape={shape}
-            onChange={onTypeRefChange}
             onCreate={onCreateDataType}
+            onChange={onTypeRefChange}
           />
         </div>
       </>
@@ -794,6 +795,7 @@ export const GroupNode = React.memo(
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tGroup & { __$$element: "group" }>>) => {
     const ref = useRef<SVGRectElement>(null);
+    const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
@@ -807,7 +809,7 @@ export const GroupNode = React.memo(
     );
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -907,6 +909,7 @@ export const UnknownNode = React.memo(
     id,
   }: RF.NodeProps<DmnDiagramNodeData<null>>) => {
     const ref = useRef<HTMLDivElement>(null);
+    const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
@@ -914,7 +917,7 @@ export const UnknownNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
 
     return (
       <>
@@ -1002,13 +1005,19 @@ function useNodeResizing(id: string): boolean {
 
   return node.resizing ?? false;
 }
-function useNodeDimensions(type: NodeType, snapGrid: SnapGrid, id: string, shape: DMNDI15__DMNShape): RF.Dimensions {
+function useNodeDimensions(
+  type: NodeType,
+  snapGrid: SnapGrid,
+  id: string,
+  shape: DMNDI15__DMNShape,
+  isExternal: boolean
+): RF.Dimensions {
   const node = RF.useStore((s) => s.nodeInternals.get(id));
   if (!node) {
     throw new Error("Can't use nodeInternals of non-existent node " + id);
   }
 
-  if (type === NODE_TYPES.decisionService && shape["@_isCollapsed"]) {
+  if (type === NODE_TYPES.decisionService && (isExternal || shape["@_isCollapsed"])) {
     return DECISION_SERVICE_COLLAPSED_DIMENSIONS;
   }
 

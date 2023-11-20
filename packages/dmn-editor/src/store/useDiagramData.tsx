@@ -285,7 +285,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         for (let i = 0; i < containedDecisions.length; i++) {
           parentIdsById.set(containedDecisions[i]["@_href"], data);
         }
-        if (shape["@_isCollapsed"]) {
+        if (shape["@_isCollapsed"] || !!dmnObjectNamespace) {
           newNode.style = {
             ...newNode.style,
             ...DECISION_SERVICE_COLLAPSED_DIMENSIONS,

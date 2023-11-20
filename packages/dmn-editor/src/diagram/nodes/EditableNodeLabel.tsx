@@ -66,11 +66,31 @@ export function EditableNodeLabel({
     [_setEditing, namedElementQName?.prefix]
   );
 
-  const [internalValue, setInternalValue] = useState(value);
+  const displayValue = useMemo(() => {
+    if (!value) {
+      return undefined;
+    }
+
+    if (!namedElement || !namedElementQName) {
+      return value;
+    }
+
+    const feelName = buildFeelQNameFromXmlQName({
+      namedElement,
+      importsByNamespace,
+      model: thisDmn.model.definitions,
+      namedElementQName,
+      relativeToNamespace: thisDmn.model.definitions["@_namespace"],
+    });
+
+    return feelName.full;
+  }, [value, namedElement, namedElementQName, importsByNamespace, thisDmn.model.definitions]);
+
+  const [internalValue, setInternalValue] = useState(displayValue);
   useEffect(() => {
     // Give `value` priority over `internalValue`, if it changes externally, we take that as the new `internalValue`.
-    setInternalValue(value);
-  }, [value]);
+    setInternalValue(displayValue);
+  }, [displayValue]);
 
   // If `shouldCommitOnBlur` is true, pressing `Esc` will override this.
   // If `shouldCommitOnBlur` is false, pressing `Enter` will override this.
@@ -172,26 +192,6 @@ export function EditableNodeLabel({
 
   const positionClass = position ?? "center-center";
 
-  const displayValue = useMemo(() => {
-    if (!value) {
-      return <EmptyLabel />;
-    }
-
-    if (!namedElement || !namedElementQName) {
-      return truncate ? <Truncate content={value} tooltipPosition={"right-end"} /> : value;
-    }
-
-    const feelName = buildFeelQNameFromXmlQName({
-      namedElement,
-      importsByNamespace,
-      model: thisDmn.model.definitions,
-      namedElementQName,
-      relativeToNamespace: thisDmn.model.definitions["@_namespace"],
-    });
-
-    return truncate ? <Truncate content={feelName.full} tooltipPosition={"right-end"} /> : feelName.full;
-  }, [value, namedElement, namedElementQName, importsByNamespace, thisDmn.model.definitions, truncate]);
-
   return (
     <div className={`kie-dmn-editor--editable-node-name-input ${positionClass} ${grow ? "grow" : ""}`}>
       {(isEditing && (
@@ -217,7 +217,13 @@ export function EditableNodeLabel({
             ...(isValid ? {} : invalidInlineFeelNameStyle),
           }}
         >
-          {displayValue}
+          {!displayValue ? (
+            <EmptyLabel />
+          ) : !truncate ? (
+            displayValue
+          ) : (
+            <Truncate content={displayValue} tooltipPosition={"right-end"} />
+          )}
         </span>
       )}
     </div>
