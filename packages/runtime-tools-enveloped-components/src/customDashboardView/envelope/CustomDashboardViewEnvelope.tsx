@@ -56,7 +56,7 @@ export function init(args: { config: EnvelopeDivConfig; container: HTMLDivElemen
       ReactDOM.render(
         <CustomDashboardViewEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
         args.container,
-        () => res(() => ref.current)
+        () => res(() => ref.current!)
       );
     });
   };

@@ -57,7 +57,7 @@ export const CustomDashboardViewEnvelopeView = React.forwardRef<CustomDashboardV
             isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
             driver={new CustomDashboardViewEnvelopeViewDriver(props.channelApi)}
             customDashboardName={customDashboardName}
-            targetOrigin={targetOrigin}
+            targetOrigin={targetOrigin!}
           />
         )}
       </>

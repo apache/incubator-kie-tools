@@ -39,7 +39,7 @@ const CustomDashboardView: React.FC<CustomDashboardViewProps & OUIAProps> = ({
   targetOrigin,
   ouiaSafe,
 }) => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLIFrameElement>(null);
   const [dashboardContent, setDashboardContent] = useState<string>();
   const [errorMessage, setErrorMessage] = useState<string>();
   const [isError, setError] = useState<boolean>(false);
@@ -62,8 +62,8 @@ const CustomDashboardView: React.FC<CustomDashboardViewProps & OUIAProps> = ({
   });
 
   useEffect(() => {
-    if (isReady) {
-      ref.current.contentWindow.postMessage(dashboardContent, null);
+    if (isReady && ref) {
+      ref.current?.contentWindow?.postMessage(dashboardContent, "");
     }
   });
 
