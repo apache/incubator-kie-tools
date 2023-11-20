@@ -226,9 +226,9 @@ export function dmnToBee(
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Pmml,
-          document: (document?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
+          document: (document?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``), // Sometimes this is stored as a FEEL string. We don't need the quotes to show in the screen.
           documentFieldId: document?.expression?.["@_id"],
-          model: (model?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
+          model: (model?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``), // Sometimes this is stored as a FEEL string. We don't need the quotes to show in the screen.
           modelFieldId: model?.expression?.["@_id"],
         };
       }

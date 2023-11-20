@@ -19,6 +19,7 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { UniqueNameIndex } from "../Dmn15Spec";
 import { ExternalPmmlsIndex, ExternalDmnsIndex } from "../DmnEditor";
 import { builtInFeelTypeNames } from "../dataTypes/BuiltInFeelTypes";
+import { getNamespaceOfDmnImport } from "../includedModels/importNamespaces";
 
 export type DerivedStore = {
   selectedNodeTypes: Set<NodeType>;
@@ -70,7 +71,7 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
   }>(() => {
     return thisDmnsImports.reduce<{ dmns: ExternalDmnsIndex; pmmls: ExternalPmmlsIndex }>(
       (acc, _import) => {
-        const externalModel = externalModelsByNamespace?.[_import["@_namespace"]];
+        const externalModel = externalModelsByNamespace?.[getNamespaceOfDmnImport({ dmnImport: _import })];
         if (!externalModel) {
           console.warn(
             `DMN DIAGRAM: Can't index external model with namespace '${_import["@_namespace"]}' because it doesn't exist on the external models list.`
