@@ -8,6 +8,7 @@ import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useInViewSelect } from "../../responsiveness/useInViewSelect";
 
+// Time zone list from https://www.timeanddate.com/time/zones/
 const UTC_POSITEVE_TIMEZONES = [
   "+00:00",
   "+01:00",
@@ -23,6 +24,7 @@ const UTC_POSITEVE_TIMEZONES = [
   "+06:30",
   "+07:00",
   "+08:00",
+  "+08:30",
   "+08:45",
   "+09:00",
   "+09:30",
@@ -32,6 +34,7 @@ const UTC_POSITEVE_TIMEZONES = [
   "+12:00",
   "+12:45",
   "+13:00",
+  "+13:45",
   "+14:00",
 ];
 
@@ -48,6 +51,7 @@ const UTC_NEGATIVE_TIMEZONES = [
   "-04:00",
   "-03:30",
   "-03:00",
+  "-02:30",
   "-02:00",
   "-01:00",
 ];
