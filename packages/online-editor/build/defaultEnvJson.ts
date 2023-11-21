@@ -127,9 +127,6 @@ export const defaultEnvJson: EnvJson = {
       extension: FileTypes.DMN,
       filePathGlob: GLOB_PATTERN.dmn,
       editor: {
-        // resourcesPathPrefix: "gwt-editors/dmn",
-        // path: "dmn-envelope.html",
-        // Uncomment for the new DMN Editor
         resourcesPathPrefix: "",
         path: "new-dmn-editor-envelope.html",
       },

@@ -713,3 +713,7 @@ section.kie-tools--settings-tab {
   font-family: var(--pf-global--FontFamily--monospace);
   font-size: revert;
 }
+
+#new-dmn-editor-dropdown-toggle {
+  padding-left: 0;
+}

@@ -48,7 +48,10 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer } from "./EditorPageDockDrawer";
 import { DmnRunnerContextProvider } from "../dmnRunner/DmnRunnerContextProvider";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import {
+  LEGACY_DMN_EDITOR_EDITOR_CONFIG,
+  useEditorEnvelopeLocator,
+} from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
@@ -58,6 +61,8 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useEnv } from "../env/hooks/EnvContext";
+import { useSettings } from "../settings/SettingsContext";
+import { EditorEnvelopeLocatorFactory } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
 
 export interface Props {
   workspaceId: string;
@@ -389,6 +394,19 @@ export function EditorPage(props: Props) {
     [i18n]
   );
 
+  const { settings } = useSettings();
+
+  const settingsAwareEditorEnvelopeLocator = useMemo(() => {
+    if (settings.editors.useLegacyDmnEditor && props.fileRelativePath.endsWith(".dmn")) {
+      return new EditorEnvelopeLocatorFactory().create({
+        targetOrigin: window.location.origin,
+        editorsConfig: [LEGACY_DMN_EDITOR_EDITOR_CONFIG],
+      });
+    }
+
+    return editorEnvelopeLocator;
+  }, [editorEnvelopeLocator, props.fileRelativePath, settings.editors.useLegacyDmnEditor]);
+
   return (
     <OnlineEditorPage onKeyDown={onKeyDown}>
       <PromiseStateWrapper
@@ -439,7 +457,7 @@ export function EditorPage(props: Props) {
                             kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
                             kogitoWorkspace_resourceListRequest={handleResourceListRequest}
                             kogitoEditor_setContentError={handleSetContentError}
-                            editorEnvelopeLocator={editorEnvelopeLocator}
+                            editorEnvelopeLocator={settingsAwareEditorEnvelopeLocator}
                             channelType={ChannelType.ONLINE_MULTI_FILE}
                             locale={locale}
                           />

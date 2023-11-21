@@ -23,25 +23,28 @@ import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { ExtendedServicesConfig, useSettings, useSettingsDispatch } from "./SettingsContext";
+import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 
 export function ExtendedServicesSettingsTab() {
-  const settings = useSettings();
+  const { settings } = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const extendedServices = useExtendedServices();
-  const [host, setHost] = useState(settings.extendedServices.config.host);
-  const [port, setPort] = useState(settings.extendedServices.config.port);
+  const [host, setHost] = useState(settings.extendedServices.host);
+  const [port, setPort] = useState(settings.extendedServices.port);
 
   const onSubmit = useCallback(
     (e: any) => {
       e.preventDefault();
-      settingsDispatch.extendedServices.setConfig(new ExtendedServicesConfig(host, port));
+      settingsDispatch.set((settings) => {
+        settings.extendedServices.host = host;
+        settings.extendedServices.port = port;
+      });
     },
-    [settingsDispatch, host, port]
+    [host, port, settingsDispatch]
   );
 
   return (
