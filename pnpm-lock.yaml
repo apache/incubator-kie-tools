@@ -5421,7 +5421,7 @@ importers:
         version: 4.8.4
       url-loader:
         specifier: ^4.1.1
-        version: 4.1.1(webpack@5.88.2)
+        version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -5834,7 +5834,7 @@ importers:
         version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
 
   packages/playwright-base:
     devDependencies:
@@ -6851,6 +6851,9 @@ importers:
       "@kie-tools/yard-language-service":
         specifier: workspace:*
         version: link:../yard-language-service
+      "@kie-tools/yard-validator":
+        specifier: workspace:*
+        version: link:../yard-validator
       "@octokit/plugin-rest-endpoint-methods":
         specifier: ^5.0.1
         version: 5.0.1(@octokit/core@3.4.0)
@@ -8655,10 +8658,10 @@ importers:
         version: 4.8.4
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
       webpack-dev-server:
         specifier: ^4.15.1
-        version: 4.15.1(webpack@5.88.2)
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
@@ -9541,7 +9544,7 @@ importers:
         version: 9.4.2(typescript@4.8.4)(webpack@5.88.2)
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
 
   packages/workspace:
     dependencies:
@@ -9894,6 +9897,9 @@ importers:
       "@kie-tools/yard-language-service":
         specifier: workspace:*
         version: link:../yard-language-service
+      "@kie-tools/yard-validator":
+        specifier: workspace:*
+        version: link:../yard-validator
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
@@ -10082,6 +10088,96 @@ importers:
       ts-jest:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
+  packages/yard-model:
+    dependencies:
+      "@kie-tools-core/notifications":
+        specifier: workspace:*
+        version: link:../notifications
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.88.2)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+      webpack:
+        specifier: ^5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
+
+  packages/yard-validator:
+    dependencies:
+      "@kie-tools-core/notifications":
+        specifier: workspace:*
+        version: link:../notifications
+      "@kie-tools/yard-validator-worker":
+        specifier: workspace:*
+        version: link:../yard-validator-worker
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
+  packages/yard-validator-worker:
+    dependencies:
+      "@kie-tools-core/notifications":
+        specifier: workspace:*
+        version: link:../notifications
+      "@kie-tools/yard-model":
+        specifier: workspace:*
+        version: link:../yard-model
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
@@ -11092,7 +11188,7 @@ packages:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.16.12
       "@babel/helper-validator-option": 7.21.0
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       semver: 6.3.1
     dev: true
 
@@ -11106,7 +11202,7 @@ packages:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.23.0
       "@babel/helper-validator-option": 7.21.0
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       semver: 6.3.1
     dev: true
 
@@ -11120,7 +11216,7 @@ packages:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.16.12
       "@babel/helper-validator-option": 7.21.0
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       lru-cache: 5.1.1
       semver: 6.3.1
     dev: true
@@ -11135,7 +11231,7 @@ packages:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.18.10
       "@babel/helper-validator-option": 7.21.0
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       lru-cache: 5.1.1
       semver: 6.3.1
     dev: true
@@ -11150,7 +11246,7 @@ packages:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.23.0
       "@babel/helper-validator-option": 7.21.0
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       lru-cache: 5.1.1
       semver: 6.3.1
     dev: true
@@ -23878,15 +23974,6 @@ packages:
       acorn: 8.10.0
     dev: true
 
-  /acorn-import-assertions@1.9.0(acorn@8.8.2):
-    resolution:
-      { integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA== }
-    peerDependencies:
-      acorn: ^8
-    dependencies:
-      acorn: 8.8.2
-    dev: true
-
   /acorn-jsx@5.3.2(acorn@7.4.1):
     resolution:
       { integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ== }
@@ -24733,8 +24820,8 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      browserslist: 4.21.5
-      caniuse-lite: 1.0.30001486
+      browserslist: 4.22.1
+      caniuse-lite: 1.0.30001547
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -25491,10 +25578,10 @@ packages:
     engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001332
-      electron-to-chromium: 1.4.107
+      caniuse-lite: 1.0.30001547
+      electron-to-chromium: 1.4.549
       escalade: 3.1.1
-      node-releases: 2.0.3
+      node-releases: 2.0.13
       picocolors: 1.0.0
     dev: true
 
@@ -25504,10 +25591,10 @@ packages:
     engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001486
-      electron-to-chromium: 1.4.388
-      node-releases: 2.0.10
-      update-browserslist-db: 1.0.11(browserslist@4.21.5)
+      caniuse-lite: 1.0.30001547
+      electron-to-chromium: 1.4.549
+      node-releases: 2.0.13
+      update-browserslist-db: 1.0.13(browserslist@4.21.5)
     dev: true
 
   /browserslist@4.22.1:
@@ -25854,16 +25941,6 @@ packages:
     engines: { node: ">=10.13" }
     dependencies:
       path-temp: 2.0.0
-    dev: true
-
-  /caniuse-lite@1.0.30001332:
-    resolution:
-      { integrity: sha512-10T30NYOEQtN6C11YGg411yebhvpnC6Z102+B95eAsN0oB6KUs01ivE8u+G6FMIRtIrVlYXhL+LUwQ3/hXwDWw== }
-    dev: true
-
-  /caniuse-lite@1.0.30001486:
-    resolution:
-      { integrity: sha512-uv7/gXuHi10Whlj0pp5q/tsK/32J2QSqVRKQhs2j8VsDCjgyruAh/eEXHF822VqO9yT6iZKw3nRwZRSPBE9OQg== }
     dev: true
 
   /caniuse-lite@1.0.30001547:
@@ -26672,7 +26749,7 @@ packages:
       globby: 13.1.2
       normalize-path: 3.0.0
       schema-utils: 4.0.0
-      serialize-javascript: 6.0.0
+      serialize-javascript: 6.0.1
       webpack: 5.76.1(esbuild@0.15.5)
     dev: true
 
@@ -26688,7 +26765,7 @@ packages:
       globby: 13.1.2
       normalize-path: 3.0.0
       schema-utils: 4.0.0
-      serialize-javascript: 6.0.0
+      serialize-javascript: 6.0.1
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
@@ -26709,7 +26786,7 @@ packages:
     resolution:
       { integrity: sha512-gbgX5AUvMb8gwxC7FLVWYT7Kkgu/y7+h/h1X43yJkNqhlK2fuYyQimqvKGNZFAY6CKii/GFKJ2cp/1/42TN36g== }
     dependencies:
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       semver: 7.0.0
     dev: true
 
@@ -26717,7 +26794,7 @@ packages:
     resolution:
       { integrity: sha512-nriW1nuJjUgvkEjIot1Spwakz52V9YkYHZAQG6A1eCgC8AA1p0zngrQEP9R0+V6hji5XilWKG1Bd0YRppmGimA== }
     dependencies:
-      browserslist: 4.21.5
+      browserslist: 4.22.1
     dev: true
 
   /core-js-compat@3.33.0:
@@ -28257,16 +28334,6 @@ packages:
       jake: 10.8.7
     dev: true
 
-  /electron-to-chromium@1.4.107:
-    resolution:
-      { integrity: sha512-Huen6taaVrUrSy8o7mGStByba8PfOWWluHNxSHGBrCgEdFVLtvdQDBr9LBCF9Uci8SYxh28QNNMO0oC17wbGAg== }
-    dev: true
-
-  /electron-to-chromium@1.4.388:
-    resolution:
-      { integrity: sha512-xZ0y4zjWZgp65okzwwt00f2rYibkFPHUv9qBz+Vzn8cB9UXIo9Zc6Dw81LJYhhNt0G/vR1OJEfStZ49NKl0YxQ== }
-    dev: true
-
   /electron-to-chromium@1.4.549:
     resolution:
       { integrity: sha512-gpXfJslSi4hYDkA0mTLEpYKRv9siAgSUgZ+UWyk+J5Cttpd1ThCVwdclzIwQSclz3hYn049+M2fgrP1WpvF8xg== }
@@ -28408,7 +28475,7 @@ packages:
     engines: { node: ">=10.13.0" }
     dependencies:
       graceful-fs: 4.2.11
-      tapable: 2.2.0
+      tapable: 2.2.1
     dev: true
 
   /enhanced-resolve@5.9.3:
@@ -28417,7 +28484,7 @@ packages:
     engines: { node: ">=10.13.0" }
     dependencies:
       graceful-fs: 4.2.11
-      tapable: 2.2.0
+      tapable: 2.2.1
     dev: true
 
   /enquirer@2.3.6:
@@ -30035,7 +30102,7 @@ packages:
       is-glob: 4.0.3
       normalize-path: 3.0.0
       schema-utils: 4.0.0
-      webpack: 5.88.2
+      webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
   /filename-reserved-regex@2.0.0:
@@ -31418,7 +31485,7 @@ packages:
       html-minifier-terser: 6.1.0
       lodash: 4.17.21
       pretty-error: 4.0.0
-      tapable: 2.2.0
+      tapable: 2.2.1
       webpack: 5.88.2(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
     dev: true
 
@@ -33965,7 +34032,7 @@ packages:
     dependencies:
       glob: 7.2.0
       minimatch: 3.0.5
-      webpack: 5.88.2
+      webpack: 5.88.2(webpack-cli@4.10.0)
       webpack-merge: 4.2.2
     dev: true
 
@@ -35869,19 +35936,9 @@ packages:
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
-  /node-releases@2.0.10:
-    resolution:
-      { integrity: sha512-5GFldHPXVG/YZmFzJvKK2zDSzPKhEp0+ZR5SVaoSag9fsL5YgHbUHDfnG5494ISANDcK4KwPXAx2xqVEydmd7w== }
-    dev: true
-
   /node-releases@2.0.13:
     resolution:
       { integrity: sha512-uYr7J37ae/ORWdZeQ1xxMJe3NtdmqMC/JZK+geofDrkLUApKRHPd18/TxtBOJ4A0/+uUIliorNrfYV6s1b02eQ== }
-    dev: true
-
-  /node-releases@2.0.3:
-    resolution:
-      { integrity: sha512-maHFz6OLqYxz+VQyCAtA3PTX4UP/53pa05fyDNc9CwjvJ0yEh6+xBwKsgCxMNhS8taUKBFYxfuiaD9U/55iFaw== }
     dev: true
 
   /node.extend@2.0.2:
@@ -37608,7 +37665,7 @@ packages:
       "@csstools/postcss-trigonometric-functions": 1.0.2(postcss@8.4.16)
       "@csstools/postcss-unset-value": 1.0.2(postcss@8.4.16)
       autoprefixer: 10.4.14(postcss@8.4.16)
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       css-blank-pseudo: 3.0.3(postcss@8.4.16)
       css-has-pseudo: 3.0.4(postcss@8.4.16)
       css-prefers-color-scheme: 6.0.3(postcss@8.4.16)
@@ -39797,7 +39854,7 @@ packages:
       klona: 2.0.5
       neo-async: 2.6.2
       sass: 1.49.9
-      webpack: 5.88.2
+      webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
   /sass-loader@13.0.2(sass@1.54.4)(webpack@5.76.1):
@@ -40502,7 +40559,7 @@ packages:
       abab: 2.0.5
       iconv-lite: 0.6.3
       source-map-js: 0.6.2
-      webpack: 5.88.2
+      webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
   /source-map-loader@4.0.0(webpack@5.76.1):
@@ -42386,9 +42443,9 @@ packages:
       setimmediate: 1.0.5
     dev: true
 
-  /update-browserslist-db@1.0.11(browserslist@4.21.5):
+  /update-browserslist-db@1.0.13(browserslist@4.21.5):
     resolution:
-      { integrity: sha512-dCwEFf0/oT85M1fHBg4F0jtLwJrutGoHSQXCh7u4o2t1drG+c0a9Flnqww6XUKSfQMPpJBRjU8d4RXB09qtvaA== }
+      { integrity: sha512-xebP81SNcPuNpPP3uzeW1NYXxI3rxyJzF3pD6sH4jE7o/IX+WtSpwnVU+qIsDPyk0d3hmFQ7mjqc6AtV604hbg== }
     hasBin: true
     peerDependencies:
       browserslist: ">= 4.21.0"
@@ -42458,23 +42515,6 @@ packages:
         optional: true
     dependencies:
       file-loader: 6.2.0(webpack@5.88.2)
-      loader-utils: 2.0.2
-      mime-types: 2.1.34
-      schema-utils: 3.1.1
-      webpack: 5.88.2
-    dev: true
-
-  /url-loader@4.1.1(webpack@5.88.2):
-    resolution:
-      { integrity: sha512-3BTV812+AVHHOJQO8O5MkWgZ5aosP7GnROJwvzLS9hWDj00lZ6Z0wNak423Lp9PBZN05N+Jk/N5Si8jRAlGyWA== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      file-loader: "*"
-      webpack: ^4.0.0 || ^5.0.0
-    peerDependenciesMeta:
-      file-loader:
-        optional: true
-    dependencies:
       loader-utils: 2.0.2
       mime-types: 2.1.34
       schema-utils: 3.1.1
@@ -43481,58 +43521,6 @@ packages:
       - utf-8-validate
     dev: true
 
-  /webpack-dev-server@4.15.1(webpack@5.88.2):
-    resolution:
-      { integrity: sha512-5hbAst3h3C3L8w6W4P96L5vaV0PxSmJhxZvWKYIdgxOQm8pNZ5dEOmmSLBVpP85ReeyRt6AS1QJNyo/oFFPeVA== }
-    engines: { node: ">= 12.13.0" }
-    hasBin: true
-    peerDependencies:
-      webpack: ^4.37.0 || ^5.0.0
-      webpack-cli: "*"
-    peerDependenciesMeta:
-      webpack:
-        optional: true
-      webpack-cli:
-        optional: true
-    dependencies:
-      "@types/bonjour": 3.5.10
-      "@types/connect-history-api-fallback": 1.3.5
-      "@types/express": 4.17.17
-      "@types/serve-index": 1.9.1
-      "@types/serve-static": 1.13.10
-      "@types/sockjs": 0.3.33
-      "@types/ws": 8.5.5
-      ansi-html-community: 0.0.8
-      bonjour-service: 1.1.1
-      chokidar: 3.5.3
-      colorette: 2.0.16
-      compression: 1.7.4
-      connect-history-api-fallback: 2.0.0
-      default-gateway: 6.0.3
-      express: 4.18.2
-      graceful-fs: 4.2.11
-      html-entities: 2.3.2
-      http-proxy-middleware: 2.0.6(@types/express@4.17.17)
-      ipaddr.js: 2.0.1
-      launch-editor: 2.6.0
-      open: 8.4.0
-      p-retry: 4.6.1
-      rimraf: 3.0.2
-      schema-utils: 4.0.0
-      selfsigned: 2.1.1
-      serve-index: 1.9.1
-      sockjs: 0.3.24
-      spdy: 4.0.2
-      webpack: 5.88.2
-      webpack-dev-middleware: 5.3.3(webpack@5.88.2)
-      ws: 8.13.0
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-    dev: true
-
   /webpack-hot-middleware@2.25.4:
     resolution:
       { integrity: sha512-IRmTspuHM06aZh98OhBJtqLpeWFM8FXJS5UYpKYxCJzyFoyWj1w6VGFfomZU7OPA55dMLrQK0pRT1eQ3PACr4w== }
@@ -43617,7 +43605,7 @@ packages:
       "@webassemblyjs/wasm-parser": 1.11.1
       acorn: 8.10.0
       acorn-import-assertions: 1.9.0(acorn@8.10.0)
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       chrome-trace-event: 1.0.2
       enhanced-resolve: 5.15.0
       es-module-lexer: 0.9.3
@@ -43630,49 +43618,8 @@ packages:
       mime-types: 2.1.34
       neo-async: 2.6.2
       schema-utils: 3.3.0
-      tapable: 2.2.0
+      tapable: 2.2.1
       terser-webpack-plugin: 5.3.9(esbuild@0.15.5)(webpack@5.76.1)
-      watchpack: 2.4.0
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - "@swc/core"
-      - esbuild
-      - uglify-js
-    dev: true
-
-  /webpack@5.88.2:
-    resolution:
-      { integrity: sha512-JmcgNZ1iKj+aiR0OvTYtWQqJwq37Pf683dY9bVORwVbUrDhLhdn/PlO2sHsFHPkj7sHNQF3JwaAkp49V+Sq1tQ== }
-    engines: { node: ">=10.13.0" }
-    hasBin: true
-    peerDependencies:
-      webpack-cli: "*"
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-    dependencies:
-      "@types/eslint-scope": 3.7.3
-      "@types/estree": 1.0.1
-      "@webassemblyjs/ast": 1.11.6
-      "@webassemblyjs/wasm-edit": 1.11.6
-      "@webassemblyjs/wasm-parser": 1.11.6
-      acorn: 8.10.0
-      acorn-import-assertions: 1.9.0(acorn@8.10.0)
-      browserslist: 4.21.5
-      chrome-trace-event: 1.0.2
-      enhanced-resolve: 5.15.0
-      es-module-lexer: 1.3.0
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.2.0
-      mime-types: 2.1.34
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.0
-      terser-webpack-plugin: 5.3.9(webpack@5.88.2)
       watchpack: 2.4.0
       webpack-sources: 3.2.3
     transitivePeerDependencies:
@@ -43739,8 +43686,8 @@ packages:
       "@webassemblyjs/ast": 1.11.6
       "@webassemblyjs/wasm-edit": 1.11.6
       "@webassemblyjs/wasm-parser": 1.11.6
-      acorn: 8.8.2
-      acorn-import-assertions: 1.9.0(acorn@8.8.2)
+      acorn: 8.10.0
+      acorn-import-assertions: 1.9.0(acorn@8.10.0)
       browserslist: 4.21.5
       chrome-trace-event: 1.0.2
       enhanced-resolve: 5.15.0
@@ -44248,12 +44195,12 @@ packages:
     resolution:
       { integrity: sha512-FiNkvbeHzB/syOjIUxFDCnhSfzAL8R5vs40MgLFBorXACCOAEaWu0gRZl14vG8MR9AOJIZbmkjhusqBYZ3HTHw== }
     engines: { node: ">=10" }
+    dev: true
 
   /yargs-parser@20.2.9:
     resolution:
       { integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w== }
     engines: { node: ">=10" }
-    dev: true
 
   /yargs-parser@21.0.0:
     resolution:
@@ -44300,7 +44247,7 @@ packages:
       require-directory: 2.1.1
       string-width: 4.2.3
       y18n: 5.0.8
-      yargs-parser: 20.2.7
+      yargs-parser: 20.2.9
 
   /yargs@17.3.1:
     resolution:
