@@ -17,17 +17,28 @@
  * under the License.
  */
 
+
 package org.kie.workbench.common.stunner.sw.client.shapes.icons;
 
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.types.Point2D;
 
-public interface IconPosition {
+public class DataDepiction extends Group {
 
-    Point2D RIGHT_TOP_CORNER = new Point2D(224, 6);
-    Point2D LEFT_FROM_RIGHT_TOP_CORNER = new Point2D(202, 6);
-    Point2D CENTER_TOP = new Point2D(180, 6);
-    Point2D RIGHT_BOTTOM = new Point2D(224, 50);
-    Point2D BOTTOM_FROM_RIGHT_TOP_CORNER = new Point2D(224, 28);
-    Point2D LEFT_TOP_CORNER = new Point2D(8, 6);
+    public DataDepiction(final String icon, final Point2D location) {
+        setLocation(location);
+        setListening(true);
 
+        MultiPath multiPath = new MultiPath(icon)
+                .setStrokeWidth(0)
+                .setFillColor("#4F5255")
+                .setListening(false);
+        add(multiPath);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+    }
 }
