@@ -78,7 +78,6 @@ export const InputDataNode = React.memo(
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
-    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -117,6 +116,12 @@ export const InputDataNode = React.memo(
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, inputData["@_name"]);
+
+    const { fontStyle, shapeStyle } = useNodeStyle({
+      dmnStyle: shape["di:Style"],
+      nodeType: type as NodeType,
+      isEnabled: diagram.overlays.enableStyles,
+    });
 
     return (
       <>
@@ -191,7 +196,6 @@ export const DecisionNode = React.memo(
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
-    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -229,6 +233,12 @@ export const DecisionNode = React.memo(
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, decision["@_name"]);
+
+    const { fontStyle, shapeStyle } = useNodeStyle({
+      dmnStyle: shape["di:Style"],
+      nodeType: type as NodeType,
+      isEnabled: diagram.overlays.enableStyles,
+    });
 
     return (
       <>
@@ -306,7 +316,6 @@ export const BkmNode = React.memo(
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
-    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -344,6 +353,12 @@ export const BkmNode = React.memo(
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, bkm["@_name"]);
+
+    const { fontStyle, shapeStyle } = useNodeStyle({
+      dmnStyle: shape["di:Style"],
+      nodeType: type as NodeType,
+      isEnabled: diagram.overlays.enableStyles,
+    });
 
     return (
       <>
@@ -421,7 +436,6 @@ export const KnowledgeSourceNode = React.memo(
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
-    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -446,6 +460,12 @@ export const KnowledgeSourceNode = React.memo(
     );
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
+    const { fontStyle, shapeStyle } = useNodeStyle({
+      dmnStyle: shape["di:Style"],
+      nodeType: type as NodeType,
+      isEnabled: diagram.overlays.enableStyles,
+    });
 
     return (
       <>
@@ -516,7 +536,6 @@ export const TextAnnotationNode = React.memo(
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
-    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -541,6 +560,12 @@ export const TextAnnotationNode = React.memo(
     );
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
+    const { fontStyle, shapeStyle } = useNodeStyle({
+      dmnStyle: shape["di:Style"],
+      nodeType: type as NodeType,
+      isEnabled: diagram.overlays.enableStyles,
+    });
 
     return (
       <>
@@ -636,8 +661,6 @@ export const DecisionServiceNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
-    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"], type as NodeType);
-
     // Select nodes representing output and encapsulated decisions contained by the Decision Service
     useEffect(() => {
       const onDoubleClick = () => {
@@ -722,6 +745,12 @@ export const DecisionServiceNode = React.memo(
       index,
       shape.index,
     ]);
+
+    const { fontStyle, shapeStyle } = useNodeStyle({
+      dmnStyle: shape["di:Style"],
+      nodeType: type as NodeType,
+      isEnabled: diagram.overlays.enableStyles,
+    });
 
     return (
       <>
@@ -827,8 +856,6 @@ export const GroupNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
-    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"], type as NodeType);
-
     // Select nodes that are visually entirely inside the group.
     useEffect(() => {
       const onDoubleClick = () => {
@@ -855,6 +882,12 @@ export const GroupNode = React.memo(
     }, [dmnEditorStoreApi, reactFlow, shape]);
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
+    const { fontStyle, shapeStyle } = useNodeStyle({
+      dmnStyle: shape["di:Style"],
+      nodeType: type as NodeType,
+      isEnabled: diagram.overlays.enableStyles,
+    });
 
     return (
       <>

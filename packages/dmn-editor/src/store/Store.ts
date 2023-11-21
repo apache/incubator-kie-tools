@@ -75,6 +75,7 @@ export interface State {
       enableExecutionHitsHighlights: boolean;
       enableCustomNodeStyles: boolean;
       enableDataTypesToolbarOnNodes: boolean;
+      enableStyles: boolean;
     };
     snapGrid: SnapGrid;
     _selectedNodes: Array<string>;
@@ -174,6 +175,7 @@ export const defaultStaticState = () => ({
       enableExecutionHitsHighlights: false,
       enableCustomNodeStyles: false,
       enableDataTypesToolbarOnNodes: true,
+      enableStyles: true,
     },
     snapGrid: { isEnabled: true, x: 20, y: 20 },
     _selectedNodes: [],

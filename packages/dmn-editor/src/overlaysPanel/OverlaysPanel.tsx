@@ -118,6 +118,17 @@ export function OverlaysPanel() {
             }
           />
         </FormGroup>
+        <FormGroup label={"Enable styles"}>
+          <Switch
+            aria-label={"Show data type toolbar on nodes"}
+            isChecked={diagram.overlays.enableStyles}
+            onChange={(newValue) =>
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.overlays.enableStyles = newValue;
+              })
+            }
+          />
+        </FormGroup>
       </Form>
     </>
   );

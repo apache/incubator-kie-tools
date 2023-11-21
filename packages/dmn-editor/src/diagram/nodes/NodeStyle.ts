@@ -30,59 +30,64 @@ export interface Color {
   opacity: number;
 }
 
-export const DEFAULT_RED_FILL = 255;
-export const DEFAULT_GREEN_FILL = 255;
-export const DEFAULT_BLUE_FILL = 255;
-export const DEFAULT_OPACITY = 0.9;
-export const DEFAULT_NODE_FILL = `rgba(${DEFAULT_RED_FILL}, ${DEFAULT_GREEN_FILL}, ${DEFAULT_BLUE_FILL}, ${DEFAULT_OPACITY})`;
+export const DEFAULT_NODE_RED_FILL = 255;
+export const DEFAULT_NODE_GREEN_FILL = 255;
+export const DEFAULT_NODE_BLUE_FILL = 255;
+export const DEFAULT_NODE_OPACITY = 0.9;
+export const DEFAULT_NODE_FILL = `rgba(${DEFAULT_NODE_RED_FILL}, ${DEFAULT_NODE_GREEN_FILL}, ${DEFAULT_NODE_BLUE_FILL}, ${DEFAULT_NODE_OPACITY})`;
 export const DEFAULT_NODE_STROKE_WIDTH = 1.5;
 export const DEFAULT_NODE_STROKE_COLOR = "rgba(0, 0, 0, 1)";
 export const DEFAULT_FONT_COLOR = "rgba(0, 0, 0, 1)";
 
-export function useNodeStyle(dmnStyle?: DMNDI15__DMNStyle, nodeType?: NodeType): NodeStyle {
+export function useNodeStyle(args: {
+  dmnStyle?: DMNDI15__DMNStyle;
+  nodeType?: NodeType;
+  isEnabled?: boolean;
+}): NodeStyle {
   const fillColor = useMemo(() => {
-    const blue = dmnStyle?.["dmndi:FillColor"]?.["@_blue"];
-    const green = dmnStyle?.["dmndi:FillColor"]?.["@_green"];
-    const red = dmnStyle?.["dmndi:FillColor"]?.["@_red"];
+    const blue = args.dmnStyle?.["dmndi:FillColor"]?.["@_blue"];
+    const green = args.dmnStyle?.["dmndi:FillColor"]?.["@_green"];
+    const red = args.dmnStyle?.["dmndi:FillColor"]?.["@_red"];
 
-    const opacity = nodeType === "node_decisionService" || nodeType === "node_group" ? 0.1 : DEFAULT_OPACITY;
-    if (blue === undefined || green === undefined || red === undefined) {
-      return `rgba(${DEFAULT_RED_FILL}, ${DEFAULT_GREEN_FILL}, ${DEFAULT_BLUE_FILL}, ${opacity})`;
+    const opacity =
+      args.nodeType === "node_decisionService" || args.nodeType === "node_group" ? 0.1 : DEFAULT_NODE_OPACITY;
+    if (!args.isEnabled || blue === undefined || green === undefined || red === undefined) {
+      return `rgba(${DEFAULT_NODE_RED_FILL}, ${DEFAULT_NODE_GREEN_FILL}, ${DEFAULT_NODE_BLUE_FILL}, ${opacity})`;
     }
 
     return `rgba(${red}, ${green}, ${blue}, ${opacity})`;
-  }, [dmnStyle, nodeType]);
+  }, [args.dmnStyle, args.nodeType, args.isEnabled]);
   const strokeColor = useMemo(() => {
-    const blue = dmnStyle?.["dmndi:StrokeColor"]?.["@_blue"];
-    const green = dmnStyle?.["dmndi:StrokeColor"]?.["@_green"];
-    const red = dmnStyle?.["dmndi:StrokeColor"]?.["@_red"];
+    const blue = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_blue"];
+    const green = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_green"];
+    const red = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_red"];
 
-    if (blue === undefined || green === undefined || red === undefined) {
+    if (!args.isEnabled || blue === undefined || green === undefined || red === undefined) {
       return DEFAULT_NODE_STROKE_COLOR;
     }
     return `rgba(${red}, ${green}, ${blue}, 1)`;
-  }, [dmnStyle]);
+  }, [args.dmnStyle, args.isEnabled]);
 
   const fontProperties = useMemo(() => {
-    const blue = dmnStyle?.["dmndi:FontColor"]?.["@_blue"];
-    const green = dmnStyle?.["dmndi:FontColor"]?.["@_green"];
-    const red = dmnStyle?.["dmndi:FontColor"]?.["@_red"];
+    const blue = args.dmnStyle?.["dmndi:FontColor"]?.["@_blue"];
+    const green = args.dmnStyle?.["dmndi:FontColor"]?.["@_green"];
+    const red = args.dmnStyle?.["dmndi:FontColor"]?.["@_red"];
 
     const fontColor =
-      blue === undefined || green === undefined || red === undefined
+      !args.isEnabled || blue === undefined || green === undefined || red === undefined
         ? DEFAULT_FONT_COLOR
         : `rgba(${red}, ${green}, ${blue}, 1)`;
 
     return {
-      bold: dmnStyle?.["@_fontBold"] ?? false,
-      italic: dmnStyle?.["@_fontItalic"] ?? false,
-      underline: dmnStyle?.["@_fontUnderline"] ?? false,
-      strikeThrough: dmnStyle?.["@_fontStrikeThrough"] ?? false,
-      family: dmnStyle?.["@_fontFamily"],
-      size: dmnStyle?.["@_fontSize"],
+      bold: args.isEnabled ? args.dmnStyle?.["@_fontBold"] ?? false : false,
+      italic: args.isEnabled ? args.dmnStyle?.["@_fontItalic"] ?? false : false,
+      underline: args.isEnabled ? args.dmnStyle?.["@_fontUnderline"] ?? false : false,
+      strikeThrough: args.isEnabled ? args.dmnStyle?.["@_fontStrikeThrough"] ?? false : false,
+      family: args.isEnabled ? args.dmnStyle?.["@_fontFamily"] : undefined,
+      size: args.isEnabled ? args.dmnStyle?.["@_fontSize"] : undefined,
       color: fontColor,
     };
-  }, [dmnStyle]);
+  }, [args.dmnStyle, args.isEnabled]);
 
   return {
     fontStyle: getFonteStyle(fontProperties),
