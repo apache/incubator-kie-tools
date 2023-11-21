@@ -50,7 +50,11 @@ export function useNodeStyle(args: {
     const red = args.dmnStyle?.["dmndi:FillColor"]?.["@_red"];
 
     const opacity =
-      args.nodeType === "node_decisionService" || args.nodeType === "node_group" ? 0.1 : DEFAULT_NODE_OPACITY;
+      args.nodeType === "node_decisionService" ||
+      args.nodeType === "node_group" ||
+      args.nodeType === "node_textAnnotation"
+        ? 0.1
+        : DEFAULT_NODE_OPACITY;
     if (!args.isEnabled || blue === undefined || green === undefined || red === undefined) {
       return `rgba(${DEFAULT_NODE_RED_FILL}, ${DEFAULT_NODE_GREEN_FILL}, ${DEFAULT_NODE_BLUE_FILL}, ${opacity})`;
     }

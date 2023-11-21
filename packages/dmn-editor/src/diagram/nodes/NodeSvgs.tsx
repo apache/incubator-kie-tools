@@ -257,10 +257,21 @@ export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?
   const { showPlaceholder, ...props } = _props;
   return (
     <g>
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={fillColor ?? "transparent"}
+        stroke={"transparent"}
+        strokeLinejoin={"round"}
+        transform={`translate(${x},${y})`}
+      />
       <path
         {...props}
         x={x}
         y={y}
+        fill={fillColor ?? "transparent"}
         d={`M20,0 L0,0 M0,0 L0,${height} M0,${height} L20,${height}`}
         stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeWidth={strokeWidth}
