@@ -545,7 +545,14 @@ export const TextAnnotationNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} strokeColor={shapeStyle.strokeColor} />
+          <TextAnnotationNodeSvg
+            {...nodeDimensions}
+            x={0}
+            y={0}
+            strokeColor={shapeStyle.strokeColor}
+            strokeWidth={shapeStyle.strokeWidth}
+            fillColor={shapeStyle.fillColor}
+          />
         </svg>
 
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -629,7 +636,7 @@ export const DecisionServiceNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
-    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
+    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"], type as NodeType);
 
     // Select nodes representing output and encapsulated decisions contained by the Decision Service
     useEffect(() => {
@@ -726,6 +733,7 @@ export const DecisionServiceNode = React.memo(
             x={0}
             y={0}
             strokeWidth={3}
+            fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
             isReadonly={false}
             isCollapsed={isCollapsed}
@@ -819,7 +827,7 @@ export const GroupNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
-    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"]);
+    const { fontStyle, shapeStyle } = useNodeStyle(shape["di:Style"], type as NodeType);
 
     // Select nodes that are visually entirely inside the group.
     useEffect(() => {
@@ -857,6 +865,7 @@ export const GroupNode = React.memo(
             x={0}
             y={0}
             strokeWidth={3}
+            fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
           />
         </svg>

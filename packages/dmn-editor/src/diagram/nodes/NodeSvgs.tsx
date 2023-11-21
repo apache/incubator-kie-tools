@@ -152,17 +152,30 @@ export const DecisionServiceNodeSvg = React.forwardRef<
     isReadonly: boolean;
   }
 >((__props, ref) => {
-  const { strokeWidth, x, y, width, height, strokeColor, props: _props } = normalize(__props);
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props: _props } = normalize(__props);
   const {
-    fillColor: interactionRectFillColor,
-    strokeColor: interactionRectStrokeColor,
-    ...interactionRect
+    strokeWidth: interactionRectStrokeWidth,
+    x: interactionRectX,
+    y: interactionRectY,
+    width: interactionRectWidth,
+    height: interactionRectHeight,
+    props: _interactionRectProps,
   } = normalize({ ...__props, strokeWidth: DEFAULT_INTRACTION_WIDTH / 2 });
+
   const { dividerLineLocalY, showSectionLabels, dividerLineRef, isCollapsed, isReadonly, ...props } = _props;
   const dividerLineCoords = {
     x: x + strokeWidth / 2,
     y: y + (dividerLineLocalY ? dividerLineLocalY : height / 2),
   };
+
+  const {
+    dividerLineLocalY: interactionRectDividerLineLocalY,
+    showSectionLabels: interactionRectShowSectionLabels,
+    dividerLineRef: interactionRectDividerLineRef,
+    isCollapsed: interactionRectIsCollapsed,
+    isReadonly: interactionRectIsReadonly,
+    ...interactionRectProps
+  } = _interactionRectProps;
 
   return (
     <g>
@@ -193,7 +206,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
         width={width}
         height={height}
         strokeWidth={strokeWidth}
-        fill={isCollapsed ? DEFAULT_NODE_FILL : "transparent"}
+        fill={isCollapsed ? DEFAULT_NODE_FILL : fillColor ?? "transparent"}
         stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeLinejoin={"round"}
         rx={"40"}
@@ -201,8 +214,13 @@ export const DecisionServiceNodeSvg = React.forwardRef<
         className={"kie-dmn-editor--node-decisionService-visibleRect"}
       />
       <rect
+        {...interactionRectProps}
         ref={ref}
-        {...interactionRect}
+        x={interactionRectX}
+        y={interactionRectY}
+        width={interactionRectWidth}
+        height={interactionRectHeight}
+        strokeWidth={interactionRectStrokeWidth}
         fill={"transparent"}
         stroke={"transparent"}
         strokeLinejoin={"round"}
@@ -260,12 +278,18 @@ export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?
 
 export const GroupNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { strokeDasharray?: string }>(
   (__props, ref) => {
-    const { strokeWidth, x, y, width, height, strokeColor, props } = normalize(__props);
+    const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
     const {
-      fillColor: interactionRectFillColor,
-      strokeColor: interactionRectStrokeColor,
-      ...interactionRect
+      strokeWidth: interactionRectStrokeWidth,
+      x: interactionRectX,
+      y: interactionRectY,
+      width: interactionRectWidth,
+      height: interactionRectHeight,
+      props: _interactionRectProps,
     } = normalize({ ...__props, strokeWidth: DEFAULT_INTRACTION_WIDTH / 2 });
+
+    const { strokeDasharray: interactionRectStrokeDasharray, ...interactionRectProps } = _interactionRectProps;
+
     const strokeDasharray = props.strokeDasharray ?? "14,10,3,10";
     return (
       <g>
@@ -275,7 +299,7 @@ export const GroupNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { st
           y={y}
           width={width}
           height={height}
-          fill={"transparent"}
+          fill={fillColor ?? "transparent"}
           stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
           strokeLinejoin={"round"}
           strokeWidth={strokeWidth}
@@ -284,8 +308,13 @@ export const GroupNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { st
           ry={40}
         />
         <rect
+          {...interactionRectProps}
           ref={ref}
-          {...interactionRect}
+          x={interactionRectX}
+          y={interactionRectY}
+          width={interactionRectWidth}
+          height={interactionRectHeight}
+          strokeWidth={interactionRectStrokeWidth}
           fill={"transparent"}
           stroke={"transparent"}
           rx={"30"}

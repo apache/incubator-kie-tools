@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { DMNDI15__DMNStyle } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { NodeType } from "../connections/graphStructure";
 
 export interface NodeStyle {
   fontStyle: React.CSSProperties;
@@ -29,23 +30,28 @@ export interface Color {
   opacity: number;
 }
 
-export const DEFAULT_NODE_FILL = "rgba(255, 255, 255, 1)";
+export const DEFAULT_RED_FILL = 255;
+export const DEFAULT_GREEN_FILL = 255;
+export const DEFAULT_BLUE_FILL = 255;
+export const DEFAULT_OPACITY = 0.9;
+export const DEFAULT_NODE_FILL = `rgba(${DEFAULT_RED_FILL}, ${DEFAULT_GREEN_FILL}, ${DEFAULT_BLUE_FILL}, ${DEFAULT_OPACITY})`;
 export const DEFAULT_NODE_STROKE_WIDTH = 1.5;
 export const DEFAULT_NODE_STROKE_COLOR = "rgba(0, 0, 0, 1)";
 export const DEFAULT_FONT_COLOR = "rgba(0, 0, 0, 1)";
 
-export function useNodeStyle(dmnStyle?: DMNDI15__DMNStyle): NodeStyle {
+export function useNodeStyle(dmnStyle?: DMNDI15__DMNStyle, nodeType?: NodeType): NodeStyle {
   const fillColor = useMemo(() => {
     const blue = dmnStyle?.["dmndi:FillColor"]?.["@_blue"];
     const green = dmnStyle?.["dmndi:FillColor"]?.["@_green"];
     const red = dmnStyle?.["dmndi:FillColor"]?.["@_red"];
 
+    const opacity = nodeType === "node_decisionService" || nodeType === "node_group" ? 0.1 : DEFAULT_OPACITY;
     if (blue === undefined || green === undefined || red === undefined) {
-      return DEFAULT_NODE_FILL;
+      return `rgba(${DEFAULT_RED_FILL}, ${DEFAULT_GREEN_FILL}, ${DEFAULT_BLUE_FILL}, ${opacity})`;
     }
 
-    return `rgba(${red}, ${green}, ${blue}, 0.9)`;
-  }, [dmnStyle]);
+    return `rgba(${red}, ${green}, ${blue}, ${opacity})`;
+  }, [dmnStyle, nodeType]);
   const strokeColor = useMemo(() => {
     const blue = dmnStyle?.["dmndi:StrokeColor"]?.["@_blue"];
     const green = dmnStyle?.["dmndi:StrokeColor"]?.["@_green"];

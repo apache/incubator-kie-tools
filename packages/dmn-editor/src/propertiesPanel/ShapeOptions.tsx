@@ -42,9 +42,9 @@ export function ShapeOptions({
   const boundPositionY = useMemo(() => +(shapesBound?.["@_y"]?.toFixed(2) ?? ""), [shapesBound]);
 
   const fillColor = useMemo(() => {
-    const b = (shapesStyle[0]?.["dmndi:FillColor"]?.["@_blue"] ?? 0).toString(16);
-    const g = (shapesStyle[0]?.["dmndi:FillColor"]?.["@_green"] ?? 0).toString(16);
-    const r = (shapesStyle[0]?.["dmndi:FillColor"]?.["@_red"] ?? 0).toString(16);
+    const b = (shapesStyle[0]?.["dmndi:FillColor"]?.["@_blue"] ?? 255).toString(16);
+    const g = (shapesStyle[0]?.["dmndi:FillColor"]?.["@_green"] ?? 255).toString(16);
+    const r = (shapesStyle[0]?.["dmndi:FillColor"]?.["@_red"] ?? 255).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
   }, [shapesStyle]);
   const strokeColor = useMemo(() => {
@@ -141,7 +141,7 @@ export function ShapeOptions({
       const withoutHash = newColor.replace("#", "");
       editShapeStyle((shapes) => {
         shapes.forEach((shape) => {
-          shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
+          shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_blue": 255, "@_green": 255, "@_red": 255 };
           shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = parseInt(withoutHash.slice(0, 2), 16);
           shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = parseInt(withoutHash.slice(2, 4), 16);
           shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = parseInt(withoutHash.slice(4, 6), 16);
@@ -195,7 +195,7 @@ export function ShapeOptions({
                             width: "20px",
                             height: "20px",
                             border: "dashed 1px black",
-                            marginBottom: "-5px",
+                            marginBottom: "-6px",
                           }}
                         />
                       }
@@ -225,7 +225,7 @@ export function ShapeOptions({
                             height: "20px",
                             border: "solid 4px",
                             borderColor: strokeColor,
-                            marginBottom: "-5px",
+                            marginBottom: "-6px",
                           }}
                         />
                       }
@@ -257,10 +257,10 @@ export function ShapeOptions({
                       <TextInput
                         aria-label={"Width"}
                         type={"number"}
-                        isDisabled={false}
-                        value={boundWidth}
+                        isDisabled={isDimensioningEnabled ? false : true}
+                        value={isDimensioningEnabled ? boundWidth : undefined}
+                        placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
                         onChange={onChangeWidth}
-                        placeholder={"Enter a value..."}
                         style={{ maxWidth: "80px", minWidth: "60px", border: "none", backgroundColor: "transparent" }}
                       />
                       <div>
@@ -282,10 +282,10 @@ export function ShapeOptions({
                       <TextInput
                         aria-label={"Height"}
                         type={"number"}
-                        isDisabled={false}
-                        value={boundHeight}
+                        isDisabled={isDimensioningEnabled ? false : true}
+                        value={isDimensioningEnabled ? boundHeight : undefined}
+                        placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
                         onChange={onChangeHeight}
-                        placeholder={"Enter a value..."}
                         style={{ maxWidth: "80px", minWidth: "60px", border: "none", backgroundColor: "transparent" }}
                       />
                       <div>
