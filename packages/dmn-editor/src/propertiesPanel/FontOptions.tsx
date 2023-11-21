@@ -16,6 +16,7 @@ import "./FontOptions.css";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { UndoAltIcon } from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ColorPicker } from "./ColorPicker";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php
 // Array of [name, family]
@@ -181,7 +182,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
     });
   }, [editShapeStyle]);
 
-  const colorPickerRef = React.useRef<HTMLInputElement>(null);
+  const colorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
 
   const onChangeColor = useCallback(
     (newColor: string) => {
@@ -309,7 +310,14 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   aria-label={"Toggle font strike through"}
                   buttonId={FontStyleToggleOptions.FONT_COLOR}
                   onClick={() => colorPickerRef.current?.click()}
-                  text={<ColorPicker colorPickerRef={colorPickerRef} fontColor={fontColor} onChange={onChangeColor} />}
+                  text={
+                    <ColorPicker
+                      icon={<p>A</p>}
+                      colorPickerRef={colorPickerRef}
+                      color={fontColor}
+                      onChange={onChangeColor}
+                    />
+                  }
                 />
               </ToggleGroup>
             </div>
@@ -333,38 +341,6 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
           </div>
         </FormSection>
       )}
-    </>
-  );
-}
-
-export function ColorPicker(props: {
-  fontColor: string;
-  onChange: (newColor: string) => void;
-  colorPickerRef: React.RefObject<HTMLInputElement>;
-}) {
-  return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-        }}
-        onClick={() => props.colorPickerRef.current?.click()}
-      >
-        <p>A</p>
-        <div style={{ height: "4px", width: "18px", backgroundColor: props.fontColor }} />
-        <input
-          ref={props.colorPickerRef}
-          aria-label={"Font color"}
-          type={"color"}
-          disabled={false}
-          value={props.fontColor}
-          style={{ opacity: "0", width: 0, height: 0 }}
-          onChange={(e) => props.onChange(e.currentTarget.value)}
-        />
-      </div>
     </>
   );
 }

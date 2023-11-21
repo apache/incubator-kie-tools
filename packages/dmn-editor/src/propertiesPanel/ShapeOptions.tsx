@@ -10,10 +10,11 @@ import { useDmnEditorStoreApi } from "../store/Store";
 import { addOrGetDrd } from "../mutations/addOrGetDrd";
 import { ArrowsAltVIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt-v-icon";
 import { ArrowsAltHIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt-h-icon";
-import { NODE_MIN_HEIGHT, NODE_MIN_WIDTH } from "../diagram/nodes/DefaultSizes";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import UndoAltIcon from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
+import { ColorPicker } from "./ColorPicker";
+import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
+import "./ShapeOptions.css";
 
 export function ShapeOptions({
   startExpanded,
@@ -165,6 +166,9 @@ export function ShapeOptions({
     });
   }, [editShapeStyle]);
 
+  const strokeColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
+  const fillColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
+
   return (
     <>
       <PropertiesPanelHeader
@@ -177,107 +181,136 @@ export function ShapeOptions({
       />
       {isShapeSectionExpanded && (
         <FormSection style={{ paddingLeft: "20px", marginTop: "0px" }}>
-          <FormGroup label={"Color"}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "auto auto auto auto",
-                gridTemplateRows: "auto",
-                gridTemplateAreas: `
-                'border-color-label border-color-value fill-color-label fill-color-value color-reset'
-            `,
-                columnGap: "5px",
-                alignItems: "center",
-              }}
-            >
-              <div style={{ gridArea: "border-color-label" }}>
-                <p>Border</p>
-              </div>
-              <div style={{ gridArea: "border-color-value" }}>
-                <input
-                  aria-label={"Border color"}
-                  type={"color"}
-                  disabled={false}
-                  value={strokeColor}
-                  onChange={(e) => onChangeStrokeColor(e.currentTarget.value)}
-                  style={{ width: "25px", border: "none" }}
-                  placeholder={"Enter a color..."}
+          <FormGroup label={"Style"}>
+            <ToggleGroup>
+              <Tooltip content={"Fill color"}>
+                <ToggleGroupItem
+                  className={"kie-dmn-editor--shape-options-toggle-button"}
+                  text={
+                    <ColorPicker
+                      icon={
+                        <div
+                          style={{
+                            backgroundColor: fillColor,
+                            width: "20px",
+                            height: "20px",
+                            border: "dashed 1px black",
+                            marginBottom: "-5px",
+                          }}
+                        />
+                      }
+                      color={fillColor}
+                      onChange={(newColor) => onChangeFillColor(newColor)}
+                      colorPickerRef={fillColorPickerRef}
+                    />
+                  }
+                  key={"fill-color"}
+                  buttonId={"shape-style-toggle-group-fill-color"}
+                  onClick={() => {
+                    fillColorPickerRef.current?.click();
+                  }}
                 />
-              </div>
+              </Tooltip>
 
-              <div style={{ gridArea: "fill-color-label" }}>
-                <p>Fill</p>
-              </div>
-              <div style={{ gridArea: "fill-color-value" }}>
-                <input
-                  aria-label={"Fill color"}
-                  type={"color"}
-                  disabled={false}
-                  value={fillColor}
-                  onChange={(e) => onChangeFillColor(e.currentTarget.value)}
-                  style={{ width: "25px", border: "none" }}
-                  placeholder={"Enter a color..."}
+              <Tooltip content="Stroke color">
+                <ToggleGroupItem
+                  className={"kie-dmn-editor--shape-options-toggle-button"}
+                  text={
+                    <ColorPicker
+                      colorDisplay={
+                        <div
+                          style={{
+                            backgroundColor: "transparent",
+                            width: "20px",
+                            height: "20px",
+                            border: "solid 4px",
+                            borderColor: strokeColor,
+                            marginBottom: "-5px",
+                          }}
+                        />
+                      }
+                      color={strokeColor}
+                      onChange={(newColor) => onChangeStrokeColor(newColor)}
+                      colorPickerRef={strokeColorPickerRef}
+                    />
+                  }
+                  key={"stroke-color"}
+                  buttonId={"shape-style-toggle-group-stroke-color"}
+                  onClick={() => {
+                    strokeColorPickerRef.current?.click();
+                  }}
                 />
-              </div>
+              </Tooltip>
 
-              <div style={{ gridArea: "color-reset", justifySelf: "flex-end" }}>
-                <Tooltip content={"Reset"}>
-                  <Button variant={ButtonVariant.plain} onClick={onReset}>
-                    <UndoAltIcon />
-                  </Button>
-                </Tooltip>
-              </div>
-            </div>
+              <Tooltip content={"Width"}>
+                <ToggleGroupItem
+                  text={
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        columnGap: "5px",
+                      }}
+                    >
+                      <TextInput
+                        aria-label={"Width"}
+                        type={"number"}
+                        isDisabled={false}
+                        value={boundWidth}
+                        onChange={onChangeWidth}
+                        placeholder={"Enter a value..."}
+                        style={{ maxWidth: "80px", minWidth: "60px", border: "none", backgroundColor: "transparent" }}
+                      />
+                      <div>
+                        <ArrowsAltHIcon aria-label={"Width"} />
+                      </div>
+                    </div>
+                  }
+                  key={"bound-width"}
+                  buttonId={"shape-style-toggle-group-bound-width"}
+                />
+              </Tooltip>
+
+              <Tooltip content={"Height"}>
+                <ToggleGroupItem
+                  text={
+                    <div
+                      style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+                    >
+                      <TextInput
+                        aria-label={"Height"}
+                        type={"number"}
+                        isDisabled={false}
+                        value={boundHeight}
+                        onChange={onChangeHeight}
+                        placeholder={"Enter a value..."}
+                        style={{ maxWidth: "80px", minWidth: "60px", border: "none", backgroundColor: "transparent" }}
+                      />
+                      <div>
+                        <ArrowsAltVIcon aria-label={"Height"} />
+                      </div>
+                    </div>
+                  }
+                  key={"bound-height"}
+                  buttonId={"shape-style-toggle-group-bound-height"}
+                />
+              </Tooltip>
+              <Tooltip content={"Reset"}>
+                <ToggleGroupItem
+                  className={"kie-dmn-editor--shape-options-toggle-button"}
+                  text={
+                    <div onClick={onReset}>
+                      <UndoAltIcon />
+                    </div>
+                  }
+                  key={"reset"}
+                  buttonId={"shape-style-toggle-group-reset"}
+                />
+              </Tooltip>
+            </ToggleGroup>
           </FormGroup>
-
-          {isDimensioningEnabled && (
-            <FormGroup label={"Dimension"}>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "auto auto auto auto",
-                  gridTemplateRows: "auto",
-                  gridTemplateAreas: `
-                'width-label width-value heigth-label heigth-value'
-            `,
-                  columnGap: "5px",
-                  alignItems: "center",
-                }}
-              >
-                <div style={{ gridArea: "width-value" }}>
-                  <TextInput
-                    aria-label={"Width"}
-                    type={"number"}
-                    isDisabled={false}
-                    value={boundWidth}
-                    onChange={onChangeWidth}
-                    placeholder={"Enter a value..."}
-                  />
-                </div>
-                <div style={{ gridArea: "width-label" }}>
-                  <Tooltip content={"Width"}>
-                    <ArrowsAltHIcon aria-label={"Width"} />
-                  </Tooltip>
-                </div>
-
-                <div style={{ gridArea: "heigth-value" }}>
-                  <TextInput
-                    aria-label={"Height"}
-                    type={"number"}
-                    isDisabled={false}
-                    value={boundHeight}
-                    onChange={onChangeHeight}
-                    placeholder={"Enter a value..."}
-                  />
-                </div>
-                <div style={{ gridArea: "heigth-label" }}>
-                  <Tooltip content={"Height"}>
-                    <ArrowsAltVIcon aria-label={"Height"} />
-                  </Tooltip>
-                </div>
-              </div>
-            </FormGroup>
-          )}
           {isPositioningEnabled && (
             <FormGroup label={"Position"}>
               <div

@@ -6,48 +6,47 @@
 }
 
 .kie-dmn-editor--font-options-toggle-group-item {
-  height: 40px;
-  width: 40px;
+  height: 48px;
 }
 
 .kie-dmn-editor--font-options-toggle-group-item > button {
-  height: 40px;
-  width: 40px;
+  height: 48px;
+  width: 50px;
+  align-items: center;
 }
 
 .kie-dmn-editor--font-options-toggle-group-item > button > span {
-  padding-top: 4px;
-  padding-left: 0px;
   font-size: 16px;
+  padding-left: 4px;
 }
 
 .kie-dmn-editor--font-options-toggle-group-item-italic > button {
-  height: 40px;
-  width: 40px;
+  height: 48px;
+  width: 50px;
+  align-items: center;
 }
 
 .kie-dmn-editor--font-options-toggle-group-item-italic > button > span {
-  padding-top: 4px;
-  padding-left: 1px;
+  padding-left: 4px;
   font-size: 16px;
 }
 
 .kie-dmn-editor--font-options-toggle-group-item-number-input {
-  height: 40px;
+  height: 48px;
 }
 
 .kie-dmn-editor--font-options-toggle-group-item-number-input button {
-  height: 40px;
+  height: 48px;
 }
 
 .kie-dmn-editor--font-options-toggle-group-item-number-input input {
-  height: 40px;
+  height: 48px;
 }
 
 .kie-dmn-editor--font-options-toggle-group-item-color-picker > button {
-  height: 40px;
-  width: 40px;
-  padding: 5px 0px 5px 12px;
+  height: 48px;
+  width: 50px;
+  align-items: center;
 }
 
 .kie-dmn-editor--font-options-toggle-group-item-color-picker > button > span {
