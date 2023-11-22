@@ -13,6 +13,7 @@ import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import "./EditableNodeLabel.css";
 import { useFocusableElement } from "../../focus/useFocusableElement";
+import { flushSync } from "react-dom";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -180,9 +181,10 @@ export function EditableNodeLabel({
     id ?? namedElement?.["@_id"],
     useCallback(
       (cb) => {
-        setEditing(true);
-
         setTimeout(() => {
+          flushSync(() => {
+            setEditing(true);
+          });
           cb();
         });
       },
@@ -232,7 +234,7 @@ export function EditableNodeLabel({
 
 export function useEditableNodeLabel(id: string | undefined) {
   const focus = useDmnEditorStore((s) => s.focus);
-  const [isEditingLabel, setEditingLabel] = useState(focus.consumableId === id);
+  const [isEditingLabel, setEditingLabel] = useState(!!id && !!focus.consumableId && focus.consumableId === id);
   const triggerEditing = useCallback<React.EventHandler<React.SyntheticEvent>>((e) => {
     e.stopPropagation();
     e.preventDefault();

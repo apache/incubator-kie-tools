@@ -1490,6 +1490,10 @@ export function KeyboardShortcuts(props: {}) {
         state.diagram._selectedNodes = [...clipboard.drgElements, ...clipboard.artifacts].map((s) =>
           buildXmlHref({ id: s["@_id"]! })
         );
+
+        if (state.diagram._selectedNodes.length === 1) {
+          state.focus.consumableId = parseXmlHref(state.diagram._selectedNodes[0]).id;
+        }
       });
     });
   }, [dmnEditorStoreApi, paste]);
