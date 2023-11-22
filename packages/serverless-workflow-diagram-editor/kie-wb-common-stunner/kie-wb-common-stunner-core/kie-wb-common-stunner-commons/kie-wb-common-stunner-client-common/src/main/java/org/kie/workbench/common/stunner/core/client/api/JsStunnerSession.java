@@ -22,7 +22,6 @@ package org.kie.workbench.common.stunner.core.client.api;
 import java.util.Collection;
 import java.util.stream.StreamSupport;
 
-import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -39,15 +38,17 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JsType
+@GWT3Export
 public class JsStunnerSession {
 
-    @JsIgnore
     private AbstractSession session;
 
-    public JsStunnerSession(AbstractSession session) {
+    public JsStunnerSession setSession(AbstractSession session) {
         this.session = session;
+        return this;
     }
 
     public Diagram getDiagram() {
