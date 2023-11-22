@@ -41,7 +41,7 @@ export function ColorPicker(props: {
           type={"color"}
           disabled={false}
           value={props.color}
-          style={{ opacity: "0", width: 0, height: 0 }}
+          style={{ opacity: 0, width: 0, height: 0 }}
           onChange={(e) => props.onChange(e.currentTarget.value)}
         />
       </div>

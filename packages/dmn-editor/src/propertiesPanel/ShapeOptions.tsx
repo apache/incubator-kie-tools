@@ -1,12 +1,12 @@
 import * as React from "react";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DC__Bounds, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { State, useDmnEditorStoreApi } from "../store/Store";
 import { addOrGetDrd } from "../mutations/addOrGetDrd";
 import { ArrowsAltVIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt-v-icon";
 import { ArrowsAltHIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt-h-icon";
@@ -15,6 +15,7 @@ import UndoAltIcon from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 import { ColorPicker } from "./ColorPicker";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import "./ShapeOptions.css";
+import { Color } from "../diagram/nodes/NodeStyle";
 
 export function ShapeOptions({
   startExpanded,
@@ -55,14 +56,14 @@ export function ShapeOptions({
   }, [shapesStyle]);
 
   const editNodeBound = useCallback(
-    (callback: (bound?: DC__Bounds) => void) => {
+    (callback: (bound?: DC__Bounds, state?: State) => void) => {
       dmnEditorStoreApi.setState((state) => {
         const { diagramElements } = addOrGetDrd({
           definitions: state.dmn.model.definitions,
           drdIndex: state.diagram.drdIndex,
         });
         const shape = diagramElements?.[shapes[0]?.index ?? 0] as DMNDI15__DMNShape | undefined;
-        callback(shape?.["dc:Bounds"]);
+        callback(shape?.["dc:Bounds"], state);
       });
     },
     [dmnEditorStoreApi, shapes]
@@ -105,7 +106,7 @@ export function ShapeOptions({
   );
 
   const editShapeStyle = useCallback(
-    (callback: (shape: DMNDI15__DMNShape[]) => void) => {
+    (callback: (shape: DMNDI15__DMNShape[], state?: State) => void) => {
       dmnEditorStoreApi.setState((state) => {
         const { diagramElements } = addOrGetDrd({
           definitions: state.dmn.model.definitions,
@@ -115,56 +116,90 @@ export function ShapeOptions({
         _shapes.forEach((_shape, i, _shapes) => {
           _shapes[i]["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
         });
-        callback(_shapes);
+        callback(_shapes, state);
       });
     },
     [dmnEditorStoreApi, shapes]
   );
 
+  const [temporaryStrokeColor, setTemporaryStrokeColor] = useState<string>("000000");
   const onChangeStrokeColor = useCallback(
     (newColor: string) => {
-      const withoutHash = newColor.replace("#", "");
-      editShapeStyle((shapes) => {
-        shapes.forEach((shape) => {
-          shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
-          shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = parseInt(withoutHash.slice(0, 2), 16);
-          shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = parseInt(withoutHash.slice(2, 4), 16);
-          shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = parseInt(withoutHash.slice(4, 6), 16);
-        });
+      setTemporaryStrokeColor(newColor.replace("#", ""));
+      editShapeStyle((shapes, state) => {
+        state!.diagram.editingStyle = true;
       });
     },
     [editShapeStyle]
   );
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const red = parseInt(temporaryStrokeColor.slice(0, 2), 16);
+      const green = parseInt(temporaryStrokeColor.slice(2, 4), 16);
+      const blue = parseInt(temporaryStrokeColor.slice(4, 6), 16);
+      editShapeStyle((shapes, state) => {
+        shapes.forEach((shape) => {
+          if (
+            red !== shape?.["di:Style"]?.["dmndi:StrokeColor"]?.["@_red"] &&
+            green !== shape?.["di:Style"]?.["dmndi:StrokeColor"]?.["@_green"] &&
+            blue !== shape?.["di:Style"]?.["dmndi:StrokeColor"]?.["@_blue"]
+          ) {
+            state!.diagram.editingStyle = false;
+            shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
+            shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = red;
+            shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = green;
+            shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = blue;
+          }
+        });
+      });
+    }, 0);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [editShapeStyle, temporaryStrokeColor]);
+
+  const [temporaryFillColor, setTemporaryFillColor] = useState<string>("ffffff");
   const onChangeFillColor = useCallback(
     (newColor: string) => {
-      const withoutHash = newColor.replace("#", "");
-      editShapeStyle((shapes) => {
-        shapes.forEach((shape) => {
-          shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_blue": 255, "@_green": 255, "@_red": 255 };
-          shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = parseInt(withoutHash.slice(0, 2), 16);
-          shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = parseInt(withoutHash.slice(2, 4), 16);
-          shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = parseInt(withoutHash.slice(4, 6), 16);
-        });
+      setTemporaryFillColor(newColor.replace("#", ""));
+      editShapeStyle((shapes, state) => {
+        state!.diagram.editingStyle = true;
       });
     },
     [editShapeStyle]
   );
 
-  const onReset = useCallback(() => {
-    editShapeStyle((shapes) => {
-      shapes.forEach((shape) => {
-        shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
-        shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = 0;
-        shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = 0;
-        shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = 0;
-        shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
-        shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = 255;
-        shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = 255;
-        shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = 255;
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const red = parseInt(temporaryFillColor.slice(0, 2), 16);
+      const green = parseInt(temporaryFillColor.slice(2, 4), 16);
+      const blue = parseInt(temporaryFillColor.slice(4, 6), 16);
+      editShapeStyle((shapes, state) => {
+        shapes.forEach((shape) => {
+          if (
+            red !== shape?.["di:Style"]?.["dmndi:FillColor"]?.["@_red"] &&
+            green !== shape?.["di:Style"]?.["dmndi:FillColor"]?.["@_green"] &&
+            blue !== shape?.["di:Style"]?.["dmndi:FillColor"]?.["@_blue"]
+          ) {
+            state!.diagram.editingStyle = false;
+            shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_blue": 255, "@_green": 255, "@_red": 255 };
+            shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = red;
+            shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = green;
+            shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = blue;
+          }
+        });
       });
-    });
-  }, [editShapeStyle]);
+    }, 0);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [editShapeStyle, temporaryFillColor]);
+
+  const onReset = useCallback(() => {
+    setTemporaryStrokeColor("000000");
+    setTemporaryFillColor("ffffff");
+  }, []);
 
   const strokeColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
   const fillColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
@@ -299,12 +334,9 @@ export function ShapeOptions({
               </Tooltip>
               <Tooltip content={"Reset"}>
                 <ToggleGroupItem
+                  onClick={onReset}
                   className={"kie-dmn-editor--shape-options-toggle-button"}
-                  text={
-                    <div onClick={onReset}>
-                      <UndoAltIcon />
-                    </div>
-                  }
+                  text={<UndoAltIcon />}
                   key={"reset"}
                   buttonId={"shape-style-toggle-group-reset"}
                 />

@@ -186,8 +186,8 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     diagram.draggingNodes.length > 0 ||
     diagram.resizingNodes.length > 0 ||
     diagram.draggingWaypoints.length > 0 ||
-    diagram.movingDividerLines.length > 0;
-  // TODO: LUIZ changingColor
+    diagram.movingDividerLines.length > 0 ||
+    diagram.editingStyle;
 
   const value = useMemo(
     () => ({

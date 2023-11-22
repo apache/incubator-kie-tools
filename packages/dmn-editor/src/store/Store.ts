@@ -84,6 +84,7 @@ export interface State {
     resizingNodes: Array<string>;
     draggingWaypoints: Array<string>;
     movingDividerLines: Array<string>;
+    editingStyle: boolean;
   };
 }
 
@@ -184,6 +185,7 @@ export const defaultStaticState = () => ({
     resizingNodes: [],
     draggingWaypoints: [],
     movingDividerLines: [],
+    editingStyle: false,
   },
 });
 
