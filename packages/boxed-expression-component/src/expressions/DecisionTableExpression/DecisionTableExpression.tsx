@@ -661,7 +661,7 @@ export function DecisionTableExpression(
             const currentAnnotationNames = prev.annotations?.map((c) => c.name) ?? [];
 
             for (let i = 0; i < args.columnsCount; i++) {
-              const name = getNextAvailablePrefixedName(currentAnnotationNames, "Annotations");
+              const name = getNextAvailablePrefixedName(currentAnnotationNames, DecisionTableColumnType.Annotation);
               currentAnnotationNames.push(name);
 
               newAnnotationsItems.push({
