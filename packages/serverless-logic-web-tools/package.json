@@ -54,6 +54,7 @@
     "@kie-tools/text-editor": "workspace:*",
     "@kie-tools/yard-editor": "workspace:*",
     "@kie-tools/yard-language-service": "workspace:*",
+    "@kie-tools/yard-validator": "workspace:*",
     "@octokit/plugin-rest-endpoint-methods": "^5.0.1",
     "@octokit/rest": "^18.5.3",
     "@patternfly/patternfly": "^4.224.2",
