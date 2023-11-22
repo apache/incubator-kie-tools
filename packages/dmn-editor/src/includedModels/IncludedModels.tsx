@@ -277,8 +277,12 @@ export function IncludedModels() {
             )) || (
               <>
                 {((modelPaths?.length ?? 0) > 0 &&
-                  `All models available in '${externalContextName}' are already included.`) ||
-                  `There's no available models in '${externalContextName}' to be included.`}
+                  `All models available${
+                    externalContextName ? ` in '${externalContextName}' ` : ` `
+                  }are already included.`) ||
+                  `There's no available models${
+                    externalContextName ? ` in '${externalContextName}' ` : ` `
+                  }to be included.`}
               </>
             )}
           </>
