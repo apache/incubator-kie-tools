@@ -643,6 +643,7 @@
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
       { "source": "@kie-tools/extended-services-api", "target": "@kie-tools-core/notifications", "weight": 1 },
       { "source": "dmn-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
+      { "source": "dmn-vscode-extension", "target": "@kie-tools/dmn-editor-envelope", "weight": 1 },
       { "source": "dmn-vscode-extension", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       {
         "source": "dmn-vscode-extension",

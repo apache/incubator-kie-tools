@@ -50,6 +50,7 @@ module.exports = async (env) => [
     entry: {
       "webview/DmnEditorEnvelopeApp": "./src/webview/DmnEditorEnvelopeApp.ts",
       "webview/SceSimEditorEnvelopeApp": "./src/webview/SceSimEditorEnvelopeApp.ts",
+      "webview/NewDmnEditorEnvelopeApp": "./src/webview/NewDmnEditorEnvelopeApp.ts",
     },
     module: {
       rules: [...patternflyBase.webpackModuleRules],

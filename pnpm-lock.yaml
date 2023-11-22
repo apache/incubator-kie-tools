@@ -3734,6 +3734,9 @@ importers:
       "@kie-tools-core/vscode-extension":
         specifier: workspace:*
         version: link:../vscode-extension
+      "@kie-tools/dmn-editor-envelope":
+        specifier: workspace:*
+        version: link:../dmn-editor-envelope
       "@kie-tools/kie-bc-editors":
         specifier: workspace:*
         version: link:../kie-bc-editors

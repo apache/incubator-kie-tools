@@ -278,6 +278,7 @@ digraph G {
   "@kie-tools/dmn-runner" -> "@kie-tools/extended-services-api" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
+  "dmn-vscode-extension" -> "@kie-tools/dmn-editor-envelope" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];

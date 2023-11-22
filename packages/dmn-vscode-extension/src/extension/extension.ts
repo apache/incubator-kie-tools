@@ -55,6 +55,23 @@ export function activate(context: vscode.ExtensionContext) {
     backendProxy: backendProxy,
   });
 
+  KogitoVsCode.startExtension({
+    extensionName: "kie-group.dmn-vscode-extension",
+    context: context,
+    viewType: "kieToolsDmnEditor",
+    generateSvgCommandId: "extension.kogito.getPreviewSvgDmn",
+    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgDmn",
+    editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
+      new EnvelopeMapping({
+        type: "dmn",
+        filePathGlob: "**/*.dmn",
+        resourcesPathPrefix: "",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/NewDmnEditorEnvelopeApp.js" },
+      }),
+    ]),
+    backendProxy: backendProxy,
+  });
+
   console.info("Extension is successfully setup.");
 }
 
