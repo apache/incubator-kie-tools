@@ -146,6 +146,9 @@ digraph G {
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/xml-parser-ts" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/yard-validator" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/yard-model" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/yard-validator-worker" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "yard-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-scripts/build-env" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-tools-root" -> "@kie-tools-scripts/bootstrap" [ style = "dashed", color = "black" ];
@@ -477,8 +480,13 @@ digraph G {
   "@kie-tools/yard-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/yard-language-service" [ style = "solid", color = "blue" ];
+  "@kie-tools/yard-editor" -> "@kie-tools/yard-validator" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
+  "@kie-tools/yard-model" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
+  "@kie-tools/yard-model" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
+  "@kie-tools/yard-validator" -> "@kie-tools/yard-validator-worker" [ style = "solid", color = "blue" ];
+  "@kie-tools/yard-validator-worker" -> "@kie-tools/yard-model" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
