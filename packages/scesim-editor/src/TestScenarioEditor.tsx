@@ -232,12 +232,14 @@ function TestScenarioMainPanel({
   addNewSimulationRow,
   fileName,
   deleteSimulationRow,
+  duplicateSimulationRow,
   scesimModel,
   updateSettingField,
 }: {
   addNewSimulationRow: (args: { beforeIndex: number }) => void;
   fileName: string;
   deleteSimulationRow: (args: { rowIndex: number }) => void;
+  duplicateSimulationRow: (args: { rowIndex: number }) => void;
   scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
   updateSettingField: (field: string, value: string) => void;
 }) {
@@ -388,6 +390,7 @@ function TestScenarioMainPanel({
                         assetType={scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text}
                         onRowAdded={addNewSimulationRow}
                         onRowDeleted={deleteSimulationRow}
+                        onRowDuplicated={duplicateSimulationRow}
                         simulationData={scesimModel.ScenarioSimulationModel["simulation"]}
                       />
                     </div>
@@ -539,21 +542,80 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
 
   const addNewSimulationRow = useCallback(
     (args: { beforeIndex: number }) => {
-      const item = {
-        factMappingValues: {
-          FactMappingValue: [
-            {
-              expressionIdentifier: { name: { __$$text: "ASD" }, type: { __$$text: "ASD" } },
-              factIdentifier: { name: { __$$text: "ASD" }, className: { __$$text: "ASD" } },
-              rawValue: { __$$text: "ASD" },
-            },
-          ],
-        },
-      };
-
       setScesimModel((prevState) => {
+        const factMappingValuesItems = prevState.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]![
+          "factMappings"
+        ]!["FactMapping"]!.map((factMapping) => {
+          return {
+            expressionIdentifier: {
+              name: { __$$text: factMapping.expressionIdentifier.name!.__$$text },
+              type: { __$$text: factMapping.expressionIdentifier.type!.__$$text },
+            },
+            factIdentifier: {
+              name: { __$$text: factMapping.factIdentifier.name!.__$$text },
+              className: { __$$text: factMapping.factIdentifier.className!.__$$text },
+            },
+            rawValue: { __$$text: "", "@_class": "string" },
+          };
+        });
+
+        const factMappingValues = {
+          factMappingValues: {
+            FactMappingValue: factMappingValuesItems,
+          },
+        };
+
         const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
-        newScenarios.splice(args.beforeIndex, 0, item);
+        newScenarios.splice(args.beforeIndex, 0, factMappingValues);
+
+        return {
+          ...prevState,
+          ScenarioSimulationModel: {
+            ...prevState.ScenarioSimulationModel,
+            ["simulation"]: {
+              ...prevState.ScenarioSimulationModel["simulation"],
+              ["scesimData"]: {
+                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
+                ["Scenario"]: newScenarios,
+              },
+            },
+          },
+        };
+      });
+    },
+    [setScesimModel]
+  );
+
+  const duplicateSimulationRow = useCallback(
+    (args: { rowIndex: number }) => {
+      setScesimModel((prevState) => {
+        const factMappingValuesItems = prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"]![
+          args.rowIndex
+        ]!.factMappingValues!.FactMappingValue!.map((factMappingValue) => {
+          return {
+            expressionIdentifier: {
+              name: { __$$text: factMappingValue.expressionIdentifier.name!.__$$text },
+              type: { __$$text: factMappingValue.expressionIdentifier.type!.__$$text },
+            },
+            factIdentifier: {
+              name: { __$$text: factMappingValue.factIdentifier.name!.__$$text },
+              className: { __$$text: factMappingValue.factIdentifier.className!.__$$text },
+            },
+            rawValue: {
+              __$$text: factMappingValue.rawValue ? factMappingValue.rawValue.__$$text : "",
+              "@_class": factMappingValue.rawValue?.["@_class"] ? factMappingValue.rawValue["@_class"] : "string",
+            },
+          };
+        });
+
+        const factMappingValues = {
+          factMappingValues: {
+            FactMappingValue: factMappingValuesItems,
+          },
+        };
+
+        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
+        newScenarios.splice(args.rowIndex, 0, factMappingValues);
 
         return {
           ...prevState,
@@ -640,6 +702,7 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
               <TestScenarioMainPanel
                 addNewSimulationRow={addNewSimulationRow}
                 deleteSimulationRow={deleteSimulationRow}
+                duplicateSimulationRow={duplicateSimulationRow}
                 fileName={scesimFile.path}
                 scesimModel={scesimModel}
                 updateSettingField={updateSettingsField}

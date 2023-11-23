@@ -44,11 +44,13 @@ function TestScenarioTable({
   assetType,
   onRowAdded,
   onRowDeleted,
+  onRowDuplicated,
   simulationData,
 }: {
   assetType: string;
   onRowAdded: (args: { beforeIndex: number }) => void;
   onRowDeleted: (args: { rowIndex: number }) => void;
+  onRowDuplicated: (args: { rowIndex: number }) => void;
   simulationData: SceSim__simulationType;
 }) {
   enum SimulationTableColumnGroup {
@@ -306,6 +308,7 @@ function TestScenarioTable({
       isReadOnly={false}
       onRowAdded={onRowAdded}
       onRowDeleted={onRowDeleted}
+      onRowDuplicated={onRowDuplicated}
       operationConfig={simulationOperationConfig}
       resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
       rows={simulationRows}
