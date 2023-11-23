@@ -199,8 +199,8 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -441,8 +441,8 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -1020,8 +1020,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
@@ -3488,8 +3488,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
@@ -4922,14 +4922,14 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       "@vscode/test-electron":
-        specifier: ^2.3.4
-        version: 2.3.4
+        specifier: ^2.3.6
+        version: 2.3.6
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       chai:
         specifier: ^4.3.10
         version: 4.3.10
@@ -4976,8 +4976,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.9.1
-        version: 5.9.1(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.10.0
+        version: 5.10.0(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -6163,8 +6163,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.88.2)
@@ -8096,14 +8096,14 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       "@vscode/test-electron":
-        specifier: ^2.3.4
-        version: 2.3.4
+        specifier: ^2.3.6
+        version: 2.3.6
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       chai:
         specifier: ^4.3.10
         version: 4.3.10
@@ -8141,8 +8141,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.9.1
-        version: 5.9.1(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.10.0
+        version: 5.10.0(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -9266,8 +9266,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.9.1
-        version: 5.9.1(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.10.0
+        version: 5.10.0(mocha@9.2.0)(typescript@4.8.4)
 
   packages/vscode-extension-dashbuilder-editor:
     dependencies:
@@ -9351,8 +9351,8 @@ importers:
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       chai:
         specifier: ^4.3.10
         version: 4.3.10
@@ -9387,8 +9387,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.9.1
-        version: 5.9.1(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.10.0
+        version: 5.10.0(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -9420,8 +9420,8 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -9456,8 +9456,8 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -10279,14 +10279,14 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       "@vscode/test-electron":
-        specifier: ^2.3.4
-        version: 2.3.4
+        specifier: ^2.3.6
+        version: 2.3.6
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
       "@vscode/vsce":
-        specifier: ^2.20.1
-        version: 2.20.1
+        specifier: ^2.22.0
+        version: 2.22.0
       chai:
         specifier: ^4.3.10
         version: 4.3.10
@@ -10321,8 +10321,8 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
       vscode-extension-tester:
-        specifier: 5.9.1
-        version: 5.9.1(mocha@9.2.0)(typescript@4.8.4)
+        specifier: 5.10.0
+        version: 5.10.0(mocha@9.2.0)(typescript@4.8.4)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -17616,10 +17616,10 @@ packages:
       "@types/ws": 8.5.5
       "@whatwg-node/fetch": 0.8.8
       graphql: 14.3.1
-      isomorphic-ws: 5.0.0(ws@8.13.0)
+      isomorphic-ws: 5.0.0(ws@8.14.2)
       tslib: 2.6.2
       value-or-promise: 1.0.12
-      ws: 8.13.0
+      ws: 8.14.2
     transitivePeerDependencies:
       - "@types/node"
       - bufferutil
@@ -21132,7 +21132,7 @@ packages:
       util: 0.12.5
       util-deprecate: 1.0.2
       watchpack: 2.4.0
-      ws: 8.13.0
+      ws: 8.14.2
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -22096,7 +22096,7 @@ packages:
     resolution:
       { integrity: sha512-ykFq2zmBGOCbpIXtoVbz4SKY5QriWPh3AjyU4G74RYbtt5yOc5OfaY75ftjg7mikMOla1CTGpX3lLbuJh8DTrQ== }
     dependencies:
-      "@types/http-cache-semantics": 4.0.0
+      "@types/http-cache-semantics": 4.0.1
       "@types/keyv": 3.1.1
       "@types/node": 18.17.18
       "@types/responselike": 1.0.0
@@ -22407,11 +22407,6 @@ packages:
   /@types/html-minifier-terser@6.1.0:
     resolution:
       { integrity: sha512-oh/6byDPnL1zeNXFrDXFLyZjkr1MsBG667IM792caf1L2UPOOMf65NFzjUH/ltyfwjAGfs1rsX1eftK0jC/KIg== }
-    dev: true
-
-  /@types/http-cache-semantics@4.0.0:
-    resolution:
-      { integrity: sha512-c3Xy026kOF7QOTn00hbIllV1dLR9hG9NkSrLQgCVs8NF6sBU+VGWjD3wLPhmh1TYAc7ugCFsvHYMN4VcBN1U1A== }
     dev: true
 
   /@types/http-cache-semantics@4.0.1:
@@ -23134,9 +23129,9 @@ packages:
       { integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ== }
     dev: true
 
-  /@vscode/test-electron@2.3.4:
+  /@vscode/test-electron@2.3.6:
     resolution:
-      { integrity: sha512-eWzIqXMhvlcoXfEFNWrVu/yYT5w6De+WZXR/bafUQhAp8+8GkQo95Oe14phwiRUPv8L+geAKl/QM2+PoT3YW3g== }
+      { integrity: sha512-M31xGH0RgqNU6CZ4/9g39oUMJ99nLzfjA+4UbtIQ6TcXQ6+2qkjOOxedmPBDDCg26/3Al5ubjY80hIoaMwKYSw== }
     engines: { node: ">=16" }
     dependencies:
       http-proxy-agent: 4.0.1
@@ -23171,9 +23166,9 @@ packages:
       - supports-color
     dev: true
 
-  /@vscode/vsce@2.20.1:
+  /@vscode/vsce@2.22.0:
     resolution:
-      { integrity: sha512-ilbvoqvR/1/zseRPBAzYR6aKqSJ+jvda4/BqIwOqTxajpvLtEpK3kMLs77+dJdrlygS+VrP7Yhad8j0ukyD96g== }
+      { integrity: sha512-8df4uJiM3C6GZ2Sx/KilSKVxsetrTBBIUb3c0W4B1EWHcddioVs5mkyDKtMNP0khP/xBILVSzlXxhV+nm2rC9A== }
     engines: { node: ">= 14" }
     hasBin: true
     dependencies:
@@ -23181,7 +23176,7 @@ packages:
       chalk: 2.4.2
       cheerio: 1.0.0-rc.10
       commander: 6.2.1
-      glob: 7.2.0
+      glob: 7.2.3
       hosted-git-info: 4.1.0
       jsonc-parser: 3.2.0
       leven: 3.1.0
@@ -25894,8 +25889,8 @@ packages:
     dependencies:
       clone-response: 1.0.2
       get-stream: 5.2.0
-      http-cache-semantics: 4.1.0
-      keyv: 4.0.3
+      http-cache-semantics: 4.1.1
+      keyv: 4.5.2
       lowercase-keys: 2.0.0
       normalize-url: 4.5.1
       responselike: 2.0.0
@@ -27806,6 +27801,7 @@ packages:
     resolution:
       { integrity: sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA== }
     engines: { node: ">=4.0.0" }
+    requiresBuild: true
     dev: true
 
   /deep-is@0.1.3:
@@ -29724,6 +29720,7 @@ packages:
     resolution:
       { integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg== }
     engines: { node: ">=6" }
+    requiresBuild: true
     dev: true
 
   /expect@26.6.2:
@@ -30803,6 +30800,7 @@ packages:
   /github-from-package@0.0.0:
     resolution:
       { integrity: sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw== }
+    requiresBuild: true
     dev: true
 
   /github-slugger@1.5.0:
@@ -30829,6 +30827,19 @@ packages:
   /glob-to-regexp@0.4.1:
     resolution:
       { integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw== }
+    dev: true
+
+  /glob@10.3.10:
+    resolution:
+      { integrity: sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g== }
+    engines: { node: ">=16 || 14 >=14.17" }
+    hasBin: true
+    dependencies:
+      foreground-child: 3.1.1
+      jackspeak: 2.3.6
+      minimatch: 9.0.3
+      minipass: 7.0.2
+      path-scurry: 1.10.1
     dev: true
 
   /glob@10.3.3:
@@ -31523,11 +31534,6 @@ packages:
       http-errors: 1.8.1
     dev: true
 
-  /http-cache-semantics@4.1.0:
-    resolution:
-      { integrity: sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ== }
-    dev: true
-
   /http-cache-semantics@4.1.1:
     resolution:
       { integrity: sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ== }
@@ -31670,7 +31676,7 @@ packages:
     engines: { node: ">=10.19.0" }
     dependencies:
       quick-lru: 5.1.1
-      resolve-alpn: 1.1.2
+      resolve-alpn: 1.2.1
     dev: true
 
   /http2-wrapper@2.2.0:
@@ -32660,6 +32666,15 @@ packages:
       ws: 8.13.0
     dev: true
 
+  /isomorphic-ws@5.0.0(ws@8.14.2):
+    resolution:
+      { integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw== }
+    peerDependencies:
+      ws: "*"
+    dependencies:
+      ws: 8.14.2
+    dev: true
+
   /isstream@0.1.2:
     resolution:
       { integrity: sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g== }
@@ -32756,6 +32771,16 @@ packages:
   /jackspeak@2.2.1:
     resolution:
       { integrity: sha512-MXbxovZ/Pm42f6cDIDkl3xpwv1AGwObKwfmjs2nQePiy85tP3fatofl3FC1aBsOtP/6fq5SbtgHwWcMsLP+bDw== }
+    engines: { node: ">=14" }
+    dependencies:
+      "@isaacs/cliui": 8.0.2
+    optionalDependencies:
+      "@pkgjs/parseargs": 0.11.0
+    dev: true
+
+  /jackspeak@2.3.6:
+    resolution:
+      { integrity: sha512-N3yCS/NegsOBokc8GAdM8UcmfsKiSS8cipheD/nivzr700H+nsMOxJjQnvwOcRYVuFkdH0wGUvW2WbXGmrZGbQ== }
     engines: { node: ">=14" }
     dependencies:
       "@isaacs/cliui": 8.0.2
@@ -34106,13 +34131,6 @@ packages:
     dev: true
     optional: true
 
-  /keyv@4.0.3:
-    resolution:
-      { integrity: sha512-zdGa2TOpSZPq5mU6iowDARnMBZgtCqJ11dJROFi6tg6kTn4nuUdU09lFyLFSaHrWqpIJ+EBq4E8/Dc0Vx5vLdA== }
-    dependencies:
-      json-buffer: 3.0.1
-    dev: true
-
   /keyv@4.5.2:
     resolution:
       { integrity: sha512-5MHbFaKn8cNSmVW7BYnijeAVlE4cYA/SVkifVgrh7yotnfhKmjuXpDKjrABLnT0SfHWV21P8ow07OGfRrNDg8g== }
@@ -34808,7 +34826,7 @@ packages:
     dependencies:
       agentkeepalive: 4.1.4
       cacache: 15.3.0
-      http-cache-semantics: 4.1.0
+      http-cache-semantics: 4.1.1
       http-proxy-agent: 4.0.1
       https-proxy-agent: 5.0.1
       is-lambda: 1.0.1
@@ -35330,6 +35348,7 @@ packages:
   /mkdirp-classic@0.5.3:
     resolution:
       { integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A== }
+    requiresBuild: true
     dev: true
 
   /mkdirp-infer-owner@2.0.0:
@@ -35460,9 +35479,9 @@ packages:
     dependencies:
       monaco-editor: 0.39.0
 
-  /monaco-page-objects@3.9.1(selenium-webdriver@4.10.0)(typescript@4.8.4):
+  /monaco-page-objects@3.10.0(selenium-webdriver@4.15.0)(typescript@4.8.4):
     resolution:
-      { integrity: sha512-Y/haEkl0U5MPH2krk6hyOpSqUdzqY9VIW4NPz48i6QHP1hSCInW2ffXl1zisStv0vBWBrDr8hu5n6Q1i7z99PQ== }
+      { integrity: sha512-5D53tuMvYNoYFJNVc2qQWEekjsroTIXp6nYZqiS9J/mFTuxMZqIwPzYj74Cf8aB87ai8MVT4ZhvKuWAArtl7iQ== }
     peerDependencies:
       selenium-webdriver: ^4.6.1
       typescript: ">=4.6.2"
@@ -35471,8 +35490,8 @@ packages:
       clone-deep: 4.0.1
       compare-versions: 6.1.0
       fs-extra: 11.1.1
-      selenium-webdriver: 4.10.0
-      ts-essentials: 9.3.2(typescript@4.8.4)
+      selenium-webdriver: 4.15.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+      ts-essentials: 9.4.1(typescript@4.8.4)
       typescript: 4.8.4
     dev: true
 
@@ -35656,6 +35675,7 @@ packages:
   /napi-build-utils@1.0.2:
     resolution:
       { integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg== }
+    requiresBuild: true
     dev: true
 
   /native-promise-only@0.8.1:
@@ -35750,6 +35770,7 @@ packages:
     resolution:
       { integrity: sha512-QB0MMv+tn9Ur2DtJrc8y09n0n6sw88CyDniWSX2cHW10goQXYPK9ZpFJOktDS4ron501edPX6h9i7Pg+RnH5nQ== }
     engines: { node: ">=10" }
+    requiresBuild: true
     dependencies:
       semver: 7.5.4
     dev: true
@@ -38303,6 +38324,7 @@ packages:
     resolution:
       { integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw== }
     hasBin: true
+    requiresBuild: true
     dependencies:
       deep-extend: 0.6.0
       ini: 1.3.8
@@ -39493,11 +39515,6 @@ packages:
       { integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ== }
     dev: true
 
-  /resolve-alpn@1.1.2:
-    resolution:
-      { integrity: sha512-8OyfzhAtA32LVUsJSke3auIyINcwdh5l3cvYKdKO0nvsYSKuiLfTM5i78PJswFPT8y6cPW+L1v6/hE95chcpDA== }
-    dev: true
-
   /resolve-alpn@1.2.1:
     resolution:
       { integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g== }
@@ -40005,19 +40022,6 @@ packages:
       { integrity: sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg== }
     dev: true
 
-  /selenium-webdriver@4.10.0:
-    resolution:
-      { integrity: sha512-hSQPw6jgc+ej/UEcdQPG/iBwwMeCEgZr9HByY/J8ToyXztEqXzU9aLsIyrlj1BywBcStO4JQK/zMUWWrV8+riA== }
-    engines: { node: ">= 14.20.0" }
-    dependencies:
-      jszip: 3.10.1
-      tmp: 0.2.1
-      ws: 8.13.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: true
-
   /selenium-webdriver@4.15.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe):
     resolution:
       { integrity: sha512-BNG1bq+KWiBGHcJ/wULi0eKY0yaDqFIbEmtbsYJmfaEghdCkXBsx1akgOorhNwjBipOr0uwpvNXqT6/nzl+zjg== }
@@ -40328,6 +40332,7 @@ packages:
   /simple-concat@1.0.1:
     resolution:
       { integrity: sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q== }
+    requiresBuild: true
 
   /simple-get@4.0.1:
     resolution:
@@ -41129,6 +41134,7 @@ packages:
     resolution:
       { integrity: sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ== }
     engines: { node: ">=0.10.0" }
+    requiresBuild: true
     dev: true
 
   /strip-json-comments@3.1.1:
@@ -41867,11 +41873,14 @@ packages:
     engines: { node: ">=6.10" }
     dev: true
 
-  /ts-essentials@9.3.2(typescript@4.8.4):
+  /ts-essentials@9.4.1(typescript@4.8.4):
     resolution:
-      { integrity: sha512-JxKJzuWqH1MmH4ZFHtJzGEhkfN3QvVR3C3w+4BIoWeoY68UVVoA2Np/Bca9z0IPSErVCWhv439aT0We4Dks8kQ== }
+      { integrity: sha512-oke0rI2EN9pzHsesdmrOrnqv1eQODmJpd/noJjwj2ZPC3Z4N2wbjrOEqnsEgmvlO2+4fBb0a794DCna2elEVIQ== }
     peerDependencies:
       typescript: ">=4.1.0"
+    peerDependenciesMeta:
+      typescript:
+        optional: true
     dependencies:
       typescript: 4.8.4
     dev: true
@@ -43088,42 +43097,42 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /vscode-extension-tester-locators@3.7.1(monaco-page-objects@3.9.1)(selenium-webdriver@4.10.0):
+  /vscode-extension-tester-locators@3.8.0(monaco-page-objects@3.10.0)(selenium-webdriver@4.15.0):
     resolution:
-      { integrity: sha512-My+ZTH2PM0g9JwWw49E+SfBMFLSjBdv6YpjekUFpzhCWK0mH+BjRC0gtINr+x2+KuVZVhsO82oSivBa1d7ZJvg== }
+      { integrity: sha512-i+iTdQmFBuhbH95EAzFZOiZWZ8umc6oahPyZGqffEOyizqzVcrQPN5YT4UX91agCqMODx0aS7yUpZZz1tg8Oew== }
     peerDependencies:
-      monaco-page-objects: ^3.9.1
+      monaco-page-objects: ^3.10.0
       selenium-webdriver: ^4.6.1
     dependencies:
-      monaco-page-objects: 3.9.1(selenium-webdriver@4.10.0)(typescript@4.8.4)
-      selenium-webdriver: 4.10.0
+      monaco-page-objects: 3.10.0(selenium-webdriver@4.15.0)(typescript@4.8.4)
+      selenium-webdriver: 4.15.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
     dev: true
 
-  /vscode-extension-tester@5.9.1(mocha@9.2.0)(typescript@4.8.4):
+  /vscode-extension-tester@5.10.0(mocha@9.2.0)(typescript@4.8.4):
     resolution:
-      { integrity: sha512-dWUUZWiLbjch9yXrdd1GH/LdjZodn4FbNDraffFyON1qEIVio0Z3hwUunKmLBNFQWRseCJfFs5peBqoF5bGo0g== }
+      { integrity: sha512-9tltf+hlwNTvi7XXjA7oH1kcTrIDOLqGB/5d+W6CSwTRMXHwxeIw4JUgKlriuy65elr06YB5IVpSBgn+fs4X5A== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
       typescript: ">=4.6.2"
     dependencies:
       "@types/selenium-webdriver": 4.1.20
-      "@vscode/vsce": 2.20.1
+      "@vscode/vsce": 2.22.0
       commander: 11.0.0
       compare-versions: 6.1.0
       fs-extra: 11.1.1
-      glob: 8.1.0
+      glob: 10.3.10
       got: 13.0.0
       hpagent: 1.2.0
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 3.9.1(selenium-webdriver@4.10.0)(typescript@4.8.4)
+      monaco-page-objects: 3.10.0(selenium-webdriver@4.15.0)(typescript@4.8.4)
       sanitize-filename: 1.6.3
-      selenium-webdriver: 4.10.0
+      selenium-webdriver: 4.15.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       targz: 1.0.1
       typescript: 4.8.4
       unzipper: 0.10.14
-      vscode-extension-tester-locators: 3.7.1(monaco-page-objects@3.9.1)(selenium-webdriver@4.10.0)
+      vscode-extension-tester-locators: 3.8.0(monaco-page-objects@3.10.0)(selenium-webdriver@4.15.0)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -43475,7 +43484,7 @@ packages:
       spdy: 4.0.2
       webpack: 5.76.1(esbuild@0.15.5)
       webpack-dev-middleware: 5.3.3(webpack@5.76.1)
-      ws: 8.13.0
+      ws: 8.14.2
     transitivePeerDependencies:
       - bufferutil
       - debug
