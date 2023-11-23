@@ -638,6 +638,11 @@ export const getCustomWorkflowSchemaFromApi = async (
     schema = (api as any).components.schemas[workflowName + "_input"];
   }
 
+  // Components can contain the content of internal refs ($ref)
+  if (schema) {
+    (schema as any)["components"] = (api as any).components;
+  }
+
   return schema ?? null;
 };
 
