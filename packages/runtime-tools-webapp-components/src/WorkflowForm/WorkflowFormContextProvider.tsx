@@ -16,21 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
-import { routes } from "../routes";
-import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
 
-export function RuntimeToolsRoutesSwitch() {
-  return (
-    <Switch>
-      <Route path={routes.runtimeTools.workflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
-      </Route>
-      <Route path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
-      </Route>
-    </Switch>
-  );
+import React, { useMemo } from "react";
+import { WorkflowFormContext } from "./WorkflowFormContext";
+import { WorkflowFormGatewayApiImpl } from "./WorkflowFormGatewayApi";
+
+export function WorkflowFormContextProvider(
+  props: React.PropsWithChildren<{ proxyEndpoint?: string; kogitoServiceUrl: string }>
+) {
+  const { proxyEndpoint, kogitoServiceUrl } = props;
+
+  const gatewayApiImpl = useMemo(() => {
+    return new WorkflowFormGatewayApiImpl(kogitoServiceUrl, "q/openapi.json", proxyEndpoint);
+  }, [kogitoServiceUrl, proxyEndpoint]);
+
+  return <WorkflowFormContext.Provider value={gatewayApiImpl}>{props.children}</WorkflowFormContext.Provider>;
 }
+
+export default WorkflowFormContextProvider;

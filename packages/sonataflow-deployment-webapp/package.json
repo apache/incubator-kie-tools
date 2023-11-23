@@ -36,6 +36,7 @@
     "@kie-tools/runtime-tools-components": "workspace:*",
     "@kie-tools/runtime-tools-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-gateway-api": "workspace:*",
+    "@kie-tools/runtime-tools-webapp-components": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
