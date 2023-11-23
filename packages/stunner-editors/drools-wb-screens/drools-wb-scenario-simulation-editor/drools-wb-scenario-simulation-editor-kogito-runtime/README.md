@@ -10,6 +10,7 @@ Some minimal tests may be done in the following way:
 2. open the `drools-wb/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime/index.html` file inside Chrome
 3. inside the Chrome dev console, issue the command `$wnd.gwtEditorBeans.get("ScenarioSimulationEditor").get().setContent("", "")`; this will create a new - empty - scesim file.
 4. Some tricks: to avoid CORS and other policy-related issues:
+   - enable chrome://flags/#temporary-unexpire-flags-m118 flag
    - set chrome://flags/#allow-insecure-localhost for invalid certificates error
    - start chrome from cli with the command `chrome --allow-file-access-from-files` to allow loading from file.
    - Open index.html file:///(path_to_file)/index.html and get no dev compilation error.
