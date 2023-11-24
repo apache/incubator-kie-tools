@@ -28,6 +28,9 @@ import org.yard.validator.util.Logger;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.yard.validator.checks.Util.getHigherInTable;
+import static org.yard.validator.checks.Util.getLowerInTable;
+
 public class CheckProducer {
 
     public static List<Check> getChecks(final ParserResult parse) {
@@ -91,8 +94,8 @@ public class CheckProducer {
                 if (i == j) {
                     continue;
                 }
-                final RowLocation locationA = getHigher(locations, i, j);
-                final RowLocation locationB = getLower(locations, i, j);
+                final RowLocation locationA = getHigherInTable(locations, i, j);
+                final RowLocation locationB = getLowerInTable(locations, i, j);
 
                 final CheckItem checkItemA = new CheckItem(
                         locationA.getTableRowNumber(),
@@ -112,25 +115,4 @@ public class CheckProducer {
         return result;
     }
 
-    private static RowLocation getHigher(
-            final RowLocation[] locations,
-            final int i,
-            final int j) {
-        if (locations[i].getTableRowNumber() > locations[j].getTableRowNumber()) {
-            return locations[i];
-        } else {
-            return locations[j];
-        }
-    }
-
-    private static RowLocation getLower(
-            final RowLocation[] locations,
-            final int i,
-            final int j) {
-        if (locations[i].getTableRowNumber() < locations[j].getTableRowNumber()) {
-            return locations[i];
-        } else {
-            return locations[j];
-        }
-    }
 }

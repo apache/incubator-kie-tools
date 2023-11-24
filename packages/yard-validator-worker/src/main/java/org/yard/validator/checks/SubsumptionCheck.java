@@ -32,43 +32,43 @@ public class SubsumptionCheck
         implements Check {
 
     private final String hitPolicy;
-    private final CheckItem checkItemA;
-    private final CheckItem checkItemB;
+    private final CheckItem higherCheckItem;
+    private final CheckItem lowerCheckItem;
 
     public SubsumptionCheck(
             final String hitPolicy,
-            final CheckItem checkItemA,
-            final CheckItem checkItemB) {
+            final CheckItem higherCheckItem,
+            final CheckItem lowerCheckItem) {
         this.hitPolicy = hitPolicy;
-        this.checkItemA = checkItemA;
-        this.checkItemB = checkItemB;
+        this.higherCheckItem = higherCheckItem;
+        this.lowerCheckItem = lowerCheckItem;
     }
 
     @Override
     public Optional<Issue> check() {
-        final Optional<Issue> aToB = getIssue(checkItemA, checkItemB);
+        final Optional<Issue> aToB = subsumes(higherCheckItem, lowerCheckItem);
 
         if (isFirstHitPolicy()) {
             if (aToB.isPresent()) {
-                // No need to check for redundancy. The first row masks the rest.
+                // No need to check for redundancy. The first row masks the other.
                 return Optional.of(new Issue(
                         "Masking row. The higher row prevents the activation of the other row.",
-                        checkItemA.getLocation(),
-                        checkItemB.getLocation()));
+                        higherCheckItem.getLocation(),
+                        lowerCheckItem.getLocation()));
             } else {
                 // No need to check the other row for subsumption,
                 // since subsumption is likely there by rule design
                 return Optional.empty();
             }
         } else {
-            final Optional<Issue> bToA = getIssue(checkItemB, checkItemA);
+            final Optional<Issue> bToA = subsumes(lowerCheckItem, higherCheckItem);
 
             // If the counterpart in the table is subsumptant, meaning the other item subsumes this, we have redundancy.
             if (aToB.isPresent() && bToA.isPresent()) {
                 return Optional.of(new Issue(
                         getRedundancyMessage(),
-                        checkItemA.getLocation(),
-                        checkItemB.getLocation()));
+                        higherCheckItem.getLocation(),
+                        lowerCheckItem.getLocation()));
             } else if (aToB.isPresent()) {
                 return aToB;
             } else {
@@ -100,7 +100,7 @@ public class SubsumptionCheck
                 || Objects.equals("PRIORITY", hitPolicy);
     }
 
-    private Optional<Issue> getIssue(
+    private Optional<Issue> subsumes(
             final CheckItem checkItemA,
             final CheckItem checkItemB) {
         // All values and ranges in A are covered by B
