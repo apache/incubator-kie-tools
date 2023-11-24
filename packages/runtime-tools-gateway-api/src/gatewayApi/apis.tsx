@@ -639,8 +639,10 @@ export const getCustomWorkflowSchemaFromApi = async (
   }
 
   // Components can contain the content of internal refs ($ref)
+  // This keeps the refs working while avoiding circular refs with the workflow itself
   if (schema) {
-    (schema as any)["components"] = (api as any).components;
+    const { [workflowName + "_input"]: _, components } = (api as any).components ?? {};
+    (schema as any)["components"] = components;
   }
 
   return schema ?? null;
