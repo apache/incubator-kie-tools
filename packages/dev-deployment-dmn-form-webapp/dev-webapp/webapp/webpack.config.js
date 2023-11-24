@@ -24,6 +24,7 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("../../env");
 const { ProvidePlugin, EnvironmentPlugin } = require("webpack");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 const buildEnv = env;
 
@@ -47,8 +48,8 @@ module.exports = (env) =>
       new EnvironmentPlugin({
         WEBPACK_REPLACE__quarkusPort: buildEnv.devDeploymentDmnFormWebapp.dev.quarkusPort,
       }),
+      new NodePolyfillPlugin(),
     ],
-
     module: {
       rules: [...patternflyBase.webpackModuleRules],
     },

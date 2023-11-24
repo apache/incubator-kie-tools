@@ -59,7 +59,6 @@ export function DmnFormPage(props: Props) {
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
   const [pageError, setPageError] = useState<boolean>(false);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
-  const app = useApp();
 
   useCancelableEffect(
     useCallback(

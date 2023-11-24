@@ -51,10 +51,6 @@ export function DevDeploymentsContextProvider(props: Props) {
   const [confirmDeleteModalState, setConfirmDeleteModalState] = useState<DeleteDeployModalState>({ isOpen: false });
 
   // Services
-  const [devDeploymentsServices, setDevDeploymentsServices] = useState<Map<string, KieSandboxDevDeploymentsService>>(
-    new Map()
-  );
-
   const getService = useCallback(
     (authSession: CloudAuthSession) => {
       if (authSession.type === "openshift") {
@@ -74,7 +70,7 @@ export function DevDeploymentsContextProvider(props: Props) {
     [env.KIE_SANDBOX_CORS_PROXY_URL]
   );
 
-  useEffect(() => {
+  const devDeploymentsServices = useMemo(() => {
     const newDevDeploymentsServices = new Map<string, KieSandboxDevDeploymentsService>();
     authSessions.forEach((authSession) => {
       if (!authSession || !isCloudAuthSession(authSession)) {
@@ -86,7 +82,7 @@ export function DevDeploymentsContextProvider(props: Props) {
         console.error(`Failed to create service for authSession: ${authSession.id}`);
       }
     });
-    setDevDeploymentsServices(newDevDeploymentsServices);
+    return newDevDeploymentsServices;
   }, [authSessions, getService]);
 
   // Deployments
@@ -105,15 +101,12 @@ export function DevDeploymentsContextProvider(props: Props) {
 
   const loadDevDeployments = useCallback(
     async (args: { authSession: CloudAuthSession }) => {
-      return (
-        devDeploymentsServices
-          .get(args.authSession.id)
-          ?.loadDevDeployments()
-          .catch((e) => {
-            console.error(e);
-            throw e;
-          }) || []
-      );
+      const service = devDeploymentsServices.get(args.authSession.id);
+
+      if (!service) {
+        return [];
+      }
+      return service.loadDevDeployments();
     },
     [devDeploymentsServices]
   );

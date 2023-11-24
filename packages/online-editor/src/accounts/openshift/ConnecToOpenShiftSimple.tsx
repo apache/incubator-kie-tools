@@ -324,9 +324,9 @@ export function ConnecToOpenShiftSimple(props: {
             data-testid="save-config-button"
             isLoading={isConnecting || props.isLoadingService}
             isDisabled={isConnecting || props.isLoadingService}
-            spinnerAriaValueText={isConnecting ? "Loading" : undefined}
+            spinnerAriaValueText={isConnecting || props.isLoadingService ? "Loading" : undefined}
           >
-            {isConnecting ? "Connecting" : "Connect"}
+            {isConnecting || props.isLoadingService ? "Connecting" : "Connect"}
           </Button>
         </ActionGroup>
       </Form>

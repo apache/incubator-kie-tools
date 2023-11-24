@@ -30,42 +30,67 @@ import { HashRouter, Link, Route, Switch } from "react-router-dom";
 // http://localhost:9008/#/form/insurance-pricing.dmn
 export const App: React.FunctionComponent = () => {
   return (
-    <div style={{ margin: "20px" }}>
+    <div style={{ display: "flex", flexWrap: "nowrap" }}>
       <HashRouter>
-        <div style={{ display: "flex" }}>
+        <div style={{ flex: "0 1" }}>
           <Link to="/">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Home
             </Button>
           </Link>
-          <Link to="/form/insurance_pricing">
+          <Link to="/form/Insurance Pricing">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Insurance Pricing
             </Button>
           </Link>
-          <Link to="/form/loan_pre_qualification">
+          <Link to="/form/Loan Pre Qualification">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Loan Pre Qualification
             </Button>
           </Link>
-          <Link to="/form/flight_rebooking">
+          <Link to="/form/Strategy">
+            <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
+              Strategy
+            </Button>
+          </Link>
+          <Link to="/form/Routing">
+            <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
+              Routing
+            </Button>
+          </Link>
+          <Link to="/form/Find Employees">
+            <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
+              Find Employees
+            </Button>
+          </Link>
+          <Link to="/form/Adjudication">
+            <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
+              Adjudication
+            </Button>
+          </Link>
+          <Link to="/form/Flight Rebooking">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Flight Rebooking
             </Button>
           </Link>
-          <Link to="/form/recursive">
+          <Link to="/form/Can Drive">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
-              Recursive
+              Can Drive
             </Button>
           </Link>
-          <Link to="/form/many_inputs">
+          <Link to="/form/Many Inputs">
             <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
               Many Inputs
             </Button>
           </Link>
+          <Link to="/form/Recursive">
+            <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
+              Recursive
+            </Button>
+          </Link>
         </div>
 
-        <div style={{ margin: "10px", border: "1px solid" }}>
+        <div style={{ flex: "1 0" }}>
           <Switch>
             <Route path="/form/">
               <DmnFormApp baseUrl={`http://localhost:${process.env.WEBPACK_REPLACE__quarkusPort}`} />

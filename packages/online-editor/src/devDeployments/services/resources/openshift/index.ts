@@ -27,16 +27,6 @@ import { serviceYaml } from "./ServiceYaml";
 
 export const createOpenShiftDeploymentYamls = [
   {
-    name: "DMN Dev deployment",
-    content: (args: ResourceArgs) => `
-${deploymentYaml(args)}
----
-${serviceYaml(args)}
----
-${routeYaml(args)}
-`,
-  },
-  {
     name: "DMN Dev deployment with Form Webapp",
     content: (args: ResourceArgs) => `
 ${deploymentWithFormWebappYaml(args)}
@@ -48,6 +38,16 @@ ${formWebappServiceYaml(args)}
 ${routeYaml(args)}
 ---
 ${formWebappRouteYaml(args)}
+`,
+  },
+  {
+    name: "DMN Dev deployment",
+    content: (args: ResourceArgs) => `
+${deploymentYaml(args)}
+---
+${serviceYaml(args)}
+---
+${routeYaml(args)}
 `,
   },
 ];

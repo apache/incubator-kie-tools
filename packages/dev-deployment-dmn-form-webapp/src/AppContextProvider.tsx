@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useCallback, useState } from "react";
 import { AppContext } from "./AppContext";
 import { AppData, fetchAppData } from "./DmnDevDeploymentFormWebAppDataApi";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 interface Props {
   children: ReactNode;
@@ -30,12 +31,22 @@ export function AppContextProvider(props: Props) {
   const [fetchDone, setFetchDone] = useState(false);
   const [data, setData] = useState<AppData>();
 
-  useEffect(() => {
-    fetchAppData(props.baseUrl)
-      .then((data: AppData) => setData(data))
-      .catch((error: any) => console.error(error))
-      .finally(() => setFetchDone(true));
-  }, [props]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        fetchAppData(props.baseUrl)
+          .then((data: AppData) => {
+            if (canceled.get()) {
+              return;
+            }
+            setData(data);
+          })
+          .catch((error: any) => console.error(error))
+          .finally(() => setFetchDone(true));
+      },
+      [props]
+    )
+  );
 
   return <AppContext.Provider value={{ fetchDone, data }}>{props.children}</AppContext.Provider>;
 }

@@ -27,16 +27,6 @@ import { serviceYaml } from "./ServiceYaml";
 
 export const createKubernetesDeploymentYamls = [
   {
-    name: "DMN Dev deployment",
-    content: (args: ResourceArgs) => `
-${deploymentYaml(args)}
----
-${serviceYaml(args)}
----
-${ingressYaml(args)}
-`,
-  },
-  {
     name: "DMN Dev deployment with Form Webapp",
     content: (args: ResourceArgs) => `
 ${deploymentWithFormWebappYaml(args)}
@@ -48,6 +38,16 @@ ${formWebappServiceYaml(args)}
 ${ingressYaml(args)}
 ---
 ${formWebappIngressYaml(args)}
+`,
+  },
+  {
+    name: "DMN Dev deployment",
+    content: (args: ResourceArgs) => `
+${deploymentYaml(args)}
+---
+${serviceYaml(args)}
+---
+${ingressYaml(args)}
 `,
   },
 ];

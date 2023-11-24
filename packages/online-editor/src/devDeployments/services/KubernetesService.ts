@@ -304,11 +304,14 @@ export class KubernetesService {
         );
       } catch (e) {
         console.error(`Failed to fetch list of ${args.kind}: ${e}`);
+        throw new Error(`Failed to fetch list of ${args.kind}: ${e}`);
       }
     } else {
       console.error(`Failed to find resource of kind ${args.kind} and apiVersion ${args.apiVersion} on endpoints map.`);
+      throw new Error(
+        `Failed to find resource of kind ${args.kind} and apiVersion ${args.apiVersion} on endpoints map.`
+      );
     }
-    return [];
   }
 
   public async deleteResource(args: { kind: string; apiVersion: string; resourceId: string }): Promise<any> {

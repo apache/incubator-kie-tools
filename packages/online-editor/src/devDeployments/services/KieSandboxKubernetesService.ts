@@ -96,68 +96,74 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   public async loadDevDeployments(): Promise<KieSandboxDeployment[]> {
-    const deployments = await this.listDeployments();
+    try {
+      const deployments = await this.listDeployments();
 
-    if (!deployments.length) {
-      return [];
-    }
+      if (!deployments.length) {
+        return [];
+      }
 
-    const ingresses = await this.listIngress();
+      const ingresses = await this.listIngress();
 
-    const services = await this.listServices();
+      const services = await this.listServices();
 
-    const healthStatusList = await Promise.all(
-      ingresses
+      const healthStatusList = await Promise.all(
+        ingresses
+          .filter(
+            (ingress) =>
+              ingress.metadata.labels && ingress.metadata.name === ingress.metadata.labels[defaultLabelTokens.partOf]
+          )
+          .map((ingress) => this.getIngressUrl(ingress))
+          .map(async (url) => ({
+            url,
+            healtStatus: await fetch(`${url}/q/health`)
+              .then((data) => data.json())
+              .then((response) => response.status)
+              .catch(() => "ERROR"),
+          }))
+      );
+
+      return deployments
         .filter(
-          (ingress) =>
-            ingress.metadata.labels && ingress.metadata.name === ingress.metadata.labels[defaultLabelTokens.partOf]
+          (deployment) =>
+            deployment.status &&
+            deployment.metadata.name &&
+            deployment.metadata.annotations &&
+            deployment.metadata.labels &&
+            deployment.metadata.labels[defaultLabelTokens.createdBy] === "kie-tools" &&
+            ingresses.some((ingress) => ingress.metadata.name === deployment.metadata.name)
         )
-        .map((ingress) => this.getIngressUrl(ingress))
-        .map(async (url) => ({
-          url,
-          healtStatus: await fetch(`${url}/q/health`)
-            .then((data) => data.json())
-            .then((response) => response.status)
-            .catch(() => "ERROR"),
-        }))
-    );
-
-    return deployments
-      .filter(
-        (deployment) =>
-          deployment.status &&
-          deployment.metadata.name &&
-          deployment.metadata.annotations &&
-          deployment.metadata.labels &&
-          deployment.metadata.labels[defaultLabelTokens.createdBy] === "kie-tools" &&
-          ingresses.some((ingress) => ingress.metadata.name === deployment.metadata.name)
-      )
-      .map((deployment) => {
-        const deploymentPartOf =
-          (deployment.metadata.labels && deployment.metadata.labels[defaultLabelTokens.partOf]) ??
-          deployment.metadata.name;
-        const ingressList = ingresses.filter(
-          (ingress) =>
-            ingress.metadata.labels && ingress.metadata.labels[defaultLabelTokens.partOf] === deploymentPartOf
-        )!;
-        const servicesList = services.filter(
-          (service) =>
-            service.metadata.labels && service.metadata.labels[defaultLabelTokens.partOf] === deploymentPartOf
-        )!;
-        const baseUrl = this.getIngressUrl(ingressList.find((ingress) => ingress.metadata.name === deploymentPartOf)!);
-        const healthStatus = healthStatusList.find((status) => status.url === baseUrl)!.healtStatus;
-        return {
-          name: deployment.metadata.name,
-          routeUrl: ingressList.find((ingress) => ingress.metadata.name.includes("form-webapp"))
-            ? `${baseUrl}/form-webapp/`
-            : `${baseUrl}/q/dev/`,
-          creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
-          state: this.extractDeploymentStateWithHealthStatus(deployment, healthStatus),
-          workspaceId: deployment.metadata.annotations![defaultAnnotationTokens.workspaceId],
-          workspaceName: deployment.metadata.annotations![defaultAnnotationTokens.workspaceName],
-          resources: [deployment, ...ingressList, ...servicesList],
-        };
-      });
+        .map((deployment) => {
+          const deploymentPartOf =
+            (deployment.metadata.labels && deployment.metadata.labels[defaultLabelTokens.partOf]) ??
+            deployment.metadata.name;
+          const ingressList = ingresses.filter(
+            (ingress) =>
+              ingress.metadata.labels && ingress.metadata.labels[defaultLabelTokens.partOf] === deploymentPartOf
+          )!;
+          const servicesList = services.filter(
+            (service) =>
+              service.metadata.labels && service.metadata.labels[defaultLabelTokens.partOf] === deploymentPartOf
+          )!;
+          const baseUrl = this.getIngressUrl(
+            ingressList.find((ingress) => ingress.metadata.name === deploymentPartOf)!
+          );
+          const healthStatus = healthStatusList.find((status) => status.url === baseUrl)!.healtStatus;
+          return {
+            name: deployment.metadata.name,
+            routeUrl: ingressList.find((ingress) => ingress.metadata.name.includes("form-webapp"))
+              ? `${baseUrl}/form-webapp/`
+              : `${baseUrl}/q/dev/`,
+            creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
+            state: this.extractDeploymentStateWithHealthStatus(deployment, healthStatus),
+            workspaceId: deployment.metadata.annotations![defaultAnnotationTokens.workspaceId],
+            workspaceName: deployment.metadata.annotations![defaultAnnotationTokens.workspaceName],
+            resources: [deployment, ...ingressList, ...servicesList],
+          };
+        });
+    } catch (error) {
+      throw new Error("Error: Failed to load Dev deployments from Kubernetes provider.", error);
+    }
   }
 
   public async deploy(args: DeployArgs): Promise<void> {

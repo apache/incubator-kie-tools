@@ -113,7 +113,7 @@ export const routes = {
 
   dmnDefinitionsJson: new Route<{}>((_, baseUrl) => `${baseUrl}/dmnDefinitions.json`),
 
-  openApiJson: new Route<{}>(() => "../q/openapi?format=json"),
+  openApiJson: new Route<{}>((_, baseUrl) => `${baseUrl}/q/openapi?format=json`),
 
   swaggerUi: new Route<{}>((_, baseUrl) => `${baseUrl}/q/swagger-ui`),
 

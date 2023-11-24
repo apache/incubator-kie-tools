@@ -23,6 +23,7 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const { env } = require("./env");
 
 module.exports = async (env) => {
@@ -47,6 +48,7 @@ module.exports = async (env) => {
         process: require.resolve("process/browser.js"),
         Buffer: ["buffer", "Buffer"],
       }),
+      new NodePolyfillPlugin(),
     ],
 
     module: {

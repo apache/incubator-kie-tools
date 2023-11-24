@@ -96,9 +96,9 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   public async loadDevDeployments(): Promise<KieSandboxDeployment[]> {
     const deployments = await this.listDeployments();
 
-    if (!deployments.length) {
-      return [];
-    }
+    // if (!deployments.length) {
+    //   return [];
+    // }
 
     const routes = await this.listRoutes();
 

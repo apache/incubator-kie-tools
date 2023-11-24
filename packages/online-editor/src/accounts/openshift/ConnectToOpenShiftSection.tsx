@@ -70,6 +70,7 @@ export function ConnectToOpenShiftSection() {
                   proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
                 })
               );
+              setIsLoadingService(false);
             })
             .catch((e) => {
               if (canceled.get()) {
@@ -78,8 +79,8 @@ export function ConnectToOpenShiftSection() {
               console.error(e);
               setKieSandboxOpenShiftService(undefined);
               setStatus(OpenShiftInstanceStatus.DISCONNECTED);
+              setIsLoadingService(false);
             });
-          setIsLoadingService(false);
         }
       },
       [connection, env.KIE_SANDBOX_CORS_PROXY_URL]

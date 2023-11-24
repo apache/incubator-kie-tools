@@ -18,6 +18,7 @@
  */
 
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
+import OpenAPIParser from "@readme/openapi-parser";
 import { routes } from "./Routes";
 
 export interface FormData {
@@ -31,77 +32,46 @@ export interface AppData {
 
 export type DmnDefinitionsJson = FormData;
 
-// Replace some Ascii characters from a string.
-// Quarkus will replace spaces with `_32` and underscores with `__`,
-// this function reverts that.
-function fromiAsciiSpacing(value: string) {
-  return value.replace(new RegExp("_32", "g"), " ").replace(new RegExp("__", "g"), "_");
-}
-
 export async function fetchAppData(baseUrl: string): Promise<AppData> {
-  const response = await fetch(routes.dmnDefinitionsJson.path({}, baseUrl));
-  const dmnDefinitionsJson = (await response.json()) as ExtendedServicesDmnJsonSchema;
+  console.log({ baseUrl });
+  const openApiSpec = await (await fetch(routes.openApiJson.path({}, baseUrl))).json();
+  const fixedRefOpenApiSpec = JSON.parse(
+    JSON.stringify(openApiSpec).replace(new RegExp("/dmnDefinitions.json", "g"), `${baseUrl}/dmnDefinitions.json`)
+  );
 
-  if (!dmnDefinitionsJson.definitions) {
-    throw new Error("No DMN definitions available.");
-  }
+  console.log({ fixedRefOpenApiSpec });
 
-  const getModelNameFromOpenApiSpec = async () => {
-    const response = await fetch(routes.openApiJson.path({}));
-    const data = await response.json();
-    const paths = Object.keys(data.paths);
+  const dereferencedSpec = await OpenAPIParser.dereference(fixedRefOpenApiSpec, {
+    dereference: { circular: "ignore" },
+  });
 
-    // Remove first '/' and final '/dmnresult'
-    const dmnResultPath = paths
-      .find((path) => path.includes("dmnresult"))!
-      .replace("/", "")
-      .replace("/dmnresult", "");
+  console.log({ dereferencedSpec });
 
-    // If the model api is in a subpath, get the model name from the last portion of the path,
-    // else, what remains is the model name
-    let modelName = dmnResultPath;
-    if (modelName?.includes("/")) {
-      modelName = modelName.substring(modelName.indexOf("/") + 1);
-    }
+  const models = Object.keys(dereferencedSpec.paths)
+    .filter((path: string) => path.includes("/dmnresult"))
+    .map((path) => path.replace("/dmnresult", ""));
 
-    return modelName;
-  };
+  console.log({ models });
 
-  const inputSets = Object.keys(dmnDefinitionsJson.definitions).filter((key: string) => key.startsWith("InputSet"));
-
-  let forms = [];
-
-  if (inputSets.length === 1) {
-    const fullDmnDefinitions = {
-      $ref: "#/definitions/InputSet",
-      ...dmnDefinitionsJson,
-    };
-    const modelName = await getModelNameFromOpenApiSpec();
-    const inputRef = fullDmnDefinitions["$ref"]!.replace("#/definitions/", "");
-    const schema = JSON.parse(JSON.stringify(fullDmnDefinitions).replace(new RegExp(inputRef, "g"), "InputSet"));
-    forms = [
-      {
-        modelName,
-        schema,
+  const forms = models.map((modelPath: string) => {
+    const inputSetSchema = dereferencedSpec.paths[modelPath]?.post.requestBody.content["application/json"].schema;
+    const outputSetSchema =
+      dereferencedSpec.paths[modelPath]?.post.responses.default.content["application/json"].schema;
+    return {
+      modelName: modelPath.replace("/", ""),
+      schema: {
+        $ref: "#/definitions/InputSet",
+        definitions: {
+          InputSet: {
+            ...inputSetSchema,
+          },
+          OutputSet: {
+            ...outputSetSchema,
+          },
+        },
       },
-    ];
-  } else {
-    forms = inputSets.map((asciiSpacedInputSetRef) => {
-      const modelName = fromiAsciiSpacing(asciiSpacedInputSetRef.replace("InputSet", ""));
-      const fullDmnDefinitions = {
-        $ref: `#/definitions/${asciiSpacedInputSetRef}`,
-        ...dmnDefinitionsJson,
-      };
-      // The input set property associated with a model is InputSetX, where X is the model name (with some character substitutions).
-      // So replace all occurrences of InputSetX -> InputSet to keep compatibility with the current DmnForm.
-      const inputRef = fullDmnDefinitions["$ref"]!.replace("#/definitions/", "");
-      const schema = JSON.parse(JSON.stringify(fullDmnDefinitions).replace(new RegExp(inputRef, "g"), "InputSet"));
-      return {
-        modelName,
-        schema,
-      };
-    });
-  }
+    };
+  });
 
   return {
     forms,

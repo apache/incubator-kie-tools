@@ -35,4 +35,4 @@ EXPOSE 8081
 
 USER 1000
 
-CMD ["httpd", "-D", "FOREGROUND"]
+ENTRYPOINT ["httpd", "-D", "FOREGROUND"]

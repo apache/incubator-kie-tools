@@ -64,12 +64,15 @@ export function AuthSessionsList(props: {}) {
             (authSession.type === "openshift" || authSession.type === "kubernetes") &&
             authSessionStatus.get(authSession.id) === AuthSessionStatus.VALID
           ) {
-            devDeployments.loadDevDeployments({ authSession }).then((deployments) => {
-              if (canceled.get()) {
-                return;
-              }
-              setDevDeploymentsUsages((prev) => new Map([...prev, [authSession.id, deployments]]));
-            });
+            devDeployments
+              .loadDevDeployments({ authSession })
+              .then((deployments) => {
+                if (canceled.get()) {
+                  return;
+                }
+                setDevDeploymentsUsages((prev) => new Map([...prev, [authSession.id, deployments]]));
+              })
+              .catch((e) => console.error(e));
           }
         });
       },
