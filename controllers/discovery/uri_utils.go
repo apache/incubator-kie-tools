@@ -1,16 +1,21 @@
-// Copyright 2023 Red Hat, Inc. and/or its affiliates
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package discovery
 
@@ -32,7 +37,7 @@ func resolveServiceUri(service *corev1.Service, customPort string, outputFormat 
 	case corev1.ServiceTypeExternalName:
 		// ExternalName may not work properly with SSL:
 		// https://kubernetes.io/docs/concepts/services-networking/service/#externalname
-		protocol = httpProtocolName
+		protocol = httpProtocol
 		host = service.Spec.ExternalName
 		port = 80
 	case corev1.ServiceTypeClusterIP:
@@ -60,9 +65,9 @@ func resolveServiceUri(service *corev1.Service, customPort string, outputFormat 
 func resolveClusterIPOrTypeNodeServiceUriParams(service *corev1.Service, customPort string) (protocol string, host string, port int) {
 	servicePort := findBestSuitedServicePort(service, customPort)
 	if isSecureServicePort(servicePort) {
-		protocol = httpsProtocolName
+		protocol = httpsProtocol
 	} else {
-		protocol = httpProtocolName
+		protocol = httpProtocol
 	}
 	host = service.Spec.ClusterIP
 	port = int(servicePort.Port)
@@ -83,9 +88,9 @@ func resolvePodUri(pod *corev1.Pod, customContainer string, customPort string, o
 		if containerPort := findBestSuitedContainerPort(container, customPort); containerPort == nil {
 			return "", fmt.Errorf("no container port was found for pod: %s in namespace: %s", pod.Name, pod.Namespace)
 		} else {
-			protocol := httpProtocolName
+			protocol := httpProtocol
 			if isSecure := isSecureContainerPort(containerPort); isSecure {
-				protocol = httpsProtocolName
+				protocol = httpsProtocol
 			}
 			if outputFormat == KubernetesDNSAddress {
 				return buildKubernetesPodDNSUri(protocol, pod.Namespace, podIp, int(containerPort.ContainerPort)), nil

@@ -19,23 +19,11 @@
 
 package discovery
 
-import (
-	"context"
-	"fmt"
-
-	"sigs.k8s.io/controller-runtime/pkg/client"
+const (
+	httpProtocol         = "http"
+	httpsProtocol        = "https"
+	webProtocol          = "web"
+	defaultHttpPort      = 80
+	defaultHttpsPort     = 443
+	defaultAppSecurePort = 8443
 )
-
-type knServiceCatalog struct {
-	Client client.Client
-}
-
-func newKnServiceCatalog(cli client.Client) knServiceCatalog {
-	return knServiceCatalog{
-		Client: cli,
-	}
-}
-
-func (c knServiceCatalog) Query(ctx context.Context, uri ResourceUri, outputFormat string) (string, error) {
-	return "", fmt.Errorf("knative service discovery is not yet implemened")
-}

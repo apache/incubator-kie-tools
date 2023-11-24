@@ -1,16 +1,21 @@
-// Copyright 2023 Red Hat, Inc. and/or its affiliates
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package discovery
 
@@ -19,16 +24,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-const (
-	httpProtocolName  = "http"
-	httpsProtocolName = "https"
-	webProtocolName   = "web"
-	securePort        = 443
-	appSecurePort     = 8443
-)
-
 func isSecurePort(port int) bool {
-	return port == securePort || port == appSecurePort
+	return port == defaultHttpsPort || port == defaultAppSecurePort
 }
 
 // findBestSuitedServicePort returns the best suited ServicePort to connect to a service.
@@ -42,15 +39,15 @@ func findBestSuitedServicePort(service *corev1.Service, customPort string) *core
 		}
 	}
 	// has ssl port?
-	if result, _ := kubernetes.GetServicePortByName(httpsProtocolName, service); result != nil {
+	if result, _ := kubernetes.GetServicePortByName(httpsProtocol, service); result != nil {
 		return result
 	}
 	// has http port?
-	if result, _ := kubernetes.GetServicePortByName(httpProtocolName, service); result != nil {
+	if result, _ := kubernetes.GetServicePortByName(httpProtocol, service); result != nil {
 		return result
 	}
 	// has web port?
-	if result, _ := kubernetes.GetServicePortByName(webProtocolName, service); result != nil {
+	if result, _ := kubernetes.GetServicePortByName(webProtocol, service); result != nil {
 		return result
 	}
 	// by definition a service must always have at least one port, get the first port.
@@ -58,7 +55,7 @@ func findBestSuitedServicePort(service *corev1.Service, customPort string) *core
 }
 
 func isSecureServicePort(servicePort *corev1.ServicePort) bool {
-	return servicePort.Name == httpsProtocolName || isSecurePort(int(servicePort.Port))
+	return servicePort.Name == httpsProtocol || isSecurePort(int(servicePort.Port))
 }
 
 // findBestSuitedContainerPort returns the best suited PortPort to connect to a pod, or nil if the pod has no ports at all.
@@ -76,15 +73,15 @@ func findBestSuitedContainerPort(container *corev1.Container, customPort string)
 		}
 	}
 	// has ssl port?
-	if result, _ := kubernetes.GetContainerPortByName(httpsProtocolName, container); result != nil {
+	if result, _ := kubernetes.GetContainerPortByName(httpsProtocol, container); result != nil {
 		return result
 	}
 	// has http port?
-	if result, _ := kubernetes.GetContainerPortByName(httpProtocolName, container); result != nil {
+	if result, _ := kubernetes.GetContainerPortByName(httpProtocol, container); result != nil {
 		return result
 	}
 	// has web port?
-	if result, _ := kubernetes.GetContainerPortByName(webProtocolName, container); result != nil {
+	if result, _ := kubernetes.GetContainerPortByName(webProtocol, container); result != nil {
 		return result
 	}
 	// when defined, a ContainerPort must always have containerPort (Required value)
@@ -92,5 +89,5 @@ func findBestSuitedContainerPort(container *corev1.Container, customPort string)
 }
 
 func isSecureContainerPort(containerPort *corev1.ContainerPort) bool {
-	return containerPort.Name == httpsProtocolName || isSecurePort(int(containerPort.ContainerPort))
+	return containerPort.Name == httpsProtocol || isSecurePort(int(containerPort.ContainerPort))
 }

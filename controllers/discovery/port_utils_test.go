@@ -1,16 +1,21 @@
-// Copyright 2023 Red Hat, Inc. and/or its affiliates
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package discovery
 
@@ -29,44 +34,44 @@ func TestIsSecurePort(t *testing.T) {
 }
 
 func TestBestSuitedServicePort_BestIsCustomPort(t *testing.T) {
-	service := mockServiceWithPorts(namespace1, service1, mockServicePort("not-wanted", tcp, 8282),
-		mockServicePort(httpsProtocolName, tcp, defaultHttps),
-		mockServicePort(customPortName, tcp, defaultHttp))
+	service := mockServiceWithPorts(namespace1, service1Name, mockServicePort("not-wanted", tcp, 8282),
+		mockServicePort(httpsProtocol, tcp, defaultHttpsPort),
+		mockServicePort(customPortName, tcp, defaultHttpPort))
 	doTestBestSuitedServicePort(t, service, customPortName, &service.Spec.Ports[2])
 }
 
 func TestBestSuitedServicePort_BestIsHttpsPort(t *testing.T) {
-	service := mockServiceWithPorts(namespace1, service1, mockServicePort("not-wanted", tcp, 8282),
-		mockServicePort(httpProtocolName, tcp, defaultHttp),
-		mockServicePort(httpsProtocolName, tcp, defaultHttps))
+	service := mockServiceWithPorts(namespace1, service1Name, mockServicePort("not-wanted", tcp, 8282),
+		mockServicePort(httpProtocol, tcp, defaultHttpPort),
+		mockServicePort(httpsProtocol, tcp, defaultHttpsPort))
 	doTestBestSuitedServicePort(t, service, "", &service.Spec.Ports[2])
 }
 
 func TestBestSuitedServicePort_BestIsHttpPort(t *testing.T) {
-	service := mockServiceWithPorts(namespace1, service1, mockServicePort("not-wanted", tcp, 8282),
-		mockServicePort(webProtocolName, tcp, 81),
-		mockServicePort(httpProtocolName, tcp, defaultHttp))
+	service := mockServiceWithPorts(namespace1, service1Name, mockServicePort("not-wanted", tcp, 8282),
+		mockServicePort(webProtocol, tcp, 81),
+		mockServicePort(httpProtocol, tcp, defaultHttpPort))
 	doTestBestSuitedServicePort(t, service, "", &service.Spec.Ports[2])
 }
 
 func TestBestSuitedServicePort_BestWebPort(t *testing.T) {
-	service := mockServiceWithPorts(namespace1, service1, mockServicePort("not-wanted", tcp, 8282),
-		mockServicePort(webProtocolName, tcp, 81))
+	service := mockServiceWithPorts(namespace1, service1Name, mockServicePort("not-wanted", tcp, 8282),
+		mockServicePort(webProtocol, tcp, 81))
 	doTestBestSuitedServicePort(t, service, "", &service.Spec.Ports[1])
 }
 
 func TestBestSuitedServicePort_BestIsFirst(t *testing.T) {
-	service := mockServiceWithPorts(namespace1, service1, mockServicePort("first-port", tcp, 8282),
+	service := mockServiceWithPorts(namespace1, service1Name, mockServicePort("first-port", tcp, 8282),
 		mockServicePort("second-port", tcp, 8383))
 	doTestBestSuitedServicePort(t, service, "", &service.Spec.Ports[0])
 }
 
 func TestIsSecureServicePort(t *testing.T) {
-	servicePort := mockServicePort(httpsProtocolName, tcp, 443)
+	servicePort := mockServicePort(httpsProtocol, tcp, 443)
 	assert.True(t, isSecureServicePort(&servicePort))
 	servicePort = mockServicePort("other-secure-port", tcp, 443)
 	assert.True(t, isSecureServicePort(&servicePort))
-	servicePort = mockServicePort(httpProtocolName, tcp, 80)
+	servicePort = mockServicePort(httpProtocol, tcp, 80)
 	assert.False(t, isSecureServicePort(&servicePort))
 }
 
@@ -81,28 +86,28 @@ func TestBestSuitedContainerPort_ContainerWithNoPorts(t *testing.T) {
 
 func TestBestSuitedContainerPort_BestIsCustomPort(t *testing.T) {
 	container := mockContainerWithPorts("", mockContainerPort("not-wanted", tcp, 8282),
-		mockContainerPort(httpsProtocolName, tcp, defaultHttps),
-		mockContainerPort(customPortName, tcp, defaultHttp))
+		mockContainerPort(httpsProtocol, tcp, defaultHttpsPort),
+		mockContainerPort(customPortName, tcp, defaultHttpPort))
 	doTestBestSuitedContainerPort(t, container, customPortName, &container.Ports[2])
 }
 
 func TestBestSuitedContainerPort_BestIsHttpsPort(t *testing.T) {
 	container := mockContainerWithPorts("", mockContainerPort("not-wanted", tcp, 8282),
-		mockContainerPort(httpProtocolName, tcp, defaultHttp),
-		mockContainerPort(httpsProtocolName, tcp, defaultHttps))
+		mockContainerPort(httpProtocol, tcp, defaultHttpPort),
+		mockContainerPort(httpsProtocol, tcp, defaultHttpsPort))
 	doTestBestSuitedContainerPort(t, container, "", &container.Ports[2])
 }
 
 func TestBestSuitedContainerPort_BestIsHttpPort(t *testing.T) {
 	container := mockContainerWithPorts("", mockContainerPort("not-wanted", tcp, 8282),
-		mockContainerPort(webProtocolName, tcp, 81),
-		mockContainerPort(httpProtocolName, tcp, defaultHttp))
+		mockContainerPort(webProtocol, tcp, 81),
+		mockContainerPort(httpProtocol, tcp, defaultHttpsPort))
 	doTestBestSuitedContainerPort(t, container, "", &container.Ports[2])
 }
 
 func TestBestSuitedContainerPort_BestWebPort(t *testing.T) {
 	container := mockContainerWithPorts("", mockContainerPort("not-wanted", tcp, 8282),
-		mockContainerPort(webProtocolName, tcp, 81))
+		mockContainerPort(webProtocol, tcp, 81))
 	doTestBestSuitedContainerPort(t, container, "", &container.Ports[1])
 }
 
@@ -118,10 +123,10 @@ func doTestBestSuitedContainerPort(t *testing.T, container *corev1.Container, cu
 }
 
 func TestIsSecureContainerPort(t *testing.T) {
-	containerPort := mockContainerPort(httpsProtocolName, tcp, 443)
+	containerPort := mockContainerPort(httpsProtocol, tcp, 443)
 	assert.True(t, isSecureContainerPort(&containerPort))
 	containerPort = mockContainerPort("other-secure-port", tcp, 443)
 	assert.True(t, isSecureContainerPort(&containerPort))
-	containerPort = mockContainerPort(httpProtocolName, tcp, 80)
+	containerPort = mockContainerPort(httpProtocol, tcp, 80)
 	assert.False(t, isSecureContainerPort(&containerPort))
 }

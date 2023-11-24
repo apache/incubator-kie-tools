@@ -1,16 +1,21 @@
-// Copyright 2023 Red Hat, Inc. and/or its affiliates
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package discovery
 
@@ -40,7 +45,7 @@ var KubernetesServicesTestValues = map[string]*ResourceUri{
 		Kind("services").
 		Version("v1").
 		Name("my-service").
-		WithLabel("label-a", "value-a").Build(),
+		WithQueryParam("label-a", "value-a").Build(),
 
 	"kubernetes:services.v1/my-service?label-a=value-a&": nil,
 
@@ -52,8 +57,8 @@ var KubernetesServicesTestValues = map[string]*ResourceUri{
 		Kind("services").
 		Version("v1").
 		Name("my-service").
-		WithLabel("label-a", "value-a").
-		WithLabel("label-b", "value-b").Build(),
+		WithQueryParam("label-a", "value-a").
+		WithQueryParam("label-b", "value-b").Build(),
 
 	"kubernetes:services.v1/my-namespace/": nil,
 
@@ -77,7 +82,7 @@ var KubernetesServicesTestValues = map[string]*ResourceUri{
 		Version("v1").
 		Namespace("my-namespace").
 		Name("my-service").
-		WithLabel("label-a", "value-a").Build(),
+		WithQueryParam("label-a", "value-a").Build(),
 
 	"kubernetes:services.v1/my-namespace/my-service?label-a=value-a&": nil,
 
@@ -85,13 +90,14 @@ var KubernetesServicesTestValues = map[string]*ResourceUri{
 
 	"kubernetes:services.v1/my-namespace/my-service?label-a=value-a&label-b=": nil,
 
-	"kubernetes:services.v1/my-namespace/my-service?label-a=value-a&label-b=value-b": NewResourceUriBuilder(KubernetesScheme).
+	"kubernetes:services.v1/my-namespace/my-service?label-a=value-a&label-b=value-b&port=custom-port-value": NewResourceUriBuilder(KubernetesScheme).
 		Kind("services").
 		Version("v1").
 		Namespace("my-namespace").
 		Name("my-service").
-		WithLabel("label-a", "value-a").
-		WithLabel("label-b", "value-b").Build(),
+		WithQueryParam("label-a", "value-a").
+		WithQueryParam("label-b", "value-b").
+		WithPort("custom-port-value").Build(),
 }
 
 func TestParseKubernetesServicesURI(t *testing.T) {
@@ -122,9 +128,9 @@ func assertEquals(t *testing.T, uri *ResourceUri, expectedUri *ResourceUri) {
 	assert.Equal(t, uri.GVK.Group, expectedUri.GVK.Group)
 	assert.Equal(t, uri.GVK.Version, expectedUri.GVK.Version)
 	assert.Equal(t, uri.GVK.Kind, expectedUri.GVK.Kind)
-	assert.Equal(t, len(uri.CustomLabels), len(expectedUri.CustomLabels))
-	for k, v := range uri.CustomLabels {
-		assert.True(t, len(expectedUri.CustomLabels[k]) > 0, "label %s is not present in expectedUri: %s", k, expectedUri.String())
-		assert.Equal(t, v, expectedUri.CustomLabels[k], "value for label %s in expectedUri should be %s, but is %s", k, v, expectedUri.CustomLabels[k])
+	assert.Equal(t, len(uri.QueryParams), len(expectedUri.QueryParams))
+	for k, v := range uri.QueryParams {
+		assert.True(t, len(expectedUri.QueryParams[k]) > 0, "label %s is not present in expectedUri: %s", k, expectedUri.String())
+		assert.Equal(t, v, expectedUri.QueryParams[k], "value for label %s in expectedUri should be %s, but is %s", k, v, expectedUri.QueryParams[k])
 	}
 }
