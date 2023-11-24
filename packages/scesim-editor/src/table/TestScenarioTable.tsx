@@ -27,7 +27,7 @@ import {
   SceSim__expressionIdentifierType,
   SceSim__factIdentifierType,
   SceSim__FactMappingType,
-  SceSim__factMappingValuesType,
+  SceSim__ScenarioType,
   SceSim__simulationType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
@@ -368,15 +368,85 @@ function TestScenarioTable({
     [updateTestScenarioModel]
   );
 
-  const onColumnDeleted = useCallback(
-    (args: { columnIndex: number; groupType: string | undefined }) => {
+  const onColumnAdded = useCallback(
+    (args: { beforeIndex: number; groupType: string | undefined }) => {
+      if (SimulationTableColumnGroup.Other === args.groupType) {
+        return;
+      }
+
+      console.log(args.beforeIndex);
+      console.log(args.groupType);
+
       updateTestScenarioModel((prevState) => {
         const deepClonedFactMappings = JSON.parse(
           JSON.stringify(
             prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings?.FactMapping ?? []
           )
         );
+        const newFactMapping = {
+          //"expressionElements"?: SceSim__expressionElementsType; // from type SceSim__FactMappingType @ SceSim.xsd
+          expressionIdentifier: { name: { __$$text: "1|100" }, type: { __$$text: args.groupType } }, // from type SceSim__FactMappingType @ SceSim.xsd
+          factIdentifier: { name: { __$$text: "Violation" }, className: { __$$text: "Violation" } }, // from type SceSim__FactMappingType @ SceSim.xsd
+          className: { __$$text: "java.lang.Void" }, // from type SceSim__FactMappingType @ SceSim.xsd
+          factAlias: { __$$text: "Violation" }, // from type SceSim__FactMappingType @ SceSim.xsd
+          expressionAlias: { __$$text: "PROPERTY" }, // from type SceSim__FactMappingType @ SceSim.xsd
+          columnWidth: { __$$text: 150 },
+          factMappingValueType: { __$$text: "NOT_EXPRESSION" }, // from type SceSim__FactMappingType @ SceSim.xsd
+        };
+
+        deepClonedFactMappings.splice(args.beforeIndex + 1, 0, newFactMapping);
+        return {
+          ScenarioSimulationModel: {
+            ...prevState.ScenarioSimulationModel,
+            simulation: {
+              ...prevState.ScenarioSimulationModel.simulation,
+              scesimModelDescriptor: {
+                ...prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor,
+                factMappings: {
+                  FactMapping: deepClonedFactMappings,
+                },
+              },
+              // scesimData: {
+              //   Scenario: deepClonedScenarios,
+              // },
+            },
+          },
+        };
+      });
+    },
+    [SimulationTableColumnGroup, updateTestScenarioModel]
+  );
+
+  const onColumnDeleted = useCallback(
+    (args: { columnIndex: number }) => {
+      updateTestScenarioModel((prevState) => {
+        const factMappingToRemove =
+          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings!.FactMapping![
+            args.columnIndex + 1
+          ];
+        const deepClonedFactMappings = JSON.parse(
+          JSON.stringify(
+            prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings?.FactMapping ?? []
+          )
+        );
         deepClonedFactMappings.splice(args.columnIndex + 1, 1);
+
+        const deepClonedScenarios = JSON.parse(
+          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimData.Scenario ?? [])
+        );
+
+        deepClonedScenarios.forEach((scenario: SceSim__ScenarioType) => {
+          const factMappingValueColumnIndex = retrieveColumnIndexbyIdentifiers(
+            factMappingToRemove.factIdentifier,
+            factMappingToRemove.expressionIdentifier
+          )!;
+
+          return {
+            factMappingValues: {
+              FactMappingValue: scenario.factMappingValues.FactMappingValue!.splice(factMappingValueColumnIndex + 1, 1),
+            },
+          };
+        });
 
         return {
           ScenarioSimulationModel: {
@@ -389,12 +459,15 @@ function TestScenarioTable({
                   FactMapping: deepClonedFactMappings,
                 },
               },
+              scesimData: {
+                Scenario: deepClonedScenarios,
+              },
             },
           },
         };
       });
     },
-    [updateTestScenarioModel]
+    [retrieveColumnIndexbyIdentifiers, updateTestScenarioModel]
   );
 
   const onRowAdded = useCallback(
@@ -538,6 +611,7 @@ function TestScenarioTable({
       isEditableHeader={assetType === TestScenarioType[TestScenarioType.RULE]}
       isReadOnly={false}
       onCellUpdates={onCellUpdates}
+      onColumnAdded={onColumnAdded}
       onColumnDeleted={onColumnDeleted}
       onRowAdded={onRowAdded}
       onRowDeleted={onRowDeleted}
