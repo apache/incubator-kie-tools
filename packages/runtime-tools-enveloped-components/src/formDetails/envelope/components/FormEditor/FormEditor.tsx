@@ -17,19 +17,35 @@
  * under the License.
  */
 
-import React, { useImperativeHandle, useState } from "react";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { CodeEditor, CodeEditorControl, Language } from "@patternfly/react-code-editor/dist/js/components/CodeEditor";
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { UndoIcon } from "@patternfly/react-icons/dist/js/icons/undo-icon";
 import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
 import { RedoIcon } from "@patternfly/react-icons/dist/js/icons/redo-icon";
 import { PlayIcon } from "@patternfly/react-icons/dist/js/icons/play-icon";
+import cloneDeep from "lodash/cloneDeep";
+import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Form } from "../../../api";
 import { useFormDetailsContext } from "../contexts/FormDetailsContext";
 import { ResizableContent } from "../FormDetails/FormDetails";
-import cloneDeep from "lodash/cloneDeep";
 import "../styles.css";
-import { EditorDidMount } from "react-monaco-editor";
+import { FormEditorEditorApi, FormEditorEditorController } from "./FormEditorController";
+
+function FormEditorControl(props: {
+  toolTipText: string;
+  onClick: () => void;
+  ariaLabel: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <Tooltip content={<div>{props.toolTipText}</div>}>
+      <Button onClick={props.onClick} variant="control" aria-label={props.ariaLabel}>
+        {props.icon}
+      </Button>
+    </Tooltip>
+  );
+}
 
 export interface FormEditorProps {
   formType?: string;
@@ -41,80 +57,55 @@ export interface FormEditorProps {
   saveFormContent: (formContent: Form) => void;
 }
 
-export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps & OUIAProps>(
+export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps>(
   (
-    {
-      code,
-      formType,
-      formContent,
-      setFormContent,
-      saveFormContent,
-      isSource = false,
-      isConfig = false,
-      ouiaId,
-      ouiaSafe,
-    },
+    { code, formType, formContent, setFormContent, saveFormContent, isSource = false, isConfig = false },
     forwardedRef
   ) => {
+    const [content, setContent] = useState("");
     const appContext = useFormDetailsContext();
+    const container = useRef<HTMLDivElement>(null);
 
-    const [monacoEditor, setMonacoEditor] = useState<any>();
-
-    useImperativeHandle(
-      forwardedRef,
-      () => {
-        return {
-          doResize() {
-            monacoEditor.layout();
-          },
-        };
-      },
-      [monacoEditor]
-    );
-
-    const getFormLanguage = (): Language | undefined => {
+    const formLanguage = useMemo<string | undefined>(() => {
       if (isSource && formType) {
         switch (formType.toLowerCase()) {
           case "tsx":
-            return Language.typescript;
+            return "typescript";
           case "html":
-            return Language.html;
+            return "html";
         }
-        /* istanbul ignore else */
       } else if (isConfig) {
-        return Language.json;
+        return "json";
       }
-    };
+    }, [formType, isSource, isConfig]);
 
-    const editorDidMount: EditorDidMount = (editor, monaco): void => {
-      /* istanbul ignore else */
-      if (isSource && formType?.toLowerCase() === "tsx") {
-        monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-          jsx: monaco.languages.typescript.JsxEmit.React,
-        });
+    const controller: FormEditorEditorApi = useMemo<FormEditorEditorApi>(() => {
+      return new FormEditorEditorController(code, (args) => setContent(args.content), formLanguage, false);
+    }, [code, formLanguage]);
 
-        monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-          noSemanticValidation: false,
-          noSyntaxValidation: false,
-        });
+    useEffect(() => {
+      if (container.current) {
+        controller.show(container.current, EditorTheme.LIGHT);
       }
-      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, function () {
-        onSaveForm();
-      });
-      setMonacoEditor(editor);
-    };
+
+      return () => {
+        controller.dispose();
+      };
+    }, [controller]);
+
+    useImperativeHandle(forwardedRef, () => controller, [controller]);
 
     const onExecuteCode = (): void => {
       const tempContent: Form = cloneDeep(formContent);
-      const value = monacoEditor.getValue();
+      const value = content;
       if (Object.keys(formContent)[0].length > 0 && isSource) {
         tempContent.source = value;
       } else {
         tempContent.configuration["resources"] = JSON.parse(value);
       }
-      const content = { ...formContent, ...tempContent };
-      appContext.updateContent(content);
-      setFormContent(content);
+      const newFormContent = { ...formContent, ...tempContent };
+      appContext.updateContent(newFormContent);
+      setFormContent(newFormContent);
     };
 
     const onSaveForm = (): void => {
@@ -122,44 +113,36 @@ export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps & O
     };
 
     const onUndoChanges = (): void => {
-      /* istanbul ignore else */
-      if (monacoEditor !== null) {
-        monacoEditor.focus();
-        monacoEditor.trigger("whatever...", "undo");
-      }
+      controller.undo();
     };
 
     const onRedoChanges = (): void => {
-      /* istanbul ignore else */
-      if (monacoEditor !== null) {
-        monacoEditor.focus();
-        monacoEditor.trigger("whatever...", "redo");
-      }
+      controller.redo();
     };
 
     const customControl = (
       <>
-        <CodeEditorControl
+        <FormEditorControl
           icon={<PlayIcon />}
-          aria-label="Execute form"
+          ariaLabel="Execute form"
           toolTipText="Execute form"
           onClick={onExecuteCode}
         />
-        <CodeEditorControl
+        <FormEditorControl
           icon={<UndoIcon />}
-          aria-label="Undo changes"
+          ariaLabel="Undo changes"
           toolTipText="Undo changes"
           onClick={onUndoChanges}
         />
-        <CodeEditorControl
+        <FormEditorControl
           icon={<RedoIcon />}
-          aria-label="Redo changes"
+          ariaLabel="Redo changes"
           toolTipText="Redo changes"
           onClick={onRedoChanges}
         />
-        <CodeEditorControl
+        <FormEditorControl
           icon={<SaveIcon />}
-          aria-label="Save form"
+          ariaLabel="Save form"
           toolTipText="Save form"
           onClick={() => onSaveForm()}
         />
@@ -167,21 +150,10 @@ export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps & O
     );
 
     return (
-      <div {...componentOuiaProps(ouiaId, "form-view", ouiaSafe)}>
-        <CodeEditor
-          isDarkTheme={false}
-          isLineNumbersVisible={true}
-          isReadOnly={false}
-          isCopyEnabled={true}
-          isMinimapVisible={false}
-          isLanguageLabelVisible
-          customControls={customControl}
-          code={code}
-          language={getFormLanguage()}
-          height="700px"
-          onEditorDidMount={editorDidMount}
-        />
-      </div>
+      <>
+        <div>{customControl}</div>
+        <div className={"kogito-form-editor-container"} ref={container} style={{ height: "700px" }} />
+      </>
     );
   }
 );
