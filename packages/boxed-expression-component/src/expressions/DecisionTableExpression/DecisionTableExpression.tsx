@@ -735,7 +735,6 @@ export function DecisionTableExpression(
       }
 
       const columnIndex = conditions.selection.selectionStart.columnIndex;
-      const column: ReactTable.ColumnInterface = conditions.column!;
 
       const atLeastTwoColumnsOfTheSameGroupType = conditions.column?.groupType
         ? _.groupBy(conditions.columns, (column) => column?.groupType)[conditions.column.groupType].length > 1
