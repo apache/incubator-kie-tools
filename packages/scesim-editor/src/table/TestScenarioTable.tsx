@@ -35,23 +35,25 @@ import {
   BeeTableOperationConfig,
 } from "@kie-tools/boxed-expression-component/dist/api/BeeTable";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
-import { StandaloneBeeTable, getColumnsAtLastLevel } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
+import {
+  BeeTableCellUpdate,
+  StandaloneBeeTable,
+  getColumnsAtLastLevel,
+} from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
+
+import { SceSimModel } from "@kie-tools/scesim-marshaller";
 
 import { useTestScenarioEditorI18n } from "../i18n";
 import { TestScenarioType } from "../TestScenarioEditor";
 
 function TestScenarioTable({
   assetType,
-  onRowAdded,
-  onRowDeleted,
-  onRowDuplicated,
   simulationData,
+  updateTestScenarioModel,
 }: {
   assetType: string;
-  onRowAdded: (args: { beforeIndex: number }) => void;
-  onRowDeleted: (args: { rowIndex: number }) => void;
-  onRowDuplicated: (args: { rowIndex: number }) => void;
   simulationData: SceSim__simulationType;
+  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   enum SimulationTableColumnGroup {
     Expect = "EXPECT",
@@ -297,6 +299,151 @@ function TestScenarioTable({
     return config;
   }, [SimulationTableColumnGroup, generateOperationConfig]);
 
+  const onRowAdded = useCallback(
+    (args: { beforeIndex: number }) => {
+      updateTestScenarioModel((prevState) => {
+        const factMappingValuesItems = prevState.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]![
+          "factMappings"
+        ]!["FactMapping"]!.map((factMapping) => {
+          return {
+            expressionIdentifier: {
+              name: { __$$text: factMapping.expressionIdentifier.name!.__$$text },
+              type: { __$$text: factMapping.expressionIdentifier.type!.__$$text },
+            },
+            factIdentifier: {
+              name: { __$$text: factMapping.factIdentifier.name!.__$$text },
+              className: { __$$text: factMapping.factIdentifier.className!.__$$text },
+            },
+            rawValue: { __$$text: "", "@_class": "string" },
+          };
+        });
+
+        const factMappingValues = {
+          factMappingValues: {
+            FactMappingValue: factMappingValuesItems,
+          },
+        };
+
+        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
+        newScenarios.splice(args.beforeIndex, 0, factMappingValues);
+
+        return {
+          ...prevState,
+          ScenarioSimulationModel: {
+            ...prevState.ScenarioSimulationModel,
+            ["simulation"]: {
+              ...prevState.ScenarioSimulationModel["simulation"],
+              ["scesimData"]: {
+                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
+                ["Scenario"]: newScenarios,
+              },
+            },
+          },
+        };
+      });
+    },
+    [updateTestScenarioModel]
+  );
+
+  const onRowDuplicated = useCallback(
+    (args: { rowIndex: number }) => {
+      updateTestScenarioModel((prevState) => {
+        const factMappingValuesItems = prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"]![
+          args.rowIndex
+        ]!.factMappingValues!.FactMappingValue!.map((factMappingValue) => {
+          return {
+            expressionIdentifier: {
+              name: { __$$text: factMappingValue.expressionIdentifier.name!.__$$text },
+              type: { __$$text: factMappingValue.expressionIdentifier.type!.__$$text },
+            },
+            factIdentifier: {
+              name: { __$$text: factMappingValue.factIdentifier.name!.__$$text },
+              className: { __$$text: factMappingValue.factIdentifier.className!.__$$text },
+            },
+            rawValue: {
+              __$$text: factMappingValue.rawValue ? factMappingValue.rawValue.__$$text : "",
+              "@_class": factMappingValue.rawValue?.["@_class"] ? factMappingValue.rawValue["@_class"] : "string",
+            },
+          };
+        });
+
+        const factMappingValues = {
+          factMappingValues: {
+            FactMappingValue: factMappingValuesItems,
+          },
+        };
+
+        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
+        newScenarios.splice(args.rowIndex, 0, factMappingValues);
+
+        return {
+          ...prevState,
+          ScenarioSimulationModel: {
+            ...prevState.ScenarioSimulationModel,
+            ["simulation"]: {
+              ...prevState.ScenarioSimulationModel["simulation"],
+              ["scesimData"]: {
+                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
+                ["Scenario"]: newScenarios,
+              },
+            },
+          },
+        };
+      });
+    },
+    [updateTestScenarioModel]
+  );
+
+  const onRowDeleted = useCallback(
+    (args: { rowIndex: number }) => {
+      updateTestScenarioModel((prevState) => {
+        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
+        newScenarios.splice(args.rowIndex, 1);
+
+        return {
+          ...prevState,
+          ScenarioSimulationModel: {
+            ...prevState.ScenarioSimulationModel,
+            ["simulation"]: {
+              ...prevState.ScenarioSimulationModel["simulation"],
+              ["scesimData"]: {
+                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
+                ["Scenario"]: newScenarios,
+              },
+            },
+          },
+        };
+      });
+    },
+    [updateTestScenarioModel]
+  );
+
+  const onCellUpdates = useCallback(
+    (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
+      cellUpdates.forEach((update) => {
+        updateTestScenarioModel((prevState) => {
+          const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
+          newScenarios[update.rowIndex].factMappingValues.FactMappingValue![update.columnIndex].rawValue!.__$$text =
+            update.value;
+
+          return {
+            ScenarioSimulationModel: {
+              ...prevState.ScenarioSimulationModel,
+              ["simulation"]: {
+                ...prevState.ScenarioSimulationModel["simulation"],
+                ["scesimData"]: {
+                  ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
+                  ["Scenario"]: newScenarios,
+                },
+              },
+            },
+          };
+        });
+      });
+    },
+    [updateTestScenarioModel]
+  );
+
   return (
     <StandaloneBeeTable
       allowedOperations={allowedOperations}
@@ -306,6 +453,7 @@ function TestScenarioTable({
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
       isEditableHeader={assetType === TestScenarioType[TestScenarioType.RULE]}
       isReadOnly={false}
+      onCellUpdates={onCellUpdates}
       onRowAdded={onRowAdded}
       onRowDeleted={onRowDeleted}
       onRowDuplicated={onRowDuplicated}

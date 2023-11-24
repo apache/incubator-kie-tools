@@ -26,7 +26,7 @@ import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-compon
 
 import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
 
-import { getMarshaller } from "@kie-tools/scesim-marshaller";
+import { getMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import {
   SceSim__FactMappingType,
   SceSim__ScenarioSimulationModelType,
@@ -229,19 +229,15 @@ function TestScenarioCreationPanel({
 }
 
 function TestScenarioMainPanel({
-  addNewSimulationRow,
   fileName,
-  deleteSimulationRow,
-  duplicateSimulationRow,
   scesimModel,
   updateSettingField,
+  updateTestScenarioModel,
 }: {
-  addNewSimulationRow: (args: { beforeIndex: number }) => void;
   fileName: string;
-  deleteSimulationRow: (args: { rowIndex: number }) => void;
-  duplicateSimulationRow: (args: { rowIndex: number }) => void;
   scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
   updateSettingField: (field: string, value: string) => void;
+  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
@@ -388,10 +384,8 @@ function TestScenarioMainPanel({
                     <div className="kie-scesim-editor--table-container">
                       <TestScenarioTable
                         assetType={scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text}
-                        onRowAdded={addNewSimulationRow}
-                        onRowDeleted={deleteSimulationRow}
-                        onRowDuplicated={duplicateSimulationRow}
                         simulationData={scesimModel.ScenarioSimulationModel["simulation"]}
+                        updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
                   </Tab>
@@ -540,125 +534,6 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
     [setScesimModel]
   );
 
-  const addNewSimulationRow = useCallback(
-    (args: { beforeIndex: number }) => {
-      setScesimModel((prevState) => {
-        const factMappingValuesItems = prevState.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]![
-          "factMappings"
-        ]!["FactMapping"]!.map((factMapping) => {
-          return {
-            expressionIdentifier: {
-              name: { __$$text: factMapping.expressionIdentifier.name!.__$$text },
-              type: { __$$text: factMapping.expressionIdentifier.type!.__$$text },
-            },
-            factIdentifier: {
-              name: { __$$text: factMapping.factIdentifier.name!.__$$text },
-              className: { __$$text: factMapping.factIdentifier.className!.__$$text },
-            },
-            rawValue: { __$$text: "", "@_class": "string" },
-          };
-        });
-
-        const factMappingValues = {
-          factMappingValues: {
-            FactMappingValue: factMappingValuesItems,
-          },
-        };
-
-        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
-        newScenarios.splice(args.beforeIndex, 0, factMappingValues);
-
-        return {
-          ...prevState,
-          ScenarioSimulationModel: {
-            ...prevState.ScenarioSimulationModel,
-            ["simulation"]: {
-              ...prevState.ScenarioSimulationModel["simulation"],
-              ["scesimData"]: {
-                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
-                ["Scenario"]: newScenarios,
-              },
-            },
-          },
-        };
-      });
-    },
-    [setScesimModel]
-  );
-
-  const duplicateSimulationRow = useCallback(
-    (args: { rowIndex: number }) => {
-      setScesimModel((prevState) => {
-        const factMappingValuesItems = prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"]![
-          args.rowIndex
-        ]!.factMappingValues!.FactMappingValue!.map((factMappingValue) => {
-          return {
-            expressionIdentifier: {
-              name: { __$$text: factMappingValue.expressionIdentifier.name!.__$$text },
-              type: { __$$text: factMappingValue.expressionIdentifier.type!.__$$text },
-            },
-            factIdentifier: {
-              name: { __$$text: factMappingValue.factIdentifier.name!.__$$text },
-              className: { __$$text: factMappingValue.factIdentifier.className!.__$$text },
-            },
-            rawValue: {
-              __$$text: factMappingValue.rawValue ? factMappingValue.rawValue.__$$text : "",
-              "@_class": factMappingValue.rawValue?.["@_class"] ? factMappingValue.rawValue["@_class"] : "string",
-            },
-          };
-        });
-
-        const factMappingValues = {
-          factMappingValues: {
-            FactMappingValue: factMappingValuesItems,
-          },
-        };
-
-        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
-        newScenarios.splice(args.rowIndex, 0, factMappingValues);
-
-        return {
-          ...prevState,
-          ScenarioSimulationModel: {
-            ...prevState.ScenarioSimulationModel,
-            ["simulation"]: {
-              ...prevState.ScenarioSimulationModel["simulation"],
-              ["scesimData"]: {
-                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
-                ["Scenario"]: newScenarios,
-              },
-            },
-          },
-        };
-      });
-    },
-    [setScesimModel]
-  );
-
-  const deleteSimulationRow = useCallback(
-    (args: { rowIndex: number }) => {
-      setScesimModel((prevState) => {
-        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
-        newScenarios.splice(args.rowIndex, 1);
-
-        return {
-          ...prevState,
-          ScenarioSimulationModel: {
-            ...prevState.ScenarioSimulationModel,
-            ["simulation"]: {
-              ...prevState.ScenarioSimulationModel["simulation"],
-              ["scesimData"]: {
-                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
-                ["Scenario"]: newScenarios,
-              },
-            },
-          },
-        };
-      });
-    },
-    [setScesimModel]
-  );
-
   return (
     <>
       {(() => {
@@ -700,11 +575,12 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
           case TestScenarioFileStatus.VALID:
             return (
               <TestScenarioMainPanel
-                addNewSimulationRow={addNewSimulationRow}
-                deleteSimulationRow={deleteSimulationRow}
-                duplicateSimulationRow={duplicateSimulationRow}
+                //addNewSimulationRow={addNewSimulationRow}
+                //deleteSimulationRow={deleteSimulationRow}
+                //duplicateSimulationRow={duplicateSimulationRow}
                 fileName={scesimFile.path}
                 scesimModel={scesimModel}
+                updateTestScenarioModel={setScesimModel}
                 updateSettingField={updateSettingsField}
               />
             );
