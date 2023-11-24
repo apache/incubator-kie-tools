@@ -24,7 +24,10 @@ import * as ReactTable from "react-table";
 import _ from "lodash";
 
 import {
+  SceSim__expressionIdentifierType,
+  SceSim__factIdentifierType,
   SceSim__FactMappingType,
+  SceSim__factMappingValuesType,
   SceSim__simulationType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
@@ -299,12 +302,35 @@ function TestScenarioTable({
     return config;
   }, [SimulationTableColumnGroup, generateOperationConfig]);
 
+  const retrieveColumnIndexbyIdentifiers = useCallback(
+    (factIdentifier: SceSim__factIdentifierType, expressionIdentifier: SceSim__expressionIdentifierType) => {
+      return simulationData.scesimModelDescriptor.factMappings!.FactMapping?.findIndex((factMapping) => {
+        return (
+          factMapping.factIdentifier.name?.__$$text == factIdentifier.name?.__$$text &&
+          factMapping.factIdentifier.className?.__$$text == factIdentifier.className?.__$$text &&
+          factMapping.expressionIdentifier.name?.__$$text == expressionIdentifier.name?.__$$text &&
+          factMapping.expressionIdentifier.type?.__$$text == expressionIdentifier.type?.__$$text
+        );
+      });
+    },
+    [simulationData.scesimModelDescriptor.factMappings]
+  );
+
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       updateTestScenarioModel((prevState) => {
-        const factMappingValuesItems = prevState.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]![
+        const sortedFactMappings = prevState.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]![
           "factMappings"
-        ]!["FactMapping"]!.map((factMapping) => {
+        ]!["FactMapping"]!.reduce((sortedFactMappings, currentFactMapping) => {
+          const sortedColumnIndex = retrieveColumnIndexbyIdentifiers(
+            currentFactMapping!.factIdentifier,
+            currentFactMapping.expressionIdentifier
+          )!;
+          sortedFactMappings[sortedColumnIndex] = currentFactMapping;
+          return sortedFactMappings;
+        }, new Array<SceSim__FactMappingType>());
+
+        const factMappingValuesItems = sortedFactMappings.map((factMapping) => {
           return {
             expressionIdentifier: {
               name: { __$$text: factMapping.expressionIdentifier.name!.__$$text },
@@ -342,6 +368,83 @@ function TestScenarioTable({
         };
       });
     },
+    [retrieveColumnIndexbyIdentifiers, updateTestScenarioModel]
+  );
+
+  const onCellUpdates = useCallback(
+    (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
+      cellUpdates.forEach((update) => {
+        updateTestScenarioModel((prevState) => {
+          const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
+          const fm =
+            prevState.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]!["factMappings"]!["FactMapping"]![
+              update.columnIndex + 1
+            ];
+          const factMappingValues = newScenarios[update.rowIndex].factMappingValues.FactMappingValue!;
+          const newFactMappingValues = [...factMappingValues];
+
+          factMappingValues.forEach((fmv, index) => {
+            if (
+              fm.factIdentifier.name?.__$$text == fmv.factIdentifier.name?.__$$text &&
+              fm.factIdentifier.className?.__$$text == fmv.factIdentifier.className?.__$$text &&
+              fm.expressionIdentifier.name?.__$$text == fmv.expressionIdentifier.name?.__$$text &&
+              fm.expressionIdentifier.type?.__$$text == fmv.expressionIdentifier.type?.__$$text
+            ) {
+              if (factMappingValues[index].rawValue) {
+                newFactMappingValues[index].rawValue!.__$$text = update.value;
+              } else {
+                newFactMappingValues[index] = {
+                  ...factMappingValues[index],
+                  rawValue: {
+                    __$$text: update.value,
+                  },
+                };
+              }
+            }
+          });
+
+          newScenarios[update.rowIndex].factMappingValues.FactMappingValue = newFactMappingValues;
+
+          return {
+            ScenarioSimulationModel: {
+              ...prevState.ScenarioSimulationModel,
+              ["simulation"]: {
+                ...prevState.ScenarioSimulationModel["simulation"],
+                ["scesimData"]: {
+                  ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
+                  ["Scenario"]: newScenarios,
+                },
+              },
+            },
+          };
+        });
+      });
+    },
+    [updateTestScenarioModel]
+  );
+
+  const onRowDeleted = useCallback(
+    (args: { rowIndex: number }) => {
+      updateTestScenarioModel((prevState) => {
+        const deepClonedScenarios = JSON.parse(
+          JSON.stringify(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])
+        );
+        deepClonedScenarios.splice(args.rowIndex, 1);
+
+        return {
+          ScenarioSimulationModel: {
+            ...prevState.ScenarioSimulationModel,
+            ["simulation"]: {
+              ...prevState.ScenarioSimulationModel["simulation"],
+              ["scesimData"]: {
+                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
+                ["Scenario"]: deepClonedScenarios,
+              },
+            },
+          },
+        };
+      });
+    },
     [updateTestScenarioModel]
   );
 
@@ -350,7 +453,7 @@ function TestScenarioTable({
       updateTestScenarioModel((prevState) => {
         const factMappingValuesItems = prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"]![
           args.rowIndex
-        ]!.factMappingValues!.FactMappingValue!.map((factMappingValue) => {
+        ].factMappingValues.FactMappingValue!.map((factMappingValue) => {
           return {
             expressionIdentifier: {
               name: { __$$text: factMappingValue.expressionIdentifier.name!.__$$text },
@@ -373,72 +476,23 @@ function TestScenarioTable({
           },
         };
 
-        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
-        newScenarios.splice(args.rowIndex, 0, factMappingValues);
+        const deepClonedScenarios = JSON.parse(
+          JSON.stringify(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])
+        );
+        deepClonedScenarios.splice(args.rowIndex, 0, factMappingValues);
 
         return {
-          ...prevState,
           ScenarioSimulationModel: {
             ...prevState.ScenarioSimulationModel,
             ["simulation"]: {
               ...prevState.ScenarioSimulationModel["simulation"],
               ["scesimData"]: {
                 ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
-                ["Scenario"]: newScenarios,
+                ["Scenario"]: deepClonedScenarios,
               },
             },
           },
         };
-      });
-    },
-    [updateTestScenarioModel]
-  );
-
-  const onRowDeleted = useCallback(
-    (args: { rowIndex: number }) => {
-      updateTestScenarioModel((prevState) => {
-        const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
-        newScenarios.splice(args.rowIndex, 1);
-
-        return {
-          ...prevState,
-          ScenarioSimulationModel: {
-            ...prevState.ScenarioSimulationModel,
-            ["simulation"]: {
-              ...prevState.ScenarioSimulationModel["simulation"],
-              ["scesimData"]: {
-                ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
-                ["Scenario"]: newScenarios,
-              },
-            },
-          },
-        };
-      });
-    },
-    [updateTestScenarioModel]
-  );
-
-  const onCellUpdates = useCallback(
-    (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
-      cellUpdates.forEach((update) => {
-        updateTestScenarioModel((prevState) => {
-          const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
-          newScenarios[update.rowIndex].factMappingValues.FactMappingValue![update.columnIndex].rawValue!.__$$text =
-            update.value;
-
-          return {
-            ScenarioSimulationModel: {
-              ...prevState.ScenarioSimulationModel,
-              ["simulation"]: {
-                ...prevState.ScenarioSimulationModel["simulation"],
-                ["scesimData"]: {
-                  ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
-                  ["Scenario"]: newScenarios,
-                },
-              },
-            },
-          };
-        });
       });
     },
     [updateTestScenarioModel]

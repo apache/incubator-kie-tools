@@ -575,9 +575,6 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
           case TestScenarioFileStatus.VALID:
             return (
               <TestScenarioMainPanel
-                //addNewSimulationRow={addNewSimulationRow}
-                //deleteSimulationRow={deleteSimulationRow}
-                //duplicateSimulationRow={duplicateSimulationRow}
                 fileName={scesimFile.path}
                 scesimModel={scesimModel}
                 updateTestScenarioModel={setScesimModel}
