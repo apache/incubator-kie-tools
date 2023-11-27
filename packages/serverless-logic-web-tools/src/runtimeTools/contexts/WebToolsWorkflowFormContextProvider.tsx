@@ -16,21 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
-import { routes } from "../routes";
-import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
 
-export function RuntimeToolsRoutesSwitch() {
+import * as React from "react";
+import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/CloudEventForm";
+import { useSettings } from "../../settings/SettingsContext";
+import { useEnv } from "../../env/EnvContext";
+
+export function WebToolsWorkflowFormContextProvider(props: React.PropsWithChildren<{}>) {
+  const settings = useSettings();
+  const { env } = useEnv();
+
   return (
-    <Switch>
-      <Route path={routes.runtimeTools.workflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
-      </Route>
-      <Route path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
-      </Route>
-    </Switch>
+    <CloudEventFormContextProvider
+      proxyEndpoint={env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL}
+      kogitoServiceUrl={settings.runtimeTools.config.kogitoServiceUrl}
+    >
+      {props.children}
+    </CloudEventFormContextProvider>
   );
 }

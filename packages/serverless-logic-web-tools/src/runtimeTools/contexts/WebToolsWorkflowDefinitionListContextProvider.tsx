@@ -16,21 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
-import { routes } from "../routes";
-import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
 
-export function RuntimeToolsRoutesSwitch() {
+import * as React from "react";
+import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDefinitionList";
+import { useSettings } from "../../settings/SettingsContext";
+
+export function WebToolsWorkflowDefinitionListContextProvider(props: React.PropsWithChildren<{}>) {
+  const settings = useSettings();
+
   return (
-    <Switch>
-      <Route path={routes.runtimeTools.workflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
-      </Route>
-      <Route path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
-      </Route>
-    </Switch>
+    <WorkflowDefinitionListContextProvider kogitoServiceUrl={settings.runtimeTools.config.kogitoServiceUrl}>
+      {props.children}
+    </WorkflowDefinitionListContextProvider>
   );
 }

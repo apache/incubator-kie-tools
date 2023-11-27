@@ -33,11 +33,11 @@ import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
 import { EditorContextProvider } from "./editor/hooks/EditorContext";
 import { WebToolsWorkspaceContextProvider } from "./workspace/hooks/WebToolsWorkspaceContextProvider";
 import { UpgradeContextProvider } from "./upgrade/UpgradeContext";
-import { WorkflowListContextProvider } from "./runtimeTools/workflows/WorkflowList";
-import { WorkflowDetailsContextProvider } from "./runtimeTools/workflows/WorkflowDetails";
-import { CloudEventFormContextProvider } from "./runtimeTools/workflows/CloudEventForm";
-import { WorkflowDefinitionListContextProvider } from "./runtimeTools/workflows/WorkflowDefinitionList";
-import { WorkflowFormContextProvider } from "./runtimeTools/workflows/WorkflowForm";
+import { WebToolsWorkflowDefinitionListContextProvider } from "./runtimeTools/contexts/WebToolsWorkflowDefinitionListContextProvider";
+import { WebToolsWorkflowListContextProvider } from "./runtimeTools/contexts/WebToolsWorkflowListContextProvider";
+import { WebToolsWorkflowDetailsContextProvider } from "./runtimeTools/contexts/WebToolsWorkflowDetailsContextProvider";
+import { WebToolsWorkflowFormContextProvider } from "./runtimeTools/contexts/WebToolsWorkflowFormContextProvider";
+import { WebToolsCloudEventFormContextProvider } from "./runtimeTools/contexts/WebToolsCloudEventFormContextProvider";
 
 export const App = () => (
   <HashRouter>
@@ -55,11 +55,11 @@ export const App = () => (
       [SampleContextProvider, {}],
       [NavigationContextProvider, {}],
       [EditorContextProvider, {}],
-      [WorkflowDefinitionListContextProvider, {}],
-      [WorkflowListContextProvider, {}],
-      [WorkflowDetailsContextProvider, {}],
-      [WorkflowFormContextProvider, {}],
-      [CloudEventFormContextProvider, {}],
+      [WebToolsWorkflowDefinitionListContextProvider, {}],
+      [WebToolsWorkflowListContextProvider, {}],
+      [WebToolsWorkflowDetailsContextProvider, {}],
+      [WebToolsWorkflowFormContextProvider, {}],
+      [WebToolsCloudEventFormContextProvider, {}],
       // Insert new context providers from here to beginning, always before RoutesSwitch
       [RoutesSwitch, {}]
     )}

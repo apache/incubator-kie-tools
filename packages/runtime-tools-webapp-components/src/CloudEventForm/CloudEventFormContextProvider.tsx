@@ -16,21 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
-import { routes } from "../routes";
-import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
 
-export function RuntimeToolsRoutesSwitch() {
-  return (
-    <Switch>
-      <Route path={routes.runtimeTools.workflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
-      </Route>
-      <Route path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
-      </Route>
-    </Switch>
+import React, { useMemo } from "react";
+import CloudEventFormContext from "./CloudEventFormContext";
+import { CloudEventFormGatewayApiImpl } from "./CloudEventFormGatewayApi";
+
+export function CloudEventFormContextProvider(
+  props: React.PropsWithChildren<{ proxyEndpoint?: string; kogitoServiceUrl: string }>
+) {
+  const { proxyEndpoint, kogitoServiceUrl } = props;
+
+  const gatewayApi = useMemo(
+    () => new CloudEventFormGatewayApiImpl(kogitoServiceUrl, proxyEndpoint),
+    [proxyEndpoint, kogitoServiceUrl]
   );
+
+  return <CloudEventFormContext.Provider value={gatewayApi}>{props.children}</CloudEventFormContext.Provider>;
 }
+
+export default CloudEventFormContextProvider;

@@ -16,21 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
-import { routes } from "../routes";
-import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
 
-export function RuntimeToolsRoutesSwitch() {
+import * as React from "react";
+import { WorkflowDetailsContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetails";
+import { useApp } from "../../context/AppContext";
+
+export function DeploymentWorkflowDetailsContextProvider(props: React.PropsWithChildren<{}>) {
+  const app = useApp();
   return (
-    <Switch>
-      <Route path={routes.runtimeTools.workflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
-      </Route>
-      <Route path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
-      </Route>
-    </Switch>
+    <WorkflowDetailsContextProvider dataIndexUrl={app.data.dataIndexUrl}>
+      {props.children}
+    </WorkflowDetailsContextProvider>
   );
 }

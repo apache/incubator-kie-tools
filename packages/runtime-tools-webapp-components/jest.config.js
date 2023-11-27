@@ -16,21 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
-import { routes } from "../routes";
-import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
 
-export function RuntimeToolsRoutesSwitch() {
-  return (
-    <Switch>
-      <Route path={routes.runtimeTools.workflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
-      </Route>
-      <Route path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
-      </Route>
-    </Switch>
-  );
-}
+module.exports = {
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.json",
+    },
+  },
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
+  moduleDirectories: ["node_modules"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
+  transform: {
+    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
+    "^.+\\.tsx?$": "ts-jest",
+  },
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
+  },
+  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
+};
