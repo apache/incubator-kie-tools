@@ -6906,6 +6906,79 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
 
+  packages/runtime-tools-webapp-components:
+    dependencies:
+      "@kie-tools/runtime-tools-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-components
+      "@kie-tools/runtime-tools-enveloped-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-enveloped-components
+      "@kie-tools/runtime-tools-gateway-api":
+        specifier: workspace:*
+        version: link:../runtime-tools-gateway-api
+      "@patternfly/react-core":
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      apollo-cache-inmemory:
+        specifier: 1.6.6
+        version: 1.6.6(graphql@14.3.1)
+      apollo-client:
+        specifier: 2.6.10
+        version: 2.6.10(graphql@14.3.1)
+      apollo-link-http:
+        specifier: 1.5.17
+        version: 1.5.17(graphql@14.3.1)
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.23.0
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.22.20(@babel/core@7.23.0)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.22.15(@babel/core@7.23.0)
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@testing-library/jest-dom":
+        specifier: ^5.16.1
+        version: 5.16.1
+      "@testing-library/react":
+        specifier: ^11.2.6
+        version: 11.2.7(react-dom@17.0.2)(react@17.0.2)
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/react":
+        specifier: ^17.0.6
+        version: 17.0.21
+      "@types/testing-library__jest-dom":
+        specifier: ^5.9.1
+        version: 5.9.5
+      "@types/testing-library__react":
+        specifier: ^9.1.2
+        version: 9.1.3
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
   packages/scesim-editor:
     dependencies:
       "@kie-tools-core/i18n":
@@ -7102,6 +7175,9 @@ importers:
       "@kie-tools/runtime-tools-gateway-api":
         specifier: workspace:*
         version: link:../runtime-tools-gateway-api
+      "@kie-tools/runtime-tools-webapp-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-webapp-components
       "@kie-tools/serverless-workflow-combined-editor":
         specifier: workspace:*
         version: link:../serverless-workflow-combined-editor
@@ -8466,6 +8542,9 @@ importers:
       "@kie-tools/runtime-tools-gateway-api":
         specifier: workspace:*
         version: link:../runtime-tools-gateway-api
+      "@kie-tools/runtime-tools-webapp-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-webapp-components
       "@kie-tools/serverless-workflow-combined-editor":
         specifier: workspace:*
         version: link:../serverless-workflow-combined-editor
@@ -11516,7 +11595,7 @@ packages:
     dependencies:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.16.12
-      "@babel/helper-validator-option": 7.22.15
+      "@babel/helper-validator-option": 7.21.0
       browserslist: 4.22.1
       semver: 6.3.1
     dev: true
@@ -11530,7 +11609,7 @@ packages:
     dependencies:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.23.0
-      "@babel/helper-validator-option": 7.22.15
+      "@babel/helper-validator-option": 7.21.0
       browserslist: 4.22.1
       semver: 6.3.1
     dev: true
@@ -28582,6 +28661,7 @@ packages:
     resolution:
       { integrity: sha512-yxJ2mFy/sibVQlu5qHjOkf9J3K6zgmCxgJ94u2EdvDOV09H+32LtRswEcUsmUWN72pVLOEnTSRaIVVzVQgS0dg== }
     engines: { node: ">=8" }
+    deprecated: Use your platform's native DOMException instead
     dependencies:
       webidl-conversions: 5.0.0
     dev: true
@@ -33004,7 +33084,7 @@ packages:
     engines: { node: ">=8" }
     dependencies:
       "@babel/core": 7.23.0
-      "@istanbuljs/schema": 0.1.2
+      "@istanbuljs/schema": 0.1.3
       istanbul-lib-coverage: 3.2.0
       semver: 6.3.1
     transitivePeerDependencies:
@@ -39880,7 +39960,7 @@ packages:
       { integrity: sha512-iMDbmAWtfU+MHpxt/I5iWI7cY6YVEZUQ3MBgPQ++XD1PELuJHIl82xBmObyP2KyQmkNB2dsqF7seoQQiAn5yDQ== }
     hasBin: true
     dependencies:
-      is-core-module: 2.13.1
+      is-core-module: 2.12.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
