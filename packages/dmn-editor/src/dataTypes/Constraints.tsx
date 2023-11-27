@@ -240,7 +240,7 @@ export function Constraints({
   );
   const kieConstraintType = useMemo(() => allowedValues?.["@_kie:constraintType"], [allowedValues]);
   const typeRef: DmnBuiltInDataType = useMemo(
-    () => (itemDefinition?.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+    () => (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
     [itemDefinition?.typeRef?.__$$text]
   );
   const isConstraintEnum = useMemo(
@@ -368,7 +368,7 @@ export function Constraints({
           isEnum(
             itemDefinition.allowedValues.text.__$$text,
             constraintTypeHelper(
-              (itemDefinition?.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType
+              (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
             ).check
           )
         ) {
@@ -381,7 +381,7 @@ export function Constraints({
           isRange(
             itemDefinition.allowedValues.text.__$$text,
             constraintTypeHelper(
-              (itemDefinition?.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType
+              (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
             ).check
           )
         ) {

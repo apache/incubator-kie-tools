@@ -255,8 +255,8 @@ export function ItemComponentsTable({
                 }
 
                 const constraintValue = dt.itemDefinition.allowedValues?.text.__$$text;
-                const typeRef = (dt.itemDefinition.typeRef?.__$$text ??
-                  DmnBuiltInDataType.Undefined) as DmnBuiltInDataType;
+                const typeRef =
+                  (dt.itemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
                 if (constraintValue === undefined) {
                   return <>None</>;
                 }
