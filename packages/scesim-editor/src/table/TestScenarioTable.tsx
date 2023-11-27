@@ -21,7 +21,8 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import * as ReactTable from "react-table";
-import _ from "lodash";
+import _, { forEach } from "lodash";
+import { v4 as uuid } from "uuid";
 
 import {
   SceSim__expressionIdentifierType,
@@ -130,7 +131,7 @@ function TestScenarioTable({
       columns: [...givenFactMappingToFactMap.entries()].map((entry) => {
         return {
           accessor: entry[0].factName,
-          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : undefined,
+          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : "<Undefined>",
           groupType: SimulationTableColumnGroup.Given,
           id: entry[0].factName,
           isRowIndexColumn: false,
@@ -139,7 +140,7 @@ function TestScenarioTable({
             return {
               accessor: factMapping.expressionIdentifier.name!.__$$text,
               dataType:
-                factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : undefined,
+                factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "<Undefined>",
               groupType: factMapping.expressionIdentifier.type!.__$$text,
               label: factMapping.expressionAlias!.__$$text,
               id: factMapping.expressionIdentifier.name!.__$$text,
@@ -161,7 +162,7 @@ function TestScenarioTable({
       columns: [...expectFactMappingToFactMap.entries()].map((entry) => {
         return {
           accessor: entry[0].factName,
-          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : undefined,
+          dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : "<Undefined>",
           groupType: SimulationTableColumnGroup.Expect,
           id: entry[0].factName,
           isRowIndexColumn: false,
@@ -170,7 +171,7 @@ function TestScenarioTable({
             return {
               accessor: factMapping.expressionIdentifier.name!.__$$text,
               dataType:
-                factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : undefined,
+                factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "<Undefined>",
               groupType: factMapping.expressionIdentifier.type!.__$$text,
               id: factMapping.expressionIdentifier.name!.__$$text,
               isRowIndexColumn: false,
@@ -316,6 +317,24 @@ function TestScenarioTable({
     [simulationData.scesimModelDescriptor.factMappings]
   );
 
+  // const getSectionIndexForGroupType = useCallback(
+  //   (columnIndex: number, groupType: SimulationTableColumnGroup) => {
+  //     switch (groupType) {
+  //       case SimulationTableColumnGroup.Given:
+  //         return columnIndex;
+  //       case SimulationTableColumnGroup.Expect:
+  //         return columnIndex - (decisionTableExpression.input?.length ?? 0);
+  //       case DecisionTableColumnType.Annotation:
+  //         return (
+  //           columnIndex - (decisionTableExpression.input?.length ?? 0) - (decisionTableExpression.output?.length ?? 0)
+  //         );
+  //       default:
+  //         assertUnreachable(groupType);
+  //     }
+  //   },
+  //   [decisionTableExpression.input?.length, decisionTableExpression.output?.length]
+  // );
+
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       cellUpdates.forEach((update) => {
@@ -368,47 +387,78 @@ function TestScenarioTable({
     [updateTestScenarioModel]
   );
 
+  /**
+   * It adds a new FactMapping in the Model Descriptor structure
+   * TODO: It manages adding a new column in a property level only: not possibile to add an empty instance column
+   */
   const onColumnAdded = useCallback(
-    (args: { beforeIndex: number; groupType: string | undefined }) => {
+    (args: { beforeIndex: number; groupType: SimulationTableColumnGroup }) => {
+      /* GIVEN and EXPECTED column types can be added only */
       if (SimulationTableColumnGroup.Other === args.groupType) {
         return;
       }
 
-      console.log(args.beforeIndex);
-      console.log(args.groupType);
-
       updateTestScenarioModel((prevState) => {
-        const deepClonedFactMappings = JSON.parse(
-          JSON.stringify(
-            prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings?.FactMapping ?? []
-          )
-        );
+        /* Creating the new FactMapping based on the original selected column's FactMapping */
+        const originColumnFactMapping =
+          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings!.FactMapping![
+            args.beforeIndex
+          ];
+
         const newFactMapping = {
-          //"expressionElements"?: SceSim__expressionElementsType; // from type SceSim__FactMappingType @ SceSim.xsd
-          expressionIdentifier: { name: { __$$text: "1|100" }, type: { __$$text: args.groupType } }, // from type SceSim__FactMappingType @ SceSim.xsd
-          factIdentifier: { name: { __$$text: "Violation" }, className: { __$$text: "Violation" } }, // from type SceSim__FactMappingType @ SceSim.xsd
-          className: { __$$text: "java.lang.Void" }, // from type SceSim__FactMappingType @ SceSim.xsd
-          factAlias: { __$$text: "Violation" }, // from type SceSim__FactMappingType @ SceSim.xsd
-          expressionAlias: { __$$text: "PROPERTY" }, // from type SceSim__FactMappingType @ SceSim.xsd
+          expressionIdentifier: {
+            name: { __$$text: `_${uuid()}`.toLocaleUpperCase() },
+            type: { __$$text: originColumnFactMapping.expressionIdentifier.type!.__$$text },
+          },
+          factIdentifier: {
+            name: { __$$text: originColumnFactMapping.factIdentifier.name!.__$$text },
+            className: { __$$text: originColumnFactMapping.factIdentifier.className!.__$$text },
+          },
+          className: { __$$text: "java.lang.Void" },
+          factAlias: { __$$text: originColumnFactMapping.factAlias.__$$text },
+          expressionAlias: { __$$text: "PROPERTY" },
           columnWidth: { __$$text: 150 },
-          factMappingValueType: { __$$text: "NOT_EXPRESSION" }, // from type SceSim__FactMappingType @ SceSim.xsd
+          factMappingValueType: { __$$text: "NOT_EXPRESSION" },
         };
 
+        /* Cloning the FactMapping list and putting the new one in the user defined index */
+        const deepClonedFactMappings = JSON.parse(
+          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings?.FactMapping)
+        );
         deepClonedFactMappings.splice(args.beforeIndex + 1, 0, newFactMapping);
+
+        /* Creating and adding a new FactMappingValue (cell) in every row, as a consequence of the new FactMapping (column) 
+           we're going to introduce. The FactMappingValue will be linked with its related FactMapping via expressionIdentifier
+           and factIdentier data. That means, the column index of new FactMappingValue could be different in other Scenario (rows) */
+        const deepClonedScenarios: SceSim__ScenarioType[] = JSON.parse(
+          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimData.Scenario)
+        );
+        deepClonedScenarios.forEach((scenario) => {
+          scenario.factMappingValues.FactMappingValue!.push({
+            expressionIdentifier: {
+              name: { __$$text: newFactMapping.expressionIdentifier.name.__$$text },
+              type: { __$$text: newFactMapping.expressionIdentifier.type.__$$text },
+            },
+            factIdentifier: {
+              name: { __$$text: newFactMapping.factIdentifier.name.__$$text },
+              className: { __$$text: newFactMapping.factIdentifier.className.__$$text },
+            },
+            rawValue: { __$$text: "", "@_class": "string" },
+          });
+        });
+
         return {
           ScenarioSimulationModel: {
             ...prevState.ScenarioSimulationModel,
             simulation: {
-              ...prevState.ScenarioSimulationModel.simulation,
               scesimModelDescriptor: {
-                ...prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor,
                 factMappings: {
                   FactMapping: deepClonedFactMappings,
                 },
               },
-              // scesimData: {
-              //   Scenario: deepClonedScenarios,
-              // },
+              scesimData: {
+                Scenario: deepClonedScenarios,
+              },
             },
           },
         };
@@ -452,9 +502,7 @@ function TestScenarioTable({
           ScenarioSimulationModel: {
             ...prevState.ScenarioSimulationModel,
             simulation: {
-              ...prevState.ScenarioSimulationModel.simulation,
               scesimModelDescriptor: {
-                ...prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor,
                 factMappings: {
                   FactMapping: deepClonedFactMappings,
                 },
