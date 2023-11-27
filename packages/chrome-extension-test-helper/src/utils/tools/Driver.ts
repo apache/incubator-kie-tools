@@ -43,7 +43,11 @@ export default class Driver {
 
     // init chrome options
     const chromeOptions: Options = new Options();
-    chromeOptions.addArguments("--load-extension=" + chromeExtensionPath, "--allow-insecure-localhost");
+    chromeOptions.addArguments(
+      "--load-extension=" + chromeExtensionPath,
+      "--enable-features=UnexpireFlagsM118",
+      "--allow-insecure-localhost"
+    );
 
     // init chrome driver log
     const LOGS_DIR: string = resolve("dist-e2e-tests", "logs");
