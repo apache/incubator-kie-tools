@@ -25,7 +25,7 @@ import {
 import ProcessFormContainer from "../../containers/ProcessFormContainer/ProcessFormContainer";
 import "../../styles.css";
 import { useHistory } from "react-router-dom";
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
 import { FormNotification, Notification } from "@kogito-apps/components-common/dist/components/FormNotification";
 import InlineEdit from "./components/InlineEdit/InlineEdit";

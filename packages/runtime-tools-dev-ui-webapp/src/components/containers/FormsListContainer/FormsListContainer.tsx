@@ -16,7 +16,7 @@
 
 import React, { useEffect } from "react";
 import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { EmbeddedFormsList, FormInfo } from "@kogito-apps/forms-list";
+import { EmbeddedFormsList, FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
 import { FormsListGatewayApi } from "../../../channel/FormsList";
 import { useFormsListGatewayApi } from "../../../channel/FormsList/FormsListContext";
 import { useHistory } from "react-router-dom";

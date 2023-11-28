@@ -33,7 +33,7 @@ import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
 import ProcessDefinitionListContextProvider from "../../../channel/ProcessDefinitionList/ProcessDefinitionListContextProvider";
 import ProcessFormContextProvider from "../../../channel/ProcessForm/ProcessFormContextProvider";
 import { CustomLabels } from "../../../api/CustomLabels";
-import { DiagramPreviewSize } from "@kogito-apps/process-details/dist/api";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 import WorkflowFormContextProvider from "../../../channel/WorkflowForm/WorkflowFormContextProvider";
 import CustomDashboardListContextProvider from "../../../channel/CustomDashboardList/CustomDashboardListContextProvider";
 import { CustomDashboardViewContextProvider } from "../../../channel/CustomDashboardView";

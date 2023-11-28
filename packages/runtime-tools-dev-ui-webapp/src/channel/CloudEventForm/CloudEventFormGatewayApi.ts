@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CloudEventRequest } from "@kogito-apps/cloud-event-form";
+import { CloudEventRequest } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm";
 import { triggerCloudEvent, triggerStartCloudEvent } from "../apis";
 
 export interface CloudEventFormGatewayApi {

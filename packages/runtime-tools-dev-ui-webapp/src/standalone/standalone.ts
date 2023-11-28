@@ -19,7 +19,7 @@ import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi, User } from "../api";
 import { RuntimeToolsDevUIChannelApiImpl } from "../standalone/RuntimeToolsDevUIChannelApiImpl";
 import { CustomLabels } from "../api/CustomLabels";
-import { DiagramPreviewSize } from "@kogito-apps/process-details/dist/api";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 
 export interface StandaloneDevUIApi {
   close: () => void;

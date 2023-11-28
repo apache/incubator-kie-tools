@@ -22,15 +22,15 @@ import {
   TriggerableNode,
 } from "@kogito-apps/management-console-shared/dist/types";
 import { OperationType } from "@kogito-apps/management-console-shared/dist/components/BulkList";
-import { FormInfo } from "@kogito-apps/forms-list";
+import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
 import axios from "axios";
-import uuidv4 from "uuid";
-import { Form, FormContent } from "@kogito-apps/form-details";
+import { v4 as uuidv4 } from "uuid";
+import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/src/formDetails";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { createProcessDefinitionList } from "../../utils/Utils";
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
-import { CustomDashboardInfo } from "@kogito-apps/custom-dashboard-list";
-import { CloudEventRequest, KOGITO_BUSINESS_KEY } from "@kogito-apps/cloud-event-form/dist";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
+import { CloudEventRequest, KOGITO_BUSINESS_KEY } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 //Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (jobsToBeActioned: (GraphQL.Job & { errorMessage?: string })[]) => {

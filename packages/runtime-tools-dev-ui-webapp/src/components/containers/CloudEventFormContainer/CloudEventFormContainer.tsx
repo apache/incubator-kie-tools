@@ -17,8 +17,8 @@
 import React, { useCallback } from "react";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useCloudEventFormGatewayApi } from "../../../channel/CloudEventForm";
-import { EmbeddedCloudEventForm } from "@kogito-apps/cloud-event-form/dist/embedded";
-import { CloudEventRequest } from "@kogito-apps/cloud-event-form/dist/api";
+import { EmbeddedCloudEventForm } from "@kie-tools/runtime-tools-gateway-api/dist/types/dist/embedded";
+import { CloudEventRequest } from "@kie-tools/runtime-tools-gateway-api/dist/types/dist/api";
 import { useParams } from "react-router";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 

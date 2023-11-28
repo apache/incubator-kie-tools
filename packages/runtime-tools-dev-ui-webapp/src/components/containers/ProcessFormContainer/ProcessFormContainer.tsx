@@ -19,7 +19,7 @@ import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-componen
 import { ProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormGatewayApi";
 import { useProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormContext";
 import { EmbeddedProcessForm } from "@kogito-apps/process-form";
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 
 interface ProcessFormContainerProps {

@@ -31,3 +31,8 @@ export interface Association {
 export interface WorkflowDetailsInitArgs {
   workflowInstance: WorkflowInstance;
 }
+
+export interface DiagramPreviewSize {
+  width: number;
+  height: number;
+}

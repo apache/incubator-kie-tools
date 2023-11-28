@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { CustomDashboardFilter, CustomDashboardInfo } from "@kogito-apps/custom-dashboard-list";
+import {
+  CustomDashboardFilter,
+  CustomDashboardInfo,
+} from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
 import { getCustomDashboard } from "../apis";
 
 /* eslint-disable @typescript-eslint/no-empty-interface */

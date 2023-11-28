@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Form, FormContent } from "@kogito-apps/form-details";
+import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/src/formDetails";
 
 import { getFormContent, saveFormContent } from "../apis";
 

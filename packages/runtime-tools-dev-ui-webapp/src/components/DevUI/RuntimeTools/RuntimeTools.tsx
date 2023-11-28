@@ -25,7 +25,7 @@ import DevUIRoutes from "../DevUIRoutes/DevUIRoutes";
 import DevUILayout from "../DevUILayout/DevUILayout";
 import ReactDOM from "react-dom";
 import { CustomLabels } from "../../../api/CustomLabels";
-import { DiagramPreviewSize } from "@kogito-apps/process-details/dist/api";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 
 interface IOwnProps {
   isProcessEnabled: boolean;

@@ -23,7 +23,7 @@ import { OUIAProps, ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-com
 import FormDetailsContainer from "../../containers/FormDetailsContainer/FormDetailsContainer";
 import "../../styles.css";
 import { useHistory } from "react-router-dom";
-import { FormInfo } from "@kogito-apps/forms-list";
+import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
 import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
 import { FormNotification, Notification } from "@kogito-apps/components-common/dist/components/FormNotification";
 import Moment from "react-moment";

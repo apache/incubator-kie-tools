@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { FormFilter, FormInfo } from "@kogito-apps/forms-list";
+import { FormFilter, FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
 import { getForms } from "../apis";
 
 /* eslint-disable @typescript-eslint/no-empty-interface */

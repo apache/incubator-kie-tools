@@ -16,7 +16,7 @@
 
 import { ApolloClient } from "apollo-client";
 import { Job, JobStatus, JobsSortBy } from "@kogito-apps/management-console-shared/dist/types";
-import { getJobsWithFilters } from "@kogito-apps/runtime-gateway-api";
+import { getJobsWithFilters } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
 
 export interface JobsManagementQueries {
   getJobs(start: number, end: number, filters: JobStatus[], sortBy: JobsSortBy | any): Promise<Job[]>;

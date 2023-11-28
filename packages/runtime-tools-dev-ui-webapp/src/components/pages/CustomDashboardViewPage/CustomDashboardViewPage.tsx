@@ -21,7 +21,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
 import { useHistory } from "react-router-dom";
 import CustomDashboardViewContainer from "../../containers/CustomDashboardViewContainer/CustomDashboardViewContainer";
-import { CustomDashboardInfo } from "@kogito-apps/custom-dashboard-list";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
 
 const CustomDashboardViewPage: React.FC<OUIAProps> = () => {
   const history = useHistory();

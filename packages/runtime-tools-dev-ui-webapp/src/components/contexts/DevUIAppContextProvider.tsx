@@ -18,7 +18,7 @@ import React from "react";
 import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 import RuntimeToolsDevUIAppContext, { DevUIAppContextImpl } from "./DevUIAppContext";
 import { CustomLabels } from "../../api/CustomLabels";
-import { DiagramPreviewSize } from "@kogito-apps/process-details/dist/api";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 
 interface IOwnProps {
   users: User[];

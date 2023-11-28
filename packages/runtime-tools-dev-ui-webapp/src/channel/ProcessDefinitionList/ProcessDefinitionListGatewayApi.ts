@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 import { getProcessDefinitionList } from "../apis";
 
 export interface ProcessDefinitionListGatewayApi {
   getProcessDefinitionFilter: () => Promise<string[]>;
   setProcessDefinitionFilter: (filter: string[]) => Promise<void>;
-  getProcessDefinitionsQuery: () => Promise<ProcessDefinition[]>;
-  openProcessForm: (processDefinition: ProcessDefinition) => Promise<void>;
+  getProcessDefinitionsQuery: () => Promise<WorkflowDefinition[]>;
+  openProcessForm: (processDefinition: WorkflowDefinition) => Promise<void>;
   openTriggerCloudEvent: () => void;
   onOpenProcessFormListen: (listener: OnOpenProcessFormListener) => UnSubscribeHandler;
   onOpenTriggerCloudEventListen: (listener: OnOpenTriggerCloudEventListener) => UnSubscribeHandler;
 }
 
 export interface OnOpenProcessFormListener {
-  onOpen: (processDefinition: ProcessDefinition) => void;
+  onOpen: (processDefinition: WorkflowDefinition) => void;
 }
 
 export interface OnOpenTriggerCloudEventListener {
@@ -60,7 +60,7 @@ export class ProcessDefinitionListGatewayApiImpl implements ProcessDefinitionLis
     return Promise.resolve();
   }
 
-  openProcessForm(processDefinition: ProcessDefinition): Promise<void> {
+  openProcessForm(processDefinition: WorkflowDefinition): Promise<void> {
     this.onOpenProcessListeners.forEach((listener) => listener.onOpen(processDefinition));
     return Promise.resolve();
   }
@@ -95,7 +95,7 @@ export class ProcessDefinitionListGatewayApiImpl implements ProcessDefinitionLis
     };
   }
 
-  getProcessDefinitionsQuery(): Promise<ProcessDefinition[]> {
+  getProcessDefinitionsQuery(): Promise<WorkflowDefinition[]> {
     return getProcessDefinitionList(this.devUIUrl, this.openApiPath);
   }
 

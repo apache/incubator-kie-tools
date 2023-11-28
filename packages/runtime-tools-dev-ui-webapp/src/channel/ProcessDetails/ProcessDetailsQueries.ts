@@ -38,7 +38,7 @@ import {
   getJobs,
   getSVG,
   getTriggerableNodes,
-} from "@kogito-apps/runtime-gateway-api";
+} from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
 
 export interface ProcessDetailsQueries {
   getProcessDetails(id: string): Promise<ProcessInstance>;

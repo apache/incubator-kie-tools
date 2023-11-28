@@ -29,7 +29,7 @@ import {
   handleProcessRetry,
   getProcessInstances,
   getChildProcessInstances,
-} from "@kogito-apps/runtime-gateway-api";
+} from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
 
 export interface ProcessListQueries {
   getProcessInstances(

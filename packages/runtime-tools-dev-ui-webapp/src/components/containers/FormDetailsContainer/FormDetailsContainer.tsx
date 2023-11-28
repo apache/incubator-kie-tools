@@ -18,8 +18,8 @@ import React from "react";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormDetailsGatewayApi } from "../../../channel/FormDetails";
 import { useFormDetailsGatewayApi } from "../../../channel/FormDetails/FormDetailsContext";
-import { EmbeddedFormDetails, FormContent } from "@kogito-apps/form-details";
-import { FormInfo } from "@kogito-apps/forms-list";
+import { EmbeddedFormDetails, FormContent } from "@kie-tools/runtime-tools-enveloped-components/src/formDetails";
+import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
 import { Form } from "@kogito-apps/form-displayer";
 
 interface FormDetailsContainerProps {

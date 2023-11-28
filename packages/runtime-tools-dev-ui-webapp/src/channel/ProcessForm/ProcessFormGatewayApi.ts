@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 import { getProcessSchema, startProcessInstance } from "../apis";
 
 export interface ProcessFormGatewayApi {

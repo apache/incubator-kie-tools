@@ -16,7 +16,7 @@
 
 import { GraphQL } from "@kogito-apps/consoles-common/dist/graphql";
 import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 
 import UserTaskInstance = GraphQL.UserTaskInstance;
 

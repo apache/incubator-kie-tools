@@ -16,7 +16,10 @@
 
 import React, { useEffect } from "react";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { EmbeddedProcessDefinitionList, ProcessDefinition } from "@kogito-apps/process-definition-list";
+import {
+  EmbeddedProcessDefinitionList,
+  ProcessDefinition,
+} from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 import {
   ProcessDefinitionListGatewayApi,
   useProcessDefinitionListGatewayApi,
