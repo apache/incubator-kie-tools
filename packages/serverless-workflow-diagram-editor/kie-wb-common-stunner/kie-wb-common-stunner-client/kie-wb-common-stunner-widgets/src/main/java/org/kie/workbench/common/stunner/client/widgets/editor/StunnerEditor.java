@@ -196,13 +196,13 @@ public class StunnerEditor {
         LienzoCanvas canvas = (LienzoCanvas) session.getCanvasHandler().getCanvas();
         LienzoPanel panel = (LienzoPanel) canvas.getView().getPanel();
         LienzoBoundsPanel lienzoPanel = panel.getView();
-        JsCanvas jsCanvas = new JsCanvas(lienzoPanel, lienzoPanel.getLayer(), new StunnerStateApplier() {
+        JsCanvas jsCanvas = JsCanvas.getInstance().init(lienzoPanel, lienzoPanel.getLayer(), new StunnerStateApplier() {
             @Override
             public Shape getShape(String uuid) {
                 return canvas.getShape(uuid);
             }
         });
-        JsCanvasWrapper jsCanvasWrapper = new JsCanvasWrapper().setWrapper(jsCanvas);
+        JsCanvasWrapper jsCanvasWrapper = new JsCanvasWrapper();
         JsWindow.setCanvas(jsCanvasWrapper);
         JsWindow.getEditor().setCanvas(jsCanvasWrapper);
     }
