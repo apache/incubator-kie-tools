@@ -22,8 +22,11 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.ParallelStateBranch;
+import org.kie.workbench.common.stunner.sw.definition.SubFlowRef;
 
 import static org.assertj.core.util.Arrays.array;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class HasBranchesTest extends HasTranslationGeneralTest {
 
@@ -82,4 +85,43 @@ public class HasBranchesTest extends HasTranslationGeneralTest {
                            hasBranches.getBranchesString(array(branch, branch)),
                            "Branch.title", "Actions.null", "Branch.title", "Actions.null");
     }
+
+    @Test
+    public void hasSubflowsTrueTest() {
+        ActionNode[] actions = new ActionNode[2];
+
+        ActionNode action1 = new ActionNode();
+        SubFlowRef subFlowRef = new SubFlowRef();
+        String workflowId = "PROPER WORKFLOW ID";
+        subFlowRef.setWorkflowId(workflowId);
+        action1.setSubFlowRef(subFlowRef);
+        actions[0] = action1;
+
+        ActionNode action2 = new ActionNode();
+        String funcRef = "FUNC REF NAME";
+        action2.setFunctionRef(funcRef);
+        actions[1] = action2;
+
+        ParallelStateBranch branch = new ParallelStateBranch();
+        branch.setName(NAME);
+        branch.setActions(actions);
+
+        assertTrue(hasBranches.hasSubflows(array(branch)));
+    }
+
+    @Test
+    public void hasSubflowsFalseTest() {
+        ActionNode[] actions = new ActionNode[1];
+        ActionNode action = new ActionNode();
+        String funcRef = "FUNC REF NAME";
+        action.setFunctionRef(funcRef);
+        actions[0] = action;
+
+        ParallelStateBranch branch = new ParallelStateBranch();
+        branch.setName(NAME);
+        branch.setActions(actions);
+
+        assertFalse(hasBranches.hasSubflows(array(branch)));
+    }
+
 }

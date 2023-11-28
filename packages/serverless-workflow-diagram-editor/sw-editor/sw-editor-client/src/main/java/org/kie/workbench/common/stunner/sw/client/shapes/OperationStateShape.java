@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.BottomDepiction;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.CornerIcon;
+import org.kie.workbench.common.stunner.sw.client.shapes.icons.DataDepiction;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.WorkflowTimeouts;
@@ -36,8 +37,10 @@ import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.F
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.PARALLEL;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.SEQUENTIAL;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.SERVICE;
+import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.SUBFLOW;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition.BOTTOM_FROM_RIGHT_TOP_CORNER;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition.LEFT_FROM_RIGHT_TOP_CORNER;
+import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition.LEFT_TOP_CORNER;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition.RIGHT_TOP_CORNER;
 import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.TIMEOUT_ACTION;
 import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.TIMEOUT_STATE;
@@ -59,8 +62,8 @@ public class OperationStateShape extends StateShape implements HasActions,
         if (state.getTimeouts() != null && state.getTimeouts() instanceof WorkflowTimeouts) {
             getView().addChild(new CornerIcon(CLOCK,
                                               LEFT_FROM_RIGHT_TOP_CORNER,
-                                              getTranslation(TIMEOUT_STATE) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getStateExecTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_ACTION) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getActionExecTimeout()));
+                                              getTranslation(TIMEOUT_STATE) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout() + "\r\n"
+                                                      + getTranslation(TIMEOUT_ACTION) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getActionExecTimeout()));
         }
 
         getView().addChild(new CornerIcon(SERVICE,
@@ -74,6 +77,10 @@ public class OperationStateShape extends StateShape implements HasActions,
 
         boolean isDefault = state.getActionMode() == null || !(state.getActionMode().equals("parallel"));
         getView().addChild(new BottomDepiction(isDefault ? SEQUENTIAL : PARALLEL));
+
+        if (hasSubflows(state.getActions())) {
+            getView().addChild(new DataDepiction(SUBFLOW, LEFT_TOP_CORNER));
+        }
     }
 
     @Override

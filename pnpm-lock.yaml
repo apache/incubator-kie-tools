@@ -7401,6 +7401,9 @@ importers:
       cypress-log-to-output:
         specifier: ^1.1.2
         version: 1.1.2
+      cypress-real-events:
+        specifier: ^1.11.0
+        version: 1.11.0(cypress@13.5.1)
       html-replace-webpack-plugin:
         specifier: ^2.6.0
         version: 2.6.0
@@ -12844,12 +12847,12 @@ packages:
     peerDependencies:
       "@babel/core": ^7.0.0-0
     dependencies:
-      "@babel/compat-data": 7.21.7
+      "@babel/compat-data": 7.22.20
       "@babel/core": 7.16.12
       "@babel/helper-compilation-targets": 7.22.15
       "@babel/helper-plugin-utils": 7.22.5
       "@babel/plugin-syntax-object-rest-spread": 7.8.3(@babel/core@7.16.12)
-      "@babel/plugin-transform-parameters": 7.21.3(@babel/core@7.16.12)
+      "@babel/plugin-transform-parameters": 7.22.15(@babel/core@7.16.12)
     dev: true
 
   /@babel/plugin-proposal-object-rest-spread@7.17.3(@babel/core@7.23.0):
@@ -12859,12 +12862,12 @@ packages:
     peerDependencies:
       "@babel/core": ^7.0.0-0
     dependencies:
-      "@babel/compat-data": 7.21.7
+      "@babel/compat-data": 7.22.20
       "@babel/core": 7.23.0
       "@babel/helper-compilation-targets": 7.22.15
       "@babel/helper-plugin-utils": 7.22.5
       "@babel/plugin-syntax-object-rest-spread": 7.8.3(@babel/core@7.23.0)
-      "@babel/plugin-transform-parameters": 7.21.3(@babel/core@7.23.0)
+      "@babel/plugin-transform-parameters": 7.22.15(@babel/core@7.23.0)
     dev: true
 
   /@babel/plugin-proposal-object-rest-spread@7.20.7(@babel/core@7.18.10):
@@ -14154,18 +14157,6 @@ packages:
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
-  /@babel/plugin-transform-dotall-regex@7.18.6(@babel/core@7.16.12):
-    resolution:
-      { integrity: sha512-6S3jpun1eEbAxq7TdjLotAsl4WpQI9DxfkycRcKrjhQYzU87qpXdknpBg/e+TdcMehqGnLFi7tnFUBR02Vq6wg== }
-    engines: { node: ">=6.9.0" }
-    peerDependencies:
-      "@babel/core": ^7.0.0-0
-    dependencies:
-      "@babel/core": 7.16.12
-      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.16.12)
-      "@babel/helper-plugin-utils": 7.22.5
-    dev: true
-
   /@babel/plugin-transform-dotall-regex@7.18.6(@babel/core@7.18.10):
     resolution:
       { integrity: sha512-6S3jpun1eEbAxq7TdjLotAsl4WpQI9DxfkycRcKrjhQYzU87qpXdknpBg/e+TdcMehqGnLFi7tnFUBR02Vq6wg== }
@@ -14178,15 +14169,27 @@ packages:
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
-  /@babel/plugin-transform-dotall-regex@7.18.6(@babel/core@7.23.0):
+  /@babel/plugin-transform-dotall-regex@7.22.5(@babel/core@7.16.12):
     resolution:
-      { integrity: sha512-6S3jpun1eEbAxq7TdjLotAsl4WpQI9DxfkycRcKrjhQYzU87qpXdknpBg/e+TdcMehqGnLFi7tnFUBR02Vq6wg== }
+      { integrity: sha512-5/Yk9QxCQCl+sOIB1WelKnVRxTJDSAIxtJLL2/pqL14ZVlbH0fUQUZa/T5/UnQtBNgghR7mfB8ERBKyKPCi7Vw== }
     engines: { node: ">=6.9.0" }
     peerDependencies:
       "@babel/core": ^7.0.0-0
     dependencies:
-      "@babel/core": 7.23.0
-      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.23.0)
+      "@babel/core": 7.16.12
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.16.12)
+      "@babel/helper-plugin-utils": 7.22.5
+    dev: true
+
+  /@babel/plugin-transform-dotall-regex@7.22.5(@babel/core@7.18.10):
+    resolution:
+      { integrity: sha512-5/Yk9QxCQCl+sOIB1WelKnVRxTJDSAIxtJLL2/pqL14ZVlbH0fUQUZa/T5/UnQtBNgghR7mfB8ERBKyKPCi7Vw== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.18.10
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.18.10)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -15001,17 +15004,6 @@ packages:
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
-  /@babel/plugin-transform-parameters@7.21.3(@babel/core@7.16.12):
-    resolution:
-      { integrity: sha512-Wxc+TvppQG9xWFYatvCGPvZ6+SIUxQ2ZdiBP+PHYMIjnPXD+uThCshaz4NZOnODAtBjjcVQQ/3OKs9LW28purQ== }
-    engines: { node: ">=6.9.0" }
-    peerDependencies:
-      "@babel/core": ^7.0.0-0
-    dependencies:
-      "@babel/core": 7.16.12
-      "@babel/helper-plugin-utils": 7.22.5
-    dev: true
-
   /@babel/plugin-transform-parameters@7.21.3(@babel/core@7.18.10):
     resolution:
       { integrity: sha512-Wxc+TvppQG9xWFYatvCGPvZ6+SIUxQ2ZdiBP+PHYMIjnPXD+uThCshaz4NZOnODAtBjjcVQQ/3OKs9LW28purQ== }
@@ -15023,14 +15015,14 @@ packages:
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
-  /@babel/plugin-transform-parameters@7.21.3(@babel/core@7.23.0):
+  /@babel/plugin-transform-parameters@7.22.15(@babel/core@7.16.12):
     resolution:
-      { integrity: sha512-Wxc+TvppQG9xWFYatvCGPvZ6+SIUxQ2ZdiBP+PHYMIjnPXD+uThCshaz4NZOnODAtBjjcVQQ/3OKs9LW28purQ== }
+      { integrity: sha512-hjk7qKIqhyzhhUvRT683TYQOFa/4cQKwQy7ALvTpODswN40MljzNDa0YldevS6tGbxwaEKVn502JmY0dP7qEtQ== }
     engines: { node: ">=6.9.0" }
     peerDependencies:
       "@babel/core": ^7.0.0-0
     dependencies:
-      "@babel/core": 7.23.0
+      "@babel/core": 7.16.12
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -16259,7 +16251,7 @@ packages:
       "@babel/core": 7.16.12
       "@babel/helper-plugin-utils": 7.22.5
       "@babel/plugin-proposal-unicode-property-regex": 7.18.6(@babel/core@7.16.12)
-      "@babel/plugin-transform-dotall-regex": 7.18.6(@babel/core@7.16.12)
+      "@babel/plugin-transform-dotall-regex": 7.22.5(@babel/core@7.16.12)
       "@babel/types": 7.23.0
       esutils: 2.0.3
     dev: true
@@ -16273,7 +16265,7 @@ packages:
       "@babel/core": 7.18.10
       "@babel/helper-plugin-utils": 7.22.5
       "@babel/plugin-proposal-unicode-property-regex": 7.18.6(@babel/core@7.18.10)
-      "@babel/plugin-transform-dotall-regex": 7.18.6(@babel/core@7.18.10)
+      "@babel/plugin-transform-dotall-regex": 7.22.5(@babel/core@7.18.10)
       "@babel/types": 7.23.0
       esutils: 2.0.3
     dev: true
@@ -16287,7 +16279,7 @@ packages:
       "@babel/core": 7.23.0
       "@babel/helper-plugin-utils": 7.22.5
       "@babel/plugin-proposal-unicode-property-regex": 7.18.6(@babel/core@7.23.0)
-      "@babel/plugin-transform-dotall-regex": 7.18.6(@babel/core@7.23.0)
+      "@babel/plugin-transform-dotall-regex": 7.22.5(@babel/core@7.23.0)
       "@babel/types": 7.23.0
       esutils: 2.0.3
     dev: true
@@ -25396,7 +25388,7 @@ packages:
     peerDependencies:
       "@babel/core": ^7.0.0-0
     dependencies:
-      "@babel/compat-data": 7.21.7
+      "@babel/compat-data": 7.22.20
       "@babel/core": 7.16.12
       "@babel/helper-define-polyfill-provider": 0.3.3(@babel/core@7.16.12)
       semver: 6.3.1
@@ -25410,7 +25402,7 @@ packages:
     peerDependencies:
       "@babel/core": ^7.0.0-0
     dependencies:
-      "@babel/compat-data": 7.21.7
+      "@babel/compat-data": 7.22.20
       "@babel/core": 7.23.0
       "@babel/helper-define-polyfill-provider": 0.3.3(@babel/core@7.23.0)
       semver: 6.3.1
@@ -25454,7 +25446,7 @@ packages:
     dependencies:
       "@babel/core": 7.16.12
       "@babel/helper-define-polyfill-provider": 0.3.3(@babel/core@7.16.12)
-      core-js-compat: 3.30.2
+      core-js-compat: 3.33.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -25467,7 +25459,7 @@ packages:
     dependencies:
       "@babel/core": 7.23.0
       "@babel/helper-define-polyfill-provider": 0.3.3(@babel/core@7.23.0)
-      core-js-compat: 3.30.2
+      core-js-compat: 3.33.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -25999,18 +25991,6 @@ packages:
       escalade: 3.1.1
       node-releases: 2.0.13
       picocolors: 1.0.0
-    dev: true
-
-  /browserslist@4.21.5:
-    resolution:
-      { integrity: sha512-tUkiguQGW7S3IhB7N+c2MV/HZPSCPAAiYBZXLsBhFB/PCy6ZKKsZrmBayHV9fdGV/ARIfJ14NkxKzRDjvp7L6w== }
-    engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
-    hasBin: true
-    dependencies:
-      caniuse-lite: 1.0.30001547
-      electron-to-chromium: 1.4.549
-      node-releases: 2.0.13
-      update-browserslist-db: 1.0.13(browserslist@4.21.5)
     dev: true
 
   /browserslist@4.22.1:
@@ -27646,6 +27626,15 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    dev: true
+
+  /cypress-real-events@1.11.0(cypress@13.5.1):
+    resolution:
+      { integrity: sha512-4LXVRsyq+xBh5TmlEyO1ojtBXtN7xw720Pwb9rEE9rkJuXmeH3VyoR1GGayMGr+Itqf11eEjfDewtDmcx6PWPQ== }
+    peerDependencies:
+      cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x
+    dependencies:
+      cypress: 13.5.1
     dev: true
 
   /cypress@13.5.1:
@@ -30473,8 +30462,8 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.4
-      schema-utils: 3.3.0
+      loader-utils: 2.0.2
+      schema-utils: 3.1.1
       webpack: 5.88.2(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0)
     dev: true
 
@@ -42818,18 +42807,6 @@ packages:
       setimmediate: 1.0.5
     dev: true
 
-  /update-browserslist-db@1.0.13(browserslist@4.21.5):
-    resolution:
-      { integrity: sha512-xebP81SNcPuNpPP3uzeW1NYXxI3rxyJzF3pD6sH4jE7o/IX+WtSpwnVU+qIsDPyk0d3hmFQ7mjqc6AtV604hbg== }
-    hasBin: true
-    peerDependencies:
-      browserslist: ">= 4.21.0"
-    dependencies:
-      browserslist: 4.21.5
-      escalade: 3.1.1
-      picocolors: 1.0.0
-    dev: true
-
   /update-browserslist-db@1.0.13(browserslist@4.22.1):
     resolution:
       { integrity: sha512-xebP81SNcPuNpPP3uzeW1NYXxI3rxyJzF3pD6sH4jE7o/IX+WtSpwnVU+qIsDPyk0d3hmFQ7mjqc6AtV604hbg== }
@@ -44175,7 +44152,7 @@ packages:
       "@webassemblyjs/wasm-parser": 1.11.6
       acorn: 8.10.0
       acorn-import-assertions: 1.9.0(acorn@8.10.0)
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       chrome-trace-event: 1.0.2
       enhanced-resolve: 5.15.0
       es-module-lexer: 1.3.0
