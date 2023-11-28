@@ -186,7 +186,7 @@ public class StunnerEditor {
 
     @SuppressWarnings("all")
     private void initializeJsSession(AbstractSession session) {
-        JsStunnerSession jssession = new JsStunnerSession().setSession(session);
+        JsStunnerSession jssession = new JsStunnerSession(session);
         JsWindow.getEditor().setSession(jssession);
         initializeJsCanvas(session);
     }
