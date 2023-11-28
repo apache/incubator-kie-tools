@@ -736,12 +736,7 @@
       { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-dev-ui-webapp",
-        "target": "@kie-tools/serverless-workflow-combined-editor",
+        "target": "@kie-tools/runtime-tools-enveloped-components",
         "weight": 1
       },
       {

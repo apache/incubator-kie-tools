@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import { OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";

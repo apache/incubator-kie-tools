@@ -19,7 +19,7 @@ import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { OUIAProps, ouiaPageTypeAndObjectId } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { OUIAProps, ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import FormDetailsContainer from "../../containers/FormDetailsContainer/FormDetailsContainer";
 import "../../styles.css";
 import { useHistory } from "react-router-dom";

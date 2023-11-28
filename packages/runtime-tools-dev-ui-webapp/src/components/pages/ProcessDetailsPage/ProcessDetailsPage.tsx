@@ -18,9 +18,13 @@ import React, { useState, useEffect } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { ServerErrors } from "@kogito-apps/components-common/dist/components/ServerErrors";
-import { KogitoSpinner } from "@kogito-apps/components-common/dist/components/KogitoSpinner";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
+import {
+  OUIAProps,
+  ouiaPageTypeAndObjectId,
+  componentOuiaProps,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { RouteComponentProps } from "react-router-dom";
 import { PageSectionHeader } from "@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader";
 import ProcessDetailsContainer from "../../containers/ProcessDetailsContainer/ProcessDetailsContainer";

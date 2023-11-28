@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect } from "react";
-import { OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { EmbeddedFormsList, FormInfo } from "@kogito-apps/forms-list";
 import { FormsListGatewayApi } from "../../../channel/FormsList";
 import { useFormsListGatewayApi } from "../../../channel/FormsList/FormsListContext";

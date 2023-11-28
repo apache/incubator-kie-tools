@@ -18,7 +18,11 @@ import React, { useEffect } from "react";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import {
+  OUIAProps,
+  ouiaPageTypeAndObjectId,
+  componentOuiaProps,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
 import TaskInboxContainer from "../../containers/TaskInboxContainer/TaskInboxContainer";
 import TaskInboxSwitchUser from "./components/TaskInboxSwitchUser";

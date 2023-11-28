@@ -17,7 +17,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import {
+  OUIAProps,
+  ouiaPageTypeAndObjectId,
+  componentOuiaProps,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import "../../styles.css";
 import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
 import { FormNotification, Notification } from "@kogito-apps/components-common/dist/components/FormNotification";

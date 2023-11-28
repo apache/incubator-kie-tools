@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Dropdown, DropdownToggle, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { UserIcon } from "@patternfly/react-icons/dist/js/icons/user-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
-import { OUIAProps, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useDevUIAppContext } from "../../../contexts/DevUIAppContext";
 import "../../../styles.css";
 

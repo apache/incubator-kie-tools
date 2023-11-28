@@ -16,7 +16,7 @@
 
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { EmbeddedProcessList } from "@kogito-apps/process-list";
 import { ProcessListGatewayApi, useProcessListGatewayApi } from "../../../channel/ProcessList";
 import { ProcessInstance, ProcessListState } from "@kogito-apps/management-console-shared/dist/types";

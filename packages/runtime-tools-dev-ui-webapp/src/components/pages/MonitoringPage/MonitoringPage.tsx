@@ -20,7 +20,11 @@ import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import {
+  OUIAProps,
+  ouiaPageTypeAndObjectId,
+  componentOuiaProps,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { PageSectionHeader } from "@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader";
 import { ProcessListGatewayApi } from "../../../channel/ProcessList";
 import { useProcessListGatewayApi } from "../../../channel/ProcessList/ProcessListContext";
@@ -28,7 +32,7 @@ import MonitoringContainer from "../../containers/MonitoringContainer/Monitoring
 import {
   KogitoEmptyState,
   KogitoEmptyStateType,
-} from "@kogito-apps/components-common/dist/components/KogitoEmptyState";
+} from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import "../../styles.css";
 import { ProcessInstance, ProcessInstanceState, OrderBy } from "@kogito-apps/management-console-shared/dist/types";
 import { Dashboard } from "@kogito-apps/monitoring";
