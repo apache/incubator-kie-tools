@@ -7,6 +7,7 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { ConstraintComponentProps } from "./Constraints";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
+const RANGE_CONSTRAINT_SEPARATOR = "..";
 const CONSTRAINT_START_ID = "start";
 const CONSTRAINT_END_ID = "end";
 
@@ -283,7 +284,9 @@ export function hasRangeEndStructure(value: string): boolean {
 }
 
 export function hasRangeStructure(value: string): boolean {
-  return hasRangeStartStructure(value) && hasRangeEndStructure(value) && value.split(".").length - 1 === 2;
+  return (
+    hasRangeStartStructure(value) && hasRangeEndStructure(value) && value.split(RANGE_CONSTRAINT_SEPARATOR).length === 2
+  );
 }
 
 export function isRange(value?: string, typeCheck?: (value: string) => boolean): [string, string] | undefined {
@@ -295,7 +298,7 @@ export function isRange(value?: string, typeCheck?: (value: string) => boolean):
     return undefined;
   }
 
-  const rangeValues = value.split("..");
+  const rangeValues = value.split(RANGE_CONSTRAINT_SEPARATOR);
   if (rangeValues.length === 2 && typeCheck?.(rangeValues[0].slice(1)) && typeCheck?.(rangeValues[1].slice(0, -1))) {
     return [rangeValues[0].slice(1), rangeValues[1].slice(0, -1)];
   }
