@@ -6294,15 +6294,30 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-styles":
+        specifier: ^4.92.6
+        version: 4.92.6
       "@patternfly/react-table":
         specifier: ^4.112.39
         version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       ajv:
         specifier: ^6.12.6
         version: 6.12.6
+      axios:
+        specifier: ^0.27.2
+        version: 0.27.2
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
+      graphql-tag:
+        specifier: 2.0.0
+        version: 2.0.0(graphql@14.3.1)
+      history:
+        specifier: ^4.9.0
+        version: 4.10.1
+      keycloak-js:
+        specifier: ^23.0.0
+        version: 23.0.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -6321,6 +6336,12 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
+      react-router:
+        specifier: ^5.2.1
+        version: 5.2.1(react@17.0.2)
+      react-router-dom:
+        specifier: ^5.2.1
+        version: 5.3.0(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
         version: 3.10.2(react@17.0.2)
@@ -6331,6 +6352,12 @@ importers:
         specifier: ^8.3.2
         version: 8.3.2
     devDependencies:
+      "@apollo/react-common":
+        specifier: 3.1.4
+        version: 3.1.4(@types/react@17.0.21)(apollo-client@2.6.10)(apollo-utilities@1.3.4)(graphql@14.3.1)(react@17.0.2)
+      "@apollo/react-hooks":
+        specifier: ^3.1.5
+        version: 3.1.5(@types/react@17.0.21)(apollo-client@2.6.10)(apollo-utilities@1.3.4)(graphql@14.3.1)(react-dom@17.0.2)(react@17.0.2)
       "@babel/core":
         specifier: ^7.16.0
         version: 7.18.10
@@ -31543,10 +31570,10 @@ packages:
     resolution:
       { integrity: sha512-36nwAD620w12kuzPAsyINPWJqlNbij+hpK1k9XRloDtym8mxzGYl2c17LnV6IAGB2Dmg4tEa7G7DlawS0+qjew== }
     dependencies:
-      "@babel/runtime": 7.16.7
+      "@babel/runtime": 7.18.9
       loose-envify: 1.4.0
       resolve-pathname: 3.0.0
-      tiny-invariant: 1.1.0
+      tiny-invariant: 1.3.1
       tiny-warning: 1.0.3
       value-equal: 1.0.1
 
@@ -33742,6 +33769,11 @@ packages:
       { integrity: sha512-EqJPEUlZD0/CSUMubKtMaYUOtWe91tZXTWMJZoKSbLk+KtdhNdcvppH8lA9XwVu2V4Ailvsj0GBZJ2ZwDjfesQ== }
     dev: true
 
+  /js-sha256@0.10.1:
+    resolution:
+      { integrity: sha512-5obBtsz9301ULlsgggLg542s/jqtddfOpV5KJc4hajc9JV8GeY2gZHSVpYBn4nWqAUTJ9v+xwtbJ1mIBgIH5Vw== }
+    dev: false
+
   /js-tokens@4.0.0:
     resolution:
       { integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ== }
@@ -34124,6 +34156,12 @@ packages:
       { integrity: sha512-r/s9ilXHAh+uia0/HaHe/ZxvTX9JbCDjtwEwVe7YhSzIZ4vBiCz4MB4Acij1wegnWoytnhkAfQWYZ2SI9Z1n/g== }
     dev: false
 
+  /jwt-decode@4.0.0:
+    resolution:
+      { integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA== }
+    engines: { node: ">=18" }
+    dev: false
+
   /karma-browserstack-launcher@1.6.0(karma@6.4.2):
     resolution:
       { integrity: sha512-Y/UWPdHZkHIVH2To4GWHCTzmrsB6H7PBWy6pw+TWz5sr4HW2mcE+Uj6qWgoVNxvQU1Pfn5LQQzI6EQ65p8QbiQ== }
@@ -34281,6 +34319,15 @@ packages:
       - supports-color
       - utf-8-validate
     dev: true
+
+  /keycloak-js@23.0.0:
+    resolution:
+      { integrity: sha512-2IbXr92uOaIiujzopYqo2Gg0gmYsMztq32K42nmnN2u464ws9nZbclR76Csil0S/Si8314mx+Ji0yv6Q9w1wYQ== }
+    dependencies:
+      base64-js: 1.5.1
+      js-sha256: 0.10.1
+      jwt-decode: 4.0.0
+    dev: false
 
   /keygrip@1.1.0:
     resolution:
@@ -39035,7 +39082,7 @@ packages:
       prop-types: 15.8.1
       react: 17.0.2
       react-router: 5.2.1(react@17.0.2)
-      tiny-invariant: 1.1.0
+      tiny-invariant: 1.3.1
       tiny-warning: 1.0.3
 
   /react-router@5.2.1(react@17.0.2):
@@ -41953,7 +42000,6 @@ packages:
   /tiny-invariant@1.3.1:
     resolution:
       { integrity: sha512-AD5ih2NlSssTCwsMznbvwMZpJ1cbhkGd2uueNxzv2jDlEeZdU04JQfRnggJQ8DrcVBGjAsCKwFBbDlVNtEMlzw== }
-    dev: true
 
   /tiny-warning@1.0.3:
     resolution:

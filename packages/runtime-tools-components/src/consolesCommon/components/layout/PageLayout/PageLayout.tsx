@@ -18,8 +18,7 @@ import React, { useState, useEffect } from "react";
 import { Page, PageSidebar, PageHeader, PageHeaderTools } from "@patternfly/react-core/dist/js/components/Page";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import "../../styles.css";
-
-import { componentOuiaProps, ouiaAttribute, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { componentOuiaProps, ouiaAttribute, OUIAProps } from "../../../../common/ouiaTools";
 import { BrandContext } from "../BrandContext/BrandContext";
 import PageToolbar from "../PageToolbar/PageToolbar";
 

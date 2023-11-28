@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 import { PageTitle } from "../PageTitle";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { componentOuiaProps, OUIAProps } from "../../../../common/ouiaTools";
 import * as H from "history";
 
 type pathType = Pick<H.Location, "pathname" | "state">;

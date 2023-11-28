@@ -27,7 +27,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
 import { Redirect } from "react-router";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { componentOuiaProps, OUIAProps } from "../../../../common/ouiaTools";
 
 export interface IOwnProps {
   defaultPath: string;

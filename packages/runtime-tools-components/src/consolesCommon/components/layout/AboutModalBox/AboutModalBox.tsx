@@ -17,9 +17,9 @@
 import React from "react";
 import { AboutModal } from "@patternfly/react-core/dist/js/components/AboutModal";
 import { TextContent, Text, TextList, TextListItem } from "@patternfly/react-core/dist/js/components/Text";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
 import "../../styles.css";
-import aboutPageBackground from "../../../static/kogitoAbout.png";
+import aboutPageBackground from "../../../../static/kogitoAbout.png";
+import { OUIAProps, componentOuiaProps } from "../../../../common/ouiaTools";
 import { useBrandContext } from "../BrandContext/BrandContext";
 
 declare global {

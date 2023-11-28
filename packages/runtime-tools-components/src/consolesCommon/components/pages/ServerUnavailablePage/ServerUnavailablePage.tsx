@@ -26,7 +26,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { componentOuiaProps, OUIAProps } from "../../../../common/ouiaTools";
 
 interface Props {
   displayName?: string;
