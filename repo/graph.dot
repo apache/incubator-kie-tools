@@ -117,6 +117,7 @@ digraph G {
   "pmml-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/runtime-tools-dev-ui-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-enveloped-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -371,6 +372,8 @@ digraph G {
   "@kie-tools/runtime-tools-components" -> "@kie-tools/runtime-tools-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-components" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-components" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/runtime-tools-dev-ui-webapp" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-dev-ui-webapp" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-enveloped-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-enveloped-components" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-gateway-api" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
