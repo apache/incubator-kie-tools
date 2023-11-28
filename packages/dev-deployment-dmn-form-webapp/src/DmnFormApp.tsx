@@ -44,22 +44,20 @@ export function DmnFormApp(props: { baseUrl: string } = { baseUrl: ".." }) {
               <HashRouter>
                 <Switch>
                   {app.data && (
-                    <>
-                      <Route
-                        path={routes.form.path({
-                          modelName: ":modelName*",
-                        })}
-                      >
-                        {({ match }) => {
-                          const formData = app.data!.forms.find((form) => form.modelName === match?.params.modelName);
-                          return formData ? (
-                            <DmnFormPage formData={formData} baseUrl={props.baseUrl} />
-                          ) : (
-                            <Redirect to={routes.error.path({})} />
-                          );
-                        }}
-                      </Route>
-                    </>
+                    <Route
+                      path={routes.form.path({
+                        modelName: ":modelName*",
+                      })}
+                    >
+                      {({ match }) => {
+                        const formData = app.data!.forms.find((form) => form.modelName === match?.params.modelName);
+                        return formData ? (
+                          <DmnFormPage formData={formData} baseUrl={props.baseUrl} />
+                        ) : (
+                          <Redirect to={routes.error.path({})} />
+                        );
+                      }}
+                    </Route>
                   )}
                   {app.data?.forms[0] && (
                     <Route path={routes.root.path({})}>

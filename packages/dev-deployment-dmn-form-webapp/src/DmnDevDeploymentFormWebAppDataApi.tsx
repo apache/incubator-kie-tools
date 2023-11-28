@@ -33,25 +33,18 @@ export interface AppData {
 export type DmnDefinitionsJson = FormData;
 
 export async function fetchAppData(baseUrl: string): Promise<AppData> {
-  console.log({ baseUrl });
   const openApiSpec = await (await fetch(routes.openApiJson.path({}, baseUrl))).json();
   const fixedRefOpenApiSpec = JSON.parse(
     JSON.stringify(openApiSpec).replace(new RegExp("/dmnDefinitions.json", "g"), `${baseUrl}/dmnDefinitions.json`)
   );
 
-  console.log({ fixedRefOpenApiSpec });
-
   const dereferencedSpec = await OpenAPIParser.dereference(fixedRefOpenApiSpec, {
     dereference: { circular: "ignore" },
   });
 
-  console.log({ dereferencedSpec });
-
   const models = Object.keys(dereferencedSpec.paths)
     .filter((path: string) => path.includes("/dmnresult"))
     .map((path) => path.replace("/dmnresult", ""));
-
-  console.log({ models });
 
   const forms = models.map((modelPath: string) => {
     const inputSetSchema = dereferencedSpec.paths[modelPath]?.post.requestBody.content["application/json"].schema;
