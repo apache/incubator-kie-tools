@@ -51,20 +51,26 @@ export function ConstraintsRange({
 
   const isStartValid = useCallback(
     (args: { includeEnd: boolean; start: string; end: string }) => {
+      if (type === DmnBuiltInDataType.String) {
+        return true;
+      }
       const parsedEnd = typeHelper.parse(args.end);
       const parsedStart = typeHelper.parse(args.start);
       return args.end !== "" ? (args.includeEnd ? parsedEnd >= parsedStart : parsedEnd > parsedStart) : true;
     },
-    [typeHelper]
+    [type, typeHelper]
   );
 
   const isEndValid = useCallback(
     (args: { includeEnd: boolean; start: string; end: string }) => {
+      if (type === DmnBuiltInDataType.String) {
+        return true;
+      }
       const parsedEnd = typeHelper.parse(args.end);
       const parsedStart = typeHelper.parse(args.start);
       return args.start !== "" ? (args.includeEnd ? parsedEnd >= parsedStart : parsedEnd > parsedStart) : true;
     },
-    [typeHelper]
+    [type, typeHelper]
   );
 
   const onInternalChange = useCallback(
