@@ -52,19 +52,19 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
 
   useEffect(() => {
     if (document.getElementById(pageId)) {
-      document.getElementById(pageId).setAttribute("data-ouia-main", "true");
+      document.getElementById(pageId)?.setAttribute("data-ouia-main", "true");
     }
   });
 
   const Header = (
     <PageHeader
-      logo={<Brand src={BrandSrc} alt={BrandAltText} onClick={BrandClick} />}
+      logo={<Brand src={BrandSrc} alt={BrandAltText!} onClick={BrandClick} />}
       headerTools={
         <PageHeaderTools>
           <BrandContext.Provider
             value={{
-              imageSrc: BrandSrc,
-              altText: BrandAltText,
+              imageSrc: BrandSrc!,
+              altText: BrandAltText!,
             }}
           >
             <PageToolbar />

@@ -44,7 +44,7 @@ export const NoData: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ouiaSafe, ...p
   }
 
   const tempPath = prevPath.split("/");
-  prevPath = tempPath.filter((item) => item);
+  prevPath = tempPath.filter((item: string) => item);
 
   const [isRedirect, setIsredirect] = useState(false);
   const redirectHandler = () => {

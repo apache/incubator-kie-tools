@@ -21,6 +21,6 @@ export interface Brand {
   altText: string;
 }
 
-export const BrandContext = React.createContext<Brand>(null);
+export const BrandContext = React.createContext<Brand>({} as Brand);
 
 export const useBrandContext = (): Brand => useContext<Brand>(BrandContext);

@@ -34,7 +34,7 @@ export class AppContextImpl implements AppContext {
   }
 }
 
-const KogitoAppContext = React.createContext<AppContext>(null);
+const KogitoAppContext = React.createContext<AppContext>({} as AppContext);
 
 export default KogitoAppContext;
 

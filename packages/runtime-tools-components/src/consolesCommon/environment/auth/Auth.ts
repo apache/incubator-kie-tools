@@ -46,7 +46,7 @@ export interface LogoutUserContext extends UserContext {
   /**
    * Logs out the current user
    */
-  logout();
+  logout(): void;
 }
 
 export class DefaultUser implements User {

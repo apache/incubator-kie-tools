@@ -36,7 +36,7 @@ export const PageSectionHeader: React.FC<PageSectionHeaderProps & OUIAProps> = (
 }) => {
   const renderBreadcrumb = (): JSX.Element[] => {
     const items: JSX.Element[] = [];
-    breadcrumbText.forEach((text, index) => {
+    breadcrumbText?.forEach((text, index) => {
       if (index === breadcrumbText.length - 1) {
         items.push(
           <BreadcrumbItem key={index} isActive>
@@ -46,7 +46,7 @@ export const PageSectionHeader: React.FC<PageSectionHeaderProps & OUIAProps> = (
       } else {
         items.push(
           <BreadcrumbItem key={index}>
-            <Link to={breadcrumbPath[index]}>{text}</Link>
+            <Link to={breadcrumbPath![index]}>{text}</Link>
           </BreadcrumbItem>
         );
       }

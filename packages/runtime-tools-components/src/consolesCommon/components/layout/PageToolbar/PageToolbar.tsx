@@ -42,7 +42,7 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({ ouiaId, ouiaSafe }) =
     setmodalToggle(!modalToggle);
   };
 
-  const onDropdownToggle = (_isDropdownOpen) => {
+  const onDropdownToggle = (_isDropdownOpen: boolean) => {
     setDropdownOpen(_isDropdownOpen);
   };
 

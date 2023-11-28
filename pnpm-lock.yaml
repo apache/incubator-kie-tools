@@ -6382,6 +6382,9 @@ importers:
       "@testing-library/jest-dom":
         specifier: ^5.16.1
         version: 5.16.1
+      "@types/history":
+        specifier: ^4.7.3
+        version: 4.7.5
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
@@ -6400,6 +6403,12 @@ importers:
       "@types/react-dom":
         specifier: ^17.0.5
         version: 17.0.8
+      "@types/react-router":
+        specifier: ^5.1.14
+        version: 5.1.14
+      "@types/react-router-dom":
+        specifier: ^5.1.7
+        version: 5.1.7
       "@types/testing-library__jest-dom":
         specifier: ^5.9.1
         version: 5.9.5

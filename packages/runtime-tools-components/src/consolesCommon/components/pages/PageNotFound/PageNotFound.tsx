@@ -50,8 +50,8 @@ export const PageNotFound: React.FC<
     prevPath = props.defaultPath;
   }
 
-  const tempPath = prevPath.split("/");
-  prevPath = tempPath.filter((item) => item);
+  const tempPath = prevPath?.split("/");
+  prevPath = tempPath?.filter((item: string) => item);
 
   const [isRedirect, setIsredirect] = useState(false);
   const redirectHandler = () => {
@@ -59,7 +59,7 @@ export const PageNotFound: React.FC<
   };
   return (
     <>
-      {isRedirect && <Redirect to={`/${prevPath[0]}`} />}
+      {isRedirect && <Redirect to={`/${prevPath?.[0]}`} />}
       <PageSection variant="light" {...componentOuiaProps(ouiaId, "page-not-found", ouiaSafe ? ouiaSafe : !isRedirect)}>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.full}>
