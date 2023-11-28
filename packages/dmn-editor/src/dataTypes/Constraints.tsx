@@ -82,7 +82,10 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
           return moment(recoveredValue, "YYYY-MM-DD", true).isValid() || value === "" || recoveredValue === "";
         case DmnBuiltInDataType.DateTime:
           return (
-            moment(recoveredValue, "YYYY-MM-DDTHH:mm:ssZZ", true).isValid() || value === "" || recoveredValue === ""
+            moment(recoveredValue, "YYYY-MM-DDTHH:mm:ssZZ", true).isValid() ||
+            moment(recoveredValue, "YYYY-MM-DD", true).isValid() ||
+            value === "" ||
+            recoveredValue === ""
           );
         case DmnBuiltInDataType.DateTimeDuration:
           return REGEX_DATE_TIME_DURATION.test(recoveredValue ?? "") || value === "" || recoveredValue === "";

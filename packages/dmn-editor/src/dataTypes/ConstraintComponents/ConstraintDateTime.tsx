@@ -13,6 +13,9 @@ export function ConstraintDateTime({ value, onChange, isValid, ...props }: Const
     (args: { date?: string; time?: string }) => {
       const newDate = args.date ?? date;
       const newTime = args.time ?? time;
+      if (newDate !== "" && newTime === "") {
+        onChange(`${newDate}`);
+      }
       if (newDate !== "" && newTime !== "") {
         onChange(`${newDate}T${newTime}`);
       }
