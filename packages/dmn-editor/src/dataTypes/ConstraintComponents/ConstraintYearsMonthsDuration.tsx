@@ -4,7 +4,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
 
-export const REGEX_YEARS_MONTH_DURATION = /^P(?!$)(\d+Y)?(\d+M)?$/;
+export const REGEX_YEARS_MONTH_DURATION = /^P(?!$)((-)?\d+Y)?((-)?\d+M)?$/;
 
 export function ConstraintYearsMonthsDuration({
   id,

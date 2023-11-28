@@ -4,7 +4,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
 
-export const REGEX_DATE_TIME_DURATION = /^P(?!$)(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?$/;
+export const REGEX_DATE_TIME_DURATION = /^P(?!$)((-)?\d+D)?(T(?=(-)?\d)((-)?\d+H)?((-)?\d+M)?((-)?\d+S)?)?$/;
 
 export function ConstraintDateTimeDuration({
   id,
