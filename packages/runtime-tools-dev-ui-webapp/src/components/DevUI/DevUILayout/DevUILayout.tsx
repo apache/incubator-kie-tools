@@ -22,7 +22,6 @@ import { MemoryRouter } from "react-router";
 import PageLayout from "@kogito-apps/consoles-common/dist/components/layout/PageLayout/PageLayout";
 import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 import DevUINav from "../DevUINav/DevUINav";
-import JobsManagementContextProvider from "../../../channel/JobsManagement/JobsManagementContextProvider";
 import ProcessDetailsContextProvider from "../../../channel/ProcessDetails/ProcessDetailsContextProvider";
 import ProcessListContextProvider from "../../../channel/ProcessList/ProcessListContextProvider";
 import TaskConsoleContextsProvider from "../../../channel/TaskInbox/TaskInboxContextProvider";
@@ -94,29 +93,27 @@ const DevUILayout: React.FC<IOwnProps> = ({
           <TaskFormContextProvider>
             <ProcessListContextProvider apolloClient={apolloClient}>
               <ProcessDetailsContextProvider apolloClient={apolloClient}>
-                <JobsManagementContextProvider apolloClient={apolloClient}>
-                  <ProcessDefinitionListContextProvider>
-                    <FormsListContextProvider>
-                      <CustomDashboardListContextProvider>
-                        <CustomDashboardViewContextProvider>
-                          <FormDetailsContextProvider>
-                            <ProcessFormContextProvider>
-                              <WorkflowFormContextProvider>
-                                <CloudEventFormContextProvider>
-                                  <MemoryRouter>
-                                    <Switch>
-                                      <Route path="/" render={renderPage} />
-                                    </Switch>
-                                  </MemoryRouter>
-                                </CloudEventFormContextProvider>
-                              </WorkflowFormContextProvider>
-                            </ProcessFormContextProvider>
-                          </FormDetailsContextProvider>
-                        </CustomDashboardViewContextProvider>
-                      </CustomDashboardListContextProvider>
-                    </FormsListContextProvider>
-                  </ProcessDefinitionListContextProvider>
-                </JobsManagementContextProvider>
+                <ProcessDefinitionListContextProvider>
+                  <FormsListContextProvider>
+                    <CustomDashboardListContextProvider>
+                      <CustomDashboardViewContextProvider>
+                        <FormDetailsContextProvider>
+                          <ProcessFormContextProvider>
+                            <WorkflowFormContextProvider>
+                              <CloudEventFormContextProvider>
+                                <MemoryRouter>
+                                  <Switch>
+                                    <Route path="/" render={renderPage} />
+                                  </Switch>
+                                </MemoryRouter>
+                              </CloudEventFormContextProvider>
+                            </WorkflowFormContextProvider>
+                          </ProcessFormContextProvider>
+                        </FormDetailsContextProvider>
+                      </CustomDashboardViewContextProvider>
+                    </CustomDashboardListContextProvider>
+                  </FormsListContextProvider>
+                </ProcessDefinitionListContextProvider>
               </ProcessDetailsContextProvider>
             </ProcessListContextProvider>
           </TaskFormContextProvider>

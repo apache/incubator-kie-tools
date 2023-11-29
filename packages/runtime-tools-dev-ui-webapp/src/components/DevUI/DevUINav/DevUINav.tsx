@@ -39,13 +39,6 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
                 </Link>
               </NavItem>
             )}
-            {(!availablePages || availablePages.includes("Jobs")) && (
-              <NavItem key={"jobs-management-nav"} isActive={pathname === "/JobsManagement"}>
-                <Link to="/JobsManagement" {...ouiaAttribute("data-ouia-navigation-name", "jobs-management-nav")}>
-                  Jobs
-                </Link>
-              </NavItem>
-            )}
             {(!availablePages || availablePages.includes("Tasks")) && (
               <NavItem key={"task-inbox-nav"} isActive={pathname === "/TaskInbox"}>
                 <Link to="/TaskInbox" {...ouiaAttribute("data-ouia-navigation-name", "task-inbox-nav")}>

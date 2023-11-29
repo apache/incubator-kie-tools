@@ -16,7 +16,7 @@
 
 import React, { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { JobsManagementPage, ProcessesPage } from "../../pages";
+import { ProcessesPage } from "../../pages";
 import { NoData } from "@kogito-apps/consoles-common/dist/components/pages/NoData";
 import { PageNotFound } from "@kogito-apps/consoles-common/dist/components/pages/PageNotFound";
 import ProcessDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
@@ -45,9 +45,6 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
   const context = useDevUIAppContext();
 
   const defaultPath = useMemo(() => {
-    if (context.isProcessEnabled) {
-      return "/JobsManagement";
-    }
     if (context.isTracingEnabled) {
       return "/Audit";
     }
@@ -75,10 +72,6 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
       {
         enabled: () => context.isProcessEnabled,
         node: <Route key="2" exact path="/Process/:instanceID" component={ProcessDetailsPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="3" exact path="/JobsManagement" component={JobsManagementPage} />,
       },
       {
         enabled: () => context.isProcessEnabled,
