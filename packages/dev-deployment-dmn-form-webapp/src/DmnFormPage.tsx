@@ -34,11 +34,10 @@ import { useDmnFormI18n } from "./i18n";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { resolveReferencesAndCheckForRecursion, getDefaultValues } from "@kie-tools/dmn-runner/dist/jsonSchema";
 import { extractDifferences } from "@kie-tools/dmn-runner/dist/results";
-import { useApp } from "./AppContext";
+import { DmnFormAppProps } from "./DmnFormApp";
 
-interface Props {
+interface Props extends DmnFormAppProps {
   formData: FormData;
-  baseUrl: string;
 }
 
 enum AlertTypes {
@@ -89,7 +88,8 @@ export function DmnFormPage(props: Props) {
   const onSubmit = useCallback(async () => {
     try {
       const formOutputs = await fetchDmnResult({
-        baseUrl: props.baseUrl,
+        baseOrigin: props.baseOrigin,
+        basePath: props.basePath,
         modelName: props.formData.modelName,
         inputs: formInputs,
       });
@@ -106,7 +106,7 @@ export function DmnFormPage(props: Props) {
       setOpenAlert(AlertTypes.ERROR);
       console.error(error);
     }
-  }, [formInputs, props.formData.modelName, props.baseUrl]);
+  }, [formInputs, props.formData.modelName, props.baseOrigin, props.basePath]);
 
   const pageErrorMessage = useMemo(
     () => (
@@ -154,10 +154,7 @@ export function DmnFormPage(props: Props) {
   }, [onSubmit]);
 
   return (
-    <Page
-      data-testid="dmn-form-page"
-      header={<DmnFormToolbar modelName={props.formData.modelName} baseUrl={props.baseUrl} />}
-    >
+    <Page data-testid="dmn-form-page" header={<DmnFormToolbar modelName={props.formData.modelName} />}>
       {openAlert === AlertTypes.ERROR && (
         <div className={"kogito--alert-container"}>
           <Alert

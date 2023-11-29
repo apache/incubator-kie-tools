@@ -19,22 +19,25 @@
 
 import { DecisionResult } from "@kie-tools/extended-services-api";
 import { routes } from "./Routes";
+import { DmnFormAppProps } from "./DmnFormApp";
 
-export interface FetchDmnResultArgs {
-  baseUrl?: string;
+export interface FetchDmnResultArgs extends DmnFormAppProps {
   modelName: string;
   inputs: any;
 }
 
 export async function fetchDmnResult(args: FetchDmnResultArgs): Promise<DecisionResult[]> {
-  const response = await fetch(routes.dmnResult.path({ modelName: args.modelName }, args.baseUrl), {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(args.inputs),
-  });
+  const response = await fetch(
+    routes.quarkusApp.dmnResult.path({ modelName: args.modelName }, args.baseOrigin, args.basePath),
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(args.inputs),
+    }
+  );
 
   return (await response.json()).decisionResults as DecisionResult[];
 }

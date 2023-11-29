@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import * as path from "path";
+
 const IS_HASH_ROUTER = true;
 
 export enum QueryParams {}
@@ -34,17 +36,23 @@ export class Route<
   }
 > {
   constructor(
-    private readonly pathDelegate: (pathParams: { [k in T["pathParams"]]: string }, baseUrl?: string) => string
+    private readonly pathDelegate: (
+      pathParams: { [k in T["pathParams"]]: string },
+      baseOrigin: string,
+      basePath: string
+    ) => string
   ) {}
 
   public url(args: {
     base?: string;
     pathParams: { [k in T["pathParams"]]: string };
     queryParams?: Partial<{ [k in T["queryParams"]]: string }>;
+    baseOrigin?: string;
+    basePath?: string;
   }) {
     const SEP = args.base?.endsWith("/") ? "" : "/";
     const HASH = IS_HASH_ROUTER ? "#" : "";
-    const path = this.pathDelegate(args.pathParams);
+    const path = this.pathDelegate(args.pathParams, args.baseOrigin ?? "", args.basePath ?? "");
     const queryParams = args.queryParams ?? {};
 
     if (!args.base && Object.keys(queryParams).length <= 0) {
@@ -70,8 +78,8 @@ export class Route<
     return queryString;
   }
 
-  public path(pathParams: { [k in T["pathParams"]]: string }, baseUrl?: string) {
-    return this.pathDelegate(pathParams, baseUrl ?? ".");
+  public path(pathParams: { [k in T["pathParams"]]: string }, baseOrigin?: string, basePath?: string) {
+    return this.pathDelegate(pathParams, baseOrigin ?? ".", basePath ?? ".");
   }
 }
 
@@ -106,28 +114,34 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
   };
 }
 
+function urlFromBasePath(baseOrigin: string, basePath: string, ...targetPaths: string[]) {
+  return new URL(path.normalize(`${baseOrigin}/${path.join(`/${basePath}`, ...targetPaths)}`)).toString();
+}
+
 export const routes = {
   root: new Route<{}>(() => "/"),
 
   error: new Route<{}>(() => "/error"),
 
-  dmnDefinitionsJson: new Route<{}>((_, baseUrl) => `${baseUrl}/dmnDefinitions.json`),
-
-  openApiJson: new Route<{}>((_, baseUrl) => `${baseUrl}/q/openapi?format=json`),
-
-  swaggerUi: new Route<{}>((_, baseUrl) => `${baseUrl}/q/swagger-ui`),
-
-  dmnResult: new Route<{
-    pathParams: PathParams.MODEL_NAME;
-  }>(({ modelName }, baseUrl) => `${baseUrl}/${modelName}/dmnresult`),
+  quarkusApp: {
+    dmnDefinitionsJson: new Route<{}>((_, baseOrigin, basePath) =>
+      urlFromBasePath(baseOrigin, basePath, "/dmnDefinitions.json")
+    ),
+    openApiJson: new Route<{}>((_, baseOrigin, basePath) =>
+      urlFromBasePath(baseOrigin, basePath, "/q/openapi?format=json")
+    ),
+    swaggerUi: new Route<{}>((_, baseOrigin, basePath) => urlFromBasePath(baseOrigin, basePath, "/q/swagger-ui")),
+    dmnResult: new Route<{
+      pathParams: PathParams.MODEL_NAME;
+    }>(({ modelName }, baseOrigin, basePath) => urlFromBasePath(baseOrigin, basePath, `/${modelName}`, "/dmnresult")),
+    model: new Route<{
+      pathParams: PathParams.FILE_PATH;
+    }>(({ filePath }, baseOrigin, basePath) => urlFromBasePath(baseOrigin, basePath, `/${filePath}`)),
+  },
 
   form: new Route<{
     pathParams: PathParams.MODEL_NAME;
   }>(({ modelName }) => `/form/${modelName}`),
-
-  model: new Route<{
-    pathParams: PathParams.FILE_PATH;
-  }>(({ filePath }, baseUrl) => `${baseUrl}/${filePath}`),
 
   static: {
     images: {

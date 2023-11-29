@@ -93,7 +93,7 @@ export const App: React.FunctionComponent = () => {
         <div style={{ flex: "1 0" }}>
           <Switch>
             <Route path="/form/">
-              <DmnFormApp baseUrl={`http://localhost:${process.env.WEBPACK_REPLACE__quarkusPort}`} />
+              <DmnFormApp baseOrigin={`http://localhost:${process.env.WEBPACK_REPLACE__quarkusPort}`} basePath="" />
             </Route>
             <Route path="/">
               <Home />

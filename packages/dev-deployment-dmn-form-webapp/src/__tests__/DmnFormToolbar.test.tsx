@@ -27,9 +27,11 @@ describe("DmnFormToolbar", () => {
     const modelName = "a_really_really_really_really_large_model_name_for_my_model";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        usingTestingAppContext(<DmnFormToolbar modelName={modelName} baseUrl=".." />, {
+        usingTestingAppContext(<DmnFormToolbar modelName={modelName} />, {
           data: {
             forms: [{ modelName, schema: {} }],
+            baseOrigin: "http://localhost",
+            basePath: "",
           },
         }).wrapper
       ).wrapper
@@ -41,9 +43,11 @@ describe("DmnFormToolbar", () => {
     const modelName = "my_model";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        usingTestingAppContext(<DmnFormToolbar modelName={modelName} baseUrl=".." />, {
+        usingTestingAppContext(<DmnFormToolbar modelName={modelName} />, {
           data: {
             forms: [{ modelName, schema: {} }],
+            baseOrigin: "http://localhost",
+            basePath: "",
           },
         }).wrapper
       ).wrapper

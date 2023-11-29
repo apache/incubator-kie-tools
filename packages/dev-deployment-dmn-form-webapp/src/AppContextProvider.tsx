@@ -21,10 +21,10 @@ import React, { ReactNode, useCallback, useState } from "react";
 import { AppContext } from "./AppContext";
 import { AppData, fetchAppData } from "./DmnDevDeploymentFormWebAppDataApi";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { DmnFormAppProps } from "./DmnFormApp";
 
-interface Props {
+interface Props extends DmnFormAppProps {
   children: ReactNode;
-  baseUrl: string;
 }
 
 export function AppContextProvider(props: Props) {
@@ -34,7 +34,7 @@ export function AppContextProvider(props: Props) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        fetchAppData(props.baseUrl)
+        fetchAppData(props)
           .then((data: AppData) => {
             if (canceled.get()) {
               return;

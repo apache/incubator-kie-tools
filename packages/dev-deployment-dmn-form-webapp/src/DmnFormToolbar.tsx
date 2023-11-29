@@ -46,7 +46,6 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 interface Props {
   modelName?: string;
-  baseUrl: string;
 }
 
 function truncateText(text: string) {
@@ -65,8 +64,8 @@ export function DmnFormToolbar(props: Props) {
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
 
   const onOpenSwaggerUI = useCallback(() => {
-    window.open(routes.swaggerUi.path({}, props.baseUrl), "_blank");
-  }, [props.baseUrl]);
+    window.open(routes.quarkusApp.swaggerUi.path({}, app.data?.baseOrigin, app.data?.basePath), "_blank");
+  }, [app.data?.baseOrigin, app.data?.basePath]);
 
   const openForm = useCallback(
     (modelName: string) => {

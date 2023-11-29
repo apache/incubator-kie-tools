@@ -21,6 +21,13 @@ import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { DmnFormApp } from "./DmnFormApp";
+import * as path from "path";
 import "../static/resources/style.css";
 
-ReactDOM.render(<DmnFormApp baseUrl=".." />, document.getElementById("app")!);
+// The following regular expression matches everything between the first and last '/'.
+const re = new RegExp("^([^/]*)/|/(?=[^/]*$)", "g");
+
+const baseOrigin = window.location.origin;
+const basePath = path.join(window.location.pathname, window.location.pathname !== "/" ? ".." : "").replace(re, "$1");
+
+ReactDOM.render(<DmnFormApp baseOrigin={baseOrigin} basePath={basePath} />, document.getElementById("app")!);

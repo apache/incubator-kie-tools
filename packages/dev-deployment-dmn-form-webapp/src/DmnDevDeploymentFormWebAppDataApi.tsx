@@ -20,6 +20,8 @@
 import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import OpenAPIParser from "@readme/openapi-parser";
 import { routes } from "./Routes";
+import { DmnFormAppProps } from "./DmnFormApp";
+import * as path from "path";
 
 export interface FormData {
   modelName: string;
@@ -28,14 +30,21 @@ export interface FormData {
 
 export interface AppData {
   forms: FormData[];
+  baseOrigin: string;
+  basePath: string;
 }
 
 export type DmnDefinitionsJson = FormData;
 
-export async function fetchAppData(baseUrl: string): Promise<AppData> {
-  const openApiSpec = await (await fetch(routes.openApiJson.path({}, baseUrl))).json();
+export async function fetchAppData(args: DmnFormAppProps): Promise<AppData> {
+  const openApiSpec = await (
+    await fetch(routes.quarkusApp.openApiJson.path({}, args.baseOrigin, args.basePath))
+  ).json();
   const fixedRefOpenApiSpec = JSON.parse(
-    JSON.stringify(openApiSpec).replace(new RegExp("/dmnDefinitions.json", "g"), `${baseUrl}/dmnDefinitions.json`)
+    JSON.stringify(openApiSpec).replace(
+      new RegExp(`${args.basePath ? `/${args.basePath}` : ""}/dmnDefinitions.json`, "g"),
+      routes.quarkusApp.dmnDefinitionsJson.path({}, args.baseOrigin, args.basePath)
+    )
   );
 
   const dereferencedSpec = await OpenAPIParser.dereference(fixedRefOpenApiSpec, {
@@ -50,8 +59,9 @@ export async function fetchAppData(baseUrl: string): Promise<AppData> {
     const inputSetSchema = dereferencedSpec.paths[modelPath]?.post.requestBody.content["application/json"].schema;
     const outputSetSchema =
       dereferencedSpec.paths[modelPath]?.post.responses.default.content["application/json"].schema;
+
     return {
-      modelName: modelPath.replace("/", ""),
+      modelName: modelPath.replace(args.basePath ? `/${args.basePath}` : "", "").replace("/", ""),
       schema: {
         $ref: "#/definitions/InputSet",
         definitions: {
@@ -68,5 +78,7 @@ export async function fetchAppData(baseUrl: string): Promise<AppData> {
 
   return {
     forms,
+    baseOrigin: args.baseOrigin,
+    basePath: args.basePath,
   };
 }
