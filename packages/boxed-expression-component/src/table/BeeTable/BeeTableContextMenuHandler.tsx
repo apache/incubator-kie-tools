@@ -62,7 +62,7 @@ export interface BeeTableContextMenuHandlerProps {
   onRowDuplicated?: (args: { rowIndex: number }) => void;
   onRowReset?: (args: { rowIndex: number }) => void;
   onRowDeleted?: (args: { rowIndex: number }) => void;
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined; rowIndex?: number }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
 }
 
@@ -302,11 +302,13 @@ export function BeeTableContextMenuHandler({
 
       const rowIndex = activeCell.rowIndex;
       const columnIndex = activeCell.columnIndex;
+      const groupType = "sd";
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
           onColumnAdded?.({
             beforeIndex: columnIndex - 1,
             groupType: column?.groupType,
+            rowIndex: rowIndex,
           });
           console.debug(`Insert column left to ${columnIndex}`);
           break;
@@ -314,6 +316,7 @@ export function BeeTableContextMenuHandler({
           onColumnAdded?.({
             beforeIndex: columnIndex,
             groupType: column?.groupType,
+            rowIndex: rowIndex,
           });
           console.debug(`Insert column right to ${columnIndex}`);
           break;
@@ -588,7 +591,7 @@ export function BeeTableContextMenuHandler({
               onClick={(e) => e.stopPropagation()}
               drilldownMenu={createDrillDownMenu(group, operation.type)}
             >
-              {operationLabel(operation.type)}
+              {operation.name ? operation.name : operationLabel(operation.type)}
             </MenuItem>
           ) : (
             <MenuItem
@@ -599,7 +602,7 @@ export function BeeTableContextMenuHandler({
               onClick={() => handleOperation(operation.type)}
               isDisabled={!allowedOperationsForSelection.includes(operation.type)}
             >
-              {operationLabel(operation.type)}
+              {operation.name ? operation.name : operationLabel(operation.type)}
             </MenuItem>
           )
         )}

@@ -50,6 +50,8 @@ import { SceSimModel } from "@kie-tools/scesim-marshaller";
 import { useTestScenarioEditorI18n } from "../i18n";
 import { TestScenarioType } from "../TestScenarioEditor";
 
+import "./TestScenarioTable.css";
+
 function TestScenarioTable({
   assetType,
   simulationData,
@@ -59,10 +61,18 @@ function TestScenarioTable({
   simulationData: SceSim__simulationType;
   updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
-  enum SimulationTableColumnGroup {
-    Expect = "EXPECT",
-    Given = "GIVEN",
-    Other = "OTHER",
+  enum SimulationTableColumnHeaderGroup {
+    EXPECT = "expect-header",
+    GIVEN = "given-header",
+  }
+  enum SimulationTableColumnInstanceGroup {
+    EXPECT = "expect-instance",
+    GIVEN = "given-instance",
+  }
+  enum SimulationTableColumnFieldGroup {
+    EXPECT = "expect",
+    GIVEN = "given",
+    OTHER = "other",
   }
 
   type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
@@ -96,7 +106,7 @@ function TestScenarioTable({
     let descriptionFactMapping: SceSim__FactMappingType | undefined;
 
     (simulationData.scesimModelDescriptor.factMappings?.FactMapping ?? []).forEach((factMapping) => {
-      if (factMapping.expressionIdentifier.type?.__$$text === SimulationTableColumnGroup.Given) {
+      if (factMapping.expressionIdentifier.type?.__$$text === SimulationTableColumnFieldGroup.GIVEN.toUpperCase()) {
         givenFactMappingToFactMap.set(
           { factName: factMapping.factAlias.__$$text, factType: factMapping.factIdentifier!.className!.__$$text },
           [
@@ -107,7 +117,9 @@ function TestScenarioTable({
             factMapping,
           ]
         );
-      } else if (factMapping.expressionIdentifier.type!.__$$text === SimulationTableColumnGroup.Expect) {
+      } else if (
+        factMapping.expressionIdentifier.type!.__$$text === SimulationTableColumnFieldGroup.EXPECT.toUpperCase()
+      ) {
         expectFactMappingToFactMap.set(
           { factName: factMapping.factAlias.__$$text, factType: factMapping.factIdentifier!.className!.__$$text },
           [
@@ -119,7 +131,7 @@ function TestScenarioTable({
           ]
         );
       } else if (
-        factMapping.expressionIdentifier.type!.__$$text === SimulationTableColumnGroup.Other &&
+        factMapping.expressionIdentifier.type!.__$$text === SimulationTableColumnFieldGroup.OTHER.toUpperCase() &&
         factMapping.expressionIdentifier.name!.__$$text === "Description"
       ) {
         descriptionFactMapping = factMapping;
@@ -128,7 +140,7 @@ function TestScenarioTable({
 
     const descriptionSection: ReactTable.Column<ROWTYPE> = {
       accessor: descriptionFactMapping!.expressionIdentifier.name!.__$$text,
-      groupType: descriptionFactMapping!.expressionIdentifier.type!.__$$text,
+      groupType: descriptionFactMapping!.expressionIdentifier.type!.__$$text.toLowerCase(),
       id: descriptionFactMapping!.expressionIdentifier.name!.__$$text,
       isRowIndexColumn: false,
       label: descriptionFactMapping!.factAlias.__$$text,
@@ -137,16 +149,16 @@ function TestScenarioTable({
     };
 
     const givenSection = {
-      accessor: SimulationTableColumnGroup.Given,
-      groupType: SimulationTableColumnGroup.Given,
-      id: SimulationTableColumnGroup.Given,
+      accessor: SimulationTableColumnHeaderGroup.GIVEN,
+      groupType: SimulationTableColumnHeaderGroup.GIVEN,
+      id: SimulationTableColumnHeaderGroup.GIVEN,
       isRowIndexColumn: false,
-      label: SimulationTableColumnGroup.Given,
+      label: i18n.table.given.toUpperCase(),
       columns: [...givenFactMappingToFactMap.entries()].map((entry) => {
         return {
           accessor: entry[0].factName,
           dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : "<Undefined>",
-          groupType: SimulationTableColumnGroup.Given,
+          groupType: SimulationTableColumnInstanceGroup.GIVEN,
           id: entry[0].factName,
           isRowIndexColumn: false,
           label: entry[0].factName,
@@ -155,7 +167,7 @@ function TestScenarioTable({
               accessor: factMapping.expressionIdentifier.name!.__$$text,
               dataType:
                 factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "<Undefined>",
-              groupType: factMapping.expressionIdentifier.type!.__$$text,
+              groupType: factMapping.expressionIdentifier.type!.__$$text.toLowerCase(),
               label: factMapping.expressionAlias!.__$$text,
               id: factMapping.expressionIdentifier.name!.__$$text,
               isRowIndexColumn: false,
@@ -168,16 +180,16 @@ function TestScenarioTable({
     };
 
     const expectSection = {
-      accessor: SimulationTableColumnGroup.Expect,
-      groupType: SimulationTableColumnGroup.Expect,
-      id: SimulationTableColumnGroup.Expect,
+      accessor: SimulationTableColumnHeaderGroup.EXPECT,
+      groupType: SimulationTableColumnHeaderGroup.EXPECT,
+      id: SimulationTableColumnHeaderGroup.EXPECT,
       isRowIndexColumn: false,
-      label: SimulationTableColumnGroup.Expect,
+      label: i18n.table.expect.toUpperCase(),
       columns: [...expectFactMappingToFactMap.entries()].map((entry) => {
         return {
           accessor: entry[0].factName,
           dataType: entry[0].factType != "java.lang.Void" ? entry[0].factType : "<Undefined>",
-          groupType: SimulationTableColumnGroup.Expect,
+          groupType: SimulationTableColumnInstanceGroup.EXPECT,
           id: entry[0].factName,
           isRowIndexColumn: false,
           label: entry[0].factName,
@@ -186,7 +198,7 @@ function TestScenarioTable({
               accessor: factMapping.expressionIdentifier.name!.__$$text,
               dataType:
                 factMapping.className!.__$$text != "java.lang.Void" ? factMapping.className!.__$$text : "<Undefined>",
-              groupType: factMapping.expressionIdentifier.type!.__$$text,
+              groupType: factMapping.expressionIdentifier.type!.__$$text.toLowerCase(),
               id: factMapping.expressionIdentifier.name!.__$$text,
               isRowIndexColumn: false,
               label: factMapping.expressionAlias!.__$$text,
@@ -199,7 +211,13 @@ function TestScenarioTable({
     };
 
     return [descriptionSection, givenSection, expectSection];
-  }, [SimulationTableColumnGroup, simulationData.scesimModelDescriptor.factMappings?.FactMapping]);
+  }, [
+    i18n,
+    SimulationTableColumnFieldGroup,
+    SimulationTableColumnHeaderGroup,
+    SimulationTableColumnInstanceGroup,
+    simulationData.scesimModelDescriptor.factMappings?.FactMapping,
+  ]);
 
   /* Retrieving the Rows from the Test Scenario model */
   const simulationRows = useMemo(
@@ -227,6 +245,12 @@ function TestScenarioTable({
       if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
         return [];
       }
+      if (
+        conditions.column?.groupType === SimulationTableColumnHeaderGroup.EXPECT ||
+        conditions.column?.groupType === SimulationTableColumnHeaderGroup.GIVEN
+      ) {
+        return [];
+      }
 
       const columnIndex = conditions.selection.selectionStart.columnIndex;
 
@@ -241,7 +265,7 @@ function TestScenarioTable({
         (conditions.column?.columns?.length ?? 0) <= 0;
 
       const columnOperations =
-        columnIndex in [0, 1] // This is the rowIndex column
+        columnIndex in [0, 1]
           ? []
           : [
               BeeTableOperation.ColumnInsertLeft,
@@ -272,90 +296,109 @@ function TestScenarioTable({
           : []),
       ];
     },
-    [simulationRows.length]
+    [SimulationTableColumnHeaderGroup, simulationRows.length]
   );
 
   const generateOperationConfig = useCallback(
-    (groupName: string) => [
-      {
-        group: groupName,
-        items: [
-          { name: i18n.table.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
-          { name: i18n.table.insertRight, type: BeeTableOperation.ColumnInsertRight },
-          { name: i18n.table.insert, type: BeeTableOperation.ColumnInsertN },
-          { name: i18n.table.delete, type: BeeTableOperation.ColumnDelete },
-        ],
-      },
-      {
-        group: i18n.table.simulation.singleEntry.toUpperCase(),
-        items: [
-          { name: i18n.table.insertAbove, type: BeeTableOperation.RowInsertAbove },
-          { name: i18n.table.insertBelow, type: BeeTableOperation.RowInsertBelow },
-          { name: i18n.table.insert, type: BeeTableOperation.RowInsertN },
-          { name: i18n.table.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.table.duplicate, type: BeeTableOperation.RowDuplicate },
-        ],
-      },
-      {
-        group: i18n.table.selection.toUpperCase(),
-        items: [
-          { name: i18n.table.copy, type: BeeTableOperation.SelectionCopy },
-          { name: i18n.table.cut, type: BeeTableOperation.SelectionCut },
-          { name: i18n.table.paste, type: BeeTableOperation.SelectionPaste },
-          { name: i18n.table.reset, type: BeeTableOperation.SelectionReset },
-        ],
-      },
-    ],
-    [i18n]
+    (groupName: string) => {
+      const isInstance =
+        groupName === SimulationTableColumnInstanceGroup.EXPECT ||
+        groupName === SimulationTableColumnInstanceGroup.GIVEN;
+
+      return [
+        {
+          group: groupName,
+          items: [
+            {
+              name: isInstance ? i18n.table.insertLeftInstance : i18n.table.insertLeftField,
+              type: BeeTableOperation.ColumnInsertLeft,
+            },
+            {
+              name: isInstance ? i18n.table.insertRightInstance : i18n.table.insertRightField,
+              type: BeeTableOperation.ColumnInsertRight,
+            },
+            { name: i18n.table.insert, type: BeeTableOperation.ColumnInsertN },
+            {
+              name: isInstance ? i18n.table.deleteInstance : i18n.table.deleteField,
+              type: BeeTableOperation.ColumnDelete,
+            },
+          ],
+        },
+        {
+          group: i18n.table.simulation.singleEntry.toUpperCase(),
+          items: [
+            { name: i18n.table.insertAbove, type: BeeTableOperation.RowInsertAbove },
+            { name: i18n.table.insertBelow, type: BeeTableOperation.RowInsertBelow },
+            { name: i18n.table.insert, type: BeeTableOperation.RowInsertN },
+            { name: i18n.table.delete, type: BeeTableOperation.RowDelete },
+            { name: i18n.table.duplicate, type: BeeTableOperation.RowDuplicate },
+          ],
+        },
+        {
+          group: i18n.table.selection.toUpperCase(),
+          items: [
+            { name: i18n.table.copy, type: BeeTableOperation.SelectionCopy },
+            { name: i18n.table.cut, type: BeeTableOperation.SelectionCut },
+            { name: i18n.table.paste, type: BeeTableOperation.SelectionPaste },
+            { name: i18n.table.reset, type: BeeTableOperation.SelectionReset },
+          ],
+        },
+      ];
+    },
+    [SimulationTableColumnInstanceGroup, i18n]
   );
 
   const simulationOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     const config: BeeTableOperationConfig = {};
     config[""] = generateOperationConfig("");
-    config[SimulationTableColumnGroup.Expect] = generateOperationConfig(SimulationTableColumnGroup.Expect);
-    config[SimulationTableColumnGroup.Given] = generateOperationConfig(SimulationTableColumnGroup.Given);
-    config[SimulationTableColumnGroup.Other] = generateOperationConfig(SimulationTableColumnGroup.Other);
+    config[SimulationTableColumnHeaderGroup.EXPECT] = generateOperationConfig("");
+    config[SimulationTableColumnHeaderGroup.GIVEN] = generateOperationConfig("");
+    config[SimulationTableColumnInstanceGroup.EXPECT] = generateOperationConfig(
+      SimulationTableColumnInstanceGroup.EXPECT
+    );
+    config[SimulationTableColumnInstanceGroup.GIVEN] = generateOperationConfig(
+      SimulationTableColumnInstanceGroup.GIVEN
+    );
+    config[SimulationTableColumnFieldGroup.EXPECT] = generateOperationConfig(SimulationTableColumnFieldGroup.EXPECT);
+    config[SimulationTableColumnFieldGroup.GIVEN] = generateOperationConfig(SimulationTableColumnFieldGroup.GIVEN);
+    config[SimulationTableColumnFieldGroup.OTHER] = generateOperationConfig(SimulationTableColumnFieldGroup.OTHER);
     return config;
-  }, [SimulationTableColumnGroup, generateOperationConfig]);
+  }, [
+    SimulationTableColumnFieldGroup,
+    SimulationTableColumnHeaderGroup,
+    SimulationTableColumnInstanceGroup,
+    generateOperationConfig,
+  ]);
 
   /** TABLE UPDATES FUNCTIONS */
 
-  // const getSectionIndexForGroupType = useCallback(
-  //   (columnIndex: number, groupType: SimulationTableColumnGroup) => {
-  //     switch (groupType) {
-  //       case SimulationTableColumnGroup.Given:
-  //         return columnIndex;
-  //       case SimulationTableColumnGroup.Expect:
-  //         return columnIndex - (decisionTableExpression.input?.length ?? 0);
-  //       case DecisionTableColumnType.Annotation:
-  //         return (
-  //           columnIndex - (decisionTableExpression.input?.length ?? 0) - (decisionTableExpression.output?.length ?? 0)
-  //         );
-  //       default:
-  //         assertUnreachable(groupType);
-  //     }
-  //   },
-  //   [decisionTableExpression.input?.length, decisionTableExpression.output?.length]
-  // );
-
+  /**
+   * It updates every changed Cell in its related FactMappingValue
+   */
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       cellUpdates.forEach((update) => {
         updateTestScenarioModel((prevState) => {
-          const newScenarios = [...(prevState.ScenarioSimulationModel["simulation"]["scesimData"]["Scenario"] ?? [])];
-          const fm =
-            prevState.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]!["factMappings"]!["FactMapping"]![
+          /* To update the related FactMappingValue, it compares every FactMappingValue associated with the Scenario (Row)
+             that contains the cell with the FactMapping (Column) fields factIdentifier and expressionIdentifier */
+          const factMapping =
+            prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings!.FactMapping![
               update.columnIndex + 1
             ];
-          const factMappingValues = newScenarios[update.rowIndex].factMappingValues.FactMappingValue!;
+
+          const deepClonedScenarios: SceSim__ScenarioType[] = JSON.parse(
+            JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimData.Scenario)
+          );
+          const factMappingValues = deepClonedScenarios[update.rowIndex].factMappingValues.FactMappingValue!;
           const newFactMappingValues = [...factMappingValues];
 
-          factMappingValues.forEach((fmv, index) => {
+          factMappingValues.forEach((factMappingValue, index) => {
             if (
-              fm.factIdentifier.name?.__$$text == fmv.factIdentifier.name?.__$$text &&
-              fm.factIdentifier.className?.__$$text == fmv.factIdentifier.className?.__$$text &&
-              fm.expressionIdentifier.name?.__$$text == fmv.expressionIdentifier.name?.__$$text &&
-              fm.expressionIdentifier.type?.__$$text == fmv.expressionIdentifier.type?.__$$text
+              factMapping.factIdentifier.name?.__$$text === factMappingValue.factIdentifier.name?.__$$text &&
+              factMapping.factIdentifier.className?.__$$text === factMappingValue.factIdentifier.className?.__$$text &&
+              factMapping.expressionIdentifier.name?.__$$text ===
+                factMappingValue.expressionIdentifier.name?.__$$text &&
+              factMapping.expressionIdentifier.type?.__$$text === factMappingValue.expressionIdentifier.type?.__$$text
             ) {
               if (factMappingValues[index].rawValue) {
                 newFactMappingValues[index].rawValue!.__$$text = update.value;
@@ -370,16 +413,15 @@ function TestScenarioTable({
             }
           });
 
-          newScenarios[update.rowIndex].factMappingValues.FactMappingValue = newFactMappingValues;
+          deepClonedScenarios[update.rowIndex].factMappingValues.FactMappingValue = newFactMappingValues;
 
           return {
             ScenarioSimulationModel: {
               ...prevState.ScenarioSimulationModel,
-              ["simulation"]: {
-                ...prevState.ScenarioSimulationModel["simulation"],
-                ["scesimData"]: {
-                  ...prevState.ScenarioSimulationModel["simulation"]["scesimData"],
-                  ["Scenario"]: newScenarios,
+              simulation: {
+                ...prevState.ScenarioSimulationModel.simulation,
+                scesimData: {
+                  Scenario: deepClonedScenarios,
                 },
               },
             },
@@ -397,9 +439,9 @@ function TestScenarioTable({
    * TODO: Improving LEFT/RIGHT add column management
    */
   const onColumnAdded = useCallback(
-    (args: { beforeIndex: number; groupType: SimulationTableColumnGroup }) => {
+    (args: { beforeIndex: number; groupType: string; rowIndex: number }) => {
       /* GIVEN and EXPECTED column types can be added only */
-      if (SimulationTableColumnGroup.Other === args.groupType) {
+      if (SimulationTableColumnFieldGroup.OTHER === args.groupType) {
         return;
       }
 
@@ -469,7 +511,7 @@ function TestScenarioTable({
         };
       });
     },
-    [SimulationTableColumnGroup, updateTestScenarioModel]
+    [updateTestScenarioModel]
   );
 
   /**
@@ -655,28 +697,30 @@ function TestScenarioTable({
   );
 
   return (
-    <StandaloneBeeTable
-      allowedOperations={allowedOperations}
-      columns={simulationColumns}
-      enableKeyboardNavigation={true}
-      headerLevelCountForAppendingRowIndexColumn={2}
-      headerVisibility={BeeTableHeaderVisibility.AllLevels}
-      isEditableHeader={assetType === TestScenarioType[TestScenarioType.RULE]}
-      isReadOnly={false}
-      onCellUpdates={onCellUpdates}
-      onColumnAdded={onColumnAdded}
-      onColumnDeleted={onColumnDeleted}
-      onRowAdded={onRowAdded}
-      onRowDeleted={onRowDeleted}
-      onRowDuplicated={onRowDuplicated}
-      operationConfig={simulationOperationConfig}
-      resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
-      rows={simulationRows}
-      scrollableParentRef={tableScrollableElementRef.current}
-      shouldRenderRowIndexColumn={true}
-      shouldShowColumnsInlineControls={true}
-      shouldShowRowsInlineControls={true}
-    />
+    <div className={"test-scenario-table"}>
+      <StandaloneBeeTable
+        allowedOperations={allowedOperations}
+        columns={simulationColumns}
+        enableKeyboardNavigation={true}
+        headerLevelCountForAppendingRowIndexColumn={2}
+        headerVisibility={BeeTableHeaderVisibility.AllLevels}
+        isEditableHeader={assetType === TestScenarioType[TestScenarioType.RULE]}
+        isReadOnly={false}
+        onCellUpdates={onCellUpdates}
+        onColumnAdded={onColumnAdded}
+        onColumnDeleted={onColumnDeleted}
+        onRowAdded={onRowAdded}
+        onRowDeleted={onRowDeleted}
+        onRowDuplicated={onRowDuplicated}
+        operationConfig={simulationOperationConfig}
+        resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
+        rows={simulationRows}
+        scrollableParentRef={tableScrollableElementRef.current}
+        shouldRenderRowIndexColumn={true}
+        shouldShowColumnsInlineControls={true}
+        shouldShowRowsInlineControls={true}
+      />
+    </div>
   );
 }
 
