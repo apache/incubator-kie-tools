@@ -18,81 +18,12 @@ import { GraphQL } from "@kogito-apps/consoles-common/dist/graphql";
 import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 
-import UserTaskInstance = GraphQL.UserTaskInstance;
-
 declare global {
   interface Window {
     KOGITO_TASK_STATES_LIST: string;
     KOGITO_TASK_ACTIVE_STATES_LIST: string;
   }
 }
-
-export const getTaskSchemaEndPoint = (task: UserTaskInstance, user: User): string => {
-  let params = "";
-  let endpoint = task.endpoint;
-
-  if (task.completed) {
-    // if task is completed we load the schema for the task definition
-    endpoint = endpoint.slice(0, -(task.id.length + 1));
-    endpoint = endpoint.replace(task.processInstanceId + "/", "");
-  } else {
-    params = `?${getTaskEndpointSecurityParams(user)}`;
-  }
-
-  return `${endpoint}/schema${params}`;
-};
-
-export const getTaskEndpointSecurityParams = (user: User): string => {
-  let groups = "";
-
-  if (user.groups && user.groups.length > 0) {
-    groups = `&group=${user.groups.join("&group=")}`;
-  }
-  return `user=${user.id}${groups}`;
-};
-
-export const resolveTaskPriority = (priority?: string): string => {
-  switch (priority) {
-    case "0":
-      return "0 - High";
-    case "5":
-      return "5 - Medium";
-    case "10":
-      return "10 - Low";
-  }
-
-  return priority || "-";
-};
-
-export const trimTaskEndpoint = (userTask: UserTaskInstance): string => {
-  if (userTask.endpoint) {
-    const endpoint = userTask.endpoint;
-    const pid = userTask.processInstanceId;
-    return `${endpoint.substring(0, endpoint.indexOf(pid))}...`;
-  }
-
-  return "-";
-};
-
-export const getAllTaskStates = (): string[] => {
-  if (window.KOGITO_TASK_STATES_LIST) {
-    return window.KOGITO_TASK_STATES_LIST.split(",").map((state) => state.trim());
-  }
-  if (process.env.KOGITO_TASK_STATES_LIST) {
-    return process.env.KOGITO_TASK_STATES_LIST.split(",").map((state) => state.trim());
-  }
-  return ["Ready", "Reserved", "Completed", "Aborted", "Skipped"];
-};
-
-export const getActiveTaskStates = (): string[] => {
-  if (window.KOGITO_TASK_ACTIVE_STATES_LIST) {
-    return window.KOGITO_TASK_ACTIVE_STATES_LIST.split(",").map((state) => state.trim());
-  }
-  if (process.env.KOGITO_TASK_ACTIVE_STATES_LIST) {
-    return process.env.KOGITO_TASK_ACTIVE_STATES_LIST.split(",").map((state) => state.trim());
-  }
-  return ["Ready", "Reserved"];
-};
 
 export const createProcessDefinitionList = (processDefinitionObjs, url: string): ProcessDefinition[] => {
   const processDefinitionList = [];

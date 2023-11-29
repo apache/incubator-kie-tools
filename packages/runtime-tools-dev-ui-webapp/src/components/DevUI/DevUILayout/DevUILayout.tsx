@@ -24,8 +24,6 @@ import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 import DevUINav from "../DevUINav/DevUINav";
 import ProcessDetailsContextProvider from "../../../channel/ProcessDetails/ProcessDetailsContextProvider";
 import ProcessListContextProvider from "../../../channel/ProcessList/ProcessListContextProvider";
-import TaskConsoleContextsProvider from "../../../channel/TaskInbox/TaskInboxContextProvider";
-import TaskFormContextProvider from "../../../channel/TaskForms/TaskFormContextProvider";
 import FormsListContextProvider from "../../../channel/FormsList/FormsListContextProvider";
 import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetailsContextProvider";
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
@@ -89,35 +87,31 @@ const DevUILayout: React.FC<IOwnProps> = ({
         diagramPreviewSize={diagramPreviewSize}
         isStunnerEnabled={isStunnerEnabled}
       >
-        <TaskConsoleContextsProvider apolloClient={apolloClient}>
-          <TaskFormContextProvider>
-            <ProcessListContextProvider apolloClient={apolloClient}>
-              <ProcessDetailsContextProvider apolloClient={apolloClient}>
-                <ProcessDefinitionListContextProvider>
-                  <FormsListContextProvider>
-                    <CustomDashboardListContextProvider>
-                      <CustomDashboardViewContextProvider>
-                        <FormDetailsContextProvider>
-                          <ProcessFormContextProvider>
-                            <WorkflowFormContextProvider>
-                              <CloudEventFormContextProvider>
-                                <MemoryRouter>
-                                  <Switch>
-                                    <Route path="/" render={renderPage} />
-                                  </Switch>
-                                </MemoryRouter>
-                              </CloudEventFormContextProvider>
-                            </WorkflowFormContextProvider>
-                          </ProcessFormContextProvider>
-                        </FormDetailsContextProvider>
-                      </CustomDashboardViewContextProvider>
-                    </CustomDashboardListContextProvider>
-                  </FormsListContextProvider>
-                </ProcessDefinitionListContextProvider>
-              </ProcessDetailsContextProvider>
-            </ProcessListContextProvider>
-          </TaskFormContextProvider>
-        </TaskConsoleContextsProvider>
+        <ProcessListContextProvider apolloClient={apolloClient}>
+          <ProcessDetailsContextProvider apolloClient={apolloClient}>
+            <ProcessDefinitionListContextProvider>
+              <FormsListContextProvider>
+                <CustomDashboardListContextProvider>
+                  <CustomDashboardViewContextProvider>
+                    <FormDetailsContextProvider>
+                      <ProcessFormContextProvider>
+                        <WorkflowFormContextProvider>
+                          <CloudEventFormContextProvider>
+                            <MemoryRouter>
+                              <Switch>
+                                <Route path="/" render={renderPage} />
+                              </Switch>
+                            </MemoryRouter>
+                          </CloudEventFormContextProvider>
+                        </WorkflowFormContextProvider>
+                      </ProcessFormContextProvider>
+                    </FormDetailsContextProvider>
+                  </CustomDashboardViewContextProvider>
+                </CustomDashboardListContextProvider>
+              </FormsListContextProvider>
+            </ProcessDefinitionListContextProvider>
+          </ProcessDetailsContextProvider>
+        </ProcessListContextProvider>
       </DevUIAppContextProvider>
     </ApolloProvider>
   );

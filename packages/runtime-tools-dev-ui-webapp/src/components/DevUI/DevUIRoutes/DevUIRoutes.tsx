@@ -20,8 +20,6 @@ import { ProcessesPage } from "../../pages";
 import { NoData } from "@kogito-apps/consoles-common/dist/components/pages/NoData";
 import { PageNotFound } from "@kogito-apps/consoles-common/dist/components/pages/PageNotFound";
 import ProcessDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
-import TaskInboxPage from "../../pages/TaskInboxPage/TaskInboxPage";
-import TaskDetailsPage from "../../pages/TaskDetailsPage/TaskDetailsPage";
 import FormsListPage from "../../pages/FormsListPage/FormsListPage";
 import FormDetailPage from "../../pages/FormDetailsPage/FormDetailsPage";
 import { TrustyApp } from "@kogito-apps/trusty";
@@ -75,10 +73,6 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
       },
       {
         enabled: () => context.isProcessEnabled,
-        node: <Route key="4" exact path="/TaskInbox" component={TaskInboxPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
         node: <Route key="5" exact path="/Forms" component={FormsListPage} />,
       },
       {
@@ -100,17 +94,6 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
       {
         enabled: () => context.isProcessEnabled,
         node: <Route key="10" exact path="/CustomDashboard/:customDashboardName" component={CustomDashboardViewPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: (
-          <Route
-            key="11"
-            exact
-            path="/TaskDetails/:taskId"
-            render={(routeProps) => <TaskDetailsPage {...routeProps} />}
-          />
-        ),
       },
       {
         enabled: () => context.isTracingEnabled,
