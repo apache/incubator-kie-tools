@@ -49,9 +49,6 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
   }, [context.isProcessEnabled, context.isTracingEnabled]);
 
   const defaultButton = useMemo(() => {
-    if (context.isProcessEnabled) {
-      return "Go to jobs management";
-    }
     if (context.isTracingEnabled) {
       return "Go to audit";
     }

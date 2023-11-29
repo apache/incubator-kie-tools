@@ -17,8 +17,6 @@
 import { ProcessDetailsQueries } from "./ProcessDetailsQueries";
 import {
   ProcessInstance,
-  Job,
-  JobCancel,
   SvgSuccessResponse,
   SvgErrorResponse,
   TriggerableNode,
@@ -41,13 +39,6 @@ export interface ProcessDetailsGatewayApi {
   processDetailsState: any;
   getProcessDiagram: (data: ProcessInstance) => Promise<SvgSuccessResponse | SvgErrorResponse>;
   handleProcessAbort: (processInstance: ProcessInstance) => Promise<void>;
-  cancelJob: (job) => Promise<JobCancel>;
-  rescheduleJob: (
-    job,
-    repeatInterval: number | string,
-    repeatLimit: number | string,
-    scheduleDate: Date
-  ) => Promise<{ modalTitle: string; modalContent: string }>;
   getTriggerableNodes(processInstance: ProcessInstance): Promise<TriggerableNode[]>;
   handleNodeTrigger(processInstance: ProcessInstance, node: any): Promise<void>;
   handleProcessVariableUpdate: (
@@ -55,7 +46,6 @@ export interface ProcessDetailsGatewayApi {
     updateJson: Record<string, unknown>
   ) => Promise<Record<string, unknown>>;
   processDetailsQuery(id: string): Promise<ProcessInstance>;
-  jobsQuery(id: string): Promise<Job[]>;
   openProcessInstanceDetails(id: string): Promise<void>;
   onOpenProcessInstanceDetailsListener: (
     listener: OnOpenProcessInstanceDetailsListener
@@ -89,19 +79,6 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
     return this.queries.handleProcessAbort(processInstance);
   };
 
-  cancelJob = (job): Promise<JobCancel> => {
-    return this.queries.jobCancel(job);
-  };
-
-  rescheduleJob = (
-    job,
-    repeatInterval: number | string,
-    repeatLimit: number | string,
-    scheduleDate: Date
-  ): Promise<{ modalTitle: string; modalContent: string }> => {
-    return this.queries.rescheduleJob(job, repeatInterval, repeatLimit, scheduleDate);
-  };
-
   getTriggerableNodes(processInstance: ProcessInstance): Promise<TriggerableNode[]> {
     return this.queries.getTriggerableNodes(processInstance);
   }
@@ -118,19 +95,6 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
     return new Promise<any>((resolve, reject) => {
       this.queries
         .getProcessDetails(id)
-        .then((value) => {
-          resolve(value);
-        })
-        .catch((reason) => {
-          reject(reason);
-        });
-    });
-  }
-
-  jobsQuery(id: string): Promise<Job[]> {
-    return new Promise<any>((resolve, reject) => {
-      this.queries
-        .getJobs(id)
         .then((value) => {
           resolve(value);
         })

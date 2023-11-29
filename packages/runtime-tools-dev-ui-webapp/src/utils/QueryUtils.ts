@@ -17,20 +17,6 @@
 import _ from "lodash";
 import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 
-const createSearchTextArray = (taskNames: string[]) => {
-  const formattedTextArray = [];
-  taskNames.forEach((word) => {
-    formattedTextArray.push({
-      referenceName: {
-        like: `*${word}*`,
-      },
-    });
-  });
-  return {
-    or: formattedTextArray,
-  };
-};
-
 const createUserAssignmentClause = (currentUser: User) => {
   return {
     or: [

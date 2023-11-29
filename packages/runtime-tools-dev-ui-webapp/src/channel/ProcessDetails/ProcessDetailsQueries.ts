@@ -17,8 +17,6 @@
 import { ApolloClient } from "apollo-client";
 import {
   ProcessInstance,
-  Job,
-  JobCancel,
   TriggerableNode,
   NodeInstance,
   SvgSuccessResponse,
@@ -28,32 +26,21 @@ import {
   handleProcessAbort,
   handleProcessSkip,
   handleProcessRetry,
-  jobCancel,
-  handleJobReschedule,
   handleNodeTrigger,
   handleProcessVariableUpdate,
   handleNodeInstanceCancel,
   handleNodeInstanceRetrigger,
   getProcessDetails,
-  getJobs,
   getSVG,
   getTriggerableNodes,
 } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
 
 export interface ProcessDetailsQueries {
   getProcessDetails(id: string): Promise<ProcessInstance>;
-  getJobs(id: string): Promise<Job[]>;
   handleProcessSkip(processInstance: ProcessInstance): Promise<void>;
   handleProcessAbort(processInstance: ProcessInstance): Promise<void>;
   handleProcessRetry(processInstance: ProcessInstance): Promise<void>;
   getSVG(processInstance: ProcessInstance): Promise<any>;
-  jobCancel(job: Job): Promise<JobCancel>;
-  rescheduleJob: (
-    job,
-    repeatInterval: number | string,
-    repeatLimit: number | string,
-    scheduleDate: Date
-  ) => Promise<{ modalTitle: string; modalContent: string }>;
   getTriggerableNodes(processInstance: ProcessInstance): Promise<TriggerableNode[]>;
   handleNodeTrigger(processInstance: ProcessInstance, node: any): Promise<void>;
   handleProcessVariableUpdate: (
@@ -75,10 +62,6 @@ export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
     return getProcessDetails(id, this.client);
   }
 
-  async getJobs(id: string): Promise<Job[]> {
-    return Promise.resolve(getJobs(id, this.client));
-  }
-
   async handleProcessSkip(processInstance: ProcessInstance): Promise<void> {
     return handleProcessSkip(processInstance, this.client);
   }
@@ -93,19 +76,6 @@ export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
 
   async getSVG(processInstance: ProcessInstance): Promise<SvgSuccessResponse | SvgErrorResponse> {
     return Promise.resolve(getSVG(processInstance, this.client));
-  }
-
-  async jobCancel(job: Job): Promise<JobCancel> {
-    return jobCancel(job, this.client);
-  }
-
-  async rescheduleJob(
-    job,
-    repeatInterval: number | string,
-    repeatLimit: number | string,
-    scheduleDate: Date
-  ): Promise<{ modalTitle: string; modalContent: string }> {
-    return handleJobReschedule(job, repeatInterval, repeatLimit, scheduleDate, this.client);
   }
 
   async getTriggerableNodes(processInstance: ProcessInstance): Promise<TriggerableNode[]> {

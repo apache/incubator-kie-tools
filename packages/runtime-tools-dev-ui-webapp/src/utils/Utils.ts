@@ -18,13 +18,6 @@ import { GraphQL } from "@kogito-apps/consoles-common/dist/graphql";
 import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 
-declare global {
-  interface Window {
-    KOGITO_TASK_STATES_LIST: string;
-    KOGITO_TASK_ACTIVE_STATES_LIST: string;
-  }
-}
-
 export const createProcessDefinitionList = (processDefinitionObjs, url: string): ProcessDefinition[] => {
   const processDefinitionList = [];
   processDefinitionObjs.forEach((processDefObj) => {
