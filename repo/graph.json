@@ -125,6 +125,7 @@
       { "id": "@kie-tools/runtime-tools-gateway-api" },
       { "id": "@kie-tools/runtime-tools-dev-ui-webapp" },
       { "id": "@kie-tools/runtime-tools-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-webapp-components" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -134,6 +135,7 @@
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" },
       { "id": "@kie-tools/yard-language-service" },
+      { "id": "@kie-tools/yard-validator" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
       { "id": "sonataflow-deployment-webapp" },
@@ -147,6 +149,8 @@
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
+      { "id": "@kie-tools/yard-validator-worker" },
+      { "id": "@kie-tools/yard-model" },
       { "id": "yard-vscode-extension" }
     ],
     "links": [
@@ -749,6 +753,11 @@
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
+      {
+        "source": "@kie-tools/runtime-tools-webapp-components",
+        "target": "@kie-tools/runtime-tools-enveloped-components",
+        "weight": 1
+      },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -760,7 +769,7 @@
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
-        "target": "@kie-tools/runtime-tools-enveloped-components",
+        "target": "@kie-tools/runtime-tools-webapp-components",
         "weight": 1
       },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/text-editor", "weight": 1 },
@@ -789,6 +798,7 @@
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools/yard-language-service", "weight": 1 },
+      { "source": "@kie-tools/yard-editor", "target": "@kie-tools/yard-validator", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
@@ -806,6 +816,7 @@
         "weight": 1
       },
       { "source": "@kie-tools/yard-language-service", "target": "@kie-tools/json-yaml-language-service", "weight": 1 },
+      { "source": "@kie-tools/yard-validator", "target": "@kie-tools/yard-validator-worker", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-base-builder-image",
         "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
@@ -822,11 +833,7 @@
         "weight": 1
       },
       { "source": "sonataflow-deployment-webapp", "target": "@kie-tools-core/react-hooks", "weight": 1 },
-      {
-        "source": "sonataflow-deployment-webapp",
-        "target": "@kie-tools/runtime-tools-enveloped-components",
-        "weight": 1
-      },
+      { "source": "sonataflow-deployment-webapp", "target": "@kie-tools/runtime-tools-webapp-components", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
         "target": "@kie-tools/maven-config-setup-helper",
@@ -905,6 +912,9 @@
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/yard-validator-worker", "target": "@kie-tools/yard-model", "weight": 1 },
+      { "source": "@kie-tools/yard-model", "target": "@kie-tools-core/notifications", "weight": 1 },
+      { "source": "@kie-tools/yard-model", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools/yard-editor", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 }
@@ -1005,6 +1015,7 @@
     ["@kie-tools/runtime-tools-dev-ui-webapp", "packages/runtime-tools-dev-ui-webapp"],
     ["@kie-tools/runtime-tools-enveloped-components", "packages/runtime-tools-enveloped-components"],
     ["@kie-tools/runtime-tools-gateway-api", "packages/runtime-tools-gateway-api"],
+    ["@kie-tools/runtime-tools-webapp-components", "packages/runtime-tools-webapp-components"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
     ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],
@@ -1075,6 +1086,9 @@
     ["@kie-tools/yaml-language-server", "packages/yaml-language-server"],
     ["@kie-tools/yard-editor", "packages/yard-editor"],
     ["@kie-tools/yard-language-service", "packages/yard-language-service"],
+    ["@kie-tools/yard-model", "packages/yard-model"],
+    ["@kie-tools/yard-validator", "packages/yard-validator"],
+    ["@kie-tools/yard-validator-worker", "packages/yard-validator-worker"],
     ["yard-vscode-extension", "packages/yard-vscode-extension"],
     ["@kie-tools-scripts/bootstrap", "scripts/bootstrap"],
     ["@kie-tools-scripts/build-env", "scripts/build-env"],

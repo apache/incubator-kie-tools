@@ -1,0 +1,26 @@
+specVersion: alpha
+kind: YaRD
+name: "Traffic Violation"
+expressionLang: alpha
+inputs:
+  - name: "Driver"
+    type: "http://myapi.org/jsonSchema.json#Driver"
+  - name: "Violation"
+    type: "http://myapi.org/jsonSchema.json#Violation"
+elements:
+  - name: "Fine"
+    type: Decision
+    requirements: ["Violation"]
+    logic:
+      type: DecisionTable
+      inputs: ["Violation.type", "Violation.Actual Speed - Violation.Speed Limit"]
+      outputComponents: ["Amount", "Points"]
+      rules:
+        - ['="speed"', "[10..30)", 500, 3]
+        - ['="speed"', "[10..30)", 500, 3]
+  - name: "Should the driver be suspended?"
+    type: Decision
+    requirements: ["Driver", "Fine"]
+    logic:
+      type: LiteralExpression
+      expression: 'if Driver.Points + Fine.Points >= 20 then "Yes" else "No"'

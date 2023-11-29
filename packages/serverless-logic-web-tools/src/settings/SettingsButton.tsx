@@ -30,7 +30,12 @@ export function SettingsButton() {
 
   return (
     <Link to={routes.settings.home.path({})}>
-      <Button variant={ButtonVariant.plain} aria-label="Settings" className={"kie-tools--masthead-hoverable-dark"}>
+      <Button
+        variant={ButtonVariant.plain}
+        aria-label="Settings"
+        className={"kie-tools--masthead-hoverable-dark"}
+        ouiaId={"settings-button"}
+      >
         <CogIcon />
       </Button>
     </Link>

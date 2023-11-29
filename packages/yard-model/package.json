@@ -1,0 +1,48 @@
+{
+  "private": false,
+  "name": "@kie-tools/yard-model",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "run-script-os",
+    "build:dev:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests",
+    "build:dev:win32": "pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests\"",
+    "build:prod": "pnpm lint && run-script-os",
+    "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
+    "build:prod:win32": "pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "install": "node install.js",
+    "install:mvnw": "run-script-os",
+    "install:mvnw:darwin:linux": "mvn wrapper:wrapper",
+    "install:mvnw:win32": "pnpm powershell \"mvn wrapper:wrapper\"",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "dependencies": {
+    "@kie-tools-core/notifications": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "copy-webpack-plugin": "^11.0.0",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "typescript": "^4.6.2",
+    "webpack": "^5.88.2"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

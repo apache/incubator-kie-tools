@@ -1,0 +1,24 @@
+specVersion: alpha
+kind: YaRD
+name: "BasePrice"
+expressionLang: alpha
+inputs:
+  - name: "Age"
+    type: date
+  - name: "Previous incidents?"
+    type: boolean
+elements:
+  - name: "Base price"
+    type: Decision
+    logic:
+      type: DecisionTable
+      inputs: ["Age", "Previous incidents?"]
+      rules:
+        - when: ["<2017-09-07", false]
+          then: 800
+        - when: ["<2017-09-07", true]
+          then: 1000
+        - when: [">=2017-09-07", false]
+          then: 500
+        - when: [">=2017-09-07", true]
+          then: 650
