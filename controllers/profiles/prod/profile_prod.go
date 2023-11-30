@@ -20,7 +20,6 @@
 package prod
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
@@ -70,7 +69,6 @@ func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
 		C:       client,
 		Catalog: discovery.NewServiceCatalog(client),
 	}
-	fmt.Println(fmt.Sprintf("XXX Prod NewProfileReconciler"))
 	// the reconciliation state machine
 	stateMachine := common.NewReconciliationStateMachine(
 		&newBuilderState{StateSupport: support},
