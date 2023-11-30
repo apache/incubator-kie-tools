@@ -38,6 +38,7 @@
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/yard-language-service": "workspace:*",
+    "@kie-tools/yard-validator": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@types/js-yaml": "^4.0.5",
