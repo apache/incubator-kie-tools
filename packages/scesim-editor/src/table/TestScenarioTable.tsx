@@ -432,25 +432,118 @@ function TestScenarioTable({
     [updateTestScenarioModel]
   );
 
+  const getSectionIndexForGroupType = useCallback(
+    (targetColumnIndex: number, selectedColumnIndex: number, groupType: string) => {
+      const addingOnTheRight = targetColumnIndex === selectedColumnIndex;
+      if (groupType === SimulationTableColumnFieldGroup.EXPECT || groupType === SimulationTableColumnFieldGroup.GIVEN) {
+        if (addingOnTheRight) {
+          return selectedColumnIndex + 1;
+        } else {
+          return selectedColumnIndex;
+        }
+      }
+      // if (
+      //   groupType === SimulationTableColumnInstanceGroup.EXPECT ||
+      //   groupType === SimulationTableColumnInstanceGroup.GIVEN
+      // ) {
+      //   const selectedFactMapping =
+      //     simulationData.scesimModelDescriptor.factMappings!.FactMapping![selectedColumnIndex + 1]; //TODO REMOVE +1
+      //   const factMappingsSize = simulationData.scesimModelDescriptor.factMappings!.FactMapping!.length;
+      //   const groupType = selectedFactMapping.expressionIdentifier.type!.__$$text;
+      //   const instanceName = selectedFactMapping.factIdentifier.name!.__$$text;
+      //   const instanceType = selectedFactMapping.factIdentifier.className!.__$$text;
+
+      //   let newInstanceIndex = selectedColumnIndex + 1; //TODO REMOVE +1
+
+      //   console.log("SELECTED");
+      //   console.log(selectedFactMapping);
+
+      //   if (addingOnTheRight) {
+      //     for (let i = selectedColumnIndex + 1; i < factMappingsSize; i++) {
+      //       //TODO REMOVE +1
+      //       const currentFM = simulationData.scesimModelDescriptor.factMappings!.FactMapping![i];
+      //       console.log("CURRENT");
+      //       console.log(currentFM);
+      //       if (
+      //         currentFM.expressionIdentifier.type!.__$$text === groupType &&
+      //         currentFM.factIdentifier.name?.__$$text === instanceName &&
+      //         currentFM.factIdentifier.className?.__$$text === instanceType
+      //       ) {
+      //         continue;
+      //       } else {
+      //         newInstanceIndex = i;
+      //         break;
+      //       }
+      //     }
+      //   } else {
+      //     for (let i = selectedColumnIndex + 1; i >= 0; i--) {
+      //       //TODO REMOVE +1
+      //       const currentFM = simulationData.scesimModelDescriptor.factMappings!.FactMapping![i];
+      //       console.log("CURRENT");
+      //       console.log(currentFM);
+
+      //       if (
+      //         currentFM.expressionIdentifier.type!.__$$text === groupType &&
+      //         currentFM.factIdentifier.name?.__$$text === instanceName &&
+      //         currentFM.factIdentifier.className?.__$$text === instanceType
+      //       ) {
+      //         continue;
+      //       } else {
+      //         newInstanceIndex = i + 1;
+      //         break;
+      //       }
+      //     }
+      //   }
+
+      //   return newInstanceIndex;
+      // }
+
+      return targetColumnIndex;
+    },
+    [SimulationTableColumnFieldGroup] //, SimulationTableColumnInstanceGroup, simulationData.scesimModelDescriptor.factMappings]
+  );
+
+  const getNextAvailablePrefixedName = useCallback(
+    (names: string[], namePrefix: string, lastIndex: number = names.length): string => {
+      const candidate = `${namePrefix}-${lastIndex + 1}`;
+      const elemWithCandidateName = names.indexOf(candidate);
+      return elemWithCandidateName >= 0 ? getNextAvailablePrefixedName(names, namePrefix, lastIndex + 1) : candidate;
+    },
+    []
+  );
+
   /**
    * It adds a new FactMapping (Column) in the Model Descriptor structure and adds the new column related FactMapping Value (Cell)
-   * TODO: It manages adding a new column in a property level only: not possibile to add an empty instance column
-   * TODO: INSTANCE and PROPERTY number management (Optional?)
-   * TODO: Improving LEFT/RIGHT add column management
    */
   const onColumnAdded = useCallback(
-    (args: { beforeIndex: number; groupType: string; rowIndex: number }) => {
+    (args: { beforeIndex: number; currentIndex: number; groupType: string }) => {
       /* GIVEN and EXPECTED column types can be added only */
       if (SimulationTableColumnFieldGroup.OTHER === args.groupType) {
         return;
       }
+      const isInstance =
+        args.groupType === SimulationTableColumnInstanceGroup.EXPECT ||
+        args.groupType === SimulationTableColumnInstanceGroup.GIVEN;
+      const selectedIndex = args.currentIndex;
+
+      console.log("AFTER " + args.beforeIndex);
+      console.log("SELECTED " + args.currentIndex);
+      const sectionIndex = getSectionIndexForGroupType(args.beforeIndex, args.currentIndex, args.groupType);
+      console.log(args.groupType);
+      console.log(isInstance);
+      console.log(sectionIndex);
 
       updateTestScenarioModel((prevState) => {
         /* Creating the new FactMapping based on the original selected column's FactMapping */
         const originColumnFactMapping =
-          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings!.FactMapping![
-            args.beforeIndex
-          ];
+          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings!.FactMapping![selectedIndex];
+        const instanceDefaultNames = prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor
+          .factMappings!.FactMapping!.filter((factMapping) =>
+            factMapping.factIdentifier.name!.__$$text.startsWith("INSTANCE-")
+          )
+          .map((factMapping) => factMapping.factIdentifier.name!.__$$text);
+
+        console.log(originColumnFactMapping);
 
         const newFactMapping = {
           expressionIdentifier: {
@@ -458,11 +551,21 @@ function TestScenarioTable({
             type: { __$$text: originColumnFactMapping.expressionIdentifier.type!.__$$text },
           },
           factIdentifier: {
-            name: { __$$text: originColumnFactMapping.factIdentifier.name!.__$$text },
-            className: { __$$text: originColumnFactMapping.factIdentifier.className!.__$$text },
+            name: {
+              __$$text: isInstance
+                ? getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE")
+                : originColumnFactMapping.factIdentifier.name!.__$$text,
+            },
+            className: {
+              __$$text: isInstance ? "java.lang.Void" : originColumnFactMapping.factIdentifier.className!.__$$text,
+            },
           },
           className: { __$$text: "java.lang.Void" },
-          factAlias: { __$$text: originColumnFactMapping.factAlias.__$$text },
+          factAlias: {
+            __$$text: isInstance
+              ? getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE")
+              : originColumnFactMapping.factAlias.__$$text,
+          },
           expressionAlias: { __$$text: "PROPERTY" },
           columnWidth: { __$$text: 150 },
           factMappingValueType: { __$$text: "NOT_EXPRESSION" },
@@ -472,7 +575,8 @@ function TestScenarioTable({
         const deepClonedFactMappings = JSON.parse(
           JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings?.FactMapping)
         );
-        deepClonedFactMappings.splice(args.beforeIndex + 1, 0, newFactMapping);
+        console.log("adding in " + sectionIndex);
+        deepClonedFactMappings.splice(sectionIndex, 0, newFactMapping);
 
         /* Creating and adding a new FactMappingValue (cell) in every row, as a consequence of the new FactMapping (column) 
            we're going to introduce. The FactMappingValue will be linked with its related FactMapping via expressionIdentifier
@@ -511,7 +615,7 @@ function TestScenarioTable({
         };
       });
     },
-    [updateTestScenarioModel]
+    [SimulationTableColumnFieldGroup, getSectionIndexForGroupType, updateTestScenarioModel]
   );
 
   /**

@@ -62,8 +62,8 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <className>java.lang.Void</className>
           </factIdentifier>
           <className>java.lang.Void</className>
-          <factAlias>INSTANCE 1</factAlias>
-          <expressionAlias>PROPERTY 1</expressionAlias>
+          <factAlias>INSTANCE-1</factAlias>
+          <expressionAlias>PROPERTY</expressionAlias>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
         <FactMapping>
@@ -77,8 +77,8 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <className>java.lang.Void</className>
           </factIdentifier>
           <className>java.lang.Void</className>
-          <factAlias>INSTANCE 2</factAlias>
-          <expressionAlias>PROPERTY 2</expressionAlias>
+          <factAlias>INSTANCE-2</factAlias>
+          <expressionAlias>PROPERTY</expressionAlias>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
       </factMappings>
@@ -134,8 +134,8 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <className>java.lang.Void</className>
           </factIdentifier>
           <className>java.lang.Void</className>
-          <factAlias>INSTANCE 1</factAlias>
-          <expressionAlias>PROPERTY 1</expressionAlias>
+          <factAlias>INSTANCE-1</factAlias>
+          <expressionAlias>PROPERTY</expressionAlias>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
       </factMappings>

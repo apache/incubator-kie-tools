@@ -62,7 +62,7 @@ export interface BeeTableContextMenuHandlerProps {
   onRowDuplicated?: (args: { rowIndex: number }) => void;
   onRowReset?: (args: { rowIndex: number }) => void;
   onRowDeleted?: (args: { rowIndex: number }) => void;
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined; rowIndex?: number }) => void;
+  onColumnAdded?: (args: { beforeIndex: number; currentIndex: number; groupType: string | undefined }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
 }
 
@@ -302,21 +302,20 @@ export function BeeTableContextMenuHandler({
 
       const rowIndex = activeCell.rowIndex;
       const columnIndex = activeCell.columnIndex;
-      const groupType = "sd";
       switch (operation) {
         case BeeTableOperation.ColumnInsertLeft:
           onColumnAdded?.({
             beforeIndex: columnIndex - 1,
+            currentIndex: columnIndex,
             groupType: column?.groupType,
-            rowIndex: rowIndex,
           });
           console.debug(`Insert column left to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertRight:
           onColumnAdded?.({
             beforeIndex: columnIndex,
+            currentIndex: columnIndex,
             groupType: column?.groupType,
-            rowIndex: rowIndex,
           });
           console.debug(`Insert column right to ${columnIndex}`);
           break;
