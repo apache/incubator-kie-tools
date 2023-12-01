@@ -28,8 +28,8 @@ import {
   kubernetesResourcesApi,
 } from "./KubernetesService";
 import { KieSandboxDeployment, Tokens, defaultLabelTokens } from "./types";
-import { DeploymentState } from "./common";
-import { getUploadStatus, postUpload } from "../DevDeploymentUploadAppApi";
+import { DeploymentState, HealthStatus } from "./common";
+import { UploadStatus, getUploadStatus, postUpload } from "./KieSandboxDevDeploymentsUploadAppApi";
 
 export interface DeployArgs {
   workspaceZipBlob: Blob;
@@ -49,13 +49,17 @@ export type KieSandboxDevDeploymentsServiceType = KieSandboxDevDeploymentsServic
   deploy(args: DeployArgs): Promise<void>;
   deleteDevDeployment(resources: K8sResourceYaml[]): Promise<void>;
   uploadAssets(args: { deployment: K8sResourceYaml; workspaceZipBlob: Blob; baseUrl: string }): Promise<void>;
-  extractDevDeploymentState(args: { deployment?: any }): DeploymentState;
+  getHealthStatus(args: { endpoint: string; deploymentName: string }): Promise<HealthStatus>;
+  extractDevDeploymentState(args: { deployment: DeploymentResource }): DeploymentState;
   newResourceName(): string;
 };
 
 export const RESOURCE_PREFIX = "dev-deployment";
 export const RESOURCE_OWNER = "kie-tools";
 export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
+export const LIVENESS_TIMEOUT = 15000;
+
+const deploymentUploadStatusMap = new Map<string, { status: UploadStatus; timestamp?: number }>();
 
 export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDeploymentsServiceType {
   id: string;
@@ -73,7 +77,20 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
 
   abstract deploy(args: DeployArgs): Promise<void>;
 
-  public extractDevDeploymentState(args: { deployment?: any }): DeploymentState {
+  public async getHealthStatus(args: { endpoint: string; deploymentName: string }): Promise<HealthStatus> {
+    return await fetch(`${args.endpoint}/q/health`)
+      .then((data) => data.json())
+      .then((response) => {
+        // If the app is up, no need for the upload status anymore.
+        deploymentUploadStatusMap.delete(args.deploymentName);
+        return response.status as HealthStatus;
+      })
+      .catch((e) => {
+        return HealthStatus.ERROR;
+      });
+  }
+
+  public extractDevDeploymentState(args: { deployment: DeploymentResource }): DeploymentState {
     if (!args.deployment || !args.deployment.status) {
       // Deployment still being created
       return DeploymentState.IN_PROGRESS;
@@ -108,7 +125,23 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
       return state;
     }
 
-    if (healtStatus !== "UP") {
+    // Check if it's uploading or about to.
+    // If it has been uploaded check the timestamp to see if enough time has passed.
+    const uploadStatus = deploymentUploadStatusMap.get(deployment.metadata.name);
+    if (
+      uploadStatus &&
+      ([UploadStatus.UPLOADING, UploadStatus.NOT_READY, UploadStatus.READY].includes(uploadStatus.status) ||
+        (uploadStatus.timestamp &&
+          uploadStatus.status === UploadStatus.UPLOADED &&
+          Date.now() - uploadStatus.timestamp <= LIVENESS_TIMEOUT))
+    ) {
+      return DeploymentState.IN_PROGRESS;
+    }
+
+    // No need for the upload status anymore, it should have failed or succeeded by now.
+    deploymentUploadStatusMap.delete(deployment.metadata.name);
+
+    if (healtStatus !== HealthStatus.UP) {
       return DeploymentState.ERROR;
     }
 
@@ -122,6 +155,7 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
     apiKey: string;
   }) {
     return new Promise<void>((resolve, reject) => {
+      deploymentUploadStatusMap.set(args.deployment.metadata.name, { status: UploadStatus.NOT_READY });
       let deploymentState = this.kubernetesService.extractDeploymentState({ deployment: args.deployment });
       const interval = setInterval(async () => {
         if (deploymentState !== DeploymentState.UP) {
@@ -130,15 +164,21 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
         } else {
           try {
             const uploadStatus = await getUploadStatus({ baseUrl: args.baseUrl });
-            if (uploadStatus === "NOT_READY") {
+            if (uploadStatus === UploadStatus.NOT_READY) {
               return;
             }
             clearInterval(interval);
-            if (uploadStatus === "READY") {
+            if (uploadStatus === UploadStatus.READY) {
+              deploymentUploadStatusMap.set(args.deployment.metadata.name, { status: UploadStatus.UPLOADING });
               await postUpload({ baseUrl: args.baseUrl, workspaceZipBlob: args.workspaceZipBlob, apiKey: args.apiKey });
+              deploymentUploadStatusMap.set(args.deployment.metadata.name, {
+                status: UploadStatus.UPLOADED,
+                timestamp: Date.now(),
+              });
               resolve();
             }
           } catch (e) {
+            deploymentUploadStatusMap.delete(args.deployment.metadata.name);
             console.error(e);
             reject(e);
             clearInterval(interval);

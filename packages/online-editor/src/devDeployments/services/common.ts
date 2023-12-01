@@ -25,6 +25,11 @@ export enum DeploymentState {
   ERROR = "ERROR",
 }
 
+export enum HealthStatus {
+  UP = "UP",
+  ERROR = "ERROR",
+}
+
 export interface DeployedModel {
   resourceName: string;
   routeUrl: string;

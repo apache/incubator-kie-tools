@@ -96,10 +96,6 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   public async loadDevDeployments(): Promise<KieSandboxDeployment[]> {
     const deployments = await this.listDeployments();
 
-    // if (!deployments.length) {
-    //   return [];
-    // }
-
     const routes = await this.listRoutes();
 
     const services = await this.listServices();
@@ -109,13 +105,10 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
         .filter(
           (route) => route.metadata.labels && route.metadata.name === route.metadata.labels[defaultLabelTokens.partOf]
         )
-        .map((route) => this.getRouteUrl(route))
-        .map(async (url) => ({
+        .map((route) => ({ url: this.getRouteUrl(route), name: route.metadata.name }))
+        .map(async ({ url, name }) => ({
           url,
-          healtStatus: await fetch(`${url}/q/health`)
-            .then((data) => data.json())
-            .then((response) => response.status)
-            .catch(() => "ERROR"),
+          healtStatus: await this.getHealthStatus({ endpoint: url, deploymentName: name }),
         }))
     );
 

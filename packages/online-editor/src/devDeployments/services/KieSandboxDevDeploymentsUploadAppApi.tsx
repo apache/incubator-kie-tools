@@ -17,7 +17,13 @@
  * under the License.
  */
 
-export type UploadStatus = "NOT_READY" | "READY" | "UPLOADING" | "UPLOADED" | "ERROR";
+export enum UploadStatus {
+  NOT_READY = "NOT_READY",
+  READY = "READY",
+  UPLOADING = "UPLOADING",
+  UPLOADED = "UPLOADED",
+  ERROR = "ERROR",
+}
 
 const UPLOAD_ENDPOINT = "/upload";
 const UPLOAD_STATUS_ENDPOINT = `/upload-status`;
@@ -33,7 +39,7 @@ export async function getUploadStatus(args: { baseUrl: string }): Promise<Upload
   } catch (e) {
     // ignore
   }
-  return "NOT_READY";
+  return UploadStatus.NOT_READY;
 }
 
 export async function postUpload(args: { baseUrl: string; workspaceZipBlob: Blob; apiKey: string }): Promise<void> {

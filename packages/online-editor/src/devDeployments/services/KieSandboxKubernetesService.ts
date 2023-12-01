@@ -99,10 +99,6 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     try {
       const deployments = await this.listDeployments();
 
-      if (!deployments.length) {
-        return [];
-      }
-
       const ingresses = await this.listIngress();
 
       const services = await this.listServices();
@@ -113,13 +109,10 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
             (ingress) =>
               ingress.metadata.labels && ingress.metadata.name === ingress.metadata.labels[defaultLabelTokens.partOf]
           )
-          .map((ingress) => this.getIngressUrl(ingress))
-          .map(async (url) => ({
+          .map((ingress) => ({ url: this.getIngressUrl(ingress), name: ingress.metadata.name }))
+          .map(async ({ url, name }) => ({
             url,
-            healtStatus: await fetch(`${url}/q/health`)
-              .then((data) => data.json())
-              .then((response) => response.status)
-              .catch(() => "ERROR"),
+            healtStatus: await this.getHealthStatus({ endpoint: url, deploymentName: name }),
           }))
       );
 
