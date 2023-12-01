@@ -146,7 +146,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
             name: deployment.metadata.name,
             routeUrl: ingressList.find((ingress) => ingress.metadata.name.includes("form-webapp"))
               ? `${baseUrl}/form-webapp/`
-              : `${baseUrl}/q/dev/`,
+              : `${baseUrl}/q/swagger-ui/`,
             creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
             state: this.extractDeploymentStateWithHealthStatus(deployment, healthStatus),
             workspaceId: deployment.metadata.annotations![defaultAnnotationTokens.workspaceId],

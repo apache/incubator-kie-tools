@@ -64,7 +64,7 @@ spec:
             - name: KOGITO_RUNTIME_VERSION
               value: ${args.kogitoRuntimeVersion}
             - name: ROOT_PATH
-              value: \${{ devDeployment.uniqueName }}
+              value: /\${{ devDeployment.uniqueName }}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH
               value: \${{ devDeployment.uniqueName }}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
