@@ -11,7 +11,7 @@ ARG MAVEN_DOWNLOAD_OUTPUT="true"
 ARG MAVEN_OFFLINE_MODE="true"
 
 # Copy from build context to resources directory
-COPY ./ ./resources/
+COPY --chown=1001 . ./resources
 
 # Build app with given resources
 RUN "${KOGITO_HOME}"/launch/build-app.sh './resources'
