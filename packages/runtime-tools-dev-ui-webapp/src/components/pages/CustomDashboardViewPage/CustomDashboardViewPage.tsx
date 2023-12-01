@@ -18,14 +18,20 @@ import React from "react";
 import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageTitle";
 import { useHistory } from "react-router-dom";
 import CustomDashboardViewContainer from "../../containers/CustomDashboardViewContainer/CustomDashboardViewContainer";
 import { CustomDashboardInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
 
+export interface CustomDashboardViewPageState {
+  data: CustomDashboardInfo;
+}
+
 const CustomDashboardViewPage: React.FC<OUIAProps> = () => {
   const history = useHistory();
-  const dashboardInfo: CustomDashboardInfo = history.location.state["data"];
+  const initialState = history.location && (history.location.state as CustomDashboardViewPageState);
+  const dashboardInfo: CustomDashboardInfo = initialState.data;
+
   return (
     <React.Fragment>
       <PageSection variant="light">

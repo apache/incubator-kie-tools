@@ -20,7 +20,7 @@ import ProcessDefinitionListContext from "./ProcessDefinitionListContext";
 import { ProcessDefinitionListGatewayApiImpl } from "./ProcessDefinitionListGatewayApi";
 
 interface ProcessDefinitionListContextProviderProps {
-  children;
+  children: React.ReactElement;
 }
 
 const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContextProviderProps> = ({ children }) => {

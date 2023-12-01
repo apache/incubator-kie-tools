@@ -17,7 +17,7 @@
 import React, { useContext } from "react";
 import { FormsListGatewayApi } from "./FormsListGatewayApi";
 
-const FormsListContext = React.createContext<FormsListGatewayApi>(null);
+const FormsListContext = React.createContext<FormsListGatewayApi>({} as FormsListGatewayApi);
 
 export const useFormsListGatewayApi = (): FormsListGatewayApi => useContext<FormsListGatewayApi>(FormsListContext);
 

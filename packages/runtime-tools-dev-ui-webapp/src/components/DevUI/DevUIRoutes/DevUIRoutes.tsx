@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
+import { NoData } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/pages/NoData";
+import {
+  PageNotFound,
+  PageNotFoundProps,
+} from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/pages/PageNotFound";
 import React, { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { ProcessesPage } from "../../pages";
-import { NoData } from "@kogito-apps/consoles-common/dist/components/pages/NoData";
-import { PageNotFound } from "@kogito-apps/consoles-common/dist/components/pages/PageNotFound";
-import ProcessDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
-import FormsListPage from "../../pages/FormsListPage/FormsListPage";
-import FormDetailPage from "../../pages/FormDetailsPage/FormDetailsPage";
-import { TrustyApp } from "@kogito-apps/trusty";
-import ProcessFormPage from "../../pages/ProcessFormPage/ProcessFormPage";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import MonitoringPage from "../../pages/MonitoringPage/MonitoringPage";
-import WorkflowFormPage from "../../pages/WorkflowFormPage/WorkflowFormPage";
+import { ProcessesPage } from "../../pages";
+import CloudEventFormPage from "../../pages/CloudEventFormPage/CloudEventFormPage";
 import CustomDashboardListPage from "../../pages/CustomDashboardListPage/CustomDashboardListPage";
 import CustomDashboardViewPage from "../../pages/CustomDashboardViewPage/CustomDashboardViewPage";
-import CloudEventFormPage from "../../pages/CloudEventFormPage/CloudEventFormPage";
+import FormDetailPage from "../../pages/FormDetailsPage/FormDetailsPage";
+import FormsListPage from "../../pages/FormsListPage/FormsListPage";
+import MonitoringPage from "../../pages/MonitoringPage/MonitoringPage";
+import WorkflowDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
+import WorkflowFormPage from "../../pages/WorkflowFormPage/WorkflowFormPage";
 
 interface IOwnProps {
-  trustyServiceUrl: string;
   dataIndexUrl: string;
   navigate: string;
 }
 
 type DevUIRoute = { enabled: () => boolean; node: React.ReactNode };
 
-const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navigate }) => {
+const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
   const context = useDevUIAppContext();
 
   const defaultPath = useMemo(() => {
@@ -66,7 +66,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
       },
       {
         enabled: () => context.isProcessEnabled,
-        node: <Route key="2" exact path="/Process/:instanceID" component={ProcessDetailsPage} />,
+        node: <Route key="2" exact path="/Process/:instanceID" component={WorkflowDetailsPage} />,
       },
       {
         enabled: () => context.isProcessEnabled,
@@ -75,10 +75,6 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
       {
         enabled: () => context.isProcessEnabled,
         node: <Route key="6" exact path="/Forms/:formName" component={FormDetailPage} />,
-      },
-      {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="7" exact path="/ProcessDefinition/Form/:processName" component={ProcessFormPage} />,
       },
       {
         enabled: () => context.isProcessEnabled,
@@ -91,24 +87,6 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
       {
         enabled: () => context.isProcessEnabled,
         node: <Route key="10" exact path="/CustomDashboard/:customDashboardName" component={CustomDashboardViewPage} />,
-      },
-      {
-        enabled: () => context.isTracingEnabled,
-        node: (
-          <Route key="12" path="/Audit">
-            <TrustyApp
-              counterfactualEnabled={false}
-              explanationEnabled={false}
-              containerConfiguration={{
-                pageWrapper: false,
-                serverRoot: trustyServiceUrl,
-                basePath: "/Audit",
-                excludeReactRouter: true,
-                useHrefLinks: false,
-              }}
-            />
-          </Route>
-        ),
       },
       {
         enabled: () => context.isProcessEnabled,
@@ -124,7 +102,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
           <Route
             key="14"
             path="/NoData"
-            render={(_props) => <NoData {..._props} defaultPath={defaultPath} defaultButton={defaultButton} />}
+            render={(_props) => <NoData {..._props} defaultPath={defaultPath!} defaultButton={defaultButton!} />}
           />
         ),
       },
@@ -140,9 +118,11 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ trustyServiceUrl, dataIndexUrl, navi
         enabled: () => true,
         node: (
           <Route
-            key="18"
-            path="*"
-            render={(_props) => <PageNotFound {..._props} defaultPath={defaultPath} defaultButton={defaultButton} />}
+            key="14"
+            path="/NoData"
+            render={(props: PageNotFoundProps) => (
+              <PageNotFound {...props} defaultPath={defaultPath!} defaultButton={defaultButton!} />
+            )}
           />
         ),
       },

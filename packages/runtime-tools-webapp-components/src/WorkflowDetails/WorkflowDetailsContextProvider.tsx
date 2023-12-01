@@ -52,6 +52,18 @@ export function WorkflowDetailsContextProvider(
     [cache, httpLink]
   );
 
+  return (
+    <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
+      {props.children}
+    </WorkflowDetailsContextProviderWithApolloClient>
+  );
+}
+
+export function WorkflowDetailsContextProviderWithApolloClient(
+  props: React.PropsWithChildren<{ apolloClient: ApolloClient<NormalizedCacheObject> }>
+) {
+  const { apolloClient } = props;
+
   const gatewayApiImpl = useMemo(() => {
     return new WorkflowDetailsGatewayApiImpl(new GraphQLWorkflowDetailsQueries(apolloClient));
   }, [apolloClient]);

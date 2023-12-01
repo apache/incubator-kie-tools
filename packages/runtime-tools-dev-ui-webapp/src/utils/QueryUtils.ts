@@ -15,7 +15,7 @@
  */
 
 import _ from "lodash";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
+import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
 
 const createUserAssignmentClause = (currentUser: User) => {
   return {

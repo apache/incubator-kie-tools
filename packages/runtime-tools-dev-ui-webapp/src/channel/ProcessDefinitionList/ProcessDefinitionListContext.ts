@@ -17,7 +17,9 @@
 import React, { useContext } from "react";
 import { ProcessDefinitionListGatewayApi } from "./ProcessDefinitionListGatewayApi";
 
-const ProcessDefinitionListContext = React.createContext<ProcessDefinitionListGatewayApi>(null);
+const ProcessDefinitionListContext = React.createContext<ProcessDefinitionListGatewayApi>(
+  {} as ProcessDefinitionListGatewayApi
+);
 
 export const useProcessDefinitionListGatewayApi = (): ProcessDefinitionListGatewayApi =>
   useContext<ProcessDefinitionListGatewayApi>(ProcessDefinitionListContext);

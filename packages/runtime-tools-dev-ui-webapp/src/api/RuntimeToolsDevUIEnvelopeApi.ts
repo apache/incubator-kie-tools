@@ -41,7 +41,7 @@ export interface RuntimeToolsDevUIInitArgs {
   isDataIndexAvailable: boolean;
   isTracingEnabled?: boolean;
   availablePages?: string[];
-  customLabels: CustomLabels;
+  customLabels?: CustomLabels;
   omittedProcessTimelineEvents?: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   isStunnerEnabled: boolean;

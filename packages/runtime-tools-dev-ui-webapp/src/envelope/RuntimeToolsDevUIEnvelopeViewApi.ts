@@ -20,7 +20,6 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-component
 
 export interface RuntimeToolsDevUIEnvelopeViewApi {
   setDataIndexUrl: (dataIndexUrl: string) => void;
-  setTrustyServiceUrl: (trustyServiceUrl: string) => void;
   setUsers: (users: User[]) => void;
   navigateTo: (page: string) => void;
   setDevUIUrl: (url: string) => void;

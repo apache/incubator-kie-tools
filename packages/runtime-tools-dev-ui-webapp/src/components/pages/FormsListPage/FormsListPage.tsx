@@ -18,7 +18,7 @@ import React, { useEffect } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { OUIAProps, ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { PageSectionHeader } from "@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader";
+import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageSectionHeader";
 import FormsListContainer from "../../containers/FormsListContainer/FormsListContainer";
 import "../../styles.css";
 

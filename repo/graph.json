@@ -124,8 +124,8 @@
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-gateway-api" },
       { "id": "@kie-tools/runtime-tools-dev-ui-webapp" },
-      { "id": "@kie-tools/runtime-tools-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-webapp-components" },
+      { "id": "@kie-tools/runtime-tools-enveloped-components" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -740,6 +740,11 @@
       { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-webapp-components",
         "target": "@kie-tools/runtime-tools-enveloped-components",
         "weight": 1
       },
@@ -751,11 +756,6 @@
       {
         "source": "@kie-tools/runtime-tools-enveloped-components",
         "target": "@kie-tools/serverless-workflow-combined-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-webapp-components",
-        "target": "@kie-tools/runtime-tools-enveloped-components",
         "weight": 1
       },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools-core/patternfly-base", "weight": 1 },

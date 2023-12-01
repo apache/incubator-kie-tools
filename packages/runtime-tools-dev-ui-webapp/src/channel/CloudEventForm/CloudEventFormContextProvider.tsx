@@ -20,7 +20,7 @@ import CloudEventFormContext from "./CloudEventFormContext";
 import { CloudEventFormGatewayApiImpl } from "./CloudEventFormGatewayApi";
 
 interface IOwnProps {
-  children;
+  children: React.ReactElement;
 }
 
 const CloudEventFormContextProvider: React.FC<IOwnProps> = ({ children }) => {

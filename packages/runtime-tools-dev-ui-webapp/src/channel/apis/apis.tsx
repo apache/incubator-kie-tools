@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@kogito-apps/consoles-common/dist/graphql";
 import {
-  BulkProcessInstanceActionResponse,
+  BulkWorkflowInstanceActionResponse,
   NodeInstance,
-  ProcessInstance,
+  WorkflowInstance,
   TriggerableNode,
-} from "@kogito-apps/management-console-shared/dist/types";
-import { OperationType } from "@kogito-apps/management-console-shared/dist/components/BulkList";
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { OperationType } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/src/formDetails";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { createProcessDefinitionList } from "../../utils/Utils";
-import { ProcessDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 import { CustomDashboardInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
 import { CloudEventRequest, KOGITO_BUSINESS_KEY } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 // Rest Api to fetch Process Diagram
-export const getSvg = async (data: ProcessInstance): Promise<any> => {
+export const getSvg = async (data: WorkflowInstance): Promise<any> => {
   return axios
     .get(`/svg/processes/${data.processId}/instances/${data.id}`)
     .then((res) => {
@@ -58,7 +57,7 @@ export const getSvg = async (data: ProcessInstance): Promise<any> => {
 };
 
 // Rest Api to skip a process in error state
-export const handleProcessSkip = async (processInstance: ProcessInstance): Promise<void> => {
+export const handleProcessSkip = async (processInstance: WorkflowInstance): Promise<void> => {
   return new Promise((resolve, reject) => {
     axios
       .post(
@@ -72,7 +71,7 @@ export const handleProcessSkip = async (processInstance: ProcessInstance): Promi
 };
 
 // Rest Api to retrigger a process in error state
-export const handleProcessRetry = async (processInstance: ProcessInstance): Promise<void> => {
+export const handleProcessRetry = async (processInstance: WorkflowInstance): Promise<void> => {
   return new Promise((resolve, reject) => {
     axios
       .post(
@@ -88,7 +87,7 @@ export const handleProcessRetry = async (processInstance: ProcessInstance): Prom
 };
 
 // Rest Api to abort a process
-export const handleProcessAbort = (processInstance: ProcessInstance): Promise<void> => {
+export const handleProcessAbort = (processInstance: WorkflowInstance): Promise<void> => {
   return new Promise((resolve, reject) => {
     axios
       .delete(
@@ -103,14 +102,14 @@ export const handleProcessAbort = (processInstance: ProcessInstance): Promise<vo
 
 // function to handle multiple actions(abort, skip and retry) on processes
 export const handleProcessMultipleAction = async (
-  processInstances: ProcessInstance[],
+  processInstances: WorkflowInstance[],
   operationType: OperationType
-): Promise<BulkProcessInstanceActionResponse> => {
+): Promise<BulkWorkflowInstanceActionResponse> => {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve, reject) => {
-    let operation: (processInstance: ProcessInstance) => Promise<void>;
-    const successProcessInstances: ProcessInstance[] = [];
-    const failedProcessInstances: ProcessInstance[] = [];
+    let operation: (processInstance: WorkflowInstance) => Promise<void>;
+    const successProcessInstances: WorkflowInstance[] = [];
+    const failedProcessInstances: WorkflowInstance[] = [];
     switch (operationType) {
       case OperationType.ABORT:
         operation = handleProcessAbort;
@@ -123,7 +122,7 @@ export const handleProcessMultipleAction = async (
         break;
     }
     for (const processInstance of processInstances) {
-      await operation(processInstance)
+      await operation!(processInstance)
         .then(() => {
           successProcessInstances.push(processInstance);
         })
@@ -133,10 +132,10 @@ export const handleProcessMultipleAction = async (
         });
     }
 
-    resolve({ successProcessInstances, failedProcessInstances });
+    resolve({ successWorkflowInstances: successProcessInstances, failedWorkflowInstances: failedProcessInstances });
   });
 };
-export const getTriggerableNodes = async (processInstance: ProcessInstance): Promise<TriggerableNode[]> => {
+export const getTriggerableNodes = async (processInstance: WorkflowInstance): Promise<TriggerableNode[]> => {
   return new Promise((resolve, reject) => {
     axios
       .get(`${processInstance.serviceUrl}/management/processes/${processInstance.processId}/nodes`)
@@ -149,7 +148,7 @@ export const getTriggerableNodes = async (processInstance: ProcessInstance): Pro
   });
 };
 
-export const handleNodeTrigger = async (processInstance: ProcessInstance, node: TriggerableNode): Promise<void> => {
+export const handleNodeTrigger = async (processInstance: WorkflowInstance, node: TriggerableNode): Promise<void> => {
   return new Promise((resolve, reject) => {
     axios
       .post(
@@ -166,7 +165,7 @@ export const handleNodeTrigger = async (processInstance: ProcessInstance, node: 
 
 // function containing Api call to update process variables
 export const handleProcessVariableUpdate = (
-  processInstance: ProcessInstance,
+  processInstance: WorkflowInstance,
   updatedJson: Record<string, unknown>
 ): Promise<Record<string, unknown>> => {
   return new Promise((resolve, reject) => {
@@ -181,7 +180,10 @@ export const handleProcessVariableUpdate = (
   });
 };
 
-export const handleNodeInstanceCancel = async (processInstance: ProcessInstance, node: NodeInstance): Promise<void> => {
+export const handleNodeInstanceCancel = async (
+  processInstance: WorkflowInstance,
+  node: NodeInstance
+): Promise<void> => {
   return new Promise((resolve, reject) => {
     axios
       .delete(
@@ -197,7 +199,7 @@ export const handleNodeInstanceCancel = async (processInstance: ProcessInstance,
 };
 
 export const handleNodeInstanceRetrigger = (
-  processInstance: Pick<ProcessInstance, "id" | "serviceUrl" | "processId">,
+  processInstance: Pick<WorkflowInstance, "id" | "serviceUrl" | "processId">,
   node: Pick<NodeInstance, "id">
 ): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -251,11 +253,11 @@ export const saveFormContent = (formName: string, content: FormContent): Promise
   });
 };
 
-export const getProcessDefinitionList = (devUIUrl: string, openApiPath: string): Promise<ProcessDefinition[]> => {
+export const getProcessDefinitionList = (devUIUrl: string, openApiPath: string): Promise<WorkflowDefinition[]> => {
   return new Promise((resolve, reject) => {
     SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
       .then((response) => {
-        const processDefinitionObjs = [];
+        const processDefinitionObjs: { [key: string]: any }[] = [];
         const paths = response.paths;
         const regexPattern = /^\/[^\n/]+\/schema/;
         Object.getOwnPropertyNames(paths)
@@ -274,7 +276,7 @@ export const getProcessDefinitionList = (devUIUrl: string, openApiPath: string):
   });
 };
 
-export const getProcessSchema = (processDefinitionData: ProcessDefinition): Promise<Record<string, any>> => {
+export const getProcessSchema = (processDefinitionData: WorkflowDefinition): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     axios
       .get(`${processDefinitionData.endpoint}/schema`)
@@ -293,7 +295,7 @@ export const getProcessSchema = (processDefinitionData: ProcessDefinition): Prom
 export const startProcessInstance = (
   formData: any,
   businessKey: string,
-  processDefinitionData: ProcessDefinition
+  processDefinitionData: WorkflowDefinition
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     const requestURL = `${processDefinitionData.endpoint}${
@@ -397,7 +399,7 @@ export const getCustomWorkflowSchema = (
   devUIUrl: string,
   openApiPath: string,
   workflowName: string
-): Promise<Record<string, any>> => {
+): Promise<Record<string, any> | null> => {
   return new Promise((resolve, reject) => {
     SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
       .then((response: any) => {

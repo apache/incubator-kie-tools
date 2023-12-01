@@ -18,5 +18,5 @@
  */
 
 export * from "./WorkflowDetailsContext";
-export { WorkflowDetailsContextProvider } from "./WorkflowDetailsContextProvider";
+export * from "./WorkflowDetailsContextProvider";
 export { WorkflowDetailsGatewayApi } from "./WorkflowDetailsGatewayApi";

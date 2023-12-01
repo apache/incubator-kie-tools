@@ -16,7 +16,7 @@
 
 import React from "react";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { EmbeddedCustomDashboardView } from "@kogito-apps/custom-dashboard-view";
+import { EmbeddedCustomDashboardView } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardView";
 import { useCustomDashboardViewGatewayApi } from "../../../channel/CustomDashboardView/CustomDashboardViewContext";
 import { CustomDashboardViewGatewayApi } from "../../../channel/CustomDashboardView";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";

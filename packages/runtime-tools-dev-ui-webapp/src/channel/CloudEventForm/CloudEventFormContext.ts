@@ -17,7 +17,7 @@
 import React, { useContext } from "react";
 import { CloudEventFormGatewayApi } from "./CloudEventFormGatewayApi";
 
-const CloudEventFormContext = React.createContext<CloudEventFormGatewayApi>(null);
+const CloudEventFormContext = React.createContext<CloudEventFormGatewayApi>({} as CloudEventFormGatewayApi);
 
 export const useCloudEventFormGatewayApi = (): CloudEventFormGatewayApi =>
   useContext<CloudEventFormGatewayApi>(CloudEventFormContext);

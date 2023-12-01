@@ -22,23 +22,29 @@ import {
   ouiaPageTypeAndObjectId,
   componentOuiaProps,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import WorkflowFormContainer from "../../containers/WorkflowFormContainer/WorkflowFormContainer";
+import { WorkflowFormContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowFormContainer";
 import "../../styles.css";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
-import { FormNotification, Notification } from "@kogito-apps/components-common/dist/components/FormNotification";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageTitle";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { useHistory } from "react-router-dom";
-import { WorkflowDefinition } from "@kogito-apps/workflow-form";
-import { InlineEdit, InlineEditApi } from "../ProcessFormPage/components/InlineEdit/InlineEdit";
+import { InlineEdit, InlineEditApi } from "@kie-tools/runtime-tools-components/dist/components/InlineEdit";
 import { useWorkflowFormGatewayApi } from "../../../channel/WorkflowForm/WorkflowFormContext";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+
+interface WorkflowFormPageState {
+  workflowDefinition: WorkflowDefinition;
+}
 
 const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [notification, setNotification] = useState<Notification>();
-  const inlineEditRef = useRef<InlineEditApi>();
+  const inlineEditRef = useRef<InlineEditApi | null>(null);
 
   const history = useHistory();
   const gatewayApi = useWorkflowFormGatewayApi();
 
-  const workflowDefinition: WorkflowDefinition = history.location.state["workflowDefinition"];
+  const initialState = history.location.state as WorkflowFormPageState;
+
+  const workflowDefinition: WorkflowDefinition | undefined = initialState.workflowDefinition;
 
   const goToWorkflowList = () => {
     history.push("/Processes");
@@ -57,13 +63,13 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
         {
           label: "Go to workflow list",
           onClick: () => {
-            setNotification(null);
+            setNotification(undefined);
             goToWorkflowList();
           },
         },
       ],
       close: () => {
-        setNotification(null);
+        setNotification(undefined);
       },
     });
   };
@@ -79,7 +85,7 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const onResetForm = () => {
     gatewayApi.setBusinessKey("");
-    inlineEditRef.current!.reset();
+    inlineEditRef.current?.reset();
   };
 
   const getBusinessKey = () => {
@@ -120,9 +126,9 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           <CardBody className="pf-u-h-100">
             <WorkflowFormContainer
               workflowDefinitionData={workflowDefinition}
-              onSubmitSuccess={onSubmitSuccess}
-              onSubmitError={onSubmitError}
               onResetForm={onResetForm}
+              onStartWorkflowError={onSubmitError}
+              onStartWorkflowSuccess={onSubmitSuccess}
             />
           </CardBody>
         </Card>

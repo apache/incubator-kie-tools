@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
+import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
 import RuntimeToolsDevUIAppContext, { DevUIAppContextImpl } from "./DevUIAppContext";
 import { CustomLabels } from "../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
@@ -27,7 +27,7 @@ interface IOwnProps {
   isProcessEnabled: boolean;
   isTracingEnabled: boolean;
   availablePages: string[];
-  customLabels: CustomLabels;
+  customLabels?: CustomLabels;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize: DiagramPreviewSize;
   isStunnerEnabled: boolean;

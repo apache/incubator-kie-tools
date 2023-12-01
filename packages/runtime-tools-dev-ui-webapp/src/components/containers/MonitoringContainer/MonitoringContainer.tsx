@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import { Dashboard, MonitoringView } from "@kogito-apps/monitoring";
+import { Dashboard, MonitoringView } from "@kie-tools/runtime-tools-enveloped-components/dist/monitoring";
 
 interface Props {
   dataIndexUrl?: string;
@@ -25,7 +25,7 @@ interface Props {
 
 const MonitoringContainer: React.FC<Props> = ({ workflow, dashboard, dataIndexUrl }) => {
   const _dashboard = dashboard || Dashboard.MONITORING;
-  return <MonitoringView dashboard={_dashboard} workflow={workflow} dataIndexUrl={dataIndexUrl} />;
+  return <MonitoringView dashboard={_dashboard} workflow={workflow} dataIndexUrl={dataIndexUrl!} />;
 };
 
 export default MonitoringContainer;

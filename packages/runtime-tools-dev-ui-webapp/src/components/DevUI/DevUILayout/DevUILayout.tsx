@@ -19,16 +19,15 @@ import { Route, Switch } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import { MemoryRouter } from "react-router";
-import PageLayout from "@kogito-apps/consoles-common/dist/components/layout/PageLayout/PageLayout";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
+import PageLayout from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageLayout/PageLayout";
+import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
 import DevUINav from "../DevUINav/DevUINav";
-import ProcessDetailsContextProvider from "../../../channel/ProcessDetails/ProcessDetailsContextProvider";
-import ProcessListContextProvider from "../../../channel/ProcessList/ProcessListContextProvider";
+import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetails";
+import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowList";
 import FormsListContextProvider from "../../../channel/FormsList/FormsListContextProvider";
 import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetailsContextProvider";
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
 import ProcessDefinitionListContextProvider from "../../../channel/ProcessDefinitionList/ProcessDefinitionListContextProvider";
-import ProcessFormContextProvider from "../../../channel/ProcessForm/ProcessFormContextProvider";
 import { CustomLabels } from "../../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 import WorkflowFormContextProvider from "../../../channel/WorkflowForm/WorkflowFormContextProvider";
@@ -45,7 +44,7 @@ interface IOwnProps {
   devUIUrl: string;
   openApiPath: string;
   availablePages?: string[];
-  customLabels: CustomLabels;
+  customLabels?: CustomLabels;
   omittedProcessTimelineEvents?: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   isStunnerEnabled: boolean;
@@ -65,7 +64,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
   isStunnerEnabled,
   children,
 }) => {
-  const renderPage = (routeProps) => {
+  const renderPage = (routeProps: { location: { pathname: string } }) => {
     return (
       <PageLayout pageNavOpen={true} withHeader={false} PageNav={<DevUINav pathname={routeProps.location.pathname} />}>
         {children}
@@ -81,37 +80,35 @@ const DevUILayout: React.FC<IOwnProps> = ({
         openApiPath={openApiPath}
         isProcessEnabled={isProcessEnabled}
         isTracingEnabled={isTracingEnabled}
-        availablePages={availablePages}
+        availablePages={availablePages!}
         customLabels={customLabels}
-        omittedProcessTimelineEvents={omittedProcessTimelineEvents}
-        diagramPreviewSize={diagramPreviewSize}
+        omittedProcessTimelineEvents={omittedProcessTimelineEvents!}
+        diagramPreviewSize={diagramPreviewSize!}
         isStunnerEnabled={isStunnerEnabled}
       >
-        <ProcessListContextProvider apolloClient={apolloClient}>
-          <ProcessDetailsContextProvider apolloClient={apolloClient}>
+        <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
+          <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
             <ProcessDefinitionListContextProvider>
               <FormsListContextProvider>
                 <CustomDashboardListContextProvider>
                   <CustomDashboardViewContextProvider>
                     <FormDetailsContextProvider>
-                      <ProcessFormContextProvider>
-                        <WorkflowFormContextProvider>
-                          <CloudEventFormContextProvider>
-                            <MemoryRouter>
-                              <Switch>
-                                <Route path="/" render={renderPage} />
-                              </Switch>
-                            </MemoryRouter>
-                          </CloudEventFormContextProvider>
-                        </WorkflowFormContextProvider>
-                      </ProcessFormContextProvider>
+                      <WorkflowFormContextProvider>
+                        <CloudEventFormContextProvider>
+                          <MemoryRouter>
+                            <Switch>
+                              <Route path="/" render={renderPage} />
+                            </Switch>
+                          </MemoryRouter>
+                        </CloudEventFormContextProvider>
+                      </WorkflowFormContextProvider>
                     </FormDetailsContextProvider>
                   </CustomDashboardViewContextProvider>
                 </CustomDashboardListContextProvider>
               </FormsListContextProvider>
             </ProcessDefinitionListContextProvider>
-          </ProcessDetailsContextProvider>
-        </ProcessListContextProvider>
+          </WorkflowDetailsContextProviderWithApolloClient>
+        </WorkflowListContextProviderWithApolloClient>
       </DevUIAppContextProvider>
     </ApolloProvider>
   );

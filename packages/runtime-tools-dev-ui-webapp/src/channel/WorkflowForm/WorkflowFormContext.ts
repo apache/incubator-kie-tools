@@ -17,7 +17,7 @@
 import React, { useContext } from "react";
 import { WorkflowFormGatewayApi } from "./WorkflowFormGatewayApi";
 
-const WorkflowFormContext = React.createContext<WorkflowFormGatewayApi>(null);
+const WorkflowFormContext = React.createContext<WorkflowFormGatewayApi>({} as WorkflowFormGatewayApi);
 
 export const useWorkflowFormGatewayApi = (): WorkflowFormGatewayApi =>
   useContext<WorkflowFormGatewayApi>(WorkflowFormContext);

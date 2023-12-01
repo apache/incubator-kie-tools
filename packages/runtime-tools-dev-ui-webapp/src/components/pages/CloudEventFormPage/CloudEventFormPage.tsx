@@ -23,10 +23,14 @@ import {
   componentOuiaProps,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import "../../styles.css";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
-import { FormNotification, Notification } from "@kogito-apps/components-common/dist/components/FormNotification";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageTitle";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { useHistory } from "react-router-dom";
 import CloudEventFormContainer from "../../containers/CloudEventFormContainer/CloudEventFormContainer";
+
+export interface CloudEventPageState {
+  source?: CloudEventPageSource;
+}
 
 export enum CloudEventPageSource {
   DEFINITIONS = "definitions",
@@ -38,8 +42,10 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const history = useHistory();
 
+  const initialState = history.location && (history.location.state as CloudEventPageState);
+
   const isTriggerNewInstance = useMemo(() => {
-    const source = history?.location?.state["source"];
+    const source = initialState.source;
     return source === CloudEventPageSource.DEFINITIONS;
   }, [history]);
 
@@ -53,13 +59,13 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           {
             label: "Go to workflow list",
             onClick: () => {
-              setNotification(null);
+              setNotification(undefined);
               history.push("/Processes");
             },
           },
         ],
         close: () => {
-          setNotification(null);
+          setNotification(undefined);
         },
       });
     },

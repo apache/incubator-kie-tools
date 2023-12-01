@@ -16,13 +16,13 @@
 
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
-import { ServerlessWorkflowCombinedEditorChannelApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
-import { ServerlessWorkflowCombinedEditorEnvelopeApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api/ServerlessWorkflowCombinedEditorEnvelopeApi";
 import {
   ServerlessWorkflowCombinedEditorApi,
-  ServerlessWorkflowCombinedEditorFactory,
-} from "@kie-tools/serverless-workflow-combined-editor/dist/editor";
-import { ServerlessWorkflowCombinedEditorEnvelopeApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
+  ServerlessWorkflowCombinedEditorChannelApi,
+  ServerlessWorkflowCombinedEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-combined-editor/dist/api";
+import { ServerlessWorkflowCombinedEditorFactory } from "@kie-tools/serverless-workflow-combined-editor/dist/editor";
+import { ServerlessWorkflowCombinedEditorEnvelopeApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/envelope";
 
 EditorEnvelope.initCustom<
   ServerlessWorkflowCombinedEditorApi,

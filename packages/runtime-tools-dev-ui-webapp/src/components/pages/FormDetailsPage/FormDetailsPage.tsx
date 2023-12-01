@@ -24,10 +24,15 @@ import FormDetailsContainer from "../../containers/FormDetailsContainer/FormDeta
 import "../../styles.css";
 import { useHistory } from "react-router-dom";
 import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
-import { FormNotification, Notification } from "@kogito-apps/components-common/dist/components/FormNotification";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageTitle";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import Moment from "react-moment";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+
+export interface FormDetailsPageState {
+  formData: FormInfo;
+}
+
 const FormDetailsPage: React.FC<OUIAProps> = () => {
   const [notification, setNotification] = useState<Notification>();
 
@@ -35,7 +40,8 @@ const FormDetailsPage: React.FC<OUIAProps> = () => {
     return ouiaPageTypeAndObjectId("form-detail");
   });
   const history = useHistory();
-  const formData: FormInfo = history.location.state["formData"];
+  const initialState = history.location && (history.location.state as FormDetailsPageState);
+  const formData: FormInfo = initialState.formData;
 
   const onSuccess = () => {
     const message = `The form '${formData.name}.${formData.type}' has been successfully saved.`;
@@ -59,7 +65,7 @@ const FormDetailsPage: React.FC<OUIAProps> = () => {
       message: submitMessage,
       details: notificationDetails,
       close: () => {
-        setNotification(null);
+        setNotification(undefined);
       },
     });
   };

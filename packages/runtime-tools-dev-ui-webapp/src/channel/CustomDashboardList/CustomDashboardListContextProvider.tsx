@@ -19,7 +19,7 @@ import CustomDashboardListContext from "./CustomDashboardListContext";
 import { CustomDashboardListGatewayApiImpl } from "./CustomDashboardListGatewayApi";
 
 interface CustomDashboardListContextProviderProps {
-  children;
+  children: React.ReactElement;
 }
 
 const CustomDashboardListContextProvider: React.FC<CustomDashboardListContextProviderProps> = ({ children }) => {

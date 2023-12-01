@@ -17,7 +17,9 @@
 import React, { useContext } from "react";
 import { CustomDashboardListGatewayApi } from "./CustomDashboardListGatewayApi";
 
-const CustomDashboardListContext = React.createContext<CustomDashboardListGatewayApi>(null);
+const CustomDashboardListContext = React.createContext<CustomDashboardListGatewayApi>(
+  {} as CustomDashboardListGatewayApi
+);
 
 export const useCustomDashboardListGatewayApi = (): CustomDashboardListGatewayApi =>
   useContext<CustomDashboardListGatewayApi>(CustomDashboardListContext);

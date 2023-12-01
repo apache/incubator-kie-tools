@@ -19,13 +19,13 @@ import "@patternfly/patternfly/patternfly.css";
 import "@patternfly/react-core/dist/styles/base.css";
 import { RuntimeToolsDevUIEnvelopeViewApi } from "./RuntimeToolsDevUIEnvelopeViewApi";
 import RuntimeTools from "../components/DevUI/RuntimeTools/RuntimeTools";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
+import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
+import { CustomLabels } from "../api/CustomLabels";
 
 export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIEnvelopeViewApi>(
   (props, forwardingRef) => {
     const [dataIndexUrl, setDataIndexUrl] = React.useState("");
-    const [trustyServiceUrl, setTrustyServiceUrl] = React.useState("");
     const [DevUiUsers, setDevUiUsers] = React.useState<User[]>([]);
     const [navigate, setNavigate] = React.useState<string>("");
     const [devUIUrl, setDevUIUrl] = React.useState<string>("");
@@ -33,7 +33,7 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     const [isProcessEnabled, setProcessEnabled] = React.useState(false);
     const [isTracingEnabled, setTracingEnabled] = React.useState(false);
     const [availablePages, setAvailablePages] = React.useState<string[]>([]);
-    const [customLabels, setCustomLabels] = React.useState(undefined);
+    const [customLabels, setCustomLabels] = React.useState<CustomLabels | undefined>();
     const [omittedProcessTimelineEvents, setOmittedProcessTimelineEvents] = React.useState<string[]>([]);
     const [diagramPreviewSize, setDiagramPreviewSize] = React.useState<DiagramPreviewSize>();
     const [isStunnerEnabled, setIsStunnerEnabled] = React.useState<boolean>(false);
@@ -44,9 +44,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
         return {
           setDataIndexUrl: (dataIndexUrl) => {
             setDataIndexUrl(dataIndexUrl);
-          },
-          setTrustyServiceUrl: (trustyServiceUrl) => {
-            setTrustyServiceUrl(trustyServiceUrl);
           },
           setUsers: (users) => {
             setDevUiUsers(users);
@@ -91,7 +88,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
           <RuntimeTools
             users={DevUiUsers}
             dataIndexUrl={dataIndexUrl}
-            trustyServiceUrl={trustyServiceUrl}
             navigate={navigate}
             openApiPath={openApiPath}
             devUIUrl={devUIUrl}

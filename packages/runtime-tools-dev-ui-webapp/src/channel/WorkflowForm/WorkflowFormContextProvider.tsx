@@ -20,7 +20,7 @@ import { WorkflowFormGatewayApiImpl } from "./WorkflowFormGatewayApi";
 import { DevUIAppContext, useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
 
 interface IOwnProps {
-  children;
+  children: React.ReactElement;
 }
 
 const WorkflowFormContextProvider: React.FC<IOwnProps> = ({ children }) => {

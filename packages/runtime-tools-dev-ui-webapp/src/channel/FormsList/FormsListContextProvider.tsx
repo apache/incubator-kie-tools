@@ -19,7 +19,7 @@ import FormsListContext from "./FormsListContext";
 import { FormsListGatewayApiImpl } from "./FormsListGatewayApi";
 
 interface FormsListContextProviderProps {
-  children;
+  children: React.ReactElement;
 }
 
 const FormsListContextProvider: React.FC<FormsListContextProviderProps> = ({ children }) => {

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { init } from "@kogito-apps/form-displayer";
+import { init } from "@kie-tools/runtime-tools-enveloped-components/src/formDisplayer";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 
 init({
   container: document.getElementById("displayer-app")!,
   config: { containerType: ContainerType.IFRAME },
   bus: {
-    postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin, _),
+    postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _),
   },
 });

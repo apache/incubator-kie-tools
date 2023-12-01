@@ -35,7 +35,7 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
             {(!availablePages || availablePages.includes("Processes")) && (
               <NavItem key={"processes-nav"} isActive={pathname === "/Processes"}>
                 <Link to="/Processes" {...ouiaAttribute("data-ouia-navigation-name", "processes-nav")}>
-                  {customLabels.pluralProcessLabel}
+                  {customLabels?.pluralProcessLabel}
                 </Link>
               </NavItem>
             )}

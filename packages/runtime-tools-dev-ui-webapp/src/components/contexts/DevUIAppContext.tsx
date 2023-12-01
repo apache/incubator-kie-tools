@@ -15,7 +15,7 @@
  */
 
 import React, { useContext } from "react";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
+import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
 import { CustomLabels } from "../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 
@@ -29,7 +29,7 @@ export interface DevUIAppContext {
   getDevUIUrl(): string;
   getOpenApiPath(): string;
   availablePages?: string[];
-  customLabels: CustomLabels;
+  customLabels?: CustomLabels;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   isWorkflow(): boolean;
@@ -63,7 +63,7 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   private readonly userListeners: UserChangeListener[] = [];
 
   constructor(private readonly args: DevUIAppContextArgs) {
-    if (args.users?.length > 0) {
+    if (args.users?.length) {
       this.currentUser = args.users[0];
     }
   }
@@ -81,11 +81,11 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   }
 
   getAllUsers(): User[] {
-    return this.args.users;
+    return this.args.users || [];
   }
 
   switchUser(userId: string): void {
-    const switchedUser = this.args.users.find((user) => user.id === userId);
+    const switchedUser = this.args.users?.find((user) => user.id === userId);
     if (switchedUser) {
       this.currentUser = switchedUser;
       this.userListeners.forEach((listener) => listener.onUserChange(switchedUser));
@@ -126,10 +126,10 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   }
 
   get availablePages(): string[] {
-    return this.args.availablePages;
+    return this.args.availablePages || [];
   }
 
-  get customLabels(): CustomLabels {
+  get customLabels(): CustomLabels | undefined {
     return this.args.customLabels;
   }
 
@@ -137,12 +137,12 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     return this.args.omittedProcessTimelineEvents;
   }
 
-  get diagramPreviewSize(): DiagramPreviewSize {
+  get diagramPreviewSize(): DiagramPreviewSize | undefined {
     return this.args.diagramPreviewSize;
   }
 }
 
-const RuntimeToolsDevUIAppContext = React.createContext<DevUIAppContext>(null);
+const RuntimeToolsDevUIAppContext = React.createContext<DevUIAppContext>({} as DevUIAppContext);
 
 export default RuntimeToolsDevUIAppContext;
 

@@ -19,7 +19,7 @@ import CustomDashboardViewContext from "./CustomDashboardViewContext";
 import { CustomDashboardViewGatewayApiImpl } from "./CustomDashboardViewGatewayApi";
 
 interface CustomDashboardViewContextProviderProps {
-  children;
+  children: React.ReactElement;
 }
 
 const CustomDashboardViewContextProvider: React.FC<CustomDashboardViewContextProviderProps> = ({ children }) => {

@@ -26,10 +26,11 @@ const initEnvelope = () => {
   const container = document.getElementById("envelope-app")!;
 
   const bus = {
-    postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _),
+    postMessage: (message: any, targetOrigin: string, _: any) => window.parent.postMessage(message, targetOrigin, _),
   };
+
   const apiImplFactory = {
-    create: (args) => new RuntimeToolsDevUIEnvelopeApiImpl(args),
+    create: (args: any) => new RuntimeToolsDevUIEnvelopeApiImpl(args),
   };
 
   const envelope = new Envelope<

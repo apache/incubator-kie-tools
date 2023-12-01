@@ -26,20 +26,23 @@ import {
   componentOuiaProps,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { RouteComponentProps } from "react-router-dom";
-import { PageSectionHeader } from "@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader";
-import ProcessDetailsContainer from "../../containers/ProcessDetailsContainer/ProcessDetailsContainer";
-import { ProcessDetailsGatewayApi, useProcessDetailsGatewayApi } from "../../../channel/ProcessDetails";
+import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageSectionHeader";
+import { WorkflowDetailsContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetailsContainer";
+import {
+  WorkflowDetailsGatewayApi,
+  useWorkflowDetailsGatewayApi,
+} from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetails/";
 import { StaticContext, useHistory } from "react-router";
 import * as H from "history";
 import "../../styles.css";
-import { ProcessInstance } from "@kogito-apps/management-console-shared/dist/types";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 
 interface MatchProps {
   instanceID: string;
 }
 
-const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps> = ({
+const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps> = ({
   ouiaId,
   ouiaSafe,
   ...props
@@ -48,15 +51,15 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
     return ouiaPageTypeAndObjectId("process-details");
   });
 
-  const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
+  const gatewayApi: WorkflowDetailsGatewayApi = useWorkflowDetailsGatewayApi();
   const appContext = useDevUIAppContext();
 
   const history = useHistory();
   const processId = props.match.params.instanceID;
-  const [processInstance, setProcessInstance] = useState<ProcessInstance>({} as ProcessInstance);
+  const [processInstance, setProcessInstance] = useState<WorkflowInstance>({} as WorkflowInstance);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fetchError, setFetchError] = useState<string>("");
-  let currentPage = JSON.parse(window.localStorage.getItem("state"));
+  let currentPage = JSON.parse(window.localStorage.getItem("state") ?? "");
   useEffect(() => {
     window.onpopstate = () => {
       props.history.push({ state: Object.assign({}, props.location.state) });
@@ -64,11 +67,11 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
   });
 
   async function fetchDetails() {
-    let response: ProcessInstance = {} as ProcessInstance;
+    let response: WorkflowInstance = {} as WorkflowInstance;
     let responseError: string = "";
     try {
       setIsLoading(true);
-      response = await gatewayApi.processDetailsQuery(processId);
+      response = await gatewayApi.workflowDetailsQuery(processId);
       setProcessInstance(response);
     } catch (error) {
       responseError = error;
@@ -82,7 +85,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
         if (currentPage) {
           currentPage = Object.assign({}, currentPage, props.location.state);
           const tempPath = currentPage.prev.split("/");
-          prevPath = tempPath.filter((item) => item);
+          prevPath = tempPath.filter((item: string) => item);
         }
         history.push({
           pathname: "/NoData",
@@ -115,7 +118,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
       return (
         <>
           {processInstance && Object.keys(processInstance).length > 0 && !fetchError ? (
-            <ProcessDetailsContainer processInstance={processInstance} />
+            <WorkflowDetailsContainer workflowInstance={processInstance} onOpenWorkflowInstanceDetails={() => {}} />
           ) : (
             <>
               {fetchError.length > 0 && (
@@ -140,7 +143,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
 
   return (
     <>
-      <PageSectionHeader titleText={`${appContext.customLabels.singularProcessLabel} Details`} ouiaId={ouiaId} />
+      <PageSectionHeader titleText={`${appContext?.customLabels?.singularProcessLabel} Details`} ouiaId={ouiaId} />
       <PageSection {...componentOuiaProps(ouiaId, "process-details-page-section", ouiaSafe)}>
         {renderItems()}
       </PageSection>
@@ -148,4 +151,4 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
   );
 };
 
-export default ProcessDetailsPage;
+export default WorkflowDetailsPage;

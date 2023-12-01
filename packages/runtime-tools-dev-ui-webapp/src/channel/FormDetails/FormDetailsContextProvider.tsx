@@ -19,7 +19,7 @@ import FormDetailsContext from "./FormDetailsContext";
 import { FormDetailsGatewayApiImpl } from "./FormDetailsGatewayApi";
 
 interface IOwnProps {
-  children;
+  children: React.ReactElement;
 }
 
 const FormDetailsContextProvider: React.FC<IOwnProps> = ({ children }) => {

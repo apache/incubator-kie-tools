@@ -25,40 +25,42 @@ import {
   ouiaPageTypeAndObjectId,
   componentOuiaProps,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { PageSectionHeader } from "@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader";
-import { ProcessListGatewayApi } from "../../../channel/ProcessList";
-import { useProcessListGatewayApi } from "../../../channel/ProcessList/ProcessListContext";
+import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageSectionHeader";
 import MonitoringContainer from "../../containers/MonitoringContainer/MonitoringContainer";
 import {
   KogitoEmptyState,
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import "../../styles.css";
-import { ProcessInstance, ProcessInstanceState, OrderBy } from "@kogito-apps/management-console-shared/dist/types";
-import { Dashboard } from "@kogito-apps/monitoring";
+import { WorkflowInstance, WorkflowInstanceState, OrderBy } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { Dashboard } from "@kie-tools/runtime-tools-enveloped-components/dist/monitoring";
+import {
+  WorkflowListGatewayApi,
+  useWorkflowListGatewayApi,
+} from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowList";
 
 interface Props {
   dataIndexUrl?: string;
 }
 const MonitoringPage: React.FC<OUIAProps & Props> = ({ ouiaId, ouiaSafe, dataIndexUrl }) => {
-  const gatewayApi: ProcessListGatewayApi = useProcessListGatewayApi();
+  const gatewayApi: WorkflowListGatewayApi = useWorkflowListGatewayApi();
   const [hasWorkflow, setHasWorkflow] = useState(false);
   const [loading, setLoading] = useState(true);
   const [openProcessSelect, setOpenProcessSelect] = useState(false);
   const [dashboard, setDashboard] = useState(Dashboard.MONITORING);
-  const [workflowList, setWorkflowList] = useState<ProcessInstance[]>([]);
-  const [selectedWorkflow, setSelectedWorkflow] = useState<ProcessInstance>();
+  const [workflowList, setWorkflowList] = useState<WorkflowInstance[]>([]);
+  const [selectedWorkflow, setSelectedWorkflow] = useState<WorkflowInstance>();
   const [activeTabKey, setActiveTabKey] = useState<ReactText>(0);
 
   const initialLoad = () =>
     gatewayApi.initialLoad(
       {
         status: [
-          ProcessInstanceState.Aborted,
-          ProcessInstanceState.Active,
-          ProcessInstanceState.Completed,
-          ProcessInstanceState.Error,
-          ProcessInstanceState.Suspended,
+          WorkflowInstanceState.Aborted,
+          WorkflowInstanceState.Active,
+          WorkflowInstanceState.Completed,
+          WorkflowInstanceState.Error,
+          WorkflowInstanceState.Suspended,
         ],
         businessKey: [],
       },

@@ -17,7 +17,7 @@
 import React, { useContext } from "react";
 import { FormDetailsGatewayApi } from "./FormDetailsGatewayApi";
 
-const FormDetailsContext = React.createContext<FormDetailsGatewayApi>(null);
+const FormDetailsContext = React.createContext<FormDetailsGatewayApi>({} as FormDetailsGatewayApi);
 
 export const useFormDetailsGatewayApi = (): FormDetailsGatewayApi =>
   useContext<FormDetailsGatewayApi>(FormDetailsContext);

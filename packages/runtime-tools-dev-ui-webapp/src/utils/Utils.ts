@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-import { GraphQL } from "@kogito-apps/consoles-common/dist/graphql";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
-import { ProcessDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 
-export const createProcessDefinitionList = (processDefinitionObjs, url: string): ProcessDefinition[] => {
-  const processDefinitionList = [];
+export const createProcessDefinitionList = (
+  processDefinitionObjs: { [key: string]: string }[],
+  url: string
+): WorkflowDefinition[] => {
+  const processDefinitionList: WorkflowDefinition[] = [];
   processDefinitionObjs.forEach((processDefObj) => {
-    const processName = Object.keys(processDefObj)[0].split("/")[1];
-    const endpoint = `${url}/${processName}`;
+    const workflowName = Object.keys(processDefObj)[0].split("/")[1];
+    const endpoint = `${url}/${workflowName}`;
     processDefinitionList.push({
-      processName,
+      workflowName,
       endpoint,
     });
   });

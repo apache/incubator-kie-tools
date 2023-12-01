@@ -57,20 +57,19 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
     this.ackCapturedInitRequest();
     this.view = await this.args.viewDelegate();
     this.view().setDataIndexUrl(initArgs.dataIndexUrl);
-    this.view().setTrustyServiceUrl(initArgs.trustyServiceUrl);
-    this.view().setUsers(initArgs.users);
+    this.view().setUsers(initArgs.users!);
     this.view().navigateTo(initArgs.page);
     this.view().setDevUIUrl && this.view().setDevUIUrl(initArgs.devUIUrl);
     this.view().setOpenApiPath && this.view().setOpenApiPath(initArgs.openApiPath);
-    this.view().setAvailablePages && this.view().setAvailablePages(initArgs.availablePages);
-    this.view().setCustomLabels && this.view().setCustomLabels(initArgs.customLabels);
+    this.view().setAvailablePages && this.view().setAvailablePages(initArgs.availablePages!);
+    this.view().setCustomLabels && this.view().setCustomLabels(initArgs.customLabels!);
     this.view().setOmittedProcessTimelineEvents &&
-      this.view().setOmittedProcessTimelineEvents(initArgs.omittedProcessTimelineEvents);
+      this.view().setOmittedProcessTimelineEvents(initArgs.omittedProcessTimelineEvents!);
     this.view().setDiagramPreviewSize && this.view().setDiagramPreviewSize(initArgs.diagramPreviewSize);
     this.view().setIsStunnerEnabled && this.view().setIsStunnerEnabled(initArgs.isStunnerEnabled);
     // Ensure these are set last. This is a workaround to ensure views are corrected configured with other properties
     // from the DevUIAppContext before they are rendered. i.e. use of DevUIAppContext is not responsive to updates.
     this.view().setProcessEnabled(initArgs.isDataIndexAvailable);
-    this.view().setTracingEnabled(initArgs.isTracingEnabled);
+    this.view().setTracingEnabled(initArgs.isTracingEnabled!);
   };
 }

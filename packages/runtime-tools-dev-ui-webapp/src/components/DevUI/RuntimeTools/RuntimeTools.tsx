@@ -17,8 +17,8 @@
 import React from "react";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
-import { ServerUnavailablePage } from "@kogito-apps/consoles-common/dist/components/pages/ServerUnavailablePage";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
+import { ServerUnavailablePage } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/pages/ServerUnavailablePage";
+import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import DevUIRoutes from "../DevUIRoutes/DevUIRoutes";
@@ -32,12 +32,11 @@ interface IOwnProps {
   isTracingEnabled: boolean;
   users: User[];
   dataIndexUrl: string;
-  trustyServiceUrl: string;
   navigate: string;
   devUIUrl: string;
   openApiPath: string;
   availablePages: string[];
-  customLabels: CustomLabels;
+  customLabels?: CustomLabels;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   isStunnerEnabled: boolean;
@@ -46,7 +45,6 @@ interface IOwnProps {
 const RuntimeTools: React.FC<IOwnProps> = ({
   users,
   dataIndexUrl,
-  trustyServiceUrl,
   navigate,
   devUIUrl,
   openApiPath,
@@ -108,7 +106,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       diagramPreviewSize={diagramPreviewSize}
       isStunnerEnabled={isStunnerEnabled}
     >
-      <DevUIRoutes navigate={navigate} trustyServiceUrl={trustyServiceUrl} dataIndexUrl={dataIndexUrl} />
+      <DevUIRoutes navigate={navigate} dataIndexUrl={dataIndexUrl} />
     </DevUILayout>
   );
 };

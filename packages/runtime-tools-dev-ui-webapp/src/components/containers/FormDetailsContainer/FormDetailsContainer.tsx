@@ -20,7 +20,7 @@ import { FormDetailsGatewayApi } from "../../../channel/FormDetails";
 import { useFormDetailsGatewayApi } from "../../../channel/FormDetails/FormDetailsContext";
 import { EmbeddedFormDetails, FormContent } from "@kie-tools/runtime-tools-enveloped-components/src/formDetails";
 import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
-import { Form } from "@kogito-apps/form-displayer";
+import { Form } from "@kie-tools/runtime-tools-enveloped-components/src/formDisplayer";
 
 interface FormDetailsContainerProps {
   formData: FormInfo;
