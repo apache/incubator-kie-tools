@@ -383,8 +383,8 @@ function TestScenarioMainPanel({
                   >
                     <div className="kie-scesim-editor--table-container">
                       <TestScenarioTable
-                        assetType={scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text}
-                        simulationData={scesimModel.ScenarioSimulationModel["simulation"]}
+                        assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
+                        tableData={scesimModel.ScenarioSimulationModel.simulation}
                         updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
