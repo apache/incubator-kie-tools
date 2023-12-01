@@ -28,6 +28,7 @@ import {
   SceSim__expressionIdentifierType,
   SceSim__factIdentifierType,
   SceSim__FactMappingType,
+  SceSim__FactMappingValueType,
   SceSim__ScenarioType,
   SceSim__simulationType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
@@ -242,7 +243,7 @@ function TestScenarioTable({
     tableData.scesimModelDescriptor.factMappings?.FactMapping,
   ]);
 
-  /* Retrieving the Rows from the Test Scenario model */
+  /* It generates the columns of the TestScenarioTable */
   const tableRows = useMemo(
     () =>
       (tableData.scesimData.Scenario ?? []).map((scenario, index) => {
@@ -262,6 +263,8 @@ function TestScenarioTable({
       }),
     [tableColumns, tableData.scesimData.Scenario]
   );
+
+  /** TABLE'S CONTEXT MENU MANAGEMENT */
 
   const allowedOperations = useCallback(
     (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
@@ -400,6 +403,27 @@ function TestScenarioTable({
 
   /** TABLE UPDATES FUNCTIONS */
 
+  /*
+    Given a List of FactMappingValues (Row of Cells), it founds the index of the list's element that matches with the 
+    identifiers (factIdentifier and expressionIdentifier) fields.
+   */
+  const retrieveFactMappingValueIndexByIdentifiers = useCallback(
+    (
+      factMappingValues: SceSim__FactMappingValueType[],
+      factIdentifier: SceSim__factIdentifierType,
+      expressionIdentifier: SceSim__expressionIdentifierType
+    ) => {
+      return factMappingValues.findIndex(
+        (factMappingValue) =>
+          factMappingValue.factIdentifier.name?.__$$text == factIdentifier.name?.__$$text &&
+          factMappingValue.factIdentifier.className?.__$$text == factIdentifier.className?.__$$text &&
+          factMappingValue.expressionIdentifier.name?.__$$text == expressionIdentifier.name?.__$$text &&
+          factMappingValue.expressionIdentifier.type?.__$$text == expressionIdentifier.type?.__$$text
+      );
+    },
+    []
+  );
+
   /**
    * It updates every changed Cell in its related FactMappingValue
    */
@@ -420,26 +444,23 @@ function TestScenarioTable({
           const factMappingValues = deepClonedScenarios[update.rowIndex].factMappingValues.FactMappingValue!;
           const newFactMappingValues = [...factMappingValues];
 
-          factMappingValues.forEach((factMappingValue, index) => {
-            if (
-              factMapping.factIdentifier.name?.__$$text === factMappingValue.factIdentifier.name?.__$$text &&
-              factMapping.factIdentifier.className?.__$$text === factMappingValue.factIdentifier.className?.__$$text &&
-              factMapping.expressionIdentifier.name?.__$$text ===
-                factMappingValue.expressionIdentifier.name?.__$$text &&
-              factMapping.expressionIdentifier.type?.__$$text === factMappingValue.expressionIdentifier.type?.__$$text
-            ) {
-              if (factMappingValues[index].rawValue) {
-                newFactMappingValues[index].rawValue!.__$$text = update.value;
-              } else {
-                newFactMappingValues[index] = {
-                  ...factMappingValues[index],
-                  rawValue: {
-                    __$$text: update.value,
-                  },
-                };
-              }
-            }
-          });
+          const factMappingValueToUpdateIndex = retrieveFactMappingValueIndexByIdentifiers(
+            newFactMappingValues,
+            factMapping.factIdentifier,
+            factMapping.expressionIdentifier
+          );
+          const factMappingValueToUpdate = factMappingValues[factMappingValueToUpdateIndex];
+
+          if (factMappingValueToUpdate.rawValue) {
+            factMappingValueToUpdate.rawValue!.__$$text = update.value;
+          } else {
+            newFactMappingValues[factMappingValueToUpdateIndex] = {
+              ...factMappingValueToUpdate,
+              rawValue: {
+                __$$text: update.value,
+              },
+            };
+          }
 
           deepClonedScenarios[update.rowIndex].factMappingValues.FactMappingValue = newFactMappingValues;
 
@@ -457,19 +478,18 @@ function TestScenarioTable({
         });
       });
     },
-    [updateTestScenarioModel]
+    [retrieveFactMappingValueIndexByIdentifiers, updateTestScenarioModel]
   );
 
   const retrieveColumnIndexbyIdentifiers = useCallback(
     (factIdentifier: SceSim__factIdentifierType, expressionIdentifier: SceSim__expressionIdentifierType) => {
-      return tableData.scesimModelDescriptor.factMappings!.FactMapping?.findIndex((factMapping) => {
-        return (
+      return tableData.scesimModelDescriptor.factMappings!.FactMapping?.findIndex(
+        (factMapping) =>
           factMapping.factIdentifier.name?.__$$text == factIdentifier.name?.__$$text &&
           factMapping.factIdentifier.className?.__$$text == factIdentifier.className?.__$$text &&
           factMapping.expressionIdentifier.name?.__$$text == expressionIdentifier.name?.__$$text &&
           factMapping.expressionIdentifier.type?.__$$text == expressionIdentifier.type?.__$$text
-        );
-      });
+      );
     },
     [tableData.scesimModelDescriptor.factMappings]
   );
@@ -539,13 +559,7 @@ function TestScenarioTable({
 
       return selectedColumnIndex;
     },
-    [
-      SimulationTableColumnFieldGroup,
-      SimulationTableColumnInstanceGroup,
-      retrieveColumnIndexbyIdentifiers,
-      tableColumns.instancesGroup,
-      tableData.scesimModelDescriptor.factMappings,
-    ]
+    [SimulationTableColumnFieldGroup, SimulationTableColumnInstanceGroup, tableData.scesimModelDescriptor.factMappings]
   );
 
   const getNextAvailablePrefixedName = useCallback(
@@ -684,7 +698,16 @@ function TestScenarioTable({
         };
       });
     },
-    [SimulationTableColumnFieldGroup, getSectionIndexForGroupType, updateTestScenarioModel]
+    [
+      SimulationTableColumnFieldGroup,
+      SimulationTableColumnInstanceGroup,
+      getNextAvailablePrefixedName,
+      getSectionIndexForGroupType,
+      retrieveColumnIndexbyIdentifiers,
+      tableColumns,
+      tableData.scesimModelDescriptor.factMappings,
+      updateTestScenarioModel,
+    ]
   );
 
   /**
@@ -712,7 +735,8 @@ function TestScenarioTable({
           JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimData.Scenario ?? [])
         );
         deepClonedScenarios.forEach((scenario: SceSim__ScenarioType) => {
-          const factMappingValueColumnIndexToRemove = retrieveColumnIndexbyIdentifiers(
+          const factMappingValueColumnIndexToRemove = retrieveFactMappingValueIndexByIdentifiers(
+            scenario.factMappingValues.FactMappingValue!,
             factMappingToRemove.factIdentifier,
             factMappingToRemove.expressionIdentifier
           )!;
@@ -744,7 +768,7 @@ function TestScenarioTable({
         };
       });
     },
-    [retrieveColumnIndexbyIdentifiers, updateTestScenarioModel]
+    [retrieveFactMappingValueIndexByIdentifiers, updateTestScenarioModel]
   );
 
   /**
