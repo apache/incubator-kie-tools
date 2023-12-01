@@ -24,7 +24,7 @@ USER 1001
 WORKDIR /home/kogito/kogito-base
 
 # Copy from build context to skeleton resources project
-COPY * ./src/main/resources/
+COPY --chown=1001 . ./src/main/resources
 
 # Maven vars enhirited from the base image
 RUN ${MAVEN_HOME}/bin/mvn -U -B ${MAVEN_ARGS_APPEND} -s ${MAVEN_SETTINGS_PATH} clean install -DskipTests

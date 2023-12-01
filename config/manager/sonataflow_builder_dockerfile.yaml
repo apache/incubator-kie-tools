@@ -7,7 +7,7 @@ ARG QUARKUS_EXTENSIONS
 ARG QUARKUS_ADD_EXTENSION_ARGS
 
 # Copy from build context to skeleton resources project
-COPY --chmod=644 * ./resources/
+COPY --chown=1001 . ./resources
 
 RUN /home/kogito/launch/build-app.sh ./resources
   
