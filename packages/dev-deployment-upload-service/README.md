@@ -54,16 +54,9 @@ spec:
 
 ```bash
 # 1.
-rm -rf /tmp/upload-service-dev && \
-pnpm build:dev && \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR='/tmp/upload-service-dev' \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT='8091' \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY='dev' \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH='/' \
-./dist/darwin/dev-deployment-upload-service
-```
-
-```bash
-# 2.
-open test.html
+pnpm start:dev
 ```

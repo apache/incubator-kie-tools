@@ -29,9 +29,9 @@
     "serve": "npx http-server dist --port 8092",
     "start": "make start",
     "start:dev": "run-script-os",
-    "start:dev:darwin": "pnpm build:prod && open ./dev/index.html && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)",
-    "start:dev:linux": "pnpm build:prod && browse ./dev/index.html && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)",
-    "start:dev:win32": "pnpm build:prod && pnpm powershell \"Invoke-Item ./dev/index.html\" && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)"
+    "start:dev:darwin": "pnpm build:dev && open ./dev/index.html && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)",
+    "start:dev:linux": "pnpm build:dev && browse ./dev/index.html && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)",
+    "start:dev:win32": "pnpm build:dev && pnpm powershell \"Invoke-Item ./dev/index.html\" && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
