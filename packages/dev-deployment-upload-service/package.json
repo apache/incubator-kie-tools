@@ -1,0 +1,47 @@
+{
+  "private": true,
+  "name": "@kie-tools/dev-deployment-upload-service",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "run-script-os",
+    "build:darwin": "make darwin",
+    "build:darwin:amd64": "make darwin-amd64",
+    "build:darwin:arm64": "make darwin-arm64",
+    "build:dev": "pnpm build:linux && pnpm build:darwin:amd64 && pnpm build:darwin:arm64 && pnpm build:win32",
+    "build:linux": "make linux",
+    "build:prod": "pnpm build:linux && pnpm build:darwin:amd64 && pnpm build:darwin:arm64 && pnpm build:win32",
+    "build:win32": "make win32",
+    "install": "go mod tidy",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "serve": "npx http-server dist --port 8092",
+    "start": "make start",
+    "start:dev": "run-script-os",
+    "start:dev:darwin": "pnpm build:dev && open ./dev/index.html && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)",
+    "start:dev:linux": "pnpm build:dev && browse ./dev/index.html && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)",
+    "start:dev:win32": "pnpm build:dev && pnpm powershell \"Invoke-Item ./dev/index.html\" && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "cross-env": "^7.0.3",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "go",
+      "make"
+    ]
+  }
+}

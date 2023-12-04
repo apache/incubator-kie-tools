@@ -48,7 +48,6 @@ export default async (env: any, argv: any) => {
     extendedServices_windowsDownloadUrl,
     extendedServices_compatibleVersion,
   ] = getExtendedServicesArgs();
-  const dmnDevDeployment_imagePullPolicy = getDmnDevDeploymentImagePullPolicy();
   const gtmResource = getGtmResource();
 
   let lastCommitHash = "";
@@ -107,7 +106,6 @@ export default async (env: any, argv: any) => {
             WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
-            WEBPACK_REPLACE__dmnDevDeployment_imagePullPolicy: dmnDevDeployment_imagePullPolicy,
             WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
             WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
           }),
@@ -116,7 +114,7 @@ export default async (env: any, argv: any) => {
               { from: "./static/resources", to: "./resources" },
               { from: "./static/images", to: "./images" },
               { from: "./static/samples", to: "./samples" },
-              { from: "./static/kubernetes", to: "./kubernetes" },
+              { from: "./static/dev-deployments", to: "./dev-deployments" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },
               {
                 from: "./static/env.json",
@@ -140,6 +138,13 @@ export default async (env: any, argv: any) => {
               {
                 from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
                 to: "./images",
+              },
+              {
+                from: path.join(
+                  path.dirname(require.resolve("@kie-tools/dev-deployment-upload-service/package.json")),
+                  "/dist"
+                ),
+                to: "./dev-deployments/upload-service",
               },
             ],
           }),
@@ -231,10 +236,4 @@ function getExtendedServicesArgs() {
   console.info("Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
-}
-
-function getDmnDevDeploymentImagePullPolicy() {
-  const baseImagePullPolicy = buildEnv.devDeployments.dmn.imagePullPolicy;
-  console.info("DMN Dev deployment :: Image pull policy: " + baseImagePullPolicy);
-  return baseImagePullPolicy;
 }
