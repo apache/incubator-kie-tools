@@ -61,7 +61,7 @@
 
   <issueManagement>
     <system>jira</system>
-    <url>https://issues.redhat.com/browse/KOGITO</url>
+    <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
 
   <repositories>

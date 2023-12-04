@@ -21,6 +21,9 @@
   /* this adjusts the max specifically for our logo */
   --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
 }
+.pf-c-page__header-brand-link {
+  text-decoration: none;
+}
 
 .kogito--alert-container {
   position: fixed;
