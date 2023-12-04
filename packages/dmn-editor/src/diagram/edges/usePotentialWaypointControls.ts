@@ -2,7 +2,6 @@ import * as RF from "reactflow";
 import { useState, useCallback, useMemo } from "react";
 import { addEdgeWaypoint } from "../../mutations/addEdgeWaypoint";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
-import { useDmnEditorDiagramContainer } from "../DiagramContainerContext";
 import { snapPoint } from "../SnapGrid";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnDiagramNodeData } from "../nodes/Nodes";
@@ -23,8 +22,6 @@ export function usePotentialWaypointControls(
     undefined
   );
 
-  const { container } = useDmnEditorDiagramContainer();
-
   const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
 
   const isExistingWaypoint = useCallback(
@@ -34,15 +31,14 @@ export function usePotentialWaypointControls(
 
   const onMouseMove = useCallback(
     (e: React.MouseEvent) => {
-      const containerBounds = container.current!.getBoundingClientRect();
-      const projectedPoint = reactFlowInstance.project({
-        x: e.clientX - containerBounds.left,
-        y: e.clientY - containerBounds.top,
+      const projectedPoint = reactFlowInstance.screenToFlowPosition({
+        x: e.clientX,
+        y: e.clientY,
       });
 
       setPotentialWaypoint(approximateClosestPoint(interactionPathRef.current!, [projectedPoint.x, projectedPoint.y]));
     },
-    [container, interactionPathRef, reactFlowInstance]
+    [interactionPathRef, reactFlowInstance]
   );
 
   const snappedPotentialWaypoint = useMemo(() => {

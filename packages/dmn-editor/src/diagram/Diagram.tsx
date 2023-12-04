@@ -264,10 +264,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       }
 
       // we need to remove the wrapper bounds, in order to get the correct position
-      const containerBounds = container.current.getBoundingClientRect();
-      const dropPoint = reactFlowInstance.project({
-        x: e.clientX - containerBounds.left,
-        y: e.clientY - containerBounds.top,
+      const dropPoint = reactFlowInstance.screenToFlowPosition({
+        x: e.clientX,
+        y: e.clientY,
       });
 
       if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE)) {
@@ -417,11 +416,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         return;
       }
 
-      // we need to remove the container bounds, in order to get the correct position
-      const containerBounds = container.current.getBoundingClientRect();
-      const dropPoint = reactFlowInstance.project({
-        x: e.clientX - containerBounds.left,
-        y: e.clientY - containerBounds.top,
+      const dropPoint = reactFlowInstance.screenToFlowPosition({
+        x: e.clientX,
+        y: e.clientY,
       });
 
       // only try to create node if source handle is compatible
