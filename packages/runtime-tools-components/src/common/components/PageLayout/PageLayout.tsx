@@ -20,10 +20,10 @@
 import React, { useState, useEffect } from "react";
 import { Page, PageSidebar, PageHeader, PageHeaderTools } from "@patternfly/react-core/dist/js/components/Page";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import "../../styles.css";
-import { componentOuiaProps, ouiaAttribute, OUIAProps } from "../../../../ouiaTools";
-import { BrandContext } from "../BrandContext/BrandContext";
+import "../styles.css";
+import { componentOuiaProps, ouiaAttribute, OUIAProps } from "../../ouiaTools";
 import PageToolbar from "../PageToolbar/PageToolbar";
+import { BrandContext } from "../../contexts/BrandContext/BrandContext";
 
 interface IOwnProps {
   children: React.ReactNode;

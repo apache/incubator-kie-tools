@@ -20,10 +20,10 @@
 import React from "react";
 import { AboutModal } from "@patternfly/react-core/dist/js/components/AboutModal";
 import { TextContent, Text, TextList, TextListItem } from "@patternfly/react-core/dist/js/components/Text";
-import "../../styles.css";
+import "../styles.css";
 import aboutPageBackground from "../../../../static/kogitoAbout.png";
-import { OUIAProps, componentOuiaProps } from "../../../../ouiaTools";
-import { useBrandContext } from "../BrandContext/BrandContext";
+import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
+import { useBrandContext } from "../../contexts/BrandContext/BrandContext";
 
 declare global {
   interface Window {

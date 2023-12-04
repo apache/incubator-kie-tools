@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
+import { User } from "@kie-tools/runtime-tools-components/dist/contexts/Auth";
 import RuntimeToolsDevUIAppContext, { DevUIAppContextImpl } from "./DevUIAppContext";
 import { CustomLabels } from "../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";

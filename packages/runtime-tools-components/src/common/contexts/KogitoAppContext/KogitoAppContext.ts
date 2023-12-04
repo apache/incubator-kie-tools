@@ -17,25 +17,28 @@
  * under the License.
  */
 
-import React from "react";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { componentOuiaProps, OUIAProps } from "../../../../ouiaTools";
+import React, { useContext } from "react";
+import { User, UserContext } from "../Auth";
 
-export interface IOwnProps {
-  title: any;
-  extra?: JSX.Element;
+export interface AppContext {
+  getCurrentUser(): User;
+  readonly userContext: UserContext;
 }
 
-export const PageTitle: React.FC<IOwnProps & OUIAProps> = ({ title, extra, ouiaId, ouiaSafe }) => {
-  return (
-    <Flex {...componentOuiaProps(ouiaId, "page-title", ouiaSafe)}>
-      <FlexItem spacer={{ default: "spacerSm" }}>
-        <Title headingLevel="h1" size="4xl">
-          {title}
-        </Title>
-      </FlexItem>
-      {extra ? <FlexItem spacer={{ default: "spacerSm" }}>{extra}</FlexItem> : null}
-    </Flex>
-  );
-};
+export class AppContextImpl implements AppContext {
+  public readonly userContext: UserContext;
+
+  constructor(userSystem: UserContext) {
+    this.userContext = userSystem;
+  }
+
+  getCurrentUser(): User {
+    return this.userContext.getCurrentUser();
+  }
+}
+
+const KogitoAppContext = React.createContext<AppContext>({} as AppContext);
+
+export default KogitoAppContext;
+
+export const useKogitoAppContext = () => useContext<AppContext>(KogitoAppContext);

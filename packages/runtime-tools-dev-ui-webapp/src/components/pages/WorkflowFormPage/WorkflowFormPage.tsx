@@ -27,7 +27,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { WorkflowFormContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowFormContainer";
 import "../../styles.css";
-import { PageTitle } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageTitle";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { useHistory } from "react-router-dom";
 import { InlineEdit, InlineEditApi } from "@kie-tools/runtime-tools-components/dist/components/InlineEdit";

@@ -27,7 +27,7 @@ import FormDetailsContainer from "../../containers/FormDetailsContainer/FormDeta
 import "../../styles.css";
 import { useHistory } from "react-router-dom";
 import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
-import { PageTitle } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageTitle";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import Moment from "react-moment";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";

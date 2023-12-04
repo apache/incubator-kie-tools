@@ -29,11 +29,11 @@ import { Avatar } from "@patternfly/react-core/dist/js/components/Avatar";
 import accessibleStyles from "@patternfly/react-styles/css/utilities/Accessibility/accessibility";
 import { css } from "@patternfly/react-styles";
 
-import { componentOuiaProps, OUIAProps } from "../../../../ouiaTools";
+import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 import AboutModalBox from "../AboutModalBox/AboutModalBox";
 import userImage from "../../../static/avatar.svg";
-import { ANONYMOUS_USER, LogoutUserContext, supportsLogout } from "../../../environment/auth";
-import { AppContext, useKogitoAppContext } from "../../../environment/context/KogitoAppContext";
+import { ANONYMOUS_USER, LogoutUserContext, supportsLogout } from "../../contexts/Auth";
+import { AppContext, useKogitoAppContext } from "../../contexts/KogitoAppContext/KogitoAppContext";
 
 const PageToolbar: React.FunctionComponent<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [isDropdownOpen, setDropdownOpen] = useState<boolean>(false);

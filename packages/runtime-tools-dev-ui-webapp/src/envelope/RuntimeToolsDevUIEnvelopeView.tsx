@@ -22,7 +22,7 @@ import "@patternfly/patternfly/patternfly.css";
 import "@patternfly/react-core/dist/styles/base.css";
 import { RuntimeToolsDevUIEnvelopeViewApi } from "./RuntimeToolsDevUIEnvelopeViewApi";
 import RuntimeTools from "../components/DevUI/RuntimeTools/RuntimeTools";
-import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
+import { User } from "@kie-tools/runtime-tools-components/dist/contexts/Auth";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 import { CustomLabels } from "../api/CustomLabels";
 

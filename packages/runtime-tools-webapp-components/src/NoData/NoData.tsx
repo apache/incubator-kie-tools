@@ -24,28 +24,21 @@ import {
   EmptyStateVariant,
   EmptyStateBody,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { Redirect, StaticContext, RouteComponentProps } from "react-router";
-import { componentOuiaProps, OUIAProps } from "../../../../ouiaTools";
-import * as H from "history";
+import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
+import { Redirect } from "react-router";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
-interface IOwnProps {
+export interface IOwnProps {
   defaultPath: string;
   defaultButton: string;
+  location: any;
 }
 
-export type LocationProps = H.LocationState & { prev?: string };
-
-export interface PageNotFoundProps
-  extends IOwnProps,
-    RouteComponentProps<{}, StaticContext, LocationProps>,
-    OUIAProps {}
-
-export const PageNotFound: React.FC<PageNotFoundProps> = ({ ouiaId, ouiaSafe, ...props }) => {
+export const NoData: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   let prevPath;
   if (props.location.state !== undefined) {
     prevPath = props.location.state.prev;
@@ -53,8 +46,8 @@ export const PageNotFound: React.FC<PageNotFoundProps> = ({ ouiaId, ouiaSafe, ..
     prevPath = props.defaultPath;
   }
 
-  const tempPath = prevPath?.split("/");
-  prevPath = tempPath?.filter((item: string) => item);
+  const tempPath = prevPath.split("/");
+  prevPath = tempPath.filter((item: string) => item);
 
   const [isRedirect, setIsredirect] = useState(false);
   const redirectHandler = () => {
@@ -62,17 +55,19 @@ export const PageNotFound: React.FC<PageNotFoundProps> = ({ ouiaId, ouiaSafe, ..
   };
   return (
     <>
-      {isRedirect && <Redirect to={`/${prevPath?.[0]}`} />}
-      <PageSection variant="light" {...componentOuiaProps(ouiaId, "page-not-found", ouiaSafe ? ouiaSafe : !isRedirect)}>
+      {isRedirect && <Redirect to={`/${prevPath[0]}`} />}
+      <PageSection isFilled={true} {...componentOuiaProps(ouiaId, "no-data", ouiaSafe ? ouiaSafe : !isRedirect)}>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.full}>
-            <EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-global--danger-color--100)" />
+            <EmptyStateIcon icon={SearchIcon} />
             <Title headingLevel="h1" size="4xl">
-              404 Error: page not found
+              {props.location.state ? props.location.state.title : "No matches"}
             </Title>
-            <EmptyStateBody>This page could not be found.</EmptyStateBody>
+            <EmptyStateBody>
+              {props.location.state ? props.location.state.description : "No data to display"}
+            </EmptyStateBody>
             <Button variant="primary" onClick={redirectHandler} data-testid="redirect-button">
-              {props.defaultButton}
+              {props.location.state ? props.location.state.buttonText : props.defaultButton}
             </Button>
           </EmptyState>
         </Bullseye>

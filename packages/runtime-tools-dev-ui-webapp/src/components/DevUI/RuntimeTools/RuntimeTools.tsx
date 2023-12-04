@@ -20,8 +20,7 @@
 import React from "react";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
-import { ServerUnavailablePage } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/pages/ServerUnavailablePage";
-import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
+import { User } from "@kie-tools/runtime-tools-components/dist/contexts/Auth";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import DevUIRoutes from "../DevUIRoutes/DevUIRoutes";
@@ -29,6 +28,7 @@ import DevUILayout from "../DevUILayout/DevUILayout";
 import ReactDOM from "react-dom";
 import { CustomLabels } from "../../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
+import { ServerUnavailablePage } from "../../../../../runtime-tools-webapp-components/src/ServerUnavailablePage";
 
 interface IOwnProps {
   isProcessEnabled: boolean;

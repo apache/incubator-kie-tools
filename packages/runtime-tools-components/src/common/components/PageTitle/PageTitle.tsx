@@ -17,14 +17,25 @@
  * under the License.
  */
 
-export * from "./environment/context";
-export * from "./environment/auth";
-export * from "./utils/KeycloakClient";
-export * from "./graphql/types";
+import React from "react";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 
-export * from "./components/layout/PageLayout/PageLayout";
-export * from "./components/pages/ServerUnavailablePage/ServerUnavailablePage";
-export * from "./components/pages/PageNotFound/PageNotFound";
-export * from "./components/pages/NoData/NoData";
-export * from "./components/layout/PageSectionHeader/PageSectionHeader";
-export * from "./components/pages/KeycloakUnavailablePage/KeycloakUnavailablePage";
+export interface IOwnProps {
+  title: any;
+  extra?: JSX.Element;
+}
+
+export const PageTitle: React.FC<IOwnProps & OUIAProps> = ({ title, extra, ouiaId, ouiaSafe }) => {
+  return (
+    <Flex {...componentOuiaProps(ouiaId, "page-title", ouiaSafe)}>
+      <FlexItem spacer={{ default: "spacerSm" }}>
+        <Title headingLevel="h1" size="4xl">
+          {title}
+        </Title>
+      </FlexItem>
+      {extra ? <FlexItem spacer={{ default: "spacerSm" }}>{extra}</FlexItem> : null}
+    </Flex>
+  );
+};

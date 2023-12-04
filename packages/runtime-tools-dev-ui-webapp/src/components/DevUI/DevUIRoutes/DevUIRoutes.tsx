@@ -17,11 +17,8 @@
  * under the License.
  */
 
-import { NoData } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/pages/NoData";
-import {
-  PageNotFound,
-  PageNotFoundProps,
-} from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/pages/PageNotFound";
+import { NoData } from "@kie-tools/runtime-tools-webapp-components/dist/NoData";
+import { PageNotFound, PageNotFoundProps } from "@kie-tools/runtime-tools-webapp-components/dist/PageNotFound";
 import React, { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";

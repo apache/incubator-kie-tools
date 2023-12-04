@@ -21,7 +21,7 @@ import React from "react";
 import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { PageTitle } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageTitle";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { useHistory } from "react-router-dom";
 import CustomDashboardViewContainer from "../../containers/CustomDashboardViewContainer/CustomDashboardViewContainer";
 import { CustomDashboardInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";

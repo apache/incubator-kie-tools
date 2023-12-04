@@ -29,7 +29,7 @@ import {
   componentOuiaProps,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { RouteComponentProps } from "react-router-dom";
-import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageSectionHeader";
+import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 import { WorkflowDetailsContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetailsContainer";
 import {
   WorkflowDetailsGatewayApi,

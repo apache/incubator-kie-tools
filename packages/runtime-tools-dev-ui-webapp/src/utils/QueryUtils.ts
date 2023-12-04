@@ -18,7 +18,7 @@
  */
 
 import _ from "lodash";
-import { User } from "@kie-tools/runtime-tools-components/dist/consolesCommon/environment/auth";
+import { User } from "@kie-tools/runtime-tools-components/dist/contexts/Auth";
 
 const createUserAssignmentClause = (currentUser: User) => {
   return {

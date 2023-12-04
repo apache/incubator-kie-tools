@@ -28,7 +28,7 @@ import {
   ouiaPageTypeAndObjectId,
   componentOuiaProps,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/consolesCommon/components/layout/PageSectionHeader";
+import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 import MonitoringContainer from "../../containers/MonitoringContainer/MonitoringContainer";
 import {
   KogitoEmptyState,
