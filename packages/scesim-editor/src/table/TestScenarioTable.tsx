@@ -126,11 +126,16 @@ function TestScenarioTable({
   */
   const generateInstanceSectionFromFactMapping = useCallback(
     (factMapping: SceSim__FactMappingType, groupType: SimulationTableColumnInstanceGroup) => {
+      /* RULE Test Scenarios can have the same instance in both GIVEN and EXPECT section. Therefore, using the following 
+         pattern to identify it */
+      const instanceID =
+        factMapping.expressionIdentifier.type?.__$$text + "." + factMapping.factIdentifier.name!.__$$text;
+
       return {
-        accessor: factMapping.factIdentifier.name!.__$$text,
+        accessor: instanceID,
         dataType: determineDataTypeLabel(factMapping.factIdentifier.className!.__$$text),
         groupType: groupType.toLowerCase(),
-        id: factMapping.factIdentifier.name!.__$$text,
+        id: instanceID,
         isRowIndexColumn: false,
         label: factMapping.factAlias.__$$text,
         columns: [] as ReactTable.Column<ROWTYPE>[],
@@ -165,7 +170,10 @@ function TestScenarioTable({
     const expectInstances: ReactTable.Column<ROWTYPE>[] = [];
 
     (tableData.scesimModelDescriptor.factMappings?.FactMapping ?? []).forEach((factMapping) => {
-      const instanceID = factMapping.factIdentifier.name!.__$$text;
+      /* RULE Test Scenarios can have the same instance in both GIVEN and EXPECT section. Therefore, using the following 
+         pattern to identify it */
+      const instanceID =
+        factMapping.expressionIdentifier.type?.__$$text + "." + factMapping.factIdentifier.name!.__$$text;
       if (factMapping.expressionIdentifier.type?.__$$text === SimulationTableColumnFieldGroup.GIVEN.toUpperCase()) {
         const instance = givenInstances.find((instanceColumn) => instanceColumn.id === instanceID);
         if (instance) {
@@ -259,6 +267,8 @@ function TestScenarioTable({
       }),
     [tableColumns, tableData.scesimData.Scenario]
   );
+
+  console.log(tableColumns.allColumns);
 
   /** TABLE'S CONTEXT MENU MANAGEMENT */
 
@@ -566,7 +576,13 @@ function TestScenarioTable({
       if (isInstance) {
         const instanceSectionID = tableColumns.instancesGroup[originalSelectedColumnIndex - 1].id;
 
-        return factMappings.findIndex((fm) => fm.factIdentifier.name!.__$$text === instanceSectionID) ?? -1;
+        return (
+          factMappings.findIndex(
+            (factMapping) =>
+              factMapping.expressionIdentifier.type?.__$$text + "." + factMapping.factIdentifier.name!.__$$text ===
+              instanceSectionID
+          ) ?? -1
+        );
       }
       return originalSelectedColumnIndex;
     },
