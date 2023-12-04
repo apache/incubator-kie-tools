@@ -144,6 +144,24 @@ export function ConstraintsRange({
     [type]
   );
 
+  const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Check boundary for "." before performing the action
+    if (
+      e.currentTarget.value[e.currentTarget.selectionStart ?? 0] === "." &&
+      e.currentTarget.value[(e.currentTarget.selectionStart ?? 2) - 2] === "." &&
+      e.key === "Backspace"
+    ) {
+      e.preventDefault();
+    }
+    if (
+      (e.currentTarget.value[e.currentTarget.selectionStart ?? 0] === "." ||
+        e.currentTarget.value[(e.currentTarget.selectionStart ?? 1) - 1] === ".") &&
+      e.key === "."
+    ) {
+      e.preventDefault();
+    }
+  }, []);
+
   return (
     <div>
       <div
@@ -198,6 +216,7 @@ export function ConstraintsRange({
             },
             value: start,
             isValid: isStartValid({ includeEnd, start, end }),
+            onKeyDown,
           })}
         </div>
         <div style={{ gridArea: "startDescription" }}>
@@ -257,6 +276,7 @@ export function ConstraintsRange({
             style: { outline: "none" },
             value: end,
             isValid: isEndValid({ includeEnd, start, end }),
+            onKeyDown,
           })}
         </div>
         <div style={{ gridArea: "endDescription" }}>
