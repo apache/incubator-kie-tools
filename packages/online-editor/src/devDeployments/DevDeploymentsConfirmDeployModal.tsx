@@ -17,16 +17,20 @@
  * under the License.
  */
 
-import * as React from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../i18n";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { useGlobalAlert } from "../alerts";
 import { useAuthSession } from "../authSessions/AuthSessionsContext";
+import { createOpenShiftDeploymentYamls } from "./services/resources/openshift";
+import { createKubernetesDeploymentYamls } from "./services/resources/kubernetes";
+import { CloudAuthSessionType, isCloudAuthSession } from "../authSessions/AuthSessionApi";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
 interface Props {
   workspaceFile: WorkspaceFile;
@@ -41,6 +45,15 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       ? devDeployments.confirmDeployModalState.cloudAuthSessionId
       : undefined
   );
+  const availableDeploymentOptions = useMemo(
+    () =>
+      authSession?.type === CloudAuthSessionType.OpenShift
+        ? createOpenShiftDeploymentYamls
+        : createKubernetesDeploymentYamls,
+    [authSession?.type]
+  );
+  const [deploymentOptionName, setDeploymentOptionName] = useState<string>(availableDeploymentOptions[0].name);
+  const [isDeploymentOptionsDropdownOpen, setDeploymentOptionsDropdownOpen] = useState(false);
 
   const deployStartedErrorAlert = useGlobalAlert(
     useCallback(
@@ -72,12 +85,24 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
   );
 
   const onConfirm = useCallback(async () => {
-    if (isConfirmLoading || (authSession?.type !== "openshift" && authSession?.type !== "kubernetes")) {
+    if (
+      !deploymentOptionName ||
+      isConfirmLoading ||
+      (authSession?.type !== CloudAuthSessionType.OpenShift && authSession?.type !== CloudAuthSessionType.Kubernetes)
+    ) {
       return;
     }
 
+    const selectedDeploymentOptionContent = availableDeploymentOptions.find(
+      (option) => option.name === deploymentOptionName
+    )!.content;
+
     setConfirmLoading(true);
-    const deployStarted = await devDeployments.deploy(props.workspaceFile, authSession);
+    const deployStarted = await devDeployments.deploy(
+      props.workspaceFile,
+      authSession,
+      selectedDeploymentOptionContent
+    );
     setConfirmLoading(false);
 
     devDeployments.setConfirmDeployModalState({ isOpen: false });
@@ -89,8 +114,10 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       deployStartedErrorAlert.show();
     }
   }, [
+    deploymentOptionName,
     isConfirmLoading,
     authSession,
+    availableDeploymentOptions,
     devDeployments,
     props.workspaceFile,
     deployStartedSuccessAlert,
@@ -101,6 +128,11 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
     devDeployments.setConfirmDeployModalState({ isOpen: false });
     setConfirmLoading(false);
   }, [devDeployments]);
+
+  const onSelectDeploymentOptions = useCallback((e, value) => {
+    setDeploymentOptionName(value);
+    setDeploymentOptionsDropdownOpen(false);
+  }, []);
 
   return (
     <Modal
@@ -129,7 +161,29 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       {i18n.devDeployments.deployConfirmModal.body}
       <br />
       <br />
-      {authSession?.type === "openshift" && (
+      {availableDeploymentOptions && (
+        <>
+          <FormGroup label={<b>Choose your deployment option:</b>}>
+            <Select
+              variant={SelectVariant.single}
+              menuAppendTo={"parent"}
+              onToggle={setDeploymentOptionsDropdownOpen}
+              isOpen={isDeploymentOptionsDropdownOpen}
+              onSelect={onSelectDeploymentOptions}
+              selections={deploymentOptionName}
+            >
+              {availableDeploymentOptions.map((option) => (
+                <SelectOption key={option.name} value={option.name}>
+                  {option.name}
+                </SelectOption>
+              ))}
+            </Select>
+          </FormGroup>
+        </>
+      )}
+      <br />
+      <br />
+      {authSession && isCloudAuthSession(authSession) && (
         <>
           {`This Dev deployment will be created at`}
           &nbsp;

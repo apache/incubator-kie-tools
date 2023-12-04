@@ -17,18 +17,28 @@
  * under the License.
  */
 
+import { K8sApiServerEndpointByResourceKind } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+
+export const AUTH_SESSION_VERSION = 1;
+
 export const AUTH_SESSION_NONE = {
   id: "none",
   name: "Unauthenticated",
   type: "none",
   login: "Unauthenticated",
+  version: AUTH_SESSION_VERSION,
 } as const;
 
 export type NoneAuthSession = typeof AUTH_SESSION_NONE;
 
-export type GitAuthSession = {
-  type: "git";
+export type BaseAuthSession = {
+  type: string;
   id: string;
+  version: number;
+};
+
+export type GitAuthSession = BaseAuthSession & {
+  type: "git";
   token: string;
   login: string;
   uuid?: string;
@@ -38,26 +48,32 @@ export type GitAuthSession = {
   createdAtDateISO: string;
 };
 
-export type OpenShiftAuthSession = {
-  type: "openshift";
-  id: string;
+export enum CloudAuthSessionType {
+  OpenShift = "openshift",
+  Kubernetes = "kubernetes",
+  None = "none",
+}
+
+export type OpenShiftAuthSession = BaseAuthSession & {
+  type: CloudAuthSessionType.OpenShift;
   authProviderId: string;
   createdAtDateISO: string;
   token: string;
   namespace: string;
   host: string;
   insecurelyDisableTlsCertificateValidation: boolean;
+  k8sApiServerEndpointsByResourceKind: K8sApiServerEndpointByResourceKind;
 };
 
-export type KubernetesAuthSession = {
-  type: "kubernetes";
-  id: string;
+export type KubernetesAuthSession = BaseAuthSession & {
+  type: CloudAuthSessionType.Kubernetes;
   authProviderId: string;
   createdAtDateISO: string;
   token: string;
   namespace: string;
   host: string;
   insecurelyDisableTlsCertificateValidation: boolean;
+  k8sApiServerEndpointsByResourceKind: K8sApiServerEndpointByResourceKind;
 };
 
 export type CloudAuthSession = OpenShiftAuthSession | KubernetesAuthSession;
@@ -68,3 +84,11 @@ export enum AuthSessionStatus {
 }
 
 export type AuthSession = GitAuthSession | OpenShiftAuthSession | KubernetesAuthSession | NoneAuthSession;
+
+export function isCloudAuthSession(authSession: AuthSession): authSession is CloudAuthSession {
+  return ["openshift", "kubernetes"].includes(authSession.type);
+}
+
+export function isGitAuthSession(authSession: AuthSession): authSession is GitAuthSession {
+  return authSession.type === "git";
+}

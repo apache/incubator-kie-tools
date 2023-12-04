@@ -24,23 +24,15 @@ import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoder
 import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import {
-  AuthenticatedUserResponse,
-  fetchAuthenticatedBitbucketUser,
-  fetchAuthenticatedGitHubUser,
-} from "../accounts/git/ConnectToGitSection";
+import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
-import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
-import {
-  GitAuthProvider,
-  SupportedGitAuthProviders,
-  isGitAuthProvider,
-  isSupportedGitAuthProviderType,
-} from "../authProviders/AuthProvidersApi";
+import { KieSandboxOpenShiftService } from "../devDeployments/services/KieSandboxOpenShiftService";
+import { isGitAuthProvider, isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "../switchExpression/switchExpression";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
-import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
 import { useEnv } from "../env/hooks/EnvContext";
+import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
+import { applyAuthSessionMigrations } from "./AuthSessionMigrations";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -71,17 +63,41 @@ const broadcastChannel = new BroadcastChannel("auth_sessions");
 const AUTH_SESSIONS_FILE_PATH = "/authSessions.json";
 const AUTH_SESSIONS_FS_NAME = "auth_sessions";
 
+function mapSerializer(_: string, value: any) {
+  if (value instanceof Map) {
+    return {
+      __$$jsClassName: "Map",
+      value: Array.from(value.entries()),
+    };
+  }
+  return value;
+}
+
+function mapDeSerializer(_: string, value: any) {
+  if (typeof value === "object" && value) {
+    if (value.__$$jsClassName === "Map") {
+      return new Map(value.value);
+    }
+  }
+  return value;
+}
+
 export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const authProviders = useAuthProviders();
   const { env } = useEnv();
   const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>();
   const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>();
 
-  const refresh = useCallback(async () => {
+  const getAuthSessionsFromFile = useCallback(async () => {
     const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
     const content = await (await fsService.getFile(fs, AUTH_SESSIONS_FILE_PATH))?.getFileContents();
-    setAuthSessions(new Map(JSON.parse(decoder.decode(content))));
+    const parsedAuthSessions = JSON.parse(decoder.decode(content), mapDeSerializer);
+    return parsedAuthSessions;
   }, []);
+
+  const refresh = useCallback(async () => {
+    setAuthSessions(await getAuthSessionsFromFile());
+  }, [getAuthSessionsFromFile]);
 
   const persistAuthSessions = useCallback(
     async (map: Map<string, AuthSession>) => {
@@ -90,7 +106,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
         fs,
         new LfsStorageFile({
           path: AUTH_SESSIONS_FILE_PATH,
-          getFileContents: async () => encoder.encode(JSON.stringify([...map.entries()])),
+          getFileContents: async () => encoder.encode(JSON.stringify(map, mapSerializer)),
         })
       );
 
@@ -133,12 +149,20 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
       if (!(await fsService.exists(fs, AUTH_SESSIONS_FILE_PATH))) {
         await persistAuthSessions(new Map());
       } else {
-        refresh();
+        const parsedAuthSessions = await getAuthSessionsFromFile();
+        const migratedAuthSessions = new Map<string, AuthSession>();
+        if (parsedAuthSessions instanceof Map || parsedAuthSessions instanceof Array) {
+          for (const [key, authSession] of parsedAuthSessions) {
+            const migratedAuthSession = await applyAuthSessionMigrations(authSession);
+            migratedAuthSessions.set(key, migratedAuthSession);
+          }
+        }
+        await persistAuthSessions(migratedAuthSessions);
       }
     }
 
     run();
-  }, [persistAuthSessions, refresh]);
+  }, [persistAuthSessions, refresh, getAuthSessionsFromFile]);
 
   const recalculateAuthSessionStatus = useCallback(
     (args?: { canceled: Holder<boolean> }) => {
@@ -180,6 +204,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                 if (
                   (await new KieSandboxOpenShiftService({
                     connection: authSession,
+                    k8sApiServerEndpointsByResourceKind: authSession.k8sApiServerEndpointsByResourceKind,
                     proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
                   }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
                 ) {
@@ -195,6 +220,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                 if (
                   (await new KieSandboxKubernetesService({
                     connection: authSession,
+                    k8sApiServerEndpointsByResourceKind: authSession.k8sApiServerEndpointsByResourceKind,
                   }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
                 ) {
                   return [authSession.id, AuthSessionStatus.VALID];

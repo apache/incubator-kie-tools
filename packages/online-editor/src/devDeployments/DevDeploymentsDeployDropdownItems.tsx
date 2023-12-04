@@ -18,8 +18,7 @@
  */
 
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
 import { FeatureDependentOnExtendedServices } from "../extendedServices/FeatureDependentOnExtendedServices";
 import { DependentFeature, useExtendedServices } from "../extendedServices/ExtendedServicesContext";
