@@ -5421,7 +5421,7 @@ importers:
         version: 4.8.4
       url-loader:
         specifier: ^4.1.1
-        version: 4.1.1(webpack@5.88.2)
+        version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -5834,7 +5834,7 @@ importers:
         version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
 
   packages/playwright-base:
     devDependencies:
@@ -7141,6 +7141,9 @@ importers:
       cypress-log-to-output:
         specifier: ^1.1.2
         version: 1.1.2
+      cypress-real-events:
+        specifier: ^1.11.0
+        version: 1.11.0(cypress@13.5.1)
       html-replace-webpack-plugin:
         specifier: ^2.6.0
         version: 2.6.0
@@ -8758,10 +8761,10 @@ importers:
         version: 4.8.4
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
       webpack-dev-server:
         specifier: ^4.15.1
-        version: 4.15.1(webpack@5.88.2)
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
@@ -9644,7 +9647,7 @@ importers:
         version: 9.4.2(typescript@4.8.4)(webpack@5.88.2)
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
 
   packages/workspace:
     dependencies:
@@ -10218,7 +10221,7 @@ importers:
         version: 4.8.4
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2
+        version: 5.88.2(webpack-cli@4.10.0)
 
   packages/yard-validator:
     dependencies:
@@ -11492,19 +11495,6 @@ packages:
       "@babel/core": ^7.0.0
     dependencies:
       "@babel/core": 7.23.0
-      "@babel/helper-annotate-as-pure": 7.22.5
-      regexpu-core: 5.3.2
-      semver: 6.3.1
-    dev: true
-
-  /@babel/helper-create-regexp-features-plugin@7.22.15(@babel/core@7.16.12):
-    resolution:
-      { integrity: sha512-29FkPLFjn4TPEa3RE7GpW+qbE8tlsu3jntNYNfcGsc49LphF1PQIiD+vMZ1z1xVOKt+93khA9tc2JBs3kBjA7w== }
-    engines: { node: ">=6.9.0" }
-    peerDependencies:
-      "@babel/core": ^7.0.0
-    dependencies:
-      "@babel/core": 7.16.12
       "@babel/helper-annotate-as-pure": 7.22.5
       regexpu-core: 5.3.2
       semver: 6.3.1
@@ -12857,7 +12847,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.16.12
-      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.16.12)
+      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.16.12)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -12883,7 +12873,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.23.0
-      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.23.0)
+      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.23.0)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -25513,18 +25503,6 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /browserslist@4.21.5:
-    resolution:
-      { integrity: sha512-tUkiguQGW7S3IhB7N+c2MV/HZPSCPAAiYBZXLsBhFB/PCy6ZKKsZrmBayHV9fdGV/ARIfJ14NkxKzRDjvp7L6w== }
-    engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
-    hasBin: true
-    dependencies:
-      caniuse-lite: 1.0.30001547
-      electron-to-chromium: 1.4.549
-      node-releases: 2.0.13
-      update-browserslist-db: 1.0.13(browserslist@4.21.5)
-    dev: true
-
   /browserslist@4.22.1:
     resolution:
       { integrity: sha512-FEVc202+2iuClEhZhrWy6ZiAcRLvNMyYcxZ8raemul1DYVOVdFsbqckWLdsixQZCpJlwe77Z3UTalE7jsjnKfQ== }
@@ -27153,6 +27131,15 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    dev: true
+
+  /cypress-real-events@1.11.0(cypress@13.5.1):
+    resolution:
+      { integrity: sha512-4LXVRsyq+xBh5TmlEyO1ojtBXtN7xw720Pwb9rEE9rkJuXmeH3VyoR1GGayMGr+Itqf11eEjfDewtDmcx6PWPQ== }
+    peerDependencies:
+      cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x
+    dependencies:
+      cypress: 13.5.1
     dev: true
 
   /cypress@13.5.1:
@@ -30011,7 +29998,7 @@ packages:
       is-glob: 4.0.3
       normalize-path: 3.0.0
       schema-utils: 4.0.0
-      webpack: 5.88.2
+      webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
   /filename-reserved-regex@2.0.0:
@@ -33969,7 +33956,7 @@ packages:
     dependencies:
       glob: 7.2.0
       minimatch: 3.0.5
-      webpack: 5.88.2
+      webpack: 5.88.2(webpack-cli@4.10.0)
       webpack-merge: 4.2.2
     dev: true
 
@@ -39748,7 +39735,7 @@ packages:
       klona: 2.0.5
       neo-async: 2.6.2
       sass: 1.49.9
-      webpack: 5.88.2
+      webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
   /sass-loader@13.0.2(sass@1.54.4)(webpack@5.76.1):
@@ -40441,7 +40428,7 @@ packages:
       abab: 2.0.5
       iconv-lite: 0.6.3
       source-map-js: 0.6.2
-      webpack: 5.88.2
+      webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
   /source-map-loader@4.0.0(webpack@5.76.1):
@@ -42321,18 +42308,6 @@ packages:
       setimmediate: 1.0.5
     dev: true
 
-  /update-browserslist-db@1.0.13(browserslist@4.21.5):
-    resolution:
-      { integrity: sha512-xebP81SNcPuNpPP3uzeW1NYXxI3rxyJzF3pD6sH4jE7o/IX+WtSpwnVU+qIsDPyk0d3hmFQ7mjqc6AtV604hbg== }
-    hasBin: true
-    peerDependencies:
-      browserslist: ">= 4.21.0"
-    dependencies:
-      browserslist: 4.21.5
-      escalade: 3.1.1
-      picocolors: 1.0.0
-    dev: true
-
   /update-browserslist-db@1.0.13(browserslist@4.22.1):
     resolution:
       { integrity: sha512-xebP81SNcPuNpPP3uzeW1NYXxI3rxyJzF3pD6sH4jE7o/IX+WtSpwnVU+qIsDPyk0d3hmFQ7mjqc6AtV604hbg== }
@@ -42393,23 +42368,6 @@ packages:
         optional: true
     dependencies:
       file-loader: 6.2.0(webpack@5.88.2)
-      loader-utils: 2.0.2
-      mime-types: 2.1.34
-      schema-utils: 3.1.1
-      webpack: 5.88.2
-    dev: true
-
-  /url-loader@4.1.1(webpack@5.88.2):
-    resolution:
-      { integrity: sha512-3BTV812+AVHHOJQO8O5MkWgZ5aosP7GnROJwvzLS9hWDj00lZ6Z0wNak423Lp9PBZN05N+Jk/N5Si8jRAlGyWA== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      file-loader: "*"
-      webpack: ^4.0.0 || ^5.0.0
-    peerDependenciesMeta:
-      file-loader:
-        optional: true
-    dependencies:
       loader-utils: 2.0.2
       mime-types: 2.1.34
       schema-utils: 3.1.1
@@ -43416,58 +43374,6 @@ packages:
       - utf-8-validate
     dev: true
 
-  /webpack-dev-server@4.15.1(webpack@5.88.2):
-    resolution:
-      { integrity: sha512-5hbAst3h3C3L8w6W4P96L5vaV0PxSmJhxZvWKYIdgxOQm8pNZ5dEOmmSLBVpP85ReeyRt6AS1QJNyo/oFFPeVA== }
-    engines: { node: ">= 12.13.0" }
-    hasBin: true
-    peerDependencies:
-      webpack: ^4.37.0 || ^5.0.0
-      webpack-cli: "*"
-    peerDependenciesMeta:
-      webpack:
-        optional: true
-      webpack-cli:
-        optional: true
-    dependencies:
-      "@types/bonjour": 3.5.10
-      "@types/connect-history-api-fallback": 1.3.5
-      "@types/express": 4.17.17
-      "@types/serve-index": 1.9.1
-      "@types/serve-static": 1.13.10
-      "@types/sockjs": 0.3.33
-      "@types/ws": 8.5.5
-      ansi-html-community: 0.0.8
-      bonjour-service: 1.1.1
-      chokidar: 3.5.3
-      colorette: 2.0.16
-      compression: 1.7.4
-      connect-history-api-fallback: 2.0.0
-      default-gateway: 6.0.3
-      express: 4.18.2
-      graceful-fs: 4.2.11
-      html-entities: 2.3.2
-      http-proxy-middleware: 2.0.6(@types/express@4.17.17)
-      ipaddr.js: 2.0.1
-      launch-editor: 2.6.0
-      open: 8.4.0
-      p-retry: 4.6.1
-      rimraf: 3.0.2
-      schema-utils: 4.0.0
-      selfsigned: 2.1.1
-      serve-index: 1.9.1
-      sockjs: 0.3.24
-      spdy: 4.0.2
-      webpack: 5.88.2
-      webpack-dev-middleware: 5.3.3(webpack@5.88.2)
-      ws: 8.13.0
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-    dev: true
-
   /webpack-hot-middleware@2.25.4:
     resolution:
       { integrity: sha512-IRmTspuHM06aZh98OhBJtqLpeWFM8FXJS5UYpKYxCJzyFoyWj1w6VGFfomZU7OPA55dMLrQK0pRT1eQ3PACr4w== }
@@ -43575,47 +43481,6 @@ packages:
       - uglify-js
     dev: true
 
-  /webpack@5.88.2:
-    resolution:
-      { integrity: sha512-JmcgNZ1iKj+aiR0OvTYtWQqJwq37Pf683dY9bVORwVbUrDhLhdn/PlO2sHsFHPkj7sHNQF3JwaAkp49V+Sq1tQ== }
-    engines: { node: ">=10.13.0" }
-    hasBin: true
-    peerDependencies:
-      webpack-cli: "*"
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-    dependencies:
-      "@types/eslint-scope": 3.7.3
-      "@types/estree": 1.0.1
-      "@webassemblyjs/ast": 1.11.6
-      "@webassemblyjs/wasm-edit": 1.11.6
-      "@webassemblyjs/wasm-parser": 1.11.6
-      acorn: 8.10.0
-      acorn-import-assertions: 1.9.0(acorn@8.10.0)
-      browserslist: 4.22.1
-      chrome-trace-event: 1.0.2
-      enhanced-resolve: 5.15.0
-      es-module-lexer: 1.3.0
-      eslint-scope: 5.1.1
-      events: 3.3.0
-      glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
-      loader-runner: 4.2.0
-      mime-types: 2.1.34
-      neo-async: 2.6.2
-      schema-utils: 3.3.0
-      tapable: 2.2.0
-      terser-webpack-plugin: 5.3.9(webpack@5.88.2)
-      watchpack: 2.4.0
-      webpack-sources: 3.2.3
-    transitivePeerDependencies:
-      - "@swc/core"
-      - esbuild
-      - uglify-js
-    dev: true
-
   /webpack@5.88.2(@swc/core@1.3.92)(esbuild@0.18.20)(webpack-cli@4.10.0):
     resolution:
       { integrity: sha512-JmcgNZ1iKj+aiR0OvTYtWQqJwq37Pf683dY9bVORwVbUrDhLhdn/PlO2sHsFHPkj7sHNQF3JwaAkp49V+Sq1tQ== }
@@ -43676,7 +43541,7 @@ packages:
       "@webassemblyjs/wasm-parser": 1.11.6
       acorn: 8.10.0
       acorn-import-assertions: 1.9.0(acorn@8.10.0)
-      browserslist: 4.21.5
+      browserslist: 4.22.1
       chrome-trace-event: 1.0.2
       enhanced-resolve: 5.15.0
       es-module-lexer: 1.3.0
