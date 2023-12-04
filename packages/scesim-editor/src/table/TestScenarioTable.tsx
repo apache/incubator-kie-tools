@@ -530,7 +530,9 @@ function TestScenarioTable({
             currentFM.factIdentifier.name?.__$$text === instanceName &&
             currentFM.factIdentifier.className?.__$$text === instanceType
           ) {
-            continue;
+            if (i == factMappings.length - 1) {
+              newColumnTargetColumn = i + 1;
+            }
           } else {
             newColumnTargetColumn = i;
             break;
