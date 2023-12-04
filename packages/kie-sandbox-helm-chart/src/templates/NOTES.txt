@@ -1,0 +1,70 @@
+In order to get KIE sandbox running you need to run these commands:
+
+1. Run the following commands in a separate terminal to port-forward Cors Proxy component:
+{{- if .Values.corsProxy.ingress.enabled }}
+{{- range $host := .Values.corsProxy.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.corsProxy.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.corsProxy.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "kie-sandbox-helm-chart.corsProxy.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.corsProxy.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "kie-sandbox-helm-chart.corsProxy.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "kie-sandbox-helm-chart.corsProxy.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.corsProxy.service.port }}
+{{- else if contains "ClusterIP" .Values.corsProxy.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "kie-sandbox-helm-chart.name" . }},app.kubernetes.io/component={{ .Values.corsProxy.name }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Cors Proxy URL: http://127.0.0.1:8081"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8081:$CONTAINER_PORT
+{{- end }}
+
+2. Run the following commands in a separate terminal to port-forward Extendend Services component:
+{{- if .Values.extendedServices.ingress.enabled }}
+{{- range $host := .Values.sandboextendedServicesx.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.extendedServices.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.extendedServices.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "kie-sandbox-helm-chart.extendedServices.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.extendedServices.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "kie-sandbox-helm-chart.extendedServices.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "kie-sandbox-helm-chart.extendedServices.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.extendedServices.service.port }}
+{{- else if contains "ClusterIP" .Values.extendedServices.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "kie-sandbox-helm-chart.name" . }},app.kubernetes.io/component={{ .Values.extendedServices.name }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Extended Services URL: http://127.0.0.1:21345"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 21345:$CONTAINER_PORT
+{{- end }}
+
+3. Run the following commands in a separate terminal to port-forward Sanxbox component and get the application URL:
+{{- if .Values.sandbox.ingress.enabled }}
+{{- range $host := .Values.sandbox.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.sanbox.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.sandbox.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "kie-sandbox-helm-chart.sanbox.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.sandbox.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "kie-sandbox-helm-chart.sandbox.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "kie-sandbox-helm-chart.sandbox.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.sandbox.service.port }}
+{{- else if contains "ClusterIP" .Values.sandbox.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "kie-sandbox-helm-chart.name" . }},app.kubernetes.io/component={{ .Values.sandbox.name }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "KIE Sandbox URL http://127.0.0.1:8080"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
+{{- end }}

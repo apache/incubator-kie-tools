@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kie-sandbox-helm-chart.corsProxy.fullname" . }}
+  labels:
+    {{- include "kie-sandbox-helm-chart.corsProxy.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.corsProxy.autoscaling.enabled }}
+  replicas: {{ .Values.corsProxy.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "kie-sandbox-helm-chart.corsProxy.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.corsProxy.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kie-sandbox-helm-chart.corsProxy.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.corsProxy.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "kie-sandbox-helm-chart.corsProxy.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.corsProxy.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.corsProxy.securityContext | nindent 12 }}
+          image: "{{ .Values.corsProxy.image.registry }}/{{ .Values.corsProxy.image.account }}/{{ .Values.corsProxy.image.name }}:{{ .Values.corsProxy.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.corsProxy.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.corsProxy.service.port }}
+              name: proxy
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: proxy
+          readinessProbe:
+            tcpSocket:
+              port: proxy
+          resources:
+            {{- toYaml .Values.corsProxy.resources | nindent 12 }}
+      {{- with .Values.corsProxy.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.corsProxy.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.corsProxy.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

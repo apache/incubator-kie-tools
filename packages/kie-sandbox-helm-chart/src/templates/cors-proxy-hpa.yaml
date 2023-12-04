@@ -1,0 +1,28 @@
+{{- if .Values.corsProxy.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "kie-sandbox-helm-chart.corsProxy.fullname" . }}
+  labels:
+    {{- include "kie-sandbox-helm-chart.corsProxy.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "kie-sandbox-helm-chart.corsProxy.fullname" . }}
+  minReplicas: {{ .Values.corsProxy.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.corsProxy.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.corsProxy.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.corsProxy.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.corsProxy.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.corsProxy.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

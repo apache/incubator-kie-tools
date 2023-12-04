@@ -1,0 +1,28 @@
+{{- if .Values.extendedServices.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "kie-sandbox-helm-chart.extendedServices.fullname" . }}
+  labels:
+    {{- include "kie-sandbox-helm-chart.extendedServices.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "kie-sandbox-helm-chart.extendedServices.fullname" . }}
+  minReplicas: {{ .Values.extendedServices.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.extendedServices.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.extendedServices.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.extendedServices.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.extendedServices.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.extendedServices.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "kie-sandbox-helm-chart.sandbox.fullname" . }}-test-connection"
+  labels:
+    {{- include "kie-sandbox-helm-chart.sandbox.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "kie-sandbox-helm-chart.sandbox.fullname" . }}:{{ .Values.sandbox.service.port }}']
+  restartPolicy: Never

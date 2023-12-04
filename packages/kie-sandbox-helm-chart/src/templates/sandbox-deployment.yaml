@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kie-sandbox-helm-chart.sandbox.fullname" . }}
+  labels:
+    {{- include "kie-sandbox-helm-chart.sandbox.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.sandbox.autoscaling.enabled }}
+  replicas: {{ .Values.sandbox.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "kie-sandbox-helm-chart.sandbox.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.sandbox.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kie-sandbox-helm-chart.sandbox.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.sandbox.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "kie-sandbox-helm-chart.sandbox.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.sandbox.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.sandbox.securityContext | nindent 12 }}
+          image: "{{ .Values.sandbox.image.registry }}/{{ .Values.sandbox.image.account }}/{{ .Values.sandbox.image.name }}:{{ .Values.sandbox.image.tag | default .Chart.AppVersion }}"
+          env:
+          - name: KIE_SANDBOX_EXTENDED_SERVICES_URL
+            value: {{ .Values.sandbox.extendedServiceUrl }}
+          - name: KIE_SANDBOX_CORS_PROXY_URL
+            value: {{ .Values.sandbox.corsProxyUrl }}
+          imagePullPolicy: {{ .Values.sandbox.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.sandbox.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.sandbox.resources | nindent 12 }}
+      {{- with .Values.sandbox.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.sandbox.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.sandbox.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

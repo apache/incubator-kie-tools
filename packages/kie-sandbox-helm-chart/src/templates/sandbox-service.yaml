@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kie-sandbox-helm-chart.sandbox.fullname" . }}
+  labels:
+    {{- include "kie-sandbox-helm-chart.sandbox.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.sandbox.service.type }}
+  ports:
+    - port: {{ .Values.sandbox.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+      {{- if (and (eq .Values.sandbox.service.type "NodePort")) }}
+      nodePort: {{ .Values.sandbox.service.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "kie-sandbox-helm-chart.sandbox.selectorLabels" . | nindent 4 }}
