@@ -2,12 +2,13 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 name: Jenkins Tests
 on:
-  pull_request:
-    branches:
-      - "main"
-    paths:
-      - ".ci/jenkins/**"
-      - ".github/workflows/jenkins-tests-PR.yml"
+  workflow_dispatch:
+  # pull_request:
+  #   branches:
+  #     - "main"
+  #   paths:
+  #     - ".ci/jenkins/**"
+  #     - ".github/workflows/jenkins-tests-PR.yml"
 
 jobs:
   dsl-tests:

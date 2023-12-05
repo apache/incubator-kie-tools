@@ -24,7 +24,7 @@ runs:
       run: |
         echo "STEP: Print storage usage (before bootstrap)"
         cd ${{ inputs.working_dir }}
-        du -sh .
+        df -h .
 
     - name: "Bootstrap"
       shell: bash
@@ -38,4 +38,4 @@ runs:
       run: |
         echo "STEP: Print storage usage (after bootstrap)"
         cd ${{ inputs.working_dir }}
-        du -sh .
+        df -h .

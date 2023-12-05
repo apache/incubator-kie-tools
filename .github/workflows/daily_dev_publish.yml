@@ -1,12 +1,12 @@
 name: "Daily dev :: Publish"
 
 on:
-  schedule:
-    - cron: "0 2 * * *" # 2am UTC everyday
+  # schedule:
+  #   - cron: "0 2 * * *" # 2am UTC everyday
   workflow_dispatch:
-  pull_request:
-    paths:
-      - ".github/workflows/daily_dev_publish.yml"
+  # pull_request:
+  #   paths:
+  #     - ".github/workflows/daily_dev_publish.yml"
 
 concurrency:
   group: ${{ github.event.pull_request && format('daily-dev-publish-pr-{0}', github.event.pull_request.number) || format('daily-dev-publish-ref-{0}', github.ref_name) }}
