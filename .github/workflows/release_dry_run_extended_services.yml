@@ -1,0 +1,22 @@
+name: "Release :: Dry Run (Extended Services)"
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *" # 4am UTC everyday
+  pull_request:
+    branches: ["**"]
+    paths:
+      - ".github/workflows/release*"
+      - ".github/actions/**"
+
+concurrency:
+  group: ${{ github.event.pull_request && format('release-dry-run-pr-{0}', github.event.pull_request.number) || format('release-dry-run-ref-{0}', github.ref_name) }}
+  cancel-in-progress: true
+
+jobs:
+  dry_run:
+    uses: ./.github/workflows/release_build_extended_services.yml
+    with:
+      dry_run: true
+      base_ref: ${{ github.event.pull_request && github.base_ref || github.ref }}

@@ -1,0 +1,87 @@
+name: "Release :: Build (Extended Services)"
+
+on:
+  workflow_call:
+    inputs:
+      dry_run:
+        type: boolean
+        required: true
+      base_ref:
+        type: string
+        required: true
+      tag:
+        type: string
+        required: false
+        default: "0.0.0"
+      upload_asset_url:
+        type: string
+        required: false
+        default: ""
+    secrets:
+      gh_token:
+        required: false
+
+env:
+  KIE_TOOLS_BUILD__runLinters: "false"
+  KIE_TOOLS_BUILD__runTests: "false"
+  KIE_TOOLS_BUILD__runEndToEndTests: "false"
+  KIE_TOOLS_BUILD__buildContainerImages: "true"
+
+jobs:
+  extended_services:
+    env:
+      EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online"
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+    steps:
+      - name: "Support longpaths (Windows only)"
+        if: runner.os == 'Windows'
+        run: git config --system core.longpaths true
+
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup environment"
+        id: setup_env
+        uses: ./.github/actions/setup-env
+
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/extended-services...
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
+      - name: "Upload Extended Services for macOS (macOS only)"
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/extended-services/dist/darwin/Kogito.dmg
+          asset_name: kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg
+          asset_content_type: application/octet-stream
+
+      - name: "Upload Extended Services for Windows (Windows only)"
+        if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: "./packages/extended-services/dist/win32/kie_sandbox_extended_services.exe"
+          asset_name: "kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
+          asset_content_type: application/octet-stream

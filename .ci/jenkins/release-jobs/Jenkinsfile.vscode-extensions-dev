@@ -1,0 +1,129 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent {
+        docker {
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            args '--shm-size=2g --privileged --group-add docker'
+        }
+    }
+
+    options {
+        timeout(time: 120, unit: 'MINUTES')
+    }
+
+    parameters {
+        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
+        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        PNPM_FILTER_STRING = '-F kie-editors-dev-vscode-extension...'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                script {
+                    githubUtils.checkoutRepo(
+                        "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                        "${params.BASE_REF}",
+                        "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                script {
+                    buildUtils.setupPnpm()
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                script {
+                    buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                }
+            }
+        }
+
+        stage('Upload VS Code Extension (dev)') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "packages/kie-editors-dev-vscode-extension/dist/kie_editors_dev_vscode_extension_${params.TAG}.vsix",
+                        "vscode_extension_dev_${params.TAG}.vsix",
+                        'application/zip',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

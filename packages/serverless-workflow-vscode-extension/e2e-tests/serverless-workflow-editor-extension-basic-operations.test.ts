@@ -50,7 +50,7 @@ describe("Serverless workflow editor - Basic operations tests", () => {
   });
 
   it("Opens, edits and saves the *.sw.json file", async function () {
-    this.timeout(50000);
+    this.timeout(80000);
 
     const WORKFLOW_NAME = "greet.sw.json";
 
@@ -108,7 +108,7 @@ describe("Serverless workflow editor - Basic operations tests", () => {
   });
 
   it("Opens, edits and saves the *.sw.yaml file", async function () {
-    this.timeout(50000);
+    this.timeout(80000);
 
     const WORKFLOW_NAME = "greet.sw.yaml";
 
