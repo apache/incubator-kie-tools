@@ -21,7 +21,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import * as ReactTable from "react-table";
-import _, { cond, isNumber } from "lodash";
+import _, { isNumber } from "lodash";
 import { v4 as uuid } from "uuid";
 
 import {
@@ -106,7 +106,7 @@ function TestScenarioTable({
      In case of the Description column, the behavior is slightly different (column dimension, label and no datatype label) 
   */
   const generateColumnFromFactMapping = useCallback(
-    (factMapping: SceSim__FactMappingType, isDescriptionColumn?: boolean) => {
+    (factMapping: SceSim__FactMappingType, factMappingIndex: number, isDescriptionColumn?: boolean) => {
       return {
         accessor: factMapping.expressionIdentifier.name!.__$$text,
         dataType: isDescriptionColumn ? undefined : determineDataTypeLabel(factMapping.className.__$$text),
@@ -169,7 +169,7 @@ function TestScenarioTable({
     const givenInstances: ReactTable.Column<ROWTYPE>[] = [];
     const expectInstances: ReactTable.Column<ROWTYPE>[] = [];
 
-    (tableData.scesimModelDescriptor.factMappings?.FactMapping ?? []).forEach((factMapping) => {
+    (tableData.scesimModelDescriptor.factMappings?.FactMapping ?? []).forEach((factMapping, index) => {
       /* RULE Test Scenarios can have the same instance in both GIVEN and EXPECT section. Therefore, using the following 
          pattern to identify it */
       const instanceID =
@@ -177,13 +177,13 @@ function TestScenarioTable({
       if (factMapping.expressionIdentifier.type?.__$$text === SimulationTableColumnFieldGroup.GIVEN.toUpperCase()) {
         const instance = givenInstances.find((instanceColumn) => instanceColumn.id === instanceID);
         if (instance) {
-          instance.columns?.push(generateColumnFromFactMapping(factMapping));
+          instance.columns?.push(generateColumnFromFactMapping(factMapping, index));
         } else {
           const newInstance = generateInstanceSectionFromFactMapping(
             factMapping,
             SimulationTableColumnInstanceGroup.GIVEN
           );
-          newInstance.columns.push(generateColumnFromFactMapping(factMapping));
+          newInstance.columns.push(generateColumnFromFactMapping(factMapping, index));
           givenInstances.push(newInstance);
         }
       } else if (
@@ -191,20 +191,20 @@ function TestScenarioTable({
       ) {
         const instance = expectInstances.find((instanceColumn) => instanceColumn.id === instanceID);
         if (instance) {
-          instance.columns?.push(generateColumnFromFactMapping(factMapping));
+          instance.columns?.push(generateColumnFromFactMapping(factMapping, index));
         } else {
           const newInstance = generateInstanceSectionFromFactMapping(
             factMapping,
             SimulationTableColumnInstanceGroup.EXPECT
           );
-          newInstance.columns.push(generateColumnFromFactMapping(factMapping));
+          newInstance.columns.push(generateColumnFromFactMapping(factMapping, index));
           expectInstances.push(newInstance);
         }
       } else if (
         factMapping.expressionIdentifier.type!.__$$text === SimulationTableColumnFieldGroup.OTHER.toUpperCase() &&
         factMapping.expressionIdentifier.name!.__$$text === "Description"
       ) {
-        descriptionColumns.push(generateColumnFromFactMapping(factMapping, true));
+        descriptionColumns.push(generateColumnFromFactMapping(factMapping, index, true));
       }
     });
 
@@ -267,8 +267,6 @@ function TestScenarioTable({
       }),
     [tableColumns, tableData.scesimData.Scenario]
   );
-
-  console.log(tableColumns);
 
   /** TABLE'S CONTEXT MENU MANAGEMENT */
 
@@ -335,9 +333,11 @@ function TestScenarioTable({
         groupName === SimulationTableColumnInstanceGroup.EXPECT ||
         groupName === SimulationTableColumnInstanceGroup.GIVEN;
 
+      const groupLabel = (!isInstance ? i18n.table.field : i18n.table.instance).toUpperCase();
+
       return [
         {
-          group: groupName,
+          group: groupLabel,
           items: [
             {
               name: isInstance ? i18n.table.insertLeftInstance : i18n.table.insertLeftField,

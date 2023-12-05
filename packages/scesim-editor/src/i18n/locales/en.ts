@@ -118,7 +118,7 @@ export const en: TestScenarioEditorI18n = {
   },
   tab: {
     backgroundTabTitle: "Background",
-    scenarioTabTitle: "Simulation",
+    scenarioTabTitle: "Scenarios",
   },
   table: {
     simulation: {
@@ -132,6 +132,7 @@ export const en: TestScenarioEditorI18n = {
     deleteInstance: "Delete Instance",
     duplicate: "Duplicate",
     expect: "Expect",
+    field: "Field",
     given: "Given",
     insert: "Insert",
     insertAbove: "Insert Above",
@@ -140,6 +141,7 @@ export const en: TestScenarioEditorI18n = {
     insertRightField: "Insert Field Right",
     insertLeftInstance: "Insert Instance Left",
     insertRightInstance: "Insert Instance Right",
+    instance: "Instance",
     paste: "Paste",
     reset: "Reset",
     selection: "Selection",

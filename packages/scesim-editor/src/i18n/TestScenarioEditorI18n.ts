@@ -111,6 +111,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     deleteField: string;
     deleteInstance: string;
     expect: string;
+    field: string;
     given: string;
     insert: string;
     insertAbove: string;
@@ -119,6 +120,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     insertRightField: string;
     insertLeftInstance: string;
     insertRightInstance: string;
+    instance: string;
     paste: string;
     reset: string;
     selection: string;
