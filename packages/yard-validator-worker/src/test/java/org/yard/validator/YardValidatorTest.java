@@ -70,7 +70,7 @@ public class YardValidatorTest {
 
     @Test
     public void maskingRule() throws FileNotFoundException {
-        final String read = read("subsumption-the-other-way.yml", "First");
+        final String read = read("subsumption.yml", "First");
         final YardValidator validator = new YardValidator();
 
         final List<Issue> issues = new ArrayList<>();
@@ -79,6 +79,30 @@ public class YardValidatorTest {
 
         assertEquals(1, issues.size());
         assertIssue(issues.get(0), "Masking row. The higher row prevents the activation of the other row.", 2, 3);
+    }
+
+    @Test
+    public void subsumptionButFirstHPMakesItOK() throws FileNotFoundException {
+        final String read = read("subsumption-the-other-way.yml", "First");
+        final YardValidator validator = new YardValidator();
+
+        final List<Issue> issues = new ArrayList<>();
+
+        validator.validate(read, issues::add);
+
+        assertEquals(0, issues.size());
+    }
+
+    @Test
+    public void noIssues() throws FileNotFoundException {
+        final String read = read("package-prices.yml");
+        final YardValidator validator = new YardValidator();
+
+        final List<Issue> issues = new ArrayList<>();
+
+        validator.validate(read, issues::add);
+
+        assertEquals(0, issues.size());
     }
 
     @Test
@@ -99,6 +123,24 @@ public class YardValidatorTest {
     }
 
     @Test
+    public void checkCorrectIssueRowsWhenThen() throws FileNotFoundException {
+        final String read = read("when-then-redundancy.yml");
+        final YardValidator validator = new YardValidator();
+
+        final List<Issue> issues = new ArrayList<>();
+
+        validator.validate(read, issues::add);
+
+        assertEquals(1, issues.size());
+        final Issue issue = issues.get(0);
+        assertIssue(issue, "Redundancy found. If both rows return the same result, the other can be removed. If they return different results, the table fails to return a value.", 1, 2);
+        final RowLocation first = (RowLocation) issue.getLocations()[0];
+        final RowLocation second = (RowLocation) issue.getLocations()[1];
+        assertEquals(22, first.getActualRowNumberInFile());
+        assertEquals(24, second.getActualRowNumberInFile());
+    }
+
+    @Test
     public void redundancyWithUniqueHP() throws FileNotFoundException {
         final String read = read("redundancy.yml", "Unique");
         final YardValidator validator = new YardValidator();
@@ -114,6 +156,7 @@ public class YardValidatorTest {
         assertEquals(1, issues.size());
         assertIssue(issues.get(0), "Redundancy found. Unique hit policy fails when more than one row returns results.", 1, 2);
     }
+
     private void assertIssue(
             final Issue issue,
             final String message,
