@@ -543,6 +543,9 @@ function TestScenarioTable({
     []
   );
 
+  /* It determines in which index position a column should be added. In case of a field, the new column index
+     is simply in the right or in the left of the selected column. In case of a new instance, it's required to 
+     find the first column index outside the selected Instance group. */
   const determineNewColumnTargetIndex = useCallback(
     (
       factMappings: SceSim__FactMappingType[],
