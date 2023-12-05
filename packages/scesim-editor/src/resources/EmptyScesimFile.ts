@@ -50,6 +50,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           <className>java.lang.String</className>
           <factAlias>Scenario description</factAlias>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <columnWidth>300</columnWidth>
         </FactMapping>
         <FactMapping>
           <expressionElements/>
@@ -65,6 +66,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           <factAlias>INSTANCE-1</factAlias>
           <expressionAlias>PROPERTY</expressionAlias>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <columnWidth>150</columnWidth>
         </FactMapping>
         <FactMapping>
           <expressionElements/>
@@ -80,6 +82,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           <factAlias>INSTANCE-2</factAlias>
           <expressionAlias>PROPERTY</expressionAlias>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <columnWidth>150</columnWidth>
         </FactMapping>
       </factMappings>
     </scesimModelDescriptor>

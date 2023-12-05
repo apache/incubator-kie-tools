@@ -35,3 +35,13 @@
 .test-scenario-table .expression-container table thead th.other .add-column-button {
   background-color: #ffffff;
 }
+
+.test-scenario-table .inline-editable-preview {
+  font-family: Menlo, monospace;
+  font-size: 0.8em;
+  white-space: pre !important;
+}
+
+.test-scenario-table .header-cell-info input[type="text"] {
+  font-size: 0.8em;
+}
