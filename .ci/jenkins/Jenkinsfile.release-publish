@@ -46,7 +46,7 @@ pipeline {
             }
         }
 
-        stage("Fetch release for ${params.TAG}") {
+        stage('Fetch release') {
             steps {
                 script {
                     response = githubUtils.fetchRelease("${pipelineVars.githubRepositorySlug}", "${params.TAG}", "${pipelineVars.kieToolsBotGithubTokenCredentialsId}")
