@@ -107,7 +107,7 @@ function TestScenarioTable({
     (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
       updateTestScenarioModel((prevState) => {
         const oldWidth =
-          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings!.FactMapping![inputIndex]
+          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping![inputIndex]
             .columnWidth?.__$$text;
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(oldWidth) : newWidthAction;
 
@@ -115,7 +115,7 @@ function TestScenarioTable({
         if (newWidth && oldWidth !== newWidth) {
           /* Cloning the FactMapping list and updating the new width */
           const deepClonedFactMappings: SceSim__FactMappingType[] = JSON.parse(
-            JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings?.FactMapping)
+            JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping)
           );
           const factMappingToUpdate = deepClonedFactMappings[inputIndex];
 
@@ -221,7 +221,7 @@ function TestScenarioTable({
     const givenInstances: ReactTable.Column<ROWTYPE>[] = [];
     const expectInstances: ReactTable.Column<ROWTYPE>[] = [];
 
-    (tableData.scesimModelDescriptor.factMappings?.FactMapping ?? []).forEach((factMapping, index) => {
+    (tableData.scesimModelDescriptor.factMappings.FactMapping ?? []).forEach((factMapping, index) => {
       /* RULE Test Scenarios can have the same instance in both GIVEN and EXPECT section. Therefore, using the following 
          pattern to identify it */
       const instanceID =
@@ -296,7 +296,7 @@ function TestScenarioTable({
     TestScenarioTableColumnHeaderGroup,
     TestScenarioTableColumnFieldGroup,
     TestScenarioTableColumnInstanceGroup,
-    tableData.scesimModelDescriptor.factMappings?.FactMapping,
+    tableData.scesimModelDescriptor.factMappings.FactMapping,
   ]);
 
   /* It generates the columns of the TestScenarioTable */
@@ -487,7 +487,7 @@ function TestScenarioTable({
           /* To update the related FactMappingValue, it compares every FactMappingValue associated with the Scenario (Row)
              that contains the cell with the FactMapping (Column) fields factIdentifier and expressionIdentifier */
           const factMapping =
-            prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings!.FactMapping![
+            prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping![
               update.columnIndex + 1
             ];
 
@@ -652,7 +652,7 @@ function TestScenarioTable({
 
       updateTestScenarioModel((prevState) => {
         const factMappingList =
-          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings!.FactMapping!;
+          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
         const selectedColumnIndex = determineSelectedColumnIndex(factMappingList, args.currentIndex, isInstance);
 
         /* Creating the new FactMapping based on the original selected column's FactMapping */
@@ -665,10 +665,8 @@ function TestScenarioTable({
           selectedColumnFactMapping
         );
 
-        const instanceDefaultNames = prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor
-          .factMappings!.FactMapping!.filter((factMapping) =>
-            factMapping.factIdentifier.name!.__$$text.startsWith("INSTANCE-")
-          )
+        const instanceDefaultNames = prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings
+          .FactMapping!.filter((factMapping) => factMapping.factIdentifier.name!.__$$text.startsWith("INSTANCE-"))
           .map((factMapping) => factMapping.factIdentifier.name!.__$$text);
 
         const newFactMapping = {
@@ -699,7 +697,7 @@ function TestScenarioTable({
 
         /* Cloning the FactMapping list and putting the new one in the user defined index */
         const deepClonedFactMappings = JSON.parse(
-          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings?.FactMapping)
+          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping)
         );
         deepClonedFactMappings.splice(targetColumnIndex, 0, newFactMapping);
 
@@ -761,7 +759,7 @@ function TestScenarioTable({
           args.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
 
         const factMappings =
-          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings!.FactMapping!;
+          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
         const columnIndexToRemove = determineSelectedColumnIndex(factMappings, args.columnIndex + 1, isInstance);
 
         /* Retriving the FactMapping (Column) to be removed). If the user selected a single column, it finds the exact
@@ -790,7 +788,7 @@ function TestScenarioTable({
 
         /* Cloning the FactMappings list (Columns) and and removing the FactMapping (Column) at given index */
         const deepClonedFactMappings = JSON.parse(
-          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings?.FactMapping)
+          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping)
         );
         deepClonedFactMappings.splice(
           allFactMappingWithIndexesToRemove[0].factMappingIndex,
@@ -854,7 +852,7 @@ function TestScenarioTable({
       updateTestScenarioModel((prevState) => {
         /* Creating a new Scenario (Row) composed by a list of FactMappingValues. The list order is not relevant. */
         const factMappings =
-          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings?.FactMapping ?? [];
+          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping ?? [];
         const factMappingValuesItems = factMappings.map((factMapping) => {
           return {
             expressionIdentifier: {

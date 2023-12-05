@@ -57,7 +57,7 @@
   </xsd:complexType>
   <xsd:complexType name="scesimModelDescriptorType">
     <xsd:sequence>
-      <xsd:element type="factMappingsType" name="factMappings" minOccurs="0" />
+      <xsd:element type="factMappingsType" name="factMappings" />
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="settingsType">
