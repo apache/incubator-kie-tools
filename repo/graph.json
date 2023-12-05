@@ -721,8 +721,6 @@
       { "source": "pmml-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools/pmml-editor", "weight": 1 },
       { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/editor", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-components",
         "target": "@kie-tools/json-yaml-language-service",
@@ -734,7 +732,6 @@
         "weight": 1
       },
       { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
@@ -746,6 +743,16 @@
       {
         "source": "@kie-tools/runtime-tools-webapp-components",
         "target": "@kie-tools/runtime-tools-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-enveloped-components",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-enveloped-components",
+        "target": "@kie-tools/i18n-common-dictionary",
         "weight": 1
       },
       {

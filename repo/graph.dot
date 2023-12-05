@@ -370,13 +370,12 @@ digraph G {
   "@kie-tools-core/react-hooks" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/react-hooks" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools/runtime-tools-components" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-components" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-components" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-components" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-components" -> "@kie-tools/runtime-tools-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-components" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-components" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-dev-ui-webapp" -> "@kie-tools/runtime-tools-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-enveloped-components" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-enveloped-components" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-enveloped-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-enveloped-components" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-gateway-api" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
