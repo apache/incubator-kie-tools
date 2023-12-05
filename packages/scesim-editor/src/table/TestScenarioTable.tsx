@@ -159,18 +159,18 @@ function TestScenarioTable({
         groupType: factMapping.expressionIdentifier.type!.__$$text.toLowerCase(),
         id: factMapping!.expressionIdentifier.name!.__$$text,
         isRowIndexColumn: false,
-        isInlineEditable: isDescriptionColumn
-          ? false
-          : assetType === TestScenarioType[TestScenarioType.RULE]
-          ? true
-          : false,
+        // isInlineEditable: isDescriptionColumn         **TODO NOT SURE IF IT MAKES SENSE TO IMPLEMENT IT
+        //   ? false
+        //   : assetType === TestScenarioType[TestScenarioType.RULE]
+        //   ? true
+        //   : false,
         label: isDescriptionColumn ? factMapping.factAlias.__$$text : factMapping.expressionAlias!.__$$text,
         minWidth: isDescriptionColumn ? 300 : 100,
         setWidth: setColumnWidth(factMappingIndex),
         width: factMapping.columnWidth?.__$$text ?? (isDescriptionColumn ? 300 : factMapping.columnWidth?.__$$text),
       };
     },
-    [assetType, determineDataTypeLabel, setColumnWidth]
+    [determineDataTypeLabel, setColumnWidth]
   );
 
   /* It determines the Instance Section (the header row in the middle) based on the given FactMapping (Scesim column representation)
