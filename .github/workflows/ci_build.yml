@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  TMPDIR: "${{ github.workspace }}/tmp"
+  TMPDIR: "/tmp"
 
 jobs:
   run:
