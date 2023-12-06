@@ -34,15 +34,24 @@ pipeline {
         KIE_TOOLS_BUILD__runTests = 'false'
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
 
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__name = 'dmn-dev-deployment-base-image'
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags = 'daily-dev'
+        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
+        DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
+        DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
+        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = 'daily-dev'
 
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry = 'quay.io'
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount = 'kie-tools'
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageName = 'dmn-dev-deployment-base-image'
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageTag = 'daily-dev'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'quay.io'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'kie-tools'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'dev-deployment-dmn-form-webapp-image'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = 'daily-dev'
+
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
+        ONLINE_EDITOR__devDeploymentBaseImageTag = 'daily-dev'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = 'daily-dev'
         ONLINE_EDITOR__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
         EXTENDED_SERVICES__kieSandboxUrl = 'https://kiegroup.github.io/kogito-online/dev'
@@ -181,13 +190,13 @@ pipeline {
             }
         }
 
-        stage('Push dmn-dev-deployment-base-image to quay.io') {
+        stage('Push dev-deployment-base-image to quay.io') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account}",
-                        "${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name}",
-                        "${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
                 }

@@ -39,14 +39,22 @@ pipeline {
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
         OPENSHIFT_PART_OF = 'staging-kie-sandbox-app'
 
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__name = 'dmn-dev-deployment-base-image'
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "${params.TAG}-prerelease"
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry = 'quay.io'
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount = 'kie-tools'
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageName = 'dmn-dev-deployment-base-image'
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageTag = "${params.TAG}-prerelease"
+        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
+        DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
+        DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
+        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "${params.TAG}-prerelease"
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'quay.io'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'kie-tools'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'dev-deployment-dmn-form-webapp-image'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "${params.TAG}-prerelease"
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.TAG}-prerelease"
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.TAG}-prerelease"
 
         KIE_SANDBOX__imageRegistry = 'quay.io'
         KIE_SANDBOX__imageAccount = 'kie-tools'
@@ -698,30 +706,60 @@ pipeline {
             }
         }
 
-        stage('Build (dmn-dev-deployment-base-image)') {
+        stage('Build (dev-deployment-base-image)') {
             steps {
                 dir('kie-tools') {
                     sh '''#!/bin/bash -el
                     export KIE_TOOLS_BUILD__runTests=true
                     export KIE_TOOLS_BUILD__buildContainerImages=true
                     docker system prune -af
-                    echo "Build @kie-tools/dmn-dev-deployment-base-image"
-                    pnpm -F @kie-tools/dmn-dev-deployment-base-image... --workspace-concurrency=1 build:prod
+                    echo "Build @kie-tools/dev-deployment-base-image"
+                    pnpm -F @kie-tools/dev-deployment-base-image... --workspace-concurrency=1 build:prod
                     '''.trim()
                 }
             }
         }
 
-        stage('STAGING: Push dmn-dev-deployment-base-image to quay.io') {
+        stage('STAGING: Push dev-deployment-base-image to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account}",
-                        "${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name}",
-                        "${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
+                        "${pipelineVars.quayPushCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Build (dev-deployment-dmn-form-webapp-image)') {
+            steps {
+                dir('kie-tools') {
+                    sh '''#!/bin/bash -el
+                    export KIE_TOOLS_BUILD__runTests=true
+                    export KIE_TOOLS_BUILD__buildContainerImages=true
+                    docker system prune -af
+                    echo "Build @kie-tools/dev-deployment-dmn-form-webapp-image"
+                    pnpm -F @kie-tools/dev-deployment-dmn-form-webapp-image... --workspace-concurrency=1 build:prod
+                    '''.trim()
+                }
+            }
+        }
+
+        stage('STAGING: Push dev-deployment-dmn-form-webapp-image to quay.io') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
                 }
@@ -825,7 +863,7 @@ def buildPartial(params) {
     export SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl=https://staging-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud
 
     pnpm -F='!@kie-tools/serverless-logic-web-tools-swf-dev-mode-image' \
-    -F='!@kie-tools/dmn-dev-deployment-base-image' \
+    -F='!@kie-tools/dev-deployment-base-image' \
     -F='!@kie-tools/serverless-logic-web-tools-base-builder-image' \
     -F='!@kie-tools/dashbuilder-viewer-image' \
     -r --workspace-concurrency=1 build:prod
