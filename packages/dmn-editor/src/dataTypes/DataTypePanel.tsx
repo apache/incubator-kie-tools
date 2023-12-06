@@ -43,16 +43,14 @@ import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { KIE_DMN_UNKNOWN_NAMESPACE, UniqueNameIndex } from "../Dmn15Spec";
+import { UniqueNameIndex } from "../Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
 import { Constraints } from "./Constraints";
 import { original } from "immer";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
-import { buildFeelQName, parseFeelQName } from "../feel/parseFeelQName";
-import { getNamespaceOfDmnImport } from "../includedModels/importNamespaces";
-import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { useResolvedTypeRef } from "./useResolvedTypeRef";
 
 export function DataTypePanel({
   isReadonly,
@@ -65,7 +63,6 @@ export function DataTypePanel({
   allDataTypesById: DataTypeIndex;
   editItemDefinition: EditItemDefinition;
 }) {
-  const thisDmn = useDmnEditorStore((s) => s.dmn);
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
   const toggleStruct = useCallback(
@@ -182,70 +179,7 @@ export function DataTypePanel({
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
-  const { externalModelsByNamespace } = useExternalModels();
-
-  const resolveTypeRef = useCallback(
-    (typeRef: string | undefined) => {
-      if (!typeRef) {
-        return typeRef;
-      }
-
-      // Built-in types are not relative.
-      if (builtInFeelTypeNames.has(typeRef)) {
-        return typeRef;
-      }
-
-      // If it's a local data type, it's not relative.
-      if (dataType.namespace === thisDmnsNamespace) {
-        return typeRef;
-      }
-
-      const externalModel = externalModelsByNamespace?.[dataType.namespace];
-      if (externalModel?.type !== "dmn") {
-        throw new Error("DMN EDITOR: Can't find external DMN model for known external Data Type.");
-      }
-
-      const parsedTypeRefFeelQName = parseFeelQName(typeRef);
-
-      const possibleNamespaces = [
-        ...(externalModel.model.definitions.import ?? []).flatMap((i) =>
-          i["@_name"] === (parsedTypeRefFeelQName.importName ?? "") ? i["@_namespace"] : []
-        ),
-        dataType.namespace, // Has to go last to override imports, as per the DMN specification.
-      ];
-
-      return possibleNamespaces.reduce(
-        (acc, namespace) => {
-          const thisDmnsImport = importsByNamespace.get(namespace);
-          if (!thisDmnsImport) {
-            return acc;
-          }
-
-          const typeRefQName = buildFeelQName({
-            type: "feel-qname",
-            importName: thisDmnsImport["@_name"],
-            localPart: parsedTypeRefFeelQName.localPart,
-          });
-
-          return allTopLevelDataTypesByFeelName.get(typeRefQName)?.feelName ?? acc;
-        },
-        buildFeelQName({
-          type: "feel-qname",
-          importName: "?",
-          localPart: parsedTypeRefFeelQName.localPart,
-        })
-      );
-    },
-    [
-      allTopLevelDataTypesByFeelName,
-      dataType.namespace,
-      externalModelsByNamespace,
-      importsByNamespace,
-      thisDmnsNamespace,
-    ]
-  );
-
-  const resolvedTypeRef = resolveTypeRef(dataType.itemDefinition.typeRef?.__$$text);
+  const resolvedTypeRef = useResolvedTypeRef(dataType.itemDefinition.typeRef?.__$$text, dataType.namespace);
 
   return (
     <>
@@ -426,7 +360,6 @@ export function DataTypePanel({
             editItemDefinition={editItemDefinition}
             dropdownOpenFor={dropdownOpenFor}
             setDropdownOpenFor={setDropdownOpenFor}
-            resolveTypeRef={resolveTypeRef}
           />
         )}
       </PageSection>

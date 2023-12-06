@@ -58,6 +58,9 @@ import { constraintTypeHelper } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { resolveTypeRef } from "./resolveTypeRef";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -77,7 +80,6 @@ export function ItemComponentsTable({
   dropdownOpenFor,
   allDataTypesById,
   setDropdownOpenFor,
-  resolveTypeRef,
 }: {
   isReadonly: boolean;
   parent: DataType;
@@ -86,11 +88,12 @@ export function ItemComponentsTable({
   allDataTypesById: DataTypeIndex;
   dropdownOpenFor: string | undefined;
   setDropdownOpenFor: React.Dispatch<React.SetStateAction<string | undefined>>;
-  resolveTypeRef: (typeRef: string | undefined) => string | undefined;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const { expandedItemComponentIds } = useDmnEditorStore((s) => s.dataTypesEditor);
+  const { allTopLevelDataTypesByFeelName, importsByNamespace } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
@@ -386,7 +389,14 @@ export function ItemComponentsTable({
                           <TypeRefSelector
                             heightRef={dmnEditorRootElementRef}
                             isDisabled={isReadonly}
-                            typeRef={resolveTypeRef(dt.itemDefinition.typeRef?.__$$text)}
+                            typeRef={resolveTypeRef({
+                              typeRef: dt.itemDefinition.typeRef?.__$$text,
+                              namespace: parent.namespace,
+                              allTopLevelDataTypesByFeelName,
+                              externalModelsByNamespace,
+                              thisDmnsImportsByNamespace: importsByNamespace,
+                              relativeToNamespace: thisDmnsNamespace,
+                            })}
                             onChange={(newDataType) => {
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                                 itemDefinition.typeRef = { __$$text: newDataType };

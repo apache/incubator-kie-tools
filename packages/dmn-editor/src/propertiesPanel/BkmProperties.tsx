@@ -29,6 +29,7 @@ import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditor } from "../DmnEditorContext";
+import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 
 export function BkmProperties({
   bkm,
@@ -47,7 +48,7 @@ export function BkmProperties({
   const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
   const { dmnEditorRootElementRef } = useDmnEditor();
 
-  bkm.extensionElements?.["kie:attachment"];
+  const resolvedTypeRef = useResolvedTypeRef(bkm.variable?.["@_typeRef"], namespace);
 
   return (
     <>
@@ -76,7 +77,7 @@ export function BkmProperties({
       <FormGroup label="Data type">
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
-          typeRef={bkm.variable?.["@_typeRef"]}
+          typeRef={resolvedTypeRef}
           onChange={(newTypeRef) => {
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel;

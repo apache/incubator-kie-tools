@@ -37,6 +37,7 @@ import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useDmnEditor } from "../DmnEditorContext";
+import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -84,6 +85,8 @@ export function DecisionServiceProperties({
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
+  const resolvedTypeRef = useResolvedTypeRef(decisionService.variable?.["@_typeRef"], namespace);
+
   return (
     <>
       <FormGroup label="Name">
@@ -111,7 +114,7 @@ export function DecisionServiceProperties({
       <FormGroup label="Data type">
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
-          typeRef={decisionService.variable?.["@_typeRef"]}
+          typeRef={resolvedTypeRef}
           onChange={(newTypeRef) => {
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService;

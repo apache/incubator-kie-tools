@@ -87,7 +87,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
 
 export const InputDataNode = React.memo(
   ({
-    data: { dmnObject: inputData, shape, index, dmnObjectQName },
+    data: { dmnObject: inputData, shape, index, dmnObjectQName, dmnObjectNamespace },
     selected,
     dragging,
     zIndex,
@@ -193,6 +193,7 @@ export const InputDataNode = React.memo(
           <DataTypeNodePanel
             isVisible={!isTargeted && isHovered}
             variable={inputData.variable}
+            namespace={dmnObjectNamespace}
             shape={shape}
             onCreate={onCreateDataType}
             onChange={onTypeRefChange}
@@ -205,7 +206,7 @@ export const InputDataNode = React.memo(
 
 export const DecisionNode = React.memo(
   ({
-    data: { parentRfNode, dmnObject: decision, shape, index, dmnObjectQName },
+    data: { parentRfNode, dmnObject: decision, shape, index, dmnObjectQName, dmnObjectNamespace },
     selected,
     dragging,
     zIndex,
@@ -313,6 +314,7 @@ export const DecisionNode = React.memo(
           <DataTypeNodePanel
             isVisible={!isTargeted && isHovered}
             variable={decision.variable}
+            namespace={dmnObjectNamespace}
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
@@ -325,7 +327,7 @@ export const DecisionNode = React.memo(
 
 export const BkmNode = React.memo(
   ({
-    data: { dmnObject: bkm, shape, index, dmnObjectQName },
+    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace },
     selected,
     dragging,
     zIndex,
@@ -433,6 +435,7 @@ export const BkmNode = React.memo(
           <DataTypeNodePanel
             isVisible={!isTargeted && isHovered}
             variable={bkm.variable}
+            namespace={dmnObjectNamespace}
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
@@ -646,7 +649,7 @@ export const TextAnnotationNode = React.memo(
 
 export const DecisionServiceNode = React.memo(
   ({
-    data: { dmnObject: decisionService, shape, index, dmnObjectQName },
+    data: { dmnObject: decisionService, shape, index, dmnObjectQName, dmnObjectNamespace },
     selected,
     dragging,
     zIndex,
@@ -831,6 +834,7 @@ export const DecisionServiceNode = React.memo(
           <DataTypeNodePanel
             isVisible={!isTargeted && selected && !dragging}
             variable={decisionService.variable}
+            namespace={dmnObjectNamespace}
             shape={shape}
             onCreate={onCreateDataType}
             onChange={onTypeRefChange}

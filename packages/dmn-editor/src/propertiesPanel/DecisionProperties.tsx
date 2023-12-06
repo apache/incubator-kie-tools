@@ -29,6 +29,7 @@ import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditor } from "../DmnEditorContext";
+import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 
 export function DecisionProperties({
   decision,
@@ -47,6 +48,8 @@ export function DecisionProperties({
   const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
   const { dmnEditorRootElementRef } = useDmnEditor();
+
+  const resolvedTypeRef = useResolvedTypeRef(decision.variable?.["@_typeRef"], namespace);
 
   return (
     <>
@@ -75,7 +78,7 @@ export function DecisionProperties({
       <FormGroup label="Data type">
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
-          typeRef={decision.variable?.["@_typeRef"]}
+          typeRef={resolvedTypeRef}
           onChange={(newTypeRef) => {
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
