@@ -25,8 +25,8 @@ class PipelineVars implements Serializable {
     String kieToolsBotGithubCredentialsId = 'kie-tools-bot-gh';
     String kieToolsBotGithubTokenCredentialsId = 'kie-tools-bot-gh-token';
     String kieToolsGithubCodeQLTokenCredentialsId = 'kie-tools-gh-codeql-token';
-    String chromeStoreCredentialsId = 'kie-tools-chome-store';
-    String chromeStoreRefreshTokenCredentialsId = 'kie-tools-chome-store-refresh-token';
+    String chromeStoreCredentialsId = 'kie-tools-chrome-store';
+    String chromeStoreRefreshTokenCredentialsId = 'kie-tools-chrome-store-refresh-token';
     String npmTokenCredentialsId = 'kie-tools-npm-token';
     String buildKiteTokenCredentialsId = 'kie-tools-build-kite-token';
 
