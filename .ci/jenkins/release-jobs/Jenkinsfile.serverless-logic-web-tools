@@ -1,0 +1,184 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent {
+        docker {
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            args '--shm-size=2g --privileged --group-add docker'
+        }
+    }
+
+    options {
+        timeout(time: 120, unit: 'MINUTES')
+    }
+
+    parameters {
+        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
+        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Base Ref', name: 'BASE_REF')
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        SERVERLESS_LOGIC_WEB_TOOLS__version = "${params.TAG}"
+        SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef = "${params.TAG}"
+        SERVERLESS_LOGIC_WEB_TOOLS__buildInfo = ''
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'quay.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'kie-tools'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'serverless-logic-web-tools-swf-builder-image'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = "${params.TAG}"
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'quay.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount = 'kie-tools'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName = 'serverless-logic-web-tools-base-builder-image'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag = "${params.TAG}"
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry = 'quay.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount = 'kie-tools'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName = 'serverless-logic-web-tools-swf-dev-mode-image'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = "${params.TAG}"
+        DASHBUILDER__viewerImageRegistry = 'quay.io'
+        DASHBUILDER__viewerImageAccount = 'kie-tools'
+        DASHBUILDER__viewerImageName = 'dashbuilder-viewer-image'
+        SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = "${params.TAG}"
+        SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl = 'https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
+
+        PNPM_FILTER_STRING = '-F @kie-tools/serverless-logic-web-tools...'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Checkout serverless-logic-sandbox-deployment') {
+            steps {
+                dir('serverless-logic-sandbox-deployment') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            'http://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
+                            'gh-pages',
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to GitHub Pages (serverless-logic-sandbox-deployment)') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                dir('serverless-logic-sandbox-deployment') {
+                    script {
+                        sh """#!/bin/bash -el
+                        git config --global user.email 'kietoolsbot@gmail.com'
+                        git config --global user.name 'KIE Tools Bot (kiegroup)'
+                        git checkout gh-pages
+
+                        echo "Reset deployment dir"
+                        shopt -s extglob
+                        rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME"|"0.25.0"|"schemas")
+                        echo "Copy resources"
+                        cp -r ${WORKSPACE}/kie-tools/packages/serverless-logic-web-tools/dist/* .
+                        echo "Commit changes and push"
+                        git add .
+                        git commit -m "Deploy ${params.TAG}"
+                        """.trim()
+
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
+                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/serverless-logic-sandbox-deployment.git gh-pages')
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

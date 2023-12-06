@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  TMPDIR: "${{ github.workspace }}/tmp"
+  TMPDIR: "/tmp"
 
 jobs:
   run:
@@ -70,10 +70,6 @@ jobs:
           fi
 
           echo "Done"
-
-      - name: "Start telemetry service (`main` only)"
-        if: steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
-        uses: runforesight/workflow-telemetry-action@6705383eabd01833acfe8412ec697384830e1455 #v1.8.7
 
       - name: "Setup environment"
         if: steps.setup_build_mode.outputs.mode != 'none'
@@ -268,4 +264,4 @@ jobs:
         if: always() && !cancelled()
         shell: bash
         run: |
-          du -sh .
+          df -h .
