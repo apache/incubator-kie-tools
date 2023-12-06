@@ -33,7 +33,11 @@ import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import { v4 as uuid } from "uuid";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
-import { AUTH_SESSION_VERSION, CloudAuthSessionType, KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
+import {
+  AUTH_SESSION_VERSION_NUMBER,
+  CloudAuthSessionType,
+  KubernetesAuthSession,
+} from "../../authSessions/AuthSessionApi";
 import {
   KubernetesConnection,
   KubernetesConnectionStatus,
@@ -252,7 +256,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxKubernetesService) {
       const newAuthSession: KubernetesAuthSession = {
         type: CloudAuthSessionType.Kubernetes,
-        version: AUTH_SESSION_VERSION,
+        version: AUTH_SESSION_VERSION_NUMBER,
         id: uuid(),
         ...props.connection,
         authProviderId: "kubernetes",

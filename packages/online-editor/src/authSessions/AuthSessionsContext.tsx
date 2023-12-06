@@ -21,18 +21,32 @@ import React, { createContext, PropsWithChildren, useCallback, useContext, useEf
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
-import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
-import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
+import { LfsStorageFile } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
-import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
+import {
+  AuthSession,
+  AuthSessionStatus,
+  AUTH_SESSION_NONE,
+  authSessionFsCache,
+  authSessionFsService,
+  mapDeSerializer,
+  AUTH_SESSIONS_FILE_PATH,
+  AUTH_SESSIONS_FS_NAME_WITH_VERSION,
+  mapSerializer,
+  authSessionBroadcastChannel,
+} from "./AuthSessionApi";
 import { KieSandboxOpenShiftService } from "../devDeployments/services/KieSandboxOpenShiftService";
 import { isGitAuthProvider, isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "../switchExpression/switchExpression";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
-import { applyAuthSessionMigrations } from "./AuthSessionMigrations";
+import {
+  applyAuthSessionMigrations,
+  deleteOlderAuthSessionsStorage,
+  migrateAuthSessions,
+} from "./AuthSessionMigrations";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -56,32 +70,6 @@ export function useAuthSessionsDispatch() {
   return useContext(AuthSessionsDispatchContext);
 }
 
-const fsCache = new LfsFsCache();
-const fsService = new LfsStorageService();
-const broadcastChannel = new BroadcastChannel("auth_sessions");
-
-const AUTH_SESSIONS_FILE_PATH = "/authSessions.json";
-const AUTH_SESSIONS_FS_NAME = "auth_sessions";
-
-function mapSerializer(_: string, value: any) {
-  if (value instanceof Map) {
-    return {
-      __$$jsClassName: "Map",
-      value: Array.from(value.entries()),
-    };
-  }
-  return value;
-}
-
-function mapDeSerializer(_: string, value: any) {
-  if (typeof value === "object" && value) {
-    if (value.__$$jsClassName === "Map") {
-      return new Map(value.value);
-    }
-  }
-  return value;
-}
-
 export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const authProviders = useAuthProviders();
   const { env } = useEnv();
@@ -89,10 +77,13 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>();
 
   const getAuthSessionsFromFile = useCallback(async () => {
-    const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
-    const content = await (await fsService.getFile(fs, AUTH_SESSIONS_FILE_PATH))?.getFileContents();
-    const parsedAuthSessions = JSON.parse(decoder.decode(content), mapDeSerializer);
-    return parsedAuthSessions;
+    const fs = authSessionFsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME_WITH_VERSION);
+    if (await authSessionFsService.exists(fs, AUTH_SESSIONS_FILE_PATH)) {
+      const content = await (await authSessionFsService.getFile(fs, AUTH_SESSIONS_FILE_PATH))?.getFileContents();
+      const parsedAuthSessions = JSON.parse(decoder.decode(content), mapDeSerializer);
+      return parsedAuthSessions;
+    }
+    return [];
   }, []);
 
   const refresh = useCallback(async () => {
@@ -101,8 +92,8 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
 
   const persistAuthSessions = useCallback(
     async (map: Map<string, AuthSession>) => {
-      const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
-      await fsService.createOrOverwriteFile(
+      const fs = authSessionFsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME_WITH_VERSION);
+      await authSessionFsService.createOrOverwriteFile(
         fs,
         new LfsStorageFile({
           path: AUTH_SESSIONS_FILE_PATH,
@@ -111,7 +102,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
       );
 
       // This goes to other broadcast channel instances, on other tabs
-      broadcastChannel.postMessage("UPDATE_AUTH_SESSIONS");
+      authSessionBroadcastChannel.postMessage("UPDATE_AUTH_SESSIONS");
 
       // This updates this tab
       refresh();
@@ -139,30 +130,27 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
 
   // Update after persisted
   useEffect(() => {
-    broadcastChannel.onmessage = refresh;
+    authSessionBroadcastChannel.onmessage = refresh;
   }, [refresh]);
 
   // Init
-  useEffect(() => {
-    async function run() {
-      const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
-      if (!(await fsService.exists(fs, AUTH_SESSIONS_FILE_PATH))) {
-        await persistAuthSessions(new Map());
-      } else {
-        const parsedAuthSessions = await getAuthSessionsFromFile();
-        const migratedAuthSessions = new Map<string, AuthSession>();
-        if (parsedAuthSessions instanceof Map || parsedAuthSessions instanceof Array) {
-          for (const [key, authSession] of parsedAuthSessions) {
-            const migratedAuthSession = await applyAuthSessionMigrations(authSession);
-            migratedAuthSessions.set(key, migratedAuthSession);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        const run = async () => {
+          console.log("running migrations");
+          const migratedAuthSessions = await migrateAuthSessions();
+          if (canceled.get()) {
+            return;
           }
-        }
-        await persistAuthSessions(migratedAuthSessions);
-      }
-    }
-
-    run();
-  }, [persistAuthSessions, refresh, getAuthSessionsFromFile]);
+          await persistAuthSessions(migratedAuthSessions);
+          await deleteOlderAuthSessionsStorage();
+        };
+        run();
+      },
+      [persistAuthSessions]
+    )
+  );
 
   const recalculateAuthSessionStatus = useCallback(
     (args?: { canceled: Holder<boolean> }) => {

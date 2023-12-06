@@ -16,6 +16,7 @@ module.exports = class KieSandboxFs {
     this.promises = new PromisifiedKieSandboxFs(...args);
     // Needed so things don't break if you destructure fs and pass individual functions around
     this.init = this.init.bind(this);
+    this.deactivate = this.deactivate.bind(this);
     this.readFile = this.readFile.bind(this);
     this.readFileBulk = this.readFileBulk.bind(this);
     this.writeFile = this.writeFile.bind(this);
@@ -35,6 +36,9 @@ module.exports = class KieSandboxFs {
   }
   init(name, options) {
     return this.promises.init(name, options);
+  }
+  deactivate() {
+    return this.promises.deactivate();
   }
   readFile(filepath, opts, cb) {
     const [resolve, reject] = wrapCallback(opts, cb);

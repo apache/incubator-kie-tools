@@ -18,15 +18,43 @@
  */
 
 import { K8sApiServerEndpointByResourceKind } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
+import { LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 
-export const AUTH_SESSION_VERSION = 1;
+export const authSessionFsCache = new LfsFsCache();
+export const authSessionFsService = new LfsStorageService();
+export const authSessionBroadcastChannel = new BroadcastChannel("auth_sessions");
+
+export const AUTH_SESSIONS_FILE_PATH = "/authSessions.json";
+export const AUTH_SESSIONS_FS_NAME = "auth_sessions";
+export const AUTH_SESSION_VERSION_NUMBER = 1;
+export const AUTH_SESSIONS_FS_NAME_WITH_VERSION = `${AUTH_SESSIONS_FS_NAME}_v${AUTH_SESSION_VERSION_NUMBER.toString()}`;
+
+export function mapSerializer(_: string, value: any) {
+  if (value instanceof Map) {
+    return {
+      __$$jsClassName: "Map",
+      value: Array.from(value.entries()),
+    };
+  }
+  return value;
+}
+
+export function mapDeSerializer(_: string, value: any) {
+  if (typeof value === "object" && value) {
+    if (value.__$$jsClassName === "Map") {
+      return new Map(value.value);
+    }
+  }
+  return value;
+}
 
 export const AUTH_SESSION_NONE = {
   id: "none",
   name: "Unauthenticated",
   type: "none",
   login: "Unauthenticated",
-  version: AUTH_SESSION_VERSION,
+  version: AUTH_SESSION_VERSION_NUMBER,
 } as const;
 
 export type NoneAuthSession = typeof AUTH_SESSION_NONE;

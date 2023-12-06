@@ -17,11 +17,73 @@
  * under the License.
  */
 
+import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { KubernetesService } from "../devDeployments/services/KubernetesService";
-import { AUTH_SESSION_VERSION, AuthSession, CloudAuthSessionType } from "./AuthSessionApi";
+import {
+  AUTH_SESSIONS_FILE_PATH,
+  AUTH_SESSIONS_FS_NAME,
+  AUTH_SESSION_VERSION_NUMBER,
+  AuthSession,
+  CloudAuthSessionType,
+  authSessionFsCache,
+  authSessionFsService,
+  mapDeSerializer,
+} from "./AuthSessionApi";
+
+export async function getAuthSessionsFromVersion(version?: number) {
+  const authSessionFsName = version && version >= 0 ? `${AUTH_SESSIONS_FS_NAME}_v${version}` : AUTH_SESSIONS_FS_NAME;
+  console.log({ authSessionFsName });
+  const fs = authSessionFsCache.getOrCreateFs(authSessionFsName);
+  const authSessionsFile = await authSessionFsService.getFile(fs, AUTH_SESSIONS_FILE_PATH);
+  if (!authSessionsFile) {
+    return [];
+  }
+  const content = await authSessionsFile.getFileContents();
+  const parsedAuthSessions = Array.from(JSON.parse(decoder.decode(content), mapDeSerializer));
+  return parsedAuthSessions;
+}
+
+export async function getAllAuthSessions() {
+  let allAuthSessions: any[] = [];
+  for (let i = AUTH_SESSION_VERSION_NUMBER; i >= 0; i--) {
+    const authSessions = await getAuthSessionsFromVersion(i);
+    console.log({ authSessions, allAuthSessions });
+    allAuthSessions = allAuthSessions.concat(authSessions);
+  }
+  return allAuthSessions;
+}
+
+export async function deleteOlderAuthSessionsStorage() {
+  for (let i = AUTH_SESSION_VERSION_NUMBER - 1; i >= 0; i--) {
+    const authSessionFsName = i && i >= 0 ? `${AUTH_SESSIONS_FS_NAME}_v${i}` : AUTH_SESSIONS_FS_NAME;
+    const fs = authSessionFsCache.getOrCreateFs(authSessionFsName);
+    if (await authSessionFsService.exists(fs, AUTH_SESSIONS_FILE_PATH)) {
+      await authSessionFsService.deleteFile(fs, AUTH_SESSIONS_FILE_PATH);
+    }
+    await fs.deactivate();
+    indexedDB.deleteDatabase(authSessionFsName);
+  }
+}
+
+export async function migrateAuthSessions() {
+  const olderAuthSessions = await getAllAuthSessions();
+  const migratedAuthSessions = new Map<string, AuthSession>();
+  for (const [key, authSession] of olderAuthSessions) {
+    console.log({ key, authSession });
+    try {
+      const migratedAuthSession = await applyAuthSessionMigrations(authSession);
+      migratedAuthSessions.set(key, migratedAuthSession);
+    } catch (e) {
+      console.log(e);
+      console.log("Failed to apply migrations to auth session", authSession);
+    }
+  }
+  console.log({ migratedAuthSessions });
+  return migratedAuthSessions;
+}
 
 export async function applyAuthSessionMigrations(authSession: any): Promise<AuthSession> {
-  if (authSession.version && authSession.version > AUTH_SESSION_VERSION) {
+  if (authSession.version && authSession.version > AUTH_SESSION_VERSION_NUMBER) {
     throw new Error(
       `Failed to apply migration script to AuthSession: ${authSession.id}. Version is greater than current version.`
     );
@@ -37,11 +99,13 @@ export async function applyAuthSessionMigrations(authSession: any): Promise<Auth
         newAuthSession.type === CloudAuthSessionType.Kubernetes ||
         newAuthSession.type === CloudAuthSessionType.OpenShift
       ) {
+        console.log("HERE!");
         newAuthSession.k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
           connection: newAuthSession,
         });
       }
     case 1:
+    // Already current version. Nothing to do.
     default:
       break;
   }
