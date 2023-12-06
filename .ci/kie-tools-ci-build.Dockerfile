@@ -32,10 +32,9 @@ zip \
 unzip \
 bzip2 \
 xvfb \
-fluxbox
-
-# Cleanup
-RUN apt-get clean autoclean && apt-get autoremove --yes && rm -rf /var/lib/{apt,dpkg,cache,log}/
+fluxbox && \
+apt-get clean autoclean && apt-get autoremove --yes && \
+rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 # Install firefox
 RUN wget -O /tmp/firefox-latest.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
