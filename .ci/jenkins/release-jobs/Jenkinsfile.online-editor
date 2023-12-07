@@ -39,9 +39,9 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         ONLINE_EDITOR__buildInfo = "${params.TAG}"
-        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/kiegroup/kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_linux_${params.TAG}.tar.gz"
-        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/kiegroup/kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_macos_${params.TAG}.dmg"
-        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/kiegroup/kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_windows_${params.TAG}.exe"
+        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_linux_${params.TAG}.tar.gz"
+        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_macos_${params.TAG}.dmg"
+        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_windows_${params.TAG}.exe"
         ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.TAG}"
         ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry = 'quay.io'
         ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount = 'kie-tools'
@@ -151,7 +151,7 @@ pipeline {
 
                         sh """#!/bin/bash -el
                         git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'KIE Tools Bot (kiegroup)'
+                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
                         git checkout gh-pages
 
                         echo "Reset deployment dir"

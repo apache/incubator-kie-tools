@@ -169,9 +169,9 @@ pipeline {
                     export CHROME_EXTENSION__routerRelativePath=kogito-online/dev/editors/
                     export SWF_CHROME_EXTENSION__routerTargetOrigin=https://kiegroup.github.io
                     export SWF_CHROME_EXTENSION__routerRelativePath=kogito-online/dev/editors/
-                    export ONLINE_EDITOR__extendedServicesDownloadUrlLinux=https://github.com/kiegroup/kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_linux_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.tar.gz
-                    export ONLINE_EDITOR__extendedServicesDownloadUrlMacOs=https://github.com/kiegroup/kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_macos_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.dmg
-                    export ONLINE_EDITOR__extendedServicesDownloadUrlWindows=https://github.com/kiegroup/kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_windows_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.exe
+                    export ONLINE_EDITOR__extendedServicesDownloadUrlLinux=https://github.com/apache/incubator-kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_linux_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.tar.gz
+                    export ONLINE_EDITOR__extendedServicesDownloadUrlMacOs=https://github.com/apache/incubator-kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_macos_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.dmg
+                    export ONLINE_EDITOR__extendedServicesDownloadUrlWindows=https://github.com/apache/incubator-kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_windows_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.exe
                     export ONLINE_EDITOR__extendedServicesCompatibleVersion=${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}
                     export ONLINE_EDITOR__buildInfo="${env.VERSION} (daily-dev) @ ${env.GIT_COMMIT} (${env.BUILD_DATE})"
                     export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${env.VERSION} (daily-dev) @ ${env.GIT_COMMIT} (${env.BUILD_DATE})"
@@ -359,7 +359,7 @@ pipeline {
 
                         sh """#!/bin/bash -el
                         git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'KIE Tools Bot (kiegroup)'
+                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
                         git checkout gh-pages
                         rm -rf dev && mkdir -p dev/editors
                         cp -RL ../kie-tools/packages/stunner-editors/dist/dmn dev/editors/
@@ -368,7 +368,7 @@ pipeline {
                         cp -r ../kie-tools/packages/online-editor/dist/* dev/
                         rm -rf dev/gwt-editors
                         ln -s editors dev/gwt-editors
-                        git add . && git commit -m "KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
+                        git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
                         """.trim()
 
                         withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
@@ -391,11 +391,11 @@ pipeline {
 
                         sh """#!/bin/bash -el
                         git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'KIE Tools Bot (kiegroup)'
+                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
                         git checkout gh-pages
                         rm -rf dev && mkdir dev
                         cp -r ../kie-tools/packages/serverless-logic-web-tools/dist/* dev/
-                        git add . && git commit -m "KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
+                        git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
                         """.trim()
 
                         withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {

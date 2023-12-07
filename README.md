@@ -4,12 +4,12 @@
 
 The **[KIE Community](http://kie.org)** is a home for leading Open Source projects that play a role in delivering solutions around Business Automation and Artificial Intelligence in the Cloud.
 
-[![GitHub Stars](https://img.shields.io/github/stars/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/network/members)
-[![GitHub Issues](https://img.shields.io/github/issues/kiegroup/kie-tools.svg)]()
-[![Pull Requests](https://img.shields.io/github/issues-pr/kiegroup/kie-tools.svg?style=flat-square)](https://github.com/kiegroup/kie-tools/pulls)
-[![Contributors](https://img.shields.io/github/contributors/kiegroup/kie-tools.svg?style=flat-square)](https://github.com/kiegroup/kie-tools/graphs/contributors)
-[![License](https://img.shields.io/github/license/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/apache/incubator-kie-tools.svg)]()
+[![Pull Requests](https://img.shields.io/github/issues-pr/apache/incubator-kie-tools.svg?style=flat-square)](https://github.com/apache/incubator-kie-tools/pulls)
+[![Contributors](https://img.shields.io/github/contributors/apache/incubator-kie-tools.svg?style=flat-square)](https://github.com/apache/incubator-kie-tools/graphs/contributors)
+[![License](https://img.shields.io/github/license/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/blob/main/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/KieCommunity.svg?label=Follow&style=social)](https://twitter.com/KieCommunity?lang=en)
 
 This repository contains tooling applications and libraries for KIE projects.
@@ -20,7 +20,7 @@ This repository contains tooling applications and libraries for KIE projects.
 
 ## Build from source
 
-To start building the KIE Tools project, you're going to need:
+To start building the Apache KIE Tools project, you're going to need:
 
 - Node `18` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `8.7.0` _(To install, follow these instructions: https://pnpm.io/installation)_
@@ -60,13 +60,13 @@ Note that it is recommended that you specify which package you want to build, so
 
 > **ℹ️ NOTE:** If you want to build _everything_, run `pnpm -r build:dev` or `pnpm -r build:prod`. It's going to take a while, though :)
 
-> **ℹ️ NOTE:** The KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` script.
+> **ℹ️ NOTE:** The Apache KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` script.
 
 > **ℹ️ NOTE:** Final artifacts will be on `{packages,examples}/*/dist` directories.
 
 ## Applications
 
-The KIE Tools project contains several applications. To develop each one of them individually, refer to the instructions below.
+The Apache KIE Tools project contains several applications. To develop each one of them individually, refer to the instructions below.
 
 #### VS Code Extension (DMN, BPMN, SceSim, and PMML Editors)
 
@@ -127,7 +127,7 @@ The KIE Tools project contains several applications. To develop each one of them
 
 #### Stunner Editors
 
-The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of KIE Tools.
+The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of Apache KIE Tools.
 After cloning the repo, start with a fresh build.
 
 - `pnpm bootstrap -F @kie-tools/stunner-editors...`

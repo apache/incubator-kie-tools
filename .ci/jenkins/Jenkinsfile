@@ -31,7 +31,7 @@ pipeline {
                 }
             }
         }
-        stage('Build KIE Tools - Stunner Editors') {
+        stage('Build Apache KIE Tools - Stunner Editors') {
             steps {
                 script {
                     mvnCmd = getMavenCommand('kie-tools/packages/stunner-editors')
@@ -51,7 +51,7 @@ pipeline {
                 }
             }
         }
-        stage('Analyze KIE Tools - Stunner Editors by SonarCloud') {
+        stage('Analyze Apache KIE Tools - Stunner Editors by SonarCloud') {
             when {
                 expression { isNormalPRCheck() && isSonarCloudEnabled() }
             }

@@ -20,7 +20,7 @@
 import { extractFileExtension, removeDirectories } from "./utils";
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("KIE Tools extension is running.");
+  console.log("Apache KIE Tools extension is running.");
 });
 
 /* Active tab management */
