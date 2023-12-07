@@ -38,18 +38,26 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__name = 'dmn-dev-deployment-base-image'
-        DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "latest ${params.TAG}"
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry = 'quay.io'
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount = 'kie-tools'
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageName = 'dmn-dev-deployment-base-image'
-        ONLINE_EDITOR__dmnDevDeploymentBaseImageTag = "${params.TAG}"
+        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'quay.io'
+        DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
+        DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
+        DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "latest ${params.TAG}"
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'quay.io'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'kie-tools'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'dev-deployment-dmn-form-webapp-image'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "latest ${params.TAG}"
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.TAG}"
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.TAG}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/dmn-dev-deployment-base-image...'
+        PNPM_FILTER_STRING = '-F @kie-tools/dev-deployment-dmn-form-webapp-image...'
     }
 
     stages {
@@ -122,16 +130,16 @@ pipeline {
             }
         }
 
-        stage('Push dmn-dev-deployment-base-image to quay.io') {
+        stage('Push dev-deployment-dmn-form-webapp-image to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry}/${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account}",
-                        "${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name}",
-                        "${env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
                 }
