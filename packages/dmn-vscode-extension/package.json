@@ -65,11 +65,23 @@
           "dark": "./static/svg-icon-dark.png",
           "light": "./static/svg-icon-light.png"
         },
-        "title": "Get DMN Editor Preview SVG"
+        "title": "Generate DMN Editor preview SVG (legacy)"
       },
       {
         "command": "extension.kogito.silentlyGenerateSvgDmn",
-        "title": "Generate SVG without any notification"
+        "title": "Generate DMN Editor preview SVG (legacy) without any notification"
+      },
+      {
+        "command": "extension.kie.tools.generatePreviewSvgDmn",
+        "icon": {
+          "dark": "./static/svg-icon-dark.png",
+          "light": "./static/svg-icon-light.png"
+        },
+        "title": "Generate DMN preview SVG"
+      },
+      {
+        "command": "extension.kie.tools.silentlyGenerateSvgDmn",
+        "title": "Generate DMN preview SVG without any notification"
       }
     ],
     "configuration": {
@@ -144,14 +156,23 @@
       "commandPalette": [
         {
           "command": "extension.kogito.getPreviewSvgDmn",
-          "when": "resourceLangId =~ /dmn/"
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieKogitoWebviewEditorsDmn'"
+        },
+        {
+          "command": "extension.kie.tools.generatePreviewSvgDmn",
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieToolsDmnEditor'"
         }
       ],
       "editor/title": [
         {
           "command": "extension.kogito.getPreviewSvgDmn",
           "group": "navigation",
-          "when": "resourceLangId =~ /dmn/"
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieKogitoWebviewEditorsDmn'"
+        },
+        {
+          "command": "extension.kie.tools.generatePreviewSvgDmn",
+          "group": "navigation",
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieToolsDmnEditor'"
         }
       ]
     }

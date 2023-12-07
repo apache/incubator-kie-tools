@@ -59,8 +59,8 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kie-group.dmn-vscode-extension",
     context: context,
     viewType: "kieToolsDmnEditor",
-    generateSvgCommandId: "extension.kogito.getPreviewSvgDmn",
-    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgDmn",
+    generateSvgCommandId: "extension.kie.tools.generatePreviewSvgDmn",
+    silentlyGenerateSvgCommandId: "extension.kie.tools.silentlyGenerateSvgDmn",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping({
         type: "dmn",
