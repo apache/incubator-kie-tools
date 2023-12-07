@@ -30,8 +30,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/stretchr/testify/require"
 )
 

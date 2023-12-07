@@ -37,7 +37,7 @@ pipeline {
             }
         }
 
-        stage('Checkout KIE Tools (Simulated squashed merge)') {
+        stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
             steps {
                 dir('kie-tools') {
                     script {
@@ -73,12 +73,12 @@ pipeline {
             }
         }
 
-        stage('KIE Tools CI') {
+        stage('Apache KIE Tools CI') {
             when {
                 expression { BUILD_IMAGE_JOB_STATUS == 'SKIPPED' ||  BUILD_IMAGE_JOB_STATUS == 'SUCCESS' }
             }
             parallel {
-                stage('KIE Tools Build') {
+                stage('Apache KIE Tools Build') {
                     steps {
                         script {
                             build(

@@ -1,4 +1,4 @@
-module github.com/kiegroup/kie-tools/packages/dev-deployment-upload-service
+module github.com/apache/incubator-kie-tools/packages/dev-deployment-upload-service
 
 go 1.20
 
