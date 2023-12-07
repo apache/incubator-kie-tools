@@ -42,11 +42,7 @@ import { switchExpression } from "../switchExpression/switchExpression";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
-import {
-  applyAuthSessionMigrations,
-  deleteOlderAuthSessionsStorage,
-  migrateAuthSessions,
-} from "./AuthSessionMigrations";
+import { deleteOlderAuthSessionsStorage, migrateAuthSessions } from "./AuthSessionMigrations";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -73,8 +69,10 @@ export function useAuthSessionsDispatch() {
 export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const authProviders = useAuthProviders();
   const { env } = useEnv();
-  const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>();
-  const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>();
+  const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>(new Map<string, AuthSession>());
+  const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>(
+    new Map<string, AuthSessionStatus>()
+  );
 
   const getAuthSessionsFromFile = useCallback(async () => {
     const fs = authSessionFsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME_WITH_VERSION);
@@ -138,7 +136,6 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
     useCallback(
       ({ canceled }) => {
         const run = async () => {
-          console.log("running migrations");
           const migratedAuthSessions = await migrateAuthSessions();
           if (canceled.get()) {
             return;
@@ -242,7 +239,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   }, [add, remove, recalculateAuthSessionStatus]);
 
   const value = useMemo(() => {
-    return authSessions && authSessionStatus ? { authSessions, authSessionStatus } : undefined;
+    return { authSessions, authSessionStatus };
   }, [authSessionStatus, authSessions]);
 
   return (

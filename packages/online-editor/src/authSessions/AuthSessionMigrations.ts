@@ -32,7 +32,6 @@ import {
 
 export async function getAuthSessionsFromVersion(version?: number) {
   const authSessionFsName = version && version >= 0 ? `${AUTH_SESSIONS_FS_NAME}_v${version}` : AUTH_SESSIONS_FS_NAME;
-  console.log({ authSessionFsName });
   const fs = authSessionFsCache.getOrCreateFs(authSessionFsName);
   const authSessionsFile = await authSessionFsService.getFile(fs, AUTH_SESSIONS_FILE_PATH);
   if (!authSessionsFile) {
@@ -47,7 +46,6 @@ export async function getAllAuthSessions() {
   let allAuthSessions: any[] = [];
   for (let i = AUTH_SESSION_VERSION_NUMBER; i >= 0; i--) {
     const authSessions = await getAuthSessionsFromVersion(i);
-    console.log({ authSessions, allAuthSessions });
     allAuthSessions = allAuthSessions.concat(authSessions);
   }
   return allAuthSessions;
@@ -69,16 +67,17 @@ export async function migrateAuthSessions() {
   const olderAuthSessions = await getAllAuthSessions();
   const migratedAuthSessions = new Map<string, AuthSession>();
   for (const [key, authSession] of olderAuthSessions) {
-    console.log({ key, authSession });
     try {
       const migratedAuthSession = await applyAuthSessionMigrations(authSession);
       migratedAuthSessions.set(key, migratedAuthSession);
     } catch (e) {
-      console.log(e);
-      console.log("Failed to apply migrations to auth session", authSession);
+      console.error("Failed to apply migrations to auth session", {
+        id: authSession.id,
+        authProvider: authSession.authProviderId,
+        host: authSession.host,
+      });
     }
   }
-  console.log({ migratedAuthSessions });
   return migratedAuthSessions;
 }
 
@@ -99,13 +98,12 @@ export async function applyAuthSessionMigrations(authSession: any): Promise<Auth
         newAuthSession.type === CloudAuthSessionType.Kubernetes ||
         newAuthSession.type === CloudAuthSessionType.OpenShift
       ) {
-        console.log("HERE!");
         newAuthSession.k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
           connection: newAuthSession,
         });
       }
     case 1:
-    // Already current version. Nothing to do.
+    // Already at current version. Nothing to do.
     default:
       break;
   }
