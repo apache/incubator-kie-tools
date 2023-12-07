@@ -2,10 +2,10 @@ name: "CI :: Code formatting"
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   branches: ["**"]
+  push:
+    branches: [main]
+  pull_request:
+    branches: ["**"]
 
 concurrency:
   group: ${{ github.event.pull_request && format('check-code-formatting-pr-{0}', github.event.pull_request.number) || format('check-code-formatting-push-main-{0}', github.sha) }}

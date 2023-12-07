@@ -39,7 +39,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <tycho.version>2.7.5</tycho.version>
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
-    <tycho.scmUrl>scm:git:https://github.com/kiegroup/kie-tools.git</tycho.scmUrl>
+    <tycho.scmUrl>scm:git:https://github.com/apache/incubator-kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
     <jdt.ls.version>1.29.0.20231026174049</jdt.ls.version>
     <tycho.test.platformArgs />

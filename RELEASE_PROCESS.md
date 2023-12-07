@@ -22,9 +22,12 @@ Make sure an associated tag to the release is created on:
 9. Remove the uploaded staging artifacts from the draft release.
 10. Click on "Publish release"
 11. 🔨(manual) Jenkins job [Release publish](https://ci-builds.apache.org/job/KIE/job/kie-tools/job/kie-tools-release-publish).
-   - Click on Build with Parameters
-   - Set the Tag and what is going to be released
-   - Click on build
-   - ⚠️ Something failed? Delete the necessary artifacts from the release (for it to be uploaded again), and re-trigger only what failed.
+
+- Click on Build with Parameters
+- Set the Tag and what is going to be released
+- Click on build
+- ⚠️ Something failed? Delete the necessary artifacts from the release (for it to be uploaded again), and re-trigger only what failed.
+
 12. 🔨(manual) WORKFLOW (`release_publish_extended_services.yml`)
-   - Upload Extended Services release artifacts for MacOS and Windows to the release.
+
+- Upload Extended Services release artifacts for MacOS and Windows to the release.

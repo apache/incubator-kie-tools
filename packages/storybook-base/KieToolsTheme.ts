@@ -22,7 +22,7 @@ import brandImage from "./static/logo.svg";
 
 export const KieToolsTheme = create({
   base: "light",
-  brandTitle: "KIE Tools",
+  brandTitle: "Apache KIE Tools",
   brandImage,
   brandTarget: "_self",
 });

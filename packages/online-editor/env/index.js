@@ -37,15 +37,15 @@ module.exports = composeEnv(
         description: "Build information to be shown at the bottom of Home page.",
       },
       ONLINE_EDITOR__extendedServicesDownloadUrlLinux: {
-        default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_linux_${extendedServicesEnv.env.extendedServices.version}.tar.gz`,
+        default: `https://github.com/apache/incubator-kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_linux_${extendedServicesEnv.env.extendedServices.version}.tar.gz`,
         description: "Download URL for Extended Services for Linux.",
       },
       ONLINE_EDITOR__extendedServicesDownloadUrlMacOs: {
-        default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_macos_${extendedServicesEnv.env.extendedServices.version}.dmg`,
+        default: `https://github.com/apache/incubator-kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_macos_${extendedServicesEnv.env.extendedServices.version}.dmg`,
         description: "Download URL for Extended Services for macOS.",
       },
       ONLINE_EDITOR__extendedServicesDownloadUrlWindows: {
-        default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_windows_${extendedServicesEnv.env.extendedServices.version}.exe`,
+        default: `https://github.com/apache/incubator-kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_windows_${extendedServicesEnv.env.extendedServices.version}.exe`,
         description: "Download URL for Extended Services for Windows.",
       },
       ONLINE_EDITOR__extendedServicesCompatibleVersion: {

@@ -49,9 +49,9 @@ pipeline {
         KIE_SANDBOX__imageName = 'kie-sandbox-image'
         KIE_SANDBOX__imageBuildTags = "latest ${params.TAG}"
         ONLINE_EDITOR__buildInfo = "${params.TAG}"
-        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/kiegroup/kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_linux_${params.TAG}.tar.gz"
-        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/kiegroup/kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_macos_${params.TAG}.dmg"
-        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/kiegroup/kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_windows_${params.TAG}.exe"
+        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_linux_${params.TAG}.tar.gz"
+        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_macos_${params.TAG}.dmg"
+        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_windows_${params.TAG}.exe"
         ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.TAG}"
         ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry = 'quay.io'
         ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount = 'kie-tools'

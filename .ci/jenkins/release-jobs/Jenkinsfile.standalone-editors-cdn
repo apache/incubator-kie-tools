@@ -135,7 +135,7 @@ pipeline {
 
                         sh """#!/bin/bash -el
                         git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'KIE Tools Bot (kiegroup)'
+                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
                         git checkout gh-pages
 
                         echo "Copy standalone resources"

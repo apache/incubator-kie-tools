@@ -44,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('Build KIE Tools') {
+        stage('Build Apache KIE Tools') {
             agent {
                 docker {
                     label("${buildUtils.apacheAgentLabels()}")
@@ -68,7 +68,7 @@ pipeline {
                     }
                 }
 
-                stage('Checkout KIE Tools (Simulated squashed merge)') {
+                stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
                     steps {
                         dir('kie-tools') {
                             script {
