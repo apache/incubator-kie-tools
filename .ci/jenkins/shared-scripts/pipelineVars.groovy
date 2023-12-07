@@ -17,7 +17,7 @@
 class PipelineVars implements Serializable {
 
     String githubRepositoryOrg = 'apache';
-    String githubRepositoryName = 'kie-tools';
+    String githubRepositoryName = 'incubator-kie-tools';
     String githubRepositorySlug = 'apache/kie-tools';
 
     String quayPushCredentialsId = 'quay-io-kie-tools-token';
