@@ -15950,7 +15950,7 @@ packages:
       "@babel/core": 7.23.0
       "@babel/helper-module-transforms": 7.23.0(@babel/core@7.23.0)
       "@babel/helper-plugin-utils": 7.22.5
-      "@babel/helper-simple-access": 7.21.5
+      "@babel/helper-simple-access": 7.22.5
       babel-plugin-dynamic-import-node: 2.3.3
     dev: true
 
@@ -15963,6 +15963,19 @@ packages:
     dependencies:
       "@babel/core": 7.16.12
       "@babel/helper-module-transforms": 7.23.0(@babel/core@7.16.12)
+      "@babel/helper-plugin-utils": 7.22.5
+      "@babel/helper-simple-access": 7.22.5
+    dev: true
+
+  /@babel/plugin-transform-modules-commonjs@7.22.5(@babel/core@7.23.0):
+    resolution:
+      { integrity: sha512-B4pzOXj+ONRmuaQTg05b3y/4DuFz3WcCNAXPLb2Q0GT0TrGKGxNKV4jwsXts+StaM0LQczZbOpj8o1DLPDJIiA== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.23.0
+      "@babel/helper-module-transforms": 7.23.0(@babel/core@7.23.0)
       "@babel/helper-plugin-utils": 7.22.5
       "@babel/helper-simple-access": 7.22.5
     dev: true
@@ -18525,9 +18538,9 @@ packages:
     dependencies:
       "@babel/core": 7.23.0
       "@babel/helper-plugin-utils": 7.22.5
-      "@babel/helper-validator-option": 7.22.15
+      "@babel/helper-validator-option": 7.22.5
       "@babel/plugin-syntax-jsx": 7.22.5(@babel/core@7.23.0)
-      "@babel/plugin-transform-modules-commonjs": 7.23.0(@babel/core@7.23.0)
+      "@babel/plugin-transform-modules-commonjs": 7.22.5(@babel/core@7.23.0)
       "@babel/plugin-transform-typescript": 7.22.9(@babel/core@7.23.0)
     dev: true
 
@@ -33094,7 +33107,7 @@ packages:
     engines: { node: ">=14" }
     dependencies:
       cross-spawn: 7.0.3
-      signal-exit: 4.0.2
+      signal-exit: 4.1.0
     dev: true
 
   /forever-agent@0.6.1:
@@ -43102,12 +43115,6 @@ packages:
   /signal-exit@3.0.7:
     resolution:
       { integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ== }
-
-  /signal-exit@4.0.2:
-    resolution:
-      { integrity: sha512-MY2/qGx4enyjprQnFaZsHib3Yadh3IXyV2C321GY0pjGfVBu4un0uDJkwgdxqO+Rdx8JMT8IfJIRwbYVz3Ob3Q== }
-    engines: { node: ">=14" }
-    dev: true
 
   /signal-exit@4.1.0:
     resolution:
