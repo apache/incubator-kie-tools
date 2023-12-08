@@ -126,9 +126,9 @@ function ignore_maven_self_signed_certificates() {
 }
 
 function set_kogito_maven_repo() {
-    local kogito_maven_repo_url="${JBOSS_MAVEN_REPO_URL}"
+    local kogito_maven_repo_url="${DEFAULT_MAVEN_REPO_URL}"
     if [ -n "${kogito_maven_repo_url}" ]; then
-        sed -i.bak "s|https://repository.jboss.org/nexus/content/groups/public/|${kogito_maven_repo_url}|" "${MAVEN_SETTINGS_PATH}"
+        sed -i.bak "s|https://repository.apache.org/content/groups/public/|${kogito_maven_repo_url}|" "${MAVEN_SETTINGS_PATH}"
     fi
 }
 

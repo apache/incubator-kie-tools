@@ -8,7 +8,7 @@ Feature: kogito-s2i-builder image JVM build tests
     And run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-11
 
   Scenario: Verify if the s2i build is finished as expected with non native build and no runtime image
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main
       | variable     | value   |
       | NATIVE       | false   |
       | RUNTIME_TYPE | quarkus |
@@ -26,7 +26,7 @@ Feature: kogito-s2i-builder image JVM build tests
     And file /home/kogito/cacerts should exist
 
   Scenario: Verify if the s2i build is finished as expected with non native build and no runtime image and no RUNTIME_TYPE defined
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main
       | variable     | value   |
       | NATIVE       | false   |
     Then check that page is served
@@ -43,7 +43,7 @@ Feature: kogito-s2i-builder image JVM build tests
     And file /home/kogito/cacerts should exist
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build with runtime image
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable     | value                     |
       | NATIVE       | false                     |
       | RUNTIME_TYPE | quarkus                   |
@@ -78,7 +78,7 @@ Feature: kogito-s2i-builder image JVM build tests
     And file /home/kogito/bin/quarkus-run.jar should exist
 
   Scenario: Verify if the multi-module s2i build is finished as expected performing a non native build
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from . using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from . using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value                                                    |
       | RUNTIME_TYPE      | quarkus                                                  |
       | NATIVE            | false                                                    |
@@ -96,11 +96,11 @@ Feature: kogito-s2i-builder image JVM build tests
     And file /home/kogito/bin/quarkus-run.jar should exist
 
   Scenario: Perform an incremental s2i build using quarkus runtime type
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld with env and incremental using nightly-main
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld with env and incremental using nightly-main
       | variable     | value   |
       | RUNTIME_TYPE | quarkus |
       | NATIVE       | false   |
-    And s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld with env and incremental using nightly-main
+    And s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld with env and incremental using nightly-main
       | variable     | value   |
       | RUNTIME_TYPE | quarkus |
       | NATIVE       | false   |
@@ -120,7 +120,7 @@ Feature: kogito-s2i-builder image JVM build tests
 #### SpringBoot Scenarios
 
   Scenario: Verify if the s2i build is finished as expected with debug enabled
-      Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+      Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-springboot-examples/process-springboot-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
         | variable     | value        |
         | RUNTIME_TYPE | springboot   |
         | JAVA_OPTIONS | -Ddebug=true |
@@ -138,7 +138,7 @@ Feature: kogito-s2i-builder image JVM build tests
       And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
   
   Scenario: Verify if the s2i build is finished as expected with no runtime image and debug enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example using nightly-main
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-springboot-examples/process-springboot-example using nightly-main
       | variable            | value        |
       | JAVA_OPTIONS        | -Ddebug=true |
       | RUNTIME_TYPE        | springboot   |
@@ -173,7 +173,7 @@ Feature: kogito-s2i-builder image JVM build tests
     And container log should contain Tomcat initialized with port(s): 8080 (http)
   
   Scenario: Verify if the s2i build is finished as expected using multi-module build with debug enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from . using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from . using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value |
       | JAVA_OPTIONS      | -Ddebug=true                       |
       | RUNTIME_TYPE      | springboot                         |
@@ -193,11 +193,11 @@ Feature: kogito-s2i-builder image JVM build tests
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
   Scenario: Perform an incremental s2i build using springboot runtime type
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example with env and incremental using nightly-main
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-springboot-examples/process-springboot-example with env and incremental using nightly-main
       # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
       | variable     | value      |
       | RUNTIME_TYPE | springboot |
-    And s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example with env and incremental using nightly-main
+    And s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-springboot-examples/process-springboot-example with env and incremental using nightly-main
       # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
       | variable     | value      |
       | RUNTIME_TYPE | springboot |
@@ -215,7 +215,7 @@ Feature: kogito-s2i-builder image JVM build tests
       | expected_status_code | 201                                                                           |
 
   Scenario: Verify if the s2i build is finished as expected with uber-jar package type built
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-quarkus-examples/process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value                           |
       | MAVEN_ARGS_APPEND | -Dquarkus.package.type=uber-jar |
       | RUNTIME_TYPE      | quarkus                         |

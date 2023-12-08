@@ -5,111 +5,53 @@ pipeline {
         label 'ubuntu'
     }
     options {
-        timeout(time: 120, unit: 'MINUTES')
+        timeout(time: 240, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
+        skipDefaultCheckout()
     }
     stages {
-        stage('Initialization') {
+        stage("Invoke build-and-test") {
             steps {
                 script {
-                    clean()
-
                     sh 'printenv'
-                    
-                    githubscm.checkoutIfExists(getRepoName(), getChangeAuthor(), getChangeBranch(), 'apache', getChangeTarget(), true)
-                }
-            }
-        }
-        stage('Validate CeKit Image and Modules descriptors') {
-            steps {
-                script {
-                    sh '''
-                        curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/v1.3.6/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz
-                        tar -xzvf cekit-image-validator-runner.tgz
-                        chmod +x cekit-image-validator-runner
-                    '''
-                    sh './cekit-image-validator-runner modules/'
-                    getImages().each { image -> sh "./cekit-image-validator-runner ${image}-image.yaml" }
-                }
-            }
-        }
-        stage('Build & Test Images') {
-            steps {
-                script {
-                    parallelStages = [:]
-                    for(String image : getImages()){
-                        parallelStages[image] = createBuildAndTestStageClosure(image)
+                    List buildParams = []
+                    buildParams.add(string(name: 'DISPLAY_NAME', value: "PR #${CHANGE_ID}: ${CHANGE_URL}"))
+                    buildParams.add(string(name: 'CHANGE_ID', value: CHANGE_ID))
+                    buildParams.add(string(name: 'CHANGE_URL', value: CHANGE_URL))
+                    buildParams.add(string(name: 'SOURCE_REPOSITORY', value: getChangeRepository()))
+                    buildParams.add(string(name: 'SOURCE_AUTHOR', value: getChangeAuthor()))
+                    buildParams.add(string(name: 'SOURCE_BRANCH', value: getChangeBranch()))
+                    buildParams.add(string(name: 'TARGET_BRANCH', value: getChangeTarget()))
+                    buildParams.add(string(name: 'BUILD_KOGITO_APPS_REF', value: getChangeTarget()))
+                    // Keep executing so we can cancel all if needed
+                    def job = build(job: "../kogito-images.build-and-test", wait: true, parameters: buildParams, propagate: false)
+                    if (job.result != 'SUCCESS') {
+                        if (job.result == 'UNSTABLE') {
+                            unstable("Tests on images seems to have failed: ${job.absoluteUrl}")
+                        } else {
+                            error("Error building images. Please check the logs of the job: ${job.absoluteUrl}")
+                        }
                     }
-                    parallel parallelStages
                 }
             }
         }
     }
-    post {
-        always {
-            script {
-                clean()
-            }
-        }
-        unsuccessful {
-            script {
-                pullrequest.postComment(util.getMarkdownTestSummary('PR', "${BUILD_URL}", 'GITHUB'))
-            }
-        }
-    }
-}
-
-void clean() {
-    util.cleanNode()
-}
-
-Closure createBuildAndTestStageClosure(String image) {
-    return {
-        stage("Build&Test ${image}") {
-            List buildParams = []
-            buildParams.add(string(name: "DISPLAY_NAME", value: "PR #${ghprbPullId} - ${image}: ${ghprbPullLink}"))
-            buildParams.add(string(name: 'BUILD_IMAGE_NAME', value: image))
-            buildParams.add(string(name: 'SOURCE_AUTHOR', value: getChangeAuthor()))
-            buildParams.add(string(name: 'SOURCE_BRANCH', value: getChangeBranch()))
-            buildParams.add(string(name: 'TARGET_BRANCH', value: getChangeTarget()))
-            buildParams.add(string(name: 'BUILD_KOGITO_APPS_REF', value: getChangeTarget()))
-            
-            githubscm.prepareCommitStatusInformationForPullRequest(getRepoName(), getChangeAuthor(), getChangeBranch(), 'apache', getGitAuthorCredentialsId())
-            githubscm.updateGithubCommitStatus(image, 'PENDING', 'Queued', getRepoName())
-            
-            // Keep executing so we can cancel all if needed
-            def job = build(job: "${getRepoName()}.build-image", wait: true, parameters: buildParams, propagate: false)
-            if (job.result != 'SUCCESS') {
-                if (job.result == 'UNSTABLE') {
-                    unstable("Tests on ${image} seems to have failed")
-                } else {
-                    error("Error building ${image}. Please check the logs of the job: ${job.absoluteUrl}")
-                }
-            }
-        }
-    }
-}
-
-String[] getImages() {
-    if (env.IMAGES_LIST) {
-        return env.IMAGES_LIST.split(',')
-    }
-    return sh(returnStdout: true, script: "make list | tr '\\n' ','").trim().split(',')
 }
 
 String getChangeAuthor() {
-    return env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepoGitUrl) : (env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR)
+    return pullrequest.getAuthorAndRepoForPr().split('/')[0]
+}
+
+String getChangeRepository() {
+    return pullrequest.getAuthorAndRepoForPr().split('/')[1]
 }
 
 String getChangeBranch() {
-    return env.ghprbSourceBranch ?: CHANGE_BRANCH
+    return CHANGE_BRANCH
 }
 
 String getChangeTarget() {
-    return env.ghprbTargetBranch ?: CHANGE_TARGET
-}
-
-String getRepoName() {
-    return env.REPO_NAME
+    return CHANGE_TARGET
 }
 
 String getGitAuthorCredentialsId() {

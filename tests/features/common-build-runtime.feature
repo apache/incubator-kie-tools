@@ -6,5 +6,5 @@
 Feature: Common tests for Kogito builder and runtime images
 
   Scenario: Verify if usage help is correctly called
-    When container is started with command /home/kogito/kogito-app-launch.sh -h
+    When container is started with command bash -c "sleep 5s; /home/kogito/kogito-app-launch.sh -h"
     Then container log should contain This is the

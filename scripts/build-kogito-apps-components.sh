@@ -2,18 +2,19 @@
 # Parameters:
 #   1 - image name - can't  be empty.
 #   2 - git target branch - defaults to main
-#   3 - git target uri - defaults to https://github.com/kiegroup/kogito-apps.git
+#   3 - git target uri - defaults to https://github.com/apache/incubator-kie-kogito-apps.git
 
 # fast fail
 set -e
 set -o pipefail
 
-KOGITO_APPS_REPO_NAME="kogito-apps"
+KOGITO_APPS_REPO_NAME="incubator-kie-kogito-apps"
+KOGITO_APPS_FOLDER_NAME="kogito-apps"
 
 # Read entries before sourcing
 imageName="${1}"
 gitBranch="${2:-main}"
-gitUri="${3:-https://github.com/kiegroup/kogito-apps.git}"
+gitUri="${3:-https://github.com/apache/${KOGITO_APPS_REPO_NAME}.git}"
 contextDir=""
 shift $#
 
@@ -24,7 +25,7 @@ APPS_MAVEN_OPTIONS="-Dquarkus.package.type=fast-jar -Dquarkus.build.image=false"
 # used for all-in-one image
 extended_context=""
 
-# Fix taken from https://github.com/kiegroup/kogito-apps/pull/1762
+# Fix taken from https://github.com/apache/incubator-kie-kogito-apps/pull/1762
 if [ ! -z "${CYPRESS_BINARY_URL}" ]; then
     export CYPRESS_INSTALL_BINARY="${CYPRESS_BINARY_URL}/cypress-9.7.0.zip"
     echo "Setting 'CYPRESS_INSTALL_BINARY' variable to ${CYPRESS_INSTALL_BINARY}"
@@ -115,12 +116,13 @@ for ctx in ${contextDir}; do
     cd ${build_target_dir}
     echo "Using branch/tag ${gitBranch}, checking out. Temporary build dir is ${build_target_dir} and target dist is ${target_tmp_dir}"
 
-    if [ ! -d "${build_target_dir}/${KOGITO_APPS_REPO_NAME}" ]; then
-        git_command="git clone --single-branch --branch ${gitBranch} --depth 1 ${gitUri}"
+    KOGITO_APPS_DIR=${build_target_dir}/${KOGITO_APPS_FOLDER_NAME}
+    if [ ! -d "${KOGITO_APPS_DIR}" ]; then
+        git_command="git clone --single-branch --branch ${gitBranch} --depth 1 ${gitUri} ${KOGITO_APPS_DIR}"
         echo "cloning ${KOGITO_APPS_REPO_NAME} with the following git command: ${git_command}"
         eval ${git_command}
     fi
-    cd ${KOGITO_APPS_REPO_NAME} && echo "working dir `pwd`"
+    cd ${KOGITO_APPS_DIR} && echo "working dir `pwd`"
     echo "Got MAVEN_OPTIONS = ${MAVEN_OPTIONS}"
     mvn_command="mvn -am -pl ${ctx} package ${MAVEN_OPTIONS} -Dmaven.repo.local=${mvn_local_repo} -Dquarkus.container-image.build=false"
     echo "Building component(s) ${contextDir} with the following maven command [${mvn_command}]"

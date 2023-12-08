@@ -3,7 +3,7 @@ Feature: kogito-s2i-builder image tests
 
   Scenario: verify if all labels are correctly set on kogito-s2i-builder image
     Given image is built
-    Then the image should contain label maintainer with value kogito <bsig-cloud@redhat.com>
+    Then the image should contain label maintainer with value Apache KIE <dev@kie.apache.org>
     And the image should contain label io.openshift.s2i.scripts-url with value image:///usr/local/s2i
     And the image should contain label io.openshift.s2i.destination with value /tmp
     And the image should contain label io.openshift.expose-services with value 8080:http
@@ -23,7 +23,7 @@ Feature: kogito-s2i-builder image tests
     And file /home/kogito/.m2/settings.xml should not contain <url>https://maven.repository.redhat.com/techpreview/all</url>
 
   Scenario: Verify if the s2i build is finished as expected performing a non native build with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-quarkus-examples/process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value         |
       | NATIVE            | false         |
       | RUNTIME_TYPE      | quarkus       |
@@ -33,7 +33,7 @@ Feature: kogito-s2i-builder image tests
     And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
 
   Scenario: Verify if the s2i build is finished as expected with persistence enabled
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-springboot-examples/process-springboot-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable          | value         |
       | MAVEN_ARGS_APPEND | -Ppersistence |
       | RUNTIME_TYPE      | springboot    |

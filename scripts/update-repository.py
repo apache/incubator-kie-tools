@@ -1,7 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 #Script responsible to update the tests with 
 #Should be run from root directory of the repository
-#Sample usage:  python3 scripts/update-tests.py
+#Sample usage:  python scripts/update-tests.py
 
 import sys
 sys.dont_write_bytecode = True
@@ -14,8 +14,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Update Maven information in repo from the given artifact url and '
                                                  'version.')
     parser.add_argument('--repo-url', dest='repo_url', help='Defines the url of the repository to setup into the tests')
-    parser.add_argument('--replace-jboss-repo', dest='replace_jboss_repo', default=False, action='store_true',
-                        help='Enable if repo-url should replace the main JBoss repository')
+    parser.add_argument('--replace-default-repo', dest='replace_default_repo', default=False, action='store_true',
+                        help='Enable if repo-url should replace the default repository')
     parser.add_argument('--ignore-self-signed-cert', dest='ignore_self_signed_cert', default=False,
                         action='store_true',
                         help='If set to true will relax the SSL for user-generated self-signed certificates')
@@ -41,11 +41,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.repo_url:
-        common.update_maven_repo_in_build_config(args.repo_url, args.replace_jboss_repo)
-        common.update_maven_repo_in_setup_maven(args.repo_url, args.replace_jboss_repo)
-        common.update_maven_repo_in_behave_tests(args.repo_url, args.replace_jboss_repo)
+        common.update_maven_repo_in_build_config(args.repo_url, args.replace_default_repo)
+        common.update_maven_repo_in_setup_maven(args.repo_url, args.replace_default_repo)
+        common.update_maven_repo_in_behave_tests(args.repo_url, args.replace_default_repo)
         if not args.tests_only:
-            common.update_maven_repo_env_value(args.repo_url, args.replace_jboss_repo, args.prod)
+            common.update_maven_repo_env_value(args.repo_url, args.replace_default_repo, args.prod)
     
     if args.ignore_self_signed_cert:
         common.ignore_maven_self_signed_certificate_in_build_config()

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 # Script responsible to update the tests with
 # Should be run from root directory of the repository
 

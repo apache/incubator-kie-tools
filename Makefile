@@ -1,7 +1,7 @@
-IMAGE_VERSION := $(shell python3 scripts/retrieve_version.py)
+IMAGE_VERSION := $(shell python scripts/retrieve_version.py)
 SHORTENED_LATEST_VERSION := $(shell echo $(IMAGE_VERSION) | awk -F. '{print $$1"."$$2}')
 KOGITO_APPS_TARGET_BRANCH ?= main
-KOGITO_APPS_TARGET_URI ?= https://github.com/kiegroup/kogito-apps.git
+KOGITO_APPS_TARGET_URI ?= https://github.com/apache/incubator-kie-kogito-apps.git
 BUILD_ENGINE ?= docker
 BUILD_ENGINE_TLS_OPTIONS ?= ''
 .DEFAULT_GOAL := build
@@ -12,14 +12,14 @@ clone-repos:
 # if the ignore_test env is not defined or false, proceed with the tests, as first step prepare the examples to be used
 ifneq ($(ignore_test),true)
 ifneq ($(ignore_test_prepare),true)
-	cd tests/test-apps && export CONTAINER_ENGINE=$(BUILD_ENGINE) && sh clone-repo.sh $(NATIVE) $(image_name)
+	cd tests/test-apps && export CONTAINER_ENGINE=$(BUILD_ENGINE) && bash clone-repo.sh $(NATIVE) $(image_name)
 	cd ../..
 endif
 endif
 
 .PHONY: list
 list:
-	@python3 scripts/list-images.py $(arg)
+	@python scripts/list-images.py $(arg)
 
 .PHONY: display-image-version
 display-image-version:
@@ -99,7 +99,7 @@ endif
 .PHONY: push-staging
 push-staging: build _push-staging
 _push-staging:
-	python3 scripts/push-staging.py ${override}
+	python scripts/push-staging.py ${override}
 
 
 # push to local registry, useful to push the built images to local registry

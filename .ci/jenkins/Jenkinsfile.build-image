@@ -7,10 +7,12 @@ pipeline {
         docker { 
             image env.AGENT_DOCKER_BUILDER_IMAGE
             args env.AGENT_DOCKER_BUILDER_ARGS
+            alwaysPull true
         }
     }
     options {
-        timeout(time: 120, unit: 'MINUTES')
+        timeout(time: 150, unit: 'MINUTES')
+        skipDefaultCheckout()
     }
     environment {
         // Linked to node label
@@ -18,8 +20,6 @@ pipeline {
         CONTAINER_ENGINE = 'docker'
         CONTAINER_ENGINE_TLS_OPTIONS = ''
 
-        OPENSHIFT_API = credentials('OPENSHIFT_API')
-        OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
         OPENSHIFT_CREDS_KEY = 'OPENSHIFT_CREDS'
 
         IMAGE_BUILD_PLATFORMS = 'linux/amd64,linux/arm64'
@@ -28,8 +28,6 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    clean()
-
                     sh 'printenv'
 
                     assert getBuildImageName() : 'Please provide `BUILD_IMAGE_NAME` parameter'
@@ -44,12 +42,13 @@ pipeline {
                         checkout(githubscm.resolveRepository(getRepoName(), getSourceAuthor(), getSourceBranch(), false, getGitAuthorCredentialsId()))
                         githubscm.prepareCommitStatusInformation(getRepoName(), getSourceAuthor(), getSourceBranch(), getGitAuthorCredentialsId())
                     }
+                    githubscm.setUserConfig('robot', 'kie.apache.org', true)
                     updateGithubCommitStatus('PENDING', 'Started')
 
                     // Login to final registry if deploy is needed
                     if (shouldDeployImage()) {
                         if (isDeployImageInOpenshiftRegistry()) {
-                            cloud.loginOpenShift(env.OPENSHIFT_API, env.OPENSHIFT_CREDS_KEY)
+                            cloud.loginOpenShift(getOpenShiftAPI(), env.OPENSHIFT_CREDS_KEY)
                             cloud.loginOpenshiftRegistry(env.CONTAINER_ENGINE, env.CONTAINER_ENGINE_TLS_OPTIONS ?: '')
                         } else if (getDeployImageRegistryCredentials()) {
                             cloud.loginContainerRegistry(getDeployImageRegistry(), getDeployImageRegistryCredentials(), env.CONTAINER_ENGINE, env.CONTAINER_ENGINE_TLS_OPTIONS ?: '')
@@ -67,12 +66,12 @@ pipeline {
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
 
                         // Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
-                        runPythonCommand("python3 scripts/update-repository.py --build-maven-mirror-url ${MAVEN_MIRROR_URL} --ignore-self-signed-cert")
+                        runPythonCommand("python scripts/update-repository.py --build-maven-mirror-url ${MAVEN_MIRROR_URL} --ignore-self-signed-cert")
                     }
 
                     if (getMavenArtifactRepository()) {
                         echo "Setup Repository url to '${getMavenArtifactRepository()}'"
-                        runPythonCommand("python3 scripts/update-repository.py  --repo-url ${getMavenArtifactRepository()}")
+                        runPythonCommand("python scripts/update-repository.py  --repo-url ${getMavenArtifactRepository()}")
                     }
                 }
             }
@@ -89,7 +88,7 @@ pipeline {
         //                     echo "[WARN] Artifacts repository defined in env will override the quarkus platform URL in tests. Make sure the platform artifacts are available on that artifacts repository (you can use a maven group)"
         //                 }
         //                 // Setup quarkus platform repo configuration
-        //                 runPythonCommand("python3 scripts/update-repository.py --repo-url ${getQuarkusPlatformURL()} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
+        //                 runPythonCommand("python scripts/update-repository.py --repo-url ${getQuarkusPlatformURL()} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
         //             }
         //         }
         //     }
@@ -99,8 +98,9 @@ pipeline {
                 script {
                     updateGithubCommitStatus('PENDING', 'Build in progress')
 
-                    String localRegistry = cloud.startLocalRegistry()
-                    cloud.prepareForDockerMultiplatformBuild([localRegistry],[cloud.getDockerIOMirrorRegistryConfig()], false)
+                    int freePort = cloud.findFreePort()
+                    env.localRegistryUrl = cloud.startLocalRegistry(freePort)
+                    cloud.prepareForDockerMultiplatformBuild([env.localRegistryUrl],[cloud.getDockerIOMirrorRegistryConfig()], false)
 
                     // Generate the Dockerfile
                     runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${getBuildImageName()} ignore_test=true ignore_tag=true build_options='--dry-run'")
@@ -108,7 +108,7 @@ pipeline {
                     // Build multiplatform from generated Dockerfile
                     String squashMessage = "${getBuildImageName()}:${getImageVersion()} squashed"
                     dir('target/image') {
-                        cloud.dockerBuildMultiPlatformImages(getBuiltImageTag(), getImageBuildPlatforms(), shouldDeployImage(), squashMessage)
+                        cloud.dockerBuildMultiPlatformImages(getBuiltImageTag(), getImageBuildPlatforms(), shouldDeployImage(), squashMessage, false, true)
                     }
                 }
             }
@@ -119,8 +119,6 @@ pipeline {
             }
             steps {
                 script {
-                    cloud.installSkopeo()
-
                     // Make public if quay registry
                     if (getDeployImageRegistry() == QUAY_REGISTRY) {
                         String namespace = getDeployImageNamespace()
@@ -153,7 +151,7 @@ pipeline {
             }
             steps {
                 script {
-                    updateTestsCommand = 'python3 scripts/update-repository.py --tests-only'
+                    updateTestsCommand = 'python scripts/update-repository.py --tests-only'
                     updateTestsCommand += getMavenArtifactRepository() ? " --repo-url ${getMavenArtifactRepository()}" : ''
                     updateTestsCommand += getTestsKogitoExamplesRef() ? " --examples-ref ${getTestsKogitoExamplesRef()}" : ''
                     updateTestsCommand += getTestsKogitoExamplesURI() ? " --examples-uri ${getTestsKogitoExamplesURI()}" : ''
@@ -189,7 +187,7 @@ pipeline {
                         unstable "Testing error(s) for image ${getBuildImageName()}"
                     } finally {
                         junit testResults: 'target/**/*.xml', allowEmptyResults: true
-                        archiveArtifacts artifacts: 'target/**/*.xml', allowEmptyArchive: true
+                        archiveArtifacts artifacts: 'target/**/*.xml, **/*.txt, **/*.log', allowEmptyArchive: true
                     }
                 }
             }
@@ -199,22 +197,22 @@ pipeline {
         always {
             script {
                 updateGithubCommitStatusFromBuildResult()
-
-                clean()
+                collectContainerLogs()
+                archiveArtifacts artifacts: '**/*-build.log, **/*.log', allowEmptyArchive: true
+            }
+        }
+        cleanup {
+            script {
+                cleanWs()
             }
         }
     }
 }
 
-void clean() {
-    util.cleanNode(env.CONTAINER_ENGINE)
-
-    cloud.cleanDockerMultiplatformBuild()
-    cloud.cleanLocalRegistry()
-    cloud.cleanSkopeo()
-
-    // Clean Cekit cache, in case we reuse an old node
-    sh "rm -rf \$HOME/.cekit/cache"
+void collectContainerLogs() {
+    sh '''#!/bin/bash
+        for container in $(docker container ls --format "{{.Names}}"); do echo "[$container:START]"; docker logs $container; echo "[$container:END]"; done &> containers.log
+    '''
 }
 
 String getMakeBuildImageArgs() {
@@ -240,7 +238,7 @@ String getBuiltImageTag(String imageTag = '') {
     if (shouldDeployImage()) {
         return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${getFinalImageName()}:${imageTag ?: getDeployImageTag()}"
     } else {
-        return "localhost:5000/${getBuildImageName()}:${githubscm.getCommitHash()}"
+        return "${env.localRegistryUrl}/${getBuildImageName()}:${githubscm.getCommitHash()}"
     }
 }
 
@@ -261,7 +259,7 @@ String getDeployImageRegistryCredentials() {
 }
 
 String getDeployImageRegistry() {
-    return isDeployImageInOpenshiftRegistry() ? env.OPENSHIFT_REGISTRY : params.DEPLOY_IMAGE_REGISTRY
+    return isDeployImageInOpenshiftRegistry() ? getOpenShiftRegistry() : params.DEPLOY_IMAGE_REGISTRY
 }
 
 String getDeployImageNamespace() {
@@ -292,6 +290,22 @@ boolean isDeployLatestTag() {
 // utils
 ////////////////////////////////////////////////////////////////////////
 
+String getOpenShiftRegistry() {
+    String registry = ''
+    withCredentials([string(credentialsId: 'OPENSHIFT_REGISTRY', variable: 'OPENSHIFT_REGISTRY')]) {
+        registry = env.OPENSHIFT_REGISTRY
+    }
+    return registry
+}
+
+String getOpenShiftAPI() {
+    String openShiftAPI = ''
+    withCredentials([string(credentialsId: 'OPENSHIFT_API', variable: 'OPENSHIFT_API')]) {
+        openShiftAPI = env.OPENSHIFT_API
+    }
+    return openShiftAPI
+}
+
 String getRepoName() {
     return env.REPO_NAME
 }
@@ -317,11 +331,11 @@ String getTargetBranch() {
 }
 
 String getGitAuthorCredentialsId() {
-    return env.AUTHOR_CREDS_ID
+    return env.GIT_AUTHOR_CREDS_ID
 }
 
 String getGitAuthorTokenCredentialsId() {
-    return env.AUTHOR_TOKEN_CREDS_ID
+    return env.GIT_AUTHOR_TOKEN_CREDS_ID
 }
 
 boolean shouldDeployImage() {

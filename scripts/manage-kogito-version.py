@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 # This script will be responsible to help to manage kogito images and modules version, it will update all needed files
 # Example of usage:
 #   # move the current version to the next one or rcX

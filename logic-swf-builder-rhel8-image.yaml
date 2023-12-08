@@ -16,7 +16,7 @@ labels:
   - name: "com.redhat.component"
     value: "openshift-serverless-1-logic-swf-builder-rhel8-container"
   - name: "maintainer"
-    value: "serverless-logic <bsig-cloud@redhat.com>"
+    value: "Apache KIE <dev@kie.apache.org>"
   - name: "io.k8s.description"
     value: "Red Hat build of Runtime image for Kogito Serverless Workflow builder with Quarkus extensions libraries preinstalled"
   - name: "io.k8s.display-name"

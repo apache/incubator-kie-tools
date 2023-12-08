@@ -3,7 +3,7 @@ Feature: kogito-trusty-ui feature
 
   Scenario: verify if all labels are correctly set on kogito-trusty-ui image
     Given image is built
-    Then the image should contain label maintainer with value kogito <bsig-cloud@redhat.com>
+    Then the image should contain label maintainer with value Apache KIE <dev@kie.apache.org>
     And the image should contain label io.openshift.expose-services with value 8080:http
     And the image should contain label io.k8s.description with value Runtime image for Kogito Trusty UI, manage your Business Process easily.
     And the image should contain label io.k8s.display-name with value Kogito Trusty UI

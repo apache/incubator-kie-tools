@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 # This script will be responsible to fetch the latest rc tags from each image and define the next
 # rc tag to avoid images get overridden.
 #

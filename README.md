@@ -5,11 +5,11 @@ Kogito
 
 <p align="center"><img width=55% height=55% src="docsimg/kogito.png"></p>
 
-[![GitHub Stars](https://img.shields.io/github/stars/kiegroup/kogito-images.svg)](https://github.com/kiegroup/kogito-images/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/kiegroup/kogito-images.svg)](https://github.com/kiegroup/kogito-images/network/members)
-[![Pull Requests](https://img.shields.io/github/issues-pr/kiegroup/kogito-images.svg?style=flat-square)](https://github.com/kiegroup/kogito-images/pulls)
-[![Contributors](https://img.shields.io/github/contributors/kiegroup/kogito-images.svg?style=flat-square)](https://github.com/kiegroup/kogito-images/graphs/contributors)
-[![License](https://img.shields.io/github/license/kiegroup/kogito-images.svg)](https://github.com/kiegroup/kogito-images/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/apache/incubator-kie-kogito-images.svg)](https://github.com/apache/incubator-kie-kogito-images/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/apache/incubator-kie-kogito-images.svg)](https://github.com/apache/incubator-kie-kogito-images/network/members)
+[![Pull Requests](https://img.shields.io/github/issues-pr/apache/incubator-kie-kogito-images.svg?style=flat-square)](https://github.com/apache/incubator-kie-kogito-images/pulls)
+[![Contributors](https://img.shields.io/github/contributors/apache/incubator-kie-kogito-images.svg?style=flat-square)](https://github.com/apache/incubator-kie-kogito-images/graphs/contributors)
+[![License](https://img.shields.io/github/license/apache/incubator-kie-kogito-images.svg)](https://github.com/apache/incubator-kie-kogito-images/blob/main/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kogito_kie.svg?label=Follow&style=social)](https://twitter.com/kogito_kie?lang=en)
 
 
@@ -231,12 +231,12 @@ See the next topic for an example.
 #### Kogito s2i Builder Image example
 
 ##### S2i Builder Image Example with Quarkus
-In this example, let's use a simple application based on Quarkus that is available in the [Kogito Examples](https://github.com/kiegroup/kogito-examples)
+In this example, let's use a simple application based on Quarkus that is available in the [Kogito Examples](https://github.com/apache/incubator-kie-kogito-examples)
 repository: the *rules-quarkus-helloworld* example, with native compilation disabled.
 
 
 ```bash
-$ s2i build https://github.com/kiegroup/kogito-examples.git \
+$ s2i build https://github.com/apache/incubator-kie-kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus \
     --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
@@ -279,11 +279,11 @@ $ curl -H "Content-Type: application/json" -X POST -d '{"strings":["hello"]}' ht
 
 
 ##### S2i Builder Image Example with Springboot
-In this example, let's use a simple application based on Spring Boot that is available in the [Kogito Examples](https://github.com/kiegroup/kogito-examples)
+In this example, let's use a simple application based on Spring Boot that is available in the [Kogito Examples](https://github.com/apache/incubator-kie-kogito-examples)
 repository: the *process-springboot-example*.
 
 ```bash
-$ s2i build https://github.com/kiegroup/kogito-examples.git \
+$ s2i build https://github.com/apache/incubator-kie-kogito-examples.git \
     --ref main \
     --context-dir kogito-springboot-examples/process-springboot-example \
     -e RUNTIME_TYPE=springboot \
@@ -320,7 +320,7 @@ Let's start 2 builds with the incremental option enabled and compare the time sp
 
 ```bash
 # First incremental build
-$ time s2i build https://github.com/kiegroup/kogito-examples.git \
+$ time s2i build https://github.com/apache/incubator-kie-kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus
     --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
@@ -338,7 +338,7 @@ And now, let's run it again.
 
 ```bash
 # Second incremental build
-$ time s2i build https://github.com/kiegroup/kogito-examples.git \
+$ time s2i build https://github.com/apache/incubator-kie-kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus
     --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
@@ -366,7 +366,7 @@ To make it possible we just need to set the **MAVEN_MIRROR_URL** environment var
 
 ```bash
 # Third incremental build, with Maven mirror option
-$ time s2i build https://github.com/kiegroup/kogito-examples.git \
+$ time s2i build https://github.com/apache/incubator-kie-kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus
     --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
@@ -435,8 +435,8 @@ If you don't have an already existing project, the best way to create a new one 
 to generate project structure. 
 The available archetypes are:
 
-- [Kogito Quarkus Archetype](https://github.com/kiegroup/kogito-runtimes/tree/main/archetypes/kogito-quarkus-archetype)
-- [Kogito Spring Boot Archetype](https://github.com/kiegroup/kogito-runtimes/tree/main/archetypes/kogito-springboot-archetype)
+- [Kogito Quarkus Archetype](https://github.com/apache/incubator-kie-kogito-runtimes/tree/main/archetypes/kogito-quarkus-archetype)
+- [Kogito Spring Boot Archetype](https://github.com/apache/incubator-kie-kogito-runtimes/tree/main/archetypes/kogito-springboot-archetype)
 
 Note that, when building Quarkus based application that is **not** an *UberJAR* we also need to copy the **lib** directory 
 located inside the *target* directory.  
@@ -476,7 +476,7 @@ docker run -it quay.io/kiegroup/kogito-runtime-jvm:latest /home/kogito/kogito-ap
 In the next few lines let's take a look on how this image can be used to receive an already built UberJAR. 
 To configure Quarkus to generate an UberJAR please follow the instructions described [here](https://quarkus.io/guides/maven-tooling#configuration-reference)
 
-For this example let's use the [process-quarkus-example](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-quarkus-examples/process-quarkus-example).
+For this example let's use the [process-quarkus-example](https://github.com/apache/incubator-kie-kogito-examples/tree/stable/kogito-quarkus-examples/process-quarkus-example).
 Once you have checked out the example on your local machine follow the steps below:
 
 **Example with UberJAR**
@@ -681,7 +681,7 @@ $ docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_HOSTS=m
 You should notice a few debug messages present in the system output.
 
 
-The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Data Index Service 
+The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Data Index Service 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
 ### Kogito Explainability Component Image
@@ -702,7 +702,7 @@ You should notice a few debug messages being printed in the system output.
 
 To know what configurations this image accepts please take a look [here](kogito-explainability-image.yaml) on the **envs** section.
 
-The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Explainability Service 
+The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Explainability Service 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
 
@@ -746,7 +746,7 @@ You should notice a few debug messages being printed in the system output.
 
 To know what configurations this image accepts please take a look [here](kogito-trusty-image.yaml) on the **envs** section.
 
-The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Trusty Service 
+The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Trusty Service 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
 ### Kogito Jobs Service Component Images
@@ -754,7 +754,7 @@ to your Kogito infrastructure on a Kubernetes cluster and provide its capabiliti
 The Kogito Jobs Service is a dedicated lightweight service responsible for scheduling jobs that aim at firing at a given time. 
 It does not execute the job itself, but it triggers a callback that could be an HTTP request on a given endpoint specified 
 on the job request, or any other callback that could be supported by the service. 
-For more information please visit this [link](https://github.com/kiegroup/kogito-runtimes/wiki/Job-Service).
+For more information please visit this [link](https://github.com/apache/incubator-kie-kogito-runtimes/wiki/Job-Service).
 
 Today, the Jobs service contains four images:
 
@@ -820,7 +820,7 @@ podman-compose -f contrib/jobs-service/container-compose-<variant>.yaml up
 
 The above command will spinup the Jobs-service so you can connect your application.
 
-The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Jobs Service
+The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Jobs Service
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications
 
 
@@ -849,7 +849,7 @@ You should notice a few debug messages being printed in the system output.
 
 To know what configurations this image accepts please take a look [here](kogito-management-console-image.yaml) on the **envs** section.
 
-The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Management Console 
+The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Management Console 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
 ### Kogito Task Console Component Image
@@ -874,7 +874,7 @@ You should notice a few debug messages being printed in the system output.
 
 To know what configurations this image accepts please take a look [here](kogito-task-console-image.yaml) on the **envs** section.
 
-The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Task Console
+The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Task Console
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
 ### Kogito Trusty UI Component Image
@@ -899,12 +899,12 @@ You should notice a few debug messages being printed in the system output.
 
 To know what configurations this image accepts please take a look [here](kogito-trusty-ui-image.yaml) on the **envs** section.
 
-The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Trusty UI 
+The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Trusty UI 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
 ### Kogito JIT Runner Component Image
 
-The Kogito JIT Runner provides a tool that allows you to submit a DMN model and evaluate it on the fly with a simple HTTP request. You can find more details on JIT [here](https://github.com/kiegroup/kogito-apps/tree/main/jitexecutor).
+The Kogito JIT Runner provides a tool that allows you to submit a DMN model and evaluate it on the fly with a simple HTTP request. You can find more details on JIT [here](https://github.com/apache/incubator-kie-kogito-apps/tree/main/jitexecutor).
 
 Basic usage:
 
@@ -930,10 +930,10 @@ Once the images are built and imported into a registry (quay.io or any other reg
 
 As a first step, we need to make the Kogito Images available as Image Streams in OpenShift. If you have `cluster-admin` 
 rights you can deploy it into the **openshift** namespace, otherwise, deploy it into the namespace where you have permissions. 
-To install the image stream use this imagestream file: [kogito-imagestream.yaml](https://raw.githubusercontent.com/kiegroup/kogito-images/main/kogito-imagestream.yaml).
+To install the image stream use this imagestream file: [kogito-imagestream.yaml](https://raw.githubusercontent.com/apache/incubator-kie-kogito-images/main/kogito-imagestream.yaml).
 It points to the latest released version.
 
-Let's use the *kogito-quarkus-examples/rules-quarkus-helloworld* from [Kogito Examples](https://github.com/kiegroup/kogito-examples).
+Let's use the *kogito-quarkus-examples/rules-quarkus-helloworld* from [Kogito Examples](https://github.com/apache/incubator-kie-kogito-examples).
 
 ```bash
 # creating a new namespace
@@ -947,7 +947,7 @@ You can add applications to this project with the 'new-app' command. For example
 to build a new example application in Ruby.
 
 # installing the imagestream on the current namespace
-$ oc create -f https://raw.githubusercontent.com/kiegroup/kogito-images/0.16.0/kogito-imagestream.yaml
+$ oc create -f https://raw.githubusercontent.com/apache/incubator-kie-kogito-images/0.16.0/kogito-imagestream.yaml
 imagestream.image.openshift.io/kogito-runtime-native created
 imagestream.image.openshift.io/kogito-runtime-jvm created
 imagestream.image.openshift.io/kogito-s2i-builder created
@@ -967,7 +967,7 @@ imagestream.image.openshift.io/kogito-management-console created
 
 # performing a new build
 $ oc new-build --name=rules-quarkus-helloworld-builder --image-stream=kogito-s2i-builder:latest \ 
-    https://github.com/kiegroup/kogito-examples.git#main --context-dir=kogito-quarkus-examples/rules-quarkus-helloworld \
+    https://github.com/apache/incubator-kie-kogito-examples.git#main --context-dir=kogito-quarkus-examples/rules-quarkus-helloworld \
     --strategy=source --env NATIVE=false 
 --> Found image 8c9d756 (5 days old) in image stream "rules-quarkus-helloworld/kogito-s2i-builder" under tag "latest" for "kogito-s2i-builder:latest"
 
@@ -978,7 +978,7 @@ $ oc new-build --name=rules-quarkus-helloworld-builder --image-stream=kogito-s2i
     Tags: builder, kogito, quarkus
 
     * The source repository appears to match: jee
-    * A source build using source code from https://github.com/kiegroup/kogito-examples.git#main will be created
+    * A source build using source code from https://github.com/apache/incubator-kie-kogito-examples.git#main will be created
       * The resulting image will be pushed to image stream tag "rules-quarkus-helloworld-builder:latest"
       * Use 'start-build' to trigger a new build
 
@@ -1077,7 +1077,7 @@ As output, you should see the following response:
 ```
 
 
-For more complex deployment, please use the [Kogito Cloud Operator](https://github.com/kiegroup/kogito-cloud-operator)
+For more complex deployment, please use the [Kogito Cloud Operator](https://github.com/apache/incubator-kie-kogito-operator)
 
 
 

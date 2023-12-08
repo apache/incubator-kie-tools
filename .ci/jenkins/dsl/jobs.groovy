@@ -17,7 +17,7 @@ import org.kie.jenkins.jobdsl.Utils
 jenkins_path = '.ci/jenkins'
 
 // PR checks
-Utils.isMainBranch(this) && KogitoJobTemplate.createPullRequestMultibranchPipelineJob(this, "${jenkins_path}/Jenkinsfile")
+setupPrJob()
 
 // Init branch
 createSetupBranchJob()
@@ -39,23 +39,10 @@ setupQuarkusUpdateJob()
 
 void setupPrJob() {
     setupBuildImageJob(JobType.PULL_REQUEST)
+    setupBuildAndTestJob(JobType.PULL_REQUEST)
 
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.PULL_REQUEST, "${jenkins_path}/Jenkinsfile", "Kogito Images PR check")
-    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
-    jobParams.pr.putAll([
-        run_only_for_branches: [ "${GIT_BRANCH}" ],
-        disable_status_message_error: true,
-        disable_status_message_failure: true,
-        commitContext: 'Retrieve and Launch Image Checks',
-        contextShowtestResults: false,
-    ])
-    if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
-        jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
-    }
-    jobParams.env.putAll([
-        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-    ])
-    KogitoJobTemplate.createPRJob(this, jobParams)
+    // Branch Source Plugin multibranchPipelineJob
+    Utils.isMainBranch(this) && KogitoJobTemplate.createPullRequestMultibranchPipelineJob(this, "${jenkins_path}/Jenkinsfile", JobType.PULL_REQUEST.getName())
 }
 
 void createSetupBranchJob() {
@@ -66,7 +53,8 @@ void createSetupBranchJob() {
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
-        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
         IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}"
     ])
@@ -98,8 +86,8 @@ void setupDeployJob(JobType jobType) {
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
         MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
@@ -155,8 +143,8 @@ void setupBuildImageJob(JobType jobType) {
         MAX_REGISTRY_RETRIES: 3,
         TARGET_AUTHOR: Utils.getGitAuthor(this), // In case of a PR to merge with target branch
 
-        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        AUTHOR_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         logRotator {
@@ -195,6 +183,61 @@ void setupBuildImageJob(JobType jobType) {
     }
 }
 
+void setupBuildAndTestJob(JobType jobType) {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images.build-and-test', jobType, "${jenkins_path}/Jenkinsfile.build-and-test", 'Kogito Images Build And test images')
+    // Use jenkinsfile from the build branch
+    jobParams.git.author = '${SOURCE_AUTHOR}'
+    jobParams.git.repository = '${SOURCE_REPOSITORY}'
+    jobParams.git.branch = '${SOURCE_BRANCH}'
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
+    jobParams.env.putAll([
+        MAX_REGISTRY_RETRIES: 3,
+        TARGET_AUTHOR: Utils.getGitAuthor(this), // In case of a PR to merge with target branch
+
+        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+    ])
+    if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
+        jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
+    }
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        logRotator {
+            daysToKeep(10)
+        }
+        parameters {
+            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
+
+            stringParam('SOURCE_AUTHOR', Utils.getGitAuthor(this), 'Build author')
+            stringParam('SOURCE_REPOSITORY', Utils.getRepoName(this), 'Build repository name')
+            stringParam('SOURCE_BRANCH', Utils.getGitBranch(this), 'Build branch name')
+            stringParam('TARGET_BRANCH', '', '(Optional) In case of a PR to merge with target branch, please provide the target branch')
+            stringParam('CHANGE_ID', '', 'CHANGE_ID coming from Branch Source Plugin')
+            stringParam('CHANGE_URL', '', 'CHANGE_URL coming from Branch Source Plugin')
+
+            // Build information
+            stringParam('MAVEN_ARTIFACTS_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
+            stringParam('BUILD_KOGITO_APPS_URI', '', '(Optional) Git uri to the kogito-apps repository to use for tests.')
+            stringParam('BUILD_KOGITO_APPS_REF', '', '(Optional) Git reference (branch/tag) to the kogito-apps repository to use for building. Default to BUILD_BRANCH_NAME.')
+            stringParam('QUARKUS_PLATFORM_URL', Utils.getMavenQuarkusPlatformRepositoryUrl(this), 'URL to the Quarkus platform to use. The version to use will be guessed from artifacts.')
+
+            // Test information
+            booleanParam('SKIP_TESTS', false, 'Skip tests')
+            stringParam('TESTS_KOGITO_EXAMPLES_URI', '', '(Optional) Git uri to the kogito-examples repository to use for tests.')
+            stringParam('TESTS_KOGITO_EXAMPLES_REF', '', '(Optional) Git reference (branch/tag) to the kogito-examples repository to use for tests.')
+
+            // Deploy information
+            booleanParam('DEPLOY_IMAGE', false, 'Should we deploy image to given deploy registry ?')
+            booleanParam('DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
+            stringParam('DEPLOY_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('DEPLOY_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
+            stringParam('DEPLOY_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
+            stringParam('DEPLOY_IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
+            stringParam('DEPLOY_IMAGE_TAG', '', 'Image tag to use to deploy images')
+            booleanParam('DEPLOY_WITH_LATEST_TAG', false, 'Set to true if you want the deployed images to also be with the `latest` tag')
+        }
+    }
+}
+
 void setupPromoteJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Images Promote')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
@@ -207,8 +250,8 @@ void setupPromoteJob(JobType jobType) {
 
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
 
-        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
         DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
         MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
@@ -256,6 +299,6 @@ void setupPromoteJob(JobType jobType) {
 
 void setupQuarkusUpdateJob() {
     KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], [
-        "source ~/virtenvs/cekit/bin/activate && python3 scripts/update-repository.py --quarkus-platform-version %new_version%"
+        "python scripts/update-repository.py --quarkus-platform-version %new_version%"
     ])
 }

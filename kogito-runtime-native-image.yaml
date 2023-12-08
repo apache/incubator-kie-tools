@@ -17,7 +17,7 @@ labels:
   - name: "org.kie.kogito.version"
     value: "2.0.0-SNAPSHOT"
   - name: "maintainer"
-    value: "kogito <bsig-cloud@redhat.com>"
+    value: "Apache KIE <dev@kie.apache.org>"
   - name: "io.k8s.description"
     value: "Runtime image for Kogito based on Quarkus native image"
   - name: "io.k8s.display-name"

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 # This script defines some common function that are used by manage-kogito-version.py and push-staging.py script
 
 
@@ -319,7 +319,7 @@ def update_examples_uri_in_behave_tests(examples_uri):
     """
     print("Set examples_uri {} in behave tests".format(examples_uri))
     # pattern to get the default examples uri
-    pattern = re.compile(r'(https://github.com/kiegroup/kogito-examples.git)')
+    pattern = re.compile(r'(https://github.com/apache/incubator-kie-kogito-examples.git)')
     replacement = examples_uri
     update_in_behave_tests(pattern, replacement)
 
@@ -361,17 +361,17 @@ def update_runtime_image_in_behave_tests(runtime_image_name, image_suffix):
     update_in_behave_tests(pattern, replacement)
 
 
-def update_maven_repo_in_behave_tests(repo_url, replace_jboss_repository):
+def update_maven_repo_in_behave_tests(repo_url, replace_default_repository):
     """
     Update maven repository into behave tests
     :param repo_url: Maven repository url
-    :param replace_jboss_repository: Set to true if default Jboss repository needs to be overriden
+    :param replace_default_repository: Set to true if default repository needs to be overriden
     """
     print("Set maven repo {} in behave tests".format(repo_url))
     pattern = re.compile('\|\s*variable[\s]*\|[\s]*value[\s]*\|')
     env_var_key = "MAVEN_REPO_URL"
-    if replace_jboss_repository:
-        env_var_key = "JBOSS_MAVEN_REPO_URL"
+    if replace_default_repository:
+        env_var_key = "DEFAULT_MAVEN_REPO_URL"
     replacement = "| variable | value |\n      | {} | {} |".format(env_var_key,
                                                                                                            repo_url)
     update_in_behave_tests(pattern, replacement)
@@ -396,16 +396,16 @@ def update_maven_mirror_url_in_quarkus_plugin_behave_tests(mirror_url):
         "MAVEN_MIRROR_URL", mirror_url)
     update_in_behave_tests(pattern, replacement)
 
-def update_maven_repo_env_value(repo_url, replace_jboss_repository, prod=False):
+def update_maven_repo_env_value(repo_url, replace_default_repository, prod=False):
     """
     Update the given maven repository value for all images/modules.
     :param repo_url: Maven repository url
-    :param replace_jboss_repository: Set to true if default Jboss repository needs to be ove
+    :param replace_default_repository: Set to true if default repository needs to be overidden
     :param prod: if the module to be updated is prod version.
     """
     env_name = "MAVEN_REPO_URL"
-    if replace_jboss_repository:
-        env_name = "JBOSS_MAVEN_REPO_URL"
+    if replace_default_repository:
+        env_name = "DEFAULT_MAVEN_REPO_URL"
     update_env_value(env_name, repo_url, prod)
 
 
@@ -453,29 +453,29 @@ def update_examples_uri_in_clone_repo(examples_uri):
     replacement = "git clone {}".format(examples_uri)
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
 
-def update_maven_repo_in_build_config(repo_url, replace_jboss_repository):
+def update_maven_repo_in_build_config(repo_url, replace_default_repository):
     """
     Update maven repository in build config modules
     :param repo_url: Maven repository url
-    :param replace_jboss_repository: Set to true if default Jboss repository needs to be overridden
+    :param replace_default_repository: Set to true if default repository needs to be overridden
     """
     maven_env_name = 'MAVEN_REPO_URL'
-    if replace_jboss_repository:
-        maven_env_name = 'JBOSS_MAVEN_REPO_URL'
+    if replace_default_repository:
+        maven_env_name = 'DEFAULT_MAVEN_REPO_URL'
     update_env_value_in_build_config_modules(maven_env_name, repo_url, True)
 
-def update_maven_repo_in_setup_maven(repo_url, replace_jboss_repository):
+def update_maven_repo_in_setup_maven(repo_url, replace_default_repository):
     """
     Update maven repository into setup-maven.sh script
     :param repo_url: Maven repository url
-    :param replace_jboss_repository: Set to true if default Jboss repository needs to be overridden
+    :param replace_default_repository: Set to true if default repository needs to be overridden
     """
     print("Set maven repo {} in setup-maven script".format(repo_url))
     pattern = ""
     replacement = ""
-    if replace_jboss_repository:
-        pattern = re.compile(r'(export JBOSS_MAVEN_REPO_URL=.*)')
-        replacement = 'export JBOSS_MAVEN_REPO_URL="{}"'.format(repo_url)
+    if replace_default_repository:
+        pattern = re.compile(r'(export DEFAULT_MAVEN_REPO_URL=.*)')
+        replacement = 'export DEFAULT_MAVEN_REPO_URL="{}"'.format(repo_url)
     else:
         pattern = re.compile(r'(# export MAVEN_REPO_URL=.*)')
         replacement = 'export MAVEN_REPO_URL="{}"'.format(repo_url)

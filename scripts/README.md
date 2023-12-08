@@ -50,13 +50,13 @@ Utilitary script used to retrieve all images that can be built on this repo, the
 the community image list:
 
 ```bash
-$ python3 list-images.py
+$ python list-images.py
 ```
 
 And the product image list by using the `--prod` flag:
 
 ```bash
-$ python3 list-images.py --prod
+$ python list-images.py --prod
 ```
 
 

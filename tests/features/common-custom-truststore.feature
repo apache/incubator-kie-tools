@@ -18,7 +18,7 @@
 @openshift-serverless-1-tech-preview/logic-data-index-ephemeral-rhel8
 Feature: Common tests for Custom TrustStore configuration
   Scenario: Verify if a custom certificate is correctly handled
-    When container is started with command /home/kogito/kogito-app-launch.sh
+    When container is started with command bash -c "sleep 5s; /home/kogito/kogito-app-launch.sh"
       | variable            | value              |
       | CUSTOM_TRUSTSTORE   | my-truststore.jks  |
       | RUNTIME_TYPE        | quarkus            |
