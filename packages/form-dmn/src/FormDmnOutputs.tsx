@@ -283,7 +283,7 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
               <I18nWrapped
                 components={{
                   jira: (
-                    <a href={ISSUES_URL} target={"_blank"}>
+                    <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}
                     </a>
                   ),
