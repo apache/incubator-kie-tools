@@ -36,7 +36,11 @@ import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
 import { v4 as uuid } from "uuid";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
-import { AUTH_SESSION_VERSION, CloudAuthSessionType, OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
+import {
+  AUTH_SESSION_VERSION_NUMBER,
+  CloudAuthSessionType,
+  OpenShiftAuthSession,
+} from "../../authSessions/AuthSessionApi";
 import {
   KubernetesConnection,
   isHostValid,
@@ -159,7 +163,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxOpenShiftService) {
       const newAuthSession: OpenShiftAuthSession = {
         type: CloudAuthSessionType.OpenShift,
-        version: AUTH_SESSION_VERSION,
+        version: AUTH_SESSION_VERSION_NUMBER,
         id: uuid(),
         ...props.connection,
         authProviderId: "openshift",

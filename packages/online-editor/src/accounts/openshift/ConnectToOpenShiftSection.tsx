@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useMemo, useState, useEffect, useCallback } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
 import { ConnecToOpenShiftSimple } from "./ConnecToOpenShiftSimple";
