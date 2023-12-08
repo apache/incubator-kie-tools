@@ -93,7 +93,7 @@
 
 # 0.25.0 (alpha)
 
-- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)
+- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - Apache KIE Tools Security updates (3rd round)
 - [KOGITO-8092](https://issues.redhat.com/browse/KOGITO-8092) - [SWF Editor] Improve the creation of workflow from an empty file
 
 # 0.24.0 (alpha)
@@ -177,7 +177,7 @@
 - [KOGITO-6558](https://issues.redhat.com/browse/KOGITO-6558) - [SW Editor] - YAML support
 - [KOGITO-6646](https://issues.redhat.com/browse/KOGITO-6646) - Marshaller Issues
 - [KOGITO-6647](https://issues.redhat.com/browse/KOGITO-6647) - Upgrade Extension for 0.8 specification
-- [KOGITO-6648](https://issues.redhat.com/browse/KOGITO-6648) - Migrate Extension to KIE Tools Repository
+- [KOGITO-6648](https://issues.redhat.com/browse/KOGITO-6648) - Migrate Extension to Apache KIE Tools Repository
 - [KOGITO-6795](https://issues.redhat.com/browse/KOGITO-6795) - Serverless Workflow Editor Issues
 - [KOGITO-6807](https://issues.redhat.com/browse/KOGITO-6807) - Implement undo, redo and isDirty
 - [KOGITO-6796](https://issues.redhat.com/browse/KOGITO-6796) - Fetch error on console when opening the editor

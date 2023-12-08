@@ -4,13 +4,13 @@
   "description": "Core module of the YARD editor, Yet Another Rule Definition editor",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "types": "./dist/editor/index.d.ts",
   "main": "dist/editor/index.js",
@@ -38,6 +38,7 @@
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/yard-language-service": "workspace:*",
+    "@kie-tools/yard-validator": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@types/js-yaml": "^4.0.5",

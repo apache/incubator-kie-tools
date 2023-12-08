@@ -43,7 +43,8 @@ export const AboutButton: React.FunctionComponent = () => {
   const buildInfo = process.env.WEBPACK_REPLACE__buildInfo;
   const kogitoRuntimesVersion = process.env.WEBPACK_REPLACE__kogitoRuntimeVersion;
   const quarkusVersion = process.env.WEBPACK_REPLACE__quarkusPlatformVersion;
-  const dmnDevDeploymentsBaseImageUrl = env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL;
+  const devDeploymentsBaseImageUrl = env.KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL;
+  const devDeploymentsDmnFormWebappImageUrl = env.KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL;
   const extendedServicesVersion = process.env.WEBPACK_REPLACE__extendedServicesCompatibleVersion;
   const commitSha = process.env.WEBPACK_REPLACE__commitHash;
 
@@ -96,8 +97,12 @@ export const AboutButton: React.FunctionComponent = () => {
               <DescriptionListDescription>{quarkusVersion}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
-              <DescriptionListTerm>DMN Dev deployments image URL: </DescriptionListTerm>
-              <DescriptionListDescription>{dmnDevDeploymentsBaseImageUrl}</DescriptionListDescription>
+              <DescriptionListTerm>Dev deployments image URL: </DescriptionListTerm>
+              <DescriptionListDescription>{devDeploymentsBaseImageUrl}</DescriptionListDescription>
+            </DescriptionListGroup>
+            <DescriptionListGroup>
+              <DescriptionListTerm>Dev deployments DMN Form webapp image URL: </DescriptionListTerm>
+              <DescriptionListDescription>{devDeploymentsDmnFormWebappImageUrl}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
               <DescriptionListTerm>Extended Services version: </DescriptionListTerm>

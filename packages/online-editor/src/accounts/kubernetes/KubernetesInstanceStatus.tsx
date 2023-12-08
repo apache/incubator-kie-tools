@@ -18,7 +18,6 @@
  */
 
 export enum KubernetesInstanceStatus {
-  UNAVAILABLE = "UNAVAILABLE",
   DISCONNECTED = "DISCONNECTED",
   CONNECTED = "CONNECTED",
   EXPIRED = "EXPIRED",

@@ -79,7 +79,7 @@
 
 # 0.25.0 (alpha)
 
-- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)
+- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - Apache KIE Tools Security updates (3rd round)
 
 # 0.24.0 (alpha)
 

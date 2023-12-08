@@ -149,6 +149,10 @@ export default async (env: any, argv: any) => {
                 to: "./dashbuilder-client",
                 globOptions: { ignore: ["**/WEB-INF/**/*"] }, // "**/*.html" omitted because dashbuilder-client/index.html is needed
               },
+              {
+                from: path.resolve(__dirname, "node_modules/@kie-tools/yard-validator/dist/yard-validator-worker.js"),
+                to: "./yard-validator-worker.js",
+              },
             ],
           }),
           new ProvidePlugin({

@@ -5,13 +5,13 @@
   "license": "Apache-2.0",
   "publisher": "redhat",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "browser": "./dist/browser/extension.js",
   "main": "dist/extension/extension.js",
@@ -53,10 +53,10 @@
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^8.2.2",
     "@types/react": "^17.0.6",
-    "@types/selenium-webdriver": "^4.1.15",
+    "@types/selenium-webdriver": "^4.1.20",
     "@types/vscode": "1.67.0",
     "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.20.1",
+    "@vscode/vsce": "^2.22.0",
     "chai": "^4.3.10",
     "copy-webpack-plugin": "^11.0.0",
     "cpr": "^3.0.1",
@@ -66,9 +66,9 @@
     "mocha-multi-reporters": "^1.5.1",
     "rimraf": "^3.0.2",
     "sanitize-filename-ts": "^1.0.2",
-    "selenium-webdriver": "^4.10.0",
+    "selenium-webdriver": "^4.15.0",
     "typescript": "^4.6.2",
-    "vscode-extension-tester": "5.9.1",
+    "vscode-extension-tester": "5.10.0",
     "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
