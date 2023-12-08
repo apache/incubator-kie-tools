@@ -30,6 +30,7 @@ pipeline {
         END_TO_END_TESTS_REPORTS_PATTERNS = 'kie-tools/packages/**/dist-e2e-tests/junit-report*.xml kie-tools/examples/**/dist-e2e-tests/junit-report*.xml kie-tools/packages/**/target/failsafe-reports/TEST-*.xml kie-tools/examples/**/target/failsafe-reports/TEST-*.xml'
         END_TO_END_TESTS_ARTIFACTS_PATTERNS = 'kie-tools/packages/**/dist-e2e-tests kie-tools/examples/**/dist-e2e-tests'
         BUILD_ARTIFACTS_PATTERNS = 'kie-tools/packages/**/dist kie-tools/examples/**/dist'
+        ENABLE_BUILD_KITE = 'false'
     }
 
     stages {
