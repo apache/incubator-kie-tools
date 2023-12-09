@@ -207,9 +207,9 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP__account}",
-                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP__name}",
-                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP__buildTags}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
                 }
