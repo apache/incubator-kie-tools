@@ -106,7 +106,7 @@ pipeline {
                 dir('serverless-logic-sandbox-deployment') {
                     script {
                         githubUtils.checkoutRepo(
-                            'http://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
+                            'http://github.com/apache/incubator-kie-serverless-logic-sandbox-deployment.git',
                             'gh-pages',
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
@@ -167,8 +167,8 @@ pipeline {
                         git commit -m "Deploy ${params.TAG}"
                         """.trim()
 
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/serverless-logic-sandbox-deployment.git gh-pages')
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.asfGithubPushCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
+                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-serverless-logic-sandbox-deployment.git gh-pages')
                         }
                     }
                 }

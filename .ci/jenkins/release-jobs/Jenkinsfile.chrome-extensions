@@ -39,11 +39,11 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        CHROME_EXTENSION__routerTargetOrigin = 'https://kiegroup.github.io'
-        CHROME_EXTENSION__routerRelativePath = "kogito-online/chrome-extension/${params.TAG}"
+        CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
+        CHROME_EXTENSION__routerRelativePath = "incubator-kie-kogito-online/chrome-extension/${params.TAG}"
         CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
-        CHROME_EXTENSION__onlineEditorUrl = 'https://kiegroup.github.io/kogito-online'
-        SWF_CHROME_EXTENSION__routerTargetOrigin = 'https://kiegroup.github.io'
+        CHROME_EXTENSION__onlineEditorUrl = 'https://apache.github.io/incubator-kie-kogito-online'
+        SWF_CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
         SWF_CHROME_EXTENSION__routerRelativePath = "kogito-online/swf-chrome-extension/${params.TAG}"
         SWF_CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
 
@@ -95,7 +95,7 @@ pipeline {
                 dir('kogito-online') {
                     script {
                         githubUtils.checkoutRepo(
-                            'http://github.com/kiegroup/kogito-online.git',
+                            'http://github.com/apache/incubator-kie-kogito-online.git',
                             'gh-pages',
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
@@ -179,8 +179,8 @@ pipeline {
                         git commit -m "Deploy ${params.TAG} (Chrome Extension for Kogito KIE Editors)"
                         """.trim()
 
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/kogito-online.git gh-pages')
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.asfGithubPushCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
+                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-kogito-online.git gh-pages')
                         }
                     }
                 }
@@ -281,8 +281,8 @@ pipeline {
                         git commit -m "Deploy ${params.TAG} (Chrome Extension for Serverless Workflow Editor)"
                         """.trim()
 
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/kogito-online.git gh-pages')
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.asfGithubPushCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
+                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-kogito-online.git gh-pages')
                         }
                     }
                 }

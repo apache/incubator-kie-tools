@@ -109,7 +109,7 @@ pipeline {
                 dir('kogito-online') {
                     script {
                         githubUtils.checkoutRepo(
-                            'http://github.com/kiegroup/kogito-online.git',
+                            'http://github.com/apache/incubator-kie-kogito-online.git',
                             'gh-pages',
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
@@ -186,8 +186,8 @@ pipeline {
                         git commit -m "Deploy ${params.TAG} (Editors + Online Editor)"
                         """.trim()
 
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/kogito-online.git gh-pages')
+                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.asfGithubPushCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
+                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-kogito-online.git gh-pages')
                         }
                     }
                 }

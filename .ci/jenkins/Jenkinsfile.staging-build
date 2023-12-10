@@ -147,7 +147,7 @@ pipeline {
                 dir('kogito-online-staging') {
                     script {
                         githubUtils.checkoutRepo(
-                            'https://github.com/kiegroup/kogito-online-staging.git',
+                            'https://github.com/apache/incubator-kie-kogito-online-staging.git',
                             'main',
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
@@ -164,7 +164,7 @@ pipeline {
                 dir('serverless-logic-sandbox-deployment') {
                     script {
                         githubUtils.checkoutRepo(
-                            'https://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
+                            'https://github.com/apache/incubator-kie-serverless-logic-sandbox-deployment.git',
                             'gh-pages',
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
@@ -226,7 +226,7 @@ pipeline {
             steps {
                 dir('kogito-online-staging') {
                     script {
-                        deployOnlineEditor("${params.TAG}", "${pipelineVars.kieToolsBotGithubCredentialsId}")
+                        deployOnlineEditor("${params.TAG}", "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }
@@ -239,7 +239,7 @@ pipeline {
             steps {
                 dir('serverless-logic-sandbox-deployment') {
                     script {
-                        deployServerlessLogicWebTools("${params.TAG}", "${pipelineVars.kieToolsBotGithubCredentialsId}")
+                        deployServerlessLogicWebTools("${params.TAG}", "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }
@@ -842,12 +842,12 @@ def buildPartial(params) {
     export KIE_TOOLS_BUILD__buildContainerImages=true
     export WEBPACK__minimize=true
     export WEBPACK__tsLoaderTranspileOnly=false
-    export CHROME_EXTENSION__routerTargetOrigin=https://kiegroup.github.io
-    export CHROME_EXTENSION__routerRelativePath=kogito-online-staging/${params.TAG}-prerelease/chrome-extension
-    export CHROME_EXTENSION__onlineEditorUrl=https://kiegroup.github.io/kogito-online-staging/${params.TAG}-prerelease
+    export CHROME_EXTENSION__routerTargetOrigin=https://apache.github.io
+    export CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online-staging/${params.TAG}-prerelease/chrome-extension
+    export CHROME_EXTENSION__onlineEditorUrl=https://apache.github.io/incubator-kie-kogito-online-staging/${params.TAG}-prerelease
     export CHROME_EXTENSION__manifestFile=manifest.prod.json
-    export SWF_CHROME_EXTENSION__routerTargetOrigin=https://kiegroup.github.io
-    export SWF_CHROME_EXTENSION__routerRelativePath=kogito-online-staging/${params.TAG}-prerelease/swf-chrome-extension
+    export SWF_CHROME_EXTENSION__routerTargetOrigin=https://apache.github.io
+    export SWF_CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online-staging/${params.TAG}-prerelease/swf-chrome-extension
     export SWF_CHROME_EXTENSION__manifestFile=manifest.prod.json
     export ONLINE_EDITOR__buildInfo="${params.TAG} (staging) @ ${params.COMMIT_SHA}"
     export ONLINE_EDITOR__extendedServicesDownloadUrlLinux=${params.DOWNLOAD_ASSET_URL}/STAGING__kie_sandbox_extended_services_linux_${params.TAG}.tar.gz
@@ -856,7 +856,7 @@ def buildPartial(params) {
     export ONLINE_EDITOR__extendedServicesCompatibleVersion=${params.TAG}
     export ONLINE_EDITOR__gtmId=""
     export ONLINE_EDITOR__corsProxyUrl=https://staging-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud
-    export EXTENDED_SERVICES__kieSandboxUrl=https://kiegroup.github.io/kogito-online-staging/${params.TAG}-prerelease
+    export EXTENDED_SERVICES__kieSandboxUrl=https://apache.github.io/incubator-kie-kogito-online-staging/${params.TAG}-prerelease
     export SERVERLESS_LOGIC_WEB_TOOLS__version=${params.TAG}-prerelease
     export SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef=${params.TAG}
     export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${params.TAG} (staging) @ ${params.COMMIT_SHA}"
@@ -909,7 +909,7 @@ def deployOnlineEditor(String tag, String credentialsId) {
     """.trim()
 
     withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-        sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/kogito-online-staging.git main')
+        sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-kogito-online-staging.git main')
     }
 }
 
@@ -932,6 +932,6 @@ def deployServerlessLogicWebTools(String tag, String credentialsId) {
     """.trim()
 
     withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-        sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/serverless-logic-sandbox-deployment.git gh-pages')
+        sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-serverless-logic-sandbox-deployment.git gh-pages')
     }
 }
