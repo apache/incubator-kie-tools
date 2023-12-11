@@ -156,23 +156,6 @@ pipeline {
             }
         }
 
-        stage('Checkout serverless-logic-sandbox-deployment') {
-            when {
-                expression { !params.DRY_RUN }
-            }
-            steps {
-                dir('serverless-logic-sandbox-deployment') {
-                    script {
-                        githubUtils.checkoutRepo(
-                            'https://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
-                            'gh-pages',
-                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                        )
-                    }
-                }
-            }
-        }
-
         stage('Setup PNPM') {
             steps {
                 dir('kie-tools') {
@@ -227,19 +210,6 @@ pipeline {
                 dir('kogito-online-staging') {
                     script {
                         deployOnlineEditor("${params.TAG}", "${pipelineVars.asfGithubPushCredentialsId}")
-                    }
-                }
-            }
-        }
-
-        stage('STAGING: Deploy Serverless Logic Web Tools to serverless-logic-sandbox-deployment') {
-            when {
-                expression { !params.DRY_RUN }
-            }
-            steps {
-                dir('serverless-logic-sandbox-deployment') {
-                    script {
-                        deployServerlessLogicWebTools("${params.TAG}", "${pipelineVars.kieToolsBotGithubCredentialsId}")
                     }
                 }
             }
@@ -909,25 +879,4 @@ def deployOnlineEditor(String tag, String credentialsId) {
     """.trim()
 
     githubUtils.pushObject('origin', 'main', "${credentialsId}")
-}
-
-def deployServerlessLogicWebTools(String tag, String credentialsId) {
-    DEPLOYMENT_DIR = "staging/${tag}-prerelease"
-
-    sh """#!/bin/bash -el
-    echo "Switch to gh-pages branch"
-    git checkout gh-pages
-
-    echo "Reset deployment dir"
-    rm -rf ${DEPLOYMENT_DIR}
-
-    echo "Copy Serverless Logic Web Tools resources to the deployment dir"
-    cp -r ${WORKSPACE}/kie-tools/packages/serverless-logic-web-tools/dist ${DEPLOYMENT_DIR}
-
-    echo "Commit changes and push"
-    git add ${DEPLOYMENT_DIR}
-    git commit -m "Deploy ${tag}-prerelease (staging)"
-    """.trim()
-
-    githubUtils.pushObject('origin', 'gh-pages', "${credentialsId}")
 }

@@ -396,29 +396,6 @@ pipeline {
                 }
             }
         }
-
-        stage('Update serverless-logic-sandbox-deployment') {
-            steps {
-                dir('serverless-logic-sandbox-deployment') {
-                    script {
-                        githubUtils.checkoutRepo(
-                            'https://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
-                            'gh-pages',
-                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                        )
-
-                        sh """#!/bin/bash -el
-                        git checkout gh-pages
-                        rm -rf dev && mkdir dev
-                        cp -r ../kie-tools/packages/serverless-logic-web-tools/dist/* dev/
-                        git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
-                        """.trim()
-
-                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.kieToolsBotGithubCredentialsId}")
-                    }
-                }
-            }
-        }
     }
 
     post {
