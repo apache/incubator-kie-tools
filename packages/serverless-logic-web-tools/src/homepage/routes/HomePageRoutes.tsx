@@ -31,11 +31,11 @@ import { EditorPage } from "../../editor/EditorPage";
 import { NoMatchPage } from "../../navigation/NoMatchPage";
 import { SamplesCatalog } from "../../samples/SamplesCatalog";
 import { WorkspaceFiles } from "../recentModels/workspaceFiles/WorkspaceFiles";
-import { RuntimeToolsWorkflowInstances } from "../../runtimeTools/workflows/RuntimeToolsWorkflowInstances";
-import { RuntimeToolsWorkflowDetails } from "../../runtimeTools/workflows/RuntimeToolsWorkflowDetails";
-import { RuntimeToolsWorkflowDefinitions } from "../../runtimeTools/workflows/RuntimeToolsWorkflowDefinitions";
-import { RuntimeToolsTriggerCloudEvent } from "../../runtimeTools/workflows/RuntimeToolsTriggerCloudEvent";
-import { RuntimeToolsWorkflowForm } from "../../runtimeTools/workflows/RuntimeToolsWorkflowForm";
+import { RuntimeToolsWorkflowInstances } from "../../runtimeTools/pages/RuntimeToolsWorkflowInstances";
+import { RuntimeToolsWorkflowDetails } from "../../runtimeTools/pages/RuntimeToolsWorkflowDetails";
+import { RuntimeToolsWorkflowDefinitions } from "../../runtimeTools/pages/RuntimeToolsWorkflowDefinitions";
+import { RuntimeToolsTriggerCloudEvent } from "../../runtimeTools/pages/RuntimeToolsTriggerCloudEvent";
+import { RuntimeToolsWorkflowForm } from "../../runtimeTools/pages/RuntimeToolsWorkflowForm";
 
 export function HomePageRoutes(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
