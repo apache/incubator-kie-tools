@@ -30,25 +30,45 @@ import {
 import * as vscode from "vscode";
 import * as __path from "path";
 import { RelativePattern, WorkspaceFolder } from "vscode";
+import { listFiles } from "isomorphic-git";
+import { Minimatch } from "minimatch";
+import { VsCodeEquivalentIsomorphicGitFs } from "./VsCodeResourceContentServiceIsomorphicGitFs";
 
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
  */
-export class VsCodeResourceContentServiceImpl implements ResourceContentService {
+export class VsCodeResourceContentServiceForWorkspaces implements ResourceContentService {
   private readonly currentAssetFolder: string;
+  private readonly vscodeEquivalentFs: VsCodeEquivalentIsomorphicGitFs;
 
   constructor(currentAssetFolder: string) {
     this.currentAssetFolder = currentAssetFolder;
+    this.vscodeEquivalentFs = new VsCodeEquivalentIsomorphicGitFs();
   }
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     const workspaceFolderPath = vscode.workspace.workspaceFolders![0].uri.fsPath + __path.sep;
     const basePath =
       opts?.type === SearchType.ASSET_FOLDER ? workspaceFolderPath + this.currentAssetFolder : workspaceFolderPath;
-    const relativePattern = new RelativePattern(basePath, pattern);
-    const files = await vscode.workspace.findFiles(relativePattern);
-    const paths = files.map((uri: vscode.Uri) => vscode.workspace.asRelativePath(uri));
-    return new ResourcesList(pattern, paths);
+
+    // The vscode API will read all files, including the .gitignore ones,
+    // making this action is less performatic than the git ls-files which will
+    // automatically exclude the .gitignore files.
+    try {
+      console.debug("Trying to use isomorphic-git to read dir.");
+      const files = await listFiles({ fs: this.vscodeEquivalentFs as any, dir: basePath });
+      const minimatch = new Minimatch(pattern);
+      // The regexp is 50x faster than the direct match using glob.
+      const regexp = minimatch.makeRe();
+      const paths = files.filter((file) => regexp.test(file));
+      return new ResourcesList(pattern, paths);
+    } catch (error) {
+      console.debug("Failed to use isomorphic-git to read dir. Falling back to vscode API. error: ", error);
+      const relativePattern = new RelativePattern(basePath, pattern);
+      const files = await vscode.workspace.findFiles(relativePattern);
+      const paths = files.map((uri: vscode.Uri) => vscode.workspace.asRelativePath(uri));
+      return new ResourcesList(pattern, paths);
+    }
   }
 
   public async get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
@@ -86,9 +106,9 @@ export class VsCodeResourceContentServiceImpl implements ResourceContentService 
         .readFile(vscode.Uri.parse(contentPath))
         .then((content) => new ResourceContent(path, Buffer.from(content).toString("base64"), ContentType.BINARY));
     } else {
-      return vscode.workspace
-        .openTextDocument(contentPath)
-        .then((textDoc) => new ResourceContent(path, textDoc.getText(), ContentType.TEXT));
+      return vscode.workspace.fs
+        .readFile(vscode.Uri.parse(contentPath))
+        .then((content) => new ResourceContent(path, Buffer.from(content).toString(), ContentType.TEXT));
     }
   }
 }

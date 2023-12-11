@@ -33,8 +33,8 @@ import {
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeKieEditorController, KogitoEditorDocument } from "./VsCodeKieEditorController";
 import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
-import { VsCodeNodeResourceContentServiceImpl } from "./VsCodeNodeResourceContentServiceImpl";
-import { VsCodeResourceContentServiceImpl } from "./VsCodeResourceContentServiceImpl";
+import { VsCodeResourceContentServiceForDanglingFiles } from "./VsCodeResourceContentServiceForDanglingFiles";
+import { VsCodeResourceContentServiceForWorkspaces } from "./VsCodeResourceContentServiceForWorkspaces";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
@@ -100,9 +100,9 @@ export class VsCodeKieEditorControllerFactory {
 
   public createResourceContentService(path: string, workspacePath: string): ResourceContentService {
     if (this.isAssetInWorkspace(path)) {
-      return new VsCodeResourceContentServiceImpl(this.getParentFolder(workspacePath));
+      return new VsCodeResourceContentServiceForWorkspaces(this.getParentFolder(workspacePath));
     } else {
-      return new VsCodeNodeResourceContentServiceImpl(this.getParentFolder(path));
+      return new VsCodeResourceContentServiceForDanglingFiles(this.getParentFolder(path));
     }
   }
 

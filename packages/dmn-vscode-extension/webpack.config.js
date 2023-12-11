@@ -23,6 +23,7 @@ const stunnerEditors = require("@kie-tools/stunner-editors");
 const vscodeJavaCodeCompletionExtensionPlugin = require("@kie-tools/vscode-java-code-completion-extension-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const { ProvidePlugin } = require("webpack");
 
 const commonConfig = (env) =>
   merge(common(env), {
@@ -80,6 +81,16 @@ module.exports = async (env) => [
           },
         ],
       }),
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
     ],
+    resolve: {
+      fallback: {
+        stream: require.resolve("stream-browserify"),
+        buffer: require.resolve("buffer/"),
+      },
+    },
   }),
 ];

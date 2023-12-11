@@ -28,6 +28,7 @@ import {
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnEditorRoot } from "./DmnEditorRoot";
+import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 
 export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
   public createEditor(
@@ -84,13 +85,59 @@ export class DmnEditorInterface implements Editor {
   // This is the argument to ReactDOM.render. These props can be understood like "static globals".
   public af_componentRoot() {
     return (
-      <DmnEditorRoot
-        exposing={(s) => (this.self = s)}
-        onNewEdit={(e) => this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send(e)}
-        onRequestFileList={(r) => this.envelopeContext.channelApi.requests.kogitoWorkspace_resourceListRequest(r)}
-        onRequestFileContent={(r) => this.envelopeContext.channelApi.requests.kogitoWorkspace_resourceContentRequest(r)}
-        onOpenFile={(p) => this.envelopeContext.channelApi.notifications.kogitoWorkspace_openFile.send(p)}
+      <DmnEditorRootWrapper
+        exposing={(dmnEditorRoot) => (this.self = dmnEditorRoot)}
+        envelopeContext={this.envelopeContext}
       />
     );
   }
+}
+
+// This component is a wrapper. It memoizes the DmnEditorRoot props beforing rendering it.
+function DmnEditorRootWrapper({
+  envelopeContext,
+  exposing,
+}: {
+  envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>;
+  exposing: (s: DmnEditorRoot) => void;
+}) {
+  const onNewEdit = React.useCallback(
+    (workspaceEdit: WorkspaceEdit) => {
+      envelopeContext?.channelApi.notifications.kogitoWorkspace_newEdit.send(workspaceEdit);
+    },
+    [envelopeContext]
+  );
+
+  const onRequestFileList = React.useCallback(
+    async (resource: ResourcesList) => {
+      return (
+        envelopeContext?.channelApi.requests.kogitoWorkspace_resourceListRequest(resource) ?? new ResourcesList("", [])
+      );
+    },
+    [envelopeContext]
+  );
+
+  const onRequestFileContent = React.useCallback(
+    async (resource: ResourceContent) => {
+      return envelopeContext?.channelApi.requests.kogitoWorkspace_resourceContentRequest(resource);
+    },
+    [envelopeContext]
+  );
+
+  const onOpenFile = React.useCallback(
+    (path: string) => {
+      envelopeContext?.channelApi.notifications.kogitoWorkspace_openFile.send(path);
+    },
+    [envelopeContext]
+  );
+
+  return (
+    <DmnEditorRoot
+      exposing={exposing}
+      onNewEdit={onNewEdit}
+      onRequestFileList={onRequestFileList}
+      onRequestFileContent={onRequestFileContent}
+      onOpenFile={onOpenFile}
+    />
+  );
 }

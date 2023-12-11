@@ -34,7 +34,7 @@ import * as vscode from "vscode";
  * Implementation of a ResourceContentService using the Node filesystem APIs. This should only be used when the edited
  * asset is not part the opened workspace.
  */
-export class VsCodeNodeResourceContentServiceImpl implements ResourceContentService {
+export class VsCodeResourceContentServiceForDanglingFiles implements ResourceContentService {
   private readonly rootFolder: string;
 
   constructor(rootFolder: string) {
