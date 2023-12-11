@@ -162,8 +162,6 @@ pipeline {
                         CHROME_EXTENSION_DIR = "chrome-extension/${params.TAG}"
 
                         sh """#!/bin/bash -el
-                        git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
                         git checkout gh-pages
 
                         echo "Copy Chrome Extension resources"
@@ -179,9 +177,7 @@ pipeline {
                         git commit -m "Deploy ${params.TAG} (Chrome Extension for Kogito KIE Editors)"
                         """.trim()
 
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.asfGithubPushCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-kogito-online.git gh-pages')
-                        }
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }
@@ -267,8 +263,6 @@ pipeline {
                         DEPLOYMENT_DIR = "swf-chrome-extension/${params.TAG}"
 
                         sh """#!/bin/bash -el
-                        git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
                         git checkout gh-pages
 
                         echo "Copy Chrome Extension resources"
@@ -281,9 +275,7 @@ pipeline {
                         git commit -m "Deploy ${params.TAG} (Chrome Extension for Serverless Workflow Editor)"
                         """.trim()
 
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.asfGithubPushCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-kogito-online.git gh-pages')
-                        }
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }

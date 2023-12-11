@@ -908,9 +908,7 @@ def deployOnlineEditor(String tag, String credentialsId) {
     git commit -m "Deploy ${tag}-prerelease (staging)"
     """.trim()
 
-    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-        sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-kogito-online-staging.git main')
-    }
+    githubUtils.pushObject('origin', 'main', "${credentialsId}")
 }
 
 def deployServerlessLogicWebTools(String tag, String credentialsId) {
@@ -931,7 +929,5 @@ def deployServerlessLogicWebTools(String tag, String credentialsId) {
     git commit -m "Deploy ${tag}-prerelease (staging)"
     """.trim()
 
-    withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-        sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-serverless-logic-sandbox-deployment.git gh-pages')
-    }
+    githubUtils.pushObject('origin', 'gh-pages', "${credentialsId}")
 }

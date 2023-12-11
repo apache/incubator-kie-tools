@@ -380,8 +380,6 @@ pipeline {
                         )
 
                         sh """#!/bin/bash -el
-                        git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
                         git checkout gh-pages
                         rm -rf dev && mkdir -p dev/editors
                         cp -RL ../kie-tools/packages/stunner-editors/dist/dmn dev/editors/
@@ -393,9 +391,7 @@ pipeline {
                         git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
                         """.trim()
 
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.asfGithubPushCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-kogito-online.git gh-pages')
-                        }
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }
@@ -412,17 +408,13 @@ pipeline {
                         )
 
                         sh """#!/bin/bash -el
-                        git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
                         git checkout gh-pages
                         rm -rf dev && mkdir dev
                         cp -r ../kie-tools/packages/serverless-logic-web-tools/dist/* dev/
                         git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
                         """.trim()
 
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.asfGithubPushCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/apache/incubator-kie-serverless-logic-sandbox-deployment.git gh-pages')
-                        }
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }
