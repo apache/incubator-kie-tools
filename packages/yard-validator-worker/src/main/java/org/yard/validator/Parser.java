@@ -38,8 +38,7 @@ public class Parser {
 
             Logger.log("YaRD model has been read.");
             Logger.log("YaRD model name is " + model.getName());
-            final TreeMap<RowLocation, CustomTreeSet> result
-                    = visit(findTableStartRow(yaml), model);
+            final TreeMap<RowLocation, CustomTreeSet> result = visit(findTableStartRow(yaml), model);
 
             return new ParserResult(result, hitPolicy.toUpperCase());
         } catch (Exception e) {
@@ -72,16 +71,19 @@ public class Parser {
                 hitPolicy = dt.getHitPolicy();
 
                 final List<Rule> rules = dt.getRules();
-                for (Rule rule : rules) {
-                    final RowLocation location = new RowLocation(
-                            rule.getRowNumber(),
-                            rule.getRowNumber() + rulesRow);
+                for (final Rule rule : rules) {
                     if (rule instanceof WhenThenRule) {
+                        final RowLocation location = new RowLocation(
+                                rule.getRowNumber(),
+                                rule.getRowNumber() * 2 - 1 + rulesRow);
                         final CustomTreeSet keys = getWhenThenKeys(dt, (WhenThenRule) rule, location);
                         if (!keys.isEmpty()) {
                             result.put(location, keys);
                         }
                     } else if (rule instanceof InlineRule) {
+                        final RowLocation location = new RowLocation(
+                                rule.getRowNumber(),
+                                rule.getRowNumber() + rulesRow);
                         final CustomTreeSet keys = getInlineRuleKeys(dt, (InlineRule) rule, location);
                         if (!keys.isEmpty()) {
                             result.put(location, keys);

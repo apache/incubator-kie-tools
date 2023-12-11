@@ -1,0 +1,25 @@
+specVersion: alpha
+kind: YaRD
+name: "Traffic Violation"
+# expressionLang: FEEL
+inputs:
+  - name: "Length"
+    type: integer
+  - name: "Width"
+    type: number
+  - name: "Height"
+    type: number
+  - name: "Weight"
+    type: number
+elements:
+  - name: Package
+    type: Decision
+    logic:
+      type: DecisionTable
+      # First matching result will be picked
+      inputs: ["Height", "Width", "Length", "Weight"]
+      rules:
+        - when: ["<= 3", "<= 25", "<= 35", "<= 2"]
+          then: '{ "Size": "S", "Cost": 10.90 }'
+        - when: ["<= 3", "<= 25", "<= 35", "<= 2"]
+          then: '{ "Size": "S", "Cost": 10.90 }'

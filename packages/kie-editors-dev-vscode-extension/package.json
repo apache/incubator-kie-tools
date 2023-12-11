@@ -5,13 +5,13 @@
   "description": "",
   "license": "Apache-2.0",
   "publisher": "kie-group",
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "browser": "./dist/extension/extension.js",
   "main": "dist/extension/extension.js",
@@ -146,7 +146,7 @@
           "type": "string"
         }
       },
-      "title": "KIE Tools Dev Test Configuration"
+      "title": "Apache KIE Tools Dev Test Configuration"
     },
     "customEditors": [
       {

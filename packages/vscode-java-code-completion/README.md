@@ -1,4 +1,4 @@
-# KIE Tools Java Code Completion
+# Apache KIE Tools Java Code Completion
 
 This package provides a type-safe Java Code Completion library for a Typescript project.
 

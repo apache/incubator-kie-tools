@@ -60,6 +60,17 @@
       <artifactId>uberfire-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.treblereel.j2cl.processors</groupId>
+      <artifactId>annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.treblereel.j2cl.processors</groupId>
+      <artifactId>processors</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Test scope. -->
 
     <dependency>
