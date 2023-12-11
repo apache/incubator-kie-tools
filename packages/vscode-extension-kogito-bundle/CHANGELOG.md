@@ -167,7 +167,7 @@
 
 # 0.25.0 (alpha)
 
-- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - KIE Tools Security updates (3rd round)
+- [KOGITO-8077](https://issues.redhat.com/browse/KOGITO-8077) - Apache KIE Tools Security updates (3rd round)
 - [KOGITO-8092](https://issues.redhat.com/browse/KOGITO-8092) - [SWF Editor] Improve the creation of workflow from an empty file
 - [KOGITO-8028](https://issues.redhat.com/browse/KOGITO-8028) - Dashbuilder Viewer VSCode Extension
 

@@ -17,306 +17,187 @@
  * under the License.
  */
 
+import { KieSandboxDeployment, defaultAnnotationTokens, defaultLabelTokens } from "./types";
 import {
-  CreateDeployment,
-  DeleteDeployment,
-  DeploymentDescriptor,
-  DeploymentGroupDescriptor,
-  GetDeployment,
-  ListDeployments,
-  CreateService,
-  DeleteService,
-  DeploymentState,
-  ResourceLabelNames,
-  DeleteIngress,
-  IngressDescriptor,
-  CreateIngress,
-  ListIngresses,
-  IngressGroupDescriptor,
-  ResourceDataSource,
-  CreateDeploymentTemplateArgs,
-} from "@kie-tools-core/kubernetes-bridge/dist/resources";
-import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
+  parseK8sResourceYaml,
+  callK8sApiServer,
+  interpolateK8sResourceYamls,
+} from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import {
+  DeploymentResource,
+  IngressResource,
   KubernetesConnectionStatus,
   KubernetesService,
-  KubernetesServiceArgs,
-} from "@kie-tools-core/kubernetes-bridge/dist/service";
-import { UploadStatus, getUploadStatus, postUpload } from "../DmnDevDeploymentQuarkusAppApi";
-import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "./types";
+  kubernetesResourcesApi,
+} from "./KubernetesService";
+import { DeployArgs, KieSandboxDevDeploymentsService } from "./KieSandboxDevDeploymentsService";
+import { selfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReviewYaml";
 
-export const RESOURCE_PREFIX = "dmn-dev-deployment";
-export const RESOURCE_OWNER = "kie-sandbox";
-export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
-
-export class KieSandboxKubernetesService implements KieSandboxDeploymentService {
-  service: KubernetesService;
-  constructor(readonly args: KubernetesServiceArgs) {
-    this.service = new KubernetesService(args);
-  }
-
+export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
-    return this.service.isConnectionEstablished(this.args.connection);
-  }
+    try {
+      const namespaceApiPath = this.args.k8sApiServerEndpointsByResourceKind
+        .get(kubernetesResourcesApi.namespace.kind)
+        ?.get(kubernetesResourcesApi.namespace.apiVersion)?.path.global;
+      if (!namespaceApiPath) {
+        return KubernetesConnectionStatus.ERROR;
+      }
 
-  public newResourceName(): string {
-    return this.service.newResourceName(RESOURCE_PREFIX);
-  }
+      const response = await this.kubernetesService.kubernetesFetch(
+        `${namespaceApiPath}/${this.args.connection.namespace}`
+      );
+      if (response.status === 401) {
+        return KubernetesConnectionStatus.MISSING_PERMISSIONS;
+      } else if (response.status === 404) {
+        return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
+      } else if (response.status !== 200) {
+        return KubernetesConnectionStatus.ERROR;
+      }
 
-  public async listDeployments(): Promise<DeploymentDescriptor[]> {
-    const deployments = await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute<DeploymentGroupDescriptor>({
-        target: new ListDeployments({
-          namespace: this.args.connection.namespace,
-          labelSelector: ResourceLabelNames.CREATED_BY,
-        }),
-      })
-    );
-    return deployments.items ?? [];
-  }
+      const requiredResources = ["deployments", "services", "ingresses"];
 
-  public async loadDeployedModels(): Promise<KieSandboxDeployedModel[]> {
-    const deployments = await this.listDeployments();
-
-    if (!deployments.length) {
-      return [];
-    }
-
-    const ingresses = await this.listIngresses();
-
-    const uploadStatuses = await Promise.all(
-      ingresses
-        .map((ingress) => this.getIngressUrl(ingress))
-        .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
-    );
-
-    return deployments
-      .filter(
-        (deployment) =>
-          deployment.status &&
-          deployment.metadata.name &&
-          deployment.metadata.annotations &&
-          deployment.metadata.labels &&
-          deployment.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER &&
-          ingresses.some((ingress) => ingress.metadata.name === deployment.metadata.name)
-      )
-      .map((deployment) => {
-        const ingress = ingresses.find((ingress) => ingress.metadata.name === deployment.metadata.name)!;
-        const baseUrl = this.getIngressUrl(ingress);
-        const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
-        return {
-          resourceName: deployment.metadata.name!,
-          uri: deployment.metadata.annotations![ResourceLabelNames.URI],
-          routeUrl: baseUrl,
-          creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
-          state: this.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
-          workspaceName: deployment.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
-        };
-      });
-  }
-
-  public async createDeployment(args: {
-    deployArgs: DeployArgs;
-    routeUrl: string;
-    resourceArgs: ResourceArgs;
-    rootPath: string;
-    getUpdatedRollbacks: () => ResourceFetch[];
-  }): Promise<DeploymentDescriptor> {
-    return await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute<DeploymentDescriptor>({
-        target: new CreateDeployment({
-          ...args.resourceArgs,
-          uri: args.deployArgs.targetFilePath,
-          baseUrl: args.routeUrl,
-          workspaceName: args.deployArgs.workspaceName,
-          containerImageUrl: args.deployArgs.containerImageUrl,
-          envVars: [
-            {
-              name: "BASE_URL",
-              value: args.routeUrl,
-            },
-            {
-              name: "QUARKUS_PLATFORM_VERSION",
-              value: process.env.WEBPACK_REPLACE__quarkusPlatformVersion!,
-            },
-            {
-              name: "KOGITO_RUNTIME_VERSION",
-              value: process.env.WEBPACK_REPLACE__kogitoRuntimeVersion!,
-            },
-            {
-              name: "ROOT_PATH",
-              value: `/${args.rootPath}`,
-            },
-          ],
-          resourceDataSource: ResourceDataSource.TEMPLATE,
-          imagePullPolicy: process.env
-            .WEBPACK_REPLACE__dmnDevDeployment_imagePullPolicy! as CreateDeploymentTemplateArgs["imagePullPolicy"],
-        }),
-        rollbacks: args.getUpdatedRollbacks(),
-      })
-    );
-  }
-
-  public async uploadAssets(args: {
-    resourceArgs: ResourceArgs;
-    deployment: DeploymentDescriptor;
-    workspaceZipBlob: Blob;
-    baseUrl: string;
-  }) {
-    return new Promise<void>((resolve, reject) => {
-      let deploymentState = this.service.extractDeploymentState({ deployment: args.deployment });
-      const interval = setInterval(async () => {
-        if (deploymentState !== DeploymentState.UP) {
-          const deployment = await this.service.withFetch((fetcher: ResourceFetcher) =>
-            fetcher.execute<DeploymentDescriptor>({
-              target: new GetDeployment(args.resourceArgs),
+      const permissionsResultMap = await callK8sApiServer({
+        k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
+        k8sResourceYamls: parseK8sResourceYaml(
+          requiredResources.map((resource) =>
+            interpolateK8sResourceYamls(selfSubjectAccessReviewYaml, {
+              namespace: this.args.connection.namespace,
+              resource,
             })
-          );
+          )
+        ),
+        k8sApiServerUrl: KubernetesService.getBaseUrl(this.args),
+        k8sNamespace: this.args.connection.namespace,
+        k8sServiceAccountToken: this.args.connection.token,
+      }).then((results) =>
+        results.map((result) => ({
+          resource: result.spec.resourceAttributes.resource,
+          allowed: result.status.allowed,
+        }))
+      );
 
-          deploymentState = this.service.extractDeploymentState({ deployment });
-        } else {
-          try {
-            const uploadStatus = await getUploadStatus({ baseUrl: args.baseUrl });
-            if (uploadStatus === "NOT_READY") {
-              return;
-            }
-            clearInterval(interval);
-            if (uploadStatus === "WAITING") {
-              await postUpload({ baseUrl: args.baseUrl, workspaceZipBlob: args.workspaceZipBlob });
-              resolve();
-            }
-          } catch (e) {
-            console.error(e);
-            reject(e);
-            clearInterval(interval);
-          }
-        }
-      }, CHECK_UPLOAD_STATUS_POLLING_TIME);
+      if (permissionsResultMap.some((permissionResult) => !permissionResult.allowed)) {
+        return KubernetesConnectionStatus.MISSING_PERMISSIONS;
+      }
+
+      return KubernetesConnectionStatus.CONNECTED;
+    } catch (error) {
+      console.error(error);
+      return KubernetesConnectionStatus.ERROR;
+    }
+  }
+
+  public async listIngress(): Promise<IngressResource[]> {
+    return await this.kubernetesService.listResources<IngressResource>({
+      kind: kubernetesResourcesApi.ingress.kind,
+      apiVersion: kubernetesResourcesApi.ingress.apiVersion,
+      queryParams: [`labelSelector=${defaultLabelTokens.createdBy}`],
     });
+  }
+
+  public async loadDevDeployments(): Promise<KieSandboxDeployment[]> {
+    try {
+      const deployments = await this.listDeployments();
+
+      const ingresses = await this.listIngress();
+
+      const services = await this.listServices();
+
+      const healthStatusList = await Promise.all(
+        ingresses
+          .filter(
+            (ingress) =>
+              ingress.metadata.labels && ingress.metadata.name === ingress.metadata.labels[defaultLabelTokens.partOf]
+          )
+          .map((ingress) => ({ url: this.getIngressUrl(ingress), name: ingress.metadata.name }))
+          .map(async ({ url, name }) => ({
+            url,
+            healtStatus: await this.getHealthStatus({ endpoint: url, deploymentName: name }),
+          }))
+      );
+
+      return deployments
+        .filter(
+          (deployment) =>
+            deployment.status &&
+            deployment.metadata.name &&
+            deployment.metadata.annotations &&
+            deployment.metadata.labels &&
+            deployment.metadata.labels[defaultLabelTokens.createdBy] === "kie-tools" &&
+            ingresses.some((ingress) => ingress.metadata.name === deployment.metadata.name)
+        )
+        .map((deployment) => {
+          const deploymentPartOf =
+            (deployment.metadata.labels && deployment.metadata.labels[defaultLabelTokens.partOf]) ??
+            deployment.metadata.name;
+          const ingressList = ingresses.filter(
+            (ingress) =>
+              ingress.metadata.labels && ingress.metadata.labels[defaultLabelTokens.partOf] === deploymentPartOf
+          )!;
+          const servicesList = services.filter(
+            (service) =>
+              service.metadata.labels && service.metadata.labels[defaultLabelTokens.partOf] === deploymentPartOf
+          )!;
+          const baseUrl = this.getIngressUrl(
+            ingressList.find((ingress) => ingress.metadata.name === deploymentPartOf)!
+          );
+          const healthStatus = healthStatusList.find((status) => status.url === baseUrl)!.healtStatus;
+          return {
+            name: deployment.metadata.name,
+            routeUrl: ingressList.find((ingress) => ingress.metadata.name.includes("form-webapp"))
+              ? `${baseUrl}/form-webapp/`
+              : `${baseUrl}/q/swagger-ui/`,
+            creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
+            state: this.extractDeploymentStateWithHealthStatus(deployment, healthStatus),
+            workspaceId: deployment.metadata.annotations![defaultAnnotationTokens.workspaceId],
+            workspaceName: deployment.metadata.annotations![defaultAnnotationTokens.workspaceName],
+            resources: [deployment, ...ingressList, ...servicesList],
+          };
+        });
+    } catch (error) {
+      throw new Error("Error: Failed to load Dev deployments from Kubernetes provider.", error);
+    }
   }
 
   public async deploy(args: DeployArgs): Promise<void> {
-    const resourceArgs: ResourceArgs = {
-      namespace: this.args.connection.namespace,
-      resourceName: this.newResourceName(),
-      createdBy: RESOURCE_OWNER,
-    };
-
-    const rollbacks = [new DeleteIngress(resourceArgs), new DeleteService(resourceArgs)];
-    let rollbacksCount = rollbacks.length;
-
-    await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({
-        target: new CreateService({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
-      })
-    );
-
-    const getUpdatedRollbacks = () => rollbacks.slice(--rollbacksCount);
-
-    const ingress = await this.createIngress(resourceArgs, getUpdatedRollbacks);
-
-    const ingressUrl = this.getIngressUrl(ingress);
-
-    const deployment = await this.createDeployment({
-      deployArgs: args,
-      routeUrl: ingressUrl,
-      resourceArgs,
-      rootPath: resourceArgs.resourceName,
-      getUpdatedRollbacks,
-    });
-
-    this.uploadAssets({ resourceArgs, deployment, workspaceZipBlob: args.workspaceZipBlob, baseUrl: ingressUrl });
-  }
-
-  public async deleteDeployment(resourceName: string) {
-    await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({
-        target: new DeleteDeployment({
-          resourceName,
-          namespace: this.args.connection.namespace,
-        }),
-      })
-    );
-  }
-  public async deleteService(resourceName: string) {
-    await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({
-        target: new DeleteService({
-          resourceName,
-          namespace: this.args.connection.namespace,
-        }),
-      })
-    );
-  }
-
-  public async deleteDevDeployment(resourceName: string): Promise<void> {
-    await this.deleteDeployment(resourceName);
-    await this.deleteService(resourceName);
-    await this.deleteIngress(resourceName);
-  }
-
-  public extractDeploymentStateWithUploadStatus(
-    deployment: DeploymentDescriptor,
-    uploadStatus: UploadStatus
-  ): DeploymentState {
-    const state = this.service.extractDeploymentState({ deployment });
-
-    if (state !== DeploymentState.UP) {
-      return state;
+    if (!args.deploymentOptionContent) {
+      throw new Error("Invalid deployment option!");
     }
 
-    if (uploadStatus === "ERROR") {
-      return DeploymentState.ERROR;
+    let resources = [];
+    try {
+      resources = await this.kubernetesService.applyResourceYamls([args.deploymentOptionContent], args.tokenMap);
+
+      const mainDeployment = resources.find(
+        (resource) =>
+          resource.kind === kubernetesResourcesApi.deployment.kind &&
+          resource.metadata.name === args.tokenMap.devDeployment.uniqueName
+      ) as DeploymentResource;
+      const mainIngress = resources.find(
+        (resource) =>
+          resource.kind === kubernetesResourcesApi.ingress.kind &&
+          resource.metadata.name === args.tokenMap.devDeployment.uniqueName
+      ) as IngressResource;
+      const ingressUrl = this.getIngressUrl(mainIngress);
+
+      const apiKey = args.tokenMap.devDeployment.uploadService.apiKey;
+
+      this.uploadAssets({
+        deployment: mainDeployment,
+        workspaceZipBlob: args.workspaceZipBlob,
+        baseUrl: ingressUrl,
+        apiKey,
+      });
+    } catch (e) {
+      console.error(e);
+      if (resources.length) {
+        this.deleteDevDeployment(resources);
+      }
+      throw new Error("Failed to deploy resources.");
     }
-
-    if (uploadStatus !== "UPLOADED") {
-      return DeploymentState.IN_PROGRESS;
-    }
-
-    return DeploymentState.UP;
   }
 
-  getIngressUrl(resource: IngressDescriptor): string {
-    return this.service.composeDeploymentUrlFromIngress(resource);
-  }
-
-  async createIngress(
-    resourceArgs: ResourceArgs,
-    getUpdatedRollbacks: () => ResourceFetch[]
-  ): Promise<IngressDescriptor> {
-    const route = await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute<IngressDescriptor>({
-        target: new CreateIngress({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
-        rollbacks: getUpdatedRollbacks(),
-      })
-    );
-    return route;
-  }
-
-  async listIngresses(): Promise<IngressDescriptor[]> {
-    const ingresses = (
-      await this.service.withFetch((fetcher: ResourceFetcher) =>
-        fetcher.execute<IngressGroupDescriptor>({
-          target: new ListIngresses({
-            namespace: this.args.connection.namespace,
-          }),
-        })
-      )
-    ).items.filter(
-      (route) => route.metadata.labels && route.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
-    );
-
-    return ingresses;
-  }
-
-  async deleteIngress(resourceName: string) {
-    await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({
-        target: new DeleteIngress({
-          resourceName,
-          namespace: this.args.connection.namespace,
-        }),
-      })
-    );
+  getIngressUrl(resource: IngressResource): string {
+    return `${new URL(this.args.connection.host).origin}/${resource.metadata?.name}`;
   }
 }

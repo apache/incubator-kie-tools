@@ -1,4 +1,4 @@
-module github.com/kiegroup/kie-tools/packages/extended-services
+module github.com/apache/incubator-kie-tools/packages/extended-services
 
 go 1.20
 
