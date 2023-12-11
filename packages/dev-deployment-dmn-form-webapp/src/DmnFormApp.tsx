@@ -46,11 +46,7 @@ export function DmnFormApp(props: DmnFormAppProps) {
               <HashRouter>
                 <Switch>
                   {app.data && (
-                    <Route
-                      path={routes.form.path({
-                        modelName: ":modelName*",
-                      })}
-                    >
+                    <Route path={routes.form.path({ modelName: ":modelName*" })}>
                       {({ match }) => {
                         const formData = app.data!.forms.find((form) => form.modelName === match?.params.modelName);
                         return formData ? (

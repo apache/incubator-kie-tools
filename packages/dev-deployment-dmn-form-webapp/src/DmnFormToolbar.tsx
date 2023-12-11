@@ -128,6 +128,7 @@ export function DmnFormToolbar(props: Props) {
         >
           <Text component={TextVariants.a} className="kogito--dmn-form__toolbar a">
             {i18n.names.swaggerUI}
+            &nbsp;
             <ExternalLinkAltIcon className="pf-u-mx-sm" />
           </Text>
         </DropdownItem>
@@ -176,6 +177,7 @@ export function DmnFormToolbar(props: Props) {
               {app.data!.forms.length > 1 && (
                 <Dropdown
                   onSelect={() => setModelDropdownOpen(false)}
+                  isPlain={true}
                   toggle={
                     <DropdownToggle
                       id="dmn-dev-deployment-form-toolbar-model-dropdown-button"
