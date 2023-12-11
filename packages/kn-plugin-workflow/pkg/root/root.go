@@ -37,9 +37,29 @@ type RootCmdConfig struct {
 
 func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:     cfg.Name,
-		Short:   "SonataFlow",
-		Long:    "Manage SonataFlow projects",
+		Use:   cfg.Name,
+		Short: "SonataFlow",
+		Long: `
+	Manage SonataFlow projects
+	==========================
+
+	Currently, SonataFlow targets use cases with a single Serverless Workflow main
+	file definition (i.e. workflow.json|yaml).
+
+	Additionally, you can define the configurable parameters of your application in the
+	"application.properties" file (inside the root pproject directory).
+	You can also store your spec files (i.e., Open API files) inside the "specs" folder,
+    schemas file inside "schema" folder and also subflows (inside subflows folder).
+
+	A SonataFlow project, as the following structure by default:
+
+	Workflow project root
+		/specs (optional)
+		/schemas (optional)
+		/subflows (optional)
+		workflow.json|yaml (mandatory)
+
+	`,
 		Aliases: []string{"kn-workflow"},
 	}
 
