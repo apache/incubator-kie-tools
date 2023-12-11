@@ -402,7 +402,7 @@ pipeline {
                 dir('serverless-logic-sandbox-deployment') {
                     script {
                         githubUtils.checkoutRepo(
-                            'https://github.com/apache/incubator-kie-serverless-logic-sandbox-deployment.git',
+                            'https://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
                             'gh-pages',
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
@@ -414,7 +414,7 @@ pipeline {
                         git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
                         """.trim()
 
-                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.kieToolsBotGithubCredentialsId}")
                     }
                 }
             }

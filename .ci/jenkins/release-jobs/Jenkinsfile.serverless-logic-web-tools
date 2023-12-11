@@ -106,7 +106,7 @@ pipeline {
                 dir('serverless-logic-sandbox-deployment') {
                     script {
                         githubUtils.checkoutRepo(
-                            'http://github.com/apache/incubator-kie-serverless-logic-sandbox-deployment.git',
+                            'http://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
                             'gh-pages',
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
@@ -165,7 +165,7 @@ pipeline {
                         git commit -m "Deploy ${params.TAG}"
                         """.trim()
 
-                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.kieToolsBotGithubCredentialsId}")
                     }
                 }
             }

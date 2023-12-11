@@ -164,7 +164,7 @@ pipeline {
                 dir('serverless-logic-sandbox-deployment') {
                     script {
                         githubUtils.checkoutRepo(
-                            'https://github.com/apache/incubator-kie-serverless-logic-sandbox-deployment.git',
+                            'https://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
                             'gh-pages',
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
@@ -239,7 +239,7 @@ pipeline {
             steps {
                 dir('serverless-logic-sandbox-deployment') {
                     script {
-                        deployServerlessLogicWebTools("${params.TAG}", "${pipelineVars.asfGithubPushCredentialsId}")
+                        deployServerlessLogicWebTools("${params.TAG}", "${pipelineVars.kieToolsBotGithubCredentialsId}")
                     }
                 }
             }
