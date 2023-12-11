@@ -29,6 +29,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
+                    util.waitForDocker()
                     currentBuild.displayName = params.DISPLAY_NAME ?: currentBuild.displayName
 
                     dir(getRepoName()) {

@@ -33,11 +33,10 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    clean()
-
                     if (params.DISPLAY_NAME) {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
+                    util.waitForDocker()
 
                     readDeployProperties()
 
@@ -61,8 +60,6 @@ pipeline {
                     dir(getRepoName()) {
                         checkoutRepo()
                     }
-
-                    cloud.installSkopeo()
                 }
             }
         }
@@ -139,12 +136,6 @@ void checkoutRepo() {
     checkout(githubscm.resolveRepository(getRepoName(), getGitAuthor(), getBuildBranch(), false, getGitAuthorCredsId()))
     // need to manually checkout branch since on a detached branch after checkout command
     sh "git checkout ${getBuildBranch()}"
-}
-
-void clean() {
-    cleanWs()
-    util.cleanNode()
-    cloud.cleanSkopeo()
 }
 
 void promoteImages() {

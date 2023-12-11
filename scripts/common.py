@@ -450,7 +450,7 @@ def update_examples_uri_in_clone_repo(examples_uri):
     """
     print("Set examples_uri {} in clone-repo script".format(examples_uri))
     pattern = re.compile(r'(git clone.*)')
-    replacement = "git clone {}".format(examples_uri)
+    replacement = "git clone {} kogito-examples".format(examples_uri)
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
 
 def update_maven_repo_in_build_config(repo_url, replace_default_repository):

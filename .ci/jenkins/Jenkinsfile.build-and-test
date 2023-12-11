@@ -15,6 +15,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
+                    util.waitForDocker()
                     sh 'printenv'
                     
                     dir(getRepoName()) {

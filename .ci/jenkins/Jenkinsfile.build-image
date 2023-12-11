@@ -28,6 +28,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
+                    util.waitForDocker()
                     sh 'printenv'
 
                     assert getBuildImageName() : 'Please provide `BUILD_IMAGE_NAME` parameter'
