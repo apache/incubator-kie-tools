@@ -17,30 +17,74 @@
  * under the License.
  */
 
-import { DeployedModel } from "@kie-tools-core/kubernetes-bridge/dist/resources";
-import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { DeploymentState } from "./common";
 
-export type KieSandboxDeployedModel = DeployedModel & {
-  uri: string;
+export type KieSandboxDeployment = {
+  name: string;
+  routeUrl: string;
+  creationTimestamp: Date;
+  state: DeploymentState;
+  resources: K8sResourceYaml[];
+  workspaceId: string;
   workspaceName: string;
 };
 
-export interface DeployArgs {
-  targetFilePath: string;
+export type DevDeploymentTokens = {
+  uniqueName: string;
+};
+
+export type WorkspaceTokens = {
+  id: string;
+  name: string;
+};
+
+export type KubernetesTokens = {
+  namespace: string;
+};
+
+export type UploadServiceTokens = {
+  apiKey: string;
+};
+
+export type LabelTokens = {
+  createdBy: string;
+  partOf: string;
+};
+
+export type AnnotationTokens = {
+  workspaceId: string;
   workspaceName: string;
-  workspaceZipBlob: Blob;
-  containerImageUrl: string;
-}
+};
+
+export const defaultLabelTokens: LabelTokens = {
+  createdBy: "tools.kie.org/created-by",
+  partOf: "tools.kie.org/part-of",
+} as const;
+
+export const defaultAnnotationTokens: AnnotationTokens = {
+  workspaceId: "tools.kie.org/workspace-id",
+  workspaceName: "tools.kie.org/workspace-name",
+} as const;
+
+export const CREATED_BY_KIE_TOOLS = "kie-tools";
+
+export const TOKENS_PREFIX = "devDeployment";
+
+export type Tokens = DevDeploymentTokens & {
+  workspace: WorkspaceTokens;
+  kubernetes: KubernetesTokens;
+  uploadService: UploadServiceTokens;
+  labels: LabelTokens;
+  annotations: AnnotationTokens;
+};
+
+export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;
 
 export type ResourceArgs = {
-  namespace: string;
-  resourceName: string;
-  createdBy: string;
-};
-
-export type KieSandboxDeploymentService = {
-  isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
-  loadDeployedModels(): Promise<KieSandboxDeployedModel[]>;
-  deploy(args: DeployArgs): Promise<void>;
-  deleteDevDeployment(resourceName: string): Promise<void>;
+  baseImageUrl: string;
+  formWebappImageUrl: string;
+  imagePullPolicy: string;
+  quarkusPlatformVersion: string;
+  kogitoRuntimeVersion: string;
 };

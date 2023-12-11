@@ -1,4 +1,4 @@
-# KIE Tools Notifications
+# Apache KIE Tools Notifications
 
 This package provides a type-safe Notifications library for a Typescript project.
 

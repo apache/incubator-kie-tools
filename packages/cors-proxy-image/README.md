@@ -1,6 +1,6 @@
 # cors-proxy-image
 
-This package contains the `Containerfile` and scripts to build a container image for the [@kie-tools/cors-proxy](https://github.com/kiegroup/kie-tools/packages/cors-proxy).
+This package contains the `Containerfile` and scripts to build a container image for the [@kie-tools/cors-proxy](https://github.com/apache/incubator-kie-tools/packages/cors-proxy).
 
 ## Additional requirements
 

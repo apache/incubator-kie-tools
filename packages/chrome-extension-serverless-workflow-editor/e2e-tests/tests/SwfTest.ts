@@ -39,7 +39,7 @@ beforeEach(async () => {
   if (buildEnv.swfChromeExtension.e2eTestingToken !== "") {
     const gitHubRepoPage: GitHubRepoPage = await tools.openPage(
       GitHubRepoPage,
-      "https://github.com/kiegroup/kie-tools"
+      "https://github.com/apache/incubator-kie-tools"
     );
     await gitHubRepoPage.addToken(buildEnv.swfChromeExtension.e2eTestingToken);
   }
@@ -48,7 +48,7 @@ beforeEach(async () => {
 test(TEST_NAME, async () => {
   const gitHubListPage: GitHubListPage = await tools.openPage(
     GitHubListPage,
-    "https://github.com/kiegroup/kie-tools/tree/main/packages/chrome-extension-serverless-workflow-editor/e2e-tests/samples"
+    "https://github.com/apache/incubator-kie-tools/tree/main/packages/chrome-extension-serverless-workflow-editor/e2e-tests/samples"
   );
   const gitHubFile: GitHubListItem = await gitHubListPage.getFile("chrome_sample.sw.json");
   const editorPage: GitHubEditorPage = await gitHubFile.open();
