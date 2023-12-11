@@ -20,7 +20,6 @@
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-styles": "^4.92.6",
-    "@patternfly/react-table": "^4.112.39",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
