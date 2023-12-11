@@ -118,6 +118,7 @@ digraph G {
   "@kie-tools/runtime-tools-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-enveloped-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/runtime-tools-monitoring-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-logic-web-tools" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -376,6 +377,7 @@ digraph G {
   "@kie-tools/runtime-tools-gateway-api" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-gateway-api" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-gateway-api" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/runtime-tools-monitoring-webapp" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
