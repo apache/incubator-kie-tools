@@ -33,11 +33,19 @@ interface HookArgs {
 export function useEditorNotifications(args: HookArgs) {
   const { webToolsEditor, content, fileRelativePath } = { ...args };
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [lazyNotifications, setLazyNotifications] = useState<Notification[]>([]);
   const editorDispatch = useEditorDispatch();
 
   useEffect(() => {
     editorDispatch.setNotifications(notifications);
   }, [editorDispatch, notifications]);
+
+  const onLazyValidate = useCallback(async () => {
+    if (!webToolsEditor?.editor) {
+      return;
+    }
+    setLazyNotifications(await webToolsEditor.editor.validate());
+  }, [webToolsEditor]);
 
   useCancelableEffect(
     useCallback(
@@ -70,13 +78,13 @@ export function useEditorNotifications(args: HookArgs) {
                   },
                 } as Notification)
             );
-            setNotifications(mappedDiagnostics);
+            setNotifications([...mappedDiagnostics, ...lazyNotifications]);
           })
           .catch((e) => console.error(e));
       },
-      [content, fileRelativePath, webToolsEditor]
+      [content, fileRelativePath, webToolsEditor, lazyNotifications]
     )
   );
 
-  return notifications;
+  return { notifications, onLazyValidate };
 }
