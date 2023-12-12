@@ -119,7 +119,7 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 		dir, err := os.Getwd()
 		cfg.SpecsDir = dir + "/specs"
 		if err != nil {
-			return cfg, fmt.Errorf("❌ ERROR: failed to get default support files folder: %w", err)
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default support specs files folder: %w", err)
 		}
 	}
 
