@@ -176,7 +176,7 @@ func runUndeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err 
 		dir, err := os.Getwd()
 		cfg.SchemasDir = dir + "/schemas"
 		if err != nil {
-			return cfg, fmt.Errorf("❌ ERROR: failed to get default support files folder: %w", err)
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default support schemas files folder: %w", err)
 		}
 	}
 
