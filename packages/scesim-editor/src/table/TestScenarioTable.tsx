@@ -174,7 +174,7 @@ function TestScenarioTable({
   );
 
   /* It determines the Instance Section (the header row in the middle) based on the given FactMapping (Scesim column representation)
-     and the groupType. 
+     and the groupType. An Instance represents the a real implementation of a DMN Type (DMN-based SCESIM) / Java Class (Rule-based Scesim)
   */
   const generateInstanceSectionFromFactMapping = useCallback(
     (factMapping: SceSim__FactMappingType, groupType: TestScenarioTableColumnInstanceGroup) => {
