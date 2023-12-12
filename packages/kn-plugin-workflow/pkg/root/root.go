@@ -44,7 +44,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	==========================
 
 	Currently, SonataFlow targets use cases with a single Serverless Workflow main
-	file definition (i.e. workflow.json|yaml).
+	file definition (i.e. workflow.sw.{json|yaml|yml}).
 
 	Additionally, you can define the configurable parameters of your application in the
 	"application.properties" file (inside the root project directory).
