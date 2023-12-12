@@ -54,7 +54,7 @@ func NewCreateCommand() *cobra.Command {
 		/specs (optional)
 		/schemas (optional)
 		/subflows (optional)
-		workflow.json|yaml (mandatory)
+		workflow.sw.{json|yaml|yml} (mandatory)
 
 	`,
 		Example: `
