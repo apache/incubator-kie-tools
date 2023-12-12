@@ -47,7 +47,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	file definition (i.e. workflow.json|yaml).
 
 	Additionally, you can define the configurable parameters of your application in the
-	"application.properties" file (inside the root pproject directory).
+	"application.properties" file (inside the root project directory).
 	You can also store your spec files (i.e., Open API files) inside the "specs" folder,
     schemas file inside "schema" folder and also subflows (inside subflows folder).
 
