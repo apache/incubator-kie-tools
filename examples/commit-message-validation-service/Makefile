@@ -1,4 +1,4 @@
-METADATA_PATH                                     					:= github.com/kiegroup/kie-tools/examples/commit-message-validation-service/pkg/metadata
+METADATA_PATH                                     					:= github.com/apache/incubator-kie-tools/examples/commit-message-validation-service/pkg/metadata
 SET_COMMIT_MESSAGE_VALIDATION_SERVICE_PORT                 	:= $(METADATA_PATH).Port=$(shell build-env commitMessageValidationService.port)
 SET_COMMIT_MESSAGE_VALIDATION_SERVICE_ENABLED_VALIDATORS   	:= $(METADATA_PATH).Validators=$(shell build-env commitMessageValidationService.validators)
 LDFLAGS                                           					:= "-X $(SET_COMMIT_MESSAGE_VALIDATION_SERVICE_PORT) -X $(SET_COMMIT_MESSAGE_VALIDATION_SERVICE_ENABLED_VALIDATORS)"

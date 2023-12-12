@@ -1,0 +1,38 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+#  http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License. 
+
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.3
+
+RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.57-5.el9.x86_64 \
+  && microdnf --disableplugin=subscription-manager clean all \
+  && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
+  && sed -i -e 's/Listen 80/Listen 8081/' /etc/httpd/conf/httpd.conf \
+  && sed -i -e 's/#ServerName www.example.com:80/ServerName 127.0.0.1:8080/' /etc/httpd/conf/httpd.conf \
+  && sed -i -e "/ServerName 127.0.0.1:8080/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
+  && sed -i -e 's/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' /etc/httpd/conf/httpd.conf \
+  && sed -i '$ a ServerTokens Prod' /etc/httpd/conf/httpd.conf \
+  && sed -i '$ a ServerSignature Off' /etc/httpd/conf/httpd.conf \
+  && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html \
+  && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html
+
+COPY dist-dev /var/www/html
+
+EXPOSE 8081
+
+USER 1000
+
+ENTRYPOINT ["httpd", "-D", "FOREGROUND"]
