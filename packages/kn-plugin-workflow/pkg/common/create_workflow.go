@@ -83,9 +83,9 @@ func CreateWorkflow(workflowFilePath string, yamlWorkflow bool) (err error) {
 	workflowByte, err := GetWorkflowTemplate(yamlWorkflow)
 	err = afero.WriteFile(FS, workflowFilePath, workflowByte, 0644)
 	if err != nil {
-		return fmt.Errorf("error writing the workflow YAML file: %w", err)
+		return fmt.Errorf("error writing the workflow file: %w", err)
 	}
 
-	fmt.Printf("Workflow YAML file created at %s \n", workflowFilePath)
+	fmt.Printf("Workflow file created at %s \n", workflowFilePath)
 	return nil
 }

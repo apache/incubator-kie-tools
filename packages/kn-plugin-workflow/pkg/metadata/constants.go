@@ -47,7 +47,7 @@ const (
 	YMLExtension          = ".yml"
 	JSONExtension         = ".json"
 	YAMLSWExtension       = "sw.yaml"
-	YMLSWExtensionShort   = "sw.yml"
+	YMLSWExtension        = "sw.yml"
 	JSONSWExtension       = "sw.json"
 	ApplicationProperties = "application.properties"
 

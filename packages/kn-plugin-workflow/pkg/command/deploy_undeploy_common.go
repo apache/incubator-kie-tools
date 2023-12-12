@@ -81,7 +81,7 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 
 func generateManifests(cfg *DeployUndeployCmdConfig) error {
 
-	workflowExtensionsType := []string{metadata.YAMLSWExtension, metadata.YMLSWExtensionShort, metadata.JSONSWExtension}
+	workflowExtensionsType := []string{metadata.YAMLSWExtension, metadata.YMLSWExtension, metadata.JSONSWExtension}
 
 	fmt.Println("\n🛠️  Generating your manifests...")
 
