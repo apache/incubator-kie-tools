@@ -127,6 +127,7 @@
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-gateway-api" },
       { "id": "@kie-tools/runtime-tools-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-monitoring-webapp" },
       { "id": "@kie-tools/runtime-tools-webapp-components" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
@@ -769,6 +770,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/runtime-tools-monitoring-webapp",
+        "target": "@kie-tools/dashbuilder-client",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/runtime-tools-webapp-components",
         "target": "@kie-tools/runtime-tools-enveloped-components",
         "weight": 1
@@ -1032,6 +1038,7 @@
     ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
     ["@kie-tools/runtime-tools-enveloped-components", "packages/runtime-tools-enveloped-components"],
     ["@kie-tools/runtime-tools-gateway-api", "packages/runtime-tools-gateway-api"],
+    ["@kie-tools/runtime-tools-monitoring-webapp", "packages/runtime-tools-monitoring-webapp"],
     ["@kie-tools/runtime-tools-webapp-components", "packages/runtime-tools-webapp-components"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
