@@ -57,7 +57,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 		/specs (optional)
 		/schemas (optional)
 		/subflows (optional)
-		workflow.json|yaml (mandatory)
+		workflow.sw.{json|yaml|yml} (mandatory)
 
 	`,
 		Aliases: []string{"kn-workflow"},
