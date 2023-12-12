@@ -46,7 +46,7 @@ func NewCreateCommand() *cobra.Command {
 	Additionally, you can define the configurable parameters of your application in the 
 	"application.properties" file (inside the root project directory).
 	You can also store your spec files (i.e., Open API files) inside the "specs" folder,
-	schemas file inside "schema" folder and also subflows (inside subflows folder).
+	schemas file inside "schemas" folder and also subflows inside "subflows" folder.
 
 	A SonataFlow project, as the following structure by default:
 
