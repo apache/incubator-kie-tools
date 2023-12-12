@@ -101,20 +101,6 @@ pipeline {
             }
         }
 
-        stage('Checkout serverless-logic-sandbox-deployment') {
-            steps {
-                dir('serverless-logic-sandbox-deployment') {
-                    script {
-                        githubUtils.checkoutRepo(
-                            'http://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
-                            'gh-pages',
-                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                        )
-                    }
-                }
-            }
-        }
-
         stage('Setup PNPM') {
             steps {
                 dir('kie-tools') {
@@ -140,36 +126,6 @@ pipeline {
                 dir('kie-tools') {
                     script {
                         buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
-                    }
-                }
-            }
-        }
-
-        stage('Deploy to GitHub Pages (serverless-logic-sandbox-deployment)') {
-            when {
-                expression { !params.DRY_RUN }
-            }
-            steps {
-                dir('serverless-logic-sandbox-deployment') {
-                    script {
-                        sh """#!/bin/bash -el
-                        git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
-                        git checkout gh-pages
-
-                        echo "Reset deployment dir"
-                        shopt -s extglob
-                        rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME"|"0.25.0"|"schemas")
-                        echo "Copy resources"
-                        cp -r ${WORKSPACE}/kie-tools/packages/serverless-logic-web-tools/dist/* .
-                        echo "Commit changes and push"
-                        git add .
-                        git commit -m "Deploy ${params.TAG}"
-                        """.trim()
-
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/serverless-logic-sandbox-deployment.git gh-pages')
-                        }
                     }
                 }
             }

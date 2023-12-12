@@ -29,6 +29,8 @@ class PipelineVars implements Serializable {
     String chromeStoreRefreshTokenCredentialsId = 'kie-tools-chrome-store-refresh-token';
     String npmTokenCredentialsId = 'kie-tools-npm-token';
     String buildKiteTokenCredentialsId = 'kie-tools-build-kite-token';
+    String asfGithubPushCredentialsId = '84811880-2025-45b6-a44c-2f33bef30ad2';
+    String asfGithubTokenPushCredentialsId = '41128c14-bb63-4708-9074-d20a318ee630';
 
     String defaultArtifactsTempDir = 'artifacts-tmp';
 
