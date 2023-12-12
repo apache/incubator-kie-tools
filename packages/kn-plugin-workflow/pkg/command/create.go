@@ -65,7 +65,7 @@ func NewCreateCommand() *cobra.Command {
 	# Create a project with an specific name
 	{{.Name}} create --name myproject
 
-	# Creates a YAML sample workflow file (json is default)
+	# Creates a YAML sample workflow file (JSON is default)
 	{{.Name}} create --yaml-workflow
 		`,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"}, //nolint:misspell
