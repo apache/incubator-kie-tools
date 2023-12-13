@@ -162,6 +162,9 @@ pipeline {
                         CHROME_EXTENSION_DIR = "chrome-extension/${params.TAG}"
 
                         sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+
                         git checkout gh-pages
 
                         echo "Copy Chrome Extension resources"
@@ -193,7 +196,7 @@ pipeline {
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
                         "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.TAG}.zip",
-                        'EXTENSION_ID'
+                        "${pipelineVars.chromeExtensionIdCredentialsId}"
                     )
                 }
             }
@@ -219,7 +222,7 @@ pipeline {
                     env.CHROME_EXTESION_KIE_EDITORS_PUBLISH_STATUS = chromeStoreUtils.publishExtension(
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
-                        'EXTENSION_ID'
+                        "${pipelineVars.chromeExtensionIdCredentialsId}"
                     )
                 }
             }
@@ -263,6 +266,9 @@ pipeline {
                         DEPLOYMENT_DIR = "swf-chrome-extension/${params.TAG}"
 
                         sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+                        
                         git checkout gh-pages
 
                         echo "Copy Chrome Extension resources"
@@ -291,7 +297,7 @@ pipeline {
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
                         "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
-                        'EXTENSION_ID'
+                        "${pipelineVars.swfChromeExtensionIdCredentialsId}"
                     )
                 }
             }
@@ -317,7 +323,7 @@ pipeline {
                     env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_PUBLISH_STATUS = chromeStoreUtils.publishExtension(
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
-                        'EXTENSION_ID'
+                        "${pipelineVars.swfChromeExtensionIdCredentialsId}"
                     )
                 }
             }

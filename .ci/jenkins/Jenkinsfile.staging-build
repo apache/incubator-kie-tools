@@ -846,6 +846,9 @@ def deployOnlineEditor(String tag, String credentialsId) {
     DEPLOYMENT_DIR = "${tag}-prerelease"
 
     sh """#!/bin/bash -el
+    git config user.email asf-ci-kie@jenkins.kie.apache.org
+    git config user.name asf-ci-kie
+    
     echo "Switch to main branch"
     git checkout main
 
