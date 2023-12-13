@@ -27,6 +27,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/client-go/kubernetes/scheme"
 )
@@ -36,10 +37,13 @@ func Test_Handler_WorkflowMinimal(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, proj)
 	assert.Equal(t, "hello", proj.Workflow.Name)
+	assert.Equal(t, string(metadata.DevProfile), proj.Workflow.Annotations[metadata.Profile])
 }
 
 func Test_Handler_WorkflowMinimalInvalid(t *testing.T) {
-	proj, err := New("default").WithWorkflow(getWorkflowMinimalInvalid()).AsObjects()
+	proj, err := New("default").
+		WithWorkflow(getWorkflowMinimalInvalid()).
+		AsObjects()
 	assert.Error(t, err)
 	assert.Nil(t, proj)
 }
@@ -47,6 +51,7 @@ func Test_Handler_WorkflowMinimalInvalid(t *testing.T) {
 func Test_Handler_WorkflowMinimalAndProps(t *testing.T) {
 	proj, err := New("default").
 		Named("minimal").
+		Profile(metadata.ProdProfile).
 		WithWorkflow(getWorkflowMinimal()).
 		WithAppProperties(getWorkflowProperties()).
 		AsObjects()
@@ -55,6 +60,7 @@ func Test_Handler_WorkflowMinimalAndProps(t *testing.T) {
 	assert.NotNil(t, proj.Properties)
 	assert.Equal(t, "minimal", proj.Workflow.Name)
 	assert.Equal(t, "minimal-props", proj.Properties.Name)
+	assert.Equal(t, string(metadata.ProdProfile), proj.Workflow.Annotations[metadata.Profile])
 	assert.NotEmpty(t, proj.Properties.Data)
 }
 
@@ -144,33 +150,40 @@ func Test_Handler_WorklflowServiceAndPropsAndSpec_SaveAs(t *testing.T) {
 }
 
 func Test_Handler_WorkflowService_SaveAs(t *testing.T) {
-	handler := New("default").
-		WithWorkflow(getWorkflowService())
+	testRun := func(t *testing.T, handler WorkflowProjectHandler) {
+		proj, err := handler.AsObjects()
+		assert.NoError(t, err)
+		assert.NotNil(t, proj.Workflow)
 
-	proj, err := handler.AsObjects()
-	assert.NoError(t, err)
-	assert.NotNil(t, proj.Workflow)
+		tmpPath, err := os.MkdirTemp("", "*-test")
+		assert.NoError(t, err)
+		defer os.RemoveAll(tmpPath)
 
-	tmpPath, err := os.MkdirTemp("", "*-test")
-	assert.NoError(t, err)
-	defer os.RemoveAll(tmpPath)
+		assert.NoError(t, handler.SaveAsKubernetesManifests(tmpPath))
+		files, err := os.ReadDir(tmpPath)
+		assert.NoError(t, err)
+		assert.Len(t, files, 1)
 
-	assert.NoError(t, handler.SaveAsKubernetesManifests(tmpPath))
-	files, err := os.ReadDir(tmpPath)
-	assert.NoError(t, err)
-	assert.Len(t, files, 1)
-
-	for _, f := range files {
-		if strings.HasSuffix(f.Name(), yamlFileExt) {
-			contents, err := os.ReadFile(path.Join(tmpPath, f.Name()))
-			assert.NoError(t, err)
-			decode := scheme.Codecs.UniversalDeserializer().Decode
-			k8sObj, _, err := decode(contents, nil, nil)
-			assert.NoError(t, err)
-			assert.NotNil(t, k8sObj)
-			assert.NotEmpty(t, k8sObj.GetObjectKind().GroupVersionKind().String())
+		for _, f := range files {
+			if strings.HasSuffix(f.Name(), yamlFileExt) {
+				contents, err := os.ReadFile(path.Join(tmpPath, f.Name()))
+				assert.NoError(t, err)
+				decode := scheme.Codecs.UniversalDeserializer().Decode
+				k8sObj, _, err := decode(contents, nil, nil)
+				assert.NoError(t, err)
+				assert.NotNil(t, k8sObj)
+				assert.NotEmpty(t, k8sObj.GetObjectKind().GroupVersionKind().String())
+			}
 		}
 	}
+
+	t.Run("SaveAs in default namespace", func(t *testing.T) {
+		testRun(t, New("default").WithWorkflow(getWorkflowService()))
+	})
+
+	t.Run("SaveAs with empty namespace namespace", func(t *testing.T) {
+		testRun(t, New("").WithWorkflow(getWorkflowService()))
+	})
 }
 
 func getWorkflowMinimalInvalid() io.Reader {

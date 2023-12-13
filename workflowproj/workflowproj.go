@@ -49,6 +49,8 @@ type WorkflowProjectHandler interface {
 	// Named overwrites the workflow ID. The handler will use this name instead to generate the manifests name.
 	// Remember that together with the Namespace, the Name is the unique key of a Kubernetes object.
 	Named(name string) WorkflowProjectHandler
+	// Profile overrides the default profile (dev) in the generated SonataFlow manifest
+	Profile(profile metadata.ProfileType) WorkflowProjectHandler
 	// WithWorkflow reader for a file or the content stream of a workflow definition.
 	WithWorkflow(reader io.Reader) WorkflowProjectHandler
 	// WithAppProperties reader for a file or the content stream of a workflow application properties.
@@ -81,7 +83,6 @@ type resource struct {
 
 // New is the entry point for this package.
 // You can create a new handler with the given namespace, meaning that every manifest generated will use this namespace.
-// namespace is a required parameter.
 func New(namespace string) WorkflowProjectHandler {
 	s := scheme.Scheme
 	utilruntime.Must(operatorapi.AddToScheme(s))
@@ -96,6 +97,7 @@ func New(namespace string) WorkflowProjectHandler {
 type workflowProjectHandler struct {
 	name             string
 	namespace        string
+	profile          metadata.ProfileType
 	scheme           *runtime.Scheme
 	project          WorkflowProject
 	rawWorkflow      io.Reader
@@ -106,6 +108,12 @@ type workflowProjectHandler struct {
 
 func (w *workflowProjectHandler) Named(name string) WorkflowProjectHandler {
 	w.name = strings.ToLower(name)
+	w.parsed = false
+	return w
+}
+
+func (w *workflowProjectHandler) Profile(profile metadata.ProfileType) WorkflowProjectHandler {
+	w.profile = profile
 	w.parsed = false
 	return w
 }
@@ -190,9 +198,6 @@ func (w *workflowProjectHandler) parseRawProject() error {
 }
 
 func (w *workflowProjectHandler) sanityCheck() error {
-	if len(w.namespace) == 0 {
-		return errors.New("Namespace is required when building Workflow projects")
-	}
 	if w.rawWorkflow == nil {
 		return errors.New("A workflow reader pointer is required when building Workflow projects")
 	}
@@ -221,8 +226,11 @@ func (w *workflowProjectHandler) parseRawWorkflow() error {
 	w.project.Workflow, err = operatorapi.FromCNCFWorkflow(workflowDef, context.TODO())
 	w.project.Workflow.Name = w.name
 	w.project.Workflow.Namespace = w.namespace
-
-	SetWorkflowProfile(w.project.Workflow, metadata.DevProfile)
+	profile := metadata.DevProfile
+	if len(w.profile) > 0 {
+		profile = w.profile
+	}
+	SetWorkflowProfile(w.project.Workflow, profile)
 	SetDefaultLabels(w.project.Workflow, w.project.Workflow)
 	if err = SetTypeToObject(w.project.Workflow, w.scheme); err != nil {
 		return err
