@@ -30,9 +30,9 @@ import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
-import { useSettingsDispatch } from "../settings/SettingsContext";
 import {
   ImportableUrl,
+  isCertainlyGit,
   isPotentiallyGit,
   isSingleFile,
   UrlType,
@@ -44,7 +44,7 @@ import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportMod
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
 import { useGitHubClient } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
-import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
+import { AuthInfo, useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
@@ -52,7 +52,7 @@ import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/Loc
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
+import { AUTH_SESSION_NONE, GitAuthSession } from "../authSessions/AuthSessionApi";
 import { useBitbucketClient } from "../bitbucket/Hooks";
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
@@ -76,7 +76,9 @@ export function NewWorkspaceFromUrlPage() {
 
   const authProviders = useAuthProviders();
   const { authSessions, authSessionStatus } = useAuthSessions();
-  const { authSession, gitConfig, authInfo } = useAuthSession(queryParamAuthSessionId);
+  const authSessionInfo = useAuthSession(queryParamAuthSessionId);
+  const { authSession, gitConfig } = authSessionInfo;
+  const [authInfo, setAuthInfo] = useState<AuthInfo | undefined>(authSessionInfo.authInfo);
   const authProvider = useAuthProvider(authSession);
   const insecurelyDisableTlsCertificateValidation = useMemo(() => {
     if (typeof queryParamInsecurelyDisableTlsCertificateValidation === "string") {
@@ -95,6 +97,25 @@ export function NewWorkspaceFromUrlPage() {
     insecurelyDisableTlsCertificateValidation
   );
   const { clonableUrl, selectedGitRefName, gitServerRefsPromise } = clonableUrlObject;
+
+  if (
+    gitServerRefsPromise.error?.toString().includes("Unauthorized") &&
+    isCertainlyGit(importableUrl.type) &&
+    importableUrl.url &&
+    !authInfo
+  ) {
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders,
+      authSessions,
+      authSessionStatus,
+      urlDomain: new URL(importableUrl.url).hostname,
+    });
+    setAuthInfo({
+      username: (compatible as GitAuthSession[])[0].login,
+      uuid: (compatible as GitAuthSession[])[0].uuid,
+      password: (compatible as GitAuthSession[])[0].token,
+    });
+  }
 
   const setAuthSessionId = useCallback(
     (newAuthSessionId: React.SetStateAction<string | undefined>) => {
