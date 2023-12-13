@@ -38,6 +38,7 @@
     "@kie-tools/runtime-tools-components": "workspace:*",
     "@kie-tools/runtime-tools-gateway-api": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
+    "@patternfly/patternfly": "^4.224.2",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-table": "^4.112.39",

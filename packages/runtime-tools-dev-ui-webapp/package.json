@@ -18,13 +18,15 @@
     "dist"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && tsc -p tsconfig.json",
+    "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm test",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
+    "@babel/standalone": "7.15.3",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
@@ -32,17 +34,22 @@
     "@kie-tools/runtime-tools-components": "workspace:*",
     "@kie-tools/runtime-tools-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-gateway-api": "workspace:*",
+    "@kie-tools/runtime-tools-monitoring-webapp": "workspace:*",
     "@kie-tools/runtime-tools-webapp-components": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
     "@kie-tools/serverless-workflow-mermaid-viewer": "^0.30.0",
     "@kie-tools/serverless-workflow-text-editor": "workspace:*",
+    "@patternfly/patternfly": "^4.224.2",
     "@patternfly/react-core": "^4.276.6",
     "apollo-cache-inmemory": "1.6.6",
     "apollo-client": "2.6.10",
     "apollo-link-error": "1.1.13",
     "apollo-link-http": "1.5.17",
     "axios": "^0.27.2",
+    "copy-webpack-plugin": "^11.0.0",
+    "node-polyfill-webpack-plugin": "^2.0.1",
     "react": "^17.0.2",
     "react-apollo": "3.1.3",
     "react-apollo-hooks": "0.5.0",
@@ -50,7 +57,11 @@
     "react-moment": "0.9.7",
     "react-router": "^5.2.1",
     "react-router-dom": "^5.2.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -72,11 +83,17 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/testing-library__jest-dom": "^5.9.1",
     "@types/uuid": "^8.3.0",
+    "file-loader": "^6.2.0",
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",
+    "raw-loader": "^4.0.2",
     "rimraf": "^3.0.2",
+    "svg-url-loader": "^8.0.0",
     "ts-jest": "^26.5.6",
-    "typescript": "^4.6.2"
+    "ts-loader": "^9.4.2",
+    "tsconfig-paths-webpack-plugin": "^4.1.0",
+    "typescript": "^4.6.2",
+    "url-loader": "^4.1.1"
   }
 }

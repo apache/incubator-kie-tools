@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { init } from "@kie-tools/runtime-tools-enveloped-components/src/formDisplayer";
+import { init } from "@kie-tools/runtime-tools-enveloped-components/dist/formDisplayer";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 
 init({

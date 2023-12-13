@@ -1,12 +1,12 @@
 {
   "extends": "@kie-tools/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "declaration": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "target": "es6",
-    "moduleResolution": "node"
+    "allowSyntheticDefaultImports": true,
+    "target": "es6"
   },
   "include": ["src"]
 }

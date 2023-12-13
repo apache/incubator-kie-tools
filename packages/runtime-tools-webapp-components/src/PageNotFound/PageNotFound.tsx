@@ -30,7 +30,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { Redirect, StaticContext, RouteComponentProps } from "react-router";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/src/common/ouiaTools";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools/OuiaUtils";
 import * as H from "history";
 
 interface IOwnProps {

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/src/formDetails";
+import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/dist/formDetails";
 
 import { getFormContent, saveFormContent } from "../apis";
 

@@ -27,7 +27,7 @@ import { OperationType } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/src/formDetails";
+import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/dist/formDetails";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { createProcessDefinitionList } from "../../utils/Utils";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";

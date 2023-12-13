@@ -28,7 +28,7 @@ import DevUILayout from "../DevUILayout/DevUILayout";
 import ReactDOM from "react-dom";
 import { CustomLabels } from "../../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
-import { ServerUnavailablePage } from "../../../../../runtime-tools-webapp-components/src/ServerUnavailablePage";
+import { ServerUnavailablePage } from "@kie-tools/runtime-tools-webapp-components/dist/ServerUnavailablePage";
 
 interface IOwnProps {
   isProcessEnabled: boolean;

@@ -31,7 +31,7 @@ import { css } from "@patternfly/react-styles";
 
 import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 import AboutModalBox from "../AboutModalBox/AboutModalBox";
-import userImage from "../../../static/avatar.svg";
+import userImage from "../../static/avatar.svg";
 import { ANONYMOUS_USER, LogoutUserContext, supportsLogout } from "../../contexts/Auth";
 import { AppContext, useKogitoAppContext } from "../../contexts/KogitoAppContext/KogitoAppContext";
 
