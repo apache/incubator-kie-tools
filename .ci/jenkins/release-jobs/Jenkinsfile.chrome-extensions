@@ -162,6 +162,9 @@ pipeline {
                         CHROME_EXTENSION_DIR = "chrome-extension/${params.TAG}"
 
                         sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+
                         git checkout gh-pages
 
                         echo "Copy Chrome Extension resources"
@@ -263,6 +266,9 @@ pipeline {
                         DEPLOYMENT_DIR = "swf-chrome-extension/${params.TAG}"
 
                         sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+                        
                         git checkout gh-pages
 
                         echo "Copy Chrome Extension resources"

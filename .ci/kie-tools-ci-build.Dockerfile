@@ -106,4 +106,6 @@ ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 ENV DISPLAY=":99"
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 
+ENTRYPOINT [""]
+
 CMD ["bash"]

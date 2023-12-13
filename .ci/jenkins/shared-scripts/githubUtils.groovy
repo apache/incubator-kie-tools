@@ -141,8 +141,8 @@ def pushObject(String remote, String object, String credentialsId) {
 * Setup git user configuration
 */
 def setUserConfig(String username) {
-    sh "git config user.email kietoolsbot@gmail.com"
-    sh "git config user.name ${username}"
+    sh "git config --global user.email kietoolsbot@gmail.com"
+    sh "git config --global user.name ${username}"
 }
 
 /**
