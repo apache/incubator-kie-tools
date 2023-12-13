@@ -47,6 +47,9 @@ pipeline {
         SWF_CHROME_EXTENSION__routerRelativePath = "kogito-online/swf-chrome-extension/${params.TAG}"
         SWF_CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
 
+        CHROME_EXTENSION_ID = 'Mgkfehibfkdpjkfjbikpchpcfimepckf'
+        SWF_CHROME_EXTENSION_ID = ''
+
         PNPM_FILTER_STRING = '-F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...'
     }
 
@@ -196,7 +199,7 @@ pipeline {
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
                         "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.TAG}.zip",
-                        'EXTENSION_ID'
+                        "${pipelineVars.chromeExtensionIdCredentialsId}"
                     )
                 }
             }
@@ -222,7 +225,7 @@ pipeline {
                     env.CHROME_EXTESION_KIE_EDITORS_PUBLISH_STATUS = chromeStoreUtils.publishExtension(
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
-                        'EXTENSION_ID'
+                        "${pipelineVars.chromeExtensionIdCredentialsId}"
                     )
                 }
             }
@@ -297,7 +300,7 @@ pipeline {
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
                         "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
-                        'EXTENSION_ID'
+                        "${pipelineVars.swfChromeExtensionIdCredentialsId}"
                     )
                 }
             }
@@ -323,7 +326,7 @@ pipeline {
                     env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_PUBLISH_STATUS = chromeStoreUtils.publishExtension(
                         "${pipelineVars.chromeStoreCredentialsId}",
                         "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
-                        'EXTENSION_ID'
+                        "${pipelineVars.swfChromeExtensionIdCredentialsId}"
                     )
                 }
             }
