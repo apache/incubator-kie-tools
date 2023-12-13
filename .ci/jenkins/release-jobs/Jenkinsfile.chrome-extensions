@@ -47,9 +47,6 @@ pipeline {
         SWF_CHROME_EXTENSION__routerRelativePath = "kogito-online/swf-chrome-extension/${params.TAG}"
         SWF_CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
 
-        CHROME_EXTENSION_ID = 'Mgkfehibfkdpjkfjbikpchpcfimepckf'
-        SWF_CHROME_EXTENSION_ID = ''
-
         PNPM_FILTER_STRING = '-F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...'
     }
 

@@ -131,18 +131,9 @@ def checkoutRepoSquashedMerge(String author, String branch, String url, String t
 */
 def pushObject(String remote, String object, String credentialsId) {
     withCredentials([usernamePassword(credentialsId: "${credentialsId}", usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
-        setUserConfig("${GITHUB_USER}")
         sh("git config --local credential.helper \"!f() { echo username=\\$GITHUB_USER; echo password=\\$GITHUB_TOKEN; }; f\"")
         sh("git push ${remote} ${object}")
     }
-}
-
-/**
-* Setup git user configuration
-*/
-def setUserConfig(String username) {
-    sh "git config --global user.email kietoolsbot@gmail.com"
-    sh "git config --global user.name ${username}"
 }
 
 /**
