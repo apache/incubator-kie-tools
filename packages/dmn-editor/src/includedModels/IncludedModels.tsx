@@ -55,6 +55,7 @@ import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/A
 import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -79,21 +80,38 @@ export function IncludedModels() {
   const [importName, setImportName] = useState("");
 
   const [selectedModel, setSelectedModel] = useState<ExternalModel | undefined>(undefined);
-  // FIXME: Tiago --> Use `useCancellableEffect`
-  useEffect(() => {
-    if (!selectedPath) {
-      return;
-    }
 
-    // FIXME: Tiago --> Handle `onRequestExternalModelByPath` not being available.
-    onRequestExternalModelByPath?.(selectedPath).then((m) => {
-      if (m) {
-        setSelectedModel(m);
-      } else {
-        // FIXME: Tiago --> Handle error.
-      }
-    });
-  }, [onRequestExternalModelByPath, selectedPath]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!selectedPath) {
+          return;
+        }
+
+        if (onRequestExternalModelByPath === undefined) {
+          return;
+        }
+
+        onRequestExternalModelByPath(selectedPath)
+          .then((model) => {
+            if (canceled.get()) {
+              return;
+            }
+
+            if (model) {
+              setSelectedModel(model);
+            } else {
+              return;
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            return;
+          });
+      },
+      [onRequestExternalModelByPath, selectedPath]
+    )
+  );
 
   const openModal = useCallback(() => {
     setModalOpen(true);
@@ -147,14 +165,29 @@ export function IncludedModels() {
     cancel();
   }, [selectedPath, selectedModel, importName, allFeelVariableUniqueNames, dmnEditorStoreApi, cancel]);
 
-  // FIXME: Tiago --> Use `useCancellableEffect`
   const [modelPaths, setModelPaths] = useState<string[] | undefined>(undefined);
-  useEffect(() => {
-    // FIXME: Tiago --> Handle `onRequestExternalModelsAvailableToInclude` not being available.
-    onRequestExternalModelsAvailableToInclude?.().then((m) => {
-      setModelPaths(m);
-    });
-  }, [isModelSelectOpen, onRequestExternalModelsAvailableToInclude]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (onRequestExternalModelsAvailableToInclude === undefined) {
+          return;
+        }
+
+        onRequestExternalModelsAvailableToInclude()
+          .then((model) => {
+            if (canceled.get()) {
+              return;
+            }
+            setModelPaths(model);
+          })
+          .catch((err) => {
+            console.error(err);
+            return;
+          });
+      },
+      [isModelSelectOpen, onRequestExternalModelsAvailableToInclude]
+    )
+  );
 
   const externalModelsByPath = useMemo(
     () =>
@@ -186,8 +219,14 @@ export function IncludedModels() {
     [externalModelsByPath, importsByNamespace, modelPaths]
   );
 
-  const pmmlPathsNotYetIncluded = modelPathsNotYetIncluded?.filter((s) => s.endsWith(".pmml"));
-  const dmnPathsNotYetIncluded = modelPathsNotYetIncluded?.filter((s) => s.endsWith(".dmn"));
+  const pmmlPathsNotYetIncluded = useMemo(
+    () => modelPathsNotYetIncluded?.filter((s) => s.endsWith(".pmml")),
+    [modelPathsNotYetIncluded]
+  );
+  const dmnPathsNotYetIncluded = useMemo(
+    () => modelPathsNotYetIncluded?.filter((s) => s.endsWith(".dmn")),
+    [modelPathsNotYetIncluded]
+  );
 
   const selectToggleRef = useRef<HTMLButtonElement>(null);
   const inViewSelect = useInViewSelect(dmnEditorRootElementRef, selectToggleRef);
@@ -236,12 +275,12 @@ export function IncludedModels() {
                       placeholderText={"Select a model to include..."}
                       onToggle={setModelSelectOpen}
                       onClear={() => setSelectedPath(undefined)}
-                      onSelect={(e, v) => {
-                        if (typeof v !== "string") {
-                          throw new Error(`Invalid path for an included model ${JSON.stringify(v)}`);
+                      onSelect={(e, path) => {
+                        if (typeof path !== "string") {
+                          throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
                         }
 
-                        setSelectedPath(v);
+                        setSelectedPath(path);
                         setModelSelectOpen(false);
                       }}
                       selections={selectedPath}
@@ -415,7 +454,10 @@ function IncludedModelCard({
     }
   }, [externalModel.model, externalModel.type]);
 
-  const pathDisplayed = onRequestToResolvePath?.(externalModel.relativePath) ?? externalModel.relativePath;
+  const pathDisplayed = useMemo(
+    () => onRequestToResolvePath?.(externalModel.relativePath) ?? externalModel.relativePath,
+    [onRequestToResolvePath, externalModel.relativePath]
+  );
 
   const [isCardActionsOpen, setCardActionsOpen] = useState(false);
 

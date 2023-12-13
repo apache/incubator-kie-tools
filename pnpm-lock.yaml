@@ -3673,6 +3673,9 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
       "@kie-tools-core/switch-expression-ts":
         specifier: workspace:*
         version: link:../switch-expression-ts
