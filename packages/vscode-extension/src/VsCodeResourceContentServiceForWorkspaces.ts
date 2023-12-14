@@ -57,16 +57,19 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
     try {
       console.debug("Trying to use isomorphic-git to read dir.");
       const files = await listFiles({ fs: this.vscodeEquivalentFs as any, dir: basePath });
+      console.debug("Success on using isomorphic-git!");
       const minimatch = new Minimatch(pattern);
       // The regexp is 50x faster than the direct match using glob.
       const regexp = minimatch.makeRe();
-      const paths = files.filter((file) => regexp.test(file));
+      const paths = files.filter((file) => regexp.test(file)).map((file) => __path.join(basePath, file));
       return new ResourcesList(pattern, paths);
     } catch (error) {
       console.debug("Failed to use isomorphic-git to read dir. Falling back to vscode API. error: ", error);
       const relativePattern = new RelativePattern(basePath, pattern);
       const files = await vscode.workspace.findFiles(relativePattern);
-      const paths = files.map((uri: vscode.Uri) => vscode.workspace.asRelativePath(uri));
+      const paths = files
+        .map((uri: vscode.Uri) => vscode.workspace.asRelativePath(uri))
+        .map((file) => __path.join(basePath, file));
       return new ResourcesList(pattern, paths);
     }
   }
@@ -89,6 +92,9 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
   }
 
   private resolvePath(uri: string) {
+    if (__path.isAbsolute(uri)) {
+      return uri;
+    }
     const folders: ReadonlyArray<WorkspaceFolder> = vscode.workspace.workspaceFolders!;
     if (folders) {
       const rootPath = folders[0].uri.path;

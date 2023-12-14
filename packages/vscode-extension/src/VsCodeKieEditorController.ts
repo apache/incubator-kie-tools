@@ -34,6 +34,7 @@ import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { VsCodeKieEditorCustomDocument } from "./VsCodeKieEditorCustomDocument";
+import * as __path from "path";
 
 function fileExtension(documentUri: vscode.Uri) {
   const lastSlashIndex = documentUri.fsPath.lastIndexOf("/");
@@ -89,6 +90,7 @@ export class VsCodeKieEditorController implements EditorApi {
             initialLocale: vscode.env.language,
             isReadOnly: false,
             channel: vscode.env.uiKind === UIKind.Desktop ? ChannelType.VSCODE_DESKTOP : ChannelType.VSCODE_WEB,
+            workingDirBasePath: vscode.workspace.workspaceFolders![0].uri.fsPath + __path.sep,
           }
         )
     )

@@ -23,7 +23,7 @@ import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { EditorToolbar } from "./Toolbar/EditorToolbar";
 import { useOnlineI18n } from "../i18n";
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, DEFAULT_WORKING_DIR_BASE_PATH } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -63,6 +63,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { useEnv } from "../env/hooks/EnvContext";
 import { useSettings } from "../settings/SettingsContext";
 import { EditorEnvelopeLocatorFactory } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
+import { relative } from "path";
 
 export interface Props {
   workspaceId: string;
@@ -298,11 +299,11 @@ export function EditorPage(props: Props) {
   }, [alertsDispatch]);
 
   const handleOpenFile = useCallback(
-    async (relativePath: string) => {
+    async (absolutePath: string) => {
       if (!workspaceFilePromise.data) {
         return;
       }
-
+      const relativePath = relative(DEFAULT_WORKING_DIR_BASE_PATH, absolutePath);
       const file = await workspaces.getFile({
         workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
         relativePath,
@@ -460,6 +461,7 @@ export function EditorPage(props: Props) {
                             editorEnvelopeLocator={settingsAwareEditorEnvelopeLocator}
                             channelType={ChannelType.ONLINE_MULTI_FILE}
                             locale={locale}
+                            workingDirBasePath={DEFAULT_WORKING_DIR_BASE_PATH}
                           />
                         )}
                       </EditorPageDockDrawer>

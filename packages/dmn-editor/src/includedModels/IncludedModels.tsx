@@ -35,7 +35,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { basename, dirname, extname } from "path";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { ExternalModel } from "../DmnEditor";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15_SPEC } from "../Dmn15Spec";
@@ -93,13 +93,13 @@ export function IncludedModels() {
         }
 
         onRequestExternalModelByPath(selectedPath)
-          .then((model) => {
+          .then((externalModel) => {
             if (canceled.get()) {
               return;
             }
 
-            if (model) {
-              setSelectedModel(model);
+            if (externalModel) {
+              setSelectedModel(externalModel);
             } else {
               return;
             }
@@ -174,11 +174,11 @@ export function IncludedModels() {
         }
 
         onRequestExternalModelsAvailableToInclude()
-          .then((model) => {
+          .then((externalModel) => {
             if (canceled.get()) {
               return;
             }
-            setModelPaths(model);
+            setModelPaths(externalModel);
           })
           .catch((err) => {
             console.error(err);
@@ -358,17 +358,22 @@ export function IncludedModels() {
             <Divider inset={{ default: "insetMd" }} />
             <br />
             <Gallery hasGutter={true} minWidths={{ xl: "calc(25% - 1rem)", md: "calc(33% - 1rem)", sm: "100%" }}>
-              {thisDmnsImports.flatMap((i, index) => {
+              {thisDmnsImports.flatMap((dmnImport, index) => {
                 const externalModel =
-                  externalModelsByNamespace?.[getNamespaceOfDmnImport({ dmnImport: i })] ??
+                  externalModelsByNamespace?.[getNamespaceOfDmnImport({ dmnImport: dmnImport })] ??
                   (!isModalOpen && index === thisDmnsImports.length - 1 ? selectedModel : undefined); // Use the selected model to avoid showing the "unknown included model" card.
 
                 return !externalModel ? (
-                  <UnknownIncludedModelCard key={i["@_id"]} _import={i} index={index} isReadonly={false} />
+                  <UnknownIncludedModelCard
+                    key={dmnImport["@_id"]}
+                    _import={dmnImport}
+                    index={index}
+                    isReadonly={false}
+                  />
                 ) : (
                   <IncludedModelCard
-                    key={i["@_id"]}
-                    _import={i}
+                    key={dmnImport["@_id"]}
+                    _import={dmnImport}
                     index={index}
                     externalModel={externalModel}
                     isReadonly={false}

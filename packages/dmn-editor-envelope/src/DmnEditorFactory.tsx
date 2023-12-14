@@ -25,6 +25,7 @@ import {
   KogitoEditorEnvelopeContextType,
   KogitoEditorChannelApi,
   EditorTheme,
+  DEFAULT_WORKING_DIR_BASE_PATH,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnEditorRoot } from "./DmnEditorRoot";
@@ -88,6 +89,7 @@ export class DmnEditorInterface implements Editor {
       <DmnEditorRootWrapper
         exposing={(dmnEditorRoot) => (this.self = dmnEditorRoot)}
         envelopeContext={this.envelopeContext}
+        workingDirBasePath={this.initArgs.workingDirBasePath ?? DEFAULT_WORKING_DIR_BASE_PATH}
       />
     );
   }
@@ -97,9 +99,11 @@ export class DmnEditorInterface implements Editor {
 function DmnEditorRootWrapper({
   envelopeContext,
   exposing,
+  workingDirBasePath,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
+  workingDirBasePath: string;
 }) {
   const onNewEdit = React.useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -138,6 +142,7 @@ function DmnEditorRootWrapper({
       onRequestFileList={onRequestFileList}
       onRequestFileContent={onRequestFileContent}
       onOpenFile={onOpenFile}
+      workingDirBasePath={workingDirBasePath}
     />
   );
 }

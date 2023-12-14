@@ -55,6 +55,7 @@ export type DmnEditorRootProps = {
   onRequestFileList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   onRequestFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFile: WorkspaceChannelApi["kogitoWorkspace_openFile"];
+  workingDirBasePath: string;
 };
 
 export type DmnEditorRootState = {
@@ -166,7 +167,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   };
 
   private onRequestToResolvePath = (relativePath: string) => {
-    return __path.relative("/", __path.resolve(__path.dirname(this.state.absolutePath!), relativePath));
+    return __path.relative(
+      this.props.workingDirBasePath,
+      __path.resolve(__path.dirname(this.state.absolutePath!), relativePath)
+    );
   };
 
   private onRequestExternalModelByPath: DmnEditor.OnRequestExternalModelByPath = async (relativePath) => {
@@ -197,7 +201,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return;
     }
 
-    this.props.onOpenFile(this.onRequestToResolvePath(relativePath));
+    const fileAbsolutePath = __path.join(this.props.workingDirBasePath, this.onRequestToResolvePath(relativePath));
+    this.props.onOpenFile(fileAbsolutePath);
   };
 
   public render() {
@@ -302,7 +307,7 @@ function ExternalModelsManager({
         return Promise.all(resources);
       })
       .then((resources) => {
-        const index: DmnEditor.ExternalModelsIndex = {};
+        const externalModelMap: DmnEditor.ExternalModelsIndex = {};
 
         const namespacesSet = new Set(namespaces.split(NAMESPACES_EFFECT_SEPARATOR));
 
@@ -317,15 +322,15 @@ function ExternalModelsManager({
             const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
             if (namespace && namespacesSet.has(namespace)) {
               // Check for multiplicity of namespaces on DMN models
-              if (index[namespace]) {
+              if (externalModelMap[namespace]) {
                 console.warn(
                   `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${relativePath}' and '${
-                    index[namespace]!.relativePath
+                    externalModelMap[namespace]!.relativePath
                   }'. The latter will be considered.`
                 );
               }
 
-              index[namespace] = {
+              externalModelMap[namespace] = {
                 relativePath,
                 model: getMarshaller(content, { upgradeTo: "latest" }).parser.parse(),
                 type: "dmn",
@@ -336,7 +341,7 @@ function ExternalModelsManager({
             const namespace = getPmmlNamespace({ fileRelativePath: relativePath });
             if (namespace && namespacesSet.has(namespace)) {
               // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
-              index[namespace] = {
+              externalModelMap[namespace] = {
                 relativePath,
                 model: XML2PMML(content),
                 type: "pmml",
@@ -348,7 +353,7 @@ function ExternalModelsManager({
         }
 
         if (!canceled) {
-          onChange(index);
+          onChange(externalModelMap);
         }
       });
 
