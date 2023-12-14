@@ -36,14 +36,15 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.corsProxy.service.port }}
-              name: proxy
               protocol: TCP
           livenessProbe:
-            tcpSocket:
-              port: proxy
+            httpGet:
+              path: /ping
+              port: http
           readinessProbe:
-            tcpSocket:
-              port: proxy
+            httpGet:
+              path: /ping
+              port: http
           resources:
             {{- toYaml .Values.corsProxy.resources | nindent 12 }}
       {{- with .Values.corsProxy.nodeSelector }}

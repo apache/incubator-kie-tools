@@ -1,9 +1,9 @@
-{{- if .Values.sandbox.ingress.enabled -}}
-{{- $fullName := include "kie-sandbox-helm-chart.sandbox.fullname" . -}}
-{{- $svcPort := .Values.sandbox.service.port -}}
-{{- if and .Values.sandbox.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.sandbox.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.sandbox.ingress.annotations "kubernetes.io/ingress.class" .Values.sandbox.ingress.className}}
+{{- if .Values.kieSandbox.ingress.enabled -}}
+{{- $fullName := include "kie-sandbox-helm-chart.kieSandbox.fullname" . -}}
+{{- $svcPort := .Values.kieSandbox.service.port -}}
+{{- if and .Values.kieSandbox.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.kieSandbox.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.kieSandbox.ingress.annotations "kubernetes.io/ingress.class" .Values.kieSandbox.ingress.className}}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -17,18 +17,18 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "kie-sandbox-helm-chart.sandbox.labels" . | nindent 4 }}
-  {{- with .Values.sandbox.ingress.annotations }}
+    {{- include "kie-sandbox-helm-chart.kieSandbox.labels" . | nindent 4 }}
+  {{- with .Values.kieSandbox.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.sandbox.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.sandbox.ingress.className }}
+  {{- if and .Values.kieSandbox.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.kieSandbox.ingress.className }}
   {{- end }}
-  {{- if .Values.sandbox.ingress.tls }}
+  {{- if .Values.kieSandbox.ingress.tls }}
   tls:
-    {{- range .Values.sandbox.ingress.tls }}
+    {{- range .Values.kieSandbox.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -37,7 +37,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.sandbox.ingress.hosts }}
+    {{- range .Values.kieSandbox.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:

@@ -1,46 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "kie-sandbox-helm-chart.sandbox.fullname" . }}
+  name: {{ include "kie-sandbox-helm-chart.kieSandbox.fullname" . }}
   labels:
-    {{- include "kie-sandbox-helm-chart.sandbox.labels" . | nindent 4 }}
+    {{- include "kie-sandbox-helm-chart.kieSandbox.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.sandbox.autoscaling.enabled }}
-  replicas: {{ .Values.sandbox.replicaCount }}
+  {{- if not .Values.kieSandbox.autoscaling.enabled }}
+  replicas: {{ .Values.kieSandbox.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "kie-sandbox-helm-chart.sandbox.selectorLabels" . | nindent 6 }}
+      {{- include "kie-sandbox-helm-chart.kieSandbox.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.sandbox.podAnnotations }}
+      {{- with .Values.kieSandbox.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "kie-sandbox-helm-chart.sandbox.selectorLabels" . | nindent 8 }}
+        {{- include "kie-sandbox-helm-chart.kieSandbox.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.sandbox.imagePullSecrets }}
+      {{- with .Values.kieSandbox.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "kie-sandbox-helm-chart.sandbox.serviceAccountName" . }}
+      serviceAccountName: {{ include "kie-sandbox-helm-chart.kieSandbox.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.sandbox.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.kieSandbox.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.sandbox.securityContext | nindent 12 }}
-          image: "{{ .Values.sandbox.image.registry }}/{{ .Values.sandbox.image.account }}/{{ .Values.sandbox.image.name }}:{{ .Values.sandbox.image.tag | default .Chart.AppVersion }}"
+            {{- toYaml .Values.kieSandbox.securityContext | nindent 12 }}
+          image: "{{ .Values.kieSandbox.image.registry }}/{{ .Values.kieSandbox.image.account }}/{{ .Values.kieSandbox.image.name }}:{{ .Values.kieSandbox.image.tag | default .Chart.AppVersion }}"
           env:
           - name: KIE_SANDBOX_EXTENDED_SERVICES_URL
-            value: {{ .Values.sandbox.extendedServiceUrl }}
+            value: {{ .Values.kieSandbox.extendedServiceUrl }}
           - name: KIE_SANDBOX_CORS_PROXY_URL
-            value: {{ .Values.sandbox.corsProxyUrl }}
-          imagePullPolicy: {{ .Values.sandbox.image.pullPolicy }}
+            value: {{ .Values.kieSandbox.corsProxyUrl }}
+          imagePullPolicy: {{ .Values.kieSandbox.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.sandbox.service.port }}
+              containerPort: {{ .Values.kieSandbox.service.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -51,16 +51,16 @@ spec:
               path: /
               port: http
           resources:
-            {{- toYaml .Values.sandbox.resources | nindent 12 }}
-      {{- with .Values.sandbox.nodeSelector }}
+            {{- toYaml .Values.kieSandbox.resources | nindent 12 }}
+      {{- with .Values.kieSandbox.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.sandbox.affinity }}
+      {{- with .Values.kieSandbox.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.sandbox.tolerations }}
+      {{- with .Values.kieSandbox.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

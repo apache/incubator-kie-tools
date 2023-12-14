@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "kie-sandbox-helm-chart.corsProxy.fullname" . }}-svc
+  name: {{ include "kie-sandbox-helm-chart.corsProxy.fullname" . }}
   labels:
     {{- include "kie-sandbox-helm-chart.corsProxy.labels" . | nindent 4 }}
 spec:

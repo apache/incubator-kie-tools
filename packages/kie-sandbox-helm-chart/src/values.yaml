@@ -1,8 +1,8 @@
 
 # KIE Sandbox application
-sandbox:
+kieSandbox:
 
-  name: sandbox
+  name: kie-sandbox
 
   extendedServiceUrl: "http://127.0.0.1:21345"
   corsProxyUrl: "http://127.0.0.1:8081"
@@ -179,3 +179,5 @@ extendedServices:
   tolerations: []
 
   affinity: {}
+
+ingressSource: ""

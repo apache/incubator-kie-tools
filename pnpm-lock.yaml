@@ -5778,6 +5778,28 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
 
+  packages/kie-sandbox-helm-chart:
+    dependencies:
+      "@kie-tools/cors-proxy-image":
+        specifier: workspace:*
+        version: link:../cors-proxy-image
+      "@kie-tools/kie-sandbox-extended-services-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-extended-services-image
+      "@kie-tools/kie-sandbox-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-image
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+
   packages/kie-sandbox-image:
     dependencies:
       "@kie-tools/image-env-to-json":
@@ -23556,7 +23578,7 @@ packages:
       find-cache-dir: 3.3.1
       find-up: 5.0.0
       fs-extra: 11.1.1
-      glob: 10.3.3
+      glob: 10.3.10
       handlebars: 4.7.7
       lazy-universal-dotenv: 4.0.0
       node-fetch: 2.6.11
@@ -23588,7 +23610,7 @@ packages:
       find-cache-dir: 3.3.1
       find-up: 5.0.0
       fs-extra: 11.1.1
-      glob: 10.3.3
+      glob: 10.3.10
       handlebars: 4.7.7
       lazy-universal-dotenv: 4.0.0
       node-fetch: 2.6.11

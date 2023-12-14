@@ -60,15 +60,15 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a fully qualified sandbox name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "kie-sandbox-helm-chart.sandbox.fullname" -}}
-{{- if .Values.sandbox.fullnameOverride -}}
-{{- .Values.sandbox.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- define "kie-sandbox-helm-chart.kieSandbox.fullname" -}}
+{{- if .Values.kieSandbox.fullnameOverride -}}
+{{- .Values.kieSandbox.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
-{{- printf "%s-%s" .Release.Name .Values.sandbox.name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name .Values.kieSandbox.name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s-%s-%s" .Release.Name $name .Values.sandbox.name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s-%s" .Release.Name $name .Values.kieSandbox.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -120,13 +120,13 @@ app.kubernetes.io/component: {{ .Values.extendedServices.name | quote }}
 {{ include "kie-sandbox-helm-chart.selectorLabels" . }}
 {{- end -}}
 
-{{- define "kie-sandbox-helm-chart.sandbox.labels" -}}
-{{ include "kie-sandbox-helm-chart.sandbox.selectorLabels" . }}
+{{- define "kie-sandbox-helm-chart.kieSandbox.labels" -}}
+{{ include "kie-sandbox-helm-chart.kieSandbox.selectorLabels" . }}
 {{ include "kie-sandbox-helm-chart.labels" . }}
 {{- end -}}
 
-{{- define "kie-sandbox-helm-chart.sandbox.selectorLabels" -}}
-app.kubernetes.io/component: {{ .Values.sandbox.name | quote }}
+{{- define "kie-sandbox-helm-chart.kieSandbox.selectorLabels" -}}
+app.kubernetes.io/component: {{ .Values.kieSandbox.name | quote }}
 {{ include "kie-sandbox-helm-chart.selectorLabels" . }}
 {{- end -}}
 
@@ -166,10 +166,10 @@ Create the name of the service account to use for the extended-services componen
 {{/*
 Create the name of the service account to use for the sandbox component
 */}}
-{{- define "kie-sandbox-helm-chart.sandbox.serviceAccountName" -}}
-{{- if .Values.sandbox.serviceAccount.create -}}
-    {{ default (include "kie-sandbox-helm-chart.sandbox.fullname" .) .Values.sandbox.serviceAccount.name }}
+{{- define "kie-sandbox-helm-chart.kieSandbox.serviceAccountName" -}}
+{{- if .Values.kieSandbox.serviceAccount.create -}}
+    {{ default (include "kie-sandbox-helm-chart.kieSandbox.fullname" .) .Values.kieSandbox.serviceAccount.name }}
 {{- else -}}
-    {{ default "default" .Values.sandbox.serviceAccount.name }}
+    {{ default "default" .Values.kieSandbox.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
