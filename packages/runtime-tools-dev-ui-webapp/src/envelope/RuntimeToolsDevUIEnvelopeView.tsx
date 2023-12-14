@@ -33,7 +33,7 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     const [navigate, setNavigate] = React.useState<string>("");
     const [devUIUrl, setDevUIUrl] = React.useState<string>("");
     const [openApiPath, setOpenApiPath] = React.useState<string>("");
-    const [isProcessEnabled, setProcessEnabled] = React.useState(false);
+    const [isWorkflowEnabled, setWorkflowEnabled] = React.useState(false);
     const [isTracingEnabled, setTracingEnabled] = React.useState(false);
     const [availablePages, setAvailablePages] = React.useState<string[]>([]);
     const [customLabels, setCustomLabels] = React.useState<CustomLabels | undefined>();
@@ -60,8 +60,8 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
           setOpenApiPath: (path) => {
             setOpenApiPath(path);
           },
-          setProcessEnabled: (isProcessEnabled) => {
-            setProcessEnabled(isProcessEnabled);
+          setWorkflowEnabled: (isWorkflowEnabled) => {
+            setWorkflowEnabled(isWorkflowEnabled);
           },
           setTracingEnabled: (isTracingEnabled) => {
             setTracingEnabled(isTracingEnabled);
@@ -87,14 +87,14 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     );
     return (
       <>
-        {(isProcessEnabled || isTracingEnabled) && navigate.length > 0 && (
+        {(isWorkflowEnabled || isTracingEnabled) && navigate.length > 0 && (
           <RuntimeTools
             users={DevUiUsers}
             dataIndexUrl={dataIndexUrl}
             navigate={navigate}
             openApiPath={openApiPath}
             devUIUrl={devUIUrl}
-            isProcessEnabled={isProcessEnabled}
+            isWorkflowEnabled={isWorkflowEnabled}
             isTracingEnabled={isTracingEnabled}
             availablePages={availablePages}
             customLabels={customLabels}

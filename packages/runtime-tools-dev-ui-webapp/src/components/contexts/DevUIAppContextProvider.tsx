@@ -27,7 +27,7 @@ interface IOwnProps {
   users: User[];
   devUIUrl: string;
   openApiPath: string;
-  isProcessEnabled: boolean;
+  isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
   availablePages: string[];
   customLabels?: CustomLabels;
@@ -40,7 +40,7 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
   users,
   devUIUrl,
   openApiPath,
-  isProcessEnabled,
+  isWorkflowEnabled: isWorkflowEnabled,
   isTracingEnabled,
   availablePages,
   customLabels,
@@ -56,7 +56,7 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
           users,
           devUIUrl,
           openApiPath,
-          isProcessEnabled,
+          isWorkflowEnabled: isWorkflowEnabled,
           isTracingEnabled,
           availablePages,
           customLabels,

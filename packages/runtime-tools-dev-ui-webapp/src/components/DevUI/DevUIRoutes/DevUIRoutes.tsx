@@ -46,13 +46,13 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
     if (context.isTracingEnabled) {
       return "/Audit";
     }
-  }, [context.isProcessEnabled, context.isTracingEnabled]);
+  }, [context.isWorkflowEnabled, context.isTracingEnabled]);
 
   const defaultButton = useMemo(() => {
     if (context.isTracingEnabled) {
       return "Go to audit";
     }
-  }, [context.isProcessEnabled, context.isTracingEnabled]);
+  }, [context.isWorkflowEnabled, context.isTracingEnabled]);
 
   const routes: DevUIRoute[] = useMemo(
     () => [
@@ -61,35 +61,35 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
         node: <Route key="0" exact path="/" render={() => <Redirect to={`/${navigate}`} />} />,
       },
       {
-        enabled: () => context.isProcessEnabled,
-        node: <Route key="1" exact path="/Processes" component={ProcessesPage} />,
+        enabled: () => context.isWorkflowEnabled,
+        node: <Route key="1" exact path="/Workflows" component={ProcessesPage} />,
       },
       {
-        enabled: () => context.isProcessEnabled,
+        enabled: () => context.isWorkflowEnabled,
         node: <Route key="2" exact path="/Process/:instanceID" component={WorkflowDetailsPage} />,
       },
       {
-        enabled: () => context.isProcessEnabled,
+        enabled: () => context.isWorkflowEnabled,
         node: <Route key="5" exact path="/Forms" component={FormsListPage} />,
       },
       {
-        enabled: () => context.isProcessEnabled,
+        enabled: () => context.isWorkflowEnabled,
         node: <Route key="6" exact path="/Forms/:formName" component={FormDetailPage} />,
       },
       {
-        enabled: () => context.isProcessEnabled,
+        enabled: () => context.isWorkflowEnabled,
         node: <Route key="8" exact path="/WorkflowDefinition/Form/:workflowName" component={WorkflowFormPage} />,
       },
       {
-        enabled: () => context.isProcessEnabled,
+        enabled: () => context.isWorkflowEnabled,
         node: <Route key="9" exact path="/CustomDashboard" component={CustomDashboardListPage} />,
       },
       {
-        enabled: () => context.isProcessEnabled,
+        enabled: () => context.isWorkflowEnabled,
         node: <Route key="10" exact path="/CustomDashboard/:customDashboardName" component={CustomDashboardViewPage} />,
       },
       {
-        enabled: () => context.isProcessEnabled,
+        enabled: () => context.isWorkflowEnabled,
         node: (
           <Route key="13" path="/Monitoring">
             <MonitoringPage dataIndexUrl={dataIndexUrl} />
@@ -108,7 +108,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
       },
       {
         enabled: () => context.isWorkflow(),
-        node: <Route key="16" exact path="/Processes/CloudEvent/:instanceId?" component={CloudEventFormPage} />,
+        node: <Route key="16" exact path="/Workflows/CloudEvent/:instanceId?" component={CloudEventFormPage} />,
       },
       {
         enabled: () => context.isWorkflow(),
@@ -127,7 +127,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
         ),
       },
     ],
-    [context.isProcessEnabled, context.isTracingEnabled, context.isWorkflow()]
+    [context.isWorkflowEnabled, context.isTracingEnabled, context.isWorkflow()]
   );
 
   return <Switch>{routes.filter((r) => r.enabled()).map((r) => r.node)}</Switch>;

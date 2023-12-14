@@ -23,7 +23,7 @@ import { CustomLabels } from "../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 
 export interface DevUIAppContext {
-  isProcessEnabled: boolean;
+  isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
   getCurrentUser(): User;
   getAllUsers(): User[];
@@ -52,7 +52,7 @@ export type DevUIAppContextArgs = {
   users?: User[];
   devUIUrl: string;
   openApiPath: string;
-  isProcessEnabled: boolean;
+  isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
   availablePages?: string[];
   customLabels?: CustomLabels;
@@ -116,8 +116,8 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     return this.args.isStunnerEnabled;
   }
 
-  get isProcessEnabled(): boolean {
-    return this.args.isProcessEnabled;
+  get isWorkflowEnabled(): boolean {
+    return this.args.isWorkflowEnabled;
   }
 
   get isTracingEnabled(): boolean {

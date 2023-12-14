@@ -63,7 +63,7 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
             label: "Go to workflow list",
             onClick: () => {
               setNotification(undefined);
-              history.push("/Processes");
+              history.push("/Workflows");
             },
           },
         ],

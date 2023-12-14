@@ -3,7 +3,8 @@
   "compilerOptions": {
     "module": "esnext",
     "moduleResolution": "node",
-    "declaration": true,
+    "declaration": false,
+    "declarationMap": false,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "target": "es6"

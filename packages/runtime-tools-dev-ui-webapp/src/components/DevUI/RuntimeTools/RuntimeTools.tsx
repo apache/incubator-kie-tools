@@ -31,7 +31,7 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-component
 import { ServerUnavailablePage } from "@kie-tools/runtime-tools-webapp-components/dist/ServerUnavailablePage";
 
 interface IOwnProps {
-  isProcessEnabled: boolean;
+  isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
   users: User[];
   dataIndexUrl: string;
@@ -51,7 +51,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   navigate,
   devUIUrl,
   openApiPath,
-  isProcessEnabled,
+  isWorkflowEnabled,
   isTracingEnabled,
   availablePages,
   customLabels,
@@ -74,7 +74,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           users={users}
           devUIUrl={devUIUrl}
           openApiPath={openApiPath}
-          isProcessEnabled={isProcessEnabled}
+          isWorkflowEnabled={isWorkflowEnabled}
           isTracingEnabled={isTracingEnabled}
           availablePages={availablePages}
           customLabels={customLabels}
@@ -101,7 +101,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       users={users}
       devUIUrl={devUIUrl}
       openApiPath={openApiPath}
-      isProcessEnabled={isProcessEnabled}
+      isWorkflowEnabled={isWorkflowEnabled}
       isTracingEnabled={isTracingEnabled}
       availablePages={availablePages}
       customLabels={customLabels}

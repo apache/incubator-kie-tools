@@ -17,10 +17,9 @@
  * under the License.
  */
 
-import React, { useMemo } from "react";
+import React from "react";
 import { DevUIAppContext, useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
-import ProcessDefinitionListContext from "./ProcessDefinitionListContext";
-import { ProcessDefinitionListGatewayApiImpl } from "./ProcessDefinitionListGatewayApi";
+import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDefinitionList";
 
 interface ProcessDefinitionListContextProviderProps {
   children: React.ReactElement;
@@ -29,12 +28,10 @@ interface ProcessDefinitionListContextProviderProps {
 const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContextProviderProps> = ({ children }) => {
   const runtimeToolsApi: DevUIAppContext = useDevUIAppContext();
 
-  const gatewayApiImpl = useMemo(() => {
-    return new ProcessDefinitionListGatewayApiImpl(runtimeToolsApi.getDevUIUrl(), runtimeToolsApi.getOpenApiPath());
-  }, []);
-
   return (
-    <ProcessDefinitionListContext.Provider value={gatewayApiImpl}>{children}</ProcessDefinitionListContext.Provider>
+    <WorkflowDefinitionListContextProvider kogitoServiceUrl={runtimeToolsApi.getOpenApiPath()}>
+      {children}
+    </WorkflowDefinitionListContextProvider>
   );
 };
 

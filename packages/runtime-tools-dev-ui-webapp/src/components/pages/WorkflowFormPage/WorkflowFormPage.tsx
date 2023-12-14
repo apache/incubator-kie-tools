@@ -50,7 +50,7 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const workflowDefinition: WorkflowDefinition | undefined = initialState.workflowDefinition;
 
   const goToWorkflowList = () => {
-    history.push("/Processes");
+    history.push("/Workflows");
   };
 
   const showNotification = (

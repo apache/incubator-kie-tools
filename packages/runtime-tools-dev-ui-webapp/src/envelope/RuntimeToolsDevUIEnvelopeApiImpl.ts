@@ -72,7 +72,7 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
     this.view().setIsStunnerEnabled && this.view().setIsStunnerEnabled(initArgs.isStunnerEnabled);
     // Ensure these are set last. This is a workaround to ensure views are corrected configured with other properties
     // from the DevUIAppContext before they are rendered. i.e. use of DevUIAppContext is not responsive to updates.
-    this.view().setProcessEnabled(initArgs.isDataIndexAvailable);
+    this.view().setWorkflowEnabled(initArgs.isDataIndexAvailable);
     this.view().setTracingEnabled(initArgs.isTracingEnabled!);
   };
 }

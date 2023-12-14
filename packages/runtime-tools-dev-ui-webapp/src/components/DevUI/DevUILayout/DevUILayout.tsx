@@ -40,7 +40,7 @@ import CloudEventFormContextProvider from "../../../channel/CloudEventForm/Cloud
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
-  isProcessEnabled: boolean;
+  isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
   users: User[];
   children: React.ReactElement;
@@ -55,7 +55,7 @@ interface IOwnProps {
 
 const DevUILayout: React.FC<IOwnProps> = ({
   apolloClient,
-  isProcessEnabled,
+  isWorkflowEnabled: isWorkflowEnabled,
   isTracingEnabled,
   users,
   devUIUrl,
@@ -81,7 +81,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
         users={users}
         devUIUrl={devUIUrl}
         openApiPath={openApiPath}
-        isProcessEnabled={isProcessEnabled}
+        isWorkflowEnabled={isWorkflowEnabled}
         isTracingEnabled={isTracingEnabled}
         availablePages={availablePages!}
         customLabels={customLabels}
