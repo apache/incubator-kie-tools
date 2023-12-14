@@ -113,19 +113,12 @@ export function ExtendedServicesContextProvider(props: Props) {
   );
 }
 export class ExtendedServicesConfig {
-  constructor(public readonly host: string, public readonly port: string) {}
-
-  private buildUrl(): string {
-    if (this.port.trim().length === 0) {
-      return this.host;
-    }
-    return `${this.host}:${this.port}`;
-  }
+  constructor(public readonly href: string, public readonly port: string) {}
 
   public get url() {
     return {
-      jitExecutor: `${this.buildUrl()}/`,
-      ping: `${this.buildUrl()}/ping`,
+      jitExecutor: `${this.href}`,
+      ping: `${this.href}ping`,
     };
   }
 }
