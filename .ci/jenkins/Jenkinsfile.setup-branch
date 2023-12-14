@@ -86,6 +86,7 @@ pipeline {
                 script {
                     dir(getRepoName()) {
                         if (githubscm.isThereAnyChanges()) {
+                            githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
                             githubscm.commitChanges("[${getBuildBranch()}] Update version to ${getKogitoVersion()}")
                             githubscm.pushObject('origin', getBuildBranch(), getGitAuthorPushCredsId())
                         } else {

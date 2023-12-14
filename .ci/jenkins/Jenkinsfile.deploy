@@ -261,6 +261,7 @@ void checkoutRepo() {
 }
 
 void commitAndPushChanges(String commitMsg) {
+    githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
     githubscm.commitChanges(commitMsg)
     githubscm.pushObject('origin', getPRBranch(), getGitAuthorPushCredsId())
     changesDone = true
