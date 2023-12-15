@@ -123,7 +123,7 @@ func runUndeploy(cmd *cobra.Command, args []string) error {
 func undeploy(cfg *DeployUndeployCmdConfig) error {
 	fmt.Printf("🔨 Undeploying your SonataFlow project in namespace %s\n", cfg.NameSpace)
 
-	manifestExtension := []string{".yaml"}
+	manifestExtension := []string{metadata.YAMLExtension}
 
 	manifestPath := cfg.CustomGeneratedManifestDir
 	if len(cfg.CustomManifestsFileDir) != 0 {
