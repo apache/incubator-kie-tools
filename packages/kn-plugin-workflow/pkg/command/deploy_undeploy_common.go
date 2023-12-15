@@ -118,7 +118,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		fmt.Printf(" - ✅ Properties file found: %s\n", cfg.ApplicationPropertiesPath)
 	}
 
-	supportFileExtensions := []string{metadata.JSONExtension, metadata.YAMLSWExtension, metadata.YMLExtension}
+	supportFileExtensions := []string{metadata.JSONExtension, metadata.YAMLExtension, metadata.YMLExtension}
 
 	fmt.Println("🔍 Looking for specs files...")
 
