@@ -1,18 +1,17 @@
 
 # KIE Sandbox application
-kieSandbox:
-  extendedServiceUrl: "http://extended-services.local"
-  corsProxyUrl: "http://cors-proxy.local"
-  ingress:
-    enabled: true
-    className: nginx
-    annotations: {}
-    hosts:
-      - host: kie-sandbox.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
+extendedServiceUrl: "http://extended-services.local"
+corsProxyUrl: "http://cors-proxy.local"
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: kie-sandbox.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
 
 # Cors Proxy component
 corsProxy:

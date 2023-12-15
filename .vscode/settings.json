@@ -1,5 +1,8 @@
 {
   "eslint.options": {
     "overrideConfigFile": "packages/eslint/.eslintrc.js"
+  },
+  "yaml.schemas": {
+    "https://json.schemastore.org/chart.json": "file:///home/thiago-lugli/ibm/kie-tools/packages/kie-sandbox-helm-chart/src/charts/extended-services/extended-services-deployment.yaml"
   }
 }

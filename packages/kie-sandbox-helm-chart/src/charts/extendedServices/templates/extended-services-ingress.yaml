@@ -1,9 +1,9 @@
-{{- if .Values.extendedServices.ingress.enabled -}}
-{{- $fullName := include "kie-sandbox-helm-chart.extendedServices.fullname" . -}}
-{{- $svcPort := .Values.extendedServices.service.port -}}
-{{- if and .Values.extendedServices.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey .Values.extendedServices.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.extendedServices.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "extendedServices.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -17,18 +17,18 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "kie-sandbox-helm-chart.extendedServices.labels" . | nindent 4 }}
-  {{- with .Values.extendedServices.ingress.annotations }}
+    {{- include "extendedServices.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.extendedServices.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.extendedServices.ingress.className }}
+  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
-  {{- if .Values.extendedServices.ingress.tls }}
+  {{- if .Values.ingress.tls }}
   tls:
-    {{- range .Values.extendedServices.ingress.tls }}
+    {{- range .Values.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -37,7 +37,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.extendedServices.ingress.hosts }}
+    {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:

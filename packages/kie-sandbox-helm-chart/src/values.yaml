@@ -1,86 +1,83 @@
 
 # KIE Sandbox application
-kieSandbox:
+name: kie-sandbox
 
-  name: kie-sandbox
+extendedServiceUrl: "http://127.0.0.1:21345"
+corsProxyUrl: "http://127.0.0.1:8081"
 
-  extendedServiceUrl: "http://127.0.0.1:21345"
-  corsProxyUrl: "http://127.0.0.1:8081"
+replicaCount: 1
 
-  replicaCount: 1
-  
-  image:
-    registry: quay.io
-    account: kie-tools
-    name: kie-sandbox-image
-    pullPolicy: IfNotPresent
-    tag: "latest"
-  
-  imagePullSecrets: []
-  
-  nameOverride: ""
-  fullnameOverride: ""
-  
-  serviceAccount:
-    create: true
-    annotations: {}
-    name: ""
-  
-  podAnnotations: {}
-  
-  podSecurityContext: {}
-  
-  securityContext: {}
-  
-  service:
-    type: ClusterIP
-    port: 8080
-    nodePort: ""
-  
-  ingress:
-    enabled: false
-    className: ""
-    annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-    hosts:
-      - host: kie-sandbox.domain.com
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
+image:
+  registry: quay.io
+  account: kie-tools
+  name: kie-sandbox-image
+  pullPolicy: IfNotPresent
+  tag: "latest"
 
-  resources: {}
+imagePullSecrets: []
 
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
+nameOverride: ""
+fullnameOverride: ""
 
-  nodeSelector: {}
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
 
-  tolerations: []
+podAnnotations: {}
 
-  affinity: {}
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8080
+  nodePort: ""
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: kie-sandbox.domain.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
 
 # Cors Proxy component
 corsProxy:
-  
   name: cors-proxy
 
   replicaCount: 1
-  
+
   image:
     registry: quay.io
     account: kie-tools
     name: cors-proxy-image
     pullPolicy: IfNotPresent
     tag: "latest"
-  
+
   imagePullSecrets: []
-  
+
   nameOverride: ""
   fullnameOverride: ""
 
@@ -88,16 +85,16 @@ corsProxy:
     create: true
     annotations: {}
     name: ""
-  
+
   podAnnotations: {}
   podSecurityContext: {}
   securityContext: {}
- 
+
   service:
     type: ClusterIP
     port: 8080
     nodePort: ""
-  
+
   ingress:
     enabled: false
     className: ""
@@ -109,7 +106,7 @@ corsProxy:
             pathType: ImplementationSpecific
     tls: []
   resources: {}
-  
+
   autoscaling:
     enabled: false
     minReplicas: 1
@@ -125,11 +122,10 @@ corsProxy:
 
 # Extended services component
 extendedServices:
-
   name: extended-services
 
   replicaCount: 1
-  
+
   image:
     registry: quay.io
     account: kie-tools
@@ -137,10 +133,10 @@ extendedServices:
     pullPolicy: IfNotPresent
     tag: "latest"
   imagePullSecrets: []
-  
+
   nameOverride: ""
   fullnameOverride: ""
-  
+
   serviceAccount:
     create: true
     annotations: {}
@@ -148,12 +144,12 @@ extendedServices:
   podAnnotations: {}
   podSecurityContext: {}
   securityContext: {}
-  
+
   service:
     type: ClusterIP
     port: 21345
     nodePort: ""
-  
+
   ingress:
     enabled: false
     className: ""
@@ -164,9 +160,9 @@ extendedServices:
           - path: /
             pathType: ImplementationSpecific
     tls: []
-  
+
   resources: {}
-  
+
   autoscaling:
     enabled: false
     minReplicas: 1
