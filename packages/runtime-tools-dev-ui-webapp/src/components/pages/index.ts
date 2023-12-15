@@ -17,4 +17,4 @@
  * under the License.
  */
 
-export { default as ProcessesPage } from "./ProcessesPage/ProcessesPage";
+export { default as WorkflowsPage } from "./WorkflowsPage/WorkflowsPage";

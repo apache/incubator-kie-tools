@@ -38,7 +38,7 @@ const CustomDashboardViewContainer: React.FC<CustomDashboardViewContainerContain
 
   return (
     <EmbeddedCustomDashboardView
-      {...componentOuiaProps(ouiaId, "process-details-container", ouiaSafe)}
+      {...componentOuiaProps(ouiaId, "workflow-details-container", ouiaSafe)}
       driver={gatewayApi}
       targetOrigin={appContext.getDevUIUrl()}
       dashboardName={dashboardName}

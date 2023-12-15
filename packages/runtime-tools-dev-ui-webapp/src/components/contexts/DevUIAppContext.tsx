@@ -33,7 +33,7 @@ export interface DevUIAppContext {
   getOpenApiPath(): string;
   availablePages?: string[];
   customLabels?: CustomLabels;
-  omittedProcessTimelineEvents: string[];
+  omittedWorkflowTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   isWorkflow(): boolean;
   isStunnerEnabled: boolean;
@@ -56,7 +56,7 @@ export type DevUIAppContextArgs = {
   isTracingEnabled: boolean;
   availablePages?: string[];
   customLabels?: CustomLabels;
-  omittedProcessTimelineEvents: string[];
+  omittedWorkflowTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   isStunnerEnabled: boolean;
 };
@@ -109,7 +109,7 @@ export class DevUIAppContextImpl implements DevUIAppContext {
   }
 
   isWorkflow(): boolean {
-    return this.args.customLabels?.singularProcessLabel == "Workflow";
+    return this.args.customLabels?.singularWorkflowLabel == "Workflow";
   }
 
   getIsStunnerEnabled(): boolean {
@@ -136,8 +136,8 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     return this.args.customLabels;
   }
 
-  get omittedProcessTimelineEvents(): string[] {
-    return this.args.omittedProcessTimelineEvents;
+  get omittedWorkflowTimelineEvents(): string[] {
+    return this.args.omittedWorkflowTimelineEvents;
   }
 
   get diagramPreviewSize(): DiagramPreviewSize | undefined {

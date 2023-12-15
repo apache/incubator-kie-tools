@@ -18,6 +18,6 @@
  */
 
 export interface CustomLabels {
-  singularProcessLabel: string;
-  pluralProcessLabel: string;
+  singularWorkflowLabel: string;
+  pluralWorkflowLabel: string;
 }

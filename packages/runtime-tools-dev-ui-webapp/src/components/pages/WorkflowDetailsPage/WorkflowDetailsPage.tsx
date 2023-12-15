@@ -51,15 +51,15 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
   ...props
 }) => {
   useEffect(() => {
-    return ouiaPageTypeAndObjectId("process-details");
+    return ouiaPageTypeAndObjectId("workflow-details");
   });
 
   const gatewayApi: WorkflowDetailsGatewayApi = useWorkflowDetailsGatewayApi();
   const appContext = useDevUIAppContext();
 
   const history = useHistory();
-  const processId = props.match.params.instanceID;
-  const [processInstance, setProcessInstance] = useState<WorkflowInstance>({} as WorkflowInstance);
+  const workflowId = props.match.params.instanceID;
+  const [workflowInstance, setWorkflowInstance] = useState<WorkflowInstance>({} as WorkflowInstance);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fetchError, setFetchError] = useState<string>("");
   let currentPage = JSON.parse(window.localStorage.getItem("state") ?? "");
@@ -74,8 +74,8 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
     let responseError: string = "";
     try {
       setIsLoading(true);
-      response = await gatewayApi.workflowDetailsQuery(processId);
-      setProcessInstance(response);
+      response = await gatewayApi.workflowDetailsQuery(workflowId);
+      setWorkflowInstance(response);
     } catch (error) {
       responseError = error;
       setFetchError(error);
@@ -91,15 +91,15 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
         history.push({
           pathname: "/NoData",
           state: {
-            prev: currentPage ? currentPage.prev : "/ProcessInstances",
-            title: "Process not found",
-            description: `Process instance with the id ${processId} not found`,
+            prev: currentPage ? currentPage.prev : "/WorkflowInstances",
+            title: "Workflow not found",
+            description: `Workflow instance with the id ${workflowId} not found`,
             buttonText: currentPage
               ? `Go to ${prevPath[0]
                   .replace(/([A-Z])/g, " $1")
                   .trim()
                   .toLowerCase()}`
-              : "Go to process instances",
+              : "Go to workflow instances",
             rememberedData: Object.assign({}, props.location.state),
           },
         });
@@ -108,17 +108,17 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
   }
 
   useEffect(() => {
-    if (processId) {
+    if (workflowId) {
       fetchDetails();
     }
-  }, [processId]);
+  }, [workflowId]);
 
   const renderItems = () => {
     if (!isLoading) {
       return (
         <>
-          {processInstance && Object.keys(processInstance).length > 0 && !fetchError ? (
-            <WorkflowDetailsContainer workflowInstance={processInstance} onOpenWorkflowInstanceDetails={() => {}} />
+          {workflowInstance && Object.keys(workflowInstance).length > 0 && !fetchError ? (
+            <WorkflowDetailsContainer workflowInstance={workflowInstance} onOpenWorkflowInstanceDetails={() => {}} />
           ) : (
             <>
               {fetchError.length > 0 && (
@@ -135,7 +135,7 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
     } else {
       return (
         <Card>
-          <KogitoSpinner spinnerText="Loading process details..." />
+          <KogitoSpinner spinnerText="Loading workflow details..." />
         </Card>
       );
     }
@@ -143,8 +143,8 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
 
   return (
     <>
-      <PageSectionHeader titleText={`${appContext?.customLabels?.singularProcessLabel} Details`} ouiaId={ouiaId} />
-      <PageSection {...componentOuiaProps(ouiaId, "process-details-page-section", ouiaSafe)}>
+      <PageSectionHeader titleText={`${appContext?.customLabels?.singularWorkflowLabel} Details`} ouiaId={ouiaId} />
+      <PageSection {...componentOuiaProps(ouiaId, "workflow-details-page-section", ouiaSafe)}>
         {renderItems()}
       </PageSection>
     </>

@@ -37,7 +37,7 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     const [isTracingEnabled, setTracingEnabled] = React.useState(false);
     const [availablePages, setAvailablePages] = React.useState<string[]>([]);
     const [customLabels, setCustomLabels] = React.useState<CustomLabels | undefined>();
-    const [omittedProcessTimelineEvents, setOmittedProcessTimelineEvents] = React.useState<string[]>([]);
+    const [omittedWorkflowTimelineEvents, setOmittedWorkflowTimelineEvents] = React.useState<string[]>([]);
     const [diagramPreviewSize, setDiagramPreviewSize] = React.useState<DiagramPreviewSize>();
     const [isStunnerEnabled, setIsStunnerEnabled] = React.useState<boolean>(false);
 
@@ -72,8 +72,8 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
           setCustomLabels: (customLabels) => {
             setCustomLabels(customLabels);
           },
-          setOmittedProcessTimelineEvents: (omittedProcessTimelineEvents) => {
-            setOmittedProcessTimelineEvents(omittedProcessTimelineEvents);
+          setOmittedWorkflowTimelineEvents: (omittedWorkflowTimelineEvents) => {
+            setOmittedWorkflowTimelineEvents(omittedWorkflowTimelineEvents);
           },
           setDiagramPreviewSize: (diagramPreviewSize) => {
             setDiagramPreviewSize(diagramPreviewSize);
@@ -98,7 +98,7 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
             isTracingEnabled={isTracingEnabled}
             availablePages={availablePages}
             customLabels={customLabels}
-            omittedProcessTimelineEvents={omittedProcessTimelineEvents}
+            omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
             diagramPreviewSize={diagramPreviewSize}
             isStunnerEnabled={isStunnerEnabled}
           />

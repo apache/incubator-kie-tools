@@ -49,7 +49,7 @@ const MonitoringPage: React.FC<OUIAProps & Props> = ({ ouiaId, ouiaSafe, dataInd
   const gatewayApi: WorkflowListGatewayApi = useWorkflowListGatewayApi();
   const [hasWorkflow, setHasWorkflow] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [openProcessSelect, setOpenProcessSelect] = useState(false);
+  const [openWorkflowSelect, setOpenWorkflowSelect] = useState(false);
   const [dashboard, setDashboard] = useState(Dashboard.MONITORING);
   const [workflowList, setWorkflowList] = useState<WorkflowInstance[]>([]);
   const [selectedWorkflow, setSelectedWorkflow] = useState<WorkflowInstance>();
@@ -137,10 +137,10 @@ const MonitoringPage: React.FC<OUIAProps & Props> = ({ ouiaId, ouiaSafe, dataInd
                           variant={SelectVariant.single}
                           onSelect={(event, v) => {
                             setSelectedWorkflow(workflowList.find((p) => p.id === v));
-                            setOpenProcessSelect(false);
+                            setOpenWorkflowSelect(false);
                           }}
-                          onToggle={() => setOpenProcessSelect(!openProcessSelect)}
-                          isOpen={openProcessSelect}
+                          onToggle={() => setOpenWorkflowSelect(!openWorkflowSelect)}
+                          isOpen={openWorkflowSelect}
                           placeholderText="Select Workflow"
                           hasInlineFilter
                           maxHeight={"300px"}

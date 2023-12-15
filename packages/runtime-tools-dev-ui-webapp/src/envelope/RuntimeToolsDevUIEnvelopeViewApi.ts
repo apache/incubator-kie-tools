@@ -31,7 +31,7 @@ export interface RuntimeToolsDevUIEnvelopeViewApi {
   setTracingEnabled: (isTracingEnabled: boolean) => void;
   setAvailablePages: (availablePages: string[]) => void;
   setCustomLabels: (customLabels: CustomLabels) => void;
-  setOmittedProcessTimelineEvents: (omittedProcessTimelineEvents: string[]) => void;
+  setOmittedWorkflowTimelineEvents: (omittedWorkflowTimelineEvents: string[]) => void;
   setDiagramPreviewSize: (diagramPreviewSize?: DiagramPreviewSize) => void;
   setIsStunnerEnabled: (isStunnerEnabled: boolean) => void;
 }

@@ -40,7 +40,7 @@ interface IOwnProps {
   openApiPath: string;
   availablePages: string[];
   customLabels?: CustomLabels;
-  omittedProcessTimelineEvents: string[];
+  omittedWorkflowTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   isStunnerEnabled: boolean;
 }
@@ -55,7 +55,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   isTracingEnabled,
   availablePages,
   customLabels,
-  omittedProcessTimelineEvents,
+  omittedWorkflowTimelineEvents,
   diagramPreviewSize,
   isStunnerEnabled,
 }) => {
@@ -78,7 +78,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           isTracingEnabled={isTracingEnabled}
           availablePages={availablePages}
           customLabels={customLabels}
-          omittedProcessTimelineEvents={omittedProcessTimelineEvents}
+          omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
           diagramPreviewSize={diagramPreviewSize}
           isStunnerEnabled={isStunnerEnabled}
         >
@@ -105,7 +105,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       isTracingEnabled={isTracingEnabled}
       availablePages={availablePages}
       customLabels={customLabels}
-      omittedProcessTimelineEvents={omittedProcessTimelineEvents}
+      omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
       diagramPreviewSize={diagramPreviewSize}
       isStunnerEnabled={isStunnerEnabled}
     >

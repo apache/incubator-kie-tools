@@ -66,8 +66,8 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
     this.view().setOpenApiPath && this.view().setOpenApiPath(initArgs.openApiPath);
     this.view().setAvailablePages && this.view().setAvailablePages(initArgs.availablePages!);
     this.view().setCustomLabels && this.view().setCustomLabels(initArgs.customLabels!);
-    this.view().setOmittedProcessTimelineEvents &&
-      this.view().setOmittedProcessTimelineEvents(initArgs.omittedProcessTimelineEvents!);
+    this.view().setOmittedWorkflowTimelineEvents &&
+      this.view().setOmittedWorkflowTimelineEvents(initArgs.omittedWorkflowTimelineEvents!);
     this.view().setDiagramPreviewSize && this.view().setDiagramPreviewSize(initArgs.diagramPreviewSize);
     this.view().setIsStunnerEnabled && this.view().setIsStunnerEnabled(initArgs.isStunnerEnabled);
     // Ensure these are set last. This is a workaround to ensure views are corrected configured with other properties

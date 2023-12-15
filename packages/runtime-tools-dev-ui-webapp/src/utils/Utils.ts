@@ -19,18 +19,18 @@
 
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 
-export const createProcessDefinitionList = (
-  processDefinitionObjs: { [key: string]: string }[],
+export const createWorkflowDefinitionList = (
+  workflowDefinitionObjs: { [key: string]: string }[],
   url: string
 ): WorkflowDefinition[] => {
-  const processDefinitionList: WorkflowDefinition[] = [];
-  processDefinitionObjs.forEach((processDefObj) => {
-    const workflowName = Object.keys(processDefObj)[0].split("/")[1];
+  const workflowDefinitionList: WorkflowDefinition[] = [];
+  workflowDefinitionObjs.forEach((workflowDefObj) => {
+    const workflowName = Object.keys(workflowDefObj)[0].split("/")[1];
     const endpoint = `${url}/${workflowName}`;
-    processDefinitionList.push({
+    workflowDefinitionList.push({
       workflowName,
       endpoint,
     });
   });
-  return processDefinitionList;
+  return workflowDefinitionList;
 };

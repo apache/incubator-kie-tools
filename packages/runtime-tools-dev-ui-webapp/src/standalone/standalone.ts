@@ -40,7 +40,7 @@ export interface Consoles {
     origin?: string;
     availablePages?: string[];
     customLabels?: CustomLabels;
-    omittedProcessTimelineEvents?: string[];
+    omittedWorkflowTimelineEvents?: string[];
     diagramPreviewSize?: DiagramPreviewSize;
     isStunnerEnabled: boolean;
   }) => StandaloneDevUIApi;
@@ -61,7 +61,7 @@ const createEnvelopeServer = (
   diagramPreviewSize?: DiagramPreviewSize,
   origin?: string,
   availablePages?: string[],
-  omittedProcessTimelineEvents?: string[]
+  omittedWorkflowTimelineEvents?: string[]
 ) => {
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
   return new EnvelopeServer<RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi>(
@@ -86,7 +86,7 @@ const createEnvelopeServer = (
           openApiPath,
           customLabels,
           availablePages,
-          omittedProcessTimelineEvents,
+          omittedWorkflowTimelineEvents,
           isStunnerEnabled,
           diagramPreviewSize,
         }
@@ -128,7 +128,7 @@ export function open(args: {
   origin?: string;
   availablePages?: string[];
   customLabels?: CustomLabels;
-  omittedProcessTimelineEvents?: string[];
+  omittedWorkflowTimelineEvents?: string[];
   isStunnerEnabled: boolean;
   diagramPreviewSize?: DiagramPreviewSize;
 }): StandaloneDevUIApi {
@@ -150,14 +150,14 @@ export function open(args: {
     args.devUIUrl,
     args.openApiPath,
     args.customLabels ?? {
-      singularProcessLabel: "Process",
-      pluralProcessLabel: "Processes",
+      singularWorkflowLabel: "Workflow",
+      pluralWorkflowLabel: "Workflows",
     },
     args.isStunnerEnabled,
     args.diagramPreviewSize,
     args.origin,
     args.availablePages,
-    args.omittedProcessTimelineEvents ?? []
+    args.omittedWorkflowTimelineEvents ?? []
   );
   const channelApi = new RuntimeToolsDevUIChannelApiImpl();
   const listener = (message: MessageEvent) => {

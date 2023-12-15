@@ -22,15 +22,15 @@ import { PageNotFound, PageNotFoundProps } from "@kie-tools/runtime-tools-webapp
 import React, { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { ProcessesPage } from "../../pages";
+import { WorkflowsPage } from "../../pages";
 import CloudEventFormPage from "../../pages/CloudEventFormPage/CloudEventFormPage";
 import CustomDashboardListPage from "../../pages/CustomDashboardListPage/CustomDashboardListPage";
 import CustomDashboardViewPage from "../../pages/CustomDashboardViewPage/CustomDashboardViewPage";
 import FormDetailPage from "../../pages/FormDetailsPage/FormDetailsPage";
 import FormsListPage from "../../pages/FormsListPage/FormsListPage";
 import MonitoringPage from "../../pages/MonitoringPage/MonitoringPage";
-import WorkflowDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
 import WorkflowFormPage from "../../pages/WorkflowFormPage/WorkflowFormPage";
+import WorkflowDetailsPage from "../../pages/WorkflowDetailsPage/WorkflowDetailsPage";
 
 interface IOwnProps {
   dataIndexUrl: string;
@@ -62,11 +62,11 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
       },
       {
         enabled: () => context.isWorkflowEnabled,
-        node: <Route key="1" exact path="/Workflows" component={ProcessesPage} />,
+        node: <Route key="1" exact path="/Workflows" component={WorkflowsPage} />,
       },
       {
         enabled: () => context.isWorkflowEnabled,
-        node: <Route key="2" exact path="/Process/:instanceID" component={WorkflowDetailsPage} />,
+        node: <Route key="2" exact path="/Workflow/:instanceID" component={WorkflowDetailsPage} />,
       },
       {
         enabled: () => context.isWorkflowEnabled,

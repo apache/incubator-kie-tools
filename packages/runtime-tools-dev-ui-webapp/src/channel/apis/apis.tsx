@@ -29,7 +29,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/dist/formDetails";
 import SwaggerParser from "@apidevtools/swagger-parser";
-import { createProcessDefinitionList } from "../../utils/Utils";
+import { createWorkflowDefinitionList } from "../../utils/Utils";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
 import { CustomDashboardInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
 import { CloudEventRequest, KOGITO_BUSINESS_KEY } from "@kie-tools/runtime-tools-gateway-api/dist/types";
@@ -254,23 +254,23 @@ export const saveFormContent = (formName: string, content: FormContent): Promise
   });
 };
 
-export const getProcessDefinitionList = (devUIUrl: string, openApiPath: string): Promise<WorkflowDefinition[]> => {
+export const getWorkflowDefinitionList = (devUIUrl: string, openApiPath: string): Promise<WorkflowDefinition[]> => {
   return new Promise((resolve, reject) => {
     SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
       .then((response) => {
-        const processDefinitionObjs: { [key: string]: any }[] = [];
+        const workflowDefinitionObjs: { [key: string]: any }[] = [];
         const paths = response.paths;
         const regexPattern = /^\/[^\n/]+\/schema/;
         Object.getOwnPropertyNames(paths)
           .filter((path) => regexPattern.test(path.toString()))
           .forEach((url) => {
-            let processArray = url.split("/");
-            processArray = processArray.filter((name) => name.length !== 0);
-            if (Object.prototype.hasOwnProperty.call(paths[`/${processArray[0]}`], "post")) {
-              processDefinitionObjs.push({ [url]: paths[url] });
+            let workflowArray = url.split("/");
+            workflowArray = workflowArray.filter((name) => name.length !== 0);
+            if (Object.prototype.hasOwnProperty.call(paths[`/${workflowArray[0]}`], "post")) {
+              workflowDefinitionObjs.push({ [url]: paths[url] });
             }
           });
-        resolve(createProcessDefinitionList(processDefinitionObjs, devUIUrl));
+        resolve(createWorkflowDefinitionList(workflowDefinitionObjs, devUIUrl));
       })
       .catch((err) => reject(err));
   });

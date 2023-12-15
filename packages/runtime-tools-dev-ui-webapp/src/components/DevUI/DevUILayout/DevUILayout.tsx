@@ -30,13 +30,13 @@ import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-
 import FormsListContextProvider from "../../../channel/FormsList/FormsListContextProvider";
 import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetailsContextProvider";
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
-import ProcessDefinitionListContextProvider from "../../../channel/ProcessDefinitionList/ProcessDefinitionListContextProvider";
 import { CustomLabels } from "../../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 import WorkflowFormContextProvider from "../../../channel/WorkflowForm/WorkflowFormContextProvider";
 import CustomDashboardListContextProvider from "../../../channel/CustomDashboardList/CustomDashboardListContextProvider";
 import { CustomDashboardViewContextProvider } from "../../../channel/CustomDashboardView";
 import CloudEventFormContextProvider from "../../../channel/CloudEventForm/CloudEventFormContextProvider";
+import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDefinitionList";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -48,7 +48,7 @@ interface IOwnProps {
   openApiPath: string;
   availablePages?: string[];
   customLabels?: CustomLabels;
-  omittedProcessTimelineEvents?: string[];
+  omittedWorkflowTimelineEvents?: string[];
   diagramPreviewSize?: DiagramPreviewSize;
   isStunnerEnabled: boolean;
 }
@@ -62,7 +62,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
   openApiPath,
   availablePages,
   customLabels,
-  omittedProcessTimelineEvents,
+  omittedWorkflowTimelineEvents,
   diagramPreviewSize,
   isStunnerEnabled,
   children,
@@ -85,13 +85,13 @@ const DevUILayout: React.FC<IOwnProps> = ({
         isTracingEnabled={isTracingEnabled}
         availablePages={availablePages!}
         customLabels={customLabels}
-        omittedProcessTimelineEvents={omittedProcessTimelineEvents!}
+        omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents!}
         diagramPreviewSize={diagramPreviewSize!}
         isStunnerEnabled={isStunnerEnabled}
       >
         <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
           <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
-            <ProcessDefinitionListContextProvider>
+            <WorkflowDefinitionListContextProvider kogitoServiceUrl="openApiPath">
               <FormsListContextProvider>
                 <CustomDashboardListContextProvider>
                   <CustomDashboardViewContextProvider>
@@ -109,7 +109,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
                   </CustomDashboardViewContextProvider>
                 </CustomDashboardListContextProvider>
               </FormsListContextProvider>
-            </ProcessDefinitionListContextProvider>
+            </WorkflowDefinitionListContextProvider>
           </WorkflowDetailsContextProviderWithApolloClient>
         </WorkflowListContextProviderWithApolloClient>
       </DevUIAppContextProvider>

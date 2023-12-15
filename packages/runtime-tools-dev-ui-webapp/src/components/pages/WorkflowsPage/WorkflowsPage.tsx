@@ -44,7 +44,7 @@ interface MatchProps {
   instanceID: string;
 }
 
-const ProcessesPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps> = ({
+const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps> = ({
   ouiaId,
   ouiaSafe,
   ...props
@@ -56,7 +56,7 @@ const ProcessesPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
   const [activeTabKey, setActiveTabKey] = useState<ReactText>(0);
 
   useEffect(() => {
-    return ouiaPageTypeAndObjectId("process-instances");
+    return ouiaPageTypeAndObjectId("workflow-instances");
   });
 
   const initialState: WorkflowListState = props.location && (props.location.state as WorkflowListState);
@@ -68,7 +68,7 @@ const ProcessesPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
   const onOpenWorkflowDetails = useCallback(
     (args: { workflowId: string; state: WorkflowListState }) => {
       history.push({
-        pathname: `/Process/${args.workflowId}`,
+        pathname: `/Workflow/${args.workflowId}`,
         state: gatewayApi.workflowListState,
       });
     },
@@ -93,10 +93,13 @@ const ProcessesPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
   return (
     <React.Fragment>
       {activeTabKey === 0 && (
-        <PageSectionHeader titleText={`${apiContext.customLabels?.singularProcessLabel} Instances`} ouiaId={ouiaId} />
+        <PageSectionHeader titleText={`${apiContext.customLabels?.singularWorkflowLabel} Instances`} ouiaId={ouiaId} />
       )}
       {activeTabKey === 1 && (
-        <PageSectionHeader titleText={`${apiContext.customLabels?.singularProcessLabel} Definitions`} ouiaId={ouiaId} />
+        <PageSectionHeader
+          titleText={`${apiContext.customLabels?.singularWorkflowLabel} Definitions`}
+          ouiaId={ouiaId}
+        />
       )}
       <div>
         <Tabs
@@ -109,22 +112,22 @@ const ProcessesPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
           }}
         >
           <Tab
-            id="process-list-tab"
+            id="workflow-list-tab"
             eventKey={0}
-            title={<TabTitleText>{apiContext.customLabels?.singularProcessLabel} Instances</TabTitleText>}
+            title={<TabTitleText>{apiContext.customLabels?.singularWorkflowLabel} Instances</TabTitleText>}
           >
-            <PageSection {...componentOuiaProps(ouiaId, "process-list-page-section", ouiaSafe)}>
+            <PageSection {...componentOuiaProps(ouiaId, "workflow-list-page-section", ouiaSafe)}>
               <Card className="Dev-ui__card-size">
                 <WorkflowListContainer initialState={initialState} onOpenWorkflowDetails={onOpenWorkflowDetails} />
               </Card>
             </PageSection>
           </Tab>
           <Tab
-            id="process-definitions-tab"
+            id="workflow-definitions-tab"
             eventKey={1}
-            title={<TabTitleText>{apiContext.customLabels?.singularProcessLabel} Definitions</TabTitleText>}
+            title={<TabTitleText>{apiContext.customLabels?.singularWorkflowLabel} Definitions</TabTitleText>}
           >
-            <PageSection {...componentOuiaProps(ouiaId, "process-definition-list-page-section", ouiaSafe)}>
+            <PageSection {...componentOuiaProps(ouiaId, "workflow-definition-list-page-section", ouiaSafe)}>
               <Card className="Dev-ui__card-size">
                 <WorkflowDefinitionListContainer onOpenWorkflowForm={onOpenWorkflowForm} />
               </Card>
@@ -136,4 +139,4 @@ const ProcessesPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
   );
 };
 
-export default ProcessesPage;
+export default WorkflowsPage;
