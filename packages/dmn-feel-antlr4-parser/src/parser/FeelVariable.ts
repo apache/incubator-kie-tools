@@ -28,10 +28,14 @@ export class FeelVariable {
   private readonly _length: number;
   private readonly _scopeSymbols: FeelSymbol[];
   private readonly _source: Variable | undefined;
+  private readonly _startLine: number;
+  private readonly _endLine: number;
 
   constructor(
     startIndex: number,
     length: number,
+    startLine: number,
+    endLine: number,
     symbolType: FeelSyntacticSymbolNature,
     text: string,
     scopeSymbols?: FeelSymbol[],
@@ -43,6 +47,8 @@ export class FeelVariable {
     this._text = text;
     this._scopeSymbols = scopeSymbols ?? [];
     this._source = source;
+    this._startLine = startLine;
+    this._endLine = endLine;
   }
 
   get source(): Variable | undefined {
@@ -61,6 +67,13 @@ export class FeelVariable {
     this._startIndex = value;
   }
 
+  get startLine(): number {
+    return this._startLine;
+  }
+
+  get endLine(): number {
+    return this._endLine;
+  }
   get feelSymbolNature(): FeelSyntacticSymbolNature {
     return this._feelSymbolNature;
   }

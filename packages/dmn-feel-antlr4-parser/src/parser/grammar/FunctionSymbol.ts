@@ -17,29 +17,26 @@
  * under the License.
  */
 
-import { ScopeImpl } from "./ScopeImpl";
 import { Scope } from "./Scope";
-import { ReservedWords } from "../ReservedWords";
-import { FunctionSymbol } from "./FunctionSymbol";
+import { Symbol } from "./Symbol";
+import { Type } from "./Type";
 
-export class Scopes {
-  private readonly builtInScope: Scope;
-  private readonly globalScope: Scope;
+export class FunctionSymbol implements Symbol {
+  private readonly id;
 
-  constructor() {
-    this.builtInScope = new ScopeImpl("<builtin>");
-    this.globalScope = new ScopeImpl("<global>", this.builtInScope);
-
-    ReservedWords.FeelFunctions.forEach((word) => {
-      this.globalScope.define(new FunctionSymbol(word));
-    });
+  constructor(id: string) {
+    this.id = id;
   }
 
-  public getBuiltInScope() {
-    return this.builtInScope;
+  getId(): string | undefined {
+    return this.id;
   }
 
-  public getGlobalScope() {
-    return this.builtInScope.getChildScopes().get("<global>");
+  getType(): Type | undefined {
+    return { name: this.id };
+  }
+
+  getScope(): Scope | undefined {
+    return undefined;
   }
 }
