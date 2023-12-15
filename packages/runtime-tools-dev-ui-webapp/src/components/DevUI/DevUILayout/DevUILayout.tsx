@@ -35,7 +35,7 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-component
 import WorkflowFormContextProvider from "../../../channel/WorkflowForm/WorkflowFormContextProvider";
 import CustomDashboardListContextProvider from "../../../channel/CustomDashboardList/CustomDashboardListContextProvider";
 import { CustomDashboardViewContextProvider } from "../../../channel/CustomDashboardView";
-import CloudEventFormContextProvider from "../../../channel/CloudEventForm/CloudEventFormContextProvider";
+import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/CloudEventForm";
 import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDefinitionList";
 
 interface IOwnProps {
@@ -97,7 +97,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
                   <CustomDashboardViewContextProvider>
                     <FormDetailsContextProvider>
                       <WorkflowFormContextProvider>
-                        <CloudEventFormContextProvider>
+                        <CloudEventFormContextProvider kogitoServiceUrl="openApiPath">
                           <MemoryRouter>
                             <Switch>
                               <Route path="/" render={renderPage} />

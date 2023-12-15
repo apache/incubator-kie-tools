@@ -29,7 +29,7 @@ import "../../styles.css";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { useHistory } from "react-router-dom";
-import CloudEventFormContainer from "../../containers/CloudEventFormContainer/CloudEventFormContainer";
+import { CloudEventFormContainer } from "@kie-tools/runtime-tools-webapp-components/dist/CloudEventFormContainer";
 
 export interface CloudEventPageState {
   source?: CloudEventPageSource;
@@ -75,8 +75,8 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
     []
   );
 
-  const onSubmitSuccess = useCallback((message: string): void => {
-    showNotification("success", message);
+  const onSubmitSuccess = useCallback((): void => {
+    showNotification("success", "");
   }, []);
 
   const onSubmitError = useCallback((details?: string) => {
@@ -108,8 +108,10 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           <CardBody className="pf-u-h-100">
             <CloudEventFormContainer
               isTriggerNewInstance={isTriggerNewInstance}
-              onSuccess={(id) => onSubmitSuccess(id)}
-              onError={(details) => onSubmitError(details)}
+              cloudEventSource={`${initialState}`}
+              onStartWorkflowError={(details) => onSubmitError(details)}
+              onTriggerCloudEventSuccess={() => onSubmitSuccess()}
+              onTriggerStartCloudEventSuccess={() => onSubmitSuccess()}
             />
           </CardBody>
         </Card>
