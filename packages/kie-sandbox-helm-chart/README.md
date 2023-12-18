@@ -1,5 +1,3 @@
-{::options parse_block_html="true" /}
-
 # KIE Sandbox Helm Chart
 
 This chart can be used to deploy KIE Sandbox image on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
