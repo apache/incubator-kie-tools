@@ -1,4 +1,3 @@
-
 # KIE Sandbox application
 # -- The KIE Sandbox application name
 name: kie-sandbox
@@ -90,7 +89,7 @@ affinity: {}
 
 # -- Global configurations
 global:
-  # -- Which ingress source is being used (none | "minikube" | "openshift") Obs.: For NOTES generation only
+  # -- Which ingress source is being used (none/"minikube"/"openshift") Obs.: For NOTES generation only
   ingressSource: ""
   # -- If using OpenShift Routes, set the Route domain
   openshiftRouteDomain: ""
