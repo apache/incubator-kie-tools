@@ -391,7 +391,15 @@ function ExternalModelsManager({
     return () => {
       canceled = true;
     };
-  }, [namespaces, onChange, onRequestFileContent, onRequestFileList, thisDmnsAbsolutePath, externalUpdatesCount]);
+  }, [
+    namespaces,
+    onChange,
+    onRequestFileContent,
+    onRequestFileList,
+    thisDmnsAbsolutePath,
+    externalUpdatesCount,
+    externalModelsManagerDoneBootstraping,
+  ]);
 
   return <></>;
 }

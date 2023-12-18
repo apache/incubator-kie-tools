@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { useMemo } from "react";
+
 export interface PromiseImperativeHandle<T> {
   promise: Promise<T>;
   resolve: (value: T) => void;
@@ -37,5 +39,5 @@ export function imperativePromiseHandle<T>(): PromiseImperativeHandle<T> {
 }
 
 export function useImperativePromiseHandle<T>() {
-  return imperativePromiseHandle<T>();
+  return useMemo(() => imperativePromiseHandle<T>(), []);
 }
