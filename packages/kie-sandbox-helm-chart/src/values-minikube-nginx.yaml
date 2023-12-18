@@ -14,7 +14,7 @@ ingress:
   tls: []
 
 # Cors Proxy component
-corsProxy:
+cors_proxy:
   ingress:
     enabled: true
     className: nginx
@@ -27,7 +27,7 @@ corsProxy:
     tls: []
 
 # Extended services component
-extendedServices:
+extended_services:
   ingress:
     enabled: true
     className: nginx
@@ -39,4 +39,5 @@ extendedServices:
             pathType: ImplementationSpecific
     tls: []
 
-ingressSource: "minikube"
+global:
+  ingressSource: "minikube"

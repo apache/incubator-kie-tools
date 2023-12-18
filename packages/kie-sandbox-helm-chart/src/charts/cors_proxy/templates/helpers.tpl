@@ -1,8 +1,8 @@
 {{/*
-Create a fully qualified extended-services name.
+Create a fully qualified cors-proxy name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "extendedServices.fullname" -}}
+{{- define "cors_proxy.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -10,20 +10,20 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
-{{- define "extendedServices.selectorLabels" -}}
+{{- define "cors_proxy.selectorLabels" -}}
 app.kubernetes.io/component: {{ .Values.name | quote }}
 {{- end -}}
 
-{{- define "extendedServices.labels" -}}
-{{ include "extendedServices.selectorLabels" . }}
+{{- define "cors_proxy.labels" -}}
+{{ include "cors_proxy.selectorLabels" . }}
 {{- end -}}
 
 {{/*
-Create the name of the service account to use for the extended-services component
+Create the name of the service account to use for the cors-proxy component
 */}}
-{{- define "extendedServices.serviceAccountName" -}}
+{{- define "cors_proxy.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "extendedServices.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "cors_proxy.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}

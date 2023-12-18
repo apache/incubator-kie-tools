@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "kieSandbox.fullname" . }}
+  name: {{ include "kie_sandbox.fullname" . }}
   labels:
-    {{- include "kieSandbox.labels" . | nindent 4 }}
+    {{- include "kie_sandbox.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "kieSandbox.fullname" . }}
+    name: {{ include "kie_sandbox.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "corsProxy.fullname" . }}
+  name: {{ include "cors_proxy.fullname" . }}
   labels:
-    {{- include "corsProxy.labels" . | nindent 4 }}
+    {{- include "cors_proxy.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "corsProxy.selectorLabels" . | nindent 6 }}
+      {{- include "cors_proxy.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,17 +18,17 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "corsProxy.selectorLabels" . | nindent 8 }}
+        {{- include "cors_proxy.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "corsProxy.serviceAccountName" . }}
+      serviceAccountName: {{ include "cors_proxy.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Values.name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.account }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

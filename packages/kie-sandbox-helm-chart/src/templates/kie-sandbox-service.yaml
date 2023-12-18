@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "kieSandbox.fullname" . }}
+  name: {{ include "kie_sandbox.fullname" . }}
   labels:
-    {{- include "kieSandbox.labels" . | nindent 4 }}
+    {{- include "kie_sandbox.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -15,4 +15,4 @@ spec:
       nodePort: {{ .Values.service.nodePort }}
       {{- end }}
   selector:
-    {{- include "kieSandbox.selectorLabels" . | nindent 4 }}
+    {{- include "kie_sandbox.selectorLabels" . | nindent 4 }}

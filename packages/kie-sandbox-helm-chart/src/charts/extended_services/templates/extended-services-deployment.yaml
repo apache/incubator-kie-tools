@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "extendedServices.fullname" . }}
+  name: {{ include "extended_services.fullname" . }}
   labels:
-    {{- include "extendedServices.labels" . | nindent 4 }}
+    {{- include "extended_services.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "extendedServices.selectorLabels" . | nindent 6 }}
+      {{- include "extended_services.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,17 +18,17 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "extendedServices.selectorLabels" . | nindent 8 }}
+        {{- include "extended_services.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "extendedServices.serviceAccountName" . }}
+      serviceAccountName: {{ include "extended_services.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Values.name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.account }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"

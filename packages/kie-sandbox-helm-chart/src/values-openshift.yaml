@@ -1,36 +1,22 @@
-
 # KIE Sandbox application
-extendedServiceUrl: "http://extended-services.local"
-corsProxyUrl: "http://cors-proxy.local"
-ingress:
+extendedServiceUrl: "https://extended-services.{{ .Values.global.openshiftRouteDomain }}"
+corsProxyUrl: "https://cors-proxy.{{ .Values.global.openshiftRouteDomain }}"
+openshiftRoute:
   enabled: true
-  annotations: {}
-  hosts:
-    - paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
+  host: kie-sandbox.{{ .Values.global.openshiftRouteDomain }}
 
 # Cors Proxy component
-corsProxy:
-  ingress:
+cors_proxy:
+  openshiftRoute:
     enabled: true
-    annotations: {}
-    hosts:
-      - paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
+    host: cors-proxy.{{ .Values.global.openshiftRouteDomain }}
 
 # Extended services component
-extendedServices:
-  ingress:
+extended_services:
+  openshiftRoute:
     enabled: true
-    annotations: {}
-    hosts:
-      - paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
+    host: extended-services.{{ .Values.global.openshiftRouteDomain }}
 
-ingressSource: "openshift"
+global:
+  ingressSource: "openshift"
+  openshiftRouteDomain: ocp-example.com

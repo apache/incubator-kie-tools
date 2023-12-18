@@ -1,5 +1,3 @@
-
-
 {{/*
 Expand the name of the chart.
 */}}
@@ -28,16 +26,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a fully qualified sandbox name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "kieSandbox.fullname" -}}
+{{- define "kie_sandbox.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
 {{- printf "%s-%s" .Release.Name .Values.name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s-%s" .Release.Name $name .Values.name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -68,23 +61,23 @@ app.kubernetes.io/name: {{ include "name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{- define "corsProxy.labels" -}}
-{{ include "corsProxy.selectorLabels" .Subcharts.corsProxy }}
+{{- define "cors_proxy.labels" -}}
+{{ include "cors_proxy.selectorLabels" .Subcharts.cors_proxy }}
 {{ include "labels" . }}
 {{- end -}}
 
-{{- define "extendedServices.labels" -}}
-{{ include "extendedServices.selectorLabels" .Subcharts.extendedServices }}
+{{- define "extended_services.labels" -}}
+{{ include "extended_services.selectorLabels" .Subcharts.extended_services }}
 {{ include "labels" . }}
 {{- end -}}
 
-{{- define "kieSandbox.selectorLabels" -}}
+{{- define "kie_sandbox.selectorLabels" -}}
 app.kubernetes.io/component: {{ .Values.name | quote }}
 {{ include "selectorLabels" . }}
 {{- end -}}
 
-{{- define "kieSandbox.labels" -}}
-{{ include "kieSandbox.selectorLabels" . }}
+{{- define "kie_sandbox.labels" -}}
+{{ include "kie_sandbox.selectorLabels" . }}
 {{ include "labels" . }}
 {{- end -}}
 
@@ -102,9 +95,9 @@ Create the name of the service account to use
 {{/*
 Create the name of the service account to use for the sandbox component
 */}}
-{{- define "kieSandbox.serviceAccountName" -}}
+{{- define "kie_sandbox.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "kieSandbox.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "kie_sandbox.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
