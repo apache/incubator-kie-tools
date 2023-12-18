@@ -272,4 +272,4 @@ packages/dmn-marshaller/**/ts-gen
 packages/scesim-marshaller/**/ts-gen
 
 # kie-sandbox-helm-chart
-packages/kie-sandbox-helm-chart/src/
+packages/kie-sandbox-helm-chart/src/**/*.yaml
