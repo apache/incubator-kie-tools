@@ -37,6 +37,10 @@ import { useEffect, useMemo, useState } from "react";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { getPmmlNamespace } from "@kie-tools/dmn-editor/dist/pmml/pmml";
 import { getNamespaceOfDmnImport } from "@kie-tools/dmn-editor/dist/includedModels/importNamespaces";
+import {
+  imperativePromiseHandle,
+  PromiseImperativeHandle,
+} from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 
@@ -64,9 +68,13 @@ export type DmnEditorRootState = {
   pointer: number;
   absolutePath: string | undefined;
   externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
+  readonly: boolean;
+  externalModelsManagerDoneBootstraping: boolean;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
+  private readonly externalModelsManagerDoneBootstraping = imperativePromiseHandle<void>();
+
   constructor(props: DmnEditorRootProps) {
     super(props);
     props.exposing(this);
@@ -76,6 +84,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       stack: [],
       pointer: -1,
       absolutePath: undefined,
+      readonly: true,
+      externalModelsManagerDoneBootstraping: false,
     };
   }
 
@@ -100,27 +110,42 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   }
 
   public async setContent(absolutePath: string, content: string): Promise<void> {
-    this.setState((prev) => {
-      const newMarshaller = getMarshaller(content || EMPTY_DMN(), { upgradeTo: "latest" });
+    const marshaller = getMarshaller(content || EMPTY_DMN(), { upgradeTo: "latest" });
 
+    // Save stack
+    let savedStackPointer: DmnLatestModel[] = [];
+
+    // Set the model and path for external models manager.
+    this.setState((prev) => {
+      savedStackPointer = [...prev.stack];
+      return { stack: [marshaller.parser.parse()], absolutePath, pointer: 0 };
+    });
+
+    // Wait the external manager models to load.
+    await this.externalModelsManagerDoneBootstraping.promise;
+
+    // Set the valeus to render the DMN Editor.
+    this.setState((prev) => {
       // External change to the same file.
       if (prev.absolutePath === absolutePath) {
-        const newStack = prev.stack.slice(0, prev.pointer + 1);
+        const newStack = savedStackPointer.slice(0, prev.pointer + 1);
         return {
-          absolutePath,
-          marshaller: newMarshaller,
-          stack: [...newStack, newMarshaller.parser.parse()],
+          marshaller,
+          stack: [...newStack, marshaller.parser.parse()],
+          readonly: false,
           pointer: newStack.length,
+          externalModelsManagerDoneBootstraping: true,
         };
       }
 
       // Different file opened. Need to reset everything.
       else {
         return {
-          absolutePath,
-          marshaller: newMarshaller,
-          stack: [newMarshaller.parser.parse()],
+          marshaller,
+          stack: [marshaller.parser.parse()],
+          readonly: false,
           pointer: 0,
+          externalModelsManagerDoneBootstraping: true,
         };
       }
     });
@@ -208,29 +233,32 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   public render() {
     return (
       <>
-        {this.model && this.state.marshaller && (
+        {this.model && (
           <>
-            <DmnEditor.DmnEditor
-              originalVersion={this.state.marshaller.originalVersion}
-              model={this.model}
-              externalModelsByNamespace={this.state.externalModelsByNamespace}
-              evaluationResults={[]}
-              validationMessages={[]}
-              externalContextName={""}
-              externalContextDescription={""}
-              issueTrackerHref={""}
-              onModelChange={this.onModelChange}
-              onRequestExternalModelByPath={this.onRequestExternalModelByPath}
-              onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
-              onRequestToJumpToPath={this.onOpenFileFromRelativePath}
-              onRequestToResolvePath={this.onRequestToResolvePath}
-            />
+            {this.state.marshaller && this.state.externalModelsManagerDoneBootstraping && (
+              <DmnEditor.DmnEditor
+                originalVersion={this.state.marshaller.originalVersion}
+                model={this.model}
+                externalModelsByNamespace={this.state.externalModelsByNamespace}
+                evaluationResults={[]}
+                validationMessages={[]}
+                externalContextName={""}
+                externalContextDescription={""}
+                issueTrackerHref={""}
+                onModelChange={this.onModelChange}
+                onRequestExternalModelByPath={this.onRequestExternalModelByPath}
+                onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
+                onRequestToJumpToPath={this.onOpenFileFromRelativePath}
+                onRequestToResolvePath={this.onRequestToResolvePath}
+              />
+            )}
             <ExternalModelsManager
               thisDmnsAbsolutePath={this.state.absolutePath}
               model={this.model}
               onChange={this.setExternalModelsByNamespace}
               onRequestFileList={this.props.onRequestFileList}
               onRequestFileContent={this.props.onRequestFileContent}
+              externalModelsManagerDoneBootstraping={this.externalModelsManagerDoneBootstraping}
             />
           </>
         )}
@@ -247,12 +275,14 @@ function ExternalModelsManager({
   onChange,
   onRequestFileContent,
   onRequestFileList,
+  externalModelsManagerDoneBootstraping,
 }: {
   thisDmnsAbsolutePath: string | undefined;
   model: DmnLatestModel;
   onChange: (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => void;
   onRequestFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onRequestFileList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
+  externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
   const namespaces = useMemo(
     () =>
@@ -355,6 +385,7 @@ function ExternalModelsManager({
         if (!canceled) {
           onChange(externalModelMap);
         }
+        externalModelsManagerDoneBootstraping.resolve();
       });
 
     return () => {
