@@ -32,7 +32,7 @@ import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetails
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
 import { CustomLabels } from "../../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
-import WorkflowFormContextProvider from "../../../channel/WorkflowForm/WorkflowFormContextProvider";
+import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowForm";
 import CustomDashboardListContextProvider from "../../../channel/CustomDashboardList/CustomDashboardListContextProvider";
 import { CustomDashboardViewContextProvider } from "../../../channel/CustomDashboardView";
 import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/CloudEventForm";
@@ -91,13 +91,13 @@ const DevUILayout: React.FC<IOwnProps> = ({
       >
         <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
           <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
-            <WorkflowDefinitionListContextProvider kogitoServiceUrl="openApiPath">
+            <WorkflowDefinitionListContextProvider kogitoServiceUrl={openApiPath}>
               <FormsListContextProvider>
                 <CustomDashboardListContextProvider>
                   <CustomDashboardViewContextProvider>
                     <FormDetailsContextProvider>
-                      <WorkflowFormContextProvider>
-                        <CloudEventFormContextProvider kogitoServiceUrl="openApiPath">
+                      <WorkflowFormContextProvider kogitoServiceUrl={openApiPath}>
+                        <CloudEventFormContextProvider kogitoServiceUrl={openApiPath}>
                           <MemoryRouter>
                             <Switch>
                               <Route path="/" render={renderPage} />

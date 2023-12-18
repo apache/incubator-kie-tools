@@ -31,7 +31,7 @@ import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/P
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { useHistory } from "react-router-dom";
 import { InlineEdit, InlineEditApi } from "@kie-tools/runtime-tools-components/dist/components/InlineEdit";
-import { useWorkflowFormGatewayApi } from "../../../channel/WorkflowForm/WorkflowFormContext";
+import { useWorkflowFormGatewayApi } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowForm";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 interface WorkflowFormPageState {
