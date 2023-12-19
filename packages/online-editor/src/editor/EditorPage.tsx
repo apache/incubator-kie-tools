@@ -341,14 +341,17 @@ export function EditorPage(props: Props) {
     }
 
     return new DmnLanguageService({
-      getDmnImportedModel: async (importedModelRelativePath: string) => {
+      getDmnImportedModelResource: async (importedModelPathRelativeToWorkspaceRoot: string) => {
         try {
           const fileContent = await workspaces.getFileContent({
             workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
-            relativePath: importedModelRelativePath,
+            relativePath: importedModelPathRelativeToWorkspaceRoot,
           });
 
-          return { content: decoder.decode(fileContent), relativePath: importedModelRelativePath };
+          return {
+            content: decoder.decode(fileContent),
+            pathRelativeToWorkspaceRoot: importedModelPathRelativeToWorkspaceRoot,
+          };
         } catch (err) {
           console.debug("ERROR: DmnLanguageService.getImportedModel: ", err);
           return undefined;

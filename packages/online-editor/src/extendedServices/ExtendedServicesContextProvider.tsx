@@ -40,13 +40,17 @@ export function ExtendedServicesContextProvider(props: Props) {
   const [outdated, setOutdated] = useState(false);
 
   const config = useMemo(() => {
-    const url = new URL(settings.extendedServices.host);
-    const port = settings.extendedServices.port;
-    if (port) {
-      url.port = port;
-    }
+    try {
+      const url = new URL(settings.extendedServices.host);
+      const port = settings.extendedServices.port;
+      if (port) {
+        url.port = port;
+      }
 
-    return new ExtendedServicesConfig(url.href, url.port);
+      return new ExtendedServicesConfig(url.href, url.port);
+    } catch (error) {
+      return new ExtendedServicesConfig(settings.extendedServices.host ?? "", settings.extendedServices.port ?? "");
+    }
   }, [settings.extendedServices.port, settings.extendedServices.host]);
 
   const bridge = useMemo(() => new ExtendedServicesBridge(config.url.ping), [config]);
@@ -118,7 +122,7 @@ export class ExtendedServicesConfig {
   public get url() {
     return {
       jitExecutor: `${this.href}`,
-      ping: `${this.href}ping`,
+      ping: `${this.href.endsWith("/") ? this.href : this.href + ":" + this.port + "/"}ping`,
     };
   }
 }
