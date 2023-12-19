@@ -59,7 +59,7 @@ export class DmnLanguageService {
     const importedModels = xmlContent.getElementsByTagName(importTag?.[0] ?? IMPORT);
     return Array.from(importedModels)
       .map((importedModel) =>
-        path.join(
+        path.posix.join(
           path.dirname(modelResources.pathRelativeToWorkspaceRoot),
           path.normalize(importedModel.getAttribute(LOCATION_URI_ATTRIBUTE) ?? "")
         )
