@@ -99,7 +99,9 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
   };
   tab: {
     backgroundTabTitle: string;
+    backgroundTabInfo: string;
     scenarioTabTitle: string;
+    scenarioTabInfo: string;
   };
   table: {
     simulation: { singleEntry: string };

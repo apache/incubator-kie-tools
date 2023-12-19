@@ -40,15 +40,18 @@ import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
 import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
+import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 
 import ErrorBoundary from "./reactExt/ErrorBoundary";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
@@ -350,14 +353,13 @@ function TestScenarioMainPanel({
                 onUpdateSettingField={updateSettingField}
                 selectedDock={dockPanel.selected}
                 testScenarioSettings={{
-                  assetType: scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text,
-                  dmnName: scesimModel.ScenarioSimulationModel["settings"]!["dmnName"]?.__$$text,
-                  dmnNamespace: scesimModel.ScenarioSimulationModel["settings"]!["dmnNamespace"]?.__$$text,
-                  isStatelessSessionRule:
-                    scesimModel.ScenarioSimulationModel["settings"]!["stateless"]?.__$$text ?? false,
-                  isTestSkipped: scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"]?.__$$text ?? false,
-                  kieSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["dmoSession"]?.__$$text,
-                  ruleFlowGroup: scesimModel.ScenarioSimulationModel["settings"]!["ruleFlowGroup"]?.__$$text,
+                  assetType: scesimModel.ScenarioSimulationModel.settings!.type!.__$$text,
+                  dmnName: scesimModel.ScenarioSimulationModel.settings!.dmnName?.__$$text,
+                  dmnNamespace: scesimModel.ScenarioSimulationModel.settings!.dmnNamespace?.__$$text,
+                  isStatelessSessionRule: scesimModel.ScenarioSimulationModel.settings!.stateless?.__$$text ?? false,
+                  isTestSkipped: scesimModel.ScenarioSimulationModel.settings!.skipFromBuild?.__$$text ?? false,
+                  kieSessionRule: scesimModel.ScenarioSimulationModel.settings!.dmoSession?.__$$text,
+                  ruleFlowGroup: scesimModel.ScenarioSimulationModel.settings!.ruleFlowGroup?.__$$text,
                 }}
               />
             }
@@ -378,6 +380,11 @@ function TestScenarioMainPanel({
                           <TableIcon />
                         </TabTitleIcon>
                         <TabTitleText>{i18n.tab.scenarioTabTitle}</TabTitleText>
+                        <Tooltip content={i18n.tab.scenarioTabInfo}>
+                          <Icon size="sm" status="info">
+                            <HelpIcon />
+                          </Icon>
+                        </Tooltip>
                       </>
                     }
                   >
@@ -397,6 +404,11 @@ function TestScenarioMainPanel({
                           <TableIcon />
                         </TabTitleIcon>
                         <TabTitleText>{i18n.tab.backgroundTabTitle}</TabTitleText>
+                        <Tooltip content={i18n.tab.backgroundTabInfo}>
+                          <Icon size="sm" status="info">
+                            <HelpIcon />
+                          </Icon>
+                        </Tooltip>
                       </>
                     }
                   >

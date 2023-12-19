@@ -59,6 +59,10 @@ export function DevWebApp() {
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
   }, []);
 
+  const reset = useCallback(() => {
+    ref.current?.setContent("Untitled.scesim", "");
+  }, []);
+
   const copyAsXml = useCallback(() => {
     navigator.clipboard.writeText(ref.current?.getContent() || "");
   }, []);
@@ -85,6 +89,9 @@ export function DevWebApp() {
               <h5>(Drag & drop a file anywhere to open it)</h5>
             </FlexItem>
             <FlexItem shrink={{ default: "shrink" }}>
+              &nbsp; &nbsp; | &nbsp; &nbsp;
+              <button onClick={reset}>Reset</button>
+              &nbsp; &nbsp;
               <button onClick={copyAsXml}>Copy as XML</button>
               &nbsp; &nbsp;
               <button onClick={downloadAsXml}>Download as XML</button>

@@ -913,7 +913,7 @@ function TestScenarioTable({
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       if (isBackground) {
-        throw new Error("Impossibile state. Background table can have a single row only");
+        throw new Error("Impossible state. Background table can have a single row only");
       }
       updateTestScenarioModel((prevState) => {
         /* Creating a new Scenario (Row) composed by a list of FactMappingValues. The list order is not relevant. */
@@ -967,7 +967,7 @@ function TestScenarioTable({
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
       if (isBackground) {
-        throw new Error("Impossibile state. Background table can have a single row only");
+        throw new Error("Impossible state. Background table can have a single row only");
       }
       updateTestScenarioModel((prevState) => {
         /* Just updating the Scenario List (Rows) cloning the current List and removing the row at the given rowIndex */
@@ -999,7 +999,7 @@ function TestScenarioTable({
   const onRowDuplicated = useCallback(
     (args: { rowIndex: number }) => {
       if (isBackground) {
-        throw new Error("Impossibile state. Background table can have a single row only");
+        throw new Error("Impossible state. Background table can have a single row only");
       }
       updateTestScenarioModel((prevState) => {
         /* It simply clones a Scenario (Row) and adds it in a current-cloned Scenario list */
@@ -1060,7 +1060,7 @@ function TestScenarioTable({
         scrollableParentRef={tableScrollableElementRef.current}
         shouldRenderRowIndexColumn={!isBackground}
         shouldShowColumnsInlineControls={true}
-        shouldShowRowsInlineControls={true}
+        shouldShowRowsInlineControls={!isBackground}
       />
     </div>
   );
