@@ -38,3 +38,7 @@
 .kie-scesim-editor--grid-container {
   height: 100%;
 }
+
+.kie-scesim-editor--table-container {
+  overflow-x: auto;
+}

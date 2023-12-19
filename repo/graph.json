@@ -773,9 +773,7 @@
         "target": "@kie-tools/runtime-tools-enveloped-components",
         "weight": 1
       },
-      { "source": "@kie-tools/scesim-editor", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
-      { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
-      { "source": "@kie-tools/scesim-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/scesim-marshaller", "weight": 1 },
       { "source": "@kie-tools/scesim-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/kubernetes-bridge", "weight": 1 },
