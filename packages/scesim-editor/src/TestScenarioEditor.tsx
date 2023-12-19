@@ -400,7 +400,13 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    <Bullseye>{i18n.tab.backgroundTabTitle}</Bullseye>
+                    <div className="kie-scesim-editor--table-container">
+                      <TestScenarioTable
+                        assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
+                        tableData={scesimModel.ScenarioSimulationModel.background}
+                        updateTestScenarioModel={updateTestScenarioModel}
+                      />
+                    </div>
                   </Tab>
                 </Tabs>
               </div>
