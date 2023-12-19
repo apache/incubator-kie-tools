@@ -69,6 +69,7 @@ export interface BeeTableContextMenuHandlerProps {
   onRowDeleted?: (args: { rowIndex: number }) => void;
   onColumnAdded?: (args: {
     beforeIndex: number;
+    currentIndex: number;
     groupType: string | undefined;
     columnsCount: number;
     insertDirection: InsertRowColumnsDirection;
@@ -311,6 +312,7 @@ export function BeeTableContextMenuHandler({
         case BeeTableOperation.ColumnInsertLeft:
           onColumnAdded?.({
             beforeIndex: columnIndex - 1,
+            currentIndex: columnIndex,
             groupType: column?.groupType,
             columnsCount: 1,
             insertDirection: InsertRowColumnsDirection.BelowOrLeft,
@@ -320,6 +322,7 @@ export function BeeTableContextMenuHandler({
         case BeeTableOperation.ColumnInsertRight:
           onColumnAdded?.({
             beforeIndex: columnIndex,
+            currentIndex: columnIndex,
             groupType: column?.groupType,
             columnsCount: 1,
             insertDirection: InsertRowColumnsDirection.AboveOrRight,
@@ -330,6 +333,7 @@ export function BeeTableContextMenuHandler({
           if (direction === InsertRowColumnsDirection.AboveOrRight) {
             onColumnAdded?.({
               beforeIndex: columnIndex,
+              currentIndex: columnIndex,
               groupType: column?.groupType,
               columnsCount: insertMultipleRowColumnsValue,
               insertDirection: InsertRowColumnsDirection.AboveOrRight,
@@ -337,6 +341,7 @@ export function BeeTableContextMenuHandler({
           } else {
             onColumnAdded?.({
               beforeIndex: columnIndex - 1,
+              currentIndex: columnIndex,
               groupType: column?.groupType,
               columnsCount: insertMultipleRowColumnsValue,
               insertDirection: InsertRowColumnsDirection.BelowOrLeft,
@@ -611,7 +616,7 @@ export function BeeTableContextMenuHandler({
               onClick={(e) => e.stopPropagation()}
               drilldownMenu={createDrillDownMenu(group, operation.type)}
             >
-              {operationLabel(operation.type)}
+              {operation.name ? operation.name : operationLabel(operation.type)}
             </MenuItem>
           ) : (
             <MenuItem
@@ -622,7 +627,7 @@ export function BeeTableContextMenuHandler({
               onClick={() => handleOperation(operation.type)}
               isDisabled={!allowedOperationsForSelection.includes(operation.type)}
             >
-              {operationLabel(operation.type)}
+              {operation.name ? operation.name : operationLabel(operation.type)}
             </MenuItem>
           )
         )}

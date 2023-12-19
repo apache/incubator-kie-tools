@@ -24,7 +24,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useDmnFormI18n } from "./i18n";
 
-const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
 export function DmnFormErrorPage() {
   const { i18n } = useDmnFormI18n();
@@ -45,8 +45,8 @@ export function DmnFormErrorPage() {
             <I18nWrapped
               components={{
                 jira: (
-                  <a href={KOGITO_JIRA_LINK} target={"_blank"}>
-                    {KOGITO_JIRA_LINK}
+                  <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
+                    {ISSUES_URL}
                   </a>
                 ),
               }}

@@ -39,8 +39,10 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JsType
+@GWT3Export
 public class JsStunnerSession {
 
     @JsIgnore

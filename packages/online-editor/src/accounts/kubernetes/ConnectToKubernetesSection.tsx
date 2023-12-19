@@ -19,7 +19,6 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
-import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ConnectToKubernetesSimple } from "./ConnectToKubernetesSimple";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";

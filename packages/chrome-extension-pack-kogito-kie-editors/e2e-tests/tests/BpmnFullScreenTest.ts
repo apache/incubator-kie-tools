@@ -34,7 +34,7 @@ beforeEach(async () => {
 
 test(TEST_NAME, async () => {
   const processUrl: string =
-    "https://github.com/kiegroup/kie-tools/" +
+    "https://github.com/apache/incubator-kie-tools/" +
     "blob/main/packages/chrome-extension-pack-kogito-kie-editors/e2e-tests/samples/test.bpmn";
   let bpmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, processUrl);
   const fullScreenPage: FullScreenPage = await bpmnPage.fullScreen();

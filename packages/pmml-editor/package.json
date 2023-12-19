@@ -7,10 +7,10 @@
   "homepage": "https://manstis.github.io/kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "types": "./dist/editor/index.d.ts",
   "main": "dist/editor/index.js",

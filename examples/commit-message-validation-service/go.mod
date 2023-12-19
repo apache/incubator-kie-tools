@@ -1,4 +1,4 @@
-module github.com/kiegroup/kie-tools/examples/commit-message-validation-service
+module github.com/apache/incubator-kie-tools/examples/commit-message-validation-service
 
 go 1.20
 

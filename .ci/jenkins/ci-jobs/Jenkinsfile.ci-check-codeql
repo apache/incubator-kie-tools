@@ -1,0 +1,182 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent any
+
+    options {
+        timeout(time: 240, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
+    }
+
+    environment {
+        RESULTS_DIR = '/tmp/codeql/results'
+        DATABASE_DIR = '/tmp/codeql/db'
+        GO_RESULTS_DIR = "${RESULTS_DIR}/go"
+        GO_DATABASE_DIR = "${DATABASE_DIR}/go"
+        JS_RESULTS_DIR = "${RESULTS_DIR}/js"
+        JS_DATABASE_DIR = "${DATABASE_DIR}/js"
+    }
+
+    stages {
+        stage('Load shared library') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
+                }
+            }
+        }
+
+        stage('Check code quality') {
+            agent {
+                docker {
+                    image "quay.io/kie-tools/kie-tools-ci-build:${params.IMAGE_TAG}"
+                }
+            }
+
+            stages {
+                stage('Clean workspace before build') {
+                    steps {
+                        cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+                    }
+                }
+
+                stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
+                    steps {
+                        dir('kie-tools') {
+                            script {
+                                githubUtils.checkoutRepoSquashedMerge(
+                                    env.CHANGE_AUTHOR,
+                                    env.CHANGE_BRANCH,
+                                    "https://github.com/${env.CHANGE_AUTHOR}/${pipelineVars.githubRepositoryName}.git",
+                                    env.CHANGE_TARGET ?: env.BRANCH_NAME,
+                                    "https://github.com/${pipelineVars.githubRepositoryOrg}/${pipelineVars.githubRepositoryName}.git",
+                                    "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                                )
+                            }
+                        }
+                    }
+                }
+
+                stage('Pre-check') {
+                    steps {
+                        sh '''#!/bin/bash -el
+                        codeql version --format=json
+                        '''.trim()
+                    }
+                }
+
+                stage('CodeQL') {
+                    parallel {
+                        stage('CodeQL GO') {
+                            steps {
+                                sh """#!/bin/bash -el
+                                # Create dir to store results
+                                mkdir -p ${GO_DATABASE_DIR} ${GO_RESULTS_DIR}
+
+                                # Create a database of KIE tools go code
+                                codeql database create ${GO_DATABASE_DIR} --language=go
+
+                                # Code Scanning suite: Queries run by default in CodeQL code scanning on GitHub.
+                                codeql database analyze ${GO_DATABASE_DIR} go-code-scanning.qls --sarif-category=go --format=sarif-latest --output=${GO_RESULTS_DIR}/go-code-scanning.sarif
+
+                                # Security extended suite: Queries of lower severity and precision than the default queries
+                                codeql database analyze ${GO_DATABASE_DIR} go-security-extended.qls --sarif-category=go --format=sarif-latest --output=${GO_RESULTS_DIR}/go-security-extended.sarif
+
+                                # Security and quality suite: Queries of lower severity and precision than the default queries
+                                codeql database analyze ${GO_DATABASE_DIR} go-security-and-quality.qls --sarif-category=go --format=sarif-latest --output=${GO_RESULTS_DIR}/go-security-and-quality.sarif
+                                """.trim()
+                            }
+                        }
+
+                        stage('CodeQL Javascript') {
+                            steps {
+                                sh """#!/bin/bash -el
+                                # Create dir to store results
+                                mkdir -p ${JS_DATABASE_DIR} ${JS_RESULTS_DIR}
+
+                                # Create a database of KIE tools js code
+                                codeql database create ${JS_DATABASE_DIR} --language=javascript
+
+                                # Code Scanning suite: Queries run by default in CodeQL code scanning on GitHub.
+                                codeql database analyze ${JS_DATABASE_DIR} javascript-code-scanning.qls --sarif-category=javascript-typescript --format=sarif-latest --output=${JS_RESULTS_DIR}/javascript-code-scanning.sarif
+
+                                # Security extended suite: Queries of lower severity and precision than the default queries
+                                codeql database analyze ${JS_DATABASE_DIR} javascript-security-extended.qls --sarif-category=javascript-typescript --format=sarif-latest --output=${JS_RESULTS_DIR}/javascript-security-extended.sarif
+
+                                # Security and quality suite: Queries of lower severity and precision than the default queries
+                                codeql database analyze ${JS_DATABASE_DIR} javascript-security-and-quality.qls --sarif-category=javascript-typescript --format=sarif-latest --output=${JS_RESULTS_DIR}/javascript-security-and-quality.sarif
+                                """.trim()
+                            }
+                        }
+                    }
+                }
+
+                stage('Zip results') {
+                    steps {
+                        script {
+                            sh "mkdir ${pipelineVars.defaultArtifactsTempDir}"
+                            zipUtils.zipArtifact("${pipelineVars.defaultArtifactsTempDir}/code-analysis-results-go.zip", "${GO_RESULTS_DIR}")
+                            zipUtils.zipArtifact("${pipelineVars.defaultArtifactsTempDir}/code-analysis-results-js.zip", "${JS_RESULTS_DIR}")
+                        }
+                    }
+                }
+
+                stage('Upload results') {
+                    steps {
+                        withCredentials([string(credentialsId: "${pipelineVars.kieToolsGithubCodeQLTokenCredentialsId}", variable: 'GITHUB_TOKEN')]) {
+                            script {
+                                def repoSlug = pipelineVars.githubRepositorySlug
+                                def ref = env.CHANGE_ID ? "refs/pull/${env.CHANGE_ID}/head" : (env.CHANGE_TARGET ? "refs/heads/${env.CHANGE_TARGET}" : "refs/heads/${env.BRANCH_NAME}")
+
+                                sh """#!/bin/bash -el
+                                # GO results
+                                codeql github upload-results --sarif=${GO_RESULTS_DIR}/go-code-scanning.sarif --repository=${repoSlug} --ref=${ref} --commit=${env.GIT_COMMIT}
+                                codeql github upload-results --sarif=${GO_RESULTS_DIR}/go-security-extended.sarif --repository=${repoSlug} --ref=${ref} --commit=${env.GIT_COMMIT}
+                                codeql github upload-results --sarif=${GO_RESULTS_DIR}/go-security-and-quality.sarif --repository=${repoSlug} --ref=${ref} --commit=${env.GIT_COMMIT}
+
+                                # Javascript results
+                                codeql github upload-results --sarif=${JS_RESULTS_DIR}/javascript-code-scanning.sarif --repository=${repoSlug} --ref=${ref} --commit=${env.GIT_COMMIT}
+                                codeql github upload-results --sarif=${JS_RESULTS_DIR}/javascript-security-extended.sarif --repository=${repoSlug} --ref=${ref} --commit=${env.GIT_COMMIT}
+                                codeql github upload-results --sarif=${JS_RESULTS_DIR}/javascript-security-and-quality.sarif --repository=${repoSlug} --ref=${ref} --commit=${env.GIT_COMMIT}
+
+                                echo "REF: ${ref}"
+                                """.trim()
+                            }
+                        }
+                    }
+                }
+            }
+
+            post {
+                always {
+                    archiveArtifacts artifacts: "${pipelineVars.defaultArtifactsTempDir}/code-analysis-results-go.zip, ${pipelineVars.defaultArtifactsTempDir}/code-analysis-results-js.zip", fingerprint: true, allowEmptyArchive: true
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

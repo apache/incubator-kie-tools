@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
 interface TestScenarioEditorDictionary extends ReferenceDictionary {
   alerts: {
@@ -100,6 +100,30 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
   tab: {
     backgroundTabTitle: string;
     scenarioTabTitle: string;
+  };
+  table: {
+    simulation: { singleEntry: string };
+    background: {};
+    copy: string;
+    cut: string;
+    delete: string;
+    duplicate: string;
+    deleteField: string;
+    deleteInstance: string;
+    expect: string;
+    field: string;
+    given: string;
+    insert: string;
+    insertAbove: string;
+    insertBelow: string;
+    insertLeftField: string;
+    insertRightField: string;
+    insertLeftInstance: string;
+    insertRightInstance: string;
+    instance: string;
+    paste: string;
+    reset: string;
+    selection: string;
   };
 }
 

@@ -36,7 +36,7 @@ beforeEach(async () => {
 
 test(TEST_NAME, async () => {
   const WEB_PAGE =
-    "https://github.com/kiegroup/kie-tools/tree/main/packages/chrome-extension-pack-kogito-kie-editors/e2e-tests/samples";
+    "https://github.com/apache/incubator-kie-tools/tree/main/packages/chrome-extension-pack-kogito-kie-editors/e2e-tests/samples";
   const PROCESS_NAME = "myProcess";
   const FILE_NAME = "test.bpmn";
   const TASK_NODE_NAME = "MyTask";

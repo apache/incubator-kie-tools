@@ -1,0 +1,349 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent {
+        docker {
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            args '--shm-size=2g --privileged --group-add docker'
+        }
+    }
+
+    options {
+        timeout(time: 120, unit: 'MINUTES')
+    }
+
+    parameters {
+        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
+        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
+        CHROME_EXTENSION__routerRelativePath = "incubator-kie-kogito-online/chrome-extension/${params.TAG}"
+        CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
+        CHROME_EXTENSION__onlineEditorUrl = 'https://apache.github.io/incubator-kie-kogito-online'
+        SWF_CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
+        SWF_CHROME_EXTENSION__routerRelativePath = "kogito-online/swf-chrome-extension/${params.TAG}"
+        SWF_CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
+
+        PNPM_FILTER_STRING = '-F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    chromeStoreUtils = load '.ci/jenkins/shared-scripts/chromeStoreUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Checkout kogito-online') {
+            steps {
+                dir('kogito-online') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            'http://github.com/apache/incubator-kie-kogito-online.git',
+                            'gh-pages',
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Upload Chrome Extension for Kogito KIE Editors') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.TAG}.zip",
+                        "chrome_extension_kogito_kie_editors_${params.TAG}.zip",
+                        'application/zip',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Deploy Chrome Extension for KIE Editors to GitHub Pages (kogito-online)') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                dir('kogito-online') {
+                    script {
+                        EDITORS_DIR = "editors/${params.TAG}"
+                        CHROME_EXTENSION_DIR = "chrome-extension/${params.TAG}"
+
+                        sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+
+                        git checkout gh-pages
+
+                        echo "Copy Chrome Extension resources"
+                        rm -rf ${CHROME_EXTENSION_DIR}
+                        mkdir -p ${CHROME_EXTENSION_DIR}
+                        cp -r ${WORKSPACE}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{fonts,*-envelope.*} ${CHROME_EXTENSION_DIR}
+                        ln -s ../../${EDITORS_DIR}/bpmn ${CHROME_EXTENSION_DIR}/bpmn
+                        ln -s ../../${EDITORS_DIR}/dmn ${CHROME_EXTENSION_DIR}/dmn
+                        ln -s ../../${EDITORS_DIR}/scesim ${CHROME_EXTENSION_DIR}/scesim
+
+                        echo "Commit changes and push"
+                        git add .
+                        git commit -m "Deploy ${params.TAG} (Chrome Extension for Kogito KIE Editors)"
+                        """.trim()
+
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+
+        stage('Upload Chrome Extension for KIE Editors to the Chrome Store') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    env.CHROME_EXTESION_KIE_EDITORS_UPLOAD_STATUS = chromeStoreUtils.uploadExtension(
+                        "${pipelineVars.chromeStoreCredentialsId}",
+                        "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
+                        "kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${params.TAG}.zip",
+                        "${pipelineVars.chromeExtensionIdCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Check Upload - Chrome Extension for KIE Editors') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                sh """#!/bin/bash -el
+                [[ "${env.CHROME_EXTESION_KIE_EDITORS_UPLOAD_STATUS}" == "SUCCESS" ]]"
+                """.trim()
+            }
+        }
+
+        stage('Publish Chrome Extension for KIE Editors for users') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    env.CHROME_EXTESION_KIE_EDITORS_PUBLISH_STATUS = chromeStoreUtils.publishExtension(
+                        "${pipelineVars.chromeStoreCredentialsId}",
+                        "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
+                        "${pipelineVars.chromeExtensionIdCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Check Publish - Chrome Extension for KIE Editors') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                sh """#!/bin/bash -el
+                [[ "${env.CHROME_EXTESION_KIE_EDITORS_PUBLISH_STATUS}" == "OK" ]] || [[ "${env.CHROME_EXTESION_KIE_EDITORS_PUBLISH_STATUS}" == "PUBLISHED_WITH_FRICTION_WARNING" ]]
+                """.trim()
+            }
+        }
+
+        stage('Upload Chrome Extension for Serverless Workflow Editor') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
+                        "chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
+                        'application/zip',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Deploy Chrome Extension for Serverless Workflow Editor to GitHub Pages (kogito-online)') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                dir('kogito-online') {
+                    script {
+                        DEPLOYMENT_DIR = "swf-chrome-extension/${params.TAG}"
+
+                        sh """#!/bin/bash -el
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
+                        
+                        git checkout gh-pages
+
+                        echo "Copy Chrome Extension resources"
+                        rm -rf ${DEPLOYMENT_DIR}
+                        mkdir -p ${DEPLOYMENT_DIR}
+                        cp -r ${WORKSPACE}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,diagram,*-envelope.*,*.bundle.js,*.worker.js} ${DEPLOYMENT_DIR}
+
+                        echo "Commit changes and push"
+                        git add .
+                        git commit -m "Deploy ${params.TAG} (Chrome Extension for Serverless Workflow Editor)"
+                        """.trim()
+
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
+                    }
+                }
+            }
+        }
+
+        stage('Upload Chrome Extension for Serverless Workflow Editor to the Chrome Store') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_UPLOAD_STATUS = chromeStoreUtils.uploadExtension(
+                        "${pipelineVars.chromeStoreCredentialsId}",
+                        "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
+                        "kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${params.TAG}.zip",
+                        "${pipelineVars.swfChromeExtensionIdCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Check Upload - Chrome Extension for Serverless Workflow Editor') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                sh """#!/bin/bash -el
+                [[ "${env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_UPLOAD_STATUS}" == "SUCCESS" ]]
+                """.trim()
+            }
+        }
+
+        stage('Publish Chrome Extension for Serverless Workflow Editor for users') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_PUBLISH_STATUS = chromeStoreUtils.publishExtension(
+                        "${pipelineVars.chromeStoreCredentialsId}",
+                        "${pipelineVars.chromeStoreRefreshTokenCredentialsId}",
+                        "${pipelineVars.swfChromeExtensionIdCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Check Publish - Chrome Extension for Serverless Workflow Editor') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                sh """#!/bin/bash -el
+                [[ "${env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_PUBLISH_STATUS}" == "OK" ]] || [[ "${env.CHROME_EXTESION_SERVERLESS_WORKFLOW_EDITOR_PUBLISH_STATUS}" == "PUBLISHED_WITH_FRICTION_WARNING" ]]
+                """.trim()
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

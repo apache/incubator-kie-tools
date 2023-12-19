@@ -79,6 +79,7 @@ export interface BeeTableProps<R extends object> {
   onRowDeleted?: (args: { rowIndex: number }) => void;
   onColumnAdded?: (args: {
     beforeIndex: number;
+    currentIndex?: number;
     groupType: string | undefined;
     columnsCount: number;
     insertDirection: InsertRowColumnsDirection;

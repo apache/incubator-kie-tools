@@ -55,7 +55,7 @@ pipeline {
         stage('Build Nightly projects') {
             steps {
                 script {
-                    def projectCollection = ["kiegroup/kogito-editors-java", "kiegroup/kie-tools"]
+                    def projectCollection = ["kiegroup/kogito-editors-java", "apache/incubator-kie-tools"]
                     println "Project Collection to build ${projectCollection}"
                     def buildConfigAdditionalVariables = [:]
                     def buildConfigPathFolder = "$WORKSPACE/build_config/kogito/nightly"
@@ -143,7 +143,7 @@ def getBuildConfigMap(def buildConfigPathFolder, def buildConfigAdditionalVariab
 
 def buildProject(String project, Map<String, Object> buildConfig, String defaultGroup = "kiegroup") {
     println "[INFO] Building project ${project}"
-    if ("kiegroup/kie-tools" == project) {
+    if ("apache/incubator-kie-tools" == project) {
         env.CURRENT_KIE_TOOLS_VERSION = env.CURRENT_KIE_TOOLS_VERSION ?: sh(returnStdout: true, script: 'awk -F\'"\' \'/"version": ".+"/{ print $4; exit; }\' package.json')?.trim() + "-redhat-${env.DATE_TIME_SUFFIX}"
         println "kie-tools prod version ${env.CURRENT_KIE_TOOLS_VERSION}"
     }

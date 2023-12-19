@@ -180,6 +180,9 @@ module.exports = class PromisifiedKieSandboxFs {
     }
     await this._activationPromise;
   }
+  async deactivate() {
+    await this._deactivate();
+  }
   async _deactivate() {
     if (this._activationPromise) await this._activationPromise;
 

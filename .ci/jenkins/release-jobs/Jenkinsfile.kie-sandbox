@@ -1,0 +1,196 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent {
+        docker {
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            args '--shm-size=2g --privileged --group-add docker'
+        }
+    }
+
+    options {
+        timeout(time: 180, unit: 'MINUTES')
+    }
+
+    parameters {
+        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
+        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Kie Sandbox Extendend Services Url', name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL')
+        string(description: 'Kie Sandbox Cors Proxy Url', name: 'KIE_SANDBOX_CORS_PROXY_URL')
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        OPENSHIFT_APP_NAME = 'kie-sandbox'
+        OPENSHIFT_PART_OF = 'kie-sandbox-app'
+        OPENSHIFT_NAMESPACE = 'kie-sandbox'
+
+        KIE_SANDBOX__imageRegistry = 'quay.io'
+        KIE_SANDBOX__imageAccount = 'kie-tools'
+        KIE_SANDBOX__imageName = 'kie-sandbox-image'
+        KIE_SANDBOX__imageBuildTags = "latest ${params.TAG}"
+        ONLINE_EDITOR__buildInfo = "${params.TAG}"
+        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_linux_${params.TAG}.tar.gz"
+        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_macos_${params.TAG}.dmg"
+        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_windows_${params.TAG}.exe"
+        ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.TAG}"
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.TAG}"
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.TAG}"
+        ONLINE_EDITOR__gtmId = 'GTM-PQGMKNW'
+
+        DOCKER_CONFIG = "${WORKSPACE}/.docker"
+
+        PNPM_FILTER_STRING = '-F @kie-tools/kie-sandbox-image...'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.setupPnpm()
+                    }
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Push kie-sandbox-image to quay.io') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}",
+                        "${env.KIE_SANDBOX__imageName}",
+                        "${env.KIE_SANDBOX__imageBuildTags}",
+                        "${pipelineVars.quayPushCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Prepare environment variables for OpenShift deployment') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                sh """#!/bin/bash -el
+                echo "KIE_SANDBOX_EXTENDED_SERVICES_URL=${params.KIE_SANDBOX_EXTENDED_SERVICES_URL}" >> deployment.env
+                echo "KIE_SANDBOX_CORS_PROXY_URL=${params.KIE_SANDBOX_CORS_PROXY_URL}" >> deployment.env
+                """.trim()
+            }
+        }
+
+        stage('Deploy kie-sandbox-image to OpenShift') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    openShiftUtils.createOrUpdateApp(
+                        "${env.OPENSHIFT_NAMESPACE}",
+                        "${env.OPENSHIFT_APP_NAME}",
+                        "${params.TAG}",
+                        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}/${env.KIE_SANDBOX__imageName}:${params.TAG}",
+                        "${env.OPENSHIFT_PART_OF}",
+                        'js',
+                        "${pipelineVars.openshiftCredentialsId}",
+                        './deployment.env'
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

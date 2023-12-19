@@ -34,6 +34,7 @@ export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
   onColumnAdded?: (args: {
     beforeIndex: number;
+    currentIndex: number;
     groupType: string | undefined;
     columnsCount: number;
     insertDirection: InsertRowColumnsDirection;
@@ -92,6 +93,7 @@ export function BeeTableTh<R extends object>({
         groupType: groupType,
         columnsCount: 1,
         insertDirection: InsertRowColumnsDirection.AboveOrRight,
+        currentIndex: columnIndex,
       });
 
       if (hoverInfo.part === "left") {

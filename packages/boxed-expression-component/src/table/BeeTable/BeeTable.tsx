@@ -538,6 +538,7 @@ export function BeeTableInternal<R extends object>({
   const onColumnAdded2 = useCallback(
     (args: {
       beforeIndex: number;
+      currentIndex: number;
       groupType: string;
       columnsCount: number;
       insertDirection: InsertRowColumnsDirection;

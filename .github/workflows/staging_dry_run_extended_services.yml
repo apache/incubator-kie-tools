@@ -1,4 +1,4 @@
-name: "Staging :: Dry Run"
+name: "Staging :: Dry Run (Extended Services)"
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   dry_run:
-    uses: ./.github/workflows/staging_build.yml
+    uses: ./.github/workflows/staging_build_extended_services.yml
     with:
       dry_run: true
       base_ref: ${{ github.event.pull_request && github.base_ref || github.ref }}
