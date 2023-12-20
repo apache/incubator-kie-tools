@@ -37,7 +37,8 @@ export class VsCodeEquivalentIsomorphicGitFs {
     const contentPath = vscode.Uri.parse(path);
     try {
       console.debug("vscode.workspace.fs.readFile", "path:", contentPath);
-      return vscode.workspace.fs.readFile(contentPath);
+      const uint8Array = await vscode.workspace.fs.readFile(contentPath);
+      return Buffer.from(uint8Array);
     } catch (error) {
       console.debug("ERROR on vscode.workspace.fs.readFile", "error:", error, "path:", contentPath);
     }
