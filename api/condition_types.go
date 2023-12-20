@@ -51,7 +51,9 @@ const (
 	BuildFailedReason               = "BuildFailedReason"
 	WaitingForBuildReason           = "WaitingForBuild"
 	BuildIsRunningReason            = "BuildIsRunning"
-	BuildSkipped                    = "BuildSkipped"
+	BuildSkippedReason              = "BuildSkipped"
+	BuildSuccessfulReason           = "BuildSuccessful"
+	BuildMarkedToRestartReason      = "BuildMarkedToRestart"
 )
 
 // Condition describes the common structure for conditions in our types

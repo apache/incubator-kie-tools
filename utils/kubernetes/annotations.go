@@ -21,6 +21,7 @@ package kubernetes
 
 import (
 	"context"
+	"strconv"
 
 	"k8s.io/klog/v2"
 
@@ -44,4 +45,26 @@ func getWorkflow(namespace string, name string, c client.Client, ctx context.Con
 func GetLastGeneration(namespace string, name string, c client.Client, ctx context.Context) int64 {
 	workflow := getWorkflow(namespace, name, c, ctx)
 	return workflow.Generation
+}
+
+// GetAnnotationAsBool returns the boolean value from the given annotation.
+// If the annotation is not present or is there an error in the ParseBool conversion, returns false.
+func GetAnnotationAsBool(object client.Object, key string) bool {
+	if object.GetAnnotations() != nil {
+		b, err := strconv.ParseBool(object.GetAnnotations()[key])
+		if err != nil {
+			return false
+		}
+		return b
+	}
+	return false
+}
+
+// SetAnnotation Safely set the annotation to the object
+func SetAnnotation(object client.Object, key, value string) {
+	if object.GetAnnotations() != nil {
+		object.GetAnnotations()[key] = value
+	} else {
+		object.SetAnnotations(map[string]string{key: value})
+	}
 }

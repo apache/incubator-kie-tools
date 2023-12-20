@@ -33,9 +33,9 @@ func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
 		WithStatusSubresource(workflow).
 		Build()
 	stateSupport := fakeReconcilerSupport(client)
-	handler := newDeploymentHandler(stateSupport, newObjectEnsurers(stateSupport))
+	handler := newDeploymentReconciler(stateSupport, newObjectEnsurers(stateSupport))
 
-	result, objects, err := handler.handle(context.TODO(), workflow)
+	result, objects, err := handler.reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
@@ -44,7 +44,7 @@ func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
 	expectedImg := "quay.io/apache/my-new-workflow:1.0.0"
 	workflow.Spec.PodTemplate.Container.Image = expectedImg
 	utilruntime.Must(client.Update(context.TODO(), workflow))
-	result, objects, err = handler.handle(context.TODO(), workflow)
+	result, objects, err = handler.reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)

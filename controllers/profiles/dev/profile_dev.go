@@ -21,6 +21,7 @@ package dev
 
 import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
+	"k8s.io/client-go/tools/record"
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -34,17 +35,18 @@ import (
 var _ profiles.ProfileReconciler = &developmentProfile{}
 
 type developmentProfile struct {
-	common.BaseReconciler
+	common.Reconciler
 }
 
 func (d developmentProfile) GetProfile() metadata.ProfileType {
 	return metadata.DevProfile
 }
 
-func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
+func NewProfileReconciler(client client.Client, recorder record.EventRecorder) profiles.ProfileReconciler {
 	support := &common.StateSupport{
-		C:       client,
-		Catalog: discovery.NewServiceCatalog(client),
+		C:        client,
+		Catalog:  discovery.NewServiceCatalog(client),
+		Recorder: recorder,
 	}
 
 	var ensurers *objectEnsurers
@@ -63,7 +65,7 @@ func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
 		&recoverFromFailureState{StateSupport: support})
 
 	profile := &developmentProfile{
-		BaseReconciler: common.NewBaseProfileReconciler(support, stateMachine),
+		Reconciler: common.NewReconciler(support, stateMachine),
 	}
 
 	klog.V(log.I).InfoS("Reconciling in", "profile", profile.GetProfile())

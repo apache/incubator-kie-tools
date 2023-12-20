@@ -22,6 +22,7 @@ package platform
 import (
 	"context"
 
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
@@ -60,24 +61,27 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.Sona
 		klog.V(log.I).InfoS("Maven Timeout set", "timeout", p.Spec.Build.Config.Timeout.Duration)
 	}
 
-	updatePlatform(ctx, c, p)
-
-	return nil
+	return createOrUpdatePlatform(ctx, c, p)
 }
 
-func updatePlatform(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform) {
+func createOrUpdatePlatform(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform) error {
 	config := operatorapi.SonataFlowPlatform{}
-	errGet := c.Get(ctx, ctrl.ObjectKey{Namespace: p.Namespace, Name: p.Name}, &config)
-	if errGet != nil {
-		klog.V(log.E).ErrorS(errGet, "Error reading the Platform")
+	err := c.Get(ctx, ctrl.ObjectKey{Namespace: p.Namespace, Name: p.Name}, &config)
+	if errors.IsNotFound(err) {
+		klog.V(log.D).ErrorS(err, "Platform not found, creating it")
+		return c.Create(ctx, p)
+	} else if err != nil {
+		klog.V(log.E).ErrorS(err, "Error reading the Platform")
+		return err
 	}
+
 	config.Spec = p.Spec
 	config.Status.Cluster = p.Status.Cluster
-
-	updateErr := c.Update(ctx, &config)
-	if updateErr != nil {
-		klog.V(log.E).ErrorS(updateErr, "Error updating the BuildPlatform")
+	err = c.Update(ctx, &config)
+	if err != nil {
+		klog.V(log.E).ErrorS(err, "Error updating the BuildPlatform")
 	}
+	return err
 }
 
 func newDefaultSonataFlowPlatform(namespace string) *operatorapi.SonataFlowPlatform {

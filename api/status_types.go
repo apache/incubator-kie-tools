@@ -283,21 +283,12 @@ func (s *conditionManager) MarkUnknown(t ConditionType, reason, messageFormat st
 
 // MarkFalse sets the status of t and the ready condition to False.
 func (s *conditionManager) MarkFalse(t ConditionType, reason, messageFormat string, messageA ...interface{}) {
-	types := []ConditionType{t}
-	for _, cond := range s.dependents {
-		if cond == t {
-			types = append(types, s.ready)
-		}
-	}
-
-	for _, t := range types {
-		s.setCondition(Condition{
-			Type:    t,
-			Status:  corev1.ConditionFalse,
-			Reason:  reason,
-			Message: fmt.Sprintf(messageFormat, messageA...),
-		})
-	}
+	s.setCondition(Condition{
+		Type:    t,
+		Status:  corev1.ConditionFalse,
+		Reason:  reason,
+		Message: fmt.Sprintf(messageFormat, messageA...),
+	})
 }
 
 // InitializeConditions updates all Conditions in the ConditionSet to Unknown

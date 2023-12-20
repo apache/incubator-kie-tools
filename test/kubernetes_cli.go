@@ -32,11 +32,16 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
+
+func NewFakeRecorder() record.EventRecorder {
+	return record.NewFakeRecorder(10)
+}
 
 // NewSonataFlowClientBuilder creates a new fake.ClientBuilder with the right scheme references
 func NewSonataFlowClientBuilder() *fake.ClientBuilder {
@@ -76,6 +81,13 @@ func MustGetWorkflow(t *testing.T, client ctrl.WithWatch, name types.NamespacedN
 	workflow.Name = name.Name
 	workflow.Namespace = name.Namespace
 	return mustGet(t, client, workflow, workflow).(*operatorapi.SonataFlow)
+}
+
+func MustGetBuild(t *testing.T, client ctrl.WithWatch, name types.NamespacedName) *operatorapi.SonataFlowBuild {
+	build := &operatorapi.SonataFlowBuild{}
+	err := client.Get(context.TODO(), name, build)
+	assert.NoError(t, err)
+	return build
 }
 
 func mustGet(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.SonataFlow, obj ctrl.Object) ctrl.Object {

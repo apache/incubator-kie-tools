@@ -24,17 +24,14 @@ import (
 	"testing"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
-
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
-
-	"github.com/stretchr/testify/assert"
-	appsv1 "k8s.io/api/apps/v1"
-	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
-
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
+	"github.com/stretchr/testify/assert"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 func Test_Reconciler_ProdOps(t *testing.T) {
@@ -47,18 +44,18 @@ func Test_Reconciler_ProdOps(t *testing.T) {
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow).
 		WithStatusSubresource(workflow, &operatorapi.SonataFlowBuild{}).Build()
-	result, err := NewProfileForOpsReconciler(client).Reconcile(context.TODO(), workflow)
+	result, err := NewProfileForOpsReconciler(client, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
 	assert.NotNil(t, result.RequeueAfter)
 	assert.True(t, workflow.Status.GetCondition(api.BuiltConditionType).IsFalse())
-	assert.Equal(t, api.BuildSkipped, workflow.Status.GetCondition(api.BuiltConditionType).Reason)
+	assert.Equal(t, api.BuildSkippedReason, workflow.Status.GetCondition(api.BuiltConditionType).Reason)
 	// We need the deployment controller to tell us that the workflow is ready
 	// Since we don't have it in a mocked env, the result must be ready == false
 	assert.False(t, workflow.Status.IsReady())
 
 	// Reconcile again to run the ddeployment handler
-	result, err = NewProfileForOpsReconciler(client).Reconcile(context.TODO(), workflow)
+	result, err = NewProfileForOpsReconciler(client, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
 	// Let's check for the right creation of the workflow (one CM volume, one container with a custom image)
@@ -86,7 +83,7 @@ func Test_Reconciler_ProdCustomPod(t *testing.T) {
 	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, build, platform).
 		WithStatusSubresource(workflow, build, platform).Build()
-	_, err := NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
+	_, err := NewProfileReconciler(client, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
 	// Let's check for the right creation of the workflow (one CM volume, one container with a custom image)
@@ -107,7 +104,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
 
-	result, err := NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
+	result, err := NewProfileReconciler(client, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
 	assert.NotNil(t, result.RequeueAfter)
@@ -115,7 +112,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.False(t, workflow.Status.IsReady())
 
 	// still building
-	result, err = NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
+	result, err = NewProfileReconciler(client, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.Equal(t, requeueWhileWaitForBuild, result.RequeueAfter)
 	assert.True(t, workflow.Status.IsBuildRunningOrUnknown())
@@ -128,15 +125,15 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.NoError(t, client.Status().Update(context.TODO(), build))
 
 	// last reconciliation cycle waiting for build
-	result, err = NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
+	result, err = NewProfileReconciler(client, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.Equal(t, requeueWhileWaitForBuild, result.RequeueAfter)
 	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.False(t, workflow.Status.IsReady())
-	assert.Equal(t, api.WaitingForBuildReason, workflow.Status.GetTopLevelCondition().Reason)
+	assert.Equal(t, api.WaitingForDeploymentReason, workflow.Status.GetTopLevelCondition().Reason)
 
 	// now we create the objects
-	result, err = NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
+	result, err = NewProfileReconciler(client, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.False(t, workflow.Status.IsReady())
@@ -154,7 +151,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	err = client.Status().Update(context.TODO(), deployment)
 	assert.NoError(t, err)
 
-	result, err = NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
+	result, err = NewProfileReconciler(client, test.NewFakeRecorder()).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.True(t, workflow.Status.IsReady())
@@ -187,24 +184,6 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	assert.NoError(t, err)
 	assert.False(t, workflow.Status.IsReady())
 	assert.Equal(t, api.WaitingForDeploymentReason, workflow.Status.GetTopLevelCondition().Reason)
-
-	// let's mess with the deployment
-	/* TODO the state should be able to enforce: https://issues.redhat.com/browse/KOGITO-8524
-	deployment.Spec.Template.Spec.Containers[0].Ports[0].ContainerPort = 9090
-	err = client.Update(context.TODO(), deployment)
-	assert.NoError(t, err)
-	result, objects, err = handler.Do(context.TODO(), workflow)
-	assert.True(t, result.Requeue)
-	assert.NoError(t, err)
-	assert.NotNil(t, result)
-	assert.Len(t, objects, 2)
-	// the reconciliation state should guarantee our port
-	deployment = &appsv1.Deployment{}
-	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), deployment)
-	assert.NoError(t, err)
-	assert.Equal(t, int32(8080), deployment.Spec.Template.Spec.Containers[0].Ports[0].ContainerPort)
-	*/
-
 }
 
 func Test_GenerationAnnotationCheck(t *testing.T) {
@@ -248,6 +227,7 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 
 func fakeReconcilerSupport(client clientruntime.Client) *common.StateSupport {
 	return &common.StateSupport{
-		C: client,
+		C:        client,
+		Recorder: test.NewFakeRecorder(),
 	}
 }

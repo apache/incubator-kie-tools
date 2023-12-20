@@ -111,3 +111,30 @@ func TestSonataFlowBuildController_WithArgsAndEnv(t *testing.T) {
 	assert.Len(t, containerBuild.Spec.Tasks[0].Kaniko.AdditionalFlags, 1)
 	assert.Len(t, containerBuild.Spec.Tasks[0].Kaniko.Envs, 1)
 }
+
+func TestSonataFlowBuildController_MarkToRestart(t *testing.T) {
+	namespace := t.Name()
+	ksw := test.GetBaseSonataFlow(namespace)
+	ksb := test.GetNewEmptySonataFlowBuild(ksw.Name, namespace)
+	ksb.Annotations = map[string]string{operatorapi.BuildRestartAnnotation: "true"}
+
+	cl := test.NewSonataFlowClientBuilder().
+		WithRuntimeObjects(ksb, ksw).
+		WithRuntimeObjects(test.GetBasePlatformInReadyPhase(namespace)).
+		WithRuntimeObjects(test.GetSonataFlowBuilderConfig(namespace)).
+		WithStatusSubresource(ksb, ksw).
+		Build()
+
+	r := &SonataFlowBuildReconciler{cl, cl.Scheme(), &record.FakeRecorder{}, &rest.Config{}}
+	req := reconcile.Request{
+		NamespacedName: types.NamespacedName{
+			Name:      ksb.Name,
+			Namespace: ksb.Namespace,
+		},
+	}
+
+	_, err := r.Reconcile(context.TODO(), req)
+	assert.NoError(t, err)
+	ksb = test.MustGetBuild(t, cl, types.NamespacedName{Name: ksb.Name, Namespace: namespace})
+	assert.Equal(t, "false", ksb.Annotations[operatorapi.BuildRestartAnnotation])
+}

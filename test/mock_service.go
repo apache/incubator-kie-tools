@@ -22,8 +22,6 @@ package test
 import (
 	"context"
 
-	"k8s.io/klog/v2"
-
 	oappsv1 "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
 	consolev1 "github.com/openshift/api/console/v1"
@@ -35,10 +33,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	clientv1 "sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/fake"
-
-	apiv08 "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 )
 
 type MockPlatformService struct {
@@ -54,10 +48,6 @@ type MockPlatformService struct {
 	GetCachedFunc   func(ctx context.Context, key clientv1.ObjectKey, obj clientv1.Object) error
 	GetSchemeFunc   func() *runtime.Scheme
 	StatusFunc      func() clientv1.StatusWriter
-}
-
-func MockService() *MockPlatformService {
-	return MockServiceWithExtraScheme()
 }
 
 var knownTypes = map[schema.GroupVersion][]runtime.Object{
@@ -104,54 +94,6 @@ var knownTypes = map[schema.GroupVersion][]runtime.Object{
 		&consolev1.ConsoleYAMLSample{},
 		&consolev1.ConsoleYAMLSampleList{},
 	},
-}
-
-func MockServiceWithExtraScheme(objs ...runtime.Object) *MockPlatformService {
-	registerObjs := []runtime.Object{&apiv08.SonataFlow{}, &apiv08.SonataFlowList{}}
-	registerObjs = append(registerObjs, objs...)
-	apiv08.SchemeBuilder.Register(registerObjs...)
-	scheme, _ := apiv08.SchemeBuilder.Build()
-	for gv, types := range knownTypes {
-		for _, t := range types {
-			scheme.AddKnownTypes(gv, t)
-		}
-	}
-	client := fake.NewFakeClientWithScheme(scheme)
-	klog.V(log.D).InfoS("Fake client created", "client", client)
-	return &MockPlatformService{
-		Client: client,
-		scheme: scheme,
-		CreateFunc: func(ctx context.Context, obj clientv1.Object, opts ...clientv1.CreateOption) error {
-			return client.Create(ctx, obj, opts...)
-		},
-		DeleteFunc: func(ctx context.Context, obj clientv1.Object, opts ...clientv1.DeleteOption) error {
-			return client.Delete(ctx, obj, opts...)
-		},
-		GetFunc: func(ctx context.Context, key clientv1.ObjectKey, obj clientv1.Object) error {
-			return client.Get(ctx, key, obj)
-		},
-		ListFunc: func(ctx context.Context, list clientv1.ObjectList, opts ...clientv1.ListOption) error {
-			return client.List(ctx, list, opts...)
-		},
-		UpdateFunc: func(ctx context.Context, obj clientv1.Object, opts ...clientv1.UpdateOption) error {
-			return client.Update(ctx, obj, opts...)
-		},
-		PatchFunc: func(ctx context.Context, obj clientv1.Object, patch clientv1.Patch, opts ...clientv1.PatchOption) error {
-			return client.Patch(ctx, obj, patch, opts...)
-		},
-		DeleteAllOfFunc: func(ctx context.Context, obj clientv1.Object, opts ...clientv1.DeleteAllOfOption) error {
-			return client.DeleteAllOf(ctx, obj, opts...)
-		},
-		GetCachedFunc: func(ctx context.Context, key clientv1.ObjectKey, obj clientv1.Object) error {
-			return client.Get(ctx, key, obj)
-		},
-		GetSchemeFunc: func() *runtime.Scheme {
-			return scheme
-		},
-		StatusFunc: func() clientv1.StatusWriter {
-			return client.Status()
-		},
-	}
 }
 
 func (service *MockPlatformService) Create(ctx context.Context, obj clientv1.Object, opts ...clientv1.CreateOption) error {

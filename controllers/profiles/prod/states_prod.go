@@ -22,6 +22,7 @@ package prod
 import (
 	"context"
 
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -56,6 +57,8 @@ func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFl
 			_, err = h.PerformStatusUpdate(ctx, workflow)
 			return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
 		}
+		// We won't record events here to avoid spamming multiple events to the object, the status should alert the admin
+		// since a namespace without a platform means incorrect configuration.
 		klog.V(log.E).ErrorS(err, "Failed to get active platform")
 		return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
 	}
@@ -66,7 +69,7 @@ func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFl
 	if err != nil {
 		//If we are not able to retrieve or create a Build CR for this Workflow we will mark
 		klog.V(log.E).ErrorS(err, "Failed to retrieve or create a Build CR")
-		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.WaitingForBuildReason,
+		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildFailedReason,
 			"Failed to retrieve or create a Build CR", workflow.Namespace)
 		_, err = h.PerformStatusUpdate(ctx, workflow)
 		return ctrl.Result{}, nil, err
@@ -76,12 +79,17 @@ func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFl
 		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildIsRunningReason, "")
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForBuildReason, "")
 		_, err = h.PerformStatusUpdate(ctx, workflow)
+		h.Recorder.Eventf(workflow, corev1.EventTypeNormal, api.BuildIsRunningReason, "Workflow %s build has started.", workflow.Name)
 	} else {
-		// TODO: not ideal, but we will improve it on https://issues.redhat.com/browse/KOGITO-8792
-		klog.V(log.I).InfoS("Build is in failed state, try to delete the SonataFlowBuild to restart a new build cycle")
+		klog.V(log.I).InfoS("Build is in failed state, you can mark the build to rebuild by setting to 'true' the ", "annotation", operatorapi.BuildRestartAnnotation)
 	}
 
 	return ctrl.Result{RequeueAfter: requeueAfterStartingBuild}, nil, err
+}
+
+func (h *newBuilderState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
+	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
+	return nil
 }
 
 type followBuildStatusState struct {
@@ -89,7 +97,7 @@ type followBuildStatusState struct {
 }
 
 func (h *followBuildStatusState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
-	return workflow.Status.IsBuildRunningOrUnknown()
+	return workflow.Status.IsBuildRunningOrUnknown() || workflow.Status.IsWaitingForBuild()
 }
 
 func (h *followBuildStatusState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
@@ -101,24 +109,32 @@ func (h *followBuildStatusState) Do(ctx context.Context, workflow *operatorapi.S
 		if _, err = h.PerformStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{}, nil, err
 		}
-		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil, nil
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil, err
 	}
 
 	if build.Status.BuildPhase == operatorapi.BuildPhaseSucceeded {
 		klog.V(log.I).InfoS("Workflow build has finished")
+		if workflow.Status.IsReady() {
+			// Rollout our deployment to take the latest changes in the new image.
+			if err := common.DeploymentManager(h.C).RolloutDeployment(ctx, workflow); err != nil {
+				return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil, err
+			}
+			h.Recorder.Eventf(workflow, corev1.EventTypeNormal, api.WaitingForDeploymentReason, "Rolling out workflow %s deployment.", workflow.Name)
+		}
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "Build has finished, rolling out deployment")
 		//If we have finished a build and the workflow is not running, we will start the provisioning phase
 		workflow.Status.Manager().MarkTrue(api.BuiltConditionType)
 		_, err = h.PerformStatusUpdate(ctx, workflow)
+		h.Recorder.Eventf(workflow, corev1.EventTypeNormal, api.BuildSuccessfulReason, "Workflow %s build has been finished successfully.", workflow.Name)
 	} else if build.Status.BuildPhase == operatorapi.BuildPhaseFailed || build.Status.BuildPhase == operatorapi.BuildPhaseError {
-		// TODO: we should handle build failures https://issues.redhat.com/browse/KOGITO-8792
-		// TODO: ideally, we can have a configuration per platform of how many attempts we try to rebuild
-		// TODO: to rebuild, just do buildManager.MarkToRestart. The controller will then try to rebuild the workflow.
 		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildFailedReason,
 			"Workflow %s build failed. Error: %s", workflow.Name, build.Status.Error)
 		_, err = h.PerformStatusUpdate(ctx, workflow)
+		h.Recorder.Eventf(workflow, corev1.EventTypeWarning, api.BuildFailedReason, "Workflow %s build has failed. Error: %s", workflow.Name, build.Status.Error)
 	} else if build.Status.BuildPhase == operatorapi.BuildPhaseRunning && !workflow.Status.IsBuildRunning() {
 		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildIsRunningReason, "")
 		_, err = h.PerformStatusUpdate(ctx, workflow)
+		h.Recorder.Eventf(workflow, corev1.EventTypeNormal, api.BuildIsRunningReason, "Workflow %s build is running.", workflow.Name)
 	}
 
 	if err != nil {
@@ -126,6 +142,11 @@ func (h *followBuildStatusState) Do(ctx context.Context, workflow *operatorapi.S
 	}
 
 	return ctrl.Result{RequeueAfter: requeueWhileWaitForBuild}, nil, nil
+}
+
+func (h *followBuildStatusState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
+	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
+	return nil
 }
 
 type deployWithBuildWorkflowState struct {
@@ -157,18 +178,23 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 	}
 
 	if h.isWorkflowChanged(workflow) { // Let's check that the 2 resWorkflowDef definition are different
-		workflow.Status.Manager().MarkUnknown(api.RunningConditionType, "", "")
 		if err = buildManager.MarkToRestart(build); err != nil {
 			return ctrl.Result{}, nil, err
 		}
-		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildIsRunningReason, "Marked to restart")
+		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildIsRunningReason, "Build marked to restart")
 		workflow.Status.Manager().MarkUnknown(api.RunningConditionType, "", "")
 		_, err = h.PerformStatusUpdate(ctx, workflow)
+		h.Recorder.Eventf(workflow, corev1.EventTypeNormal, api.BuildMarkedToRestartReason, "Workflow %s will start a new build.", workflow.Name)
 		return ctrl.Result{Requeue: false}, nil, err
 	}
 
 	// didn't change, business as usual
-	return newDeploymentHandler(h.StateSupport, h.ensurers).handleWithImage(ctx, workflow, build.Status.ImageTag)
+	return newDeploymentReconciler(h.StateSupport, h.ensurers).reconcileWithBuiltImage(ctx, workflow, build.Status.ImageTag)
+}
+
+func (h *deployWithBuildWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
+	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
+	return nil
 }
 
 // isWorkflowChanged marks the workflow status as unknown to require a new build reconciliation

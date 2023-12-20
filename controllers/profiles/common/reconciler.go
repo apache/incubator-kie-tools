@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
+	"k8s.io/client-go/tools/record"
 
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -36,8 +37,9 @@ import (
 
 // StateSupport is the shared structure with common accessors used throughout the whole reconciliation profiles
 type StateSupport struct {
-	C       client.Client
-	Catalog discovery.ServiceCatalog
+	C        client.Client
+	Catalog  discovery.ServiceCatalog
+	Recorder record.EventRecorder
 }
 
 // PerformStatusUpdate updates the SonataFlow Status conditions
@@ -51,29 +53,23 @@ func (s StateSupport) PerformStatusUpdate(ctx context.Context, workflow *operato
 	return true, err
 }
 
-// PostReconcile function to perform all the other operations required after the reconciliation - placeholder for null pattern usages
-func (s StateSupport) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
-	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
-	return nil
-}
-
-// BaseReconciler is the base structure used by every reconciliation profile.
-// Use NewBaseProfileReconciler to build a new reference.
-type BaseReconciler struct {
+// Reconciler is the base structure used by every reconciliation profile.
+// Use NewReconciler to build a new reference.
+type Reconciler struct {
 	*StateSupport
 	reconciliationStateMachine *ReconciliationStateMachine
 	objects                    []client.Object
 }
 
-func NewBaseProfileReconciler(support *StateSupport, stateMachine *ReconciliationStateMachine) BaseReconciler {
-	return BaseReconciler{
+func NewReconciler(support *StateSupport, stateMachine *ReconciliationStateMachine) Reconciler {
+	return Reconciler{
 		StateSupport:               support,
 		reconciliationStateMachine: stateMachine,
 	}
 }
 
 // Reconcile does the actual reconciliation algorithm based on a set of ReconciliationState
-func (b *BaseReconciler) Reconcile(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
+func (b *Reconciler) Reconcile(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
 	workflow.Status.Manager().InitializeConditions()
 	result, objects, err := b.reconciliationStateMachine.do(ctx, workflow)
 	if err != nil {

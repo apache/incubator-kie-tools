@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
+	"k8s.io/client-go/tools/record"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -34,7 +35,7 @@ import (
 var _ profiles.ProfileReconciler = &prodProfile{}
 
 type prodProfile struct {
-	common.BaseReconciler
+	common.Reconciler
 }
 
 const (
@@ -64,10 +65,11 @@ func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 
 // NewProfileReconciler the default profile builder which includes a build state to run an internal build process
 // to have an immutable workflow image deployed
-func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
+func NewProfileReconciler(client client.Client, recorder record.EventRecorder) profiles.ProfileReconciler {
 	support := &common.StateSupport{
-		C:       client,
-		Catalog: discovery.NewServiceCatalog(client),
+		C:        client,
+		Catalog:  discovery.NewServiceCatalog(client),
+		Recorder: recorder,
 	}
 	// the reconciliation state machine
 	stateMachine := common.NewReconciliationStateMachine(
@@ -76,7 +78,7 @@ func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
 		&deployWithBuildWorkflowState{StateSupport: support, ensurers: newObjectEnsurers(support)},
 	)
 	reconciler := &prodProfile{
-		BaseReconciler: common.NewBaseProfileReconciler(support, stateMachine),
+		Reconciler: common.NewReconciler(support, stateMachine),
 	}
 
 	return reconciler
@@ -84,10 +86,11 @@ func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
 
 // NewProfileForOpsReconciler creates an alternative prod profile that won't require to build the workflow image in order to deploy
 // the workflow application. It assumes that the image has been built somewhere else.
-func NewProfileForOpsReconciler(client client.Client) profiles.ProfileReconciler {
+func NewProfileForOpsReconciler(client client.Client, recorder record.EventRecorder) profiles.ProfileReconciler {
 	support := &common.StateSupport{
-		C:       client,
-		Catalog: discovery.NewServiceCatalog(client),
+		C:        client,
+		Catalog:  discovery.NewServiceCatalog(client),
+		Recorder: recorder,
 	}
 	// the reconciliation state machine
 	stateMachine := common.NewReconciliationStateMachine(
@@ -95,7 +98,7 @@ func NewProfileForOpsReconciler(client client.Client) profiles.ProfileReconciler
 		&followDeployWorkflowState{StateSupport: support, ensurers: newObjectEnsurers(support)},
 	)
 	reconciler := &prodProfile{
-		BaseReconciler: common.NewBaseProfileReconciler(support, stateMachine),
+		Reconciler: common.NewReconciler(support, stateMachine),
 	}
 
 	return reconciler

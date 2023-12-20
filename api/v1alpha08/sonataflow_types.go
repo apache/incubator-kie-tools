@@ -694,7 +694,7 @@ func (s *SonataFlowStatus) Manager() api.ConditionsManager {
 }
 
 func (s *SonataFlowStatus) IsWaitingForPlatform() bool {
-	cond := s.GetCondition(api.RunningConditionType)
+	cond := s.GetCondition(api.BuiltConditionType)
 	return cond.IsFalse() && cond.Reason == api.WaitingForPlatformReason
 }
 

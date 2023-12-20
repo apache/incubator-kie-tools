@@ -22,6 +22,7 @@ package v1alpha08
 import (
 	"encoding/json"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -49,6 +50,9 @@ const (
 	// BuildPhaseError --
 	BuildPhaseError BuildPhase = "Error"
 )
+
+// BuildRestartAnnotation marks a SonataFlowBuild to restart
+const BuildRestartAnnotation = metadata.Domain + "/restartBuild"
 
 // BuildTemplate an abstraction over the actual build process performed by the platform.
 // +k8s:openapi-gen=true

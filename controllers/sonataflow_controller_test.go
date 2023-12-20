@@ -49,7 +49,7 @@ func TestSonataFlowController(t *testing.T) {
 		// Create a fake client to mock API calls.
 		cl := test.NewSonataFlowClientBuilder().WithRuntimeObjects(objs...).WithStatusSubresource(ksw, ksp).Build()
 		// Create a SonataFlowReconciler object with the scheme and fake client.
-		r := &SonataFlowReconciler{Client: cl, Scheme: cl.Scheme()}
+		r := &SonataFlowReconciler{Client: cl, Scheme: cl.Scheme(), Recorder: test.NewFakeRecorder()}
 
 		// Mock request to simulate Reconcile() being called on an event for a
 		// watched resource .

@@ -33,17 +33,22 @@ type ensureBuildSkipped struct {
 func (f *ensureBuildSkipped) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 	return workflow.Status.GetCondition(api.BuiltConditionType).IsUnknown() ||
 		workflow.Status.GetCondition(api.BuiltConditionType).IsTrue() ||
-		workflow.Status.GetCondition(api.BuiltConditionType).Reason != api.BuildSkipped
+		workflow.Status.GetCondition(api.BuiltConditionType).Reason != api.BuildSkippedReason
 }
 
 func (f *ensureBuildSkipped) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	// We skip the build, so let's ensure the status reflect that
-	workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildSkipped, "")
+	workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildSkippedReason, "")
 	if _, err := f.PerformStatusUpdate(ctx, workflow); err != nil {
 		return ctrl.Result{Requeue: false}, nil, err
 	}
 
 	return ctrl.Result{Requeue: true}, nil, nil
+}
+
+func (f *ensureBuildSkipped) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
+	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
+	return nil
 }
 
 type followDeployWorkflowState struct {
@@ -53,9 +58,14 @@ type followDeployWorkflowState struct {
 
 func (f *followDeployWorkflowState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 	// we always reconcile since in this flow we don't mind building anything, just reconcile the deployment state
-	return workflow.Status.GetCondition(api.BuiltConditionType).Reason == api.BuildSkipped
+	return workflow.Status.GetCondition(api.BuiltConditionType).Reason == api.BuildSkippedReason
 }
 
 func (f *followDeployWorkflowState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
-	return newDeploymentHandler(f.StateSupport, f.ensurers).handle(ctx, workflow)
+	return newDeploymentReconciler(f.StateSupport, f.ensurers).reconcile(ctx, workflow)
+}
+
+func (f *followDeployWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
+	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
+	return nil
 }

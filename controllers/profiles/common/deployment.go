@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	appsv1 "k8s.io/api/apps/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -36,18 +37,20 @@ import (
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 )
 
-var _ WorkflowDeploymentHandler = &deploymentHandler{}
+var _ WorkflowDeploymentManager = &deploymentHandler{}
 
-// WorkflowDeploymentHandler interface to handle workflow deployment features.
-type WorkflowDeploymentHandler interface {
+// WorkflowDeploymentManager interface to handle workflow deployment features.
+type WorkflowDeploymentManager interface {
 	// SyncDeploymentStatus updates the workflow status aligned with the deployment counterpart.
 	// For example, if the deployment is in a failed state, it sets the status to
 	// Running `false` and the Message and Reason to human-readable format.
 	SyncDeploymentStatus(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error)
+	// RolloutDeployment rolls out the underlying deployment object for the given workflow.
+	RolloutDeployment(ctx context.Context, workflow *operatorapi.SonataFlow) error
 }
 
-// DeploymentHandler creates a new WorkflowDeploymentHandler implementation based on the current profile.
-func DeploymentHandler(c client.Client) WorkflowDeploymentHandler {
+// DeploymentManager creates a new WorkflowDeploymentManager implementation based on the current profile.
+func DeploymentManager(c client.Client) WorkflowDeploymentManager {
 	return &deploymentHandler{c: c}
 }
 
@@ -55,7 +58,22 @@ type deploymentHandler struct {
 	c client.Client
 }
 
-func (d deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
+func (d *deploymentHandler) RolloutDeployment(ctx context.Context, workflow *operatorapi.SonataFlow) error {
+	deployment := &appsv1.Deployment{}
+	if err := d.c.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
+		// Deployment not found, nothing to do.
+		if errors.IsNotFound(err) {
+			return nil
+		}
+		return err
+	}
+	if err := kubeutil.MarkDeploymentToRollout(deployment); err != nil {
+		return err
+	}
+	return d.c.Update(ctx, deployment)
+}
+
+func (d *deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
 	deployment := &appsv1.Deployment{}
 	if err := d.c.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
 		// we should have the deployment by this time, so even if the error above is not found, we should halt.

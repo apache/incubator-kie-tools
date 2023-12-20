@@ -31,23 +31,23 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 )
 
-type deploymentHandler struct {
+type deploymentReconciler struct {
 	*common.StateSupport
 	ensurers *objectEnsurers
 }
 
-func newDeploymentHandler(stateSupport *common.StateSupport, ensurer *objectEnsurers) *deploymentHandler {
-	return &deploymentHandler{
+func newDeploymentReconciler(stateSupport *common.StateSupport, ensurer *objectEnsurers) *deploymentReconciler {
+	return &deploymentReconciler{
 		StateSupport: stateSupport,
 		ensurers:     ensurer,
 	}
 }
 
-func (d *deploymentHandler) handle(ctx context.Context, workflow *operatorapi.SonataFlow) (reconcile.Result, []client.Object, error) {
-	return d.handleWithImage(ctx, workflow, "")
+func (d *deploymentReconciler) reconcile(ctx context.Context, workflow *operatorapi.SonataFlow) (reconcile.Result, []client.Object, error) {
+	return d.reconcileWithBuiltImage(ctx, workflow, "")
 }
 
-func (d *deploymentHandler) handleWithImage(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
+func (d *deploymentReconciler) reconcileWithBuiltImage(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
 	pl, _ := platform.GetActivePlatform(ctx, d.C, workflow.Namespace)
 	propsCM, _, err := d.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(ctx, d.StateSupport.Catalog, workflow, pl))
 	if err != nil {
@@ -86,7 +86,7 @@ func (d *deploymentHandler) handleWithImage(ctx context.Context, workflow *opera
 	}
 
 	// Follow deployment status
-	result, err := common.DeploymentHandler(d.C).SyncDeploymentStatus(ctx, workflow)
+	result, err := common.DeploymentManager(d.C).SyncDeploymentStatus(ctx, workflow)
 	if err != nil {
 		return reconcile.Result{Requeue: false}, nil, err
 	}
@@ -97,7 +97,7 @@ func (d *deploymentHandler) handleWithImage(ctx context.Context, workflow *opera
 	return result, objs, nil
 }
 
-func (d *deploymentHandler) getDeploymentMutateVisitors(
+func (d *deploymentReconciler) getDeploymentMutateVisitors(
 	workflow *operatorapi.SonataFlow,
 	image string,
 	configMap *v1.ConfigMap) []common.MutateVisitor {

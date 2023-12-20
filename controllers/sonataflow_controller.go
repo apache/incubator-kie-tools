@@ -95,7 +95,7 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return reconcile.Result{}, nil
 	}
 
-	return profiles.NewReconciler(r.Client, workflow).Reconcile(ctx, workflow)
+	return profiles.NewReconciler(r.Client, r.Recorder, workflow).Reconcile(ctx, workflow)
 }
 
 func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.SonataFlowPlatform) []reconcile.Request {
@@ -135,7 +135,6 @@ func buildEnqueueRequestsFromMapFunc(c client.Client, b *operatorapi.SonataFlowB
 	var requests []reconcile.Request
 
 	if b.Status.BuildPhase == operatorapi.BuildPhaseSucceeded {
-
 		// Fetch the Workflow instance
 		workflow := &operatorapi.SonataFlow{}
 		namespacedName := types.NamespacedName{

@@ -89,6 +89,9 @@ func (c *containerBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 		return err
 	}
 	build.Status.BuildPhase = operatorapi.BuildPhase(containerBuilder.Status.Phase)
+	if len(build.Status.BuildPhase) == 0 {
+		build.Status.BuildPhase = operatorapi.BuildPhaseInitialization
+	}
 	build.Status.Error = containerBuilder.Status.Error
 	return nil
 }
