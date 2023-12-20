@@ -117,7 +117,7 @@ export const en: TestScenarioEditorI18n = {
     settingsTooltip: "Setting: Properties of this Test Scenario asset",
   },
   tab: {
-    backgroundTabTitle: "Common Given",
+    backgroundTabTitle: "Background",
     backgroundTabInfo: "For GIVEN data shared with the multiple test scenarios, you can define them only once here.",
     scenarioTabTitle: "Test Scenario",
     scenarioTabInfo:

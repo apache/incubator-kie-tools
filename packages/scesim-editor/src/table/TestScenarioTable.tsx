@@ -668,7 +668,9 @@ function TestScenarioTable({
             currentFM.factIdentifier.name?.__$$text === instanceName &&
             currentFM.factIdentifier.className?.__$$text === instanceType
           ) {
-            continue;
+            if (i == 0) {
+              newColumnTargetColumn = 0;
+            }
           } else {
             newColumnTargetColumn = i + 1;
             break;
@@ -855,8 +857,7 @@ function TestScenarioTable({
           args.groupType === TestScenarioTableColumnInstanceGroup.EXPECT ||
           args.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
 
-        const factMappings =
-          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
+        const factMappings = retrieveModelDescriptor(prevState.ScenarioSimulationModel).factMappings.FactMapping!;
         const columnIndexToRemove = determineSelectedColumnIndex(factMappings, args.columnIndex + 1, isInstance);
 
         /* Retriving the FactMapping (Column) to be removed). If the user selected a single column, it finds the exact
@@ -885,7 +886,7 @@ function TestScenarioTable({
 
         /* Cloning the FactMappings list (Columns) and and removing the FactMapping (Column) at given index */
         const deepClonedFactMappings = JSON.parse(
-          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping)
+          JSON.stringify(retrieveModelDescriptor(prevState.ScenarioSimulationModel).factMappings.FactMapping)
         );
         deepClonedFactMappings.splice(
           allFactMappingWithIndexesToRemove[0].factMappingIndex,
@@ -895,7 +896,7 @@ function TestScenarioTable({
         /* Cloning the Scenario List (Rows) and finding the Cell(s) to remove accordingly to the factMapping data of 
           the removed columns */
         const deepClonedRowsData = JSON.parse(
-          JSON.stringify(retrieveRowsData(prevState.ScenarioSimulationModel.simulation.scesimData) ?? [])
+          JSON.stringify(retrieveRowsDataFromModel(prevState.ScenarioSimulationModel) ?? [])
         );
         deepClonedRowsData.forEach((scenario: SceSim__ScenarioType) => {
           allFactMappingWithIndexesToRemove.forEach((itemToRemove) => {
@@ -922,11 +923,29 @@ function TestScenarioTable({
             simulation: {
               scesimModelDescriptor: {
                 factMappings: {
-                  FactMapping: deepClonedFactMappings,
+                  FactMapping: isBackground
+                    ? prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping
+                    : deepClonedFactMappings,
                 },
               },
               scesimData: {
-                Scenario: deepClonedRowsData,
+                Scenario: isBackground
+                  ? prevState.ScenarioSimulationModel.simulation.scesimData.Scenario
+                  : deepClonedRowsData,
+              },
+            },
+            background: {
+              scesimModelDescriptor: {
+                factMappings: {
+                  FactMapping: isBackground
+                    ? deepClonedFactMappings
+                    : prevState.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping,
+                },
+              },
+              scesimData: {
+                BackgroundData: isBackground
+                  ? deepClonedRowsData
+                  : prevState.ScenarioSimulationModel.background.scesimData.BackgroundData,
               },
             },
           },
@@ -936,6 +955,7 @@ function TestScenarioTable({
     [
       TestScenarioTableColumnInstanceGroup,
       determineSelectedColumnIndex,
+      isBackground,
       retrieveFactMappingValueIndexByIdentifiers,
       updateTestScenarioModel,
     ]
