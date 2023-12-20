@@ -402,9 +402,13 @@ function TestScenarioTable({
         : true;
 
       const columnCanBeDeleted =
-        columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType && (conditions.columns?.length ?? 0) > 4;
+        columnIndex > 0 &&
+        atLeastTwoColumnsOfTheSameGroupType &&
+        ((isBackground && (conditions.columns?.length ?? 0) > 1) ||
+          (!isBackground && columnIndex > 0 && (conditions.columns?.length ?? 0) > 4));
 
-      const columnOperations = (isInstance ? columnIndex in [0] : columnIndex in [0, 1])
+      const columnsWithNoOperations = isBackground ? [0] : [0, 1];
+      const columnOperations = (isInstance ? columnIndex in [0] : columnIndex in columnsWithNoOperations)
         ? []
         : [
             BeeTableOperation.ColumnInsertLeft,
