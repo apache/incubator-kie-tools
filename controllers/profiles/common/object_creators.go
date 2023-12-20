@@ -28,6 +28,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/properties"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils/openshift"
@@ -39,8 +41,7 @@ import (
 type ObjectCreator func(workflow *operatorapi.SonataFlow) (client.Object, error)
 
 const (
-	DefaultHTTPWorkflowPortInt = 8080
-	defaultHTTPServicePort     = 80
+	defaultHTTPServicePort = 80
 
 	// Quarkus Health Check Probe configuration.
 	// See: https://quarkus.io/guides/smallrye-health#running-the-health-check
@@ -58,7 +59,7 @@ const (
 	healthStartedInitialDelaySeconds = 10
 )
 
-var DefaultHTTPWorkflowPortIntStr = intstr.FromInt(DefaultHTTPWorkflowPortInt)
+var DefaultHTTPWorkflowPortIntStr = intstr.FromInt(constants.DefaultHTTPWorkflowPortInt)
 
 // DeploymentCreator is an objectCreator for a base Kubernetes Deployments for profiles that need to deploy the workflow on a vanilla deployment.
 // It serves as a basis for a basic Quarkus Java application, expected to listen on http 8080.
@@ -108,7 +109,7 @@ func getReplicasOrDefault(workflow *operatorapi.SonataFlow) *int32 {
 
 func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, error) {
 	defaultContainerPort := corev1.ContainerPort{
-		ContainerPort: DefaultHTTPWorkflowPortInt,
+		ContainerPort: DefaultHTTPWorkflowPortIntStr.IntVal,
 		Name:          utils.HttpScheme,
 		Protocol:      corev1.ProtocolTCP,
 	}
@@ -158,7 +159,7 @@ func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, erro
 	portIdx := -1
 	for i := range defaultFlowContainer.Ports {
 		if defaultFlowContainer.Ports[i].Name == utils.HttpScheme ||
-			defaultFlowContainer.Ports[i].ContainerPort == DefaultHTTPWorkflowPortInt {
+			defaultFlowContainer.Ports[i].ContainerPort == DefaultHTTPWorkflowPortIntStr.IntVal {
 			portIdx = i
 			break
 		}
@@ -206,5 +207,9 @@ func OpenShiftRouteCreator(workflow *operatorapi.SonataFlow) (client.Object, err
 
 // WorkflowPropsConfigMapCreator creates a ConfigMap to hold the external application properties
 func WorkflowPropsConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
-	return workflowproj.CreateNewAppPropsConfigMap(workflow, ImmutableApplicationProperties(workflow, nil)), nil
+	props, err := properties.ImmutableApplicationProperties(workflow, nil)
+	if err != nil {
+		return nil, err
+	}
+	return workflowproj.CreateNewAppPropsConfigMap(workflow, props), nil
 }

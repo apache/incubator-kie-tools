@@ -88,7 +88,7 @@ func statusEnricher(ctx context.Context, c client.Client, workflow *operatorapi.
 
 // findNodePortFromPorts returns the first Port in an array of ServicePort
 func findNodePortFromPorts(ports []v1.ServicePort) int {
-	if ports != nil && len(ports) > 0 {
+	if len(ports) > 0 {
 		for _, p := range ports {
 			if p.NodePort != 0 {
 				return int(p.NodePort)

@@ -32,6 +32,7 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/builder"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 )
@@ -100,7 +101,7 @@ func (h *followBuildStatusState) Do(ctx context.Context, workflow *operatorapi.S
 		if _, err = h.PerformStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{}, nil, err
 		}
-		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, nil, nil
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil, nil
 	}
 
 	if build.Status.BuildPhase == operatorapi.BuildPhaseSucceeded {

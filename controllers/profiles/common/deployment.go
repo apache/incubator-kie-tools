@@ -31,6 +31,7 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 )
@@ -59,14 +60,14 @@ func (d deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *o
 	if err := d.c.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
 		// we should have the deployment by this time, so even if the error above is not found, we should halt.
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Couldn't find the workflow deployment")
-		return ctrl.Result{RequeueAfter: RequeueAfterFailure}, err
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, err
 	}
 
 	// Deployment is available, we can return after setting Running = TRUE
 	if kubeutil.IsDeploymentAvailable(deployment) {
 		workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 		klog.V(log.I).InfoS("Workflow is in Running Condition")
-		return ctrl.Result{RequeueAfter: RequeueAfterIsRunning}, nil
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterIsRunning}, nil
 	}
 
 	if kubeutil.IsDeploymentFailed(deployment) {
@@ -75,25 +76,25 @@ func (d deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *o
 		workflow.Status.LastTimeRecoverAttempt = metav1.Now()
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, failedReason)
 		klog.V(log.I).InfoS("Workflow deployment failed", "Reason Message", failedReason)
-		return ctrl.Result{RequeueAfter: RequeueAfterFailure}, nil
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil
 	}
 
 	// Deployment hasn't minimum replicas, let's find out why to give users a meaningful information
 	if kubeutil.IsDeploymentMinimumReplicasUnavailable(deployment) {
 		message, err := kubeutil.DeploymentTroubleshooter(d.c, deployment, operatorapi.DefaultContainerName).ReasonMessage()
 		if err != nil {
-			return ctrl.Result{RequeueAfter: RequeueAfterFailure}, err
+			return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, err
 		}
 		if len(message) > 0 {
 			klog.V(log.I).InfoS("Workflow is not in Running condition duo to a deployment unavailability issue", "reason", message)
 			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, message)
-			return ctrl.Result{RequeueAfter: RequeueAfterFailure}, nil
+			return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil
 		}
 	}
 
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
 	klog.V(log.I).InfoS("Workflow is in WaitingForDeployment Condition")
-	return ctrl.Result{RequeueAfter: RequeueAfterFollowDeployment, Requeue: true}, nil
+	return ctrl.Result{RequeueAfter: constants.RequeueAfterFollowDeployment, Requeue: true}, nil
 }
 
 // GetDeploymentUnavailabilityMessage gets the replica failure reason.

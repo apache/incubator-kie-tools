@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package common
+package constants
 
 import "time"
 
@@ -30,4 +30,6 @@ const (
 	// RequeueRecoverDeploymentErrorInterval interval between recovering from failures
 	RequeueRecoverDeploymentErrorInterval = RecoverDeploymentErrorInterval * time.Minute
 	RecoverDeploymentErrorInterval        = 10
+
+	DefaultHTTPWorkflowPortInt = 8080
 )

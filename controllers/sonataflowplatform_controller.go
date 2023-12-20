@@ -124,9 +124,11 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 
 			target, err = a.Handle(ctx, target)
 			if err != nil {
-				target.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformFailureReason, err.Error())
-				if err := r.Client.Status().Patch(ctx, target, ctrl.MergeFrom(&instance)); err != nil {
-					return reconcile.Result{}, err
+				if target != nil {
+					target.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformFailureReason, err.Error())
+					if err := r.Client.Status().Patch(ctx, target, ctrl.MergeFrom(&instance)); err != nil {
+						return reconcile.Result{}, err
+					}
 				}
 				r.Recorder.Event(&instance, corev1.EventTypeWarning, "Failed", fmt.Sprintf("Failed to update SonataFlowPlaform: %s", err))
 				return reconcile.Result{}, err

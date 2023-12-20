@@ -19,6 +19,9 @@ type ServicesPlatformSpec struct {
 	// Deploys the Data Index service for use by "prod" profile workflows.
 	// +optional
 	DataIndex *ServiceSpec `json:"dataIndex,omitempty"`
+	// Deploys the Job service for use by "prod" profile workflows.
+	// +optional
+	JobService *ServiceSpec `json:"jobService,omitempty"`
 }
 
 // ServiceSpec defines the desired state of a platform service
@@ -51,7 +54,7 @@ type PersistencePostgreSql struct {
 	SecretRef PostgreSqlSecretOptions `json:"secretRef"`
 	// Service reference to postgresql datasource. Mutually exclusive to jdbcUrl.
 	// +optional
-	ServiceRef PostgreSqlServiceOptions `json:"serviceRef,omitempty"`
+	ServiceRef *PostgreSqlServiceOptions `json:"serviceRef,omitempty"`
 	// PostgreSql JDBC URL. Mutually exclusive to serviceRef.
 	// e.g. "jdbc:postgresql://host:port/database?currentSchema=data-index-service"
 	// +optional

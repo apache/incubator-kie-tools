@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package common
+package properties
 
 import (
 	"context"
@@ -27,45 +27,33 @@ import (
 	"strings"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 
 	"github.com/magiconair/properties"
 
 	"k8s.io/klog/v2"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 )
 
 const (
-	ConfigMapWorkflowPropsVolumeName = "workflow-properties"
-	kogitoServiceUrlProperty         = "kogito.service.url"
-	kogitoServiceUrlProtocol         = "http"
-	dataIndexServiceUrlProperty      = "mp.messaging.outgoing.kogito-processinstances-events.url"
-	kafkaSmallRyeHealthProperty      = "quarkus.smallrye-health.check.\"io.quarkus.kafka.client.health.KafkaHealthCheck\".enabled"
-	dataIndexServiceUrlProtocol      = "http"
-
-	DataIndexImageBase = "quay.io/kiegroup/kogito-data-index-"
-	DataIndexName      = "data-index-service"
-
-	PersistenceTypeEphemeral   = "ephemeral"
-	PersistenceTypePostgressql = "postgresql"
-
-	microprofileServiceCatalogPropertyPrefix = "org.kie.kogito.addons.discovery."
-	discoveryLikePropertyPattern             = "^\\${(kubernetes|knative|openshift):(.*)}$"
+	discoveryLikePropertyPattern = "^\\${(kubernetes|knative|openshift):(.*)}$"
 )
 
-var immutableApplicationProperties = "quarkus.http.port=" + DefaultHTTPWorkflowPortIntStr.String() + "\n" +
-	"quarkus.http.host=0.0.0.0\n" +
-	// We disable the Knative health checks to not block the dev pod to run if Knative objects are not available
-	// See: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/eventing/consume-produce-events-with-knative-eventing.html#ref-knative-eventing-add-on-source-configuration
-	"org.kie.kogito.addons.knative.eventing.health-enabled=false\n" +
-	"quarkus.devservices.enabled=false\n" +
-	"quarkus.kogito.devservices.enabled=false\n"
+var (
+	immutableApplicationProperties = fmt.Sprintf("quarkus.http.port=%d\n"+
+		"quarkus.http.host=0.0.0.0\n"+
+		// We disable the Knative health checks to not block the dev pod to run if Knative objects are not available
+		// See: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/eventing/consume-produce-events-with-knative-eventing.html#ref-knative-eventing-add-on-source-configuration
+		"org.kie.kogito.addons.knative.eventing.health-enabled=false\n"+
+		"quarkus.devservices.enabled=false\n"+
+		"quarkus.kogito.devservices.enabled=false\n", constants.DefaultHTTPWorkflowPortInt)
 
-var discoveryLikePropertyExpr = regexp.MustCompile(discoveryLikePropertyPattern)
-
-var _ AppPropertyHandler = &appPropertyHandler{}
+	discoveryLikePropertyExpr                    = regexp.MustCompile(discoveryLikePropertyPattern)
+	_                         AppPropertyHandler = &appPropertyHandler{}
+)
 
 type AppPropertyHandler interface {
 	WithUserProperties(userProperties string) AppPropertyHandler
@@ -79,7 +67,7 @@ type appPropertyHandler struct {
 	catalog                  discovery.ServiceCatalog
 	ctx                      context.Context
 	userProperties           string
-	defaultMutableProperties string
+	defaultMutableProperties *properties.Properties
 	isService                bool
 }
 
@@ -124,7 +112,7 @@ func (a *appPropertyHandler) Build() string {
 		}
 	}
 
-	defaultMutableProps := properties.MustLoadString(a.defaultMutableProperties)
+	defaultMutableProps := a.defaultMutableProperties
 	for _, k := range defaultMutableProps.Keys() {
 		if _, ok := props.Get(k); ok {
 			defaultMutableProps.Delete(k)
@@ -135,6 +123,7 @@ func (a *appPropertyHandler) Build() string {
 	defaultImmutableProps := properties.MustLoadString(immutableApplicationProperties)
 	// finally overwrite with the defaults immutable properties.
 	props.Merge(defaultImmutableProps)
+	props.Sort()
 	return props.String()
 }
 
@@ -143,81 +132,82 @@ func (a *appPropertyHandler) Build() string {
 func (a *appPropertyHandler) withKogitoServiceUrl() AppPropertyHandler {
 	var kogitoServiceUrl string
 	if len(a.workflow.Namespace) > 0 {
-		kogitoServiceUrl = fmt.Sprintf("%s://%s.%s", kogitoServiceUrlProtocol, a.workflow.Name, a.workflow.Namespace)
+		kogitoServiceUrl = fmt.Sprintf("%s://%s.%s", constants.KogitoServiceURLProtocol, a.workflow.Name, a.workflow.Namespace)
 	} else {
-		kogitoServiceUrl = fmt.Sprintf("%s://%s", kogitoServiceUrlProtocol, a.workflow.Name)
+		kogitoServiceUrl = fmt.Sprintf("%s://%s", constants.KogitoServiceURLProtocol, a.workflow.Name)
 	}
-	return a.addDefaultMutableProperty(kogitoServiceUrlProperty, kogitoServiceUrl)
-}
-
-// withDataIndexServiceUrl adds the property dataIndexServiceUrlProperty to the application properties.
-// See Service Discovery https://kubernetes.io/docs/concepts/services-networking/service/#dns
-func (a *appPropertyHandler) withDataIndexServiceUrl() AppPropertyHandler {
-	if profiles.IsProdProfile(a.workflow) && dataIndexEnabled(a.platform) {
-		a.addDefaultMutableProperty(
-			dataIndexServiceUrlProperty,
-			fmt.Sprintf("%s://%s.%s/processes", dataIndexServiceUrlProtocol, GetDataIndexName(a.platform), a.platform.Namespace),
-		)
-	}
-
-	return a
+	return a.addDefaultMutableProperty(constants.KogitoServiceURLProperty, kogitoServiceUrl)
 }
 
 // withKafkaHealthCheckDisabled adds the property kafkaSmallRyeHealthProperty to the application properties.
 // See Service Discovery https://kubernetes.io/docs/concepts/services-networking/service/#dns
 func (a *appPropertyHandler) withKafkaHealthCheckDisabled() AppPropertyHandler {
 	a.addDefaultMutableProperty(
-		kafkaSmallRyeHealthProperty,
+		constants.DataIndexKafkaSmallRyeHealthProperty,
 		"false",
 	)
 	return a
 }
 
 func (a *appPropertyHandler) addDefaultMutableProperty(name string, value string) AppPropertyHandler {
-	a.defaultMutableProperties = a.defaultMutableProperties + fmt.Sprintf("%s=%s\n", name, value)
+	a.defaultMutableProperties.Set(name, value)
 	return a
-}
-
-func dataIndexEnabled(platform *operatorapi.SonataFlowPlatform) bool {
-	return platform != nil && platform.Spec.Services.DataIndex != nil &&
-		platform.Spec.Services.DataIndex.Enabled != nil && *platform.Spec.Services.DataIndex.Enabled
 }
 
 // NewAppPropertyHandler creates the default workflow configurations property handler
 // The set of properties is initialized with the operator provided immutable properties.
 // The set of defaultMutableProperties is initialized with the operator provided properties that the user might override.
-func NewAppPropertyHandler(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) AppPropertyHandler {
+func NewAppPropertyHandler(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (AppPropertyHandler, error) {
 	handler := &appPropertyHandler{
 		workflow: workflow,
 		platform: platform,
 	}
-	handler.withDataIndexServiceUrl()
-	return handler.withKogitoServiceUrl()
+	props := properties.NewProperties()
+	props.Set(constants.KogitoEventsUserTaskEnabled, "false")
+	props.Set(constants.KogitoEventsVariablesEnabled, "false")
+	props.Set(constants.KogitoProcessDefinitionsEnabled, "false")
+	if platform != nil {
+		p, err := services.GenerateDataIndexWorkflowProperties(workflow, platform)
+		if err != nil {
+			return nil, err
+		}
+		props.Merge(p)
+		p, err = services.GenerateJobServiceWorkflowProperties(workflow, platform)
+		if err != nil {
+			return nil, err
+		}
+		props.Merge(p)
+		props.Sort()
+	}
+	handler.defaultMutableProperties = props
+	return handler.withKogitoServiceUrl(), nil
 }
 
 // NewServicePropertyHandler creates the default service configurations property handler
 // The set of properties is initialized with the operator provided immutable properties.
 // The set of defaultMutableProperties is initialized with the operator provided properties that the user might override.
-func NewServiceAppPropertyHandler(platform *operatorapi.SonataFlowPlatform) AppPropertyHandler {
+func NewServiceAppPropertyHandler(platform *operatorapi.SonataFlowPlatform, ps services.Platform) (AppPropertyHandler, error) {
 	handler := &appPropertyHandler{
 		platform:  platform,
 		isService: true,
 	}
-	return handler.withKafkaHealthCheckDisabled()
+	props, err := ps.GenerateServiceProperties()
+	if err != nil {
+		return nil, err
+	}
+	handler.defaultMutableProperties = props
+	return handler, nil
 }
 
 // ImmutableApplicationProperties immutable default application properties that can be used with any workflow based on Quarkus.
 // Alias for NewAppPropertyHandler(workflow).Build()
-func ImmutableApplicationProperties(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) string {
-	return NewAppPropertyHandler(workflow, platform).Build()
-}
+func ImmutableApplicationProperties(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (string, error) {
+	p, err := NewAppPropertyHandler(workflow, platform)
+	if err != nil {
+		return "", err
+	}
+	return p.Build(), nil
 
-func GetDataIndexName(platform *operatorapi.SonataFlowPlatform) string {
-	return platform.Name + "-" + DataIndexName
-}
-
-func GetDataIndexCmName(platform *operatorapi.SonataFlowPlatform) string {
-	return GetDataIndexName(platform) + "-props"
 }
 
 func (a *appPropertyHandler) requireServiceDiscovery() bool {
@@ -272,7 +262,7 @@ func generateDiscoveryProperties(ctx context.Context, catalog discovery.ServiceC
 
 func removeDiscoveryProperties(props *properties.Properties) {
 	for _, k := range props.Keys() {
-		if strings.HasPrefix(k, microprofileServiceCatalogPropertyPrefix) {
+		if strings.HasPrefix(k, constants.MicroprofileServiceCatalogPropertyPrefix) {
 			props.Delete(k)
 		}
 	}
@@ -282,7 +272,7 @@ func generateMicroprofileServiceCatalogProperty(serviceUri string) string {
 	escapedServiceUri := escapeValue(serviceUri, ":")
 	escapedServiceUri = escapeValue(escapedServiceUri, "/")
 	escapedServiceUri = escapeValue(escapedServiceUri, "=")
-	property := microprofileServiceCatalogPropertyPrefix + escapedServiceUri
+	property := constants.MicroprofileServiceCatalogPropertyPrefix + escapedServiceUri
 	return property
 }
 

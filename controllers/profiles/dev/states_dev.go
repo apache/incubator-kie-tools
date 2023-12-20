@@ -36,6 +36,7 @@ import (
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
@@ -83,9 +84,9 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 	if err != nil {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "External Resources ConfigMap not found: %s", err.Error())
 		if _, err = e.PerformStatusUpdate(ctx, workflow); err != nil {
-			return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, err
+			return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
 		}
-		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, nil
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, nil
 	}
 
 	deployment, _, err := e.ensurers.deployment.Ensure(ctx, workflow,
@@ -93,19 +94,19 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 		common.ImageDeploymentMutateVisitor(workflow, devBaseContainerImage),
 		mountDevConfigMapsMutateVisitor(flowDefCM.(*corev1.ConfigMap), propsCM.(*corev1.ConfigMap), externalCM))
 	if err != nil {
-		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, err
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
 	}
 	objs = append(objs, deployment)
 
 	service, _, err := e.ensurers.service.Ensure(ctx, workflow, common.ServiceMutateVisitor(workflow))
 	if err != nil {
-		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, err
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
 	}
 	objs = append(objs, service)
 
 	route, _, err := e.ensurers.network.Ensure(ctx, workflow)
 	if err != nil {
-		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, err
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
 	}
 	objs = append(objs, route)
 
@@ -114,9 +115,9 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 		klog.V(log.I).InfoS("Workflow is in WaitingForDeployment Condition")
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
 		if _, err = e.PerformStatusUpdate(ctx, workflow); err != nil {
-			return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, err
+			return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
 		}
-		return ctrl.Result{RequeueAfter: common.RequeueAfterIsRunning}, objs, nil
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterIsRunning}, objs, nil
 	}
 
 	// Is the deployment still available?
@@ -127,11 +128,11 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 			api.DeploymentUnavailableReason,
 			common.GetDeploymentUnavailabilityMessage(convertedDeployment))
 		if _, err = e.PerformStatusUpdate(ctx, workflow); err != nil {
-			return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, err
+			return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
 		}
 	}
 
-	return ctrl.Result{RequeueAfter: common.RequeueAfterIsRunning}, objs, nil
+	return ctrl.Result{RequeueAfter: constants.RequeueAfterIsRunning}, objs, nil
 }
 
 type followWorkflowDeploymentState struct {
@@ -146,11 +147,11 @@ func (f *followWorkflowDeploymentState) CanReconcile(workflow *operatorapi.Sonat
 func (f *followWorkflowDeploymentState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	result, err := common.DeploymentHandler(f.C).SyncDeploymentStatus(ctx, workflow)
 	if err != nil {
-		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, nil, err
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil, err
 	}
 
 	if _, err := f.PerformStatusUpdate(ctx, workflow); err != nil {
-		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, nil, err
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil, err
 	}
 
 	return result, nil, nil
@@ -193,7 +194,7 @@ func (r *recoverFromFailureState) Do(ctx context.Context, workflow *operatorapi.
 			if _, updateErr := r.PerformStatusUpdate(ctx, workflow); updateErr != nil {
 				return ctrl.Result{Requeue: false}, nil, updateErr
 			}
-			return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, nil, nil
+			return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil, nil
 		}
 		return ctrl.Result{Requeue: false}, nil, err
 	}
@@ -205,16 +206,16 @@ func (r *recoverFromFailureState) Do(ctx context.Context, workflow *operatorapi.
 		if _, updateErr := r.PerformStatusUpdate(ctx, workflow); updateErr != nil {
 			return ctrl.Result{Requeue: false}, nil, updateErr
 		}
-		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, nil, nil
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil, nil
 	}
 
-	if workflow.Status.RecoverFailureAttempts >= common.RecoverDeploymentErrorRetries {
+	if workflow.Status.RecoverFailureAttempts >= constants.RecoverDeploymentErrorRetries {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.RedeploymentExhaustedReason,
 			"Can't recover workflow from failure after maximum attempts: %d", workflow.Status.RecoverFailureAttempts)
 		if _, updateErr := r.PerformStatusUpdate(ctx, workflow); updateErr != nil {
 			return ctrl.Result{}, nil, updateErr
 		}
-		return ctrl.Result{RequeueAfter: common.RequeueRecoverDeploymentErrorInterval}, nil, nil
+		return ctrl.Result{RequeueAfter: constants.RequeueRecoverDeploymentErrorInterval}, nil, nil
 	}
 
 	// TODO: we can improve deployment failures https://issues.redhat.com/browse/KOGITO-8812
@@ -222,7 +223,7 @@ func (r *recoverFromFailureState) Do(ctx context.Context, workflow *operatorapi.
 	// Guard to avoid consecutive reconciliations to mess with the recover interval
 	if !workflow.Status.LastTimeRecoverAttempt.IsZero() &&
 		metav1.Now().Sub(workflow.Status.LastTimeRecoverAttempt.Time).Minutes() > 10 {
-		return ctrl.Result{RequeueAfter: time.Minute * common.RecoverDeploymentErrorInterval}, nil, nil
+		return ctrl.Result{RequeueAfter: time.Minute * constants.RecoverDeploymentErrorInterval}, nil, nil
 	}
 
 	// let's try rolling out the deployment
@@ -236,7 +237,7 @@ func (r *recoverFromFailureState) Do(ctx context.Context, workflow *operatorapi.
 
 	if retryErr != nil {
 		klog.V(log.E).ErrorS(retryErr, "Error during Deployment rollout")
-		return ctrl.Result{RequeueAfter: common.RequeueRecoverDeploymentErrorInterval}, nil, nil
+		return ctrl.Result{RequeueAfter: constants.RequeueRecoverDeploymentErrorInterval}, nil, nil
 	}
 
 	workflow.Status.RecoverFailureAttempts += 1
@@ -244,5 +245,5 @@ func (r *recoverFromFailureState) Do(ctx context.Context, workflow *operatorapi.
 	if _, err := r.PerformStatusUpdate(ctx, workflow); err != nil {
 		return ctrl.Result{Requeue: false}, nil, err
 	}
-	return ctrl.Result{RequeueAfter: common.RequeueRecoverDeploymentErrorInterval}, nil, nil
+	return ctrl.Result{RequeueAfter: constants.RequeueRecoverDeploymentErrorInterval}, nil, nil
 }

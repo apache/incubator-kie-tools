@@ -30,6 +30,7 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 )
@@ -77,9 +78,9 @@ func mountProdConfigMapsMutateVisitor(propsCM *v1.ConfigMap) common.MutateVisito
 			}
 
 			kubeutil.AddOrReplaceVolume(&deployment.Spec.Template.Spec,
-				kubeutil.VolumeConfigMap(common.ConfigMapWorkflowPropsVolumeName, propsCM.Name, v1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}))
+				kubeutil.VolumeConfigMap(constants.ConfigMapWorkflowPropsVolumeName, propsCM.Name, v1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}))
 			kubeutil.AddOrReplaceVolumeMount(idx, &deployment.Spec.Template.Spec,
-				kubeutil.VolumeMount(common.ConfigMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
+				kubeutil.VolumeMount(constants.ConfigMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
 
 			return nil
 		}

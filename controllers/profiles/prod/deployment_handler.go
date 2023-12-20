@@ -27,6 +27,7 @@ import (
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 )
 
@@ -81,7 +82,7 @@ func (d *deploymentHandler) handleWithImage(ctx context.Context, workflow *opera
 		if _, err := d.PerformStatusUpdate(ctx, workflow); err != nil {
 			return reconcile.Result{Requeue: false}, nil, err
 		}
-		return reconcile.Result{RequeueAfter: common.RequeueAfterFollowDeployment, Requeue: true}, objs, nil
+		return reconcile.Result{RequeueAfter: constants.RequeueAfterFollowDeployment, Requeue: true}, objs, nil
 	}
 
 	// Follow deployment status

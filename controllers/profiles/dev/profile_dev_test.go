@@ -25,11 +25,12 @@ import (
 	"testing"
 
 	corev1 "k8s.io/api/core/v1"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 
@@ -40,7 +41,7 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 
 	"github.com/stretchr/testify/assert"
-	v1 "k8s.io/api/core/v1"
+
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
@@ -141,7 +142,7 @@ func Test_newDevProfile(t *testing.T) {
 	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
 	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
 
-	propCM := &v1.ConfigMap{}
+	propCM := &corev1.ConfigMap{}
 	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowPropertiesConfigMapName(workflow)}, propCM)
 	assert.NotEmpty(t, propCM.Data[workflowproj.ApplicationPropertiesFileName])
 	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
@@ -149,7 +150,7 @@ func Test_newDevProfile(t *testing.T) {
 	assert.Contains(t, propCM.Data[workflowproj.ApplicationPropertiesFileName], "quarkus.http.port")
 
 	service := test.MustGetService(t, client, workflow)
-	assert.Equal(t, int32(common.DefaultHTTPWorkflowPortInt), service.Spec.Ports[0].TargetPort.IntVal)
+	assert.Equal(t, int32(constants.DefaultHTTPWorkflowPortInt), service.Spec.Ports[0].TargetPort.IntVal)
 
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 	err = client.Status().Update(context.TODO(), workflow)
@@ -167,7 +168,7 @@ func Test_newDevProfile(t *testing.T) {
 
 	// check if the reconciliation ensures the object correctly
 	service = test.MustGetService(t, client, workflow)
-	assert.Equal(t, int32(common.DefaultHTTPWorkflowPortInt), service.Spec.Ports[0].TargetPort.IntVal)
+	assert.Equal(t, int32(constants.DefaultHTTPWorkflowPortInt), service.Spec.Ports[0].TargetPort.IntVal)
 
 	// now with the deployment
 	deployment = test.MustGetDeployment(t, client, workflow)
@@ -175,7 +176,7 @@ func Test_newDevProfile(t *testing.T) {
 	err = client.Update(context.TODO(), deployment)
 	assert.NoError(t, err)
 
-	propCM = &v1.ConfigMap{}
+	propCM = &corev1.ConfigMap{}
 	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowPropertiesConfigMapName(workflow)}, propCM)
 	assert.NotEmpty(t, propCM.Data[workflowproj.ApplicationPropertiesFileName])
 	assert.Contains(t, propCM.Data[workflowproj.ApplicationPropertiesFileName], "quarkus.http.port")
@@ -261,7 +262,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	configmapName := "mycamel-configmap"
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 	workflow.Spec.Resources.ConfigMaps = append(workflow.Spec.Resources.ConfigMaps,
-		operatorapi.ConfigMapWorkflowResource{ConfigMap: v1.LocalObjectReference{Name: configmapName}, WorkflowPath: "routes"})
+		operatorapi.ConfigMapWorkflowResource{ConfigMap: corev1.LocalObjectReference{Name: configmapName}, WorkflowPath: "routes"})
 
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
@@ -319,7 +320,6 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	err = client.Update(context.TODO(), workflow)
 	assert.NoError(t, err)
 	result, err = devReconciler.Reconcile(context.TODO(), workflow)
-	deployment = test.MustGetDeployment(t, client, workflow)
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
 
@@ -336,7 +336,6 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	err = client.Update(context.TODO(), workflow)
 	assert.NoError(t, err)
 	result, err = devReconciler.Reconcile(context.TODO(), workflow)
-	deployment = test.MustGetDeployment(t, client, workflow)
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
 
@@ -374,7 +373,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 }
 
 func Test_VolumeWithCapitalizedPaths(t *testing.T) {
-	configMap := &v1.ConfigMap{}
+	configMap := &corev1.ConfigMap{}
 	test.GetKubernetesResource(test.SonataFlowGreetingsStaticFilesConfig, configMap)
 	configMap.Namespace = t.Name()
 	workflow := test.GetSonataFlow(test.SonataFlowGreetingsWithStaticResourcesCR, t.Name())
@@ -396,7 +395,7 @@ func Test_VolumeWithCapitalizedPaths(t *testing.T) {
 	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 2)
 }
 
-func sortVolumeMounts(container *v1.Container) {
+func sortVolumeMounts(container *corev1.Container) {
 	sort.SliceStable(container.VolumeMounts, func(i, j int) bool {
 		return container.VolumeMounts[i].Name < container.VolumeMounts[j].Name
 	})
