@@ -86,6 +86,9 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { switchExpression } from "../../switchExpression/switchExpression";
 import { GitStatusProps } from "../../workspace/components/GitStatusIndicatorActions";
+import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
+import { QueryParams } from "../../navigation/Routes";
+import { useHistory } from "react-router";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -113,6 +116,9 @@ export function FileSwitcher(props: {
   const workspaces = useWorkspaces();
   const workspaceFileNameRef = useRef<HTMLInputElement>(null);
   const [newFileNameValid, setNewFileNameValid] = useState<boolean>(true);
+  const queryParamNewFile = useQueryParam(QueryParams.NEW_FILE);
+  const queryParams = useQueryParams();
+  const history = useHistory();
 
   const resetWorkspaceFileName = useCallback(() => {
     if (workspaceFileNameRef.current) {
@@ -128,6 +134,9 @@ export function FileSwitcher(props: {
         setNewFileNameValid(true);
         return;
       }
+      history.replace({
+        search: queryParams.without(QueryParams.NEW_FILE).toString(),
+      });
 
       const newRelativePath = join(
         props.workspaceFile.relativeDirPath,
@@ -143,7 +152,7 @@ export function FileSwitcher(props: {
 
       setNewFileNameValid(!hasConflictingFileName && !hasForbiddenCharacters);
     },
-    [props.workspaceFile, workspaces]
+    [history, props.workspaceFile, queryParams, workspaces]
   );
 
   const renameWorkspaceFile = useCallback(
@@ -181,7 +190,9 @@ export function FileSwitcher(props: {
     },
     [newFileNameValid, resetWorkspaceFileName]
   );
-
+  if (workspaceFileNameRef.current && queryParamNewFile) {
+    workspaceFileNameRef.current.select();
+  }
   useEffect(resetWorkspaceFileName, [resetWorkspaceFileName]);
   const [isFilesDropdownOpen, setFilesDropdownOpen] = useState(false);
   const [isPopoverVisible, setPopoverVisible] = useState(false);

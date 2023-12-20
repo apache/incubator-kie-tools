@@ -27,6 +27,7 @@ export enum QueryParams {
   AUTH_SESSION_ID = "authSessionId",
   INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION = "insecurelyDisableTlsCertificateValidation",
   CONFIRM = "confirm",
+  NEW_FILE = "newFile",
 }
 
 export enum PathParams {
@@ -143,6 +144,10 @@ export const routes = {
       | QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION
       | QueryParams.CONFIRM;
   }>(() => `/import`),
+
+  newFile: new Route<{
+    queryParams: QueryParams.NEW_FILE;
+  }>(() => `/new`),
 
   workspaceWithFilePath: new Route<{
     pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;
