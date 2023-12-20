@@ -28,7 +28,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 func NewConvertCommand() *cobra.Command {
@@ -157,45 +156,29 @@ func runConvertProject(cfg CreateQuarkusProjectConfig) (err error) {
 func moveSWFFilesToQuarkusProject(cfg CreateQuarkusProjectConfig, rootFolder string) error {
 	targetFolder := filepath.Join(rootFolder, cfg.ProjectName+"/src/main/resources")
 
-	// ensure target directory exists
 	err := os.MkdirAll(targetFolder, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
-	files, err := os.ReadDir(rootFolder)
+	items, err := os.ReadDir(rootFolder)
 	if err != nil {
 		return err
 	}
 
-	for _, file := range files {
-		// Move *.sw.yaml, *.sw.json, application.properties to target
-		if strings.HasSuffix(file.Name(), ".sw.yaml") || strings.HasSuffix(file.Name(), ".sw.json") || file.Name() == "application.properties" {
-			oldPath := filepath.Join(rootFolder, file.Name())
-			newPath := filepath.Join(targetFolder, file.Name())
-			if err := os.Rename(oldPath, newPath); err != nil {
-				return fmt.Errorf("error moving file %s: %w", oldPath, err)
-			}
+	for _, item := range items {
+		if item.IsDir() && item.Name() == cfg.ProjectName {
+			continue
 		}
 
-		// Move /specs directory to target
-		if file.IsDir() && file.Name() == "specs" {
-			oldPath := filepath.Join(rootFolder, file.Name())
-			newPath := filepath.Join(targetFolder, file.Name())
-			if err := os.Rename(oldPath, newPath); err != nil {
-				return fmt.Errorf("error moving directory %s: %w", oldPath, err)
-			}
-		}
+		srcPath := filepath.Join(rootFolder, item.Name())
+		dstPath := filepath.Join(targetFolder, item.Name())
 
-		// Move /dashboards directory to target
-		if file.IsDir() && file.Name() == metadata.DashboardsDefaultDirName {
-			oldPath := filepath.Join(rootFolder, file.Name())
-			newPath := filepath.Join(targetFolder, file.Name())
-			if err := os.Rename(oldPath, newPath); err != nil {
-				return fmt.Errorf("error moving directory %s: %w", oldPath, err)
-			}
+		if err := os.Rename(srcPath, dstPath); err != nil {
+			return fmt.Errorf("error moving %s: %w", srcPath, err)
 		}
 	}
+
 	return nil
 }
 

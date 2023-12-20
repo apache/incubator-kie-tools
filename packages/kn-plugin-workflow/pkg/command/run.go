@@ -42,15 +42,16 @@ func NewRunCommand() *cobra.Command {
 		Short: "Run a SonataFlow project in development mode",
 		Long: `
 	 Run a SonataFlow project in development mode.
+
 	 By default, it runs over ` + metadata.DevModeImage + ` on Docker.
 	 Alternatively, you can run the same image with Podman.
 		
 		 `,
 		Example: `
-    # Run the local directory
+	# Run the workflow inside the current local directory
 	{{.Name}} run
 
-	 # Run the local directory mapping a different host port to the running container port.
+	 # Run the current local directory mapping a different host port to the running container port.
 	{{.Name}} run --port 8081
 
  	# Disable automatic browser launch of SonataFlow  Dev UI 
