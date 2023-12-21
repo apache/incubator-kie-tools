@@ -62,7 +62,7 @@ export interface BeeTableContextMenuHandlerProps {
   onRowDuplicated?: (args: { rowIndex: number }) => void;
   onRowReset?: (args: { rowIndex: number }) => void;
   onRowDeleted?: (args: { rowIndex: number }) => void;
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnAdded?: (args: { beforeIndex: number; currentIndex: number; groupType: string | undefined }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
 }
 
@@ -306,6 +306,7 @@ export function BeeTableContextMenuHandler({
         case BeeTableOperation.ColumnInsertLeft:
           onColumnAdded?.({
             beforeIndex: columnIndex - 1,
+            currentIndex: columnIndex,
             groupType: column?.groupType,
           });
           console.debug(`Insert column left to ${columnIndex}`);
@@ -313,6 +314,7 @@ export function BeeTableContextMenuHandler({
         case BeeTableOperation.ColumnInsertRight:
           onColumnAdded?.({
             beforeIndex: columnIndex,
+            currentIndex: columnIndex,
             groupType: column?.groupType,
           });
           console.debug(`Insert column right to ${columnIndex}`);
@@ -588,7 +590,7 @@ export function BeeTableContextMenuHandler({
               onClick={(e) => e.stopPropagation()}
               drilldownMenu={createDrillDownMenu(group, operation.type)}
             >
-              {operationLabel(operation.type)}
+              {operation.name ? operation.name : operationLabel(operation.type)}
             </MenuItem>
           ) : (
             <MenuItem
@@ -599,7 +601,7 @@ export function BeeTableContextMenuHandler({
               onClick={() => handleOperation(operation.type)}
               isDisabled={!allowedOperationsForSelection.includes(operation.type)}
             >
-              {operationLabel(operation.type)}
+              {operation.name ? operation.name : operationLabel(operation.type)}
             </MenuItem>
           )
         )}

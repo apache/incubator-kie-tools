@@ -7250,6 +7250,9 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools/boxed-expression-component":
+        specifier: workspace:*
+        version: link:../boxed-expression-component
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
@@ -7262,12 +7265,21 @@ importers:
       "@patternfly/react-styles":
         specifier: ^4.92.6
         version: 4.92.6
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       react:
         specifier: ^17.0.2
         version: 17.0.2
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
+      react-table:
+        specifier: ^7.6.2
+        version: 7.7.0(react@17.0.2)
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -7293,21 +7305,27 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@types/lodash":
+        specifier: ^4.14.168
+        version: 4.14.169
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
       "@types/react-dom":
         specifier: ^17.0.5
         version: 17.0.8
+      "@types/react-table":
+        specifier: ^7.0.25
+        version: 7.7.7
+      "@types/uuid":
+        specifier: ^8.3.0
+        version: 8.3.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.88.2)
-      react-json-view:
-        specifier: ^1.21.3
-        version: 1.21.3(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -11933,25 +11951,6 @@ packages:
       semver: 6.3.1
     dev: true
 
-  /@babel/helper-create-class-features-plugin@7.21.8(@babel/core@7.23.0):
-    resolution:
-      { integrity: sha512-+THiN8MqiH2AczyuZrnrKL6cAxFRRQDKW9h1YkBvbgKmAm6mwiacig1qT73DHIWMGo40GRnsEfN3LA+E6NtmSw== }
-    engines: { node: ">=6.9.0" }
-    peerDependencies:
-      "@babel/core": ^7.0.0
-    dependencies:
-      "@babel/core": 7.23.0
-      "@babel/helper-annotate-as-pure": 7.22.5
-      "@babel/helper-environment-visitor": 7.22.20
-      "@babel/helper-function-name": 7.23.0
-      "@babel/helper-member-expression-to-functions": 7.23.0
-      "@babel/helper-optimise-call-expression": 7.22.5
-      "@babel/helper-replace-supers": 7.22.20(@babel/core@7.23.0)
-      "@babel/helper-skip-transparent-expression-wrappers": 7.22.5
-      "@babel/helper-split-export-declaration": 7.22.6
-      semver: 6.3.1
-    dev: true
-
   /@babel/helper-create-class-features-plugin@7.22.15(@babel/core@7.16.12):
     resolution:
       { integrity: sha512-jKkwA59IXcvSaiK2UN45kKwSC9o+KuoXsBDvHvU/7BecYIp8GQ2UwrVvFgJASUT+hBnwJx6MhvMCuMzwZZ7jlg== }
@@ -13060,7 +13059,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.23.0
-      "@babel/helper-create-class-features-plugin": 7.21.8(@babel/core@7.23.0)
+      "@babel/helper-create-class-features-plugin": 7.22.9(@babel/core@7.23.0)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -15994,7 +15993,7 @@ packages:
       "@babel/core": 7.23.0
       "@babel/helper-module-transforms": 7.23.0(@babel/core@7.23.0)
       "@babel/helper-plugin-utils": 7.22.5
-      "@babel/helper-simple-access": 7.21.5
+      "@babel/helper-simple-access": 7.22.5
       babel-plugin-dynamic-import-node: 2.3.3
     dev: true
 

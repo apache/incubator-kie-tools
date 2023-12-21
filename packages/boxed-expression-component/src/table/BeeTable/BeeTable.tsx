@@ -536,7 +536,7 @@ export function BeeTableInternal<R extends object>({
   );
 
   const onColumnAdded2 = useCallback(
-    (args: { beforeIndex: number; groupType: string }) => {
+    (args: { beforeIndex: number; currentIndex: number; groupType: string }) => {
       if (onColumnAdded) {
         onColumnAdded(args);
         adaptSelection({
