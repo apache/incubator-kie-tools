@@ -23,8 +23,7 @@ import (
 	"context"
 	"fmt"
 
-	"regexp"
-	"strings"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
@@ -38,10 +37,6 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 )
 
-const (
-	discoveryLikePropertyPattern = "^\\${(kubernetes|knative|openshift):(.*)}$"
-)
-
 var (
 	immutableApplicationProperties = fmt.Sprintf("quarkus.http.port=%d\n"+
 		"quarkus.http.host=0.0.0.0\n"+
@@ -50,9 +45,7 @@ var (
 		"org.kie.kogito.addons.knative.eventing.health-enabled=false\n"+
 		"quarkus.devservices.enabled=false\n"+
 		"quarkus.kogito.devservices.enabled=false\n", constants.DefaultHTTPWorkflowPortInt)
-
-	discoveryLikePropertyExpr                    = regexp.MustCompile(discoveryLikePropertyPattern)
-	_                         AppPropertyHandler = &appPropertyHandler{}
+	_ AppPropertyHandler = &appPropertyHandler{}
 )
 
 type AppPropertyHandler interface {
@@ -68,7 +61,6 @@ type appPropertyHandler struct {
 	ctx                      context.Context
 	userProperties           string
 	defaultMutableProperties *properties.Properties
-	isService                bool
 }
 
 func (a *appPropertyHandler) WithUserProperties(properties string) AppPropertyHandler {
@@ -91,12 +83,7 @@ func (a *appPropertyHandler) Build() string {
 		props, propErr = properties.LoadString(a.userProperties)
 	}
 	if propErr != nil {
-		// can't load user's properties, ignore it
-		if a.isService && a.platform != nil {
-			klog.V(log.D).InfoS("Can't load user's property", "platform", a.platform.Name, "namespace", a.platform.Namespace, "properties", a.userProperties)
-		} else {
-			klog.V(log.D).InfoS("Can't load user's property", "workflow", a.workflow.Name, "namespace", a.workflow.Namespace, "properties", a.userProperties)
-		}
+		klog.V(log.D).InfoS("Can't load user's property", "workflow", a.workflow.Name, "namespace", a.workflow.Namespace, "properties", a.userProperties)
 		props = properties.NewProperties()
 	}
 	// Disable expansions since it's not our responsibility
@@ -111,19 +98,12 @@ func (a *appPropertyHandler) Build() string {
 			props.Merge(discoveryProperties)
 		}
 	}
+	props = utils.NewApplicationPropertiesBuilder().
+		WithInitialProperties(props).
+		WithImmutableProperties(properties.MustLoadString(immutableApplicationProperties)).
+		WithDefaultMutableProperties(a.defaultMutableProperties).
+		Build()
 
-	defaultMutableProps := a.defaultMutableProperties
-	for _, k := range defaultMutableProps.Keys() {
-		if _, ok := props.Get(k); ok {
-			defaultMutableProps.Delete(k)
-		}
-	}
-	// overwrite with the default mutable properties provided by the operator that are not set by the user.
-	props.Merge(defaultMutableProps)
-	defaultImmutableProps := properties.MustLoadString(immutableApplicationProperties)
-	// finally overwrite with the defaults immutable properties.
-	props.Merge(defaultImmutableProps)
-	props.Sort()
 	return props.String()
 }
 
@@ -154,9 +134,15 @@ func (a *appPropertyHandler) addDefaultMutableProperty(name string, value string
 	return a
 }
 
-// NewAppPropertyHandler creates the default workflow configurations property handler
-// The set of properties is initialized with the operator provided immutable properties.
-// The set of defaultMutableProperties is initialized with the operator provided properties that the user might override.
+// NewAppPropertyHandler creates a property handler for a given workflow to execute in the provided platform.
+// This handler is intended to build the application properties required by the workflow to execute properly, note that
+// the produced properties might vary depending on the platfom, for example, if the job service managed by the platform
+// a particular set of properties will be added, etc.
+// By default, the following properties are incorporated:
+// The set of immutable properties provided by the operator. (user can never change)
+// The set of defaultMutableProperties that are provided by the operator, and that the user might overwrite if it changes
+// the workflow ConfigMap. This set includes for example the required properties to connect with the data index and the
+// job service when any of these services are managed by the platform.
 func NewAppPropertyHandler(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (AppPropertyHandler, error) {
 	handler := &appPropertyHandler{
 		workflow: workflow,
@@ -183,22 +169,6 @@ func NewAppPropertyHandler(workflow *operatorapi.SonataFlow, platform *operatora
 	return handler.withKogitoServiceUrl(), nil
 }
 
-// NewServicePropertyHandler creates the default service configurations property handler
-// The set of properties is initialized with the operator provided immutable properties.
-// The set of defaultMutableProperties is initialized with the operator provided properties that the user might override.
-func NewServiceAppPropertyHandler(platform *operatorapi.SonataFlowPlatform, ps services.Platform) (AppPropertyHandler, error) {
-	handler := &appPropertyHandler{
-		platform:  platform,
-		isService: true,
-	}
-	props, err := ps.GenerateServiceProperties()
-	if err != nil {
-		return nil, err
-	}
-	handler.defaultMutableProperties = props
-	return handler, nil
-}
-
 // ImmutableApplicationProperties immutable default application properties that can be used with any workflow based on Quarkus.
 // Alias for NewAppPropertyHandler(workflow).Build()
 func ImmutableApplicationProperties(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (string, error) {
@@ -212,70 +182,4 @@ func ImmutableApplicationProperties(workflow *operatorapi.SonataFlow, platform *
 
 func (a *appPropertyHandler) requireServiceDiscovery() bool {
 	return a.ctx != nil && a.catalog != nil
-}
-
-// generateDiscoveryProperties Given a user configured properties set, generates the MicroProfileConfigServiceCatalog
-// required properties to resolve the corresponding service addresses base on these properties.
-// e.g.
-// Given a user configured property like this:
-//
-//	quarkus.rest-client.acme_financial_service_yml.url=${kubernetes:services.v1/usecase1/financial-service?port=http-port}
-//
-// generates the following property:
-//
-//	org.kie.kogito.addons.discovery.kubernetes\:services.v1\/usecase1\/financial-service?port\=http-port=http://10.5.9.1:8080
-//
-// where http://10.5.9.1:8080 is the corresponding k8s cloud address for the service financial-service in the namespace usecase1.
-func generateDiscoveryProperties(ctx context.Context, catalog discovery.ServiceCatalog, props *properties.Properties,
-	workflow *operatorapi.SonataFlow) *properties.Properties {
-	klog.V(log.I).Infof("Generating service discovery properties for workflow: %s, and namespace: %s.", workflow.Name, workflow.Namespace)
-	result := properties.NewProperties()
-	props.DisableExpansion = true
-	for _, k := range props.Keys() {
-		value, _ := props.Get(k)
-		klog.V(log.I).Infof("Scanning property %s=%s for service discovery configuration.", k, value)
-		if !discoveryLikePropertyExpr.MatchString(value) {
-			klog.V(log.I).Infof("Skipping property %s=%s since it does not look like a service discovery configuration.", k, value)
-		} else {
-			klog.V(log.I).Infof("Property %s=%s looks like a service discovery configuration.", k, value)
-			plainUri := value[2 : len(value)-1]
-			if uri, err := discovery.ParseUri(plainUri); err != nil {
-				klog.V(log.I).Infof("Property %s=%s not correspond to a valid service discovery configuration, it will be excluded from service discovery.", k, value)
-			} else {
-				if len(uri.Namespace) == 0 {
-					klog.V(log.I).Infof("Current service discovery configuration has no configured namespace, workflow namespace: %s will be used instead.", workflow.Namespace)
-					uri.Namespace = workflow.Namespace
-				}
-				if address, err := catalog.Query(ctx, *uri, discovery.KubernetesDNSAddress); err != nil {
-					klog.V(log.E).ErrorS(err, "An error was produced during service address resolution.", "serviceUri", plainUri)
-				} else {
-					klog.V(log.I).Infof("Service: %s was resolved into the following address: %s.", plainUri, address)
-					mpProperty := generateMicroprofileServiceCatalogProperty(plainUri)
-					klog.V(log.I).Infof("Generating microprofile service catalog property %s=%s.", mpProperty, address)
-					result.MustSet(mpProperty, address)
-				}
-			}
-		}
-	}
-	return result
-}
-
-func removeDiscoveryProperties(props *properties.Properties) {
-	for _, k := range props.Keys() {
-		if strings.HasPrefix(k, constants.MicroprofileServiceCatalogPropertyPrefix) {
-			props.Delete(k)
-		}
-	}
-}
-
-func generateMicroprofileServiceCatalogProperty(serviceUri string) string {
-	escapedServiceUri := escapeValue(serviceUri, ":")
-	escapedServiceUri = escapeValue(escapedServiceUri, "/")
-	escapedServiceUri = escapeValue(escapedServiceUri, "=")
-	property := constants.MicroprofileServiceCatalogPropertyPrefix + escapedServiceUri
-	return property
-}
-
-func escapeValue(unescaped string, value string) string {
-	return strings.Replace(unescaped, value, fmt.Sprintf("\\%s", value), -1)
 }

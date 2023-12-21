@@ -37,6 +37,6 @@ func SetIsOpenShift(cfg *rest.Config) {
 	var err error
 	isOpenShift, err = openshift.IsOpenShift(cfg)
 	if err != nil {
-		panic("Impossible to verify if the cluster is OpenShift or not" + err.Error())
+		panic("Impossible to verify if the cluster is OpenShift or not: " + err.Error())
 	}
 }

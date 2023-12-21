@@ -100,13 +100,149 @@ var KubernetesServicesTestValues = map[string]*ResourceUri{
 		WithPort("custom-port-value").Build(),
 }
 
+var KnativeServicesTestValues = map[string]*ResourceUri{
+	"knative:/": nil,
+
+	"knative:my-service": NewResourceUriBuilder(KnativeScheme).
+		Kind("services").
+		Version("v1").
+		Group("serving.knative.dev").
+		Name("my-service").Build(),
+
+	"knative:my-namespace/my-service": NewResourceUriBuilder(KnativeScheme).
+		Kind("services").
+		Version("v1").
+		Group("serving.knative.dev").
+		Namespace("my-namespace").
+		Name("my-service").Build(),
+
+	"knative:services.v1.serving.knative.dev": nil,
+
+	"knative:services.v1.serving.knative.dev/": nil,
+
+	"knative:services.v1.serving.knative.dev/my-service": NewResourceUriBuilder(KnativeScheme).
+		Kind("services").
+		Version("v1").
+		Group("serving.knative.dev").
+		Name("my-service").Build(),
+
+	"knative:services.v1.serving.knative.dev/my-service?": nil,
+
+	"knative:services.v1.serving.knative.dev/my-service?label-a": nil,
+
+	"knative:services.v1.serving.knative.dev/my-service?label-a=": nil,
+
+	"knative:services.v1.serving.knative.dev/my-service?label-a=value-a": NewResourceUriBuilder(KnativeScheme).
+		Kind("services").
+		Version("v1").
+		Group("serving.knative.dev").
+		Name("my-service").
+		WithQueryParam("label-a", "value-a").Build(),
+
+	"knative:services.v1.serving.knative.dev/my-service?label-a=value-a&": nil,
+
+	"knative:services.v1.serving.knative.dev/my-service?label-a=value-a&label-b": nil,
+
+	"knative:services.v1.serving.knative.dev/my-service?label-a=value-a&label-b=": nil,
+
+	"knative:services.v1.serving.knative.dev/my-service?label-a=value-a&label-b=value-b": NewResourceUriBuilder(KnativeScheme).
+		Kind("services").
+		Group("serving.knative.dev").
+		Version("v1").
+		Name("my-service").
+		WithQueryParam("label-a", "value-a").
+		WithQueryParam("label-b", "value-b").Build(),
+
+	"knative:services.v1.serving.knative.dev/my-namespace/": nil,
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service": NewResourceUriBuilder(KnativeScheme).
+		Kind("services").
+		Group("serving.knative.dev").
+		Version("v1").
+		Namespace("my-namespace").
+		Name("my-service").
+		Build(),
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service/": nil,
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service/another": nil,
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service?label-a": nil,
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service?label-a=": nil,
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service?label-a=value-a": NewResourceUriBuilder(KnativeScheme).
+		Kind("services").
+		Version("v1").
+		Group("serving.knative.dev").
+		Namespace("my-namespace").
+		Name("my-service").
+		WithQueryParam("label-a", "value-a").Build(),
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service?label-a=value-a&": nil,
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service?label-a=value-a&label-b": nil,
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service?label-a=value-a&label-b=": nil,
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-service?label-a=value-a&label-b=value-b&port=custom-port-value": NewResourceUriBuilder(KnativeScheme).
+		Kind("services").
+		Version("v1").
+		Group("serving.knative.dev").
+		Namespace("my-namespace").
+		Name("my-service").
+		WithQueryParam("label-a", "value-a").
+		WithQueryParam("label-b", "value-b").
+		WithPort("custom-port-value").Build(),
+}
+
+var KnativeBrokersTestValues = map[string]*ResourceUri{
+	"knative:/": nil,
+
+	"knative:brokers.v1.eventing.knative.dev": nil,
+
+	"knative:brokers.v1.eventing.knative.dev/": nil,
+
+	"knative:brokers.v1.eventing.knative.dev/my-broker": NewResourceUriBuilder(KnativeScheme).
+		Kind("brokers").
+		Version("v1").
+		Group("eventing.knative.dev").
+		Name("my-broker").Build(),
+
+	"knative:brokers.v1.eventing.knative.dev/my-namespace/": nil,
+
+	"knative:brokers.v1.eventing.knative.dev/my-namespace/my-broker": NewResourceUriBuilder(KnativeScheme).
+		Kind("brokers").
+		Group("eventing.knative.dev").
+		Version("v1").
+		Namespace("my-namespace").
+		Name("my-broker").
+		Build(),
+
+	"knative:brokers.v1.eventing.knative.dev/my-namespace/my-broker/": nil,
+
+	"knative:brokers.v1.eventing.knative.dev/my-namespace/my-broker/another": nil,
+}
+
 func TestParseKubernetesServicesURI(t *testing.T) {
 	for k, v := range KubernetesServicesTestValues {
-		doTestParseKubernetesServicesURI(t, k, v)
+		doTestParseURI(t, k, v)
 	}
 }
 
-func doTestParseKubernetesServicesURI(t *testing.T, url string, expectedUri *ResourceUri) {
+func TestParseKnativeServicesURI(t *testing.T) {
+	for k, v := range KnativeServicesTestValues {
+		doTestParseURI(t, k, v)
+	}
+}
+
+func TestParseKnativeBrokersURI(t *testing.T) {
+	for k, v := range KnativeBrokersTestValues {
+		doTestParseURI(t, k, v)
+	}
+}
+
+func doTestParseURI(t *testing.T, url string, expectedUri *ResourceUri) {
 	result, err := ParseUri(url)
 	if expectedUri == nil {
 		if result != nil {

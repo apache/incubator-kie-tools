@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	"k8s.io/client-go/rest"
+
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -52,6 +54,7 @@ const (
 
 	// knative groups
 	knativeServices = "knative:services.v1.serving.knative.dev"
+	knativeBrokers  = "knative:brokers.v1.eventing.knative.dev"
 
 	// openshift groups
 	openshiftRoutes            = "openshift:routes.v1.route.openshift.io"
@@ -84,10 +87,17 @@ type sonataFlowServiceCatalog struct {
 }
 
 // NewServiceCatalog returns a new ServiceCatalog configured to resolve kubernetes, knative, and openshift resource addresses.
-func NewServiceCatalog(cli client.Client) ServiceCatalog {
+func NewServiceCatalog(cli client.Client, knDiscoveryClient *KnDiscoveryClient) ServiceCatalog {
 	return &sonataFlowServiceCatalog{
 		kubernetesCatalog: newK8SServiceCatalog(cli),
-		knativeCatalog:    newKnServiceCatalog(cli),
+		knativeCatalog:    newKnServiceCatalog(knDiscoveryClient),
+	}
+}
+
+func NewServiceCatalogForConfig(cli client.Client, cfg *rest.Config) ServiceCatalog {
+	return &sonataFlowServiceCatalog{
+		kubernetesCatalog: newK8SServiceCatalog(cli),
+		knativeCatalog:    newKnServiceCatalogForConfig(cfg),
 	}
 }
 
@@ -96,7 +106,7 @@ func (c *sonataFlowServiceCatalog) Query(ctx context.Context, uri ResourceUri, o
 	case KubernetesScheme:
 		return c.kubernetesCatalog.Query(ctx, uri, outputFormat)
 	case KnativeScheme:
-		return "", fmt.Errorf("knative service discovery is not yet implemened")
+		return c.knativeCatalog.Query(ctx, uri, outputFormat)
 	case OpenshiftScheme:
 		return "", fmt.Errorf("openshift service discovery is not yet implemented")
 	default:

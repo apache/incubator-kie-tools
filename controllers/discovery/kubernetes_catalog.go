@@ -57,7 +57,7 @@ func (c k8sServiceCatalog) Query(ctx context.Context, uri ResourceUri, outputFor
 	case ingressKind:
 		return c.resolveIngressQuery(ctx, uri)
 	default:
-		return "", fmt.Errorf("resolution of kind: %s is not implemented", uri.GVK.Kind)
+		return "", fmt.Errorf("resolution of kubernetes kind: %s is not implemented", uri.GVK.Kind)
 	}
 }
 

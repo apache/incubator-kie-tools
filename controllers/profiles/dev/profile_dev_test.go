@@ -24,6 +24,8 @@ import (
 	"sort"
 	"testing"
 
+	"k8s.io/client-go/rest"
+
 	corev1 "k8s.io/api/core/v1"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -55,7 +57,7 @@ func Test_OverrideStartupProbe(t *testing.T) {
 
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
-	devReconciler := NewProfileReconciler(client, test.NewFakeRecorder())
+	devReconciler := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder())
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
@@ -82,7 +84,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "")
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
-	reconciler := NewProfileReconciler(client, test.NewFakeRecorder())
+	reconciler := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder())
 
 	// we are in failed state and have no objects
 	result, err := reconciler.Reconcile(context.TODO(), workflow)
@@ -123,7 +125,7 @@ func Test_newDevProfile(t *testing.T) {
 
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
-	devReconciler := NewProfileReconciler(client, test.NewFakeRecorder())
+	devReconciler := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder())
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
@@ -196,7 +198,7 @@ func Test_newDevProfile(t *testing.T) {
 func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
-	devReconciler := NewProfileReconciler(client, test.NewFakeRecorder())
+	devReconciler := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder())
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
@@ -213,7 +215,7 @@ func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
 	platform := test.GetBasePlatformWithDevBaseImageInReadyPhase(workflow.Namespace)
 
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
-	devReconciler := NewProfileReconciler(client, test.NewFakeRecorder())
+	devReconciler := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder())
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
@@ -230,7 +232,7 @@ func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.
 	platform := test.GetBasePlatformWithBaseImageInReadyPhase(workflow.Namespace)
 
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
-	devReconciler := NewProfileReconciler(client, test.NewFakeRecorder())
+	devReconciler := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder())
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
@@ -247,7 +249,7 @@ func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testin
 	platform := test.GetBasePlatformInReadyPhase(workflow.Namespace)
 
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
-	devReconciler := NewProfileReconciler(client, test.NewFakeRecorder())
+	devReconciler := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder())
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
@@ -266,7 +268,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
-	devReconciler := NewProfileReconciler(client, test.NewFakeRecorder())
+	devReconciler := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder())
 
 	camelXmlRouteFileName := "camelroute-xml"
 	xmlRoute := `<route routeConfigurationId="xmlError">
@@ -380,7 +382,7 @@ func Test_VolumeWithCapitalizedPaths(t *testing.T) {
 
 	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, configMap).WithStatusSubresource(workflow, configMap).Build()
 
-	devReconciler := NewProfileReconciler(client, test.NewFakeRecorder())
+	devReconciler := NewProfileReconciler(client, &rest.Config{}, test.NewFakeRecorder())
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)

@@ -540,6 +540,42 @@ spec:
           - subjectaccessreviews
           verbs:
           - create
+        - apiGroups:
+          - apps
+          resources:
+          - statefulset
+          - statefulsets
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - networking.k8s.io
+          resources:
+          - ingress
+          - ingresses
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - serving.knative.dev
+          resources:
+          - service
+          - services
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - eventing.knative.dev
+          resources:
+          - broker
+          - brokers
+          verbs:
+          - get
+          - list
+          - watch
         serviceAccountName: sonataflow-operator-controller-manager
       deployments:
       - label:

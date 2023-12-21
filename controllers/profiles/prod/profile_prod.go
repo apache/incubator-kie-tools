@@ -22,6 +22,8 @@ package prod
 import (
 	"time"
 
+	"k8s.io/client-go/rest"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
 	"k8s.io/client-go/tools/record"
 
@@ -65,10 +67,10 @@ func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 
 // NewProfileReconciler the default profile builder which includes a build state to run an internal build process
 // to have an immutable workflow image deployed
-func NewProfileReconciler(client client.Client, recorder record.EventRecorder) profiles.ProfileReconciler {
+func NewProfileReconciler(client client.Client, cfg *rest.Config, recorder record.EventRecorder) profiles.ProfileReconciler {
 	support := &common.StateSupport{
 		C:        client,
-		Catalog:  discovery.NewServiceCatalog(client),
+		Catalog:  discovery.NewServiceCatalogForConfig(client, cfg),
 		Recorder: recorder,
 	}
 	// the reconciliation state machine
@@ -86,10 +88,10 @@ func NewProfileReconciler(client client.Client, recorder record.EventRecorder) p
 
 // NewProfileForOpsReconciler creates an alternative prod profile that won't require to build the workflow image in order to deploy
 // the workflow application. It assumes that the image has been built somewhere else.
-func NewProfileForOpsReconciler(client client.Client, recorder record.EventRecorder) profiles.ProfileReconciler {
+func NewProfileForOpsReconciler(client client.Client, cfg *rest.Config, recorder record.EventRecorder) profiles.ProfileReconciler {
 	support := &common.StateSupport{
 		C:        client,
-		Catalog:  discovery.NewServiceCatalog(client),
+		Catalog:  discovery.NewServiceCatalogForConfig(client, cfg),
 		Recorder: recorder,
 	}
 	// the reconciliation state machine

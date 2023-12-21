@@ -26294,6 +26294,48 @@ rules:
   - create
 ---
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sonataflow-operator-service-discovery-role
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - statefulset
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingress
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - serving.knative.dev
+  resources:
+  - service
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - eventing.knative.dev
+  resources:
+  - broker
+  - brokers
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: sonataflow-operator-leader-election-rolebinding
@@ -26367,6 +26409,19 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: sonataflow-operator-proxy-role
+subjects:
+- kind: ServiceAccount
+  name: sonataflow-operator-controller-manager
+  namespace: sonataflow-operator-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sonataflow-operator-service-discovery-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: sonataflow-operator-service-discovery-role
 subjects:
 - kind: ServiceAccount
   name: sonataflow-operator-controller-manager
