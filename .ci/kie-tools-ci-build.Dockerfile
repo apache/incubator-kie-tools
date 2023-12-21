@@ -51,7 +51,7 @@ RUN CHROME_VERSION=$(curl https://googlechromelabs.github.io/chrome-for-testing/
 RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
 
 # User setup (non-root)
-RUN groupadd -g 1000 nonrootuser && useradd --create-home -u 910 -g 910 -s /bin/bash nonrootuser && \
+RUN groupadd -g 910 nonrootuser && useradd --create-home -u 910 -g 910 -s /bin/bash nonrootuser && \
     echo "nonrootuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Docker user setup (non-root)

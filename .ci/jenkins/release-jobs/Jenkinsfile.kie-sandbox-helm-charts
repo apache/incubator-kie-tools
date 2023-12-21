@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/thiagoelg/kie-tools-ci-build:v1'
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -63,25 +63,25 @@ pipeline {
             }
         }
 
-        // stage('Clean workspace before build') {
-        //     steps {
-        //         cleanWs(deleteDirs: true, disableDeferredWipeout: true)
-        //     }
-        // }
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
 
-        // stage('Checkout kie-tools') {
-        //     steps {
-        //         dir('kie-tools') {
-        //             script {
-        //                 githubUtils.checkoutRepo(
-        //                     "http://github.com/${pipelineVars.githubRepositorySlug}.git",
-        //                     "${params.BASE_REF}",
-        //                     "${pipelineVars.kieToolsBotGithubCredentialsId}"
-        //                 )
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Checkout kie-tools') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepo(
+                            "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                            "${params.BASE_REF}",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
 
         stage('Setup PNPM') {
             steps {
