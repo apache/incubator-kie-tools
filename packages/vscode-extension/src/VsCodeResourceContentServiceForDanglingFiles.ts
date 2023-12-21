@@ -29,6 +29,7 @@ import {
 
 import * as minimatch from "minimatch";
 import * as vscode from "vscode";
+import * as __path from "path";
 
 /**
  * Implementation of a ResourceContentService using the Node filesystem APIs. This should only be used when the edited
@@ -42,49 +43,59 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
   }
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
-    return new Promise<ResourcesList>((resolve, reject) => {
-      vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.rootFolder)).then(
-        (files) => {
-          const paths = files
-            .filter(([name, depth]) => {
-              let fileName;
-              if (opts?.type === SearchType.TRAVERSAL) {
-                fileName = this.rootFolder + name;
-              } else {
-                fileName = name;
-              }
-              return depth === 1 && minimatch(name, pattern);
-            })
-            .map(([name]) => this.rootFolder + name);
-          resolve(new ResourcesList(pattern, paths));
-        },
-        (_err) => {
-          resolve(new ResourcesList(pattern, []));
-        }
+    try {
+      const files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.rootFolder));
+      return new ResourcesList(
+        pattern,
+        files.flatMap(([relativePath, fileType]) =>
+          fileType === vscode.FileType.File && minimatch(relativePath, pattern) ? relativePath : []
+        )
       );
-    });
+    } catch (e) {
+      return new ResourcesList(pattern, []);
+    }
   }
 
-  public async get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
-    let assetPath = path;
-
-    if (!assetPath.startsWith(this.rootFolder)) {
-      assetPath = this.rootFolder + path;
-    }
-
-    if (opts?.type === ContentType.BINARY) {
-      return new Promise<ResourceContent | undefined>((resolve, reject) => {
-        vscode.workspace.fs.readFile(vscode.Uri.parse(assetPath)).then(
-          (data) => resolve(new ResourceContent(path, Buffer.from(data).toString("base64"), ContentType.BINARY)),
-          (_err) => resolve(new ResourceContent(path, undefined, ContentType.BINARY))
-        );
-      });
-    }
-    return new Promise<ResourceContent | undefined>((resolve, reject) => {
-      vscode.workspace.fs.readFile(vscode.Uri.parse(assetPath)).then(
-        (data) => resolve(new ResourceContent(path, Buffer.from(data).toString(), ContentType.TEXT)),
-        (_err) => resolve(new ResourceContent(path, undefined))
+  public async get(
+    pathRelativeToTheWorkspaceRoot: string,
+    opts?: ResourceContentOptions
+  ): Promise<ResourceContent | undefined> {
+    if (__path.isAbsolute(pathRelativeToTheWorkspaceRoot)) {
+      throw new Error(
+        "VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Can't work with absolute paths. All paths must be relative to folder of the open file."
       );
-    });
+    }
+
+    const absolutePath = __path.join(this.rootFolder, pathRelativeToTheWorkspaceRoot);
+
+    if (__path.resolve(this.rootFolder, pathRelativeToTheWorkspaceRoot) !== absolutePath) {
+      throw new Error(
+        "VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Path relative to the root folder trying to access files outside of it."
+      );
+    }
+
+    try {
+      const content = await vscode.workspace.fs.readFile(vscode.Uri.parse(absolutePath));
+
+      if (opts?.type === ContentType.BINARY) {
+        return new ResourceContent(
+          pathRelativeToTheWorkspaceRoot, // Always return the relative path.
+          Buffer.from(content).toString("base64"),
+          ContentType.BINARY
+        );
+      } else {
+        return new ResourceContent(
+          pathRelativeToTheWorkspaceRoot, // Always return the relative path.
+          Buffer.from(content).toString(),
+          ContentType.TEXT
+        );
+      }
+    } catch (e) {
+      console.error(
+        `VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Error reading file ${pathRelativeToTheWorkspaceRoot}. Returning undefined.`,
+        e
+      );
+      return new ResourceContent(pathRelativeToTheWorkspaceRoot, undefined, opts?.type);
+    }
   }
 }

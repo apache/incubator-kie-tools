@@ -75,7 +75,9 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
       const relativePattern = new RelativePattern(basePath, pattern);
       const files = await vscode.workspace.findFiles(relativePattern);
-      const pathsRelativeToTheWorkspaceRoot = files.map((uri: vscode.Uri) => vscode.workspace.asRelativePath(uri));
+      const pathsRelativeToTheWorkspaceRoot = files.map((uri: vscode.Uri) =>
+        vscode.workspace.asRelativePath(uri, false)
+      );
       return new ResourcesList(pattern, pathsRelativeToTheWorkspaceRoot);
     }
   }

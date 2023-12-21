@@ -464,7 +464,7 @@ export function EditorPage(props: Props) {
                             editorEnvelopeLocator={settingsAwareEditorEnvelopeLocator}
                             channelType={ChannelType.ONLINE_MULTI_FILE}
                             locale={locale}
-                            workingDirBasePath={DEFAULT_WORKING_DIR_BASE_PATH}
+                            workingDirBasePath={""}
                           />
                         )}
                       </EditorPageDockDrawer>

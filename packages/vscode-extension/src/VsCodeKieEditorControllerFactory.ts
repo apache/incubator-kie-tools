@@ -68,7 +68,7 @@ export class VsCodeKieEditorControllerFactory {
     const editorEnvelopeLocator = this.getEditorEnvelopeLocatorForWebview(webviewPanel.webview);
     const resourceContentService = this.createResourceContentService(
       document.document.uri.fsPath,
-      vscode.workspace.asRelativePath(document.document.uri).replace(/\//g, __path.sep)
+      vscode.workspace.asRelativePath(document.document.uri, false).replace(/\//g, __path.sep)
     );
 
     const envelopeMapping = editorEnvelopeLocator.getEnvelopeMapping(document.document.uri.fsPath);
