@@ -1,8 +1,8 @@
 {{/*
-Create a fully qualified cors-proxy name.
+Create a fully qualified sandbox name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "cors_proxy.fullname" -}}
+{{- define "kie_sandbox.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -18,22 +18,22 @@ These can be overriden by the base chart.
 {{- define "labels" -}}
 {{- end -}}
 
-{{- define "cors_proxy.selectorLabels" -}}
+{{- define "kie_sandbox.selectorLabels" -}}
 app.kubernetes.io/component: {{ .Values.name | quote }}
 {{ include "selectorLabels" . }}
 {{- end -}}
 
-{{- define "cors_proxy.labels" -}}
-{{ include "cors_proxy.selectorLabels" . }}
+{{- define "kie_sandbox.labels" -}}
+{{ include "kie_sandbox.selectorLabels" . }}
 {{ include "labels" . }}
 {{- end -}}
 
 {{/*
-Create the name of the service account to use for the cors-proxy component
+Create the name of the service account to use for the sandbox component
 */}}
-{{- define "cors_proxy.serviceAccountName" -}}
+{{- define "kie_sandbox.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "cors_proxy.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "kie_sandbox.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}

@@ -32,11 +32,10 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.account }}/{{ .Values.image.name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- with .Values.env }}
           env:
-          - name: KIE_SANDBOX_EXTENDED_SERVICES_URL
-            value: {{ tpl .Values.extendedServiceUrl . }}
-          - name: KIE_SANDBOX_CORS_PROXY_URL
-            value: {{ tpl .Values.corsProxyUrl . }}
+            {{- tpl (toYaml .) $ | nindent 12 }}
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

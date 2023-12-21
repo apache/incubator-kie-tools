@@ -10,12 +10,22 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
+{{/*
+These can be overriden by the base chart.
+*/}}
+{{- define "selectorLabels" -}}
+{{- end -}}
+{{- define "labels" -}}
+{{- end -}}
+
 {{- define "extended_services.selectorLabels" -}}
 app.kubernetes.io/component: {{ .Values.name | quote }}
+{{ include "selectorLabels" . }}
 {{- end -}}
 
 {{- define "extended_services.labels" -}}
 {{ include "extended_services.selectorLabels" . }}
+{{ include "labels" . }}
 {{- end -}}
 
 {{/*

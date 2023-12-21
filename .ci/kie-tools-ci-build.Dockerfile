@@ -51,7 +51,7 @@ RUN CHROME_VERSION=$(curl https://googlechromelabs.github.io/chrome-for-testing/
 RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && sysctl -p
 
 # User setup (non-root)
-RUN groupadd -g 910 nonrootuser && useradd --create-home -u 910 -g 910 -s /bin/bash nonrootuser && \
+RUN groupadd -g 1000 nonrootuser && useradd --create-home -u 910 -g 910 -s /bin/bash nonrootuser && \
     echo "nonrootuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Docker user setup (non-root)
@@ -100,6 +100,10 @@ RUN wget https://github.com/github/codeql-action/releases/latest/download/codeql
 # Openshift client setup
 RUN wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz -P /tmp && \
     sudo tar -C /usr/bin/ -xvzf /tmp/openshift-client-linux.tar.gz oc && rm /tmp/openshift-client-linux.tar.gz
+
+# Helm CLI setup
+RUN wget https://get.helm.sh/helm-v3.13.3-linux-amd64.tar.gz -P /tmp && \
+    sudo tar -C /usr/bin/ -zxvf /tmp/helm-v3.13.3-linux-amd64.tar.gz linux-amd64/helm --strip-components 1 && rm /tmp/helm-v3.13.3-linux-amd64.tar.gz
 
 # Env vars
 ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"

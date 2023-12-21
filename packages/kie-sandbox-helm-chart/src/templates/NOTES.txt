@@ -58,28 +58,28 @@ In order to get KIE sandbox running you need to run these commands:
 {{- end }}
 {{- end }}
 
-{{- if .Values.ingress.enabled }}
+{{- if .Values.kie_sandbox.ingress.enabled }}
 
 3. KIE Sandbox available at:
-{{- range $host := .Values.ingress.hosts }}
+{{- range $host := .Values.kie_sandbox.ingress.hosts }}
   {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.kie_sandbox.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- else }}
 
 3. Run the following commands in a separate terminal to port-forward Sanxbox component and get the application URL:
-{{- if contains "NodePort" .Values.service.type }}
+{{- if contains "NodePort" .Values.kie_sandbox.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "kie_sandbox.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
+{{- else if contains "LoadBalancer" .Values.kie_sandbox.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "kie_sandbox.fullname" . }}'
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "kie_sandbox.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo http://$SERVICE_IP:{{ .Values.service.port }}
-{{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "name" . }},app.kubernetes.io/component={{ .Values.name }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://$SERVICE_IP:{{ .Values.kie_sandbox.service.port }}
+{{- else if contains "ClusterIP" .Values.kie_sandbox.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "name" . }},app.kubernetes.io/component={{ .Values.kie_sandbox.name }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
   export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
   echo "KIE Sandbox URL http://127.0.0.1:8080"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
@@ -103,7 +103,7 @@ Run the following commands:
   echo "$MINIKUBE_IP {{ $host.host }}" | sudo tee -a /etc/hosts
   {{- end }}
 {{- end }}
-{{- range $host := .Values.ingress.hosts }}
+{{- range $host := .Values.kie_sandbox.ingress.hosts }}
   {{- range .paths }}
   echo "$MINIKUBE_IP {{ $host.host }}" | sudo tee -a /etc/hosts
   {{- end }}
@@ -116,7 +116,7 @@ Run the following commands:
 2. Extended Services available at:
   http{{ if $.Values.extended_services.openshiftRoute.tls }}s{{ end }}://{{ tpl .Values.extended_services.openshiftRoute.host . }}
 3. KIE Sandbox available at:
-  http{{ if $.Values.openshiftRoute.tls }}s{{ end }}://{{ tpl .Values.openshiftRoute.host . }}
+  http{{ if $.Values.kie_sandbox.openshiftRoute.tls }}s{{ end }}://{{ tpl .Values.kie_sandbox.openshiftRoute.host . }}
 
 {{- else }}
 {{- if .Values.cors_proxy.ingress.enabled }}
@@ -135,11 +135,11 @@ Run the following commands:
   {{- end }}
 {{- end }}
 {{- end }}
-{{- if .Values.ingress.enabled }}
+{{- if .Values.kie_sandbox.ingress.enabled }}
 3. KIE Sandbox available at:
-{{- range $host := .Values.ingress.hosts }}
+{{- range $host := .Values.kie_sandbox.ingress.hosts }}
   {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.kie_sandbox.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- end }}

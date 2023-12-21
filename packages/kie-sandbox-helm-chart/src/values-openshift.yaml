@@ -1,9 +1,13 @@
 # KIE Sandbox application
-extendedServiceUrl: "https://extended-services.{{ .Values.global.openshiftRouteDomain }}"
-corsProxyUrl: "https://cors-proxy.{{ .Values.global.openshiftRouteDomain }}"
-openshiftRoute:
-  enabled: true
-  host: kie-sandbox.{{ .Values.global.openshiftRouteDomain }}
+kie_sandbox:
+  env:
+    - name: "KIE_SANDBOX_EXTENDED_SERVICES_URL"
+      value: "https://extended-services.{{ .Values.global.openshiftRouteDomain }}"
+    - name: "KIE_SANDBOX_CORS_PROXY_URL"
+      value: "https://cors-proxy.{{ .Values.global.openshiftRouteDomain }}"
+  openshiftRoute:
+    enabled: true
+    host: kie-sandbox.{{ .Values.global.openshiftRouteDomain }}
 
 # Cors Proxy component
 cors_proxy:
