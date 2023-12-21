@@ -55,22 +55,28 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
     // making this action is less performatic than the git ls-files which will
     // automatically exclude the .gitignore files.
     try {
-      console.debug("Trying to use isomorphic-git to read dir.");
-      const files = await listFiles({ fs: this.vscodeEquivalentFs as any, dir: basePath });
-      console.debug("Success on using isomorphic-git!");
+      console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Trying to use isomorphic-git to read dir.");
+      const filePathsRelativeToTheBasePath = await listFiles({ fs: this.vscodeEquivalentFs as any, dir: basePath });
+      console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Success on using isomorphic-git!");
+
       const minimatch = new Minimatch(pattern);
-      // The regexp is 50x faster than the direct match using glob.
-      const regexp = minimatch.makeRe();
-      const paths = files.filter((file) => regexp.test(file)).map((file) => __path.join(basePath, file));
-      return new ResourcesList(pattern, paths);
+      const regexp = minimatch.makeRe(); // The regexp is ~50x faster than the direct match using glob.
+      const matchingPathsRelativeToTheBasePath = filePathsRelativeToTheBasePath.filter(
+        (p) =>
+          regexp.test(
+            "/" + p // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
+          ) || regexp.test(__path.relative(this.currentAssetFolder, p)) // check on the asset folder for *.{ext} pattern
+      );
+      return new ResourcesList(pattern, matchingPathsRelativeToTheBasePath);
     } catch (error) {
-      console.debug("Failed to use isomorphic-git to read dir. Falling back to vscode API. error: ", error);
+      console.debug(
+        "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Failed to use isomorphic-git to read dir. Falling back to vscode's API.",
+        error
+      );
       const relativePattern = new RelativePattern(basePath, pattern);
       const files = await vscode.workspace.findFiles(relativePattern);
-      const paths = files
-        .map((uri: vscode.Uri) => vscode.workspace.asRelativePath(uri))
-        .map((file) => (opts?.type === SearchType.ASSET_FOLDER ? file : __path.join(basePath, file)));
-      return new ResourcesList(pattern, paths);
+      const pathsRelativeToTheWorkspaceRoot = files.map((uri: vscode.Uri) => vscode.workspace.asRelativePath(uri));
+      return new ResourcesList(pattern, pathsRelativeToTheWorkspaceRoot);
     }
   }
 

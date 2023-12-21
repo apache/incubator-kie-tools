@@ -187,15 +187,12 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
     return list.paths.flatMap((p) =>
       // Ignore thisDmn's file absolutePath
-      p === this.state.absolutePath ? [] : __path.relative(__path.dirname(this.state.absolutePath!), p)
+      this.onRequestToResolvePath(p) === this.state.absolutePath ? [] : p
     );
   };
 
   private onRequestToResolvePath = (relativePath: string) => {
-    return __path.relative(
-      this.props.workingDirBasePath,
-      __path.resolve(__path.dirname(this.state.absolutePath!), relativePath)
-    );
+    return __path.join(this.props.workingDirBasePath, relativePath);
   };
 
   private onRequestExternalModelByPath: DmnEditor.OnRequestExternalModelByPath = async (relativePath) => {
@@ -226,8 +223,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return;
     }
 
-    const fileAbsolutePath = __path.join(this.props.workingDirBasePath, this.onRequestToResolvePath(relativePath));
-    this.props.onOpenFile(fileAbsolutePath);
+    this.props.onOpenFile(this.onRequestToResolvePath(relativePath));
   };
 
   public render() {
@@ -344,35 +340,34 @@ function ExternalModelsManager({
         for (let i = 0; i < resources.length; i++) {
           const r = resources[i];
           const content = r?.content ?? "";
-          const absolutePath = r?.path ?? "";
-          const relativePath = __path.relative(__path.dirname(thisDmnsAbsolutePath), absolutePath);
+          const pathRelativeToWorkspaceRoot = r?.path ?? "";
 
-          const ext = __path.extname(relativePath);
+          const ext = __path.extname(pathRelativeToWorkspaceRoot);
           if (ext === ".dmn") {
             const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
             if (namespace && namespacesSet.has(namespace)) {
               // Check for multiplicity of namespaces on DMN models
               if (externalModelMap[namespace]) {
                 console.warn(
-                  `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${relativePath}' and '${
+                  `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${pathRelativeToWorkspaceRoot}' and '${
                     externalModelMap[namespace]!.relativePath
                   }'. The latter will be considered.`
                 );
               }
 
               externalModelMap[namespace] = {
-                relativePath,
+                relativePath: pathRelativeToWorkspaceRoot,
                 model: getMarshaller(content, { upgradeTo: "latest" }).parser.parse(),
                 type: "dmn",
                 svg: "",
               };
             }
           } else if (ext === ".pmml") {
-            const namespace = getPmmlNamespace({ fileRelativePath: relativePath });
+            const namespace = getPmmlNamespace({ fileRelativePath: pathRelativeToWorkspaceRoot });
             if (namespace && namespacesSet.has(namespace)) {
               // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
               externalModelMap[namespace] = {
-                relativePath,
+                relativePath: pathRelativeToWorkspaceRoot,
                 model: XML2PMML(content),
                 type: "pmml",
               };

@@ -185,7 +185,7 @@ export function IncludedModels() {
             return;
           });
       },
-      [isModelSelectOpen, onRequestExternalModelsAvailableToInclude]
+      [onRequestExternalModelsAvailableToInclude]
     )
   );
 
@@ -459,11 +459,6 @@ function IncludedModelCard({
     }
   }, [externalModel.model, externalModel.type]);
 
-  const pathDisplayed = useMemo(
-    () => onRequestToResolvePath?.(externalModel.relativePath) ?? externalModel.relativePath,
-    [onRequestToResolvePath, externalModel.relativePath]
-  );
-
   const [isCardActionsOpen, setCardActionsOpen] = useState(false);
 
   return (
@@ -529,7 +524,7 @@ function IncludedModelCard({
               onRequestToJumpToPath?.(externalModel.relativePath);
             }}
           >
-            <i>{pathDisplayed}</i>
+            <i>{externalModel.relativePath}</i>
           </Button>
         </small>
       </CardBody>
