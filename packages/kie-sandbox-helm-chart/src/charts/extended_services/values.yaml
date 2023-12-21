@@ -27,7 +27,7 @@ serviceAccount:
   annotations: {}
   name: ""
 
-# @ignored  
+# @ignored
 podAnnotations: {}
 
 # @ignored
