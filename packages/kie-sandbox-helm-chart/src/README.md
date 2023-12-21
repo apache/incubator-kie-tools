@@ -8,9 +8,9 @@ A Helm chart to deploy KIE Sandbox and related services on Kubernetes
 
 | Repository | Name              | Version |
 | ---------- | ----------------- | ------- |
-|            | cors_proxy        | \*      |
-|            | extended_services | \*      |
-|            | kie_sandbox       | \*      |
+|            | cors_proxy        | 0.0.0   |
+|            | extended_services | 0.0.0   |
+|            | kie_sandbox       | 0.0.0   |
 
 ## Values
 
