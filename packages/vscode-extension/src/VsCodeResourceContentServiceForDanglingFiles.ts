@@ -27,7 +27,7 @@ import {
   SearchType,
 } from "@kie-tools-core/workspace/dist/api";
 
-import * as minimatch from "minimatch";
+import { Minimatch } from "minimatch";
 import * as vscode from "vscode";
 import * as __path from "path";
 
@@ -45,10 +45,20 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     try {
       const files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.rootFolder));
+      const minimatch = new Minimatch(pattern);
+      const regexp = minimatch.makeRe(); // The regexp is ~50x faster than the direct match using glob.
       return new ResourcesList(
         pattern,
-        files.flatMap(([relativePath, fileType]) =>
-          fileType === vscode.FileType.File && minimatch(relativePath, pattern) ? relativePath : []
+        files.flatMap(([pathRelativeToOpenFile, fileType]) =>
+          fileType === 1 && // 1 === vscode.FileType.File, using it directly causes an error
+          (regexp.test(
+            "/" + pathRelativeToOpenFile // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
+          ) ||
+            regexp.test(
+              pathRelativeToOpenFile // Regex have the same behavior as the glob with *.{ext} pattern.
+            ))
+            ? pathRelativeToOpenFile
+            : []
         )
       );
     } catch (e) {
@@ -59,6 +69,7 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
   public async get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
     // Keeping the original logic where "path" can be either relative or absolute
     const absolutePath = path.startsWith(this.rootFolder) ? path : __path.join(this.rootFolder, path);
+    const pathRelativeToOpenFile = __path.relative(this.rootFolder, absolutePath);
 
     if (__path.resolve(this.rootFolder, path) !== absolutePath) {
       throw new Error(
@@ -71,13 +82,13 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
 
       if (opts?.type === ContentType.BINARY) {
         return new ResourceContent(
-          path, // Always return the relative path.
+          pathRelativeToOpenFile, // Always return the relative path.
           Buffer.from(content).toString("base64"),
           ContentType.BINARY
         );
       } else {
         return new ResourceContent(
-          path, // Always return the relative path.
+          pathRelativeToOpenFile, // Always return the relative path.
           Buffer.from(content).toString(),
           ContentType.TEXT
         );

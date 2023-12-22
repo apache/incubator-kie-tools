@@ -38,8 +38,8 @@ describe("VsCodeNodeResourceContentService", () => {
     expect(resourcesListWithAssets).not.toBeNull();
     expect(resourcesListWithAssets.pattern).toBe(txtPattern);
     expect(resourcesListWithAssets.paths).toHaveLength(2);
-    expect(resourcesListWithAssets.paths).toContain(testWorkspace + "resource1.txt");
-    expect(resourcesListWithAssets.paths).toContain(testWorkspace + "resource2.txt");
+    expect(resourcesListWithAssets.paths).toContain("resource1.txt");
+    expect(resourcesListWithAssets.paths).toContain("resource2.txt");
 
     const pdfPattern = "*.pdf";
     const resourcesListEmpty = await resourceContentService.list(pdfPattern);
