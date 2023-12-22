@@ -129,11 +129,10 @@ Feature: Serverless Workflow devmode images
       | wait                 | 480                                                                              |
       | expected_status_code | 200                                                                              |
 
-  Scenario: Verify if container starts in devmode with service discovery property
+  Scenario: Verify if container starts in devmode with service discovery enabled
     When container is started with env
-      | variable          | value                                                                                 |
-      | SCRIPT_DEBUG      | true                                                                                  |
-      | MAVEN_ARGS_APPEND | -Dkogito.dataindex.ws.url=${knative:services.v1.serving.knative.dev/namespace1/test2} |
+      | variable                    | value |
+      | QUARKUS_DEVSERVICES_ENABLED | false |
     Then check that page is served
       | property             | value             |
       | port                 | 8080              |
@@ -141,7 +140,7 @@ Feature: Serverless Workflow devmode images
       | wait                 | 480               |
       | request_method       | GET               |
       | expected_status_code | 200               |
-    And container log should contain Service Discovery has failed on property [kogito.dataindex.ws.url
+    And container log should contain kogito-addon-microprofile-config-service-catalog-extension
     
   Scenario: Verify if container have the KOGITO_CODEGEN_PROCESS_FAILONERROR env set to false
     When container is started with command bash
