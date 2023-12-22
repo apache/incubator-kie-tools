@@ -56,19 +56,11 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
     }
   }
 
-  public async get(
-    pathRelativeToTheWorkspaceRoot: string,
-    opts?: ResourceContentOptions
-  ): Promise<ResourceContent | undefined> {
-    if (__path.isAbsolute(pathRelativeToTheWorkspaceRoot)) {
-      throw new Error(
-        "VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Can't work with absolute paths. All paths must be relative to folder of the open file."
-      );
-    }
+  public async get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
+    // Keeping the original logic where "path" can be either relative or absolute
+    const absolutePath = path.startsWith(this.rootFolder) ? path : __path.join(this.rootFolder, path);
 
-    const absolutePath = __path.join(this.rootFolder, pathRelativeToTheWorkspaceRoot);
-
-    if (__path.resolve(this.rootFolder, pathRelativeToTheWorkspaceRoot) !== absolutePath) {
+    if (__path.resolve(this.rootFolder, path) !== absolutePath) {
       throw new Error(
         "VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Path relative to the root folder trying to access files outside of it."
       );
@@ -79,23 +71,23 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
 
       if (opts?.type === ContentType.BINARY) {
         return new ResourceContent(
-          pathRelativeToTheWorkspaceRoot, // Always return the relative path.
+          path, // Always return the relative path.
           Buffer.from(content).toString("base64"),
           ContentType.BINARY
         );
       } else {
         return new ResourceContent(
-          pathRelativeToTheWorkspaceRoot, // Always return the relative path.
+          path, // Always return the relative path.
           Buffer.from(content).toString(),
           ContentType.TEXT
         );
       }
     } catch (e) {
       console.error(
-        `VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Error reading file ${pathRelativeToTheWorkspaceRoot}. Returning undefined.`,
+        `VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Error reading file ${path}. Returning undefined.`,
         e
       );
-      return new ResourceContent(pathRelativeToTheWorkspaceRoot, undefined, opts?.type);
+      return new ResourceContent(path, undefined, opts?.type);
     }
   }
 }

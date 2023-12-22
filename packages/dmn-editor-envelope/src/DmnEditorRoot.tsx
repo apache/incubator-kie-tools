@@ -185,31 +185,46 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       opts: { type: SearchType.TRAVERSAL },
     });
 
-    return list.paths.flatMap((p) =>
+    return list.paths.flatMap((pathRelativeToWorkspaceRoot) =>
       // Ignore thisDmn's file absolutePath
-      this.onRequestToResolvePath(p) === this.state.absolutePath ? [] : p
+      this.joinPathWithWorkingDirBasePath(pathRelativeToWorkspaceRoot) === this.state.absolutePath
+        ? []
+        : pathRelativeToWorkspaceRoot
     );
   };
 
-  private onRequestToResolvePath = (relativePath: string) => {
+  private joinPathWithWorkingDirBasePath = (relativePath: string) => {
     return __path.join(this.props.workingDirBasePath, relativePath);
   };
 
-  private onRequestExternalModelByPath: DmnEditor.OnRequestExternalModelByPath = async (relativePath) => {
-    const absolutePath = this.onRequestToResolvePath(relativePath);
-    const resource = await this.props.onRequestFileContent({ path: absolutePath, opts: { type: ContentType.TEXT } });
+  private onRequestToResolvePath = (relativePath: string) => {
+    return __path.relative(
+      this.props.workingDirBasePath,
+      __path.resolve(__path.dirname(this.state.absolutePath!), relativePath)
+    );
+  };
 
-    const ext = __path.extname(relativePath);
+  private onRequestExternalModelByPath: DmnEditor.OnRequestExternalModelByPath = async (
+    pathRelativeToWorkspaceRoot
+  ) => {
+    const absolutePathOfRequestFile = this.joinPathWithWorkingDirBasePath(pathRelativeToWorkspaceRoot);
+    const resource = await this.props.onRequestFileContent({
+      path: absolutePathOfRequestFile,
+      opts: { type: ContentType.TEXT },
+    });
+    const pathRelativeToOpenFile = __path.relative(__path.dirname(this.state.absolutePath!), absolutePathOfRequestFile);
+
+    const ext = __path.extname(pathRelativeToWorkspaceRoot);
     if (ext === ".dmn") {
       return {
-        relativePath,
+        relativePath: pathRelativeToOpenFile,
         type: "dmn",
         model: getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse(),
         svg: "",
       };
     } else if (ext === ".pmml") {
       return {
-        relativePath,
+        relativePath: pathRelativeToOpenFile,
         type: "pmml",
         model: XML2PMML(resource?.content ?? ""),
       };
@@ -223,7 +238,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return;
     }
 
-    this.props.onOpenFile(this.onRequestToResolvePath(relativePath));
+    this.props.onOpenFile(this.joinPathWithWorkingDirBasePath(relativePath));
   };
 
   public render() {
