@@ -13,11 +13,14 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "scripts": {
-    "build:prod": "pnpm cleanup && run-script-if --bool $([ $(command -v helm) ] && echo true || echo false) --then \"helm package -u -d ./dist ./src\"",
+    "build:prod": "run-script-os",
+    "build:prod:linux:darwin": "pnpm cleanup && run-script-if --bool $([ $(command -v helm) ] && echo true || echo false) --then \"helm package -u -d ./dist ./src\"",
+    "build:prod:win32": "pnpm cleanup && run-script-if --bool '$([bool](Get-Command helms -errorAction SilentlyContinue))' --then \"helm package -u -d ./dist ./src\"",
     "cleanup": "rimraf Chart.lock && rimraf dist",
     "helm:delete": "run-script-if --bool $([ $(command -v helm) ] && echo true || echo false) --then \"helm delete kie-sandbox-helm-chart\"",
     "helm:install": "pnpm cleanup && run-script-if --bool $([ $(command -v helm) ] && echo true || echo false) --then \"helm install --dependency-update kie-sandbox-helm-chart ./src\"",
-    "install": "node install.js"
+    "install": "node install.js",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {
     "@kie-tools/cors-proxy-image": "workspace:*",
@@ -28,7 +31,8 @@
     "@kie-tools/root-env": "workspace:*",
     "js-yaml": "^4.1.0",
     "prettier": "^2.8.8",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [
