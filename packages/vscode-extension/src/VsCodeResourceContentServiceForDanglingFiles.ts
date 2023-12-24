@@ -68,10 +68,10 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
 
   public async get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
     // Keeping the original logic where "path" can be either relative or absolute
-    const absolutePath = path.startsWith(this.rootFolder) ? path : __path.posix.join(this.rootFolder, path);
-    const pathRelativeToOpenFile = __path.posix.relative(this.rootFolder, absolutePath);
+    const absolutePath = path.startsWith(this.rootFolder) ? path : __path.join(this.rootFolder, path);
+    const pathRelativeToOpenFile = __path.relative(this.rootFolder, absolutePath);
 
-    const resolvedPath = __path.posix.resolve(this.rootFolder, path);
+    const resolvedPath = __path.resolve(this.rootFolder, path);
     if (resolvedPath !== absolutePath) {
       throw new Error(
         `VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Path relative to the root folder trying to access files outside of it. Resolved path: '${resolvedPath}'. Absolute path: '${absolutePath}'.`
