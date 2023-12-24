@@ -71,9 +71,10 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
     const absolutePath = path.startsWith(this.rootFolder) ? path : __path.join(this.rootFolder, path);
     const pathRelativeToOpenFile = __path.relative(this.rootFolder, absolutePath);
 
-    if (__path.resolve(this.rootFolder, path) !== absolutePath) {
+    const resolvedPath = __path.resolve(this.rootFolder, path);
+    if (resolvedPath !== absolutePath) {
       throw new Error(
-        "VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Path relative to the root folder trying to access files outside of it."
+        `VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Path relative to the root folder trying to access files outside of it. Resolved path: '${resolvedPath}'. Absolute path: '${absolutePath}'.`
       );
     }
 
