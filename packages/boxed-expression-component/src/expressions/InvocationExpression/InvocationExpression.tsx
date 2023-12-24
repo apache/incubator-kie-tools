@@ -31,6 +31,7 @@ import {
   ExpressionDefinitionLogicType,
   generateUuid,
   getNextAvailablePrefixedName,
+  InsertRowColumnsDirection,
   InvocationExpressionDefinition,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -64,7 +65,7 @@ export function InvocationExpression(
   invocationExpression: InvocationExpressionDefinition & { isNested: boolean; parentElementId: string }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { variables } = useBoxedExpressionEditor();
+  const { decisionNodeId, variables } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const parametersWidth = useMemo(() => {
@@ -139,9 +140,9 @@ export function InvocationExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
         label: invocationExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: invocationExpression.id as keyof ROWTYPE,
-        dataType: invocationExpression.dataType ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+        dataType: invocationExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
@@ -178,9 +179,10 @@ export function InvocationExpression(
       },
     ],
     [
+      decisionNodeId,
       invocationExpression.name,
       invocationExpression.dataType,
-      invocationExpression.invokedFunction,
+      invocationExpression.invokedFunction.name,
       parametersWidth,
       setParametersWidth,
     ]
@@ -237,7 +239,7 @@ export function InvocationExpression(
         <ArgumentEntryExpressionCell {...props} parentElementId={invocationExpression.parentElementId} />
       ),
     }),
-    [updateEntry]
+    [invocationExpression.parentElementId, updateEntry]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
@@ -288,10 +290,24 @@ export function InvocationExpression(
   );
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
+      const newEntries: ContextExpressionDefinitionEntry[] = [];
+      const names = (invocationExpression.bindingEntries ?? []).map((e) => e.entryInfo.name);
+      for (let i = 0; i < args.rowsCount; i++) {
+        const name = getNextAvailablePrefixedName(names, "p");
+        names.push(name);
+        newEntries.push(getDefaultArgumentEntry(name));
+      }
       setExpression((prev: InvocationExpressionDefinition) => {
         const newArgumentEntries = [...(prev.bindingEntries ?? [])];
-        newArgumentEntries.splice(args.beforeIndex, 0, getDefaultArgumentEntry());
+
+        for (const newEntry of newEntries) {
+          let index = args.beforeIndex;
+          newArgumentEntries.splice(index, 0, newEntry);
+          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+            index++;
+          }
+        }
 
         return {
           ...prev,

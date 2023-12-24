@@ -38,6 +38,7 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
+  InsertRowColumnsDirection,
 } from "@kie-tools/boxed-expression-component/dist/api/BeeTable";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import {
@@ -644,7 +645,13 @@ function TestScenarioTable({
    * It adds a new FactMapping (Column) in the Model Descriptor structure and adds the new column related FactMapping Value (Cell)
    */
   const onColumnAdded = useCallback(
-    (args: { beforeIndex: number; currentIndex: number; groupType: string }) => {
+    (args: {
+      beforeIndex: number;
+      currentIndex: number;
+      groupType: string;
+      columnsCount: number;
+      insertDirection: InsertRowColumnsDirection;
+    }) => {
       /* GIVEN and EXPECTED column types can be added only */
       if (TestScenarioTableColumnFieldGroup.OTHER === args.groupType) {
         return;

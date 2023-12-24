@@ -33,6 +33,20 @@ export class FeelVariablesParser {
 
   constructor(variablesSource: VariablesRepository) {
     this.variablesRepository = variablesSource;
+    this.refreshExpressions();
+  }
+
+  public refreshExpressions() {
+    for (const expression of this.variablesRepository.expressions.values()) {
+      for (const variable of expression.variables) {
+        variable.source?.expressions.delete(expression.uuid);
+      }
+      const parsedExpression = this.parse(expression.uuid, expression.fullExpression);
+      expression.variables = parsedExpression.feelVariables;
+      for (const variable of parsedExpression.feelVariables) {
+        variable.source?.expressions.set(expression.uuid, expression);
+      }
+    }
   }
 
   public parse(variableContextUuid: string, expression: string): ParsedExpression {
@@ -117,7 +131,8 @@ export class FeelVariablesParser {
       parser.helper.defineVariable(
         context.variable.value,
         context.variable.typeRef ? this.createType(context.variable.typeRef) : undefined,
-        context.variable.feelSyntacticSymbolNature
+        context.variable.feelSyntacticSymbolNature,
+        context.variable
       );
     }
   }

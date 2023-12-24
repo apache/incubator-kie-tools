@@ -38,12 +38,15 @@ export enum ChannelType {
   STANDALONE = "STANDALONE",
 }
 
+export const DEFAULT_WORKING_DIR_BASE_PATH = "/";
+
 export interface EditorInitArgs {
   resourcesPathPrefix: string;
   fileExtension: string;
   initialLocale: string;
   isReadOnly: boolean;
   channel: ChannelType;
+  workingDirBasePath?: string;
 }
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, I18nEnvelopeApi {

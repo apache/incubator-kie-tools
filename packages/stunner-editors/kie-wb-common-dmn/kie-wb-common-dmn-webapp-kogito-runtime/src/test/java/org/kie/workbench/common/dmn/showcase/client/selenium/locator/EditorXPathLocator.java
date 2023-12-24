@@ -43,7 +43,7 @@ public class EditorXPathLocator implements XPathLocator {
      * @return XPath Locator for currently opened expression title
      */
     public static EditorXPathLocator expressionEditorTitle() {
-        return new EditorXPathLocator("//div[@class='expression-name-and-logic-type']/span[@class='expression-title']");
+        return new EditorXPathLocator("//p[@class='expression-info-name pf-u-text-truncate name']");
     }
 
     public static EditorXPathLocator dataTypesTab() {

@@ -42,8 +42,7 @@ test.describe("New file", () => {
       await page.getByRole("button", { name: "New Decision" }).click();
       await expect(page.getByRole("button", { name: "Decision Edit file name" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Decision Edit file name" })).toContainText("Untitled");
-      await kieSandbox.isEditorLoaded();
-      await expect(kieSandbox.getEditor().getByRole("button", { name: "DMN Input Data" })).toBeAttached();
+      await expect(kieSandbox.getEditor().getByRole("heading", { name: "This DMN's Diagram is empty" })).toBeAttached();
       await expect(page).toHaveScreenshot("new-file-dmn.png");
     });
 

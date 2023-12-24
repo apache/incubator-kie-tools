@@ -175,7 +175,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         ],
       },
     ];
-  }, [i18n.terms.copy, i18n.terms.cut, i18n.terms.paste, i18n.terms.reset, i18n.terms.selection]);
+  }, [i18n]);
 
   const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
     if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
