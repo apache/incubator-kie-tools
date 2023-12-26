@@ -716,4 +716,6 @@ section.kie-tools--settings-tab {
 
 #new-dmn-editor-dropdown-toggle {
   padding-left: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
