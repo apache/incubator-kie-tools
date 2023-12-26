@@ -83,6 +83,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
 
   const embeddedFile: EmbeddedEditorFile = useMemo(() => {
     return {
+      pathRelativeToTheWorkspaceRoot: "", // FIXME: TIAGO/LUIZ: Fix this.
       getFileContents: /* istanbul ignore next */ async () => Promise.resolve(getFileContent()),
       isReadOnly: true,
       fileExtension: `sw.${getFileType()}`,

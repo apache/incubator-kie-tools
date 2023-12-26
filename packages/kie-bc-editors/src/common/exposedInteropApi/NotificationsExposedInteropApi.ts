@@ -33,14 +33,14 @@ export interface NotificationsExposedInteropApi {
 
   /**
    * Creates a list of notification for a given path. This notifications will replace existent notification for that path.
-   * @param path The path that references the Notification
+   * @param pathRelativeToTheWorkspaceRoot The path that references the Notification
    * @param notifications List of Notifications
    */
-  setNotifications(path: string, notifications: Notification[]): void;
+  setNotifications(pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]): void;
 
   /**
    * Removes all the notification from a Path.
-   * @param path The notifications path
+   * @param pathRelativeToTheWorkspaceRoot The notifications path
    */
-  removeNotifications(path: string): void;
+  removeNotifications(pathRelativeToTheWorkspaceRoot: string): void;
 }

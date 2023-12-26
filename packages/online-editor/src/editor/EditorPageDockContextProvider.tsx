@@ -42,7 +42,7 @@ interface EditorPageDockContextType {
   disabledReason: string;
   onTogglePanel: (panelId: PanelId) => void;
   onOpenPanel: (panelId: PanelId) => void;
-  setNotifications: (tabName: string, path: string, notifications: Notification[]) => void;
+  setNotifications: (tabName: string, pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => void;
   addToggleItem: (panelId: PanelId, newItem: JSX.Element) => void;
   removeToggleItem: (panelId: PanelId) => void;
   toggleGroupItems: Map<PanelId, JSX.Element>;
@@ -117,9 +117,11 @@ export function EditorPageDockContextProvider({
   }, [i18n, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
 
   const setNotifications = useCallback(
-    (tabName: string, path: string, notifications: Notification[]) => {
-      notificationsToggle?.setNewNotifications(tabName, { path, notifications });
-      notificationsPanel?.getTab(tabName)?.kogitoNotifications_setNotifications(path, notifications);
+    (tabName: string, pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => {
+      notificationsToggle?.setNewNotifications(tabName, { path: pathRelativeToTheWorkspaceRoot, notifications });
+      notificationsPanel
+        ?.getTab(tabName)
+        ?.kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, notifications);
     },
     [notificationsPanel, notificationsToggle]
   );

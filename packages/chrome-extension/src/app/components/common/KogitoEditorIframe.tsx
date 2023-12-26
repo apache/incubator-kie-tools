@@ -61,7 +61,8 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
   }, [repoInfo]);
 
   const onResourceContentRequest = useCallback(
-    (request: ResourceContentRequest) => resourceContentService.get(request.path, request.opts),
+    (request: ResourceContentRequest) =>
+      resourceContentService.get(request.pathRelativeToTheWorkspaceRoot, request.opts),
     [resourceContentService]
   );
 
@@ -77,7 +78,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
       fileExtension: props.openFileExtension,
       getFileContents: props.getFileContents,
       isReadOnly: props.readonly,
-      path: props.contentPath,
+      pathRelativeToTheWorkspaceRoot: props.contentPath,
     };
   }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
 

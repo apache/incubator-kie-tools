@@ -41,7 +41,10 @@ export class StandaloneEditorsEditorChannelApiImpl implements KogitoEditorChanne
     private readonly file: EmbeddedEditorFile,
     private readonly locale: string,
     private readonly overrides: Partial<KogitoEditorChannelApi>,
-    private readonly resources?: Map<string, { contentType: ContentType; content: Promise<string> }>
+    private readonly resources?: Map<
+      string /** path relative to the "workspace" root */,
+      { contentType: ContentType; content: Promise<string> }
+    >
   ) {}
 
   public kogitoWorkspace_newEdit(edit: WorkspaceEdit) {
@@ -66,29 +69,29 @@ export class StandaloneEditorsEditorChannelApiImpl implements KogitoEditorChanne
 
   public async kogitoEditor_contentRequest() {
     const content = await this.file.getFileContents();
-    return { content: content ?? "", path: this.file.fileName };
+    return { content: content ?? "", pathRelativeToTheWorkspaceRoot: this.file.fileName };
   }
 
   public async kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
-    const resource = this.resources?.get(request.path);
+    const resource = this.resources?.get(request.pathRelativeToTheWorkspaceRoot);
 
     if (!resource) {
-      console.warn("The editor requested an unspecified resource: " + request.path);
-      return new ResourceContent(request.path, undefined);
+      console.warn("The editor requested an unspecified resource: " + request.pathRelativeToTheWorkspaceRoot);
+      return new ResourceContent(request.pathRelativeToTheWorkspaceRoot, undefined);
     }
 
     const requestedContentType = request.opts?.type ?? resource.contentType;
     if (requestedContentType !== resource.contentType) {
       console.warn(
         "The editor requested a resource with a different content type from the one specified: " +
-          request.path +
+          request.pathRelativeToTheWorkspaceRoot +
           ". Content type requested: " +
           requestedContentType
       );
-      return new ResourceContent(request.path, undefined);
+      return new ResourceContent(request.pathRelativeToTheWorkspaceRoot, undefined);
     }
 
-    return new ResourceContent(request.path, await resource.content, resource.contentType);
+    return new ResourceContent(request.pathRelativeToTheWorkspaceRoot, await resource.content, resource.contentType);
   }
 
   public async kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
@@ -101,8 +104,8 @@ export class StandaloneEditorsEditorChannelApiImpl implements KogitoEditorChanne
     return new ResourcesList(request.pattern, matches);
   }
 
-  public kogitoWorkspace_openFile(path: string): void {
-    this.overrides.kogitoWorkspace_openFile?.(path);
+  public kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot: string): void {
+    this.overrides.kogitoWorkspace_openFile?.(pathRelativeToTheWorkspaceRoot);
   }
 
   public kogitoEditor_ready(): void {
@@ -125,11 +128,14 @@ export class StandaloneEditorsEditorChannelApiImpl implements KogitoEditorChanne
     this.overrides.kogitoNotifications_createNotification?.(notification);
   }
 
-  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    this.overrides.kogitoNotifications_setNotifications?.(path, notifications);
+  public kogitoNotifications_setNotifications(
+    pathRelativeToTheWorkspaceRoot: string,
+    notifications: Notification[]
+  ): void {
+    this.overrides.kogitoNotifications_setNotifications?.(pathRelativeToTheWorkspaceRoot, notifications);
   }
 
-  public kogitoNotifications_removeNotifications(path: string): void {
-    this.overrides.kogitoNotifications_removeNotifications?.(path);
+  public kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void {
+    this.overrides.kogitoNotifications_removeNotifications?.(pathRelativeToTheWorkspaceRoot);
   }
 }

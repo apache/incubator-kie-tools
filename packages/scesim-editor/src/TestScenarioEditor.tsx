@@ -108,7 +108,7 @@ export type TestScenarioDataObject = {
 export type TestScenarioEditorRef = {
   /* TODO Convert these to Promises */
   getContent(): string;
-  setContent(path: string, content: string): void;
+  setContent(pathRelativeToTheWorkspaceRoot: string, content: string): void;
 };
 
 export type TestScenarioSettings = {
@@ -475,13 +475,13 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
     forwardRef,
     () => ({
       getContent: () => marshaller.builder.build(scesimModel),
-      setContent: (path, content) => {
+      setContent: (absolutePath, content) => {
         console.debug("SCESIM setContent called");
         console.debug("=== FILE CONTENT ===");
         console.debug(content ? content : "EMPTY FILE");
         console.debug("=== END FILE CONTENT ===");
 
-        setScesimFile({ content: content || EMPTY_ONE_EIGHT, path: path });
+        setScesimFile({ content: content || EMPTY_ONE_EIGHT, path: absolutePath });
       },
     }),
     [marshaller.builder, scesimModel]

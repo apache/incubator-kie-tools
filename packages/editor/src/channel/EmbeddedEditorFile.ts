@@ -25,5 +25,5 @@ export interface EmbeddedEditorFile {
   fileExtension: string;
   getFileContents: () => Promise<string | undefined>;
   isReadOnly: boolean;
-  path?: string;
+  pathRelativeToTheWorkspaceRoot: string;
 }

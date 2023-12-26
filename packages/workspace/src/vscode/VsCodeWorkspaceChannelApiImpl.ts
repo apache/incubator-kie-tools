@@ -28,11 +28,11 @@ import {
 import * as vscode from "vscode";
 
 export class VsCodeWorkspaceChannelApiImpl implements WorkspaceChannelApi {
-  public kogitoWorkspace_openFile(path: string) {
+  public kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot: string) {
     try {
-      vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(path));
+      vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(pathRelativeToTheWorkspaceRoot));
     } catch (e) {
-      throw new Error(`Cannot open file at: ${path}.`);
+      throw new Error(`Cannot open file at: ${pathRelativeToTheWorkspaceRoot}.`);
     }
   }
 

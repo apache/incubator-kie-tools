@@ -30,15 +30,19 @@ export function addImport({
     name: string;
     namespace: string;
     xmlns: string;
-    locationURI: string;
+    locationUriRelativeToThisDmn: string;
   };
 }) {
+  const locationURI = includedModel.locationUriRelativeToThisDmn.startsWith("../")
+    ? includedModel.locationUriRelativeToThisDmn // If the included model is located in a parent directory, we leave it that way because that is explicit enough already.
+    : `./${includedModel.locationUriRelativeToThisDmn}`; // Always use this notation to make it explicit that we're using thisDmn's location as reference.
+
   const newImport: DMN15__tImport = {
     "@_id": generateUuid(),
     "@_name": includedModel.name.trim(),
     "@_importType": includedModel.xmlns,
     "@_namespace": includedModel.namespace,
-    "@_locationURI": includedModel.locationURI,
+    "@_locationURI": locationURI,
   };
 
   definitions.import ??= [];

@@ -21,7 +21,7 @@ import { WorkspaceEdit, ResourceContent, ResourceContentRequest, ResourceListReq
 
 export interface WorkspaceChannelApi {
   kogitoWorkspace_newEdit(edit: WorkspaceEdit): void;
-  kogitoWorkspace_openFile(path: string): void;
+  kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot: string): void;
   kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
   kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
 }

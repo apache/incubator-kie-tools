@@ -23,7 +23,7 @@ import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 const testWorkspace = __path.resolve(__dirname, "test-workspace") + __path.sep;
 
-describe("VsCodeNodeResourceContentService", () => {
+describe("VsCodeResourceContentServiceForDanglingFiles", () => {
   test("Test list", async () => {
     const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles(testWorkspace);
     const txtPattern = "*.txt";

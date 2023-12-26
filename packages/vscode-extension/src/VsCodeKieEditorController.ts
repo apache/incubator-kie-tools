@@ -90,9 +90,7 @@ export class VsCodeKieEditorController implements EditorApi {
             initialLocale: vscode.env.language,
             isReadOnly: false,
             channel: vscode.env.uiKind === UIKind.Desktop ? ChannelType.VSCODE_DESKTOP : ChannelType.VSCODE_WEB,
-            workingDirBasePath: vscode.workspace.workspaceFolders?.[0]?.uri?.fsPath
-              ? vscode.workspace.workspaceFolders?.[0]?.uri?.fsPath + __path.sep
-              : __path.dirname(document.document.uri.fsPath),
+            workspaceRootAbsolutePath: vscode.workspace.workspaceFolders![0].uri.fsPath + __path.sep,
           }
         )
     )
@@ -117,9 +115,9 @@ export class VsCodeKieEditorController implements EditorApi {
     return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content);
   }
 
-  public setContent(path: string, content: string) {
+  public setContent(pathRelativeToTheWorkspaceRoot: string, content: string) {
     return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
-      { path, content },
+      { pathRelativeToTheWorkspaceRoot, content },
       { showLoadingOverlay: true }
     );
   }
@@ -268,7 +266,7 @@ export class VsCodeKieEditorController implements EditorApi {
       this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
         {
           content: e.document.getText(),
-          path: e.document.uri.path,
+          pathRelativeToTheWorkspaceRoot: e.document.uri.path,
         },
         { showLoadingOverlay: false }
       );

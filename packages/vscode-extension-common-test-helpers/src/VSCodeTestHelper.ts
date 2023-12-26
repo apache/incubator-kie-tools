@@ -101,19 +101,19 @@ export class VSCodeTestHelper {
    * Opens folder using commmand suplied by vscode-extension-tester
    * and open the dedicated SideBarView with the folder.
    *
-   * @param absolutePath absolute path to the folder that needs to be openned
+   * @param path absolute path to the folder that needs to be openned
    * @returns a promise that resolves to a SideBarView of the openned folder
    */
-  public openFolder = async (absolutePath: string): Promise<SideBarView> => {
-    await this.browser.openResources(absolutePath);
+  public openFolder = async (path: string): Promise<SideBarView> => {
+    await this.browser.openResources(path);
 
     const control = (await new ActivityBar().getViewControl("Explorer")) as ViewControl;
     this.sidebarView = await control.openView();
     assert.isTrue(await this.sidebarView.isDisplayed(), "Explorer side bar view was not opened");
 
-    const folderName = absolutePath.split("/").pop();
+    const folderName = path.split("/").pop();
     if (folderName == undefined) {
-      throw new Error("Wrong absolutePath format: " + absolutePath);
+      throw new Error("Wrong absolutePath format: " + path);
     }
 
     this.workspaceSectionView = await this.sidebarView.getContent().getSection(folderName);

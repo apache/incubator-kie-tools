@@ -23,7 +23,7 @@ import { ResourceContentOptions } from "./ResourceContentOptions";
 import { ResourceListOptions } from "./ResourceListOptions";
 
 export interface ResourceContentService {
-  get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined>;
+  get(pathRelativeToTheWorkspaceRoot: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined>;
 
   list(globPattern: string, opts?: ResourceListOptions): Promise<ResourcesList>;
 }

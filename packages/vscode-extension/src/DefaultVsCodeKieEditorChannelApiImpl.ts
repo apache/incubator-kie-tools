@@ -88,11 +88,18 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
     throw new Error("Document type not supported");
   }
 
-  public kogitoWorkspace_openFile(workspaceFilePath: string) {
+  public kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot: string) {
+    if (__path.isAbsolute(pathRelativeToTheWorkspaceRoot)) {
+      throw new Error(
+        "VS CODE DEFAULT CHANNEL API IMPL: Can't open absolute path. Paths must be relative to the workspace root."
+      );
+    }
+
     this.workspaceApi.kogitoWorkspace_openFile(
-      __path.isAbsolute(workspaceFilePath)
-        ? workspaceFilePath
-        : __path.join(__path.dirname(this.editor.document.document.uri.path), workspaceFilePath)
+      __path.join(
+        vscode.workspace.workspaceFolders?.[0].uri.fsPath ?? __path.dirname(this.editor.document.document.uri.fsPath),
+        pathRelativeToTheWorkspaceRoot
+      )
     );
   }
 
@@ -105,7 +112,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
       // This is important for the use-case where users type `code new-file.dmn` on a terminal.
       try {
         await vscode.workspace.fs.writeFile(this.editor.document.document.uri, new Uint8Array());
-        return { content: "", path: this.editor.document.document.uri.path };
+        return { content: "", pathRelativeToTheWorkspaceRoot: this.editor.document.document.uri.path };
       } catch (error) {
         console.error(
           "Failed on vscode.workspace.fs.writeFile. document uri: ",
@@ -117,7 +124,10 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
       }
     }
 
-    return { content, path: this.editor.document.document.uri.path };
+    return {
+      content,
+      pathRelativeToTheWorkspaceRoot: vscode.workspace.asRelativePath(this.editor.document.document.uri, false),
+    };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent) {
@@ -164,7 +174,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
-    return this.resourceContentService.get(request.path, request.opts);
+    return this.resourceContentService.get(request.pathRelativeToTheWorkspaceRoot, request.opts);
   }
 
   public kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
@@ -179,12 +189,15 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
     this.notificationsApi.kogitoNotifications_createNotification(notification);
   }
 
-  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    this.notificationsApi.kogitoNotifications_setNotifications(path, notifications);
+  public kogitoNotifications_setNotifications(
+    pathRelativeToTheWorkspaceRoot: string,
+    notifications: Notification[]
+  ): void {
+    this.notificationsApi.kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, notifications);
   }
 
-  public kogitoNotifications_removeNotifications(path: string): void {
-    this.notificationsApi.kogitoNotifications_removeNotifications(path);
+  public kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void {
+    this.notificationsApi.kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot);
   }
 
   public kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {

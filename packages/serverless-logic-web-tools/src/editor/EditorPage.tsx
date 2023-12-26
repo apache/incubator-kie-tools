@@ -135,7 +135,7 @@ export function EditorPage(props: Props) {
           lastContent.current = content;
 
           setEmbeddedEditorFile({
-            path: workspaceFilePromise.data.workspaceFile.relativePath,
+            pathRelativeToTheWorkspaceRoot: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
             isReadOnly: !isEditable(workspaceFilePromise.data.workspaceFile.relativePath),
             fileExtension: workspaceFilePromise.data.workspaceFile.extension,

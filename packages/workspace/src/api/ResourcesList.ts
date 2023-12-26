@@ -19,10 +19,10 @@
 
 export class ResourcesList {
   public readonly pattern: string;
-  public readonly paths: string[];
+  public readonly pathsRelativeToTheWorkspaceRoot: string[];
 
-  constructor(pattern: string, paths: string[]) {
+  constructor(pattern: string, pathsRelativeToTheWorkspaceRoot: string[]) {
     this.pattern = pattern;
-    this.paths = paths;
+    this.pathsRelativeToTheWorkspaceRoot = pathsRelativeToTheWorkspaceRoot;
   }
 }

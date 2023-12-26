@@ -37,9 +37,9 @@ export const SwfStandaloneTextOnlyEditorPage = () => {
   const [workflowType, setWorkflowType] = useState<ServerlessWorkflowType>();
   const [editor, setEditor] = useState<StandaloneEditorApi>();
 
-  const onSetContent = useCallback((path: string, content: string) => {
-    const match = /\.sw\.(json|yaml|yml)$/.exec(path.toLowerCase());
-    const extension = match ? match[1] : extname(path);
+  const onSetContent = useCallback((pathRelativeToTheWorkspaceRoot: string, content: string) => {
+    const match = /\.sw\.(json|yaml|yml)$/.exec(pathRelativeToTheWorkspaceRoot.toLowerCase());
+    const extension = match ? match[1] : extname(pathRelativeToTheWorkspaceRoot);
 
     const editorApi = SwfEditor.open({
       container: swfEditorContainer.current!,

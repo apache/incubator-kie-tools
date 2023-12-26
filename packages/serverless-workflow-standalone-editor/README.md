@@ -43,7 +43,7 @@ Available parameters:
 The returned object will contain the methods needed to manipulate the Editor:
 
 - `getContent(): Promise<string>`: Returns a Promise containing the Editor content.
-- `setContent(path: string, content: string): Promise<void>`: Sets the content of the Editor. The returning Promise will be rejected if setting the content fails.
+- `setContent(absolutePath: string, content: string): Promise<void>`: Sets the content of the Editor. The returning Promise will be rejected if setting the content fails.
 - `getPreview(): Promise<string>`: Returns a Promise containing the SVG string of the current diagram.
 - `undo(): void`: Undo the last change in the Editor. This will also fire the subscribed callbacks of content changes.
 - `redo(): void`: Redo the last undone change in the Editor. This will also fire the subscribed callbacks of content changes.

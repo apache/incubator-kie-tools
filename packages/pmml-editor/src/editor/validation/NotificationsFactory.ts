@@ -21,7 +21,10 @@ import { ValidationLevel } from "./ValidationLevel";
 import { Notification, NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import { ValidationEntry } from "./ValidationRegistry";
 
-export const toNotifications = (path: string, validationEntries: ValidationEntry[]): Notification[] => {
+export const toNotifications = (
+  pathRelativeToTheWorkspaceRoot: string,
+  validationEntries: ValidationEntry[]
+): Notification[] => {
   const mapValidationLevel = (level: ValidationLevel): NotificationSeverity => {
     switch (level) {
       case ValidationLevel.ERROR:
@@ -33,7 +36,7 @@ export const toNotifications = (path: string, validationEntries: ValidationEntry
 
   return validationEntries.map<Notification>((validationEntry) => {
     return {
-      path: path,
+      pathRelativeToTheWorkspaceRoot,
       message: validationEntry.message ?? "",
       type: "PROBLEM",
       severity: mapValidationLevel(validationEntry.level),

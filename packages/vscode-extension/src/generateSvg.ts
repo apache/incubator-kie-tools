@@ -94,7 +94,8 @@ export async function generateSvg(args: {
         return;
       }
 
-      args.workspaceApi.kogitoWorkspace_openFile(svgUri.path);
+      const svgFilePathRelativeToTheWorkspaceRoot = svgUri.path;
+      args.workspaceApi.kogitoWorkspace_openFile(svgFilePathRelativeToTheWorkspaceRoot);
     });
   }
 }

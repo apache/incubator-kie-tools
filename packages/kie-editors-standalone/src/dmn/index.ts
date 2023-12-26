@@ -80,6 +80,7 @@ export function open(args: {
   const channelApiImpl = new StandaloneEditorsEditorChannelApiImpl(
     stateControl,
     {
+      pathRelativeToTheWorkspaceRoot: "", // FIXME: TIAGO/LUIZ: Fix this.
       fileName: "",
       fileExtension: "dmn",
       getFileContents: () => Promise.resolve(args.initialContent),

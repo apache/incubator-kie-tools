@@ -66,8 +66,8 @@ export class YardEditorChannelApiImpl implements YardEditorChannelApi {
     this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 
-  public kogitoWorkspace_openFile(path: string): void {
-    this.defaultApiImpl.kogitoWorkspace_openFile(path);
+  public kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot: string): void {
+    this.defaultApiImpl.kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot);
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {
@@ -82,12 +82,15 @@ export class YardEditorChannelApiImpl implements YardEditorChannelApi {
     this.defaultApiImpl.kogitoNotifications_createNotification(notification);
   }
 
-  public kogitoNotifications_removeNotifications(path: string): void {
-    this.defaultApiImpl.kogitoNotifications_removeNotifications(path);
+  public kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void {
+    this.defaultApiImpl.kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot);
   }
 
-  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
+  public kogitoNotifications_setNotifications(
+    pathRelativeToTheWorkspaceRoot: string,
+    notifications: Notification[]
+  ): void {
+    this.defaultApiImpl.kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, notifications);
   }
 
   public kogitoEditor_theme(): SharedValueProvider<EditorTheme> {

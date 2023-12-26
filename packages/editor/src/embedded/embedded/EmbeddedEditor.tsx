@@ -50,7 +50,7 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
   customChannelApiImpl?: KogitoEditorChannelApi;
   stateControl?: StateControl;
   isReady?: boolean;
-  workingDirBasePath?: string;
+  workspaceRootAbsolutePath?: string;
 };
 
 /**
@@ -87,7 +87,8 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   );
   const [isReady, setReady] = useState(false);
   const envelopeMapping = useMemo(
-    () => props.editorEnvelopeLocator.getEnvelopeMapping(props.file.path ?? props.file.fileName),
+    () =>
+      props.editorEnvelopeLocator.getEnvelopeMapping(props.file.pathRelativeToTheWorkspaceRoot ?? props.file.fileName),
     [props.editorEnvelopeLocator, props.file]
   );
 
@@ -118,7 +119,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
             initialLocale: props.locale,
             isReadOnly: props.file.isReadOnly,
             channel: props.channelType,
-            workingDirBasePath: props.workingDirBasePath,
+            workspaceRootAbsolutePath: props.workspaceRootAbsolutePath,
           }
         )
     );
@@ -128,6 +129,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     props.file.isReadOnly,
     props.locale,
     props.channelType,
+    props.workspaceRootAbsolutePath,
     envelopeMapping?.resourcesPathPrefix,
   ]);
 
@@ -140,7 +142,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   useEffectAfterFirstRender(() => {
     props.file.getFileContents().then((content) => {
       envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
-        { content: content!, path: props.file.fileName },
+        { content: content!, pathRelativeToTheWorkspaceRoot: props.file.fileName },
         { showLoadingOverlay: true }
       );
     });
@@ -181,9 +183,9 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo.send()),
         getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
         getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
-        setContent: (path, content) =>
+        setContent: (absolutePath, content) =>
           envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
-            { path, content },
+            { pathRelativeToTheWorkspaceRoot: absolutePath, content },
             { showLoadingOverlay: false }
           ),
         validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),

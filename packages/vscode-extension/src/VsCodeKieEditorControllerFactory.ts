@@ -98,11 +98,14 @@ export class VsCodeKieEditorControllerFactory {
     editor.startListeningToDocumentChanges();
   }
 
-  public createResourceContentService(path: string, workspacePath: string): ResourceContentService {
-    if (this.isAssetInWorkspace(path)) {
-      return new VsCodeResourceContentServiceForWorkspaces(this.getParentFolder(workspacePath));
+  public createResourceContentService(
+    openFileAbsolutePath: string,
+    workspaceRootAbsolutePath: string
+  ): ResourceContentService {
+    if (this.isAssetInWorkspace(openFileAbsolutePath)) {
+      return new VsCodeResourceContentServiceForWorkspaces(this.getParentFolder(workspaceRootAbsolutePath));
     } else {
-      return new VsCodeResourceContentServiceForDanglingFiles(this.getParentFolder(path));
+      return new VsCodeResourceContentServiceForDanglingFiles(this.getParentFolder(openFileAbsolutePath));
     }
   }
 
@@ -154,8 +157,11 @@ export class VsCodeKieEditorControllerFactory {
     return webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, relativePath)).toString();
   }
 
-  private isAssetInWorkspace(path: string): boolean {
-    return vscode.workspace.workspaceFolders?.map((f) => f.uri.fsPath).find((p) => path.startsWith(p)) !== undefined;
+  private isAssetInWorkspace(openFileAbsolutePath: string): boolean {
+    return (
+      vscode.workspace.workspaceFolders?.map((f) => f.uri.fsPath).find((p) => openFileAbsolutePath.startsWith(p)) !==
+      undefined
+    );
   }
 
   private getParentFolder(assetPath: string) {

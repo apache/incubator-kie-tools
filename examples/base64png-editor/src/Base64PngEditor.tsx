@@ -88,7 +88,7 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
    * Callback is exposed to the Channel that is called when a new file is opened. It sets the originalContent to the received value.
    */
   const setContent = useCallback(
-    (path: string, content: string) => {
+    (pathRelativeToTheWorkspaceRoot: string, content: string) => {
       setOriginalContent(content);
       updateEditorToInitialState();
     },
@@ -167,7 +167,8 @@ export const Base64PngEditor = React.forwardRef<EditorApi, Props>((props, forwar
   useImperativeHandle(forwardedRef, () => {
     return {
       getContent: () => Promise.resolve(getContent()),
-      setContent: (path: string, content: string) => Promise.resolve(setContent(path, content)),
+      setContent: (pathRelativeToTheWorkspaceRoot: string, content: string) =>
+        Promise.resolve(setContent(pathRelativeToTheWorkspaceRoot, content)),
       getPreview: () => Promise.resolve(getPreview()),
       undo: () => Promise.resolve(undo()),
       redo: () => Promise.resolve(redo()),
