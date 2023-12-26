@@ -44,6 +44,7 @@ export class KogitoEditorEnvelopeApiImpl<
 {
   protected view: () => EditorEnvelopeViewApi<E>;
   private capturedInitRequestYet = false;
+  private pathRelativeToTheWorkspaceRoot: string;
   private editor: E;
 
   constructor(
@@ -91,6 +92,7 @@ export class KogitoEditorEnvelopeApiImpl<
     this.view().setLoading();
 
     const editorContent = await this.args.envelopeContext.channelApi.requests.kogitoEditor_contentRequest();
+    this.pathRelativeToTheWorkspaceRoot = editorContent.pathRelativeToTheWorkspaceRoot;
 
     await this.editor
       .setContent(editorContent.pathRelativeToTheWorkspaceRoot, editorContent.content)
@@ -125,9 +127,10 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 
   public kogitoEditor_contentRequest() {
-    return this.editor
-      .getContent()
-      .then((content) => ({ content: sanitize(content), pathRelativeToTheWorkspaceRoot: "" })); // FIXME: TIAGO/LUIZ: This is wrong.
+    return this.editor.getContent().then((content) => ({
+      content: sanitize(content),
+      pathRelativeToTheWorkspaceRoot: this.pathRelativeToTheWorkspaceRoot,
+    }));
   }
 
   public kogitoEditor_previewRequest() {

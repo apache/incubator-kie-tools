@@ -50,7 +50,10 @@ export type OnDmnModelChange = (model: DmnLatestModel) => void;
 
 export type OnRequestToJumpToPath = (pathRelativeToTheOpenFile: string) => void;
 export type OnRequestToResolvePath = (pathRelativeToTheOpenFile: string) => string;
+
+/** @returns a list of paths relative to the open file. */
 export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
+
 export type OnRequestExternalModelByPath = (pathRelativeToTheOpenFile: string) => Promise<ExternalModel | null>;
 export type ExternalModelsIndex = Record<string /** pathRelativeToTheOpenFile */, ExternalModel | undefined>;
 export type ExternalModel = ({ type: "dmn" } & ExternalDmn) | ({ type: "pmml" } & ExternalPmml);

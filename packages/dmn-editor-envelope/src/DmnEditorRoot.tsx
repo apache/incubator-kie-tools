@@ -56,8 +56,8 @@ export const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
 export type DmnEditorRootProps = {
   exposing: (s: DmnEditorRoot) => void;
   onNewEdit: (edit: WorkspaceEdit) => void;
-  onRequestFileList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
-  onRequestFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
+  onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
+  onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePath: string;
 };
@@ -177,26 +177,24 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     );
   };
 
-  // TIAGO: Theoretically ok. Returning paths relative to the open file.
   private onRequestExternalModelsAvailableToInclude: DmnEditor.OnRequestExternalModelsAvailableToInclude = async () => {
     if (!this.state.openFilePathRelativeToTheWorkspaceRoot) {
       return [];
     }
 
-    const list = await this.props.onRequestFileList({
+    const list = await this.props.onRequestWorkspaceFilesList({
       pattern: EXTERNAL_MODELS_SEARCH_GLOB_PATTERN,
       opts: { type: SearchType.TRAVERSAL },
-    }); // FIXME: TIAGO/LUIZ: WRONG PATH: Should've been returning a list of "pathsRelativeToTheWorkspaceRoot", instead of a list of "absolutePaths"
+    });
 
     return list.pathsRelativeToTheWorkspaceRoot.flatMap((p) =>
-      // Ignore thisDmn's file absolutePath
+      // Do not show this DMN on the list
       p === this.state.openFilePathRelativeToTheWorkspaceRoot
         ? []
         : __path.relative(__path.dirname(this.state.openFilePathRelativeToTheWorkspaceRoot!), p)
     );
   };
 
-  // TIAGO: Theoretically ok. Returning paths relative to the workspace root
   private onRequestToResolvePathRelativeToTheOpenFile: DmnEditor.OnRequestToResolvePath = (
     pathRelativeToTheOpenFile
   ) => {
@@ -214,15 +212,14 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     // return (which is the pathRelativeToTheWorkspaceRoot) = tmp/Tmp.dmn
   };
 
-  // TIAGO: Theoretically ok. Returning paths relative to the open file.
   private onRequestExternalModelByPathsRelativeToTheOpenFile: DmnEditor.OnRequestExternalModelByPath = async (
     pathRelativeToTheOpenFile
   ) => {
     const pathRelativeToTheWorkspaceRoot = this.onRequestToResolvePathRelativeToTheOpenFile(pathRelativeToTheOpenFile);
-    const resource = await this.props.onRequestFileContent({
+    const resource = await this.props.onRequestWorkspaceFileContent({
       pathRelativeToTheWorkspaceRoot,
       opts: { type: ContentType.TEXT },
-    }); // TIAGO: Theoretically ok
+    });
 
     const ext = __path.extname(pathRelativeToTheOpenFile);
     if (ext === ".dmn") {
@@ -243,7 +240,6 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     }
   };
 
-  // TIAGO: Theoretically ok, receiving paths relative to the open file.
   private onOpenFileFromPathRelativeToTheOpenFile = (pathRelativeToTheOpenFile: string) => {
     if (!this.state.openFilePathRelativeToTheWorkspaceRoot) {
       return;
@@ -278,14 +274,11 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
             />
             <ExternalModelsManager
               workspaceRootAbsolutePath={this.props.workspaceRootAbsolutePath}
-              thisDmnsAbsolutePath={__path.join(
-                this.props.workspaceRootAbsolutePath,
-                this.state.openFilePathRelativeToTheWorkspaceRoot ?? ""
-              )}
+              thisDmnsPathRelativeToTheWorkspaceRoot={this.state.openFilePathRelativeToTheWorkspaceRoot}
               model={this.model}
               onChange={this.setExternalModelsByNamespace}
-              onRequestFileList={this.props.onRequestFileList}
-              onRequestFileContent={this.props.onRequestFileContent}
+              onRequestWorkspaceFilesList={this.props.onRequestWorkspaceFilesList}
+              onRequestWorkspaceFileContent={this.props.onRequestWorkspaceFileContent}
               externalModelsManagerDoneBootstraping={this.externalModelsManagerDoneBootstraping}
             />
           </>
@@ -299,19 +292,19 @@ const NAMESPACES_EFFECT_SEPARATOR = " , ";
 
 function ExternalModelsManager({
   workspaceRootAbsolutePath,
-  thisDmnsAbsolutePath,
+  thisDmnsPathRelativeToTheWorkspaceRoot,
   model,
   onChange,
-  onRequestFileContent,
-  onRequestFileList,
+  onRequestWorkspaceFileContent,
+  onRequestWorkspaceFilesList,
   externalModelsManagerDoneBootstraping,
 }: {
   workspaceRootAbsolutePath: string;
-  thisDmnsAbsolutePath: string | undefined;
+  thisDmnsPathRelativeToTheWorkspaceRoot: string | undefined;
   model: DmnLatestModel;
   onChange: (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => void;
-  onRequestFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
-  onRequestFileList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
+  onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
+  onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
   const namespaces = useMemo(
@@ -334,7 +327,8 @@ function ExternalModelsManager({
     const bc = new BroadcastChannel("workspaces_files");
     bc.onmessage = ({ data }) => {
       // Changes to `thisDmn` shouldn't update its references to external models.
-      if (data?.relativePath === thisDmnsAbsolutePath) {
+      // Here, `data?.relativePath` is relative to the workspace root.
+      if (data?.relativePath === thisDmnsPathRelativeToTheWorkspaceRoot) {
         return;
       }
 
@@ -343,29 +337,31 @@ function ExternalModelsManager({
     return () => {
       bc.close();
     };
-  }, [thisDmnsAbsolutePath]);
+  }, [thisDmnsPathRelativeToTheWorkspaceRoot]);
 
   // This effect actually populates `externalModelsByNamespace` through the `onChange` call.
   useEffect(() => {
     let canceled = false;
 
-    if (!thisDmnsAbsolutePath) {
+    if (!thisDmnsPathRelativeToTheWorkspaceRoot) {
       return;
     }
 
-    onRequestFileList({ pattern: EXTERNAL_MODELS_SEARCH_GLOB_PATTERN, opts: { type: SearchType.TRAVERSAL } })
+    onRequestWorkspaceFilesList({ pattern: EXTERNAL_MODELS_SEARCH_GLOB_PATTERN, opts: { type: SearchType.TRAVERSAL } })
       .then((list) => {
         const resources: Array<Promise<ResourceContent | undefined>> = [];
         for (let i = 0; i < list.pathsRelativeToTheWorkspaceRoot.length; i++) {
-          const absolutePath = list.pathsRelativeToTheWorkspaceRoot[i];
+          const pathRelativeToTheWorkspaceRoot = list.pathsRelativeToTheWorkspaceRoot[i];
 
-          // FIXME: TIAGO/LUIZ: This is probably wrong.
-          if (absolutePath === thisDmnsAbsolutePath) {
+          if (pathRelativeToTheWorkspaceRoot === thisDmnsPathRelativeToTheWorkspaceRoot) {
             continue;
           }
 
           resources.push(
-            onRequestFileContent({ pathRelativeToTheWorkspaceRoot: absolutePath, opts: { type: ContentType.TEXT } })
+            onRequestWorkspaceFileContent({
+              pathRelativeToTheWorkspaceRoot,
+              opts: { type: ContentType.TEXT },
+            })
           );
         }
         return Promise.all(resources);
@@ -376,27 +372,30 @@ function ExternalModelsManager({
         const namespacesSet = new Set(namespaces.split(NAMESPACES_EFFECT_SEPARATOR));
 
         for (let i = 0; i < resources.length; i++) {
-          const r = resources[i];
-          const content = r?.content ?? "";
-          const pathRelativeToTheWorkspaceRoot = r?.pathRelativeToTheWorkspaceRoot ?? "";
+          const resource = resources[i];
+          if (!resource) {
+            continue;
+          }
 
-          const ext = __path.extname(pathRelativeToTheWorkspaceRoot);
+          const content = resource.content ?? "";
+
+          const ext = __path.extname(resource.pathRelativeToTheWorkspaceRoot);
           if (ext === ".dmn") {
             const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
             if (namespace && namespacesSet.has(namespace)) {
               // Check for multiplicity of namespaces on DMN models
               if (externalModelsIndex[namespace]) {
                 console.warn(
-                  `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${pathRelativeToTheWorkspaceRoot}' and '${
-                    externalModelsIndex[namespace]!.pathRelativeToTheOpenFile
-                  }'. The latter will be considered.`
+                  `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${
+                    resource.pathRelativeToTheWorkspaceRoot
+                  }' and '${externalModelsIndex[namespace]!.pathRelativeToTheOpenFile}'. The latter will be considered.`
                 );
               }
 
               externalModelsIndex[namespace] = {
                 pathRelativeToTheOpenFile: __path.relative(
-                  __path.dirname(thisDmnsAbsolutePath),
-                  __path.join(workspaceRootAbsolutePath, pathRelativeToTheWorkspaceRoot)
+                  __path.dirname(thisDmnsPathRelativeToTheWorkspaceRoot),
+                  resource.pathRelativeToTheWorkspaceRoot
                 ),
                 model: getMarshaller(content, { upgradeTo: "latest" }).parser.parse(),
                 type: "dmn",
@@ -404,11 +403,11 @@ function ExternalModelsManager({
               };
             }
           } else if (ext === ".pmml") {
-            const namespace = getPmmlNamespace({ fileRelativePath: pathRelativeToTheWorkspaceRoot });
+            const namespace = getPmmlNamespace({ fileRelativePath: resource.pathRelativeToTheWorkspaceRoot });
             if (namespace && namespacesSet.has(namespace)) {
               // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
               externalModelsIndex[namespace] = {
-                pathRelativeToTheOpenFile: pathRelativeToTheWorkspaceRoot,
+                pathRelativeToTheOpenFile: resource.pathRelativeToTheWorkspaceRoot,
                 model: XML2PMML(content),
                 type: "pmml",
               };
@@ -430,9 +429,9 @@ function ExternalModelsManager({
   }, [
     namespaces,
     onChange,
-    onRequestFileContent,
-    onRequestFileList,
-    thisDmnsAbsolutePath,
+    onRequestWorkspaceFileContent,
+    onRequestWorkspaceFilesList,
+    thisDmnsPathRelativeToTheWorkspaceRoot,
     externalUpdatesCount,
     workspaceRootAbsolutePath,
     externalModelsManagerDoneBootstraping,

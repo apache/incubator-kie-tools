@@ -136,8 +136,7 @@ function DmnEditorRootWrapper({
     [envelopeContext]
   );
 
-  // FIXME: TIAGO/LUIZ: Double-check. Should return pathRelativeToTheWorkspaceRoot.
-  const onRequestFileList = useCallback(
+  const onRequestWorkspaceFilesList = useCallback(
     async (resource: ResourcesList) => {
       return (
         envelopeContext?.channelApi.requests.kogitoWorkspace_resourceListRequest(resource) ?? new ResourcesList("", [])
@@ -146,8 +145,7 @@ function DmnEditorRootWrapper({
     [envelopeContext]
   );
 
-  // FIXME: TIAGO/LUIZ: Double-check. Should receive and return pathRelativeToTheWorkspaceRoot.
-  const onRequestFileContent = useCallback(
+  const onRequestWorkspaceFileContent = useCallback(
     async (resource: ResourceContent) => {
       return envelopeContext?.channelApi.requests.kogitoWorkspace_resourceContentRequest(resource);
     },
@@ -165,8 +163,8 @@ function DmnEditorRootWrapper({
     <DmnEditorRoot
       exposing={exposing}
       onNewEdit={onNewEdit}
-      onRequestFileList={onRequestFileList}
-      onRequestFileContent={onRequestFileContent}
+      onRequestWorkspaceFilesList={onRequestWorkspaceFilesList}
+      onRequestWorkspaceFileContent={onRequestWorkspaceFileContent}
       onOpenFileFromPathRelativeToTheWorkspaceRoot={onOpenFileFromPathRelativeToTheWorkspaceRoot}
       workspaceRootAbsolutePath={workspaceRootAbsolutePath}
     />

@@ -63,7 +63,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { useEnv } from "../env/hooks/EnvContext";
 import { useSettings } from "../settings/SettingsContext";
 import { EditorEnvelopeLocatorFactory } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
-import { relative } from "path";
+import * as __path from "path";
 
 export interface Props {
   workspaceId: string;
@@ -299,20 +299,18 @@ export function EditorPage(props: Props) {
   }, [alertsDispatch]);
 
   const handleOpenFile = useCallback(
-    // FIXME: TIAGO/LUIZ: Double check.
     async (pathRelativeToTheWorkspaceRoot: string) => {
       if (!workspaceFilePromise.data) {
         return;
       }
-      const relativePath = relative(DEFAULT_WORKSPACE_ROOT_ABSOLUTE_PATH, pathRelativeToTheWorkspaceRoot);
       const file = await workspaces.getFile({
         workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
-        relativePath,
+        relativePath: pathRelativeToTheWorkspaceRoot,
       });
 
       if (!file) {
         throw new Error(
-          `Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceFile.workspaceId}'`
+          `Can't find ${pathRelativeToTheWorkspaceRoot} on Workspace '${workspaceFilePromise.data.workspaceFile.workspaceId}'`
         );
       }
 

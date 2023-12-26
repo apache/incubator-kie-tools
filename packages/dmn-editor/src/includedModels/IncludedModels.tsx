@@ -77,7 +77,7 @@ export function IncludedModels() {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModelSelectOpen, setModelSelectOpen] = useState(false);
-  const [selectedPath, setSelectedPath] = useState<string | undefined>(undefined);
+  const [selectedPathRelativeToThisDmn, setSelectedPathRelativeToThisDmn] = useState<string | undefined>(undefined);
   const [importName, setImportName] = useState("");
 
   const [selectedModel, setSelectedModel] = useState<ExternalModel | undefined>(undefined);
@@ -85,7 +85,7 @@ export function IncludedModels() {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!selectedPath) {
+        if (!selectedPathRelativeToThisDmn) {
           return;
         }
 
@@ -93,24 +93,24 @@ export function IncludedModels() {
           return;
         }
 
-        onRequestExternalModelByPath(selectedPath)
+        onRequestExternalModelByPath(selectedPathRelativeToThisDmn)
           .then((externalModel) => {
             if (canceled.get()) {
               return;
             }
 
-            if (externalModel) {
-              setSelectedModel(externalModel);
-            } else {
+            if (!externalModel) {
               return;
             }
+
+            setSelectedModel(externalModel);
           })
           .catch((err) => {
             console.error(err);
             return;
           });
       },
-      [onRequestExternalModelByPath, selectedPath]
+      [onRequestExternalModelByPath, selectedPathRelativeToThisDmn]
     )
   );
 
@@ -121,22 +121,22 @@ export function IncludedModels() {
   const cancel = useCallback(() => {
     setModalOpen(false);
     setModelSelectOpen(false);
-    setSelectedPath(undefined);
+    setSelectedPathRelativeToThisDmn(undefined);
     setImportName("");
   }, []);
 
   const add = useCallback(() => {
     if (
-      !selectedPath ||
+      !selectedPathRelativeToThisDmn ||
       !selectedModel ||
       !DMN15_SPEC.IMPORT.name.isValid(generateUuid(), importName, allFeelVariableUniqueNames)
     ) {
       return;
     }
 
-    const xmlns = namespaceForNewImportsByFileExtension[extname(selectedPath)];
+    const xmlns = namespaceForNewImportsByFileExtension[extname(selectedPathRelativeToThisDmn)];
     if (!xmlns) {
-      throw new Error(`Can't import model with an unsupported file extension: '${selectedPath}'.`);
+      throw new Error(`Can't import model with an unsupported file extension: '${selectedPathRelativeToThisDmn}'.`);
     }
 
     const namespace =
@@ -164,18 +164,18 @@ export function IncludedModels() {
     }, 5000); // Give it time for the `externalModelsByNamespace` object to be reassembled externally.
 
     cancel();
-  }, [selectedPath, selectedModel, importName, allFeelVariableUniqueNames, dmnEditorStoreApi, cancel]);
+  }, [selectedPathRelativeToThisDmn, selectedModel, importName, allFeelVariableUniqueNames, dmnEditorStoreApi, cancel]);
 
-  const [modelPaths, setModelPaths] = useState<string[] | undefined>(undefined);
+  const [modelPathRelativeToThisDmn, setModelPathsRelativeToThisDmn] = useState<string[] | undefined>(undefined);
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
         onRequestExternalModelsAvailableToInclude?.()
-          .then((externalModels) => {
+          .then((paths) => {
             if (canceled.get()) {
               return;
             }
-            setModelPaths(externalModels);
+            setModelPathsRelativeToThisDmn(paths);
           })
           .catch((err) => {
             console.error(err);
@@ -186,7 +186,7 @@ export function IncludedModels() {
     )
   );
 
-  const externalModelsByPath = useMemo(
+  const externalModelsByPathsRelativeToThisDmn = useMemo(
     () =>
       Object.entries(externalModelsByNamespace ?? {}).reduce((acc, [namespace, externalModel]) => {
         if (!externalModel) {
@@ -199,13 +199,13 @@ export function IncludedModels() {
     [externalModelsByNamespace]
   );
 
-  const modelPathsNotYetIncluded = useMemo(
+  const modelPathsRelativeToThisDmnNotYetIncluded = useMemo(
     () =>
-      modelPaths &&
-      modelPaths.filter((path) => {
+      modelPathRelativeToThisDmn &&
+      modelPathRelativeToThisDmn.filter((path) => {
         // If externalModel does not exist, or there's no existing import with this
         // namespace, it can be listed as available for including.
-        const externalModel = externalModelsByPath.get(path);
+        const externalModel = externalModelsByPathsRelativeToThisDmn.get(path);
         return (
           !externalModel ||
           (externalModel.type === "dmn" && !importsByNamespace.get(externalModel.model.definitions["@_namespace"])) ||
@@ -213,16 +213,16 @@ export function IncludedModels() {
             !importsByNamespace.get(getPmmlNamespace({ fileRelativePath: externalModel.pathRelativeToTheOpenFile })))
         );
       }),
-    [externalModelsByPath, importsByNamespace, modelPaths]
+    [externalModelsByPathsRelativeToThisDmn, importsByNamespace, modelPathRelativeToThisDmn]
   );
 
   const pmmlPathsNotYetIncluded = useMemo(
-    () => modelPathsNotYetIncluded?.filter((s) => s.endsWith(".pmml")),
-    [modelPathsNotYetIncluded]
+    () => modelPathsRelativeToThisDmnNotYetIncluded?.filter((s) => s.endsWith(".pmml")),
+    [modelPathsRelativeToThisDmnNotYetIncluded]
   );
   const dmnPathsNotYetIncluded = useMemo(
-    () => modelPathsNotYetIncluded?.filter((s) => s.endsWith(".dmn")),
-    [modelPathsNotYetIncluded]
+    () => modelPathsRelativeToThisDmnNotYetIncluded?.filter((s) => s.endsWith(".dmn")),
+    [modelPathsRelativeToThisDmnNotYetIncluded]
   );
 
   const selectToggleRef = useRef<HTMLButtonElement>(null);
@@ -236,7 +236,7 @@ export function IncludedModels() {
         title={"Include model"}
         variant={ModalVariant.large}
         actions={
-          (modelPathsNotYetIncluded?.length ?? 0) > 0
+          (modelPathsRelativeToThisDmnNotYetIncluded?.length ?? 0) > 0
             ? [
                 <Button key="confirm" variant="primary" onClick={add}>
                   Include model
@@ -252,9 +252,9 @@ export function IncludedModels() {
               ]
         }
       >
-        {(modelPathsNotYetIncluded && (
+        {(modelPathsRelativeToThisDmnNotYetIncluded && (
           <>
-            {(modelPathsNotYetIncluded.length > 0 && (
+            {(modelPathsRelativeToThisDmnNotYetIncluded.length > 0 && (
               <>
                 <br />
                 {externalContextDescription}
@@ -271,16 +271,16 @@ export function IncludedModels() {
                       typeAheadAriaLabel={"Select a model to include..."}
                       placeholderText={"Select a model to include..."}
                       onToggle={setModelSelectOpen}
-                      onClear={() => setSelectedPath(undefined)}
+                      onClear={() => setSelectedPathRelativeToThisDmn(undefined)}
                       onSelect={(e, path) => {
                         if (typeof path !== "string") {
                           throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
                         }
 
-                        setSelectedPath(path);
+                        setSelectedPathRelativeToThisDmn(path);
                         setModelSelectOpen(false);
                       }}
-                      selections={selectedPath}
+                      selections={selectedPathRelativeToThisDmn}
                       isOpen={isModelSelectOpen}
                       aria-labelledby={"Included model selector"}
                       isGrouped={true}
@@ -294,7 +294,7 @@ export function IncludedModels() {
                               <SelectOption
                                 key={pathRelativeToTheWorkspaceRoot}
                                 description={dirname(pathRelativeToTheWorkspaceRoot)}
-                                value={pathRelativeToTheWorkspaceRoot}
+                                value={pathRelativeToThisDmn}
                               >
                                 {basename(pathRelativeToTheWorkspaceRoot)}
                               </SelectOption>
@@ -315,7 +315,7 @@ export function IncludedModels() {
                               <SelectOption
                                 key={pathRelativeToTheWorkspaceRoot}
                                 description={dirname(pathRelativeToTheWorkspaceRoot)}
-                                value={pathRelativeToTheWorkspaceRoot}
+                                value={pathRelativeToThisDmn}
                               >
                                 {basename(pathRelativeToTheWorkspaceRoot)}
                               </SelectOption>
@@ -347,7 +347,7 @@ export function IncludedModels() {
               </>
             )) || (
               <>
-                {((modelPaths?.length ?? 0) > 0 &&
+                {((modelPathRelativeToThisDmn?.length ?? 0) > 0 &&
                   `All models available${
                     externalContextName ? ` in '${externalContextName}' ` : ` `
                   }are already included.`) ||
