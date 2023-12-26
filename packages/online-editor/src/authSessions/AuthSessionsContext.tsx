@@ -38,7 +38,7 @@ import {
 } from "./AuthSessionApi";
 import { KieSandboxOpenShiftService } from "../devDeployments/services/KieSandboxOpenShiftService";
 import { isGitAuthProvider, isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
-import { switchExpression } from "../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";

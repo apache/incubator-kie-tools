@@ -18,19 +18,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { getCookie, setCookie } from "../cookies";
+import { useEffect, useMemo, useState } from "react";
+import { useSettings } from "../settings/SettingsContext";
 import { ExtendedServicesBridge } from "./ExtendedServicesBridge";
-import { DependentFeature, ExtendedServicesContext } from "./ExtendedServicesContext";
-import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
-import {
-  ExtendedServicesConfig,
-  EXTENDED_SERVICES_HOST_COOKIE_NAME,
-  EXTENDED_SERVICES_PORT_COOKIE_NAME,
-} from "../settings/SettingsContext";
-import { ExtendedServicesModal } from "./ExtendedServicesModal";
-import { useEnv } from "../env/hooks/EnvContext";
 import { ExtendedServicesClient } from "./ExtendedServicesClient";
+import { DependentFeature, ExtendedServicesContext } from "./ExtendedServicesContext";
+import { ExtendedServicesModal } from "./ExtendedServicesModal";
+import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 
 interface Props {
   children: React.ReactNode;
@@ -39,54 +33,28 @@ interface Props {
 const KIE_SANDBOX_EXTENDED_SERVICES_POLLING_TIME = 1000;
 
 export function ExtendedServicesContextProvider(props: Props) {
-  const env = useEnv();
+  const { settings } = useSettings();
   const [status, setStatus] = useState(ExtendedServicesStatus.AVAILABLE);
   const [isModalOpen, setModalOpen] = useState(false);
   const [installTriggeredBy, setInstallTriggeredBy] = useState<DependentFeature | undefined>(undefined);
   const [outdated, setOutdated] = useState(false);
 
-  const { port, host } = useMemo(() => {
-    const url = new URL(env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL);
-    const port = url.port;
-    url.port = "";
+  const config = useMemo(() => {
+    try {
+      const url = new URL(settings.extendedServices.host);
+      const port = settings.extendedServices.port;
+      if (port) {
+        url.port = port;
+      }
 
-    return {
-      port,
-      host: url.href,
-    };
-  }, [env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL]);
+      return new ExtendedServicesConfig(url.href, url.port);
+    } catch (error) {
+      return new ExtendedServicesConfig(settings.extendedServices.host ?? "", settings.extendedServices.port ?? "");
+    }
+  }, [settings.extendedServices.port, settings.extendedServices.host]);
 
-  const [config, setConfig] = useState(new ExtendedServicesConfig(host, port));
   const bridge = useMemo(() => new ExtendedServicesBridge(config.url.ping), [config]);
   const version = useMemo(() => process.env.WEBPACK_REPLACE__extendedServicesCompatibleVersion ?? "0.0.0", []);
-
-  const saveNewConfig = useCallback((newConfig: ExtendedServicesConfig) => {
-    setConfig(newConfig);
-    setCookie(EXTENDED_SERVICES_HOST_COOKIE_NAME, newConfig.host);
-    setCookie(EXTENDED_SERVICES_PORT_COOKIE_NAME, newConfig.port);
-  }, []);
-
-  useEffect(() => {
-    try {
-      const envUrl = new URL(env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL);
-      const envHost = `${envUrl.protocol}//${envUrl.hostname}`;
-      const envPort = envUrl.port;
-
-      const host = getCookie(EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envHost;
-      const port = getCookie(EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envPort;
-
-      const newConfig = new ExtendedServicesConfig(host, port);
-      setConfig(newConfig);
-
-      new ExtendedServicesBridge(newConfig.url.ping).check().then((checked) => {
-        if (checked) {
-          saveNewConfig(newConfig);
-        }
-      });
-    } catch (e) {
-      console.error("Invalid KIE_SANDBOX_EXTENDED_SERVICES_URL", e);
-    }
-  }, [env.env.KIE_SANDBOX_EXTENDED_SERVICES_URL, saveNewConfig]);
 
   useEffect(() => {
     // Pooling to detect either if ExtendedServices is running or has stopped
@@ -137,9 +105,8 @@ export function ExtendedServicesContextProvider(props: Props) {
       setStatus,
       setModalOpen,
       setInstallTriggeredBy,
-      saveNewConfig,
     }),
-    [client, config, installTriggeredBy, isModalOpen, outdated, saveNewConfig, status, version]
+    [client, config, installTriggeredBy, isModalOpen, outdated, status, version]
   );
 
   return (
@@ -148,4 +115,14 @@ export function ExtendedServicesContextProvider(props: Props) {
       <ExtendedServicesModal />
     </ExtendedServicesContext.Provider>
   );
+}
+export class ExtendedServicesConfig {
+  constructor(public readonly href: string, public readonly port: string) {}
+
+  public get url() {
+    return {
+      jitExecutor: `${this.href}`,
+      ping: `${this.href.endsWith("/") ? this.href : this.href + ":" + this.port + "/"}ping`,
+    };
+  }
 }

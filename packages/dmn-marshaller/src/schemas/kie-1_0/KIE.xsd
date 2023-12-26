@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
-  targetNamespace="http://www.drools.org/kie/dmn/1.2"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  targetNamespace="https://kie.org/dmn/extensions/1.0"
   elementFormDefault="qualified"
   attributeFormDefault="unqualified">
 
   <xsd:element name="ComponentsWidthsExtension" type="kie:tComponentsWidthsExtension" />
   <xsd:element name="ComponentWidths" type="kie:tComponentWidths" />
   <xsd:element name="attachment" type="kie:tAttachment" />
+  <xsd:attribute name="constraintType" type="tConstraintType" use="optional"/>
 
   <xsd:complexType name="tComponentsWidthsExtension">
     <xsd:sequence>
@@ -19,12 +20,20 @@
     <xsd:sequence>
       <xsd:element type="xsd:float" name="width" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
-    <xsd:attribute type="xsd:string" name="dmnElementRef" />
+    <xsd:attribute type="xsd:QName" name="dmnElementRef" />
   </xsd:complexType>
 
   <xsd:complexType name="tAttachment">
     <xsd:attribute type="xsd:anyURI" name="url" />
     <xsd:attribute type="xsd:string" name="name" />
   </xsd:complexType>
+
+  <xsd:simpleType name="tConstraintType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="enumeration"/>
+			<xsd:enumeration value="expression"/>
+			<xsd:enumeration value="range"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 
 </xsd:schema>

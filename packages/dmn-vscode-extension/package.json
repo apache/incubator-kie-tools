@@ -30,6 +30,7 @@
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools/dmn-editor-envelope": "workspace:*",
     "@kie-tools/kie-bc-editors": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*"
   },
@@ -64,11 +65,23 @@
           "dark": "./static/svg-icon-dark.png",
           "light": "./static/svg-icon-light.png"
         },
-        "title": "Get DMN Editor Preview SVG"
+        "title": "Generate DMN Editor preview SVG (legacy)"
       },
       {
         "command": "extension.kogito.silentlyGenerateSvgDmn",
-        "title": "Generate SVG without any notification"
+        "title": "Generate DMN Editor preview SVG (legacy) without any notification"
+      },
+      {
+        "command": "extension.kie.tools.generatePreviewSvgDmn",
+        "icon": {
+          "dark": "./static/svg-icon-dark.png",
+          "light": "./static/svg-icon-light.png"
+        },
+        "title": "Generate DMN preview SVG"
+      },
+      {
+        "command": "extension.kie.tools.silentlyGenerateSvgDmn",
+        "title": "Generate DMN preview SVG without any notification"
       }
     ],
     "configuration": {
@@ -92,13 +105,22 @@
     },
     "customEditors": [
       {
-        "displayName": "DMN/SceSim Editors",
+        "displayName": "KIE DMN/SceSim Editors (legacy)",
         "selector": [
           {
             "filenamePattern": "*.{dmn,scesim}"
           }
         ],
         "viewType": "kieKogitoWebviewEditorsDmn"
+      },
+      {
+        "displayName": "KIE DMN Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.dmn"
+          }
+        ],
+        "viewType": "kieToolsDmnEditor"
       }
     ],
     "javaExtensions": [
@@ -134,14 +156,23 @@
       "commandPalette": [
         {
           "command": "extension.kogito.getPreviewSvgDmn",
-          "when": "resourceLangId =~ /dmn/"
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieKogitoWebviewEditorsDmn'"
+        },
+        {
+          "command": "extension.kie.tools.generatePreviewSvgDmn",
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieToolsDmnEditor'"
         }
       ],
       "editor/title": [
         {
           "command": "extension.kogito.getPreviewSvgDmn",
           "group": "navigation",
-          "when": "resourceLangId =~ /dmn/"
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieKogitoWebviewEditorsDmn'"
+        },
+        {
+          "command": "extension.kie.tools.generatePreviewSvgDmn",
+          "group": "navigation",
+          "when": "resourceLangId =~ /dmn/ && activeCustomEditorId == 'kieToolsDmnEditor'"
         }
       ]
     }

@@ -1,0 +1,17 @@
+.kie-dmn-editor--constraint-input {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.kie-dmn-editor--constraint-invalid input {
+  color: red;
+  text-decoration: red dotted underline;
+  text-underline-position: under;
+}
+
+.kie-dmn-editor--constraint-invalid {
+  color: red;
+  text-decoration: red dotted underline;
+  text-underline-position: under;
+}

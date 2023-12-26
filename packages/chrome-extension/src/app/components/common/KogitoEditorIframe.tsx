@@ -77,6 +77,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
       fileExtension: props.openFileExtension,
       getFileContents: props.getFileContents,
       isReadOnly: props.readonly,
+      path: props.contentPath,
     };
   }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
 

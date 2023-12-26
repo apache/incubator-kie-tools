@@ -18,7 +18,7 @@
  */
 import * as React from "react";
 import { Reducer } from "react";
-import { enableAllPlugins } from "immer";
+import { enableMapSet, enablePatches } from "immer";
 import { createStore, Store } from "redux";
 import {
   Actions,
@@ -109,7 +109,8 @@ export class PMMLEditor extends React.Component<Props, State> {
       activeOperation: Operation.NONE,
     };
 
-    enableAllPlugins();
+    enableMapSet();
+    enablePatches();
 
     this.reducer = mergeReducers(PMMLReducer(this.history, this.validationRegistry), {
       Header: HeaderReducer(this.history),

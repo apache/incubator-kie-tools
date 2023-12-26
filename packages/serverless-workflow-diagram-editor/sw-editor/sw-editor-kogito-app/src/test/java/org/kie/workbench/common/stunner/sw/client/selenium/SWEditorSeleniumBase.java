@@ -75,7 +75,7 @@ public class SWEditorSeleniumBase {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.chromedriver().useMirror().setup();
+        WebDriverManager.chromedriver().setup();
         WebDriverManager.chromedriver().clearDriverCache().setup();
     }
 
