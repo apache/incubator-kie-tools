@@ -89,7 +89,7 @@ export const App = () => {
     const fileName = basename(pathRelativeToTheWorkspaceRoot);
 
     setEmbeddedEditorFile({
-      path: pathRelativeToTheWorkspaceRoot,
+      pathRelativeToTheWorkspaceRoot,
       getFileContents: async () => content,
       isReadOnly: false,
       fileExtension: extension,

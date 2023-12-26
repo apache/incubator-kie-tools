@@ -85,7 +85,7 @@ export const App = () => {
     const fileName = basename(pathRelativeToTheWorkspaceRoot);
 
     setEmbeddedEditorFile({
-      path: pathRelativeToTheWorkspaceRoot,
+      pathRelativeToTheWorkspaceRoot,
       getFileContents: async () => content,
       isReadOnly: false,
       fileExtension: extension,
@@ -94,7 +94,7 @@ export const App = () => {
   }, []);
 
   const onNewContent = useCallback(
-    (type: YardFileType) => {
+    (type: string) => {
       onSetContent(`new-document.yard.${type}`, "");
     },
     [onSetContent]

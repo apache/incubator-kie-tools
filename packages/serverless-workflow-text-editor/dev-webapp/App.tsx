@@ -81,7 +81,7 @@ export const App = () => {
     }
 
     const devWebAppSwfLanguageService = new DevWebAppSwfLanguageService();
-    return devWebAppSwfLanguageService.getLs(embeddedEditorFile.path!);
+    return devWebAppSwfLanguageService.getLs(embeddedEditorFile.pathRelativeToTheWorkspaceRoot!);
   }, [embeddedEditorFile]);
 
   const apiImpl = useMemo(() => {
@@ -129,13 +129,13 @@ export const App = () => {
     const content = await editor.getContent();
     const lsDiagnostics = await swfLanguageService.getDiagnostics({
       content: content,
-      uriPath: embeddedEditorFile.path!,
+      uriPath: embeddedEditorFile.pathRelativeToTheWorkspaceRoot!,
     });
 
     const notifications = lsDiagnostics.map(
       (lsDiagnostic) =>
         ({
-          path: "", // empty to not group them by path, as we're only validating one file.
+          pathRelativeToTheWorkspaceRoot: "", // empty to not group them by path, as we're only validating one file.
           severity: lsDiagnostic.severity === DiagnosticSeverity.Error ? "ERROR" : "WARNING",
           message: `${lsDiagnostic.message} [Line ${lsDiagnostic.range.start.line + 1}]`,
           type: "PROBLEM",
@@ -158,7 +158,7 @@ export const App = () => {
     const fileName = basename(pathRelativeToTheWorkspaceRoot);
 
     setEmbeddedEditorFile({
-      path: pathRelativeToTheWorkspaceRoot,
+      pathRelativeToTheWorkspaceRoot,
       getFileContents: async () => content,
       isReadOnly: false,
       fileExtension: extension,
