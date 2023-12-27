@@ -48,12 +48,12 @@ export const allPmmlImportNamespaces = new Set([
   "http://www.dmg.org/PMML-1_1",
 ]);
 
-export function getPmmlNamespace({ fileRelativePath }: { fileRelativePath: string }) {
-  return buildXmlHref({ namespace: KIE_PMML_NAMESPACE, id: fileRelativePath });
+export function getPmmlNamespace({ pathRelativeToTheOpenFile }: { pathRelativeToTheOpenFile: string }) {
+  return buildXmlHref({ namespace: KIE_PMML_NAMESPACE, id: pathRelativeToTheOpenFile });
 }
 
 export function getPmmlNamespaceFromDmnImport({ dmnImport }: { dmnImport: DMN15__tImport }) {
   return dmnImport["@_locationURI"]
-    ? getPmmlNamespace({ fileRelativePath: dmnImport["@_locationURI"] })
+    ? getPmmlNamespace({ pathRelativeToTheOpenFile: dmnImport["@_locationURI"] })
     : dmnImport["@_namespace"];
 }

@@ -143,7 +143,7 @@ export function IncludedModels() {
       selectedModel.type === "dmn"
         ? selectedModel.model.definitions["@_namespace"]!
         : selectedModel.type === "pmml"
-        ? getPmmlNamespace({ fileRelativePath: selectedModel.pathRelativeToTheOpenFile })
+        ? getPmmlNamespace({ pathRelativeToTheOpenFile: selectedModel.pathRelativeToTheOpenFile })
         : KIE_UNKNOWN_NAMESPACE;
 
     setModalOpen(false);
@@ -210,7 +210,9 @@ export function IncludedModels() {
           !externalModel ||
           (externalModel.type === "dmn" && !importsByNamespace.get(externalModel.model.definitions["@_namespace"])) ||
           (externalModel.type === "pmml" &&
-            !importsByNamespace.get(getPmmlNamespace({ fileRelativePath: externalModel.pathRelativeToTheOpenFile })))
+            !importsByNamespace.get(
+              getPmmlNamespace({ pathRelativeToTheOpenFile: externalModel.pathRelativeToTheOpenFile })
+            ))
         );
       }),
     [externalModelsByPathsRelativeToThisDmn, importsByNamespace, modelPathRelativeToThisDmn]

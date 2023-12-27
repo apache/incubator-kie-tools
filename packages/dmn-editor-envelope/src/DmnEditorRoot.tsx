@@ -379,6 +379,11 @@ function ExternalModelsManager({
 
           const content = resource.content ?? "";
 
+          const pathRelativeToTheOpenFile = __path.relative(
+            __path.dirname(thisDmnsPathRelativeToTheWorkspaceRoot),
+            resource.pathRelativeToTheWorkspaceRoot
+          );
+
           const ext = __path.extname(resource.pathRelativeToTheWorkspaceRoot);
           if (ext === ".dmn") {
             const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
@@ -393,21 +398,18 @@ function ExternalModelsManager({
               }
 
               externalModelsIndex[namespace] = {
-                pathRelativeToTheOpenFile: __path.relative(
-                  __path.dirname(thisDmnsPathRelativeToTheWorkspaceRoot),
-                  resource.pathRelativeToTheWorkspaceRoot
-                ),
+                pathRelativeToTheOpenFile,
                 model: getMarshaller(content, { upgradeTo: "latest" }).parser.parse(),
                 type: "dmn",
                 svg: "",
               };
             }
           } else if (ext === ".pmml") {
-            const namespace = getPmmlNamespace({ fileRelativePath: resource.pathRelativeToTheWorkspaceRoot });
+            const namespace = getPmmlNamespace({ pathRelativeToTheOpenFile });
             if (namespace && namespacesSet.has(namespace)) {
               // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
               externalModelsIndex[namespace] = {
-                pathRelativeToTheOpenFile: resource.pathRelativeToTheWorkspaceRoot,
+                pathRelativeToTheOpenFile,
                 model: XML2PMML(content),
                 type: "pmml",
               };
