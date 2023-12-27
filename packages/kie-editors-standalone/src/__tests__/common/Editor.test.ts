@@ -59,7 +59,7 @@ describe("createEditor", () => {
     editor.setContent("my-path", "my-content");
     expect(spyOnContentChangedNotification).toHaveBeenCalledWith(
       {
-        path: "my-path",
+        pathRelativeToTheWorkspaceRoot: "my-path",
         content: "my-content",
       },
       { showLoadingOverlay: true }
