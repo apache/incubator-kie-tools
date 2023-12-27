@@ -67,7 +67,7 @@ export const modelsByNamespace = Object.values(avaiableModels).reduce((acc, v) =
   if (v.type === "dmn") {
     acc[v.model.definitions["@_namespace"]] = v;
   } else if (v.type === "pmml") {
-    acc[getPmmlNamespace({ pathRelativeToTheOpenFile: v.pathRelativeToTheOpenFile })] = v;
+    acc[getPmmlNamespace({ normalizedPathRelativeToTheOpenFile: v.pathRelativeToTheOpenFile })] = v;
   }
   return acc;
 }, {} as DmnEditor.ExternalModelsIndex);

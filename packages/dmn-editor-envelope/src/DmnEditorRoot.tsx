@@ -405,7 +405,7 @@ function ExternalModelsManager({
               };
             }
           } else if (ext === ".pmml") {
-            const namespace = getPmmlNamespace({ pathRelativeToTheOpenFile });
+            const namespace = getPmmlNamespace({ normalizedPathRelativeToTheOpenFile: pathRelativeToTheOpenFile });
             if (namespace && namespacesSet.has(namespace)) {
               // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
               externalModelsIndex[namespace] = {
