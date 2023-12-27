@@ -282,7 +282,6 @@ function spawnCommandString(commandString: string) {
 }
 
 function shell() {
-  return { shell: "pwsh" };
   return process.platform === "win32" ? { shell: "powershell.exe" } : {};
 }
 
