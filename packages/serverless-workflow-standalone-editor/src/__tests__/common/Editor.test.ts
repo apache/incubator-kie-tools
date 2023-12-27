@@ -41,7 +41,7 @@ describe("createEditor", () => {
 
   const stateControl = new StateControl();
 
-  test("setContent calls envelope with path and content", () => {
+  test("setContent calls envelope with path relative to the workspace root and content", () => {
     const editor = createEditor(
       envelopeServer.envelopeApi,
       stateControl,
