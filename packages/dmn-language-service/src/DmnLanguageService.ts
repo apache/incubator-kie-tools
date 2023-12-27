@@ -20,11 +20,10 @@
 import { DmnDocumentData } from "./DmnDocumentData";
 import { DmnDecision } from "./DmnDecision";
 import * as path from "path";
+import { DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 
-const IMPORT = "import";
 const INPUT_DATA = "inputData";
 const XML_MIME = "text/xml";
-const LOCATION_URI_ATTRIBUTE = "locationURI";
 const DECISION_NAME_ATTRIBUTE = "name";
 const NAMESPACE = "namespace";
 const DMN_NAME = "name";
@@ -38,32 +37,53 @@ export interface DmnLanguageServiceImportedModelResources {
 
 export class DmnLanguageService {
   private readonly parser = new DOMParser();
-  private readonly importTagRegExp = new RegExp(`([a-z]*:)?(${IMPORT})`);
   private readonly inputDataRegEx = new RegExp(`([a-z]*:)?(${INPUT_DATA})`);
   private readonly decisionsTagRegExp = new RegExp(`([a-z]*:)?(${DECISION})`);
   private readonly definitionsTagRegExp = new RegExp(`([a-z]*:)?(${DEFINITIONS})`);
+  private marshaller: DmnMarshaller;
+  private importedModelsByPathsRelativeToWorkspaceRoot = new Set<string>();
 
   constructor(
     private readonly args: {
-      getDmnImportedModelResource: (
-        importedModelPathRelativeToWorkspaceRoot: string
+      getModelContentFromPathRelativeToWorkspaceRoot: (
+        pathRelativeToWorkspaceRoot: string
       ) => Promise<DmnLanguageServiceImportedModelResources | undefined>;
+      modelContent: string;
+      pathRelativeToWorkspaceRoot: string;
     }
-  ) {}
+  ) {
+    if (args.modelContent !== "") {
+      this.marshaller = getMarshaller(args.modelContent);
+    }
+    this.importedModelsByPathsRelativeToWorkspaceRoot.add(args.pathRelativeToWorkspaceRoot);
+  }
 
   private getImportedModelPathRelativeToWorkspaceRoot(
     modelResources: DmnLanguageServiceImportedModelResources
   ): string[] {
-    const xmlContent = this.parser.parseFromString(modelResources.content, XML_MIME);
-    const importTag = this.importTagRegExp.exec(modelResources.content);
-    const importedModels = xmlContent.getElementsByTagName(importTag?.[0] ?? IMPORT);
-    return Array.from(importedModels)
-      .map((importedModel) =>
-        path.posix.join(
+    const marshaller: DmnMarshaller = getMarshaller(modelResources.content);
+    const definitions = marshaller.parser.parse()?.definitions;
+
+    if (!definitions) {
+      return [];
+    }
+    if (!definitions.import) {
+      return [];
+    }
+
+    return definitions.import
+      .flatMap((importedModel) => {
+        const importedModelPathRelativeToWorkspaceRoot = path.posix.join(
           path.dirname(modelResources.pathRelativeToWorkspaceRoot),
-          path.normalize(importedModel.getAttribute(LOCATION_URI_ATTRIBUTE) ?? "")
-        )
-      )
+          path.normalize(importedModel["@_locationURI"] ?? "")
+        );
+        // Can't import a model that already is imported
+        if (this.importedModelsByPathsRelativeToWorkspaceRoot.has(importedModelPathRelativeToWorkspaceRoot)) {
+          return [];
+        }
+        this.importedModelsByPathsRelativeToWorkspaceRoot.add(importedModelPathRelativeToWorkspaceRoot);
+        return importedModelPathRelativeToWorkspaceRoot;
+      })
       .filter((e) => e !== null) as string[];
   }
 
@@ -110,7 +130,7 @@ export class DmnLanguageService {
   }
 
   // recursively get imported models
-  public async getAllImportedModelsResources(
+  public async recursivelyGetAllImportedModelsResources(
     modelsResources: DmnLanguageServiceImportedModelResources[]
   ): Promise<DmnLanguageServiceImportedModelResources[]> {
     // get imported models resources
@@ -120,16 +140,31 @@ export class DmnLanguageService {
       const importedModelsResources = (
         await Promise.all(
           importedModelsPathsRelativeToWorkspaceRoot.map((importedModelPathRelativeToOpenFile) =>
-            this.args.getDmnImportedModelResource(importedModelPathRelativeToOpenFile)
+            this.args.getModelContentFromPathRelativeToWorkspaceRoot(importedModelPathRelativeToOpenFile)
           )
         )
       ).filter((e) => e !== undefined) as DmnLanguageServiceImportedModelResources[];
 
       if (importedModelsResources.length > 0) {
-        return [...importedModelsResources, ...(await this.getAllImportedModelsResources(importedModelsResources))];
+        return [
+          ...importedModelsResources,
+          ...(await this.recursivelyGetAllImportedModelsResources(importedModelsResources)),
+        ];
       }
       return [...importedModelsResources];
     }
     return [];
+  }
+
+  public async getAllImportedModelsResources(modelPath: string) {
+    const modelResource = [
+      (await this.args.getModelContentFromPathRelativeToWorkspaceRoot(modelPath)) ??
+        ([] as DmnLanguageServiceImportedModelResources[]),
+    ].flatMap((e) => e);
+    return this.recursivelyGetAllImportedModelsResources(modelResource);
+  }
+
+  public getDmnSpecVersion() {
+    return this.marshaller?.originalVersion;
   }
 }

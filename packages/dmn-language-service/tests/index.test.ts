@@ -31,7 +31,7 @@ const tests = [
 
 describe("DmnLanguageService", () => {
   const service = new DmnLanguageService({
-    getDmnImportedModelResource: () =>
+    getModelContentFromPathRelativeToWorkspaceRoot: () =>
       new Promise((res) =>
         res({
           pathRelativeToWorkspaceRoot: "",
@@ -70,9 +70,9 @@ describe("DmnLanguageService", () => {
     );
   });
 
-  it("getAllImportedModelsResources - empty", async () => {
+  it("recursivelyGetAllImportedModelsResources - empty", async () => {
     const service = new DmnLanguageService({
-      getDmnImportedModelResource: () =>
+      getModelContentFromPathRelativeToWorkspaceRoot: () =>
         new Promise((res) =>
           res({
             pathRelativeToWorkspaceRoot: "",
@@ -81,10 +81,10 @@ describe("DmnLanguageService", () => {
         ),
     });
 
-    expect(await service.getAllImportedModelsResources([])).toEqual([]);
+    expect(await service.recursivelyGetAllImportedModelsResources([])).toEqual([]);
   });
 
-  it("getAllImportedModelsResources - get resources", async () => {
+  it("recursivelyGetAllImportedModelsResources - get resources", async () => {
     const absolutePathOfModelWithNestedIncludedModel = resolve(__dirname, "./fixtures/recursive.dmn");
     const modelContent = readFileSync(absolutePathOfModelWithNestedIncludedModel, "utf8");
 
@@ -96,10 +96,12 @@ describe("DmnLanguageService", () => {
       content: includedModelContent,
     };
 
-    const service = new DmnLanguageService({ getDmnImportedModelResource: () => new Promise((res) => res(expected)) });
+    const service = new DmnLanguageService({
+      getModelContentFromPathRelativeToWorkspaceRoot: () => new Promise((res) => res(expected)),
+    });
 
     expect(
-      await service.getAllImportedModelsResources([
+      await service.recursivelyGetAllImportedModelsResources([
         { content: modelContent, pathRelativeToWorkspaceRoot: absolutePathOfModelWithNestedIncludedModel },
       ])
     ).toEqual([expected]);
@@ -122,7 +124,9 @@ describe("DmnLanguageService", () => {
       "My Model Name",
       [new DmnDecision("Decision-1"), new DmnDecision("Decision-2"), new DmnDecision("Decision-3")]
     );
-    const service = new DmnLanguageService({ getDmnImportedModelResource: () => new Promise((res) => res(expected)) });
+    const service = new DmnLanguageService({
+      getModelContentFromPathRelativeToWorkspaceRoot: () => new Promise((res) => res(expected)),
+    });
 
     expect(service.getDmnDocumentData(modelContent)).toEqual(dmnDocumentData);
   });
