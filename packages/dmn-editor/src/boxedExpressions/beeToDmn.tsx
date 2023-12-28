@@ -142,12 +142,12 @@ export function beeToDmn(
                   contextEntry: [
                     {
                       "@_id": expression.classFieldId,
-                      expression: { __$$element: "literalExpression", text: { __$$text: expression.className! } },
+                      expression: { __$$element: "literalExpression", text: { __$$text: expression.className ?? "" } },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName },
                     },
                     {
                       "@_id": expression.methodFieldId,
-                      expression: { __$$element: "literalExpression", text: { __$$text: expression.methodName! } },
+                      expression: { __$$element: "literalExpression", text: { __$$text: expression.methodName ?? "" } },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName },
                     },
                   ],
@@ -160,12 +160,12 @@ export function beeToDmn(
                   contextEntry: [
                     {
                       "@_id": expression.documentFieldId,
-                      expression: { __$$element: "literalExpression", text: { __$$text: expression.document! } },
+                      expression: { __$$element: "literalExpression", text: { __$$text: expression.document ?? "" } },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName },
                     },
                     {
                       "@_id": expression.modelFieldId,
-                      expression: { __$$element: "literalExpression", text: { __$$text: expression.model! } },
+                      expression: { __$$element: "literalExpression", text: { __$$text: expression.model ?? "" } },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName },
                     },
                   ],
@@ -214,7 +214,7 @@ export function beeToDmn(
         "@_id": expression.id,
         "@_label": expression.name,
         "@_typeRef": expression.dataType,
-        text: { __$$text: expression.content! },
+        text: { __$$text: expression.content ?? "" },
       };
     case ExpressionDefinitionLogicType.Relation:
       __widths.set(expression.id, [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH]);
