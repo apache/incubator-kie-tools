@@ -31,6 +31,8 @@ const tests = [
 
 describe("DmnLanguageService", () => {
   const service = new DmnLanguageService({
+    modelContent: "",
+    pathRelativeToWorkspaceRoot: "",
     getModelContentFromPathRelativeToWorkspaceRoot: () =>
       new Promise((res) =>
         res({
@@ -72,6 +74,8 @@ describe("DmnLanguageService", () => {
 
   it("recursivelyGetAllImportedModelsResources - empty", async () => {
     const service = new DmnLanguageService({
+      modelContent: "",
+      pathRelativeToWorkspaceRoot: "",
       getModelContentFromPathRelativeToWorkspaceRoot: () =>
         new Promise((res) =>
           res({
@@ -97,6 +101,8 @@ describe("DmnLanguageService", () => {
     };
 
     const service = new DmnLanguageService({
+      modelContent: "",
+      pathRelativeToWorkspaceRoot: "",
       getModelContentFromPathRelativeToWorkspaceRoot: () => new Promise((res) => res(expected)),
     });
 
@@ -125,6 +131,8 @@ describe("DmnLanguageService", () => {
       [new DmnDecision("Decision-1"), new DmnDecision("Decision-2"), new DmnDecision("Decision-3")]
     );
     const service = new DmnLanguageService({
+      modelContent: "",
+      pathRelativeToWorkspaceRoot: "",
       getModelContentFromPathRelativeToWorkspaceRoot: () => new Promise((res) => res(expected)),
     });
 
