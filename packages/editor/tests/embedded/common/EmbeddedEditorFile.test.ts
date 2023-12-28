@@ -25,7 +25,7 @@ describe("EmbeddedEditorFile", () => {
       fileName: "new-file",
       isReadOnly: true,
       getFileContents: () => Promise.resolve("content"),
-      pathRelativeToTheWorkspaceRoot: "new-file.dmn",
+      normalizedPosixPathRelativeToTheWorkspaceRoot: "new-file.dmn",
     };
 
     expect(file.fileName).toEqual("new-file");

@@ -70,7 +70,10 @@ export const EditorComponent = ({
   }, [id, readOnly, origin, resources, initialContent, openEditor]);
 
   const setEditorContents = useCallback((resource: UploadedFile) => {
-    editorRef.current?.setContent(resource.value.pathRelativeToTheWorkspaceRoot, resource.value.content ?? "");
+    editorRef.current?.setContent(
+      resource.value.normalizedPosixPathRelativeToTheWorkspaceRoot,
+      resource.value.content ?? ""
+    );
     setModelName(resource.name);
   }, []);
 
@@ -89,7 +92,7 @@ export const EditorComponent = ({
       {
         name: modelName,
         value: {
-          pathRelativeToTheWorkspaceRoot: modelName,
+          normalizedPosixPathRelativeToTheWorkspaceRoot: modelName,
           type: ContentType.TEXT,
           content,
         },

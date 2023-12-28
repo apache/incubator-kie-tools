@@ -32,7 +32,7 @@ export function validationPromise(yaml: String): Promise<Notification[]> {
         for (const result of validationResult.result) {
           for (const location of result.locations) {
             notifications.push({
-              pathRelativeToTheWorkspaceRoot: "",
+              normalizedPosixPathRelativeToTheWorkspaceRoot: "",
               severity: "ERROR",
               message: result.issue,
               type: "PROBLEM",

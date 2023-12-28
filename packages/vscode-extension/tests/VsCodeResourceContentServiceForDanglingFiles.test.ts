@@ -21,26 +21,26 @@ import * as __path from "path";
 import { VsCodeResourceContentServiceForDanglingFiles } from "@kie-tools-core/vscode-extension/dist/VsCodeResourceContentServiceForDanglingFiles";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
-const testWorkspace = __path.resolve(__dirname, "test-workspace") + __path.sep;
+const testWorkspaceAbsoluteFsPath = __path.resolve(__dirname, "test-workspace") + __path.sep;
 
 describe("VsCodeResourceContentServiceForDanglingFiles", () => {
   test("Test list", async () => {
-    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles(testWorkspace);
+    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles(testWorkspaceAbsoluteFsPath);
     const txtPattern = "*.txt";
 
     const resourcesListWithAssets = await resourceContentService.list(txtPattern);
 
     expect(resourcesListWithAssets).not.toBeNull();
     expect(resourcesListWithAssets.pattern).toBe(txtPattern);
-    expect(resourcesListWithAssets.pathsRelativeToTheWorkspaceRoot).toHaveLength(2);
-    expect(resourcesListWithAssets.pathsRelativeToTheWorkspaceRoot).toContain("resource1.txt");
-    expect(resourcesListWithAssets.pathsRelativeToTheWorkspaceRoot).toContain("resource2.txt");
+    expect(resourcesListWithAssets.normalizedPosixPathsRelativeToTheWorkspaceRoot).toHaveLength(2);
+    expect(resourcesListWithAssets.normalizedPosixPathsRelativeToTheWorkspaceRoot).toContain("resource1.txt");
+    expect(resourcesListWithAssets.normalizedPosixPathsRelativeToTheWorkspaceRoot).toContain("resource2.txt");
 
     const pdfPattern = "*.pdf";
     const resourcesListEmpty = await resourceContentService.list(pdfPattern);
     expect(resourcesListEmpty).not.toBeNull();
     expect(resourcesListEmpty.pattern).toBe(pdfPattern);
-    expect(resourcesListEmpty.pathsRelativeToTheWorkspaceRoot).toHaveLength(0);
+    expect(resourcesListEmpty.normalizedPosixPathsRelativeToTheWorkspaceRoot).toHaveLength(0);
   });
 
   test("Test list with errors", async () => {
@@ -53,17 +53,17 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
 
     expect(resourcesList).not.toBeNull();
     expect(resourcesList.pattern).toBe(pattern);
-    expect(resourcesList.pathsRelativeToTheWorkspaceRoot).toHaveLength(0);
+    expect(resourcesList.normalizedPosixPathsRelativeToTheWorkspaceRoot).toHaveLength(0);
   });
 
   test("Test get", async () => {
-    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles(testWorkspace);
+    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles(testWorkspaceAbsoluteFsPath);
 
     const resource1Path = "resource1.txt";
     const resource1Content = await resourceContentService.get(resource1Path);
 
     expect(resource1Content).not.toBeNull();
-    expect(resource1Content?.pathRelativeToTheWorkspaceRoot).toBe(resource1Path);
+    expect(resource1Content?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(resource1Path);
     expect(resource1Content?.type).toBe(ContentType.TEXT);
     expect(resource1Content?.content).toBe("content for resource 1");
 
@@ -71,7 +71,7 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
     const resource2Content = await resourceContentService.get(resource2Path);
 
     expect(resource2Content).not.toBeNull();
-    expect(resource2Content?.pathRelativeToTheWorkspaceRoot).toBe(resource2Path);
+    expect(resource2Content?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(resource2Path);
     expect(resource2Content?.type).toBe(ContentType.TEXT);
     expect(resource2Content?.content).toBe("content for resource 2");
 
@@ -79,7 +79,7 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
     const iconContent = await resourceContentService.get(iconPath, { type: ContentType.BINARY });
 
     expect(iconContent).not.toBeNull();
-    expect(iconContent?.pathRelativeToTheWorkspaceRoot).toBe(iconPath);
+    expect(iconContent?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(iconPath);
     expect(iconContent?.type).toBe(ContentType.BINARY);
     expect(iconContent?.content).not.toBeNull();
   });
@@ -93,7 +93,7 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
     const txtResourceContent = await resourceContentService.get(txtResourcePath);
 
     expect(txtResourceContent).not.toBeNull();
-    expect(txtResourceContent?.pathRelativeToTheWorkspaceRoot).toBe(txtResourcePath);
+    expect(txtResourceContent?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(txtResourcePath);
     expect(txtResourceContent?.type).toBe(ContentType.TEXT);
     expect(txtResourceContent?.content).toBe(undefined);
 
@@ -101,7 +101,7 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
     const binaryContent = await resourceContentService.get(binaryPath, { type: ContentType.BINARY });
 
     expect(binaryContent).not.toBeNull();
-    expect(binaryContent?.pathRelativeToTheWorkspaceRoot).toBe(binaryPath);
+    expect(binaryContent?.normalizedPosixPathRelativeToTheWorkspaceRoot).toBe(binaryPath);
     expect(binaryContent?.type).toBe(ContentType.BINARY);
     expect(binaryContent?.content).toBe(undefined);
   });

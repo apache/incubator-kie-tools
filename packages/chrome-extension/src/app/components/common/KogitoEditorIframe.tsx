@@ -62,7 +62,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
 
   const onResourceContentRequest = useCallback(
     (request: ResourceContentRequest) =>
-      resourceContentService.get(request.pathRelativeToTheWorkspaceRoot, request.opts),
+      resourceContentService.get(request.normalizedPosixPathRelativeToTheWorkspaceRoot, request.opts),
     [resourceContentService]
   );
 
@@ -78,7 +78,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
       fileExtension: props.openFileExtension,
       getFileContents: props.getFileContents,
       isReadOnly: props.readonly,
-      pathRelativeToTheWorkspaceRoot: props.contentPath,
+      normalizedPosixPathRelativeToTheWorkspaceRoot: props.contentPath,
     };
   }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
 

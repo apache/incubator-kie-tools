@@ -41,13 +41,13 @@ interface Props {
   onNewEdit: (edit: WorkspaceEdit) => void;
 
   /**
-   * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, notifications) to report all validation
+   * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot, notifications) to report all validation
    * notifications to the Channel that will replace existing notification for the path. Increases the
    * decoupling of the ServerlessWorkflowEditor from the Channel.
-   * @param pathRelativeToTheWorkspaceRoot The path that references the Notification
+   * @param normalizedPosixPathRelativeToTheWorkspaceRoot The path that references the Notification
    * @param notifications List of Notifications
    */
-  setNotifications: (pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => void;
+  setNotifications: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => void;
 
   /**
    * ChannelType where the component is running.
@@ -57,7 +57,7 @@ interface Props {
 }
 
 export type ServerlessWorkflowEditorRef = {
-  setContent(pathRelativeToTheWorkspaceRoot: string, content: string): Promise<void>;
+  setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void>;
 };
 
 type ServerlessWorkflowEditorContent = {
@@ -77,11 +77,11 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
     forwardedRef,
     () => {
       return {
-        setContent: (pathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
+        setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
           try {
             setInitialContent({
               originalContent: newContent,
-              path: pathRelativeToTheWorkspaceRoot,
+              path: normalizedPosixPathRelativeToTheWorkspaceRoot,
             });
             return Promise.resolve();
           } catch (e) {
@@ -131,11 +131,11 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
       if (!initialContent) {
         return;
       }
-      const pathRelativeToTheWorkspaceRoot = initialContent.path; // FIXME: TIAGO/LUIZ: Fix this? Should've been `pathRelativeToTheWorkspaceRoot`.
+      const normalizedPosixPathRelativeToTheWorkspaceRoot = initialContent.path; // FIXME: TIAGO/LUIZ: Fix this? Should've been `normalizedPosixPathRelativeToTheWorkspaceRoot`.
 
       const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
         type: "PROBLEM",
-        pathRelativeToTheWorkspaceRoot,
+        normalizedPosixPathRelativeToTheWorkspaceRoot,
         severity: "ERROR",
         message: `${error.message}`,
         position: {
@@ -145,7 +145,7 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
           endColumn: error.endColumn,
         },
       }));
-      props.setNotifications.apply(pathRelativeToTheWorkspaceRoot, notifications);
+      props.setNotifications.apply(normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
     },
     [initialContent, props.setNotifications]
   );

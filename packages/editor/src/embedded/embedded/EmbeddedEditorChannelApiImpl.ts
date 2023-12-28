@@ -60,13 +60,16 @@ export class EmbeddedEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public async kogitoEditor_contentRequest() {
     const content = await this.file.getFileContents();
-    return { content: content ?? "", pathRelativeToTheWorkspaceRoot: this.file.pathRelativeToTheWorkspaceRoot };
+    return {
+      content: content ?? "",
+      normalizedPosixPathRelativeToTheWorkspaceRoot: this.file.normalizedPosixPathRelativeToTheWorkspaceRoot,
+    };
   }
 
   public async kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
     return (
       this.overrides.kogitoWorkspace_resourceContentRequest?.(request) ??
-      new ResourceContent(request.pathRelativeToTheWorkspaceRoot, undefined)
+      new ResourceContent(request.normalizedPosixPathRelativeToTheWorkspaceRoot, undefined)
     );
   }
 
@@ -74,8 +77,8 @@ export class EmbeddedEditorChannelApiImpl implements KogitoEditorChannelApi {
     return this.overrides.kogitoWorkspace_resourceListRequest?.(request) ?? new ResourcesList(request.pattern, []);
   }
 
-  public kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot: string): void {
-    this.overrides.kogitoWorkspace_openFile?.(pathRelativeToTheWorkspaceRoot);
+  public kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.overrides.kogitoWorkspace_openFile?.(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
   public kogitoEditor_ready(): void {
@@ -99,13 +102,13 @@ export class EmbeddedEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public kogitoNotifications_setNotifications(
-    pathRelativeToTheWorkspaceRoot: string,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ): void {
-    this.overrides.kogitoNotifications_setNotifications?.(pathRelativeToTheWorkspaceRoot, notifications);
+    this.overrides.kogitoNotifications_setNotifications?.(normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
   }
 
-  public kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void {
-    this.overrides.kogitoNotifications_removeNotifications?.(pathRelativeToTheWorkspaceRoot);
+  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.overrides.kogitoNotifications_removeNotifications?.(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 }

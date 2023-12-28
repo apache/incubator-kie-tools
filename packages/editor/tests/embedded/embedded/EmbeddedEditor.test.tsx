@@ -37,7 +37,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
-    pathRelativeToTheWorkspaceRoot: "test.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "test.dmn",
   };
 
   const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [
@@ -93,7 +93,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     editorRef.current?.setContent("test-path-relative-to-the-workspace-root", "content");
 
     expect(spyOnContentChangedNotification).toBeCalledWith(
-      { content: "content", pathRelativeToTheWorkspaceRoot: "test-path-relative-to-the-workspace-root" },
+      { content: "content", normalizedPosixPathRelativeToTheWorkspaceRoot: "test-path-relative-to-the-workspace-root" },
       { showLoadingOverlay: false }
     );
   });
@@ -207,7 +207,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "kogitoWorkspace_resourceContentRequest",
-      data: [{ pathRelativeToTheWorkspaceRoot: "" } as ResourceContent],
+      data: [{ normalizedPosixPathRelativeToTheWorkspaceRoot: "" } as ResourceContent],
     });
 
     expect(onResourceContentRequest).toBeCalled();
@@ -233,7 +233,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "kogitoWorkspace_resourceListRequest",
-      data: [{ pattern: "", pathsRelativeToTheWorkspaceRoot: [] } as ResourcesList],
+      data: [{ pattern: "", normalizedPosixPathsRelativeToTheWorkspaceRoot: [] } as ResourcesList],
     });
 
     expect(onResourceListRequest).toBeCalled();

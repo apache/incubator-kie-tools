@@ -58,7 +58,7 @@ export type DmnEditorRootProps = {
   onNewEdit: (edit: WorkspaceEdit) => void;
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
-  onOpenFileFromPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
+  onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePath: string;
 };
 
@@ -66,7 +66,7 @@ export type DmnEditorRootState = {
   marshaller: DmnMarshaller<typeof DMN_LATEST_VERSION> | undefined;
   stack: DmnLatestModel[];
   pointer: number;
-  openFilePathRelativeToTheWorkspaceRoot: string | undefined;
+  openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
   readonly: boolean;
   externalModelsManagerDoneBootstraping: boolean;
@@ -83,7 +83,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       marshaller: undefined,
       stack: [],
       pointer: -1,
-      openFilePathRelativeToTheWorkspaceRoot: undefined,
+      openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: undefined,
       readonly: true,
       externalModelsManagerDoneBootstraping: false,
     };
@@ -109,7 +109,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     return this.state.marshaller.builder.build(this.model);
   }
 
-  public async setContent(openFilePathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+  public async setContent(
+    openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    content: string
+  ): Promise<void> {
     const marshaller = getMarshaller(content || EMPTY_DMN(), { upgradeTo: "latest" });
 
     // Save stack
@@ -118,7 +121,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     // Set the model and path for external models manager.
     this.setState((prev) => {
       savedStackPointer = [...prev.stack];
-      return { stack: [marshaller.parser.parse()], openFilePathRelativeToTheWorkspaceRoot, pointer: 0 };
+      return { stack: [marshaller.parser.parse()], openFilenormalizedPosixPathRelativeToTheWorkspaceRoot, pointer: 0 };
     });
 
     // Wait the external manager models to load.
@@ -127,11 +130,14 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     // Set the valeus to render the DMN Editor.
     this.setState((prev) => {
       // External change to the same file.
-      if (prev.openFilePathRelativeToTheWorkspaceRoot === openFilePathRelativeToTheWorkspaceRoot) {
+      if (
+        prev.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot ===
+        openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+      ) {
         const newStack = savedStackPointer.slice(0, prev.pointer + 1);
         return {
           marshaller,
-          openFilePathRelativeToTheWorkspaceRoot,
+          openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
           stack: [...newStack, marshaller.parser.parse()],
           readonly: false,
           pointer: newStack.length,
@@ -143,7 +149,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       else {
         return {
           marshaller,
-          openFilePathRelativeToTheWorkspaceRoot,
+          openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
           stack: [marshaller.parser.parse()],
           readonly: false,
           pointer: 0,
@@ -173,12 +179,15 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
           pointer: newStack.length,
         };
       },
-      () => this.props.onNewEdit({ id: `${this.state.openFilePathRelativeToTheWorkspaceRoot}__${generateUuid()}` })
+      () =>
+        this.props.onNewEdit({
+          id: `${this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot}__${generateUuid()}`,
+        })
     );
   };
 
   private onRequestExternalModelsAvailableToInclude: DmnEditor.OnRequestExternalModelsAvailableToInclude = async () => {
-    if (!this.state.openFilePathRelativeToTheWorkspaceRoot) {
+    if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return [];
     }
 
@@ -187,51 +196,56 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       opts: { type: SearchType.TRAVERSAL },
     });
 
-    return list.pathsRelativeToTheWorkspaceRoot.flatMap((p) =>
+    return list.normalizedPosixPathsRelativeToTheWorkspaceRoot.flatMap((p) =>
       // Do not show this DMN on the list
-      p === this.state.openFilePathRelativeToTheWorkspaceRoot
+      p === this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
         ? []
-        : __path.relative(__path.dirname(this.state.openFilePathRelativeToTheWorkspaceRoot!), p)
+        : __path.relative(__path.dirname(this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
     );
   };
 
   private onRequestToResolvePathRelativeToTheOpenFile: DmnEditor.OnRequestToResolvePath = (
-    pathRelativeToTheOpenFile
+    normalizedPosixPathRelativeToTheOpenFile
   ) => {
-    const pathRelativeToTheWorkspaceRoot = __path
-      .resolve(__path.dirname(this.state.openFilePathRelativeToTheWorkspaceRoot!), pathRelativeToTheOpenFile)
+    const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
+      .resolve(
+        __path.dirname(this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot!),
+        normalizedPosixPathRelativeToTheOpenFile
+      )
       .substring(1); // Remove leading slash.
 
-    return pathRelativeToTheWorkspaceRoot;
+    return normalizedPosixPathRelativeToTheWorkspaceRoot;
 
     // Example:
     // this.state.openFileAbsolutePath = /Users/ljmotta/packages/dmns/Dmn.dmn
-    // pathRelativeToTheOpenFile = ../../tmp/Tmp.dmn
+    // normalizedPosixPathRelativeToTheOpenFile = ../../tmp/Tmp.dmn
     // workspaceRootAbsolutePath = /Users/ljmotta
     // resolvedAbsolutePath = /Users/ljmotta/tmp/Tmp.dmn
-    // return (which is the pathRelativeToTheWorkspaceRoot) = tmp/Tmp.dmn
+    // return (which is the normalizedPosixPathRelativeToTheWorkspaceRoot) = tmp/Tmp.dmn
   };
 
   private onRequestExternalModelByPathsRelativeToTheOpenFile: DmnEditor.OnRequestExternalModelByPath = async (
-    pathRelativeToTheOpenFile
+    normalizedPosixPathRelativeToTheOpenFile
   ) => {
-    const pathRelativeToTheWorkspaceRoot = this.onRequestToResolvePathRelativeToTheOpenFile(pathRelativeToTheOpenFile);
+    const normalizedPosixPathRelativeToTheWorkspaceRoot = this.onRequestToResolvePathRelativeToTheOpenFile(
+      normalizedPosixPathRelativeToTheOpenFile
+    );
     const resource = await this.props.onRequestWorkspaceFileContent({
-      pathRelativeToTheWorkspaceRoot,
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
       opts: { type: ContentType.TEXT },
     });
 
-    const ext = __path.extname(pathRelativeToTheOpenFile);
+    const ext = __path.extname(normalizedPosixPathRelativeToTheOpenFile);
     if (ext === ".dmn") {
       return {
-        pathRelativeToTheOpenFile,
+        normalizedPosixPathRelativeToTheOpenFile,
         type: "dmn",
         model: getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse(),
         svg: "",
       };
     } else if (ext === ".pmml") {
       return {
-        pathRelativeToTheOpenFile,
+        normalizedPosixPathRelativeToTheOpenFile,
         type: "pmml",
         model: XML2PMML(resource?.content ?? ""),
       };
@@ -240,13 +254,13 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     }
   };
 
-  private onOpenFileFromPathRelativeToTheOpenFile = (pathRelativeToTheOpenFile: string) => {
-    if (!this.state.openFilePathRelativeToTheWorkspaceRoot) {
+  private onOpenFileFromPathRelativeToTheOpenFile = (normalizedPosixPathRelativeToTheOpenFile: string) => {
+    if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return;
     }
 
-    this.props.onOpenFileFromPathRelativeToTheWorkspaceRoot(
-      this.onRequestToResolvePathRelativeToTheOpenFile(pathRelativeToTheOpenFile)
+    this.props.onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot(
+      this.onRequestToResolvePathRelativeToTheOpenFile(normalizedPosixPathRelativeToTheOpenFile)
     );
   };
 
@@ -274,7 +288,9 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
             />
             <ExternalModelsManager
               workspaceRootAbsolutePath={this.props.workspaceRootAbsolutePath}
-              thisDmnsPathRelativeToTheWorkspaceRoot={this.state.openFilePathRelativeToTheWorkspaceRoot}
+              thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot={
+                this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+              }
               model={this.model}
               onChange={this.setExternalModelsByNamespace}
               onRequestWorkspaceFilesList={this.props.onRequestWorkspaceFilesList}
@@ -292,7 +308,7 @@ const NAMESPACES_EFFECT_SEPARATOR = " , ";
 
 function ExternalModelsManager({
   workspaceRootAbsolutePath,
-  thisDmnsPathRelativeToTheWorkspaceRoot,
+  thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
   model,
   onChange,
   onRequestWorkspaceFileContent,
@@ -300,7 +316,7 @@ function ExternalModelsManager({
   externalModelsManagerDoneBootstraping,
 }: {
   workspaceRootAbsolutePath: string;
-  thisDmnsPathRelativeToTheWorkspaceRoot: string | undefined;
+  thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   model: DmnLatestModel;
   onChange: (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => void;
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
@@ -328,7 +344,7 @@ function ExternalModelsManager({
     bc.onmessage = ({ data }) => {
       // Changes to `thisDmn` shouldn't update its references to external models.
       // Here, `data?.relativePath` is relative to the workspace root.
-      if (data?.relativePath === thisDmnsPathRelativeToTheWorkspaceRoot) {
+      if (data?.relativePath === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot) {
         return;
       }
 
@@ -337,29 +353,29 @@ function ExternalModelsManager({
     return () => {
       bc.close();
     };
-  }, [thisDmnsPathRelativeToTheWorkspaceRoot]);
+  }, [thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot]);
 
   // This effect actually populates `externalModelsByNamespace` through the `onChange` call.
   useEffect(() => {
     let canceled = false;
 
-    if (!thisDmnsPathRelativeToTheWorkspaceRoot) {
+    if (!thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return;
     }
 
     onRequestWorkspaceFilesList({ pattern: EXTERNAL_MODELS_SEARCH_GLOB_PATTERN, opts: { type: SearchType.TRAVERSAL } })
       .then((list) => {
         const resources: Array<Promise<ResourceContent | undefined>> = [];
-        for (let i = 0; i < list.pathsRelativeToTheWorkspaceRoot.length; i++) {
-          const pathRelativeToTheWorkspaceRoot = list.pathsRelativeToTheWorkspaceRoot[i];
+        for (let i = 0; i < list.normalizedPosixPathsRelativeToTheWorkspaceRoot.length; i++) {
+          const normalizedPosixPathRelativeToTheWorkspaceRoot = list.normalizedPosixPathsRelativeToTheWorkspaceRoot[i];
 
-          if (pathRelativeToTheWorkspaceRoot === thisDmnsPathRelativeToTheWorkspaceRoot) {
+          if (normalizedPosixPathRelativeToTheWorkspaceRoot === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot) {
             continue;
           }
 
           resources.push(
             onRequestWorkspaceFileContent({
-              pathRelativeToTheWorkspaceRoot,
+              normalizedPosixPathRelativeToTheWorkspaceRoot,
               opts: { type: ContentType.TEXT },
             })
           );
@@ -379,12 +395,12 @@ function ExternalModelsManager({
 
           const content = resource.content ?? "";
 
-          const pathRelativeToTheOpenFile = __path.relative(
-            __path.dirname(thisDmnsPathRelativeToTheWorkspaceRoot),
-            resource.pathRelativeToTheWorkspaceRoot
+          const normalizedPosixPathRelativeToTheOpenFile = __path.relative(
+            __path.dirname(thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot),
+            resource.normalizedPosixPathRelativeToTheWorkspaceRoot
           );
 
-          const ext = __path.extname(resource.pathRelativeToTheWorkspaceRoot);
+          const ext = __path.extname(resource.normalizedPosixPathRelativeToTheWorkspaceRoot);
           if (ext === ".dmn") {
             const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
             if (namespace && namespacesSet.has(namespace)) {
@@ -392,24 +408,26 @@ function ExternalModelsManager({
               if (externalModelsIndex[namespace]) {
                 console.warn(
                   `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${
-                    resource.pathRelativeToTheWorkspaceRoot
-                  }' and '${externalModelsIndex[namespace]!.pathRelativeToTheOpenFile}'. The latter will be considered.`
+                    resource.normalizedPosixPathRelativeToTheWorkspaceRoot
+                  }' and '${
+                    externalModelsIndex[namespace]!.normalizedPosixPathRelativeToTheOpenFile
+                  }'. The latter will be considered.`
                 );
               }
 
               externalModelsIndex[namespace] = {
-                pathRelativeToTheOpenFile,
+                normalizedPosixPathRelativeToTheOpenFile,
                 model: getMarshaller(content, { upgradeTo: "latest" }).parser.parse(),
                 type: "dmn",
                 svg: "",
               };
             }
           } else if (ext === ".pmml") {
-            const namespace = getPmmlNamespace({ normalizedPathRelativeToTheOpenFile: pathRelativeToTheOpenFile });
+            const namespace = getPmmlNamespace({ normalizedPosixPathRelativeToTheOpenFile });
             if (namespace && namespacesSet.has(namespace)) {
               // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
               externalModelsIndex[namespace] = {
-                pathRelativeToTheOpenFile,
+                normalizedPosixPathRelativeToTheOpenFile,
                 model: XML2PMML(content),
                 type: "pmml",
               };
@@ -433,7 +451,7 @@ function ExternalModelsManager({
     onChange,
     onRequestWorkspaceFileContent,
     onRequestWorkspaceFilesList,
-    thisDmnsPathRelativeToTheWorkspaceRoot,
+    thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
     externalUpdatesCount,
     workspaceRootAbsolutePath,
     externalModelsManagerDoneBootstraping,

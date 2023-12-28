@@ -99,13 +99,13 @@ export class VsCodeKieEditorControllerFactory {
   }
 
   public createResourceContentService(
-    openFileAbsolutePath: string,
-    workspaceRootAbsolutePath: string
+    openFileAbsoluteFsPath: string,
+    workspaceRootAbsoluteFsPath: string
   ): ResourceContentService {
-    if (this.isAssetInWorkspace(openFileAbsolutePath)) {
-      return new VsCodeResourceContentServiceForWorkspaces(this.getParentFolder(workspaceRootAbsolutePath));
+    if (this.isAssetInWorkspace(openFileAbsoluteFsPath)) {
+      return new VsCodeResourceContentServiceForWorkspaces(this.getParentFolder(workspaceRootAbsoluteFsPath));
     } else {
-      return new VsCodeResourceContentServiceForDanglingFiles(this.getParentFolder(openFileAbsolutePath));
+      return new VsCodeResourceContentServiceForDanglingFiles(this.getParentFolder(openFileAbsoluteFsPath));
     }
   }
 
@@ -153,20 +153,20 @@ export class VsCodeKieEditorControllerFactory {
     return "";
   }
 
-  private getWebviewPath(webview: Webview, relativePath: string) {
-    return webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, relativePath)).toString();
+  private getWebviewPath(webview: Webview, relativeUriPath: string) {
+    return webview.asWebviewUri(Uri.joinPath(this.context.extensionUri, relativeUriPath)).toString();
   }
 
-  private isAssetInWorkspace(openFileAbsolutePath: string): boolean {
+  private isAssetInWorkspace(assetsAbsoluteFsPath: string): boolean {
     return (
-      vscode.workspace.workspaceFolders?.map((f) => f.uri.fsPath).find((p) => openFileAbsolutePath.startsWith(p)) !==
+      vscode.workspace.workspaceFolders?.map((f) => f.uri.fsPath).find((p) => assetsAbsoluteFsPath.startsWith(p)) !==
       undefined
     );
   }
 
-  private getParentFolder(assetPath: string) {
-    if (assetPath.includes(__path.sep)) {
-      return assetPath.substring(0, assetPath.lastIndexOf(__path.sep) + 1);
+  private getParentFolder(absoluteFsPath: string) {
+    if (absoluteFsPath.includes(__path.sep)) {
+      return absoluteFsPath.substring(0, absoluteFsPath.lastIndexOf(__path.sep) + 1);
     }
     return "";
   }

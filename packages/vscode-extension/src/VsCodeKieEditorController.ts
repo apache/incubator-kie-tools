@@ -115,9 +115,9 @@ export class VsCodeKieEditorController implements EditorApi {
     return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content);
   }
 
-  public setContent(pathRelativeToTheWorkspaceRoot: string, content: string) {
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) {
     return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
-      { pathRelativeToTheWorkspaceRoot, content },
+      { normalizedPosixPathRelativeToTheWorkspaceRoot, content },
       { showLoadingOverlay: true }
     );
   }
@@ -266,7 +266,7 @@ export class VsCodeKieEditorController implements EditorApi {
       this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
         {
           content: e.document.getText(),
-          pathRelativeToTheWorkspaceRoot: e.document.uri.path,
+          normalizedPosixPathRelativeToTheWorkspaceRoot: e.document.uri.path,
         },
         { showLoadingOverlay: false }
       );

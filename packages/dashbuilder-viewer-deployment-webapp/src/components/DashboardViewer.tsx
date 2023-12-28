@@ -67,7 +67,7 @@ export function DashboardViewer(props: DashboardViewerProps) {
             const filename = basename(props.dashboard.uri, `.${extension}`);
 
             setEmbeddedEditorFile({
-              pathRelativeToTheWorkspaceRoot: props.dashboard.uri,
+              normalizedPosixPathRelativeToTheWorkspaceRoot: props.dashboard.uri,
               getFileContents: async () => content,
               isReadOnly: true,
               fileExtension: extension,

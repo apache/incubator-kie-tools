@@ -475,13 +475,13 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
     forwardRef,
     () => ({
       getContent: () => marshaller.builder.build(scesimModel),
-      setContent: (absolutePath, content) => {
+      setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) => {
         console.debug("SCESIM setContent called");
         console.debug("=== FILE CONTENT ===");
         console.debug(content ? content : "EMPTY FILE");
         console.debug("=== END FILE CONTENT ===");
 
-        setScesimFile({ content: content || EMPTY_ONE_EIGHT, path: absolutePath });
+        setScesimFile({ content: content || EMPTY_ONE_EIGHT, path: normalizedPosixPathRelativeToTheWorkspaceRoot });
       },
     }),
     [marshaller.builder, scesimModel]

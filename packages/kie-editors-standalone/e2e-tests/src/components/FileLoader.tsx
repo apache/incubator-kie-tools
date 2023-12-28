@@ -49,7 +49,7 @@ export const FileLoader: React.FC<Props> = (props: Props) => {
             {
               name: file.name,
               value: {
-                pathRelativeToTheWorkspaceRoot: file.name,
+                normalizedPosixPathRelativeToTheWorkspaceRoot: file.name,
                 type: ContentType.TEXT,
                 content: fileContent,
               },

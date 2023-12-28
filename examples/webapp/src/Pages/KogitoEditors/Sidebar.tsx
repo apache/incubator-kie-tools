@@ -92,7 +92,7 @@ export function Sidebar({ editorEnvelopeLocator, editor, setFile, file, fileExte
       fileExtension: fileExtension,
       fileName: "new-file",
       getFileContents: () => Promise.resolve(""),
-      pathRelativeToTheWorkspaceRoot: `new-file.${fileExtension}`,
+      normalizedPosixPathRelativeToTheWorkspaceRoot: `new-file.${fileExtension}`,
     });
   }, [fileExtension, setFile]);
 
@@ -103,7 +103,7 @@ export function Sidebar({ editorEnvelopeLocator, editor, setFile, file, fileExte
       fileExtension: fileExtension,
       fileName: "sample",
       getFileContents: () => fetch(`examples/sample.${fileExtension}`).then((response) => response.text()),
-      pathRelativeToTheWorkspaceRoot: `sample.${fileExtension}`,
+      normalizedPosixPathRelativeToTheWorkspaceRoot: `sample.${fileExtension}`,
     });
   }, [fileExtension, setFile]);
 
@@ -124,7 +124,7 @@ export function Sidebar({ editorEnvelopeLocator, editor, setFile, file, fileExte
         isReadOnly: false,
         fileExtension: extractFileExtension(currentFile.name)!,
         fileName: removeFileExtension(currentFile.name),
-        pathRelativeToTheWorkspaceRoot: currentFile.name,
+        normalizedPosixPathRelativeToTheWorkspaceRoot: currentFile.name,
         getFileContents: () =>
           new Promise<string | undefined>((resolve) => {
             const reader = new FileReader();

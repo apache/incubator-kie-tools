@@ -37,7 +37,7 @@ interface NewProps {
 }
 
 interface UploadProps {
-  setContent: (pathRelativeToTheWorkspaceRoot: string, content: string) => void;
+  setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) => void;
 }
 
 interface AllProps extends NewProps, UploadProps {}

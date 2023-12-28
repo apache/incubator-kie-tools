@@ -32,12 +32,12 @@ export class PopupMessagesNotificationHandler implements NotificationsChannelApi
   public kogitoNotifications_createNotification(notification: Notification): void {
     this.getHandleStrategyForSeverity(notification.severity)(
       notification.message,
-      notification.pathRelativeToTheWorkspaceRoot
+      notification.normalizedPosixPathRelativeToTheWorkspaceRoot
     );
   }
 
   public kogitoNotifications_setNotifications(
-    pathRelativeToTheWorkspaceRoot: string,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ): void {
     if (notifications.length === 0) {
@@ -49,11 +49,11 @@ export class PopupMessagesNotificationHandler implements NotificationsChannelApi
     const errorsMessage = this.consolidateMessages(errors);
     const othersMessage = this.consolidateMessages(others);
 
-    this.getHandleStrategyForSeverity("ERROR")(errorsMessage, pathRelativeToTheWorkspaceRoot);
-    this.getHandleStrategyForSeverity("SUCCESS")(othersMessage, pathRelativeToTheWorkspaceRoot);
+    this.getHandleStrategyForSeverity("ERROR")(errorsMessage, normalizedPosixPathRelativeToTheWorkspaceRoot);
+    this.getHandleStrategyForSeverity("SUCCESS")(othersMessage, normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
-  public kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void {
+  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
     // Popups can't be removed.
   }
 
@@ -69,14 +69,14 @@ export class PopupMessagesNotificationHandler implements NotificationsChannelApi
   }
 
   private handleStrategy(showFunction: (message: string, ...items: string[]) => Thenable<string | undefined>) {
-    return (message: string, pathRelativeToTheWorkspaceRoot: string) =>
-      pathRelativeToTheWorkspaceRoot.length === 0
+    return (message: string, normalizedPosixPathRelativeToTheWorkspaceRoot: string) =>
+      normalizedPosixPathRelativeToTheWorkspaceRoot.length === 0
         ? showFunction(message)
         : showFunction(message, this.i18n.getCurrent().open).then((selected) => {
             if (!selected) {
               return;
             }
-            this.workspaceApi.kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot);
+            this.workspaceApi.kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot);
           });
   }
 

@@ -88,8 +88,8 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
     throw new Error("Document type not supported");
   }
 
-  public kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot: string) {
-    if (__path.isAbsolute(pathRelativeToTheWorkspaceRoot)) {
+  public kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot: string) {
+    if (__path.isAbsolute(normalizedPosixPathRelativeToTheWorkspaceRoot)) {
       throw new Error(
         "VS CODE DEFAULT CHANNEL API IMPL: Can't open absolute path. Paths must be relative to the workspace root."
       );
@@ -98,7 +98,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
     this.workspaceApi.kogitoWorkspace_openFile(
       __path.join(
         vscode.workspace.workspaceFolders?.[0].uri.fsPath ?? __path.dirname(this.editor.document.document.uri.fsPath),
-        pathRelativeToTheWorkspaceRoot
+        normalizedPosixPathRelativeToTheWorkspaceRoot
       )
     );
   }
@@ -112,7 +112,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
       // This is important for the use-case where users type `code new-file.dmn` on a terminal.
       try {
         await vscode.workspace.fs.writeFile(this.editor.document.document.uri, new Uint8Array());
-        return { content: "", pathRelativeToTheWorkspaceRoot: this.editor.document.document.uri.path };
+        return { content: "", normalizedPosixPathRelativeToTheWorkspaceRoot: this.editor.document.document.uri.path };
       } catch (error) {
         console.error(
           "Failed on vscode.workspace.fs.writeFile. document uri: ",
@@ -126,7 +126,10 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
 
     return {
       content,
-      pathRelativeToTheWorkspaceRoot: vscode.workspace.asRelativePath(this.editor.document.document.uri, false),
+      normalizedPosixPathRelativeToTheWorkspaceRoot: vscode.workspace.asRelativePath(
+        this.editor.document.document.uri,
+        false
+      ),
     };
   }
 
@@ -174,7 +177,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
-    return this.resourceContentService.get(request.pathRelativeToTheWorkspaceRoot, request.opts);
+    return this.resourceContentService.get(request.normalizedPosixPathRelativeToTheWorkspaceRoot, request.opts);
   }
 
   public kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
@@ -190,14 +193,17 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
   }
 
   public kogitoNotifications_setNotifications(
-    pathRelativeToTheWorkspaceRoot: string,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ): void {
-    this.notificationsApi.kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, notifications);
+    this.notificationsApi.kogitoNotifications_setNotifications(
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+      notifications
+    );
   }
 
-  public kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void {
-    this.notificationsApi.kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot);
+  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.notificationsApi.kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
   public kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {

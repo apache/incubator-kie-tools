@@ -42,8 +42,8 @@ export class TextEditorView implements Editor {
     this.editorRef = React.createRef<EditorApi>();
   }
 
-  public setContent(pathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
-    return this.editorRef.current!.setContent(pathRelativeToTheWorkspaceRoot, content);
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+    return this.editorRef.current!.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content);
   }
 
   public getContent(): Promise<string> {

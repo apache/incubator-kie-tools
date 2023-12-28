@@ -70,7 +70,7 @@ export function useFileValidation(
         extendedServices.client.validateBpmn(payload).then((validationResults) => {
           const notifications: Notification[] = validationResults.map((validationResult: any) => ({
             type: "PROBLEM",
-            pathRelativeToTheWorkspaceRoot: "",
+            normalizedPosixPathRelativeToTheWorkspaceRoot: "",
             severity: "ERROR",
             message: validationResult,
           }));
@@ -131,7 +131,7 @@ export function useFileValidation(
                 }
                 return {
                   type: "PROBLEM",
-                  pathRelativeToTheWorkspaceRoot: path,
+                  normalizedPosixPathRelativeToTheWorkspaceRoot: path,
                   severity: validationResult.severity,
                   message: `${validationResult.messageType}: ${validationResult.message}`,
                 };

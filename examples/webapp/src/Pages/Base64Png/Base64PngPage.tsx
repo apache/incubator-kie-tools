@@ -40,7 +40,7 @@ export function Base64PngPage() {
     fileExtension: "base64png",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
-    pathRelativeToTheWorkspaceRoot: "new-file.base64png",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "new-file.base64png",
   });
 
   /**

@@ -29,13 +29,13 @@ import { MonacoEditorApi, MonacoEditorOperation } from "./monaco/MonacoEditorCon
 interface Props {
   onStateControlCommandUpdate: (command: StateControlCommand) => void;
   onNewEdit: (edit: WorkspaceEdit) => void;
-  setNotifications: (pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => void;
+  setNotifications: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => void;
   channelType: ChannelType;
   isReadOnly: boolean;
 }
 
 export type TextEditorRef = {
-  setContent(pathRelativeToTheWorkspaceRoot: string, content: string): Promise<void>;
+  setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void>;
 };
 
 type TextEditorContent = {
@@ -54,11 +54,11 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
     forwardedRef,
     () => {
       return {
-        setContent: (pathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
+        setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, newContent: string): Promise<void> => {
           try {
             setInitialContent({
               originalContent: newContent,
-              path: pathRelativeToTheWorkspaceRoot,
+              path: normalizedPosixPathRelativeToTheWorkspaceRoot,
             });
             return Promise.resolve();
           } catch (e) {
@@ -93,11 +93,11 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
     if (!initialContent) {
       return;
     }
-    const pathRelativeToTheWorkspaceRoot = initialContent.path; // FIXME: TIAGO/LUIZ: Fix this? Should've been `pathRelativeToTheWorkspaceRoot`.
+    const normalizedPosixPathRelativeToTheWorkspaceRoot = initialContent.path; // FIXME: TIAGO/LUIZ: Fix this? Should've been `normalizedPosixPathRelativeToTheWorkspaceRoot`.
 
     const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
       type: "PROBLEM",
-      pathRelativeToTheWorkspaceRoot,
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
       severity: "ERROR",
       message: `${error.message}`,
       position: {
@@ -107,7 +107,7 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
         endColumn: error.endColumn,
       },
     }));
-    props.setNotifications(pathRelativeToTheWorkspaceRoot, notifications);
+    props.setNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
   };
 
   const isVscode = useCallback(() => {

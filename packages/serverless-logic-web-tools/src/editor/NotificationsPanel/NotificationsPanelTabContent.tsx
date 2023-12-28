@@ -65,17 +65,19 @@ export const NotificationPanelTabContent = React.forwardRef<NotificationsChannel
   );
 
   const setNotifications = useCallback(
-    (pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => {
+    (normalizedPosixPathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => {
       onNotificationsLengthChange(name, notifications.length);
       setTabNotifications(notifications);
     },
     [onNotificationsLengthChange, name]
   );
 
-  const removeNotifications = useCallback((pathRelativeToTheWorkspaceRoot: string) => {
+  const removeNotifications = useCallback((normalizedPosixPathRelativeToTheWorkspaceRoot: string) => {
     setTabNotifications((previousTabNotifications) => {
       return previousTabNotifications.filter(
-        (tabNotification) => tabNotification.pathRelativeToTheWorkspaceRoot === pathRelativeToTheWorkspaceRoot
+        (tabNotification) =>
+          tabNotification.normalizedPosixPathRelativeToTheWorkspaceRoot ===
+          normalizedPosixPathRelativeToTheWorkspaceRoot
       );
     });
   }, []);
@@ -88,11 +90,11 @@ export const NotificationPanelTabContent = React.forwardRef<NotificationsChannel
 
   const notificationsMap: Map<string, Notification[]> = useMemo(() => {
     return tabNotifications.reduce((acc, notification) => {
-      const notificationEntry = acc.get(notification.pathRelativeToTheWorkspaceRoot);
+      const notificationEntry = acc.get(notification.normalizedPosixPathRelativeToTheWorkspaceRoot);
       if (!notificationEntry) {
-        acc.set(notification.pathRelativeToTheWorkspaceRoot, [notification]);
+        acc.set(notification.normalizedPosixPathRelativeToTheWorkspaceRoot, [notification]);
       } else {
-        acc.set(notification.pathRelativeToTheWorkspaceRoot, [...notificationEntry, notification]);
+        acc.set(notification.normalizedPosixPathRelativeToTheWorkspaceRoot, [...notificationEntry, notification]);
       }
       return acc;
     }, new Map());

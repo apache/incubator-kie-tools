@@ -48,21 +48,26 @@ export type EvaluationResults = Record<string, any>;
 export type ValidationMessages = Record<string, any>;
 export type OnDmnModelChange = (model: DmnLatestModel) => void;
 
-export type OnRequestToJumpToPath = (pathRelativeToTheOpenFile: string) => void;
-export type OnRequestToResolvePath = (pathRelativeToTheOpenFile: string) => string;
+export type OnRequestToJumpToPath = (normalizedPosixPathRelativeToTheOpenFile: string) => void;
+export type OnRequestToResolvePath = (normalizedPosixPathRelativeToTheOpenFile: string) => string;
 
 /** @returns a list of paths relative to the open file. */
 export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
 
-export type OnRequestExternalModelByPath = (pathRelativeToTheOpenFile: string) => Promise<ExternalModel | null>;
-export type ExternalModelsIndex = Record<string /** pathRelativeToTheOpenFile */, ExternalModel | undefined>;
+export type OnRequestExternalModelByPath = (
+  normalizedPosixPathRelativeToTheOpenFile: string
+) => Promise<ExternalModel | null>;
+export type ExternalModelsIndex = Record<
+  string /** normalizedPosixPathRelativeToTheOpenFile */,
+  ExternalModel | undefined
+>;
 export type ExternalModel = ({ type: "dmn" } & ExternalDmn) | ({ type: "pmml" } & ExternalPmml);
 
-export type ExternalDmnsIndex = Map<string /** pathRelativeToTheOpenFile */, ExternalDmn>;
-export type ExternalDmn = { model: DmnLatestModel; pathRelativeToTheOpenFile: string; svg: string };
+export type ExternalDmnsIndex = Map<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn>;
+export type ExternalDmn = { model: DmnLatestModel; normalizedPosixPathRelativeToTheOpenFile: string; svg: string };
 
-export type ExternalPmmlsIndex = Map<string /** pathRelativeToTheOpenFile */, ExternalPmml>;
-export type ExternalPmml = { model: PMML; pathRelativeToTheOpenFile: string };
+export type ExternalPmmlsIndex = Map<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalPmml>;
+export type ExternalPmml = { model: PMML; normalizedPosixPathRelativeToTheOpenFile: string };
 
 export type DmnEditorProps = {
   /**

@@ -51,18 +51,18 @@ export class VsCodeNotificationsChannelApiImpl implements NotificationsChannelAp
   }
 
   public kogitoNotifications_setNotifications(
-    pathRelativeToTheWorkspaceRoot: string,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ): void {
     const alerts = notifications.filter((n) => n.type === "ALERT");
     const problems = notifications.filter((n) => n.type !== "ALERT");
 
-    this.get("PROBLEM").kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, problems);
-    this.get("ALERT").kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, alerts);
+    this.get("PROBLEM").kogitoNotifications_setNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot, problems);
+    this.get("ALERT").kogitoNotifications_setNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot, alerts);
   }
 
-  public kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void {
-    this.get("PROBLEM").kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot);
+  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.get("PROBLEM").kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
   private handle(notification: Notification): NotificationsChannelApi {

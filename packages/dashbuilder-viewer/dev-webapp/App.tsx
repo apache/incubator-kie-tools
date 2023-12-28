@@ -45,7 +45,7 @@ const FILE: EmbeddedEditorFile = {
   getFileContents: function (): Promise<string | undefined> {
     return Promise.resolve(TEST_CONTENT);
   },
-  pathRelativeToTheWorkspaceRoot: "",
+  normalizedPosixPathRelativeToTheWorkspaceRoot: "",
   isReadOnly: false,
 };
 

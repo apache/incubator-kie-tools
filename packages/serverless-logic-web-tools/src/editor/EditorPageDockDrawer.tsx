@@ -48,7 +48,11 @@ export interface EditorPageDockDrawerRef {
   toggle: (panelId: PanelId) => void;
   close: () => void;
   getNotificationsPanel: () => NotificationsPanelRef | undefined;
-  setNotifications: (tabName: string, pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => void;
+  setNotifications: (
+    tabName: string,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    notifications: Notification[]
+  ) => void;
 }
 
 export const EditorPageDockDrawer = React.forwardRef<
@@ -84,11 +88,14 @@ export const EditorPageDockDrawer = React.forwardRef<
   }, []);
 
   const setNotifications = useCallback(
-    (tabName: string, pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => {
-      notificationsToggle?.setNewNotifications(tabName, { path: pathRelativeToTheWorkspaceRoot, notifications });
+    (tabName: string, normalizedPosixPathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => {
+      notificationsToggle?.setNewNotifications(tabName, {
+        path: normalizedPosixPathRelativeToTheWorkspaceRoot,
+        notifications,
+      });
       notificationsPanel
         ?.getTab(tabName)
-        ?.kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, notifications);
+        ?.kogitoNotifications_setNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
     },
     [notificationsPanel, notificationsToggle]
   );

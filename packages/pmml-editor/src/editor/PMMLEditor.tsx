@@ -70,13 +70,13 @@ interface Props {
   newEdit: (edit: WorkspaceEdit) => void;
 
   /**
-   * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, notifications) to report all validation
+   * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot, notifications) to report all validation
    * notifications to the Channel that  will replace existing notification for the path. Increases the
    * decoupling of the PMMLEditor from the Channel.
-   * @param pathRelativeToTheWorkspaceRoot The path that references the Notification
+   * @param normalizedPosixPathRelativeToTheWorkspaceRoot The path that references the Notification
    * @param notifications List of Notifications
    */
-  setNotifications: (pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => void;
+  setNotifications: (normalizedPosixPathRelativeToTheWorkspaceRoot: string, notifications: Notification[]) => void;
 }
 
 export interface State {
@@ -125,9 +125,9 @@ export class PMMLEditor extends React.Component<Props, State> {
     this.props.ready();
   }
 
-  public setContent(pathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
     try {
-      this.doSetContent(pathRelativeToTheWorkspaceRoot, content);
+      this.doSetContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content);
       this.props.setNotifications(this.state.path, this.validate());
       return Promise.resolve();
     } catch (e) {
@@ -136,7 +136,7 @@ export class PMMLEditor extends React.Component<Props, State> {
     }
   }
 
-  private doSetContent(pathRelativeToTheWorkspaceRoot: string, content: string): void {
+  private doSetContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): void {
     let pmml: PMML;
     let _content: string = content;
 
@@ -166,7 +166,7 @@ export class PMMLEditor extends React.Component<Props, State> {
     });
 
     this.setState({
-      path: pathRelativeToTheWorkspaceRoot,
+      path: normalizedPosixPathRelativeToTheWorkspaceRoot,
       content: _content,
       originalContent: _content,
       activeOperation: Operation.NONE,

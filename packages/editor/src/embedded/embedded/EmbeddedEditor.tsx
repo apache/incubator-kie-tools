@@ -88,7 +88,9 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   const [isReady, setReady] = useState(false);
   const envelopeMapping = useMemo(
     () =>
-      props.editorEnvelopeLocator.getEnvelopeMapping(props.file.pathRelativeToTheWorkspaceRoot ?? props.file.fileName),
+      props.editorEnvelopeLocator.getEnvelopeMapping(
+        props.file.normalizedPosixPathRelativeToTheWorkspaceRoot ?? props.file.fileName
+      ),
     [props.editorEnvelopeLocator, props.file]
   );
 
@@ -142,7 +144,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   useEffectAfterFirstRender(() => {
     props.file.getFileContents().then((content) => {
       envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
-        { content: content!, pathRelativeToTheWorkspaceRoot: props.file.fileName },
+        { content: content!, normalizedPosixPathRelativeToTheWorkspaceRoot: props.file.fileName },
         { showLoadingOverlay: true }
       );
     });
@@ -183,9 +185,9 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo.send()),
         getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
         getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
-        setContent: (absolutePath, content) =>
+        setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) =>
           envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
-            { pathRelativeToTheWorkspaceRoot: absolutePath, content },
+            { normalizedPosixPathRelativeToTheWorkspaceRoot, content },
             { showLoadingOverlay: false }
           ),
         validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),

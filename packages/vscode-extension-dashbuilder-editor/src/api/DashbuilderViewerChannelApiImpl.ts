@@ -95,8 +95,8 @@ export class DashbuilderViewerChannelApiImpl implements DashbuilderViewerChannel
   kogitoWorkspace_newEdit(edit: WorkspaceEdit): void {
     this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
-  kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot: string): void {
-    this.defaultApiImpl.kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot);
+  kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.defaultApiImpl.kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
   kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {
     return this.defaultApiImpl.kogitoWorkspace_resourceContentRequest(request);
@@ -107,10 +107,16 @@ export class DashbuilderViewerChannelApiImpl implements DashbuilderViewerChannel
   kogitoNotifications_createNotification(notification: Notification): void {
     this.defaultApiImpl.kogitoNotifications_createNotification(notification);
   }
-  kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]): void {
-    this.defaultApiImpl.kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, notifications);
+  kogitoNotifications_setNotifications(
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    notifications: Notification[]
+  ): void {
+    this.defaultApiImpl.kogitoNotifications_setNotifications(
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+      notifications
+    );
   }
-  kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void {
-    this.defaultApiImpl.kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot);
+  kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.defaultApiImpl.kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 }

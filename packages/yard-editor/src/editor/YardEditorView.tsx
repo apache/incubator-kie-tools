@@ -39,9 +39,9 @@ export class YardEditorView implements Editor {
     this.editorRef = React.createRef<YardEditorApi>();
     this.initArgs = initArgs;
   }
-  public setContent(pathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
-    this.path = pathRelativeToTheWorkspaceRoot;
-    return this.editorRef.current!.setContent(pathRelativeToTheWorkspaceRoot, content);
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+    this.path = normalizedPosixPathRelativeToTheWorkspaceRoot;
+    return this.editorRef.current!.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content);
   }
 
   public getContent(): Promise<string> {

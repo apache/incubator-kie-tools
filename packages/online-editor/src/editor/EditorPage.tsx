@@ -168,7 +168,7 @@ export function EditorPage(props: Props) {
 
           // FIXME: KOGITO-7958: PMML Editor doesn't work well after this is called. Can't edit using multiple tabs.
           setEmbeddedEditorFile({
-            pathRelativeToTheWorkspaceRoot: workspaceFilePromise.data.workspaceFile.relativePath,
+            normalizedPosixPathRelativeToTheWorkspaceRoot: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
             isReadOnly: false,
             fileExtension: workspaceFilePromise.data.workspaceFile.extension,
@@ -275,7 +275,7 @@ export function EditorPage(props: Props) {
     async (request: ResourceContentRequest) => {
       return workspaces.resourceContentGet({
         workspaceId: props.workspaceId,
-        relativePath: request.pathRelativeToTheWorkspaceRoot, // This is the "path relative to the workspace root", or here in the KIE Sandbox context, just "relativePath", as it is assumed that all "relativePaths" are relative to the workspace root.
+        relativePath: request.normalizedPosixPathRelativeToTheWorkspaceRoot, // This is the "normalized posix path relative to the workspace root", or here in the KIE Sandbox context, just "relativePath", as it is assumed that all "relativePaths" are relative to the workspace root.
         opts: request.opts,
       });
     },
@@ -299,18 +299,18 @@ export function EditorPage(props: Props) {
   }, [alertsDispatch]);
 
   const handleOpenFile = useCallback(
-    async (pathRelativeToTheWorkspaceRoot: string) => {
+    async (normalizedPosixPathRelativeToTheWorkspaceRoot: string) => {
       if (!workspaceFilePromise.data) {
         return;
       }
       const file = await workspaces.getFile({
         workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
-        relativePath: pathRelativeToTheWorkspaceRoot,
+        relativePath: normalizedPosixPathRelativeToTheWorkspaceRoot,
       });
 
       if (!file) {
         throw new Error(
-          `Can't find ${pathRelativeToTheWorkspaceRoot} on Workspace '${workspaceFilePromise.data.workspaceFile.workspaceId}'`
+          `Can't find ${normalizedPosixPathRelativeToTheWorkspaceRoot} on Workspace '${workspaceFilePromise.data.workspaceFile.workspaceId}'`
         );
       }
 

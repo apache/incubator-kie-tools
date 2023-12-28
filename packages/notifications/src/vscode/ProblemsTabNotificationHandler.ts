@@ -38,23 +38,23 @@ export class ProblemsTabNotificationHandler implements NotificationsChannelApi {
   private readonly diagnosticCollection = vscode.languages.createDiagnosticCollection(DIAGNOSTIC_COLLECTION_NAME);
 
   public kogitoNotifications_createNotification(notification: Notification): void {
-    const uri = vscode.Uri.parse(notification.pathRelativeToTheWorkspaceRoot);
+    const uri = vscode.Uri.parse(notification.normalizedPosixPathRelativeToTheWorkspaceRoot);
     const diagnostics: vscode.Diagnostic[] = this.diagnosticCollection.get(uri)?.map((elem) => elem) || [];
     diagnostics.push(this.buildDiagnostic(notification));
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
   public kogitoNotifications_setNotifications(
-    pathRelativeToTheWorkspaceRoot: string,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ): void {
-    const uri = vscode.Uri.parse(pathRelativeToTheWorkspaceRoot);
+    const uri = vscode.Uri.parse(normalizedPosixPathRelativeToTheWorkspaceRoot);
     const diagnostics = notifications.map((notification) => this.buildDiagnostic(notification));
     this.diagnosticCollection.set(uri, diagnostics);
   }
 
-  public kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string) {
-    this.diagnosticCollection.delete(vscode.Uri.parse(pathRelativeToTheWorkspaceRoot));
+  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string) {
+    this.diagnosticCollection.delete(vscode.Uri.parse(normalizedPosixPathRelativeToTheWorkspaceRoot));
   }
 
   private buildDiagnostic(notification: Notification): vscode.Diagnostic {

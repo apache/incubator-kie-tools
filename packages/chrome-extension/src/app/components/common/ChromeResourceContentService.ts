@@ -41,7 +41,7 @@ class ChromeResourceContentService implements ResourceContentService {
 
   // In this context, `workspaceRoot` can be understood as the repository root directory.
   public get(
-    pathRelativeToTheWorkspaceRoot: string,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     opts?: ResourceContentOptions
   ): Promise<ResourceContent | undefined> {
     opts = opts ?? { type: ContentType.TEXT };
@@ -50,13 +50,16 @@ class ChromeResourceContentService implements ResourceContentService {
       this.repoInfo.owner,
       this.repoInfo.repo,
       this.repoInfo.gitref,
-      pathRelativeToTheWorkspaceRoot,
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
       opts!.type
     )
-      .then((resourceContent) => new ResourceContent(pathRelativeToTheWorkspaceRoot, resourceContent, opts!.type))
+      .then(
+        (resourceContent) =>
+          new ResourceContent(normalizedPosixPathRelativeToTheWorkspaceRoot, resourceContent, opts!.type)
+      )
       .catch((e) => {
         console.debug(e);
-        console.debug(`Error retrieving content from URI ${pathRelativeToTheWorkspaceRoot}`);
+        console.debug(`Error retrieving content from URI ${normalizedPosixPathRelativeToTheWorkspaceRoot}`);
         return undefined;
       });
   }

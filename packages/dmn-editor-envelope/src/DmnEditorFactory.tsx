@@ -101,8 +101,8 @@ export class DmnEditorInterface implements Editor {
     return this.self.getContent();
   }
 
-  public setContent(pathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
-    return this.self.setContent(pathRelativeToTheWorkspaceRoot, content);
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+    return this.self.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content);
   }
 
   // This is the argument to ReactDOM.render. These props can be understood like "static globals".
@@ -150,9 +150,11 @@ function DmnEditorRootWrapper({
     [envelopeContext]
   );
 
-  const onOpenFileFromPathRelativeToTheWorkspaceRoot = useCallback(
-    (pathRelativeToTheWorkspaceRoot: string) => {
-      envelopeContext?.channelApi.notifications.kogitoWorkspace_openFile.send(pathRelativeToTheWorkspaceRoot);
+  const onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot = useCallback(
+    (normalizedPosixPathRelativeToTheWorkspaceRoot: string) => {
+      envelopeContext?.channelApi.notifications.kogitoWorkspace_openFile.send(
+        normalizedPosixPathRelativeToTheWorkspaceRoot
+      );
     },
     [envelopeContext]
   );
@@ -163,7 +165,9 @@ function DmnEditorRootWrapper({
       onNewEdit={onNewEdit}
       onRequestWorkspaceFilesList={onRequestWorkspaceFilesList}
       onRequestWorkspaceFileContent={onRequestWorkspaceFileContent}
-      onOpenFileFromPathRelativeToTheWorkspaceRoot={onOpenFileFromPathRelativeToTheWorkspaceRoot}
+      onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot={
+        onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot
+      }
       workspaceRootAbsolutePath={workspaceRootAbsolutePath}
     />
   );

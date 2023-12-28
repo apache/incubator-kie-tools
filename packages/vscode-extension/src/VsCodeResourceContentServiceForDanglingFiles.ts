@@ -24,40 +24,40 @@ import {
   ResourceContentService,
   ResourceListOptions,
   ResourcesList,
-  SearchType,
 } from "@kie-tools-core/workspace/dist/api";
 
 import { Minimatch } from "minimatch";
 import * as vscode from "vscode";
 import * as __path from "path";
+import { toFsPath, toPosixPath } from "@kie-tools-core/operating-system/dist/paths";
 
 /**
  * Implementation of a ResourceContentService using the Node filesystem APIs. This should only be used when the edited
  * asset is not part the opened workspace.
  */
 export class VsCodeResourceContentServiceForDanglingFiles implements ResourceContentService {
-  private readonly rootFolder: string;
+  private readonly rootFolderAbsoluteFsPath: string;
 
-  constructor(rootFolder: string) {
-    this.rootFolder = rootFolder;
+  constructor(rootFolderAbsoluteFsPath: string) {
+    this.rootFolderAbsoluteFsPath = rootFolderAbsoluteFsPath;
   }
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     try {
-      const files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.rootFolder));
+      const files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.rootFolderAbsoluteFsPath));
       const minimatch = new Minimatch(pattern);
       const regexp = minimatch.makeRe(); // The regexp is ~50x faster than the direct match using glob.
       return new ResourcesList(
         pattern,
-        files.flatMap(([pathRelativeToWorkspaceRoot, fileType]) =>
+        files.flatMap(([normalizedFsPathRelativeToWorkspaceRoot, fileType]) =>
           fileType === 1 && // 1 === vscode.FileType.File, using it directly causes an error
           (regexp.test(
-            "/" + pathRelativeToWorkspaceRoot // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
+            "/" + normalizedFsPathRelativeToWorkspaceRoot // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
           ) ||
             regexp.test(
-              pathRelativeToWorkspaceRoot // Regex have the same behavior as the glob with *.{ext} pattern.
+              normalizedFsPathRelativeToWorkspaceRoot // Regex have the same behavior as the glob with *.{ext} pattern.
             ))
-            ? pathRelativeToWorkspaceRoot
+            ? toPosixPath(normalizedFsPathRelativeToWorkspaceRoot)
             : []
         )
       );
@@ -67,45 +67,46 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
   }
 
   public async get(
-    pathRelativeToTheWorkspaceRoot: string,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     opts?: ResourceContentOptions
   ): Promise<ResourceContent | undefined> {
-    if (__path.isAbsolute(pathRelativeToTheWorkspaceRoot)) {
+    if (__path.isAbsolute(normalizedPosixPathRelativeToTheWorkspaceRoot)) {
       throw new Error(
         "VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Can't work with absolute paths. All paths must be relative to folder of the open file."
       );
     }
 
-    const absolutePath = __path.join(this.rootFolder, pathRelativeToTheWorkspaceRoot);
+    const normalizedFsPathRelativeToTheWorkspaceRoot = toFsPath(normalizedPosixPathRelativeToTheWorkspaceRoot);
+    const absoluteFsPath = __path.join(this.rootFolderAbsoluteFsPath, normalizedFsPathRelativeToTheWorkspaceRoot);
 
-    if (__path.resolve(this.rootFolder, pathRelativeToTheWorkspaceRoot) !== absolutePath) {
+    if (__path.resolve(this.rootFolderAbsoluteFsPath, normalizedFsPathRelativeToTheWorkspaceRoot) !== absoluteFsPath) {
       throw new Error(
         "VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Path relative to the root folder trying to access files outside of it."
       );
     }
 
     try {
-      const content = await vscode.workspace.fs.readFile(vscode.Uri.parse(absolutePath));
+      const content = await vscode.workspace.fs.readFile(vscode.Uri.parse(absoluteFsPath));
 
       if (opts?.type === ContentType.BINARY) {
         return new ResourceContent(
-          pathRelativeToTheWorkspaceRoot, // Always return the relative path.
+          normalizedPosixPathRelativeToTheWorkspaceRoot, // Always return the relative path.
           Buffer.from(content).toString("base64"),
           ContentType.BINARY
         );
       } else {
         return new ResourceContent(
-          pathRelativeToTheWorkspaceRoot, // Always return the relative path.
+          normalizedPosixPathRelativeToTheWorkspaceRoot, // Always return the relative path.
           Buffer.from(content).toString(),
           ContentType.TEXT
         );
       }
     } catch (e) {
       console.error(
-        `VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Error reading file ${pathRelativeToTheWorkspaceRoot}. Returning undefined.`,
+        `VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Error reading file ${normalizedPosixPathRelativeToTheWorkspaceRoot}. Returning undefined.`,
         e
       );
-      return new ResourceContent(pathRelativeToTheWorkspaceRoot, undefined, opts?.type);
+      return new ResourceContent(normalizedPosixPathRelativeToTheWorkspaceRoot, undefined, opts?.type);
     }
   }
 }

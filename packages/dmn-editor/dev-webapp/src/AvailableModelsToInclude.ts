@@ -32,13 +32,13 @@ export const avaiableModels: DmnEditor.ExternalModel[] = [
     type: "dmn",
     model: sumBkmModel,
     svg: "",
-    pathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/sumBkm.dmn",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/sumBkm.dmn",
   },
   {
     type: "dmn",
     model: sumDiffDsModel,
     svg: "",
-    pathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/sumDiffDs.dmn",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/sumDiffDs.dmn",
   },
   {
     type: "dmn",
@@ -46,18 +46,18 @@ export const avaiableModels: DmnEditor.ExternalModel[] = [
       upgradeTo: "latest",
     }).parser.parse(),
     svg: "",
-    pathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/empty.dmn",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/empty.dmn",
   },
   {
     type: "pmml",
     model: testTreePmmlModel,
-    pathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/testTree.pmml",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-models-to-include/testTree.pmml",
   },
 ];
 
 export const availableModelsByPath: Record<string, DmnEditor.ExternalModel> = Object.values(avaiableModels).reduce(
   (acc, v) => {
-    acc[v.pathRelativeToTheOpenFile] = v;
+    acc[v.normalizedPosixPathRelativeToTheOpenFile] = v;
     return acc;
   },
   {} as Record<string, DmnEditor.ExternalModel>
@@ -67,7 +67,7 @@ export const modelsByNamespace = Object.values(avaiableModels).reduce((acc, v) =
   if (v.type === "dmn") {
     acc[v.model.definitions["@_namespace"]] = v;
   } else if (v.type === "pmml") {
-    acc[getPmmlNamespace({ normalizedPathRelativeToTheOpenFile: v.pathRelativeToTheOpenFile })] = v;
+    acc[getPmmlNamespace({ normalizedPathRelativeToTheOpenFile: v.normalizedPosixPathRelativeToTheOpenFile })] = v;
   }
   return acc;
 }, {} as DmnEditor.ExternalModelsIndex);

@@ -117,10 +117,10 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
       },
       keyboardShortcutsService: envelopeContext.services.keyboardShortcuts,
       resourceContentEditorService: {
-        get(pathRelativeToTheWorkspaceFile: string, opts?: ResourceContentOptions) {
+        get(normalizedPosixPathRelativeToTheWorkspaceFile: string, opts?: ResourceContentOptions) {
           return envelopeContext.channelApi.requests
             .kogitoWorkspace_resourceContentRequest({
-              pathRelativeToTheWorkspaceRoot: pathRelativeToTheWorkspaceFile, // FIXME: TIAGO/LUIZ: Fix this :)
+              normalizedPosixPathRelativeToTheWorkspaceRoot: normalizedPosixPathRelativeToTheWorkspaceFile, // FIXME: TIAGO/LUIZ: Fix this :)
               opts,
             })
             .then((r) => r?.content);
@@ -128,19 +128,22 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         list(pattern: string, opts?: ResourceListOptions) {
           return envelopeContext.channelApi.requests
             .kogitoWorkspace_resourceListRequest({ pattern, opts })
-            .then((r) => r.pathsRelativeToTheWorkspaceRoot.sort());
+            .then((r) => r.normalizedPosixPathsRelativeToTheWorkspaceRoot.sort());
         },
       },
       workspaceService: {
-        openFile(pathRelativeToTheOpenFile: string): void {
-          const openFilePathRelativeToTheWorkspaceRoot = ""; // FIXME: TIAGO/LUIZ: Fix this :)
+        openFile(normalizedPosixPathRelativeToTheOpenFile: string): void {
+          const openFilenormalizedPosixPathRelativeToTheWorkspaceRoot = ""; // FIXME: TIAGO/LUIZ: Fix this :)
 
-          const resolvedPathRelativeToTheWorkspaceRoot = __path
-            .resolve(__path.dirname(openFilePathRelativeToTheWorkspaceRoot!), pathRelativeToTheOpenFile)
+          const resolvednormalizedPosixPathRelativeToTheWorkspaceRoot = __path
+            .resolve(
+              __path.dirname(openFilenormalizedPosixPathRelativeToTheWorkspaceRoot!),
+              normalizedPosixPathRelativeToTheOpenFile
+            )
             .substring(1); // Remove leading slash.
 
           envelopeContext.channelApi.notifications.kogitoWorkspace_openFile.send(
-            resolvedPathRelativeToTheWorkspaceRoot
+            resolvednormalizedPosixPathRelativeToTheWorkspaceRoot
           );
         },
       },
@@ -156,14 +159,14 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         createNotification: (notification: Notification) => {
           envelopeContext.channelApi.notifications.kogitoNotifications_createNotification.send(notification);
         },
-        removeNotifications: (pathRelativeToTheWorkspaceFile: string) => {
+        removeNotifications: (normalizedPosixPathRelativeToTheWorkspaceFile: string) => {
           envelopeContext.channelApi.notifications.kogitoNotifications_removeNotifications.send(
-            pathRelativeToTheWorkspaceFile
+            normalizedPosixPathRelativeToTheWorkspaceFile
           );
         },
-        setNotifications: (pathRelativeToTheWorkspaceFile: string, notifications: Notification[]) => {
+        setNotifications: (normalizedPosixPathRelativeToTheWorkspaceFile: string, notifications: Notification[]) => {
           envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(
-            pathRelativeToTheWorkspaceFile,
+            normalizedPosixPathRelativeToTheWorkspaceFile,
             notifications
           );
         },

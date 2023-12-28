@@ -45,7 +45,7 @@ function getCustomChannelApiImpl(
   const dependencies = new Dependencies();
 
   const embeddedEditorFile: EmbeddedEditorFile = {
-    pathRelativeToTheWorkspaceRoot: fileInfo.path,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: fileInfo.path,
     getFileContents: () => {
       return Promise.resolve(dependencies.all.edit__githubTextAreaWithFileContents()?.textContent ?? "");
     },

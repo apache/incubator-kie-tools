@@ -21,7 +21,7 @@ import { NotificationSeverity } from "./NotificationSeverity";
 import { NotificationType } from "./NotificationType";
 
 export interface Notification {
-  pathRelativeToTheWorkspaceRoot: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
   severity: NotificationSeverity;
   message: string;
   type: NotificationType;

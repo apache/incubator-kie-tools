@@ -61,9 +61,9 @@ export const createEditor = (
     },
     getContent: () => envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
     getPreview: () => envelopeApi.requests.kogitoEditor_previewRequest(),
-    setContent: (pathRelativeToTheWorkspaceRoot, content) =>
+    setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) =>
       envelopeApi.requests.kogitoEditor_contentChanged(
-        { pathRelativeToTheWorkspaceRoot, content },
+        { normalizedPosixPathRelativeToTheWorkspaceRoot, content },
         { showLoadingOverlay: true }
       ),
     subscribeToContentChanges: (callback) => stateControl.subscribe(callback),

@@ -28,14 +28,17 @@ export interface NotificationsChannelApi {
 
   /**
    * Creates a list of notification for a given path. This notifications will replace existent notification for that path.
-   * @param pathRelativeToTheWorkspaceRoot The path that references the Notification
+   * @param normalizedPosixPathRelativeToTheWorkspaceRoot The path that references the Notification
    * @param notifications List of Notifications
    */
-  kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot: string, notifications: Notification[]): void;
+  kogitoNotifications_setNotifications(
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    notifications: Notification[]
+  ): void;
 
   /**
    * Removes all the notification from a Path.
-   * @param pathRelativeToTheWorkspaceRoot The notifications path
+   * @param normalizedPosixPathRelativeToTheWorkspaceRoot The notifications path
    */
-  kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void;
+  kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void;
 }

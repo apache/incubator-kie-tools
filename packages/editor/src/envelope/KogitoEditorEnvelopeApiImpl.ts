@@ -44,7 +44,7 @@ export class KogitoEditorEnvelopeApiImpl<
 {
   protected view: () => EditorEnvelopeViewApi<E>;
   private capturedInitRequestYet = false;
-  private pathRelativeToTheWorkspaceRoot: string;
+  private normalizedPosixPathRelativeToTheWorkspaceRoot: string;
   private editor: E;
 
   constructor(
@@ -92,10 +92,10 @@ export class KogitoEditorEnvelopeApiImpl<
     this.view().setLoading();
 
     const editorContent = await this.args.envelopeContext.channelApi.requests.kogitoEditor_contentRequest();
-    this.pathRelativeToTheWorkspaceRoot = editorContent.pathRelativeToTheWorkspaceRoot;
+    this.normalizedPosixPathRelativeToTheWorkspaceRoot = editorContent.normalizedPosixPathRelativeToTheWorkspaceRoot;
 
     await this.editor
-      .setContent(editorContent.pathRelativeToTheWorkspaceRoot, editorContent.content)
+      .setContent(editorContent.normalizedPosixPathRelativeToTheWorkspaceRoot, editorContent.content)
       .catch((e) => this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent))
       .finally(() => this.view().setLoadingFinished());
 
@@ -110,7 +110,7 @@ export class KogitoEditorEnvelopeApiImpl<
     }
 
     return this.editor
-      .setContent(editorContent.pathRelativeToTheWorkspaceRoot, editorContent.content)
+      .setContent(editorContent.normalizedPosixPathRelativeToTheWorkspaceRoot, editorContent.content)
       .catch((e) => {
         this.args.envelopeContext.channelApi.notifications.kogitoEditor_setContentError.send(editorContent);
         throw e;
@@ -129,7 +129,7 @@ export class KogitoEditorEnvelopeApiImpl<
   public kogitoEditor_contentRequest() {
     return this.editor.getContent().then((content) => ({
       content: sanitize(content),
-      pathRelativeToTheWorkspaceRoot: this.pathRelativeToTheWorkspaceRoot,
+      normalizedPosixPathRelativeToTheWorkspaceRoot: this.normalizedPosixPathRelativeToTheWorkspaceRoot,
     }));
   }
 

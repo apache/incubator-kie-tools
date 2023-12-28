@@ -36,7 +36,7 @@ export function addImport({
     includedModel.normalizedPathRelativeToThisDmn.startsWith("./") ||
     includedModel.normalizedPathRelativeToThisDmn.startsWith("../");
 
-  const pathExplicitlyRelativeToThisDmn = isAlreadyUsingExplicitRelativePathNotation
+  const posixPathExplicitlyRelativeToThisDmn = isAlreadyUsingExplicitRelativePathNotation
     ? includedModel.normalizedPathRelativeToThisDmn // If the included model is located in a parent directory, we leave it that way because that is explicit enough already.
     : `./${includedModel.normalizedPathRelativeToThisDmn}`; // Always use this notation to make it explicit that we're using thisDmn's location as reference.
 
@@ -45,7 +45,7 @@ export function addImport({
     "@_name": includedModel.name.trim(),
     "@_importType": includedModel.xmlns,
     "@_namespace": includedModel.namespace,
-    "@_locationURI": pathExplicitlyRelativeToThisDmn,
+    "@_locationURI": posixPathExplicitlyRelativeToThisDmn,
   };
 
   definitions.import ??= [];

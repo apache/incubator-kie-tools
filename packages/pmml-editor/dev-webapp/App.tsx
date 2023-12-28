@@ -60,9 +60,9 @@ export const App = () => {
             setContent("");
             editor.setContent("New document", "").finally();
           }}
-          setContent={(pathRelativeToTheWorkspaceRoot: string, xml: string) => {
+          setContent={(normalizedPosixPathRelativeToTheWorkspaceRoot: string, xml: string) => {
             setContent(xml);
-            editor.setContent(pathRelativeToTheWorkspaceRoot, xml).finally();
+            editor.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, xml).finally();
           }}
         />
       )}

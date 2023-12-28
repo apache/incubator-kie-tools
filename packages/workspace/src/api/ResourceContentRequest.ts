@@ -20,6 +20,6 @@
 import { ResourceContentOptions } from "./ResourceContentOptions";
 
 export interface ResourceContentRequest {
-  pathRelativeToTheWorkspaceRoot: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
   opts?: ResourceContentOptions;
 }

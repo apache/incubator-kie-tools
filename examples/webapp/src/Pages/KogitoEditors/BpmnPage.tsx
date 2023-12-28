@@ -44,7 +44,7 @@ export function BpmnPage() {
     fileExtension: "bpmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
-    pathRelativeToTheWorkspaceRoot: "new-file.bpmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "new-file.bpmn",
   });
 
   /**

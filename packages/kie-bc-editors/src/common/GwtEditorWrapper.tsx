@@ -85,9 +85,9 @@ export class GwtEditorWrapper implements Editor {
     return this.gwtEditor.getContent().then((content) => this.textFormatter.format(content));
   }
 
-  public setContent(pathRelativeToTheWorkspaceRoot: string, content: string) {
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) {
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
-    return this.gwtEditor.setContent(pathRelativeToTheWorkspaceRoot, content.trim());
+    return this.gwtEditor.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content.trim());
   }
 
   public selectStateByName(name: string | null) {

@@ -18,11 +18,8 @@
  */
 
 export class ResourcesList {
-  public readonly pattern: string;
-  public readonly pathsRelativeToTheWorkspaceRoot: string[];
-
-  constructor(pattern: string, pathsRelativeToTheWorkspaceRoot: string[]) {
-    this.pattern = pattern;
-    this.pathsRelativeToTheWorkspaceRoot = pathsRelativeToTheWorkspaceRoot;
-  }
+  constructor(
+    public readonly pattern: string,
+    public readonly normalizedPosixPathsRelativeToTheWorkspaceRoot: string[]
+  ) {}
 }

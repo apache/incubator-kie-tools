@@ -23,5 +23,5 @@
  * This API is exposed from the Envelope to be consumed on Java code.
  */
 export interface WorkspaceExposedInteropApi {
-  openFile(pathRelativeToTheOpenFile: string): void;
+  openFile(normalizedPosixPathRelativeToTheOpenFile: string): void;
 }

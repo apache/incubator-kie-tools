@@ -143,7 +143,9 @@ export function IncludedModels() {
       selectedModel.type === "dmn"
         ? selectedModel.model.definitions["@_namespace"]!
         : selectedModel.type === "pmml"
-        ? getPmmlNamespace({ normalizedPathRelativeToTheOpenFile: selectedModel.pathRelativeToTheOpenFile })
+        ? getPmmlNamespace({
+            normalizedPosixPathRelativeToTheOpenFile: selectedModel.normalizedPosixPathRelativeToTheOpenFile,
+          })
         : KIE_UNKNOWN_NAMESPACE;
 
     setModalOpen(false);
@@ -154,7 +156,7 @@ export function IncludedModels() {
           xmlns,
           namespace,
           name: importName,
-          normalizedPathRelativeToThisDmn: selectedModel.pathRelativeToTheOpenFile,
+          normalizedPathRelativeToThisDmn: selectedModel.normalizedPosixPathRelativeToTheOpenFile,
         },
       });
     });
@@ -193,7 +195,7 @@ export function IncludedModels() {
           console.warn(`DMN EDITOR: Could not find model with namespace '${namespace}'. Ignoring.`);
           return acc;
         } else {
-          return acc.set(externalModel.pathRelativeToTheOpenFile, externalModel);
+          return acc.set(externalModel.normalizedPosixPathRelativeToTheOpenFile, externalModel);
         }
       }, new Map<string, ExternalModel>()),
     [externalModelsByNamespace]
@@ -211,7 +213,9 @@ export function IncludedModels() {
           (externalModel.type === "dmn" && !importsByNamespace.get(externalModel.model.definitions["@_namespace"])) ||
           (externalModel.type === "pmml" &&
             !importsByNamespace.get(
-              getPmmlNamespace({ normalizedPathRelativeToTheOpenFile: externalModel.pathRelativeToTheOpenFile })
+              getPmmlNamespace({
+                normalizedPosixPathRelativeToTheOpenFile: externalModel.normalizedPosixPathRelativeToTheOpenFile,
+              })
             ))
         );
       }),
@@ -289,16 +293,15 @@ export function IncludedModels() {
                     >
                       <SelectGroup label={"DMN"} key={"DMN"}>
                         {((dmnPathsNotYetIncluded?.length ?? 0) > 0 &&
-                          dmnPathsNotYetIncluded?.map((pathRelativeToThisDmn) => {
-                            const pathRelativeToTheWorkspaceRoot =
-                              onRequestToResolvePath?.(pathRelativeToThisDmn) ?? pathRelativeToThisDmn;
+                          dmnPathsNotYetIncluded?.map((p) => {
+                            const normalizedPosixPathRelativeToTheWorkspaceRoot = onRequestToResolvePath?.(p) ?? p;
                             return (
                               <SelectOption
-                                key={pathRelativeToTheWorkspaceRoot}
-                                description={dirname(pathRelativeToTheWorkspaceRoot)}
-                                value={pathRelativeToThisDmn}
+                                key={normalizedPosixPathRelativeToTheWorkspaceRoot}
+                                description={dirname(normalizedPosixPathRelativeToTheWorkspaceRoot)}
+                                value={p}
                               >
-                                {basename(pathRelativeToTheWorkspaceRoot)}
+                                {basename(normalizedPosixPathRelativeToTheWorkspaceRoot)}
                               </SelectOption>
                             );
                           })) || (
@@ -310,16 +313,15 @@ export function IncludedModels() {
                       <Divider key="divider" />
                       <SelectGroup label={"PMML"} key={"PMML"}>
                         {((pmmlPathsNotYetIncluded?.length ?? 0) > 0 &&
-                          pmmlPathsNotYetIncluded?.map((pathRelativeToThisDmn) => {
-                            const pathRelativeToTheWorkspaceRoot =
-                              onRequestToResolvePath?.(pathRelativeToThisDmn) ?? pathRelativeToThisDmn;
+                          pmmlPathsNotYetIncluded?.map((p) => {
+                            const normalizedPosixPathRelativeToTheWorkspaceRoot = onRequestToResolvePath?.(p) ?? p;
                             return (
                               <SelectOption
-                                key={pathRelativeToTheWorkspaceRoot}
-                                description={dirname(pathRelativeToTheWorkspaceRoot)}
-                                value={pathRelativeToThisDmn}
+                                key={normalizedPosixPathRelativeToTheWorkspaceRoot}
+                                description={dirname(normalizedPosixPathRelativeToTheWorkspaceRoot)}
+                                value={p}
                               >
-                                {basename(pathRelativeToTheWorkspaceRoot)}
+                                {basename(normalizedPosixPathRelativeToTheWorkspaceRoot)}
                               </SelectOption>
                             );
                           })) || (
@@ -475,8 +477,10 @@ function IncludedModelCard({
   }, [externalModel.model, externalModel.type]);
 
   const pathDisplayed = useMemo(
-    () => onRequestToResolvePath?.(externalModel.pathRelativeToTheOpenFile) ?? externalModel.pathRelativeToTheOpenFile,
-    [onRequestToResolvePath, externalModel.pathRelativeToTheOpenFile]
+    () =>
+      onRequestToResolvePath?.(externalModel.normalizedPosixPathRelativeToTheOpenFile) ??
+      externalModel.normalizedPosixPathRelativeToTheOpenFile,
+    [onRequestToResolvePath, externalModel.normalizedPosixPathRelativeToTheOpenFile]
   );
 
   const [isCardActionsOpen, setCardActionsOpen] = useState(false);
@@ -541,7 +545,7 @@ function IncludedModelCard({
             variant={ButtonVariant.link}
             style={{ paddingLeft: 0, whiteSpace: "break-spaces", textAlign: "left" }}
             onClick={() => {
-              onRequestToJumpToPath?.(externalModel.pathRelativeToTheOpenFile);
+              onRequestToJumpToPath?.(externalModel.normalizedPosixPathRelativeToTheOpenFile);
             }}
           >
             <i>{pathDisplayed}</i>

@@ -37,8 +37,8 @@ export class DashbuilderEditorView implements DashbuilderEditorApi {
     this.editorRef = React.createRef<DashbuilderEditorApi>();
   }
 
-  public setContent(pathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
-    return this.editorRef.current!.setContent(pathRelativeToTheWorkspaceRoot, content);
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+    return this.editorRef.current!.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content);
   }
 
   public getContent(): Promise<string> {

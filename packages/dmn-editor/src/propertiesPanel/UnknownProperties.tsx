@@ -65,7 +65,7 @@ export function UnknownProperties(props: { shape: DMNDI15__DMNShape; dmnElementR
               <Button
                 style={{ paddingLeft: 0 }}
                 variant={ButtonVariant.link}
-                onClick={() => onRequestToJumpToPath?.(externalDmn.pathRelativeToTheOpenFile)}
+                onClick={() => onRequestToJumpToPath?.(externalDmn.normalizedPosixPathRelativeToTheOpenFile)}
               >{`Go to '${externalDmn.model.definitions["@_name"]}'`}</Button>
             </>
           )}

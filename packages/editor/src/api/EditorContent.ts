@@ -19,6 +19,6 @@
 
 export interface EditorContent {
   content: string;
-  pathRelativeToTheWorkspaceRoot: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
   context?: Map<string, string>;
 }

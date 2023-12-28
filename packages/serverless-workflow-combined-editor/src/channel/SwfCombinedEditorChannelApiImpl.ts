@@ -77,23 +77,26 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     this.args.defaultApiImpl.kogitoNotifications_createNotification(notification);
   }
 
-  public kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot: string): void {
-    this.args.defaultApiImpl.kogitoNotifications_removeNotifications(pathRelativeToTheWorkspaceRoot);
+  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.args.defaultApiImpl.kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
   public kogitoNotifications_setNotifications(
-    pathRelativeToTheWorkspaceRoot: string,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ): void {
-    this.args.defaultApiImpl.kogitoNotifications_setNotifications(pathRelativeToTheWorkspaceRoot, notifications);
+    this.args.defaultApiImpl.kogitoNotifications_setNotifications(
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+      notifications
+    );
   }
 
   public kogitoWorkspace_newEdit(edit: WorkspaceEdit): void {
     this.args.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 
-  public kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot: string): void {
-    this.args.defaultApiImpl.kogitoWorkspace_openFile(pathRelativeToTheWorkspaceRoot);
+  public kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.args.defaultApiImpl.kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {
