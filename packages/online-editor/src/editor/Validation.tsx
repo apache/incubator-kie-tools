@@ -133,7 +133,7 @@ export function useFileValidation(
             }
             const decodedFileContent = decoder.decode(fileContent);
             dmnLanguageService
-              ?.getAllImportedModelsResources(workspaceFile.relativePath)
+              ?.getAllImportedModelsByPathRelativeToWorkspaceRoot(workspaceFile.relativePath)
               .then((importedModelsResources: DmnLanguageServiceImportedModelResources[]) => {
                 if (canceled.get()) {
                   return;

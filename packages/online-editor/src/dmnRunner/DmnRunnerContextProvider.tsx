@@ -216,7 +216,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
       const decodedFileContent = decoder.decode(fileContent);
       const importedModelsResources =
-        (await props.dmnLanguageService?.getAllImportedModelsResources(props.workspaceFile.relativePath)) ?? [];
+        (await props.dmnLanguageService?.getAllImportedModelsByPathRelativeToWorkspaceRoot(
+          props.workspaceFile.relativePath
+        )) ?? [];
       const dmnResources = [
         { content: decodedFileContent, pathRelativeToWorkspaceRoot: props.workspaceFile.relativePath },
         ...importedModelsResources,
