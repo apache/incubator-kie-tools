@@ -136,7 +136,7 @@ function build_kogito_app() {
                     -DprojectGroupId=$PROJECT_GROUP_ID \
                     -DprojectArtifactId=$PROJECT_ARTIFACT_ID \
                     -DprojectVersion=$PROJECT_VERSION \
-                    -Dextensions="kogito,quarkus-smallrye-health,quarkus-smallrye-openapi,quarkus-resteasy,quarkus-resteasy-jackson"
+                    -Dextensions="org.kie.kogito:kogito-quarkus:${KOGITO_VERSION},quarkus-smallrye-health,quarkus-smallrye-openapi,quarkus-resteasy,quarkus-resteasy-jackson"
 
             if [ ! -z ${QUARKUS_EXTRA_EXTENSIONS} ]; then
                 log_info "----> Adding extra Quarkus extensions: ${QUARKUS_EXTRA_EXTENSIONS}"
@@ -218,7 +218,7 @@ function build_kogito_app() {
 
             $MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" $(get_quarkus_platform_properties) \
                 "${quarkus_plugin}":"${quarkus_platform_version}":add-extension \
-                -Dextensions="org.kie.kogito:kogito-quarkus-serverless-workflow"
+                -Dextensions="org.kie.kogito:kogito-quarkus-serverless-workflow:${KOGITO_VERSION}"
         fi
 
         $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s "${MAVEN_SETTINGS_PATH}" \

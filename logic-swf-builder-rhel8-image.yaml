@@ -12,7 +12,7 @@ labels:
   - name: "io.quarkus.platform.version"
     value: "2.16.7.Final"
   - name: "org.kie.kogito.version"
-    value: "2.0.0-SNAPSHOT"
+    value: "999-SNAPSHOT"
   - name: "com.redhat.component"
     value: "openshift-serverless-1-logic-swf-builder-rhel8-container"
   - name: "maintainer"

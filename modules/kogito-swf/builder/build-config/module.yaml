@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.swf.builder.build-config
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 description: "Kogito Serverless Workflow builder image build configuration"
 
 envs:
@@ -9,4 +9,4 @@ envs:
   - name: QUARKUS_EXTENSIONS
     # NOTE: If you change the QUARKUS_EXTENSIONS value remember to update the scripts/logic/build-quarkus-app.sh too!
     # Follow up issue to remove KOGITO_VERSION: https://issues.redhat.com/browse/KOGITO-9270
-    value: quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,org.kie.kogito:kogito-addons-quarkus-microprofile-config-service-catalog:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-kubernetes:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-events-process:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-process-management:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-source-files:${KOGITO_VERSION}
+    value: quarkus-kubernetes,smallrye-health,org.kie.kogito:kogito-quarkus-serverless-workflow:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-knative-eventing:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-microprofile-config-service-catalog:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-kubernetes:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-events-process:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-process-management:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-source-files:${KOGITO_VERSION}

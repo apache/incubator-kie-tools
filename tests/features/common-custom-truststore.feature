@@ -17,8 +17,11 @@
 @rhpam-7/rhpam-kogito-runtime-jvm-rhel8
 @openshift-serverless-1-tech-preview/logic-data-index-ephemeral-rhel8
 Feature: Common tests for Custom TrustStore configuration
+  # This test sets an invalid certificate to the container, it fails to start, and if timing is bad cekit hangs on 'Running command ps -C java in container'
+  # See https://github.com/apache/incubator-kie-kogito-images/issues/1722
+  @ignore
   Scenario: Verify if a custom certificate is correctly handled
-    When container is started with command bash -c "sleep 10s; /home/kogito/kogito-app-launch.sh"
+    When container is started with command bash -c "/home/kogito/kogito-app-launch.sh"
       | variable            | value              |
       | CUSTOM_TRUSTSTORE   | my-truststore.jks  |
       | RUNTIME_TYPE        | quarkus            |

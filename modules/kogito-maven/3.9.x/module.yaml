@@ -1,0 +1,14 @@
+schema_version: 1
+name: org.kie.kogito.maven
+version: "3.9.3"
+
+envs:
+  - name: "MAVEN_VERSION"
+    value: "3.9.3"
+
+# unfortunately by now the version needs to be hardcoded.
+artifacts:
+  - name: apache-maven-3.9.3-bin.tar.gz
+    url: https://archive.apache.org/dist/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz
+    md5: f3fbff830d9a0dc2c6c99a76e27d0c01
+

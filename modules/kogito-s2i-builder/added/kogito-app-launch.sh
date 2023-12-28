@@ -36,7 +36,7 @@ case ${runtime_type} in
             fi
             # shellcheck disable=SC2086
             exec "${KOGITO_HOME}"/bin/*-runner ${JAVA_OPTIONS} ${KOGITO_QUARKUS_S2I_PROPS} \
-                -Dquarkus.http.host=0.0.0.0 -Djava.library.path="${KOGITO_HOME}"/ssl-libs \
+                -Dquarkus.http.host=0.0.0.0 \
                 -Dquarkus.http.port=8080 \
                 -Djavax.net.ssl.trustStore="${KOGITO_HOME}"/cacerts
         else

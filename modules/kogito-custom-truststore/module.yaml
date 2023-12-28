@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.security.custom.truststores
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 description: "Adds the capability of configuring a custom Java Truststore to replace the original cacerts"
 
 envs:

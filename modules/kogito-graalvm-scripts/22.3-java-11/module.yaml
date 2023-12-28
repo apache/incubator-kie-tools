@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.graalvm.scripts
-version: "2.0.0-snapshot"
+version: "22.3-java-11"
 
 execute:
   - script: configure

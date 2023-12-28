@@ -1,0 +1,33 @@
+schema_version: 1
+name: org.kie.kogito.graalvm.java17.installer
+version: "23.0"
+
+envs:
+  - name: "JAVA_HOME"
+    value: "/usr/share/graalvm"
+  - name: "GRAALVM_HOME"
+    value: "/usr/share/graalvm"
+  - name: "GRAALVM_VERSION"
+    value: "23.0.2.1"
+  - name: "GRAALVM_JAVA_VERSION"
+    value: "17"
+
+packages:
+  manager: microdnf
+  install:
+    - freetype-devel
+    - gcc
+    - glibc-devel
+    - libstdc++-static
+    - zlib-devel
+
+artifacts:
+  - name: mandrel-java17-linux-amd64-23.0.2.1-Final.tar.gz
+    url: https://github.com/graalvm/mandrel/releases/download/mandrel-23.0.2.1-Final/mandrel-java17-linux-amd64-23.0.2.1-Final.tar.gz
+    md5: b026ea8d357b13702f9cd05f3d87f64a
+  - name: mandrel-java17-linux-aarch64-23.0.2.1-Final.tar.gz
+    url: https://github.com/graalvm/mandrel/releases/download/mandrel-23.0.2.1-Final/mandrel-java17-linux-aarch64-23.0.2.1-Final.tar.gz
+    md5: e3143fe4bb21267087cca3ca66ae6af2
+
+execute:
+  - script: configure

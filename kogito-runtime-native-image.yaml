@@ -1,7 +1,7 @@
 schema_version: 1
 
 name: "quay.io/kiegroup/kogito-runtime-native"
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
 description: "Runtime image for Kogito based on Quarkus native image"
 
@@ -13,9 +13,9 @@ labels:
   - name: "io.openshift.expose-services"
     value: "8080:http"
   - name: "io.quarkus.platform.version"
-    value: "2.16.10.Final"
+    value: "3.2.9.Final"
   - name: "org.kie.kogito.version"
-    value: "2.0.0-SNAPSHOT"
+    value: "999-SNAPSHOT"
   - name: "maintainer"
     value: "Apache KIE <dev@kie.apache.org>"
   - name: "io.k8s.description"

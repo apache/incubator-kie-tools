@@ -1,13 +1,13 @@
 schema_version: 1
 
 name: "quay.io/kiegroup/kogito-trusty-postgresql"
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
 description: "Runtime image for Kogito Trusty Service for PostgreSQL persistence provider"
 
 labels:
   - name: "org.kie.kogito.version"
-    value: "2.0.0-SNAPSHOT"
+    value: "999-SNAPSHOT"
   - name: "maintainer"
     value: "Apache KIE <dev@kie.apache.org>"
   - name: "io.k8s.description"
@@ -35,7 +35,7 @@ modules:
     - name: org.kie.kogito.system.user
     - name: org.kie.kogito.logging
     - name: org.kie.kogito.openjdk.headless
-      version: "11"
+      version: "17"
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.launch.scripts
     - name: org.kie.kogito.trusty.postgresql

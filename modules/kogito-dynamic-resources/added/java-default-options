@@ -139,7 +139,7 @@ gc_config() {
     local timeRatio=${GC_TIME_RATIO:-4}
     local adaptiveSizePolicyWeight=${GC_ADAPTIVE_SIZE_POLICY_WEIGHT:-90}
     local maxMetaspaceSize
-    local gcOptions="${GC_CONTAINER_OPTIONS:--XX:+UseParallelOldGC}"
+    local gcOptions="${GC_CONTAINER_OPTIONS:--XX:+UseParallelGC}"
     # for compat reasons we don't set a default value for metaspaceSize
     local metaspaceSize
 

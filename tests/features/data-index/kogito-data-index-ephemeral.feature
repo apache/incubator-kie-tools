@@ -21,4 +21,4 @@ Feature: Kogito-data-index ephemeral postgresql feature.
     When container is started with env
       | variable               | value   |
       | SCRIPT_DEBUG           | true    |
-    Then container log should contain -Dquarkus.profile=http-events-support
+    Then available container log should contain -Dquarkus.profile=http-events-support

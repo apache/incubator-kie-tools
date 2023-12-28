@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.swf.common.build
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 description: "Kogito Serverless Workflow image build process"
 
 packages:

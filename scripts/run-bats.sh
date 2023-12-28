@@ -17,7 +17,7 @@ echo "----> running bats on kogito-explainability"
 ./bats/bin/bats modules/kogito-explainability/tests/bats
 
 echo "----> running bats on kogito-graalvm-scripts"
-./bats/bin/bats modules/kogito-graalvm-scripts/tests/bats
+./bats/bin/bats modules/kogito-graalvm-scripts/common/tests/bats
 
 echo "----> running bats on kogito-jobs-service-common"
 ./bats/bin/bats modules/kogito-jobs-service-common/tests/bats

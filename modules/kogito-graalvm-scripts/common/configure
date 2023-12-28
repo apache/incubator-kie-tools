@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+
+SCRIPT_DIR=$(dirname "${0}")
+
+cp -v "${SCRIPT_DIR}"/added/* "${KOGITO_HOME}"/launch/

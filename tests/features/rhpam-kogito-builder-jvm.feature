@@ -29,7 +29,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | variable       | value          |
       | RUNTIME_TYPE   | quarkus        |
       | NATIVE         | true           |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT |      
+      | KOGITO_VERSION | 999-SNAPSHOT |      
     Then s2i build log should contain Container Image rhpam-7/rhpam-kogito-builder-rhel8 does not supports native builds, please refer to the documentation.
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
@@ -37,7 +37,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | variable       | value          |
       | RUNTIME_TYPE   | quarkus        |
       | NATIVE         | false          |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT |      
+      | KOGITO_VERSION | 999-SNAPSHOT |      
     Then file /home/kogito/bin/quarkus-run.jar should exist
     And s2i build log should contain Generating quarkus project structure for project...
     And s2i build log should contain Using Quarkus com.redhat.quarkus.platform:quarkus-maven-plugin
@@ -64,7 +64,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | variable            | value          |
       | RUNTIME_TYPE        | quarkus        |
       | NATIVE              | false          |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT |           
+      | KOGITO_VERSION | 999-SNAPSHOT |           
       | PROJECT_GROUP_ID    | com.mycompany  |
       | PROJECT_ARTIFACT_ID | myproject      |
       | PROJECT_VERSION     | 2.0-SNAPSHOT   |
@@ -85,7 +85,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly when runtime is springboot
     Given s2i build /tmp/kogito-examples from dmn-example using nightly-main and runtime-image rhpam-7/rhpam-kogito-runtime-jvm-rhel8:latest
       | variable       | value          |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT |      
+      | KOGITO_VERSION | 999-SNAPSHOT |      
       | RUNTIME_TYPE   | springboot     |
     Then file /home/kogito/bin/project-1.0-SNAPSHOT.jar should exist
     And s2i build log should contain Generating springboot project structure for project...

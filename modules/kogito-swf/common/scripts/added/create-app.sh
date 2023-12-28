@@ -104,9 +104,11 @@ if [ "${SCRIPT_DEBUG^^}" = "TRUE" ]; then
     cat pom.xml
 fi
 
+# we force the dependencies download beforehand, so we won't have problems when running or building our apps in offline mode
+# see:
+#   https://quarkus.io/guides/maven-tooling#downloading-maven-artifact-dependencies-for-offline-development-and-testing
+#   https://maven.apache.org/plugins/maven-dependency-plugin/go-offline-mojo.html
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
   -nsu \
   -s "${MAVEN_SETTINGS_PATH}" \
-  -DskipTests \
-  -Dquarkus.container-image.build=false \
-   clean install
+  clean dependency:go-offline io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":go-offline

@@ -26,7 +26,7 @@ echo "OUTPUT_DIR=${OUTPUT_DIR}"
 echo "TESTS_SCRIPT_DIR_PATH=${TESTS_SCRIPT_DIR_PATH}"
 
 if [ -d  "${script_dir_path}/${image_name}" ]; then
-  curl -Ls https://sh.jbang.dev | bash -s - "${TESTS_SCRIPT_DIR_PATH}/RunTests.java"
+  curl -Ls https://sh.jbang.dev | bash -s - "${TESTS_SCRIPT_DIR_PATH}/src/RunTests.java"
 else
   echo "No shell test to run for image ${image_name}"
 fi

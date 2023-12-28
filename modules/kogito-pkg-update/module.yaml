@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.pkg-update
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 description: "Perform a system update via the package manager."
 
 execute:

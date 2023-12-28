@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.s2i.builder
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 
 labels:
   - name: "io.openshift.s2i.scripts-url"

@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.swf.devmode.runtime.community
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 description: "Kogito Serverless Workflow devmode with required extensions"
 
 envs:

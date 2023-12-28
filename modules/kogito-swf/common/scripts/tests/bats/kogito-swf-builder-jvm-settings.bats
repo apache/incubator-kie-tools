@@ -22,7 +22,7 @@ teardown() {
     source ${KOGITO_HOME}/launch/jvm-settings.sh
 
     echo "MAVEN_OPTS is: ${MAVEN_OPTS}"
-    [[ "${MAVEN_OPTS}" == *"-XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError"* ]]
+    [[ "${MAVEN_OPTS}" == *"-XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError"* ]]
 }
 
 @test "run jvm-settings with custom conf" {
@@ -34,5 +34,5 @@ teardown() {
     source ${KOGITO_HOME}/launch/jvm-settings.sh
 
     echo "MAVEN_OPTS is: ${MAVEN_OPTS}"
-    [[ "${MAVEN_OPTS}" == *"-Xmx1024m -Xms512m -Xotherthing -XX:+UseParallelOldGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError"* ]]
+    [[ "${MAVEN_OPTS}" == *"-Xmx1024m -Xms512m -Xotherthing -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+ExitOnOutOfMemoryError"* ]]
 }

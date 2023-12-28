@@ -1,7 +1,7 @@
 schema_version: 1
 
 name: "quay.io/kiegroup/kogito-base-builder"
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
 description: "Image with JDK and Maven, used as a base image. It is used by Web Tools !"
 
@@ -13,9 +13,9 @@ labels:
   - name: "io.openshift.expose-services"
     value: "8080:http"
   - name: "io.quarkus.platform.version"
-    value: "2.16.10.Final"
+    value: "3.2.9.Final"
   - name: "org.kie.kogito.version"
-    value: "2.0.0-SNAPSHOT"
+    value: "999-SNAPSHOT"
   - name: "maintainer"
     value: "Apache KIE <dev@kie.apache.org>"
   - name: "io.k8s.description"
@@ -37,10 +37,11 @@ modules:
     - name: org.kie.kogito.logging
     - name: org.kie.kogito.launch.scripts
     - name: org.kie.kogito.openjdk
-      version: "11"
+      version: "17"
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.maven
-      version: "3.8.6"
+      version: "3.9.3"
+    - name: org.kie.kogito.maven.common
     - name: org.kie.kogito.project.versions
     - name: org.kie.kogito.security.custom.truststores
 

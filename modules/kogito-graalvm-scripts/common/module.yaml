@@ -1,0 +1,6 @@
+schema_version: 1
+name: org.kie.kogito.graalvm.common.scripts
+version: "999-SNAPSHOT"
+
+execute:
+  - script: configure

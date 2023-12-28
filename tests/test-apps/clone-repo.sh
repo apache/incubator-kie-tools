@@ -20,6 +20,7 @@ fi
 set -e
 realPath="realpath"
 if [[ $OSTYPE == 'darwin'* ]]; then
+  # If you are on MacOS, use "brew install coreutils"
   realPath="grealpath"
 fi
 base_dir=`dirname $(${realPath} -s $0)`
@@ -43,7 +44,7 @@ git clone https://github.com/apache/${KOGITO_EXAMPLES_REPO_NAME}.git ${KOGITO_EX
 cd ${KOGITO_EXAMPLES_DIR}/
 git fetch origin
 git fetch origin --tags
-git checkout -b nightly-main
+git switch nightly-main
 
 # make a new copy of rules-quarkus-helloworld for native tests
 cp -rv  ${KOGITO_EXAMPLES_DIR}/kogito-quarkus-examples/rules-quarkus-helloworld/ ${KOGITO_EXAMPLES_DIR}/kogito-quarkus-examples/rules-quarkus-helloworld-native/

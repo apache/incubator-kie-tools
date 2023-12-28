@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.dataindex.oracle
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 
 # see build-kogito-apps-components.sh script, responsible for build it.
 # called by the Makefile before builds

@@ -4,9 +4,9 @@ Feature: kogito-runtime-jvm feature.
 
   Scenario: verify if the java installation is correct
     When container is started with command bash
-    Then run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-11
+    Then run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-17
     And run sh -c 'echo $JAVA_VENDOR' in container and immediately check its output for openjdk
-    And run sh -c 'echo $JAVA_VERSION' in container and immediately check its output for 11
+    And run sh -c 'echo $JAVA_VERSION' in container and immediately check its output for 17
 
   Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port with quarkus
     Given s2i build /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld from target

@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.image.dependencies
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 description: holds common dependencies across images
 
 execute:

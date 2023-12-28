@@ -3,8 +3,8 @@
 export KOGITO_HOME=/tmp/kogito
 export JBOSS_CONTAINER_JAVA_JVM_MODULE=${KOGITO_HOME}/launch
 mkdir -p "${KOGITO_HOME}"/launch
-cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh "${KOGITO_HOME}"/launch/
-cp $BATS_TEST_DIRNAME/../../../kogito-dynamic-resources/added/container-limits "${KOGITO_HOME}"/launch/
+cp $BATS_TEST_DIRNAME/../../../../kogito-logging/added/logging.sh "${KOGITO_HOME}"/launch/
+cp $BATS_TEST_DIRNAME/../../../../kogito-dynamic-resources/added/container-limits "${KOGITO_HOME}"/launch/
 
 # imports
 source $BATS_TEST_DIRNAME/../../added/memory-limit.sh

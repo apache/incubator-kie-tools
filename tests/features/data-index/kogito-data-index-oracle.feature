@@ -12,12 +12,10 @@ Feature: Kogito-data-index oracle feature.
   Scenario: verify if of container is correctly started with oracle parameters
     When container is started with env
       | variable                     | value                                      |
-      | SCRIPT_DEBUG                 | true                                       |
       | QUARKUS_DATASOURCE_JDBC_URL  | jdbc:oracle:thin:@//10.1.1.53:1521/quarkus |
       | QUARKUS_DATASOURCE_USERNAME  | kogito                                     |
       | QUARKUS_DATASOURCE_PASSWORD  | s3cr3t                                     |
-    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
-    And container log should contain java.sql.SQLException: Acquisition timeout while waiting for new connection
+    Then container log should contain java.sql.SQLRecoverableException: ORA-17002: I/O error
     And container log should not contain Application failed to start
 
   Scenario: check if the default quarkus profile is correctly set on data index
@@ -25,3 +23,4 @@ Feature: Kogito-data-index oracle feature.
       | variable               | value   |
       | SCRIPT_DEBUG           | true    |
     Then container log should contain -Dquarkus.profile=kafka-events-support
+    And container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar

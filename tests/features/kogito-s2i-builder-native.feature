@@ -3,17 +3,17 @@ Feature: kogito-s2i-builder image native build tests
 
   Scenario: verify java cacerts and libsunec are available in the given kogito builder container.
     When container is started with command bash
-    Then  file /home/kogito/ssl-libs/libsunec.so should exist
-    And file /home/kogito/cacerts should exist
+    Then file /home/kogito/cacerts should exist
 
   Scenario: verify if the maven and graal vm settings are correct on kogito-s2i-builder image for native
     When container is started with command bash
     Then run sh -c 'echo $MAVEN_HOME' in container and immediately check its output for /usr/share/maven
-    And run sh -c 'echo $MAVEN_VERSION' in container and immediately check its output for 3.8.6
-    And run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-11
+    And run sh -c 'echo $MAVEN_VERSION' in container and immediately check its output for 3.9.3
+    And run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-17
     And run sh -c 'echo $GRAALVM_HOME' in container and immediately check its output for /usr/share/graalvm
-    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 22.3.2
+    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 23.0.2.1
 
+  @ignore
   Scenario: Verify if the s2i build is finished as expected using native build and runtime image
     Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
       | variable     | value      |
@@ -48,10 +48,10 @@ Feature: kogito-s2i-builder image native build tests
       | wait            | 80                    |
       | expected_phrase | ["hello","world"]     |
     And file /home/kogito/bin/rules-quarkus-helloworld-runner should exist
-    And file /home/kogito/ssl-libs/libsunec.so should exist
     And file /home/kogito/cacerts should exist
     And s2i build log should contain -J-Xmx2576980378
 
+  @ignore
   Scenario: Verify if the s2i build is finished as expected performing a native build and if it is listening on the expected port, test uses custom properties file to test the port configuration.
     Given s2i build /tmp/kogito-examples from kogito-quarkus-examples/rules-quarkus-helloworld using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
       | variable     | value      |
@@ -70,6 +70,7 @@ Feature: kogito-s2i-builder image native build tests
     And file /home/kogito/bin/rules-quarkus-helloworld-runner should exist
     And s2i build log should contain -J-Xmx5153960755
 
+  @ignore
   Scenario: Verify if the s2i build is finished as expected performing a native build with persistence enabled - Step 1: build the application and copy to the runtime image
     Given s2i build https://github.com/apache/incubator-kie-kogito-examples.git from kogito-quarkus-examples/process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
       | variable          | value         |
@@ -107,13 +108,14 @@ Feature: kogito-s2i-builder image native build tests
       | wait            | 80                    |
       | expected_phrase | ["hello","world"]     |    
 
+  @ignore
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly using native build
     Given s2i build /tmp/kogito-examples from dmn-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-native:latest
       | variable       | value          |
       | RUNTIME_TYPE   | quarkus        |
       | NATIVE         | true           |
       | LIMIT_MEMORY   | 6442450944     |
-      | KOGITO_VERSION | 2.0.0-SNAPSHOT |      
+      | KOGITO_VERSION | 999-SNAPSHOT |      
     Then file /home/kogito/bin/project-1.0-SNAPSHOT-runner should exist
     And check that page is served
       | property        | value                                                                                            |

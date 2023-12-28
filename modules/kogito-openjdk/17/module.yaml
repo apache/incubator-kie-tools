@@ -1,0 +1,26 @@
+schema_version: 1
+name: org.kie.kogito.openjdk
+version: "17"
+
+labels:
+  - name: "org.jboss.product"
+    value: "openjdk"
+  - name: "org.jboss.product.version"
+    value: "17"
+  - name: "org.jboss.product.openjdk.version"
+    value: "17"
+
+envs:
+  - name: "JAVA_HOME"
+    value: "/usr/lib/jvm/java-17"
+  - name: "JAVA_VENDOR"
+    value: "openjdk"
+  - name: "JAVA_VERSION"
+    value: "17"
+
+execute:
+  - script: clean.sh
+
+packages:
+  install:
+    - java-17-openjdk-devel

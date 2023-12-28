@@ -1,11 +1,11 @@
 schema_version: 1
 name: org.kie.kogito.swf.common.scripts
-version: "2.0.0-snapshot"
+version: "999-SNAPSHOT"
 description: "Kogito Serverless Workflow image common scripts"
 
 envs:
   - name: QUARKUS_EXTENSIONS
-    example: 'quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing'
+    example: 'quarkus-kubernetes,org.kie.kogito:kogito-quarkus-serverless-workflow:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-knative-eventing:${KOGITO_VERSION}'
     description: To add extension to your application
 
   - name: PROJECT_GROUP_ID
