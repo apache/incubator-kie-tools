@@ -17,8 +17,7 @@
  * under the License.
  */
 
-import { DmnDocumentData, DmnLanguageService } from "../src";
-import { readFile } from "fs/promises";
+import { DmnDocumentData, DmnLanguageService, DmnLanguageServiceImportedModelResources } from "../src";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { DmnDecision } from "../src/DmnDecision";
@@ -29,100 +28,194 @@ const tests = [
   { pathRelativeToWorkspaceRoot: "./fixtures/nested.dmn", expected: [] },
 ];
 
-describe("DmnLanguageService", () => {
-  const service = new DmnLanguageService({
-    modelContent: "",
-    pathRelativeToWorkspaceRoot: "",
-    getModelContentFromPathRelativeToWorkspaceRoot: () =>
-      new Promise((res) =>
-        res({
-          pathRelativeToWorkspaceRoot: "",
-          content: "",
-        })
-      ),
-  });
-
-  it("getImportedModelPathsRelativeToWorkspaceRoot - empty string", () => {
-    expect(
-      service.getImportedModelPathsRelativeToWorkspaceRoot([{ content: "", pathRelativeToWorkspaceRoot: "" }])
-    ).toEqual([]);
-  });
-
-  it("getImportedModelPathsRelativeToWorkspaceRoot - single file", () => {
-    tests.forEach(({ pathRelativeToWorkspaceRoot, expected }) => {
-      const content = readFileSync(resolve(__dirname, pathRelativeToWorkspaceRoot), "utf8");
-      expect(service.getImportedModelPathsRelativeToWorkspaceRoot({ content, pathRelativeToWorkspaceRoot })).toEqual(
-        expected
-      );
+const getModelContentFromPathRelativeToWorkspaceRoot = (
+  pathRelativeToWorkspaceRoot: string
+): Promise<DmnLanguageServiceImportedModelResources> => {
+  const path = resolve(__dirname, pathRelativeToWorkspaceRoot);
+  return new Promise((res, rej) => {
+    return res({
+      pathRelativeToWorkspaceRoot: path,
+      content: readFileSync(path, "utf8"),
     });
   });
+};
 
-  it("getImportedModelPathsRelativeToWorkspaceRoot - multiple files", async () => {
-    const importedModelResources = (
-      await Promise.all(
-        tests.map(({ pathRelativeToWorkspaceRoot }) => readFile(resolve(__dirname, pathRelativeToWorkspaceRoot)))
-      )
-    ).map((e, i) => ({
-      content: e.toString("utf8"),
-      pathRelativeToWorkspaceRoot: tests[i].pathRelativeToWorkspaceRoot,
-    }));
+describe("DmnLanguageService", () => {
+  it("getAllImportedModelsByModelResource - empty string", async () => {
+    const dmnLs = new DmnLanguageService({
+      modelContent: "",
+      pathRelativeToWorkspaceRoot: "",
+      getModelContentFromPathRelativeToWorkspaceRoot,
+    });
 
-    expect(service.getImportedModelPathsRelativeToWorkspaceRoot(importedModelResources)).toEqual(
-      tests.flatMap((e) => e.expected)
+    expect(await dmnLs.getAllImportedModelsByModelResource([{ content: "", pathRelativeToWorkspaceRoot: "" }])).toEqual(
+      []
     );
   });
 
-  it("recursivelyGetAllImportedModelsResources - empty", async () => {
-    const service = new DmnLanguageService({
-      modelContent: "",
-      pathRelativeToWorkspaceRoot: "",
-      getModelContentFromPathRelativeToWorkspaceRoot: () =>
-        new Promise((res) =>
-          res({
-            pathRelativeToWorkspaceRoot: "",
-            content: "",
-          })
-        ),
+  it("getAllImportedModelsByModelResource - single file", async () => {
+    const testResources = await Promise.all(
+      tests.map(({ pathRelativeToWorkspaceRoot, expected }) => {
+        const dmnLs = new DmnLanguageService({
+          modelContent: "",
+          pathRelativeToWorkspaceRoot: resolve(__dirname, pathRelativeToWorkspaceRoot),
+          getModelContentFromPathRelativeToWorkspaceRoot,
+        });
+
+        const content = readFileSync(resolve(__dirname, pathRelativeToWorkspaceRoot), "utf8");
+        return dmnLs.getAllImportedModelsByModelResource([
+          { content, pathRelativeToWorkspaceRoot: resolve(__dirname, pathRelativeToWorkspaceRoot) },
+        ]);
+      })
+    );
+
+    const expectResources = tests.map(({ expected }) => {
+      return expected.map((pathRelativeToWorkspaceRoot) => {
+        const path = resolve(__dirname, pathRelativeToWorkspaceRoot);
+        return {
+          content: readFileSync(path, "utf8"),
+          pathRelativeToWorkspaceRoot: path,
+        };
+      });
     });
 
-    expect(await service.recursivelyGetAllImportedModelsResources([])).toEqual([]);
+    expect(testResources).toEqual(expectResources);
   });
 
-  it("recursivelyGetAllImportedModelsResources - get resources", async () => {
-    const absolutePathOfModelWithNestedIncludedModel = resolve(__dirname, "./fixtures/recursive.dmn");
-    const modelContent = readFileSync(absolutePathOfModelWithNestedIncludedModel, "utf8");
+  it("getAllImportedModelsByModelResource - multiple files", async () => {
+    const importedModelResources = tests.map(({ pathRelativeToWorkspaceRoot }) => {
+      const path = resolve(__dirname, pathRelativeToWorkspaceRoot);
+      return {
+        content: readFileSync(path, "utf8"),
+        pathRelativeToWorkspaceRoot: path,
+      };
+    });
 
-    const absolutePathOfIncludedModel = resolve(__dirname, "./fixtures/nested.dmn");
-    const includedModelContent = readFileSync(absolutePathOfIncludedModel, "utf8");
+    const pathSet = new Set();
+    const expectResources = tests.flatMap(({ expected }) => {
+      return expected.flatMap((pathRelativeToWorkspaceRoot) => {
+        const path = resolve(__dirname, pathRelativeToWorkspaceRoot);
+        if (pathSet.has(path)) {
+          return [];
+        }
+        pathSet.add(path);
+        return {
+          content: readFileSync(path, "utf8"),
+          pathRelativeToWorkspaceRoot: path,
+        };
+      });
+    });
 
-    const expected = {
-      pathRelativeToWorkspaceRoot: absolutePathOfIncludedModel,
-      content: includedModelContent,
-    };
-
-    const service = new DmnLanguageService({
+    const dmnLs = new DmnLanguageService({
       modelContent: "",
       pathRelativeToWorkspaceRoot: "",
-      getModelContentFromPathRelativeToWorkspaceRoot: () => new Promise((res) => res(expected)),
+      getModelContentFromPathRelativeToWorkspaceRoot,
+    });
+
+    expect(await dmnLs.getAllImportedModelsByModelResource(importedModelResources)).toEqual(expectResources);
+  });
+
+  it("getAllImportedModelsByPathRelativeToWorkspaceRoot - empty", async () => {
+    const dmnLs = new DmnLanguageService({
+      modelContent: "",
+      pathRelativeToWorkspaceRoot: "",
+      getModelContentFromPathRelativeToWorkspaceRoot: (path) => {
+        return new Promise((res, rej) => {
+          res({
+            content: "",
+            pathRelativeToWorkspaceRoot: "",
+          });
+        });
+      },
+    });
+
+    expect(await dmnLs.getAllImportedModelsByPathRelativeToWorkspaceRoot("")).toEqual([]);
+  });
+
+  it("getAllImportedModelsByPathRelativeToWorkspaceRoot - get resources", async () => {
+    const absolutePathOfModelWithNestedImportedModel = "./fixtures/recursive.dmn";
+    const absolutePathOfImportedModel = resolve(__dirname, "./fixtures/nested.dmn");
+    const importedModelContent = readFileSync(absolutePathOfImportedModel, "utf8");
+
+    const expected = [
+      {
+        pathRelativeToWorkspaceRoot: absolutePathOfImportedModel,
+        content: importedModelContent,
+      },
+    ];
+
+    const dmnLs = new DmnLanguageService({
+      modelContent: "",
+      pathRelativeToWorkspaceRoot: resolve(__dirname, absolutePathOfModelWithNestedImportedModel),
+      getModelContentFromPathRelativeToWorkspaceRoot,
     });
 
     expect(
-      await service.recursivelyGetAllImportedModelsResources([
-        { content: modelContent, pathRelativeToWorkspaceRoot: absolutePathOfModelWithNestedIncludedModel },
-      ])
-    ).toEqual([expected]);
+      await dmnLs.getAllImportedModelsByPathRelativeToWorkspaceRoot(absolutePathOfModelWithNestedImportedModel)
+    ).toEqual(expected);
+  });
+
+  it("getAllImportedModelsByPathRelativeToWorkspaceRoot - should return multiple imported models", async () => {
+    const absolutePathOfModelWithMultipleImportedModel = "./fixtures/model.dmn";
+    const recursiveAbsolutePathOfImportedModel = resolve(__dirname, "./fixtures/recursive.dmn");
+    const nestedAbsolutePathOfImportedModel = resolve(__dirname, "./fixtures/nested.dmn");
+    const recursiveImportedModelContent = readFileSync(recursiveAbsolutePathOfImportedModel, "utf8");
+    const nestedImportedModelContent = readFileSync(nestedAbsolutePathOfImportedModel, "utf8");
+
+    const expected = [
+      {
+        pathRelativeToWorkspaceRoot: recursiveAbsolutePathOfImportedModel,
+        content: recursiveImportedModelContent,
+      },
+      {
+        pathRelativeToWorkspaceRoot: nestedAbsolutePathOfImportedModel,
+        content: nestedImportedModelContent,
+      },
+    ];
+
+    const dmnLs = new DmnLanguageService({
+      modelContent: "",
+      pathRelativeToWorkspaceRoot: resolve(__dirname, absolutePathOfModelWithMultipleImportedModel),
+      getModelContentFromPathRelativeToWorkspaceRoot,
+    });
+
+    expect(
+      await dmnLs.getAllImportedModelsByPathRelativeToWorkspaceRoot(absolutePathOfModelWithMultipleImportedModel)
+    ).toEqual(expected);
+  });
+
+  it("getAllImportedModelsByPathRelativeToWorkspaceRoot - recursive import", async () => {
+    const absolutePathOfExample1ImportedModel = "./fixtures/example1.dmn";
+    const example2AbsolutePathOfImportedModel = resolve(__dirname, "./fixtures/example2.dmn");
+    const example2ImportedModelContent = readFileSync(example2AbsolutePathOfImportedModel, "utf8");
+
+    const expected = [
+      {
+        pathRelativeToWorkspaceRoot: example2AbsolutePathOfImportedModel,
+        content: example2ImportedModelContent,
+      },
+    ];
+
+    const dmnLs = new DmnLanguageService({
+      modelContent: "",
+      pathRelativeToWorkspaceRoot: resolve(__dirname, absolutePathOfExample1ImportedModel),
+      getModelContentFromPathRelativeToWorkspaceRoot,
+    });
+
+    expect(await dmnLs.getAllImportedModelsByPathRelativeToWorkspaceRoot(absolutePathOfExample1ImportedModel)).toEqual(
+      expected
+    );
   });
 
   it("getDmnDocumentData - get decisions", async () => {
-    const absolutePathOfModelWithNestedIncludedModel = resolve(__dirname, "./fixtures/decisions.dmn");
-    const modelContent = readFileSync(absolutePathOfModelWithNestedIncludedModel, "utf8");
+    const absolutePathOfModelWithNestedImportedModel = resolve(__dirname, "./fixtures/decisions.dmn");
+    const modelContent = readFileSync(absolutePathOfModelWithNestedImportedModel, "utf8");
 
-    const absolutePathOfIncludedModel = resolve(__dirname, "./fixtures/nested.dmn");
-    const includedModelContent = readFileSync(absolutePathOfIncludedModel, "utf8");
+    const absolutePathOfImportedModel = resolve(__dirname, "./fixtures/nested.dmn");
 
     const expected = {
-      pathRelativeToWorkspaceRoot: absolutePathOfIncludedModel,
-      content: includedModelContent,
+      pathRelativeToWorkspaceRoot: absolutePathOfImportedModel,
+      content: readFileSync(absolutePathOfImportedModel, "utf8"),
     };
 
     const dmnDocumentData: DmnDocumentData = new DmnDocumentData(
@@ -130,12 +223,12 @@ describe("DmnLanguageService", () => {
       "My Model Name",
       [new DmnDecision("Decision-1"), new DmnDecision("Decision-2"), new DmnDecision("Decision-3")]
     );
-    const service = new DmnLanguageService({
+    const dmnLs = new DmnLanguageService({
       modelContent: "",
-      pathRelativeToWorkspaceRoot: "",
-      getModelContentFromPathRelativeToWorkspaceRoot: () => new Promise((res) => res(expected)),
+      pathRelativeToWorkspaceRoot: absolutePathOfModelWithNestedImportedModel,
+      getModelContentFromPathRelativeToWorkspaceRoot,
     });
 
-    expect(service.getDmnDocumentData(modelContent)).toEqual(dmnDocumentData);
+    expect(dmnLs.getDmnDocumentData(modelContent)).toEqual(dmnDocumentData);
   });
 });

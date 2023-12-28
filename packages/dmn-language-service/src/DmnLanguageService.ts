@@ -61,6 +61,10 @@ export class DmnLanguageService {
   private getImportedModelPathRelativeToWorkspaceRoot(
     modelResources: DmnLanguageServiceImportedModelResources
   ): string[] {
+    if (!modelResources.content) {
+      return [];
+    }
+
     const marshaller: DmnMarshaller = getMarshaller(modelResources.content);
     const definitions = marshaller.parser.parse()?.definitions;
 
@@ -87,7 +91,7 @@ export class DmnLanguageService {
       .filter((e) => e !== null) as string[];
   }
 
-  public getImportedModelPathsRelativeToWorkspaceRoot(
+  private getImportedModelPathsRelativeToWorkspaceRoot(
     modelResources: DmnLanguageServiceImportedModelResources[] | DmnLanguageServiceImportedModelResources
   ): string[] {
     if (Array.isArray(modelResources)) {
@@ -95,6 +99,40 @@ export class DmnLanguageService {
     }
 
     return this.getImportedModelPathRelativeToWorkspaceRoot(modelResources);
+  }
+
+  public async getAllImportedModelsByModelResource(
+    modelsResources: DmnLanguageServiceImportedModelResources[]
+  ): Promise<DmnLanguageServiceImportedModelResources[]> {
+    // get imported models resources
+    const importedModelsPathsRelativeToWorkspaceRoot =
+      this.getImportedModelPathsRelativeToWorkspaceRoot(modelsResources);
+    if (importedModelsPathsRelativeToWorkspaceRoot && importedModelsPathsRelativeToWorkspaceRoot.length > 0) {
+      const importedModelsResources = (
+        await Promise.all(
+          importedModelsPathsRelativeToWorkspaceRoot.map((importedModelPathRelativeToOpenFile) =>
+            this.args.getModelContentFromPathRelativeToWorkspaceRoot(importedModelPathRelativeToOpenFile)
+          )
+        )
+      ).filter((e) => e !== undefined) as DmnLanguageServiceImportedModelResources[];
+
+      if (importedModelsResources.length > 0) {
+        return [
+          ...importedModelsResources,
+          ...(await this.getAllImportedModelsByModelResource(importedModelsResources)),
+        ];
+      }
+      return [...importedModelsResources];
+    }
+    return [];
+  }
+
+  public async getAllImportedModelsByPathRelativeToWorkspaceRoot(modelPathRelativeToWorkspaceRoot: string) {
+    const modelResource = [
+      (await this.args.getModelContentFromPathRelativeToWorkspaceRoot(modelPathRelativeToWorkspaceRoot)) ??
+        ([] as DmnLanguageServiceImportedModelResources[]),
+    ].flatMap((e) => e);
+    return this.getAllImportedModelsByModelResource(modelResource);
   }
 
   // Receive all contents, paths and a node ID and returns the model that contains the node.
@@ -127,41 +165,6 @@ export class DmnLanguageService {
       .map((decision) => decision.getAttribute(DECISION_NAME_ATTRIBUTE))
       .flatMap((decisionName) => (decisionName ? [new DmnDecision(decisionName)] : []));
     return new DmnDocumentData(namespace ?? "", dmnModelName ?? "", decisions);
-  }
-
-  // recursively get imported models
-  public async recursivelyGetAllImportedModelsResources(
-    modelsResources: DmnLanguageServiceImportedModelResources[]
-  ): Promise<DmnLanguageServiceImportedModelResources[]> {
-    // get imported models resources
-    const importedModelsPathsRelativeToWorkspaceRoot =
-      this.getImportedModelPathsRelativeToWorkspaceRoot(modelsResources);
-    if (importedModelsPathsRelativeToWorkspaceRoot && importedModelsPathsRelativeToWorkspaceRoot.length > 0) {
-      const importedModelsResources = (
-        await Promise.all(
-          importedModelsPathsRelativeToWorkspaceRoot.map((importedModelPathRelativeToOpenFile) =>
-            this.args.getModelContentFromPathRelativeToWorkspaceRoot(importedModelPathRelativeToOpenFile)
-          )
-        )
-      ).filter((e) => e !== undefined) as DmnLanguageServiceImportedModelResources[];
-
-      if (importedModelsResources.length > 0) {
-        return [
-          ...importedModelsResources,
-          ...(await this.recursivelyGetAllImportedModelsResources(importedModelsResources)),
-        ];
-      }
-      return [...importedModelsResources];
-    }
-    return [];
-  }
-
-  public async getAllImportedModelsResources(modelPath: string) {
-    const modelResource = [
-      (await this.args.getModelContentFromPathRelativeToWorkspaceRoot(modelPath)) ??
-        ([] as DmnLanguageServiceImportedModelResources[]),
-    ].flatMap((e) => e);
-    return this.recursivelyGetAllImportedModelsResources(modelResource);
   }
 
   public getDmnSpecVersion() {
