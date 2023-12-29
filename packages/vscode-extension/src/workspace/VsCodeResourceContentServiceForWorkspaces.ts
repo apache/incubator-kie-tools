@@ -67,17 +67,39 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Trying to use isomorphic-git to read dir.");
       const normalizedPosixPathsRelativeToTheBasePath = await listFiles({
         fs: this.isomorphicGitFs,
-        dir: baseAbsoluteFsPath,
+        dir: this.args.workspaceRootAbsoluteFsPath,
       });
       console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Success on using isomorphic-git!");
 
       const minimatch = new Minimatch(pattern);
       const regexp = minimatch.makeRe(); // The regexp is ~50x faster than the direct match using glob.
+      const openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot = __path.dirname(
+        getNormalizedPosixPathRelativeToWorkspaceRoot(this.args.document)
+      );
+
       const matchingNormalizedPosixPathsRelativeToTheBasePath = normalizedPosixPathsRelativeToTheBasePath.filter(
-        (p) =>
-          regexp.test(
-            "/" + p // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
-          ) || regexp.test(__path.relative(getNormalizedPosixPathRelativeToWorkspaceRoot(this.args.document), p)) // check on the asset folder for *.{ext} pattern
+        (p) => {
+          const matchesPattern =
+            // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
+            regexp.test("/" + p) ||
+            // check on the asset folder for *.{ext} pattern
+            regexp.test(__path.relative(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot, p));
+
+          const conformsToSearchType =
+            !opts ||
+            opts.type === SearchType.TRAVERSAL ||
+            (opts.type === SearchType.ASSET_FOLDER &&
+              __path
+                .join(baseAbsoluteFsPath, toFsPath(p))
+                .startsWith(
+                  __path.join(
+                    baseAbsoluteFsPath,
+                    toFsPath(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot)
+                  )
+                ));
+
+          return matchesPattern && conformsToSearchType;
+        }
       );
       return new ResourcesList(pattern, matchingNormalizedPosixPathsRelativeToTheBasePath);
     } catch (error) {

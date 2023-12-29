@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { PromiseFsClient } from "isomorphic-git";
 import * as vscode from "vscode";
 
 export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
@@ -47,7 +46,6 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
   async readdir(path: string) {
     const contentPath = vscode.Uri.parse(path);
     try {
-      console.debug("vscode.workspace.fs.readDirectory", "path:", contentPath);
       return vscode.workspace.fs.readDirectory(contentPath);
     } catch (error) {
       console.debug("ERROR on vscode.workspace.fs.readDirectory", "error:", error, "path:", contentPath);
@@ -57,7 +55,6 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
   async read(path: string) {
     const contentPath = vscode.Uri.parse(path);
     try {
-      console.debug("vscode.workspace.fs.readFile", "path:", contentPath);
       const uint8Array = await vscode.workspace.fs.readFile(contentPath);
       return Buffer.from(uint8Array);
     } catch (error) {
@@ -72,7 +69,6 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
   async write(path: string, buffer: Buffer) {
     const contentPath = vscode.Uri.parse(path);
     try {
-      console.debug("vscode.workspace.fs.write", "path:", contentPath);
       return vscode.workspace.fs.writeFile(contentPath, buffer);
     } catch (error) {
       console.debug("ERROR on vscode.workspace.fs.write", "error:", error, "path:", contentPath);
@@ -82,7 +78,6 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
   async lstat(path: string) {
     const contentPath = vscode.Uri.parse(path);
     try {
-      console.debug("vscode.workspace.fs.stat", "path:", contentPath);
       return vscode.workspace.fs.stat(contentPath);
     } catch (error) {
       console.debug("ERROR on vscode.workspace.fs.stat", "error:", error, "path:", contentPath);

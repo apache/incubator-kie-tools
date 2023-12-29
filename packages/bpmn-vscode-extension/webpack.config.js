@@ -33,6 +33,12 @@ const commonConfig = (env) =>
       umdNamedDefine: true,
       globalObject: "this",
     },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
     externals: {
       vscode: "commonjs vscode",
     },
