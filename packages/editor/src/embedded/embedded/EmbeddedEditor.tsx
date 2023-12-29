@@ -50,7 +50,7 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
   customChannelApiImpl?: KogitoEditorChannelApi;
   stateControl?: StateControl;
   isReady?: boolean;
-  workspaceRootAbsolutePath?: string;
+  workspaceRootAbsolutePosixPath?: string;
 };
 
 /**
@@ -121,7 +121,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
             initialLocale: props.locale,
             isReadOnly: props.file.isReadOnly,
             channel: props.channelType,
-            workspaceRootAbsolutePath: props.workspaceRootAbsolutePath,
+            workspaceRootAbsolutePosixPath: props.workspaceRootAbsolutePosixPath,
           }
         )
     );
@@ -131,7 +131,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     props.file.isReadOnly,
     props.locale,
     props.channelType,
-    props.workspaceRootAbsolutePath,
+    props.workspaceRootAbsolutePosixPath,
     envelopeMapping?.resourcesPathPrefix,
   ]);
 

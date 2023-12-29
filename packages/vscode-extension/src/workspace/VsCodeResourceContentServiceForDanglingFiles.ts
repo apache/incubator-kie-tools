@@ -36,30 +36,25 @@ import { toFsPath, toPosixPath } from "@kie-tools-core/operating-system/dist/pat
  * asset is not part the opened workspace.
  */
 export class VsCodeResourceContentServiceForDanglingFiles implements ResourceContentService {
-  private readonly rootFolderAbsoluteFsPath: string;
-
-  constructor(rootFolderAbsoluteFsPath: string) {
-    this.rootFolderAbsoluteFsPath = rootFolderAbsoluteFsPath;
+  private readonly workspaceRootAbsoluteFsPath: string;
+  constructor(private readonly args: { openFileAbsoluteFsPath: string }) {
+    this.workspaceRootAbsoluteFsPath = __path.dirname(this.args.openFileAbsoluteFsPath);
   }
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     try {
-      const files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.rootFolderAbsoluteFsPath));
+      const files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.workspaceRootAbsoluteFsPath));
       const minimatch = new Minimatch(pattern);
       const regexp = minimatch.makeRe(); // The regexp is ~50x faster than the direct match using glob.
       return new ResourcesList(
         pattern,
-        files.flatMap(([normalizedFsPathRelativeToWorkspaceRoot, fileType]) =>
-          fileType === 1 && // 1 === vscode.FileType.File, using it directly causes an error
-          (regexp.test(
-            "/" + normalizedFsPathRelativeToWorkspaceRoot // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
-          ) ||
-            regexp.test(
-              normalizedFsPathRelativeToWorkspaceRoot // Regex have the same behavior as the glob with *.{ext} pattern.
-            ))
-            ? toPosixPath(normalizedFsPathRelativeToWorkspaceRoot)
-            : []
-        )
+        files.flatMap(([p, fileType]) => {
+          const matched =
+            fileType === 1 && // 1 === vscode.FileType.File, using it directly causes an error
+            (regexp.test("/" + p) || regexp.test(p)); // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
+
+          return matched ? toPosixPath(p) : [];
+        })
       );
     } catch (e) {
       return new ResourcesList(pattern, []);
@@ -77,9 +72,11 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
     }
 
     const normalizedFsPathRelativeToTheWorkspaceRoot = toFsPath(normalizedPosixPathRelativeToTheWorkspaceRoot);
-    const absoluteFsPath = __path.join(this.rootFolderAbsoluteFsPath, normalizedFsPathRelativeToTheWorkspaceRoot);
+    const absoluteFsPath = __path.join(this.workspaceRootAbsoluteFsPath, normalizedFsPathRelativeToTheWorkspaceRoot);
 
-    if (__path.resolve(this.rootFolderAbsoluteFsPath, normalizedFsPathRelativeToTheWorkspaceRoot) !== absoluteFsPath) {
+    if (
+      __path.resolve(this.workspaceRootAbsoluteFsPath, normalizedFsPathRelativeToTheWorkspaceRoot) !== absoluteFsPath
+    ) {
       throw new Error(
         "VS CODE RESOURCE CONTENT API IMPL FOR DANGLING FILES: Path relative to the root folder trying to access files outside of it."
       );

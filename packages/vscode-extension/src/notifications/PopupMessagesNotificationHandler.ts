@@ -17,15 +17,15 @@
  * under the License.
  */
 
-import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
-import * as vscode from "vscode";
-import { Notification, NotificationsChannelApi, NotificationSeverity } from "../api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { Notification, NotificationsChannelApi, NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
+import * as vscode from "vscode";
+import { VsCodeWorkspaceChannelApiImpl } from "../workspace/VsCodeWorkspaceChannelApiImpl";
 import { NotificationsApiVsCodeI18nDictionary } from "./i18n";
 
 export class PopupMessagesNotificationHandler implements NotificationsChannelApi {
   constructor(
-    private readonly workspaceApi: WorkspaceChannelApi,
+    private readonly workspaceApi: VsCodeWorkspaceChannelApiImpl,
     private readonly i18n: I18n<NotificationsApiVsCodeI18nDictionary>
   ) {}
 
@@ -76,7 +76,7 @@ export class PopupMessagesNotificationHandler implements NotificationsChannelApi
             if (!selected) {
               return;
             }
-            this.workspaceApi.kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot);
+            this.workspaceApi.openFile(normalizedPosixPathRelativeToTheWorkspaceRoot);
           });
   }
 

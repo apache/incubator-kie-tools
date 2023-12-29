@@ -29,35 +29,36 @@ import {
 
 import * as vscode from "vscode";
 import * as __path from "path";
-import { RelativePattern, WorkspaceFolder } from "vscode";
+import { RelativePattern } from "vscode";
 import { listFiles } from "isomorphic-git";
 import { Minimatch } from "minimatch";
-import { VsCodeEquivalentIsomorphicGitFs } from "./VsCodeResourceContentServiceIsomorphicGitFs";
+import { ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders } from "./VsCodeResourceContentServiceIsomorphicGitFs";
 import { toFsPath } from "@kie-tools-core/operating-system/dist/paths";
+import { getNormalizedPosixPathRelativeToWorkspaceRoot } from "./workspaceRoot";
+import { KogitoEditorDocument } from "../VsCodeKieEditorController";
 
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
  */
 export class VsCodeResourceContentServiceForWorkspaces implements ResourceContentService {
-  private readonly currentAssetFolder: string;
-  private readonly vscodeEquivalentFs: VsCodeEquivalentIsomorphicGitFs;
+  private readonly isomorphicGitFs = new ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders();
 
-  constructor(currentAssetFolder: string) {
-    this.currentAssetFolder = currentAssetFolder;
-    this.vscodeEquivalentFs = new VsCodeEquivalentIsomorphicGitFs();
-  }
+  constructor(
+    private readonly args: { workspaceRootAbsoluteFsPath: string; document: KogitoEditorDocument["document"] }
+  ) {}
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     if (!vscode.workspace.workspaceFolders) {
       throw new Error("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: No workspaces found.");
     }
 
-    const workspaceRootAbsoluteFsPath = vscode.workspace.workspaceFolders[0].uri.fsPath + __path.sep;
-
     const baseAbsoluteFsPath =
       opts?.type === SearchType.ASSET_FOLDER
-        ? __path.join(workspaceRootAbsoluteFsPath, this.currentAssetFolder)
-        : workspaceRootAbsoluteFsPath;
+        ? __path.join(
+            this.args.workspaceRootAbsoluteFsPath,
+            __path.dirname(getNormalizedPosixPathRelativeToWorkspaceRoot(this.args.document))
+          )
+        : this.args.workspaceRootAbsoluteFsPath;
 
     // The vscode API will read all files, including the .gitignore ones,
     // making this action is less performatic than the git ls-files which will
@@ -65,7 +66,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
     try {
       console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Trying to use isomorphic-git to read dir.");
       const normalizedPosixPathsRelativeToTheBasePath = await listFiles({
-        fs: this.vscodeEquivalentFs as any,
+        fs: this.isomorphicGitFs,
         dir: baseAbsoluteFsPath,
       });
       console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Success on using isomorphic-git!");
@@ -76,7 +77,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
         (p) =>
           regexp.test(
             "/" + p // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
-          ) || regexp.test(__path.relative(this.currentAssetFolder, p)) // check on the asset folder for *.{ext} pattern
+          ) || regexp.test(__path.relative(getNormalizedPosixPathRelativeToWorkspaceRoot(this.args.document), p)) // check on the asset folder for *.{ext} pattern
       );
       return new ResourcesList(pattern, matchingNormalizedPosixPathsRelativeToTheBasePath);
     } catch (error) {

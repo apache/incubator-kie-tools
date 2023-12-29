@@ -38,14 +38,18 @@ import {
   JavaCodeCompletionChannelApi,
   JavaCodeCompletionClass,
 } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { getNormalizedPosixPathRelativeToWorkspaceRoot, getWorkspaceRoot } from "./workspace/workspaceRoot";
+import { toFsPath } from "@kie-tools-core/operating-system/dist/paths";
+import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
+import { VsCodeWorkspaceChannelApiImpl } from "./workspace/VsCodeWorkspaceChannelApiImpl";
 
 export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
   constructor(
     private readonly editor: VsCodeKieEditorController,
     private readonly resourceContentService: ResourceContentService,
-    private readonly workspaceApi: WorkspaceChannelApi,
+    private readonly workspaceApi: VsCodeWorkspaceChannelApiImpl,
     private readonly backendProxy: BackendProxy,
-    private readonly notificationsApi: NotificationsChannelApi,
+    private readonly notificationsApi: VsCodeNotificationsChannelApiImpl,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>
@@ -95,15 +99,19 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
       );
     }
 
-    this.workspaceApi.kogitoWorkspace_openFile(
+    this.workspaceApi.openFile(
       __path.join(
-        vscode.workspace.workspaceFolders?.[0].uri.fsPath ?? __path.dirname(this.editor.document.document.uri.fsPath),
-        normalizedPosixPathRelativeToTheWorkspaceRoot
+        getWorkspaceRoot(this.editor.document.document).workspaceRootAbsoluteFsPath,
+        toFsPath(normalizedPosixPathRelativeToTheWorkspaceRoot)
       )
     );
   }
 
   public async kogitoEditor_contentRequest() {
+    const normalizedPosixPathRelativeToTheWorkspaceRoot = getNormalizedPosixPathRelativeToWorkspaceRoot(
+      this.editor.document.document
+    );
+
     let content: string;
     try {
       content = await this.editor.getDocumentContent();
@@ -112,7 +120,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
       // This is important for the use-case where users type `code new-file.dmn` on a terminal.
       try {
         await vscode.workspace.fs.writeFile(this.editor.document.document.uri, new Uint8Array());
-        return { content: "", normalizedPosixPathRelativeToTheWorkspaceRoot: this.editor.document.document.uri.path };
+        return { content: "", normalizedPosixPathRelativeToTheWorkspaceRoot };
       } catch (error) {
         console.error(
           "Failed on vscode.workspace.fs.writeFile. document uri: ",
@@ -126,10 +134,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
 
     return {
       content,
-      normalizedPosixPathRelativeToTheWorkspaceRoot: vscode.workspace.asRelativePath(
-        this.editor.document.document.uri,
-        false
-      ),
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
     };
   }
 

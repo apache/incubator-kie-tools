@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import { Notification, NotificationsChannelApi, NotificationType } from "../api";
-import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { Notification, NotificationsChannelApi, NotificationType } from "@kie-tools-core/notifications/dist/api";
+import * as vscode from "vscode";
+import { VsCodeWorkspaceChannelApiImpl } from "../workspace/VsCodeWorkspaceChannelApiImpl";
+import { notificationsApiVsCodeI18nDefaults, notificationsApiVsCodeI18nDictionaries } from "./i18n";
 import { PopupMessagesNotificationHandler } from "./PopupMessagesNotificationHandler";
 import { ProblemsTabNotificationHandler } from "./ProblemsTabNotificationHandler";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
-import * as vscode from "vscode";
-import { notificationsApiVsCodeI18nDefaults, notificationsApiVsCodeI18nDictionaries } from "./i18n";
 
 type NotificationsApiHandlersMap = {
   [K in NotificationType]: NotificationsChannelApi;
@@ -33,7 +33,7 @@ export class VsCodeNotificationsChannelApiImpl implements NotificationsChannelAp
   private readonly strategies: NotificationsApiHandlersMap;
 
   constructor(
-    private readonly workspaceApi: WorkspaceChannelApi,
+    private readonly workspaceApi: VsCodeWorkspaceChannelApiImpl,
     private readonly i18n = new I18n(
       notificationsApiVsCodeI18nDefaults,
       notificationsApiVsCodeI18nDictionaries,

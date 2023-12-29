@@ -90,7 +90,8 @@ export class VsCodeKieEditorController implements EditorApi {
             initialLocale: vscode.env.language,
             isReadOnly: false,
             channel: vscode.env.uiKind === UIKind.Desktop ? ChannelType.VSCODE_DESKTOP : ChannelType.VSCODE_WEB,
-            workspaceRootAbsolutePath: vscode.workspace.workspaceFolders![0].uri.fsPath + __path.sep,
+            workspaceRootAbsolutePosixPath:
+              vscode.workspace.workspaceFolders?.[0].uri.path ?? __path.dirname(document.document.uri.path),
           }
         )
     )

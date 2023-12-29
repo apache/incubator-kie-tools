@@ -46,7 +46,7 @@ export interface EditorInitArgs {
   initialLocale: string;
   isReadOnly: boolean;
   channel: ChannelType;
-  workspaceRootAbsolutePath?: string;
+  workspaceRootAbsolutePosixPath?: string;
 }
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, I18nEnvelopeApi {

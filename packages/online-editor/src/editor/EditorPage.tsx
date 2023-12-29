@@ -497,7 +497,7 @@ export function EditorPage(props: Props) {
                             editorEnvelopeLocator={settingsAwareEditorEnvelopeLocator}
                             channelType={ChannelType.ONLINE_MULTI_FILE}
                             locale={locale}
-                            workspaceRootAbsolutePath={DEFAULT_WORKSPACE_ROOT_ABSOLUTE_PATH}
+                            workspaceRootAbsolutePosixPath={DEFAULT_WORKSPACE_ROOT_ABSOLUTE_PATH}
                           />
                         )}
                       </EditorPageDockDrawer>

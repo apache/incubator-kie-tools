@@ -18,7 +18,7 @@
  */
 
 import * as vscode from "vscode";
-import { Notification, NotificationsChannelApi, NotificationSeverity } from "../api";
+import { Notification, NotificationsChannelApi, NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 
 const DIAGNOSTIC_COLLECTION_NAME = "kogito";
 

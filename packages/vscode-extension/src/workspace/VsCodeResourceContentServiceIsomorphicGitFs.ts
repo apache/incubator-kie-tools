@@ -17,11 +17,32 @@
  * under the License.
  */
 
+import { PromiseFsClient } from "isomorphic-git";
 import * as vscode from "vscode";
 
-export class VsCodeEquivalentIsomorphicGitFs {
+export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
   // This is a hack. The isomorphic-git check for this property, if it's undefined, it tries to bind the methods.
   public readonly _original_unwrapped_fs = true;
+
+  async mkdir(path: string) {
+    throw new Error("This pseudo-FS impl is readonly.");
+  }
+
+  async rmdir(path: string) {
+    throw new Error("This pseudo-FS impl is readonly.");
+  }
+
+  async unlink(path: string) {
+    throw new Error("This pseudo-FS impl is readonly.");
+  }
+
+  async stat(path: string) {
+    throw new Error("This pseudo-FS impl is readonly.");
+  }
+
+  async writeFile(path: string, _: any) {
+    throw new Error("This pseudo-FS impl is readonly.");
+  }
 
   async readdir(path: string) {
     const contentPath = vscode.Uri.parse(path);

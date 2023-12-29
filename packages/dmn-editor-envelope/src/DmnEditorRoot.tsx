@@ -59,7 +59,7 @@ export type DmnEditorRootProps = {
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
-  workspaceRootAbsolutePath: string;
+  workspaceRootAbsolutePosixPath: string;
 };
 
 export type DmnEditorRootState = {
@@ -219,7 +219,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     // Example:
     // this.state.openFileAbsolutePath = /Users/ljmotta/packages/dmns/Dmn.dmn
     // normalizedPosixPathRelativeToTheOpenFile = ../../tmp/Tmp.dmn
-    // workspaceRootAbsolutePath = /Users/ljmotta
+    // workspaceRootAbsolutePosixPath = /Users/ljmotta
     // resolvedAbsolutePath = /Users/ljmotta/tmp/Tmp.dmn
     // return (which is the normalizedPosixPathRelativeToTheWorkspaceRoot) = tmp/Tmp.dmn
   };
@@ -287,7 +287,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               // (end)
             />
             <ExternalModelsManager
-              workspaceRootAbsolutePath={this.props.workspaceRootAbsolutePath}
+              workspaceRootAbsolutePosixPath={this.props.workspaceRootAbsolutePosixPath}
               thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot={
                 this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
               }
@@ -307,7 +307,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 const NAMESPACES_EFFECT_SEPARATOR = " , ";
 
 function ExternalModelsManager({
-  workspaceRootAbsolutePath,
+  workspaceRootAbsolutePosixPath,
   thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
   model,
   onChange,
@@ -315,7 +315,7 @@ function ExternalModelsManager({
   onRequestWorkspaceFilesList,
   externalModelsManagerDoneBootstraping,
 }: {
-  workspaceRootAbsolutePath: string;
+  workspaceRootAbsolutePosixPath: string;
   thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   model: DmnLatestModel;
   onChange: (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => void;
@@ -453,7 +453,7 @@ function ExternalModelsManager({
     onRequestWorkspaceFilesList,
     thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
     externalUpdatesCount,
-    workspaceRootAbsolutePath,
+    workspaceRootAbsolutePosixPath,
     externalModelsManagerDoneBootstraping,
   ]);
 

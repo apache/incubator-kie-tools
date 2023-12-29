@@ -18,14 +18,16 @@
  */
 
 import * as __path from "path";
-import { VsCodeResourceContentServiceForDanglingFiles } from "@kie-tools-core/vscode-extension/dist/VsCodeResourceContentServiceForDanglingFiles";
+import { VsCodeResourceContentServiceForDanglingFiles } from "@kie-tools-core/vscode-extension/dist/workspace/VsCodeResourceContentServiceForDanglingFiles";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 const testWorkspaceAbsoluteFsPath = __path.resolve(__dirname, "test-workspace") + __path.sep;
 
 describe("VsCodeResourceContentServiceForDanglingFiles", () => {
   test("Test list", async () => {
-    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles(testWorkspaceAbsoluteFsPath);
+    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles({
+      openFileAbsoluteFsPath: __path.join(testWorkspaceAbsoluteFsPath, "myFile.txt"),
+    });
     const txtPattern = "*.txt";
 
     const resourcesListWithAssets = await resourceContentService.list(txtPattern);
@@ -44,9 +46,9 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
   });
 
   test("Test list with errors", async () => {
-    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles(
-      __path.resolve("/probably/an/unexisting/path/")
-    );
+    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles({
+      openFileAbsoluteFsPath: __path.resolve("/probably/an/unexisting/path/myFile.txt"),
+    });
 
     const pattern = "*.txt";
     const resourcesList = await resourceContentService.list(pattern);
@@ -57,7 +59,9 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
   });
 
   test("Test get", async () => {
-    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles(testWorkspaceAbsoluteFsPath);
+    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles({
+      openFileAbsoluteFsPath: __path.join(testWorkspaceAbsoluteFsPath, "myFile.txt"),
+    });
 
     const resource1Path = "resource1.txt";
     const resource1Content = await resourceContentService.get(resource1Path);
@@ -85,9 +89,9 @@ describe("VsCodeResourceContentServiceForDanglingFiles", () => {
   });
 
   test("Test get with errors", async () => {
-    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles(
-      __path.resolve("/probably/an/unexisting/path/")
-    );
+    const resourceContentService = new VsCodeResourceContentServiceForDanglingFiles({
+      openFileAbsoluteFsPath: __path.resolve("/probably/an/unexisting/path/myFile.txt"),
+    });
 
     const txtResourcePath = "resource1.txt";
     const txtResourceContent = await resourceContentService.get(txtResourcePath);

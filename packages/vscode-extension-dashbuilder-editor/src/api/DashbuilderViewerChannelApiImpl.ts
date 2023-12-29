@@ -27,10 +27,12 @@ import {
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
+import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/notifications/VsCodeNotificationsChannelApiImpl";
 import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
+import { VsCodeWorkspaceChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/workspace/VsCodeWorkspaceChannelApiImpl";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 import {
@@ -39,7 +41,6 @@ import {
   ResourceContentService,
   ResourceListRequest,
   ResourcesList,
-  WorkspaceChannelApi,
   WorkspaceEdit,
 } from "@kie-tools-core/workspace/dist/api";
 import { DashbuilderViewerChannelApi } from "@kie-tools/dashbuilder-viewer";
@@ -51,9 +52,9 @@ export class DashbuilderViewerChannelApiImpl implements DashbuilderViewerChannel
   constructor(
     private readonly editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceChannelApi,
+    workspaceApi: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsChannelApi,
+    notificationsApi: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>,

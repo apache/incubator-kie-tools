@@ -27,10 +27,12 @@ import {
 import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
+import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/notifications/VsCodeNotificationsChannelApiImpl";
 import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
+import { VsCodeWorkspaceChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/workspace/VsCodeWorkspaceChannelApiImpl";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import {
   ResourceContent,
@@ -38,7 +40,6 @@ import {
   ResourceContentService,
   ResourceListRequest,
   ResourcesList,
-  WorkspaceChannelApi,
   WorkspaceEdit,
 } from "@kie-tools-core/workspace/dist/api";
 import {
@@ -46,10 +47,6 @@ import {
   ServerlessWorkflowDiagramEditorEnvelopeApi,
 } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { FileLanguage, SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import {
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   getJsonStateNameFromOffset,
   getJsonStateNameOffset,
@@ -70,9 +67,9 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
   constructor(
     private readonly editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceChannelApi,
+    workspaceApi: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsChannelApi,
+    notificationsApi: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>,

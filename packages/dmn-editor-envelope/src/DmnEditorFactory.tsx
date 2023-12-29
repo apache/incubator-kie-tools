@@ -111,7 +111,9 @@ export class DmnEditorInterface implements Editor {
       <DmnEditorRootWrapper
         exposing={(dmnEditorRoot) => (this.self = dmnEditorRoot)}
         envelopeContext={this.envelopeContext}
-        workspaceRootAbsolutePath={this.initArgs.workspaceRootAbsolutePath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_PATH}
+        workspaceRootAbsolutePosixPath={
+          this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_PATH
+        }
       />
     );
   }
@@ -121,11 +123,11 @@ export class DmnEditorInterface implements Editor {
 function DmnEditorRootWrapper({
   envelopeContext,
   exposing,
-  workspaceRootAbsolutePath,
+  workspaceRootAbsolutePosixPath,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
-  workspaceRootAbsolutePath: string;
+  workspaceRootAbsolutePosixPath: string;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -168,7 +170,7 @@ function DmnEditorRootWrapper({
       onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot={
         onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot
       }
-      workspaceRootAbsolutePath={workspaceRootAbsolutePath}
+      workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
     />
   );
 }

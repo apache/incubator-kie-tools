@@ -26,6 +26,8 @@ import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completi
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
 import { DefaultVsCodeKieEditorChannelApiImpl } from "./DefaultVsCodeKieEditorChannelApiImpl";
+import { VsCodeWorkspaceChannelApiImpl } from "./workspace/VsCodeWorkspaceChannelApiImpl";
+import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 
 /**
  * Produces instances of KogitoEditorChannelApi to be used if we want to provide the extension a Channel API with
@@ -46,9 +48,9 @@ export interface VsCodeKieEditorChannelApiProducer {
   get(
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceChannelApi,
+    workspaceApi: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsChannelApi,
+    notificationsApi: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>
@@ -59,9 +61,9 @@ export class DefaultVsCodeEditorChannelApiProducer implements VsCodeKieEditorCha
   get(
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceChannelApi,
+    workspaceApi: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsChannelApi,
+    notificationsApi: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>
