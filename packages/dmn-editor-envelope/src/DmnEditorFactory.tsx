@@ -25,7 +25,7 @@ import {
   KogitoEditorEnvelopeContextType,
   KogitoEditorChannelApi,
   EditorTheme,
-  DEFAULT_WORKSPACE_ROOT_ABSOLUTE_PATH,
+  DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnEditorRoot } from "./DmnEditorRoot";
@@ -112,7 +112,7 @@ export class DmnEditorInterface implements Editor {
         exposing={(dmnEditorRoot) => (this.self = dmnEditorRoot)}
         envelopeContext={this.envelopeContext}
         workspaceRootAbsolutePosixPath={
-          this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_PATH
+          this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
         }
       />
     );

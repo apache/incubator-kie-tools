@@ -41,7 +41,7 @@ export function beeToDmn(
               },
             };
           }),
-          ...(expression.result
+          ...(expression.result.logicType !== ExpressionDefinitionLogicType.Undefined
             ? [
                 {
                   "@_id": expression.result.id,

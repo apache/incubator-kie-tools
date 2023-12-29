@@ -19,6 +19,7 @@
 
 import {
   ChannelType,
+  DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
   EditorApi,
   EditorEnvelopeLocator,
   KogitoEditorChannelApi,
@@ -121,7 +122,8 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
             initialLocale: props.locale,
             isReadOnly: props.file.isReadOnly,
             channel: props.channelType,
-            workspaceRootAbsolutePosixPath: props.workspaceRootAbsolutePosixPath,
+            workspaceRootAbsolutePosixPath:
+              props.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
           }
         )
     );
