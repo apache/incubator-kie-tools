@@ -124,7 +124,6 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         get: (normalizedPosixPathRelativeToTheOpenFile: string, opts?: ResourceContentOptions) => {
           const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
             .resolve(
-              initArgs.workspaceRootAbsolutePosixPath!,
               __path.dirname(this.gwtEditor.normalizedPosixPathRelativeToTheWorkspaceRoot),
               normalizedPosixPathRelativeToTheOpenFile
             )
@@ -158,7 +157,6 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         openFile: (normalizedPosixPathRelativeToTheOpenFile: string): void => {
           const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
             .resolve(
-              initArgs.workspaceRootAbsolutePosixPath!,
               __path.dirname(this.gwtEditor.normalizedPosixPathRelativeToTheWorkspaceRoot),
               normalizedPosixPathRelativeToTheOpenFile
             )
@@ -188,7 +186,6 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         removeNotifications: (normalizedPosixPathRelativeToTheOpenFile: string) => {
           const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
             .resolve(
-              initArgs.workspaceRootAbsolutePosixPath!,
               __path.dirname(this.gwtEditor.normalizedPosixPathRelativeToTheWorkspaceRoot),
               normalizedPosixPathRelativeToTheOpenFile
             )
@@ -203,11 +200,10 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
         setNotifications: (normalizedPosixPathRelativeToTheOpenFile: string, notifications: Notification[]) => {
           const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
             .resolve(
-              initArgs.workspaceRootAbsolutePosixPath!,
               __path.dirname(this.gwtEditor.normalizedPosixPathRelativeToTheWorkspaceRoot),
               normalizedPosixPathRelativeToTheOpenFile
             )
-            .substring(1); // Remove leading slash
+            .substring(1); // Remove leading slash. __path.resolve always adds it.
 
           envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(
             normalizedPosixPathRelativeToTheWorkspaceRoot, // Everything going to the channel must be relative to the workpsace root.

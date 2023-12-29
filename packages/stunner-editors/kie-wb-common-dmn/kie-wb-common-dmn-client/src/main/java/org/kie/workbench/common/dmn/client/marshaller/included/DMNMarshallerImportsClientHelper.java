@@ -211,7 +211,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                                         final int itemDefinitionCount = definitions.getItemDefinition().size();
                                         models.add(new DMNIncludedModel(fileName,
                                                 modelPackage,
-                                                (file.startsWith("./") ? file.substring(2) : file),
+                                                file,
                                                 namespace,
                                                 importType,
                                                 drgElementCount,
@@ -236,7 +236,8 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                                     int modelCount = pmmlDocumentMetadata.getModels() != null ? pmmlDocumentMetadata.getModels().size() : 0;
                                     models.add(new PMMLIncludedModel(fileName,
                                             "",
-                                            (file.startsWith("./") ? file.substring(2) : file),
+                                            file,
+                                            DMNImportTypes.PMML.getDefaultNamespace(),
                                             "https://kie.org/pmml#" + (file.startsWith("./") ? file.substring(2) : file),
                                             modelCount));
                                     return promises.resolve();
@@ -323,7 +324,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
 
                         for (final Map.Entry<String, PMMLDocumentMetadata> entry : otherDefinitions.entrySet()) {
                             final PMMLDocumentMetadata def = entry.getValue();
-                            findImportByPMMLDocument(FileUtils.getFileName(def.getPath()), imports).ifPresent(anImport -> {
+                            findImportByPMMLDocument(def.getPath(), imports).ifPresent(anImport -> {
                                 final JSITImport foundImported = Js.uncheckedCast(anImport);
                                 importDefinitions.put(foundImported, def);
                             });
@@ -497,9 +498,9 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
                     final Map<String, String> filesToNameMap = includedModels.stream().collect(Collectors.toMap(PMMLIncludedModel::getPath,
                             PMMLIncludedModel::getModelName));
                     final List<PMMLDocumentMetadata> pmmlDocumentMetadata = allDefinitions.entrySet().stream()
-                            .filter(entry -> filesToNameMap.keySet().contains(FileUtils.getFileName(entry.getKey())))
+                            .filter(entry -> filesToNameMap.keySet().contains(entry.getKey()))
                             .map(entry -> new PMMLDocumentMetadata(entry.getValue().getPath(),
-                                    filesToNameMap.get(FileUtils.getFileName(entry.getKey())),
+                                    filesToNameMap.get(entry.getKey()),
                                     entry.getValue().getImportType(),
                                     entry.getValue().getModels()))
                             .collect(Collectors.toList());

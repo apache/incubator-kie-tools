@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package org.kie.workbench.common.dmn.client.marshaller.included;
@@ -104,9 +104,9 @@ public class DMNMarshallerImportsClientHelperTest {
     public void setup() {
         promises = new SyncPromises();
         importsHelper = new DMNMarshallerImportsClientHelper(dmnImportsService,
-                                                             dmnImportsContentService,
-                                                             promises,
-                                                             includedModelFactory);
+                dmnImportsContentService,
+                promises,
+                includedModelFactory);
     }
 
     @Test
@@ -123,9 +123,9 @@ public class DMNMarshallerImportsClientHelperTest {
     public void loadModelsPMMLFile() {
 
         final PMMLDocumentMetadata pmmlDocumentMetadata = new PMMLDocumentMetadata(PMML_PATH,
-                                                                                   PMML_FILE,
-                                                                                   PMML.getDefaultNamespace(),
-                                                                                   Collections.emptyList());
+                PMML_FILE,
+                PMML.getDefaultNamespace(),
+                Collections.emptyList());
 
         when(dmnImportsContentService.getModelsURIs()).thenReturn(promises.resolve(new String[]{PMML_PATH}));
         when(dmnImportsContentService.loadFile(PMML_PATH)).thenReturn(promises.resolve(PMML_CONTENT));
@@ -185,9 +185,9 @@ public class DMNMarshallerImportsClientHelperTest {
     public void getPMMLDocumentsAsync() {
 
         final PMMLDocumentMetadata pmmlDocumentMetadata = new PMMLDocumentMetadata(PMML_PATH,
-                                                                                   PMML_FILE,
-                                                                                   PMML.getDefaultNamespace(),
-                                                                                   Collections.emptyList());
+                PMML_FILE,
+                PMML.getDefaultNamespace(),
+                Collections.emptyList());
 
         when(dmnImportsContentService.getModelsPMMLFilesURIs()).thenReturn(promises.resolve(new String[]{PMML_PATH}));
         when(dmnImportsContentService.loadFile(PMML_PATH)).thenReturn(promises.resolve(PMML_CONTENT));
@@ -224,9 +224,9 @@ public class DMNMarshallerImportsClientHelperTest {
     @Test
     public void getPMMLDocumentsMetadataFromFiles() {
         final PMMLDocumentMetadata documentMetadata = new PMMLDocumentMetadata(PMML_FILE,
-                                                                               PMML.getDefaultNamespace(),
-                                                                               Collections.emptyList());
-        final List<PMMLIncludedModel> includedModels = Arrays.asList(new PMMLIncludedModel(PMML_MODEL_NAME, "", PMML_FILE, PMML.getDefaultNamespace(), 0));
+                PMML.getDefaultNamespace(),
+                Collections.emptyList());
+        final List<PMMLIncludedModel> includedModels = Arrays.asList(new PMMLIncludedModel(PMML_MODEL_NAME, "", PMML_FILE, PMML.getDefaultNamespace(), "https://kie.org/pmml#" + PMML_FILE, 0));
         when(dmnImportsContentService.getModelsPMMLFilesURIs()).thenReturn(promises.resolve(new String[]{PMML_PATH}));
         when(dmnImportsContentService.loadFile(PMML_PATH)).thenReturn(promises.resolve(PMML_CONTENT));
         doReturn(promises.resolve(documentMetadata)).when(dmnImportsContentService).getPMMLDocumentMetadata(PMML_PATH);
