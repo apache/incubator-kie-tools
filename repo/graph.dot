@@ -115,6 +115,7 @@ digraph G {
   "@kie-tools/kie-sandbox-extended-services-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-sandbox-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-sandbox-fs" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/kie-sandbox-helm-chart" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kn-plugin-workflow" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/kubernetes-bridge" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -353,6 +354,9 @@ digraph G {
   "@kie-tools/kie-sandbox-extended-services-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-sandbox-fs" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-sandbox-fs" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/kie-sandbox-helm-chart" -> "@kie-tools/cors-proxy-image" [ style = "solid", color = "black" ];
+  "@kie-tools/kie-sandbox-helm-chart" -> "@kie-tools/kie-sandbox-extended-services-image" [ style = "solid", color = "black" ];
+  "@kie-tools/kie-sandbox-helm-chart" -> "@kie-tools/kie-sandbox-image" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/online-editor" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
