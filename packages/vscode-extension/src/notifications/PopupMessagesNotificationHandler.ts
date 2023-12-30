@@ -18,28 +18,25 @@
  */
 
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { Notification, NotificationsChannelApi, NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
+import { Notification, NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import * as vscode from "vscode";
 import { VsCodeWorkspaceChannelApiImpl } from "../workspace/VsCodeWorkspaceChannelApiImpl";
 import { NotificationsApiVsCodeI18nDictionary } from "./i18n";
 
-export class PopupMessagesNotificationHandler implements NotificationsChannelApi {
+export class PopupMessagesNotificationHandler {
   constructor(
     private readonly workspaceApi: VsCodeWorkspaceChannelApiImpl,
     private readonly i18n: I18n<NotificationsApiVsCodeI18nDictionary>
   ) {}
 
-  public kogitoNotifications_createNotification(notification: Notification): void {
+  public createNotification(notification: Notification): void {
     this.getHandleStrategyForSeverity(notification.severity)(
       notification.message,
       notification.normalizedPosixPathRelativeToTheWorkspaceRoot
     );
   }
 
-  public kogitoNotifications_setNotifications(
-    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
-    notifications: Notification[]
-  ): void {
+  public showAlert(normalizedPosixPathRelativeToTheWorkspaceRoot: string, notifications: Notification[]): void {
     if (notifications.length === 0) {
       return;
     }
@@ -51,10 +48,6 @@ export class PopupMessagesNotificationHandler implements NotificationsChannelApi
 
     this.getHandleStrategyForSeverity("ERROR")(errorsMessage, normalizedPosixPathRelativeToTheWorkspaceRoot);
     this.getHandleStrategyForSeverity("SUCCESS")(othersMessage, normalizedPosixPathRelativeToTheWorkspaceRoot);
-  }
-
-  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
-    // Popups can't be removed.
   }
 
   private getHandleStrategyForSeverity(severity: NotificationSeverity) {

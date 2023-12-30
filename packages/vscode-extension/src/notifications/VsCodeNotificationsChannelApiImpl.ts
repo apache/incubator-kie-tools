@@ -18,19 +18,16 @@
  */
 
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { Notification, NotificationsChannelApi, NotificationType } from "@kie-tools-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as vscode from "vscode";
 import { VsCodeWorkspaceChannelApiImpl } from "../workspace/VsCodeWorkspaceChannelApiImpl";
-import { notificationsApiVsCodeI18nDefaults, notificationsApiVsCodeI18nDictionaries } from "./i18n";
 import { PopupMessagesNotificationHandler } from "./PopupMessagesNotificationHandler";
 import { ProblemsTabNotificationHandler } from "./ProblemsTabNotificationHandler";
+import { notificationsApiVsCodeI18nDefaults, notificationsApiVsCodeI18nDictionaries } from "./i18n";
+import { KogitoEditorDocument } from "../VsCodeKieEditorController";
 
-type NotificationsApiHandlersMap = {
-  [K in NotificationType]: NotificationsChannelApi;
-};
-
-export class VsCodeNotificationsChannelApiImpl implements NotificationsChannelApi {
-  private readonly strategies: NotificationsApiHandlersMap;
+export class VsCodeNotificationsChannelApiImpl {
+  private readonly strategies;
 
   constructor(
     private readonly workspaceApi: VsCodeWorkspaceChannelApiImpl,
@@ -46,30 +43,37 @@ export class VsCodeNotificationsChannelApiImpl implements NotificationsChannelAp
     };
   }
 
-  public kogitoNotifications_createNotification(notification: Notification): void {
-    this.handle(notification).kogitoNotifications_createNotification(notification);
+  public createNotification(document: KogitoEditorDocument["document"], notification: Notification): void {
+    if (notification.type === "ALERT") {
+      this.strategies.ALERT.createNotification(notification);
+    } else if (notification.type === "PROBLEM") {
+      this.strategies.PROBLEM.createNotification(document, notification);
+    } else {
+      throw new Error(`Unknown notification type ${notification.type}`);
+    }
   }
 
-  public kogitoNotifications_setNotifications(
+  public setNotifications(
+    document: KogitoEditorDocument["document"],
     normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ): void {
-    const alerts = notifications.filter((n) => n.type === "ALERT");
-    const problems = notifications.filter((n) => n.type !== "ALERT");
+    this.strategies.PROBLEM.setProblemsEntries(
+      document,
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+      notifications.filter((n) => n.type === "PROBLEM")
+    );
 
-    this.get("PROBLEM").kogitoNotifications_setNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot, problems);
-    this.get("ALERT").kogitoNotifications_setNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot, alerts);
+    this.strategies.ALERT.showAlert(
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+      notifications.filter((n) => n.type === "ALERT")
+    );
   }
 
-  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
-    this.get("PROBLEM").kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot);
-  }
-
-  private handle(notification: Notification): NotificationsChannelApi {
-    return this.get(notification.type);
-  }
-
-  private get(type: NotificationType): NotificationsChannelApi {
-    return this.strategies[type] ?? new ProblemsTabNotificationHandler();
+  public removeNotifications(
+    document: KogitoEditorDocument["document"],
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string
+  ): void {
+    this.strategies.PROBLEM.removeNotifications(document, normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 }

@@ -18,30 +18,29 @@
  */
 
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import {
-  WorkspaceEdit,
-  ResourceContentRequest,
-  ResourceContentService,
-  ResourceListRequest,
-  WorkspaceChannelApi,
-} from "@kie-tools-core/workspace/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
-import * as __path from "path";
-import * as vscode from "vscode";
-import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
-import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
-import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { toFsPath } from "@kie-tools-core/operating-system/dist/paths";
 import {
   JavaCodeCompletionAccessor,
   JavaCodeCompletionApi,
   JavaCodeCompletionChannelApi,
   JavaCodeCompletionClass,
 } from "@kie-tools-core/vscode-java-code-completion/dist/api";
-import { getNormalizedPosixPathRelativeToWorkspaceRoot, getWorkspaceRoot } from "./workspace/workspaceRoot";
-import { toFsPath } from "@kie-tools-core/operating-system/dist/paths";
+import {
+  ResourceContentRequest,
+  ResourceContentService,
+  ResourceListRequest,
+  WorkspaceEdit,
+} from "@kie-tools-core/workspace/dist/api";
+import * as __path from "path";
+import * as vscode from "vscode";
+import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
+import { VsCodeI18n } from "./i18n";
 import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 import { VsCodeWorkspaceChannelApiImpl } from "./workspace/VsCodeWorkspaceChannelApiImpl";
+import { getNormalizedPosixPathRelativeToWorkspaceRoot, getWorkspaceRoot } from "./workspace/workspaceRoot";
 
 export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
   constructor(
@@ -194,21 +193,25 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
   }
 
   public kogitoNotifications_createNotification(notification: Notification): void {
-    this.notificationsApi.kogitoNotifications_createNotification(notification);
+    this.notificationsApi.createNotification(this.editor.document.document, notification);
   }
 
   public kogitoNotifications_setNotifications(
     normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ): void {
-    this.notificationsApi.kogitoNotifications_setNotifications(
+    this.notificationsApi.setNotifications(
+      this.editor.document.document,
       normalizedPosixPathRelativeToTheWorkspaceRoot,
       notifications
     );
   }
 
   public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
-    this.notificationsApi.kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot);
+    this.notificationsApi.removeNotifications(
+      this.editor.document.document,
+      normalizedPosixPathRelativeToTheWorkspaceRoot
+    );
   }
 
   public kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {

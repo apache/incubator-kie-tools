@@ -17,8 +17,9 @@
  * under the License.
  */
 
-import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import * as vscode from "vscode";
 import {
   CancellationToken,
@@ -28,15 +29,13 @@ import {
   EventEmitter,
   Uri,
 } from "vscode";
-import { VsCodeI18n } from "./i18n";
-import * as __path from "path";
 import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
 import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
 import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { VsCodeI18n } from "./i18n";
+import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 import { executeOnSaveHook } from "./onSaveHook";
 import { getNormalizedPosixPathRelativeToWorkspaceRoot } from "./workspace/workspaceRoot";
-import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 
 export class VsCodeKieEditorCustomDocument implements CustomDocument {
   private readonly encoder = new TextEncoder();
@@ -94,7 +93,7 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
 
       try {
         const notifications = await editor.validate();
-        this.vscodeNotifications.kogitoNotifications_setNotifications(destination.fsPath, notifications);
+        this.vscodeNotifications.setNotifications(this, destination.fsPath, notifications);
       } catch (e) {
         this.vsCodeLogger.warn(`File was not validated: ${e}`);
       }
