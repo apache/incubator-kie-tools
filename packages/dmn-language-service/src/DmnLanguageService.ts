@@ -82,7 +82,7 @@ export class DmnLanguageService {
     return definitions.import
       .flatMap((importedModel) => {
         const importedModelNormalizedPosixPathRelativeToWorkspaceRoot = path.normalize(
-          path.join(
+          path.posix.join(
             path.dirname(modelResources.normalizedPosixPathRelativeToWorkspaceRoot),
             path.normalize(importedModel["@_locationURI"] ?? "")
           )
