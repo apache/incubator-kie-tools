@@ -41,25 +41,37 @@ export function SingleEditorToolbar(props: {
   const copyLinkSuccessAlertRef = useRef<HTMLDivElement>(null);
   const { i18n } = useChromeExtensionI18n();
 
-  const goFullScreen = useCallback((e: any) => {
-    e.preventDefault();
-    props.onFullScreen();
-  }, []);
+  const goFullScreen = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      props.onFullScreen();
+    },
+    [props]
+  );
 
-  const seeAsSource = useCallback((e: any) => {
-    e.preventDefault();
-    props.onSeeAsSource();
-  }, []);
+  const seeAsSource = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      props.onSeeAsSource();
+    },
+    [props]
+  );
 
-  const seeAsDiagram = useCallback((e: any) => {
-    e.preventDefault();
-    props.onSeeAsDiagram();
-  }, []);
+  const seeAsDiagram = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      props.onSeeAsDiagram();
+    },
+    [props]
+  );
 
-  const openInExternalEditor = useCallback((e: any) => {
-    e.preventDefault();
-    props.onOpenInExternalEditor?.();
-  }, []);
+  const openInExternalEditor = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      props.onOpenInExternalEditor?.();
+    },
+    [props]
+  );
 
   const copyLinkToExternalEditor = useCallback((e: any) => {
     e.preventDefault();

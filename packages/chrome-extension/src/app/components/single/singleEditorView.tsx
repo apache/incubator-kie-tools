@@ -99,7 +99,7 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
         props.fileInfo.gitRef,
         props.fileInfo.path
       ),
-    []
+    [githubApi, props.fileInfo.gitRef, props.fileInfo.org, props.fileInfo.path, props.fileInfo.repo]
   );
   const getFileName = useCallback(() => {
     return decodeURIComponent(props.fileInfo.path.split("/").pop()!);

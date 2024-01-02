@@ -26,15 +26,10 @@ export function fetchFile(
   repo: string,
   ref: string,
   path: string,
-  contentType?: ContentType,
-  commitSHA?: string
+  contentType?: ContentType
 ) {
-  const rawGithubUserContentUrl = "https://raw.githubusercontent.com";
-  const modifiedRawGithubUserContentUrl = new URL(rawGithubUserContentUrl);
-  modifiedRawGithubUserContentUrl.pathname = `${org}/${repo}/${ref}/${path}`;
-  if (commitSHA) {
-    modifiedRawGithubUserContentUrl.pathname = `${modifiedRawGithubUserContentUrl.pathname}/${commitSHA}`;
-  }
+  const modifiedRawGithubUserContentUrl = new URL(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`);
+
   return octokit.repos
     .getContent({
       repo: repo,
