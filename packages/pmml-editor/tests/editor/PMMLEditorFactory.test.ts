@@ -19,6 +19,7 @@
 
 import {
   ChannelType,
+  DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
   Editor,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
@@ -52,6 +53,7 @@ describe("PMMLEditorFactory", () => {
       initialLocale: "en",
       isReadOnly: false,
       channel: ChannelType.EMBEDDED,
+      workspaceRootAbsolutePosixPath: DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
     });
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });
