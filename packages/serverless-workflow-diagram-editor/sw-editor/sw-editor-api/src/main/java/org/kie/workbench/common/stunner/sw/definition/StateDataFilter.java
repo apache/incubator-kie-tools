@@ -32,16 +32,11 @@ public class StateDataFilter {
     public String output;
 
     public final String getInput() {
-        if(input == null) {
-            return "undefined";
-        }
         return input;
     }
 
     public final void setInput(String input) {
-        if(!input.equals("undefined")) {
-            this.input = input;
-        }
+        this.input = input;
     }
 
     public final String getOutput() {

@@ -56,16 +56,11 @@ public class WorkflowTimeouts {
     }
 
     public final String getStateExecTimeout() {
-        if (stateExecTimeout == null) {
-           return "undefined";
-        }
         return stateExecTimeout;
     }
 
     public final void setStateExecTimeout(String stateExecTimeout) {
-        if( !stateExecTimeout.equals("undefined")){
-            this.stateExecTimeout = stateExecTimeout;
-        }
+        this.stateExecTimeout = stateExecTimeout;
     }
 
     public final String getActionExecTimeout() {

@@ -60,8 +60,8 @@ public class ParallelStateShape extends StateShape implements HasDataFilter,
         if (state.getTimeouts() != null && state.getTimeouts() instanceof WorkflowTimeouts) {
             getView().addChild(new CornerIcon(CLOCK,
                                               LEFT_FROM_RIGHT_TOP_CORNER,
-                                              getTranslation(TIMEOUT_BRANCH) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getBranchExecTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_STATE) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout()));
+                                              getTranslation(TIMEOUT_BRANCH) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getBranchExecTimeout()) + "\r\n"
+                                                      + getTranslation(TIMEOUT_STATE) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout())));
         }
 
         getView().addChild(new CornerIcon(BRANCH,

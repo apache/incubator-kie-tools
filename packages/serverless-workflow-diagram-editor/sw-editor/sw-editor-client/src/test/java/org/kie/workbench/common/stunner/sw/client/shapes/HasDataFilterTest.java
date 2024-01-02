@@ -38,7 +38,7 @@ public class HasDataFilterTest extends HasTranslationGeneralTest {
         String in = "in";
         filter.setInput(in);
 
-        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": in\r\n" + TEST_STRING + ": null",
+        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": in\r\n" + TEST_STRING + ": undefined",
                            hasDataFilter.getStateDataFilter(filter),
                            "Datafilter.parameter",
                            "Datafilter.input",
@@ -64,7 +64,7 @@ public class HasDataFilterTest extends HasTranslationGeneralTest {
         String in = "012345678901234567890123456789012345";
         filter.setInput(in);
 
-        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": 012345678901234567890123456789...\r\n" + TEST_STRING + ": null",
+        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": 012345678901234567890123456789...\r\n" + TEST_STRING + ": undefined",
                            hasDataFilter.getStateDataFilter(filter),
                            "Datafilter.parameter",
                            "Datafilter.input",
@@ -105,7 +105,7 @@ public class HasDataFilterTest extends HasTranslationGeneralTest {
         String in = "                                                                          ";
         filter.setInput(in);
 
-        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": \r\n" + TEST_STRING + ": null",
+        assertTranslations(TEST_STRING + ":\r\n" + TEST_STRING + ": \r\n" + TEST_STRING + ": undefined",
                            hasDataFilter.getStateDataFilter(filter),
                            "Datafilter.parameter",
                            "Datafilter.input",
