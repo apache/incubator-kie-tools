@@ -216,14 +216,14 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
       const decodedFileContent = decoder.decode(fileContent);
       const importedModelsResources =
-        (await props.dmnLanguageService?.getAllImportedModelsByPathRelativeToWorkspaceRoot(
-          props.workspaceFile.relativePath
-        )) ?? [];
+        (await props.dmnLanguageService?.getImportedModels({
+          normalizedPosixPathRelativeToWorkspaceRoot: props.workspaceFile.relativePath,
+        })) ?? [];
       const dmnResources = [
-        { content: decodedFileContent, pathRelativeToWorkspaceRoot: props.workspaceFile.relativePath },
+        { content: decodedFileContent, normalizedPosixPathRelativeToWorkspaceRoot: props.workspaceFile.relativePath },
         ...importedModelsResources,
       ].map((resource) => ({
-        URI: resource.pathRelativeToWorkspaceRoot,
+        URI: resource.normalizedPosixPathRelativeToWorkspaceRoot,
         content: resource.content ?? "",
       }));
 

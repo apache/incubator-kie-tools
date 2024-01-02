@@ -108,20 +108,6 @@ export function useFileValidation(
           return;
         }
 
-        const dmnSpecVersion = dmnLanguageService?.getDmnSpecVersion();
-        if (!dmnSpecVersion || (dmnSpecVersion !== "1.0" && dmnSpecVersion !== "1.1" && dmnSpecVersion !== "1.2")) {
-          setNotifications(i18n.terms.validation, "", [
-            {
-              type: "ALERT",
-              path: "",
-              severity: "WARNING",
-              message:
-                "Validation checks are temporarily supported only on DMN 1.2 or below. For full access to this feature, use the Legacy DMN Editor.",
-            },
-          ]);
-          return;
-        }
-
         workspaces
           .getFileContent({
             workspaceId: workspaceFile.workspaceId,
@@ -131,21 +117,40 @@ export function useFileValidation(
             if (canceled.get()) {
               return;
             }
+
             const decodedFileContent = decoder.decode(fileContent);
+
+            const dmnSpecVersion = dmnLanguageService?.getDmnSpecVersion(decodedFileContent);
+            if (!dmnSpecVersion || (dmnSpecVersion !== "1.0" && dmnSpecVersion !== "1.1" && dmnSpecVersion !== "1.2")) {
+              setNotifications(i18n.terms.validation, "", [
+                {
+                  type: "ALERT",
+                  path: "",
+                  severity: "WARNING",
+                  message:
+                    "Validation checks are temporarily supported only on DMN 1.2 or below. For full access to this feature, use the Legacy DMN Editor.",
+                },
+              ]);
+              return;
+            }
+
             dmnLanguageService
-              ?.getAllImportedModelsByPathRelativeToWorkspaceRoot(workspaceFile.relativePath)
+              ?.getImportedModels({ normalizedPosixPathRelativeToWorkspaceRoot: workspaceFile.relativePath })
               .then((importedModelsResources: DmnLanguageServiceImportedModelResources[]) => {
                 if (canceled.get()) {
                   return;
                 }
                 const resources = [
-                  { content: decodedFileContent, pathRelativeToWorkspaceRoot: workspaceFile.relativePath },
+                  {
+                    content: decodedFileContent,
+                    normalizedPosixPathRelativeToWorkspaceRoot: workspaceFile.relativePath,
+                  },
                   ...importedModelsResources,
                 ];
                 const payload: ExtendedServicesModelPayload = {
                   mainURI: workspaceFile.relativePath,
                   resources: resources.map((resource) => ({
-                    URI: resource.pathRelativeToWorkspaceRoot,
+                    URI: resource.normalizedPosixPathRelativeToWorkspaceRoot,
                     content: resource.content ?? "",
                   })),
                 };

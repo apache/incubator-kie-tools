@@ -40,11 +40,8 @@ export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorCh
     initArgs: EditorInitArgs
   ): Promise<BpmnEditor> {
     const dmnLs = new DmnLanguageService({
-      modelContent: "",
-      pathRelativeToWorkspaceRoot: "",
       // currently does not need to implement it since we don't need a way to read other Dmn files.
-      getModelContentFromPathRelativeToWorkspaceRoot: () =>
-        Promise.resolve({ pathRelativeToWorkspaceRoot: "", content: "" }),
+      getModelContent: () => Promise.resolve({ normalizedPosixPathRelativeToWorkspaceRoot: "", content: "" }),
     });
 
     const exposedInteropApi: CustomWindow["envelope"] = {

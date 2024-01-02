@@ -350,18 +350,16 @@ export function EditorPage(props: Props) {
 
           setDmnLanguageService(
             new DmnLanguageService({
-              pathRelativeToWorkspaceRoot: workspaceFilePromise.data.workspaceFile.relativePath,
-              modelContent,
-              getModelContentFromPathRelativeToWorkspaceRoot: async (pathRelativeToWorkspaceRoot: string) => {
+              getModelContent: async (args: { normalizedPosixPathRelativeToWorkspaceRoot: string }) => {
                 try {
                   const fileContent = await workspaces.getFileContent({
                     workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
-                    relativePath: pathRelativeToWorkspaceRoot,
+                    relativePath: args.normalizedPosixPathRelativeToWorkspaceRoot,
                   });
 
                   return {
                     content: decoder.decode(fileContent),
-                    pathRelativeToWorkspaceRoot: pathRelativeToWorkspaceRoot,
+                    normalizedPosixPathRelativeToWorkspaceRoot: args.normalizedPosixPathRelativeToWorkspaceRoot,
                   };
                 } catch (err) {
                   console.debug("ERROR: DmnLanguageService.getDmnModelContent: ", err);
