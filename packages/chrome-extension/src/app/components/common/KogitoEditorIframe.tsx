@@ -58,7 +58,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
 
   const resourceContentService = useMemo(() => {
     return resourceContentServiceFactory.createNew(githubApi.octokit(), repoInfo);
-  }, [repoInfo]);
+  }, [githubApi, repoInfo, resourceContentServiceFactory]);
 
   const onResourceContentRequest = useCallback(
     (request: ResourceContentRequest) => resourceContentService.get(request.path, request.opts),
@@ -85,7 +85,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
     if (!textMode && wasOnTextMode) {
       props.getFileContents().then((content) => editor?.setContent(props.contentPath, content ?? ""));
     }
-  }, [textMode, wasOnTextMode, editor]);
+  }, [textMode, wasOnTextMode, editor, props]);
 
   // When !textMode, we should listen for changes on the diagram to update GitHub's default text editor.
   useEffect(() => {
@@ -104,7 +104,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
       });
     });
     return () => editor.getStateControl().unsubscribe(stateControlSubscription);
-  }, [textMode, editor]);
+  }, [textMode, editor, props.readonly]);
 
   // Forward reference methods to set content programmatically vs property
   useImperativeHandle(
@@ -118,7 +118,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
         setContent: (content: string) => editor.setContent(props.contentPath, content),
       };
     },
-    [editor]
+    [editor, props.contentPath]
   );
 
   return (
