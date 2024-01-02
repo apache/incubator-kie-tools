@@ -27,6 +27,7 @@ To start building the Apache KIE Tools project, you're going to need:
 - Maven `3.8.6`
 - Java `11`
 - Go `1.21.1` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
 
 > **ℹ️ NOTE:** Some packages will require that `make` is available as well.
 
