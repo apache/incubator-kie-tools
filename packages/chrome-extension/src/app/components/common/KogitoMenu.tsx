@@ -37,18 +37,19 @@ export function KogitoMenu() {
   const [isInfoPopOverOpen, setInfoPopOverOpen] = useState(false);
   const [potentialToken, setPotentialToken] = useState("");
 
-  async function updateToken(token?: string) {
-    const validToken = await tokenIsValid(token);
-
-    if (validToken) {
-      gitHubApi.setToken(token!);
-      setPotentialToken("");
-    } else {
-      gitHubApi.setToken("");
-    }
-
-    return validToken;
-  }
+  const updateToken = useCallback(
+    async (token?: string) => {
+      const validToken = await tokenIsValid(token);
+      if (validToken) {
+        gitHubApi.setToken(token!);
+        setPotentialToken("");
+      } else {
+        gitHubApi.setToken("");
+      }
+      return validToken;
+    },
+    [gitHubApi]
+  );
 
   useEffect(() => {
     updateToken(gitHubApi.token).then(() => {
@@ -68,7 +69,7 @@ export function KogitoMenu() {
         inputRef.current!.setSelectionRange(0, 0);
       }, 0);
     },
-    [updateToken]
+    [updateToken, setPotentialToken, setWholeMenuOpen]
   );
 
   const onReset = useCallback(() => {
