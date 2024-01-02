@@ -65,8 +65,8 @@ export function IsolatedPrEditor(props: {
   const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
   const { isolatedEditorRef } = useIsolatedEditorRef();
-  const originalFilePath = useMemo(() => getOriginalFilePath(props.unprocessedFilePath), []);
-  const modifiedFilePath = useMemo(() => getModifiedFilePath(props.unprocessedFilePath), []);
+  const originalFilePath = useMemo(() => getOriginalFilePath(props.unprocessedFilePath), [props.unprocessedFilePath]);
+  const modifiedFilePath = useMemo(() => getModifiedFilePath(props.unprocessedFilePath), [props.unprocessedFilePath]);
 
   useIsolatedEditorTogglingEffect(
     textMode,
@@ -92,7 +92,7 @@ export function IsolatedPrEditor(props: {
     return showOriginal || fileStatusOnPr === FileStatusOnPr.DELETED
       ? () => getOriginalFileContents(githubApi.octokit(), props.prInfo, originalFilePath)
       : () => getModifiedFileContents(githubApi.octokit(), props.prInfo, modifiedFilePath);
-  }, [showOriginal, fileStatusOnPr, originalFilePath, modifiedFilePath, githubApi.octokit]);
+  }, [showOriginal, fileStatusOnPr, githubApi, props.prInfo, originalFilePath, modifiedFilePath]);
 
   const shouldAddLinkToOriginalFile = useMemo(() => {
     return fileStatusOnPr === FileStatusOnPr.CHANGED || fileStatusOnPr === FileStatusOnPr.DELETED;
@@ -114,7 +114,14 @@ export function IsolatedPrEditor(props: {
           gitref: props.prInfo.gitRef,
           repo: props.prInfo.repo,
         };
-  }, [showOriginal]);
+  }, [
+    props.prInfo.gitRef,
+    props.prInfo.org,
+    props.prInfo.repo,
+    props.prInfo.targetGitRef,
+    props.prInfo.targetOrg,
+    showOriginal,
+  ]);
 
   const onEditorReady = useCallback(() => {
     setEditorReady(true);

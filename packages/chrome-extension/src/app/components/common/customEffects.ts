@@ -27,7 +27,7 @@ export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>
     } else {
       firstRender.current = false;
     }
-  }, deps);
+  }, [func]);
 }
 
 export function useIsolatedEditorTogglingEffect(
@@ -43,7 +43,7 @@ export function useIsolatedEditorTogglingEffect(
       githubTextEditorToReplace.classList.add("hidden");
       iframeContainer.classList.remove("hidden");
     }
-  }, [textMode]);
+  }, [githubTextEditorToReplace.classList, iframeContainer.classList, textMode]);
 }
 
 export function useInitialAsyncCallEffect<T>(promise: () => Promise<T>, callback: (a: T) => void) {
@@ -60,5 +60,5 @@ export function useInitialAsyncCallEffect<T>(promise: () => Promise<T>, callback
     return () => {
       canceled = true;
     };
-  }, []);
+  }, [callback, promise]);
 }
