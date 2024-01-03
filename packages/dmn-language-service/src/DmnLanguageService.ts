@@ -121,11 +121,8 @@ export class DmnLanguageService {
   }
 
   /**
-   * This method retrieves a map, where the keys are the model normalized posix path relative to workspace root and the values
-   * their imported model resources.
-   *
-   * @param modelResources a list of model resources to get their imported models.
-   * @returns a map of imported models resources by model path normalized posix path relative to workspace root .
+   * This method receives a model resource list and retrieves a map of their imported models. The map keys are the model
+   * normalized posix path relative to workspace root and the values all imported model resources of the models.
    */
   public async getImportedModels(
     modelResources: DmnLanguageServiceImportedModelResource[]
