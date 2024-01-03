@@ -32,7 +32,6 @@ import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
 import {
   ImportableUrl,
-  isCertainlyGit,
   isPotentiallyGit,
   isSingleFile,
   UrlType,
@@ -44,7 +43,7 @@ import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportMod
 import { fetchSingleFileContent } from "./fetchSingleFileContent";
 import { useGitHubClient } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
-import { AuthInfo, useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
+import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
@@ -52,7 +51,7 @@ import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/Loc
 import { encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { AUTH_SESSION_NONE, GitAuthSession } from "../authSessions/AuthSessionApi";
+import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 import { useBitbucketClient } from "../bitbucket/Hooks";
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
@@ -77,8 +76,7 @@ export function NewWorkspaceFromUrlPage() {
   const authProviders = useAuthProviders();
   const { authSessions, authSessionStatus } = useAuthSessions();
   const authSessionInfo = useAuthSession(queryParamAuthSessionId);
-  const { authSession, gitConfig } = authSessionInfo;
-  const [authInfo, setAuthInfo] = useState<AuthInfo | undefined>(authSessionInfo.authInfo);
+  const { authSession, gitConfig, authInfo } = authSessionInfo;
   const authProvider = useAuthProvider(authSession);
   const insecurelyDisableTlsCertificateValidation = useMemo(() => {
     if (typeof queryParamInsecurelyDisableTlsCertificateValidation === "string") {
@@ -97,25 +95,6 @@ export function NewWorkspaceFromUrlPage() {
     insecurelyDisableTlsCertificateValidation
   );
   const { clonableUrl, selectedGitRefName, gitServerRefsPromise } = clonableUrlObject;
-
-  if (
-    gitServerRefsPromise.error?.toString().includes("Unauthorized") &&
-    isCertainlyGit(importableUrl.type) &&
-    importableUrl.url &&
-    !authInfo
-  ) {
-    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
-      authProviders,
-      authSessions,
-      authSessionStatus,
-      urlDomain: new URL(importableUrl.url).hostname,
-    });
-    setAuthInfo({
-      username: (compatible as GitAuthSession[])[0].login,
-      uuid: (compatible as GitAuthSession[])[0].uuid,
-      password: (compatible as GitAuthSession[])[0].token,
-    });
-  }
 
   const setAuthSessionId = useCallback(
     (newAuthSessionId: React.SetStateAction<string | undefined>) => {
@@ -208,7 +187,7 @@ export function NewWorkspaceFromUrlPage() {
 
   // Startup the page. Only import if those are set.
   useEffect(() => {
-    if (!selectedGitRefName || !queryParamUrl) {
+    if (!queryParamUrl) {
       return;
     }
 
@@ -219,12 +198,19 @@ export function NewWorkspaceFromUrlPage() {
       urlDomain: new URL(queryParamUrl).hostname,
     });
 
+    let newQueryParams = queryParams;
+    if (authSession?.id && AUTH_SESSION_NONE.id !== authSession?.id) {
+      newQueryParams = newQueryParams.with(QueryParams.AUTH_SESSION_ID, authSession?.id);
+    } else if (compatible.length > 0) {
+      newQueryParams = newQueryParams.with(QueryParams.AUTH_SESSION_ID, compatible[0].id);
+    }
+
+    if (selectedGitRefName) {
+      newQueryParams = newQueryParams.with(QueryParams.BRANCH, selectedGitRefName);
+    }
     history.replace({
       pathname: routes.import.path({}),
-      search: queryParams
-        .with(QueryParams.BRANCH, selectedGitRefName)
-        .with(QueryParams.AUTH_SESSION_ID, authSession?.id ?? compatible[0].id)
-        .toString(),
+      search: newQueryParams.toString(),
     });
   }, [
     authProviders,
@@ -437,13 +423,13 @@ export function NewWorkspaceFromUrlPage() {
   ]);
 
   useEffect(() => {
-    if (!queryParamUrl) {
+    if (!queryParamUrl || (importingError && queryParamAuthSessionId)) {
       history.replace({
         pathname: routes.import.path({}),
         search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
       });
     }
-  }, [history, queryParamUrl, queryParams, routes.import]);
+  }, [history, importingError, queryParamUrl, queryParams, queryParamAuthSessionId, routes.import]);
 
   useEffect(() => {
     if ((!queryParamBranch || !queryParamAuthSessionId) && selectedGitRefName) {
