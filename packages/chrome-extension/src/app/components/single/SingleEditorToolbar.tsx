@@ -40,37 +40,38 @@ export function SingleEditorToolbar(props: {
   const linkToExternalEditorTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const copyLinkSuccessAlertRef = useRef<HTMLDivElement>(null);
   const { i18n } = useChromeExtensionI18n();
+  const { onFullScreen, onSeeAsSource, onSeeAsDiagram, onOpenInExternalEditor } = props;
 
   const goFullScreen = useCallback(
     (e: any) => {
       e.preventDefault();
-      props.onFullScreen();
+      onFullScreen();
     },
-    [props]
+    [onFullScreen]
   );
 
   const seeAsSource = useCallback(
     (e: any) => {
       e.preventDefault();
-      props.onSeeAsSource();
+      onSeeAsSource();
     },
-    [props]
+    [onSeeAsSource]
   );
 
   const seeAsDiagram = useCallback(
     (e: any) => {
       e.preventDefault();
-      props.onSeeAsDiagram();
+      onSeeAsDiagram();
     },
-    [props]
+    [onSeeAsDiagram]
   );
 
   const openInExternalEditor = useCallback(
     (e: any) => {
       e.preventDefault();
-      props.onOpenInExternalEditor?.();
+      onOpenInExternalEditor?.();
     },
-    [props]
+    [onOpenInExternalEditor]
   );
 
   const copyLinkToExternalEditor = useCallback((e: any) => {
@@ -95,7 +96,7 @@ export function SingleEditorToolbar(props: {
     return () => {
       /* Do nothing */
     };
-  }, [copyLinkSuccessAlertVisible]);
+  }, [closeCopyLinkSuccessAlert, copyLinkSuccessAlertVisible]);
 
   return (
     <>
