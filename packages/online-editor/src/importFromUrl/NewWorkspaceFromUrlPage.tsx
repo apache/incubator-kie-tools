@@ -75,8 +75,7 @@ export function NewWorkspaceFromUrlPage() {
 
   const authProviders = useAuthProviders();
   const { authSessions, authSessionStatus } = useAuthSessions();
-  const authSessionInfo = useAuthSession(queryParamAuthSessionId);
-  const { authSession, gitConfig, authInfo } = authSessionInfo;
+  const { authSession, gitConfig, authInfo } = useAuthSession(queryParamAuthSessionId);
   const authProvider = useAuthProvider(authSession);
   const insecurelyDisableTlsCertificateValidation = useMemo(() => {
     if (typeof queryParamInsecurelyDisableTlsCertificateValidation === "string") {
