@@ -20,7 +20,7 @@
 import { DmnDocumentData } from "./DmnDocumentData";
 import { DmnDecision } from "./DmnDecision";
 import * as path from "path";
-import { DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
+import { getMarshaller } from "@kie-tools/dmn-marshaller";
 
 const INPUT_DATA = "inputData";
 const XML_MIME = "text/xml";
@@ -30,19 +30,7 @@ const DMN_NAME = "name";
 const DECISION = "decision";
 const DEFINITIONS = "definitions";
 
-interface ImportedModelsByModelResources {
-  modelResources: DmnLanguageServiceImportedModelResources[];
-  normalizedPosixPathRelativeToWorkspaceRoot?: undefined;
-}
-
-interface ImportedModelsByNormalizedPosixPathRelativeToWorkspaceRoot {
-  modelResources?: undefined;
-  normalizedPosixPathRelativeToWorkspaceRoot: string;
-}
-
-type ImportedModelsParams = ImportedModelsByModelResources | ImportedModelsByNormalizedPosixPathRelativeToWorkspaceRoot;
-
-export interface DmnLanguageServiceImportedModelResources {
+export interface DmnLanguageServiceImportedModelResource {
   content: string;
   normalizedPosixPathRelativeToWorkspaceRoot: string;
 }
@@ -57,98 +45,74 @@ export class DmnLanguageService {
     private readonly args: {
       getModelContent: (args: {
         normalizedPosixPathRelativeToWorkspaceRoot: string;
-      }) => Promise<DmnLanguageServiceImportedModelResources | undefined>;
+      }) => Promise<DmnLanguageServiceImportedModelResource>;
     }
   ) {}
 
   private getImportedModelByNormalizedPosixPathRelativeToWorkspaceRoot(
-    modelResources: DmnLanguageServiceImportedModelResources,
-    importedModelsNormalizedPosixPathRelativeToWorkspaceRoot: Set<string>
+    modelResource: DmnLanguageServiceImportedModelResource,
+    importedModelsByModel: Map<string, string[]>
   ): string[] {
-    if (!modelResources.content) {
+    if (!modelResource.content) {
       return [];
     }
 
-    const marshaller: DmnMarshaller = getMarshaller(modelResources.content);
-    const definitions = marshaller.parser.parse()?.definitions;
-
-    if (!definitions) {
-      return [];
-    }
-    if (!definitions.import) {
+    const definitions = getMarshaller(modelResource.content, { upgradeTo: "latest" }).parser.parse()?.definitions;
+    if (!definitions?.import) {
       return [];
     }
 
-    return definitions.import
-      .flatMap((importedModel) => {
-        const importedModelNormalizedPosixPathRelativeToWorkspaceRoot = path.posix.normalize(
-          path.posix.join(
-            path.dirname(modelResources.normalizedPosixPathRelativeToWorkspaceRoot),
-            path.normalize(importedModel["@_locationURI"] ?? "")
-          )
-        );
-
-        // Can't import a model that already is imported
-        if (
-          importedModelsNormalizedPosixPathRelativeToWorkspaceRoot.has(
-            importedModelNormalizedPosixPathRelativeToWorkspaceRoot
-          )
-        ) {
-          return [];
-        }
-        importedModelsNormalizedPosixPathRelativeToWorkspaceRoot.add(
-          importedModelNormalizedPosixPathRelativeToWorkspaceRoot
-        );
-        return importedModelNormalizedPosixPathRelativeToWorkspaceRoot;
-      })
-      .filter((e) => e !== null) as string[];
-  }
-
-  private getImportedModelsByNormalizedPosixPathRelativeToWorkspaceRoot(
-    modelResources: DmnLanguageServiceImportedModelResources[] | DmnLanguageServiceImportedModelResources,
-    importedModelsNormalizedPosixPathRelativeToWorkspaceRoot: Set<string>
-  ): string[] {
-    if (Array.isArray(modelResources)) {
-      return modelResources.flatMap((modelResource) =>
-        this.getImportedModelByNormalizedPosixPathRelativeToWorkspaceRoot(
-          modelResource,
-          importedModelsNormalizedPosixPathRelativeToWorkspaceRoot
-        )
+    return definitions.import.flatMap((importedModel) => {
+      const importedModelNormalizedPosixPathRelativeToWorkspaceRoot = path.posix.join(
+        path.dirname(modelResource.normalizedPosixPathRelativeToWorkspaceRoot),
+        path.normalize(importedModel["@_locationURI"] ?? "")
       );
-    }
 
-    return this.getImportedModelByNormalizedPosixPathRelativeToWorkspaceRoot(
-      modelResources,
-      importedModelsNormalizedPosixPathRelativeToWorkspaceRoot
-    );
+      // Get the list of imported models from the input model resource
+      const importedModels = importedModelsByModel.get(modelResource.normalizedPosixPathRelativeToWorkspaceRoot);
+
+      // Add imported model to the list
+      if (!importedModels) {
+        importedModelsByModel.set(modelResource.normalizedPosixPathRelativeToWorkspaceRoot, [
+          importedModelNormalizedPosixPathRelativeToWorkspaceRoot,
+        ]);
+        return importedModelNormalizedPosixPathRelativeToWorkspaceRoot;
+      }
+
+      // Check if the imported model is already mapped
+      if (importedModels.find((e) => e === importedModelNormalizedPosixPathRelativeToWorkspaceRoot)) {
+        return [];
+      }
+
+      // Add imported model to the list
+      importedModelsByModel.set(modelResource.normalizedPosixPathRelativeToWorkspaceRoot, [
+        ...importedModels,
+        importedModelNormalizedPosixPathRelativeToWorkspaceRoot,
+      ]);
+      return importedModelNormalizedPosixPathRelativeToWorkspaceRoot;
+    });
   }
 
   private async internalGetImportedModelsByModelResources(
-    modelResources: DmnLanguageServiceImportedModelResources[],
-    importedModelsNormalizedPosixPathRelativeToWorkspaceRoot: Set<string>
-  ): Promise<DmnLanguageServiceImportedModelResources[]> {
+    modelResources: DmnLanguageServiceImportedModelResource[],
+    importedModelsByModel: Map<string, string[]>
+  ): Promise<DmnLanguageServiceImportedModelResource[]> {
     // get imported models resources
-    const importedModelsPathsRelativeToWorkspaceRoot =
-      this.getImportedModelsByNormalizedPosixPathRelativeToWorkspaceRoot(
-        modelResources,
-        importedModelsNormalizedPosixPathRelativeToWorkspaceRoot
-      );
-    if (importedModelsPathsRelativeToWorkspaceRoot && importedModelsPathsRelativeToWorkspaceRoot.length > 0) {
-      const importedModelsResources = (
-        await Promise.all(
-          importedModelsPathsRelativeToWorkspaceRoot.map((normalizedPosixPathRelativeToWorkspaceRoot) =>
-            this.args.getModelContent({ normalizedPosixPathRelativeToWorkspaceRoot })
-          )
+    const importedModelsPathsRelativeToWorkspaceRoot = modelResources.flatMap((modelResource) =>
+      this.getImportedModelByNormalizedPosixPathRelativeToWorkspaceRoot(modelResource, importedModelsByModel)
+    );
+
+    if (importedModelsPathsRelativeToWorkspaceRoot.length > 0) {
+      const importedModelsResources = await Promise.all(
+        importedModelsPathsRelativeToWorkspaceRoot.map((normalizedPosixPathRelativeToWorkspaceRoot) =>
+          this.args.getModelContent({ normalizedPosixPathRelativeToWorkspaceRoot })
         )
-      ).filter((e) => e !== undefined) as DmnLanguageServiceImportedModelResources[];
+      );
 
       if (importedModelsResources.length > 0) {
         return [
           ...importedModelsResources,
-          ...(await this.internalGetImportedModelsByModelResources(
-            importedModelsResources,
-            importedModelsNormalizedPosixPathRelativeToWorkspaceRoot
-          )),
+          ...(await this.internalGetImportedModelsByModelResources(importedModelsResources, importedModelsByModel)),
         ];
       }
       return [...importedModelsResources];
@@ -156,33 +120,48 @@ export class DmnLanguageService {
     return [];
   }
 
-  private async getImportedModelsByModelResources(
-    modelsResources: DmnLanguageServiceImportedModelResources[]
-  ): Promise<DmnLanguageServiceImportedModelResources[]> {
-    return this.internalGetImportedModelsByModelResources(modelsResources, new Set<string>());
-  }
+  /**
+   * This method retrieves a map of the model normalized posix path relative to workspace root by their imported model resources.
+   *
+   * @param modelResources a list of the model resources to get their imported models.
+   * @returns a map of the model normalized posix path relative to workspace root by their imported models resources.
+   */
+  public async getImportedModels(
+    modelResources: DmnLanguageServiceImportedModelResource[]
+  ): Promise<Map<string, DmnLanguageServiceImportedModelResource[]>> {
+    try {
+      // Using "Path" to avoid big names. Both paths are normalized posix path relative to workspace root.
+      const importedModelsPathsByModelPath = new Map<string, string[]>(
+        modelResources.map((modelResource) => [modelResource.normalizedPosixPathRelativeToWorkspaceRoot, []])
+      );
+      const importedModelResources = await this.internalGetImportedModelsByModelResources(
+        modelResources,
+        importedModelsPathsByModelPath
+      );
 
-  public async getImportedModels(args: ImportedModelsParams) {
-    if (args.modelResources) {
-      return this.getImportedModelsByModelResources(args.modelResources);
+      return Array.from(importedModelsPathsByModelPath.entries()).reduce(
+        (importedModelsResourcesByModelPath, [normalizedPosixPathRelativeToWorkspaceRoot, importedModelPaths]) => {
+          importedModelPaths?.forEach((importedModelPath: string) => {
+            importedModelsResourcesByModelPath.set(normalizedPosixPathRelativeToWorkspaceRoot, [
+              ...(importedModelsResourcesByModelPath.get(normalizedPosixPathRelativeToWorkspaceRoot) ?? []),
+              importedModelResources.find((e) => e.normalizedPosixPathRelativeToWorkspaceRoot === importedModelPath)!,
+            ]);
+          });
+
+          return importedModelsResourcesByModelPath;
+        },
+        new Map<string, DmnLanguageServiceImportedModelResource[]>()
+      );
+    } catch (error) {
+      throw new Error(`
+DMN LANGUAGE SERVICE - getImportedModels: Error while using model resources.
+Tried to use the following model resources: ${modelResources}
+Error details: ${error}`);
     }
-
-    const importedModelsNormalizedPosixPathRelativeToWorkspaceRoot = new Set<string>();
-    importedModelsNormalizedPosixPathRelativeToWorkspaceRoot.add(args.normalizedPosixPathRelativeToWorkspaceRoot);
-
-    const modelResource = [
-      (await this.args.getModelContent({
-        normalizedPosixPathRelativeToWorkspaceRoot: args.normalizedPosixPathRelativeToWorkspaceRoot,
-      })) ?? ([] as DmnLanguageServiceImportedModelResources[]),
-    ].flatMap((e) => e);
-    return this.internalGetImportedModelsByModelResources(
-      modelResource,
-      importedModelsNormalizedPosixPathRelativeToWorkspaceRoot
-    );
   }
 
   // Receive all contents, paths and a node ID and returns the model that contains the node.
-  public getPathFromNodeId(resourceContents: DmnLanguageServiceImportedModelResources[], nodeId: string): string {
+  public getPathFromNodeId(resourceContents: DmnLanguageServiceImportedModelResource[], nodeId: string): string {
     for (const resourceContent of resourceContents) {
       const xmlContent = this.parser.parseFromString(resourceContent.content ?? "", XML_MIME);
       const inputDataTag = this.inputDataRegEx.exec(resourceContent.content ?? "");
@@ -218,7 +197,7 @@ export class DmnLanguageService {
       return;
     }
     try {
-      return getMarshaller(modelContent)?.originalVersion;
+      return getMarshaller(modelContent).originalVersion;
     } catch (error) {
       return;
     }

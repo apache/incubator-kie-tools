@@ -17,23 +17,44 @@
  * under the License.
  */
 
-import { DmnDocumentData, DmnLanguageService, DmnLanguageServiceImportedModelResources } from "../src";
+import { DmnDocumentData, DmnLanguageService, DmnLanguageServiceImportedModelResource } from "../src";
 import { readFileSync } from "fs";
 import * as __path from "path";
 import { DmnDecision } from "../src/DmnDecision";
+import { decisions, example1, example2, model, nested, recursive, simple15 } from "./fixtures/fileContents";
 
 const tests = [
   {
     normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/model.dmn",
-    expected: ["fixtures/recursive.dmn", "fixtures/nested.dmn"],
+    expected: new Map([
+      [
+        "fixtures/model.dmn",
+        [
+          { content: recursive(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/recursive.dmn" },
+          { content: nested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/nested.dmn" },
+        ],
+      ],
+      [
+        "fixtures/recursive.dmn",
+        [{ content: nested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/nested.dmn" }],
+      ],
+    ]),
   },
-  { normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/recursive.dmn", expected: ["fixtures/nested.dmn"] },
-  { normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/nested.dmn", expected: [] },
+  {
+    normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/recursive.dmn",
+    expected: new Map([
+      [
+        "fixtures/recursive.dmn",
+        [{ content: nested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/nested.dmn" }],
+      ],
+    ]),
+  },
+  { normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/nested.dmn", expected: new Map() },
 ];
 
 const getModelContent = (args: {
   normalizedPosixPathRelativeToWorkspaceRoot: string;
-}): Promise<DmnLanguageServiceImportedModelResources> => {
+}): Promise<DmnLanguageServiceImportedModelResource> => {
   const fsAbsolutePath = __path.resolve(
     __dirname,
     args.normalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
@@ -48,205 +69,108 @@ const getModelContent = (args: {
 
 describe("DmnLanguageService", () => {
   describe("getImportedModels", () => {
-    describe("ModelResource", () => {
-      it("empty string", async () => {
-        const dmnLs = new DmnLanguageService({
-          getModelContent: getModelContent,
-        });
-
-        expect(
-          await dmnLs.getImportedModels({
-            modelResources: [
-              {
-                content: "",
-                normalizedPosixPathRelativeToWorkspaceRoot: "",
-              },
-            ],
-          })
-        ).toEqual([]);
+    it("empty string", async () => {
+      const dmnLs = new DmnLanguageService({
+        getModelContent: getModelContent,
       });
 
-      it("single file", async () => {
-        const testResources = await Promise.all(
-          tests.map(({ normalizedPosixPathRelativeToWorkspaceRoot }) => {
-            const dmnLs = new DmnLanguageService({
-              getModelContent,
-            });
+      expect(
+        await dmnLs.getImportedModels([
+          {
+            content: "",
+            normalizedPosixPathRelativeToWorkspaceRoot: "",
+          },
+        ])
+      ).toEqual(new Map());
+    });
 
-            const fsFileAbsolutePath = __path.resolve(
-              __dirname,
-              normalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-            );
-            const content = readFileSync(fsFileAbsolutePath, "utf8");
-            return dmnLs.getImportedModels({
-              modelResources: [
-                {
-                  content,
-                  normalizedPosixPathRelativeToWorkspaceRoot,
-                },
-              ],
-            });
-          })
-        );
-
-        const expectResources = tests.map(({ expected }) => {
-          return expected.map((normalizedPosixPathRelativeToWorkspaceRoot) => {
-            const fsFileAbsolutePath = __path.resolve(
-              __dirname,
-              normalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-            );
-            return {
-              content: readFileSync(fsFileAbsolutePath, "utf8"),
-              normalizedPosixPathRelativeToWorkspaceRoot,
-            };
+    it("single file", async () => {
+      const testResources = await Promise.all(
+        tests.map(({ normalizedPosixPathRelativeToWorkspaceRoot }) => {
+          const dmnLs = new DmnLanguageService({
+            getModelContent,
           });
-        });
 
-        expect(testResources).toEqual(expectResources);
-      });
-
-      it("multiple files", async () => {
-        const importedModelResources = tests.map(({ normalizedPosixPathRelativeToWorkspaceRoot }) => {
           const fsFileAbsolutePath = __path.resolve(
             __dirname,
             normalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
           );
-          return {
-            content: readFileSync(fsFileAbsolutePath, "utf8"),
-            normalizedPosixPathRelativeToWorkspaceRoot,
-          };
-        });
-
-        const pathSet = new Set();
-        const expectResources = tests.flatMap(({ expected }) => {
-          return expected.flatMap((normalizedPosixPathRelativeToWorkspaceRoot) => {
-            const fsFileAbsolutePath = __path.resolve(
-              __dirname,
-              normalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-            );
-            if (pathSet.has(fsFileAbsolutePath)) {
-              return [];
-            }
-            pathSet.add(fsFileAbsolutePath);
-            return {
-              content: readFileSync(fsFileAbsolutePath, "utf8"),
+          const content = readFileSync(fsFileAbsolutePath, "utf8");
+          return dmnLs.getImportedModels([
+            {
+              content,
               normalizedPosixPathRelativeToWorkspaceRoot,
-            };
-          });
-        });
+            },
+          ]);
+        })
+      );
 
-        const dmnLs = new DmnLanguageService({
-          getModelContent,
-        });
-
-        expect(await dmnLs.getImportedModels({ modelResources: importedModelResources })).toEqual(expectResources);
-      });
+      expect(testResources).toEqual(tests.map((test) => test.expected));
     });
 
-    describe("NormalizedPosixPathRelativeToWorkspaceRoot", () => {
-      it("empty", async () => {
-        const dmnLs = new DmnLanguageService({
-          getModelContent: (path) => {
-            return new Promise((res, rej) => {
-              res({
-                content: "",
-                normalizedPosixPathRelativeToWorkspaceRoot: "",
-              });
-            });
-          },
-        });
-
-        expect(await dmnLs.getImportedModels({ normalizedPosixPathRelativeToWorkspaceRoot: "" })).toEqual([]);
+    it("multiple files", async () => {
+      const importedModelResources = tests.map(({ normalizedPosixPathRelativeToWorkspaceRoot }) => {
+        const fsFileAbsolutePath = __path.resolve(
+          __dirname,
+          normalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
+        );
+        return {
+          content: readFileSync(fsFileAbsolutePath, "utf8"),
+          normalizedPosixPathRelativeToWorkspaceRoot,
+        };
       });
 
-      it("get resources", async () => {
-        const normalizedPosixPathRelativeToWorkspaceRoot = "fixtures/recursive.dmn";
-
-        const importedModelNormalizedPosixPathRelativeToWorkspaceRoot = "fixtures/nested.dmn";
-        const fsImportedModelAbsolutePath = __path.resolve(
-          __dirname,
-          importedModelNormalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-        );
-        const expected = [
-          {
-            normalizedPosixPathRelativeToWorkspaceRoot: importedModelNormalizedPosixPathRelativeToWorkspaceRoot,
-            content: readFileSync(fsImportedModelAbsolutePath, "utf8"),
-          },
-        ];
-
-        const dmnLs = new DmnLanguageService({
-          getModelContent,
+      const expected = tests.reduce((expectedMap, test) => {
+        Array.from(test.expected.entries()).forEach(([key, value]) => {
+          expectedMap.set(key, value);
         });
+        return expectedMap;
+      }, new Map());
 
-        expect(await dmnLs.getImportedModels({ normalizedPosixPathRelativeToWorkspaceRoot })).toEqual(expected);
+      const dmnLs = new DmnLanguageService({
+        getModelContent,
       });
 
-      it("should return multiple imported models", async () => {
-        const normalizedPosixPathRelativeToWorkspaceRoot = "fixtures/model.dmn";
+      expect(await dmnLs.getImportedModels(importedModelResources)).toEqual(expected);
+    });
 
-        const recursiveImportedModelNormalizedPosixPathRelativeToWorkspaceRoot = "fixtures/recursive.dmn";
-        const nestedImportedModelNormalizedPosixPathRelativeToWorkspaceRoot = "fixtures/nested.dmn";
+    it("recursive import", async () => {
+      const normalizedPosixPathRelativeToWorkspaceRoot = "fixtures/example1.dmn";
+      const importedModelNormalizedPosixPathRelativeToWorkspaceRoot = "fixtures/example2.dmn";
 
-        const recursiveImportedModelAbsolutePath = __path.resolve(
-          __dirname,
-          recursiveImportedModelNormalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-        );
-        const nestedImportedModelAbsolutePath = __path.resolve(
-          __dirname,
-          nestedImportedModelNormalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-        );
-
-        const expected = [
-          {
-            normalizedPosixPathRelativeToWorkspaceRoot:
-              recursiveImportedModelNormalizedPosixPathRelativeToWorkspaceRoot,
-            content: readFileSync(recursiveImportedModelAbsolutePath, "utf8"),
-          },
-          {
-            normalizedPosixPathRelativeToWorkspaceRoot: nestedImportedModelNormalizedPosixPathRelativeToWorkspaceRoot,
-            content: readFileSync(nestedImportedModelAbsolutePath, "utf8"),
-          },
-        ];
-
-        const dmnLs = new DmnLanguageService({
-          getModelContent,
-        });
-
-        expect(await dmnLs.getImportedModels({ normalizedPosixPathRelativeToWorkspaceRoot })).toEqual(expected);
+      const dmnLs = new DmnLanguageService({
+        getModelContent,
       });
 
-      it("recursive import", async () => {
-        const normalizedPosixPathRelativeToWorkspaceRoot = "fixtures/example1.dmn";
-        const importedModelNormalizedPosixPathRelativeToWorkspaceRoot = "fixtures/example2.dmn";
-        const fsImportedModelAbsolutePath = __path.resolve(
-          __dirname,
-          importedModelNormalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-        );
-        const expected = [
-          {
-            normalizedPosixPathRelativeToWorkspaceRoot: importedModelNormalizedPosixPathRelativeToWorkspaceRoot,
-            content: readFileSync(fsImportedModelAbsolutePath, "utf8"),
-          },
-        ];
-
-        const dmnLs = new DmnLanguageService({
-          getModelContent,
-        });
-
-        expect(await dmnLs.getImportedModels({ normalizedPosixPathRelativeToWorkspaceRoot })).toEqual(expected);
-      });
+      expect(
+        await dmnLs.getImportedModels([{ content: example1(), normalizedPosixPathRelativeToWorkspaceRoot }])
+      ).toEqual(
+        new Map([
+          [
+            "fixtures/example1.dmn",
+            [
+              {
+                content: example2(),
+                normalizedPosixPathRelativeToWorkspaceRoot: importedModelNormalizedPosixPathRelativeToWorkspaceRoot,
+              },
+            ],
+          ],
+          [
+            "fixtures/example2.dmn",
+            [
+              {
+                content: example1(),
+                normalizedPosixPathRelativeToWorkspaceRoot: normalizedPosixPathRelativeToWorkspaceRoot,
+              },
+            ],
+          ],
+        ])
+      );
     });
   });
 
   describe("getDmnDocumentData", () => {
     it("get decisions", () => {
-      const normalizedPosixPathRelativeToWorkspaceRoot = "fixtures/decisions.dmn";
-      const fsModelAbsolutePath = __path.resolve(
-        __dirname,
-        normalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-      );
-      const modelContent = readFileSync(fsModelAbsolutePath, "utf8");
-
       const dmnDocumentData: DmnDocumentData = new DmnDocumentData(
         "https://kiegroup.org/dmn/_57B8BED3-0077-4154-8435-30E57EA6F02E",
         "My Model Name",
@@ -256,7 +180,7 @@ describe("DmnLanguageService", () => {
         getModelContent,
       });
 
-      expect(dmnLs.getDmnDocumentData(modelContent)).toEqual(dmnDocumentData);
+      expect(dmnLs.getDmnDocumentData(decisions())).toEqual(dmnDocumentData);
     });
   });
 
@@ -278,32 +202,19 @@ describe("DmnLanguageService", () => {
     });
 
     it("1.2", () => {
-      const normalizedPosixPathRelativeToWorkspaceRoot = "fixtures/decisions.dmn";
-      const fsModelAbsolutePath = __path.resolve(
-        __dirname,
-        normalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-      );
-
-      const modelContent = readFileSync(fsModelAbsolutePath, "utf8");
       const dmnLs = new DmnLanguageService({
         getModelContent,
       });
 
-      expect(dmnLs.getDmnSpecVersion(modelContent)).toEqual("1.2");
+      expect(dmnLs.getDmnSpecVersion(model())).toEqual("1.2");
     });
 
     it("1.5", () => {
-      const normalizedPosixPathRelativeToWorkspaceRoot = "fixtures/simple-1.5.dmn";
-      const fsModelAbsolutePath = __path.resolve(
-        __dirname,
-        normalizedPosixPathRelativeToWorkspaceRoot.split("/").join(__path.sep)
-      );
-      const modelContent = readFileSync(fsModelAbsolutePath, "utf8");
       const dmnLs = new DmnLanguageService({
         getModelContent,
       });
 
-      expect(dmnLs.getDmnSpecVersion(modelContent)).toEqual("1.5");
+      expect(dmnLs.getDmnSpecVersion(simple15())).toEqual("1.5");
     });
   });
 });
