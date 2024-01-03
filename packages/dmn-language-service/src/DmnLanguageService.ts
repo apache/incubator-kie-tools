@@ -68,10 +68,10 @@ export class DmnLanguageService {
         path.normalize(importedModel["@_locationURI"] ?? "")
       );
 
-      // Get the list of imported models from the input model resource
+      // Get the list of imported models from the model resource
       const importedModels = importedModelsByModel.get(modelResource.normalizedPosixPathRelativeToWorkspaceRoot);
 
-      // Add imported model to the list
+      // Map the imported model
       if (!importedModels) {
         importedModelsByModel.set(modelResource.normalizedPosixPathRelativeToWorkspaceRoot, [
           importedModelNormalizedPosixPathRelativeToWorkspaceRoot,
@@ -79,12 +79,12 @@ export class DmnLanguageService {
         return importedModelNormalizedPosixPathRelativeToWorkspaceRoot;
       }
 
-      // Check if the imported model is already mapped
+      // Check if the imported model was already mapped
       if (importedModels.find((e) => e === importedModelNormalizedPosixPathRelativeToWorkspaceRoot)) {
         return [];
       }
 
-      // Add imported model to the list
+      // Map the imported model
       importedModelsByModel.set(modelResource.normalizedPosixPathRelativeToWorkspaceRoot, [
         ...importedModels,
         importedModelNormalizedPosixPathRelativeToWorkspaceRoot,
@@ -121,10 +121,11 @@ export class DmnLanguageService {
   }
 
   /**
-   * This method retrieves a map of the model normalized posix path relative to workspace root by their imported model resources.
+   * This method retrieves a map, where the keys are the model normalized posix path relative to workspace root and the values
+   * their imported model resources.
    *
-   * @param modelResources a list of the model resources to get their imported models.
-   * @returns a map of the model normalized posix path relative to workspace root by their imported models resources.
+   * @param modelResources a list of model resources to get their imported models.
+   * @returns a map of imported models resources by model path normalized posix path relative to workspace root .
    */
   public async getImportedModels(
     modelResources: DmnLanguageServiceImportedModelResource[]
