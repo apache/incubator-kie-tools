@@ -99,7 +99,7 @@ If you don't have access rigths to this config, try creating a dummy Route resou
 To install the chart with the release name `kie-sandbox`:
 
 ```console
-$ helm install kie-sandbox ./src --values ./src/values-openshift.yaml --set global.ocpRouteDomain=<YOUR_OCP_ROUTE_DOMAIN>
+$ helm install kie-sandbox ./src --values ./src/values-openshift.yaml --set global.openshiftRouteDomain="<YOUR_OCP_ROUTE_DOMAIN>"
 ```
 
 Following message should be displayed on your console.
@@ -134,13 +134,15 @@ $ helm install kie-sandbox oci://quay.io/kie-tools/kie-sandbox-helm-chart --vers
 ### Minikube install
 
 ```console
-$ helm install kie-sandbox oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --values ./src/values-minikube-nginx.yaml
+$ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-minikube-nginx.yaml
 ```
 
 ### OpenShift install
 
 ```console
-$ helm install kie-sandbox oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --values ./src/values-openshift.yaml --set global.ocpRouteDomain=<YOUR_OCP_ROUTE_DOMAIN>
+$ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-openshift.yaml --set global.openshiftRouteDomain="<YOUR_OCP_ROUTE_DOMAIN>"
 ```
 
 ## Uninstalling the Chart
