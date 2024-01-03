@@ -153,8 +153,8 @@ public class DMNAssetsDropdownItemsProviderTest {
         final IncludedModel includedModel5 = makePMMLIncludedModel(5);
         final Import import1 = mock(Import.class);
         final Import import2 = mock(Import.class);
-        final LocationURI import1URI = new LocationURI("/src/main/kie3");
-        final LocationURI import2URI = new LocationURI("/src/main/kie4");
+        final LocationURI import1URI = new LocationURI("src/main/kie3.pmml");
+        final LocationURI import2URI = new LocationURI("src/main/kie4.pmml");
         final KieAssetsDropdownItem dropdownItem1 = mock(KieAssetsDropdownItem.class);
         final KieAssetsDropdownItem dropdownItem2 = mock(KieAssetsDropdownItem.class);
         final KieAssetsDropdownItem dropdownItem5 = mock(KieAssetsDropdownItem.class);
@@ -182,9 +182,9 @@ public class DMNAssetsDropdownItemsProviderTest {
                                                     final int modelCount) {
         return new PMMLIncludedModel("name" + id,
                                      "com.kie.pmml",
-                                     "src/main/kie" + id,
+                                     "src/main/kie" + id + ".pmml",
                                      PMML.getDefaultNamespace(),
-                                     "https://kie.org/pmml#src/main/kie" + id,
+                                     "https://kie.org/pmml#src/main/kie" + id + ".pmml",
                                      modelCount);
     }
 
