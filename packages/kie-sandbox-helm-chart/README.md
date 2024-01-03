@@ -121,6 +121,28 @@ NOTES:
 
 No need to run any commands. KIE Sandbox should be accessible via https://kie-sandbox.<YOUR_OCP_ROUTE_DOMAIN>
 
+## Installing a released version from the OCI registry:
+
+Very similar to the way you install the chart from source code, you can also install a released version available on quay.io registry:
+
+### Default install
+
+```console
+$ helm install kie-sandbox oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0
+```
+
+### Minikube install
+
+```console
+$ helm install kie-sandbox oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --values ./src/values-minikube-nginx.yaml
+```
+
+### OpenShift install
+
+```console
+$ helm install kie-sandbox oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --values ./src/values-openshift.yaml --set global.ocpRouteDomain=<YOUR_OCP_ROUTE_DOMAIN>
+```
+
 ## Uninstalling the Chart
 
 To uninstall the `kie-sandbox` deployment:
