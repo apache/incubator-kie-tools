@@ -21,7 +21,9 @@
 def pushChartToRegistry(String registry, String chart, String credentialsId) {
     withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
         sh "set +x && helm registry login -u $REGISTRY_USER -p $REGISTRY_PWD $registry"
-        sh "helm push ${chart} oci://${$registry}"
+        sh "helm push ${chart} oci://${registry}"
         sh "helm registry logout ${registry}"
     }
 }
+
+return this;
