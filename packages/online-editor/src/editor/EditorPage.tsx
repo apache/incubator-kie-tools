@@ -331,48 +331,36 @@ export function EditorPage(props: Props) {
     setContentErrorAlert.show();
   }, [setContentErrorAlert]);
 
-  const [dmnLanguageService, setDmnLanguageService] = useState<DmnLanguageService | undefined>();
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        if (!workspaceFilePromise.data?.workspaceFile) {
-          return;
+  const dmnLanguageService = useMemo(() => {
+    if (!workspaceFilePromise.data?.workspaceFile) {
+      return;
+    }
+
+    if (workspaceFilePromise.data?.workspaceFile.extension.toLocaleLowerCase() !== "dmn") {
+      return;
+    }
+
+    return new DmnLanguageService({
+      getModelContent: async (args: { normalizedPosixPathRelativeToWorkspaceRoot: string }) => {
+        try {
+          const fileContent = await workspaces.getFileContent({
+            workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
+            relativePath: args.normalizedPosixPathRelativeToWorkspaceRoot,
+          });
+
+          return {
+            content: decoder.decode(fileContent),
+            normalizedPosixPathRelativeToWorkspaceRoot: args.normalizedPosixPathRelativeToWorkspaceRoot,
+          };
+        } catch (err) {
+          throw new Error(`
+KIE SANDBOX - DmnLanguageService - getModelContent: Error on getFileContent.
+Tried to open path: ${args.normalizedPosixPathRelativeToWorkspaceRoot}
+Error details: ${err}`);
         }
-
-        if (workspaceFilePromise.data?.workspaceFile.extension.toLocaleLowerCase() !== "dmn") {
-          return;
-        }
-
-        workspaceFilePromise.data?.workspaceFile.getFileContentsAsString().then((modelContent) => {
-          if (canceled.get()) {
-            return;
-          }
-
-          setDmnLanguageService(
-            new DmnLanguageService({
-              getModelContent: async (args: { normalizedPosixPathRelativeToWorkspaceRoot: string }) => {
-                try {
-                  const fileContent = await workspaces.getFileContent({
-                    workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
-                    relativePath: args.normalizedPosixPathRelativeToWorkspaceRoot,
-                  });
-
-                  return {
-                    content: decoder.decode(fileContent),
-                    normalizedPosixPathRelativeToWorkspaceRoot: args.normalizedPosixPathRelativeToWorkspaceRoot,
-                  };
-                } catch (err) {
-                  console.debug("ERROR: DmnLanguageService.getDmnModelContent: ", err);
-                  return undefined;
-                }
-              },
-            })
-          );
-        });
       },
-      [workspaces, workspaceFilePromise.data?.workspaceFile]
-    )
-  );
+    });
+  }, [workspaceFilePromise.data?.workspaceFile, workspaces]);
 
   const onKeyDown = useCallback(
     (ke: React.KeyboardEvent) => {

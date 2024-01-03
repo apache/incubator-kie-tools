@@ -25,7 +25,7 @@ import { useOnlineI18n } from "../i18n";
 import { ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
-import { DmnLanguageService, DmnLanguageServiceImportedModelResources } from "@kie-tools/dmn-language-service";
+import { DmnLanguageService, DmnLanguageServiceImportedModelResource } from "@kie-tools/dmn-language-service";
 import { WorkspacesContextType } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
@@ -119,7 +119,6 @@ export function useFileValidation(
             }
 
             const decodedFileContent = decoder.decode(fileContent);
-
             const dmnSpecVersion = dmnLanguageService?.getDmnSpecVersion(decodedFileContent);
             if (!dmnSpecVersion || (dmnSpecVersion !== "1.0" && dmnSpecVersion !== "1.1" && dmnSpecVersion !== "1.2")) {
               setNotifications(i18n.terms.validation, "", [
@@ -135,17 +134,26 @@ export function useFileValidation(
             }
 
             dmnLanguageService
-              ?.getImportedModels({ normalizedPosixPathRelativeToWorkspaceRoot: workspaceFile.relativePath })
-              .then((importedModelsResources: DmnLanguageServiceImportedModelResources[]) => {
+              ?.getImportedModels([
+                {
+                  content: decodedFileContent,
+                  normalizedPosixPathRelativeToWorkspaceRoot: workspaceFile.relativePath,
+                },
+              ])
+              .then((importedModelResourcesByModelPath: Map<string, DmnLanguageServiceImportedModelResource[]>) => {
                 if (canceled.get()) {
                   return;
                 }
+                // Get all imported models. Create a Set to remove duplicates.
+                const allImportedModelResources = new Set(
+                  [...(importedModelResourcesByModelPath?.values() ?? [])].flatMap((e) => e)
+                );
                 const resources = [
                   {
                     content: decodedFileContent,
                     normalizedPosixPathRelativeToWorkspaceRoot: workspaceFile.relativePath,
                   },
-                  ...importedModelsResources,
+                  ...allImportedModelResources,
                 ];
                 const payload: ExtendedServicesModelPayload = {
                   mainURI: workspaceFile.relativePath,

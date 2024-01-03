@@ -215,13 +215,19 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       });
 
       const decodedFileContent = decoder.decode(fileContent);
-      const importedModelsResources =
-        (await props.dmnLanguageService?.getImportedModels({
+      const importedModelResourcesByModelPath = await props.dmnLanguageService?.getImportedModels([
+        {
+          content: decodedFileContent,
           normalizedPosixPathRelativeToWorkspaceRoot: props.workspaceFile.relativePath,
-        })) ?? [];
+        },
+      ]);
+      // Get all imported models. Create a Set to remove duplicates.
+      const allImportedModelResources = new Set(
+        [...(importedModelResourcesByModelPath?.values() ?? [])].flatMap((e) => e)
+      );
       const dmnResources = [
         { content: decodedFileContent, normalizedPosixPathRelativeToWorkspaceRoot: props.workspaceFile.relativePath },
-        ...importedModelsResources,
+        ...allImportedModelResources,
       ].map((resource) => ({
         URI: resource.normalizedPosixPathRelativeToWorkspaceRoot,
         content: resource.content ?? "",

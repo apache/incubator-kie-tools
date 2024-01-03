@@ -155,7 +155,7 @@ export class DmnLanguageService {
     } catch (error) {
       throw new Error(`
 DMN LANGUAGE SERVICE - getImportedModels: Error while using model resources.
-Tried to use the following model resources: ${modelResources}
+Tried to use the following model resources: ${JSON.stringify(modelResources)}
 Error details: ${error}`);
     }
   }
