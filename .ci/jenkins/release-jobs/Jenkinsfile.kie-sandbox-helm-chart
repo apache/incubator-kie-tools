@@ -127,7 +127,7 @@ pipeline {
                     script {
                         helmUtils.pushChartToRegistry(
                             "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
-                            "packages/${env.KIE_SANDBOX_HELM_CHART__name}/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
+                            "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
                             "${pipelineVars.quayPushCredentialsId}"
                         )
                     }
