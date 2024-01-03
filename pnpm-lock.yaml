@@ -8073,6 +8073,9 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor":
         specifier: workspace:*
         version: link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-envelope
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
