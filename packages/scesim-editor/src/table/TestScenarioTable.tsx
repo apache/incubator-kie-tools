@@ -627,7 +627,7 @@ function TestScenarioTable({
   const determineNewColumnTargetIndex = useCallback(
     (
       factMappings: SceSim__FactMappingType[],
-      isDirectionRight: boolean,
+      insertDirection: InsertRowColumnsDirection,
       selectedColumnIndex: number,
       selectedColumnGroupType: string,
       selectedFactMapping: SceSim__FactMappingType
@@ -640,7 +640,7 @@ function TestScenarioTable({
         selectedColumnGroupType === TestScenarioTableColumnFieldGroup.EXPECT ||
         selectedColumnGroupType === TestScenarioTableColumnFieldGroup.GIVEN
       ) {
-        if (isDirectionRight) {
+        if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
           return selectedColumnIndex + 1;
         } else {
           return selectedColumnIndex;
@@ -649,7 +649,7 @@ function TestScenarioTable({
 
       let newColumnTargetColumn = -1;
 
-      if (isDirectionRight) {
+      if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
         for (let i = selectedColumnIndex; i < factMappings.length; i++) {
           const currentFM = factMappings[i];
           if (
@@ -749,16 +749,14 @@ function TestScenarioTable({
         const selectedColumnFactMapping = factMappingList[selectedColumnIndex];
         const targetColumnIndex = determineNewColumnTargetIndex(
           factMappingList,
-          args.beforeIndex === args.currentIndex,
+          args.insertDirection,
           selectedColumnIndex,
           args.groupType,
           selectedColumnFactMapping
         );
 
-        const instanceDefaultNames = retrieveModelDescriptor(prevState.ScenarioSimulationModel)
-          .factMappings.FactMapping!.filter((factMapping) =>
-            factMapping.factIdentifier.name!.__$$text.startsWith("INSTANCE-")
-          )
+        const instanceDefaultNames = factMappingList
+          .filter((factMapping) => factMapping.factIdentifier.name!.__$$text.startsWith("INSTANCE-"))
           .map((factMapping) => factMapping.factIdentifier.name!.__$$text);
 
         const newFactMapping = {
@@ -907,7 +905,7 @@ function TestScenarioTable({
 
         /* Cloning the Scenario List (Rows) and finding the Cell(s) to remove accordingly to the factMapping data of 
           the removed columns */
-        const deepClonedRowsData = JSON.parse(
+        const deepClonedRowsData: SceSim__ScenarioType[] = JSON.parse(
           JSON.stringify(retrieveRowsDataFromModel(prevState.ScenarioSimulationModel) ?? [])
         );
         deepClonedRowsData.forEach((rowData: SceSim__ScenarioType | SceSim__BackgroundDataType) => {

@@ -59,7 +59,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <type>GIVEN</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>Empty</name>
+            <name>INSTANCE-1</name>
             <className>java.lang.Void</className>
           </factIdentifier>
           <className>java.lang.Void</className>
@@ -75,7 +75,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <type>EXPECT</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>Empty</name>
+            <name>INSTANCE-2</name>
             <className>java.lang.Void</className>
           </factIdentifier>
           <className>java.lang.Void</className>
@@ -101,7 +101,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
-              <name>Empty</name>
+              <name>INSTANCE-1</name>
               <className>java.lang.Void</className>
             </factIdentifier>
             <expressionIdentifier>
@@ -111,7 +111,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
-              <name>Empty</name>
+              <name>INSTANCE-2</name>
               <className>java.lang.Void</className>
             </factIdentifier>
             <expressionIdentifier>
@@ -133,12 +133,12 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <type>GIVEN</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>Empty</name>
+            <name>INSTANCE-1</name>
             <className>java.lang.Void</className>
           </factIdentifier>
           <className>java.lang.Void</className>
           <factAlias>INSTANCE-1</factAlias>
-          <expressionAlias>PROPERTY 1</expressionAlias>
+          <expressionAlias>PROPERTY</expressionAlias>
           <columnWidth>150</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
@@ -149,7 +149,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
         <factMappingValues>
           <FactMappingValue>
             <factIdentifier>
-              <name>Empty</name>
+              <name>INSTANCE-1</name>
               <className>java.lang.Void</className>
             </factIdentifier>
             <expressionIdentifier>
