@@ -62,10 +62,12 @@ import "./TestScenarioTable.css";
 function TestScenarioTable({
   assetType,
   tableData,
+  scrollableParentRef,
   updateTestScenarioModel,
 }: {
   assetType: string;
   tableData: SceSim__simulationType | SceSim__backgroundType;
+  scrollableParentRef: React.MutableRefObject<HTMLDivElement | null>;
   updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   enum TestScenarioTableColumnHeaderGroup {
@@ -85,12 +87,6 @@ function TestScenarioTable({
   type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
   const { i18n } = useTestScenarioEditorI18n();
-
-  const tableScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
-
-  useEffect(() => {
-    tableScrollableElementRef.current.current = document.querySelector(".kie-scesim-editor--table-container") ?? null;
-  }, []);
 
   /** BACKGROUND TABLE MANAGMENT */
 
@@ -1121,7 +1117,7 @@ function TestScenarioTable({
         operationConfig={simulationOperationConfig}
         resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
         rows={tableRows}
-        scrollableParentRef={tableScrollableElementRef.current}
+        scrollableParentRef={scrollableParentRef}
         shouldRenderRowIndexColumn={!isBackground}
         shouldShowColumnsInlineControls={true}
         shouldShowRowsInlineControls={!isBackground}

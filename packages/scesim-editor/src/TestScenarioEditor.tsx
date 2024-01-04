@@ -20,7 +20,7 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
@@ -247,6 +247,9 @@ function TestScenarioMainPanel({
   const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
   const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
 
+  const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
+  const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
+
   const onTabChanged = useCallback((_event, tab) => {
     setTab(tab);
   }, []);
@@ -388,10 +391,14 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    <div className="kie-scesim-editor--table-container">
+                    <div
+                      className="kie-scesim-editor--scenario-table-container"
+                      ref={scenarioTableScrollableElementRef}
+                    >
                       <TestScenarioTable
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.simulation}
+                        scrollableParentRef={scenarioTableScrollableElementRef}
                         updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
@@ -412,10 +419,14 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    <div className="kie-scesim-editor--table-container">
+                    <div
+                      className="kie-scesim-editor--background-table-container"
+                      ref={backgroundTableScrollableElementRef}
+                    >
                       <TestScenarioTable
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.background}
+                        scrollableParentRef={backgroundTableScrollableElementRef}
                         updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
