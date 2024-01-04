@@ -135,8 +135,8 @@ export enum DecisionTableExpressionDefinitionHitPolicy {
   Unique = "UNIQUE",
   First = "FIRST",
   Priority = "PRIORITY",
-  Any = "ANY",
   Collect = "COLLECT",
+  Any = "ANY",
   RuleOrder = "RULE ORDER",
   OutputOrder = "OUTPUT ORDER",
 }

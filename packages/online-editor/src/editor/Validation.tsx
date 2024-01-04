@@ -25,7 +25,7 @@ import { useOnlineI18n } from "../i18n";
 import { ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
-import { DmnLanguageService, DmnLanguageServiceImportedModel } from "@kie-tools/dmn-language-service";
+import { DmnLanguageService, DmnLanguageServiceImportedModelResources } from "@kie-tools/dmn-language-service";
 import { WorkspacesContextType } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 export function useFileValidation(
@@ -102,16 +102,18 @@ export function useFileValidation(
       .then((fileContent) => {
         const decodedFileContent = decoder.decode(fileContent);
         dmnLanguageService
-          ?.getAllImportedModelsResources([decodedFileContent])
-          .then((importedModelsResources: DmnLanguageServiceImportedModel[]) => {
+          ?.getAllImportedModelsResources([
+            { content: decodedFileContent, pathRelativeToWorkspaceRoot: workspaceFile.relativePath },
+          ])
+          .then((importedModelsResources: DmnLanguageServiceImportedModelResources[]) => {
             const resources = [
-              { content: decodedFileContent, relativePath: workspaceFile.relativePath },
+              { content: decodedFileContent, pathRelativeToWorkspaceRoot: workspaceFile.relativePath },
               ...importedModelsResources,
             ];
             const payload: ExtendedServicesModelPayload = {
               mainURI: workspaceFile.relativePath,
               resources: resources.map((resource) => ({
-                URI: resource.relativePath,
+                URI: resource.pathRelativeToWorkspaceRoot,
                 content: resource.content ?? "",
               })),
             };

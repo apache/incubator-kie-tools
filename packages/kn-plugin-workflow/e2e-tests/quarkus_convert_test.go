@@ -143,7 +143,7 @@ func RunQuarkusConvertTest(t *testing.T, cfgTestInputCreateConvert CfgTestInputC
 
 	// Verify the content of the file `workflow.sw.json`
 	workflowFilePath := filepath.Join(projectDir, "src/main/resources/workflow.sw.json")
-	workflowFileData, err := common.GetWorkflowTemplate()
+	workflowFileData, err := common.GetWorkflowTemplate(false)
 	require.NoErrorf(t, err, "Error reading workflow template: %v", err)
 	expectedFileContent := string(workflowFileData)
 	VerifyFileContent(t, workflowFilePath, expectedFileContent)

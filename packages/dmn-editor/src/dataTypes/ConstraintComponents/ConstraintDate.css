@@ -1,0 +1,23 @@
+.kie-dmn-editor--constraint-date button::after {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.kie-dmn-editor--constraint-date > div > div > button {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent !important;
+}
+
+.kie-dmn-editor--constraint-date > div > div {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.kie-dmn-editor--constraint-date-invalid > div > div > input {
+  color: red;
+  text-decoration: red dotted underline;
+  text-underline-position: under;
+}

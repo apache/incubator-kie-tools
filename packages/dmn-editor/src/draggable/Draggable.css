@@ -1,0 +1,34 @@
+.kie-dmn-editor--draggable-row {
+  display: flex;
+  flex-direction: row;
+  background-color: transparent;
+}
+
+.kie-dmn-editor--draggable-row-hovered {
+  background-color: rgb(220, 220, 220);
+}
+
+.kie-dmn-editor--draggable-row-is-dragging {
+  opacity: 0;
+}
+
+.kie-dmn-editor--draggable-icon {
+  align-self: center;
+  cursor: grab;
+}
+
+.kie-dmn-editor--draggable-icon:active {
+  cursor: grabbing;
+}
+
+.kie-dmn-editor--draggable-icon-handler {
+  color: transparent;
+}
+
+.kie-dmn-editor--draggable-icon-handler-hovered {
+  color: gray;
+}
+
+.kie-dmn-editor--draggable-children {
+  flex-grow: 1;
+}

@@ -1,0 +1,48 @@
+.kie-dmn-editor--editable-node-name-input {
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+
+.kie-dmn-editor--editable-node-name-input.top-center {
+  align-items: start;
+  text-align: center;
+  justify-content: center;
+}
+.kie-dmn-editor--editable-node-name-input.top-left {
+  align-items: start;
+  text-align: left;
+  padding: 8px;
+}
+.kie-dmn-editor--editable-node-name-input.center-center {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+.kie-dmn-editor--editable-node-name-input.center-left {
+  align-items: center;
+  text-align: left;
+}
+.kie-dmn-editor--editable-node-name-input.top-center input,
+.kie-dmn-editor--editable-node-name-input.center-center input {
+  text-align: center;
+}
+
+.kie-dmn-editor--editable-node-name-input input {
+  border: 0;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+
+.kie-dmn-editor--editable-node-name-input input:focus {
+  outline: 0;
+}
+
+.kie-dmn-editor--editable-node-name-input.grow,
+.kie-dmn-editor--editable-node-name-input.grow input,
+.kie-dmn-editor--editable-node-name-input.grow span {
+  width: 100%;
+  flex-grow: 1;
+}

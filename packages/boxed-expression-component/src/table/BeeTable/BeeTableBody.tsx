@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { BeeTableHeaderVisibility } from "../../api";
+import { BeeTableHeaderVisibility, InsertRowColumnsDirection } from "../../api";
 import * as ReactTable from "react-table";
 import { BeeTableTdForAdditionalRow } from "./BeeTableTdForAdditionalRow";
 import { BeeTableTd } from "./BeeTableTd";
@@ -38,7 +38,7 @@ export interface BeeTableBodyProps<R extends object> {
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   /** */
-  onRowAdded?: (args: { beforeIndex: number }) => void;
+  onRowAdded?: (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => void;
 
   shouldRenderRowIndexColumn: boolean;
 

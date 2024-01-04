@@ -26,7 +26,7 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { EnvironmentPlugin } = require("webpack");
 const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
-const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets");
+const swEditorAssets = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { env } = require("./env");
 const buildEnv = env;
 
@@ -81,9 +81,15 @@ module.exports = async (env) => {
           { from: `./rules.json`, to: "./rules.json" },
           // This is used for development only.
           {
-            from: swEditor.swEditorPath(),
+            from: swEditorAssets.swEditorPath(),
             to: "./diagram",
             globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+          },
+          {
+            context: swEditorAssets.swEditorFontsPath(),
+            from: "fontawesome-webfont.*",
+            to: "./fonts",
+            force: true,
           },
         ],
       }),

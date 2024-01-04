@@ -88,9 +88,11 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
     throw new Error("Document type not supported");
   }
 
-  public kogitoWorkspace_openFile(path: string) {
+  public kogitoWorkspace_openFile(workspaceFilePath: string) {
     this.workspaceApi.kogitoWorkspace_openFile(
-      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.document.uri.path), path)
+      __path.isAbsolute(workspaceFilePath)
+        ? workspaceFilePath
+        : __path.join(__path.dirname(this.editor.document.document.uri.path), workspaceFilePath)
     );
   }
 
@@ -101,8 +103,18 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
     } catch (e) {
       // If file doesn't exist, we create an empty one.
       // This is important for the use-case where users type `code new-file.dmn` on a terminal.
-      await vscode.workspace.fs.writeFile(this.editor.document.document.uri, new Uint8Array());
-      return { content: "", path: this.editor.document.document.uri.path };
+      try {
+        await vscode.workspace.fs.writeFile(this.editor.document.document.uri, new Uint8Array());
+        return { content: "", path: this.editor.document.document.uri.path };
+      } catch (error) {
+        console.error(
+          "Failed on vscode.workspace.fs.writeFile. document uri: ",
+          this.editor.document.document.uri,
+          "error: ",
+          error
+        );
+        throw error;
+      }
     }
 
     return { content, path: this.editor.document.document.uri.path };

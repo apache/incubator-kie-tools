@@ -1,0 +1,1022 @@
+/* (begin) global */
+.kie-dmn-editor--root {
+  height: 100%;
+}
+
+.kie-dmn-editor--diagram-container {
+  height: 100%;
+  position: relative;
+}
+
+.kie-dmn-editor--bee-container {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  user-select: none;
+  padding-left: 16px;
+}
+/* (end) global */
+
+/* (begin) diagram empty state */
+.kie-dmn-editor--diagram-empty-state {
+  border: 1px solid lightgray;
+  backdrop-filter: blur(4px);
+  background: rgb(255, 255, 255, 60%);
+  border-radius: 16px;
+  padding: 16px;
+  pointer-events: all;
+  box-shadow: 0 0 60px 20px #e1e1e1;
+}
+/* (end) diagram empty state */
+
+/* (begin) nodes */
+.kie-dmn-editor--node {
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-word;
+  overflow: hidden;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-align: center;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  overflow: visible;
+}
+.kie-dmn-editor--node:focus {
+  outline: none;
+}
+.kie-dmn-editor--node.dimmed,
+.kie-dmn-editor--node-shape.dimmed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.kie-dmn-editor--node-shape {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.kie-dmn-editor--text-annotation-node {
+  text-align: left;
+  display: block;
+}
+
+.kie-dmn-editor--unknown-node {
+  color: red;
+}
+/* (end) nodes */
+
+/* (begin) decisionService and group nodes */
+/* DECISION SERVICES AND GROUPS HAVE A SPECIFIC SELECTION MECHANISM TO ALLOW EDITING EDGES INSIDE THEM */
+.kie-dmn-editor--node-decisionService-visibleRect {
+  pointer-events: none;
+}
+
+.kie-dmn-editor--node-containerNodeInteractionRect,
+.kie-dmn-editor--node-decisionService-interactionDividerLine {
+  pointer-events: stroke !important;
+  opacity: 0;
+  /* ⬇ Uncomment for debugging purposes:*/
+  /* stroke: purple;
+  opacity: 0.2; */
+}
+.kie-dmn-editor--node-decisionService-interactionDividerLine:not(.readonly):hover {
+  cursor: row-resize;
+}
+
+.react-flow__node-node_group,
+.react-flow__node-node_decisionService {
+  pointer-events: none !important;
+  background: transparent;
+  box-shadow: none !important;
+}
+.react-flow__node-node_group:not(.selected) .kie-dmn-editor--node-shape,
+.react-flow__node-node_decisionService:not(.selected) .kie-dmn-editor--node-shape {
+  filter: none !important;
+}
+.react-flow__node-node_decisionService .kie-dmn-editor--outgoing-stuff-node-panel,
+.react-flow__node-node_group .kie-dmn-editor--outgoing-stuff-node-panel,
+.react-flow__node-node_decisionService .kie-dmn-editor--editable-node-name-input span,
+.react-flow__node-node_group .kie-dmn-editor--editable-node-name-input span,
+.react-flow__node-node_decisionService .kie-dmn-editor--info-node-panel,
+.react-flow__node-node_group .kie-dmn-editor--info-node-panel,
+.react-flow__node-node_decisionService .kie-dmn-editor--data-type-node-panel,
+.react-flow__node-node_group .kie-dmn-editor--data-type-node-panel,
+.react-flow__node-node_decisionService .react-flow__resize-control div,
+.react-flow__node-node_group .react-flow__resize-control div {
+  pointer-events: all !important;
+}
+.kie-dmn-editor--decision-service-node {
+  position: relative;
+}
+.react-flow__node-node_decisionService.selected .kie-dmn-editor--decision-service-collapsed-button {
+  border-color: #006ba4 !important;
+}
+.kie-dmn-editor--decision-service-node .kie-dmn-editor--decision-service-collapsed-button {
+  border: 3px;
+  border-style: solid;
+  border-color: black;
+  font-weight: bold;
+  position: absolute;
+  width: 24px;
+  height: 25px;
+  font-size: 24px;
+  text-align: center;
+  bottom: 4px;
+  line-height: 21px;
+}
+.react-flow__node-node_decisionService .kie-dmn-editor--node-shape .kie-dmn-editor--decision-service-label {
+  font-family: system-ui;
+  font-size: 0.6em;
+  letter-spacing: 8px;
+  fill: #a9a9a9;
+}
+/* (end) decisionService and group nodes */
+
+/* (begin) external nodes */
+.kie-dmn-editor--node.external {
+  text-decoration: underline;
+}
+/* (end) external node */
+
+/* (begin) textAnnotation, and unknown nodes */
+.react-flow__node-node_unknown.selected:before,
+.react-flow__node-node_textAnnotation.selected:before {
+  content: "";
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 6px;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  backdrop-filter: blur(8px);
+}
+.react-flow__node-node_textAnnotation.selected:before {
+  border: 1px dashed #006ba4;
+  background-color: rgb(161 222 255 / 20%); /* Very slightly blue hue */
+}
+.react-flow__node-node_unknown.selected:before {
+  border: 1px dashed #a40000;
+  background-color: rgb(255 161 161 / 20%); /* Very slightly red hue */
+}
+/* (end) textAnnotation, and unknown nodes */
+
+/* (begin) palette */
+.kie-dmn-editor--drd-selector-popover .pf-c-popover__body {
+  padding: 0;
+}
+.kie-dmn-editor--drd-selector {
+  padding: 3px 8px 3px 16px;
+  border-radius: 99999px;
+  background: white;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+}
+.kie-dmn-editor--drd-selector input {
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  max-width: 300px;
+  min-width: 50px;
+}
+.kie-dmn-editor--drd-selector:hover {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+  filter: brightness(95%);
+}
+.kie-dmn-editor--drd-selector button {
+  border: 0;
+  padding: 4px 16px;
+  border-radius: 8px;
+  background: white;
+}
+.kie-dmn-editor--drd-selector button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--drd-selector button:active {
+  filter: brightness(90%);
+}
+.kie-dmn-editor--drd-list button {
+  padding: 8px 16px;
+  margin: 4px 0;
+  margin-right: 16px;
+  border-radius: 12px;
+  text-align: left;
+  background: white;
+  border-radius: 8px;
+  border: 0;
+  max-width: 300px;
+  width: 100%;
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+}
+.kie-dmn-editor--drd-list button.active {
+  color: #0067cc;
+  filter: brightness(95%);
+}
+.kie-dmn-editor--drd-list button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--drd-list button:active {
+  filter: brightness(90%);
+}
+.kie-dmn-editor--palette {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--palette:hover {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+
+.kie-dmn-editor--palette.pulse {
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
+  }
+
+  70% {
+    box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.kie-dmn-editor--palette-button {
+  margin: 0;
+  margin-bottom: 8px;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--palette-button:hover {
+  filter: brightness(95%);
+  cursor: grab;
+}
+.kie-dmn-editor--palette-button:active {
+  filter: brightness(90%);
+  cursor: grabbing;
+}
+/* (end) palette */
+
+/* (begin) properties panel toggle */
+
+.kie-dmn-editor--properties-panel-toggle {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--properties-panel-toggle:hover {
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--properties-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--properties-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--properties-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+/* (end) properties panel toggle */
+
+/* (begin) version popover */
+.kie-dmn-editor--version-popover .pf-c-popover__body {
+  padding: 0;
+}
+/* (end) version popover */
+
+/* (begin) overlays panel toggle */
+.kie-dmn-editor--overlay-panel-popover .pf-c-popover__body {
+  padding: 0;
+}
+.kie-dmn-editor--overlays-panel-toggle {
+  margin-right: 16px;
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--overlays-panel-toggle:hover {
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--overlays-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--overlays-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--overlays-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+
+.kie-dmn-editor--snap-slider .pf-c-slider__value > input {
+  max-width: 60px;
+  min-width: 60px;
+  width: 60px;
+}
+/* (end) overlays panel toggle */
+
+/* (begin) drg/external nodes panel toggle */
+.kie-dmn-editor--drg-panel-toggle {
+  margin-right: 16px;
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--external-nodes-panel-toggle:hover,
+.kie-dmn-editor--drg-panel-toggle:hover {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--external-nodes-panel-toggle-button,
+.kie-dmn-editor--drg-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--external-nodes-panel-toggle-button:hover,
+.kie-dmn-editor--drg-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--external-nodes-panel-toggle-button:active,
+.kie-dmn-editor--drg-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+.kie-dmn-editor--external-nodes-panel-toggle-button.active,
+.kie-dmn-editor--drg-panel-toggle-button.active {
+  color: #006ba4;
+}
+.kie-dmn-editor--palette-nodes-popover {
+  position: absolute;
+  top: 0;
+  left: 58px;
+  overflow: auto;
+  box-shadow: 0px 5px 10px 0px lightgray;
+  background: white;
+  width: 400px;
+}
+.kie-dmn-editor--external-nodes-panel-toggle {
+  margin-right: 16px;
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--external-nodes-panel-toggle-button svg {
+  transform: scale(1, -1); /* Flip the 'migration icon' vertically, to point to the Diagram */
+}
+
+/* (end) drg/external nodes panel toggle */
+
+/* nodes */
+.kie-dmn-editor--outgoing-stuff-node-panel {
+  position: absolute;
+  left: calc(100% - 10px); /* - 1px to make sure it is directly connected to the node */
+  top: 0;
+  padding-left: 15px;
+  height: max(40%, 80px);
+  align-content: flex-start;
+}
+.kie-dmn-editor--outgoing-stuff-node-panel > div {
+  display: flex;
+  margin: 0 0 4px 0;
+  background: #fff;
+  border-radius: 24px;
+  border: 1px solid black;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--outgoing-stuff-node-panel > div > div {
+  color: black;
+  margin: 0;
+  padding: 0;
+  width: 34px;
+  height: 34px;
+  max-width: 34px;
+  border-radius: 34px;
+  background: #fff;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+}
+.kie-dmn-editor--outgoing-stuff-node-panel > div > div:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--outgoing-stuff-node-panel > div > div:active {
+  filter: brightness(90%);
+}
+
+/* (begin) node handles */
+/*  To make sure connection lines are steadly glued to the 
+handles, we make their indicators be ::before elements. The handle 
+itself is a 0px by 0px div, as connection lines can move freely when
+the cursor is inside it. By making it adimensional, that never happens.  */
+.kie-dmn-editor--node-handle.connecting::before {
+  content: "";
+  position: absolute;
+  background: #0388ce;
+  border-radius: 100%;
+  border: 1px solid black;
+  pointer-events: none;
+  width: 20px;
+  height: 20px;
+  top: -10px;
+  left: -10px;
+}
+.kie-dmn-editor--node-handle:not(.connecting)::before {
+  content: "";
+  position: absolute;
+  background: #0388ce;
+  border-radius: 100%;
+  border: 1px solid black;
+  pointer-events: none;
+  width: 14px;
+  height: 14px;
+  top: -7px;
+  left: -7px;
+}
+.kie-dmn-editor--node-handle {
+  /* These 0px are is by design. See explanation above. */
+  width: 0px;
+  min-width: 0px;
+  height: 0px;
+  min-height: 0px;
+  border: 0;
+  z-index: 20;
+}
+.kie-dmn-editor--node-handle.top {
+  top: 0;
+  left: 50%;
+}
+.kie-dmn-editor--node-handle.right {
+  top: 50%;
+  right: 0;
+}
+.kie-dmn-editor--node-handle.bottom {
+  bottom: 0;
+  left: 50%;
+}
+.kie-dmn-editor--node-handle.left {
+  top: 50%;
+  left: 0;
+}
+.kie-dmn-editor--node-handle.center {
+  top: 50%;
+  left: 50%;
+}
+/* (end) node handles */
+
+/* (begin) node panels */
+
+/* data type selector on inputData, decision, bkm, and decisionService nodes */
+.kie-dmn-editor--data-type-node-panel {
+  position: absolute;
+  top: -46px;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: end;
+  zoom: 0.8;
+}
+.kie-dmn-editor--data-type-node-panel .kie-dmn-editor--data-type-jump-to-definition {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+/* Customizing some patternfly components is hard... */
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type > button,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type input,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > button,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type,
+.kie-dmn-editor--data-type-node-panel > div {
+  border-radius: 99999px;
+  outline: none;
+}
+.kie-dmn-editor--data-type-node-panel > div {
+  padding-left: 12px;
+  border: 1.25px solid black;
+  background: white;
+  box-shadow: 5px 5px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--data-type-node-panel .pf-c-select__menu.pf-m-static {
+  text-align: left;
+  z-index: 999999;
+}
+.kie-dmn-editor--data-type-node-panel span {
+  height: 19px;
+}
+.kie-dmn-editor--data-type-node-panel .pf-c-button.pf-c-select__toggle-button.pf-m-plain {
+  margin-left: 24px;
+}
+.kie-dmn-editor--data-type-node-panel .pf-c-button.pf-m-control::after,
+.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead::before {
+  border: 0;
+}
+.kie-dmn-editor--data-type-node-panel > div:hover {
+  backdrop-filter: brightness(95%);
+}
+.kie-dmn-editor--data-type-node-panel > div:active {
+  backdrop-filter: brightness(90%);
+}
+/*    edit button on decision and bkm nodes */
+.kie-dmn-editor--edit-expression-node-panel {
+  position: absolute;
+  padding: 4px 8px;
+  bottom: -16px;
+  font-size: 0.7em;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+  cursor: pointer;
+  background: white;
+  color: black;
+}
+.kie-dmn-editor--edit-expression-node-panel > .pf-c-label__content::before {
+  border: 1px solid black;
+}
+.kie-dmn-editor--edit-expression-node-panel:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--edit-expression-node-panel:active {
+  filter: brightness(90%);
+}
+.kie-dmn-editor--tabs ~ section {
+  overflow: auto;
+  height: calc(100% - 40px);
+}
+/* info button on all nodes */
+.kie-dmn-editor--info-node-panel {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 4px - 21px);
+  padding-right: 21px;
+  height: max(25%, 40px);
+}
+.kie-dmn-editor--info-label {
+  padding: 4px 5px;
+  height: 19px;
+  cursor: pointer;
+  background: white;
+  color: black;
+  font-weight: bold;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--info-label > .pf-c-label__content::before {
+  border: 1px solid black;
+}
+.kie-dmn-editor--info-label:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--info-label:active {
+  filter: brightness(90%);
+}
+/* (end) node panels */
+
+/* back button on boxed expression */
+.kie-dmn-editor--boxed-expression-back {
+  cursor: pointer;
+  background: white;
+  margin-left: -1px;
+  height: 40px;
+  width: 192px;
+  justify-content: center;
+}
+.kie-dmn-editor--boxed-expression-back > .pf-c-label__content::before {
+  border: 1px solid black;
+}
+.kie-dmn-editor--boxed-expression-back:hover {
+  filter: brightness(95%);
+  box-shadow: 2px 3px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--boxed-expression-back:active {
+  filter: brightness(90%);
+}
+
+/* (begin) edges with waypoints */
+.kie-dmn-editor--edge.dimmed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+circle.kie-dmn-editor--diagram-edge-waypoint {
+  fill: black;
+  stroke-width: 8;
+  stroke: #006ba4;
+}
+circle.kie-dmn-editor--diagram-edge-waypoint:active,
+circle.kie-dmn-editor--diagram-edge-waypoint:hover {
+  stroke-width: 16;
+  cursor: grab;
+}
+.react-flow__edge.selected .kie-dmn-editor--edge-waypoint-potential,
+.react-flow__edge:not(.selected) .kie-dmn-editor--edge-waypoint-potential {
+  fill: #4d809b96;
+}
+.kie-dmn-editor--edge-waypoint-potential {
+  pointer-events: none;
+}
+/* (end) edges with waypoints */
+
+/* (begin) misc */
+.kie-dmn-editor--round-svg-container {
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+.kie-dmn-editor--sticky-top-glass-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background: rgb(255, 255, 255, 60%);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid lightgray;
+}
+.kie-dmn-editor--boxed-expression-header {
+  padding: 16px;
+}
+.kie-dmn-editor--data-type-panel-header {
+  padding: 0 16px 0 16px;
+  align-items: center !important;
+}
+.kie-dmn-editor--data-type-panel-header-nested-or-external {
+  height: 120px;
+  align-items: flex-end !important;
+  padding: 0 16px 0 16px;
+}
+/* (end) misc */
+
+/* (begin) external nodes */
+.kie-dmn-editor--external-nodes-section:not(:last-child) {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid lightgray;
+}
+.kie-dmn-editor--external-nodes-section-title {
+  margin-bottom: 6px;
+}
+.kie-dmn-editor--external-nodes-list-item {
+  border-radius: 999px;
+  background: white;
+}
+.kie-dmn-editor--external-nodes-list-item:hover {
+  filter: brightness(95%);
+  cursor: grab;
+}
+.kie-dmn-editor--external-nodes-list-item:active {
+  filter: brightness(90%);
+  cursor: grabbing;
+}
+/* (end) external nodes */
+
+/* (begin) data type label */
+.kie-dmn-editor--data-type-label {
+  font-style: italic;
+  font-size: smaller;
+  color: #1b515f;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* (end) data type label */
+
+/* (begin) data types */
+.kie-dmn-editor--data-types-filter {
+  padding: 16px;
+}
+.kie-dmn-editor--data-types-filter input {
+  flex-grow: 1;
+}
+.kie-dmn-editor--data-types-nav {
+  padding-left: 16px;
+}
+.kie-dmn-editor--data-types-nav-item:first-child {
+  margin-top: 16px;
+}
+.kie-dmn-editor--data-types-nav-item {
+  display: flex;
+  align-items: baseline;
+  padding: 0 16px;
+  margin: 8px 0;
+  margin-right: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.kie-dmn-editor--data-types-title {
+  flex-grow: 1;
+  font-size: 2em;
+}
+.kie-dmn-editor--data-types-title div,
+.kie-dmn-editor--data-types-title div input {
+  width: 100%;
+}
+.kie-dmn-editor--data-types-nav-item.active {
+  color: #0067cc;
+  backdrop-filter: brightness(95%);
+}
+.kie-dmn-editor--data-types-nav-item:hover {
+  backdrop-filter: brightness(90%);
+}
+.kie-dmn-editor--data-types-nav-item:focus {
+  backdrop-filter: brightness(80%);
+}
+.kie-dmn-editor--data-type-parents button {
+  padding: 6px !important;
+  margin-right: 36px !important;
+}
+.kie-dmn-editor--data-type-parents button:last-child::after {
+  content: "↴";
+  margin-top: 8px;
+}
+.kie-dmn-editor--data-type-parents button::after {
+  content: ">";
+  margin: 0;
+  font-size: 24px;
+  position: absolute;
+  padding: 8px;
+  pointer-events: none;
+  right: 0px;
+  width: calc(100% + 30px);
+  height: 100%;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.kie-dmn-editor--data-type-properties-table--empty-state {
+  margin: 8px 24px 0 0;
+  padding: 24px;
+  background: #eee;
+  border-radius: 24px;
+  text-align: center;
+}
+.kie-dmn-editor--data-type-properties-table td,
+th {
+  padding: 12px;
+}
+.kie-dmn-editor--data-type-properties-table {
+  position: relative;
+  overflow: hidden;
+}
+.kie-dmn-editor--data-type-properties-table tr {
+  border-bottom: 1px solid lightgray;
+  position: relative;
+}
+/* Hover effect */
+.kie-dmn-editor--data-type-properties-table tbody tr:hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: #0067cc;
+}
+/* Gradients for depth illusion */
+.kie-dmn-editor--data-type-properties-table .first-nested-at-level {
+  background: linear-gradient(to bottom, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%);
+}
+.kie-dmn-editor--data-type-properties-table .last-nested-at-level {
+  background: linear-gradient(to top, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%);
+}
+.kie-dmn-editor--data-type-properties-table .first-nested-at-level.last-nested-at-level {
+  background: linear-gradient(to bottom, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%),
+    linear-gradient(to top, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%);
+}
+.kie-dmn-editor--data-type-properties-table .pf-m-typeahead {
+  background: rgb(255, 255, 255, 0.7); /* Let */
+}
+.kie-dmn-editor--type-ref-selector-invalid-value input {
+  color: red;
+  text-decoration: red dotted underline;
+  text-underline-position: under;
+}
+/* (end) data types */
+
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ⬇ (begin) react-flow theming ⬇ */
+/* ******************************* */
+
+/* edge selection / hover */
+.react-flow__edge > .kie-dmn-editor--edge {
+  pointer-events: none;
+}
+.react-flow__edge.selected > .kie-dmn-editor--edge {
+  fill: #006ba4 !important;
+  stroke: #006ba4 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(2px 2px 2px #006ba477);
+}
+.react-flow__edge.selected .react-flow__edge-interaction.normal {
+  cursor: crosshair;
+}
+.react-flow__edge.selected .react-flow__edge-interaction.dragging-waypoint,
+.react-flow__edge.selected
+  .react-flow__edge-interaction.dragging-waypoint
+  ~ .kie-dmn-editor--diagram-edge-waypoints
+  circle {
+  cursor: grabbing;
+}
+.react-flow__edge:not(.selected) .kie-dmn-editor--edge:hover,
+.react-flow__edge:not(.selected) .react-flow__edge-interaction:hover + .kie-dmn-editor--edge {
+  stroke-width: 2px !important;
+}
+
+/* nodes selection / hover */
+.react-flow__node:not(.selected):hover > .kie-dmn-editor--node-shape.normal {
+  filter: drop-shadow(2px 2px 2px rgb(127, 127, 127));
+}
+.react-flow__node.selected {
+  color: #006ba4 !important;
+}
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid ~ .kie-dmn-editor--node,
+.react-flow__node
+  > .kie-dmn-editor--node-shape.drop-target-invalid
+  ~ .kie-dmn-editor--node
+  .kie-dmn-editor--decision-service-collapsed-button {
+  border-color: red !important;
+  color: red !important;
+  opacity: 0.4;
+}
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid {
+  border-color: red !important;
+}
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid > g * {
+  stroke: rgba(255, 0, 0, 0.2) !important;
+  fill: rgba(164, 0, 0, 0.1) !important;
+}
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target ~ .kie-dmn-editor--node {
+  color: #006ba4 !important;
+}
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target,
+.react-flow__node.selected > .kie-dmn-editor--node-shape.normal {
+  border-color: #006ba4 !important;
+  filter: drop-shadow(2px 2px 2px #006ba477);
+}
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target > g * {
+  stroke: #006ba4 !important;
+  fill: rgba(0, 107, 164, 0.1) !important;
+}
+
+.react-flow__node.selected:not(.react-flow__node-node_unknown) > .kie-dmn-editor--node-shape > g * {
+  stroke: #006ba4 !important;
+}
+
+/* hierarchy view */
+
+.react-flow__node.hierarchy.up::after,
+.react-flow__node.hierarchy.down::after {
+  content: "";
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  border-radius: 24px;
+}
+.react-flow__node.hierarchy.up::after {
+  background-color: rgba(0, 131, 164, 0.15);
+}
+.react-flow__node.hierarchy.down::after {
+  background-color: rgb(0 1 128 / 10%);
+}
+.react-flow__edge.hierarchy.up .react-flow__edge-interaction {
+  stroke: rgba(0, 131, 164, 0.15);
+}
+.react-flow__edge.hierarchy.down .react-flow__edge-interaction {
+  stroke: rgb(0 1 128 / 10%);
+}
+
+/* selection rect */
+.react-flow__nodesselection-rect {
+  display: none;
+}
+
+/* controls */
+.react-flow__controls {
+  border-radius: 20px;
+  border: 1px solid black;
+  background: white;
+  margin-bottom: 24px;
+}
+.react-flow__controls:hover {
+  box-shadow: -4px -4px 2px 0px rgb(127 127 127);
+}
+.react-flow__controls > button {
+  border-radius: 20px;
+}
+.react-flow__controls > button:hover {
+  filter: brightness(95%);
+}
+.react-flow__controls > button:active {
+  filter: brightness(90%);
+}
+.react-flow__controls {
+  border-radius: 1000px;
+}
+.react-flow__controls-button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 1000px;
+}
+.react-flow__resize-control {
+  z-index: 0;
+}
+
+/* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */
+.react-flow__selection.react-flow__container {
+  pointer-events: none;
+}
+
+/* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */
+.react-flow__connectionline {
+  z-index: 10000;
+}
+
+/* edge updaters */
+.react-flow__edgeupdater {
+  z-index: 9000;
+  fill: white;
+  stroke: #006ba4;
+  stroke-width: 2px;
+  cursor: grab;
+}
+.react-flow__edge:not(.selected:hover) .react-flow__edgeupdater,
+.react-flow__edgeupdater.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.react-flow__pane.selection {
+  cursor: crosshair;
+}
+/* attribution*/
+.react-flow__attribution {
+  margin-right: 7px;
+}
+/* ⬆ (end) react-flow theming ⬆ */
+
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/*   ⬇ (begin) pf4 overrides ⬇    */
+/* ******************************* */
+.pf-c-popover {
+  max-width: unset;
+}
+
+.pf-c-truncate,
+.pf-c-truncate__start {
+  min-width: 0 !important;
+}
+
+.pf-c-select__menu {
+  margin-top: 1px;
+}
+/*   ⬆ (end) pf4 overrides ⬆      */
