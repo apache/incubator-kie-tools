@@ -65,7 +65,7 @@ export class DmnLanguageService {
     return definitions.import.flatMap((importedModel) => {
       const importedModelNormalizedPosixPathRelativeToWorkspaceRoot = path.posix.join(
         path.dirname(modelResource.normalizedPosixPathRelativeToWorkspaceRoot),
-        path.normalize(importedModel["@_locationURI"] ?? "")
+        path.posix.normalize(importedModel["@_locationURI"] ?? "")
       );
 
       // Get the list of imported models from the model resource
