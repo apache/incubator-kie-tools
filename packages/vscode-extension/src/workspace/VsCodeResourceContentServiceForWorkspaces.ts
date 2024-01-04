@@ -48,7 +48,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
   ) {}
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
-    if (!vscode.workspace.workspaceFolders) {
+    if (!vscode.workspace.workspaceFolders?.length) {
       throw new Error("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: No workspaces found.");
     }
 
@@ -120,7 +120,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
     normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     opts?: ResourceContentOptions
   ): Promise<ResourceContent | undefined> {
-    if (!vscode.workspace.workspaceFolders) {
+    if (!vscode.workspace.workspaceFolders?.length) {
       throw new Error("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: No workspaces found.");
     }
 
