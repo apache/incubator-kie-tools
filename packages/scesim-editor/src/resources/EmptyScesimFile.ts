@@ -59,7 +59,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <type>GIVEN</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>INSTANCE-1</name>
+            <name>Empty</name>
             <className>java.lang.Void</className>
           </factIdentifier>
           <className>java.lang.Void</className>
@@ -75,7 +75,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <type>EXPECT</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>INSTANCE-2</name>
+            <name>Empty</name>
             <className>java.lang.Void</className>
           </factIdentifier>
           <className>java.lang.Void</className>
@@ -101,7 +101,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
-              <name>INSTANCE-1</name>
+              <name>Empty</name>
               <className>java.lang.Void</className>
             </factIdentifier>
             <expressionIdentifier>
@@ -111,7 +111,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
-              <name>INSTANCE-2</name>
+              <name>Empty</name>
               <className>java.lang.Void</className>
             </factIdentifier>
             <expressionIdentifier>
@@ -133,7 +133,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <type>GIVEN</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>INSTANCE-1</name>
+            <name>Empty</name>
             <className>java.lang.Void</className>
           </factIdentifier>
           <className>java.lang.Void</className>
@@ -149,7 +149,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
         <factMappingValues>
           <FactMappingValue>
             <factIdentifier>
-              <name>INSTANCE-1</name>
+              <name>Empty</name>
               <className>java.lang.Void</className>
             </factIdentifier>
             <expressionIdentifier>

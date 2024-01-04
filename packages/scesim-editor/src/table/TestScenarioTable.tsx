@@ -767,8 +767,8 @@ function TestScenarioTable({
         );
 
         const instanceDefaultNames = factMappingList
-          .filter((factMapping) => factMapping.factIdentifier.name!.__$$text.startsWith("INSTANCE-"))
-          .map((factMapping) => factMapping.factIdentifier.name!.__$$text);
+          .filter((factMapping) => factMapping.factAlias!.__$$text.startsWith("INSTANCE-"))
+          .map((factMapping) => factMapping.factAlias!.__$$text);
 
         const newFactMapping = {
           expressionIdentifier: {
