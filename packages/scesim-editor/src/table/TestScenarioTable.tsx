@@ -26,6 +26,7 @@ import { v4 as uuid } from "uuid";
 
 import {
   SceSim__backgroundDatasType,
+  SceSim__BackgroundDataType,
   SceSim__backgroundType,
   SceSim__expressionIdentifierType,
   SceSim__factIdentifierType,
@@ -902,17 +903,17 @@ function TestScenarioTable({
         const deepClonedRowsData = JSON.parse(
           JSON.stringify(retrieveRowsDataFromModel(prevState.ScenarioSimulationModel) ?? [])
         );
-        deepClonedRowsData.forEach((scenario: SceSim__ScenarioType) => {
+        deepClonedRowsData.forEach((rowData: SceSim__ScenarioType | SceSim__BackgroundDataType) => {
           allFactMappingWithIndexesToRemove.forEach((itemToRemove) => {
             const factMappingValueColumnIndexToRemove = retrieveFactMappingValueIndexByIdentifiers(
-              scenario.factMappingValues.FactMappingValue!,
+              rowData.factMappingValues.FactMappingValue!,
               itemToRemove.factMapping!.factIdentifier,
               itemToRemove.factMapping!.expressionIdentifier
             )!;
 
             return {
               factMappingValues: {
-                FactMappingValue: scenario.factMappingValues.FactMappingValue!.splice(
+                FactMappingValue: rowData.factMappingValues.FactMappingValue!.splice(
                   factMappingValueColumnIndexToRemove,
                   1
                 ),
