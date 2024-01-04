@@ -118,7 +118,10 @@ export const en: TestScenarioEditorI18n = {
   },
   tab: {
     backgroundTabTitle: "Background",
-    scenarioTabTitle: "Scenarios",
+    backgroundTabInfo: "For GIVEN data shared with the multiple test scenarios, you can define them only once here.",
+    scenarioTabTitle: "Test Scenario",
+    scenarioTabInfo:
+      "The rows of the Test Scenario table define the individual test scenarios. A test scenario has a unique index number, description, set of input values (the GIVEN values), and a set of output values (the EXPECT values).",
   },
   table: {
     simulation: {

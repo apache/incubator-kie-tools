@@ -18,17 +18,22 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 
 import * as ReactTable from "react-table";
 import _, { isNumber } from "lodash";
 import { v4 as uuid } from "uuid";
 
 import {
+  SceSim__backgroundDatasType,
+  SceSim__BackgroundDataType,
+  SceSim__backgroundType,
   SceSim__expressionIdentifierType,
   SceSim__factIdentifierType,
   SceSim__FactMappingType,
   SceSim__FactMappingValueType,
+  SceSim__ScenarioSimulationModelType,
+  SceSim__scenariosType,
   SceSim__ScenarioType,
   SceSim__simulationType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
@@ -57,10 +62,12 @@ import "./TestScenarioTable.css";
 function TestScenarioTable({
   assetType,
   tableData,
+  scrollableParentRef,
   updateTestScenarioModel,
 }: {
   assetType: string;
-  tableData: SceSim__simulationType;
+  tableData: SceSim__simulationType | SceSim__backgroundType;
+  scrollableParentRef: React.RefObject<HTMLElement>;
   updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   enum TestScenarioTableColumnHeaderGroup {
@@ -81,11 +88,48 @@ function TestScenarioTable({
 
   const { i18n } = useTestScenarioEditorI18n();
 
-  const tableScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
+  /** BACKGROUND TABLE MANAGMENT */
 
-  useEffect(() => {
-    tableScrollableElementRef.current.current = document.querySelector(".kie-scesim-editor--table-container") ?? null;
-  }, []);
+  const isBackground = useMemo(() => {
+    return "BackgroundData" in tableData.scesimData;
+  }, [tableData]);
+
+  const columnIndexStart = useMemo(() => {
+    return isBackground ? 0 : 1;
+  }, [isBackground]);
+
+  const retrieveRowsData = useCallback(
+    (rowData: SceSim__backgroundDatasType | SceSim__scenariosType) => {
+      if (isBackground) {
+        return (rowData as SceSim__backgroundDatasType).BackgroundData;
+      } else {
+        return (rowData as SceSim__scenariosType).Scenario;
+      }
+    },
+    [isBackground]
+  );
+
+  const retrieveRowsDataFromModel = useCallback(
+    (scesimModel: SceSim__ScenarioSimulationModelType) => {
+      if (isBackground) {
+        return scesimModel.background.scesimData.BackgroundData;
+      } else {
+        return scesimModel.simulation.scesimData.Scenario;
+      }
+    },
+    [isBackground]
+  );
+
+  const retrieveModelDescriptor = useCallback(
+    (scesimModel: SceSim__ScenarioSimulationModelType) => {
+      if (isBackground) {
+        return scesimModel.background.scesimModelDescriptor;
+      } else {
+        return scesimModel.simulation.scesimModelDescriptor;
+      }
+    },
+    [isBackground]
+  );
 
   /** TABLE COLUMNS AND ROWS POPULATION */
 
@@ -107,16 +151,16 @@ function TestScenarioTable({
   const setColumnWidth = useCallback(
     (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
       updateTestScenarioModel((prevState) => {
-        const oldWidth =
-          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping![inputIndex]
-            .columnWidth?.__$$text;
+        const oldWidth = retrieveModelDescriptor(prevState.ScenarioSimulationModel).factMappings.FactMapping![
+          inputIndex
+        ].columnWidth?.__$$text;
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(oldWidth) : newWidthAction;
 
         let model = prevState;
         if (newWidth && oldWidth !== newWidth) {
           /* Cloning the FactMapping list and updating the new width */
           const deepClonedFactMappings: SceSim__FactMappingType[] = JSON.parse(
-            JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping)
+            JSON.stringify(retrieveModelDescriptor(prevState.ScenarioSimulationModel).factMappings.FactMapping)
           );
           const factMappingToUpdate = deepClonedFactMappings[inputIndex];
 
@@ -135,7 +179,19 @@ function TestScenarioTable({
                 ...prevState.ScenarioSimulationModel.simulation,
                 scesimModelDescriptor: {
                   factMappings: {
-                    FactMapping: deepClonedFactMappings,
+                    FactMapping: isBackground
+                      ? prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping
+                      : deepClonedFactMappings,
+                  },
+                },
+              },
+              background: {
+                ...prevState.ScenarioSimulationModel.background,
+                scesimModelDescriptor: {
+                  factMappings: {
+                    FactMapping: isBackground
+                      ? deepClonedFactMappings
+                      : prevState.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping,
                   },
                 },
               },
@@ -303,7 +359,7 @@ function TestScenarioTable({
   /* It generates the columns of the TestScenarioTable */
   const tableRows = useMemo(
     () =>
-      (tableData.scesimData.Scenario ?? []).map((scenario, index) => {
+      (retrieveRowsData(tableData.scesimData) ?? []).map((scenario, index) => {
         const factMappingValues = scenario.factMappingValues.FactMappingValue ?? [];
 
         const tableRow = getColumnsAtLastLevel(tableColumns.allColumns, 2).reduce(
@@ -318,7 +374,7 @@ function TestScenarioTable({
         );
         return tableRow;
       }),
-    [tableColumns, tableData.scesimData.Scenario]
+    [tableColumns.allColumns, tableData.scesimData]
   );
 
   /** TABLE'S CONTEXT MENU MANAGEMENT */
@@ -344,9 +400,13 @@ function TestScenarioTable({
         : true;
 
       const columnCanBeDeleted =
-        columnIndex > 0 && atLeastTwoColumnsOfTheSameGroupType && (conditions.columns?.length ?? 0) > 4;
+        columnIndex > 0 &&
+        atLeastTwoColumnsOfTheSameGroupType &&
+        ((isBackground && (conditions.columns?.length ?? 0) > 1) ||
+          (!isBackground && columnIndex > 0 && (conditions.columns?.length ?? 0) > 4));
 
-      const columnOperations = (isInstance ? columnIndex in [0] : columnIndex in [0, 1])
+      const columnsWithNoOperations = isBackground ? [0] : [0, 1];
+      const columnOperations = (isInstance ? columnIndex in [0] : columnIndex in columnsWithNoOperations)
         ? []
         : [
             BeeTableOperation.ColumnInsertLeft,
@@ -365,7 +425,7 @@ function TestScenarioTable({
               BeeTableOperation.SelectionReset,
             ]
           : []),
-        ...(conditions.selection.selectionStart.rowIndex >= 0
+        ...(conditions.selection.selectionStart.rowIndex >= 0 && !isBackground
           ? [
               BeeTableOperation.RowInsertAbove,
               BeeTableOperation.RowInsertBelow,
@@ -377,7 +437,7 @@ function TestScenarioTable({
           : []),
       ];
     },
-    [TestScenarioTableColumnHeaderGroup, TestScenarioTableColumnInstanceGroup, tableRows.length]
+    [isBackground, TestScenarioTableColumnHeaderGroup, TestScenarioTableColumnInstanceGroup, tableRows.length]
   );
 
   const generateOperationConfig = useCallback(
@@ -487,15 +547,18 @@ function TestScenarioTable({
         updateTestScenarioModel((prevState) => {
           /* To update the related FactMappingValue, it compares every FactMappingValue associated with the Scenario (Row)
              that contains the cell with the FactMapping (Column) fields factIdentifier and expressionIdentifier */
-          const factMapping =
-            prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping![
-              update.columnIndex + 1
-            ];
+          const factMapping = retrieveModelDescriptor(prevState.ScenarioSimulationModel).factMappings.FactMapping![
+            update.columnIndex + columnIndexStart
+          ];
 
-          const deepClonedScenarios: SceSim__ScenarioType[] = JSON.parse(
-            JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimData.Scenario)
+          const deepClonedRowsData: SceSim__ScenarioType[] = JSON.parse(
+            JSON.stringify(
+              retrieveRowsDataFromModel(
+                isBackground ? prevState.ScenarioSimulationModel : prevState.ScenarioSimulationModel
+              )
+            )
           );
-          const factMappingValues = deepClonedScenarios[update.rowIndex].factMappingValues.FactMappingValue!;
+          const factMappingValues = deepClonedRowsData[update.rowIndex].factMappingValues.FactMappingValue!;
           const newFactMappingValues = [...factMappingValues];
 
           const factMappingValueToUpdateIndex = retrieveFactMappingValueIndexByIdentifiers(
@@ -516,7 +579,7 @@ function TestScenarioTable({
             };
           }
 
-          deepClonedScenarios[update.rowIndex].factMappingValues.FactMappingValue = newFactMappingValues;
+          deepClonedRowsData[update.rowIndex].factMappingValues.FactMappingValue = newFactMappingValues;
 
           return {
             ScenarioSimulationModel: {
@@ -524,7 +587,17 @@ function TestScenarioTable({
               simulation: {
                 ...prevState.ScenarioSimulationModel.simulation,
                 scesimData: {
-                  Scenario: deepClonedScenarios,
+                  Scenario: isBackground
+                    ? prevState.ScenarioSimulationModel.simulation.scesimData.Scenario
+                    : deepClonedRowsData,
+                },
+              },
+              background: {
+                ...prevState.ScenarioSimulationModel.background,
+                scesimData: {
+                  BackgroundData: isBackground
+                    ? deepClonedRowsData
+                    : prevState.ScenarioSimulationModel.background.scesimData.BackgroundData,
                 },
               },
             },
@@ -532,7 +605,7 @@ function TestScenarioTable({
         });
       });
     },
-    [retrieveFactMappingValueIndexByIdentifiers, updateTestScenarioModel]
+    [isBackground, retrieveFactMappingValueIndexByIdentifiers, updateTestScenarioModel]
   );
 
   const getNextAvailablePrefixedName = useCallback(
@@ -550,7 +623,7 @@ function TestScenarioTable({
   const determineNewColumnTargetIndex = useCallback(
     (
       factMappings: SceSim__FactMappingType[],
-      isDirectionRight: boolean,
+      insertDirection: InsertRowColumnsDirection,
       selectedColumnIndex: number,
       selectedColumnGroupType: string,
       selectedFactMapping: SceSim__FactMappingType
@@ -563,7 +636,7 @@ function TestScenarioTable({
         selectedColumnGroupType === TestScenarioTableColumnFieldGroup.EXPECT ||
         selectedColumnGroupType === TestScenarioTableColumnFieldGroup.GIVEN
       ) {
-        if (isDirectionRight) {
+        if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
           return selectedColumnIndex + 1;
         } else {
           return selectedColumnIndex;
@@ -572,7 +645,7 @@ function TestScenarioTable({
 
       let newColumnTargetColumn = -1;
 
-      if (isDirectionRight) {
+      if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
         for (let i = selectedColumnIndex; i < factMappings.length; i++) {
           const currentFM = factMappings[i];
           if (
@@ -597,7 +670,9 @@ function TestScenarioTable({
             currentFM.factIdentifier.name?.__$$text === instanceName &&
             currentFM.factIdentifier.className?.__$$text === instanceType
           ) {
-            continue;
+            if (i == 0) {
+              newColumnTargetColumn = 0;
+            }
           } else {
             newColumnTargetColumn = i + 1;
             break;
@@ -636,9 +711,11 @@ function TestScenarioTable({
           ) ?? -1
         );
       }
-      return originalSelectedColumnIndex;
+
+      /* In case of background, the rowIndex column is not present */
+      return originalSelectedColumnIndex - (isBackground ? 1 : 0);
     },
-    [tableColumns.instancesGroup]
+    [isBackground, tableColumns.instancesGroup]
   );
 
   /**
@@ -661,23 +738,22 @@ function TestScenarioTable({
         args.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
 
       updateTestScenarioModel((prevState) => {
-        const factMappingList =
-          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
+        const factMappingList = retrieveModelDescriptor(prevState.ScenarioSimulationModel).factMappings.FactMapping!;
         const selectedColumnIndex = determineSelectedColumnIndex(factMappingList, args.currentIndex, isInstance);
 
         /* Creating the new FactMapping based on the original selected column's FactMapping */
         const selectedColumnFactMapping = factMappingList[selectedColumnIndex];
         const targetColumnIndex = determineNewColumnTargetIndex(
           factMappingList,
-          args.beforeIndex === args.currentIndex,
+          args.insertDirection,
           selectedColumnIndex,
           args.groupType,
           selectedColumnFactMapping
         );
 
-        const instanceDefaultNames = prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings
-          .FactMapping!.filter((factMapping) => factMapping.factIdentifier.name!.__$$text.startsWith("INSTANCE-"))
-          .map((factMapping) => factMapping.factIdentifier.name!.__$$text);
+        const instanceDefaultNames = factMappingList
+          .filter((factMapping) => factMapping.factAlias!.__$$text.startsWith("INSTANCE-"))
+          .map((factMapping) => factMapping.factAlias!.__$$text);
 
         const newFactMapping = {
           expressionIdentifier: {
@@ -707,17 +783,17 @@ function TestScenarioTable({
 
         /* Cloning the FactMapping list and putting the new one in the user defined index */
         const deepClonedFactMappings = JSON.parse(
-          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping)
+          JSON.stringify(retrieveModelDescriptor(prevState.ScenarioSimulationModel).factMappings.FactMapping)
         );
         deepClonedFactMappings.splice(targetColumnIndex, 0, newFactMapping);
 
         /* Creating and adding a new FactMappingValue (cell) in every row, as a consequence of the new FactMapping (column) 
            we're going to introduce. The FactMappingValue will be linked with its related FactMapping via expressionIdentifier
            and factIdentier data. That means, the column index of new FactMappingValue could be different in other Scenario (rows) */
-        const deepClonedScenarios: SceSim__ScenarioType[] = JSON.parse(
-          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimData.Scenario)
+        const deepClonedRowsData: SceSim__ScenarioType[] = JSON.parse(
+          JSON.stringify(retrieveRowsDataFromModel(prevState.ScenarioSimulationModel))
         );
-        deepClonedScenarios.forEach((scenario) => {
+        deepClonedRowsData.forEach((scenario) => {
           scenario.factMappingValues.FactMappingValue!.splice(args.beforeIndex + 1, 0, {
             expressionIdentifier: {
               name: { __$$text: newFactMapping.expressionIdentifier.name.__$$text },
@@ -737,11 +813,29 @@ function TestScenarioTable({
             simulation: {
               scesimModelDescriptor: {
                 factMappings: {
-                  FactMapping: deepClonedFactMappings,
+                  FactMapping: isBackground
+                    ? prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping
+                    : deepClonedFactMappings,
                 },
               },
               scesimData: {
-                Scenario: deepClonedScenarios,
+                Scenario: isBackground
+                  ? prevState.ScenarioSimulationModel.simulation.scesimData.Scenario
+                  : deepClonedRowsData,
+              },
+            },
+            background: {
+              scesimModelDescriptor: {
+                factMappings: {
+                  FactMapping: isBackground
+                    ? deepClonedFactMappings
+                    : prevState.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping,
+                },
+              },
+              scesimData: {
+                BackgroundData: isBackground
+                  ? deepClonedRowsData
+                  : prevState.ScenarioSimulationModel.background.scesimData.BackgroundData,
               },
             },
           },
@@ -754,6 +848,7 @@ function TestScenarioTable({
       determineNewColumnTargetIndex,
       determineSelectedColumnIndex,
       getNextAvailablePrefixedName,
+      isBackground,
       updateTestScenarioModel,
     ]
   );
@@ -768,8 +863,7 @@ function TestScenarioTable({
           args.groupType === TestScenarioTableColumnInstanceGroup.EXPECT ||
           args.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
 
-        const factMappings =
-          prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
+        const factMappings = retrieveModelDescriptor(prevState.ScenarioSimulationModel).factMappings.FactMapping!;
         const columnIndexToRemove = determineSelectedColumnIndex(factMappings, args.columnIndex + 1, isInstance);
 
         /* Retriving the FactMapping (Column) to be removed). If the user selected a single column, it finds the exact
@@ -794,11 +888,11 @@ function TestScenarioTable({
                 }
               })
               .filter((item) => isNumber(item.factMappingIndex))
-          : [{ factMappingIndex: args.columnIndex + 1, factMapping: factMappingToRemove }];
+          : [{ factMappingIndex: args.columnIndex + columnIndexStart, factMapping: factMappingToRemove }];
 
         /* Cloning the FactMappings list (Columns) and and removing the FactMapping (Column) at given index */
         const deepClonedFactMappings = JSON.parse(
-          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping)
+          JSON.stringify(retrieveModelDescriptor(prevState.ScenarioSimulationModel).factMappings.FactMapping)
         );
         deepClonedFactMappings.splice(
           allFactMappingWithIndexesToRemove[0].factMappingIndex,
@@ -807,20 +901,20 @@ function TestScenarioTable({
 
         /* Cloning the Scenario List (Rows) and finding the Cell(s) to remove accordingly to the factMapping data of 
           the removed columns */
-        const deepClonedScenarios = JSON.parse(
-          JSON.stringify(prevState.ScenarioSimulationModel.simulation.scesimData.Scenario ?? [])
+        const deepClonedRowsData: SceSim__ScenarioType[] = JSON.parse(
+          JSON.stringify(retrieveRowsDataFromModel(prevState.ScenarioSimulationModel) ?? [])
         );
-        deepClonedScenarios.forEach((scenario: SceSim__ScenarioType) => {
+        deepClonedRowsData.forEach((rowData: SceSim__ScenarioType | SceSim__BackgroundDataType) => {
           allFactMappingWithIndexesToRemove.forEach((itemToRemove) => {
             const factMappingValueColumnIndexToRemove = retrieveFactMappingValueIndexByIdentifiers(
-              scenario.factMappingValues.FactMappingValue!,
+              rowData.factMappingValues.FactMappingValue!,
               itemToRemove.factMapping!.factIdentifier,
               itemToRemove.factMapping!.expressionIdentifier
             )!;
 
             return {
               factMappingValues: {
-                FactMappingValue: scenario.factMappingValues.FactMappingValue!.splice(
+                FactMappingValue: rowData.factMappingValues.FactMappingValue!.splice(
                   factMappingValueColumnIndexToRemove,
                   1
                 ),
@@ -835,11 +929,29 @@ function TestScenarioTable({
             simulation: {
               scesimModelDescriptor: {
                 factMappings: {
-                  FactMapping: deepClonedFactMappings,
+                  FactMapping: isBackground
+                    ? prevState.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping
+                    : deepClonedFactMappings,
                 },
               },
               scesimData: {
-                Scenario: deepClonedScenarios,
+                Scenario: isBackground
+                  ? prevState.ScenarioSimulationModel.simulation.scesimData.Scenario
+                  : deepClonedRowsData,
+              },
+            },
+            background: {
+              scesimModelDescriptor: {
+                factMappings: {
+                  FactMapping: isBackground
+                    ? deepClonedFactMappings
+                    : prevState.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping,
+                },
+              },
+              scesimData: {
+                BackgroundData: isBackground
+                  ? deepClonedRowsData
+                  : prevState.ScenarioSimulationModel.background.scesimData.BackgroundData,
               },
             },
           },
@@ -849,6 +961,7 @@ function TestScenarioTable({
     [
       TestScenarioTableColumnInstanceGroup,
       determineSelectedColumnIndex,
+      isBackground,
       retrieveFactMappingValueIndexByIdentifiers,
       updateTestScenarioModel,
     ]
@@ -859,6 +972,9 @@ function TestScenarioTable({
    */
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
+      if (isBackground) {
+        throw new Error("Impossible state. Background table can have a single row only");
+      }
       updateTestScenarioModel((prevState) => {
         /* Creating a new Scenario (Row) composed by a list of FactMappingValues. The list order is not relevant. */
         const factMappings =
@@ -910,6 +1026,9 @@ function TestScenarioTable({
    */
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
+      if (isBackground) {
+        throw new Error("Impossible state. Background table can have a single row only");
+      }
       updateTestScenarioModel((prevState) => {
         /* Just updating the Scenario List (Rows) cloning the current List and removing the row at the given rowIndex */
         const deepClonedScenarios = JSON.parse(
@@ -939,6 +1058,9 @@ function TestScenarioTable({
    */
   const onRowDuplicated = useCallback(
     (args: { rowIndex: number }) => {
+      if (isBackground) {
+        throw new Error("Impossible state. Background table can have a single row only");
+      }
       updateTestScenarioModel((prevState) => {
         /* It simply clones a Scenario (Row) and adds it in a current-cloned Scenario list */
         const clonedFactMappingValues = JSON.parse(
@@ -995,10 +1117,10 @@ function TestScenarioTable({
         operationConfig={simulationOperationConfig}
         resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
         rows={tableRows}
-        scrollableParentRef={tableScrollableElementRef.current}
-        shouldRenderRowIndexColumn={true}
+        scrollableParentRef={scrollableParentRef}
+        shouldRenderRowIndexColumn={!isBackground}
         shouldShowColumnsInlineControls={true}
-        shouldShowRowsInlineControls={true}
+        shouldShowRowsInlineControls={!isBackground}
       />
     </div>
   );

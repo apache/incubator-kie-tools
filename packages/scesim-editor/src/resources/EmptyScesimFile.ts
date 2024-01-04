@@ -139,6 +139,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           <className>java.lang.Void</className>
           <factAlias>INSTANCE-1</factAlias>
           <expressionAlias>PROPERTY</expressionAlias>
+          <columnWidth>150</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
       </factMappings>
