@@ -46,7 +46,7 @@
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-table": "^4.112.39",
-    "@types/jest": "^29.5.7",
+    "@types/jest": "^29.5.11",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "@types/react-router": "^5.1.14",
