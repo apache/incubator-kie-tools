@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 
 import * as ReactTable from "react-table";
 import _, { isNumber } from "lodash";
@@ -67,7 +67,7 @@ function TestScenarioTable({
 }: {
   assetType: string;
   tableData: SceSim__simulationType | SceSim__backgroundType;
-  scrollableParentRef: React.MutableRefObject<HTMLDivElement | null>;
+  scrollableParentRef: React.RefObject<HTMLElement>;
   updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   enum TestScenarioTableColumnHeaderGroup {
