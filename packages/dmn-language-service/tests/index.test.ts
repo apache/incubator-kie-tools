@@ -21,7 +21,18 @@ import { DmnDocumentData, DmnLanguageService, DmnLanguageServiceImportedModelRes
 import { readFileSync } from "fs";
 import * as __path from "path";
 import { DmnDecision } from "../src/DmnDecision";
-import { decisions, example1, example2, model, nested, recursive, simple15 } from "./fixtures/fileContents";
+import { decisions, deepNested, deepRecursive, example1, example2, model, simple15 } from "./fixtures/fileContents";
+
+class NoErrorThrownError extends Error {}
+
+const getError = async <TError>(call: () => unknown): Promise<TError> => {
+  try {
+    await call();
+    throw new NoErrorThrownError();
+  } catch (error: unknown) {
+    return error as TError;
+  }
+};
 
 const tests = [
   {
@@ -30,26 +41,45 @@ const tests = [
       [
         "fixtures/model.dmn",
         [
-          { content: recursive(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/recursive.dmn" },
-          { content: nested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/nested.dmn" },
+          { content: deepRecursive(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/deep/recursive.dmn" },
+          { content: deepNested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/deep/nested.dmn" },
         ],
       ],
       [
-        "fixtures/recursive.dmn",
-        [{ content: nested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/nested.dmn" }],
+        "fixtures/deep/recursive.dmn",
+        [{ content: deepNested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/deep/nested.dmn" }],
       ],
     ]),
   },
   {
-    normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/recursive.dmn",
+    normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/deep/recursive.dmn",
     expected: new Map([
       [
-        "fixtures/recursive.dmn",
-        [{ content: nested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/nested.dmn" }],
+        "fixtures/deep/recursive.dmn",
+        [{ content: deepNested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/deep/nested.dmn" }],
       ],
     ]),
   },
-  { normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/nested.dmn", expected: new Map() },
+  {
+    normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/simple-1.5.dmn",
+    expected: new Map([
+      [
+        "fixtures/simple-1.5.dmn",
+        [{ content: model(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/model.dmn" }],
+      ],
+      [
+        "fixtures/model.dmn",
+        [
+          { content: deepRecursive(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/deep/recursive.dmn" },
+          { content: deepNested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/deep/nested.dmn" },
+        ],
+      ],
+      [
+        "fixtures/deep/recursive.dmn",
+        [{ content: deepNested(), normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/deep/nested.dmn" }],
+      ],
+    ]),
+  },
 ];
 
 const getModelContent = (args: {
@@ -166,6 +196,42 @@ describe("DmnLanguageService", () => {
           ],
         ])
       );
+    });
+
+    describe("invelid model resources", () => {
+      it("content", async () => {
+        const dmnLs = new DmnLanguageService({
+          getModelContent,
+        });
+
+        const dmnModelResources = [
+          { content: "aaa", normalizedPosixPathRelativeToWorkspaceRoot: "fixtures/model.dmn" },
+        ];
+
+        const error: Error = await getError(async () => await dmnLs.getImportedModels(dmnModelResources));
+
+        expect(error).not.toBeInstanceOf(NoErrorThrownError);
+        expect(error.message).toEqual(`
+DMN LANGUAGE SERVICE - getImportedModels: Error while getting imported models from model resources.
+Tried to use the following model resources: ${JSON.stringify(dmnModelResources)}
+Error details: SyntaxError: about:blank:1:3: text data outside of root node.`);
+      });
+
+      it("normalizedPosixPathRelativeToWorkspaceRoot", async () => {
+        const dmnLs = new DmnLanguageService({
+          getModelContent,
+        });
+
+        const dmnModelResources = [{ content: model(), normalizedPosixPathRelativeToWorkspaceRoot: "aaa" }];
+        const fsAbsoluteModelPath = __path.resolve(__dirname, "deep/recursive.dmn".split("/").join(__path.sep));
+
+        const error: Error = await getError(async () => await dmnLs.getImportedModels(dmnModelResources));
+        expect(error).not.toBeInstanceOf(NoErrorThrownError);
+        expect(error.message).toEqual(`
+DMN LANGUAGE SERVICE - getImportedModels: Error while getting imported models from model resources.
+Tried to use the following model resources: ${JSON.stringify(dmnModelResources)}
+Error details: Error: ENOENT: no such file or directory, open '${fsAbsoluteModelPath}'`);
+      });
     });
   });
 

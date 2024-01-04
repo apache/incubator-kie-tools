@@ -71,22 +71,14 @@ export class DmnLanguageService {
       // Get the list of imported models from the model resource
       const importedModels = importedModelsByModel.get(modelResource.normalizedPosixPathRelativeToWorkspaceRoot);
 
-      // Map the imported model
-      if (!importedModels) {
-        importedModelsByModel.set(modelResource.normalizedPosixPathRelativeToWorkspaceRoot, [
-          importedModelNormalizedPosixPathRelativeToWorkspaceRoot,
-        ]);
-        return importedModelNormalizedPosixPathRelativeToWorkspaceRoot;
-      }
-
       // Check if the imported model was already mapped
-      if (importedModels.find((e) => e === importedModelNormalizedPosixPathRelativeToWorkspaceRoot)) {
+      if (importedModels && importedModels.find((e) => e === importedModelNormalizedPosixPathRelativeToWorkspaceRoot)) {
         return [];
       }
 
       // Map the imported model
       importedModelsByModel.set(modelResource.normalizedPosixPathRelativeToWorkspaceRoot, [
-        ...importedModels,
+        ...(importedModels ?? []),
         importedModelNormalizedPosixPathRelativeToWorkspaceRoot,
       ]);
       return importedModelNormalizedPosixPathRelativeToWorkspaceRoot;
@@ -152,7 +144,7 @@ export class DmnLanguageService {
       );
     } catch (error) {
       throw new Error(`
-DMN LANGUAGE SERVICE - getImportedModels: Error while using model resources.
+DMN LANGUAGE SERVICE - getImportedModels: Error while getting imported models from model resources.
 Tried to use the following model resources: ${JSON.stringify(modelResources)}
 Error details: ${error}`);
     }
