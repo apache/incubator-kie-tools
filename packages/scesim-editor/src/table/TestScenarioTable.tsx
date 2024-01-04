@@ -704,17 +704,8 @@ function TestScenarioTable({
    */
   const determineSelectedColumnIndex = useCallback(
     (factMappings: SceSim__FactMappingType[], originalSelectedColumnIndex: number, isInstance: boolean) => {
-      console.log("ORIGINAL: " + originalSelectedColumnIndex);
       if (isInstance) {
         const instanceSectionID = tableColumns.instancesGroup[originalSelectedColumnIndex - 1].id;
-        console.log(
-          "RETURNED: " +
-            factMappings.findIndex(
-              (factMapping) =>
-                factMapping.expressionIdentifier.type?.__$$text + "." + factMapping.factIdentifier.name!.__$$text ===
-                instanceSectionID
-            )
-        );
 
         return (
           factMappings.findIndex(
@@ -724,8 +715,6 @@ function TestScenarioTable({
           ) ?? -1
         );
       }
-
-      console.log("RETURNED: " + (originalSelectedColumnIndex - (isBackground ? 1 : 0)));
 
       /* In case of background, the rowIndex column is not present */
       return originalSelectedColumnIndex - (isBackground ? 1 : 0);
