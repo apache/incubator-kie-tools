@@ -19,18 +19,19 @@
 
 import { GitHubPageType } from "./app/github/GitHubPageType";
 import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit";
-import { iframeContainer, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
+import { FileInfo, iframeContainer, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { mainContainer, runAfterUriChange } from "./app/utils";
 import { Dependencies } from "./app/Dependencies";
 import * as ReactDOM from "react-dom";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import "../resources/style.css";
 import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";
 import { ExternalEditorManager } from "./ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
 import { renderOpenRepoInExternalEditorApp } from "./app/components/openRepoInExternalEditor/openRepoInExternalEditorApp";
+import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 /**
  * Starts a Kogito extension.
@@ -40,6 +41,7 @@ import { renderOpenRepoInExternalEditorApp } from "./app/components/openRepoInEx
  *  @param args.githubAuthTokenCookieName The name of the cookie that will hold a GitHub PAT for your extension.
  *  @param args.editorEnvelopeLocator The file extension mapping to the provided Editors.
  *  @param args.externalEditorManager The implementation of ExternalEditorManager for your extension.
+ *  @param args.customChannelApiImpl Optional channelApi implementation.
  */
 export function startExtension(args: {
   name: string;
@@ -47,12 +49,21 @@ export function startExtension(args: {
   githubAuthTokenCookieName: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   externalEditorManager?: ExternalEditorManager;
+  getCustomChannelApiImpl?: (
+    pageType: GitHubPageType,
+    fileInfo: FileInfo,
+    stateControl: StateControl
+  ) => KogitoEditorChannelApi | undefined;
 }) {
   const logger = new Logger(args.name);
   const resourceContentServiceFactory = new ResourceContentServiceFactory();
   const dependencies = new Dependencies();
 
-  const runInit = () =>
+  const runInit = () => {
+    const pageType = discoverCurrentGitHubPageType();
+    const fileInfo = extractFileInfoFromUrl();
+    const stateControl = new StateControl();
+
     init({
       id: chrome.runtime.id,
       logger: logger,
@@ -62,7 +73,10 @@ export function startExtension(args: {
       editorEnvelopeLocator: args.editorEnvelopeLocator,
       resourceContentServiceFactory: resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager,
+      stateControl,
+      customChannelApiImpl: args.getCustomChannelApiImpl?.(pageType, fileInfo, stateControl),
     });
+  };
 
   runAfterUriChange(logger, () => setTimeout(runInit, 0));
   setTimeout(runInit, 0);

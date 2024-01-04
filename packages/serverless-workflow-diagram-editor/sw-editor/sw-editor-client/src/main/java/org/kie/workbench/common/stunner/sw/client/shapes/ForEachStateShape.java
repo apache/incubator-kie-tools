@@ -6,27 +6,28 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
+import io.crysknife.ui.translation.client.TranslationService;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.BottomDepiction;
 import org.kie.workbench.common.stunner.sw.client.shapes.icons.CornerIcon;
+import org.kie.workbench.common.stunner.sw.client.shapes.icons.DataDepiction;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.WorkflowTimeouts;
@@ -37,8 +38,10 @@ import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.F
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.PARALLEL;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.SEQUENTIAL;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.SERVICE;
+import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.SUBFLOW;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition.BOTTOM_FROM_RIGHT_TOP_CORNER;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition.LEFT_FROM_RIGHT_TOP_CORNER;
+import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition.LEFT_TOP_CORNER;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition.RIGHT_BOTTOM;
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPosition.RIGHT_TOP_CORNER;
 import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.TIMEOUT_ACTION;
@@ -80,6 +83,10 @@ public class ForEachStateShape extends StateShape implements HasActions,
         }
 
         getView().addChild(new BottomDepiction(isDefaultMode(state.getMode()) ? PARALLEL : SEQUENTIAL));
+
+        if (hasSubflows(state.getActions())) {
+            getView().addChild(new DataDepiction(SUBFLOW, LEFT_TOP_CORNER));
+        }
     }
 
     @Override

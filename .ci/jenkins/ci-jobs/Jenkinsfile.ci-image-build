@@ -1,0 +1,147 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent any
+
+    parameters {
+        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
+    }
+
+    environment {
+        IMAGE_ACCOUNT = 'quay.io/kie-tools'
+        IMAGE_NAME = 'kie-tools-ci-build'
+        IMAGE_NAME_TAG = "${IMAGE_ACCOUNT}/${IMAGE_NAME}:${params.IMAGE_TAG}"
+        DOCKER_CONFIG = "${WORKSPACE}/.docker"
+    }
+
+    options {
+        timeout(time: 240, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Clean workspace') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        githubUtils.checkoutRepoSquashedMerge(
+                            env.CHANGE_AUTHOR,
+                            env.CHANGE_BRANCH,
+                            "https://github.com/${env.CHANGE_AUTHOR}/${pipelineVars.githubRepositoryName}.git",
+                            env.CHANGE_TARGET ?: env.BRANCH_NAME,
+                            "https://github.com/${pipelineVars.githubRepositoryOrg}/${pipelineVars.githubRepositoryName}.git",
+                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Check image tag already exists') {
+            steps {
+                script {
+                    IMAGE_EXISTS = dockerUtils.checkImageExistsInRegistry(
+                        "${IMAGE_ACCOUNT}",
+                        "${IMAGE_NAME}",
+                        "${params.IMAGE_TAG}",
+                        "${pipelineVars.quayPushCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        // Trigger by PR = Tag is GIT commit hash and it has expiration = 1d
+        // Trigger by Branch = Tags are GIT commit and latest and they have no expiration
+        stage('Build image') {
+            when {
+                expression { !IMAGE_EXISTS }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        if (!env.CHANGE_ID && env.BRANCH_NAME == 'main') {
+                            sh """
+                            docker build -t ${IMAGE_NAME_TAG} -f .ci/kie-tools-ci-build.Dockerfile .
+                            docker tag ${IMAGE_NAME_TAG} ${IMAGE_ACCOUNT}/${IMAGE_NAME}:latest
+                            """
+                            IMAGE_TAGS = "${params.IMAGE_TAG} latest"
+                        } else {
+                            sh "docker build -t ${IMAGE_NAME_TAG} --label 'quay.expires-after=1d' -f .ci/kie-tools-ci-build.Dockerfile ."
+                            IMAGE_TAGS = "${params.IMAGE_TAG}"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Push image to registry') {
+            when {
+                expression { !IMAGE_EXISTS }
+            }
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${IMAGE_ACCOUNT}",
+                        "${IMAGE_NAME}",
+                        "${IMAGE_TAGS}",
+                        "${pipelineVars.quayPushCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Test built image') {
+            agent {
+                docker {
+                    image env.IMAGE_NAME_TAG
+                }
+            }
+            steps {
+                echo 'Test tools'
+                sh '''#!/bin/bash -el
+                    java -version
+                    mvn --version
+                    node --version
+                    npm --version
+                    pnpm --version
+                    go version
+                '''.trim()
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

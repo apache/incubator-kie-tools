@@ -1,7 +1,7 @@
 {
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "lib": ["es6", "dom", "es2018.promise", "es2019", "esnext"],
+    "lib": ["es6", "dom", "es2018.promise", "es2019", "esnext", "DOM.Iterable"],
     "target": "es5",
     "declaration": true,
     "declarationMap": true,

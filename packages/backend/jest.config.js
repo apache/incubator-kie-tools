@@ -32,6 +32,7 @@ module.exports = {
       },
     ],
   },
+  transformIgnorePatterns: [],
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
   },

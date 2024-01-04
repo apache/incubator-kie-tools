@@ -79,7 +79,7 @@ export function DevDeploymentsConfirmDeleteModal() {
     setLoading(true);
     const deleteStarted = await devDeployments.deleteDeployments({
       authSession,
-      resourceNames: devDeployments.confirmDeleteModalState.resourceNames,
+      resources: devDeployments.confirmDeleteModalState.resources,
     });
     await delay(600);
     setLoading(false);
@@ -128,15 +128,17 @@ export function DevDeploymentsConfirmDeleteModal() {
       {`This action is not reversible and links you shared with other people will not be available anymore.`}
       <br />
       <br />
-      {`The following deployments will be deleted:`}
+      {`The following resources will be deleted:`}
       <br />
       <br />
       {devDeployments.confirmDeleteModalState.isOpen && (
         <ul>
-          {devDeployments.confirmDeleteModalState.resourceNames.map((resourceName) => {
+          {devDeployments.confirmDeleteModalState.resources.map((resource) => {
             return (
-              <li key={resourceName}>
-                <b>- {resourceName}</b>
+              <li key={`${resource.kind}: ${resource.metadata?.name}`}>
+                <b>
+                  - {resource.kind}: {resource.metadata?.name}
+                </b>
               </li>
             );
           })}

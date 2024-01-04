@@ -23,18 +23,16 @@ package org.kie.workbench.common.stunner.client.widgets.editor;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwt.core.client.JavaScriptException;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
+import io.crysknife.client.ManagedInstance;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import jsinterop.base.Js;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
@@ -42,6 +40,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.api.JsCanvasWrapper;
 import org.kie.workbench.common.stunner.core.client.api.JsStunnerSession;
 import org.kie.workbench.common.stunner.core.client.api.JsWindow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -67,10 +66,10 @@ import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 @Dependent
 public class StunnerEditor {
 
-    ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
-    ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
-    ClientTranslationService translationService;
-    ErrorPage errorPage;
+    private final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
+    private final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
+    private final ClientTranslationService translationService;
+    private final ErrorPage errorPage;
     private boolean hasErrors;
 
     private SessionDiagramPresenter diagramPresenter;
@@ -78,8 +77,6 @@ public class StunnerEditor {
     private Consumer<DiagramParsingException> parsingExceptionProcessor;
     private Consumer<Throwable> exceptionProcessor;
     private AlertsControl<AbstractCanvas> alertsControl;
-
-    private HTMLDivElement rootContainer;
 
     // CDI proxy.
     public StunnerEditor() {
@@ -100,13 +97,6 @@ public class StunnerEditor {
         };
         this.exceptionProcessor = e -> {
         };
-    }
-
-    HTMLDivElement getRootContainer() {
-        if (null == rootContainer) {
-            rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
-        }
-        return rootContainer;
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -167,29 +157,29 @@ public class StunnerEditor {
                 callback.onError(error);
             }
         });
-        removeAllChildren(getRootContainer());
 
-        getRootContainer().appendChild(diagramPresenter.getView().getElement());
-
-        addResizeListener();
-
-        resize();
+        setupRootContainer();
     }
 
-    void addResizeListener() {
+    protected void setupRootContainer() {
+        HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
+        removeAllChildren(rootContainer);
+
+        rootContainer.appendChild(diagramPresenter.getView().getElement());
         DomGlobal.window.addEventListener("resize", evt -> {
-            resizeTo(DomGlobal.window.innerWidth, DomGlobal.window.innerHeight);
+            resizeTo(rootContainer, DomGlobal.window.innerWidth, DomGlobal.window.innerHeight);
         });
+        resize(rootContainer);
     }
 
-    void resize() {
-        resizeTo(DomGlobal.document.body.clientWidth,
-                 DomGlobal.document.body.clientHeight);
+    private void resize(HTMLDivElement rootContainer) {
+        resizeTo(rootContainer, DomGlobal.document.body.clientWidth,
+                DomGlobal.document.body.clientHeight);
     }
 
-    private void resizeTo(int width,
+    private void resizeTo(HTMLDivElement rootContainer, int width,
                           int height) {
-        CSSStyleDeclaration style = getRootContainer().style;
+        CSSStyleDeclaration style = rootContainer.style;
         style.width = WidthUnionType.of(width + "px");
         style.height = HeightUnionType.of(height + "px");
     }
@@ -197,7 +187,7 @@ public class StunnerEditor {
     @SuppressWarnings("all")
     private void initializeJsSession(AbstractSession session) {
         JsStunnerSession jssession = new JsStunnerSession(session);
-        JsWindow.editor.session = jssession;
+        JsWindow.getEditor().setSession(jssession);
         initializeJsCanvas(session);
     }
 
@@ -206,14 +196,15 @@ public class StunnerEditor {
         LienzoCanvas canvas = (LienzoCanvas) session.getCanvasHandler().getCanvas();
         LienzoPanel panel = (LienzoPanel) canvas.getView().getPanel();
         LienzoBoundsPanel lienzoPanel = panel.getView();
-        JsCanvas jsCanvas = new JsCanvas(lienzoPanel, lienzoPanel.getLayer(), new StunnerStateApplier() {
+        JsCanvas jsCanvas = JsCanvas.getInstance().init(lienzoPanel, lienzoPanel.getLayer(), new StunnerStateApplier() {
             @Override
             public Shape getShape(String uuid) {
                 return canvas.getShape(uuid);
             }
         });
-        JsWindow.canvas = jsCanvas;
-        JsWindow.editor.canvas = jsCanvas;
+        JsCanvasWrapper jsCanvasWrapper = new JsCanvasWrapper();
+        JsWindow.setCanvas(jsCanvasWrapper);
+        JsWindow.getEditor().setCanvas(jsCanvasWrapper);
     }
 
     public int getCurrentContentHash() {
@@ -232,7 +223,7 @@ public class StunnerEditor {
         if (throwable instanceof DiagramParsingException) {
             final DiagramParsingException diagramParsingException = (DiagramParsingException) throwable;
             parsingExceptionProcessor.accept(diagramParsingException);
-            JavaScriptException javaScriptException = Js.uncheckedCast(diagramParsingException.getCause());
+            Exception javaScriptException = Js.uncheckedCast(diagramParsingException.getCause());
             if (javaScriptException != null) {
                 message = error.getMessage() + "\r\n";
                 message += javaScriptException.getLocalizedMessage();
@@ -256,9 +247,14 @@ public class StunnerEditor {
                 (diagramPresenter.getView() != null)) {
             addError(message);
         } else {
-            removeAllChildren(getRootContainer());
-            getRootContainer().appendChild(Js.uncheckedCast(errorPage.getElement()));
+            clearRootAndDrawError();
         }
+    }
+
+    protected void clearRootAndDrawError() {
+        HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
+        removeAllChildren(rootContainer);
+        rootContainer.appendChild(errorPage.getElement());
     }
 
     public StunnerEditor close() {

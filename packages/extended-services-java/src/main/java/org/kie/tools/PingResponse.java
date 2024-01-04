@@ -21,44 +21,26 @@ package org.kie.tools;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 @ApplicationScoped
-@JsonPropertyOrder({ "version", "proxy", "kieSandboxUrl", "started" })
+@JsonPropertyOrder({ "version", "started" })
 public class PingResponse {
 
     private final String version;
-    private final ProxyConfig proxyConfig;
-    private final String kieSandboxUrl;
     private final boolean started;
 
-    @Inject
-    public PingResponse(@ConfigProperty(name = "extended.services.version") String version,
-                        ProxyConfig proxyConfig,
-                        @ConfigProperty(name = "kie.sandbox.url") String kieSandboxUrl) {
+    public PingResponse(@ConfigProperty(name = "extendedServicesJava.version")final String version) {
         this.version = version;
-        this.proxyConfig = proxyConfig;
-        this.kieSandboxUrl = kieSandboxUrl;
         this.started = true;
     }
 
     @JsonProperty("version")
     public String getVersion() {
         return version;
-    }
-
-    @JsonProperty("proxy")
-    public ProxyConfig getProxyConfig() {
-        return proxyConfig;
-    }
-
-    @JsonProperty("kieSandboxUrl")
-    public String getKieSandboxUrl() {
-        return kieSandboxUrl;
     }
 
     @JsonProperty("started")

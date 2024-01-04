@@ -24,20 +24,28 @@ import * as ReactTable from "react-table";
 import {
   BeeTableCellCoordinates,
   BeeTableCoordinatesContextProvider,
+  useBeeTableSelectableCell,
   useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
-import { useBeeTableSelectableCell } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { InsertRowColumnsDirection } from "../../api";
 
 export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnAdded?: (args: {
+    beforeIndex: number;
+    currentIndex: number;
+    groupType: string | undefined;
+    columnsCount: number;
+    insertDirection: InsertRowColumnsDirection;
+  }) => void;
   className: string;
   thProps: Partial<ReactTable.TableHeaderProps>;
   onClick?: React.MouseEventHandler;
   isLastLevelColumn: boolean;
   rowIndex: number;
   rowSpan: number;
+  columnKey: string;
   columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
   shouldShowColumnsInlineControls: boolean;
@@ -61,6 +69,7 @@ export function BeeTableTh<R extends object>({
   thProps,
   onClick,
   columnIndex,
+  columnKey,
   rowIndex,
   rowSpan,
   groupType,
@@ -79,7 +88,13 @@ export function BeeTableTh<R extends object>({
       }
 
       // This index doesn't take into account the rowIndex column, so we actually need to subtract 1.
-      onColumnAdded?.({ beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex, groupType: groupType });
+      onColumnAdded?.({
+        beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex,
+        groupType: groupType,
+        columnsCount: 1,
+        insertDirection: InsertRowColumnsDirection.AboveOrRight,
+        currentIndex: columnIndex,
+      });
 
       if (hoverInfo.part === "left") {
         setHoverInfo({ isHovered: false });
@@ -93,10 +108,14 @@ export function BeeTableTh<R extends object>({
   const { beeGwtService } = useBoxedExpressionEditor();
 
   useEffect(() => {
-    if (isActive && column.isRowIndexColumn) {
-      beeGwtService?.selectObject("");
+    if (isActive) {
+      if (column.isRowIndexColumn) {
+        beeGwtService?.selectObject("");
+      } else {
+        beeGwtService?.selectObject(columnKey);
+      }
     }
-  }, [beeGwtService, isActive]);
+  }, [beeGwtService, column.isRowIndexColumn, columnKey, isActive]);
 
   const _thRef = useRef<HTMLTableCellElement>(null);
   const thRef = forwardRef ?? _thRef;

@@ -1,0 +1,88 @@
+# CORS Proxy component
+# -- The CORS Proxy application name
+name: cors-proxy
+
+# @ignored
+replicaCount: 1
+
+# -- Image source configuration for the CORS Proxy image
+image:
+  registry: quay.io
+  account: kie-tools
+  name: cors-proxy-image
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+# -- Pull secrets used when pulling CORS Proxy image
+imagePullSecrets: []
+
+# -- Overrides charts name
+nameOverride: ""
+# -- Overrides charts full name
+fullnameOverride: ""
+
+# -- CORS Proxy ServiceAccount configuration (https://kubernetes.io/docs/concepts/security/service-accounts/)
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+# @ignored
+podAnnotations: {}
+
+# @ignored
+podSecurityContext: {}
+
+# @ignored
+securityContext: {}
+
+# -- CORS Proxy Service configuration (https://kubernetes.io/docs/concepts/services-networking/service/)
+service:
+  type: ClusterIP
+  port: 8080
+  nodePort: ""
+
+# -- CORS Proxy Ingress configuration (https://kubernetes.io/docs/concepts/services-networking/ingress/)
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+# -- CORS Proxy OpenShift Route configuration (https://docs.openshift.com/container-platform/4.14/networking/routes/route-configuration.html)
+openshiftRoute:
+  enabled: false
+  annotations: {}
+  host: cors-proxy.{{ .Values.global.openshiftRouteDomain }}
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: None
+
+# @ignored
+resources: {}
+
+# -- CORS Proxy HorizontalPodAutoscaler configuration (https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# @ignored
+nodeSelector: {}
+
+# @ignored
+tolerations: []
+
+# @ignored
+affinity: {}
+
+# @ignored
+global:
+  openshiftRouteDomain: ocp-example.com

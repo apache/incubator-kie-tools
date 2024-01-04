@@ -20,7 +20,6 @@
 
 package org.kie.workbench.common.stunner.core.client.components.proxies;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +35,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.stubs.ManagedInstanceStub;
 
@@ -50,7 +50,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ElementProxyTest {
 
     private static final String SHAPE_UUID = "proxyShape1";
@@ -88,7 +88,6 @@ public class ElementProxyTest {
         commandFactories = new ManagedInstanceStub<>(commandFactory);
         when(proxyShape.getUUID()).thenReturn(SHAPE_UUID);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         view = spy(new ElementProxyViewMock<>());
         tested = spy(new ElementProxy(commandManager, selectionEvent, commandFactories, definitionUtils, sessionManager)
                              .setCanvasHandler(canvasHandler)

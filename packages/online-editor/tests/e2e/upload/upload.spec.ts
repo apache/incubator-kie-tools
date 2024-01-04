@@ -40,7 +40,7 @@ test.describe("Upload", () => {
       await upload.fileSelector(page.getByRole("button", { name: "Select files..." }), "testModel.dmn");
       await expect(page.getByRole("button", { name: "Decision Edit file name" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Decision Edit file name" })).toContainText("testModel");
-      await expect(kieSandbox.getEditor().getByRole("button", { name: "DMN Input Data" })).toBeAttached();
+      await expect(kieSandbox.getEditor().getByText("Test input data")).toBeAttached();
     });
 
     test("should upload file by 'Select folders'", async ({ page, upload }) => {

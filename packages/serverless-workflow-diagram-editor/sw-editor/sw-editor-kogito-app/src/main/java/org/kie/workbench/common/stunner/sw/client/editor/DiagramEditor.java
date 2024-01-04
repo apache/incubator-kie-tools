@@ -24,10 +24,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
@@ -35,9 +31,13 @@ import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
+import io.crysknife.ui.translation.client.TranslationService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
@@ -75,6 +75,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.bridge.Notification;
 
 @ApplicationScoped
+@JsType
 public class DiagramEditor {
 
     public static final String EDITOR_ID = "SWDiagramEditor";
@@ -264,7 +265,7 @@ public class DiagramEditor {
     }
 
     JsCanvas getJsCanvas() {
-        return Js.uncheckedCast(JsWindow.editor.canvas);
+        return Js.uncheckedCast(JsWindow.getEditor().getCanvas());
     }
 
     @SuppressWarnings("all")

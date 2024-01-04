@@ -20,25 +20,10 @@
 import { FsUsageCounter } from "./FsUsageCounter";
 import { FsFlushManager } from "./FsFlushManager";
 import { FsCache } from "./FsCache";
-
-interface PromiseImperativeHandle<T> {
-  promise: Promise<T>;
-  resolve: (value: T) => void;
-  reject: (err: unknown) => void;
-}
-
-function imperativePromiseHandle<T>(): PromiseImperativeHandle<T> {
-  let resolve: PromiseImperativeHandle<T>["resolve"] | undefined;
-  let reject: PromiseImperativeHandle<T>["reject"] | undefined;
-
-  const promise = new Promise<T>((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-
-  // Promise constructors run synchronously, so resolve and reject will always be assigned.
-  return { promise, resolve: resolve!, reject: reject! };
-}
+import {
+  imperativePromiseHandle,
+  PromiseImperativeHandle,
+} from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
 
 export class FsUnloadManager {
   constructor(

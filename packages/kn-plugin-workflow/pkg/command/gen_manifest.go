@@ -21,8 +21,8 @@ package command
 
 import (
 	"fmt"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 	"os"
@@ -36,17 +36,26 @@ func NewGenManifest() *cobra.Command {
 		Long: `
 	Generate a list of Operator manifests for a SonataFlow project.
 	By default, the manifests are generated in the ./manifests directory,
-	but they can be configured by --manifestPath flag.
+	but they can be configured by --custom-generated-manifest-dir flag.
 		 `,
 		Example: `
-	# Persist the generated Operator manifests on a default path (./manifests)
+	# Persist the generated Operator manifests on a default path (default ./manifests)
 	{{.Name}} gen-manifest
-	# Persist the generated Operator manifests on a specific path 
-	{{.Name}} gen-manifest --manifestPath=<full_directory_path>
-	# Specify a custom support files folder. 
-	{{.Name}} gen-manifest --supportFilesFolder=<full_directory_path>
+
+	# Persist the generated Operator manifests on a specific custom path
+	{{.Name}} gen-manifest --custom-generated-manifest-dir=<full_directory_path>
+
+	# Specify a custom subflows files directory. (default: ./subflows)
+	{{.Name}} gen-manifest --subflows-dir=<full_directory_path>
+
+	# Specify a custom support specs directory. (default: ./specs)
+	{{.Name}} gen-manifest --specs-dir=<full_directory_path>
+
+	# Specify a custom support schemas directory. (default: ./schemas)
+	{{.Name}} gen-manifest --schemas-dir=<full_directory_path>
+
 			 `,
-		PreRunE:    common.BindEnv("namespace", "manifestPath", "supportFilesFolder"),
+		PreRunE:    common.BindEnv("namespace", "custom-generated-manifests-dir", "specs-dir", "schemas-dir", "subflows-dir"),
 		SuggestFor: []string{"gen-manifests", "generate-manifest"}, //nolint:misspell
 	}
 
@@ -55,8 +64,10 @@ func NewGenManifest() *cobra.Command {
 	}
 
 	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
-	cmd.Flags().StringP("manifestPath", "c", "", "Target directory of your generated Operator manifests.")
-	cmd.Flags().StringP("supportFilesFolder", "s", "", "Specify a custom support files folder")
+	cmd.Flags().StringP("custom-generated-manifests-dir", "c", "", "Target directory of your generated Operator manifests.")
+	cmd.Flags().StringP("specs-dir", "p", "", "Specify a custom specs files directory")
+	cmd.Flags().StringP("subflows-dir", "s", "", "Specify a custom subflows files directory")
+	cmd.Flags().StringP("schemas-dir", "t", "", "Specify a custom schemas files directory")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -71,7 +82,7 @@ func generateManifestsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	fmt.Println("🛠️️ Generating a list of Operator manifests for a SonataFlow project...")
-	fmt.Printf("📂 Manifests will be generated in %s\n", cfg.ManifestPath)
+	fmt.Printf("📂 Manifests will be generated in %s\n", cfg.CustomGeneratedManifestDir)
 
 	if err := setupEnvironment(&cfg); err != nil {
 		return fmt.Errorf("❌ ERROR: setup environment: %w", err)
@@ -89,18 +100,37 @@ func generateManifestsCmd(cmd *cobra.Command, args []string) error {
 func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err error) {
 
 	cfg = DeployUndeployCmdConfig{
-		NameSpace:         viper.GetString("namespace"),
-		SupportFileFolder: viper.GetString("supportFilesFolder"),
-		ManifestPath:      viper.GetString("manifestPath"),
+		NameSpace:                  viper.GetString("namespace"),
+		SpecsDir:                   viper.GetString("specs-dir"),
+		SchemasDir:                 viper.GetString("schemas-dir"),
+		SubflowsDir:                viper.GetString("subflows-dir"),
+		CustomGeneratedManifestDir: viper.GetString("custom-generated-manifests-dir"),
 	}
 
-	if len(cfg.SupportFileFolder) == 0 {
+	if len(cfg.SubflowsDir) == 0 {
 		dir, err := os.Getwd()
-		cfg.SupportFileFolder = dir + "/specs"
+		cfg.SubflowsDir = dir + "/subflows"
 		if err != nil {
-			return cfg, fmt.Errorf("❌ ERROR: failed to get default support files folder: %w", err)
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default subflows workflow files folder: %w", err)
 		}
 	}
+
+	if len(cfg.SpecsDir) == 0 {
+		dir, err := os.Getwd()
+		cfg.SpecsDir = dir + "/specs"
+		if err != nil {
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default support specs files folder: %w", err)
+		}
+	}
+
+	if len(cfg.SchemasDir) == 0 {
+		dir, err := os.Getwd()
+		cfg.SchemasDir = dir + "/schemas"
+		if err != nil {
+			return cfg, fmt.Errorf("❌ ERROR: failed to get default support schemas files folder: %w", err)
+		}
+	}
+
 	dir, err := os.Getwd()
 	cfg.DefaultDashboardsFolder = dir + "/" + metadata.DashboardsDefaultDirName
 	if err != nil {
@@ -108,11 +138,11 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 	}
 
 	//setup manifest path
-	manifestDir, err := resolveManifestDir(cfg.ManifestPath)
+	manifestDir, err := resolveManifestDir(cfg.CustomGeneratedManifestDir)
 	if err != nil {
 		return cfg, fmt.Errorf("❌ ERROR: failed to get manifest directory: %w", err)
 	}
-	cfg.ManifestPath = manifestDir
+	cfg.CustomGeneratedManifestDir = manifestDir
 
 	return cfg, nil
 }

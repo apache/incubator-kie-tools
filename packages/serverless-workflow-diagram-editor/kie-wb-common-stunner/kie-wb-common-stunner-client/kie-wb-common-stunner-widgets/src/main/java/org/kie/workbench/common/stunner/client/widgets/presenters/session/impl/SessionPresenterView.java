@@ -20,16 +20,15 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
 

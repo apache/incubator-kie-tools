@@ -4,12 +4,12 @@
 
 The **[KIE Community](http://kie.org)** is a home for leading Open Source projects that play a role in delivering solutions around Business Automation and Artificial Intelligence in the Cloud.
 
-[![GitHub Stars](https://img.shields.io/github/stars/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/network/members)
-[![GitHub Issues](https://img.shields.io/github/issues/kiegroup/kie-tools.svg)]()
-[![Pull Requests](https://img.shields.io/github/issues-pr/kiegroup/kie-tools.svg?style=flat-square)](https://github.com/kiegroup/kie-tools/pulls)
-[![Contributors](https://img.shields.io/github/contributors/kiegroup/kie-tools.svg?style=flat-square)](https://github.com/kiegroup/kie-tools/graphs/contributors)
-[![License](https://img.shields.io/github/license/kiegroup/kie-tools.svg)](https://github.com/kiegroup/kie-tools/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/apache/incubator-kie-tools.svg)]()
+[![Pull Requests](https://img.shields.io/github/issues-pr/apache/incubator-kie-tools.svg?style=flat-square)](https://github.com/apache/incubator-kie-tools/pulls)
+[![Contributors](https://img.shields.io/github/contributors/apache/incubator-kie-tools.svg?style=flat-square)](https://github.com/apache/incubator-kie-tools/graphs/contributors)
+[![License](https://img.shields.io/github/license/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/blob/main/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/KieCommunity.svg?label=Follow&style=social)](https://twitter.com/KieCommunity?lang=en)
 
 This repository contains tooling applications and libraries for KIE projects.
@@ -20,13 +20,14 @@ This repository contains tooling applications and libraries for KIE projects.
 
 ## Build from source
 
-To start building the KIE Tools project, you're going to need:
+To start building the Apache KIE Tools project, you're going to need:
 
 - Node `18` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `8.7.0` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Maven `3.8.6`
 - Java `11`
 - Go `1.21.1` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
 
 > **ℹ️ NOTE:** Some packages will require that `make` is available as well.
 
@@ -60,13 +61,13 @@ Note that it is recommended that you specify which package you want to build, so
 
 > **ℹ️ NOTE:** If you want to build _everything_, run `pnpm -r build:dev` or `pnpm -r build:prod`. It's going to take a while, though :)
 
-> **ℹ️ NOTE:** The KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` script.
+> **ℹ️ NOTE:** The Apache KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` script.
 
 > **ℹ️ NOTE:** Final artifacts will be on `{packages,examples}/*/dist` directories.
 
 ## Applications
 
-The KIE Tools project contains several applications. To develop each one of them individually, refer to the instructions below.
+The Apache KIE Tools project contains several applications. To develop each one of them individually, refer to the instructions below.
 
 #### VS Code Extension (DMN, BPMN, SceSim, and PMML Editors)
 
@@ -86,7 +87,7 @@ The KIE Tools project contains several applications. To develop each one of them
 1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-pack-kogito-kie-editors` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
 2. Run `pnpm build:dev` on `packages/chrome-extension-pack-kogito-kie-editors`. This will create a version of the Chrome Extension that fetches the envelope locally.
 3. Open a terminal and run `pnpm start` on `packages/chrome-extension-pack-kogito-kie-editors`. This will start a `webpack serve` instance with the editors and their envelope. We use that because we don't pack the Chrome Extension bundle with the editors inside. Instead, we fetch them from GitHub pages.
-4. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable this flag. Alternativelly, you can go to `https://localhost:9001` and add an exception.
+4. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#temporary-unexpire-flags-m118` in your Chrome browser, enable this flag and restart browser. Then go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable also this flag. Alternativelly, you can go to `https://localhost:9001` and add an exception.
 5. Open Chrome and go to `chrome://extensions`. Enable "Developer mode" in the top-right corner and click on "Load unpacked". Choose the `packages/chrome-extension-pack-kogito-kie-editors/dist` folder.
 6. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
 
@@ -95,7 +96,7 @@ The KIE Tools project contains several applications. To develop each one of them
 1. After you've successfully built the project following the instructions above, open the `packages/chrome-extension-serverless-workflow-editor` folder on your favourite IDE. You can import the entire repo as well if you want to make changes to other packages.
 1. Run `pnpm build:dev` on `packages/chrome-extension-serverless-workflow-editor`. This will create a version of the Chrome Extension that fetches the envelope locally.
 1. Open a terminal and run `pnpm start` on `packages/chrome-extension-serverless-workflow-editor`. This will start a `webpack serve` instance with the editors and their envelope. We use that because we don't pack the Chrome Extension bundle with the editors inside. Instead, we fetch them from GitHub pages.
-1. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable this flag. Alternativelly, you can go to `https://localhost:9000` and add an exception.
+1. You also have to enable invalid certificates for resources loaded from localhost in your browser. To do that, go to `chrome://flags/#temporary-unexpire-flags-m118` in your Chrome browser, enable this flag and restart browser. Then go to `chrome://flags/#allow-insecure-localhost` in your Chrome browser and enable also this flag. Alternativelly, you can go to `https://localhost:9000` and add an exception.
 1. Open Chrome and go to `chrome://extensions`. Enable "Developer mode" in the top-right corner and click on "Load unpacked". Choose the `packages/chrome-extension-serverless-workflow-editor/dist` folder.
 1. From now on you can use the development version of the extension. **Remember!** After each change, you have to rebuild the changed modules and hit the "Refresh" button of the extension card.
 
@@ -127,7 +128,7 @@ The KIE Tools project contains several applications. To develop each one of them
 
 #### Stunner Editors
 
-The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of KIE Tools.
+The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of Apache KIE Tools.
 After cloning the repo, start with a fresh build.
 
 - `pnpm bootstrap -F @kie-tools/stunner-editors...`

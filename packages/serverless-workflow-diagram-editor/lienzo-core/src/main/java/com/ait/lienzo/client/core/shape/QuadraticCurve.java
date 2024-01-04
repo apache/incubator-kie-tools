@@ -25,13 +25,10 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * Quadratic curves, a type of Bezier curve, are defined by a context point, a control point, and an ending point.
  */
-@JsType
 public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve> {
 
     /**
@@ -44,17 +41,14 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve> {
      * @param ex end point X coordinate
      * @param ey end point Y coordinate
      */
-    @JsIgnore
     public QuadraticCurve(final double sx, final double sy, final double cx, final double cy, final double ex, final double ey) {
         this(new Point2D(sx, sy), new Point2D(cx, cy), new Point2D(ex, ey));
     }
 
-    @JsIgnore
     public QuadraticCurve(final double cx, final double cy, final double ex, final double ey) {
         this(0, 0, cx, cy, ex, ey);
     }
 
-    @JsIgnore
     public QuadraticCurve(final Point2D cp, final Point2D ep) {
         this(new Point2D(0, 0), cp, ep);
     }

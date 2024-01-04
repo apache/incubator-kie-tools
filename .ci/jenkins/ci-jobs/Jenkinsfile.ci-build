@@ -1,0 +1,204 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent any
+
+    options {
+        timeout(time: 600, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
+    }
+
+    environment {
+        TESTS_REPORTS_PATTERNS = 'kie-tools/packages/**/dist-tests/junit-report*.xml kie-tools/examples/**/dist-tests/junit-report*.xml kie-tools/packages/**/target/surefire-reports/TEST-*.xml kie-tools/examples/**/target/surefire-reports/TEST-*.xml'
+        END_TO_END_TESTS_REPORTS_PATTERNS = 'kie-tools/packages/**/dist-e2e-tests/junit-report*.xml kie-tools/examples/**/dist-e2e-tests/junit-report*.xml kie-tools/packages/**/target/failsafe-reports/TEST-*.xml kie-tools/examples/**/target/failsafe-reports/TEST-*.xml'
+        END_TO_END_TESTS_ARTIFACTS_PATTERNS = 'kie-tools/packages/**/dist-e2e-tests kie-tools/examples/**/dist-e2e-tests'
+        BUILD_ARTIFACTS_PATTERNS = 'kie-tools/packages/**/dist kie-tools/examples/**/dist'
+        ENABLE_BUILDKITE = 'false'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                    zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
+                }
+            }
+        }
+
+        stage('Build Apache KIE Tools') {
+            agent {
+                docker {
+                    label("${buildUtils.apacheAgentLabels()}")
+                    image "quay.io/kie-tools/kie-tools-ci-build:${params.IMAGE_TAG}"
+                    args '--shm-size=2g --privileged --group-add docker'
+                }
+            }
+
+            stages {
+                stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+                    steps {
+                        script {
+                            buildUtils.startRequiredServices()
+                        }
+                    }
+                }
+
+                stage('Clean workspace before build') {
+                    steps {
+                        cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+                    }
+                }
+
+                stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
+                    steps {
+                        dir('kie-tools') {
+                            script {
+                                githubUtils.checkoutRepoSquashedMerge(
+                                    env.CHANGE_AUTHOR,
+                                    env.CHANGE_BRANCH,
+                                    "https://github.com/${env.CHANGE_AUTHOR}/${pipelineVars.githubRepositoryName}.git",
+                                    env.CHANGE_TARGET ?: env.BRANCH_NAME,
+                                    "https://github.com/${pipelineVars.githubRepositoryOrg}/${pipelineVars.githubRepositoryName}.git",
+                                    "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                                )
+                            }
+                        }
+                    }
+                }
+
+                stage('Setup PNPM') {
+                    steps {
+                        dir('kie-tools') {
+                            script {
+                                buildUtils.setupPnpm()
+                            }
+                        }
+                    }
+                }
+
+                stage('PNPM Bootstrap') {
+                    steps {
+                        dir('kie-tools') {
+                            sh '''#!/bin/bash -el
+                            export PLAYWRIGHT_BASE__installDeps=true
+                            pnpm bootstrap
+                            '''.trim()
+                        }
+                    }
+                }
+
+                stage('Build FULL') {
+                    steps {
+                        dir('kie-tools') {
+                            sh '''#!/bin/bash -el
+                            export WEBPACK__minimize=false
+                            export WEBPACK__tsLoaderTranspileOnl=false
+                            export KIE_TOOLS_BUILD__runLinters=true
+                            export KIE_TOOLS_BUILD__runTests=true
+                            export KIE_TOOLS_BUILD__runEndToEndTests=true
+                            export KIE_TOOLS_BUILD__buildContainerImages=true
+                            export KIE_TOOLS_BUILD__buildExamples=true
+                            export KIE_TOOLS_BUILD__ignoreTestFailures=false
+                            export KIE_TOOLS_BUILD__ignoreEndToEndTestFailures=false
+                            export START_SERVER_AND_TEST_INSECURE=true
+                            export CYPRESS_VERIFY_TIMEOUT=100000
+                            pnpm -r --workspace-concurrency=1 build:prod
+                            '''.trim()
+                        }
+                    }
+                }
+
+                stage('Zip artifacts') {
+                    steps {
+                        script {
+                            sh "mkdir ${pipelineVars.defaultArtifactsTempDir}"
+                            zipUtils.zipArtifact("${pipelineVars.defaultArtifactsTempDir}/build-artifacts.zip", "${env.BUILD_ARTIFACTS_PATTERNS}")
+                            zipUtils.zipArtifact("${pipelineVars.defaultArtifactsTempDir}/tests-reports.zip", "${env.TESTS_REPORTS_PATTERNS}")
+                            zipUtils.zipArtifact("${pipelineVars.defaultArtifactsTempDir}/end-to-end-tests-reports.zip", "${env.END_TO_END_TESTS_REPORTS_PATTERNS}")
+                            zipUtils.zipArtifact("${pipelineVars.defaultArtifactsTempDir}/end-to-end-tests-artifacts.zip", "${env.END_TO_END_TESTS_ARTIFACTS_PATTERNS}")
+                        }
+                    }
+                }
+
+                stage('Prepare test reports for junit') {
+                    steps {
+                        script {
+                            zipUtils.unzipArtifact("${pipelineVars.defaultArtifactsTempDir}/tests-reports.zip", "${pipelineVars.defaultArtifactsTempDir}/test-reports")
+                            zipUtils.unzipArtifact("${pipelineVars.defaultArtifactsTempDir}/end-to-end-tests-reports.zip", "${pipelineVars.defaultArtifactsTempDir}/end-to-end-tests-reports")
+                        }
+                    }
+                }
+
+                stage('Upload end-to-end tests results to Buildkite (`main` only)') {
+                    when {
+                        expression { !env.CHANGE_ID && env.BRANCH_NAME == 'main' && env.ENABLE_BUILDKITE == 'true' }
+                    }
+                    steps {
+                        dir('kie-tools') {
+                            withCredentials([string(credentialsId: "${pipelineVars.buildKiteTokenCredentialsId}", variable: 'BUILDKITE_ANALYTICS_TOKEN')]) {
+                                sh """#!/bin/bash -el
+                                eval "find -P * -type f ${END_TO_END_TESTS_REPORTS_PATTERNS}"
+                                echo "---------------------------- starting upload -----------------------"
+                                eval "find -P * -type f ${END_TO_END_TESTS_REPORTS_PATTERNS}" | xargs -I{} curl -X POST \
+                                    -H "Authorization: Token token=\"${BUILDKITE_ANALYTICS_TOKEN}\"" \
+                                    -F "format=junit" \
+                                    -F "data=@{}" \
+                                    -F "run_env[CI]=github_actions" \
+                                    -F "run_env[key]=${JOB_NAME}-${BUILD_NUMBER}" \
+                                    -F "run_env[number]=${BUILD_NUMBER}" \
+                                    -F "run_env[branch]=${GIT_BRANCH}" \
+                                    -F "run_env[commit_sha]=${GIT_COMMIT}" \
+                                    -F "run_env[message]=${CHANGE_TITLE}" \
+                                    -F "run_env[url]=https://github.com/${pipelineVars.githubRepositorySlug}/actions/runs/${BUILD_NUMBER}" \
+                                    https://analytics-api.buildkite.com/v1/uploads
+                                """.trim()
+                            }
+                        }
+                    }
+                }
+            }
+
+            post {
+                always {
+                    // Tests reports
+                    withChecks('Tests') {
+                        junit allowEmptyResults: true, testResults: "${pipelineVars.defaultArtifactsTempDir}/test-reports/**/junit-report*.xml"
+                    }
+
+                    // E2E Tests reports
+                    withChecks('E2E Tests') {
+                        junit allowEmptyResults: true, testResults: "${pipelineVars.defaultArtifactsTempDir}/end-to-end-tests-reports/**/junit-report*.xml"
+                    }
+
+                    archiveArtifacts artifacts: "${pipelineVars.defaultArtifactsTempDir}/build-artifacts.zip, ${pipelineVars.defaultArtifactsTempDir}/tests-reports.zip, ${pipelineVars.defaultArtifactsTempDir}/end-to-end-tests-reports.zip, ${pipelineVars.defaultArtifactsTempDir}/end-to-end-tests-artifacts.zip", fingerprint: true
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

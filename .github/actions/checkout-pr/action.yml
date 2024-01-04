@@ -33,7 +33,7 @@ runs:
       run: |
         echo "STEP: Setup global Git user (kie-tools-bot)"
         git config --global user.email "kietoolsbot@gmail.com"
-        git config --global user.name "KIE Tools Bot (kiegroup)"
+        git config --global user.name "Apache KIE Tools Bot (kiegroup)"
 
     - name: "Merge PR changes (squashed)"
       id: merge_changes
@@ -45,7 +45,7 @@ runs:
           user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
 
           echo "Merge changes from $user/${{ github.head_ref }}"
-          git remote add $user https://github.com/$user/kie-tools.git
+          git remote add $user https://github.com/$user/${{ github.event.pull_request.head.repo.name }}.git
           git fetch $user ${{ github.head_ref }}
 
           echo "Before merging..."

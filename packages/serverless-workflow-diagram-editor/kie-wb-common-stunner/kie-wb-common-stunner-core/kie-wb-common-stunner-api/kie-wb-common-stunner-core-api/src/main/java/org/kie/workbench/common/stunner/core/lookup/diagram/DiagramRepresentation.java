@@ -6,27 +6,23 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
 package org.kie.workbench.common.stunner.core.lookup.diagram;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.uberfire.backend.vfs.Path;
 
-@Portable
 public class DiagramRepresentation {
 
     private final String name;
@@ -36,12 +32,12 @@ public class DiagramRepresentation {
     private final Path path;
     private final String thumbImageData;
 
-    DiagramRepresentation(final @MapsTo("name") String name,
-                          final @MapsTo("title") String title,
-                          final @MapsTo("defSetId") String defSetId,
-                          final @MapsTo("shapeSetId") String shapeSetId,
-                          final @MapsTo("path") Path path,
-                          final @MapsTo("thumbImageData") String thumbImageData) {
+    DiagramRepresentation(final String name,
+                          final String title,
+                          final String defSetId,
+                          final String shapeSetId,
+                          final Path path,
+                          final String thumbImageData) {
         this.name = name;
         this.title = title;
         this.defSetId = defSetId;
@@ -74,7 +70,6 @@ public class DiagramRepresentation {
         return thumbImageData;
     }
 
-    @NonPortable
     public static final class DiagramRepresentationBuilder {
 
         private final Diagram diagram;

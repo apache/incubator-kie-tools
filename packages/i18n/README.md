@@ -1,4 +1,4 @@
-# KIE Tools i18n
+# Apache KIE Tools i18n
 
 This package provides a type-safe i18n library for a Typescript project.
 

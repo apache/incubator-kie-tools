@@ -22,13 +22,12 @@ package org.kie.workbench.common.stunner.core.client.components.views;
 
 import java.util.Objects;
 
-import javax.enterprise.context.Dependent;
-
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import jakarta.enterprise.context.Dependent;
 import org.gwtproject.timer.client.Timer;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandlerRegistration;
 import org.uberfire.mvp.Command;

@@ -96,7 +96,7 @@ public class BPMNDesignerKogitoSeleniumIT {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.firefoxdriver().useMirror().setup();
+        WebDriverManager.firefoxdriver().setup();
     }
 
     @Before

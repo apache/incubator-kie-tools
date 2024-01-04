@@ -30,7 +30,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
 )
 
 var cfgTestInputPrepareQuarkusCreateBuild = CfgTestInputQuarkusCreate{

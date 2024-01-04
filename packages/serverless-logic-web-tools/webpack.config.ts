@@ -19,7 +19,7 @@
 
 import patternflyBase from "@kie-tools-core/patternfly-base";
 import common from "@kie-tools-core/webpack-base/webpack.common.config";
-import * as swEditor from "@kie-tools/serverless-workflow-diagram-editor-assets";
+import * as swEditorAssets from "@kie-tools/serverless-workflow-diagram-editor-assets";
 import CopyPlugin from "copy-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
@@ -140,14 +140,24 @@ export default async (env: any, argv: any) => {
               { from: "./static/favicon.svg", to: "./favicon.svg" },
               // These below are used for development only.
               {
-                from: swEditor.swEditorPath(),
+                from: swEditorAssets.swEditorPath(),
                 to: "./diagram",
                 globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
+              },
+              {
+                context: swEditorAssets.swEditorFontsPath(),
+                from: "fontawesome-webfont.*",
+                to: "./fonts",
+                force: true,
               },
               {
                 from: "../dashbuilder-editor/dist/dashbuilder-client/",
                 to: "./dashbuilder-client",
                 globOptions: { ignore: ["**/WEB-INF/**/*"] }, // "**/*.html" omitted because dashbuilder-client/index.html is needed
+              },
+              {
+                from: path.resolve(__dirname, "node_modules/@kie-tools/yard-validator/dist/yard-validator-worker.js"),
+                to: "./yard-validator-worker.js",
               },
             ],
           }),

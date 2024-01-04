@@ -27,20 +27,20 @@ jobs:
         if: runner.os == 'Windows'
         run: git config --system core.longpaths true
 
-      - name: "Checkout kogito-apps"
+      - name: "Checkout kie-kogito-apps"
         uses: actions/checkout@v3
         with:
-          repository: kiegroup/kogito-apps
+          repository: apache/incubator-kie-kogito-apps
           ref: ${{ github.event.inputs.kogito_runtime_version }}
 
       - name: "Set up Maven"
-        uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f #v4.5
+        uses: stCarolas/setup-maven@v4.5
         with:
           maven-version: 3.8.6
 
       - name: "Set up JDK 11"
         if: runner.os != 'Windows'
-        uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc
+        uses: actions/setup-java@v3
         with:
           java-version: "11"
           distribution: "zulu"
@@ -78,7 +78,7 @@ jobs:
 
       - name: "Setup MSCV"
         if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@cec98b9d092141f74527d0afa6feb2af698cfe89 #v1.12.1
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: "Setup MSBUILD"
         if: runner.os == 'Windows'

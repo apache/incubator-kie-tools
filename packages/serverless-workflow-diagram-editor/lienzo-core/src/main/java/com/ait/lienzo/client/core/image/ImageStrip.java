@@ -1,6 +1,6 @@
 package com.ait.lienzo.client.core.image;
 
-import com.google.gwt.resources.client.ImageResource;
+import org.treblereel.j2cl.processors.common.resources.ImageResource;
 
 public class ImageStrip {
 
@@ -17,7 +17,7 @@ public class ImageStrip {
                       final int padding,
                       final Orientation orientation) {
         this(resource.getName(),
-             resource.getSafeUri().asString(),
+             resource.getSrc(),
              wide,
              high,
              padding,

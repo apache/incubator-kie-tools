@@ -5,6 +5,7 @@
 **/node_modules/
 **/dist/
 **/dist-dev/
+**/dist-dev-webapp/
 **/dist-tests/
 **/dist-e2e-tests/
 **/dist-storybook/
@@ -154,6 +155,8 @@ packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/deploy/
 packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/lib/
 packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/model/
 packages/serverless-workflow-diagram-editor/**/src/main/webapp/model/
+packages/serverless-workflow-diagram-editor/kie-wb-common-stunner/kie-wb-common-stunner-client/kie-wb-common-stunner-lienzo/src/main/resources/org/kie/workbench/common/stunner/client/lienzo/resources/
+
 
 # dashbuilder
 packages/dashbuilder/**/org.uberfire
