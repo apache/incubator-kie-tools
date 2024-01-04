@@ -24,4 +24,5 @@ export enum GitHubPageType {
   CAN_OPEN_REPO_IN_EXTERNAL_EDITOR,
   ANY,
   PR_HOME,
+  REPO_HOME,
 }
