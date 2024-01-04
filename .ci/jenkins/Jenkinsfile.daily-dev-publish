@@ -392,7 +392,7 @@ pipeline {
                         ln -s editors dev/gwt-editors
                         git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
                         """.trim()
-                            
+
                         githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }

@@ -5,7 +5,7 @@ name: kie-sandbox
 # -- Env variables for KIE Sandbox deployment
 env:
   - name: "KIE_SANDBOX_EXTENDED_SERVICES_URL"
-    value: http://127.0.0.1:21345"
+    value: "http://127.0.0.1:21345"
   - name: "KIE_SANDBOX_CORS_PROXY_URL"
     value: "http://127.0.0.1:8081"
 

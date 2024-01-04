@@ -38,6 +38,11 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
+        KIE_SANDBOX_HELM_CHART__registry = 'quay.io'
+        KIE_SANDBOX_HELM_CHART__account = 'kie-tools'
+        KIE_SANDBOX_HELM_CHART__name = 'kie-sandbox-helm-chart'
+        KIE_SANDBOX_HELM_CHART__tag = "${params.TAG}"
+
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
         PNPM_FILTER_STRING = '-F @kie-tools/kie-sandbox-helm-chart...'
@@ -50,7 +55,7 @@ pipeline {
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
-                    dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    hemlUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
                 }
             }
         }
@@ -113,6 +118,22 @@ pipeline {
             }
         }
 
+        stage('Push kie-sandbox-helm-chart to quay.io') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        helmUtils.pushChartToRegistry(
+                            "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
+                            "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
+                            "${pipelineVars.quayPushCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
     }
 
     post {

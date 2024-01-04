@@ -94,6 +94,11 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = "${params.TAG}-prerelease"
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags = "${params.TAG}-prerelease"
 
+        KIE_SANDBOX_HELM_CHART__registry = 'quay.io'
+        KIE_SANDBOX_HELM_CHART__account = 'kie-tools'
+        KIE_SANDBOX_HELM_CHART__name = 'kie-sandbox-helm-chart'
+        KIE_SANDBOX_HELM_CHART__tag = "${params.TAG}-prerelease"
+
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 
@@ -106,6 +111,7 @@ pipeline {
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
                     openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
                     zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
                 }
             }
@@ -795,6 +801,23 @@ pipeline {
                 }
             }
         }
+
+        stage('STAGING: Push kie-sandbox-helm-chart to quay.io') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                dir('kie-tools') {
+                    script {
+                        helmUtils.pushChartToRegistry(
+                            "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
+                            "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
+                            "${pipelineVars.quayPushCredentialsId}"
+                        )
+                    }
+                }
+            }
+        }
     }
 
     post {
@@ -848,7 +871,7 @@ def deployOnlineEditor(String tag, String credentialsId) {
     sh """#!/bin/bash -el
     git config user.email asf-ci-kie@jenkins.kie.apache.org
     git config user.name asf-ci-kie
-    
+
     echo "Switch to main branch"
     git checkout main
 
