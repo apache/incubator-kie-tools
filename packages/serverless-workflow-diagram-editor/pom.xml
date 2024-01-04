@@ -48,9 +48,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:kiegroup/kie-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/kie-tools.git</developerConnection>
-    <url>scm:git:git@github.com:kiegroup/kie-tools.git</url>
+    <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
+    <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
+    <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
   </scm>
 
   <developers>
@@ -251,7 +251,7 @@
     <version.j2cl.plugin>0.21.0</version.j2cl.plugin>
 
     <!-- Third party Libraries -->
-    <version.ch.qos.logback>1.2.11</version.ch.qos.logback>
+    <version.ch.qos.logback>1.3.12</version.ch.qos.logback>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
     <version.jsinterop.annotations>2.0.0</version.jsinterop.annotations>
     <version.com.google.guava>32.1.3-jre</version.com.google.guava>
@@ -288,7 +288,7 @@
     <version.org.uberfire.patternfly>7.74.1.Final</version.org.uberfire.patternfly>
 
     <version.io.crysknife>0.6</version.io.crysknife>
-    <version.org.gwt3.processors>0.6.3</version.org.gwt3.processors>
+    <version.org.gwt3.processors>0.6.4</version.org.gwt3.processors>
     <version.j2cl>0.11.0-9336533b6</version.j2cl>
     <version.j2cl.maven.plugin>0.21.0</version.j2cl.maven.plugin>
 
@@ -1216,7 +1216,7 @@
                         as transitive dependency as well. -->
                       <ignoreClass>org.joda.time.*</ignoreClass>
                       <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
-                           See https://github.com/kiegroup/kie-tools/blob/main/packages/stunner-editors/errai-javax-enterprise/README -->
+                           See https://github.com/apache/incubator-kie-tools/blob/main/packages/stunner-editors/errai-javax-enterprise/README -->
                       <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
                       <ignoreClass>javax.inject.Provider</ignoreClass>
                       <ignoreClass>javax.inject.Named</ignoreClass>

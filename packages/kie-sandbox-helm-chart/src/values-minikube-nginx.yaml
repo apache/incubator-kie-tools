@@ -1,0 +1,46 @@
+# KIE Sandbox application
+kie_sandbox:
+  env:
+    - name: "KIE_SANDBOX_EXTENDED_SERVICES_URL"
+      value: "http://extended-services.local"
+    - name: "KIE_SANDBOX_CORS_PROXY_URL"
+      value: "http://cors-proxy.local"
+  ingress:
+    enabled: true
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: kie-sandbox.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+
+# Cors Proxy component
+cors_proxy:
+  ingress:
+    enabled: true
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: cors-proxy.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+
+# Extended services component
+extended_services:
+  ingress:
+    enabled: true
+    className: nginx
+    annotations: {}
+    hosts:
+      - host: extended-services.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+
+global:
+  ingressSource: "minikube"

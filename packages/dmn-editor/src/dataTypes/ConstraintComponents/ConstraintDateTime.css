@@ -1,0 +1,14 @@
+.kie-dmn-editor--constraint-date-time {
+  display: flex;
+  flex-direction: row;
+}
+
+.kie-dmn-editor--constraint-date-time-timezone {
+  width: 120px;
+}
+
+.kie-dmn-editor--constraint-date-time-timezone-invalid > button {
+  color: red;
+  text-decoration: red dotted underline;
+  text-underline-position: under;
+}

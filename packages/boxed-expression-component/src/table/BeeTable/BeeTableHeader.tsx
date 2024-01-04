@@ -21,7 +21,12 @@ import * as _ from "lodash";
 import * as React from "react";
 import { useCallback } from "react";
 import * as ReactTable from "react-table";
-import { DmnBuiltInDataType, BeeTableHeaderVisibility, ExpressionDefinition } from "../../api";
+import {
+  DmnBuiltInDataType,
+  BeeTableHeaderVisibility,
+  ExpressionDefinition,
+  InsertRowColumnsDirection,
+} from "../../api";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
@@ -64,7 +69,12 @@ export interface BeeTableHeaderProps<R extends object> {
   /** Option to enable or disable header edits */
   isEditableHeader: boolean;
   /** */
-  onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
+  onColumnAdded?: (args: {
+    beforeIndex: number;
+    groupType: string | undefined;
+    columnsCount: number;
+    insertDirection: InsertRowColumnsDirection;
+  }) => void;
 
   shouldRenderRowIndexColumn: boolean;
 
@@ -138,6 +148,7 @@ export function BeeTableHeader<R extends object>({
           rowSpan={rowSpan}
           key={columnKey}
           column={column}
+          columnKey={columnKey}
           columnIndex={0}
           rowIndex={rowIndex}
           thProps={column.getHeaderProps()}
@@ -153,13 +164,6 @@ export function BeeTableHeader<R extends object>({
       );
     },
     [getColumnKey, shouldShowRowsInlineControls]
-  );
-
-  const onHeaderClick = useCallback(
-    (columnKey: string) => () => {
-      beeGwtService?.selectObject(columnKey);
-    },
-    [beeGwtService]
   );
 
   const renderColumn = useCallback<
@@ -190,7 +194,6 @@ export function BeeTableHeader<R extends object>({
               shouldShowColumnsInlineControls={shouldShowRowsInlineControls}
               getColumnKey={getColumnKey}
               getColumnLabel={getColumnLabel}
-              onHeaderClick={onHeaderClick}
               reactTableInstance={reactTableInstance}
               column={column}
               columnIndex={columnIndex}
@@ -261,7 +264,6 @@ export function BeeTableHeader<R extends object>({
       isEditableHeader,
       shouldShowRowsInlineControls,
       getColumnLabel,
-      onHeaderClick,
       onColumnAdded,
       lastColumnMinWidth,
       setEditing,
@@ -356,7 +358,14 @@ export function BeeTableHeader<R extends object>({
         );
       }
     });
-  }, [getColumnKey, reactTableInstance, renderColumn, shouldRenderHeaderGroup, shouldRenderRowIndexColumn]);
+  }, [
+    getColumnKey,
+    headerVisibility,
+    reactTableInstance,
+    renderColumn,
+    shouldRenderHeaderGroup,
+    shouldRenderRowIndexColumn,
+  ]);
 
   return <>{<thead>{renderHeaderGroups()}</thead>}</>;
 }

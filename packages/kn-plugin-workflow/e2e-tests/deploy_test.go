@@ -24,7 +24,7 @@ package e2e_tests
 import (
 	"testing"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
 )
 
 type cfgTestInputDeploy struct {

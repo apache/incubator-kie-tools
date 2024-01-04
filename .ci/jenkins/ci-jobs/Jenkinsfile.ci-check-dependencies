@@ -1,0 +1,88 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent any
+
+    options {
+        timeout(time: 240, unit: 'MINUTES')
+    }
+
+    parameters {
+        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Check dependencies consistency') {
+            agent {
+                docker {
+                    image "quay.io/kie-tools/kie-tools-ci-build:${params.IMAGE_TAG}"
+                }
+            }
+
+            stages {
+                stage('Clean workspace before build') {
+                    steps {
+                        cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+                    }
+                }
+
+                stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
+                    steps {
+                        dir('kie-tools') {
+                            script {
+                                githubUtils.checkoutRepoSquashedMerge(
+                                    env.CHANGE_AUTHOR,
+                                    env.CHANGE_BRANCH,
+                                    "https://github.com/${env.CHANGE_AUTHOR}/${pipelineVars.githubRepositoryName}.git",
+                                    env.CHANGE_TARGET ?: env.BRANCH_NAME,
+                                    "https://github.com/${pipelineVars.githubRepositoryOrg}/${pipelineVars.githubRepositoryName}.git",
+                                    "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                                )
+                            }
+                        }
+                    }
+                }
+
+                stage('Check dependencies consistency') {
+                    steps {
+                        dir('kie-tools') {
+                            sh '''#!/bin/bash -el
+                            pnpm bootstrap:root
+                            npx --yes syncpack@6.2.0 list-mismatches
+                            '''.trim()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}

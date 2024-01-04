@@ -35,14 +35,14 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { useAuthSessions, useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList";
-import { GitAuthSession } from "../../authSessions/AuthSessionApi";
+import { AUTH_SESSION_VERSION_NUMBER, GitAuthSession } from "../../authSessions/AuthSessionApi";
 import { PromiseStateStatus, usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import {
   GitAuthProvider,
   isSupportedGitAuthProviderType,
   SupportedGitAuthProviders,
 } from "../../authProviders/AuthProvidersApi";
-import { switchExpression } from "../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { AuthOptionsType, getBitbucketClient } from "../../bitbucket/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
 
@@ -145,6 +145,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
 
             const newAuthSession: GitAuthSession = {
               id: uuid(),
+              version: AUTH_SESSION_VERSION_NUMBER,
               token: tokenInput,
               type: "git",
               login: response.data.login,

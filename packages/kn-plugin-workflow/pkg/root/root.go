@@ -22,10 +22,10 @@ package root
 import (
 	"fmt"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -37,9 +37,29 @@ type RootCmdConfig struct {
 
 func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:     cfg.Name,
-		Short:   "SonataFlow",
-		Long:    "Manage SonataFlow projects",
+		Use:   cfg.Name,
+		Short: "SonataFlow",
+		Long: `
+	Manage SonataFlow projects
+	==========================
+
+	Currently, SonataFlow targets use cases with a single Serverless Workflow main
+	file definition (i.e. workflow.sw.{json|yaml|yml}).
+
+	Additionally, you can define the configurable parameters of your application in the
+	"application.properties" file (inside the root project directory).
+	You can also store your spec files (i.e., Open API files) inside the "specs" folder,
+    schemas file inside "schemas" folder and also subflows inside "subflows" folder.
+
+	A SonataFlow project, as the following structure by default:
+
+	Workflow project root
+		/specs (optional)
+		/schemas (optional)
+		/subflows (optional)
+		workflow.sw.{json|yaml|yml} (mandatory)
+
+	`,
 		Aliases: []string{"kn-workflow"},
 	}
 

@@ -39,10 +39,9 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <tycho.version>2.7.5</tycho.version>
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
-    <tycho.scmUrl>scm:git:https://github.com/kiegroup/kie-tools.git</tycho.scmUrl>
+    <tycho.scmUrl>scm:git:https://github.com/apache/incubator-kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
-    <!-- Using a SNAPSHOT version because of https://github.com/eclipse/eclipse.jdt.ls/issues/1970 -->
-    <jdt.ls.version>1.29.0-SNAPSHOT</jdt.ls.version>
+    <jdt.ls.version>1.29.0.20231026174049</jdt.ls.version>
     <tycho.test.platformArgs />
     <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
 
@@ -62,11 +61,11 @@
     <repository>
       <id>jdt.ls.p2</id>
       <layout>p2</layout>
-      <url>https://download.eclipse.org/jdtls/snapshots/repository/latest/</url>
+      <url>https://download.eclipse.org/jdtls/milestones/1.29.0/repository/</url>
     </repository>
     <repository>
       <id>jdt.ls.maven</id>
-      <url>https://repo.eclipse.org/content/repositories/jdtls-snapshots/</url>
+      <url>https://repo.eclipse.org/content/repositories/jdtls-releases/</url>
     </repository>
   </repositories>
   <build>

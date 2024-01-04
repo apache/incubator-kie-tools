@@ -26,10 +26,10 @@ export function Home() {
     <Page>
       <PageSection>
         <TextContent>
-          <Text component={"h1"}>Welcome to KIE Tools Examples</Text>
+          <Text component={"h1"}>Welcome to Apache KIE Tools Examples</Text>
           <Text component={"p"}>
             <span>To understand what's in this webapp, please refer to the project </span>
-            <a href={"https://github.com/kiegroup/kie-tools/blob/main/examples/webapp/README.md"}>{"README"}</a>
+            <a href={"https://github.com/apache/incubator-kie-tools/blob/main/examples/webapp/README.md"}>{"README"}</a>
             <span> on GitHub.</span>
           </Text>
         </TextContent>

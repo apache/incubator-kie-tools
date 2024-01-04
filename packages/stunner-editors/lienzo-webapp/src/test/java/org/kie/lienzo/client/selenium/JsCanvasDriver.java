@@ -41,7 +41,7 @@ public class JsCanvasDriver extends JsCanvasExecutor {
     private long loadTimeMillis = 1000;
 
     public static void init() {
-        WebDriverManager.firefoxdriver().useMirror().setup();
+        WebDriverManager.firefoxdriver().setup();
     }
 
     public static JsCanvasDriver devMode() {

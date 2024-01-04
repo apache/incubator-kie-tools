@@ -22,6 +22,7 @@ import * as React from "react";
 import { YardEditor } from "./YardEditor";
 import { YardEditorApi, YardEditorChannelApi } from "../api";
 import { Position } from "monaco-editor";
+import { validationPromise } from "@kie-tools/yard-validator/dist/";
 
 export class YardEditorView implements Editor {
   private readonly editorRef: React.RefObject<YardEditorApi>;
@@ -29,6 +30,7 @@ export class YardEditorView implements Editor {
   public af_isReact = true;
   public af_componentId: "yard-editor";
   public af_componentTitle: "Yard Editor";
+  private path: string;
 
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<YardEditorChannelApi>,
@@ -37,8 +39,8 @@ export class YardEditorView implements Editor {
     this.editorRef = React.createRef<YardEditorApi>();
     this.initArgs = initArgs;
   }
-
   public setContent(path: string, content: string): Promise<void> {
+    this.path = path;
     return this.editorRef.current!.setContent(path, content);
   }
 
@@ -74,7 +76,22 @@ export class YardEditorView implements Editor {
   }
 
   public async validate(): Promise<Notification[]> {
-    return this.editorRef.current!.validate();
+    let result: Notification[] = [];
+    return this.editorRef
+      .current!.getContent()
+      .then((value) => {
+        return validationPromise(value);
+      })
+      .then((value) => {
+        result = result.concat(value);
+        return this.editorRef.current!.validate();
+      })
+      .then((value) => {
+        result = result.concat(value);
+        return new Promise<Notification[]>((resolve) => {
+          resolve(result);
+        });
+      });
   }
 
   public async setTheme(theme: EditorTheme) {

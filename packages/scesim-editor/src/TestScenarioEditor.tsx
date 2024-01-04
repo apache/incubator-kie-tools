@@ -26,12 +26,13 @@ import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-compon
 
 import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
 
-import { getMarshaller } from "@kie-tools/scesim-marshaller";
+import { getMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import {
   SceSim__FactMappingType,
   SceSim__ScenarioSimulationModelType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
@@ -52,12 +53,12 @@ import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 import ErrorBoundary from "./reactExt/ErrorBoundary";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 import TestScenarioSideBarMenu from "./sidebar/TestScenarioSideBarMenu";
+import TestScenarioTable from "./table/TestScenarioTable";
 import { useTestScenarioEditorI18n } from "./i18n";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 
 /* Constants */
 
@@ -158,10 +159,7 @@ function TestScenarioCreationPanel({
             value={assetType}
             id="asset-type-select"
             name="asset-type-select"
-            onChange={(value: string) => {
-              console.log(assetType);
-              setAssetType(value);
-            }}
+            onChange={(value: string) => setAssetType(value)}
           >
             {assetsOption.map((option, index) => (
               <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
@@ -234,10 +232,12 @@ function TestScenarioMainPanel({
   fileName,
   scesimModel,
   updateSettingField,
+  updateTestScenarioModel,
 }: {
   fileName: string;
   scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
   updateSettingField: (field: string, value: string) => void;
+  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
@@ -280,6 +280,9 @@ function TestScenarioMainPanel({
     /* The first two FactMapping are related to the "Number" and "Description" columns. 
        If those columns only are present, no Data Objects can be detected in the scesim file */
     for (let i = 2; i < factsMappings.length; i++) {
+      if (factsMappings[i].className!.__$$text === "java.lang.Void") {
+        continue;
+      }
       const dataObject = dataObjects.find((value) => value.id === factsMappings[i]["factAlias"].__$$text);
       if (dataObject) {
         if (!dataObject.children?.some((value) => value.id === factsMappings[i]["expressionAlias"]?.__$$text)) {
@@ -378,7 +381,13 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    <Bullseye>{i18n.tab.scenarioTabTitle}</Bullseye>
+                    <div className="kie-scesim-editor--table-container">
+                      <TestScenarioTable
+                        assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
+                        tableData={scesimModel.ScenarioSimulationModel.simulation}
+                        updateTestScenarioModel={updateTestScenarioModel}
+                      />
+                    </div>
                   </Tab>
                   <Tab
                     eventKey={TestScenarioEditorTab.BACKGROUND}
@@ -568,6 +577,7 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
               <TestScenarioMainPanel
                 fileName={scesimFile.path}
                 scesimModel={scesimModel}
+                updateTestScenarioModel={setScesimModel}
                 updateSettingField={updateSettingsField}
               />
             );

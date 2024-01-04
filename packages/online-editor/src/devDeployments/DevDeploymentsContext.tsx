@@ -20,8 +20,10 @@
 import * as React from "react";
 import { useContext } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { KieSandboxDeployedModel } from "./services/types";
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
+import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
+import { KieSandboxDeployment, ResourceArgs } from "./services/types";
+import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 
 export interface DeploymentFile {
   path: string;
@@ -41,7 +43,7 @@ export type DeleteDeployModalState =
   | {
       isOpen: true;
       cloudAuthSessionId: string;
-      resourceNames: string[];
+      resources: K8sResourceYaml[];
     }
   | {
       isOpen: false;
@@ -61,17 +63,23 @@ export interface DevDeploymentsContextType {
   setConfirmDeleteModalState: React.Dispatch<React.SetStateAction<DeleteDeployModalState>>;
 
   // Actions
-  deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
-  loadDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployedModel[]>;
-  deleteDeployment: (args: { authSession: CloudAuthSession; resourceName: string }) => Promise<boolean>;
-  deleteDeployments: (args: { authSession: CloudAuthSession; resourceNames: string[] }) => Promise<boolean>;
+  deploy: (
+    workspaceFile: WorkspaceFile,
+    authSession: CloudAuthSession,
+    deploymentOption: (args: ResourceArgs) => string
+  ) => Promise<boolean>;
+  loadDevDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployment[]>;
+  deleteDeployments: (args: { authSession: CloudAuthSession; resources: K8sResourceYaml[] }) => Promise<boolean>;
+
+  // Services
+  devDeploymentsServices: Map<string, KieSandboxDevDeploymentsService>;
 }
 
 export const DevDeploymentsContext = React.createContext<DevDeploymentsContextType>({
-  deployments: [],
   isDropdownOpen: false,
   isDeploymentsDropdownOpen: false,
   isConfirmDeployModalOpen: false,
+  devDeploymentsServices: new Map<string, KieSandboxDevDeploymentsService>(),
 } as any);
 
 export function useDevDeployments() {

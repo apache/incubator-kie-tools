@@ -32,6 +32,7 @@ import {
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   generateUuid,
+  InsertRowColumnsDirection,
   ListExpressionDefinition,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -117,7 +118,7 @@ export function ListExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: decisionNodeId as any,
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: listExpression.name ?? DEFAULT_EXPRESSION_NAME,
         dataType: listExpression.dataType,
         isRowIndexColumn: false,
@@ -148,15 +149,25 @@ export function ListExpression(
   }, []);
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
       setExpression((prev: ListExpressionDefinition) => {
         const newItems = [...prev.items];
+        const newListItems = [];
 
-        const newItem = getDefaultListItem(prev.dataType);
+        for (let i = 0; i < args.rowsCount; i++) {
+          const newItem = getDefaultListItem(prev.dataType);
+          newListItems.push(newItem);
+          variables?.repository.addVariableToContext(newItem.id, newItem.id, listExpression.parentElementId);
+        }
 
-        variables?.repository.addVariableToContext(newItem.id, newItem.id, listExpression.parentElementId);
+        for (const newEntry of newListItems) {
+          let index = args.beforeIndex;
+          newItems.splice(index, 0, newEntry);
+          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+            index++;
+          }
+        }
 
-        newItems.splice(args.beforeIndex, 0, newItem);
         return { ...prev, items: newItems };
       });
     },

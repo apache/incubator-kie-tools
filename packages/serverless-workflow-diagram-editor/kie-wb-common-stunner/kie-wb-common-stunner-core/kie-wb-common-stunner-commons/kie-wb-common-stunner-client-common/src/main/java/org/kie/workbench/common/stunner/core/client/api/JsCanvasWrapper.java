@@ -37,12 +37,7 @@ import org.treblereel.j2cl.processors.annotations.GWT3Export;
 @GWT3Export
 public class JsCanvasWrapper {
 
-    private JsCanvas wrapper;
-
-    public JsCanvasWrapper setWrapper(JsCanvas wrapper) {
-        this.wrapper = wrapper;
-        return this;
-    }
+    private JsCanvas wrapper = JsCanvas.getInstance();
 
     public Layer getLayer() {
         return wrapper.getLayer();

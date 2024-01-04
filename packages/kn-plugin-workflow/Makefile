@@ -25,7 +25,7 @@ BIN_PATH         := ./dist
 TEST_PATH        := ./dist-tests
 MAIN_PATH        := cmd/main.go
 
-METADATA_PATH                 := github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata
+METADATA_PATH                 := github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata
 SET_QUARKUS_PLATFORM_GROUP_ID := $(METADATA_PATH).QuarkusPlatformGroupId=$(QUARKUS_PLATFORM_GROUP_ID)
 SET_QUARKUS_VERSION           := $(METADATA_PATH).QuarkusVersion=$(QUARKUS_VERSION)
 SET_DEV_MODE_IMAGE            := $(METADATA_PATH).DevModeImage=$(DEV_MODE_IMAGE)

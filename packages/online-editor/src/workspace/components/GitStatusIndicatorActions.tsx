@@ -49,7 +49,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { listDeletedFiles } from "./WorkspaceStatusIndicator";
 import { FileLabel } from "../../filesList/FileLabel";
 import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
-import { switchExpression } from "../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 
 export type GitStatusProps = {
   workspaceDescriptor: WorkspaceDescriptor;

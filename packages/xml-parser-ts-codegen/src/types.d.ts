@@ -122,6 +122,7 @@ export type XptcMetaTypeProperty = {
   elem: XptcElement | undefined;
   metaType: {
     name: string;
+    xsdType: string;
   };
   typeBody?: (type: string) => string | undefined;
   isArray: boolean;

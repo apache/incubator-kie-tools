@@ -5,13 +5,13 @@
   "description": "",
   "license": "Apache-2.0",
   "publisher": "kie-group",
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "browser": "./dist/extension/extension.js",
   "main": "dist/extension/extension.js",
@@ -63,9 +63,9 @@
     "@types/minimatch": "^3.0.5",
     "@types/mocha": "^8.2.2",
     "@types/vscode": "1.67.0",
-    "@vscode/test-electron": "^2.3.4",
+    "@vscode/test-electron": "^2.3.6",
     "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.20.1",
+    "@vscode/vsce": "^2.22.0",
     "chai": "^4.3.10",
     "copy-webpack-plugin": "^11.0.0",
     "cpr": "^3.0.1",
@@ -81,7 +81,7 @@
     "sanitize-filename-ts": "^1.0.2",
     "ts-jest": "^26.5.6",
     "typescript": "^4.6.2",
-    "vscode-extension-tester": "5.9.1",
+    "vscode-extension-tester": "5.10.0",
     "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
@@ -146,7 +146,7 @@
           "type": "string"
         }
       },
-      "title": "KIE Tools Dev Test Configuration"
+      "title": "Apache KIE Tools Dev Test Configuration"
     },
     "customEditors": [
       {

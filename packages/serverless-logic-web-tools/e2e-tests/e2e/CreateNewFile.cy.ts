@@ -139,4 +139,63 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
     // check there are no problems in dashbuilder file
     cy.get("#total-notifications").should("have.text", 0);
   });
+
+  it("should create a new YAML serverless decision", () => {
+    cy.ouia({ ouiaId: "new-yard.yaml-button" }).click();
+    cy.loadEditor();
+
+    // check header labels
+    cy.ouia({ ouiaId: "file-name-input" }).should("have.value", "Untitled");
+    cy.ouia({ ouiaId: "file-type-label" }).should("have.text", "Serverless Decision");
+
+    cy.getEditor().within(() => {
+      // create basic YARD structure
+      cy.get(".codelens-decoration a:contains('Create a Serverless Decision')").click();
+      cy.get("[aria-label='Serverless Decision Example'] a").click();
+
+      // move cursor to the top
+      cy.get(".monaco-editor").type("{pageUp}");
+
+      // check text editor
+      cy.get(".monaco-editor textarea")
+        .should("contain.value", "specVersion: alpha")
+        .should("contain.value", "kind: YaRD")
+        .should("contain.value", "name: 'Traffic Violation'")
+        .should("contain.value", "expressionLang: alpha");
+
+      // check General properties
+      cy.ouia({ ouiaId: "yard-name-input" }).should("have.value", "Traffic Violation");
+      cy.ouia({ ouiaId: "yard-type-input" }).should("have.value", "YaRD");
+      cy.ouia({ ouiaId: "yard-expr-lang-version-input" }).should("have.value", "alpha");
+      cy.ouia({ ouiaId: "yard-spec-version-input" }).should("have.value", "alpha");
+
+      // switch to Decion Inputs tab and check
+      cy.ouia({ ouiaId: "yard-ui-tabs" }).ouia({ ouiaId: "decision-inputs-tab" }).click();
+      cy.ouia({ ouiaId: "decison-input-name" }).should(($items) => {
+        expect($items.length).eq(2);
+        expect($items.eq(0)).value("Driver");
+        expect($items.eq(1)).value("Violation");
+      });
+      cy.ouia({ ouiaId: "decison-input-type" }).should(($items) => {
+        expect($items.length).eq(2);
+        expect($items.eq(0)).value("http://myapi.org/jsonSchema.json#Driver");
+        expect($items.eq(1)).value("http://myapi.org/jsonSchema.json#Violation");
+      });
+
+      // switch to Decision Elements tab and check
+      cy.ouia({ ouiaId: "yard-ui-tabs" }).ouia({ ouiaId: "decision-elements-tab" }).click();
+      cy.ouia({ ouiaId: "decision-diagram-body" }).should("contain.text", "Should the driver be suspended?");
+      cy.ouia({ ouiaId: "decision-diagram-body" }).should(
+        "contain.text",
+        'if Driver.Points + Fine.Points >= 20 then "Yes" else "No"'
+      );
+      cy.ouia({ ouiaId: "decision-diagram-body" }).should(
+        "contain.text",
+        'Violation.type: ="speed"\nViolation.Speed - Violation.SpeedLimit: >= 30'
+      );
+    });
+
+    // check there are no problems in YARD file
+    cy.get("#total-notifications").should("have.text", 0);
+  });
 });

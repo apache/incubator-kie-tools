@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",
@@ -30,6 +30,7 @@
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/k8s-yaml-to-apiserver-requests": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/kubernetes-bridge": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
@@ -37,10 +38,13 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
+    "@kie-tools-core/switch-expression-ts": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools-core/workspaces-git-fs": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/cors-proxy-api": "workspace:*",
+    "@kie-tools/dev-deployment-upload-service": "workspace:*",
+    "@kie-tools/dmn-editor-envelope": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
     "@kie-tools/dmn-runner": "workspace:*",
     "@kie-tools/emscripten-fs": "^0.0.2",
