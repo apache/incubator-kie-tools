@@ -28,7 +28,7 @@ module.exports = {
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
   testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
-  transformIgnorePatterns: [],
+  transformIgnorePatterns: ["<rootDir>/node_modules/(?!axios)"],
   transform: {
     "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
     "^.+\\.tsx?$": "ts-jest",
