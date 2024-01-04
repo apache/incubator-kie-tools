@@ -518,20 +518,22 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
       setScesimModel((prevState) => ({
         ScenarioSimulationModel: {
           ...prevState.ScenarioSimulationModel,
-          ["settings"]: {
-            ...prevState.ScenarioSimulationModel["settings"],
-            ["dmoSession"]:
+          settings: {
+            ...prevState.ScenarioSimulationModel.settings,
+            dmnFilePath:
+              assetType === TestScenarioType[TestScenarioType.DMN] ? { __$$text: "./MockedDMNName.dmn" } : undefined,
+            dmoSession:
               assetType === TestScenarioType[TestScenarioType.RULE] && kieSessionRule
                 ? { __$$text: kieSessionRule }
                 : undefined,
-            ["ruleFlowGroup"]:
+            ruleFlowGroup:
               assetType === TestScenarioType[TestScenarioType.RULE] && ruleFlowGroup
                 ? { __$$text: ruleFlowGroup }
                 : undefined,
-            ["skipFromBuild"]: { __$$text: isTestSkipped },
-            ["stateless"]:
+            skipFromBuild: { __$$text: isTestSkipped },
+            stateless:
               assetType === TestScenarioType[TestScenarioType.RULE] ? { __$$text: isStatelessSessionRule } : undefined,
-            ["type"]: { __$$text: assetType },
+            type: { __$$text: assetType },
           },
         },
       })),
