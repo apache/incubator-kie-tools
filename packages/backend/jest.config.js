@@ -31,7 +31,7 @@ module.exports = {
     "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
     "^.+\\.tsx?$": "ts-jest",
   },
-  transformIgnorePatterns: ["<rootDir>/node_modules/(?!axios)"],
+  transformIgnorePatterns: [],
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMock.js",
   },
