@@ -341,21 +341,18 @@ export function EditorPage(props: Props) {
     }
 
     return new DmnLanguageService({
-      getModelContent: async (args: { normalizedPosixPathRelativeToWorkspaceRoot: string }) => {
+      getModelXml: async (args) => {
         try {
-          const fileContent = await workspaces.getFileContent({
-            workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
-            relativePath: args.normalizedPosixPathRelativeToWorkspaceRoot,
-          });
-
-          return {
-            content: decoder.decode(fileContent),
-            normalizedPosixPathRelativeToWorkspaceRoot: args.normalizedPosixPathRelativeToWorkspaceRoot,
-          };
+          return decoder.decode(
+            await workspaces.getFileContent({
+              workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
+              relativePath: args.normalizedPosixPathRelativeToTheWorkspaceRoot,
+            })
+          );
         } catch (err) {
           throw new Error(`
-KIE SANDBOX - DmnLanguageService - getModelContent: Error on getFileContent.
-Tried to open path: ${args.normalizedPosixPathRelativeToWorkspaceRoot}
+KIE SANDBOX - DmnLanguageService - getModelXml: Error on getFileContent.
+Tried to open path: ${args.normalizedPosixPathRelativeToTheWorkspaceRoot}
 Error details: ${err}`);
         }
       },

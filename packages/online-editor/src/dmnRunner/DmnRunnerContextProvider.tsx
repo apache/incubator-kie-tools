@@ -207,37 +207,31 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
-  const extendedServicesModelPayload = useCallback(
-    async (formInputs?: InputRow) => {
+  const extendedServicesModelPayload = useCallback<(formInputs?: InputRow) => Promise<ExtendedServicesModelPayload>>(
+    async (formInputs) => {
       const fileContent = await workspaces.getFileContent({
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: props.workspaceFile.relativePath,
       });
 
       const decodedFileContent = decoder.decode(fileContent);
-      const importedModelResourcesByModelPath = await props.dmnLanguageService?.getImportedModels([
+      const importIndex = await props.dmnLanguageService?.buildImportIndex([
         {
           content: decodedFileContent,
-          normalizedPosixPathRelativeToWorkspaceRoot: props.workspaceFile.relativePath,
+          normalizedPosixPathRelativeToTheWorkspaceRoot: props.workspaceFile.relativePath,
         },
       ]);
-      // Get all imported models. Create a Set to remove duplicates.
-      const allImportedModelResources = new Set(
-        [...(importedModelResourcesByModelPath?.values() ?? [])].flatMap((e) => e)
-      );
-      const dmnResources = [
-        { content: decodedFileContent, normalizedPosixPathRelativeToWorkspaceRoot: props.workspaceFile.relativePath },
-        ...allImportedModelResources,
-      ].map((resource) => ({
-        URI: resource.normalizedPosixPathRelativeToWorkspaceRoot,
-        content: resource.content ?? "",
-      }));
 
       return {
-        mainURI: props.workspaceFile.relativePath,
-        resources: dmnResources,
         context: formInputs,
-      } as ExtendedServicesModelPayload;
+        mainURI: props.workspaceFile.relativePath,
+        resources: [...(importIndex?.models.entries() ?? [])].map(
+          ([normalizedPosixPathRelativeToTheWorkspaceRoot, model]) => ({
+            content: model.xml,
+            URI: normalizedPosixPathRelativeToTheWorkspaceRoot,
+          })
+        ),
+      };
     },
     [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
   );
