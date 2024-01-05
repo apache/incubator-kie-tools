@@ -35,15 +35,15 @@ export const dmn12D = () => {
   return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/dImportsAB.dmn" });
 };
 
-export const dmn15ImportsDmn12C = () => {
+export const dmn15A = () => {
   return getModelXmlForTestFixtures({
-    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12C.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/aImportsDmn12C.dmn",
   });
 };
 
-export const dmn15ImportsDmn12D = () => {
+export const dmn15B = () => {
   return getModelXmlForTestFixtures({
-    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12D.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/bImportsDmn12D.dmn",
   });
 };
 

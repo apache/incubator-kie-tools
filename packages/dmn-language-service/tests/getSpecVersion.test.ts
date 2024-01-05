@@ -18,7 +18,7 @@
  */
 
 import { DmnLanguageService } from "../src";
-import { dmn12D, dmn15ImportsDmn12D } from "./fs/fixtures";
+import { dmn12D, dmn15B } from "./fs/fixtures";
 import { asyncGetModelXmlForTestFixtures } from "./fs/getModelXml";
 
 it("empty", () => {
@@ -38,5 +38,5 @@ it("1.2", () => {
 
 it("1.5", () => {
   const dmnLs = new DmnLanguageService({ getModelXml: asyncGetModelXmlForTestFixtures });
-  expect(dmnLs.getSpecVersion(dmn15ImportsDmn12D())).toEqual("1.5");
+  expect(dmnLs.getSpecVersion(dmn15B())).toEqual("1.5");
 });
