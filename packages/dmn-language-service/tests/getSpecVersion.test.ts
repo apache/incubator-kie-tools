@@ -18,7 +18,7 @@
  */
 
 import { DmnLanguageService } from "../src";
-import { dmn12ImportsAB, dmn15ImportsDmn12ImportsAB } from "./fs/fixtures";
+import { dmn12D, dmn15ImportsDmn12D } from "./fs/fixtures";
 import { asyncGetModelXmlForTestFixtures } from "./fs/getModelXml";
 
 it("empty", () => {
@@ -33,10 +33,10 @@ it("invalid", () => {
 
 it("1.2", () => {
   const dmnLs = new DmnLanguageService({ getModelXml: asyncGetModelXmlForTestFixtures });
-  expect(dmnLs.getSpecVersion(dmn12ImportsAB())).toEqual("1.2");
+  expect(dmnLs.getSpecVersion(dmn12D())).toEqual("1.2");
 });
 
 it("1.5", () => {
   const dmnLs = new DmnLanguageService({ getModelXml: asyncGetModelXmlForTestFixtures });
-  expect(dmnLs.getSpecVersion(dmn15ImportsDmn12ImportsAB())).toEqual("1.5");
+  expect(dmnLs.getSpecVersion(dmn15ImportsDmn12D())).toEqual("1.5");
 });

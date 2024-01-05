@@ -43,5 +43,5 @@
       </di:extension>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
-  <import id="_512DB531-51F7-4EA2-B4BA-F2E769660B64" name="mo" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="https://kiegroup.org/dmn/_3FC31AA3-F0BA-4A0C-AEA5-7C0B5E4E6DB7" locationURI="../dmn12/importsAB.dmn" />
+  <import id="_512DB531-51F7-4EA2-B4BA-F2E769660B64" name="mo" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="https://kiegroup.org/dmn/_3FC31AA3-F0BA-4A0C-AEA5-7C0B5E4E6DB7" locationURI="../dmn12/dImportsAB.dmn" />
 </definitions>

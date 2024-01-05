@@ -24,15 +24,15 @@ import { DmnLanguageService } from "../src";
 import {
   dmn12A,
   dmn12B,
-  dmn12ImportsAB,
-  dmn15ImportsDmn12ImportsAB,
-  dmn12ImportsB,
+  dmn12C,
+  dmn12D,
+  dmn15ImportsDmn12C,
+  dmn15ImportsDmn12D,
   immediateRecursionA,
   immediateRecursionB,
   threeLevelRecursionA,
   threeLevelRecursionB,
   threeLevelRecursionC,
-  dmn15ImportsDmn12ImportsB,
 } from "./fs/fixtures";
 import { asyncGetModelXmlForTestFixtures } from "./fs/getModelXml";
 
@@ -90,26 +90,51 @@ Error details: SyntaxError: about:blank:3:2: disallowed character in tag name`);
 });
 
 describe("retrieve import index from single model resource", () => {
-  it("dmn12 - correctly populate the immediate and deep hierarchy", async () => {
+  it("dmn12 - dmn without imports - correctly populate the immediate and deep hierarchy", async () => {
     const dmnLs = new DmnLanguageService({ getModelXml: asyncGetModelXmlForTestFixtures });
 
     const importIndex = await dmnLs.buildImportIndex([
       {
-        content: dmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsAB.dmn",
+        content: dmn12A(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/a.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/dmn12/importsAB.dmn",
+          "fixtures/dmn12/a.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set([]),
+            deep: new Set([]),
+          },
+        ],
+      ])
+    );
+    expect(importIndex.models).toEqual(
+      new Map([["fixtures/dmn12/a.dmn", { xml: dmn12A(), definitions: getDefinitions(dmn12A()) }]])
+    );
+  });
+
+  it("dmn12 - correctly populate the immediate and deep hierarchy", async () => {
+    const dmnLs = new DmnLanguageService({ getModelXml: asyncGetModelXmlForTestFixtures });
+
+    const importIndex = await dmnLs.buildImportIndex([
+      {
+        content: dmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/dImportsAB.dmn",
+      },
+    ]);
+    expect(importIndex.hierarchy).toEqual(
+      new Map([
+        [
+          "fixtures/dmn12/dImportsAB.dmn",
+          {
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/b.dmn",
+          "fixtures/dmn12/bImportsA.dmn",
           {
             immediate: new Set(["fixtures/dmn12/a.dmn"]),
             deep: new Set(["fixtures/dmn12/a.dmn"]),
@@ -126,8 +151,8 @@ describe("retrieve import index from single model resource", () => {
     );
     expect(importIndex.models).toEqual(
       new Map([
-        ["fixtures/dmn12/importsAB.dmn", { xml: dmn12ImportsAB(), definitions: getDefinitions(dmn12ImportsAB()) }],
-        ["fixtures/dmn12/b.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
+        ["fixtures/dmn12/dImportsAB.dmn", { xml: dmn12D(), definitions: getDefinitions(dmn12D()) }],
+        ["fixtures/dmn12/bImportsA.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
         ["fixtures/dmn12/a.dmn", { xml: dmn12A(), definitions: getDefinitions(dmn12A()) }],
       ])
     );
@@ -138,28 +163,28 @@ describe("retrieve import index from single model resource", () => {
 
     const importIndex = await dmnLs.buildImportIndex([
       {
-        content: dmn15ImportsDmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+        content: dmn15ImportsDmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12D.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+          "fixtures/dmn15/importsDmn12D.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/importsAB.dmn"]),
-            deep: new Set(["fixtures/dmn12/importsAB.dmn", "fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/dImportsAB.dmn"]),
+            deep: new Set(["fixtures/dmn12/dImportsAB.dmn", "fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/importsAB.dmn",
+          "fixtures/dmn12/dImportsAB.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/b.dmn",
+          "fixtures/dmn12/bImportsA.dmn",
           {
             immediate: new Set(["fixtures/dmn12/a.dmn"]),
             deep: new Set(["fixtures/dmn12/a.dmn"]),
@@ -177,11 +202,11 @@ describe("retrieve import index from single model resource", () => {
     expect(importIndex.models).toEqual(
       new Map([
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
-          { xml: dmn15ImportsDmn12ImportsAB(), definitions: getDefinitions(dmn15ImportsDmn12ImportsAB()) },
+          "fixtures/dmn15/importsDmn12D.dmn",
+          { xml: dmn15ImportsDmn12D(), definitions: getDefinitions(dmn15ImportsDmn12D()) },
         ],
-        ["fixtures/dmn12/importsAB.dmn", { xml: dmn12ImportsAB(), definitions: getDefinitions(dmn12ImportsAB()) }],
-        ["fixtures/dmn12/b.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
+        ["fixtures/dmn12/dImportsAB.dmn", { xml: dmn12D(), definitions: getDefinitions(dmn12D()) }],
+        ["fixtures/dmn12/bImportsA.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
         ["fixtures/dmn12/a.dmn", { xml: dmn12A(), definitions: getDefinitions(dmn12A()) }],
       ])
     );
@@ -193,23 +218,23 @@ describe("retrieve import index from single model resource", () => {
     const importIndex = await dmnLs.buildImportIndex([
       {
         content: immediateRecursionA(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/a.dmn",
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/aImportsB.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/immediateRecursion/a.dmn",
+          "fixtures/immediateRecursion/aImportsB.dmn",
           {
-            immediate: new Set(["fixtures/immediateRecursion/b.dmn"]),
-            deep: new Set(["fixtures/immediateRecursion/b.dmn", "fixtures/immediateRecursion/a.dmn"]),
+            immediate: new Set(["fixtures/immediateRecursion/bImportsA.dmn"]),
+            deep: new Set(["fixtures/immediateRecursion/bImportsA.dmn", "fixtures/immediateRecursion/aImportsB.dmn"]),
           },
         ],
         [
-          "fixtures/immediateRecursion/b.dmn",
+          "fixtures/immediateRecursion/bImportsA.dmn",
           {
-            immediate: new Set(["fixtures/immediateRecursion/a.dmn"]),
-            deep: new Set(["fixtures/immediateRecursion/a.dmn", "fixtures/immediateRecursion/b.dmn"]),
+            immediate: new Set(["fixtures/immediateRecursion/aImportsB.dmn"]),
+            deep: new Set(["fixtures/immediateRecursion/aImportsB.dmn", "fixtures/immediateRecursion/bImportsA.dmn"]),
           },
         ],
       ])
@@ -217,11 +242,11 @@ describe("retrieve import index from single model resource", () => {
     expect(importIndex.models).toEqual(
       new Map([
         [
-          "fixtures/immediateRecursion/a.dmn",
+          "fixtures/immediateRecursion/aImportsB.dmn",
           { xml: immediateRecursionA(), definitions: getDefinitions(immediateRecursionA()) },
         ],
         [
-          "fixtures/immediateRecursion/b.dmn",
+          "fixtures/immediateRecursion/bImportsA.dmn",
           { xml: immediateRecursionB(), definitions: getDefinitions(immediateRecursionB()) },
         ],
       ])
@@ -234,41 +259,41 @@ describe("retrieve import index from single model resource", () => {
     const importIndex = await dmnLs.buildImportIndex([
       {
         content: threeLevelRecursionA(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/a.dmn",
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/aImportsB.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/threeLevelRecursion/a.dmn",
+          "fixtures/threeLevelRecursion/aImportsB.dmn",
           {
-            immediate: new Set(["fixtures/threeLevelRecursion/b.dmn"]),
+            immediate: new Set(["fixtures/threeLevelRecursion/bImportsC.dmn"]),
             deep: new Set([
-              "fixtures/threeLevelRecursion/b.dmn",
-              "fixtures/threeLevelRecursion/c.dmn",
-              "fixtures/threeLevelRecursion/a.dmn",
+              "fixtures/threeLevelRecursion/bImportsC.dmn",
+              "fixtures/threeLevelRecursion/cImportsA.dmn",
+              "fixtures/threeLevelRecursion/aImportsB.dmn",
             ]),
           },
         ],
         [
-          "fixtures/threeLevelRecursion/b.dmn",
+          "fixtures/threeLevelRecursion/bImportsC.dmn",
           {
-            immediate: new Set(["fixtures/threeLevelRecursion/c.dmn"]),
+            immediate: new Set(["fixtures/threeLevelRecursion/cImportsA.dmn"]),
             deep: new Set([
-              "fixtures/threeLevelRecursion/b.dmn",
-              "fixtures/threeLevelRecursion/c.dmn",
-              "fixtures/threeLevelRecursion/a.dmn",
+              "fixtures/threeLevelRecursion/bImportsC.dmn",
+              "fixtures/threeLevelRecursion/cImportsA.dmn",
+              "fixtures/threeLevelRecursion/aImportsB.dmn",
             ]),
           },
         ],
         [
-          "fixtures/threeLevelRecursion/c.dmn",
+          "fixtures/threeLevelRecursion/cImportsA.dmn",
           {
-            immediate: new Set(["fixtures/threeLevelRecursion/a.dmn"]),
+            immediate: new Set(["fixtures/threeLevelRecursion/aImportsB.dmn"]),
             deep: new Set([
-              "fixtures/threeLevelRecursion/b.dmn",
-              "fixtures/threeLevelRecursion/c.dmn",
-              "fixtures/threeLevelRecursion/a.dmn",
+              "fixtures/threeLevelRecursion/bImportsC.dmn",
+              "fixtures/threeLevelRecursion/cImportsA.dmn",
+              "fixtures/threeLevelRecursion/aImportsB.dmn",
             ]),
           },
         ],
@@ -277,15 +302,15 @@ describe("retrieve import index from single model resource", () => {
     expect(importIndex.models).toEqual(
       new Map([
         [
-          "fixtures/threeLevelRecursion/a.dmn",
+          "fixtures/threeLevelRecursion/aImportsB.dmn",
           { xml: threeLevelRecursionA(), definitions: getDefinitions(threeLevelRecursionA()) },
         ],
         [
-          "fixtures/threeLevelRecursion/b.dmn",
+          "fixtures/threeLevelRecursion/bImportsC.dmn",
           { xml: threeLevelRecursionB(), definitions: getDefinitions(threeLevelRecursionB()) },
         ],
         [
-          "fixtures/threeLevelRecursion/c.dmn",
+          "fixtures/threeLevelRecursion/cImportsA.dmn",
           { xml: threeLevelRecursionC(), definitions: getDefinitions(threeLevelRecursionC()) },
         ],
       ])
@@ -299,39 +324,39 @@ describe("retrieve import index from multi model resources", () => {
 
     const importIndex = await dmnLs.buildImportIndex([
       {
-        content: dmn12ImportsB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsB.dmn",
+        content: dmn12C(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/cImportsB.dmn",
       },
       {
-        content: dmn15ImportsDmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+        content: dmn15ImportsDmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12D.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/dmn12/importsB.dmn",
+          "fixtures/dmn12/cImportsB.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+          "fixtures/dmn15/importsDmn12D.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/importsAB.dmn"]),
-            deep: new Set(["fixtures/dmn12/importsAB.dmn", "fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/dImportsAB.dmn"]),
+            deep: new Set(["fixtures/dmn12/dImportsAB.dmn", "fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/importsAB.dmn",
+          "fixtures/dmn12/dImportsAB.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/b.dmn",
+          "fixtures/dmn12/bImportsA.dmn",
           {
             immediate: new Set(["fixtures/dmn12/a.dmn"]),
             deep: new Set(["fixtures/dmn12/a.dmn"]),
@@ -348,13 +373,13 @@ describe("retrieve import index from multi model resources", () => {
     );
     expect(importIndex.models).toEqual(
       new Map([
-        ["fixtures/dmn12/importsAB.dmn", { xml: dmn12ImportsAB(), definitions: getDefinitions(dmn12ImportsAB()) }],
-        ["fixtures/dmn12/importsB.dmn", { xml: dmn12ImportsB(), definitions: getDefinitions(dmn12ImportsB()) }],
-        ["fixtures/dmn12/b.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
+        ["fixtures/dmn12/dImportsAB.dmn", { xml: dmn12D(), definitions: getDefinitions(dmn12D()) }],
+        ["fixtures/dmn12/cImportsB.dmn", { xml: dmn12C(), definitions: getDefinitions(dmn12C()) }],
+        ["fixtures/dmn12/bImportsA.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
         ["fixtures/dmn12/a.dmn", { xml: dmn12A(), definitions: getDefinitions(dmn12A()) }],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
-          { xml: dmn15ImportsDmn12ImportsAB(), definitions: getDefinitions(dmn15ImportsDmn12ImportsAB()) },
+          "fixtures/dmn15/importsDmn12D.dmn",
+          { xml: dmn15ImportsDmn12D(), definitions: getDefinitions(dmn15ImportsDmn12D()) },
         ],
       ])
     );
@@ -364,33 +389,33 @@ describe("retrieve import index from multi model resources", () => {
     const dmnLs = new DmnLanguageService({ getModelXml: asyncGetModelXmlForTestFixtures });
     const importIndex = await dmnLs.buildImportIndex([
       {
-        content: dmn12ImportsB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsB.dmn",
+        content: dmn12C(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/cImportsB.dmn",
       },
       {
-        content: dmn15ImportsDmn12ImportsB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsB.dmn",
+        content: dmn15ImportsDmn12C(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12C.dmn",
       },
     ]);
 
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/dmn12/importsB.dmn",
+          "fixtures/dmn12/cImportsB.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn15/importsDmn12ImportsB.dmn",
+          "fixtures/dmn15/importsDmn12C.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/importsB.dmn"]),
-            deep: new Set(["fixtures/dmn12/importsB.dmn", "fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/cImportsB.dmn"]),
+            deep: new Set(["fixtures/dmn12/cImportsB.dmn", "fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/b.dmn",
+          "fixtures/dmn12/bImportsA.dmn",
           {
             immediate: new Set(["fixtures/dmn12/a.dmn"]),
             deep: new Set(["fixtures/dmn12/a.dmn"]),
@@ -408,12 +433,12 @@ describe("retrieve import index from multi model resources", () => {
     expect(importIndex.models).toEqual(
       new Map([
         [
-          "fixtures/dmn15/importsDmn12ImportsB.dmn",
-          { xml: dmn15ImportsDmn12ImportsB(), definitions: getDefinitions(dmn15ImportsDmn12ImportsB()) },
+          "fixtures/dmn15/importsDmn12C.dmn",
+          { xml: dmn15ImportsDmn12C(), definitions: getDefinitions(dmn15ImportsDmn12C()) },
         ],
-        ["fixtures/dmn12/b.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
+        ["fixtures/dmn12/bImportsA.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
         ["fixtures/dmn12/a.dmn", { xml: dmn12A(), definitions: getDefinitions(dmn12A()) }],
-        ["fixtures/dmn12/importsB.dmn", { xml: dmn12ImportsB(), definitions: getDefinitions(dmn12ImportsB()) }],
+        ["fixtures/dmn12/cImportsB.dmn", { xml: dmn12C(), definitions: getDefinitions(dmn12C()) }],
       ])
     );
   });
@@ -423,32 +448,32 @@ describe("retrieve import index from multi model resources", () => {
 
     const importIndex = await dmnLs.buildImportIndex([
       {
-        content: dmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsAB.dmn",
+        content: dmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/dImportsAB.dmn",
       },
       {
-        content: dmn15ImportsDmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+        content: dmn15ImportsDmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12D.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/dmn12/importsAB.dmn",
+          "fixtures/dmn12/dImportsAB.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+          "fixtures/dmn15/importsDmn12D.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/importsAB.dmn"]),
-            deep: new Set(["fixtures/dmn12/importsAB.dmn", "fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/dImportsAB.dmn"]),
+            deep: new Set(["fixtures/dmn12/dImportsAB.dmn", "fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/b.dmn",
+          "fixtures/dmn12/bImportsA.dmn",
           {
             immediate: new Set(["fixtures/dmn12/a.dmn"]),
             deep: new Set(["fixtures/dmn12/a.dmn"]),
@@ -465,12 +490,12 @@ describe("retrieve import index from multi model resources", () => {
     );
     expect(importIndex.models).toEqual(
       new Map([
-        ["fixtures/dmn12/importsAB.dmn", { xml: dmn12ImportsAB(), definitions: getDefinitions(dmn12ImportsAB()) }],
+        ["fixtures/dmn12/dImportsAB.dmn", { xml: dmn12D(), definitions: getDefinitions(dmn12D()) }],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
-          { xml: dmn15ImportsDmn12ImportsAB(), definitions: getDefinitions(dmn15ImportsDmn12ImportsAB()) },
+          "fixtures/dmn15/importsDmn12D.dmn",
+          { xml: dmn15ImportsDmn12D(), definitions: getDefinitions(dmn15ImportsDmn12D()) },
         ],
-        ["fixtures/dmn12/b.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
+        ["fixtures/dmn12/bImportsA.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
         ["fixtures/dmn12/a.dmn", { xml: dmn12A(), definitions: getDefinitions(dmn12A()) }],
       ])
     );
@@ -481,32 +506,32 @@ describe("retrieve import index from multi model resources", () => {
 
     const importIndex = await dmnLs.buildImportIndex([
       {
-        content: dmn15ImportsDmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+        content: dmn15ImportsDmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12D.dmn",
       },
       {
-        content: dmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsAB.dmn",
+        content: dmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/dImportsAB.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/dmn12/importsAB.dmn",
+          "fixtures/dmn12/dImportsAB.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+          "fixtures/dmn15/importsDmn12D.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/importsAB.dmn"]),
-            deep: new Set(["fixtures/dmn12/importsAB.dmn", "fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/dImportsAB.dmn"]),
+            deep: new Set(["fixtures/dmn12/dImportsAB.dmn", "fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/b.dmn",
+          "fixtures/dmn12/bImportsA.dmn",
           {
             immediate: new Set(["fixtures/dmn12/a.dmn"]),
             deep: new Set(["fixtures/dmn12/a.dmn"]),
@@ -523,12 +548,12 @@ describe("retrieve import index from multi model resources", () => {
     );
     expect(importIndex.models).toEqual(
       new Map([
-        ["fixtures/dmn12/importsAB.dmn", { xml: dmn12ImportsAB(), definitions: getDefinitions(dmn12ImportsAB()) }],
+        ["fixtures/dmn12/dImportsAB.dmn", { xml: dmn12D(), definitions: getDefinitions(dmn12D()) }],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
-          { xml: dmn15ImportsDmn12ImportsAB(), definitions: getDefinitions(dmn15ImportsDmn12ImportsAB()) },
+          "fixtures/dmn15/importsDmn12D.dmn",
+          { xml: dmn15ImportsDmn12D(), definitions: getDefinitions(dmn15ImportsDmn12D()) },
         ],
-        ["fixtures/dmn12/b.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
+        ["fixtures/dmn12/bImportsA.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
         ["fixtures/dmn12/a.dmn", { xml: dmn12A(), definitions: getDefinitions(dmn12A()) }],
       ])
     );
@@ -539,32 +564,32 @@ describe("retrieve import index from multi model resources", () => {
 
     const importIndex = await dmnLs.buildImportIndex([
       {
-        content: dmn15ImportsDmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+        content: dmn15ImportsDmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12D.dmn",
       },
       {
-        content: dmn15ImportsDmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+        content: dmn15ImportsDmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12D.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/dmn12/importsAB.dmn",
+          "fixtures/dmn12/dImportsAB.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+          "fixtures/dmn15/importsDmn12D.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/importsAB.dmn"]),
-            deep: new Set(["fixtures/dmn12/importsAB.dmn", "fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/dImportsAB.dmn"]),
+            deep: new Set(["fixtures/dmn12/dImportsAB.dmn", "fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/b.dmn",
+          "fixtures/dmn12/bImportsA.dmn",
           {
             immediate: new Set(["fixtures/dmn12/a.dmn"]),
             deep: new Set(["fixtures/dmn12/a.dmn"]),
@@ -581,12 +606,12 @@ describe("retrieve import index from multi model resources", () => {
     );
     expect(importIndex.models).toEqual(
       new Map([
-        ["fixtures/dmn12/importsAB.dmn", { xml: dmn12ImportsAB(), definitions: getDefinitions(dmn12ImportsAB()) }],
+        ["fixtures/dmn12/dImportsAB.dmn", { xml: dmn12D(), definitions: getDefinitions(dmn12D()) }],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
-          { xml: dmn15ImportsDmn12ImportsAB(), definitions: getDefinitions(dmn15ImportsDmn12ImportsAB()) },
+          "fixtures/dmn15/importsDmn12D.dmn",
+          { xml: dmn15ImportsDmn12D(), definitions: getDefinitions(dmn15ImportsDmn12D()) },
         ],
-        ["fixtures/dmn12/b.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
+        ["fixtures/dmn12/bImportsA.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
         ["fixtures/dmn12/a.dmn", { xml: dmn12A(), definitions: getDefinitions(dmn12A()) }],
       ])
     );
@@ -598,57 +623,57 @@ describe("retrieve import index from multi model resources", () => {
     const importIndex = await dmnLs.buildImportIndex([
       {
         content: dmn12B(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/b.dmn",
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/bImportsA.dmn",
       },
       {
-        content: dmn15ImportsDmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+        content: dmn15ImportsDmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12D.dmn",
       },
       {
-        content: dmn12ImportsAB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsAB.dmn",
+        content: dmn12D(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/dImportsAB.dmn",
       },
       {
-        content: dmn15ImportsDmn12ImportsB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsB.dmn",
+        content: dmn15ImportsDmn12C(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12C.dmn",
       },
       {
-        content: dmn12ImportsB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsB.dmn",
+        content: dmn12C(),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/cImportsB.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/dmn12/importsAB.dmn",
+          "fixtures/dmn12/dImportsAB.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+          "fixtures/dmn15/importsDmn12D.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/importsAB.dmn"]),
-            deep: new Set(["fixtures/dmn12/importsAB.dmn", "fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/dImportsAB.dmn"]),
+            deep: new Set(["fixtures/dmn12/dImportsAB.dmn", "fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/importsB.dmn",
+          "fixtures/dmn12/cImportsB.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/b.dmn"]),
-            deep: new Set(["fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/bImportsA.dmn"]),
+            deep: new Set(["fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn15/importsDmn12ImportsB.dmn",
+          "fixtures/dmn15/importsDmn12C.dmn",
           {
-            immediate: new Set(["fixtures/dmn12/importsB.dmn"]),
-            deep: new Set(["fixtures/dmn12/importsB.dmn", "fixtures/dmn12/b.dmn", "fixtures/dmn12/a.dmn"]),
+            immediate: new Set(["fixtures/dmn12/cImportsB.dmn"]),
+            deep: new Set(["fixtures/dmn12/cImportsB.dmn", "fixtures/dmn12/bImportsA.dmn", "fixtures/dmn12/a.dmn"]),
           },
         ],
         [
-          "fixtures/dmn12/b.dmn",
+          "fixtures/dmn12/bImportsA.dmn",
           {
             immediate: new Set(["fixtures/dmn12/a.dmn"]),
             deep: new Set(["fixtures/dmn12/a.dmn"]),
@@ -665,17 +690,17 @@ describe("retrieve import index from multi model resources", () => {
     );
     expect(importIndex.models).toEqual(
       new Map([
-        ["fixtures/dmn12/importsB.dmn", { xml: dmn12ImportsB(), definitions: getDefinitions(dmn12ImportsB()) }],
-        ["fixtures/dmn12/importsAB.dmn", { xml: dmn12ImportsAB(), definitions: getDefinitions(dmn12ImportsAB()) }],
+        ["fixtures/dmn12/cImportsB.dmn", { xml: dmn12C(), definitions: getDefinitions(dmn12C()) }],
+        ["fixtures/dmn12/dImportsAB.dmn", { xml: dmn12D(), definitions: getDefinitions(dmn12D()) }],
         [
-          "fixtures/dmn15/importsDmn12ImportsAB.dmn",
-          { xml: dmn15ImportsDmn12ImportsAB(), definitions: getDefinitions(dmn15ImportsDmn12ImportsAB()) },
+          "fixtures/dmn15/importsDmn12D.dmn",
+          { xml: dmn15ImportsDmn12D(), definitions: getDefinitions(dmn15ImportsDmn12D()) },
         ],
         [
-          "fixtures/dmn15/importsDmn12ImportsB.dmn",
-          { xml: dmn15ImportsDmn12ImportsB(), definitions: getDefinitions(dmn15ImportsDmn12ImportsB()) },
+          "fixtures/dmn15/importsDmn12C.dmn",
+          { xml: dmn15ImportsDmn12C(), definitions: getDefinitions(dmn15ImportsDmn12C()) },
         ],
-        ["fixtures/dmn12/b.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
+        ["fixtures/dmn12/bImportsA.dmn", { xml: dmn12B(), definitions: getDefinitions(dmn12B()) }],
         ["fixtures/dmn12/a.dmn", { xml: dmn12A(), definitions: getDefinitions(dmn12A()) }],
       ])
     );
@@ -687,27 +712,27 @@ describe("retrieve import index from multi model resources", () => {
     const importIndex = await dmnLs.buildImportIndex([
       {
         content: immediateRecursionA(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/a.dmn",
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/aImportsB.dmn",
       },
       {
         content: immediateRecursionB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/b.dmn",
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/bImportsA.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/immediateRecursion/a.dmn",
+          "fixtures/immediateRecursion/aImportsB.dmn",
           {
-            immediate: new Set(["fixtures/immediateRecursion/b.dmn"]),
-            deep: new Set(["fixtures/immediateRecursion/b.dmn", "fixtures/immediateRecursion/a.dmn"]),
+            immediate: new Set(["fixtures/immediateRecursion/bImportsA.dmn"]),
+            deep: new Set(["fixtures/immediateRecursion/bImportsA.dmn", "fixtures/immediateRecursion/aImportsB.dmn"]),
           },
         ],
         [
-          "fixtures/immediateRecursion/b.dmn",
+          "fixtures/immediateRecursion/bImportsA.dmn",
           {
-            immediate: new Set(["fixtures/immediateRecursion/a.dmn"]),
-            deep: new Set(["fixtures/immediateRecursion/a.dmn", "fixtures/immediateRecursion/b.dmn"]),
+            immediate: new Set(["fixtures/immediateRecursion/aImportsB.dmn"]),
+            deep: new Set(["fixtures/immediateRecursion/aImportsB.dmn", "fixtures/immediateRecursion/bImportsA.dmn"]),
           },
         ],
       ])
@@ -715,11 +740,11 @@ describe("retrieve import index from multi model resources", () => {
     expect(importIndex.models).toEqual(
       new Map([
         [
-          "fixtures/immediateRecursion/a.dmn",
+          "fixtures/immediateRecursion/aImportsB.dmn",
           { xml: immediateRecursionA(), definitions: getDefinitions(immediateRecursionA()) },
         ],
         [
-          "fixtures/immediateRecursion/b.dmn",
+          "fixtures/immediateRecursion/bImportsA.dmn",
           { xml: immediateRecursionB(), definitions: getDefinitions(immediateRecursionB()) },
         ],
       ])
@@ -732,49 +757,49 @@ describe("retrieve import index from multi model resources", () => {
     const importIndex = await dmnLs.buildImportIndex([
       {
         content: threeLevelRecursionA(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/a.dmn",
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/aImportsB.dmn",
       },
       {
         content: threeLevelRecursionB(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/b.dmn",
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/bImportsC.dmn",
       },
       {
         content: threeLevelRecursionC(),
-        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/c.dmn",
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/cImportsA.dmn",
       },
     ]);
     expect(importIndex.hierarchy).toEqual(
       new Map([
         [
-          "fixtures/threeLevelRecursion/a.dmn",
+          "fixtures/threeLevelRecursion/aImportsB.dmn",
           {
-            immediate: new Set(["fixtures/threeLevelRecursion/b.dmn"]),
+            immediate: new Set(["fixtures/threeLevelRecursion/bImportsC.dmn"]),
             deep: new Set([
-              "fixtures/threeLevelRecursion/b.dmn",
-              "fixtures/threeLevelRecursion/c.dmn",
-              "fixtures/threeLevelRecursion/a.dmn",
+              "fixtures/threeLevelRecursion/bImportsC.dmn",
+              "fixtures/threeLevelRecursion/cImportsA.dmn",
+              "fixtures/threeLevelRecursion/aImportsB.dmn",
             ]),
           },
         ],
         [
-          "fixtures/threeLevelRecursion/b.dmn",
+          "fixtures/threeLevelRecursion/bImportsC.dmn",
           {
-            immediate: new Set(["fixtures/threeLevelRecursion/c.dmn"]),
+            immediate: new Set(["fixtures/threeLevelRecursion/cImportsA.dmn"]),
             deep: new Set([
-              "fixtures/threeLevelRecursion/b.dmn",
-              "fixtures/threeLevelRecursion/c.dmn",
-              "fixtures/threeLevelRecursion/a.dmn",
+              "fixtures/threeLevelRecursion/bImportsC.dmn",
+              "fixtures/threeLevelRecursion/cImportsA.dmn",
+              "fixtures/threeLevelRecursion/aImportsB.dmn",
             ]),
           },
         ],
         [
-          "fixtures/threeLevelRecursion/c.dmn",
+          "fixtures/threeLevelRecursion/cImportsA.dmn",
           {
-            immediate: new Set(["fixtures/threeLevelRecursion/a.dmn"]),
+            immediate: new Set(["fixtures/threeLevelRecursion/aImportsB.dmn"]),
             deep: new Set([
-              "fixtures/threeLevelRecursion/b.dmn",
-              "fixtures/threeLevelRecursion/c.dmn",
-              "fixtures/threeLevelRecursion/a.dmn",
+              "fixtures/threeLevelRecursion/bImportsC.dmn",
+              "fixtures/threeLevelRecursion/cImportsA.dmn",
+              "fixtures/threeLevelRecursion/aImportsB.dmn",
             ]),
           },
         ],
@@ -783,15 +808,15 @@ describe("retrieve import index from multi model resources", () => {
     expect(importIndex.models).toEqual(
       new Map([
         [
-          "fixtures/threeLevelRecursion/a.dmn",
+          "fixtures/threeLevelRecursion/aImportsB.dmn",
           { xml: threeLevelRecursionA(), definitions: getDefinitions(threeLevelRecursionA()) },
         ],
         [
-          "fixtures/threeLevelRecursion/b.dmn",
+          "fixtures/threeLevelRecursion/bImportsC.dmn",
           { xml: threeLevelRecursionB(), definitions: getDefinitions(threeLevelRecursionB()) },
         ],
         [
-          "fixtures/threeLevelRecursion/c.dmn",
+          "fixtures/threeLevelRecursion/cImportsA.dmn",
           { xml: threeLevelRecursionC(), definitions: getDefinitions(threeLevelRecursionC()) },
         ],
       ])
@@ -817,7 +842,7 @@ Error details: SyntaxError: about:blank:1:3: text data outside of root node.`);
   it("normalizedPosixPathRelativeToTheWorkspaceRoot", async () => {
     const dmnLs = new DmnLanguageService({ getModelXml: asyncGetModelXmlForTestFixtures });
 
-    const dmnModelResources = [{ content: dmn12ImportsAB(), normalizedPosixPathRelativeToTheWorkspaceRoot: "aaa" }];
+    const dmnModelResources = [{ content: dmn12D(), normalizedPosixPathRelativeToTheWorkspaceRoot: "aaa" }];
     const fsAbsoluteModelPath = __path.resolve(__dirname, "a.dmn".split("/").join(__path.sep));
 
     const error: Error = await getError(async () => await dmnLs.buildImportIndex(dmnModelResources));

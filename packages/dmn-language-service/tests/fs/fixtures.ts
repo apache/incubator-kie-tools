@@ -24,56 +24,56 @@ export const dmn12A = () => {
 };
 
 export const dmn12B = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/b.dmn" });
+  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/bImportsA.dmn" });
 };
 
-export const dmn12ImportsB = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsB.dmn" });
+export const dmn12C = () => {
+  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/cImportsB.dmn" });
 };
 
-export const dmn12ImportsAB = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsAB.dmn" });
+export const dmn12D = () => {
+  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/dImportsAB.dmn" });
 };
 
-export const dmn15ImportsDmn12ImportsB = () => {
+export const dmn15ImportsDmn12C = () => {
   return getModelXmlForTestFixtures({
-    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsB.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12C.dmn",
   });
 };
 
-export const dmn15ImportsDmn12ImportsAB = () => {
+export const dmn15ImportsDmn12D = () => {
   return getModelXmlForTestFixtures({
-    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12D.dmn",
   });
 };
 
 export const immediateRecursionA = () => {
   return getModelXmlForTestFixtures({
-    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/a.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/aImportsB.dmn",
   });
 };
 
 export const immediateRecursionB = () => {
   return getModelXmlForTestFixtures({
-    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/b.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/bImportsA.dmn",
   });
 };
 
 export const threeLevelRecursionA = () => {
   return getModelXmlForTestFixtures({
-    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/a.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/aImportsB.dmn",
   });
 };
 
 export const threeLevelRecursionB = () => {
   return getModelXmlForTestFixtures({
-    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/b.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/bImportsC.dmn",
   });
 };
 
 export const threeLevelRecursionC = () => {
   return getModelXmlForTestFixtures({
-    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/c.dmn",
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/cImportsA.dmn",
   });
 };
 
