@@ -32,6 +32,7 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     const [DevUiUsers, setDevUiUsers] = React.useState<User[]>([]);
     const [navigate, setNavigate] = React.useState<string>("");
     const [devUIUrl, setDevUIUrl] = React.useState<string>("");
+    const [openApiBaseUrl, setOpenApiBaseUrl] = React.useState<string>("");
     const [openApiPath, setOpenApiPath] = React.useState<string>("");
     const [isWorkflowEnabled, setWorkflowEnabled] = React.useState(false);
     const [isTracingEnabled, setTracingEnabled] = React.useState(false);
@@ -56,6 +57,9 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
           },
           setDevUIUrl: (url) => {
             setDevUIUrl(url);
+          },
+          setOpenApiBaseUrl: (baseUrl) => {
+            setOpenApiBaseUrl(baseUrl);
           },
           setOpenApiPath: (path) => {
             setOpenApiPath(path);
@@ -92,6 +96,7 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
             users={DevUiUsers}
             dataIndexUrl={dataIndexUrl}
             navigate={navigate}
+            openApiBaseUrl={openApiBaseUrl}
             openApiPath={openApiPath}
             devUIUrl={devUIUrl}
             isWorkflowEnabled={isWorkflowEnabled}

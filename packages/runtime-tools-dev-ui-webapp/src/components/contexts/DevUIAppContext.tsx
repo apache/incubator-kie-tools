@@ -51,6 +51,7 @@ export interface UnSubscribeHandler {
 export type DevUIAppContextArgs = {
   users?: User[];
   devUIUrl: string;
+  openApiBaseUrl: string;
   openApiPath: string;
   isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
@@ -73,6 +74,10 @@ export class DevUIAppContextImpl implements DevUIAppContext {
 
   getDevUIUrl(): string {
     return this.args.devUIUrl;
+  }
+
+  getOpenApiBaseUrl(): string {
+    return this.args.openApiBaseUrl;
   }
 
   getOpenApiPath(): string {

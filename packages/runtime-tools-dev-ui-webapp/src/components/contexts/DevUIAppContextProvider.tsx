@@ -26,6 +26,7 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-component
 interface IOwnProps {
   users: User[];
   devUIUrl: string;
+  openApiBaseUrl: string;
   openApiPath: string;
   isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
@@ -39,6 +40,7 @@ interface IOwnProps {
 const DevUIAppContextProvider: React.FC<IOwnProps> = ({
   users,
   devUIUrl,
+  openApiBaseUrl,
   openApiPath,
   isWorkflowEnabled: isWorkflowEnabled,
   isTracingEnabled,
@@ -55,6 +57,7 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
         new DevUIAppContextImpl({
           users,
           devUIUrl,
+          openApiBaseUrl,
           openApiPath,
           isWorkflowEnabled,
           isTracingEnabled,

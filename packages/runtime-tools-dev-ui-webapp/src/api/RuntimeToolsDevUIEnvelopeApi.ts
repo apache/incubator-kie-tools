@@ -40,6 +40,7 @@ export interface RuntimeToolsDevUIInitArgs {
   trustyServiceUrl?: string;
   page: string;
   devUIUrl: string;
+  openApiBaseUrl: string;
   openApiPath: string;
   isDataIndexAvailable: boolean;
   isTracingEnabled?: boolean;

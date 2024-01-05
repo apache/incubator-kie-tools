@@ -36,6 +36,7 @@ export interface Consoles {
     trustyServiceUrl: string;
     page: string;
     devUIUrl: string;
+    openApiBaseUrl: string;
     openApiPath: string;
     origin?: string;
     availablePages?: string[];
@@ -55,6 +56,7 @@ const createEnvelopeServer = (
   trustyServiceUrl: string,
   page: string,
   devUIUrl: string,
+  openApiBaseUrl: string,
   openApiPath: string,
   customLabels: CustomLabels,
   isStunnerEnabled: boolean,
@@ -83,6 +85,7 @@ const createEnvelopeServer = (
           trustyServiceUrl,
           page,
           devUIUrl,
+          openApiBaseUrl,
           openApiPath,
           customLabels,
           availablePages,
@@ -124,6 +127,7 @@ export function open(args: {
   trustyServiceUrl: string;
   page: string;
   devUIUrl: string;
+  openApiBaseUrl: string;
   openApiPath: string;
   origin?: string;
   availablePages?: string[];
@@ -148,6 +152,7 @@ export function open(args: {
     args.trustyServiceUrl,
     args.page,
     args.devUIUrl,
+    args.openApiBaseUrl,
     args.openApiPath,
     args.customLabels ?? {
       singularWorkflowLabel: "Workflow",

@@ -45,6 +45,7 @@ interface IOwnProps {
   users: User[];
   children: React.ReactElement;
   devUIUrl: string;
+  openApiBaseUrl: string;
   openApiPath: string;
   availablePages?: string[];
   customLabels?: CustomLabels;
@@ -59,6 +60,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
   isTracingEnabled,
   users,
   devUIUrl,
+  openApiBaseUrl,
   openApiPath,
   availablePages,
   customLabels,
@@ -80,6 +82,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
       <DevUIAppContextProvider
         users={users}
         devUIUrl={devUIUrl}
+        openApiBaseUrl={openApiBaseUrl}
         openApiPath={openApiPath}
         isWorkflowEnabled={isWorkflowEnabled}
         isTracingEnabled={isTracingEnabled}
@@ -91,13 +94,13 @@ const DevUILayout: React.FC<IOwnProps> = ({
       >
         <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
           <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
-            <WorkflowDefinitionListContextProvider kogitoServiceUrl={openApiPath}>
+            <WorkflowDefinitionListContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
               <FormsListContextProvider>
                 <CustomDashboardListContextProvider>
                   <CustomDashboardViewContextProvider>
                     <FormDetailsContextProvider>
-                      <WorkflowFormContextProvider kogitoServiceUrl={openApiPath}>
-                        <CloudEventFormContextProvider kogitoServiceUrl={openApiPath}>
+                      <WorkflowFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}/${openApiPath}`}>
+                        <CloudEventFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}/${openApiPath}`}>
                           <MemoryRouter>
                             <Switch>
                               <Route path="/" render={renderPage} />

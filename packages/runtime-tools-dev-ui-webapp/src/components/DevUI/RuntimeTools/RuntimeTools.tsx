@@ -37,6 +37,7 @@ interface IOwnProps {
   dataIndexUrl: string;
   navigate: string;
   devUIUrl: string;
+  openApiBaseUrl: string;
   openApiPath: string;
   availablePages: string[];
   customLabels?: CustomLabels;
@@ -50,6 +51,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   dataIndexUrl,
   navigate,
   devUIUrl,
+  openApiBaseUrl,
   openApiPath,
   isWorkflowEnabled,
   isTracingEnabled,
@@ -73,6 +75,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           apolloClient={client}
           users={users}
           devUIUrl={devUIUrl}
+          openApiBaseUrl={openApiBaseUrl}
           openApiPath={openApiPath}
           isWorkflowEnabled={isWorkflowEnabled}
           isTracingEnabled={isTracingEnabled}
@@ -100,6 +103,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       apolloClient={client}
       users={users}
       devUIUrl={devUIUrl}
+      openApiBaseUrl={openApiBaseUrl}
       openApiPath={openApiPath}
       isWorkflowEnabled={isWorkflowEnabled}
       isTracingEnabled={isTracingEnabled}

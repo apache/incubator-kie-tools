@@ -254,9 +254,12 @@ export const saveFormContent = (formName: string, content: FormContent): Promise
   });
 };
 
-export const getWorkflowDefinitionList = (devUIUrl: string, openApiPath: string): Promise<WorkflowDefinition[]> => {
+export const getWorkflowDefinitionList = (
+  openApiBaseUrl: string,
+  openApiPath: string
+): Promise<WorkflowDefinition[]> => {
   return new Promise((resolve, reject) => {
-    SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
+    SwaggerParser.parse(`${openApiBaseUrl}/${openApiPath}`)
       .then((response) => {
         const workflowDefinitionObjs: { [key: string]: any }[] = [];
         const paths = response.paths;
@@ -270,7 +273,7 @@ export const getWorkflowDefinitionList = (devUIUrl: string, openApiPath: string)
               workflowDefinitionObjs.push({ [url]: paths[url] });
             }
           });
-        resolve(createWorkflowDefinitionList(workflowDefinitionObjs, devUIUrl));
+        resolve(createWorkflowDefinitionList(workflowDefinitionObjs, openApiBaseUrl));
       })
       .catch((err) => reject(err));
   });
@@ -395,12 +398,12 @@ export const getCustomDashboardContent = (name: string): Promise<string> => {
 };
 
 export const getCustomWorkflowSchema = (
-  devUIUrl: string,
+  openApiBaseUrl: string,
   openApiPath: string,
   workflowName: string
 ): Promise<Record<string, any> | null> => {
   return new Promise((resolve, reject) => {
-    SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
+    SwaggerParser.parse(`${openApiBaseUrl}/${openApiPath}`)
       .then((response: any) => {
         let schema = {};
         try {
