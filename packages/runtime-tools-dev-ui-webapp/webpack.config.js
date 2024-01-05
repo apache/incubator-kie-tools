@@ -37,12 +37,9 @@ module.exports = async (env) =>
       standalone: path.resolve(__dirname, "src", "standalone", "standalone.ts"),
       envelope: path.resolve(__dirname, "src", "standalone", "EnvelopeApp.ts"),
       "resources/form-displayer": "./src/resources/form-displayer.ts",
-      "resources/serverless-workflow-text-editor-envelope":
-        "./src/resources/ServerlessWorkflowTextEditorEnvelopeApp.ts",
-      "resources/serverless-workflow-combined-editor-envelope":
-        "./src/resources/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
-      "resources/serverless-workflow-diagram-editor-envelope":
-        "./src/resources/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
+      "serverless-workflow-text-editor-envelope": "./src/resources/ServerlessWorkflowTextEditorEnvelopeApp.ts",
+      "serverless-workflow-combined-editor-envelope": "./src/resources/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
+      "serverless-workflow-diagram-editor-envelope": "./src/resources/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
     },
     devServer: {
       static: {
@@ -79,6 +76,18 @@ module.exports = async (env) =>
       new CopyPlugin({
         patterns: [
           { from: "./resources", to: "./resources" },
+          {
+            from: "./resources/serverless-workflow-combined-editor-envelope.html",
+            to: "./serverless-workflow-combined-editor-envelope.html",
+          },
+          {
+            from: "./resources/serverless-workflow-diagram-editor-envelope.html",
+            to: "./serverless-workflow-diagram-editor-envelope.html",
+          },
+          {
+            from: "./resources/serverless-workflow-text-editor-envelope.html",
+            to: "./serverless-workflow-text-editor-envelope.html",
+          },
           { from: "./src/static", to: "./static" },
           { from: "./src/components/styles.css", to: "./components/styles.css" },
           { from: "./node_modules/@kie-tools/runtime-tools-monitoring-webapp/dist", to: "./monitoring-webapp" },

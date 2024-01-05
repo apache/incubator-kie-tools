@@ -118,7 +118,11 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
           >
             <PageSection {...componentOuiaProps(ouiaId, "workflow-list-page-section", ouiaSafe)}>
               <Card className="Dev-ui__card-size">
-                <WorkflowListContainer initialState={initialState} onOpenWorkflowDetails={onOpenWorkflowDetails} />
+                <WorkflowListContainer
+                  initialState={initialState}
+                  onOpenWorkflowDetails={onOpenWorkflowDetails}
+                  targetOrigin={apiContext.getDevUIUrl()}
+                />
               </Card>
             </PageSection>
           </Tab>
@@ -129,7 +133,10 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
           >
             <PageSection {...componentOuiaProps(ouiaId, "workflow-definition-list-page-section", ouiaSafe)}>
               <Card className="Dev-ui__card-size">
-                <WorkflowDefinitionListContainer onOpenWorkflowForm={onOpenWorkflowForm} />
+                <WorkflowDefinitionListContainer
+                  onOpenWorkflowForm={onOpenWorkflowForm}
+                  targetOrigin={apiContext.getDevUIUrl()}
+                />
               </Card>
             </PageSection>
           </Tab>

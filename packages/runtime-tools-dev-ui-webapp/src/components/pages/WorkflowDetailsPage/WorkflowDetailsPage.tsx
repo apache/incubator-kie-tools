@@ -62,7 +62,7 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
   const [workflowInstance, setWorkflowInstance] = useState<WorkflowInstance>({} as WorkflowInstance);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fetchError, setFetchError] = useState<string>("");
-  let currentPage = JSON.parse(window.localStorage.getItem("state") ?? "");
+  let currentPage = JSON.parse(window.localStorage.getItem("state") ?? "null");
   useEffect(() => {
     window.onpopstate = () => {
       props.history.push({ state: Object.assign({}, props.location.state) });
@@ -118,7 +118,11 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
       return (
         <>
           {workflowInstance && Object.keys(workflowInstance).length > 0 && !fetchError ? (
-            <WorkflowDetailsContainer workflowInstance={workflowInstance} onOpenWorkflowInstanceDetails={() => {}} />
+            <WorkflowDetailsContainer
+              workflowInstance={workflowInstance}
+              onOpenWorkflowInstanceDetails={() => {}}
+              targetOrigin={appContext.getDevUIUrl()}
+            />
           ) : (
             <>
               {fetchError.length > 0 && (
