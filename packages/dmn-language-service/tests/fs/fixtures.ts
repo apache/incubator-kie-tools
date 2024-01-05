@@ -19,50 +19,64 @@
 
 import { getModelXmlForTestFixtures } from "./getModelXml";
 
-export const singleImport = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/singleImport.dmn" });
+export const dmn12A = () => {
+  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/a.dmn" });
 };
 
-export const doubleImport = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/doubleImport.dmn" });
+export const dmn12B = () => {
+  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/b.dmn" });
 };
 
-export const deepNested = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/deep/nested.dmn" });
+export const dmn12ImportsB = () => {
+  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsB.dmn" });
 };
 
-export const deepRecursive = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/deep/recursive.dmn" });
+export const dmn12ImportsAB = () => {
+  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/importsAB.dmn" });
 };
 
-export const example1 = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/example1.dmn" });
+export const dmn15ImportsDmn12ImportsB = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsB.dmn",
+  });
 };
 
-export const example2 = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/example2.dmn" });
+export const dmn15ImportsDmn12ImportsAB = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn15/importsDmn12ImportsAB.dmn",
+  });
 };
 
-export const example3 = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/example3.dmn" });
+export const immediateRecursionA = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/a.dmn",
+  });
 };
 
-export const example4 = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/example4.dmn" });
+export const immediateRecursionB = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/immediateRecursion/b.dmn",
+  });
 };
 
-export const example5 = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/example5.dmn" });
+export const threeLevelRecursionA = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/a.dmn",
+  });
+};
+
+export const threeLevelRecursionB = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/b.dmn",
+  });
+};
+
+export const threeLevelRecursionC = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/threeLevelRecursion/c.dmn",
+  });
 };
 
 export const decisions = () => {
   return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/decisions.dmn" });
-};
-
-export const simple15 = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/simple-1.5.dmn" });
-};
-
-export const simple152 = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/simple-1.5-2.dmn" });
 };

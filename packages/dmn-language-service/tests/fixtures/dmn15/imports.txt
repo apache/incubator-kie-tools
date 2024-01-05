@@ -1,0 +1,4 @@
+importsDmn12ImportsB -> importsB -> b
+
+importsDmn12ImportsAB -> importsAB -> a
+importsDmn12ImportsAB -> importsAB -> b -> a
