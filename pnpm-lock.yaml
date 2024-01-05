@@ -671,8 +671,8 @@ importers:
         specifier: workspace:*
         version: link:../workspace
       axios:
-        specifier: ^0.27.2
-        version: 0.27.2
+        specifier: ^1.6.4
+        version: 1.6.4
       fast-xml-parser:
         specifier: ^4.3.1
         version: 4.3.1
@@ -5829,6 +5829,34 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
 
+  packages/kie-sandbox-helm-chart:
+    dependencies:
+      "@kie-tools/cors-proxy-image":
+        specifier: workspace:*
+        version: link:../cors-proxy-image
+      "@kie-tools/kie-sandbox-extended-services-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-extended-services-image
+      "@kie-tools/kie-sandbox-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-image
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
+      prettier:
+        specifier: ^2.8.8
+        version: 2.8.8
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   packages/kie-sandbox-image:
     dependencies:
       "@kie-tools/image-env-to-json":
@@ -7107,8 +7135,8 @@ importers:
         specifier: 2.6.10
         version: 2.6.10(graphql@14.3.1)
       axios:
-        specifier: ^0.27.2
-        version: 0.27.2
+        specifier: ^1.6.4
+        version: 1.6.4
       gql-query-builder:
         specifier: 3.1.3
         version: 3.1.3
@@ -7561,8 +7589,8 @@ importers:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
       axios:
-        specifier: ^0.27.2
-        version: 0.27.2
+        specifier: ^1.6.4
+        version: 1.6.4
       bowser:
         specifier: ^2.10.0
         version: 2.11.0
@@ -8045,6 +8073,9 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor":
         specifier: workspace:*
         version: link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-envelope
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
@@ -25658,7 +25689,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9(debug@4.3.1)
+      follow-redirects: 1.15.3(debug@4.3.1)
     transitivePeerDependencies:
       - debug
     dev: true
@@ -25667,8 +25698,19 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9(debug@4.3.1)
+      follow-redirects: 1.14.9
       form-data: 4.0.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
+  /axios@1.6.4:
+    resolution:
+      { integrity: sha512-heJnIs6N4aa1eSthhN9M5ioILu8Wi8vmQW9iHQ9NUvfkJb0lEEDUiIdQNAuBtfUt3FxReaKdpQA5DbmMOqzF/A== }
+    dependencies:
+      follow-redirects: 1.15.4
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
     dev: false
@@ -28455,6 +28497,7 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+    dev: true
 
   /debug@4.3.2:
     resolution:
@@ -31133,7 +31176,7 @@ packages:
     dependencies:
       tabbable: 5.3.3
 
-  /follow-redirects@1.14.9(debug@4.3.1):
+  /follow-redirects@1.14.9:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -31142,8 +31185,31 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
+
+  /follow-redirects@1.15.3(debug@4.3.1):
+    resolution:
+      { integrity: sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q== }
+    engines: { node: ">=4.0" }
+    peerDependencies:
+      debug: "*"
+    peerDependenciesMeta:
+      debug:
+        optional: true
     dependencies:
       debug: 4.3.1
+    dev: true
+
+  /follow-redirects@1.15.4:
+    resolution:
+      { integrity: sha512-Cr4D/5wlrb0z9dgERpUL3LrmPKVDsETIJhaCMeDfuFYcqa5bldGV6wBsAN6X/vxlXQtFBMrXdXxdL8CbDTGniw== }
+    engines: { node: ">=4.0" }
+    peerDependencies:
+      debug: "*"
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
 
   /for-each@0.3.3:
     resolution:
@@ -32420,7 +32486,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9(debug@4.3.1)
+      follow-redirects: 1.15.3(debug@4.3.1)
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -38787,7 +38853,6 @@ packages:
   /proxy-from-env@1.1.0:
     resolution:
       { integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg== }
-    dev: true
 
   /prr@1.0.1:
     resolution:

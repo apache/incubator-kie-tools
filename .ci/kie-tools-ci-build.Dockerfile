@@ -101,6 +101,10 @@ RUN wget https://github.com/github/codeql-action/releases/latest/download/codeql
 RUN wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz -P /tmp && \
     sudo tar -C /usr/bin/ -xvzf /tmp/openshift-client-linux.tar.gz oc && rm /tmp/openshift-client-linux.tar.gz
 
+# Helm CLI setup
+RUN wget https://get.helm.sh/helm-v3.13.3-linux-amd64.tar.gz -P /tmp && \
+    sudo tar -C /usr/bin/ -zxvf /tmp/helm-v3.13.3-linux-amd64.tar.gz linux-amd64/helm --strip-components 1 && rm /tmp/helm-v3.13.3-linux-amd64.tar.gz
+
 # Env vars
 ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 ENV DISPLAY=":99"

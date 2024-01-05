@@ -115,6 +115,7 @@ digraph G {
   "@kie-tools/kie-sandbox-extended-services-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-sandbox-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kie-sandbox-fs" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/kie-sandbox-helm-chart" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kn-plugin-workflow" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/kubernetes-bridge" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -139,9 +140,9 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/serverless-workflow-diagram-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/serverless-workflow-diagram-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-jq-expressions" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -353,6 +354,9 @@ digraph G {
   "@kie-tools/kie-sandbox-extended-services-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-sandbox-fs" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-sandbox-fs" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/kie-sandbox-helm-chart" -> "@kie-tools/cors-proxy-image" [ style = "solid", color = "black" ];
+  "@kie-tools/kie-sandbox-helm-chart" -> "@kie-tools/kie-sandbox-extended-services-image" [ style = "solid", color = "black" ];
+  "@kie-tools/kie-sandbox-helm-chart" -> "@kie-tools/kie-sandbox-image" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/online-editor" [ style = "solid", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
@@ -430,11 +434,11 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "solid", color = "blue" ];
-  "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-text-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
+  "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-jq-expressions" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
@@ -445,7 +449,6 @@ digraph G {
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
-  "swf-vscode-extension" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "solid", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "dashed", color = "blue" ];

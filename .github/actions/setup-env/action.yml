@@ -97,6 +97,16 @@ runs:
         colima start --memory 4 --network-address --verbose
       # QEMU is reinstalled due to this bug: https://github.com/lima-vm/lima/issues/1742
 
+    - name: "Setup Helm (Ubuntu)"
+      if: runner.os == 'Linux'
+      shell: bash
+      env:
+        HELM_VERSION: "v3.13.3"
+      run: |
+        echo "STEP: Install Helm (Ubuntu only)"
+        sudo wget -q https://get.helm.sh/helm-$HELM_VERSION-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm
+        sudo chmod +x /usr/local/bin/helm
+
     - name: "Setup network timeout"
       shell: bash
       run: |

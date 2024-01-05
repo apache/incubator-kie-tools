@@ -30,6 +30,7 @@ const argsByCommand = new Map([
   ["mvn", ["-v"]],
   ["go", ["version"]],
   ["make", ["-v"]],
+  ["helm", ["version"]],
 ]);
 
 async function main() {
