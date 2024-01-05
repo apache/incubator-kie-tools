@@ -36,7 +36,7 @@ export const dmn12D = () => {
 };
 
 export const dmn12E = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/eImportsXD.dmn" });
+  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/eImportsXB.dmn" });
 };
 
 export const dmn12X = () => {
@@ -44,11 +44,7 @@ export const dmn12X = () => {
 };
 
 export const dmn12Y = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/yImportsZ.dmn" });
-};
-
-export const dmn12Z = () => {
-  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/z.dmn" });
+  return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/dmn12/y.dmn" });
 };
 
 export const dmn15A = () => {
