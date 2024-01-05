@@ -126,7 +126,7 @@ function init(globals: Globals) {
     renderOpenRepoInExternalEditorApp({
       ...globals,
       pageType,
-      className: "btn ml-2 d-none d-md-block",
+      className: "btn btn-sm",
       container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()!,
     });
   } else {
@@ -185,7 +185,8 @@ export function discoverCurrentGitHubPageType() {
   }
 
   const isOrgSlashRepo = window.location.pathname.split("/").length === 3;
-  const isOrgSlashRepoSlashTreeSlashName = pathnameMatches(`/.*/.*/tree/[^/]*`);
+  const isOrgSlashRepoSlashTreeSlashName =
+    window.location.pathname.split("/tree/").length === 2 && !window.location.pathname.split("/tree/")[1].includes("/");
 
   if (isOrgSlashRepo || isOrgSlashRepoSlashTreeSlashName) {
     return GitHubPageType.REPO_HOME;
