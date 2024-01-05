@@ -165,7 +165,7 @@ export class DmnLanguageService {
 
       parents.push(normalizedPosixPathRelativeToTheWorkspaceRoot);
       await this.recusivelyPopulateImportIndex(p, importIndex, parents, depth - 1);
-      parents.pop(); // TODO: Add a test that actually breaks if we remove this line.
+      parents.pop();
     }
   }
 
