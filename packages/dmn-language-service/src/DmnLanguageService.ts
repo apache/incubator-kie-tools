@@ -31,33 +31,49 @@ const DMN_NAME = "name";
 const DECISION = "decision";
 const DEFINITIONS = "definitions";
 
+/**
+ * The normalized posix path relative to the workspace root is a string
+ * Example of paths: "myFolderInsideWorkspace/myFile.txt"
+ */
+type NormalizedPosixPathRelativeToWorkspaceRoot = string & {}; // Stops TypeScript of auto casting to string;
+
 export interface DmnLanguageServiceResource {
   content: string;
-  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: NormalizedPosixPathRelativeToWorkspaceRoot;
 }
 
 /**
- * TODO: Write this documentation
- *
- * This type represents the ...
- * string: normalizedPosixPathRelativeToTheWorkspaceRoot
- * .
+ * The hierarchy is a map of NormalizedPosixPathRelativeToWorkspaceRoot to `deep` and `immediate` sets
+ * The `deep` Set contains all direct and indirect imported DMNs of the given DMN
+ * The `immediate` Set contains all direct imported DMNs of the given DMN
+ */
+type ImportIndexHierarchy = Map<
+  NormalizedPosixPathRelativeToWorkspaceRoot,
+  {
+    deep: Set<NormalizedPosixPathRelativeToWorkspaceRoot>;
+    immediate: Set<NormalizedPosixPathRelativeToWorkspaceRoot>;
+  }
+>;
+
+/**
+ * The models is a map of NormalizedPosixPathRelativeToWorkspaceRoot to `definitions` and `xml`
+ * The `definitions` is the parsed definitions of the given DMN
+ * The `xml` is the plain text of the given DMN
+ */
+type ImportIndexModels = Map<
+  NormalizedPosixPathRelativeToWorkspaceRoot,
+  {
+    definitions: DMN15__tDefinitions;
+    xml: string;
+  }
+>;
+
+/**
+ * The ImportIndex collects the hierarchy and the models of all imported DMNs
  */
 export interface ImportIndex {
-  hierarchy: Map<
-    string,
-    {
-      deep: Set<string>;
-      immediate: Set<string>;
-    }
-  >;
-  models: Map<
-    string,
-    {
-      definitions: DMN15__tDefinitions;
-      xml: string;
-    }
-  >;
+  hierarchy: ImportIndexHierarchy;
+  models: ImportIndexModels;
 }
 
 export class DmnLanguageService {
@@ -153,6 +169,20 @@ export class DmnLanguageService {
     }
   }
 
+  /**
+   * This method collects the hierarchy and the models of all imported DMNs from the given DMNs
+   *
+   * @param resources the given resources to be used to build the `ImportIndex`
+   * @param depth the recursion max depth level of the hierarchy and models.
+   *
+   * Example:
+   *
+   * `-1: total recursion`
+   *
+   * `0: one level of recursion`
+   *
+   * @returns an `ImportIndex` with the hierarchy and models of all DMNs from the given resources. It includes the given resources and it'll build based on the given depth.
+   */
   public async buildImportIndex(
     resources: DmnLanguageServiceResource[],
     depth = -1 // By default, we recurse infinitely.
