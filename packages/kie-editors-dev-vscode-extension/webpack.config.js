@@ -40,12 +40,6 @@ module.exports = async (env) => [
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
-    plugins: [
-      new ProvidePlugin({
-        process: require.resolve("process/browser.js"),
-        Buffer: ["buffer", "Buffer"],
-      }),
-    ],
   }),
   merge(common(env), {
     output: {
@@ -131,12 +125,6 @@ module.exports = async (env) => [
     entry: {
       "webview/PMMLEditorEnvelopeApp": "./src/webview/PMMLEditorEnvelopeApp.ts",
     },
-    plugins: [
-      new ProvidePlugin({
-        process: require.resolve("process/browser.js"),
-        Buffer: ["buffer", "Buffer"],
-      }),
-    ],
     resolve: {
       alias: {
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
