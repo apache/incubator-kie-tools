@@ -1,0 +1,13 @@
+diff --git a/middleware/immer.d.ts b/middleware/immer.d.ts
+index e770ab38042021bdbf4e7d12635de380fd563925..19b728c6228191371625d52da79821bd551191ed 100644
+--- a/middleware/immer.d.ts
++++ b/middleware/immer.d.ts
+@@ -14,7 +14,7 @@ type SkipTwo<T> = T extends {
+ } ? [] : T extends {
+     length: 0 | 1;
+ } ? [] : T extends [unknown, unknown, ...infer A] ? A : T extends [unknown, unknown?, ...infer A] ? A : T extends [unknown?, unknown?, ...infer A] ? A : never;
+-type WithImmer<S> = Write<S, StoreImmer<S>>;
++export type WithImmer<S> = Write<S, StoreImmer<S>>;
+ type StoreImmer<S> = S extends {
+     getState: () => infer T;
+     setState: infer SetState;

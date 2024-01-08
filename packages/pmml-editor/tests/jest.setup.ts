@@ -18,6 +18,7 @@
  */
 
 import "@testing-library/jest-dom";
-import { enableAllPlugins } from "immer";
+import { enableMapSet, enablePatches } from "immer";
 
-enableAllPlugins();
+enableMapSet();
+enablePatches();

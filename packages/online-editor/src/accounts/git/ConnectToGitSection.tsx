@@ -42,7 +42,7 @@ import {
   isSupportedGitAuthProviderType,
   SupportedGitAuthProviders,
 } from "../../authProviders/AuthProvidersApi";
-import { switchExpression } from "../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { AuthOptionsType, getBitbucketClient } from "../../bitbucket/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
 

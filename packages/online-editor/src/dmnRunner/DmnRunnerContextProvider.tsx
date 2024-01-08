@@ -207,29 +207,31 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
-  const extendedServicesModelPayload = useCallback(
-    async (formInputs?: InputRow) => {
+  const extendedServicesModelPayload = useCallback<(formInputs?: InputRow) => Promise<ExtendedServicesModelPayload>>(
+    async (formInputs) => {
       const fileContent = await workspaces.getFileContent({
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: props.workspaceFile.relativePath,
       });
 
       const decodedFileContent = decoder.decode(fileContent);
-      const importedModelsResources =
-        (await props.dmnLanguageService?.getAllImportedModelsResources([decodedFileContent])) ?? [];
-      const dmnResources = [
-        { content: decodedFileContent, relativePath: props.workspaceFile.relativePath },
-        ...importedModelsResources,
-      ].map((resource) => ({
-        URI: resource.relativePath,
-        content: resource.content ?? "",
-      }));
+      const importIndex = await props.dmnLanguageService?.buildImportIndex([
+        {
+          content: decodedFileContent,
+          normalizedPosixPathRelativeToTheWorkspaceRoot: props.workspaceFile.relativePath,
+        },
+      ]);
 
       return {
-        mainURI: props.workspaceFile.relativePath,
-        resources: dmnResources,
         context: formInputs,
-      } as ExtendedServicesModelPayload;
+        mainURI: props.workspaceFile.relativePath,
+        resources: [...(importIndex?.models.entries() ?? [])].map(
+          ([normalizedPosixPathRelativeToTheWorkspaceRoot, model]) => ({
+            content: model.xml,
+            URI: normalizedPosixPathRelativeToTheWorkspaceRoot,
+          })
+        ),
+      };
     },
     [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
   );

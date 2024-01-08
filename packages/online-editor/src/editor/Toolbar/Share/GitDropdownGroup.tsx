@@ -35,7 +35,7 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { AuthSessionSelect } from "../../../authSessions/AuthSessionSelect";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../../../accounts/AccountsContext";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { switchExpression } from "../../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import GithubIcon from "@patternfly/react-icons/dist/js/icons/github-icon";
 import GitIcon from "@patternfly/react-icons/dist/js/icons/git-icon";

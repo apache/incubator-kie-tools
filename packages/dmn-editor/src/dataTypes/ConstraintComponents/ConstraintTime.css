@@ -1,0 +1,33 @@
+.kie-dmn-editor--constraint-time button::after {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.kie-dmn-editor--constraint-time > div > div > button {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent !important;
+}
+
+.kie-dmn-editor--constraint-time > div > div {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.kie-dmn-editor--constraint-time-timezone {
+  width: 120px;
+}
+
+.kie-dmn-editor--constraint-time-timezone > button {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.kie-dmn-editor--constraint-time-timezone-invalid > button {
+  color: red;
+  text-decoration: red dotted underline;
+  text-underline-position: under;
+}

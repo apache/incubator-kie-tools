@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { ExtendedServicesConfig } from "../settings/SettingsContext";
+import { ExtendedServicesConfig } from "./ExtendedServicesContextProvider";
 import { ExtendedServicesClient } from "./ExtendedServicesClient";
 import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 
@@ -32,7 +32,6 @@ export interface ExtendedServicesContextType {
   status: ExtendedServicesStatus;
   setStatus: React.Dispatch<ExtendedServicesStatus>;
   config: ExtendedServicesConfig;
-  saveNewConfig: React.Dispatch<ExtendedServicesConfig>;
   client: ExtendedServicesClient;
   version: string;
   outdated: boolean;

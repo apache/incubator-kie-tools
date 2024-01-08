@@ -25,7 +25,6 @@ test.describe("Create Boxed Function", () => {
   });
 
   test("should render FEEL function expression correctly", async ({ boxedExpressionEditor, page }) => {
-    await expect(page.getByText("Expression Name (Function)")).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "F", exact: true })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Edit parameters" })).toBeAttached();
@@ -36,7 +35,6 @@ test.describe("Create Boxed Function", () => {
   });
 
   test("should render Java function expression correctly", async ({ boxedExpressionEditor, page }) => {
-    await expect(page.getByText("Expression Name (Function)")).toBeAttached();
     await page.getByRole("columnheader", { name: "F", exact: true }).click();
     await page.getByRole("menuitem", { name: "Java" }).click();
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-java-function.png");
@@ -55,7 +53,6 @@ test.describe("Create Boxed Function", () => {
   });
 
   test("should render PMML function expression correctly", async ({ boxedExpressionEditor, page }) => {
-    await expect(page.getByText("Expression Name (Function)")).toBeAttached();
     await page.getByRole("columnheader", { name: "F", exact: true }).click();
     await page.getByRole("menuitem", { name: "PMML" }).click();
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-pmml-function.png");

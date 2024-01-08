@@ -1,0 +1,10 @@
+# -- Overrides charts name
+nameOverride: ""
+# -- Overrides charts full name
+fullnameOverride: ""
+
+global:
+  # -- Which ingress source is being used (none/"minikube"/"openshift") Obs.: For NOTES generation only
+  ingressSource: ""
+  # -- If using OpenShift Routes, set the Route domain
+  openshiftRouteDomain: ""

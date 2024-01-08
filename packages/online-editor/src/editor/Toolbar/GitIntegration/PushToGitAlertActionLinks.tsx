@@ -23,7 +23,7 @@ import { AuthSessionSelect, AuthSessionSelectFilter } from "../../../authSession
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../../../accounts/AccountsContext";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
-import { switchExpression } from "../../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 import { AuthProviderGroup } from "../../../authProviders/AuthProvidersApi";
 

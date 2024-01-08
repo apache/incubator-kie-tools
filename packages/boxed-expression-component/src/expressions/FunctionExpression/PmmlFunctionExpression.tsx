@@ -65,6 +65,7 @@ export function PmmlFunctionExpression({
   functionExpression: PmmlFunctionExpressionDefinition & { isNested: boolean };
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
+  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameters);
@@ -73,8 +74,8 @@ export function PmmlFunctionExpression({
     return [
       {
         label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: functionExpression.id as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        dataType: functionExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
@@ -110,7 +111,7 @@ export function PmmlFunctionExpression({
         ],
       },
     ];
-  }, [functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
+  }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
 
   const headerVisibility = useMemo(() => {
     return functionExpression.isNested

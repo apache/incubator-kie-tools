@@ -74,12 +74,13 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
   // Wrap file content into object for EmbeddedEditor
   const file = useMemo(() => {
     return {
-      fileName: contentPath,
-      fileExtension: openFileExtension,
-      getFileContents: getFileContents,
-      isReadOnly: readonly,
+      fileName: props.contentPath,
+      fileExtension: props.openFileExtension,
+      getFileContents: props.getFileContents,
+      isReadOnly: props.readonly,
+      path: props.contentPath,
     };
-  }, [contentPath, openFileExtension, getFileContents, readonly]);
+  }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
 
   // When changing from textMode to !textMode, we should update the diagram content
   useEffect(() => {

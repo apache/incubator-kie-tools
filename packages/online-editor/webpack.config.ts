@@ -84,6 +84,7 @@ export default async (env: any, argv: any) => {
           index: "./src/index.tsx",
           "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
           "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
+          "new-dmn-editor-envelope": "./src/envelope/NewDmnEditorEnvelopeApp.ts",
           "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
         },
         plugins: [
@@ -133,6 +134,7 @@ export default async (env: any, argv: any) => {
               { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
               { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
               { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
+              { from: "./static/envelope/new-dmn-editor-envelope.html", to: "./new-dmn-editor-envelope.html" },
               {
                 from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
                 to: "./images",
@@ -175,6 +177,9 @@ export default async (env: any, argv: any) => {
         historyApiFallback: false,
         static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
         compress: true,
+        client: {
+          overlay: false,
+        },
       },
     },
   ];

@@ -30,7 +30,7 @@ import { useOnlineI18n } from "../../../i18n";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { PushToGitAlertActionLinks } from "../GitIntegration/PushToGitAlertActionLinks";
 import { useGitIntegration } from "../GitIntegration/GitIntegrationContextProvider";
-import { switchExpression } from "../../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useHistory } from "react-router";
 import { useEditorToolbarContext } from "../EditorToolbarContextProvider";
