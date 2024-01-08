@@ -27,7 +27,7 @@ export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>
     } else {
       firstRender.current = false;
     }
-  }, [func]);
+  }, [func, ...deps]);
 }
 
 export function useIsolatedEditorTogglingEffect(

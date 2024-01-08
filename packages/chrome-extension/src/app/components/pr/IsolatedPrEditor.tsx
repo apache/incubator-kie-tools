@@ -73,9 +73,13 @@ export function IsolatedPrEditor(props: {
     props.githubTextEditorToReplace
   );
 
-  useInitialAsyncCallEffect(() => {
-    return discoverFileStatusOnPr(githubApi.octokit(), props.prInfo, originalFilePath, modifiedFilePath);
-  }, setFileStatusOnPr);
+  useInitialAsyncCallEffect(
+    useCallback(
+      () => discoverFileStatusOnPr(githubApi.octokit(), props.prInfo, originalFilePath, modifiedFilePath),
+      [githubApi, props.prInfo, originalFilePath, modifiedFilePath]
+    ),
+    setFileStatusOnPr
+  );
 
   const closeDiagram = useCallback(() => {
     setTextMode(true);
