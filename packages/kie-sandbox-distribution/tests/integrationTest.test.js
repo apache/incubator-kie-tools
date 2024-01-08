@@ -6,7 +6,7 @@ const kieSandboxUrl = `http://127.0.0.1:${env.kieSandboxDistribution.kieSandbox.
 const corsProxyUrl = `http://127.0.0.1:${env.kieSandboxDistribution.corsProxy.exposedPort}`;
 const extendedServicesUrl = `http://127.0.0.1:${env.kieSandboxDistribution.extendedServices.exposedPort}`;
 
-describe("Test built images individually", async () => {
+describe("Test built images individually", () => {
   it("cors-proxy homepage", async () => {
     expect(await (await fetch(corsProxyUrl)).text()).toMatchSnapshot();
   });
