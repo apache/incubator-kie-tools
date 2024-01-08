@@ -36,9 +36,30 @@ module.exports = async (env) => [
     externals: {
       vscode: "commonjs vscode",
     },
-    target: "web",
+    target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
+    },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
+  }),
+  merge(common(env), {
+    output: {
+      library: "AppFormer.VsCodePack",
+      libraryTarget: "umd",
+      umdNamedDefine: true,
+      globalObject: "this",
+    },
+    externals: {
+      vscode: "commonjs vscode",
+    },
+    target: "webworker",
+    entry: {
+      "extension/extensionWeb": "./src/extension/extension.ts",
     },
     plugins: [
       new ProvidePlugin({
@@ -133,5 +154,11 @@ module.exports = async (env) => [
         ...patternflyBase.webpackModuleRules,
       ],
     },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
   }),
 ];

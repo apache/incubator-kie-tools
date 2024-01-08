@@ -22,7 +22,7 @@ import * as vscode from "vscode";
 export class VsCodeWorkspaceChannelApiImpl {
   public openFile(absoluteFsPath: string) {
     try {
-      vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(absoluteFsPath));
+      vscode.commands.executeCommand("vscode.open", vscode.Uri.file(absoluteFsPath));
     } catch (e) {
       throw new Error(`Cannot open file at: ${absoluteFsPath}.`);
     }

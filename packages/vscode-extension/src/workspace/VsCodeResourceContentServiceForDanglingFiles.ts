@@ -43,7 +43,7 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     try {
-      const files = await vscode.workspace.fs.readDirectory(vscode.Uri.parse(this.workspaceRootAbsoluteFsPath));
+      const files = await vscode.workspace.fs.readDirectory(vscode.Uri.file(this.workspaceRootAbsoluteFsPath));
       const minimatch = new Minimatch(pattern);
       const regexp = minimatch.makeRe(); // The regexp is ~50x faster than the direct match using glob.
       return new ResourcesList(
@@ -83,7 +83,7 @@ export class VsCodeResourceContentServiceForDanglingFiles implements ResourceCon
     }
 
     try {
-      const content = await vscode.workspace.fs.readFile(vscode.Uri.parse(absoluteFsPath));
+      const content = await vscode.workspace.fs.readFile(vscode.Uri.file(absoluteFsPath));
 
       if (opts?.type === ContentType.BINARY) {
         return new ResourceContent(

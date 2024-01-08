@@ -44,7 +44,7 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
   }
 
   async readdir(path: string) {
-    const contentPath = vscode.Uri.parse(path);
+    const contentPath = vscode.Uri.file(path);
     try {
       return vscode.workspace.fs.readDirectory(contentPath);
     } catch (error) {
@@ -53,7 +53,7 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
   }
 
   async read(path: string) {
-    const contentPath = vscode.Uri.parse(path);
+    const contentPath = vscode.Uri.file(path);
     try {
       const uint8Array = await vscode.workspace.fs.readFile(contentPath);
       return Buffer.from(uint8Array);
@@ -67,7 +67,7 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
   }
 
   async write(path: string, buffer: Buffer) {
-    const contentPath = vscode.Uri.parse(path);
+    const contentPath = vscode.Uri.file(path);
     try {
       return vscode.workspace.fs.writeFile(contentPath, buffer);
     } catch (error) {
@@ -76,7 +76,7 @@ export class ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders {
   }
 
   async lstat(path: string) {
-    const contentPath = vscode.Uri.parse(path);
+    const contentPath = vscode.Uri.file(path);
     try {
       return vscode.workspace.fs.stat(contentPath);
     } catch (error) {

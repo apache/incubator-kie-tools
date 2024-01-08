@@ -126,7 +126,8 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
 
     if (__path.isAbsolute(normalizedPosixPathRelativeToTheWorkspaceRoot)) {
       throw new Error(
-        "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Can't work with absolute paths. All paths must be relative to the workspace root."
+        `VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Can't work with absolute paths. All paths must be relative to the workspace root.
+Normalized POSIX path relative to the workspace root: ${normalizedPosixPathRelativeToTheWorkspaceRoot}`
       );
     }
 
@@ -137,12 +138,15 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
 
     if (__path.resolve(workspaceRootAbsoluteFsPath, normalizedFsPathRelativeToTheWorkspaceRoot) !== absoluteFsPath) {
       throw new Error(
-        "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Path relative to the workspace root trying to access files outside the workspace."
+        `VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Path relative to the workspace root trying to access files outside the workspace.
+Absolute FS path: ${absoluteFsPath}
+Resolved path: ${__path.resolve(workspaceRootAbsoluteFsPath, normalizedFsPathRelativeToTheWorkspaceRoot)}
+`
       );
     }
 
     try {
-      const content = await vscode.workspace.fs.readFile(vscode.Uri.parse(absoluteFsPath));
+      const content = await vscode.workspace.fs.readFile(vscode.Uri.file(absoluteFsPath));
 
       if (opts?.type === ContentType.BINARY) {
         return new ResourceContent(

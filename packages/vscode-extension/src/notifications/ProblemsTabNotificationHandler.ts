@@ -43,7 +43,7 @@ export class ProblemsTabNotificationHandler {
 
   public createNotification(document: KogitoEditorDocument["document"], notification: Notification): void {
     const workspaceRoot = getWorkspaceRoot(document);
-    const uri = vscode.Uri.parse(
+    const uri = vscode.Uri.file(
       __path.join(
         workspaceRoot.workspaceRootAbsoluteFsPath,
         toFsPath(notification.normalizedPosixPathRelativeToTheWorkspaceRoot)
@@ -60,7 +60,7 @@ export class ProblemsTabNotificationHandler {
     notifications: Notification[]
   ): void {
     const workspaceRoot = getWorkspaceRoot(document);
-    const uri = vscode.Uri.parse(
+    const uri = vscode.Uri.file(
       __path.join(workspaceRoot.workspaceRootAbsoluteFsPath, toFsPath(normalizedPosixPathRelativeToTheWorkspaceRoot))
     );
     const diagnostics = notifications.map((notification) => this.buildDiagnostic(notification));
@@ -72,7 +72,7 @@ export class ProblemsTabNotificationHandler {
     normalizedPosixPathRelativeToTheWorkspaceRoot: string
   ) {
     const workspaceRoot = getWorkspaceRoot(document);
-    const uri = vscode.Uri.parse(
+    const uri = vscode.Uri.file(
       __path.join(workspaceRoot.workspaceRootAbsoluteFsPath, toFsPath(normalizedPosixPathRelativeToTheWorkspaceRoot))
     );
     this.diagnosticCollection.delete(uri);
