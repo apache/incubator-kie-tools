@@ -30,6 +30,12 @@ const commonConfig = (env) =>
       umdNamedDefine: true,
       globalObject: "this",
     },
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
     externals: {
       vscode: "commonjs vscode",
     },
@@ -41,12 +47,6 @@ module.exports = async (env) => [
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
-    plugins: [
-      new ProvidePlugin({
-        process: require.resolve("process/browser.js"),
-        Buffer: ["buffer", "Buffer"],
-      }),
-    ],
   }),
   merge(commonConfig(env), {
     target: "web",

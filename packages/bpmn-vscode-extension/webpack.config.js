@@ -50,12 +50,6 @@ module.exports = async (env) => [
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
-    plugins: [
-      new ProvidePlugin({
-        process: require.resolve("process/browser.js"),
-        Buffer: ["buffer", "Buffer"],
-      }),
-    ],
   }),
   merge(commonConfig(env), {
     target: "web",
