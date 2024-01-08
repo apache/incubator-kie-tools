@@ -27,7 +27,7 @@ export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>
     } else {
       firstRender.current = false;
     }
-    //Using deps as an extension mechanism to allow callers to define their own custom dependencies.
+    // Using deps as an extension mechanism to allow callers to define their own custom dependencies.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [func, ...deps]);
 }
