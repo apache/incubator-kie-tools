@@ -17,11 +17,27 @@
  * under the License.
  */
 
-
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
-public interface HasTranslation {
+public interface IsTruncatable {
 
-    String getTranslation(String constant);
+    int DEFAULT_MAX_LENGTH_SIZE = 30;
 
+
+    default String truncate(String value) {
+        return truncate(value, DEFAULT_MAX_LENGTH_SIZE);
+    }
+
+    default String truncate(String value, int size) {
+        if (value == null) {
+            return "undefined";
+        }
+
+        String result = value.trim();
+        if (result.length() <= size) {
+            return result;
+        }
+
+        return result.substring(0, size) + "...";
+    }
 }

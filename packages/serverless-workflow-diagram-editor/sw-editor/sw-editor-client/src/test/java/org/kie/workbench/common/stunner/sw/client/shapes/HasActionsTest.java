@@ -72,7 +72,7 @@ public class HasActionsTest extends HasTranslationGeneralTest {
         FunctionRef functionRef = new FunctionRef();
         action.setFunctionRef(functionRef);
 
-        assertTranslations(TEST_STRING + ": " + "null",
+        assertTranslations(TEST_STRING + ": " + "undefined",
                            hasAction.getActionString(action),
                            "Action.function");
     }
@@ -96,7 +96,7 @@ public class HasActionsTest extends HasTranslationGeneralTest {
         ActionEventRef eventRef = new ActionEventRef();
         action.setEventRef(eventRef);
 
-        assertTranslations(TEST_STRING + ": " + "null",
+        assertTranslations(TEST_STRING + ": " + "undefined",
                            hasAction.getActionString(action),
                            "Action.event");
     }
@@ -131,7 +131,7 @@ public class HasActionsTest extends HasTranslationGeneralTest {
         SubFlowRef subFlowRef = new SubFlowRef();
         action.setSubFlowRef(subFlowRef);
 
-        assertTranslations(TEST_STRING + ": " + "null",
+        assertTranslations(TEST_STRING + ": " + "undefined",
                            hasAction.getActionString(action),
                            "Action.subflow");
     }

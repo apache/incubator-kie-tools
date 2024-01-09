@@ -27,9 +27,7 @@ import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.DAT
 import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.DATA_FILTER_OUTPUT;
 import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.DATA_FILTER_PARAMETER;
 
-public interface HasDataFilter extends HasTranslation {
-
-    int DEFAULT_MAX_LENGTH_SIZE = 30;
+public interface HasDataFilter extends HasTranslation, IsTruncatable {
 
     default String getStateDataFilter(StateDataFilter filter) {
         if (filter == null) {
@@ -40,20 +38,4 @@ public interface HasDataFilter extends HasTranslation {
                 + "\r\n" + getTranslation(DATA_FILTER_OUTPUT) + ": " + truncate(filter.getOutput());
     }
 
-    default String truncate(String value) {
-        return truncate(value, DEFAULT_MAX_LENGTH_SIZE);
-    }
-
-    default String truncate(String value, int size) {
-        if (value == null) {
-            return "undefined";
-        }
-
-        String result = value.trim();
-        if (result.length() <= size) {
-            return result;
-        }
-
-        return result.substring(0, size) + "...";
-    }
 }
