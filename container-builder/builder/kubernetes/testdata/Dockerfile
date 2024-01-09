@@ -32,7 +32,7 @@ RUN ${MAVEN_HOME}/bin/mvn -U -B ${MAVEN_ARGS_APPEND} -s ${MAVEN_SETTINGS_PATH} c
 #=============================
 # Runtime Run
 #=============================
-FROM registry.access.redhat.com/ubi8/openjdk-11:1.11
+FROM registry.access.redhat.com/ubi8/openjdk-17:1.18
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
