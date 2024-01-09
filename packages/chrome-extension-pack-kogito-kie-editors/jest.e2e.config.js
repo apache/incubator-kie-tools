@@ -34,7 +34,12 @@ module.exports = {
     ],
   ],
   transform: {
-    "^.+\\.(ts)$": "ts-jest",
+    "^.+\\.(ts)$": [
+      "ts-jest",
+      {
+        tsconfig: "<rootDir>/tsconfig.json",
+      },
+    ],
   },
   testRegex: ["e2e-tests/tests/.*Test.ts"],
   testTimeout: 100000,
