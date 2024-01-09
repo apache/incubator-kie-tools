@@ -152,7 +152,7 @@ function DmnEditorRootWrapper({
     [envelopeContext]
   );
 
-  const onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot = useCallback(
+  const onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot = useCallback(
     (normalizedPosixPathRelativeToTheWorkspaceRoot: string) => {
       envelopeContext?.channelApi.notifications.kogitoWorkspace_openFile.send(
         normalizedPosixPathRelativeToTheWorkspaceRoot
@@ -167,8 +167,8 @@ function DmnEditorRootWrapper({
       onNewEdit={onNewEdit}
       onRequestWorkspaceFilesList={onRequestWorkspaceFilesList}
       onRequestWorkspaceFileContent={onRequestWorkspaceFileContent}
-      onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot={
-        onOpenFileFromnormalizedPosixPathRelativeToTheWorkspaceRoot
+      onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
+        onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
       }
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
     />

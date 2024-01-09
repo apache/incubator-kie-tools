@@ -58,10 +58,10 @@ export async function startExtension(args: {
   await args.backendProxy.tryLoadBackendExtension(true);
 
   const i18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
-  const workspaceApi = new VsCodeWorkspaceChannelApiImpl();
+  const vscodeWorkspace = new VsCodeWorkspaceChannelApiImpl();
   const editorStore = new VsCodeKieEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
-  const vsCodeNotificationsApi = new VsCodeNotificationsChannelApiImpl(workspaceApi);
+  const vscodeNotifications = new VsCodeNotificationsChannelApiImpl(vscodeWorkspace);
   const vsCodeJavaCodeCompletionChannelApi = new VsCodeJavaCodeCompletionApiImpl();
 
   const editorFactory = new VsCodeKieEditorControllerFactory(
@@ -69,9 +69,9 @@ export async function startExtension(args: {
     editorStore,
     args.editorEnvelopeLocator,
     messageBroadcaster,
-    workspaceApi,
+    vscodeWorkspace,
     args.backendProxy,
-    vsCodeNotificationsApi,
+    vscodeNotifications,
     vsCodeJavaCodeCompletionChannelApi,
     args.viewType,
     i18n,
@@ -88,7 +88,7 @@ export async function startExtension(args: {
           editorStore,
           editorFactory,
           i18n,
-          vsCodeNotificationsApi,
+          vscodeNotifications,
           args.editorEnvelopeLocator
         ),
         {
@@ -124,7 +124,7 @@ export async function startExtension(args: {
       vscode.commands.registerCommand(args.generateSvgCommandId, () =>
         generateSvg({
           editorStore,
-          vscodeWorkspace: workspaceApi,
+          vscodeWorkspace,
           vsCodeI18n: i18n,
           displayNotification: true,
           editorEnvelopeLocator: args.editorEnvelopeLocator,
@@ -138,7 +138,7 @@ export async function startExtension(args: {
       vscode.commands.registerCommand(args.silentlyGenerateSvgCommandId, () =>
         generateSvg({
           editorStore,
-          vscodeWorkspace: workspaceApi,
+          vscodeWorkspace,
           vsCodeI18n: i18n,
           displayNotification: false,
           editorEnvelopeLocator: args.editorEnvelopeLocator,

@@ -86,8 +86,8 @@ export function open(args: {
   const channelApiImpl = new StandaloneEditorsEditorChannelApiImpl(
     stateControl,
     {
-      normalizedPosixPathRelativeToTheWorkspaceRoot: "", // FIXME: TIAGO/LUIZ: Fix this.
-      fileName: "",
+      normalizedPosixPathRelativeToTheWorkspaceRoot: "", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
+      fileName: "", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
       fileExtension: "dmn",
       getFileContents: () => Promise.resolve(args.initialContent),
       isReadOnly: args.readOnly ?? false,

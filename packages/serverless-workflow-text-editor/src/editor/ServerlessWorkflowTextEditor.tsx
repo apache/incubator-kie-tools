@@ -62,7 +62,7 @@ export type ServerlessWorkflowEditorRef = {
 
 type ServerlessWorkflowEditorContent = {
   originalContent: string;
-  path: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
 };
 
 const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
@@ -81,7 +81,7 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
           try {
             setInitialContent({
               originalContent: newContent,
-              path: normalizedPosixPathRelativeToTheWorkspaceRoot,
+              normalizedPosixPathRelativeToTheWorkspaceRoot,
             });
             return Promise.resolve();
           } catch (e) {
@@ -131,11 +131,10 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
       if (!initialContent) {
         return;
       }
-      const normalizedPosixPathRelativeToTheWorkspaceRoot = initialContent.path; // FIXME: TIAGO/LUIZ: Fix this? Should've been `normalizedPosixPathRelativeToTheWorkspaceRoot`.
 
       const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
         type: "PROBLEM",
-        normalizedPosixPathRelativeToTheWorkspaceRoot,
+        normalizedPosixPathRelativeToTheWorkspaceRoot: initialContent.normalizedPosixPathRelativeToTheWorkspaceRoot,
         severity: "ERROR",
         message: `${error.message}`,
         position: {
@@ -145,7 +144,7 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
           endColumn: error.endColumn,
         },
       }));
-      props.setNotifications.apply(normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
+      props.setNotifications.apply(initialContent.normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
     },
     [initialContent, props.setNotifications]
   );
@@ -183,7 +182,7 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
         <SwfTextEditor
           channelType={props.channelType}
           content={initialContent.originalContent}
-          fileName={initialContent.path}
+          fileName={initialContent.normalizedPosixPathRelativeToTheWorkspaceRoot}
           onContentChange={onContentChanged}
           setValidationErrors={setValidationErrors}
           ref={swfTextEditorRef}

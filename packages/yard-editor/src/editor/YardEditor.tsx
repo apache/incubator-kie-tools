@@ -91,7 +91,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
           try {
             setFile({
               content: newContent,
-              path: normalizedPosixPathRelativeToTheWorkspaceRoot,
+              normalizedPosixPathRelativeToTheWorkspaceRoot,
             });
             setYardData(deserialize(newContent));
             return Promise.resolve();
@@ -131,11 +131,9 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
       if (!file) {
         return;
       }
-      const normalizedPosixPathRelativeToTheWorkspaceRoot = file.path; // FIXME: TIAGO/LUIZ: Fix this? Should've been `normalizedPosixPathRelativeToTheWorkspaceRoot`.
-
       const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
         type: "PROBLEM",
-        normalizedPosixPathRelativeToTheWorkspaceRoot,
+        normalizedPosixPathRelativeToTheWorkspaceRoot: file.normalizedPosixPathRelativeToTheWorkspaceRoot,
         severity: "ERROR",
         message: `${error.message}`,
         position: {
@@ -145,7 +143,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
           endColumn: error.endColumn,
         },
       }));
-      props.setNotifications.apply(normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
+      props.setNotifications.apply(file.normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
     },
     [file, props.setNotifications]
   );

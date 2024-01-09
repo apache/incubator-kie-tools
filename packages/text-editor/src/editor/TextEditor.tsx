@@ -40,7 +40,7 @@ export type TextEditorRef = {
 
 type TextEditorContent = {
   originalContent: string;
-  path: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
 };
 
 const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | undefined, Props> = (
@@ -58,7 +58,7 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
           try {
             setInitialContent({
               originalContent: newContent,
-              path: normalizedPosixPathRelativeToTheWorkspaceRoot,
+              normalizedPosixPathRelativeToTheWorkspaceRoot,
             });
             return Promise.resolve();
           } catch (e) {
@@ -93,11 +93,10 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
     if (!initialContent) {
       return;
     }
-    const normalizedPosixPathRelativeToTheWorkspaceRoot = initialContent.path; // FIXME: TIAGO/LUIZ: Fix this? Should've been `normalizedPosixPathRelativeToTheWorkspaceRoot`.
 
     const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
       type: "PROBLEM",
-      normalizedPosixPathRelativeToTheWorkspaceRoot,
+      normalizedPosixPathRelativeToTheWorkspaceRoot: initialContent.normalizedPosixPathRelativeToTheWorkspaceRoot,
       severity: "ERROR",
       message: `${error.message}`,
       position: {
@@ -107,7 +106,7 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
         endColumn: error.endColumn,
       },
     }));
-    props.setNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
+    props.setNotifications(initialContent.normalizedPosixPathRelativeToTheWorkspaceRoot, notifications);
   };
 
   const isVscode = useCallback(() => {
@@ -144,7 +143,7 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
           <MonacoEditor
             channelType={props.channelType}
             content={initialContent.originalContent}
-            fileName={initialContent.path}
+            fileName={initialContent.normalizedPosixPathRelativeToTheWorkspaceRoot}
             onContentChange={onContentChanged}
             setValidationErrors={setValidationErrors}
             ref={swfTextEditorRef}
