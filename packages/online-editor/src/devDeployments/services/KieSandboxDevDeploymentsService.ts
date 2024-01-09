@@ -27,14 +27,16 @@ import {
   ServiceResource,
   kubernetesResourcesApi,
 } from "./KubernetesService";
-import { KieSandboxDeployment, Tokens, defaultLabelTokens } from "./types";
+import { KieSandboxDeployment, ResourceArgs, Tokens, defaultLabelTokens } from "./types";
 import { DeploymentState, HealthStatus } from "./common";
 import { UploadStatus, getUploadStatus, postUpload } from "./KieSandboxDevDeploymentsUploadAppApi";
+import { DeploymentOption } from "./deploymentOptions/types";
 
 export interface DeployArgs {
   workspaceZipBlob: Blob;
   tokenMap: { devDeployment: Tokens };
-  deploymentOptionContent: string;
+  deploymentOption: DeploymentOption;
+  resourceArgs: ResourceArgs;
 }
 
 export type KieSandboxDevDeploymentsServiceProps = {

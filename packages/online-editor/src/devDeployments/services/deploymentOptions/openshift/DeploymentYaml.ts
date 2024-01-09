@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import { ResourceArgs } from "../../types";
+import { DeploymentResourceArgs } from "../../types";
 
-export const ingressYaml = (args: ResourceArgs) => `
-kind: Ingress
-apiVersion: networking.k8s.io/v1
+export const deploymentYaml = (args: Omit<DeploymentResourceArgs, "sidecarImageUrl">) => `
+kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: \${{ devDeployment.uniqueName }}
   namespace: \${{ devDeployment.kubernetes.namespace }}
@@ -34,19 +34,33 @@ metadata:
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: HTTP
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
     \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
     \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
-  rules:
-    - http:
-        paths:
-          - path: /\${{ devDeployment.uniqueName }}
-            pathType: Prefix
-            backend:
-              service:
-                name: \${{ devDeployment.uniqueName }}
-                port:
-                  number: 8080
+  replicas: 1
+  selector:
+    matchLabels:
+      app: \${{ devDeployment.uniqueName }}
+  template:
+    metadata:
+      labels:
+        app: \${{ devDeployment.uniqueName }}
+        deploymentconfig: \${{ devDeployment.uniqueName }}
+        \${{ devDeployment.labels.createdBy }}: kie-tools
+        \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
+    spec:
+      containers:
+        - name: \${{ devDeployment.uniqueName }}
+          image: ${args.imageUrl}
+          imagePullPolicy: ${args.imagePullPolicy}
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: QUARKUS_PLATFORM_VERSION
+              value: ${args.quarkusPlatformVersion}
+            - name: KOGITO_RUNTIME_VERSION
+              value: ${args.kogitoRuntimeVersion}
+            - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
+              value: \${{ devDeployment.uploadService.apiKey }}
 `;

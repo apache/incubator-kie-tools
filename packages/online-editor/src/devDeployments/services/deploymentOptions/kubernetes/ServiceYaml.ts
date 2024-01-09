@@ -17,19 +17,17 @@
  * under the License.
  */
 
-import { ResourceArgs } from "../../types";
-
-export const formWebappServiceYaml = (args: ResourceArgs) => `
+export const serviceYaml = () => `
 kind: Service
 apiVersion: v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+  name: \${{ devDeployment.uniqueName }}
   namespace: \${{ devDeployment.kubernetes.namespace }}
   labels:
     app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
@@ -38,10 +36,10 @@ metadata:
     \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
   ports:
-    - name: 8081-tcp
+    - name: 8080-tcp
       protocol: TCP
-      port: 8081
-      targetPort: 8081
+      port: 8080
+      targetPort: 8080
   selector:
     app: \${{ devDeployment.uniqueName }}
     deploymentconfig: \${{ devDeployment.uniqueName }}

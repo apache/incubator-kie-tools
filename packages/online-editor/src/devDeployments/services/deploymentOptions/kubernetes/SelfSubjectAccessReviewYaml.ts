@@ -17,9 +17,12 @@
  * under the License.
  */
 
-export * from "./k8sApiServerCalls";
-export * from "./k8sApiServerEndpointsByResourceKind";
-export * from "./interpolateK8sResourceYaml";
-export * from "./patchK8sResourceYaml";
-export * from "./parseK8sResourceYaml";
-export * from "./common";
+export const selfSubjectAccessReviewYaml = () => `
+kind: SelfSubjectAccessReview
+apiVersion: authorization.k8s.io/v1
+spec:
+  resourceAttributes:
+    resource: \${{ resource }}
+    verb: "*"
+    namespace: \${{ namespace }}
+`;

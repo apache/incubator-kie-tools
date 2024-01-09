@@ -21,7 +21,7 @@ import { KieSandboxDeployment, defaultAnnotationTokens, defaultLabelTokens } fro
 import {
   parseK8sResourceYaml,
   callK8sApiServer,
-  interpolateK8sResourceYamls,
+  interpolateK8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import {
   DeploymentResource,
@@ -31,7 +31,7 @@ import {
   kubernetesResourcesApi,
 } from "./KubernetesService";
 import { DeployArgs, KieSandboxDevDeploymentsService } from "./KieSandboxDevDeploymentsService";
-import { selfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReviewYaml";
+import { selfSubjectAccessReviewYaml } from "./deploymentOptions/kubernetes/SelfSubjectAccessReviewYaml";
 
 export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
@@ -60,7 +60,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
         k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
         k8sResourceYamls: parseK8sResourceYaml(
           requiredResources.map((resource) =>
-            interpolateK8sResourceYamls(selfSubjectAccessReviewYaml, {
+            interpolateK8sResourceYaml(selfSubjectAccessReviewYaml(), {
               namespace: this.args.connection.namespace,
               resource,
             })
@@ -160,13 +160,20 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   public async deploy(args: DeployArgs): Promise<void> {
-    if (!args.deploymentOptionContent) {
+    if (!args.deploymentOption) {
       throw new Error("Invalid deployment option!");
     }
 
+    const patches = args.deploymentOption.parameters?.map((parameter) => parameter.resourcePatch);
+
+    const deploymentOptionContent = args.deploymentOption.content(args.resourceArgs);
+
     let resources = [];
     try {
-      resources = await this.kubernetesService.applyResourceYamls([args.deploymentOptionContent], args.tokenMap);
+      resources = await this.kubernetesService.applyResourceYamls({
+        k8sResourceYamls: [deploymentOptionContent],
+        tokens: args.tokenMap,
+      });
 
       const mainDeployment = resources.find(
         (resource) =>

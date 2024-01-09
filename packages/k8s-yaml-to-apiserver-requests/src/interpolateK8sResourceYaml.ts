@@ -66,7 +66,7 @@ function trimTokensFromInputText(inputText: string, flattenedTokens: FlattenedTo
   return trimmedInputText;
 }
 
-export function interpolateK8sResourceYamls(k8sResourceYaml: string, tokenMap: TokenMap) {
+export function interpolateK8sResourceYaml(k8sResourceYaml: string, tokenMap: TokenMap) {
   const flattenedTokens = flattenTokenMap(tokenMap);
 
   const trimmedTokensFromInputText = trimTokensFromInputText(k8sResourceYaml, flattenedTokens);

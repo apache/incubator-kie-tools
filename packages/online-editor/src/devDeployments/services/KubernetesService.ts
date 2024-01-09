@@ -22,7 +22,7 @@ import {
   buildK8sApiServerEndpointsByResourceKind,
   callK8sApiServer,
   K8sApiServerEndpointByResourceKind,
-  interpolateK8sResourceYamls,
+  interpolateK8sResourceYaml,
   TokenMap,
   K8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
@@ -197,10 +197,14 @@ export class KubernetesService {
     });
   }
 
-  public async applyResourceYamls(k8sResourceYamls: string[], tokens?: TokenMap) {
-    const interpolatedYamls = tokens
-      ? k8sResourceYamls.map((yamlContent) => interpolateK8sResourceYamls(yamlContent, tokens))
-      : k8sResourceYamls;
+  public async applyResourceYamls(args: {
+    k8sResourceYamls: string[];
+    patches?: Record<string, any>;
+    tokens?: TokenMap;
+  }) {
+    const interpolatedYamls = args.tokens
+      ? args.k8sResourceYamls.map((yamlContent) => interpolateK8sResourceYaml(yamlContent, args.tokens!))
+      : args.k8sResourceYamls;
     return await callK8sApiServer({
       k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
       k8sResourceYamls: parseK8sResourceYaml(interpolatedYamls),

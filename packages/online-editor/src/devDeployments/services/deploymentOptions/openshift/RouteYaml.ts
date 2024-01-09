@@ -17,11 +17,9 @@
  * under the License.
  */
 
-import { ResourceArgs } from "../../types";
-
-export const deploymentYaml = (args: ResourceArgs) => `
-kind: Deployment
-apiVersion: apps/v1
+export const routeYaml = () => `
+kind: Route
+apiVersion: route.openshift.io/v1
 metadata:
   name: \${{ devDeployment.uniqueName }}
   namespace: \${{ devDeployment.kubernetes.namespace }}
@@ -37,36 +35,13 @@ metadata:
     \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
     \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: \${{ devDeployment.uniqueName }}
-  template:
-    metadata:
-      labels:
-        app: \${{ devDeployment.uniqueName }}
-        deploymentconfig: \${{ devDeployment.uniqueName }}
-        \${{ devDeployment.labels.createdBy }}: kie-tools
-        \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
-    spec:
-      containers:
-        - name: \${{ devDeployment.uniqueName }}
-          image: ${args.baseImageUrl}
-          imagePullPolicy: ${args.imagePullPolicy}
-          ports:
-            - containerPort: 8080
-              protocol: TCP
-          env:
-            - name: BASE_URL
-              value: http://localhost/\${{ devDeployment.uniqueName }}
-            - name: QUARKUS_PLATFORM_VERSION
-              value: ${args.quarkusPlatformVersion}
-            - name: KOGITO_RUNTIME_VERSION
-              value: ${args.kogitoRuntimeVersion}
-            - name: ROOT_PATH
-              value: /\${{ devDeployment.uniqueName }}
-            - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH
-              value: \${{ devDeployment.uniqueName }}
-            - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
-              value: \${{ devDeployment.uploadService.apiKey }}
+  subdomain: \${{ devDeployment.uniqueName }}
+  to:
+    name: \${{ devDeployment.uniqueName }}
+    kind: Service
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: None
 `;

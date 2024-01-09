@@ -82,8 +82,17 @@ export type Tokens = DevDeploymentTokens & {
 export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;
 
 export type ResourceArgs = {
+  kogitoQuarkusBlankAppImageUrl: string;
   baseImageUrl: string;
-  formWebappImageUrl: string;
+  dmnFormWebappImageUrl: string;
+  imagePullPolicy: string;
+  quarkusPlatformVersion: string;
+  kogitoRuntimeVersion: string;
+};
+
+export type DeploymentResourceArgs = {
+  imageUrl: string;
+  sidecarImageUrl: string;
   imagePullPolicy: string;
   quarkusPlatformVersion: string;
   kogitoRuntimeVersion: string;

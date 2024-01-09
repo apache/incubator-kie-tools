@@ -202,7 +202,7 @@ export interface WorkspacesContextType {
     extension: string;
   }): Promise<WorkspaceFile>;
 
-  prepareZip(args: { workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
+  prepareZip(args: { workspaceId: string; onlyExtensions?: string[]; globPattern?: string }): Promise<Blob>;
 
   getFiles(args: { workspaceId: string; globPattern?: string }): Promise<WorkspaceFile[]>;
 

@@ -17,12 +17,11 @@
  * under the License.
  */
 
-export const selfSubjectAccessReviewYaml = `
-kind: SelfSubjectAccessReview
-apiVersion: authorization.k8s.io/v1
-spec:
-  resourceAttributes:
-    resource: \${{ resource }}
-    verb: "*"
-    namespace: \${{ namespace }}
-`;
+export type ResourcePatch = {
+  kind: string;
+  patchObject: Record<string, any>;
+};
+
+export function patchK8sResourceYaml(k8sResourceYaml: string, patches: Array<ResourcePatch>) {
+  return k8sResourceYaml;
+}

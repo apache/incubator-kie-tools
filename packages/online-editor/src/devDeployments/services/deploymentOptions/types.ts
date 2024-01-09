@@ -17,9 +17,19 @@
  * under the License.
  */
 
-export * from "./k8sApiServerCalls";
-export * from "./k8sApiServerEndpointsByResourceKind";
-export * from "./interpolateK8sResourceYaml";
-export * from "./patchK8sResourceYaml";
-export * from "./parseK8sResourceYaml";
-export * from "./common";
+import { ResourcePatch } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { ResourceArgs } from "../types";
+
+export type DeploymentParameter = {
+  name: string;
+  description?: string;
+  defaultValue?: string | Number;
+  type: "text" | "number";
+  resourcePatch: ResourcePatch;
+};
+
+export type DeploymentOption = {
+  name: string;
+  content: (args: ResourceArgs) => string;
+  parameters?: Array<DeploymentParameter>;
+};

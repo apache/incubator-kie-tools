@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { ResourceArgs } from "../../types";
+import { DeploymentResourceArgs } from "../../types";
 
-export const deploymentWithFormWebappYaml = (args: ResourceArgs) => `
+export const deploymentYaml = (args: Omit<DeploymentResourceArgs, "sidecarImageUrl">) => `
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -51,22 +51,22 @@ spec:
     spec:
       containers:
         - name: \${{ devDeployment.uniqueName }}
-          image: ${args.baseImageUrl}
+          image: ${args.imageUrl}
           imagePullPolicy: ${args.imagePullPolicy}
           ports:
             - containerPort: 8080
               protocol: TCP
           env:
+            - name: BASE_URL
+              value: http://localhost/\${{ devDeployment.uniqueName }}
             - name: QUARKUS_PLATFORM_VERSION
               value: ${args.quarkusPlatformVersion}
             - name: KOGITO_RUNTIME_VERSION
               value: ${args.kogitoRuntimeVersion}
+            - name: ROOT_PATH
+              value: /\${{ devDeployment.uniqueName }}
+            - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH
+              value: \${{ devDeployment.uniqueName }}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
               value: \${{ devDeployment.uploadService.apiKey }}
-        - name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
-          image: ${args.formWebappImageUrl}
-          imagePullPolicy: ${args.imagePullPolicy}
-          ports:
-            - containerPort: 8081
-              protocol: TCP
 `;

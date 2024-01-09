@@ -150,13 +150,18 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   }
 
   public async deploy(args: DeployArgs): Promise<void> {
-    if (!args.deploymentOptionContent) {
+    if (!args.deploymentOption) {
       throw new Error("Invalid deployment option!");
     }
 
+    const deploymentOptionContent = args.deploymentOption.content(args.resourceArgs);
+
     let resources = [];
     try {
-      resources = await this.kubernetesService.applyResourceYamls([args.deploymentOptionContent], args.tokenMap);
+      resources = await this.kubernetesService.applyResourceYamls({
+        k8sResourceYamls: [deploymentOptionContent],
+        tokens: args.tokenMap,
+      });
 
       const mainDeployment = resources.find(
         (resource) =>

@@ -17,11 +17,9 @@
  * under the License.
  */
 
-import { ResourceArgs } from "../../types";
-
-export const formWebappServiceYaml = (args: ResourceArgs) => `
-kind: Service
-apiVersion: v1
+export const formWebappIngressYaml = () => `
+kind: Ingress
+apiVersion: networking.k8s.io/v1
 metadata:
   name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
   namespace: \${{ devDeployment.kubernetes.namespace }}
@@ -34,16 +32,20 @@ metadata:
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
   annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
     \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
     \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
-  ports:
-    - name: 8081-tcp
-      protocol: TCP
-      port: 8081
-      targetPort: 8081
-  selector:
-    app: \${{ devDeployment.uniqueName }}
-    deploymentconfig: \${{ devDeployment.uniqueName }}
-  type: ClusterIP
+  rules:
+    - http:
+        paths:
+          - path: /\${{ devDeployment.uniqueName }}/form-webapp(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+                port:
+                  number: 8081
 `;

@@ -17,50 +17,34 @@
  * under the License.
  */
 
-import { ResourceArgs } from "../../types";
-
-export const deploymentYaml = (args: ResourceArgs) => `
-kind: Deployment
-apiVersion: apps/v1
+export const formWebappRouteYaml = () => `
+kind: Route
+apiVersion: route.openshift.io/v1
 metadata:
-  name: \${{ devDeployment.uniqueName }}
+  name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
   namespace: \${{ devDeployment.kubernetes.namespace }}
   labels:
     app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
+    type: sharded
   annotations:
+    haproxy.router.openshift.io/rewrite-target: /
     \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
     \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: \${{ devDeployment.uniqueName }}
-  template:
-    metadata:
-      labels:
-        app: \${{ devDeployment.uniqueName }}
-        deploymentconfig: \${{ devDeployment.uniqueName }}
-        \${{ devDeployment.labels.createdBy }}: kie-tools
-        \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
-    spec:
-      containers:
-        - name: \${{ devDeployment.uniqueName }}
-          image: ${args.baseImageUrl}
-          imagePullPolicy: ${args.imagePullPolicy}
-          ports:
-            - containerPort: 8080
-              protocol: TCP
-          env:
-            - name: QUARKUS_PLATFORM_VERSION
-              value: ${args.quarkusPlatformVersion}
-            - name: KOGITO_RUNTIME_VERSION
-              value: ${args.kogitoRuntimeVersion}
-            - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
-              value: \${{ devDeployment.uploadService.apiKey }}
+  subdomain: \${{ devDeployment.uniqueName }}
+  path: /form-webapp
+  to:
+    name: \${{ devDeployment.uniqueName }}-dmn-form-webapp
+    kind: Service
+  port:
+    targetPort: 8081
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: None
 `;

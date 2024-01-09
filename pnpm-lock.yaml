@@ -3030,9 +3030,6 @@ importers:
 
   packages/dev-deployment-base-image:
     dependencies:
-      "@kie-tools/dev-deployment-kogito-quarkus-blank-app":
-        specifier: workspace:*
-        version: link:../dev-deployment-kogito-quarkus-blank-app
       "@kie-tools/dev-deployment-upload-service":
         specifier: workspace:*
         version: link:../dev-deployment-upload-service
@@ -3231,6 +3228,31 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/dev-deployment-kogito-quarkus-blank-app-image:
+    dependencies:
+      "@kie-tools/dev-deployment-base-image":
+        specifier: workspace:*
+        version: link:../dev-deployment-base-image
+      "@kie-tools/dev-deployment-kogito-quarkus-blank-app":
+        specifier: workspace:*
+        version: link:../dev-deployment-kogito-quarkus-blank-app
+    devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
@@ -40513,7 +40535,7 @@ packages:
       { integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA== }
     hasBin: true
     dependencies:
-      glob: 7.2.0
+      glob: 7.2.3
 
   /ripemd160@2.0.2:
     resolution:

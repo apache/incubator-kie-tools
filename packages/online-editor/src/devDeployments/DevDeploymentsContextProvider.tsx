@@ -32,6 +32,7 @@ import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { v4 as uuid } from "uuid";
+import { DeploymentOption } from "./services/deploymentOptions/types";
 
 interface Props {
   children: React.ReactNode;
@@ -115,7 +116,8 @@ export function DevDeploymentsContextProvider(props: Props) {
     async (
       workspaceFile: WorkspaceFile,
       authSession: CloudAuthSession,
-      deploymentOption: (args: ResourceArgs) => string
+      deploymentOption: DeploymentOption,
+      deploymentParameters: Record<string, string | number>
     ) => {
       const service = devDeploymentsServices.get(authSession.id);
       if (!service) {
@@ -128,7 +130,6 @@ export function DevDeploymentsContextProvider(props: Props) {
 
       const zipBlob = await workspaces.prepareZip({
         workspaceId: workspaceFile.workspaceId,
-        onlyExtensions: ["dmn"],
       });
 
       const workspace = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
@@ -151,6 +152,7 @@ export function DevDeploymentsContextProvider(props: Props) {
           kubernetes: {
             namespace: authSession.namespace,
           },
+          ...deploymentParameters,
         },
       };
 
@@ -158,13 +160,15 @@ export function DevDeploymentsContextProvider(props: Props) {
         await service.deploy({
           workspaceZipBlob: zipBlob,
           tokenMap,
-          deploymentOptionContent: deploymentOption({
+          deploymentOption,
+          resourceArgs: {
+            kogitoQuarkusBlankAppImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL,
             baseImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-            formWebappImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL,
+            dmnFormWebappImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL,
             imagePullPolicy: env.KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
             quarkusPlatformVersion: process.env.WEBPACK_REPLACE__quarkusPlatformVersion!,
             kogitoRuntimeVersion: process.env.WEBPACK_REPLACE__kogitoRuntimeVersion!,
-          }),
+          },
         });
         return true;
       } catch (error) {

@@ -21,6 +21,10 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
+    DEV_DEPLOYMENT_BASE_IMAGE__builderImage: {
+      default: "registry.access.redhat.com/ubi9/openjdk-11:1.17",
+      description: "The image used in the FROM import.",
+    },
     DEV_DEPLOYMENT_BASE_IMAGE__registry: {
       default: "quay.io",
       description: "The image registry.",
@@ -41,6 +45,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   get env() {
     return {
       devDeploymentBaseImage: {
+        builderImage: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__builderImage),
         registry: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__registry),
         account: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__account),
         name: getOrDefault(this.vars.DEV_DEPLOYMENT_BASE_IMAGE__name),
