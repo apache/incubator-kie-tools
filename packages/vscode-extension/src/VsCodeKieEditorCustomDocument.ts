@@ -38,7 +38,7 @@ import { executeOnSaveHook } from "./onSaveHook";
 import {
   getNormalizedPosixPathRelativeToWorkspaceRoot,
   getWorkspaceRoot,
-  normalizeWindowsWorkspaceRoot,
+  normalizeWindowsWorkspaceRootAbsoluteFsPath,
 } from "./workspace/workspaceRoot";
 import * as __path from "path";
 
@@ -102,7 +102,7 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
           this,
           __path.posix.normalize(
             __path.relative(
-              normalizeWindowsWorkspaceRoot(getWorkspaceRoot(this).workspaceRootAbsoluteFsPath),
+              normalizeWindowsWorkspaceRootAbsoluteFsPath(getWorkspaceRoot(this).workspaceRootAbsoluteFsPath),
               destination.fsPath
             )
           ),
