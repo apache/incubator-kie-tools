@@ -28,6 +28,7 @@ interface WorkflowFormContainerProps {
   onResetForm: () => void;
   onStartWorkflowSuccess: (workflowId: string) => void;
   onStartWorkflowError: (error: any) => void;
+  targetOrigin?: string;
 }
 export const WorkflowFormContainer: React.FC<WorkflowFormContainerProps & OUIAProps> = ({
   workflowDefinitionData,
@@ -36,6 +37,7 @@ export const WorkflowFormContainer: React.FC<WorkflowFormContainerProps & OUIAPr
   onResetForm,
   ouiaId,
   ouiaSafe,
+  targetOrigin,
 }) => {
   const gatewayApi: WorkflowFormGatewayApi = useWorkflowFormGatewayApi();
 
@@ -60,7 +62,7 @@ export const WorkflowFormContainer: React.FC<WorkflowFormContainerProps & OUIAPr
             });
         },
       }}
-      targetOrigin={window.location.origin}
+      targetOrigin={targetOrigin || window.location.origin}
       workflowDefinition={{
         workflowName: workflowDefinitionData.workflowName,
         endpoint: workflowDefinitionData.endpoint,

@@ -33,6 +33,7 @@ import { useHistory } from "react-router-dom";
 import { InlineEdit, InlineEditApi } from "@kie-tools/runtime-tools-components/dist/components/InlineEdit";
 import { useWorkflowFormGatewayApi } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowForm";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 
 interface WorkflowFormPageState {
   workflowDefinition: WorkflowDefinition;
@@ -44,6 +45,7 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const history = useHistory();
   const gatewayApi = useWorkflowFormGatewayApi();
+  const apiContext = useDevUIAppContext();
 
   const initialState = history.location.state as WorkflowFormPageState;
 
@@ -132,6 +134,7 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
               onResetForm={onResetForm}
               onStartWorkflowError={onSubmitError}
               onStartWorkflowSuccess={onSubmitSuccess}
+              targetOrigin={apiContext.getDevUIUrl()}
             />
           </CardBody>
         </Card>
