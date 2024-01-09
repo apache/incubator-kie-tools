@@ -103,7 +103,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
       }}
     >
       <DrawerHead style={{ height: "100%" }}>
-        {formContent && Object.keys(formContent)[0].length > 0 && (
+        {formContent && Object.keys(formContent)[0] && Object.keys(formContent)[0].length > 0 && (
           <span>
             <FormDisplayerContainer formContent={formContent} targetOrigin={targetOrigin} />
           </span>

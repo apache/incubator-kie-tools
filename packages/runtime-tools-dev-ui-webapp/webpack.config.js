@@ -53,10 +53,18 @@ module.exports = async (env) =>
         overlay: false,
         progress: true,
       },
+      proxy: [
+        {
+          context: ["/svg", "/forms", "/customDashboard"],
+          target: "http://localhost:4000",
+          secure: false,
+          changeOrigin: true,
+        },
+      ],
     },
     plugins: [
       new MonacoWebpackPlugin({
-        languages: ["typescript", "json"],
+        languages: ["html", "typescript", "json"],
         customLanguages: [
           {
             label: "yaml",
