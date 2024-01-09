@@ -35,7 +35,12 @@ import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
 import { VsCodeI18n } from "./i18n";
 import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 import { executeOnSaveHook } from "./onSaveHook";
-import { getNormalizedPosixPathRelativeToWorkspaceRoot } from "./workspace/workspaceRoot";
+import {
+  getNormalizedPosixPathRelativeToWorkspaceRoot,
+  getWorkspaceRoot,
+  normalizeWindowsWorkspaceRoot,
+} from "./workspace/workspaceRoot";
+import * as __path from "path";
 
 export class VsCodeKieEditorCustomDocument implements CustomDocument {
   private readonly encoder = new TextEncoder();
@@ -93,7 +98,16 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
 
       try {
         const notifications = await editor.validate();
-        this.vscodeNotifications.setNotifications(this, destination.fsPath, notifications);
+        this.vscodeNotifications.setNotifications(
+          this,
+          __path.posix.normalize(
+            __path.relative(
+              normalizeWindowsWorkspaceRoot(getWorkspaceRoot(this).workspaceRootAbsoluteFsPath),
+              destination.fsPath
+            )
+          ),
+          notifications
+        );
       } catch (e) {
         this.vsCodeLogger.warn(`File was not validated: ${e}`);
       }

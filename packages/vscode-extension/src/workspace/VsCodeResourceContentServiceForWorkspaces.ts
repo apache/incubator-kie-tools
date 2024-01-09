@@ -83,7 +83,8 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
             // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
             regexp.test("/" + p) ||
             // check on the asset folder for *.{ext} pattern
-            regexp.test(__path.relative(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot, p));
+            // the regex doesn't support "\" from Windows paths, requiring to test againts POSIX paths
+            regexp.test(__path.posix.relative(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot, p));
 
           const conformsToSearchType =
             !opts ||
