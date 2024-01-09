@@ -30,7 +30,7 @@ export class VsCodeNotificationsChannelApiImpl {
   private readonly strategies;
 
   constructor(
-    private readonly workspaceApi: VsCodeWorkspaceChannelApiImpl,
+    private readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     private readonly i18n = new I18n(
       notificationsApiVsCodeI18nDefaults,
       notificationsApiVsCodeI18nDictionaries,
@@ -39,7 +39,7 @@ export class VsCodeNotificationsChannelApiImpl {
   ) {
     this.strategies = {
       PROBLEM: new ProblemsTabNotificationHandler(),
-      ALERT: new PopupMessagesNotificationHandler(this.workspaceApi, this.i18n),
+      ALERT: new PopupMessagesNotificationHandler(this.vscodeWorkspace, this.i18n),
     };
   }
 

@@ -46,9 +46,9 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
   constructor(
     private readonly editor: VsCodeKieEditorController,
     private readonly resourceContentService: ResourceContentService,
-    private readonly workspaceApi: VsCodeWorkspaceChannelApiImpl,
+    private readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     private readonly backendProxy: BackendProxy,
-    private readonly notificationsApi: VsCodeNotificationsChannelApiImpl,
+    private readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>
@@ -98,7 +98,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
       );
     }
 
-    this.workspaceApi.openFile(
+    this.vscodeWorkspace.openFile(
       __path.join(
         getWorkspaceRoot(this.editor.document.document).workspaceRootAbsoluteFsPath,
         toFsPath(normalizedPosixPathRelativeToTheWorkspaceRoot)
@@ -193,14 +193,14 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
   }
 
   public kogitoNotifications_createNotification(notification: Notification): void {
-    this.notificationsApi.createNotification(this.editor.document.document, notification);
+    this.vscodeNotifications.createNotification(this.editor.document.document, notification);
   }
 
   public kogitoNotifications_setNotifications(
     normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ): void {
-    this.notificationsApi.setNotifications(
+    this.vscodeNotifications.setNotifications(
       this.editor.document.document,
       normalizedPosixPathRelativeToTheWorkspaceRoot,
       notifications
@@ -208,7 +208,7 @@ export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannel
   }
 
   public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
-    this.notificationsApi.removeNotifications(
+    this.vscodeNotifications.removeNotifications(
       this.editor.document.document,
       normalizedPosixPathRelativeToTheWorkspaceRoot
     );

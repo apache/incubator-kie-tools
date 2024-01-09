@@ -52,9 +52,9 @@ export class VsCodeKieEditorControllerFactory {
     private readonly editorStore: VsCodeKieEditorStore,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
-    private readonly workspaceApi: VsCodeWorkspaceChannelApiImpl,
+    private readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     private readonly backendProxy: BackendProxy,
-    private readonly notificationsApi: VsCodeNotificationsChannelApiImpl,
+    private readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>,
@@ -119,9 +119,9 @@ export class VsCodeKieEditorControllerFactory {
     return this.channelApiProducer.get(
       editor,
       resourceContentService,
-      this.workspaceApi,
+      this.vscodeWorkspace,
       this.backendProxy,
-      this.notificationsApi,
+      this.vscodeNotifications,
       this.javaCodeCompletionApi,
       this.viewType,
       this.i18n

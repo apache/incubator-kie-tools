@@ -38,9 +38,9 @@ export interface VsCodeKieEditorChannelApiProducer {
    * Method to obtain the KogitoEditorChannelApi instance.
    * @param editor
    * @param resourceContentService
-   * @param workspaceApi
+   * @param vscodeWorkspace
    * @param backendProxy
-   * @param notificationsApi
+   * @param vscodeNotifications
    * @param javaCodeCompletionApi
    * @param viewType
    * @param i18n
@@ -48,9 +48,9 @@ export interface VsCodeKieEditorChannelApiProducer {
   get(
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: VsCodeWorkspaceChannelApiImpl,
+    vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: VsCodeNotificationsChannelApiImpl,
+    vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>
@@ -61,9 +61,9 @@ export class DefaultVsCodeEditorChannelApiProducer implements VsCodeKieEditorCha
   get(
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: VsCodeWorkspaceChannelApiImpl,
+    vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: VsCodeNotificationsChannelApiImpl,
+    vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>
@@ -71,9 +71,9 @@ export class DefaultVsCodeEditorChannelApiProducer implements VsCodeKieEditorCha
     return new DefaultVsCodeKieEditorChannelApiImpl(
       editor,
       resourceContentService,
-      workspaceApi,
+      vscodeWorkspace,
       backendProxy,
-      notificationsApi,
+      vscodeNotifications,
       javaCodeCompletionApi,
       viewType,
       i18n

@@ -34,7 +34,7 @@ const encoder = new TextEncoder();
 
 export async function generateSvg(args: {
   editorStore: VsCodeKieEditorStore;
-  workspaceApi: VsCodeWorkspaceChannelApiImpl;
+  vscodeWorkspace: VsCodeWorkspaceChannelApiImpl;
   vsCodeI18n: I18n<VsCodeI18n>;
   displayNotification: boolean;
   editorEnvelopeLocator: EditorEnvelopeLocator;
@@ -94,7 +94,7 @@ export async function generateSvg(args: {
         return;
       }
 
-      args.workspaceApi.openFile(svgUri.fsPath);
+      args.vscodeWorkspace.openFile(svgUri.fsPath);
     });
   }
 }

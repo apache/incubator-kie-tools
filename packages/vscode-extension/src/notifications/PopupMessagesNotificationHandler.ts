@@ -25,7 +25,7 @@ import { NotificationsApiVsCodeI18nDictionary } from "./i18n";
 
 export class PopupMessagesNotificationHandler {
   constructor(
-    private readonly workspaceApi: VsCodeWorkspaceChannelApiImpl,
+    private readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     private readonly i18n: I18n<NotificationsApiVsCodeI18nDictionary>
   ) {}
 
@@ -69,7 +69,7 @@ export class PopupMessagesNotificationHandler {
             if (!selected) {
               return;
             }
-            this.workspaceApi.openFile(normalizedPosixPathRelativeToTheWorkspaceRoot);
+            this.vscodeWorkspace.openFile(normalizedPosixPathRelativeToTheWorkspaceRoot);
           });
   }
 

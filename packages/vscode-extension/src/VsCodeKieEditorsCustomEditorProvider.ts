@@ -48,7 +48,7 @@ export class VsCodeKieEditorsCustomEditorProvider implements CustomEditorProvide
     private readonly editorStore: VsCodeKieEditorStore,
     private readonly editorFactory: VsCodeKieEditorControllerFactory,
     private readonly vsCodeI18n: I18n<VsCodeI18n>,
-    private readonly vscodeNotificationsApi: VsCodeNotificationsChannelApiImpl,
+    private readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator
   ) {}
 
@@ -75,7 +75,7 @@ export class VsCodeKieEditorsCustomEditorProvider implements CustomEditorProvide
       this.resolveBackupUri(openContext.backupId),
       this.editorStore,
       this.vsCodeI18n,
-      this.vscodeNotificationsApi,
+      this.vscodeNotifications,
       this.editorEnvelopeLocator
     );
     this.setupListeners(document);

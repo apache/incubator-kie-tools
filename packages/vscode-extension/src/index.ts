@@ -124,7 +124,7 @@ export async function startExtension(args: {
       vscode.commands.registerCommand(args.generateSvgCommandId, () =>
         generateSvg({
           editorStore,
-          workspaceApi,
+          vscodeWorkspace: workspaceApi,
           vsCodeI18n: i18n,
           displayNotification: true,
           editorEnvelopeLocator: args.editorEnvelopeLocator,
@@ -138,7 +138,7 @@ export async function startExtension(args: {
       vscode.commands.registerCommand(args.silentlyGenerateSvgCommandId, () =>
         generateSvg({
           editorStore,
-          workspaceApi,
+          vscodeWorkspace: workspaceApi,
           vsCodeI18n: i18n,
           displayNotification: false,
           editorEnvelopeLocator: args.editorEnvelopeLocator,

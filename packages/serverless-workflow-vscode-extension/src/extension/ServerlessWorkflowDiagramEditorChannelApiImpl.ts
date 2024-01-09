@@ -67,9 +67,9 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
   constructor(
     private readonly editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: VsCodeWorkspaceChannelApiImpl,
+    vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: VsCodeNotificationsChannelApiImpl,
+    vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>,
@@ -80,9 +80,9 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     this.defaultApiImpl = new DefaultVsCodeKieEditorChannelApiImpl(
       editor,
       resourceContentService,
-      workspaceApi,
+      vscodeWorkspace,
       backendProxy,
-      notificationsApi,
+      vscodeNotifications,
       javaCodeCompletionApi,
       viewType,
       i18n
