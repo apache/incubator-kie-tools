@@ -18,7 +18,6 @@
  */
 
 import "@testing-library/jest-dom";
-import "@testing-library/jest-dom/matchers";
 import { enableMapSet, enablePatches } from "immer";
 
 enableMapSet();
