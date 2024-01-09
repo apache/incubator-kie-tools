@@ -7,5 +7,5 @@
     "target": "es6",
     "moduleResolution": "node"
   },
-  "include": ["src", "./tests/jest-setup.js"]
+  "include": ["src"]
 }

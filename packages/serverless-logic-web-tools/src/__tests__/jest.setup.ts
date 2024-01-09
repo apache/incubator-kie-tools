@@ -18,6 +18,7 @@
  */
 
 import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/matchers";
 import { TextEncoder, TextDecoder } from "util";
 
 (global as any).TextEncoder = TextEncoder;

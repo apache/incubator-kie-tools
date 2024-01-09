@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/matchers";
 import { render, waitFor } from "@testing-library/react";
 import { AnimatedTripleDotLabel } from "../../../src/extendedServices/AnimatedTripleDotLabel";
 
