@@ -48,8 +48,6 @@ pipeline {
                     // Login old and new registries
                     helper.loginRegistry(baseImageParamsPrefix)
                     helper.loginRegistry(promoteImageParamsPrefix)
-
-                    cloud.installSkopeo()
                 }
             }
         }
@@ -86,8 +84,8 @@ pipeline {
                         // Merge PR
                         String prLink = properties.retrieve("${helper.getRepoName()}.pr.link")
                         if (prLink) {
-                            githubscm.mergePR(prLink, helper.getGitAuthorCredsID())
-                            githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorCredsID())
+                            githubscm.mergePR(prLink, helper.getGitAuthorPushCredsId())
+                            githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorPushCredsId())
                         }
 
                         // Tag api / container-builder
@@ -117,13 +115,13 @@ pipeline {
             steps {
                 script {
                     dir(helper.getRepoName()) {
-                        if(githubscm.isReleaseExist(helper.getGitTag(), helper.getGitAuthorCredsID())) {
-                            githubscm.deleteReleaseAndTag(helper.getGitTag(), helper.getGitAuthorCredsID())
+                        if(githubscm.isReleaseExist(helper.getGitTag(), helper.getGitAuthorCredsId())) {
+                            githubscm.deleteReleaseAndTag(helper.getGitTag(), helper.getGitAuthorPushCredsId())
                         }
-                        githubscm.createReleaseWithGeneratedReleaseNotes(helper.getGitTag(), helper.getBuildBranch(), githubscm.getPreviousTagFromVersion(helper.getProjectVersion(), 'v', '', ['/']), helper.getGitAuthorCredsID())
-                        githubscm.updateReleaseBody(helper.getGitTag(), helper.getGitAuthorCredsID())
+                        githubscm.createReleaseWithGeneratedReleaseNotes(helper.getGitTag(), helper.getBuildBranch(), githubscm.getPreviousTagFromVersion(helper.getProjectVersion(), 'v', '', ['/']), helper.getGitAuthorPushCredsId())
+                        githubscm.updateReleaseBody(helper.getGitTag(), helper.getGitAuthorPushCredsId())
     
-                        withCredentials([usernamePassword(credentialsId: helper.getGitAuthorCredsID(), usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+                        withCredentials([usernamePassword(credentialsId: helper.getGitAuthorPushCredsId(), usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
                             sh """
                                 gh release upload ${helper.getGitTag()} "operator.yaml"
                             """
@@ -141,7 +139,6 @@ pipeline {
             script {
                 helper.cleanGoPath()
                 util.cleanNode(containerEngine)
-                cloud.cleanSkopeo()
             }
         }
     }
@@ -168,8 +165,9 @@ void updateInternalGoModuleWithTag(String moduleName, String tagName) {
 
 void commitAndPush(String remote, String commitMsg, Closure preCommit) {
     if (githubscm.isThereAnyChanges()) {
+        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
         githubscm.commitChanges(commitMsg, preCommit)
-        githubscm.pushObject(remote, helper.getBuildBranch(), helper.getGitAuthorCredsID())
+        githubscm.pushObject(remote, helper.getBuildBranch(), helper.getGitAuthorPushCredsId())
     } else {
         echo "No change... Skipping commit and push"
     }

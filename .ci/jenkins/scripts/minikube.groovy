@@ -100,8 +100,8 @@ void preChecks() {
         ${minikubeContainerEngine} info
 
         if [[ ! \$(command -v minikube) ]]; then
-            curl -LO https://github.com/kubernetes/minikube/releases/download/v${minikubeVersion}/minikube-${minikubeVersion}-0.x86_64.rpm
-            sudo yum localinstall -y minikube-${minikubeVersion}-0.x86_64.rpm
+            sudo ./hack/ci/install-minikube.sh /usr/local/bin
+            sudo chmod +x /usr/local/bin/minikube
         fi
     """
 }

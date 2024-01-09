@@ -69,12 +69,13 @@ pipeline {
                         git checkout -- go.sum
                     '''
                     if (githubscm.isThereAnyChanges()) {
+                        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
                         githubscm.commitChanges("[${helper.getBuildBranch()}] Update version to ${helper.getProjectVersion()}", {
                             sh '''
                                 git add .
                             '''
                         })
-                        githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorCredsID())
+                        githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorPushCredsId())
                     } else {
                         println '[WARN] no changes to commit'
                     }
