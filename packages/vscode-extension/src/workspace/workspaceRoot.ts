@@ -43,20 +43,7 @@ export function getWorkspaceRoot(document: KogitoEditorDocument["document"]): {
   } else {
     return {
       type: "dangling",
-      workspaceRootAbsoluteFsPath: __path.dirname(document.uri.path),
+      workspaceRootAbsoluteFsPath: __path.dirname(document.uri.fsPath),
     };
   }
-}
-
-/**
- * The "vscode.workspace.workspaceFolders" returns a POSIX path with a starting "/" on Windows machines
- * This function removes the starting "/" and normalizes the path, returning a compatible absolute FS path.
- */
-
-export function normalizeWindowsWorkspaceRootAbsoluteFsPath(workspaceRootAbsoluteFsPath: string): string {
-  // The vscode.env.uiKind returns 1 for desktop applications, enabling the usage of the process.platform
-  if (vscode.env.uiKind === 1 && process.platform === "win32" && workspaceRootAbsoluteFsPath.startsWith("/")) {
-    return __path.normalize(workspaceRootAbsoluteFsPath.slice(1));
-  }
-  return workspaceRootAbsoluteFsPath;
 }

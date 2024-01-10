@@ -35,11 +35,7 @@ import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
 import { VsCodeI18n } from "./i18n";
 import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 import { executeOnSaveHook } from "./onSaveHook";
-import {
-  getNormalizedPosixPathRelativeToWorkspaceRoot,
-  getWorkspaceRoot,
-  normalizeWindowsWorkspaceRootAbsoluteFsPath,
-} from "./workspace/workspaceRoot";
+import { getNormalizedPosixPathRelativeToWorkspaceRoot, getWorkspaceRoot } from "./workspace/workspaceRoot";
 import * as __path from "path";
 
 export class VsCodeKieEditorCustomDocument implements CustomDocument {
@@ -101,10 +97,7 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
         this.vscodeNotifications.setNotifications(
           this,
           __path.posix.normalize(
-            __path.relative(
-              normalizeWindowsWorkspaceRootAbsoluteFsPath(getWorkspaceRoot(this).workspaceRootAbsoluteFsPath),
-              destination.fsPath
-            )
+            __path.relative(getWorkspaceRoot(this).workspaceRootAbsoluteFsPath, destination.fsPath)
           ),
           notifications
         );
