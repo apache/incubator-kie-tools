@@ -7055,18 +7055,36 @@ importers:
       "@types/uuid":
         specifier: ^8.3.0
         version: 8.3.0
+      apollo-server-express:
+        specifier: ^3.13.0
+        version: 3.13.0(express@4.18.2)(graphql@14.3.1)
+      body-parser:
+        specifier: ^1.20.2
+        version: 1.20.2
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
       css-loader:
         specifier: ^5.2.6
         version: 5.2.7(webpack@5.88.2)
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.88.2)
       filemanager-webpack-plugin:
         specifier: ^7.0.0
         version: 7.0.0(webpack@5.88.2)
+      graphql:
+        specifier: 14.3.1
+        version: 14.3.1
       html-webpack-plugin:
         specifier: ^5.3.2
         version: 5.5.3(webpack@5.88.2)
@@ -7082,6 +7100,9 @@ importers:
       jest-when:
         specifier: ^3.5.0
         version: 3.5.2(jest@26.6.3)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
         version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
@@ -7106,6 +7127,9 @@ importers:
       svg-url-loader:
         specifier: ^8.0.0
         version: 8.0.0(webpack@5.88.2)
+      swagger-ui-express:
+        specifier: ^5.0.0
+        version: 5.0.0(express@4.18.2)
       ts-jest:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.9.5)
@@ -11690,6 +11714,47 @@ packages:
       call-me-maybe: 1.0.2
       openapi-types: 7.2.3
 
+  /@apollo/protobufjs@1.2.6:
+    resolution:
+      { integrity: sha512-Wqo1oSHNUj/jxmsVp4iR3I480p6qdqHikn38lKrFhfzcDJ7lwd7Ck7cHRl4JE81tWNArl77xhnG/OkZhxKBYOw== }
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      "@protobufjs/aspromise": 1.1.2
+      "@protobufjs/base64": 1.1.2
+      "@protobufjs/codegen": 2.0.4
+      "@protobufjs/eventemitter": 1.1.0
+      "@protobufjs/fetch": 1.1.0
+      "@protobufjs/float": 1.0.2
+      "@protobufjs/inquire": 1.1.0
+      "@protobufjs/path": 1.1.2
+      "@protobufjs/pool": 1.1.0
+      "@protobufjs/utf8": 1.1.0
+      "@types/long": 4.0.2
+      "@types/node": 10.17.60
+      long: 4.0.0
+    dev: true
+
+  /@apollo/protobufjs@1.2.7:
+    resolution:
+      { integrity: sha512-Lahx5zntHPZia35myYDBRuF58tlwPskwHc5CWBZC/4bMKB6siTBWwtMrkqXcsNwQiFSzSx5hKdRPUmemrEp3Gg== }
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      "@protobufjs/aspromise": 1.1.2
+      "@protobufjs/base64": 1.1.2
+      "@protobufjs/codegen": 2.0.4
+      "@protobufjs/eventemitter": 1.1.0
+      "@protobufjs/fetch": 1.1.0
+      "@protobufjs/float": 1.0.2
+      "@protobufjs/inquire": 1.1.0
+      "@protobufjs/path": 1.1.2
+      "@protobufjs/pool": 1.1.0
+      "@protobufjs/utf8": 1.1.0
+      "@types/long": 4.0.2
+      long: 4.0.0
+    dev: true
+
   /@apollo/react-common@3.1.4(@types/react@17.0.21)(apollo-client@2.6.10)(apollo-utilities@1.3.4)(graphql@14.3.1)(react@17.0.2):
     resolution:
       { integrity: sha512-X5Kyro73bthWSCBJUC5XYQqMnG0dLWuDZmVkzog9dynovhfiVCV4kPSdgSIkqnb++cwCzOVuQ4rDKVwo2XRzQA== }
@@ -11802,6 +11867,110 @@ packages:
       - apollo-utilities
       - graphql
     dev: false
+
+  /@apollo/usage-reporting-protobuf@4.1.1:
+    resolution:
+      { integrity: sha512-u40dIUePHaSKVshcedO7Wp+mPiZsaU6xjv9J+VyxpoU/zL6Jle+9zWeG98tr/+SZ0nZ4OXhrbb8SNr0rAPpIDA== }
+    dependencies:
+      "@apollo/protobufjs": 1.2.7
+    dev: true
+
+  /@apollo/utils.dropunuseddefinitions@1.1.0(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-jU1XjMr6ec9pPoL+BFWzEPW7VHHulVdGKMkPAMiCigpVIT11VmCbnij0bWob8uS3ODJ65tZLYKAh/55vLw2rbg== }
+    engines: { node: ">=12.13.0" }
+    peerDependencies:
+      graphql: 14.x || 15.x || 16.x
+    dependencies:
+      graphql: 14.3.1
+    dev: true
+
+  /@apollo/utils.keyvaluecache@1.0.2:
+    resolution:
+      { integrity: sha512-p7PVdLPMnPzmXSQVEsy27cYEjVON+SH/Wb7COyW3rQN8+wJgT1nv9jZouYtztWW8ZgTkii5T6tC9qfoDREd4mg== }
+    dependencies:
+      "@apollo/utils.logger": 1.0.1
+      lru-cache: 7.13.1
+    dev: true
+
+  /@apollo/utils.logger@1.0.1:
+    resolution:
+      { integrity: sha512-XdlzoY7fYNK4OIcvMD2G94RoFZbzTQaNP0jozmqqMudmaGo2I/2Jx71xlDJ801mWA/mbYRihyaw6KJii7k5RVA== }
+    dev: true
+
+  /@apollo/utils.printwithreducedwhitespace@1.1.0(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-GfFSkAv3n1toDZ4V6u2d7L4xMwLA+lv+6hqXicMN9KELSJ9yy9RzuEXaX73c/Ry+GzRsBy/fdSUGayGqdHfT2Q== }
+    engines: { node: ">=12.13.0" }
+    peerDependencies:
+      graphql: 14.x || 15.x || 16.x
+    dependencies:
+      graphql: 14.3.1
+    dev: true
+
+  /@apollo/utils.removealiases@1.0.0(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-6cM8sEOJW2LaGjL/0vHV0GtRaSekrPQR4DiywaApQlL9EdROASZU5PsQibe2MWeZCOhNrPRuHh4wDMwPsWTn8A== }
+    engines: { node: ">=12.13.0" }
+    peerDependencies:
+      graphql: 14.x || 15.x || 16.x
+    dependencies:
+      graphql: 14.3.1
+    dev: true
+
+  /@apollo/utils.sortast@1.1.0(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-VPlTsmUnOwzPK5yGZENN069y6uUHgeiSlpEhRnLFYwYNoJHsuJq2vXVwIaSmts015WTPa2fpz1inkLYByeuRQA== }
+    engines: { node: ">=12.13.0" }
+    peerDependencies:
+      graphql: 14.x || 15.x || 16.x
+    dependencies:
+      graphql: 14.3.1
+      lodash.sortby: 4.7.0
+    dev: true
+
+  /@apollo/utils.stripsensitiveliterals@1.2.0(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-E41rDUzkz/cdikM5147d8nfCFVKovXxKBcjvLEQ7bjZm/cg9zEcXvS6vFY8ugTubI3fn6zoqo0CyU8zT+BGP9w== }
+    engines: { node: ">=12.13.0" }
+    peerDependencies:
+      graphql: 14.x || 15.x || 16.x
+    dependencies:
+      graphql: 14.3.1
+    dev: true
+
+  /@apollo/utils.usagereporting@1.0.1(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-6dk+0hZlnDbahDBB2mP/PZ5ybrtCJdLMbeNJD+TJpKyZmSY6bA3SjI8Cr2EM9QA+AdziywuWg+SgbWUF3/zQqQ== }
+    engines: { node: ">=12.13.0" }
+    peerDependencies:
+      graphql: 14.x || 15.x || 16.x
+    dependencies:
+      "@apollo/usage-reporting-protobuf": 4.1.1
+      "@apollo/utils.dropunuseddefinitions": 1.1.0(graphql@14.3.1)
+      "@apollo/utils.printwithreducedwhitespace": 1.1.0(graphql@14.3.1)
+      "@apollo/utils.removealiases": 1.0.0(graphql@14.3.1)
+      "@apollo/utils.sortast": 1.1.0(graphql@14.3.1)
+      "@apollo/utils.stripsensitiveliterals": 1.2.0(graphql@14.3.1)
+      graphql: 14.3.1
+    dev: true
+
+  /@apollographql/apollo-tools@0.5.4(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-shM3q7rUbNyXVVRkQJQseXv6bnYM3BUma/eZhwXR4xsuM+bqWnJKvW7SAfRjP7LuSCocrexa5AXhjjawNHrIlw== }
+    engines: { node: ">=8", npm: ">=6" }
+    peerDependencies:
+      graphql: ^14.2.1 || ^15.0.0 || ^16.0.0
+    dependencies:
+      graphql: 14.3.1
+    dev: true
+
+  /@apollographql/graphql-playground-html@1.6.29:
+    resolution:
+      { integrity: sha512-xCcXpoz52rI4ksJSdOCxeOCn2DLocxwHf9dVT/Q90Pte1LX+LY+91SFtJF3KXVHH8kEin+g1KKCQPKBjZJfWNA== }
+    dependencies:
+      xss: 1.0.14
+    dev: true
 
   /@arcanis/slice-ansi@1.1.1:
     resolution:
@@ -18446,7 +18615,7 @@ packages:
       "@babel/plugin-transform-unicode-escapes": 7.22.5(@babel/core@7.18.10)
       "@babel/plugin-transform-unicode-regex": 7.22.5(@babel/core@7.18.10)
       "@babel/preset-modules": 0.1.5(@babel/core@7.18.10)
-      "@babel/types": 7.23.0
+      "@babel/types": 7.22.5
       babel-plugin-polyfill-corejs2: 0.3.3(@babel/core@7.18.10)
       babel-plugin-polyfill-corejs3: 0.5.3(@babel/core@7.18.10)
       babel-plugin-polyfill-regenerator: 0.4.1(@babel/core@7.18.10)
@@ -20282,6 +20451,17 @@ packages:
       tslib: 2.6.2
     dev: true
 
+  /@graphql-tools/merge@8.3.1(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-BMm99mqdNZbEYeTPK3it9r9S6rsZsQKtlqJsSBknAclXq2pGEfOxjcIZi+kBSkHZKPKCRrYDd5vY0+rUmIHVLg== }
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      "@graphql-tools/utils": 8.9.0(graphql@14.3.1)
+      graphql: 14.3.1
+      tslib: 2.6.2
+    dev: true
+
   /@graphql-tools/merge@8.4.2(graphql@14.3.1):
     resolution:
       { integrity: sha512-XbrHAaj8yDuINph+sAfuq3QCZ/tKblrTLOpirK0+CAgNlZUCHs0Fa+xtMUURgwCVThLle1AF7svJCxFizygLsw== }
@@ -20289,6 +20469,19 @@ packages:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
       "@graphql-tools/utils": 9.2.1(graphql@14.3.1)
+      graphql: 14.3.1
+      tslib: 2.6.2
+    dev: true
+
+  /@graphql-tools/mock@8.7.20(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-ljcHSJWjC/ZyzpXd5cfNhPI7YljRVvabKHPzKjEs5ElxWu2cdlLGvyNYepApXDsM/OJG/2xuhGM+9GWu5gEAPQ== }
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      "@graphql-tools/schema": 9.0.19(graphql@14.3.1)
+      "@graphql-tools/utils": 9.2.1(graphql@14.3.1)
+      fast-json-stable-stringify: 2.1.0
       graphql: 14.3.1
       tslib: 2.6.2
     dev: true
@@ -20351,6 +20544,19 @@ packages:
       - supports-color
     dev: true
 
+  /@graphql-tools/schema@8.5.1(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-0Esilsh0P/qYcB5DKQpiKeQs/jevzIadNTaT0jeWklPMwNbT7yMX4EqZany7mbeRRlSRwMzNzL5olyFdffHBZg== }
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      "@graphql-tools/merge": 8.3.1(graphql@14.3.1)
+      "@graphql-tools/utils": 8.9.0(graphql@14.3.1)
+      graphql: 14.3.1
+      tslib: 2.6.2
+      value-or-promise: 1.0.11
+    dev: true
+
   /@graphql-tools/schema@9.0.19(graphql@14.3.1):
     resolution:
       { integrity: sha512-oBRPoNBtCkk0zbUsyP4GaIzCt8C0aCI4ycIRUL67KK5pOHljKLBBtGT+Jr6hkzA74C8Gco8bpZPe7aWFjiaK2w== }
@@ -20394,6 +20600,16 @@ packages:
   /@graphql-tools/utils@8.13.1(graphql@14.3.1):
     resolution:
       { integrity: sha512-qIh9yYpdUFmctVqovwMdheVNJqFh+DQNWIhX87FJStfXYnmweBUDATok9fWPleKeFwxnW8IapKmY8m8toJEkAw== }
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      graphql: 14.3.1
+      tslib: 2.6.2
+    dev: true
+
+  /@graphql-tools/utils@8.9.0(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-pjJIWH0XOVnYGXCqej8g/u/tsfV4LvLlj0eATKQu5zwnxd/TiTHq7Cg313qUPTFFHZ3PP5wJ15chYVtLDwaymg== }
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
     dependencies:
@@ -20822,6 +21038,11 @@ packages:
       "@types/node": 18.17.18
       "@types/yargs": 17.0.24
       chalk: 4.1.2
+    dev: true
+
+  /@josephg/resolvable@1.0.1:
+    resolution:
+      { integrity: sha512-CtzORUwWTTOTqfVtHaKRJ0I1kNQd1bpn3sUh8I3nJDVY+5/M/Oe1DnEWzPQvqq/xPIIkzzzIP7mfCoAjFRvDhg== }
     dev: true
 
   /@jridgewell/gen-mapping@0.1.1:
@@ -22658,6 +22879,59 @@ packages:
     dependencies:
       "@xml-tools/parser": 1.0.11
       prettier: 2.8.8
+    dev: true
+
+  /@protobufjs/aspromise@1.1.2:
+    resolution:
+      { integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ== }
+    dev: true
+
+  /@protobufjs/base64@1.1.2:
+    resolution:
+      { integrity: sha512-AZkcAA5vnN/v4PDqKyMR5lx7hZttPDgClv83E//FMNhR2TMcLUhfRUBHCmSl0oi9zMgDDqRUJkSxO3wm85+XLg== }
+    dev: true
+
+  /@protobufjs/codegen@2.0.4:
+    resolution:
+      { integrity: sha512-YyFaikqM5sH0ziFZCN3xDC7zeGaB/d0IUb9CATugHWbd1FRFwWwt4ld4OYMPWu5a3Xe01mGAULCdqhMlPl29Jg== }
+    dev: true
+
+  /@protobufjs/eventemitter@1.1.0:
+    resolution:
+      { integrity: sha512-j9ednRT81vYJ9OfVuXG6ERSTdEL1xVsNgqpkxMsbIabzSo3goCjDIveeGv5d03om39ML71RdmrGNjG5SReBP/Q== }
+    dev: true
+
+  /@protobufjs/fetch@1.1.0:
+    resolution:
+      { integrity: sha512-lljVXpqXebpsijW71PZaCYeIcE5on1w5DlQy5WH6GLbFryLUrBD4932W/E2BSpfRJWseIL4v/KPgBFxDOIdKpQ== }
+    dependencies:
+      "@protobufjs/aspromise": 1.1.2
+      "@protobufjs/inquire": 1.1.0
+    dev: true
+
+  /@protobufjs/float@1.0.2:
+    resolution:
+      { integrity: sha512-Ddb+kVXlXst9d+R9PfTIxh1EdNkgoRe5tOX6t01f1lYWOvJnSPDBlG241QLzcyPdoNTsblLUdujGSE4RzrTZGQ== }
+    dev: true
+
+  /@protobufjs/inquire@1.1.0:
+    resolution:
+      { integrity: sha512-kdSefcPdruJiFMVSbn801t4vFK7KB/5gd2fYvrxhuJYg8ILrmn9SKSX2tZdV6V+ksulWqS7aXjBcRXl3wHoD9Q== }
+    dev: true
+
+  /@protobufjs/path@1.1.2:
+    resolution:
+      { integrity: sha512-6JOcJ5Tm08dOHAbdR3GrvP+yUUfkjG5ePsHYczMFLq3ZmMkAD98cDgcT2iA1lJ9NVwFd4tH/iSSoe44YWkltEA== }
+    dev: true
+
+  /@protobufjs/pool@1.1.0:
+    resolution:
+      { integrity: sha512-0kELaGSIDBKvcgS4zkjz1PeddatrjYcmMWOlAuAPwAeccUrPHdUqo/J6LiymHHEiJT5NrF1UVwxY14f+fy4WQw== }
+    dev: true
+
+  /@protobufjs/utf8@1.1.0:
+    resolution:
+      { integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw== }
     dev: true
 
   /@radix-ui/number@1.0.1:
@@ -25089,6 +25363,13 @@ packages:
       { integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ== }
     dev: true
 
+  /@types/accepts@1.3.7:
+    resolution:
+      { integrity: sha512-Pay9fq2lM2wXPWbteBsRAGiWH2hig4ZE2asK+mm7kUzlxRTfL961rj89I6zV/E3PcIkDqyuBEcMxFT7rccugeQ== }
+    dependencies:
+      "@types/node": 18.17.18
+    dev: true
+
   /@types/archiver@5.3.1:
     resolution:
       { integrity: sha512-wKYZaSXaDvTZuInAWjCeGG7BEAgTWG2zZW0/f7IYFcoHB2X2d9lkVFnrOlXl3W6NrvO6Ml3FLLu8Uksyymcpnw== }
@@ -25209,6 +25490,11 @@ packages:
   /@types/cookie@0.4.1:
     resolution:
       { integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q== }
+    dev: true
+
+  /@types/cors@2.8.12:
+    resolution:
+      { integrity: sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw== }
     dev: true
 
   /@types/cors@2.8.13:
@@ -25380,6 +25666,15 @@ packages:
       { integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA== }
     dev: true
 
+  /@types/express-serve-static-core@4.17.31:
+    resolution:
+      { integrity: sha512-DxMhY+NAsTwMMFHBTtJFNp5qiHKJ7TeqOo23zVEM9alT1Ml27Q3xcTH0xwxn7Q0BbMcVEJOs/7aQtUWupUQN3Q== }
+    dependencies:
+      "@types/node": 18.17.18
+      "@types/qs": 6.9.7
+      "@types/range-parser": 1.2.4
+    dev: true
+
   /@types/express-serve-static-core@4.17.35:
     resolution:
       { integrity: sha512-wALWQwrgiB2AWTT91CB62b6Yt0sNHpznUXeZEcnPU3DRdlDIz74x8Qg1UUYKSVFi+va5vKOLYRBI1bRKiLLKIg== }
@@ -25388,6 +25683,16 @@ packages:
       "@types/qs": 6.9.7
       "@types/range-parser": 1.2.4
       "@types/send": 0.17.1
+    dev: true
+
+  /@types/express@4.17.14:
+    resolution:
+      { integrity: sha512-TEbt+vaPFQ+xpxFLFssxUDXj5cWCxZJjIcB7Yg0k0GMHGtgtQgpvx/MUQUeAkNbA9AAGrwkAsoeItdTgS7FMyg== }
+    dependencies:
+      "@types/body-parser": 1.19.2
+      "@types/express-serve-static-core": 4.17.35
+      "@types/qs": 6.9.7
+      "@types/serve-static": 1.13.10
     dev: true
 
   /@types/express@4.17.17:
@@ -25604,6 +25909,11 @@ packages:
     resolution:
       { integrity: sha512-DvmZHoHTFJ8zhVYwCLWbQ7uAbYQEk52Ev2/ZiQ7Y7gQGeV9pjBqjnQpECMHfKS1rCYAhMI7LHVxwyZLZinJgdw== }
 
+  /@types/long@4.0.2:
+    resolution:
+      { integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA== }
+    dev: true
+
   /@types/mdx@2.0.8:
     resolution:
       { integrity: sha512-r7/zWe+f9x+zjXqGxf821qz++ld8tp6Z4jUS6qmPZUXH6tfh4riXOhAqb12tWGWAevCFtMt1goLWkQMqIJKpsA== }
@@ -25653,6 +25963,11 @@ packages:
     dependencies:
       "@types/node": 18.17.18
       form-data: 3.0.1
+    dev: true
+
+  /@types/node@10.17.60:
+    resolution:
+      { integrity: sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw== }
     dev: true
 
   /@types/node@13.13.52:
@@ -27453,6 +27768,18 @@ packages:
       tslib: 1.14.1
       zen-observable: 0.8.15
 
+  /apollo-datasource@3.3.2:
+    resolution:
+      { integrity: sha512-L5TiS8E2Hn/Yz7SSnWIVbZw0ZfEIXZCa5VUiVxD9P53JvSrf4aStvsFDlGWPvpIdCR+aly2CfoB79B9/JjKFqg== }
+    engines: { node: ">=12.0" }
+    deprecated: The `apollo-datasource` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
+    dependencies:
+      "@apollo/utils.keyvaluecache": 1.0.2
+      apollo-server-env: 4.2.1
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
   /apollo-link-error@1.1.13(graphql@14.3.1):
     resolution:
       { integrity: sha512-jAZOOahJU6bwSqb2ZyskEK1XdgUY9nkmeclCrW7Gddh1uasHVqmoYc4CKdb0/H0Y1J9lvaXKle2Wsw/Zx1AyUg== }
@@ -27497,6 +27824,128 @@ packages:
       ts-invariant: 0.4.4
       tslib: 1.14.1
       zen-observable-ts: 0.8.21
+
+  /apollo-reporting-protobuf@3.4.0:
+    resolution:
+      { integrity: sha512-h0u3EbC/9RpihWOmcSsvTW2O6RXVaD/mPEjfrPkxRPTEPWqncsgOoRJw+wih4OqfH3PvTJvoEIf4LwKrUaqWog== }
+    deprecated: The `apollo-reporting-protobuf` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/usage-reporting-protobuf` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
+    dependencies:
+      "@apollo/protobufjs": 1.2.6
+    dev: true
+
+  /apollo-server-core@3.13.0(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-v/g6DR6KuHn9DYSdtQijz8dLOkP78I5JSVJzPkARhDbhpH74QNwrQ2PP2URAPPEDJ2EeZNQDX8PvbYkAKqg+kg== }
+    engines: { node: ">=12.0" }
+    peerDependencies:
+      graphql: ^15.3.0 || ^16.0.0
+    dependencies:
+      "@apollo/utils.keyvaluecache": 1.0.2
+      "@apollo/utils.logger": 1.0.1
+      "@apollo/utils.usagereporting": 1.0.1(graphql@14.3.1)
+      "@apollographql/apollo-tools": 0.5.4(graphql@14.3.1)
+      "@apollographql/graphql-playground-html": 1.6.29
+      "@graphql-tools/mock": 8.7.20(graphql@14.3.1)
+      "@graphql-tools/schema": 8.5.1(graphql@14.3.1)
+      "@josephg/resolvable": 1.0.1
+      apollo-datasource: 3.3.2
+      apollo-reporting-protobuf: 3.4.0
+      apollo-server-env: 4.2.1
+      apollo-server-errors: 3.3.1(graphql@14.3.1)
+      apollo-server-plugin-base: 3.7.2(graphql@14.3.1)
+      apollo-server-types: 3.8.0(graphql@14.3.1)
+      async-retry: 1.3.3
+      fast-json-stable-stringify: 2.1.0
+      graphql: 14.3.1
+      graphql-tag: 2.12.6(graphql@14.3.1)
+      loglevel: 1.8.1
+      lru-cache: 6.0.0
+      node-abort-controller: 3.1.1
+      sha.js: 2.4.11
+      uuid: 9.0.1
+      whatwg-mimetype: 3.0.0
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
+  /apollo-server-env@4.2.1:
+    resolution:
+      { integrity: sha512-vm/7c7ld+zFMxibzqZ7SSa5tBENc4B0uye9LTfjJwGoQFY5xsUPH5FpO5j0bMUDZ8YYNbrF9SNtzc5Cngcr90g== }
+    engines: { node: ">=12.0" }
+    deprecated: The `apollo-server-env` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/utils.fetcher` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
+    dependencies:
+      node-fetch: 2.6.11
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
+  /apollo-server-errors@3.3.1(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-xnZJ5QWs6FixHICXHxUfm+ZWqqxrNuPlQ+kj5m6RtEgIpekOPssH/SD9gf2B4HuWV0QozorrygwZnux8POvyPA== }
+    engines: { node: ">=12.0" }
+    deprecated: The `apollo-server-errors` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/server` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
+    peerDependencies:
+      graphql: ^15.3.0 || ^16.0.0
+    dependencies:
+      graphql: 14.3.1
+    dev: true
+
+  /apollo-server-express@3.13.0(express@4.18.2)(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-iSxICNbDUyebOuM8EKb3xOrpIwOQgKxGbR2diSr4HP3IW8T3njKFOoMce50vr+moOCe1ev8BnLcw9SNbuUtf7g== }
+    engines: { node: ">=12.0" }
+    peerDependencies:
+      express: ^4.17.1
+      graphql: ^15.3.0 || ^16.0.0
+    dependencies:
+      "@types/accepts": 1.3.7
+      "@types/body-parser": 1.19.2
+      "@types/cors": 2.8.12
+      "@types/express": 4.17.14
+      "@types/express-serve-static-core": 4.17.31
+      accepts: 1.3.8
+      apollo-server-core: 3.13.0(graphql@14.3.1)
+      apollo-server-types: 3.8.0(graphql@14.3.1)
+      body-parser: 1.20.2
+      cors: 2.8.5
+      express: 4.18.2
+      graphql: 14.3.1
+      parseurl: 1.3.3
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: true
+
+  /apollo-server-plugin-base@3.7.2(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-wE8dwGDvBOGehSsPTRZ8P/33Jan6/PmL0y0aN/1Z5a5GcbFhDaaJCjK5cav6npbbGL2DPKK0r6MPXi3k3N45aw== }
+    engines: { node: ">=12.0" }
+    deprecated: The `apollo-server-plugin-base` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/server` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
+    peerDependencies:
+      graphql: ^15.3.0 || ^16.0.0
+    dependencies:
+      apollo-server-types: 3.8.0(graphql@14.3.1)
+      graphql: 14.3.1
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
+  /apollo-server-types@3.8.0(graphql@14.3.1):
+    resolution:
+      { integrity: sha512-ZI/8rTE4ww8BHktsVpb91Sdq7Cb71rdSkXELSwdSR0eXu600/sY+1UXhTWdiJvk+Eq5ljqoHLwLbY2+Clq2b9A== }
+    engines: { node: ">=12.0" }
+    deprecated: The `apollo-server-types` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/server` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
+    peerDependencies:
+      graphql: ^15.3.0 || ^16.0.0
+    dependencies:
+      "@apollo/utils.keyvaluecache": 1.0.2
+      "@apollo/utils.logger": 1.0.1
+      apollo-reporting-protobuf: 3.4.0
+      apollo-server-env: 4.2.1
+      graphql: 14.3.1
+    transitivePeerDependencies:
+      - encoding
+    dev: true
 
   /apollo-utilities@1.3.4(graphql@14.3.1):
     resolution:
@@ -27877,6 +28326,13 @@ packages:
     resolution:
       { integrity: sha512-8A7SkiisnEgME2zEedtDYPxUPzdv3x//E7n5IFktPAtMYSEAV7eNJF0rMwrVyUFj6d/8rgajLantbjcNRQYXIg== }
     dev: false
+
+  /async-retry@1.3.3:
+    resolution:
+      { integrity: sha512-wfr/jstw9xNi/0teMHrRW7dsz3Lt5ARhYNZ2ewpadnhaIp5mbALhOAP+EAdsC7t4Z6wqsDVv9+W6gm1Dk9mEyw== }
+    dependencies:
+      retry: 0.13.1
+    dev: true
 
   /async@2.6.4:
     resolution:
@@ -28604,6 +29060,27 @@ packages:
       unpipe: 1.0.0
     transitivePeerDependencies:
       - supports-color
+
+  /body-parser@1.20.2:
+    resolution:
+      { integrity: sha512-ml9pReCu3M61kGlqoTm2umSXTlRTuGTx0bfYj+uIUKKYycG5NtSbeetV3faSU6R7ajOPw0g/J1PvK4qNy7s5bA== }
+    engines: { node: ">= 0.8", npm: 1.2.8000 || >= 1.4.16 }
+    dependencies:
+      bytes: 3.1.2
+      content-type: 1.0.5
+      debug: 2.6.9
+      depd: 2.0.0
+      destroy: 1.2.0
+      http-errors: 2.0.0
+      iconv-lite: 0.4.24
+      on-finished: 2.4.1
+      qs: 6.11.0
+      raw-body: 2.5.2
+      type-is: 1.6.18
+      unpipe: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /body-scroll-lock@4.0.0-beta.0:
     resolution:
@@ -29559,6 +30036,16 @@ packages:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
+  /cliui@8.0.1:
+    resolution:
+      { integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ== }
+    engines: { node: ">=12" }
+    dependencies:
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      wrap-ansi: 7.0.0
+    dev: true
+
   /clone-deep@4.0.1:
     resolution:
       { integrity: sha512-neHB9xuzh/wk0dIHweyAXv2aPGZIVk3pLMe+/RNzINf17fe0OG96QroktYAUm7SM1PBnzTabaLboqqxDyMU+SQ== }
@@ -29822,6 +30309,23 @@ packages:
       typedarray: 0.0.6
     dev: true
 
+  /concurrently@8.2.2:
+    resolution:
+      { integrity: sha512-1dP4gpXFhei8IOtlXRE/T/4H88ElHgTiUzh71YUmtjTEHMSRS2Z/fgOxHSxxusGHogsRfxNq1vyAwxSC+EVyDg== }
+    engines: { node: ^14.13.0 || >=16.0.0 }
+    hasBin: true
+    dependencies:
+      chalk: 4.1.2
+      date-fns: 2.30.0
+      lodash: 4.17.21
+      rxjs: 7.8.1
+      shell-quote: 1.8.1
+      spawn-command: 0.0.2
+      supports-color: 8.1.1
+      tree-kill: 1.2.2
+      yargs: 17.7.2
+    dev: true
+
   /config-chain@1.1.12:
     resolution:
       { integrity: sha512-a1eOIcu8+7lUInge4Rpf/n4Krkf3Dd9lqhljRzII1/Zno/kRtUWnznPO3jOKBmTEktkt3fkxisUcivoj0ebzoA== }
@@ -29884,6 +30388,12 @@ packages:
     resolution:
       { integrity: sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA== }
     engines: { node: ">= 0.6" }
+
+  /content-type@1.0.5:
+    resolution:
+      { integrity: sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA== }
+    engines: { node: ">= 0.6" }
+    dev: true
 
   /convert-source-map@1.7.0:
     resolution:
@@ -30374,6 +30884,11 @@ packages:
     hasBin: true
     dev: true
 
+  /cssfilter@0.0.10:
+    resolution:
+      { integrity: sha512-FAaLDaplstoRsDR8XGYH51znUN0UY7nMc6Z9/fvE8EXGwvJE9hu7W2vHwx1+bd6gCYnln9nLbzxFTrcO9YQDZw== }
+    dev: true
+
   /csso@4.2.0:
     resolution:
       { integrity: sha512-wvlcdIbf6pwKEk7vHj8/Bkc0B4ylXZruLvOgs9doS5eOsOpuodOV2zJChSpkp+pRpYQLQMeF04nr3Z68Sta9jA== }
@@ -30799,6 +31314,14 @@ packages:
   /dataloader@2.2.2:
     resolution:
       { integrity: sha512-8YnDaaf7N3k/q5HnTJVuzSyLETjoZjVmHc4AeKAzOvKHEFQKcn64OKBfzHYtE9zGjctNM7V9I0MfnUVLpi7M5g== }
+    dev: true
+
+  /date-fns@2.30.0:
+    resolution:
+      { integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw== }
+    engines: { node: ">=0.11" }
+    dependencies:
+      "@babel/runtime": 7.23.4
     dev: true
 
   /date-format@4.0.3:
@@ -33268,7 +33791,7 @@ packages:
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.88.2(@swc/core@1.3.71)(esbuild@0.18.17)(webpack-cli@4.10.0)
+      webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
   /file-selector@0.2.4:
@@ -37858,6 +38381,11 @@ packages:
       { integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg== }
     dev: true
 
+  /lodash.sortby@4.7.0:
+    resolution:
+      { integrity: sha512-HDWXG8isMntAyRF5vZ7xKuEvOhT4AhlRt/3czTSjvGUxjYCBVRQY48ViDHyfYz9VIoBkW4TMGQNapx+l3RUwdA== }
+    dev: true
+
   /lodash.template@4.5.0:
     resolution:
       { integrity: sha512-84vYFxIkmidUiFxidA/KjjH9pAycqW+h980j7Fuz5qxRtO9pgB7MDFTdys1N7A5mcucRiDyEq4fusljItR1T/A== }
@@ -37911,6 +38439,17 @@ packages:
       streamroller: 3.0.2
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /loglevel@1.8.1:
+    resolution:
+      { integrity: sha512-tCRIJM51SHjAayKwC+QAg8hT8vg6z7GSgLJKGvzuPb1Wc+hLzqtuVLxp6/HzSPOozuK+8ErAhy7U/sVzw8Dgfg== }
+    engines: { node: ">= 0.6.0" }
+    dev: true
+
+  /long@4.0.0:
+    resolution:
+      { integrity: sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA== }
     dev: true
 
   /loose-envify@1.4.0:
@@ -37971,6 +38510,12 @@ packages:
     engines: { node: ">=10" }
     dependencies:
       yallist: 4.0.0
+
+  /lru-cache@7.13.1:
+    resolution:
+      { integrity: sha512-CHqbAq7NFlW3RSnoWXLJBxCWaZVBrfa9UEHId2M3AW8iEBurbqduNexEUCGc3SHc6iCYXNJCDi903LajSVAEPQ== }
+    engines: { node: ">=12" }
+    dev: true
 
   /lru-cache@7.13.2:
     resolution:
@@ -41495,6 +42040,17 @@ packages:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
 
+  /raw-body@2.5.2:
+    resolution:
+      { integrity: sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA== }
+    engines: { node: ">= 0.8" }
+    dependencies:
+      bytes: 3.1.2
+      http-errors: 2.0.0
+      iconv-lite: 0.4.24
+      unpipe: 1.0.0
+    dev: true
+
   /raw-loader@4.0.2(webpack@5.88.2):
     resolution:
       { integrity: sha512-ZnScIV3ag9A4wPX/ZayxL/jZH+euYb6FcUinPcgiQW0+UBtEv0O6Q3lGd3cqJ+GHH+rksEv3Pj99oxJ3u3VIKA== }
@@ -42994,6 +43550,13 @@ packages:
       tslib: 2.6.2
     dev: true
 
+  /rxjs@7.8.1:
+    resolution:
+      { integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg== }
+    dependencies:
+      tslib: 2.6.2
+    dev: true
+
   /safe-array-concat@1.0.1:
     resolution:
       { integrity: sha512-6XbUAseYE2KtOuGueyeobCySj9L4+66Tn6KQMOPQJrAJEowYKW/YR/MGJZl7FdydUdaFu4LYyDZjxf4/Nmo23Q== }
@@ -43897,6 +44460,11 @@ packages:
       { integrity: sha512-q/JSVd1Lptzhf5bkYm4ob4iWPjx0KiRe3sRFBNrVqbJkFaBm5vbbowy1mymoPNLRa52+oadOhJ+K49wsSeSjTA== }
     dev: true
 
+  /spawn-command@0.0.2:
+    resolution:
+      { integrity: sha512-zC8zGoGkmc8J9ndvml8Xksr1Amk9qBujgbF0JAIWO7kXr43w0h/0GJNM/Vustixu+YE8N/MTrQ7N31FvHUACxQ== }
+    dev: true
+
   /spdx-correct@3.1.0:
     resolution:
       { integrity: sha512-lr2EZCctC2BNR7j7WzJ2FpDznxky1sjfxvvYEyzxNyb6lZXHODmEoJeFu4JupYlkfha1KZpJyoqiJ7pgA1qq8Q== }
@@ -44535,6 +45103,22 @@ packages:
       csso: 4.2.0
       picocolors: 1.0.0
       stable: 0.1.8
+    dev: true
+
+  /swagger-ui-dist@5.11.0:
+    resolution:
+      { integrity: sha512-j0PIATqQSEFGOLmiJOJZj1X1Jt6bFIur3JpY7+ghliUnfZs0fpWDdHEkn9q7QUlBtKbkn6TepvSxTqnE8l3s0A== }
+    dev: true
+
+  /swagger-ui-express@5.0.0(express@4.18.2):
+    resolution:
+      { integrity: sha512-tsU9tODVvhyfkNSvf03E6FAk+z+5cU3lXAzMy6Pv4av2Gt2xA0++fogwC4qo19XuFf6hdxevPuVCSKFuMHJhFA== }
+    engines: { node: ">= v0.10.32" }
+    peerDependencies:
+      express: ">=4.0.0 || >=5.0.0-beta"
+    dependencies:
+      express: 4.18.2
+      swagger-ui-dist: 5.11.0
     dev: true
 
   /swap-case@2.0.2:
@@ -46011,6 +46595,12 @@ packages:
       { integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg== }
     hasBin: true
 
+  /uuid@9.0.1:
+    resolution:
+      { integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA== }
+    hasBin: true
+    dev: true
+
   /v8-compile-cache-lib@3.0.1:
     resolution:
       { integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg== }
@@ -46055,6 +46645,12 @@ packages:
   /value-equal@1.0.1:
     resolution:
       { integrity: sha512-NOJ6JZCAWr0zlxZt+xqCHNTEKOsrks2HQd4MqhP1qy4z1SkbEP467eNx6TgDKXMvUOb+OENfJCZwM+16n7fRfw== }
+
+  /value-or-promise@1.0.11:
+    resolution:
+      { integrity: sha512-41BrgH+dIbCFXClcSapVs5M6GkENd3gQOJpEfPDNa71LsUGMXDL0jMWpI/Rh7WhX+Aalfz2TTS3Zt5pUsbnhLg== }
+    engines: { node: ">=12" }
+    dev: true
 
   /value-or-promise@1.0.12:
     resolution:
@@ -47418,6 +48014,16 @@ packages:
       { integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw== }
     dev: true
 
+  /xss@1.0.14:
+    resolution:
+      { integrity: sha512-og7TEJhXvn1a7kzZGQ7ETjdQVS2UfZyTlsEdDOqvQF7GoxNfY+0YLCzBy1kPdsDDx4QuNAonQPddpsn6Xl/7sw== }
+    engines: { node: ">= 0.10.0" }
+    hasBin: true
+    dependencies:
+      commander: 2.20.3
+      cssfilter: 0.0.10
+    dev: true
+
   /xtend@4.0.2:
     resolution:
       { integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ== }
@@ -47516,6 +48122,12 @@ packages:
       { integrity: sha512-z9kApYUOCwoeZ78rfRYYWdiU/iNL6mwwYlkkZfJoyMR1xps+NEBX5X7XmRpxkZHhXJ6+Ey00IwKxBBSW9FIjyA== }
     engines: { node: ">=12" }
 
+  /yargs-parser@21.1.1:
+    resolution:
+      { integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw== }
+    engines: { node: ">=12" }
+    dev: true
+
   /yargs-unparser@2.0.0:
     resolution:
       { integrity: sha512-7pRTIA9Qc1caZ0bZ6RYRGbHJthJWuakf+WmHK0rVeLkNrrGhfoabBNdue6kdINI6r4if7ocq9aD/n7xwKOdzOA== }
@@ -47583,6 +48195,20 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.0.0
+
+  /yargs@17.7.2:
+    resolution:
+      { integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w== }
+    engines: { node: ">=12" }
+    dependencies:
+      cliui: 8.0.1
+      escalade: 3.1.1
+      get-caller-file: 2.0.5
+      require-directory: 2.1.1
+      string-width: 4.2.3
+      y18n: 5.0.8
+      yargs-parser: 21.1.1
+    dev: true
 
   /yauzl@2.10.0:
     resolution:
