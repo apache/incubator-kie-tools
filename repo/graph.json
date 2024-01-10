@@ -784,6 +784,11 @@
       },
       {
         "source": "@kie-tools/runtime-tools-enveloped-components",
+        "target": "@kie-tools/dashbuilder-client",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-enveloped-components",
         "target": "@kie-tools/i18n-common-dictionary",
         "weight": 1
       },

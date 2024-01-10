@@ -7160,6 +7160,9 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools/dashbuilder-client":
+        specifier: workspace:*
+        version: link:../dashbuilder-client
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary

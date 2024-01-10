@@ -63,7 +63,7 @@ const CustomDashboardView: React.FC<CustomDashboardViewProps & OUIAProps> = ({
 
   useEffect(() => {
     if (isReady && ref) {
-      ref.current?.contentWindow?.postMessage(dashboardContent, "");
+      ref.current?.contentWindow?.postMessage(dashboardContent, "*");
     }
   });
 
