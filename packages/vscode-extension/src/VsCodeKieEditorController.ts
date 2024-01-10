@@ -35,6 +35,7 @@ import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { VsCodeKieEditorCustomDocument } from "./VsCodeKieEditorCustomDocument";
 import * as __path from "path";
+import { getWorkspaceRoot } from "./workspace/workspaceRoot";
 
 function fileExtension(documentUri: vscode.Uri) {
   const lastSlashIndex = documentUri.fsPath.lastIndexOf("/");
@@ -268,7 +269,9 @@ export class VsCodeKieEditorController implements EditorApi {
       this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
         {
           content: e.document.getText(),
-          normalizedPosixPathRelativeToTheWorkspaceRoot: e.document.uri.path,
+          normalizedPosixPathRelativeToTheWorkspaceRoot: __path.posix.normalize(
+            __path.relative(getWorkspaceRoot(e.document).workspaceRootAbsoluteFsPath, e.document.uri.fsPath)
+          ),
         },
         { showLoadingOverlay: false }
       );
