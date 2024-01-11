@@ -84,8 +84,8 @@ RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-mav
     echo "source /etc/profile.d/maven.sh" >> $HOME/.bashrc
 
 # Golang setup
-RUN wget https://go.dev/dl/go1.21.1.linux-amd64.tar.gz -P /tmp && \
-    sudo tar xzf /tmp/go1.21.1.linux-amd64.tar.gz -C /opt && rm /tmp/go1.21.1.linux-amd64.tar.gz && \
+RUN wget https://go.dev/dl/go1.21.5.linux-amd64.tar.gz -P /tmp && \
+    sudo tar xzf /tmp/go1.21.5.linux-amd64.tar.gz -C /opt && rm /tmp/go1.21.5.linux-amd64.tar.gz && \
     echo 'export GOPATH=${HOME}/go' | sudo tee /etc/profile.d/go.sh && \
     echo 'export PATH=${PATH}:/opt/go/bin:${GOPATH}/bin' | sudo tee -a /etc/profile.d/go.sh && \
     echo "source /etc/profile.d/go.sh" >> $HOME/.bashrc
