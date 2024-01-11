@@ -48,7 +48,11 @@ const (
 	DataIndexServiceName = "data-index-service"
 	JobServiceName       = "jobs-service"
 	ImageNamePrefix      = "quay.io/kiegroup/kogito"
-	DataIndexName        = "data-index"
+	//TODO, the usage of this constant was temporary introduced since only the nightly images are being updated for the
+	//data-index and jobs-service. And this is causing issues at the time of using the workflows integrated with these, etc.
+	//This will be removed when the CI is fixed.
+	ImageNameNightlySuffix = "-nightly"
+	DataIndexName          = "data-index"
 
 	DefaultDatabaseName   string = "sonataflow"
 	DefaultPostgreSQLPort int    = 5432

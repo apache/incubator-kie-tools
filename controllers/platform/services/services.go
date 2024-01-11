@@ -83,11 +83,14 @@ func (d DataIndex) GetContainerName() string {
 
 func (d DataIndex) GetServiceImageName(persistenceName string) string {
 	var tag = version.GetMajorMinor()
+	var suffix = ""
 	if version.IsSnapshot() {
 		tag = "latest"
+		//TODO, remove
+		suffix = constants.ImageNameNightlySuffix
 	}
 	// returns "quay.io/kiegroup/kogito-data-index-<persistence_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.DataIndexName, persistenceName, tag)
+	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.DataIndexName, persistenceName+suffix, tag)
 }
 
 func (d DataIndex) GetServiceName() string {
@@ -250,11 +253,14 @@ func (j JobService) GetContainerName() string {
 
 func (j JobService) GetServiceImageName(persistenceName string) string {
 	var tag = version.GetMajorMinor()
+	var suffix = ""
 	if version.IsSnapshot() {
 		tag = "latest"
+		//TODO remove
+		suffix = constants.ImageNameNightlySuffix
 	}
 	// returns "quay.io/kiegroup/kogito-jobs-service-<persistece_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.JobServiceName, persistenceName, tag)
+	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.JobServiceName, persistenceName+suffix, tag)
 }
 
 func (j JobService) GetServiceName() string {
