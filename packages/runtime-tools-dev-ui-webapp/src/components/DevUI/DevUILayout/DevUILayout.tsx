@@ -99,8 +99,8 @@ const DevUILayout: React.FC<IOwnProps> = ({
                 <CustomDashboardListContextProvider>
                   <CustomDashboardViewContextProvider>
                     <FormDetailsContextProvider>
-                      <WorkflowFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}/${openApiPath}`}>
-                        <CloudEventFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}/${openApiPath}`}>
+                      <WorkflowFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
+                        <CloudEventFormContextProvider kogitoServiceUrl={`${openApiBaseUrl}`}>
                           <MemoryRouter>
                             <Switch>
                               <Route path="/" render={renderPage} />
