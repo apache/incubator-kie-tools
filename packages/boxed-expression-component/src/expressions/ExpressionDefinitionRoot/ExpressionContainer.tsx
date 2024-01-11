@@ -63,6 +63,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
+  // Selecting the Expression container should reset the selectObject
   useEffect(() => {
     if (isActive) {
       beeGwtService?.selectObject("");

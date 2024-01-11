@@ -71,6 +71,13 @@ export function BeeTableDefaultCell<R extends object>({
     getValue
   );
 
+  const { beeGwtService } = useBoxedExpressionEditor();
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject(typeof cellProps.value === "string" ? "" : cellProps.value?.id);
+    }
+  }, [beeGwtService, cellProps, isActive]);
+
   return (
     <BeeTableEditableCellContent
       isEditing={isEditing}

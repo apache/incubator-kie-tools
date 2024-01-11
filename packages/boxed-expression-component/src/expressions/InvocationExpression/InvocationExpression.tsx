@@ -315,7 +315,7 @@ export function InvocationExpression(
         };
       });
     },
-    [getDefaultArgumentEntry, setExpression]
+    [getDefaultArgumentEntry, invocationExpression.bindingEntries, setExpression]
   );
 
   const onRowDeleted = useCallback(

@@ -312,6 +312,7 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
 
   const { beeGwtService } = useBoxedExpressionEditor();
 
+  // Selecting the Java function parameters should reset the selectObject
   useEffect(() => {
     if (isActive) {
       beeGwtService?.selectObject("");

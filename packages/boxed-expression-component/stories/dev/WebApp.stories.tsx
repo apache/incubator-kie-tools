@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   BeeGwtService,
   DmnBuiltInDataType,
@@ -31,7 +31,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorWrapper } from "../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditorProps } from "../../src/expressions";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Button, Flex, FlexItem, Tooltip } from "@patternfly/react-core/dist/js";
+import { Button, Flex, FlexItem, Text, Tooltip } from "@patternfly/react-core/dist/js";
 import { emptyExpressionDefinition } from "../misc/Empty/EmptyExpression.stories";
 import { canDriveExpressionDefinition } from "../useCases/CanDrive/CanDrive.stories";
 import { findEmployeesByKnowledgeExpression } from "../useCases/FindEmployees/FindEmployees.stories";
@@ -112,6 +112,7 @@ const beeGwtService: BeeGwtService = {
 function App(args: BoxedExpressionEditorProps) {
   const [version, setVersion] = useState(-1);
   const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition>(INITIAL_EXPRESSION);
+  const [objectUuid, setObjectUuid] = useState("");
 
   useEffect(() => {
     setVersion((prev) => prev + 1);
@@ -120,6 +121,13 @@ function App(args: BoxedExpressionEditorProps) {
   const setSample = useCallback((sample: ExpressionDefinition) => {
     setExpressionDefinition(sample);
   }, []);
+
+  const internalBeeGwtService = useMemo(() => {
+    return {
+      ...(args.beeGwtService as BeeGwtService),
+      selectObject: (uuid?: string) => setObjectUuid(uuid ?? ""),
+    };
+  }, [args.beeGwtService]);
 
   return (
     <div>
@@ -146,16 +154,23 @@ function App(args: BoxedExpressionEditorProps) {
           </Flex>
         </FlexItem>
         <FlexItem>
-          <div>
-            {BoxedExpressionEditorWrapper({
-              decisionNodeId: "_00000000-0000-0000-0000-000000000000",
-              dataTypes: args.dataTypes,
-              beeGwtService: args.beeGwtService,
-              pmmlParams: args.pmmlParams,
-              expressionDefinition: expressionDefinition,
-              setExpressionDefinition: setExpressionDefinition,
-            })}
-          </div>
+          <Flex direction={{ default: "row" }} justifyContent={{ default: "justifyContentSpaceBetween" }}>
+            <FlexItem>
+              {BoxedExpressionEditorWrapper({
+                decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+                dataTypes: args.dataTypes,
+                beeGwtService: internalBeeGwtService,
+                pmmlParams: args.pmmlParams,
+                expressionDefinition: expressionDefinition,
+                setExpressionDefinition: setExpressionDefinition,
+              })}
+            </FlexItem>
+            <FlexItem>
+              <div>
+                <Text>Selected object UUID: {objectUuid}</Text>
+              </div>
+            </FlexItem>
+          </Flex>
         </FlexItem>
       </Flex>
     </div>

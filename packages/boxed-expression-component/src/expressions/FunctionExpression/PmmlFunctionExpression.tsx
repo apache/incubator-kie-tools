@@ -270,6 +270,7 @@ function PmmlFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
 
   const { beeGwtService } = useBoxedExpressionEditor();
 
+  // Selecting the PMML function parameters should reset the selectObject
   useEffect(() => {
     if (isActive) {
       beeGwtService?.selectObject("");

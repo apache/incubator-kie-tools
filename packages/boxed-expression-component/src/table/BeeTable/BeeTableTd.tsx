@@ -109,8 +109,6 @@ export function BeeTableTd<R extends object>({
     if (isActive) {
       if (column.isRowIndexColumn) {
         beeGwtService?.selectObject("");
-      } else {
-        beeGwtService?.selectObject(typeof cell.value === "string" ? "" : cell.value?.id ?? "");
       }
     }
   }, [beeGwtService, isActive, column.isRowIndexColumn, cell.value]);

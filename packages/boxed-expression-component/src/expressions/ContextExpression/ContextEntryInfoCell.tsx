@@ -98,6 +98,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
 
   const { beeGwtService } = useBoxedExpressionEditor();
 
+  // Selecting the Context entry cell should set the selectObject
   useEffect(() => {
     if (isActive) {
       beeGwtService?.selectObject(entryInfo.id);
