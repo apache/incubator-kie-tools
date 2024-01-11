@@ -135,12 +135,10 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 	dataDeployContainer.Name = ps.GetContainerName()
 
 	replicas := ps.GetReplicaCount()
-	lbl := map[string]string{
-		workflowproj.LabelApp: platform.Name,
-	}
+	lbl, selectorLbl := getLabels(platform, ps)
 	dataDeploySpec := appsv1.DeploymentSpec{
 		Selector: &metav1.LabelSelector{
-			MatchLabels: lbl,
+			MatchLabels: selectorLbl,
 		},
 		Replicas: &replicas,
 		Template: corev1.PodTemplateSpec{
@@ -195,9 +193,7 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 }
 
 func createService(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, ps services.Platform) error {
-	lbl := map[string]string{
-		workflowproj.LabelApp: platform.Name,
-	}
+	lbl, selectorLbl := getLabels(platform, ps)
 	dataSvcSpec := corev1.ServiceSpec{
 		Ports: []corev1.ServicePort{
 			{
@@ -207,7 +203,7 @@ func createService(ctx context.Context, client client.Client, platform *operator
 				TargetPort: common.DefaultHTTPWorkflowPortIntStr,
 			},
 		},
-		Selector: lbl,
+		Selector: selectorLbl,
 	}
 	dataSvc := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
@@ -233,18 +229,28 @@ func createService(ctx context.Context, client client.Client, platform *operator
 	return nil
 }
 
+func getLabels(platform *operatorapi.SonataFlowPlatform, ps services.Platform) (map[string]string, map[string]string) {
+	lbl := map[string]string{
+		workflowproj.LabelApp:     platform.Name,
+		workflowproj.LabelService: ps.GetServiceName(),
+	}
+	selectorLbl := map[string]string{
+		workflowproj.LabelService: ps.GetServiceName(),
+	}
+	return lbl, selectorLbl
+}
+
 func createConfigMap(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, ps services.Platform) error {
 	handler, err := services.NewServiceAppPropertyHandler(ps)
 	if err != nil {
 		return err
 	}
+	lbl, _ := getLabels(platform, ps)
 	configMap := &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      ps.GetServiceCmName(),
 			Namespace: platform.Namespace,
-			Labels: map[string]string{
-				workflowproj.LabelApp: platform.Name,
-			},
+			Labels:    lbl,
 		},
 		Data: map[string]string{
 			workflowproj.ApplicationPropertiesFileName: handler.Build(),

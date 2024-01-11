@@ -34,6 +34,8 @@ const (
 	ApplicationPropertiesFileName = "application.properties"
 	// LabelApp key to use among object selectors, "app" is used among k8s applications to group objects in some UI consoles
 	LabelApp = "app"
+	// LabelService key to use among object selectors
+	LabelService = "sonataflow.org/service"
 	// LabelWorkflow specialized label managed by the controller
 	LabelWorkflow = metadata.Domain + "/workflow-app"
 )
