@@ -57,8 +57,13 @@ export const WorkflowFormContainer: React.FC<WorkflowFormContainerProps & OUIAPr
             .then((id: string) => {
               onStartWorkflowSuccess(id);
             })
-            .catch((error: any) => {
-              onStartWorkflowError(error);
+            .catch((error) => {
+              const message =
+                (error?.response?.data?.message &&
+                  error?.response?.data?.message + " " + error?.response?.data?.cause) ||
+                error?.message ||
+                "Unknown error. More details in the developer tools console.";
+              onStartWorkflowError(message);
             });
         },
       }}
