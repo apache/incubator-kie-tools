@@ -46,7 +46,7 @@ export interface BeeTableThResizableProps<R extends object> {
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getColumnLabel: (groupType: string | undefined) => string | undefined;
   onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
-  onHeaderClick?: (columnKey: string) => () => void;
+  onHeaderClick?: (columnKey: string) => void;
   reactTableInstance: ReactTable.TableInstance<R>;
   headerCellInfo: React.ReactElement;
   shouldShowColumnsInlineControls: boolean;
@@ -91,7 +91,7 @@ export function BeeTableThResizable<R extends object>({
     return cssClasses.join(" ");
   }, [columnKey, column.dataType, column.groupType]);
 
-  const onClick = useMemo(() => {
+  const onClick = useCallback(() => {
     return onHeaderClick?.(columnKey);
   }, [columnKey, onHeaderClick]);
 

@@ -66,6 +66,8 @@ export interface BeeTableHeaderProps<R extends object> {
   tableColumns: ReactTable.Column<R>[];
   /** Function to be executed when columns are modified */
   onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
+  /** Function to be executed when a column's header is clicked */
+  onHeaderClick?: (columnKey: string) => void;
   /** Option to enable or disable header edits */
   isEditableHeader: boolean;
   /** */
@@ -94,6 +96,7 @@ export function BeeTableHeader<R extends object>({
   onColumnUpdates,
   isEditableHeader,
   onColumnAdded,
+  onHeaderClick,
   shouldRenderRowIndexColumn,
   shouldShowRowsInlineControls,
   resizerStopBehavior,
@@ -187,6 +190,7 @@ export function BeeTableHeader<R extends object>({
           {!visitedColumns.has(column) && (
             <BeeTableThResizable
               forwardRef={thRef}
+              onHeaderClick={onHeaderClick}
               resizerStopBehavior={resizerStopBehavior}
               rowSpan={rowSpan}
               shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}

@@ -1098,6 +1098,12 @@ function TestScenarioTable({
     [updateTestScenarioModel]
   );
 
+  const onHeaderClick = useCallback((columnKey: string) => {
+    console.log(columnKey);
+
+    tableColumns.allColumns.forEach((column) => console.log(column.columns));
+  }, []);
+
   return (
     <div className={"test-scenario-table"}>
       <StandaloneBeeTable
@@ -1111,6 +1117,7 @@ function TestScenarioTable({
         onCellUpdates={onCellUpdates}
         onColumnAdded={onColumnAdded}
         onColumnDeleted={onColumnDeleted}
+        onHeaderClick={onHeaderClick}
         onRowAdded={onRowAdded}
         onRowDeleted={onRowDeleted}
         onRowDuplicated={onRowDuplicated}

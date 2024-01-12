@@ -68,6 +68,8 @@ export interface BeeTableProps<R extends object> {
   getRowKey?: (row: ReactTable.Row<R>) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey?: (column: ReactTable.ColumnInstance<R>) => string;
+  /** Function to be executed when a column's header is clicked */
+  onHeaderClick?: (columnKey: string) => void;
   /** Disable/Enable cell edits. Enabled by default */
   isReadOnly?: boolean;
   /** Enable keyboard navigation */
