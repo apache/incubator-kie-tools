@@ -39,7 +39,7 @@ const FILE: EmbeddedEditorFile = {
   getFileContents: function (): Promise<string | undefined> {
     return Promise.resolve("");
   },
-  normalizedPosixPathRelativeToTheWorkspaceRoot: "",
+  normalizedPosixPathRelativeToTheWorkspaceRoot: "test.dash.yaml",
   isReadOnly: false,
 };
 
