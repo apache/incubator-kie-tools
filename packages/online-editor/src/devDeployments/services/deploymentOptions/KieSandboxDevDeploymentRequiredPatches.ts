@@ -17,9 +17,63 @@
  * under the License.
  */
 
-import { ResourcePatch } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { DeploymentOptionArgs } from "../types";
+import { ResourcePatch, encodeJsonPatchSubpath } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 
-export function KieSandboxDevDeploymentRequiredPatches(args: DeploymentOptionArgs): ResourcePatch[] {
-  return [];
+export const requiredLabels = {
+  createdBy: "tools.kie.org/created-by",
+  partOf: "tools.kie.org/part-of",
+};
+
+export const requiredAnnotations = {
+  workspaceId: "tools.kie.org/workspace-id",
+  workspaceName: "tools.kie.org/workspace-name",
+} as const;
+
+export function KieSandboxDevDeploymentRequiredPatches(): ResourcePatch[] {
+  return [
+    {
+      targetKinds: ["*"],
+      jsonPatches: [
+        { op: "checkType", path: "/metadata/labels", type: "null" },
+        { op: "add", path: "/metadata/labels", value: {} },
+      ],
+    },
+    {
+      targetKinds: ["*"],
+      jsonPatches: [
+        {
+          op: "add",
+          path: `/metadata/labels/${encodeJsonPatchSubpath(requiredLabels.createdBy)}`,
+          value: "${{ devDeployment.createdBy }}",
+        },
+        {
+          op: "add",
+          path: `/metadata/labels/${encodeJsonPatchSubpath(requiredLabels.partOf)}`,
+          value: "${{ devDeployment.uniqueName }}",
+        },
+      ],
+    },
+    {
+      targetKinds: ["*"],
+      jsonPatches: [
+        { op: "checkType", path: "/metadata/annotations", type: "null" },
+        { op: "add", path: "/metadata/annotations", value: {} },
+      ],
+    },
+    {
+      targetKinds: ["*"],
+      jsonPatches: [
+        {
+          op: "add",
+          path: `/metadata/annotations/${encodeJsonPatchSubpath(requiredAnnotations.workspaceId)}`,
+          value: "${{ devDeployment.workspace.id }}",
+        },
+        {
+          op: "add",
+          path: `/metadata/annotations/${encodeJsonPatchSubpath(requiredAnnotations.workspaceName)}`,
+          value: "${{ devDeployment.workspace.name }}",
+        },
+      ],
+    },
+  ];
 }

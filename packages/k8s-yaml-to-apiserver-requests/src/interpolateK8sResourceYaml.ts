@@ -75,8 +75,6 @@ export function interpolateK8sResourceYaml(k8sResourceYaml: string, tokenMap?: T
 
   const flattenedTokens = flattenTokenMap(tokenMap);
 
-  console.log({ tokenMap, flattenedTokens });
-
   const trimmedTokensFromInputText = trimTokensFromInputText(k8sResourceYaml, flattenedTokens);
 
   return Object.entries(flattenedTokens).reduce(

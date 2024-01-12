@@ -27,6 +27,8 @@ import {
 import { DeployArgs, KieSandboxDevDeploymentsService } from "../KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { KieSandboxDeployment, ResourceActions, defaultAnnotationTokens, defaultLabelTokens } from "../types";
+import { KieSandboxDevDeploymentRequiredPatches } from "../deploymentOptions/KieSandboxDevDeploymentRequiredPatches";
+import { shouldSkipAction } from "../deploymentOptions/types";
 
 export const openShiftResourcesApi = {
   ...kubernetesResourcesApi,
@@ -154,13 +156,19 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
       throw new Error("Invalid deployment option!");
     }
 
-    // Get actions for parameters, but filter out parameters of type boolean with value = false, avoiding applying them.
-    const actions: ResourceActions[] | undefined = args.deploymentOption.parameters
-      ?.filter((parameter) => parameter.type !== "boolean" || args.parametersTokenMap.parameters[parameter.id] === true)
-      .map((parameter) => ({
-        resourcePatches: parameter.resourcePatches ?? [],
-        appendYamls: parameter.appendYamls ?? [],
-      }));
+    const actions: ResourceActions[] | undefined = [
+      ...(args.deploymentOption.parameters
+        ?.filter((parameter) => !shouldSkipAction(parameter, args.parametersTokenMap.parameters[parameter.id]))
+        .map((parameter) => ({
+          resourcePatches: parameter.resourcePatches,
+          appendYamls: parameter.appendYamls,
+        })) ?? []),
+      { resourcePatches: KieSandboxDevDeploymentRequiredPatches() },
+      {
+        resourcePatches: args.deploymentOption.resourcePatches,
+        appendYamls: args.deploymentOption.appendYamls,
+      },
+    ];
 
     let resources = [];
     try {

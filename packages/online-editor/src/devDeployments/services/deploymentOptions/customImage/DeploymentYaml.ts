@@ -32,11 +32,6 @@ metadata:
     app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
     app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
-    \${{ devDeployment.labels.createdBy }}: kie-tools
-    \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
-  annotations:
-    \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
-    \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
   replicas: 1
   selector:
@@ -47,8 +42,6 @@ spec:
       labels:
         app: \${{ devDeployment.uniqueName }}
         deploymentconfig: \${{ devDeployment.uniqueName }}
-        \${{ devDeployment.labels.createdBy }}: kie-tools
-        \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
     spec:
       containers:
         - name: \${{ devDeployment.uniqueName }}

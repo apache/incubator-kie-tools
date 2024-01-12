@@ -25,7 +25,6 @@ import {
   interpolateK8sResourceYaml,
   TokenMap,
   K8sResourceYaml,
-  ResourcePatch,
   patchK8sResourceYaml,
   appendK8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
@@ -210,20 +209,20 @@ export class KubernetesService {
     const processedYamls = args.k8sResourceYamls.map((yamlContent) => {
       let resultYaml = yamlContent;
 
-      console.log({ initYaml: resultYaml });
-
       args.actions?.forEach(({ appendYamls }) => {
-        console.log({ appendYamls });
-        resultYaml = appendYamls.reduce((yaml, yamlToAppend) => appendK8sResourceYaml(yaml, yamlToAppend), resultYaml);
+        if (appendYamls) {
+          resultYaml = appendYamls.reduce(
+            (yaml, yamlToAppend) => appendK8sResourceYaml(yaml, yamlToAppend),
+            resultYaml
+          );
+        }
       });
-
-      console.log({ afterAppend: resultYaml });
 
       args.actions?.forEach(({ resourcePatches }) => {
-        resultYaml = patchK8sResourceYaml(resultYaml, resourcePatches, args.parametersTokens);
+        if (resourcePatches) {
+          resultYaml = patchK8sResourceYaml(resultYaml, resourcePatches, args.parametersTokens);
+        }
       });
-
-      console.log({ afterPatches: resultYaml });
 
       resultYaml = interpolateK8sResourceYaml(resultYaml, args.tokens);
 

@@ -17,32 +17,80 @@
  * under the License.
  */
 
-import { Operation, applyPatch, deepClone } from "fast-json-patch";
+import { Operation, applyPatch, getValueByPointer } from "fast-json-patch";
 import { parseK8sResourceYamls } from "./parseK8sResourceYamls";
 import * as jsYaml from "js-yaml";
 import { TokenMap, interpolateK8sResourceYaml } from "./interpolateK8sResourceYaml";
+import { consoleDebugMessage } from "./common";
+
+export type CheckTypeOperation = {
+  path: string;
+  op: "checkType";
+  type: "array" | "object" | "basic" | "null" | "undefined";
+};
+
+export type PatchOperation = Operation | CheckTypeOperation;
 
 export type ResourcePatch = {
   targetKinds: string[];
-  jsonPatches: Operation[];
+  jsonPatches: PatchOperation[];
 };
 
-export function patchK8sResourceYaml(k8sResourceYaml: string, patches: ResourcePatch[], parametersTokens?: TokenMap) {
-  console.log({ k8sResourceYaml });
-  const parsedAndPatchedYamls = parseK8sResourceYamls(k8sResourceYaml.split("\n---\n")).map((resource) => {
-    console.log({ resource });
-    let updatedResource = resource;
-    patches.forEach((patch) => {
-      console.log({ patch });
-      if (patch.targetKinds.includes(resource.kind)) {
-        const { newDocument } = applyPatch(updatedResource, deepClone(patch.jsonPatches), false, false);
-        updatedResource = newDocument;
+export function encodeJsonPatchSubpath(path: string) {
+  return path.replaceAll("~", "~0").replaceAll("/", "~1");
+}
+
+function isValueOfType(type: CheckTypeOperation["type"], value: any) {
+  switch (type) {
+    case "null":
+    case "undefined":
+      if (!value) {
+        return true;
       }
-    });
+      return false;
+    case "array":
+      if (Array.isArray(value)) {
+        return true;
+      }
+      return false;
+    case "object":
+      if (typeof value === "object" && !Array.isArray(value)) {
+        return true;
+      }
+      return false;
+    case "basic":
+      if (typeof value === "boolean" || typeof value === "string" || typeof value === "number") {
+        return true;
+      }
+      return false;
+  }
+}
+
+export function patchK8sResourceYaml(k8sResourceYaml: string, patches: ResourcePatch[], parametersTokens?: TokenMap) {
+  const parsedAndPatchedYamls = parseK8sResourceYamls(k8sResourceYaml.split("\n---\n")).map((resource) => {
+    let updatedResource = resource;
+    for (const patch of patches) {
+      if (patch.targetKinds.includes(resource.kind) || patch.targetKinds.includes("*")) {
+        for (const jsonPatch of patch.jsonPatches) {
+          if (jsonPatch.op === "checkType") {
+            const value = getValueByPointer(updatedResource, jsonPatch.path);
+            if (isValueOfType(jsonPatch.type, value)) {
+              continue;
+            } else {
+              break;
+            }
+          }
+          try {
+            const { newDocument } = applyPatch(updatedResource, [jsonPatch], false, false);
+            updatedResource = newDocument;
+          } catch (e) {
+            consoleDebugMessage(`Failed to apply patch -> \n${JSON.stringify(jsonPatch)}`);
+          }
+        }
+      }
+    }
     return updatedResource;
   });
-  console.log({ parsedAndPatchedYamls });
   const finalYaml = parsedAndPatchedYamls.map((resource) => jsYaml.dump(resource)).join("\n---\n");
-  console.log({ finalYaml });
   return interpolateK8sResourceYaml(finalYaml, parametersTokens);
 }

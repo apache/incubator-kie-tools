@@ -32,6 +32,8 @@ import {
 } from "../KubernetesService";
 import { DeployArgs, KieSandboxDevDeploymentsService } from "../KieSandboxDevDeploymentsService";
 import { SelfSubjectAccessReviewYaml } from "./resources/SelfSubjectAccessReviewYaml";
+import { KieSandboxDevDeploymentRequiredPatches } from "../deploymentOptions/KieSandboxDevDeploymentRequiredPatches";
+import { shouldSkipAction } from "../deploymentOptions/types";
 
 export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
@@ -164,17 +166,19 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
       throw new Error("Invalid deployment option!");
     }
 
-    // Get actions for parameters, but filter out parameters of type boolean with value false, avoiding applying them.
-    const actions: ResourceActions[] | undefined = args.deploymentOption.parameters
-      ?.filter((parameter) => parameter.type !== "boolean" || args.parametersTokenMap.parameters[parameter.id] === true)
-      .map((parameter) => ({
-        resourcePatches: parameter.resourcePatches ?? [],
-        appendYamls: parameter.appendYamls ?? [],
-      }))
-      .concat({
-        resourcePatches: args.deploymentOption.resourcePatches ?? [],
-        appendYamls: args.deploymentOption.appendYamls ?? [],
-      });
+    const actions: ResourceActions[] | undefined = [
+      ...(args.deploymentOption.parameters
+        ?.filter((parameter) => !shouldSkipAction(parameter, args.parametersTokenMap.parameters[parameter.id]))
+        .map((parameter) => ({
+          resourcePatches: parameter.resourcePatches,
+          appendYamls: parameter.appendYamls,
+        })) ?? []),
+      { resourcePatches: KieSandboxDevDeploymentRequiredPatches() },
+      {
+        resourcePatches: args.deploymentOption.resourcePatches,
+        appendYamls: args.deploymentOption.appendYamls,
+      },
+    ];
 
     console.log({ actions });
 

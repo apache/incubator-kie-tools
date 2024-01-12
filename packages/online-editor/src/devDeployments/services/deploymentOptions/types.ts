@@ -39,8 +39,20 @@ export type DeploymentParameter = {
   | {
       defaultValue: boolean;
       type: "boolean";
+      skipActionsIfFalse?: boolean;
     }
 );
+
+export function shouldSkipAction(parameter: DeploymentParameter, value: any) {
+  // Non boolean type or configured to not skip actions if value is false
+  if (parameter.type !== "boolean" || !parameter.skipActionsIfFalse) {
+    return false;
+  }
+  if (!value) {
+    return true;
+  }
+  return false;
+}
 
 export type DeploymentOptionOpts = {
   parameters?: Array<DeploymentParameter>;

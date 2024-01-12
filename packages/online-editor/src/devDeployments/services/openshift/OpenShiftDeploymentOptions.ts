@@ -34,6 +34,7 @@ export function OpenShiftDeploymentOptions(args: DeploymentOptionArgs): Array<De
         description: "Wether to deploy the DMN Form Webapp as a sidecar container or not",
         type: "boolean",
         defaultValue: false,
+        skipActionsIfFalse: true,
         resourcePatches: [
           {
             targetKinds: ["Deployment"],

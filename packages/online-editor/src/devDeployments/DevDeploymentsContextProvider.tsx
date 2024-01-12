@@ -137,13 +137,12 @@ export function DevDeploymentsContextProvider(props: Props) {
       const workspaceName = workspace.name !== NEW_WORKSPACE_DEFAULT_NAME ? workspace.name : workspaceFile.name;
       const workspaceId = workspace.workspaceId;
 
-      console.log({ deploymentParameters });
-
       const tokenMap = {
         devDeployment: {
           labels: defaultLabelTokens,
           annotations: defaultAnnotationTokens,
           uniqueName: service.newResourceName(),
+          createdBy: "kie-tools",
           uploadService: {
             apiKey: uuid(),
           },
@@ -156,8 +155,6 @@ export function DevDeploymentsContextProvider(props: Props) {
           },
         },
       };
-
-      console.log({ tokenMap });
 
       try {
         await service.deploy({

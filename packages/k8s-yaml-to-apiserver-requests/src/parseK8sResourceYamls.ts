@@ -18,7 +18,7 @@
  */
 
 import * as jsYaml from "js-yaml";
-import { K8sResourceYaml, isValidK8sResource } from "./common";
+import { K8sResourceYaml, consoleDebugMessage, isValidK8sResource } from "./common";
 
 export function parseK8sResourceYamls(yamls: string[]): K8sResourceYaml[] {
   const parsedResources: K8sResourceYaml[] = [];
@@ -27,6 +27,10 @@ export function parseK8sResourceYamls(yamls: string[]): K8sResourceYaml[] {
     parsedContent.forEach((parsedYaml) => {
       if (isValidK8sResource(parsedYaml)) {
         parsedResources.push(parsedYaml);
+      } else {
+        consoleDebugMessage(
+          `Invalid YAML missing required properties ['kind', 'apiVersion', 'metadata'] -> \n${jsYaml.dump(parsedYaml)}`
+        );
       }
     });
   });

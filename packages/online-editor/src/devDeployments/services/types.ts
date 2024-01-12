@@ -67,8 +67,6 @@ export const defaultAnnotationTokens: AnnotationTokens = {
   workspaceName: "tools.kie.org/workspace-name",
 } as const;
 
-export const CREATED_BY_KIE_TOOLS = "kie-tools";
-
 export const TOKENS_PREFIX = "devDeployment";
 
 export type Tokens = DevDeploymentTokens & {
@@ -89,6 +87,6 @@ export type DeploymentOptionArgs = {
 };
 
 export type ResourceActions = {
-  resourcePatches: ResourcePatch[];
-  appendYamls: string[];
+  resourcePatches?: ResourcePatch[];
+  appendYamls?: string[];
 };

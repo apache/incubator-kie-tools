@@ -30,13 +30,9 @@ metadata:
     app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
     app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
-    \${{ devDeployment.labels.createdBy }}: kie-tools
-    \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
-    \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
   rules:
     - http:
