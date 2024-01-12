@@ -75,9 +75,12 @@ export type DmnEditorRootState = {
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
   private readonly externalModelsManagerDoneBootstraping = imperativePromiseHandle<void>();
 
+  private readonly dmnEditorRef: React.RefObject<DmnEditor.DmnEditorRef>;
+
   constructor(props: DmnEditorRootProps) {
     super(props);
     props.exposing(this);
+    this.dmnEditorRef = React.createRef();
     this.state = {
       externalModelsByNamespace: {},
       marshaller: undefined,
@@ -97,6 +100,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
   public async redo(): Promise<void> {
     this.setState((prev) => ({ ...prev, pointer: Math.min(prev.stack.length - 1, prev.pointer + 1) }));
+  }
+
+  public async getDiagramSvg(): Promise<string | undefined> {
+    return this.dmnEditorRef.current?.getDiagramSvg();
   }
 
   public async getContent(): Promise<string> {
@@ -270,6 +277,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
         {this.model && (
           <>
             <DmnEditor.DmnEditor
+              ref={this.dmnEditorRef}
               originalVersion={this.state.marshaller?.originalVersion}
               model={this.model}
               externalModelsByNamespace={this.state.externalModelsByNamespace}
