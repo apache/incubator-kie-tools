@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { FormDetailsDriver, FormDetailsChannelApi, Form, FormContent } from "../api";
+import { Form, FormContent } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { FormDetailsDriver, FormDetailsChannelApi } from "../api";
 
 /**
  * Implementation of the TaskInboxChannelApi delegating to a TaskInboxDriver

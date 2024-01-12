@@ -17,9 +17,8 @@
  * under the License.
  */
 
-import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/dist/formDetails";
-
-import { getFormContent, saveFormContent } from "../apis";
+import { getFormContent, saveFormContent } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
+import { Form, FormContent } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export interface FormDetailsGatewayApi {
   getFormContent: (formName: string) => Promise<Form>;

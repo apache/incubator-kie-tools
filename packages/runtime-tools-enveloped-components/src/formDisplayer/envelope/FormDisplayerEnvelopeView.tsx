@@ -20,9 +20,9 @@
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import isEmpty from "lodash/isEmpty";
+import { Form } from "@kie-tools/runtime-tools-gateway-api/src/types";
 import {
   FormDisplayerChannelApi,
-  Form,
   FormSubmitContext,
   FormSubmitResponse,
   FormDisplayerInitArgs,

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FormInfo } from "../../formsList";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 /**
  * Envelope Api
@@ -33,27 +33,4 @@ export interface FormDetailsEnvelopeApi {
 export interface Association {
   origin: string;
   envelopeServerId: string;
-}
-
-export interface FormResources {
-  scripts: {
-    [key: string]: string;
-  };
-  styles: {
-    [key: string]: string;
-  };
-}
-interface FormConfiguration {
-  schema: string;
-  resources: FormResources;
-}
-export interface Form {
-  formInfo: FormInfo;
-  source: string;
-  configuration: FormConfiguration;
-}
-
-export interface FormContent {
-  source: string;
-  configuration: FormConfiguration;
 }

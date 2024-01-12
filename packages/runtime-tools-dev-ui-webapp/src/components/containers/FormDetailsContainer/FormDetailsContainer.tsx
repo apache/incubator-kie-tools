@@ -21,8 +21,8 @@ import React from "react";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormDetailsGatewayApi } from "../../../channel/FormDetails";
 import { useFormDetailsGatewayApi } from "../../../channel/FormDetails/FormDetailsContext";
-import { EmbeddedFormDetails, Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/dist/formDetails";
-import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
+import { Form, FormContent, FormInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { EmbeddedFormDetails } from "@kie-tools/runtime-tools-enveloped-components/dist/formDetails";
 
 interface FormDetailsContainerProps {
   formData: FormInfo;

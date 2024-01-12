@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { FormFilter, FormInfo } from "./FormsListEnvelopeApi";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/src/types";
+import { FormFilter } from "./FormsListEnvelopeApi";
 /**
  * Channel Api for Forms List
  */

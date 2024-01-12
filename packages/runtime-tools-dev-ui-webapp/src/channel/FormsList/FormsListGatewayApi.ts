@@ -17,8 +17,9 @@
  * under the License.
  */
 
-import { FormFilter, FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
-import { getForms } from "../apis";
+import { FormFilter } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
+import { getForms } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 /* eslint-disable @typescript-eslint/no-empty-interface */
 export interface FormsListGatewayApi {

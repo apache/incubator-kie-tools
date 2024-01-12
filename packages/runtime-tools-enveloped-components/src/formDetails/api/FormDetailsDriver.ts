@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Form, FormContent } from "./FormDetailsEnvelopeApi";
+import { Form, FormContent } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 /**
  * Interface that defines a Driver for FormDetails views.

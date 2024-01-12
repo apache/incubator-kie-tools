@@ -24,14 +24,11 @@ import {
   TriggerableNode,
 } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { OperationType } from "@kie-tools/runtime-tools-gateway-api/dist/types";
-import { FormInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/formsList";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components/dist/formDetails";
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { createWorkflowDefinitionList } from "../../utils/Utils";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { CloudEventRequest, KOGITO_BUSINESS_KEY } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 // Rest Api to fetch Process Diagram
@@ -214,43 +211,6 @@ export const handleNodeInstanceRetrigger = (
       .catch((error) => {
         reject(JSON.stringify(error.message));
       });
-  });
-};
-
-export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get("/forms/list", {
-        params: {
-          names: formFilter.join(";"),
-        },
-      })
-      .then((result) => {
-        resolve(result.data);
-      })
-      .catch((error) => reject(error));
-  });
-};
-
-export const getFormContent = (formName: string): Promise<Form> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`/forms/${formName}`)
-      .then((result) => {
-        resolve(result.data);
-      })
-      .catch((error) => reject(error));
-  });
-};
-
-export const saveFormContent = (formName: string, content: FormContent): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(`/forms/${formName}`, content)
-      .then((result) => {
-        resolve();
-      })
-      .catch((error) => reject(error));
   });
 };
 
