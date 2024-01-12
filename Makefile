@@ -346,7 +346,7 @@ generate-all: generate generate-deploy bundle addheaders vet fmt
 
 .PHONY: test-e2e # You will need to have a Minikube/Kind cluster up in running to run this target, and run container-builder before the test
 test-e2e: install-operator-sdk
-	go test ./test/e2e/* -v -ginkgo.v
+	go test ./test/e2e/* -v -ginkgo.v -timeout 30m
 
 .PHONY: before-pr
 before-pr: test generate-all

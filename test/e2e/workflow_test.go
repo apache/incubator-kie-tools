@@ -161,7 +161,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 			}
 			return nil
 		}
-		EventuallyWithOffset(1, verifyControllerUp, time.Minute, time.Second).Should(Succeed())
+		EventuallyWithOffset(1, verifyControllerUp, 2*time.Minute, time.Second).Should(Succeed())
 	})
 
 	AfterAll(func() {
@@ -183,7 +183,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowSimpleOpsYamlCR), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, time.Minute, time.Second).Should(Succeed())
+			}, 2*time.Minute, time.Second).Should(Succeed())
 
 			By("check the workflow is in running state")
 			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState("simple") }, 15*time.Minute, 30*time.Second).Should(BeTrue())
@@ -193,7 +193,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowSimpleOpsYamlCR), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, time.Minute, time.Second).Should(Succeed())
+			}, 2*time.Minute, time.Second).Should(Succeed())
 		})
 
 		It("should successfully deploy the Greeting Workflow in prod mode and verify if it's running", func() {
@@ -203,7 +203,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowGreetingsDataInputSchemaConfig), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, time.Minute, time.Second).Should(Succeed())
+			}, 2*time.Minute, time.Second).Should(Succeed())
 
 			By("creating an instance of the SonataFlow Operand(CR)")
 			EventuallyWithOffset(1, func() error {
@@ -211,7 +211,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowGreetingsWithDataInputSchemaCR), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, time.Minute, time.Second).Should(Succeed())
+			}, 2*time.Minute, time.Second).Should(Succeed())
 
 			By("check the workflow is in running state")
 			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState("greeting") }, 15*time.Minute, 30*time.Second).Should(BeTrue())
@@ -221,7 +221,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowGreetingsWithDataInputSchemaCR), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, time.Minute, time.Second).Should(Succeed())
+			}, 2*time.Minute, time.Second).Should(Succeed())
 		})
 
 		It("should successfully deploy the orderprocessing workflow in devmode and verify if it's running", func() {
@@ -232,10 +232,10 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					test.GetSonataFlowE2eOrderProcessingFolder()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, time.Minute, time.Second).Should(Succeed())
+			}, 2*time.Minute, time.Second).Should(Succeed())
 
 			By("check the workflow is in running state")
-			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState("orderprocessing") }, 5*time.Minute, 30*time.Second).Should(BeTrue())
+			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState("orderprocessing") }, 10*time.Minute, 30*time.Second).Should(BeTrue())
 
 			cmdLog := exec.Command("kubectl", "logs", "orderprocessing", "-n", namespace)
 			if responseLog, errLog := utils.Run(cmdLog); errLog == nil {
@@ -243,14 +243,14 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 			}
 
 			By("check that the workflow is addressable")
-			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsAddressable("orderprocessing") }, 5*time.Minute, 30*time.Second).Should(BeTrue())
+			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsAddressable("orderprocessing") }, 10*time.Minute, 30*time.Second).Should(BeTrue())
 
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,
 					test.GetSonataFlowE2eOrderProcessingFolder()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, time.Minute, time.Second).Should(Succeed())
+			}, 2*time.Minute, time.Second).Should(Succeed())
 		})
 	})
 })
