@@ -65,7 +65,7 @@ export const MIN_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimens
     };
   },
   [NODE_TYPES.textAnnotation]: (snapGrid) => {
-    const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, 200, 200);
+    const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, 200, 60);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
