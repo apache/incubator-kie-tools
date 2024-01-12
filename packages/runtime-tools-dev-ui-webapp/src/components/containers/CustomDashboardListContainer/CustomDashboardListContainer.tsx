@@ -19,10 +19,8 @@
 
 import React, { useEffect } from "react";
 import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import {
-  EmbeddedCustomDashboardList,
-  CustomDashboardInfo,
-} from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { EmbeddedCustomDashboardList } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
 import { CustomDashboardListGatewayApi } from "../../../channel/CustomDashboardList";
 import { useCustomDashboardListGatewayApi } from "../../../channel/CustomDashboardList/CustomDashboardListContext";
 import { useHistory } from "react-router-dom";

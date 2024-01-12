@@ -17,11 +17,9 @@
  * under the License.
  */
 
-import {
-  CustomDashboardFilter,
-  CustomDashboardInfo,
-} from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
-import { getCustomDashboard } from "../apis";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { getCustomDashboard } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
+import { CustomDashboardFilter } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
 
 /* eslint-disable @typescript-eslint/no-empty-interface */
 export interface CustomDashboardListGatewayApi {

@@ -31,7 +31,7 @@ import { Form, FormContent } from "@kie-tools/runtime-tools-enveloped-components
 import SwaggerParser from "@apidevtools/swagger-parser";
 import { createWorkflowDefinitionList } from "../../utils/Utils";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-enveloped-components/dist/customDashboardList";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { CloudEventRequest, KOGITO_BUSINESS_KEY } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 // Rest Api to fetch Process Diagram
@@ -368,32 +368,6 @@ export const startWorkflowRest = (
         resolve(response.data.id);
       })
       .catch((err) => reject(err));
-  });
-};
-
-export const getCustomDashboard = (customDashboardFilter: string[]): Promise<CustomDashboardInfo[]> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get("/customDashboard/list", {
-        params: {
-          names: customDashboardFilter.join(";"),
-        },
-      })
-      .then((result) => {
-        resolve(result.data);
-      })
-      .catch((error) => reject(error));
-  });
-};
-
-export const getCustomDashboardContent = (name: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`/customDashboard/${name}`)
-      .then((result) => {
-        resolve(result.data);
-      })
-      .catch((error) => reject(error));
   });
 };
 

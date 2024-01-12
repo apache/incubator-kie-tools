@@ -24,7 +24,8 @@ import CustomDashboardListToolbar from "../CustomDashboardListToolbar/CustomDash
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import { CustomDashboardInfo, CustomDashboardFilter } from "../../../api/CustomDashboardListEnvelopeApi";
+import { CustomDashboardFilter } from "../../../api/CustomDashboardListEnvelopeApi";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import CustomDashboardsTable from "../CustomDashboardsTable/CustomDashboardsTable";
 import CustomDashboardsGallery from "../CustomDashboardsGallery/CustomDashboardsGallery";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";

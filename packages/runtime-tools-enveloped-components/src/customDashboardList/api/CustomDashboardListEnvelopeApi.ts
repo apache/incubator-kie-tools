@@ -36,9 +36,3 @@ export interface Association {
 export interface CustomDashboardFilter {
   customDashboardNames: string[];
 }
-
-export interface CustomDashboardInfo {
-  name: string;
-  path: string;
-  lastModified: Date;
-}

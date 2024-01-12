@@ -35,6 +35,7 @@ import {
   CloudEventRequest,
   KOGITO_BUSINESS_KEY,
   WorkflowResponse,
+  CustomDashboardInfo,
 } from "../types";
 import { ApolloClient } from "apollo-client";
 import { buildWorkflowListWhereArgument } from "./QueryUtils";
@@ -613,6 +614,32 @@ export const startWorkflowRest = (
         resolve(response.data);
       })
       .catch((err) => reject(err));
+  });
+};
+
+export const getCustomDashboard = (customDashboardFilter: string[]): Promise<CustomDashboardInfo[]> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get("/customDashboard/list", {
+        params: {
+          names: customDashboardFilter.join(";"),
+        },
+      })
+      .then((result) => {
+        resolve(result.data);
+      })
+      .catch((error) => reject(error));
+  });
+};
+
+export const getCustomDashboardContent = (name: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`/customDashboard/${name}`)
+      .then((result) => {
+        resolve(result.data);
+      })
+      .catch((error) => reject(error));
   });
 };
 

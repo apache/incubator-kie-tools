@@ -229,3 +229,9 @@ export interface CloudEventHeaders {
 
   extensions: Record<string, string>;
 }
+
+export interface CustomDashboardInfo {
+  name: string;
+  path: string;
+  lastModified: Date;
+}
