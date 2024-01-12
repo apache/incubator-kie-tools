@@ -20,8 +20,8 @@
 export const sourceHandler = (
   source: string
 ): { reactElements: string; patternflyElements: string; formName: string; trimmedSource: string } | undefined => {
-  const reactReg = /import React, {[^}]*}.*(?='react').*/gim;
-  const patternflyReg = /import {[^}]*}.*(?='@patternfly\/react-core').*/gim;
+  const reactReg = /import React, {[^}]*}.*(?=["']react['"]).*/gim;
+  const patternflyReg = /import {[^}]*}.*(?=['"]@patternfly\/react-core['"]).*/gim;
   const regexvalueReact = new RegExp(reactReg);
   const reactImport = regexvalueReact.exec(source);
   const reg = /\{([^)]+)\}/;
