@@ -53,12 +53,13 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
   const { locale } = useChromeExtensionI18n();
   const wasOnTextMode = usePrevious(textMode);
+  const { openFileExtension, contentPath, getFileContents, readonly, onSetContentError } = props;
 
   const stateControl = useMemo(() => globalStateControl || new StateControl(), [globalStateControl]);
 
   const resourceContentService = useMemo(() => {
     return resourceContentServiceFactory.createNew(githubApi.octokit(), repoInfo);
-  }, [repoInfo]);
+  }, [githubApi, repoInfo, resourceContentServiceFactory]);
 
   const onResourceContentRequest = useCallback(
     (request: ResourceContentRequest) =>
@@ -85,13 +86,13 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
   // When changing from textMode to !textMode, we should update the diagram content
   useEffect(() => {
     if (!textMode && wasOnTextMode) {
-      props.getFileContents().then((content) => editor?.setContent(props.contentPath, content ?? ""));
+      getFileContents().then((content) => editor?.setContent(contentPath, content ?? ""));
     }
-  }, [textMode, wasOnTextMode, editor]);
+  }, [textMode, wasOnTextMode, editor, getFileContents, contentPath]);
 
   // When !textMode, we should listen for changes on the diagram to update GitHub's default text editor.
   useEffect(() => {
-    if (props.readonly || textMode || !editor) {
+    if (readonly || textMode || !editor) {
       return;
     }
 
@@ -106,7 +107,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
       });
     });
     return () => editor.getStateControl().unsubscribe(stateControlSubscription);
-  }, [textMode, editor]);
+  }, [textMode, editor, readonly]);
 
   // Forward reference methods to set content programmatically vs property
   useImperativeHandle(
@@ -117,10 +118,10 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
       }
 
       return {
-        setContent: (content: string) => editor.setContent(props.contentPath, content),
+        setContent: (content: string) => editor.setContent(contentPath, content),
       };
     },
-    [editor]
+    [editor, contentPath]
   );
 
   return (
@@ -133,7 +134,7 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
           kogitoEditor_ready={onEditorReady}
           kogitoWorkspace_resourceContentRequest={onResourceContentRequest}
           kogitoWorkspace_resourceListRequest={onResourceContentList}
-          kogitoEditor_setContentError={props.onSetContentError}
+          kogitoEditor_setContentError={onSetContentError}
           editorEnvelopeLocator={envelopeLocator}
           locale={locale}
           customChannelApiImpl={customChannelApiImpl}
