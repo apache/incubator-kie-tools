@@ -9901,9 +9901,6 @@ importers:
       "@kie-tools-core/notifications":
         specifier: workspace:*
         version: link:../notifications
-      "@kie-tools-core/operating-system":
-        specifier: workspace:*
-        version: link:../operating-system
       "@kie-tools-core/vscode-java-code-completion":
         specifier: workspace:*
         version: link:../vscode-java-code-completion

@@ -21,7 +21,7 @@ import { Notification, NotificationSeverity } from "@kie-tools-core/notification
 import * as vscode from "vscode";
 import { getWorkspaceRoot } from "../workspace/workspaceRoot";
 import { KogitoEditorDocument } from "../VsCodeKieEditorController";
-import { toFsPath } from "@kie-tools-core/operating-system/dist/paths";
+import { toFsPath } from "../paths/paths";
 import * as __path from "path";
 
 const DIAGNOSTIC_COLLECTION_NAME = "kie-tools-vscode-extensions";

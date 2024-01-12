@@ -21,7 +21,7 @@ import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { toFsPath } from "@kie-tools-core/operating-system/dist/paths";
+import { toFsPath } from "./paths/paths";
 import {
   JavaCodeCompletionAccessor,
   JavaCodeCompletionApi,

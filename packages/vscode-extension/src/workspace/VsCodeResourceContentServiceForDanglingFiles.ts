@@ -29,7 +29,7 @@ import {
 import { Minimatch } from "minimatch";
 import * as vscode from "vscode";
 import * as __path from "path";
-import { toFsPath, toPosixPath } from "@kie-tools-core/operating-system/dist/paths";
+import { toFsPath, toPosixPath } from "../paths/paths";
 
 /**
  * Implementation of a ResourceContentService using the Node filesystem APIs. This should only be used when the edited

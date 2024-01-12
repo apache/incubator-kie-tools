@@ -33,7 +33,7 @@ import { RelativePattern } from "vscode";
 import { listFiles } from "isomorphic-git";
 import { Minimatch } from "minimatch";
 import { ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders } from "./VsCodeResourceContentServiceIsomorphicGitFs";
-import { toFsPath } from "@kie-tools-core/operating-system/dist/paths";
+import { toFsPath } from "../paths/paths";
 import { getNormalizedPosixPathRelativeToWorkspaceRoot } from "./workspaceRoot";
 import { KogitoEditorDocument } from "../VsCodeKieEditorController";
 
