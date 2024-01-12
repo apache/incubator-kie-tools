@@ -17,19 +17,9 @@
  * under the License.
  */
 
-import * as jsYaml from "js-yaml";
-import { K8sResourceYaml, isValidK8sResource } from "./common";
+import { ResourcePatch } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { DeploymentOptionArgs } from "../types";
 
-export function parseK8sResourceYaml(yamls: string[]): K8sResourceYaml[] {
-  const parsedResources: K8sResourceYaml[] = [];
-  yamls.forEach((yamlContent) => {
-    const parsedContent = jsYaml.loadAll(yamlContent);
-    parsedContent.forEach((parsedYaml) => {
-      if (isValidK8sResource(parsedYaml)) {
-        parsedResources.push(parsedYaml);
-      }
-    });
-  });
-
-  return parsedResources;
+export function KieSandboxDevDeploymentRequiredPatches(args: DeploymentOptionArgs): ResourcePatch[] {
+  return [];
 }

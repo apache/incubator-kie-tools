@@ -18,16 +18,16 @@
  */
 
 import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { KieSandboxOpenShiftService } from "./services/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "./services/openshift/KieSandboxOpenShiftService";
 import { ConfirmDeployModalState, DeleteDeployModalState, DevDeploymentsContext } from "./DevDeploymentsContext";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
-import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "./services/kubernetes/KieSandboxKubernetesService";
 import { CloudAuthSession, isCloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
-import { ResourceArgs, defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
+import { defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
@@ -117,7 +117,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       workspaceFile: WorkspaceFile,
       authSession: CloudAuthSession,
       deploymentOption: DeploymentOption,
-      deploymentParameters: Record<string, string | number>
+      deploymentParameters: Record<string, string | number | boolean>
     ) => {
       const service = devDeploymentsServices.get(authSession.id);
       if (!service) {
@@ -137,6 +137,8 @@ export function DevDeploymentsContextProvider(props: Props) {
       const workspaceName = workspace.name !== NEW_WORKSPACE_DEFAULT_NAME ? workspace.name : workspaceFile.name;
       const workspaceId = workspace.workspaceId;
 
+      console.log({ deploymentParameters });
+
       const tokenMap = {
         devDeployment: {
           labels: defaultLabelTokens,
@@ -152,23 +154,17 @@ export function DevDeploymentsContextProvider(props: Props) {
           kubernetes: {
             namespace: authSession.namespace,
           },
-          ...deploymentParameters,
         },
       };
+
+      console.log({ tokenMap });
 
       try {
         await service.deploy({
           workspaceZipBlob: zipBlob,
           tokenMap,
+          parametersTokenMap: { parameters: deploymentParameters },
           deploymentOption,
-          resourceArgs: {
-            kogitoQuarkusBlankAppImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL,
-            baseImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-            dmnFormWebappImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL,
-            imagePullPolicy: env.KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
-            quarkusPlatformVersion: process.env.WEBPACK_REPLACE__quarkusPlatformVersion!,
-            kogitoRuntimeVersion: process.env.WEBPACK_REPLACE__kogitoRuntimeVersion!,
-          },
         });
         return true;
       } catch (error) {
@@ -176,7 +172,7 @@ export function DevDeploymentsContextProvider(props: Props) {
         return false;
       }
     },
-    [devDeploymentsServices, env, workspaces]
+    [devDeploymentsServices, workspaces]
   );
 
   const value = useMemo(

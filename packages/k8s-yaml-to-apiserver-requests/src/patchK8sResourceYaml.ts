@@ -17,11 +17,32 @@
  * under the License.
  */
 
+import { Operation, applyPatch, deepClone } from "fast-json-patch";
+import { parseK8sResourceYamls } from "./parseK8sResourceYamls";
+import * as jsYaml from "js-yaml";
+import { TokenMap, interpolateK8sResourceYaml } from "./interpolateK8sResourceYaml";
+
 export type ResourcePatch = {
-  kind: string;
-  patchObject: Record<string, any>;
+  targetKinds: string[];
+  jsonPatches: Operation[];
 };
 
-export function patchK8sResourceYaml(k8sResourceYaml: string, patches: Array<ResourcePatch>) {
-  return k8sResourceYaml;
+export function patchK8sResourceYaml(k8sResourceYaml: string, patches: ResourcePatch[], parametersTokens?: TokenMap) {
+  console.log({ k8sResourceYaml });
+  const parsedAndPatchedYamls = parseK8sResourceYamls(k8sResourceYaml.split("\n---\n")).map((resource) => {
+    console.log({ resource });
+    let updatedResource = resource;
+    patches.forEach((patch) => {
+      console.log({ patch });
+      if (patch.targetKinds.includes(resource.kind)) {
+        const { newDocument } = applyPatch(updatedResource, deepClone(patch.jsonPatches), false, false);
+        updatedResource = newDocument;
+      }
+    });
+    return updatedResource;
+  });
+  console.log({ parsedAndPatchedYamls });
+  const finalYaml = parsedAndPatchedYamls.map((resource) => jsYaml.dump(resource)).join("\n---\n");
+  console.log({ finalYaml });
+  return interpolateK8sResourceYaml(finalYaml, parametersTokens);
 }

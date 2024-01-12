@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useEffect } from "react";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
@@ -26,13 +26,18 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { useGlobalAlert } from "../alerts";
 import { useAuthSession } from "../authSessions/AuthSessionsContext";
-import { createOpenShiftDeploymentOptions } from "./services/deploymentOptions/openshift";
-import { createKubernetesDeploymentOptions } from "./services/deploymentOptions/kubernetes";
 import { CloudAuthSessionType, isCloudAuthSession } from "../authSessions/AuthSessionApi";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DeploymentOption, DeploymentParameter } from "./services/deploymentOptions/types";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { useEnv } from "../env/hooks/EnvContext";
+import { DeploymentOptionArgs } from "./services/types";
+import { KubernetesDeploymentOptions } from "./services/kubernetes/KubernetesDeploymentOptions";
+import { OpenShiftDeploymentOptions } from "./services/openshift/OpenShiftDeploymentOptions";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 interface Props {
   workspaceFile: WorkspaceFile;
@@ -40,30 +45,36 @@ interface Props {
 
 export function DevDeploymentsConfirmDeployModal(props: Props) {
   const devDeployments = useDevDeployments();
+  const { env } = useEnv();
   const { i18n } = useOnlineI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
+
   const { authSession } = useAuthSession(
     devDeployments.confirmDeployModalState.isOpen
       ? devDeployments.confirmDeployModalState.cloudAuthSessionId
       : undefined
   );
+
+  const deploymentOptionsArgs: DeploymentOptionArgs = useMemo(
+    () => ({
+      kogitoQuarkusBlankAppImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL,
+      baseImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+      dmnFormWebappImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL,
+      imagePullPolicy: env.KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
+    }),
+    [env]
+  );
+
   const availableDeploymentOptions = useMemo(
     () =>
       authSession?.type === CloudAuthSessionType.OpenShift
-        ? createOpenShiftDeploymentOptions
-        : createKubernetesDeploymentOptions,
-    [authSession?.type]
+        ? OpenShiftDeploymentOptions(deploymentOptionsArgs)
+        : KubernetesDeploymentOptions(deploymentOptionsArgs),
+    [authSession?.type, deploymentOptionsArgs]
   );
   const [deploymentOption, setDeploymentOption] = useState<DeploymentOption>(availableDeploymentOptions[0]);
-  const [deploymentParameters, setDeploymentParameters] = useState<Record<string, string | number>>({});
+  const [deploymentParameters, setDeploymentParameters] = useState<Record<string, string | number | boolean>>({});
   const [isDeploymentOptionsDropdownOpen, setDeploymentOptionsDropdownOpen] = useState(false);
-
-  const updateParameters = useCallback((parameter: DeploymentParameter, value: string) => {
-    setDeploymentParameters((currentParameters) => ({
-      ...currentParameters,
-      [parameter.name]: parameter.type === "number" ? Number(value) : value,
-    }));
-  }, []);
 
   const deployStartedErrorAlert = useGlobalAlert(
     useCallback(
@@ -136,20 +147,103 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
     setConfirmLoading(false);
   }, [devDeployments]);
 
-  const onSelectDeploymentOptions = useCallback((e, value) => {
-    setDeploymentOption((oldOption) => {
-      if (value !== oldOption) {
-        setDeploymentParameters({});
-      }
-      return value;
-    });
+  const onSelectDeploymentOptions = useCallback((_, value: DeploymentOption) => {
+    setDeploymentOption(value);
     setDeploymentOptionsDropdownOpen(false);
   }, []);
+
+  useEffect(() => {
+    setDeploymentParameters(
+      deploymentOption.parameters?.reduce(
+        (parametersValues, parameter) => ({
+          ...parametersValues,
+          [parameter.id]: parameter.defaultValue,
+        }),
+        {}
+      ) ?? {}
+    );
+  }, [deploymentOption.parameters]);
+
+  const updateParameters = useCallback((parameter: DeploymentParameter, value: string | number | boolean) => {
+    setDeploymentParameters((currentParameters) => ({
+      ...currentParameters,
+      [parameter.id]: value,
+    }));
+  }, []);
+
+  const parametersInputs = useMemo(() => {
+    return (
+      (deploymentOption &&
+        deploymentOption.parameters &&
+        deploymentOption.parameters.map((parameter) => {
+          if (parameter.type === "boolean") {
+            return (
+              <FormGroup
+                key={parameter.id}
+                helperText={
+                  <small>
+                    <i>{parameter.description}</i>
+                  </small>
+                }
+              >
+                <Checkbox
+                  id={parameter.id}
+                  name={parameter.name}
+                  label={parameter.name}
+                  aria-label={parameter.name}
+                  isChecked={Boolean(deploymentParameters[parameter.id])}
+                  onChange={(checked) => updateParameters(parameter, checked)}
+                />
+              </FormGroup>
+            );
+          } else if (parameter.type === "text") {
+            return (
+              <FormGroup
+                label={<b>{parameter.name}:</b>}
+                key={parameter.id}
+                helperText={
+                  <small>
+                    <i>{parameter.description}</i>
+                  </small>
+                }
+              >
+                <TextArea
+                  id={parameter.id}
+                  value={String(deploymentParameters[parameter.id])}
+                  aria-label={parameter.name}
+                  onChange={(value) => updateParameters(parameter, value)}
+                  autoResize={true}
+                />
+              </FormGroup>
+            );
+          } else if (parameter.type === "number") {
+            <FormGroup
+              label={<b>{parameter.name}:</b>}
+              key={parameter.id}
+              helperText={
+                <small>
+                  <i>{parameter.description}</i>
+                </small>
+              }
+            >
+              <TextInput
+                id={parameter.id}
+                value={Number(deploymentParameters[parameter.id])}
+                aria-label={parameter.name}
+                type="number"
+                onChange={(value) => updateParameters(parameter, Number(value))}
+              />
+            </FormGroup>;
+          }
+        })) ??
+      []
+    );
+  }, [deploymentOption, deploymentParameters, updateParameters]);
 
   return (
     <Modal
       data-testid={"confirm-deploy-modal"}
-      variant={ModalVariant.small}
+      variant={ModalVariant.medium}
       title={i18n.devDeployments.deployConfirmModal.title}
       isOpen={devDeployments.confirmDeployModalState.isOpen}
       aria-label={"Confirm deploy modal"}
@@ -191,27 +285,27 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
               ))}
             </Select>
           </FormGroup>
-          <br />
-          {deploymentOption &&
-            deploymentOption.parameters &&
-            deploymentOption.parameters.map((parameter) => (
-              <FormGroup label={<b>{parameter.name}:</b>} key={parameter.name} helperText={parameter.description}>
-                <TextInput
-                  value={deploymentParameters[parameter.name] ?? ""}
-                  aria-label={parameter.name}
-                  type={parameter.type}
-                  onChange={(value) => updateParameters(parameter, value)}
-                />
-              </FormGroup>
-            ))}
+          {parametersInputs ? (
+            <Flex>
+              {parametersInputs.map((input, index) => (
+                <FlexItem key={index} fullWidth={{ default: "fullWidth" }} style={{ marginTop: "1rem" }}>
+                  {input}
+                </FlexItem>
+              ))}
+            </Flex>
+          ) : (
+            <br />
+          )}
         </>
       )}
       <br />
       {authSession && isCloudAuthSession(authSession) && (
         <>
-          {`This Dev deployment will be created at`}
+          {`This Dev deployment will be created at the`}
           &nbsp;
-          <b>{`'${authSession.namespace}'`}</b>.
+          <b>{`'${authSession.namespace}'`}</b>
+          &nbsp;
+          {`namespace.`}
         </>
       )}
     </Modal>

@@ -17,12 +17,6 @@
  * under the License.
  */
 
-export const selfSubjectAccessReviewYaml = () => `
-kind: SelfSubjectAccessReview
-apiVersion: authorization.k8s.io/v1
-spec:
-  resourceAttributes:
-    resource: \${{ resource }}
-    verb: "*"
-    namespace: \${{ namespace }}
-`;
+export function appendK8sResourceYaml(k8sResourceYaml: string, appendYaml: string) {
+  return [k8sResourceYaml].concat(appendYaml).join("\n---\n");
+}

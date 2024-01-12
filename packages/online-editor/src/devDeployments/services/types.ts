@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { K8sResourceYaml, ResourcePatch } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { DeploymentState } from "./common";
 
 export type KieSandboxDeployment = {
@@ -81,19 +81,14 @@ export type Tokens = DevDeploymentTokens & {
 
 export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;
 
-export type ResourceArgs = {
+export type DeploymentOptionArgs = {
   kogitoQuarkusBlankAppImageUrl: string;
   baseImageUrl: string;
   dmnFormWebappImageUrl: string;
   imagePullPolicy: string;
-  quarkusPlatformVersion: string;
-  kogitoRuntimeVersion: string;
 };
 
-export type DeploymentResourceArgs = {
-  imageUrl: string;
-  sidecarImageUrl: string;
-  imagePullPolicy: string;
-  quarkusPlatformVersion: string;
-  kogitoRuntimeVersion: string;
+export type ResourceActions = {
+  resourcePatches: ResourcePatch[];
+  appendYamls: string[];
 };

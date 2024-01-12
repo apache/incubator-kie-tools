@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import { DeploymentResourceArgs } from "../../types";
+import { DeploymentOptionArgs } from "../../types";
 
-export const deploymentYaml = (args: Omit<DeploymentResourceArgs, "sidecarImageUrl">) => `
+export function DeploymentYaml(args: DeploymentOptionArgs) {
+  return `
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -51,7 +52,7 @@ spec:
     spec:
       containers:
         - name: \${{ devDeployment.uniqueName }}
-          image: ${args.imageUrl}
+          image: ${args.kogitoQuarkusBlankAppImageUrl}
           imagePullPolicy: ${args.imagePullPolicy}
           ports:
             - containerPort: 8080
@@ -59,14 +60,9 @@ spec:
           env:
             - name: BASE_URL
               value: http://localhost/\${{ devDeployment.uniqueName }}
-            - name: QUARKUS_PLATFORM_VERSION
-              value: ${args.quarkusPlatformVersion}
-            - name: KOGITO_RUNTIME_VERSION
-              value: ${args.kogitoRuntimeVersion}
-            - name: ROOT_PATH
-              value: /\${{ devDeployment.uniqueName }}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH
               value: \${{ devDeployment.uniqueName }}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
               value: \${{ devDeployment.uploadService.apiKey }}
 `;
+}

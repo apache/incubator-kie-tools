@@ -17,7 +17,8 @@
  * under the License.
  */
 
-export const formWebappRouteYaml = () => `
+export function FormWebappRouteYaml() {
+  return `
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
@@ -48,3 +49,4 @@ spec:
     termination: edge
     insecureEdgeTerminationPolicy: None
 `;
+}

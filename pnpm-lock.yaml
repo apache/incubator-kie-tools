@@ -5185,6 +5185,9 @@ importers:
 
   packages/k8s-yaml-to-apiserver-requests:
     dependencies:
+      fast-json-patch:
+        specifier: ^3.1.1
+        version: 3.1.1
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
@@ -30775,6 +30778,11 @@ packages:
       { integrity: sha512-FRWsaZRWEJ1ESVNbDWmsAlqDk96gPQezzLghafp5J4GUKjbCz3OkAHuZs5TuPEtkbVQERysLp9xv6c24fBm8Aw== }
     dev: true
 
+  /fast-json-patch@3.1.1:
+    resolution:
+      { integrity: sha512-vf6IHUX2SBcA+5/+4883dsIjpBTqmfBjmYiWK1savxQmFk4JfBMLa7ynTYOs1Rolp/T1betJxHiGD3g1Mn8lUQ== }
+    dev: false
+
   /fast-json-stable-stringify@2.1.0:
     resolution:
       { integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw== }
@@ -42732,7 +42740,7 @@ packages:
       bs-logger: 0.2.6
       buffer-from: 1.1.1
       fast-json-stable-stringify: 2.1.0
-      jest: 26.6.3
+      jest: 26.6.3(ts-node@10.9.1)
       jest-util: 26.6.2
       json5: 2.2.1
       lodash: 4.17.21

@@ -18,7 +18,7 @@
  */
 
 export type TokenMap = {
-  [x: string]: string | TokenMap;
+  [x: string]: string | number | boolean | TokenMap;
 };
 
 type FlattenedTokenMap = Record<string, string>;
@@ -49,7 +49,9 @@ function flattenTokenMap(
 }
 
 function trimTokensFromInputText(inputText: string, flattenedTokens: FlattenedTokenMap) {
-  const regex = new RegExp(`${escapeRegex(TEMPLATE.OPEN)}.*?${escapeRegex(TEMPLATE.CLOSE)}`, "gm");
+  // Matches TEMPLATE.OPEN<anything in between>TEMPLATE.CLOSE.
+  // <anything in between> can have special characters, such as line breaks.
+  const regex = new RegExp(`${escapeRegex(TEMPLATE.OPEN)}[\\s\\S]*?${escapeRegex(TEMPLATE.CLOSE)}`, "gm");
 
   let trimmedInputText = inputText;
 
@@ -66,8 +68,14 @@ function trimTokensFromInputText(inputText: string, flattenedTokens: FlattenedTo
   return trimmedInputText;
 }
 
-export function interpolateK8sResourceYaml(k8sResourceYaml: string, tokenMap: TokenMap) {
+export function interpolateK8sResourceYaml(k8sResourceYaml: string, tokenMap?: TokenMap) {
+  if (!tokenMap) {
+    return k8sResourceYaml;
+  }
+
   const flattenedTokens = flattenTokenMap(tokenMap);
+
+  console.log({ tokenMap, flattenedTokens });
 
   const trimmedTokensFromInputText = trimTokensFromInputText(k8sResourceYaml, flattenedTokens);
 

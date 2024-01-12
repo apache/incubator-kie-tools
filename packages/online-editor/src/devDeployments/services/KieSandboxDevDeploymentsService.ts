@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { K8sResourceYaml, TokenMap } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import {
   DeploymentResource,
@@ -27,7 +27,7 @@ import {
   ServiceResource,
   kubernetesResourcesApi,
 } from "./KubernetesService";
-import { KieSandboxDeployment, ResourceArgs, Tokens, defaultLabelTokens } from "./types";
+import { KieSandboxDeployment, Tokens, defaultLabelTokens } from "./types";
 import { DeploymentState, HealthStatus } from "./common";
 import { UploadStatus, getUploadStatus, postUpload } from "./KieSandboxDevDeploymentsUploadAppApi";
 import { DeploymentOption } from "./deploymentOptions/types";
@@ -35,8 +35,8 @@ import { DeploymentOption } from "./deploymentOptions/types";
 export interface DeployArgs {
   workspaceZipBlob: Blob;
   tokenMap: { devDeployment: Tokens };
+  parametersTokenMap: { parameters: TokenMap };
   deploymentOption: DeploymentOption;
-  resourceArgs: ResourceArgs;
 }
 
 export type KieSandboxDevDeploymentsServiceProps = {

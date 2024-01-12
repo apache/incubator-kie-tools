@@ -18,16 +18,20 @@
  */
 
 import {
-  parseK8sResourceYaml,
+  parseK8sResourceYamls,
   buildK8sApiServerEndpointsByResourceKind,
   callK8sApiServer,
   K8sApiServerEndpointByResourceKind,
   interpolateK8sResourceYaml,
   TokenMap,
   K8sResourceYaml,
+  ResourcePatch,
+  patchK8sResourceYaml,
+  appendK8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import Path from "path";
 import { DeploymentState } from "./common";
+import { ResourceActions } from "./types";
 
 export interface KubernetesConnection {
   namespace: string;
@@ -199,15 +203,38 @@ export class KubernetesService {
 
   public async applyResourceYamls(args: {
     k8sResourceYamls: string[];
-    patches?: Record<string, any>;
+    actions?: ResourceActions[];
     tokens?: TokenMap;
+    parametersTokens?: TokenMap;
   }) {
-    const interpolatedYamls = args.tokens
-      ? args.k8sResourceYamls.map((yamlContent) => interpolateK8sResourceYaml(yamlContent, args.tokens!))
-      : args.k8sResourceYamls;
+    const processedYamls = args.k8sResourceYamls.map((yamlContent) => {
+      let resultYaml = yamlContent;
+
+      console.log({ initYaml: resultYaml });
+
+      args.actions?.forEach(({ appendYamls }) => {
+        console.log({ appendYamls });
+        resultYaml = appendYamls.reduce((yaml, yamlToAppend) => appendK8sResourceYaml(yaml, yamlToAppend), resultYaml);
+      });
+
+      console.log({ afterAppend: resultYaml });
+
+      args.actions?.forEach(({ resourcePatches }) => {
+        resultYaml = patchK8sResourceYaml(resultYaml, resourcePatches, args.parametersTokens);
+      });
+
+      console.log({ afterPatches: resultYaml });
+
+      resultYaml = interpolateK8sResourceYaml(resultYaml, args.tokens);
+
+      return resultYaml;
+    });
+
+    console.log({ processedYamls });
+
     return await callK8sApiServer({
       k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
-      k8sResourceYamls: parseK8sResourceYaml(interpolatedYamls),
+      k8sResourceYamls: parseK8sResourceYamls(processedYamls),
       k8sApiServerUrl: this.args.connection.host,
       k8sNamespace: this.args.connection.namespace,
       k8sServiceAccountToken: this.args.connection.token,

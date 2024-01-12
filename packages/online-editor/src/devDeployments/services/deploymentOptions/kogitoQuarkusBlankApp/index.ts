@@ -17,38 +17,19 @@
  * under the License.
  */
 
-import { ResourcePatch } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { DeploymentOptionArgs } from "../../types";
+import { DeploymentOption, DeploymentOptionOpts } from "../types";
+import { DeploymentYaml } from "./DeploymentYaml";
+import { ServiceYaml } from "./ServiceYaml";
 
-export type DeploymentParameterType = "text" | "number" | "boolean";
-
-export type DeploymentParameter = {
-  id: string;
-  name: string;
-  description?: string;
-  resourcePatches?: ResourcePatch[];
-  appendYamls?: string[];
-} & (
-  | {
-      defaultValue: string;
-      type: "text";
-    }
-  | {
-      defaultValue: number;
-      type: "number";
-    }
-  | {
-      defaultValue: boolean;
-      type: "boolean";
-    }
-);
-
-export type DeploymentOptionOpts = {
-  parameters?: Array<DeploymentParameter>;
-  resourcePatches?: ResourcePatch[];
-  appendYamls?: string[];
-};
-
-export type DeploymentOption = {
-  name: string;
-  content: string;
-} & DeploymentOptionOpts;
+export function KogitoQuarkusBlankAppOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
+  return {
+    name: "Kogito Quarkus Blank App",
+    content: `
+${DeploymentYaml(args)}
+---
+${ServiceYaml()}
+`,
+    ...opts,
+  };
+}

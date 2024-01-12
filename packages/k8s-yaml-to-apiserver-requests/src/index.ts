@@ -21,5 +21,6 @@ export * from "./k8sApiServerCalls";
 export * from "./k8sApiServerEndpointsByResourceKind";
 export * from "./interpolateK8sResourceYaml";
 export * from "./patchK8sResourceYaml";
-export * from "./parseK8sResourceYaml";
+export * from "./appendK8sResourceYaml";
+export * from "./parseK8sResourceYamls";
 export * from "./common";

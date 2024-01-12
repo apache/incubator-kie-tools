@@ -17,9 +17,10 @@
  * under the License.
  */
 
-export const ingressYaml = () => `
-kind: Ingress
-apiVersion: networking.k8s.io/v1
+export function RouteYaml() {
+  return `
+kind: Route
+apiVersion: route.openshift.io/v1
 metadata:
   name: \${{ devDeployment.uniqueName }}
   namespace: \${{ devDeployment.kubernetes.namespace }}
@@ -32,19 +33,17 @@ metadata:
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: HTTP
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
     \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
     \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
 spec:
-  rules:
-    - http:
-        paths:
-          - path: /\${{ devDeployment.uniqueName }}
-            pathType: Prefix
-            backend:
-              service:
-                name: \${{ devDeployment.uniqueName }}
-                port:
-                  number: 8080
+  subdomain: \${{ devDeployment.uniqueName }}
+  to:
+    name: \${{ devDeployment.uniqueName }}
+    kind: Service
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: None
 `;
+}

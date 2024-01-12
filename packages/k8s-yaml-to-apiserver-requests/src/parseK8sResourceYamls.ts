@@ -17,38 +17,19 @@
  * under the License.
  */
 
-import { ResourcePatch } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import * as jsYaml from "js-yaml";
+import { K8sResourceYaml, isValidK8sResource } from "./common";
 
-export type DeploymentParameterType = "text" | "number" | "boolean";
+export function parseK8sResourceYamls(yamls: string[]): K8sResourceYaml[] {
+  const parsedResources: K8sResourceYaml[] = [];
+  yamls.forEach((yamlContent) => {
+    const parsedContent = jsYaml.loadAll(yamlContent);
+    parsedContent.forEach((parsedYaml) => {
+      if (isValidK8sResource(parsedYaml)) {
+        parsedResources.push(parsedYaml);
+      }
+    });
+  });
 
-export type DeploymentParameter = {
-  id: string;
-  name: string;
-  description?: string;
-  resourcePatches?: ResourcePatch[];
-  appendYamls?: string[];
-} & (
-  | {
-      defaultValue: string;
-      type: "text";
-    }
-  | {
-      defaultValue: number;
-      type: "number";
-    }
-  | {
-      defaultValue: boolean;
-      type: "boolean";
-    }
-);
-
-export type DeploymentOptionOpts = {
-  parameters?: Array<DeploymentParameter>;
-  resourcePatches?: ResourcePatch[];
-  appendYamls?: string[];
-};
-
-export type DeploymentOption = {
-  name: string;
-  content: string;
-} & DeploymentOptionOpts;
+  return parsedResources;
+}

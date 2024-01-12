@@ -17,38 +17,14 @@
  * under the License.
  */
 
-import { ResourcePatch } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-
-export type DeploymentParameterType = "text" | "number" | "boolean";
-
-export type DeploymentParameter = {
-  id: string;
-  name: string;
-  description?: string;
-  resourcePatches?: ResourcePatch[];
-  appendYamls?: string[];
-} & (
-  | {
-      defaultValue: string;
-      type: "text";
-    }
-  | {
-      defaultValue: number;
-      type: "number";
-    }
-  | {
-      defaultValue: boolean;
-      type: "boolean";
-    }
-);
-
-export type DeploymentOptionOpts = {
-  parameters?: Array<DeploymentParameter>;
-  resourcePatches?: ResourcePatch[];
-  appendYamls?: string[];
-};
-
-export type DeploymentOption = {
-  name: string;
-  content: string;
-} & DeploymentOptionOpts;
+export function SelfSubjectAccessReviewYaml() {
+  return `
+kind: SelfSubjectAccessReview
+apiVersion: authorization.k8s.io/v1
+spec:
+  resourceAttributes:
+    resource: \${{ resource }}
+    verb: "*"
+    namespace: \${{ namespace }}
+`;
+}
