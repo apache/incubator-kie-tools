@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
 import elemental2.core.JsRegExp;
@@ -43,6 +42,7 @@ import org.kie.workbench.common.stunner.client.lienzo.components.mediators.previ
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.core.client.api.JsCanvasWrapper;
 import org.kie.workbench.common.stunner.core.client.api.JsWindow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -121,7 +121,6 @@ public class DiagramEditor {
         domainInitializer.initialize();
         stunnerEditor.setReadOnly(true);
     }
-
 
     @SuppressWarnings("all")
     public Promise<String> getPreview() {
@@ -264,7 +263,7 @@ public class DiagramEditor {
         });
     }
 
-    JsCanvas getJsCanvas() {
+    JsCanvasWrapper getJsCanvas() {
         return Js.uncheckedCast(JsWindow.getEditor().getCanvas());
     }
 
@@ -390,7 +389,7 @@ public class DiagramEditor {
     }
 
     @SuppressWarnings("all")
-    static void centerFirstSelectedNode(StunnerEditor stunnerEditor, JsCanvas jsCanvas) {
+    static void centerFirstSelectedNode(StunnerEditor stunnerEditor, JsCanvasWrapper jsCanvas) {
         AbstractSession session = (AbstractSession) stunnerEditor.getSession();
         SelectionControl<AbstractCanvasHandler, Element> selectionControl = session.getSelectionControl();
 
