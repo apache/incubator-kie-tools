@@ -18,11 +18,7 @@
  */
 
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
+  testEnvironment: "jsdom",
   setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules", "src"],
@@ -30,9 +26,14 @@ module.exports = {
   testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
     "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
-    "^.+\\.tsx?$": "ts-jest",
-    "^.+\\.template?$": "jest-raw-loader",
-    "^.+\\.txt?$": "jest-raw-loader",
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        tsconfig: "<rootDir>/tsconfig.json",
+      },
+    ],
+    "^.+\\.template?$": "<rootDir>/src/__tests__/utils/rawJestTransformer.mjs",
+    "^.+\\.txt?$": "<rootDir>/src/__tests__/utils/rawJestTransformer.mjs",
   },
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",

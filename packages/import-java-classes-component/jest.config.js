@@ -18,11 +18,7 @@
  */
 
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
+  testEnvironment: "jsdom",
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules", "src", "<rootDir>"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
@@ -31,7 +27,12 @@ module.exports = {
   setupFilesAfterEnv: ["./src/__tests__/test-setup.ts"],
   transform: {
     "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
-    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        tsconfig: "<rootDir>/tsconfig.json",
+      },
+    ],
   },
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "identity-obj-proxy",

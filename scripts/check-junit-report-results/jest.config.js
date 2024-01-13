@@ -18,6 +18,7 @@
  */
 
 module.exports = {
+  testEnvironment: "jsdom",
   globals: {},
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules"],

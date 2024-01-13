@@ -17,22 +17,12 @@
  * under the License.
  */
 
-module.exports = {
-  testEnvironment: "jsdom",
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
-  moduleDirectories: ["node_modules", "src"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
-    "^.+\\.tsx?$": [
-      "ts-jest",
-      {
-        tsconfig: "<rootDir>/tsconfig.json",
-      },
-    ],
-  },
-  moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
-  },
+// `jest-raw-loader` version 1.0.1 compatibility with Jest version 28.
+// See: https://github.com/keplersj/jest-raw-loader/pull/239
+const transformer = {
+  process: (content) => ({
+    code: "module.exports = " + JSON.stringify(content),
+  }),
 };
+
+export default transformer;

@@ -45,7 +45,10 @@ describe("execute local http requests", () => {
 
     localHttpService.registerPort(testPort);
     await expect(localHttpService.execute(testEndpoint, requestBody)).resolves.toMatchObject(testResponse);
-    expect(HttpService.prototype.execute).toBeCalledWith(`http://localhost:${testPort}${testEndpoint}`, requestBody);
+    expect(HttpService.prototype.execute).toHaveBeenCalledWith(
+      `http://localhost:${testPort}${testEndpoint}`,
+      requestBody
+    );
   });
 
   test("should reject the promise when an error occurs in the bridge", async () => {

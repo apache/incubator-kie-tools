@@ -104,7 +104,7 @@ describe("SwfYamlOffsets tests", () => {
       expect(getYamlStateNameFromOffset({ content, offset: 999999 })).toBeUndefined();
       expect(() => {
         getYamlStateNameFromOffset({ content, offset: 100 });
-      }).not.toThrowError();
+      }).not.toThrow();
       expect(getYamlStateNameFromOffset({ content, offset: 100 })).toBeUndefined();
     });
 

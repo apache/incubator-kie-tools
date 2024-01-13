@@ -48,10 +48,10 @@ describe("StateControl", () => {
 
     stateControlService.undo();
 
-    expect(undoCommand).toBeCalled();
+    expect(undoCommand).toHaveBeenCalled();
 
     stateControlService.redo();
 
-    expect(redoCommand).toBeCalled();
+    expect(redoCommand).toHaveBeenCalled();
   });
 });
