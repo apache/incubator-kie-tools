@@ -17,29 +17,18 @@
  * under the License.
  */
 
-import { Octokit } from "@octokit/rest";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
+import { readFileSync } from "fs";
+import * as __path from "path";
 
-export function fetchFile(
-  octokit: Octokit,
-  org: string,
-  repo: string,
-  ref: string,
-  path: string,
-  contentType?: ContentType
-) {
-  return octokit.repos
-    .getContent({
-      repo: repo,
-      owner: org,
-      ref: ref,
-      path: path,
-    })
-    .then((res) => (contentType === ContentType.BINARY ? (res.data as any).content : atob((res.data as any).content)))
-    .catch((e) => {
-      console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
-      return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then((res) =>
-        res.ok ? res.text() : Promise.resolve(undefined)
-      );
-    });
+export function getModelXmlForTestFixtures(args: { normalizedPosixPathRelativeToTheWorkspaceRoot: string }): string {
+  return readFileSync(
+    __path.resolve(__dirname, "..", args.normalizedPosixPathRelativeToTheWorkspaceRoot.split("/").join(__path.sep)), // TODO: Use `toFsPath` from `@kie-tools-core/operating-system.
+    "utf8"
+  );
+}
+
+export function asyncGetModelXmlForTestFixtures(args: {
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
+}): Promise<string> {
+  return Promise.resolve(getModelXmlForTestFixtures(args));
 }

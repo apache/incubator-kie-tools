@@ -17,29 +17,19 @@
  * under the License.
  */
 
-import { Octokit } from "@octokit/rest";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
+import { DmnDocumentData, DmnLanguageService } from "../src";
+import { DmnDecision } from "../src/DmnDecision";
+import { decisions } from "./fs/fixtures";
+import { asyncGetModelXmlForTestFixtures } from "./fs/getModelXml";
 
-export function fetchFile(
-  octokit: Octokit,
-  org: string,
-  repo: string,
-  ref: string,
-  path: string,
-  contentType?: ContentType
-) {
-  return octokit.repos
-    .getContent({
-      repo: repo,
-      owner: org,
-      ref: ref,
-      path: path,
-    })
-    .then((res) => (contentType === ContentType.BINARY ? (res.data as any).content : atob((res.data as any).content)))
-    .catch((e) => {
-      console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
-      return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then((res) =>
-        res.ok ? res.text() : Promise.resolve(undefined)
-      );
-    });
-}
+it("get decisions", () => {
+  const dmnLs = new DmnLanguageService({ getModelXml: asyncGetModelXmlForTestFixtures });
+
+  expect(dmnLs.getDmnDocumentData(decisions())).toEqual(
+    new DmnDocumentData("https://kiegroup.org/dmn/_57B8BED3-0077-4154-8435-30E57EA6F02E", "My Model Name", [
+      new DmnDecision("Decision-1"),
+      new DmnDecision("Decision-2"),
+      new DmnDecision("Decision-3"),
+    ])
+  );
+});

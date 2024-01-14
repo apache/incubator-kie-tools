@@ -156,13 +156,12 @@ public class ScenarioSimulationEditorPresenter {
         scenarioBackgroundGridWidget.unregister();
     }
 
-    public void showDocks() {
+    public void initializeDocks() {
         abstractScenarioSimulationDocksHandler.addDocks();
         abstractScenarioSimulationDocksHandler.setScesimEditorId(String.valueOf(scenarioPresenterId));
         expandToolsDock();
         registerTestToolsCallback();
         resetDocks();
-        populateRightDocks(TestToolsPresenter.IDENTIFIER);
     }
 
     public void hideDocks() {
@@ -519,6 +518,7 @@ public class ScenarioSimulationEditorPresenter {
         scenarioMainGridWidget.setContent(model.getSimulation(), model.getSettings().getType());
         scenarioBackgroundGridWidget.setContent(model.getBackground(), model.getSettings().getType());
         // NOTE: keep here initialization of docks related with model
+        initializeDocks();
         populateRightDocks(TestToolsPresenter.IDENTIFIER);
         populateRightDocks(SettingsPresenter.IDENTIFIER);
         CustomBusyPopup.close();
