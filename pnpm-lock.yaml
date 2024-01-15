@@ -6910,12 +6910,6 @@ importers:
 
   packages/runtime-tools-dev-ui-webapp:
     dependencies:
-      "@apidevtools/swagger-parser":
-        specifier: ^10.1.0
-        version: 10.1.0(openapi-types@7.2.3)
-      "@babel/standalone":
-        specifier: 7.15.3
-        version: 7.15.3
       "@kie-tools-core/editor":
         specifier: workspace:*
         version: link:../editor
@@ -6973,9 +6967,6 @@ importers:
       apollo-link-http:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
-      axios:
-        specifier: ^0.27.2
-        version: 0.27.2
       history:
         specifier: ^4.9.0
         version: 4.10.1
@@ -33791,7 +33782,7 @@ packages:
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0
-      webpack: 5.88.2(webpack-cli@4.10.0)
+      webpack: 5.88.2(@swc/core@1.3.71)(esbuild@0.18.17)(webpack-cli@4.10.0)
     dev: true
 
   /file-selector@0.2.4:
