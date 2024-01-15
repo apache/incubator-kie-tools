@@ -36,7 +36,6 @@ export interface RuntimeToolsDevUIInitArgs {
   openApiBaseUrl: string;
   openApiPath: string;
   isDataIndexAvailable: boolean;
-  isTracingEnabled?: boolean;
   availablePages?: string[];
   omittedWorkflowTimelineEvents?: string[];
   diagramPreviewSize?: DiagramPreviewSize;

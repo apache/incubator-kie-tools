@@ -33,7 +33,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     const [openApiBaseUrl, setOpenApiBaseUrl] = React.useState<string>("");
     const [openApiPath, setOpenApiPath] = React.useState<string>("");
     const [isWorkflowEnabled, setWorkflowEnabled] = React.useState(false);
-    const [isTracingEnabled, setTracingEnabled] = React.useState(false);
     const [availablePages, setAvailablePages] = React.useState<string[]>([]);
     const [omittedWorkflowTimelineEvents, setOmittedWorkflowTimelineEvents] = React.useState<string[]>([]);
     const [diagramPreviewSize, setDiagramPreviewSize] = React.useState<DiagramPreviewSize>();
@@ -61,9 +60,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
           setWorkflowEnabled: (isWorkflowEnabled) => {
             setWorkflowEnabled(isWorkflowEnabled);
           },
-          setTracingEnabled: (isTracingEnabled) => {
-            setTracingEnabled(isTracingEnabled);
-          },
           setAvailablePages: (availablePages) => {
             setAvailablePages(availablePages);
           },
@@ -82,7 +78,7 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
     );
     return (
       <>
-        {(isWorkflowEnabled || isTracingEnabled) && navigate.length > 0 && (
+        {isWorkflowEnabled && navigate.length > 0 && (
           <RuntimeTools
             dataIndexUrl={dataIndexUrl}
             navigate={navigate}
@@ -90,7 +86,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
             openApiPath={openApiPath}
             devUIUrl={devUIUrl}
             isWorkflowEnabled={isWorkflowEnabled}
-            isTracingEnabled={isTracingEnabled}
             availablePages={availablePages}
             omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
             diagramPreviewSize={diagramPreviewSize}

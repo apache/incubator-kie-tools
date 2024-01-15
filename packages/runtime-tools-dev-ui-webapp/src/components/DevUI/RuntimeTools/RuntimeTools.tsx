@@ -31,7 +31,6 @@ import { ServerUnavailablePage } from "@kie-tools/runtime-tools-webapp-component
 
 interface IOwnProps {
   isWorkflowEnabled: boolean;
-  isTracingEnabled: boolean;
   dataIndexUrl: string;
   navigate: string;
   devUIUrl: string;
@@ -50,7 +49,6 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   openApiBaseUrl,
   openApiPath,
   isWorkflowEnabled,
-  isTracingEnabled,
   availablePages,
   omittedWorkflowTimelineEvents,
   diagramPreviewSize,
@@ -72,7 +70,6 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           openApiBaseUrl={openApiBaseUrl}
           openApiPath={openApiPath}
           isWorkflowEnabled={isWorkflowEnabled}
-          isTracingEnabled={isTracingEnabled}
           availablePages={availablePages}
           omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
           diagramPreviewSize={diagramPreviewSize}
@@ -98,7 +95,6 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       openApiBaseUrl={openApiBaseUrl}
       openApiPath={openApiPath}
       isWorkflowEnabled={isWorkflowEnabled}
-      isTracingEnabled={isTracingEnabled}
       availablePages={availablePages}
       omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
       diagramPreviewSize={diagramPreviewSize}

@@ -40,7 +40,6 @@ import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
   isWorkflowEnabled: boolean;
-  isTracingEnabled: boolean;
   children: React.ReactElement;
   devUIUrl: string;
   openApiBaseUrl: string;
@@ -54,7 +53,6 @@ interface IOwnProps {
 const DevUILayout: React.FC<IOwnProps> = ({
   apolloClient,
   isWorkflowEnabled: isWorkflowEnabled,
-  isTracingEnabled,
   devUIUrl,
   openApiBaseUrl,
   openApiPath,
@@ -79,7 +77,6 @@ const DevUILayout: React.FC<IOwnProps> = ({
         openApiBaseUrl={openApiBaseUrl}
         openApiPath={openApiPath}
         isWorkflowEnabled={isWorkflowEnabled}
-        isTracingEnabled={isTracingEnabled}
         availablePages={availablePages!}
         omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents!}
         diagramPreviewSize={diagramPreviewSize!}

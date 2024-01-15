@@ -23,7 +23,6 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-component
 
 export interface DevUIAppContext {
   isWorkflowEnabled: boolean;
-  isTracingEnabled: boolean;
   getDevUIUrl(): string;
   getOpenApiPath(): string;
   availablePages?: string[];
@@ -42,7 +41,6 @@ export type DevUIAppContextArgs = {
   openApiBaseUrl: string;
   openApiPath: string;
   isWorkflowEnabled: boolean;
-  isTracingEnabled: boolean;
   availablePages?: string[];
   omittedWorkflowTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
@@ -70,10 +68,6 @@ export class DevUIAppContextImpl implements DevUIAppContext {
 
   get isWorkflowEnabled(): boolean {
     return this.args.isWorkflowEnabled;
-  }
-
-  get isTracingEnabled(): boolean {
-    return this.args.isTracingEnabled;
   }
 
   get isStunnerEnabled(): boolean {

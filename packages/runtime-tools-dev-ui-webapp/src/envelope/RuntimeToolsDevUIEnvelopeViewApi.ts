@@ -27,7 +27,6 @@ export interface RuntimeToolsDevUIEnvelopeViewApi {
   setOpenApiBaseUrl: (baseUrl: string) => void;
   setOpenApiPath: (path: string) => void;
   setWorkflowEnabled: (isWorkflowEnabled: boolean) => void;
-  setTracingEnabled: (isTracingEnabled: boolean) => void;
   setAvailablePages: (availablePages: string[]) => void;
   setOmittedWorkflowTimelineEvents: (omittedWorkflowTimelineEvents: string[]) => void;
   setDiagramPreviewSize: (diagramPreviewSize?: DiagramPreviewSize) => void;

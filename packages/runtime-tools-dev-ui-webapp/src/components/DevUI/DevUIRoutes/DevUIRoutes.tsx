@@ -42,18 +42,6 @@ type DevUIRoute = { enabled: () => boolean; node: React.ReactNode };
 const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
   const context = useDevUIAppContext();
 
-  const defaultPath = useMemo(() => {
-    if (context.isTracingEnabled) {
-      return "/Audit";
-    }
-  }, [context.isWorkflowEnabled, context.isTracingEnabled]);
-
-  const defaultButton = useMemo(() => {
-    if (context.isTracingEnabled) {
-      return "Go to audit";
-    }
-  }, [context.isWorkflowEnabled, context.isTracingEnabled]);
-
   const routes: DevUIRoute[] = useMemo(
     () => [
       {
@@ -97,16 +85,6 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
         ),
       },
       {
-        enabled: () => true,
-        node: (
-          <Route
-            key="14"
-            path="/NoData"
-            render={(_props) => <NoData {..._props} defaultPath={defaultPath!} defaultButton={defaultButton!} />}
-          />
-        ),
-      },
-      {
         enabled: () => context.isWorkflowEnabled,
         node: <Route key="16" exact path="/Workflows/CloudEvent/:instanceId?" component={CloudEventFormPage} />,
       },
@@ -114,20 +92,8 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
         enabled: () => context.isWorkflowEnabled,
         node: <Route key="17" exact path="/WorkflowDefinitions/CloudEvent" component={CloudEventFormPage} />,
       },
-      {
-        enabled: () => true,
-        node: (
-          <Route
-            key="14"
-            path="/NoData"
-            render={(props: PageNotFoundProps) => (
-              <PageNotFound {...props} defaultPath={defaultPath!} defaultButton={defaultButton!} />
-            )}
-          />
-        ),
-      },
     ],
-    [context.isWorkflowEnabled, context.isTracingEnabled]
+    [context.isWorkflowEnabled]
   );
 
   return <Switch>{routes.filter((r) => r.enabled()).map((r) => r.node)}</Switch>;

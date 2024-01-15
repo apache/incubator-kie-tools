@@ -47,7 +47,6 @@ export interface Consoles {
 const createEnvelopeServer = (
   iframe: HTMLIFrameElement,
   isDataIndexAvailable: boolean,
-  isTracingEnabled: boolean,
   dataIndexUrl: string,
   page: string,
   devUIUrl: string,
@@ -73,7 +72,6 @@ const createEnvelopeServer = (
         },
         {
           isDataIndexAvailable,
-          isTracingEnabled,
           dataIndexUrl,
           page,
           devUIUrl,
@@ -112,7 +110,6 @@ export const createDevUI = (
 export function open(args: {
   container: Element;
   isDataIndexAvailable: boolean;
-  isTracingEnabled: boolean;
   dataIndexUrl: string;
   page: string;
   devUIUrl: string;
@@ -134,7 +131,6 @@ export function open(args: {
   const envelopeServer = createEnvelopeServer(
     iframe,
     args.isDataIndexAvailable,
-    args.isTracingEnabled,
     args.dataIndexUrl,
     args.page,
     args.devUIUrl,

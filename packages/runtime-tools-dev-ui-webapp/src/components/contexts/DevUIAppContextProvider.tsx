@@ -27,7 +27,6 @@ interface IOwnProps {
   openApiBaseUrl: string;
   openApiPath: string;
   isWorkflowEnabled: boolean;
-  isTracingEnabled: boolean;
   availablePages: string[];
   omittedWorkflowTimelineEvents: string[];
   diagramPreviewSize: DiagramPreviewSize;
@@ -39,7 +38,6 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
   openApiBaseUrl,
   openApiPath,
   isWorkflowEnabled: isWorkflowEnabled,
-  isTracingEnabled,
   availablePages,
   omittedWorkflowTimelineEvents,
   diagramPreviewSize,
@@ -54,7 +52,6 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
           openApiBaseUrl,
           openApiPath,
           isWorkflowEnabled,
-          isTracingEnabled,
           availablePages,
           omittedWorkflowTimelineEvents,
           diagramPreviewSize,
