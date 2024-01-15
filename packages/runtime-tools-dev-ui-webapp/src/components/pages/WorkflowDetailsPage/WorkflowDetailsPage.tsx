@@ -147,7 +147,7 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
 
   return (
     <>
-      <PageSectionHeader titleText={`${appContext?.customLabels?.singularWorkflowLabel} Details`} ouiaId={ouiaId} />
+      <PageSectionHeader titleText={`Workflow Details`} ouiaId={ouiaId} />
       <PageSection {...componentOuiaProps(ouiaId, "workflow-details-page-section", ouiaSafe)}>
         {renderItems()}
       </PageSection>

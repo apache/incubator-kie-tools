@@ -92,15 +92,8 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
 
   return (
     <React.Fragment>
-      {activeTabKey === 0 && (
-        <PageSectionHeader titleText={`${apiContext.customLabels?.singularWorkflowLabel} Instances`} ouiaId={ouiaId} />
-      )}
-      {activeTabKey === 1 && (
-        <PageSectionHeader
-          titleText={`${apiContext.customLabels?.singularWorkflowLabel} Definitions`}
-          ouiaId={ouiaId}
-        />
-      )}
+      {activeTabKey === 0 && <PageSectionHeader titleText={`Workflow Instances`} ouiaId={ouiaId} />}
+      {activeTabKey === 1 && <PageSectionHeader titleText={`Workflow Definitions`} ouiaId={ouiaId} />}
       <div>
         <Tabs
           activeKey={activeTabKey}
@@ -111,11 +104,7 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
             background: "white",
           }}
         >
-          <Tab
-            id="workflow-list-tab"
-            eventKey={0}
-            title={<TabTitleText>{apiContext.customLabels?.singularWorkflowLabel} Instances</TabTitleText>}
-          >
+          <Tab id="workflow-list-tab" eventKey={0} title={<TabTitleText>Workflow Instances</TabTitleText>}>
             <PageSection {...componentOuiaProps(ouiaId, "workflow-list-page-section", ouiaSafe)}>
               <Card className="Dev-ui__card-size">
                 <WorkflowListContainer
@@ -126,11 +115,7 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
               </Card>
             </PageSection>
           </Tab>
-          <Tab
-            id="workflow-definitions-tab"
-            eventKey={1}
-            title={<TabTitleText>{apiContext.customLabels?.singularWorkflowLabel} Definitions</TabTitleText>}
-          >
+          <Tab id="workflow-definitions-tab" eventKey={1} title={<TabTitleText>Workflow Definitions</TabTitleText>}>
             <PageSection {...componentOuiaProps(ouiaId, "workflow-definition-list-page-section", ouiaSafe)}>
               <Card className="Dev-ui__card-size">
                 <WorkflowDefinitionListContainer

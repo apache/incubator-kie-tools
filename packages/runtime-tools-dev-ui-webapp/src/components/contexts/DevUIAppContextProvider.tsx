@@ -29,7 +29,6 @@ interface IOwnProps {
   isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
   availablePages: string[];
-  customLabels?: CustomLabels;
   omittedWorkflowTimelineEvents: string[];
   diagramPreviewSize: DiagramPreviewSize;
   isStunnerEnabled: boolean;
@@ -42,7 +41,6 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
   isWorkflowEnabled: isWorkflowEnabled,
   isTracingEnabled,
   availablePages,
-  customLabels,
   omittedWorkflowTimelineEvents,
   diagramPreviewSize,
   isStunnerEnabled,
@@ -58,7 +56,6 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
           isWorkflowEnabled,
           isTracingEnabled,
           availablePages,
-          customLabels,
           omittedWorkflowTimelineEvents,
           diagramPreviewSize,
           isStunnerEnabled,

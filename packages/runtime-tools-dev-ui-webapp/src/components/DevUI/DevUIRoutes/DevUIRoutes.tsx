@@ -107,11 +107,11 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
         ),
       },
       {
-        enabled: () => context.isWorkflow(),
+        enabled: () => context.isWorkflowEnabled,
         node: <Route key="16" exact path="/Workflows/CloudEvent/:instanceId?" component={CloudEventFormPage} />,
       },
       {
-        enabled: () => context.isWorkflow(),
+        enabled: () => context.isWorkflowEnabled,
         node: <Route key="17" exact path="/WorkflowDefinitions/CloudEvent" component={CloudEventFormPage} />,
       },
       {
@@ -127,7 +127,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
         ),
       },
     ],
-    [context.isWorkflowEnabled, context.isTracingEnabled, context.isWorkflow()]
+    [context.isWorkflowEnabled, context.isTracingEnabled]
   );
 
   return <Switch>{routes.filter((r) => r.enabled()).map((r) => r.node)}</Switch>;

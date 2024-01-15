@@ -65,7 +65,6 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
     this.view().setOpenApiBaseUrl && this.view().setOpenApiBaseUrl(initArgs.openApiBaseUrl);
     this.view().setOpenApiPath && this.view().setOpenApiPath(initArgs.openApiPath);
     this.view().setAvailablePages && this.view().setAvailablePages(initArgs.availablePages!);
-    this.view().setCustomLabels && this.view().setCustomLabels(initArgs.customLabels!);
     this.view().setOmittedWorkflowTimelineEvents &&
       this.view().setOmittedWorkflowTimelineEvents(initArgs.omittedWorkflowTimelineEvents!);
     this.view().setDiagramPreviewSize && this.view().setDiagramPreviewSize(initArgs.diagramPreviewSize);

@@ -28,7 +28,7 @@ interface IOwnProps {
 }
 
 const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
-  const { isWorkflowEnabled: isWorkflowEnabled, isTracingEnabled, customLabels, availablePages } = useDevUIAppContext();
+  const { isWorkflowEnabled: isWorkflowEnabled, isTracingEnabled, availablePages } = useDevUIAppContext();
 
   return (
     <Nav aria-label="Nav" theme="dark">
@@ -38,7 +38,7 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
             {(!availablePages || availablePages.includes("Workflows")) && (
               <NavItem key={"workflows-nav"} isActive={pathname === "/Workflows"}>
                 <Link to="/Workflows" {...ouiaAttribute("data-ouia-navigation-name", "workflows-nav")}>
-                  {customLabels?.pluralWorkflowLabel}
+                  Workflows
                 </Link>
               </NavItem>
             )}

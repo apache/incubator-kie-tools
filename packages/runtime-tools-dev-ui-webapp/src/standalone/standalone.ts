@@ -38,7 +38,6 @@ export interface Consoles {
     openApiPath: string;
     origin?: string;
     availablePages?: string[];
-    customLabels?: CustomLabels;
     omittedWorkflowTimelineEvents?: string[];
     diagramPreviewSize?: DiagramPreviewSize;
     isStunnerEnabled: boolean;
@@ -54,7 +53,6 @@ const createEnvelopeServer = (
   devUIUrl: string,
   openApiBaseUrl: string,
   openApiPath: string,
-  customLabels: CustomLabels,
   isStunnerEnabled: boolean,
   diagramPreviewSize?: DiagramPreviewSize,
   origin?: string,
@@ -81,7 +79,6 @@ const createEnvelopeServer = (
           devUIUrl,
           openApiBaseUrl,
           openApiPath,
-          customLabels,
           availablePages,
           omittedWorkflowTimelineEvents,
           isStunnerEnabled,
@@ -123,7 +120,6 @@ export function open(args: {
   openApiPath: string;
   origin?: string;
   availablePages?: string[];
-  customLabels?: CustomLabels;
   omittedWorkflowTimelineEvents?: string[];
   isStunnerEnabled: boolean;
   diagramPreviewSize?: DiagramPreviewSize;
@@ -144,10 +140,6 @@ export function open(args: {
     args.devUIUrl,
     args.openApiBaseUrl,
     args.openApiPath,
-    args.customLabels ?? {
-      singularWorkflowLabel: "Workflow",
-      pluralWorkflowLabel: "Workflows",
-    },
     args.isStunnerEnabled,
     args.diagramPreviewSize,
     args.origin,
