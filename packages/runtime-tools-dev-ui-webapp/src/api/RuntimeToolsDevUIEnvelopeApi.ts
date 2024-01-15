@@ -31,7 +31,6 @@ export interface Association {
 
 export interface RuntimeToolsDevUIInitArgs {
   dataIndexUrl: string;
-  trustyServiceUrl?: string;
   page: string;
   devUIUrl: string;
   openApiBaseUrl: string;

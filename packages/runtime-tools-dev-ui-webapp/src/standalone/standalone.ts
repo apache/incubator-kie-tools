@@ -32,7 +32,6 @@ export interface Consoles {
   open: (args: {
     container: Element;
     dataIndexUrl: string;
-    trustyServiceUrl: string;
     page: string;
     devUIUrl: string;
     openApiBaseUrl: string;
@@ -51,7 +50,6 @@ const createEnvelopeServer = (
   isDataIndexAvailable: boolean,
   isTracingEnabled: boolean,
   dataIndexUrl: string,
-  trustyServiceUrl: string,
   page: string,
   devUIUrl: string,
   openApiBaseUrl: string,
@@ -79,7 +77,6 @@ const createEnvelopeServer = (
           isDataIndexAvailable,
           isTracingEnabled,
           dataIndexUrl,
-          trustyServiceUrl,
           page,
           devUIUrl,
           openApiBaseUrl,
@@ -120,7 +117,6 @@ export function open(args: {
   isDataIndexAvailable: boolean;
   isTracingEnabled: boolean;
   dataIndexUrl: string;
-  trustyServiceUrl: string;
   page: string;
   devUIUrl: string;
   openApiBaseUrl: string;
@@ -144,7 +140,6 @@ export function open(args: {
     args.isDataIndexAvailable,
     args.isTracingEnabled,
     args.dataIndexUrl,
-    args.trustyServiceUrl,
     args.page,
     args.devUIUrl,
     args.openApiBaseUrl,
