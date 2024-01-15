@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm test",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "dev": "concurrently 'pnpm start' 'pnpm run dev:server'",
     "dev:server": "nodemon ./server/app.js",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
