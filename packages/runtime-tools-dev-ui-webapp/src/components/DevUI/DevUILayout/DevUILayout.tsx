@@ -23,7 +23,6 @@ import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import { MemoryRouter } from "react-router";
 import PageLayout from "@kie-tools/runtime-tools-components/dist/components/PageLayout/PageLayout";
-import { User } from "@kie-tools/runtime-tools-components/dist/contexts/Auth";
 import DevUINav from "../DevUINav/DevUINav";
 import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetails";
 import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowList";
@@ -42,7 +41,6 @@ interface IOwnProps {
   apolloClient: ApolloClient<any>;
   isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
-  users: User[];
   children: React.ReactElement;
   devUIUrl: string;
   openApiBaseUrl: string;
@@ -58,7 +56,6 @@ const DevUILayout: React.FC<IOwnProps> = ({
   apolloClient,
   isWorkflowEnabled: isWorkflowEnabled,
   isTracingEnabled,
-  users,
   devUIUrl,
   openApiBaseUrl,
   openApiPath,
@@ -80,7 +77,6 @@ const DevUILayout: React.FC<IOwnProps> = ({
   return (
     <ApolloProvider client={apolloClient}>
       <DevUIAppContextProvider
-        users={users}
         devUIUrl={devUIUrl}
         openApiBaseUrl={openApiBaseUrl}
         openApiPath={openApiPath}

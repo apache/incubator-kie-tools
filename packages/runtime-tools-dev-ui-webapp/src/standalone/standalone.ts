@@ -19,7 +19,7 @@
 
 import devUIEnvelopeIndex from "!!raw-loader!../../resources/iframe.html";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi, User } from "../api";
+import { RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi } from "../api";
 import { RuntimeToolsDevUIChannelApiImpl } from "../standalone/RuntimeToolsDevUIChannelApiImpl";
 import { CustomLabels } from "../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
@@ -31,7 +31,6 @@ export interface StandaloneDevUIApi {
 export interface Consoles {
   open: (args: {
     container: Element;
-    users: User[];
     dataIndexUrl: string;
     trustyServiceUrl: string;
     page: string;
@@ -51,7 +50,6 @@ const createEnvelopeServer = (
   iframe: HTMLIFrameElement,
   isDataIndexAvailable: boolean,
   isTracingEnabled: boolean,
-  users: User[],
   dataIndexUrl: string,
   trustyServiceUrl: string,
   page: string,
@@ -80,7 +78,6 @@ const createEnvelopeServer = (
         {
           isDataIndexAvailable,
           isTracingEnabled,
-          users,
           dataIndexUrl,
           trustyServiceUrl,
           page,
@@ -122,7 +119,6 @@ export function open(args: {
   container: Element;
   isDataIndexAvailable: boolean;
   isTracingEnabled: boolean;
-  users: User[];
   dataIndexUrl: string;
   trustyServiceUrl: string;
   page: string;
@@ -147,7 +143,6 @@ export function open(args: {
     iframe,
     args.isDataIndexAvailable,
     args.isTracingEnabled,
-    args.users,
     args.dataIndexUrl,
     args.trustyServiceUrl,
     args.page,

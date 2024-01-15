@@ -18,13 +18,11 @@
  */
 
 import React from "react";
-import { User } from "@kie-tools/runtime-tools-components/dist/contexts/Auth";
 import RuntimeToolsDevUIAppContext, { DevUIAppContextImpl } from "./DevUIAppContext";
 import { CustomLabels } from "../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 
 interface IOwnProps {
-  users: User[];
   devUIUrl: string;
   openApiBaseUrl: string;
   openApiPath: string;
@@ -38,7 +36,6 @@ interface IOwnProps {
 }
 
 const DevUIAppContextProvider: React.FC<IOwnProps> = ({
-  users,
   devUIUrl,
   openApiBaseUrl,
   openApiPath,
@@ -55,7 +52,6 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
     <RuntimeToolsDevUIAppContext.Provider
       value={
         new DevUIAppContextImpl({
-          users,
           devUIUrl,
           openApiBaseUrl,
           openApiPath,

@@ -88,55 +88,6 @@ app.post("/forms/:formName", controller.saveFormContent);
 app.post("/hiring", controller.startProcessInstance);
 app.get("/:processName/schema", controller.getProcessFormSchema);
 
-const taskDetailsError = ["5cead49f-7649-410a-89ff-840cc52adf52"];
-
-const checkStatesFilters = (userTaskInstance, states) => {
-  return states.includes(userTaskInstance.state);
-};
-
-const checkTaskNameFilters = (userTaskInstance, names) => {
-  for (let i = 0; i < names.length; i++) {
-    let name = names[i].referenceName.like.toLowerCase();
-    name = name.substring(1, name.length - 1);
-
-    if (userTaskInstance.referenceName && userTaskInstance.referenceName.toLowerCase().includes(name)) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-const checkTaskAssignment = (userTaskInstance, assignments) => {
-  const actualOwnerClause = assignments.or[0];
-  if (actualOwnerClause.actualOwner.equal === userTaskInstance.actualOwner) {
-    return true;
-  }
-  if (userTaskInstance.actualOwner === null) {
-    const excludedUsersClause = assignments.or[1].and[1].not;
-
-    if (
-      userTaskInstance.excludedUsers &&
-      userTaskInstance.excludedUsers.includes(excludedUsersClause.excludedUsers.contains)
-    ) {
-      return false;
-    }
-
-    const potentialUsersClause = assignments.or[1].and[2].or[0];
-    if (userTaskInstance.potentialUsers.includes(potentialUsersClause.potentialUsers.contains)) {
-      return true;
-    }
-    const potentialGroupsClause = assignments.or[1].and[2].or[1];
-    if (
-      potentialGroupsClause.potentialGroups.containsAny.some((clauseGroup) =>
-        userTaskInstance.potentialGroups.includes(clauseGroup)
-      )
-    ) {
-      return true;
-    }
-  }
-};
-
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -429,62 +380,6 @@ const resolvers = {
 
         return result;
       }
-    },
-    UserTaskInstances: async (parent, args) => {
-      let result = data.UserTaskInstances.filter((datum) => {
-        console.log("args", args);
-
-        if (args["where"].and) {
-          // if filter available
-          if (!checkTaskAssignment(datum, args["where"].and[0])) {
-            return false;
-          }
-          if (args["where"].and[1].and.length === 2) {
-            // if filter by state and taskNames
-            return (
-              checkTaskNameFilters(datum, args["where"].and[1].and[1].or) &&
-              checkStatesFilters(datum, args["where"].and[1].and[0].state.in)
-            );
-          } else if (args["where"].and[1].and.length === 1) {
-            if (args["where"].and[1].and[0].state) {
-              // if filter by states only
-              return checkStatesFilters(datum, args["where"].and[1].and[0].state.in);
-            } else if (args["where"].and[1].and[0].or) {
-              // if filter by taskNames only
-              return checkTaskNameFilters(datum, args["where"].and[1].and[0].or);
-            }
-          } else if (args["where"].and[1].and.length === 0) {
-            return false;
-          }
-        } else if (args["where"].or) {
-          // if no filters
-          return checkTaskAssignment(datum, args["where"]);
-        } else if (args["where"].id && args["where"].id.equal) {
-          // mock to return single id
-          return datum.id === args["where"].id.equal;
-        }
-        return false;
-      });
-
-      if (args["orderBy"]) {
-        result = _.orderBy(
-          result,
-          _.keys(args["orderBy"]).map((key) => key),
-          _.values(args["orderBy"]).map((value) => value.toLowerCase())
-        );
-      }
-      await timeout(2000);
-
-      if (args.where.id && taskDetailsError.includes(args.where.id.equal)) {
-        throw new Error(`Cannot find task ${args.where.id.equal}`);
-      }
-      if (args.pagination) {
-        const offset = args.pagination.offset;
-        const limit = args.pagination.limit;
-
-        result = result.slice(offset, offset + limit);
-      }
-      return result;
     },
   },
 

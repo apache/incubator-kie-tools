@@ -29,13 +29,7 @@ export interface Association {
   envelopeServerId: string;
 }
 
-export interface User {
-  id: string;
-  groups: string[];
-}
-
 export interface RuntimeToolsDevUIInitArgs {
-  users?: User[];
   dataIndexUrl: string;
   trustyServiceUrl?: string;
   page: string;

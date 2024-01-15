@@ -60,7 +60,6 @@ export class RuntimeToolsDevUIEnvelopeApiImpl implements RuntimeToolsDevUIEnvelo
     this.ackCapturedInitRequest();
     this.view = await this.args.viewDelegate();
     this.view().setDataIndexUrl(initArgs.dataIndexUrl);
-    this.view().setUsers(initArgs.users!);
     this.view().navigateTo(initArgs.page);
     this.view().setDevUIUrl && this.view().setDevUIUrl(initArgs.devUIUrl);
     this.view().setOpenApiBaseUrl && this.view().setOpenApiBaseUrl(initArgs.openApiBaseUrl);

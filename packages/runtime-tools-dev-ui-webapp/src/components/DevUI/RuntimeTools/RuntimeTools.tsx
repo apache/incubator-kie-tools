@@ -20,7 +20,6 @@
 import React from "react";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
-import { User } from "@kie-tools/runtime-tools-components/dist/contexts/Auth";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import DevUIRoutes from "../DevUIRoutes/DevUIRoutes";
@@ -33,7 +32,6 @@ import { ServerUnavailablePage } from "@kie-tools/runtime-tools-webapp-component
 interface IOwnProps {
   isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
-  users: User[];
   dataIndexUrl: string;
   navigate: string;
   devUIUrl: string;
@@ -47,7 +45,6 @@ interface IOwnProps {
 }
 
 const RuntimeTools: React.FC<IOwnProps> = ({
-  users,
   dataIndexUrl,
   navigate,
   devUIUrl,
@@ -73,7 +70,6 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       return ReactDOM.render(
         <DevUILayout
           apolloClient={client}
-          users={users}
           devUIUrl={devUIUrl}
           openApiBaseUrl={openApiBaseUrl}
           openApiPath={openApiPath}
@@ -101,7 +97,6 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   return (
     <DevUILayout
       apolloClient={client}
-      users={users}
       devUIUrl={devUIUrl}
       openApiBaseUrl={openApiBaseUrl}
       openApiPath={openApiPath}

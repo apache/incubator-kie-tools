@@ -22,14 +22,12 @@ import "@patternfly/patternfly/patternfly.css";
 import "@patternfly/react-core/dist/styles/base.css";
 import { RuntimeToolsDevUIEnvelopeViewApi } from "./RuntimeToolsDevUIEnvelopeViewApi";
 import RuntimeTools from "../components/DevUI/RuntimeTools/RuntimeTools";
-import { User } from "@kie-tools/runtime-tools-components/dist/contexts/Auth";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 import { CustomLabels } from "../api/CustomLabels";
 
 export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIEnvelopeViewApi>(
   (props, forwardingRef) => {
     const [dataIndexUrl, setDataIndexUrl] = React.useState("");
-    const [DevUiUsers, setDevUiUsers] = React.useState<User[]>([]);
     const [navigate, setNavigate] = React.useState<string>("");
     const [devUIUrl, setDevUIUrl] = React.useState<string>("");
     const [openApiBaseUrl, setOpenApiBaseUrl] = React.useState<string>("");
@@ -48,9 +46,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
         return {
           setDataIndexUrl: (dataIndexUrl) => {
             setDataIndexUrl(dataIndexUrl);
-          },
-          setUsers: (users) => {
-            setDevUiUsers(users);
           },
           navigateTo: (page) => {
             setNavigate(page);
@@ -93,7 +88,6 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
       <>
         {(isWorkflowEnabled || isTracingEnabled) && navigate.length > 0 && (
           <RuntimeTools
-            users={DevUiUsers}
             dataIndexUrl={dataIndexUrl}
             navigate={navigate}
             openApiBaseUrl={openApiBaseUrl}

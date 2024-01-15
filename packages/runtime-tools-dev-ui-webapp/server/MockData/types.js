@@ -25,11 +25,6 @@ module.exports = typeDefs = gql`
       orderBy: ProcessInstanceOrderBy
       pagination: Pagination
     ): [ProcessInstance]
-    UserTaskInstances(
-      where: UserTaskInstanceArgument
-      orderBy: UserTaskInstanceOrderBy
-      pagination: Pagination
-    ): [UserTaskInstance]
     Travels(where: TravelsArgument, orderBy: TravelsOrderBy, pagination: Pagination): [Travels]
     VisaApplications(
       where: VisaApplicationsArgument
@@ -69,7 +64,6 @@ module.exports = typeDefs = gql`
   type KogitoMetadata {
     lastUpdate: DateTime!
     processInstances: [ProcessInstanceMeta]
-    userTasks: [UserTaskInstanceMeta]
   }
 
   input KogitoMetadataOrderBy {
@@ -79,7 +73,6 @@ module.exports = typeDefs = gql`
   input KogitoMetadataArgument {
     lastUpdate: DateArgument
     processInstances: ProcessInstanceMetaArgument
-    userTasks: UserTaskInstanceMetaArgument
   }
 
   type ProcessInstanceMeta {
@@ -269,107 +262,9 @@ module.exports = typeDefs = gql`
     in: [ProcessInstanceState]
   }
 
-  type UserTaskInstance {
-    id: String!
-    description: String
-    name: String
-    priority: String
-    processInstanceId: String!
-    processId: String!
-    rootProcessInstanceId: String
-    rootProcessId: String
-    state: String!
-    actualOwner: String
-    adminGroups: [String!]
-    adminUsers: [String!]
-    completed: DateTime
-    started: DateTime!
-    excludedUsers: [String!]
-    potentialGroups: [String!]
-    potentialUsers: [String!]
-    inputs: String
-    outputs: String
-    referenceName: String
-    lastUpdate: DateTime!
-    endpoint: String
-  }
-
-  type UserTaskInstanceMeta {
-    id: String!
-    description: String
-    name: String
-    priority: String
-    processInstanceId: String!
-    state: String!
-    actualOwner: String
-    adminGroups: [String!]
-    adminUsers: [String!]
-    completed: DateTime
-    started: DateTime!
-    excludedUsers: [String!]
-    potentialGroups: [String!]
-    potentialUsers: [String!]
-    referenceName: String
-    lastUpdate: DateTime!
-  }
-
-  input UserTaskInstanceArgument {
-    and: [UserTaskInstanceArgument!]
-    or: [UserTaskInstanceArgument!]
-    not: UserTaskInstanceArgument
-    state: StringArgument
-    id: IdArgument
-    description: StringArgument
-    name: StringArgument
-    priority: StringArgument
-    processInstanceId: IdArgument
-    actualOwner: StringArgument
-    potentialUsers: StringArrayArgument
-    potentialGroups: StringArrayArgument
-    excludedUsers: StringArrayArgument
-    adminGroups: StringArrayArgument
-    adminUsers: StringArrayArgument
-    completed: DateArgument
-    started: DateArgument
-    referenceName: StringArgument
-    lastUpdate: DateArgument
-  }
-
-  input UserTaskInstanceMetaArgument {
-    state: StringArgument
-    id: IdArgument
-    description: StringArgument
-    name: StringArgument
-    priority: StringArgument
-    processInstanceId: IdArgument
-    actualOwner: StringArgument
-    potentialUsers: StringArrayArgument
-    potentialGroups: StringArrayArgument
-    excludedUsers: StringArrayArgument
-    adminGroups: StringArrayArgument
-    adminUsers: StringArrayArgument
-    completed: DateArgument
-    started: DateArgument
-    referenceName: StringArgument
-  }
-
-  input UserTaskInstanceOrderBy {
-    state: OrderBy
-    actualOwner: OrderBy
-    description: OrderBy
-    name: OrderBy
-    priority: OrderBy
-    completed: OrderBy
-    started: OrderBy
-    referenceName: OrderBy
-    lastUpdate: OrderBy
-  }
-
   type Subscription {
     ProcessInstanceAdded: ProcessInstance!
     ProcessInstanceUpdated: ProcessInstance!
-    UserTaskInstanceAdded: UserTaskInstance!
-    UserTaskInstanceUpdated: UserTaskInstance!
   }
 
   enum OrderBy {

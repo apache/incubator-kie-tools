@@ -17,13 +17,11 @@
  * under the License.
  */
 
-import { User } from "../api";
 import { CustomLabels } from "../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 
 export interface RuntimeToolsDevUIEnvelopeViewApi {
   setDataIndexUrl: (dataIndexUrl: string) => void;
-  setUsers: (users: User[]) => void;
   navigateTo: (page: string) => void;
   setDevUIUrl: (url: string) => void;
   setOpenApiBaseUrl: (baseUrl: string) => void;

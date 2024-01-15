@@ -18,17 +18,12 @@
  */
 
 import React, { useContext } from "react";
-import { User } from "@kie-tools/runtime-tools-components/dist/contexts/Auth";
 import { CustomLabels } from "../../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
 
 export interface DevUIAppContext {
   isWorkflowEnabled: boolean;
   isTracingEnabled: boolean;
-  getCurrentUser(): User;
-  getAllUsers(): User[];
-  switchUser(userId: string): void;
-  onUserChange(listener: UserChangeListener): UnSubscribeHandler;
   getDevUIUrl(): string;
   getOpenApiPath(): string;
   availablePages?: string[];
@@ -40,16 +35,11 @@ export interface DevUIAppContext {
   getIsStunnerEnabled(): boolean;
 }
 
-export interface UserChangeListener {
-  onUserChange: (user: User) => void;
-}
-
 export interface UnSubscribeHandler {
   unSubscribe: () => void;
 }
 
 export type DevUIAppContextArgs = {
-  users?: User[];
   devUIUrl: string;
   openApiBaseUrl: string;
   openApiPath: string;
@@ -63,14 +53,7 @@ export type DevUIAppContextArgs = {
 };
 
 export class DevUIAppContextImpl implements DevUIAppContext {
-  private currentUser: User;
-  private readonly userListeners: UserChangeListener[] = [];
-
-  constructor(private readonly args: DevUIAppContextArgs) {
-    if (args.users?.length) {
-      this.currentUser = args.users[0];
-    }
-  }
+  constructor(private readonly args: DevUIAppContextArgs) {}
 
   getDevUIUrl(): string {
     return this.args.devUIUrl;
@@ -82,35 +65,6 @@ export class DevUIAppContextImpl implements DevUIAppContext {
 
   getOpenApiPath(): string {
     return this.args.openApiPath;
-  }
-
-  getCurrentUser(): User {
-    return this.currentUser;
-  }
-
-  getAllUsers(): User[] {
-    return this.args.users || [];
-  }
-
-  switchUser(userId: string): void {
-    const switchedUser = this.args.users?.find((user) => user.id === userId);
-    if (switchedUser) {
-      this.currentUser = switchedUser;
-      this.userListeners.forEach((listener) => listener.onUserChange(switchedUser));
-    }
-  }
-
-  onUserChange(listener: UserChangeListener): UnSubscribeHandler {
-    this.userListeners.push(listener);
-
-    return {
-      unSubscribe: () => {
-        const index = this.userListeners.indexOf(listener);
-        if (index > -1) {
-          this.userListeners.splice(index, 1);
-        }
-      },
-    };
   }
 
   isWorkflow(): boolean {
