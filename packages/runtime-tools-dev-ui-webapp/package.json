@@ -64,7 +64,6 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^5.16.1",
-    "@types/babel__standalone": "^7.1.7",
     "@types/history": "^4.7.3",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",

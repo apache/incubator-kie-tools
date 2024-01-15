@@ -7016,9 +7016,6 @@ importers:
       "@testing-library/jest-dom":
         specifier: ^5.16.1
         version: 5.16.1
-      "@types/babel__standalone":
-        specifier: ^7.1.7
-        version: 7.1.7
       "@types/history":
         specifier: ^4.7.3
         version: 4.7.5
