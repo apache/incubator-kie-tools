@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kie.j2cl.tools</groupId>
+    <artifactId>parent</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <name>J2CL Tools</name>
+    <description>J2CL Tools</description>
+    <url>http://kogito.kie.org</url>
+    <inceptionYear>2021</inceptionYear>
+    <organization>
+        <name>JBoss by Red Hat</name>
+        <url>http://www.jboss.org/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
+        <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
+        <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>All developers are listed in the KIE GitHub organization</name>
+            <url>https://github.com/orgs/kiegroup/people</url>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>https://issues.redhat.com/browse/KOGITO</url>
+    </issueManagement>
+
+    <repositories>
+        <repository>
+            <id>jboss</id>
+            <name>JBoss Public Repo</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>sonatype-public</id>
+            <name>Sonatype Public Snapshots Repo</name>
+            <url>https://oss.sonatype.org/content/repositories/public</url>
+        </repository>
+    </repositories>
+
+    <modules>
+        <module>jakarta-spec</module>
+    </modules>
+
+</project>

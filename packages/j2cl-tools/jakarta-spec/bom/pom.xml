@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.kie.j2cl.tools.jakarta</groupId>
+    <artifactId>bom</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <name>GWT/J2CL Jakarta BOM</name>
+    <description>GWT/J2CL Jakarta BOM</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.kie.j2cl.tools.jakarta</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.j2cl.tools.jakarta</groupId>
+                <artifactId>inject</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.j2cl.tools.jakarta</groupId>
+                <artifactId>ejb</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.j2cl.tools.jakarta</groupId>
+                <artifactId>enterprise</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.j2cl.tools.jakarta.jaxb</groupId>
+                <artifactId>api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.j2cl.tools.jakarta.jsonb</groupId>
+                <artifactId>api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.j2cl.tools.jakarta</groupId>
+                <artifactId>stdlib</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.j2cl.tools.jakarta</groupId>
+                <artifactId>utils</artifactId>
+                <version>${revision}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

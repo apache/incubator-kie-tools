@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kie.j2cl.tools.jakarta</groupId>
+        <artifactId>parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <packaging>pom</packaging>
+
+    <groupId>org.kie.j2cl.tools.jakarta.jaxb</groupId>
+    <artifactId>parent</artifactId>
+
+    <name>GWT/J2CL compatible Jakarta JAXB Specs parent</name>
+    <description>GWT/J2CL compatible Jakarta JAXB Specs parent</description>
+
+    <modules>
+        <module>api</module>
+    </modules>
+
+</project>

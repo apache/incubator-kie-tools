@@ -1,0 +1,46 @@
+{
+  "private": true,
+  "name": "@kie-tools/j2cl-tools",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "run-script-os",
+    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs\"",
+    "build:prod": "run-script-os",
+    "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env endToEndTests.run --not)",
+    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env endToEndTests.run --not)\"",
+    "install": "node install.js",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "adm-zip": "^0.5.10",
+    "cpr": "^3.0.1",
+    "mvn-artifact-download": "6.1.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "symlink-dir": "^5.0.1"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

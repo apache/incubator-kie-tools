@@ -5094,6 +5094,33 @@ importers:
         specifier: ^5.9.0
         version: 5.9.0
 
+  packages/j2cl-tools:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      adm-zip:
+        specifier: ^0.5.10
+        version: 0.5.10
+      cpr:
+        specifier: ^3.0.1
+        version: 3.0.1
+      mvn-artifact-download:
+        specifier: 6.1.1
+        version: 6.1.1
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      symlink-dir:
+        specifier: ^5.0.1
+        version: 5.0.1
+
   packages/json-yaml-language-service:
     dependencies:
       "@kie-tools/yaml-language-server":
@@ -24726,12 +24753,6 @@ packages:
     engines: { node: ">=10" }
     dev: true
 
-  /@zkochan/rimraf@2.1.1:
-    resolution:
-      { integrity: sha512-TgiZpFi4XSvS8wY2/JzoJQYqgpOeBfVMPLC93cRXjbqYSXr1PGyQagS1Wyztuq1uMA1Cqd+EYLa5HESrJwH0Kw== }
-    engines: { node: ">=12.10" }
-    dev: true
-
   /@zkochan/rimraf@2.1.2:
     resolution:
       { integrity: sha512-Lc2oK51J6aQWcLWTloobJun5ZF41BbTDdLvE+aMcexoVWFoFqvZmnZoyXR2IZk6NJEVoZW8tjgtvQLfTsmRs2Q== }
@@ -36520,7 +36541,7 @@ packages:
     hasBin: true
     dependencies:
       json-stringify-safe: 5.0.1
-      minimist: 1.2.6
+      minimist: 1.2.8
       readable-stream: 3.6.0
       split2: 3.2.2
       through2: 4.0.2
@@ -40182,14 +40203,6 @@ packages:
       { integrity: sha512-O3vsMYfWighyFbTd8hk8VaSj9UAGENxAtX+//ugIst2RMk5e03h6RoIS+0ylsFxY1gvmPuAY/PO4It+gPEeySA== }
     dev: true
 
-  /rename-overwrite@4.0.0:
-    resolution:
-      { integrity: sha512-GZxPjarpxu2DGD6xHE8L4GdJhWz2+2i2x6N1I7VEof2p5M/x/LDNxNXA547k8xOpPmHnijXBE1ofmj7NDGP20g== }
-    engines: { node: ">=12.10" }
-    dependencies:
-      "@zkochan/rimraf": 2.1.1
-    dev: true
-
   /rename-overwrite@4.0.2:
     resolution:
       { integrity: sha512-L1sgBgagVgOgb1Z6QZr1yJgSMHI4SXQqAH0l/UbeyHnLKxECvKIlyVEmBo4BqsCAZGg0SBSyjCh68lis5PgC7g== }
@@ -42132,7 +42145,7 @@ packages:
     hasBin: true
     dependencies:
       better-path-resolve: 1.0.0
-      rename-overwrite: 4.0.0
+      rename-overwrite: 4.0.2
     dev: true
 
   /synchronous-promise@2.0.17:
