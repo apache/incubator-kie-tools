@@ -92,7 +92,7 @@ async function parseDeep(
 ): Promise<[string, XsdSchema][]> {
   const { xsdString } = await fetchXsdString(baseLocation, relativeLocation);
 
-  const { json: schema } = __XSD_PARSER.parse({ xml: xsdString });
+  const { json: schema } = __XSD_PARSER.parse({ type: "xml", xml: xsdString });
 
   const includePromises = (schema["xsd:schema"]["xsd:include"] ?? []).map((i) =>
     parseDeep(__XSD_PARSER, baseLocation, i["@_schemaLocation"])
@@ -414,7 +414,7 @@ ${ts}
 export const root = {
     element: "${getRealtiveLocationNs(__RELATIVE_LOCATION, __RELATIVE_LOCATION) + __ROOT_ELEMENT_NAME}",
     type: "${rootTsTypeName}" 
-};
+} as const;
 
 export const ns = new Map<string, string>([
 ${[...__XSDS.entries()]
@@ -467,7 +467,7 @@ export const meta = {
 `;
     type.properties.forEach((p) => {
       const ns = getMetaPropertyNs(__RELATIVE_LOCATION, p);
-      meta += `        "${ns}${p.name}": { type: "${p.metaType.name}", isArray: ${p.isArray} },
+      meta += `        "${ns}${p.name}": { type: "${p.metaType.name}", isArray: ${p.isArray}, fromType: "${p.fromType}", xsdType: "${p.metaType.xsdType}" },
 `;
     });
 
@@ -475,7 +475,7 @@ export const meta = {
 `;
   });
 
-  meta += `}
+  meta += `} as const;
 `;
 
   fs.mkdirSync(path.dirname(__CONVENTIONS.outputFileForGeneratedMeta), { recursive: true });
@@ -591,7 +591,7 @@ function getMetaProperties(
       fromType: metaTypeName,
       name: `@_${a.name}`,
       elem: undefined,
-      metaType: { name: getMetaTypeName(attributeType) },
+      metaType: { name: getMetaTypeName(attributeType), xsdType: attributeType.annotation },
       isArray: false,
       isOptional: a.isOptional,
     });
@@ -622,10 +622,10 @@ function getMetaProperties(
 
       metaProperties.push({
         declaredAt: referencedElement?.declaredAtRelativeLocation,
-        fromType: ct.isAnonymous ? "" : ct.name,
+        fromType: ct.isAnonymous ? "" : metaTypeName,
         name: referencedElement.name,
         elem: referencedElement,
-        metaType: { name: getMetaTypeName(tsType) },
+        metaType: { name: getMetaTypeName(tsType), xsdType: tsType.annotation },
         typeBody: () =>
           getTypeBodyForElementRef(
             __RELATIVE_LOCATION,
@@ -647,13 +647,13 @@ function getMetaProperties(
         fromType: metaTypeName,
         name: e.name,
         elem: undefined, // REALLY?
-        metaType: { name: getMetaTypeName(tsType) },
+        metaType: { name: getMetaTypeName(tsType), xsdType: tsType.annotation },
         typeBody: getTsTypeBody(tsType),
         isArray: e.isArray,
         isOptional: e.isOptional,
       });
     } else if (e.kind === "ofAnonymousType") {
-      const anonymousType = getAnonymousMetaTypeName(e.name, metaTypeName);
+      const anonymousTypeName = getAnonymousMetaTypeName(e.name, metaTypeName);
       const mp = getMetaProperties(
         __RELATIVE_LOCATION,
         __META_TYPE_MAPPING,
@@ -662,12 +662,12 @@ function getMetaProperties(
         __XSDS,
         __NAMED_TYPES_BY_TS_NAME,
         e.anonymousType,
-        anonymousType
+        anonymousTypeName
       );
-      anonymousTypes.push({ name: anonymousType, properties: mp.metaProperties });
+      anonymousTypes.push({ name: anonymousTypeName, properties: mp.metaProperties });
       anonymousTypes.push(...mp.anonymousTypes);
-      __META_TYPE_MAPPING.set(anonymousType, {
-        name: anonymousType,
+      __META_TYPE_MAPPING.set(anonymousTypeName, {
+        name: anonymousTypeName,
         properties: mp.metaProperties,
       });
       metaProperties.push({
@@ -675,7 +675,7 @@ function getMetaProperties(
         fromType: metaTypeName,
         name: e.name,
         elem: undefined, // REALLY?
-        metaType: { name: anonymousType },
+        metaType: { name: anonymousTypeName, xsdType: "Anonymous type..." },
         isArray: e.isArray,
         isOptional: e.isOptional,
       });
@@ -685,13 +685,15 @@ function getMetaProperties(
   }
 
   if (ct.isSimpleContent && ct.childOf) {
+    const t = getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, ct.childOf);
     metaProperties.push({
       declaredAt: ct.declaredAtRelativeLocation,
       fromType: metaTypeName,
       name: `__$$text`,
       elem: undefined,
       metaType: {
-        name: getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, ct.childOf).name,
+        name: t.name,
+        xsdType: t.annotation,
       },
       isArray: false,
       isOptional: false,
@@ -705,8 +707,13 @@ function getMetaProperties(
   let curParentCt = immediateParentType ? __NAMED_TYPES_BY_TS_NAME.get(immediateParentType.name) : undefined;
 
   let needsExtensionType = ct.needsExtensionType;
+
   while (curParentCt) {
     if (curParentCt?.type === "complex") {
+      const curParentCtMetaTypeName = getTsNameFromNamedType(
+        curParentCt.declaredAtRelativeLocation,
+        curParentCt.isAnonymous ? getAnonymousMetaTypeName(curParentCt.forElementWithName, "GLOBAL") : curParentCt.name
+      );
       needsExtensionType = needsExtensionType || curParentCt.needsExtensionType;
       if (curParentCt.isAnonymous) {
         throw new Error("Anonymous types are never parent types.");
@@ -725,10 +732,10 @@ function getMetaProperties(
 
         metaProperties.push({
           declaredAt: curParentCt.declaredAtRelativeLocation,
-          fromType: curParentCt.name,
+          fromType: curParentCtMetaTypeName,
           elem: undefined,
           name: `@_${a.name}`,
-          metaType: { name: getMetaTypeName(attributeType) },
+          metaType: { name: getMetaTypeName(attributeType), xsdType: attributeType.annotation },
           isArray: false,
           isOptional: a.isOptional,
         });
@@ -756,9 +763,9 @@ function getMetaProperties(
           metaProperties.push({
             elem: undefined, // REALLY?
             declaredAt: curParentCt.declaredAtRelativeLocation,
-            fromType: curParentCt.name,
+            fromType: curParentCtMetaTypeName,
             name: e.name,
-            metaType: { name: anonymousTypeName },
+            metaType: { name: anonymousTypeName, xsdType: "Anonumous type..." },
             isArray: e.isArray,
             isOptional: e.isOptional,
           });
@@ -772,10 +779,10 @@ function getMetaProperties(
 
           metaProperties.push({
             declaredAt: curParentCt.declaredAtRelativeLocation,
-            fromType: curParentCt.name,
+            fromType: curParentCtMetaTypeName,
             elem: undefined, // REALLY?
             name: e.name,
-            metaType: { name: getMetaTypeName(tsType) },
+            metaType: { name: getMetaTypeName(tsType), xsdType: tsType.annotation },
             typeBody: getTsTypeBody(tsType),
             isArray: e.isArray,
             isOptional: e.isOptional,
@@ -809,10 +816,10 @@ function getMetaProperties(
 
           metaProperties.push({
             declaredAt: referencedElement?.declaredAtRelativeLocation,
-            fromType: ct.isAnonymous ? "" : ct.name,
+            fromType: ct.isAnonymous ? "" : curParentCtMetaTypeName,
             name: referencedElement.name,
             elem: referencedElement,
-            metaType: { name: getMetaTypeName(tsType) },
+            metaType: { name: getMetaTypeName(tsType), xsdType: tsType.annotation },
             typeBody: () =>
               getTypeBodyForElementRef(
                 __RELATIVE_LOCATION,
@@ -909,7 +916,7 @@ function getTsTypeFromLocalRef(
     }
 
     // found it!
-    return { name: tsTypeName, annotation: `type found from local ref '${localNsName}'.` };
+    return { name: tsTypeName, annotation: `type found from namespace with declaration name '${localNsName}'.` };
   }
 
   // not a reference to a type in another namespace. simply local name.
@@ -954,7 +961,7 @@ function getXptcElementFromLocalElementRef(
   relativeLocation: string,
   localElementRef: string
 ): XptcElement | undefined {
-  // check if it's a local ref to another namespace
+  // check if it's a QName to another namespace
   if (localElementRef.includes(":") && localElementRef.split(":").length === 2) {
     const [localNsName, referencedElementName] = localElementRef.split(":");
     const xmlnsKey = `@_xmlns:${localNsName}`;

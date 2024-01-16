@@ -201,7 +201,7 @@ const renderImportJavaClasses = (selector: string) => {
 };
 
 const getVariables = (xml: string): FeelVariables => {
-  return new FeelVariables(xml);
+  return FeelVariables.fromModelXml(xml);
 };
 
 export { renderBoxedExpressionEditor, renderImportJavaClasses, unmountBoxedExpressionEditor, getVariables };

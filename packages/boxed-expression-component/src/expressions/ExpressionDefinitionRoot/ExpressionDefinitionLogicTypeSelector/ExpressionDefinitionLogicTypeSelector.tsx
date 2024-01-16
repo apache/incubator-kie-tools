@@ -354,6 +354,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     menuIconContainerStyle,
     pasteExpression,
     resetLogicType,
+    isResetSupported,
   ]);
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);

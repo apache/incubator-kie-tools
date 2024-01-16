@@ -12,10 +12,10 @@ id: Expression test
 version: "0.1"
 specVersion: "0.8"
 start: Expression state
-dataInputSchema: "https://raw.githubusercontent.com/kiegroup/kogito-examples/1.36.0.Final/serverless-workflow-examples/serverless-workflow-expression-quarkus/src/main/resources/schema/expression.json"
+dataInputSchema: "https://raw.githubusercontent.com/apache/incubator-kie-kogito-examples/1.36.0.Final/serverless-workflow-examples/serverless-workflow-expression-quarkus/src/main/resources/schema/expression.json"
 functions:
   - name: callBackFunc
-    operation: "https://raw.githubusercontent.com/kiegroup/kogito-examples/1.36.0.Final/serverless-workflow-examples/serverless-workflow-callback-events-over-http-quarkus/callback-workflow/src/main/resources/specs/callback.yaml"
+    operation: "https://raw.githubusercontent.com/apache/incubator-kie-kogito-examples/1.36.0.Final/serverless-workflow-examples/serverless-workflow-callback-events-over-http-quarkus/callback-workflow/src/main/resources/specs/callback.yaml"
     type: rest
   - name: testFunc
     operation: any

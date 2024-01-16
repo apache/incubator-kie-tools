@@ -26,8 +26,7 @@ export function fetchFile(
   repo: string,
   ref: string,
   path: string,
-  contentType?: ContentType,
-  commitSHA?: string
+  contentType?: ContentType
 ) {
   return octokit.repos
     .getContent({
@@ -39,7 +38,7 @@ export function fetchFile(
     .then((res) => (contentType === ContentType.BINARY ? (res.data as any).content : atob((res.data as any).content)))
     .catch((e) => {
       console.debug(`Error fetching ${path} with Octokit. Fallback is 'raw.githubusercontent.com'.`);
-      return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${commitSHA}/${path}`).then((res) =>
+      return fetch(`https://raw.githubusercontent.com/${org}/${repo}/${ref}/${path}`).then((res) =>
         res.ok ? res.text() : Promise.resolve(undefined)
       );
     });

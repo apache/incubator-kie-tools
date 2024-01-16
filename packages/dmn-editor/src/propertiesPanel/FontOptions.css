@@ -1,0 +1,54 @@
+.kie-dmn-editor--font-options-toggle-group {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item {
+  height: 48px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item > button {
+  height: 48px;
+  width: 50px;
+  align-items: center;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item > button > span {
+  font-size: 16px;
+  padding-left: 4px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-italic > button {
+  height: 48px;
+  width: 50px;
+  align-items: center;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-italic > button > span {
+  padding-left: 4px;
+  font-size: 16px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-number-input {
+  height: 48px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-number-input button {
+  height: 48px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-number-input input {
+  height: 48px;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-color-picker > button {
+  height: 48px;
+  width: 50px;
+  align-items: center;
+}
+
+.kie-dmn-editor--font-options-toggle-group-item-color-picker > button > span {
+  font-size: 16px;
+}

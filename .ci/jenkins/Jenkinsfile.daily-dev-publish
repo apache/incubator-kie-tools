@@ -54,7 +54,7 @@ pipeline {
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = 'daily-dev'
         ONLINE_EDITOR__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
-        EXTENDED_SERVICES__kieSandboxUrl = 'https://kiegroup.github.io/kogito-online/dev'
+        EXTENDED_SERVICES__kieSandboxUrl = 'https://apache.github.io/incubator-kie-kogito-online/dev'
 
         KIE_SANDBOX__imageRegistry = 'quay.io'
         KIE_SANDBOX__imageAccount = 'kie-tools'
@@ -174,10 +174,10 @@ pipeline {
                     sh """#!/bin/bash -el
                     export WEBPACK__minimize=true
                     export WEBPACK__tsLoaderTranspileOnly=false
-                    export CHROME_EXTENSION__routerTargetOrigin=https://kiegroup.github.io
-                    export CHROME_EXTENSION__routerRelativePath=kogito-online/dev/editors/
-                    export SWF_CHROME_EXTENSION__routerTargetOrigin=https://kiegroup.github.io
-                    export SWF_CHROME_EXTENSION__routerRelativePath=kogito-online/dev/editors/
+                    export CHROME_EXTENSION__routerTargetOrigin=https://apache.github.io
+                    export CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online/dev/editors/
+                    export SWF_CHROME_EXTENSION__routerTargetOrigin=https://apache.github.io
+                    export SWF_CHROME_EXTENSION__routerRelativePath=incubator-kie-kogito-online/dev/editors/
                     export ONLINE_EDITOR__extendedServicesDownloadUrlLinux=https://github.com/apache/incubator-kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_linux_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.tar.gz
                     export ONLINE_EDITOR__extendedServicesDownloadUrlMacOs=https://github.com/apache/incubator-kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_macos_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.dmg
                     export ONLINE_EDITOR__extendedServicesDownloadUrlWindows=https://github.com/apache/incubator-kie-tools/releases/download/${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}/kie_sandbox_extended_services_windows_${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}.exe
@@ -374,55 +374,26 @@ pipeline {
                 dir('kogito-online') {
                     script {
                         githubUtils.checkoutRepo(
-                            'https://github.com/kiegroup/kogito-online.git',
+                            'https://github.com/apache/incubator-kie-kogito-online.git',
                             'gh-pages',
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
 
                         sh """#!/bin/bash -el
-                        git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
+                        git config user.email asf-ci-kie@jenkins.kie.apache.org
+                        git config user.name asf-ci-kie
                         git checkout gh-pages
                         rm -rf dev && mkdir -p dev/editors
-                        cp -RL ../kie-tools/packages/stunner-editors/dist/dmn dev/editors/
-                        cp -RL ../kie-tools/packages/stunner-editors/dist/bpmn dev/editors/
-                        cp -RL ../kie-tools/packages/stunner-editors/dist/scesim dev/editors/
-                        cp -r ../kie-tools/packages/online-editor/dist/* dev/
+                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/dmn dev/editors/
+                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/bpmn dev/editors/
+                        cp -RL ${WORKSPACE}/kie-tools/packages/stunner-editors/dist/scesim dev/editors/
+                        cp -r ${WORKSPACE}/kie-tools/packages/online-editor/dist/* dev/
                         rm -rf dev/gwt-editors
                         ln -s editors dev/gwt-editors
                         git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
                         """.trim()
 
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/kogito-online.git gh-pages')
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Update serverless-logic-sandbox-deployment') {
-            steps {
-                dir('serverless-logic-sandbox-deployment') {
-                    script {
-                        githubUtils.checkoutRepo(
-                            'https://github.com/kiegroup/serverless-logic-sandbox-deployment.git',
-                            'gh-pages',
-                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                        )
-
-                        sh """#!/bin/bash -el
-                        git config --global user.email 'kietoolsbot@gmail.com'
-                        git config --global user.name 'Apache KIE Tools Bot (kiegroup)'
-                        git checkout gh-pages
-                        rm -rf dev && mkdir dev
-                        cp -r ../kie-tools/packages/serverless-logic-web-tools/dist/* dev/
-                        git add . && git commit -m "Apache KIE Tools Daily Dev Build resources - ${env.BUILD_DATE}" || echo 'No changes.'
-                        """.trim()
-
-                        withCredentials([usernamePassword(credentialsId: "${pipelineVars.kieToolsBotGithubCredentialsId}", usernameVariable: 'GH_USER', passwordVariable: 'GH_PASSWORD')]) {
-                            sh('set +x && git push https://$GH_USER:$GH_PASSWORD@github.com/kiegroup/serverless-logic-sandbox-deployment.git gh-pages')
-                        }
+                        githubUtils.pushObject('origin', 'gh-pages', "${pipelineVars.asfGithubPushCredentialsId}")
                     }
                 }
             }

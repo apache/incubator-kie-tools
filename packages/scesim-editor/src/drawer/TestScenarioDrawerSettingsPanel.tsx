@@ -26,8 +26,8 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { TestScenarioSettings, TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
+import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/esm/components/Icon/Icon";
-import { InfoCircleIcon } from "@patternfly/react-icons/dist/esm/icons/info-circle-icon";
 import { Tooltip } from "@patternfly/react-core/dist/esm/components/Tooltip";
 
 import "./TestScenarioDrawerSettingsPanel.css";
@@ -98,7 +98,7 @@ function TestScenarioDrawerSettingsPanel({
             {i18n.drawer.settings.kieSessionRule}
             <Tooltip content={i18n.drawer.settings.kieSessionRuleTooltip}>
               <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
-                <InfoCircleIcon />
+                <HelpIcon />
               </Icon>
             </Tooltip>
           </Title>
@@ -113,7 +113,7 @@ function TestScenarioDrawerSettingsPanel({
             {i18n.drawer.settings.ruleFlowGroup}
             <Tooltip content={i18n.drawer.settings.ruleFlowGroupTooltip}>
               <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
-                <InfoCircleIcon />
+                <HelpIcon />
               </Icon>
             </Tooltip>
           </Title>
@@ -135,7 +135,7 @@ function TestScenarioDrawerSettingsPanel({
             </div>
             <Tooltip content={i18n.drawer.settings.statelessSessionRuleTooltip}>
               <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
-                <InfoCircleIcon />
+                <HelpIcon />
               </Icon>
             </Tooltip>
           </div>
@@ -152,7 +152,7 @@ function TestScenarioDrawerSettingsPanel({
         </div>
         <Tooltip content={i18n.drawer.settings.testSkippedTooltip}>
           <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
-            <InfoCircleIcon />
+            <HelpIcon />
           </Icon>
         </Tooltip>
       </div>

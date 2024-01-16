@@ -28,6 +28,7 @@ import {
 } from "../../i18n";
 import { ExpressionDefinitionRoot } from "../ExpressionDefinitionRoot";
 import "./base-no-reset-wrapped.css";
+import "../../@types/react-table";
 import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 

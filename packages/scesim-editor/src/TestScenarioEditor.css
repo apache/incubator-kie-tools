@@ -17,6 +17,10 @@
  * under the License.
  */
 
+.kie-scesim-editor--background-table-container {
+  overflow-x: auto;
+}
+
 .kie-scesim-editor--content {
   padding-right: 50px;
   height: 100%;
@@ -37,4 +41,8 @@
 
 .kie-scesim-editor--grid-container {
   height: 100%;
+}
+
+.kie-scesim-editor--scenario-table-container {
+  overflow-x: auto;
 }

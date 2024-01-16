@@ -32,6 +32,7 @@ import {
   ExpressionDefinitionLogicType,
   generateUuid,
   getNextAvailablePrefixedName,
+  InsertRowColumnsDirection,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -42,7 +43,7 @@ import {
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableSelectableCellRef, useBeeTableCoordinates } from "../../selection/BeeTableSelectionContext";
+import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -66,6 +67,7 @@ export function ContextExpression(
   }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
+  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const { variables } = useBoxedExpressionEditor();
 
@@ -139,10 +141,10 @@ export function ContextExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: contextExpression.id as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: contextExpression.name ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
-        dataType: contextExpression.dataType ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
+        dataType: contextExpression.dataType,
         width: undefined,
         columns: [
           {
@@ -166,7 +168,7 @@ export function ContextExpression(
         ],
       },
     ];
-  }, [contextExpression.id, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
+  }, [decisionNodeId, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
 
   const onColumnUpdates = useCallback(
     ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
@@ -253,7 +255,7 @@ export function ContextExpression(
       return {
         entryInfo: {
           id: generateUuid(),
-          dataType: DmnBuiltInDataType.Undefined,
+          dataType: CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
           name:
             name ||
             getNextAvailablePrefixedName(
@@ -264,7 +266,7 @@ export function ContextExpression(
         entryExpression: {
           id: generateUuid(),
           logicType: ExpressionDefinitionLogicType.Undefined,
-          dataType: DmnBuiltInDataType.Undefined,
+          dataType: CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
         },
       };
     },
@@ -304,13 +306,28 @@ export function ContextExpression(
   );
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
       setExpression((prev: ContextExpressionDefinition) => {
         const newContextEntries = [...(prev.contextEntries ?? [])];
-        const defaultContextEntry = getDefaultContextEntry();
-        addVariable(args, newContextEntries, prev, defaultContextEntry);
 
-        newContextEntries.splice(args.beforeIndex, 0, defaultContextEntry);
+        const newEntries = [];
+        const names = contextExpression.contextEntries.map((e) => e.entryInfo.name);
+        for (let i = 0; i < args.rowsCount; i++) {
+          const name = getNextAvailablePrefixedName(names, "ContextEntry");
+          names.push(name);
+
+          const defaultContextEntry = getDefaultContextEntry(name);
+          addVariable(args, newContextEntries, prev, defaultContextEntry);
+          newEntries.push(defaultContextEntry);
+        }
+
+        for (const newEntry of newEntries) {
+          let index = args.beforeIndex;
+          newContextEntries.splice(index, 0, newEntry);
+          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+            index++;
+          }
+        }
 
         return {
           ...prev,
@@ -318,7 +335,7 @@ export function ContextExpression(
         };
       });
     },
-    [addVariable, getDefaultContextEntry, setExpression]
+    [addVariable, contextExpression.contextEntries, getDefaultContextEntry, setExpression]
   );
 
   const onRowDeleted = useCallback(
@@ -449,7 +466,7 @@ export function ContextResultInfoCell() {
 
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject("");
+      beeGwtService?.selectObject(""); // FIXME: Tiago --> This should actually be the id of the parent expression, as the <result> of a context follows its parent's data type.
     }
   }, [beeGwtService, isActive]);
 

@@ -23,6 +23,7 @@ import {
   extractOpenFileExtension,
   extractOpenFilePath,
   iframeFullscreenContainer,
+  openRepoInExternalEditorContainer,
   removeAllChildren,
   waitForElementToBeReady,
 } from "../../utils";
@@ -35,6 +36,8 @@ import { KOGITO_IFRAME_CONTAINER_CLASS, KOGITO_TOOLBAR_CONTAINER_CLASS } from ".
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "../common/GlobalContext";
+import { OpenInExternalEditorButton } from "../openRepoInExternalEditor/OpenInExternalEditorButton";
+import { GitHubPageType } from "../../github/GitHubPageType";
 
 export interface FileInfo {
   repo: string;
@@ -43,7 +46,9 @@ export interface FileInfo {
   gitRef: string;
 }
 
-export async function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: FileInfo }) {
+export async function renderSingleEditorReadonlyApp(
+  args: Globals & { className: string; pageType: GitHubPageType; container: () => HTMLElement; fileInfo: FileInfo }
+) {
   // wait for the dom element to be ready before rendering
   await waitForElementToBeReady("textarea[id='read-only-cursor-text-area']");
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
@@ -80,6 +85,10 @@ export async function renderSingleEditorReadonlyApp(args: Globals & { fileInfo: 
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
+      {ReactDOM.createPortal(
+        <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
+        openRepoInExternalEditorContainer(args.id, args.container())
+      )}
       <SingleEditorViewApp fileInfo={args.fileInfo} openFileExtension={openFileExtension} />
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()!),
@@ -99,7 +108,7 @@ function SingleEditorViewApp(props: { fileInfo: FileInfo; openFileExtension: str
         props.fileInfo.gitRef,
         props.fileInfo.path
       ),
-    []
+    [githubApi, props.fileInfo.gitRef, props.fileInfo.org, props.fileInfo.path, props.fileInfo.repo]
   );
   const getFileName = useCallback(() => {
     return decodeURIComponent(props.fileInfo.path.split("/").pop()!);

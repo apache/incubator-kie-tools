@@ -46,6 +46,7 @@ import {
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   NestedExpressionDispatchContextProvider,
+  useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
@@ -60,6 +61,7 @@ export function FeelFunctionExpression({
   functionExpression: FeelFunctionExpressionDefinition & { isNested: boolean; parentElementId: string };
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
+  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameters);
@@ -68,8 +70,8 @@ export function FeelFunctionExpression({
     return [
       {
         label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: functionExpression.id as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        dataType: functionExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
@@ -84,7 +86,7 @@ export function FeelFunctionExpression({
         ],
       },
     ];
-  }, [functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
+  }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
 
   const headerVisibility = useMemo(() => {
     return functionExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;

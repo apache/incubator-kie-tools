@@ -31,7 +31,6 @@ import {
 
 import { FeelSyntacticSymbolNature, FeelVariables, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
 import { Element } from "./themes/Element";
-import * as monaco from "monaco-editor";
 
 export const EXPRESSION_PROPERTIES_SEPARATOR = ".";
 
@@ -249,22 +248,60 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
             if (feelVariables) {
               const text = model.getValue();
-
-              let lastPosition = 0;
-              let offset = 0;
+              const contentByLines = model.getLinesContent();
+              let startOfPreviousToken = 0;
+              let previousLine = 0;
+              let lineOffset = 0;
+              let currentLine = 0;
               const parsedExpression = feelVariables.parser.parse(expressionId ?? "", text);
               setCurrentParsedExpression(parsedExpression);
-              for (const variable of parsedExpression.feelVariables) {
-                lastPosition = variable.startIndex;
 
-                tokenTypes.push(
-                  0, // lineIndex
-                  lastPosition - offset, // columnIndex (it's relative to the PREVIOUS token NOT to the start of the line)
-                  variable.length, // tokenLength
-                  getTokenTypeIndex(variable.feelSymbolNature), // token type
-                  0 // token modifier
-                );
-                offset = lastPosition;
+              for (const variable of parsedExpression.feelVariables) {
+                if (variable.startLine != currentLine) {
+                  lineOffset += contentByLines[currentLine].length + 1; // +1 = the line break
+                  currentLine = variable.startLine;
+                }
+                variable.startIndex -= lineOffset;
+              }
+
+              for (const variable of parsedExpression.feelVariables) {
+                if (previousLine != variable.startLine) {
+                  startOfPreviousToken = 0;
+                }
+                if (variable.startLine === variable.endLine) {
+                  tokenTypes.push(
+                    variable.startLine - previousLine, // lineIndex = relative to the PREVIOUS line
+                    variable.startIndex - startOfPreviousToken, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
+                    variable.length,
+                    getTokenTypeIndex(variable.feelSymbolNature),
+                    0 // token modifier = not used so we keep it 0
+                  );
+
+                  previousLine = variable.startLine;
+                  startOfPreviousToken = variable.startIndex;
+                } else {
+                  tokenTypes.push(
+                    variable.startLine - previousLine,
+                    variable.startIndex - startOfPreviousToken,
+                    variable.length,
+                    getTokenTypeIndex(variable.feelSymbolNature),
+                    0
+                  );
+
+                  const length =
+                    variable.length - (contentByLines[variable.startLine].length - variable.startIndex + 1); // +1 = the line break
+
+                  tokenTypes.push(
+                    variable.endLine - variable.startLine,
+                    0,
+                    length,
+                    getTokenTypeIndex(variable.feelSymbolNature),
+                    0
+                  );
+
+                  startOfPreviousToken = 0;
+                  previousLine = variable.endLine;
+                }
               }
             }
 

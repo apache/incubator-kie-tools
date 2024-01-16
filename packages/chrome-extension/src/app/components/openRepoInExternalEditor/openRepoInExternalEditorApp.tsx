@@ -20,15 +20,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Globals, Main } from "../common/Main";
-import { createAndGetMainContainer, openRepoInExternalEditorContainer, removeAllChildren } from "../../utils";
+import {
+  createAndGetMainContainer,
+  openRepoInExternalEditorContainer,
+  openRepoInExternalEditorContainerFromRepositoryHome,
+  removeAllChildren,
+} from "../../utils";
 import { OpenInExternalEditorButton } from "./OpenInExternalEditorButton";
 import { GitHubPageType } from "../../github/GitHubPageType";
-import {
-  KOGITO_IFRAME_CONTAINER_PR_CLASS,
-  KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS,
-  KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
-  KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS,
-} from "../../constants";
+import { KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS } from "../../constants";
 
 export function renderOpenRepoInExternalEditorApp(
   args: Globals & { className: string; pageType: GitHubPageType; container: () => HTMLElement }
@@ -50,7 +50,9 @@ export function renderOpenRepoInExternalEditorApp(
     >
       {ReactDOM.createPortal(
         <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
-        openRepoInExternalEditorContainer(args.id, args.container())
+        GitHubPageType.REPO_HOME === args.pageType
+          ? openRepoInExternalEditorContainerFromRepositoryHome(args.id, args.container())
+          : openRepoInExternalEditorContainer(args.id, args.container())
       )}
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()),

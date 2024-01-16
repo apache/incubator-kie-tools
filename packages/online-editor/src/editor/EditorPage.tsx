@@ -23,7 +23,7 @@ import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { EditorToolbar } from "./Toolbar/EditorToolbar";
 import { useOnlineI18n } from "../i18n";
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, DEFAULT_WORKING_DIR_BASE_PATH } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -48,7 +48,10 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer } from "./EditorPageDockDrawer";
 import { DmnRunnerContextProvider } from "../dmnRunner/DmnRunnerContextProvider";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import {
+  LEGACY_DMN_EDITOR_EDITOR_CONFIG,
+  useEditorEnvelopeLocator,
+} from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { usePreviewSvgs } from "../previewSvgs/PreviewSvgsContext";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
@@ -58,6 +61,9 @@ import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-co
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useEnv } from "../env/hooks/EnvContext";
+import { useSettings } from "../settings/SettingsContext";
+import { EditorEnvelopeLocatorFactory } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
+import { relative } from "path";
 
 export interface Props {
   workspaceId: string;
@@ -293,11 +299,11 @@ export function EditorPage(props: Props) {
   }, [alertsDispatch]);
 
   const handleOpenFile = useCallback(
-    async (relativePath: string) => {
+    async (absolutePath: string) => {
       if (!workspaceFilePromise.data) {
         return;
       }
-
+      const relativePath = relative(DEFAULT_WORKING_DIR_BASE_PATH, absolutePath);
       const file = await workspaces.getFile({
         workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
         relativePath,
@@ -335,21 +341,23 @@ export function EditorPage(props: Props) {
     }
 
     return new DmnLanguageService({
-      getDmnImportedModel: async (importedModelRelativePath: string) => {
+      getModelXml: async (args) => {
         try {
-          const fileContent = await workspaces.getFileContent({
-            workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
-            relativePath: importedModelRelativePath,
-          });
-
-          return { content: decoder.decode(fileContent), relativePath: importedModelRelativePath };
+          return decoder.decode(
+            await workspaces.getFileContent({
+              workspaceId: workspaceFilePromise.data?.workspaceFile.workspaceId,
+              relativePath: args.normalizedPosixPathRelativeToTheWorkspaceRoot,
+            })
+          );
         } catch (err) {
-          console.debug("ERROR: DmnLanguageService.getImportedModel: ", err);
-          return undefined;
+          throw new Error(`
+KIE SANDBOX - DmnLanguageService - getModelXml: Error on getFileContent.
+Tried to open path: ${args.normalizedPosixPathRelativeToTheWorkspaceRoot}
+Error details: ${err}`);
         }
       },
     });
-  }, [workspaces, workspaceFilePromise.data?.workspaceFile]);
+  }, [workspaceFilePromise.data?.workspaceFile, workspaces]);
 
   const onKeyDown = useCallback(
     (ke: React.KeyboardEvent) => {
@@ -387,6 +395,53 @@ export function EditorPage(props: Props) {
       </div>
     ),
     [i18n]
+  );
+
+  const { settings } = useSettings();
+
+  const settingsAwareEditorEnvelopeLocator = useMemo(() => {
+    if (settings.editors.useLegacyDmnEditor && props.fileRelativePath.endsWith(".dmn")) {
+      return new EditorEnvelopeLocatorFactory().create({
+        targetOrigin: window.location.origin,
+        editorsConfig: [LEGACY_DMN_EDITOR_EDITOR_CONFIG],
+      });
+    }
+
+    return editorEnvelopeLocator;
+  }, [editorEnvelopeLocator, props.fileRelativePath, settings.editors.useLegacyDmnEditor]);
+
+  // `workspaceFilePromise` is ONLY updated when there's an external change on this file (e.g., on another tab), but
+  // when we jump between the legacy and the new DMN Editor, `settingsAwareEditorEnvelopeLocator` changes,
+  // and if we don't update `embeddedEditorFile`, the new <EmbeddedEditor> will be rendered using the `embeddedEditorFile`
+  // that originally was used for opening the file, and the new chosen DMN Editor will display stale content.
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        workspaceFilePromise.data?.workspaceFile.getFileContentsAsString().then((content) => {
+          if (canceled.get()) {
+            return;
+          }
+
+          setEmbeddedEditorFile((prev) =>
+            !prev
+              ? undefined
+              : {
+                  ...prev,
+                  getFileContents: async () => content,
+                }
+          );
+        });
+      },
+      //
+      // This is a very unusual case.
+      // `workspaceFilePromise.data` should've been here, but we can't really add it otherwise
+      // the <EmbeddedEditor> component will blink on any edit.
+      // `settingsAwareEditorEnvelopeLocator` is added because it is the only case where the
+      // <EmbeddedEditor> should update for the same workspaceFile.
+      //
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [settingsAwareEditorEnvelopeLocator]
+    )
   );
 
   return (
@@ -439,9 +494,10 @@ export function EditorPage(props: Props) {
                             kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
                             kogitoWorkspace_resourceListRequest={handleResourceListRequest}
                             kogitoEditor_setContentError={handleSetContentError}
-                            editorEnvelopeLocator={editorEnvelopeLocator}
+                            editorEnvelopeLocator={settingsAwareEditorEnvelopeLocator}
                             channelType={ChannelType.ONLINE_MULTI_FILE}
                             locale={locale}
+                            workingDirBasePath={""}
                           />
                         )}
                       </EditorPageDockDrawer>

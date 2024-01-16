@@ -21,7 +21,7 @@
 * @return String with the release information
 */
 def createRelease(String repository, String name, String tag, String commit, Boolean draft, Boolean preRelease, String credentialsId) {
-    withCredentials([string(credentialsId: credentialsId, variable: 'GITHUB_TOKEN')]) {
+    withCredentials([string(credentialsId: "${credentialsId}", variable: 'GITHUB_TOKEN')]) {
         response = sh returnStdout: true, script: """
         set +x
         curl -L \
@@ -43,7 +43,7 @@ def createRelease(String repository, String name, String tag, String commit, Boo
 * @return String with the release information
 */
 def fetchRelease(String repository, String tag, String credentialsId) {
-    withCredentials([string(credentialsId: credentialsId, variable: 'GITHUB_TOKEN')]) {
+    withCredentials([string(credentialsId: "${credentialsId}", variable: 'GITHUB_TOKEN')]) {
         response = sh returnStdout: true, script: """
         set +x
         curl -L \
@@ -63,7 +63,7 @@ def fetchRelease(String repository, String tag, String credentialsId) {
 * @return String with the release asset information
 */
 def uploadReleaseAsset(String uploadUrl, String assetPath, String assetName, String assetContentType, String credentialsId) {
-    withCredentials([string(credentialsId: credentialsId, variable: 'GITHUB_TOKEN')]) {
+    withCredentials([string(credentialsId: "${credentialsId}", variable: 'GITHUB_TOKEN')]) {
         response = sh returnStdout: true, script: """
         set +x
         curl -L \
@@ -74,26 +74,6 @@ def uploadReleaseAsset(String uploadUrl, String assetPath, String assetName, Str
         -H "Content-Type: ${assetContentType}" \
         "${uploadUrl}?name=${assetName}" \
         --data-binary "@${assetPath}"
-        """.trim()
-
-        return response
-    }
-}
-
-/**
-* Set build status
-*/
-def commitStatus(String repository, String commit, String context, String state, String jobUrl) {
-    withCredentials([string(credentialsId: credentialsId, variable: 'GITHUB_TOKEN')]) {
-        response = sh returnStdout: true, script: """
-        set +x
-        curl -L \
-        -X POST \
-        -H "Accept: application/vnd.github+json" \
-        -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        https://api.github.com/repos/${repository}/statuses/${commit} \
-        -d '{"state":"${state}","target_url":"${jobUrl}","description":"${message}","context":"${context}"}'
         """.trim()
 
         return response
@@ -143,6 +123,16 @@ def checkoutRepoSquashedMerge(String author, String branch, String url, String t
         squashedMerge(author, branch, url)
     } else {
         echo 'Skip squashed merge, not a pull request'
+    }
+}
+
+/**
+* Pushes a git object to a remote repo
+*/
+def pushObject(String remote, String object, String credentialsId) {
+    withCredentials([usernamePassword(credentialsId: "${credentialsId}", usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+        sh("git config --local credential.helper \"!f() { echo username=\\$GITHUB_USER; echo password=\\$GITHUB_TOKEN; }; f\"")
+        sh("git push ${remote} ${object}")
     }
 }
 

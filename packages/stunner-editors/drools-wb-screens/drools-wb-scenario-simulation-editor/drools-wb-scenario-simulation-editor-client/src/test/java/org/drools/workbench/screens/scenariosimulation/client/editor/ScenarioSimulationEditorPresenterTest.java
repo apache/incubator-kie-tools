@@ -192,24 +192,22 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     }
 
     @Test
-    public void showDocks_PlaceStatusOpen() {
-        presenterSpy.showDocks();
+    public void initializeDocks_PlaceStatusOpen() {
+        presenterSpy.initializeDocks();
         verify(abstractScenarioSimulationDocksHandlerMock, times(1)).addDocks();
         verify(abstractScenarioSimulationDocksHandlerMock, times(1)).setScesimEditorId(String.valueOf(presenterSpy.scenarioPresenterId));
         verify(presenterSpy, times(1)).registerTestToolsCallback();
         verify(presenterSpy, times(1)).resetDocks();
-        verify(presenterSpy, times(1)).populateRightDocks(TestToolsPresenter.IDENTIFIER);
     }
 
     @Test
-    public void showDocks_PlaceStatusClose() {
-        presenterSpy.showDocks();
+    public void initializeDocks_PlaceStatusClose() {
+        presenterSpy.initializeDocks();
         verify(abstractScenarioSimulationDocksHandlerMock, times(1)).addDocks();
         verify(abstractScenarioSimulationDocksHandlerMock, times(1)).setScesimEditorId(String.valueOf(presenterSpy.scenarioPresenterId));
         verify(presenterSpy, times(1)).expandToolsDock();
         verify(presenterSpy, times(1)).registerTestToolsCallback();
         verify(presenterSpy, times(1)).resetDocks();
-        verify(presenterSpy, times(1)).populateRightDocks(TestToolsPresenter.IDENTIFIER);
     }
 
     @Test
@@ -536,6 +534,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     public void getModelSuccessCallbackMethod() {
         scenarioGridWidgetSpy.selectAndFocus();
         presenterSpy.getModelSuccessCallbackMethod(dataManagementStrategyMock, modelLocal);
+        verify(presenterSpy, times(1)).initializeDocks();
         verify(presenterSpy, times(1)).populateRightDocks(TestToolsPresenter.IDENTIFIER);
         verify(presenterSpy, times(1)).populateRightDocks(SettingsPresenter.IDENTIFIER);
         verify(scenarioGridWidgetSpy, times(1)).setContent(modelLocal.getSimulation(), settingsLocal.getType());

@@ -32,7 +32,7 @@ export function PrEditorsApp(props: { prInfo: PrInfo }) {
 
   useEffect(() => {
     setPrFileContainers(supportedPrFileElements(globals.logger, globals.envelopeLocator, globals.dependencies));
-  }, []);
+  }, [globals.dependencies, globals.envelopeLocator, globals.logger]);
 
   useEffect(() => {
     const observer = new MutationObserver((mutations) => {
@@ -59,7 +59,7 @@ export function PrEditorsApp(props: { prInfo: PrInfo }) {
     return () => {
       observer.disconnect();
     };
-  }, [prFileContainers]);
+  }, [globals.dependencies, globals.envelopeLocator, globals.logger, prFileContainers]);
 
   return (
     <>
