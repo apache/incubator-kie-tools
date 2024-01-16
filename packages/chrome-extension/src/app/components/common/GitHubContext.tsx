@@ -62,7 +62,7 @@ export const GitHubContextProvider: React.FC<{}> = (props) => {
 
   const userIsLoggedIn = useCallback(() => {
     return !!globals.dependencies.all.notificationIndicator();
-  }, []);
+  }, [globals.dependencies.all]);
 
   const octokit = useCallback(() => {
     return octokitInstance;
@@ -77,7 +77,7 @@ export const GitHubContextProvider: React.FC<{}> = (props) => {
       console.debug("Token not found.");
     }
     setReady(true);
-  }, []);
+  }, [token]);
 
   useLayoutEffect(() => {
     if (!token) {
@@ -87,7 +87,7 @@ export const GitHubContextProvider: React.FC<{}> = (props) => {
       setCookie(globals.githubAuthTokenCookieName, token);
       octokitInstance = new Octokit({ auth: token });
     }
-  }, [token]);
+  }, [globals.githubAuthTokenCookieName, token]);
 
   return (
     <GitHubContext.Provider value={{ token, setToken, octokit, userIsLoggedIn }}>

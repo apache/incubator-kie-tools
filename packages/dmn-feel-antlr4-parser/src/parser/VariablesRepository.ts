@@ -17,18 +17,20 @@
  * under the License.
  */
 
-import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { DataType } from "./DataType";
 import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 import { VariableContext } from "./VariableContext";
 import {
   DMN15__tBusinessKnowledgeModel,
+  DMN15__tConditional,
   DMN15__tContext,
   DMN15__tContextEntry,
   DMN15__tDecision,
   DMN15__tDecisionService,
   DMN15__tDecisionTable,
   DMN15__tDefinitions,
+  DMN15__tFilter,
+  DMN15__tFor,
   DMN15__tFunctionDefinition,
   DMN15__tInformationRequirement,
   DMN15__tInputData,
@@ -37,15 +39,11 @@ import {
   DMN15__tKnowledgeRequirement,
   DMN15__tList,
   DMN15__tLiteralExpression,
+  DMN15__tQuantified,
   DMN15__tRelation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-
-import {
-  DMN14__tConditional,
-  DMN14__tFilter,
-  DMN14__tFor,
-  DMN14__tQuantified,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { Expression } from "./VariableOccurrence";
+import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 
 type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN15__tLiteralExpression;
 type DmnInvocation = { __$$element: "invocation" } & DMN15__tInvocation;
@@ -56,16 +54,16 @@ type DmnRelation = { __$$element: "relation" } & DMN15__tRelation;
 type DmnList = { __$$element: "list" } & DMN15__tList;
 type DmnKnowledgeRequirement = DMN15__tKnowledgeRequirement;
 
-type UnsupportedDmn14Types =
-  | ({ __$$element: "for" } & DMN14__tFor)
-  | ({ __$$element: "every" } & DMN14__tQuantified)
-  | ({ __$$element: "some" } & DMN14__tQuantified)
-  | ({ __$$element: "conditional" } & DMN14__tConditional)
-  | ({ __$$element: "filter" } & DMN14__tFilter);
+type UnsupportedDmnExpressions =
+  | ({ __$$element: "for" } & DMN15__tFor)
+  | ({ __$$element: "every" } & DMN15__tQuantified)
+  | ({ __$$element: "some" } & DMN15__tQuantified)
+  | ({ __$$element: "conditional" } & DMN15__tConditional)
+  | ({ __$$element: "filter" } & DMN15__tFilter);
 
 type DmnDecisionNode = { __$$element: "decision" } & DMN15__tDecision;
 type DmnBusinessKnowledgeModel = DMN15__tBusinessKnowledgeModel;
-type DmnDefinitions = DMN15__tDefinitions;
+export type DmnDefinitions = DMN15__tDefinitions;
 type DmnItemDefinition = DMN15__tItemDefinition;
 type DmnContextEntry = DMN15__tContextEntry;
 type DmnInputData = DMN15__tInputData;
@@ -74,12 +72,21 @@ type DmnDecisionService = DMN15__tDecisionService;
 
 export class VariablesRepository {
   private readonly variablesIndexedByUuid: Map<string, VariableContext>;
+  private readonly expressionsIndexedByUuid: Map<string, Expression>;
   private readonly dataTypes: Map<string, DataType>;
+  private currentVariablePrefix: string;
+  private currentUuidPrefix: string;
 
-  constructor(modelXml: string) {
+  constructor(dmnDefinitions: DmnDefinitions, externalDefinitions: Map<string, DmnLatestModel>) {
     this.dataTypes = new Map<string, DataType>();
     this.variablesIndexedByUuid = new Map<string, VariableContext>();
-    this.loadVariables(modelXml);
+    this.expressionsIndexedByUuid = new Map<string, Expression>();
+    this.loadImportedVariables(dmnDefinitions, externalDefinitions);
+
+    this.currentVariablePrefix = "";
+    this.currentUuidPrefix = "";
+
+    this.loadVariables(dmnDefinitions);
   }
 
   get variables(): Map<string, VariableContext> {
@@ -93,9 +100,17 @@ export class VariablesRepository {
     }
   }
 
+  get expressions(): Map<string, Expression> {
+    return this.expressionsIndexedByUuid;
+  }
+
   public renameVariable(variableUuid: string, newName: string) {
     const variableContext = this.variablesIndexedByUuid.get(variableUuid);
     if (variableContext) {
+      for (const expression of variableContext.variable.expressions.values()) {
+        expression.renameVariable(variableContext.variable, newName);
+      }
+
       variableContext.variable.value = newName;
     }
   }
@@ -107,6 +122,7 @@ export class VariablesRepository {
         value: variableName,
         feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
         typeRef: undefined,
+        expressions: new Map<string, Expression>(),
       };
 
       const newContext = {
@@ -150,22 +166,6 @@ export class VariablesRepository {
         }
       }
       this.variablesIndexedByUuid.delete(variableUuid);
-    }
-  }
-
-  private loadVariables(xml: string) {
-    const marshaller = getMarshaller(xml);
-    switch (marshaller.version) {
-      case "1.0":
-      case "1.1":
-        throw new Error("DMN file version not supported: " + marshaller.version);
-
-      case "1.2":
-      case "1.3":
-      case "1.4":
-        const definitions = marshaller.parser.parse().definitions;
-        this.createDataTypes(definitions);
-        this.createVariables(definitions);
     }
   }
 
@@ -290,9 +290,15 @@ export class VariablesRepository {
     parent?: VariableContext,
     typeRef?: string
   ) {
-    const node = this.createVariableNode(uuid, name, variableType, parent, typeRef);
+    const node = this.createVariableNode(
+      this.buildVariableUuid(uuid),
+      this.buildName(name),
+      variableType,
+      parent,
+      typeRef
+    );
 
-    this.variablesIndexedByUuid.set(uuid, node);
+    this.variablesIndexedByUuid.set(this.buildVariableUuid(uuid), node);
 
     return node;
   }
@@ -313,6 +319,7 @@ export class VariablesRepository {
         value: name,
         feelSyntacticSymbolNature: variableType,
         typeRef: this.getTypeRef(typeRef),
+        expressions: new Map<string, Expression>(),
       },
     };
   }
@@ -323,7 +330,7 @@ export class VariablesRepository {
 
   private createDataType(itemDefinition: DmnItemDefinition) {
     return {
-      name: itemDefinition["@_name"],
+      name: this.buildName(itemDefinition["@_name"]),
       properties: new Map<string, DataType>(),
       typeRef: itemDefinition["typeRef"]?.__$$text ?? itemDefinition["@_name"],
     };
@@ -354,7 +361,10 @@ export class VariablesRepository {
   }
 
   private addLiteralExpression(parent: VariableContext, element: DmnLiteralExpression) {
-    this.addVariable(element["@_id"] ?? "", "", FeelSyntacticSymbolNature.LocalVariable, parent);
+    const id = element["@_id"] ?? "";
+    const expression = new Expression(id, element.text?.__$$text);
+    this.expressionsIndexedByUuid.set(id, expression);
+    this.addVariable(id, "", FeelSyntacticSymbolNature.LocalVariable, parent);
   }
 
   private addInvocation(parent: VariableContext, element: DmnInvocation) {
@@ -454,7 +464,9 @@ export class VariablesRepository {
   private addList(parent: VariableContext, element: DmnList) {
     if (element.expression) {
       for (const expression of element.expression) {
-        this.addInnerExpression(parent, expression);
+        if (expression) {
+          this.addInnerExpression(parent, expression);
+        }
       }
     }
   }
@@ -469,7 +481,7 @@ export class VariablesRepository {
       | DmnFunctionDefinition
       | DmnRelation
       | DmnList
-      | UnsupportedDmn14Types
+      | UnsupportedDmnExpressions
   ) {
     switch (expression.__$$element) {
       case "literalExpression":
@@ -516,6 +528,42 @@ export class VariablesRepository {
   private addInputVariableFromKnowledge(parent: VariableContext, knowledgeRequirement: DmnKnowledgeRequirement) {
     if (knowledgeRequirement.requiredKnowledge) {
       parent.inputVariables.push(knowledgeRequirement.requiredKnowledge["@_href"]?.replace("#", ""));
+    }
+  }
+
+  private buildVariableUuid(uuid: string) {
+    if (this.currentUuidPrefix.length != 0) {
+      return this.currentUuidPrefix + uuid;
+    }
+
+    return uuid;
+  }
+
+  private buildName(name: string) {
+    if (this.currentVariablePrefix.length != 0) {
+      return this.currentVariablePrefix + "." + name;
+    }
+
+    return name;
+  }
+
+  private loadVariables(dmnDefinitions: DmnDefinitions) {
+    this.createDataTypes(dmnDefinitions);
+    this.createVariables(dmnDefinitions);
+  }
+
+  private loadImportedVariables(dmnDefinitions: DmnDefinitions, externalDefinitions: Map<string, DmnLatestModel>) {
+    if (dmnDefinitions.import) {
+      for (const dmnImport of dmnDefinitions.import) {
+        if (externalDefinitions.has(dmnImport["@_namespace"])) {
+          this.currentVariablePrefix = dmnImport["@_name"];
+          this.currentUuidPrefix = dmnImport["@_namespace"];
+          const externalDef = externalDefinitions.get(dmnImport["@_namespace"]);
+          if (externalDef) {
+            this.loadVariables(externalDef.definitions);
+          }
+        }
+      }
     }
   }
 }

@@ -44,7 +44,7 @@ import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-s
 import { DependentFeature, useExtendedServices } from "./ExtendedServicesContext";
 import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
-import { ExtendedServicesConfig } from "../settings/SettingsContext";
+import { useSettingsDispatch } from "../settings/SettingsContext";
 
 enum ModalPage {
   INITIAL,
@@ -817,7 +817,8 @@ function ExtendedServicesWizardFooter(props: WizardImperativeControlProps) {
 }
 
 function ExtendedServicesPortForm() {
-  const { config, saveNewConfig } = useExtendedServices();
+  const { config } = useExtendedServices();
+  const settingsDispatch = useSettingsDispatch();
   const { i18n } = useOnlineI18n();
 
   return (
@@ -846,7 +847,11 @@ function ExtendedServicesPortForm() {
           <TextInput
             value={config.port}
             type={"number"}
-            onChange={(value) => saveNewConfig(new ExtendedServicesConfig(config.host, value))}
+            onChange={(value) =>
+              settingsDispatch.set((settings) => {
+                settings.extendedServices.port = `${value}`;
+              })
+            }
           />
         </FormGroup>
       </Form>

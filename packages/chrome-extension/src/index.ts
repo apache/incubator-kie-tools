@@ -99,7 +99,13 @@ function init(globals: Globals) {
   if (pageType === GitHubPageType.EDIT) {
     renderSingleEditorApp({ ...globals, fileInfo });
   } else if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({ ...globals, fileInfo });
+    renderSingleEditorReadonlyApp({
+      ...globals,
+      pageType,
+      className: "btn ml-2 d-none d-md-block",
+      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()!,
+      fileInfo,
+    });
   } else if (pageType === GitHubPageType.PR_FILES_OR_COMMITS) {
     renderPrEditorsApp({ ...globals });
   } else if (pageType === GitHubPageType.PR_HOME) {
@@ -109,12 +115,12 @@ function init(globals: Globals) {
       className: "btn btn-sm",
       container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!,
     });
-  } else if (pageType === GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR) {
+  } else if (pageType === GitHubPageType.REPO_HOME) {
     renderOpenRepoInExternalEditorApp({
       ...globals,
       pageType,
-      className: "btn ml-2 d-none d-md-block",
-      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()!,
+      className: "btn btn-sm",
+      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()!,
     });
   } else {
     throw new Error(`Unknown GitHubPageType ${pageType}`);
@@ -172,9 +178,11 @@ export function discoverCurrentGitHubPageType() {
   }
 
   const isOrgSlashRepo = window.location.pathname.split("/").length === 3;
+  const isOrgSlashRepoSlashTreeSlashName =
+    window.location.pathname.split("/tree/").length === 2 && !window.location.pathname.split("/tree/")[1].includes("/");
 
-  if (pathnameMatches(`/.*/.*/tree/.*`) || isOrgSlashRepo) {
-    return GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR;
+  if (isOrgSlashRepo || isOrgSlashRepoSlashTreeSlashName) {
+    return GitHubPageType.REPO_HOME;
   }
 
   if (pathnameMatches(`.*/.*/pull/[0-9]+/files.*`)) {

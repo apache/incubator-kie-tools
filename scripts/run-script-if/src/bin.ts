@@ -142,7 +142,7 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
   const boolStringConditions = argv.bool.map(evalBoolStringArg);
   const operator = argv.operator;
 
-  let conditions = [];
+  const conditions = [];
   if (operator === "and") {
     boolStringConditions.length &&
       conditions.push(boolStringConditions.every((boolStringCondition) => boolStringCondition === argv.eq));
@@ -200,7 +200,7 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
       throw e;
     })
     .finally(async () => {
-      let finallyCommands = argv.finally;
+      const finallyCommands = argv.finally;
       if (finallyCommands.length <= 0) {
         return;
       }
@@ -216,7 +216,7 @@ function evalBoolStringArg(boolArg: never | string | number) {
   let ret;
   if (process.platform === "win32" && boolArg && typeof boolArg === "string" && boolArg.startsWith("$")) {
     const output = spawnSync(boolArg, [], { stdio: "pipe", ...shell() });
-    ret = String(output.stdout).trim();
+    ret = String(output.stdout).trim().toLowerCase();
   } else {
     ret = boolArg;
   }

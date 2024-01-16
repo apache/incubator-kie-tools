@@ -1,0 +1,26 @@
+# KIE Sandbox application
+kie_sandbox:
+  env:
+    - name: "KIE_SANDBOX_EXTENDED_SERVICES_URL"
+      value: "https://extended-services.{{ .Values.global.openshiftRouteDomain }}"
+    - name: "KIE_SANDBOX_CORS_PROXY_URL"
+      value: "https://cors-proxy.{{ .Values.global.openshiftRouteDomain }}"
+  openshiftRoute:
+    enabled: true
+    host: kie-sandbox.{{ .Values.global.openshiftRouteDomain }}
+
+# Cors Proxy component
+cors_proxy:
+  openshiftRoute:
+    enabled: true
+    host: cors-proxy.{{ .Values.global.openshiftRouteDomain }}
+
+# Extended services component
+extended_services:
+  openshiftRoute:
+    enabled: true
+    host: extended-services.{{ .Values.global.openshiftRouteDomain }}
+
+global:
+  ingressSource: "openshift"
+  openshiftRouteDomain: ocp-example.com

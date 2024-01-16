@@ -20,18 +20,19 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
 
-import { getMarshaller } from "@kie-tools/scesim-marshaller";
+import { getMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import {
   SceSim__FactMappingType,
   SceSim__ScenarioSimulationModelType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
@@ -39,25 +40,28 @@ import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
 import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
+import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 
 import ErrorBoundary from "./reactExt/ErrorBoundary";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 import TestScenarioSideBarMenu from "./sidebar/TestScenarioSideBarMenu";
+import TestScenarioTable from "./table/TestScenarioTable";
 import { useTestScenarioEditorI18n } from "./i18n";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 
 /* Constants */
 
@@ -158,10 +162,7 @@ function TestScenarioCreationPanel({
             value={assetType}
             id="asset-type-select"
             name="asset-type-select"
-            onChange={(value: string) => {
-              console.log(assetType);
-              setAssetType(value);
-            }}
+            onChange={(value: string) => setAssetType(value)}
           >
             {assetsOption.map((option, index) => (
               <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
@@ -234,15 +235,20 @@ function TestScenarioMainPanel({
   fileName,
   scesimModel,
   updateSettingField,
+  updateTestScenarioModel,
 }: {
   fileName: string;
   scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
   updateSettingField: (field: string, value: string) => void;
+  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
   const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
   const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
+
+  const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
+  const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
   const onTabChanged = useCallback((_event, tab) => {
     setTab(tab);
@@ -280,6 +286,9 @@ function TestScenarioMainPanel({
     /* The first two FactMapping are related to the "Number" and "Description" columns. 
        If those columns only are present, no Data Objects can be detected in the scesim file */
     for (let i = 2; i < factsMappings.length; i++) {
+      if (factsMappings[i].className!.__$$text === "java.lang.Void") {
+        continue;
+      }
       const dataObject = dataObjects.find((value) => value.id === factsMappings[i]["factAlias"].__$$text);
       if (dataObject) {
         if (!dataObject.children?.some((value) => value.id === factsMappings[i]["expressionAlias"]?.__$$text)) {
@@ -347,14 +356,13 @@ function TestScenarioMainPanel({
                 onUpdateSettingField={updateSettingField}
                 selectedDock={dockPanel.selected}
                 testScenarioSettings={{
-                  assetType: scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text,
-                  dmnName: scesimModel.ScenarioSimulationModel["settings"]!["dmnName"]?.__$$text,
-                  dmnNamespace: scesimModel.ScenarioSimulationModel["settings"]!["dmnNamespace"]?.__$$text,
-                  isStatelessSessionRule:
-                    scesimModel.ScenarioSimulationModel["settings"]!["stateless"]?.__$$text ?? false,
-                  isTestSkipped: scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"]?.__$$text ?? false,
-                  kieSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["dmoSession"]?.__$$text,
-                  ruleFlowGroup: scesimModel.ScenarioSimulationModel["settings"]!["ruleFlowGroup"]?.__$$text,
+                  assetType: scesimModel.ScenarioSimulationModel.settings!.type!.__$$text,
+                  dmnName: scesimModel.ScenarioSimulationModel.settings!.dmnName?.__$$text,
+                  dmnNamespace: scesimModel.ScenarioSimulationModel.settings!.dmnNamespace?.__$$text,
+                  isStatelessSessionRule: scesimModel.ScenarioSimulationModel.settings!.stateless?.__$$text ?? false,
+                  isTestSkipped: scesimModel.ScenarioSimulationModel.settings!.skipFromBuild?.__$$text ?? false,
+                  kieSessionRule: scesimModel.ScenarioSimulationModel.settings!.dmoSession?.__$$text,
+                  ruleFlowGroup: scesimModel.ScenarioSimulationModel.settings!.ruleFlowGroup?.__$$text,
                 }}
               />
             }
@@ -375,10 +383,25 @@ function TestScenarioMainPanel({
                           <TableIcon />
                         </TabTitleIcon>
                         <TabTitleText>{i18n.tab.scenarioTabTitle}</TabTitleText>
+                        <Tooltip content={i18n.tab.scenarioTabInfo}>
+                          <Icon size="sm" status="info">
+                            <HelpIcon />
+                          </Icon>
+                        </Tooltip>
                       </>
                     }
                   >
-                    <Bullseye>{i18n.tab.scenarioTabTitle}</Bullseye>
+                    <div
+                      className="kie-scesim-editor--scenario-table-container"
+                      ref={scenarioTableScrollableElementRef}
+                    >
+                      <TestScenarioTable
+                        assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
+                        tableData={scesimModel.ScenarioSimulationModel.simulation}
+                        scrollableParentRef={scenarioTableScrollableElementRef}
+                        updateTestScenarioModel={updateTestScenarioModel}
+                      />
+                    </div>
                   </Tab>
                   <Tab
                     eventKey={TestScenarioEditorTab.BACKGROUND}
@@ -388,10 +411,25 @@ function TestScenarioMainPanel({
                           <TableIcon />
                         </TabTitleIcon>
                         <TabTitleText>{i18n.tab.backgroundTabTitle}</TabTitleText>
+                        <Tooltip content={i18n.tab.backgroundTabInfo}>
+                          <Icon size="sm" status="info">
+                            <HelpIcon />
+                          </Icon>
+                        </Tooltip>
                       </>
                     }
                   >
-                    <Bullseye>{i18n.tab.backgroundTabTitle}</Bullseye>
+                    <div
+                      className="kie-scesim-editor--background-table-container"
+                      ref={backgroundTableScrollableElementRef}
+                    >
+                      <TestScenarioTable
+                        assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
+                        tableData={scesimModel.ScenarioSimulationModel.background}
+                        scrollableParentRef={backgroundTableScrollableElementRef}
+                        updateTestScenarioModel={updateTestScenarioModel}
+                      />
+                    </div>
                   </Tab>
                 </Tabs>
               </div>
@@ -491,20 +529,22 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
       setScesimModel((prevState) => ({
         ScenarioSimulationModel: {
           ...prevState.ScenarioSimulationModel,
-          ["settings"]: {
-            ...prevState.ScenarioSimulationModel["settings"],
-            ["dmoSession"]:
+          settings: {
+            ...prevState.ScenarioSimulationModel.settings,
+            dmnFilePath:
+              assetType === TestScenarioType[TestScenarioType.DMN] ? { __$$text: "./MockedDMNName.dmn" } : undefined,
+            dmoSession:
               assetType === TestScenarioType[TestScenarioType.RULE] && kieSessionRule
                 ? { __$$text: kieSessionRule }
                 : undefined,
-            ["ruleFlowGroup"]:
+            ruleFlowGroup:
               assetType === TestScenarioType[TestScenarioType.RULE] && ruleFlowGroup
                 ? { __$$text: ruleFlowGroup }
                 : undefined,
-            ["skipFromBuild"]: { __$$text: isTestSkipped },
-            ["stateless"]:
+            skipFromBuild: { __$$text: isTestSkipped },
+            stateless:
               assetType === TestScenarioType[TestScenarioType.RULE] ? { __$$text: isStatelessSessionRule } : undefined,
-            ["type"]: { __$$text: assetType },
+            type: { __$$text: assetType },
           },
         },
       })),
@@ -568,6 +608,7 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
               <TestScenarioMainPanel
                 fileName={scesimFile.path}
                 scesimModel={scesimModel}
+                updateTestScenarioModel={setScesimModel}
                 updateSettingField={updateSettingsField}
               />
             );

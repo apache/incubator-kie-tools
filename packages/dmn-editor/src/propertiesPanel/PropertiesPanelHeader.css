@@ -1,0 +1,52 @@
+.kie-dmn-editor--properties-panel-header {
+  padding-bottom: 10px;
+}
+
+.kie-dmn-editor--properties-panel-header-border {
+  border-bottom: 1px solid lightgray;
+}
+
+.kie-dmn-editor--properties-panel-header-fixed {
+  position: fixed;
+  background: rgb(255, 255, 255, 60%);
+  backdrop-filter: blur(4px);
+  top: 0px;
+  padding-top: 20px;
+  z-index: 5000;
+  right: 24px;
+  left: 34px;
+}
+
+.kie-dmn-editor--properties-panel-header-not-fixed {
+  right: 24px;
+  left: 34px;
+}
+
+.kie-dmn-editor--properties-panel-header-items {
+  display: inline-flex;
+  flex-flow: row;
+  width: 100%;
+  align-items: center;
+}
+
+.kie-dmn-editor--properties-panel-header-toogle-expanded {
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.kie-dmn-editor--properties-panel-header-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 0px;
+  flex-shrink: 0;
+}
+
+.kie-dmn-editor--properties-panel-header-title {
+  margin-left: 10px;
+  flex-grow: 1;
+}
+
+.kie-dmn-editor--properties-panel-header-action {
+  width: 40px;
+  flex-shrink: 0;
+}

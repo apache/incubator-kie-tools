@@ -25,8 +25,8 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button/";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider/";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
-import { InfoCircleIcon } from "@patternfly/react-icons/dist/esm/icons/info-circle-icon";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Toolbar } from "@patternfly/react-core/dist/js/components/Toolbar/";
@@ -122,7 +122,7 @@ function TestScenarioDataObjectsPanel({
           }
         >
           <Icon className={"kie-scesim-editor-drawer-data-objects--info-icon"} size="sm" status="info">
-            <InfoCircleIcon />
+            <HelpIcon />
           </Icon>
         </Tooltip>
       </Text>

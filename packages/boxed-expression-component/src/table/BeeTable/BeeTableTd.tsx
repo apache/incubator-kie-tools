@@ -32,10 +32,11 @@ import {
   useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { InsertRowColumnsDirection } from "../../api";
 
 export interface BeeTableTdProps<R extends object> {
-  // Individual cells are not immutable referecens, By referencing the row, we avoid multiple re-renders and bugs.
-  onRowAdded?: (args: { beforeIndex: number }) => void;
+  // Individual cells are not immutable references, By referencing the row, we avoid multiple re-renders and bugs.
+  onRowAdded?: (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => void;
   isActive: boolean;
   shouldRenderInlineButtons: boolean;
   shouldShowRowsInlineControls: boolean;
@@ -105,10 +106,14 @@ export function BeeTableTd<R extends object>({
   const { beeGwtService, editorRef } = useBoxedExpressionEditor();
 
   useEffect(() => {
-    if (isActive && column.isRowIndexColumn) {
-      beeGwtService?.selectObject("");
+    if (isActive) {
+      if (column.isRowIndexColumn) {
+        beeGwtService?.selectObject("");
+      } else {
+        beeGwtService?.selectObject(typeof cell.value === "string" ? "" : cell.value?.id ?? "");
+      }
     }
-  }, [beeGwtService, isActive, column]);
+  }, [beeGwtService, isActive, column.isRowIndexColumn, cell.value]);
 
   useEffect(() => {
     const td = tdRef.current;
@@ -157,7 +162,11 @@ export function BeeTableTd<R extends object>({
         return;
       }
 
-      onRowAdded?.({ beforeIndex: hoverInfo.part === "upper" ? rowIndex : rowIndex + 1 });
+      onRowAdded?.({
+        beforeIndex: hoverInfo.part === "upper" ? rowIndex : rowIndex + 1,
+        rowsCount: 1,
+        insertDirection: InsertRowColumnsDirection.BelowOrLeft,
+      });
 
       if (hoverInfo.part === "upper") {
         setHoverInfo({ isHovered: false });

@@ -94,7 +94,7 @@ func runCreate() error {
 	}
 
 	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/%s", cfg.ProjectName, metadata.WorkflowSwJson)
-	common.CreateWorkflow(workflowFilePath)
+	common.CreateWorkflow(workflowFilePath, false)
 
 	fmt.Println("🎉 Quarkus SonataFlow project successfully created")
 	return nil

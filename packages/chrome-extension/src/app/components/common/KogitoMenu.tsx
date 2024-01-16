@@ -37,36 +37,40 @@ export function KogitoMenu() {
   const [isInfoPopOverOpen, setInfoPopOverOpen] = useState(false);
   const [potentialToken, setPotentialToken] = useState("");
 
-  async function updateToken(token?: string) {
-    const validToken = await tokenIsValid(token);
-
-    if (validToken) {
-      gitHubApi.setToken(token!);
-      setPotentialToken("");
-    } else {
-      gitHubApi.setToken("");
-    }
-
-    return validToken;
-  }
+  const updateToken = useCallback(
+    async (token?: string) => {
+      const validToken = await tokenIsValid(token);
+      if (validToken) {
+        gitHubApi.setToken(token!);
+        setPotentialToken("");
+      } else {
+        gitHubApi.setToken("");
+      }
+      return validToken;
+    },
+    [gitHubApi]
+  );
 
   useEffect(() => {
     updateToken(gitHubApi.token).then(() => {
       console.debug("Checked GitHub token.");
     });
-  }, []);
+  }, [gitHubApi.token, updateToken]);
 
-  const onPaste = useCallback((e) => {
-    const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
-    setPotentialToken(token);
-    setTimeout(async () => {
-      const wasValid = await updateToken(token);
-      if (wasValid) {
-        setTimeout(() => setWholeMenuOpen(false), 2000);
-      }
-      inputRef.current!.setSelectionRange(0, 0);
-    }, 0);
-  }, []);
+  const onPaste = useCallback(
+    (e) => {
+      const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
+      setPotentialToken(token);
+      setTimeout(async () => {
+        const wasValid = await updateToken(token);
+        if (wasValid) {
+          setTimeout(() => setWholeMenuOpen(false), 2000);
+        }
+        inputRef.current!.setSelectionRange(0, 0);
+      }, 0);
+    },
+    [updateToken, setPotentialToken, setWholeMenuOpen]
+  );
 
   const onReset = useCallback(() => {
     gitHubApi.setToken("");
@@ -74,7 +78,7 @@ export function KogitoMenu() {
     setTimeout(() => {
       inputRef.current!.focus();
     }, 0);
-  }, []);
+  }, [gitHubApi]);
 
   const toggleInfoPopOver = useCallback(() => {
     setInfoPopOverOpen(!isInfoPopOverOpen);

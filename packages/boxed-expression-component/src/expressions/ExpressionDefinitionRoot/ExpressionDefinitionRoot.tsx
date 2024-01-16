@@ -37,12 +37,6 @@ export function ExpressionDefinitionRoot({
   return (
     <ResizingWidthsContextProvider>
       <div className={`expression-container ${decisionNodeId}`}>
-        <div className="expression-name-and-logic-type">
-          <span className="expression-title">{expression.name}</span>
-          &nbsp;
-          <span className="expression-type">({expression.logicType})</span>
-        </div>
-
         <ExpressionContainer
           expression={expression}
           isResetSupported={isResetSupported}

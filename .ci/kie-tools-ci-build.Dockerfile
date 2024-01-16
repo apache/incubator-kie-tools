@@ -84,8 +84,8 @@ RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-mav
     echo "source /etc/profile.d/maven.sh" >> $HOME/.bashrc
 
 # Golang setup
-RUN wget https://go.dev/dl/go1.21.1.linux-amd64.tar.gz -P /tmp && \
-    sudo tar xzf /tmp/go1.21.1.linux-amd64.tar.gz -C /opt && rm /tmp/go1.21.1.linux-amd64.tar.gz && \
+RUN wget https://go.dev/dl/go1.21.5.linux-amd64.tar.gz -P /tmp && \
+    sudo tar xzf /tmp/go1.21.5.linux-amd64.tar.gz -C /opt && rm /tmp/go1.21.5.linux-amd64.tar.gz && \
     echo 'export GOPATH=${HOME}/go' | sudo tee /etc/profile.d/go.sh && \
     echo 'export PATH=${PATH}:/opt/go/bin:${GOPATH}/bin' | sudo tee -a /etc/profile.d/go.sh && \
     echo "source /etc/profile.d/go.sh" >> $HOME/.bashrc
@@ -101,9 +101,15 @@ RUN wget https://github.com/github/codeql-action/releases/latest/download/codeql
 RUN wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz -P /tmp && \
     sudo tar -C /usr/bin/ -xvzf /tmp/openshift-client-linux.tar.gz oc && rm /tmp/openshift-client-linux.tar.gz
 
+# Helm CLI setup
+RUN wget https://get.helm.sh/helm-v3.13.3-linux-amd64.tar.gz -P /tmp && \
+    sudo tar -C /usr/bin/ -zxvf /tmp/helm-v3.13.3-linux-amd64.tar.gz linux-amd64/helm --strip-components 1 && rm /tmp/helm-v3.13.3-linux-amd64.tar.gz
+
 # Env vars
 ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
 ENV DISPLAY=":99"
 ENV NODE_OPTIONS="--max_old_space_size=4096"
+
+ENTRYPOINT [""]
 
 CMD ["bash"]

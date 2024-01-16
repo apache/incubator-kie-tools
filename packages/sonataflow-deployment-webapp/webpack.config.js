@@ -25,7 +25,7 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets");
+const swEditorAssets = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { env } = require("./env");
 const buildEnv = env;
 
@@ -65,13 +65,19 @@ module.exports = async (env) =>
             to: "./serverless-workflow-diagram-editor-envelope.html",
           },
           {
-            from: swEditor.swEditorPath(),
+            from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
+            to: "./serverless-workflow-text-editor-envelope.html",
+          },
+          {
+            from: swEditorAssets.swEditorPath(),
             to: "./diagram",
             globOptions: { ignore: ["**/WEB-INF/**/*", "**/*.html"] },
           },
           {
-            from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
-            to: "./serverless-workflow-text-editor-envelope.html",
+            context: swEditorAssets.swEditorFontsPath(),
+            from: "fontawesome-webfont.*",
+            to: "./fonts",
+            force: true,
           },
         ],
       }),

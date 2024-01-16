@@ -18,3 +18,4 @@
  */
 
 export declare const swEditorPath: () => string;
+export declare const swEditorFontsPath: () => string;

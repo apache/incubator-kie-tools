@@ -82,7 +82,7 @@ module.exports = composeEnv(
         description: "Image registry to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageAccount: {
-        default: "kiegroup",
+        default: "kie-tools",
         description: "Image account to be used by Dev deployments when deploying models.",
       },
       ONLINE_EDITOR__devDeploymentBaseImageName: {
@@ -98,7 +98,7 @@ module.exports = composeEnv(
         description: "Image registry to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount: {
-        default: "kiegroup",
+        default: "kie-tools",
         description: "Image account to be used by Dev deployments to display a form for deployed DMN models.",
       },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageName: {

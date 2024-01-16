@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92" name="loan_pre_qualification" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB">
   <dmn:extensionElements/>
   <dmn:itemDefinition id="_D40B0106-62E8-4AC0-A39A-C6C9506194A9" name="Requested_Product" isCollection="false">
@@ -181,7 +182,9 @@
           <dmn:binding>
             <dmn:parameter id="_4B93E8C8-A092-4EAC-B23A-CC138225ACC3" name="pmt"/>
             <dmn:literalExpression id="_51ACEC3C-4207-4F5F-8FDD-9EDAA3270E60">
-              <dmn:text>(Requested Product.Amount*((Requested Product.Rate/100)/12))/(1-(1/(1+(Requested Product.Rate/100)/12)**-Requested Product.Term))</dmn:text>
+              <dmn:text>(Requested Product.Amount*((Requested
+                Product.Rate/100)/12))/(1-(1/(1+(Requested Product.Rate/100)/12)**-Requested
+                Product.Term))</dmn:text>
             </dmn:literalExpression>
           </dmn:binding>
           <dmn:binding>
@@ -207,8 +210,8 @@
       <dmn:contextEntry>
         <dmn:literalExpression id="_3F95EFD0-94D7-4D1A-9EA9-C8E12982D7E8">
           <dmn:text>if Client PITI &lt;= Lender Acceptable PITI()
-then "Sufficient"
-else "Insufficient"</dmn:text>
+            then "Sufficient"
+            else "Insufficient"</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
@@ -266,8 +269,8 @@ else "Insufficient"</dmn:text>
       <dmn:contextEntry>
         <dmn:literalExpression id="_D1F96102-4158-45BB-8C9A-B7A3BE2C0206">
           <dmn:text>if Client DTI &lt;= Lender Acceptable DTI()
-then "Sufficient"
-else "Insufficient"</dmn:text>
+            then "Sufficient"
+            else "Insufficient"</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
@@ -448,7 +451,8 @@ else "Insufficient"</dmn:text>
           <dmn:text>"Not Qualified"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_F0BD7DC2-A1B6-4CF4-95D0-906DBB540EFC">
-          <dmn:text>"Debt to income ratio is too high AND mortgage payment to income ratio is too high."</dmn:text>
+          <dmn:text>"Debt to income ratio is too high AND mortgage payment to income ratio is too
+            high."</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text/>
@@ -646,7 +650,7 @@ else "Insufficient"</dmn:text>
           <dmndi:StrokeColor red="0" green="0" blue="0"/>
           <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="315" y="225" width="136" height="62"/>
+        <dc:Bounds x="315" y="198" width="136" height="62"/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
       <dmndi:DMNShape id="dmnshape-drg-_2FE51DB1-3083-4BF7-AA71-0B0065310E72" dmnElementRef="_2FE51DB1-3083-4BF7-AA71-0B0065310E72" isCollapsed="false">
@@ -712,22 +716,22 @@ else "Insufficient"</dmn:text>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_77BA409B-E00D-4FBC-B522-8F656D4F6F0E" dmnElementRef="_77BA409B-E00D-4FBC-B522-8F656D4F6F0E">
         <di:waypoint x="383.0607476635514" y="391.5"/>
-        <di:waypoint x="383" y="287"/>
+        <di:waypoint x="383" y="260"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_4D441C11-7042-49CF-A42C-17A4348A7F29" dmnElementRef="_4D441C11-7042-49CF-A42C-17A4348A7F29">
         <di:waypoint x="167.09345794392524" y="255.17105263157896"/>
-        <di:waypoint x="315" y="256"/>
+        <di:waypoint x="315" y="229"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_3217D655-4484-4733-A9AE-4F9CF30D9924" dmnElementRef="_3217D655-4484-4733-A9AE-4F9CF30D9924">
         <di:waypoint x="167.09345794392524" y="359"/>
-        <di:waypoint x="383" y="287"/>
+        <di:waypoint x="383" y="260"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_31A1B6B2-A2A6-4E03-B898-26573A5CF3BA" dmnElementRef="_31A1B6B2-A2A6-4E03-B898-26573A5CF3BA">
         <di:waypoint x="1030" y="389.5"/>
         <di:waypoint x="1031" y="287"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_A3E95B32-2EFD-40AD-B5E4-0A73A1542011" dmnElementRef="_A3E95B32-2EFD-40AD-B5E4-0A73A1542011">
-        <di:waypoint x="383" y="256"/>
+        <di:waypoint x="383" y="229"/>
         <di:waypoint x="600" y="151"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_0B992F01-BA77-4F06-A830-D8948B467272" dmnElementRef="_0B992F01-BA77-4F06-A830-D8948B467272">

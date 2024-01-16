@@ -1,0 +1,13 @@
+apiVersion: v2
+name: kie-sandbox-helm-chart
+description: A Helm chart to deploy KIE Sandbox and related services on Kubernetes
+type: application
+version: 0.0.0
+appVersion: 0.0.0
+dependencies:
+  - name: cors_proxy
+    version: 0.0.0
+  - name: extended_services
+    version: 0.0.0
+  - name: kie_sandbox
+    version: 0.0.0
