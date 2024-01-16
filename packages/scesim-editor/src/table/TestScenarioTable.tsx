@@ -26,15 +26,14 @@ import { v4 as uuid } from "uuid";
 
 import {
   SceSim__backgroundDatasType,
-  SceSim__BackgroundDataType,
   SceSim__backgroundType,
   SceSim__expressionIdentifierType,
   SceSim__factIdentifierType,
   SceSim__FactMappingType,
+  SceSim__FactMappingValuesTypes,
   SceSim__FactMappingValueType,
   SceSim__ScenarioSimulationModelType,
   SceSim__scenariosType,
-  SceSim__ScenarioType,
   SceSim__simulationType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
@@ -63,11 +62,13 @@ function TestScenarioTable({
   assetType,
   tableData,
   scrollableParentRef,
+  updateSelectedColumnFactMapping,
   updateTestScenarioModel,
 }: {
   assetType: string;
   tableData: SceSim__simulationType | SceSim__backgroundType;
   scrollableParentRef: React.RefObject<HTMLElement>;
+  updateSelectedColumnFactMapping: React.Dispatch<React.SetStateAction<SceSim__FactMappingType | null>>;
   updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   enum TestScenarioTableColumnHeaderGroup {
@@ -551,7 +552,7 @@ function TestScenarioTable({
             update.columnIndex + columnIndexStart
           ];
 
-          const deepClonedRowsData: SceSim__ScenarioType[] = JSON.parse(
+          const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
             JSON.stringify(
               retrieveRowsDataFromModel(
                 isBackground ? prevState.ScenarioSimulationModel : prevState.ScenarioSimulationModel
@@ -790,7 +791,7 @@ function TestScenarioTable({
         /* Creating and adding a new FactMappingValue (cell) in every row, as a consequence of the new FactMapping (column) 
            we're going to introduce. The FactMappingValue will be linked with its related FactMapping via expressionIdentifier
            and factIdentier data. That means, the column index of new FactMappingValue could be different in other Scenario (rows) */
-        const deepClonedRowsData: SceSim__ScenarioType[] = JSON.parse(
+        const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
           JSON.stringify(retrieveRowsDataFromModel(prevState.ScenarioSimulationModel))
         );
         deepClonedRowsData.forEach((scenario) => {
@@ -901,10 +902,10 @@ function TestScenarioTable({
 
         /* Cloning the Scenario List (Rows) and finding the Cell(s) to remove accordingly to the factMapping data of 
           the removed columns */
-        const deepClonedRowsData: SceSim__ScenarioType[] = JSON.parse(
+        const deepClonedRowsData: SceSim__FactMappingValuesTypes[] = JSON.parse(
           JSON.stringify(retrieveRowsDataFromModel(prevState.ScenarioSimulationModel) ?? [])
         );
-        deepClonedRowsData.forEach((rowData: SceSim__ScenarioType | SceSim__BackgroundDataType) => {
+        deepClonedRowsData.forEach((rowData) => {
           allFactMappingWithIndexesToRemove.forEach((itemToRemove) => {
             const factMappingValueColumnIndexToRemove = retrieveFactMappingValueIndexByIdentifiers(
               rowData.factMappingValues.FactMappingValue!,
