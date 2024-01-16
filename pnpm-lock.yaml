@@ -14,6 +14,9 @@ patchedDependencies:
   immer@10.0.3:
     hash: utu5oov26wz5mjuays57tp3ybu
     path: patches/immer@10.0.3.patch
+  karma-firefox-launcher@2.1.2:
+    hash: 33rb3z4iahwgdqfruk4pr3teue
+    path: patches/karma-firefox-launcher@2.1.2.patch
   selenium-webdriver@4.15.0:
     hash: lbqefch5nrzt5atgrk2dnw5phe
     path: patches/selenium-webdriver@4.15.0.patch
@@ -3247,182 +3250,6 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  packages/dmn-dev-deployment-base-image:
-    dependencies:
-      "@kie-tools/dmn-dev-deployment-form-webapp":
-        specifier: workspace:*
-        version: link:../dmn-dev-deployment-form-webapp
-      "@kie-tools/dmn-dev-deployment-quarkus-app":
-        specifier: workspace:*
-        version: link:../dmn-dev-deployment-quarkus-app
-    devDependencies:
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-      yargs:
-        specifier: ^17.0.1
-        version: 17.3.1
-
-  packages/dmn-dev-deployment-form-webapp:
-    dependencies:
-      "@kie-tools-core/i18n":
-        specifier: workspace:*
-        version: link:../i18n
-      "@kie-tools-core/patternfly-base":
-        specifier: workspace:*
-        version: link:../patternfly-base
-      "@kie-tools-core/react-hooks":
-        specifier: workspace:*
-        version: link:../react-hooks
-      "@kie-tools/dmn-runner":
-        specifier: workspace:*
-        version: link:../dmn-runner
-      "@kie-tools/extended-services-api":
-        specifier: workspace:*
-        version: link:../extended-services-api
-      "@kie-tools/form-dmn":
-        specifier: workspace:*
-        version: link:../form-dmn
-      "@kie-tools/i18n-common-dictionary":
-        specifier: workspace:*
-        version: link:../i18n-common-dictionary
-      "@patternfly/react-core":
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
-      "@patternfly/react-icons":
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
-      json-refs:
-        specifier: ^3.0.15
-        version: 3.0.15
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^5.2.1
-        version: 5.2.1(react@17.0.2)
-      react-router-dom:
-        specifier: ^5.2.1
-        version: 5.3.0(react@17.0.2)
-    devDependencies:
-      "@babel/core":
-        specifier: ^7.16.0
-        version: 7.16.12
-      "@babel/preset-env":
-        specifier: ^7.16.0
-        version: 7.16.11(@babel/core@7.16.12)
-      "@babel/preset-react":
-        specifier: ^7.16.0
-        version: 7.16.0(@babel/core@7.16.12)
-      "@kie-tools-core/webpack-base":
-        specifier: workspace:*
-        version: link:../webpack-base
-      "@kie-tools/eslint":
-        specifier: workspace:*
-        version: link:../eslint
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/tsconfig":
-        specifier: workspace:*
-        version: link:../tsconfig
-      "@testing-library/jest-dom":
-        specifier: ^5.16.1
-        version: 5.16.1
-      "@testing-library/react":
-        specifier: ^11.2.6
-        version: 11.2.7(react-dom@17.0.2)(react@17.0.2)
-      "@types/jest":
-        specifier: ^26.0.23
-        version: 26.0.23
-      "@types/jest-when":
-        specifier: ^2.7.4
-        version: 2.7.4
-      "@types/lodash":
-        specifier: ^4.14.168
-        version: 4.14.169
-      "@types/react":
-        specifier: ^17.0.6
-        version: 17.0.21
-      "@types/react-dom":
-        specifier: ^17.0.5
-        version: 17.0.8
-      "@types/react-router":
-        specifier: ^5.1.14
-        version: 5.1.14
-      "@types/react-router-dom":
-        specifier: ^5.1.7
-        version: 5.1.7
-      "@types/testing-library__jest-dom":
-        specifier: ^5.9.1
-        version: 5.9.5
-      "@types/testing-library__react":
-        specifier: ^9.1.2
-        version: 9.1.3
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.88.2)
-      html-webpack-plugin:
-        specifier: ^5.3.2
-        version: 5.3.2(webpack@5.88.2)
-      jest:
-        specifier: ^26.6.3
-        version: 26.6.3
-      jest-junit:
-        specifier: ^14.0.0
-        version: 14.0.0
-      jest-when:
-        specifier: ^3.5.0
-        version: 3.5.0(jest@26.6.3)
-      process:
-        specifier: ^0.11.10
-        version: 0.11.10
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      ts-jest:
-        specifier: ^26.5.6
-        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
-      typescript:
-        specifier: ^4.6.2
-        version: 4.8.4
-      webpack:
-        specifier: ^5.88.2
-        version: 5.88.2(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.9.0
-
-  packages/dmn-dev-deployment-quarkus-app:
-    devDependencies:
-      "@kie-tools/maven-config-setup-helper":
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-
   packages/dmn-editor:
     dependencies:
       "@kie-tools-core/i18n":
@@ -5800,7 +5627,7 @@ importers:
         version: 1.0.5(karma@6.4.2)
       karma-firefox-launcher:
         specifier: ^2.1.2
-        version: 2.1.2
+        version: 2.1.2(patch_hash=33rb3z4iahwgdqfruk4pr3teue)
       karma-ie-launcher:
         specifier: ^1.0.0
         version: 1.0.0(karma@6.4.2)
@@ -34833,13 +34660,14 @@ packages:
       karma: 6.4.2
     dev: true
 
-  /karma-firefox-launcher@2.1.2:
+  /karma-firefox-launcher@2.1.2(patch_hash=33rb3z4iahwgdqfruk4pr3teue):
     resolution:
       { integrity: sha512-VV9xDQU1QIboTrjtGVD4NCfzIH7n01ZXqy/qpBhnOeGVOkG5JYPEm8kuSd7psHE6WouZaQ9Ool92g8LFweSNMA== }
     dependencies:
       is-wsl: 2.2.0
       which: 2.0.2
     dev: true
+    patched: true
 
   /karma-ie-launcher@1.0.0(karma@6.4.2):
     resolution:
@@ -45068,6 +44896,7 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.0.0
+    dev: false
 
   /yargs@17.5.1:
     resolution:
