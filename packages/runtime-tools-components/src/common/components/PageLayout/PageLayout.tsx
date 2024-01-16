@@ -17,13 +17,10 @@
  * under the License.
  */
 
-import React, { useState, useEffect } from "react";
-import { Page, PageSidebar, PageHeader, PageHeaderTools } from "@patternfly/react-core/dist/js/components/Page";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import "../styles.css";
+import { Page, PageSidebar } from "@patternfly/react-core/dist/js/components/Page";
+import React, { useEffect, useState } from "react";
 import { componentOuiaProps, ouiaAttribute, OUIAProps } from "../../ouiaTools";
-import PageToolbar from "../PageToolbar/PageToolbar";
-import { BrandContext } from "../../contexts/BrandContext/BrandContext";
+import "../styles.css";
 
 interface IOwnProps {
   children: React.ReactNode;
@@ -31,7 +28,6 @@ interface IOwnProps {
   PageNav: React.ReactNode;
   pageNavOpen?: boolean;
   BrandAltText?: string;
-  withHeader: boolean;
   BrandClick?: () => void;
 }
 
@@ -40,7 +36,6 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
   BrandSrc,
   PageNav,
   pageNavOpen,
-  withHeader,
   BrandAltText,
   BrandClick,
   ouiaId,
@@ -59,28 +54,6 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
     }
   });
 
-  const Header = (
-    <PageHeader
-      logo={<Brand src={BrandSrc} alt={BrandAltText!} onClick={BrandClick} />}
-      headerTools={
-        <PageHeaderTools>
-          <BrandContext.Provider
-            value={{
-              imageSrc: BrandSrc!,
-              altText: BrandAltText!,
-            }}
-          >
-            <PageToolbar />
-          </BrandContext.Provider>
-        </PageHeaderTools>
-      }
-      showNavToggle
-      isNavOpen={isNavOpen}
-      onNavToggle={onNavToggle}
-      {...ouiaAttribute("data-ouia-header", "true")}
-    />
-  );
-
   const Sidebar = (
     <PageSidebar
       nav={PageNav}
@@ -94,7 +67,6 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
   return (
     <React.Fragment>
       <Page
-        header={withHeader ? Header : <></>}
         mainContainerId={pageId}
         sidebar={Sidebar}
         className="kogito-consoles-common--PageLayout"

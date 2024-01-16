@@ -64,7 +64,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
 }) => {
   const renderPage = (routeProps: { location: { pathname: string } }) => {
     return (
-      <PageLayout pageNavOpen={true} withHeader={false} PageNav={<DevUINav pathname={routeProps.location.pathname} />}>
+      <PageLayout pageNavOpen={true} PageNav={<DevUINav pathname={routeProps.location.pathname} />}>
         {children}
       </PageLayout>
     );
