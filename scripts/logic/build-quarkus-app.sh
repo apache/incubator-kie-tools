@@ -44,7 +44,7 @@ properties_with_versions=("compiler-plugin.version:3.11.0" "surefire-plugin.vers
 # arch specific dependencies
 quarkus_extensions_arch_specific="com.aayushatharva.brotli4j:native-linux-aarch64:1.8.0"
 # common extensions used by the kogito-swf-builder and kogito-swf-devmode
-quarkus_extensions="quarkus-kubernetes,smallrye-health,org.kie.kogito:kogito-quarkus-serverless-workflow:${kogito_version},org.kie.kogito:kogito-addons-quarkus-knative-eventing:${kogito_version},org.kie.kogito:kogito-addons-quarkus-microprofile-config-service-catalog:${kogito_version},org.kie.kogito:kogito-addons-quarkus-kubernetes:${kogito_version}"
+quarkus_extensions="quarkus-kubernetes,smallrye-health,org.kie.kogito:kogito-quarkus-serverless-workflow:${kogito_version},org.kie.kogito:kogito-addons-quarkus-knative-eventing:${kogito_version},org.kie.kogito:kogito-addons-quarkus-microprofile-config-service-catalog:${kogito_version},org.kie.kogito:kogito-addons-quarkus-kubernetes:${kogito_version},org.kie.kogito:kogito-addons-quarkus-knative-serving:${kogito_version}"
 # dev mode purpose extensions used only by the kogito-swf-devmode
 kogito_swf_devmode_extensions="org.kie.kogito:kogito-quarkus-serverless-workflow-devui:${kogito_version},org.kie.kogito:kogito-addons-quarkus-source-files:${kogito_version},org.kie.kogito:kogito-addons-quarkus-process-management:${kogito_version},org.kie.kogito:kogito-addons-quarkus-jobs-service-embedded:${kogito_version},org.kie.kogito:kogito-addons-quarkus-data-index-inmemory:${kogito_version}"
 # builder/prod extensitons used only by the kogito-swf-builder
