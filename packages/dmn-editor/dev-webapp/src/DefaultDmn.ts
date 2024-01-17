@@ -18,19 +18,7 @@
  */
 
 export const DEFAULT_DEV_WEBAPP_DMN = `<?xml version="1.0" encoding="UTF-8" ?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" 
-    xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-    xmlns:kie="https://kie.org/dmn/extensions/1.0"
-    xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" 
-    xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
-    xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" 
-    xmlns:included0="https://kie.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" 
-    xmlns:included1="https://kie.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1"
-    expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" 
-    typeLanguage="http://www.omg.org/spec/DMN/20211108/FEEL/"
-    namespace="https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" 
-    id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92" 
-    name="loan_pre_qualification">
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns="https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92" name="loan_pre_qualification" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB">
   <dmn:extensionElements />
   <dmn:itemDefinition id="_D40B0106-62E8-4AC0-A39A-C6C9506194A9" name="Requested_Product" isCollection="false">
     <dmn:itemComponent id="_68b4a96c-198a-4575-b29a-a2c8b0539a2c" name="Type" isCollection="false">
@@ -203,44 +191,46 @@ export const DEFAULT_DEV_WEBAPP_DMN = `<?xml version="1.0" encoding="UTF-8" ?>
     <dmn:knowledgeRequirement id="_2C95829D-FCF9-44F5-8F5A-0A6CDB60600D">
       <dmn:requiredKnowledge href="#_C98BE939-B9C7-43E0-83E8-EE7A16C5276D" />
     </dmn:knowledgeRequirement>
-    <dmn:context id="_08A9C33D-719F-4B05-AC42-D15464798BC4" label="Front End Ratio" typeRef="Front_End_Ratio">
-      <dmn:contextEntry id="_C8F98D0F-218F-4B60-BD99-7FD98078FE56">
-        <dmn:invocation id="_EB658586-C3C8-488E-8118-E69E31583106" typeRef="&lt;Undefined&gt;">
+    <dmn:context id="_08A9C33D-719F-4B05-AC42-D15464798BC4">
+      <dmn:contextEntry>
+        <dmn:variable id="_C8F98D0F-218F-4B60-BD99-7FD98078FE56" name="Client PITI" typeRef="number" />
+        <dmn:invocation id="_EB658586-C3C8-488E-8118-E69E31583106">
           <dmn:literalExpression id="_6E79E4D9-BBFB-4E90-8AA3-A6C153C3C946">
             <dmn:text>PITI</dmn:text>
           </dmn:literalExpression>
-          <dmn:binding id="_4B93E8C8-A092-4EAC-B23A-CC138225ACC3">
-            <dmn:literalExpression id="_51ACEC3C-4207-4F5F-8FDD-9EDAA3270E60" typeRef="&lt;Undefined&gt;">
-              <dmn:text>(Requested Product.Amount*((Requested Product.Rate/100)/12))/(1-(1/(1+(Requested Product.Rate/100)/12)**-Requested Product.Term))</dmn:text>
+          <dmn:binding>
+            <dmn:parameter id="_4B93E8C8-A092-4EAC-B23A-CC138225ACC3" name="pmt" />
+            <dmn:literalExpression id="_51ACEC3C-4207-4F5F-8FDD-9EDAA3270E60">
+              <dmn:text>(Requested Product.Amount*((Requested
+                Product.Rate/100)/12))/(1-(1/(1+(Requested Product.Rate/100)/12)**-Requested
+                Product.Term))</dmn:text>
             </dmn:literalExpression>
-            <dmn:parameter name="pmt" typeRef="&lt;Undefined&gt;" />
           </dmn:binding>
-          <dmn:binding id="_B9D0FB44-605A-42DB-81F7-4DF4C4CC1CDD">
-            <dmn:literalExpression id="_5D050B8D-DF55-45FD-988B-9C56BED53D5B" typeRef="&lt;Undefined&gt;">
+          <dmn:binding>
+            <dmn:parameter id="_B9D0FB44-605A-42DB-81F7-4DF4C4CC1CDD" name="tax" />
+            <dmn:literalExpression id="_5D050B8D-DF55-45FD-988B-9C56BED53D5B">
               <dmn:text>Applicant Data.Monthly.Tax</dmn:text>
             </dmn:literalExpression>
-            <dmn:parameter name="tax" typeRef="&lt;Undefined&gt;" />
           </dmn:binding>
-          <dmn:binding id="_67372884-0407-4812-986F-3A2CC4C3A7B1">
-            <dmn:literalExpression id="_14C44A69-56DB-4B68-B757-4225C80E4D88" typeRef="&lt;Undefined&gt;">
+          <dmn:binding>
+            <dmn:parameter id="_67372884-0407-4812-986F-3A2CC4C3A7B1" name="insurance" />
+            <dmn:literalExpression id="_14C44A69-56DB-4B68-B757-4225C80E4D88">
               <dmn:text>Applicant Data.Monthly.Insurance</dmn:text>
             </dmn:literalExpression>
-            <dmn:parameter name="insurance" typeRef="&lt;Undefined&gt;" />
           </dmn:binding>
-          <dmn:binding id="_EDE0107C-9736-4BB6-9500-173FFAFF00DB">
-            <dmn:literalExpression id="_0DB5DE05-A2AD-4013-B191-DC1D1637A132" typeRef="&lt;Undefined&gt;">
+          <dmn:binding>
+            <dmn:parameter id="_EDE0107C-9736-4BB6-9500-173FFAFF00DB" name="income" />
+            <dmn:literalExpression id="_0DB5DE05-A2AD-4013-B191-DC1D1637A132">
               <dmn:text>Applicant Data.Monthly.Income</dmn:text>
             </dmn:literalExpression>
-            <dmn:parameter name="income" typeRef="&lt;Undefined&gt;" />
           </dmn:binding>
         </dmn:invocation>
-        <dmn:variable name="Client PITI" typeRef="number" />
       </dmn:contextEntry>
-      <dmn:contextEntry id="_3F95EFD0-94D7-4D1A-9EA9-C8E12982D7E8">
-        <dmn:literalExpression id="_3F95EFD0-94D7-4D1A-9EA9-C8E12982D7E8" typeRef="&lt;Undefined&gt;">
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_3F95EFD0-94D7-4D1A-9EA9-C8E12982D7E8">
           <dmn:text>if Client PITI &lt;= Lender Acceptable PITI()
-then &quot;Sufficient&quot;
-else &quot;Insufficient&quot;</dmn:text>
+            then &quot;Sufficient&quot;
+            else &quot;Insufficient&quot;</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
@@ -248,13 +238,13 @@ else &quot;Insufficient&quot;</dmn:text>
   <dmn:businessKnowledgeModel id="_FAF9080E-F4EF-49F7-AEFD-0D2990D8FFDA" name="PITI">
     <dmn:extensionElements />
     <dmn:variable id="_994F490E-10AC-4704-BFDA-14A3B98A981E" name="PITI" typeRef="number" />
-    <dmn:encapsulatedLogic id="_D33D9AEA-49DF-489F-98EC-4B42FF8C2027" label="PITI" kind="FEEL" typeRef="number">
+    <dmn:encapsulatedLogic id="_D33D9AEA-49DF-489F-98EC-4B42FF8C2027" kind="FEEL">
       <dmn:formalParameter id="_664280C1-D5E0-47BE-82EF-0A6579975A62" name="pmt" typeRef="number" />
       <dmn:formalParameter id="_3E7DF0B3-C48B-481D-B092-FC82EC2F6E37" name="tax" typeRef="number" />
       <dmn:formalParameter id="_DF691F86-AD12-46BA-B149-AC875836A116" name="insurance" typeRef="number" />
       <dmn:formalParameter id="_9E2E257F-90EB-4FC4-8DD9-089784E7579E" name="income" typeRef="number" />
-      <dmn:literalExpression id="_A32ED4A5-7B89-40F7-BE25-CDB636FE071C" typeRef="&lt;Undefined&gt;">
-        <dmn:text>(pmt + tax + insurance) / income</dmn:text>
+      <dmn:literalExpression id="_A32ED4A5-7B89-40F7-BE25-CDB636FE071C">
+        <dmn:text>(pmt+tax+insurance)/income</dmn:text>
       </dmn:literalExpression>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
@@ -274,32 +264,32 @@ else &quot;Insufficient&quot;</dmn:text>
     <dmn:knowledgeRequirement id="_3217D655-4484-4733-A9AE-4F9CF30D9924">
       <dmn:requiredKnowledge href="#_DA5CCF62-90A8-4CFC-A137-98B528522588" />
     </dmn:knowledgeRequirement>
-    <dmn:context id="_5F9FEA4E-B3FC-4BC2-913E-36B8071FA777" label="Back End Ratio" typeRef="Back_End_Ratio">
-      <dmn:contextEntry id="_F3ED9059-400F-4BE8-B250-C2ABCD9FF022">
-        <dmn:invocation id="_4A7FC8E0-25EF-4DAF-845A-93BD89C2BC8C" typeRef="&lt;Undefined&gt;">
+    <dmn:context id="_5F9FEA4E-B3FC-4BC2-913E-36B8071FA777">
+      <dmn:contextEntry>
+        <dmn:variable id="_F3ED9059-400F-4BE8-B250-C2ABCD9FF022" name="Client DTI" typeRef="number" />
+        <dmn:invocation id="_4A7FC8E0-25EF-4DAF-845A-93BD89C2BC8C">
           <dmn:literalExpression id="_F0E80900-1964-4142-9A05-73E7A2E0F2CD">
             <dmn:text>DTI</dmn:text>
           </dmn:literalExpression>
           <dmn:binding>
-            <dmn:literalExpression id="_3D0A1979-E59A-483F-BDA8-138F99BA5AB3" typeRef="&lt;Undefined&gt;">
+            <dmn:parameter id="_6408A089-A087-4855-BBB8-0C22BE6ECFDF" name="d" />
+            <dmn:literalExpression id="_3D0A1979-E59A-483F-BDA8-138F99BA5AB3">
               <dmn:text>Applicant Data.Monthly.Repayments + Applicant Data.Monthly.Expenses</dmn:text>
             </dmn:literalExpression>
-            <dmn:parameter name="d" typeRef="&lt;Undefined&gt;" />
           </dmn:binding>
           <dmn:binding>
-            <dmn:literalExpression id="_D985F886-71C0-4F65-8808-2CEF366BECC8" typeRef="&lt;Undefined&gt;">
+            <dmn:parameter id="_45370376-8934-4FBD-BA9F-5338916EBF07" name="i" />
+            <dmn:literalExpression id="_D985F886-71C0-4F65-8808-2CEF366BECC8">
               <dmn:text>Applicant Data.Monthly.Income</dmn:text>
             </dmn:literalExpression>
-            <dmn:parameter name="i" typeRef="&lt;Undefined&gt;" />
           </dmn:binding>
         </dmn:invocation>
-        <dmn:variable name="Client DTI" typeRef="number" />
       </dmn:contextEntry>
-      <dmn:contextEntry id="_D1F96102-4158-45BB-8C9A-B7A3BE2C0206">
-        <dmn:literalExpression id="_D1F96102-4158-45BB-8C9A-B7A3BE2C0206" typeRef="&lt;Undefined&gt;">
+      <dmn:contextEntry>
+        <dmn:literalExpression id="_D1F96102-4158-45BB-8C9A-B7A3BE2C0206">
           <dmn:text>if Client DTI &lt;= Lender Acceptable DTI()
-then &quot;Sufficient&quot;
-else &quot;Insufficient&quot;</dmn:text>
+            then &quot;Sufficient&quot;
+            else &quot;Insufficient&quot;</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
@@ -310,14 +300,14 @@ else &quot;Insufficient&quot;</dmn:text>
     <dmn:informationRequirement id="_31A1B6B2-A2A6-4E03-B898-26573A5CF3BA">
       <dmn:requiredInput href="#_4C89E59C-FDDA-438C-8D1F-0B1194EF6DAE" />
     </dmn:informationRequirement>
-    <dmn:decisionTable id="_4ACEFFF0-AD2C-4DB8-9BAD-7BCCFB03F295" label="Credit Score Rating" typeRef="Credit_Score_Rating" hitPolicy="UNIQUE">
+    <dmn:decisionTable id="_4ACEFFF0-AD2C-4DB8-9BAD-7BCCFB03F295" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
       <dmn:input id="_44C93627-629C-48B8-B71A-AE2266A42674">
         <dmn:inputExpression id="_00932A00-5ECE-4AEF-AA68-92E679CEF4AB" typeRef="number">
           <dmn:text>Credit Score.FICO</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
-      <dmn:output id="_9C201FAB-B49C-4D22-900B-B4E82D5469FB" name="" typeRef="&lt;Undefined&gt;" />
-      <dmn:annotation name="Annotations" />
+      <dmn:output id="_9C201FAB-B49C-4D22-900B-B4E82D5469FB" />
+      <dmn:annotation name="" />
       <dmn:rule id="_AED703E1-8E56-4D27-A511-3875AD1D122E">
         <dmn:inputEntry id="_E2C9F30B-D529-48D8-A51C-A2ACCC8109B3">
           <dmn:text>&gt;= 750</dmn:text>
@@ -387,7 +377,7 @@ else &quot;Insufficient&quot;</dmn:text>
     <dmn:informationRequirement id="_B6002F33-4888-48C5-B265-636030F8C2DC">
       <dmn:requiredDecision href="#_2FE51DB1-3083-4BF7-AA71-0B0065310E72" />
     </dmn:informationRequirement>
-    <dmn:decisionTable id="_EF7F404A-939E-4889-95D8-E4053DD1EED9" label="Loan Pre-Qualification" typeRef="Loan_Qualification" hitPolicy="FIRST">
+    <dmn:decisionTable id="_EF7F404A-939E-4889-95D8-E4053DD1EED9" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
       <dmn:input id="_58ABD81B-FD16-45C3-9E64-DB271AA917C0">
         <dmn:inputExpression id="_5262441E-F812-4554-AF02-5267BDDF80F5" typeRef="Credit_Score_Rating">
           <dmn:text>Credit Score Rating</dmn:text>
@@ -405,7 +395,7 @@ else &quot;Insufficient&quot;</dmn:text>
       </dmn:input>
       <dmn:output id="_B895B095-C3D6-48B4-8A50-D2D3B8CC6A45" name="Qualification" typeRef="string" />
       <dmn:output id="_A8D2D3B1-07B3-4619-8DE0-F923F511058B" name="Reason" typeRef="string" />
-      <dmn:annotation name="Annotations" />
+      <dmn:annotation name="" />
       <dmn:rule id="_B49E1642-F352-4D2E-92B6-E5DFA59AAFAC">
         <dmn:inputEntry id="_6C83C446-1A9A-4FFC-B30C-23915FF9CC43">
           <dmn:text>&quot;Poor&quot;, &quot;Bad&quot;</dmn:text>
@@ -480,7 +470,8 @@ else &quot;Insufficient&quot;</dmn:text>
           <dmn:text>&quot;Not Qualified&quot;</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_F0BD7DC2-A1B6-4CF4-95D0-906DBB540EFC">
-          <dmn:text>&quot;Debt to income ratio is too high AND mortgage payment to income ratio is too high.&quot;</dmn:text>
+          <dmn:text>&quot;Debt to income ratio is too high AND mortgage payment to income ratio is too
+            high.&quot;</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text></dmn:text>
@@ -515,11 +506,11 @@ else &quot;Insufficient&quot;</dmn:text>
   <dmn:businessKnowledgeModel id="_DA5CCF62-90A8-4CFC-A137-98B528522588" name="DTI">
     <dmn:extensionElements />
     <dmn:variable id="_2F8921D1-6384-4ECB-848E-CE84A20B2573" name="DTI" typeRef="number" />
-    <dmn:encapsulatedLogic id="_478C815E-60C9-4637-AA42-195DF16B63A5" label="DTI" kind="FEEL" typeRef="number">
+    <dmn:encapsulatedLogic id="_478C815E-60C9-4637-AA42-195DF16B63A5" kind="FEEL">
       <dmn:formalParameter id="_B7A9C222-C560-4D37-A821-0CAC88611F10" name="d" typeRef="number" />
       <dmn:formalParameter id="_43C04721-38F6-4ABF-9F2F-BD2956C05441" name="i" typeRef="number" />
-      <dmn:literalExpression id="_064FA88E-B06F-4944-85C3-DA86C3F660DD" typeRef="&lt;Undefined&gt;">
-        <dmn:text>d / i</dmn:text>
+      <dmn:literalExpression id="_064FA88E-B06F-4944-85C3-DA86C3F660DD">
+        <dmn:text>d/i</dmn:text>
       </dmn:literalExpression>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
@@ -533,7 +524,7 @@ else &quot;Insufficient&quot;</dmn:text>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram id="_1608585F-01C8-4A66-B3E5-F4422D4DD2CA" name="Default DRD" useAlternativeInputDataShape="false">
+    <dmndi:DMNDiagram id="_1608585F-01C8-4A66-B3E5-F4422D4DD2CA" name="DRG" useAlternativeInputDataShape="false">
       <di:extension>
         <kie:ComponentsWidthsExtension>
           <kie:ComponentWidths dmnElementRef="_21E8FA38-C947-4733-9E52-CF81A97ADF91">
@@ -545,28 +536,32 @@ else &quot;Insufficient&quot;</dmn:text>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_08A9C33D-719F-4B05-AC42-D15464798BC4">
             <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>1280</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_EB658586-C3C8-488E-8118-E69E31583106">
-            <kie:width>120</kie:width>
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>1110</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_6E79E4D9-BBFB-4E90-8AA3-A6C153C3C946" />
           <kie:ComponentWidths dmnElementRef="_51ACEC3C-4207-4F5F-8FDD-9EDAA3270E60">
-            <kie:width>1036</kie:width>
+            <kie:width>1110</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_5D050B8D-DF55-45FD-988B-9C56BED53D5B">
-            <kie:width>1036</kie:width>
+            <kie:width>1110</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_14C44A69-56DB-4B68-B757-4225C80E4D88">
-            <kie:width>1036</kie:width>
+            <kie:width>1110</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_0DB5DE05-A2AD-4013-B191-DC1D1637A132">
-            <kie:width>1036</kie:width>
+            <kie:width>1110</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_3F95EFD0-94D7-4D1A-9EA9-C8E12982D7E8">
-            <kie:width>1158</kie:width>
+            <kie:width>1280</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_A32ED4A5-7B89-40F7-BE25-CDB636FE071C">
-            <kie:width>454</kie:width>
+            <kie:width>300</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_D33D9AEA-49DF-489F-98EC-4B42FF8C2027">
             <kie:width>50</kie:width>
@@ -574,34 +569,38 @@ else &quot;Insufficient&quot;</dmn:text>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_5F9FEA4E-B3FC-4BC2-913E-36B8071FA777">
             <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>802</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_4A7FC8E0-25EF-4DAF-845A-93BD89C2BC8C">
-            <kie:width>120</kie:width>
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>632</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_F0E80900-1964-4142-9A05-73E7A2E0F2CD" />
           <kie:ComponentWidths dmnElementRef="_3D0A1979-E59A-483F-BDA8-138F99BA5AB3">
-            <kie:width>550</kie:width>
+            <kie:width>632</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_D985F886-71C0-4F65-8808-2CEF366BECC8">
-            <kie:width>550</kie:width>
+            <kie:width>632</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_D1F96102-4158-45BB-8C9A-B7A3BE2C0206">
-            <kie:width>672</kie:width>
+            <kie:width>802</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_4ACEFFF0-AD2C-4DB8-9BAD-7BCCFB03F295">
-            <kie:width>60</kie:width>
-            <kie:width>133</kie:width>
-            <kie:width>147</kie:width>
+            <kie:width>50</kie:width>
+            <kie:width>224</kie:width>
+            <kie:width>226</kie:width>
             <kie:width>335</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_EF7F404A-939E-4889-95D8-E4053DD1EED9">
-            <kie:width>60</kie:width>
-            <kie:width>233</kie:width>
-            <kie:width>133</kie:width>
-            <kie:width>129</kie:width>
+            <kie:width>50</kie:width>
+            <kie:width>227</kie:width>
+            <kie:width>125</kie:width>
+            <kie:width>125</kie:width>
             <kie:width>135</kie:width>
             <kie:width>681</kie:width>
-            <kie:width>138</kie:width>
+            <kie:width>100</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_064FA88E-B06F-4944-85C3-DA86C3F660DD">
             <kie:width>150</kie:width>
@@ -625,7 +624,7 @@ else &quot;Insufficient&quot;</dmn:text>
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="980" y="360" width="134" height="61" />
+        <dc:Bounds x="963" y="359" width="134" height="61" />
         <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape id="dmnshape-drg-_4C788DBD-C672-4F41-9AFE-9C7D2C145734" dmnElementRef="_4C788DBD-C672-4F41-9AFE-9C7D2C145734" isCollapsed="false">
@@ -652,7 +651,7 @@ else &quot;Insufficient&quot;</dmn:text>
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="760" y="360" width="135" height="63" />
+        <dc:Bounds x="747" y="359.3421052631579" width="135" height="63" />
         <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape id="dmnshape-drg-_1CF5CEFA-AF97-46F9-9CD5-9A8AEBB20B4E" dmnElementRef="_1CF5CEFA-AF97-46F9-9CD5-9A8AEBB20B4E" isCollapsed="false">
@@ -670,7 +669,7 @@ else &quot;Insufficient&quot;</dmn:text>
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="315" y="225" width="136" height="62" />
+        <dc:Bounds x="320" y="220" width="136" height="62" />
         <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape id="dmnshape-drg-_2FE51DB1-3083-4BF7-AA71-0B0065310E72" dmnElementRef="_2FE51DB1-3083-4BF7-AA71-0B0065310E72" isCollapsed="false">
@@ -679,7 +678,7 @@ else &quot;Insufficient&quot;</dmn:text>
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="980" y="220" width="136" height="62" />
+        <dc:Bounds x="963" y="225" width="136" height="62" />
         <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape id="dmnshape-drg-_21C50763-E49F-4D83-A824-16DA6AA87C64" dmnElementRef="_21C50763-E49F-4D83-A824-16DA6AA87C64" isCollapsed="false">
@@ -715,7 +714,7 @@ else &quot;Insufficient&quot;</dmn:text>
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="760" y="220" width="134" height="65" />
+        <dc:Bounds x="747" y="224.64473684210526" width="134" height="65" />
         <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_89EEAF9F-5A5D-4F59-91B7-EA418A7229AF" dmnElementRef="_89EEAF9F-5A5D-4F59-91B7-EA418A7229AF">
@@ -727,45 +726,42 @@ else &quot;Insufficient&quot;</dmn:text>
         <di:waypoint x="599" y="287" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_63DE7C3B-A767-4B8A-A098-91ECB4B8D330" dmnElementRef="_63DE7C3B-A767-4B8A-A098-91ECB4B8D330">
-        <di:waypoint x="827.5" y="360" />
+        <di:waypoint x="814.5" y="359.3421052631579" />
         <di:waypoint x="599" y="287" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_2C95829D-FCF9-44F5-8F5A-0A6CDB60600D" dmnElementRef="_2C95829D-FCF9-44F5-8F5A-0A6CDB60600D">
-        <di:waypoint x="827" y="252.5" />
+        <di:waypoint x="814" y="257.14473684210526" />
         <di:waypoint x="667" y="256" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_77BA409B-E00D-4FBC-B522-8F656D4F6F0E" dmnElementRef="_77BA409B-E00D-4FBC-B522-8F656D4F6F0E">
         <di:waypoint x="383.0607476635514" y="391.5" />
-        <di:waypoint x="383" y="287" />
+        <di:waypoint x="388" y="282" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_4D441C11-7042-49CF-A42C-17A4348A7F29" dmnElementRef="_4D441C11-7042-49CF-A42C-17A4348A7F29">
         <di:waypoint x="167.09345794392524" y="255.17105263157896" />
-        <di:waypoint x="315" y="256" />
+        <di:waypoint x="320" y="251" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_3217D655-4484-4733-A9AE-4F9CF30D9924" dmnElementRef="_3217D655-4484-4733-A9AE-4F9CF30D9924">
         <di:waypoint x="167.09345794392524" y="359" />
-        <di:waypoint x="383" y="287" />
+        <di:waypoint x="388" y="282" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_31A1B6B2-A2A6-4E03-B898-26573A5CF3BA" dmnElementRef="_31A1B6B2-A2A6-4E03-B898-26573A5CF3BA">
-        <di:waypoint x="1047" y="390.5" />
-        <di:waypoint x="1048" y="282" />
+        <di:waypoint x="1030" y="389.5" />
+        <di:waypoint x="1031" y="287" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_A3E95B32-2EFD-40AD-B5E4-0A73A1542011" dmnElementRef="_A3E95B32-2EFD-40AD-B5E4-0A73A1542011">
+        <di:waypoint x="388" y="251" />
+        <di:waypoint x="600" y="151" />
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_0B992F01-BA77-4F06-A830-D8948B467272" dmnElementRef="_0B992F01-BA77-4F06-A830-D8948B467272">
         <di:waypoint x="599" y="256" />
         <di:waypoint x="600" y="151" />
       </dmndi:DMNEdge>
-      <dmndi:DMNEdge id="dmnedge-drg-_B6002F33-4888-48C5-B265-636030F8C2DC" dmnElementRef="_B6002F33-4888-48C5-B265-636030F8C2DC" sourceElement="dmnshape-drg-_2FE51DB1-3083-4BF7-AA71-0B0065310E72" targetElement="dmnshape-drg-_21C50763-E49F-4D83-A824-16DA6AA87C64">
-        <di:waypoint x="1048" y="220" />
-        <di:waypoint x="600" y="151" />
-      </dmndi:DMNEdge>
-      <dmndi:DMNEdge id="dmnedge-drg-_A3E95B32-2EFD-40AD-B5E4-0A73A1542011" dmnElementRef="_A3E95B32-2EFD-40AD-B5E4-0A73A1542011" sourceElement="dmnshape-drg-_D6F4234F-15B3-4F5B-B814-5F6FF29D2907" targetElement="dmnshape-drg-_21C50763-E49F-4D83-A824-16DA6AA87C64">
-        <di:waypoint x="383" y="225" />
+      <dmndi:DMNEdge id="dmnedge-drg-_B6002F33-4888-48C5-B265-636030F8C2DC" dmnElementRef="_B6002F33-4888-48C5-B265-636030F8C2DC">
+        <di:waypoint x="1031" y="256" />
         <di:waypoint x="600" y="151" />
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
-  <dmn:import id="_E4562608-B14C-4845-A4C3-6C1A1FBC0219" name="sumBkm" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" />
-  <dmn:import id="_C726A824-9349-4CF8-91FA-F969250C8421" name="sumDiffDs" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1" />
-  <dmn:import id="_87CDD600-7564-CF87-547E-A8B876CD0812" name="testTreePmml" importType="https://www.dmg.org/PMML-4_2" namespace="https://kie.org/pmml#dev-webapp/available-models-to-include/testTree.pmml" />
 </dmn:definitions>
 `;

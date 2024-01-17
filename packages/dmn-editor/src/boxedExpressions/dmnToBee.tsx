@@ -28,19 +28,20 @@ export function dmnToBee(
   }
 
   const expr = expressionHolder.expression;
+  const exprId = expr["@_id"] ?? generateUuid();
 
   if (expr.__$$element === "literalExpression") {
     return {
-      id: expr["@_id"]!,
+      id: exprId,
       name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.Literal,
       dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       content: expr.text?.__$$text,
-      width: widthsById.get(expr["@_id"]!)?.[0],
+      width: widthsById.get(exprId)?.[0],
     };
   } else if (expr.__$$element === "decisionTable") {
     return {
-      id: expr["@_id"]!,
+      id: exprId,
       name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.DecisionTable,
       dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
@@ -51,48 +52,54 @@ export function dmnToBee(
         (expr["@_hitPolicy"] as DecisionTableExpressionDefinitionHitPolicy) ??
         DMN15_SPEC.BOXED.DECISION_TABLE.HitPolicy.default,
       input: (expr.input ?? []).map((input, i) => ({
-        idLiteralExpression: input.inputExpression["@_id"]!,
-        id: input["@_id"]!,
+        idLiteralExpression: input.inputExpression["@_id"] ?? generateUuid(),
+        id: input["@_id"] ?? generateUuid(),
         name: input["@_label"] ?? input.inputExpression["@_label"] ?? input.inputExpression.text?.__$$text ?? "",
         dataType: (input.inputExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
-        width: widthsById.get(expr["@_id"]!)?.[1 + i],
+        width: widthsById.get(exprId)?.[1 + i],
       })),
       output: (expr.output ?? []).map((output, i) => ({
-        id: output["@_id"]!,
+        id: output["@_id"] ?? generateUuid(),
         name: output["@_label"] ?? output["@_name"] ?? "",
         dataType: (output["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
-        width: widthsById.get(expr["@_id"]!)?.[1 + (expr.input ?? []).length + i],
+        width: widthsById.get(exprId)?.[1 + (expr.input ?? []).length + i],
       })),
       annotations: (expr.annotation ?? []).map((a, i) => ({
         name: a["@_name"] ?? "",
-        width: widthsById.get(expr["@_id"]!)?.[1 + (expr.input ?? []).length + (expr.output ?? []).length + i],
+        width: widthsById.get(exprId)?.[1 + (expr.input ?? []).length + (expr.output ?? []).length + i],
       })),
       rules: (expr.rule ?? []).map((r) => ({
-        id: r["@_id"]!,
-        inputEntries: (r.inputEntry ?? []).map((i) => ({ id: i["@_id"]!, content: i.text?.__$$text ?? "" })),
-        outputEntries: (r.outputEntry ?? []).map((o) => ({ id: o["@_id"]!, content: o.text?.__$$text ?? "" })),
+        id: r["@_id"] ?? generateUuid(),
+        inputEntries: (r.inputEntry ?? []).map((i) => ({
+          id: i["@_id"] ?? generateUuid(),
+          content: i.text?.__$$text ?? "",
+        })),
+        outputEntries: (r.outputEntry ?? []).map((o) => ({
+          id: o["@_id"] ?? generateUuid(),
+          content: o.text?.__$$text ?? "",
+        })),
         annotationEntries: (r.annotationEntry ?? []).map((a) => a.text?.__$$text ?? ""),
       })),
     };
   } else if (expr.__$$element === "relation") {
     return {
-      id: expr["@_id"]!,
+      id: exprId,
       name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.Relation,
       dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       rows: (expr.row ?? []).map((row) => ({
-        id: row["@_id"]!,
+        id: row["@_id"] ?? generateUuid(),
         // Assuming only literalExpressions are supported. Any other type of expression won't work for Relations.
         cells: ((row.expression as DMN15__tLiteralExpression[]) ?? []).map((s) => ({
-          id: s["@_id"]!,
+          id: s["@_id"] ?? generateUuid(),
           content: s.text?.__$$text ?? "",
         })),
       })),
       columns: (expr.column ?? []).map((c, i) => ({
-        id: c["@_id"]!,
+        id: c["@_id"] ?? generateUuid(),
         name: c["@_label"] ?? c["@_name"] ?? "",
         dataType: (c["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
-        width: widthsById.get(expr["@_id"]!)?.[1 + i],
+        width: widthsById.get(exprId)?.[1 + i],
       })),
     };
   } else if (expr.__$$element === "context") {
@@ -103,7 +110,7 @@ export function dmnToBee(
         } else {
           acc.contextEntries.push({
             entryInfo: {
-              id: e.variable?.["@_id"] ?? e["@_id"]!,
+              id: e.variable?.["@_id"] ?? e["@_id"] ?? generateUuid(),
               name: e.variable?.["@_label"] ?? e.variable?.["@_name"] ?? e["@_label"]!,
               dataType: (e.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
             },
@@ -124,11 +131,11 @@ export function dmnToBee(
     );
 
     return {
-      id: expr["@_id"]!,
+      id: exprId,
       dataType: expr["@_typeRef"] as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Context as const,
       name: expr["@_label"],
-      entryInfoWidth: widthsById.get(expr["@_id"] ?? "")?.[0],
+      entryInfoWidth: widthsById.get(exprId)?.[0],
       result,
       contextEntries,
     };
@@ -142,18 +149,18 @@ export function dmnToBee(
     const calledFunction = expr.expression! as DMN15__tLiteralExpression;
 
     return {
-      id: expr["@_id"]!,
+      id: exprId,
       dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Invocation as const,
       name: expr["@_label"],
-      entryInfoWidth: widthsById.get(expr["@_id"] ?? "")?.[0],
+      entryInfoWidth: widthsById.get(exprId)?.[0],
       invokedFunction: {
-        id: calledFunction["@_id"]!,
+        id: calledFunction["@_id"] ?? generateUuid(),
         name: calledFunction.text?.__$$text ?? "",
       },
       bindingEntries: (expr.binding ?? []).map((b) => ({
         entryInfo: {
-          id: b.parameter["@_id"]!,
+          id: b.parameter["@_id"] ?? generateUuid(),
           name: b.parameter["@_name"],
           dataType: (b.parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
         },
@@ -166,12 +173,12 @@ export function dmnToBee(
     };
   } else if (expr.__$$element === "functionDefinition") {
     const basic = {
-      id: expr["@_id"]!,
+      id: exprId,
       name: expr["@_label"],
       dataType: expr["@_typeRef"] as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Function as const,
       formalParameters: (expr.formalParameter ?? []).map((p) => ({
-        id: p["@_id"]!,
+        id: p["@_id"] ?? generateUuid(),
         name: p["@_name"]!,
         dataType: (p["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       })),
@@ -211,7 +218,7 @@ export function dmnToBee(
           classFieldId: clazz?.expression?.["@_id"],
           methodName: (method?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
           methodFieldId: method?.expression?.["@_id"],
-          classAndMethodNamesWidth: widthsById.get(expr["@_id"] ?? "")?.[1],
+          classAndMethodNamesWidth: widthsById.get(exprId)?.[1],
         };
       }
       case "PMML": {
@@ -237,7 +244,7 @@ export function dmnToBee(
     }
   } else if (expr.__$$element === "list") {
     return {
-      id: expr["@_id"]!,
+      id: exprId,
       name: expr["@_label"],
       dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.List as const,

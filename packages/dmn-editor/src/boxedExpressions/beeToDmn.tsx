@@ -2,6 +2,7 @@ import {
   DecisionTableExpressionDefinitionBuiltInAggregation,
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
+  generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DMN15_SPEC } from "../Dmn15Spec";
@@ -189,9 +190,9 @@ export function beeToDmn(
         binding: expression.bindingEntries.map((e) => {
           __widths.set(expression.id, expression.entryInfoWidth ? [expression.entryInfoWidth] : []);
           return {
-            "@_id": e.entryInfo.id,
             expression: beeToDmn(e.entryExpression, __widths)!,
             parameter: {
+              "@_id": e.entryInfo.id,
               "@_name": e.entryInfo.name,
               "@_typeRef": e.entryInfo.dataType,
             },
