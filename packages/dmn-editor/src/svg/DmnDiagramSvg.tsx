@@ -209,7 +209,6 @@ export function DmnDiagramSvg({
 
   return (
     <>
-      .
       <EdgeMarkers />
       {edges.map((e) => {
         const { path } = getSnappedMultiPointAnchoredEdgePath({
