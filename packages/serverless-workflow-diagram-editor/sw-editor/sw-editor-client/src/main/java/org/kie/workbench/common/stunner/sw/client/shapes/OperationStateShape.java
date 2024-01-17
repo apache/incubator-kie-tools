@@ -62,8 +62,8 @@ public class OperationStateShape extends StateShape implements HasActions,
         if (state.getTimeouts() != null && state.getTimeouts() instanceof WorkflowTimeouts) {
             getView().addChild(new CornerIcon(CLOCK,
                                               LEFT_FROM_RIGHT_TOP_CORNER,
-                                              getTranslation(TIMEOUT_STATE) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_ACTION) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getActionExecTimeout()));
+                                              getTranslation(TIMEOUT_STATE) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout()) + "\r\n"
+                                                      + getTranslation(TIMEOUT_ACTION) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getActionExecTimeout())));
         }
 
         getView().addChild(new CornerIcon(SERVICE,

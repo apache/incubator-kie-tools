@@ -31,7 +31,7 @@ import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.ACT
 import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.ACTION_IS_SUBFLOW;
 import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.ACTION_NAME;
 
-public interface HasActions extends HasTranslation {
+public interface HasActions extends HasTranslation, IsTruncatable {
 
     default String getActionStringFromArray(ActionNode[] actions) {
         if (actions == null || actions.length == 0) {
@@ -53,29 +53,29 @@ public interface HasActions extends HasTranslation {
         }
 
         if (StringUtils.nonEmpty(action.getName())) {
-            return getTranslation(ACTION_NAME) + ": " + action.getName();
+            return getTranslation(ACTION_NAME) + ": " + truncate(action.getName());
         }
 
         if (action.getFunctionRef() != null) {
             if (action.getFunctionRef() instanceof String) {
-                return getTranslation(ACTION_IS_FUNC) + ": " + action.getFunctionRef();
+                return getTranslation(ACTION_IS_FUNC) + ": " + truncate(action.getFunctionRef().toString());
             }
 
             FunctionRef functionRef = (FunctionRef) action.getFunctionRef();
-            return getTranslation(ACTION_IS_FUNC) + ": " + functionRef.getRefName();
+            return getTranslation(ACTION_IS_FUNC) + ": " + truncate(functionRef.getRefName());
         }
 
         if (action.getEventRef() != null) {
-            return getTranslation(ACTION_IS_EVENT) + ": " + action.getEventRef().getConsumeEventRef();
+            return getTranslation(ACTION_IS_EVENT) + ": " + truncate(action.getEventRef().getConsumeEventRef());
         }
 
         if (action.getSubFlowRef() != null) {
             if (action.getSubFlowRef() instanceof String) {
-                return getTranslation(ACTION_IS_SUBFLOW) + ": " + action.getSubFlowRef();
+                return getTranslation(ACTION_IS_SUBFLOW) + ": " + truncate(action.getSubFlowRef().toString());
             }
 
             SubFlowRef subFlowRef = (SubFlowRef) action.getSubFlowRef();
-            return getTranslation(ACTION_IS_SUBFLOW) + ": " + subFlowRef.getWorkflowId();
+            return getTranslation(ACTION_IS_SUBFLOW) + ": " + truncate(subFlowRef.getWorkflowId());
         }
 
         return getTranslation(ACTION_IS_NULL);
