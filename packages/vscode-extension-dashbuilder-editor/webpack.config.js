@@ -18,6 +18,7 @@
  */
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const { ProvidePlugin } = require("webpack");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const dashbuilderClient = require("@kie-tools/dashbuilder-client");
 const { merge } = require("webpack-merge");
@@ -49,7 +50,12 @@ module.exports = async (env) => [
     entry: {
       "browser/extension": "./src/browser/extension.ts",
     },
-    plugins: [],
+    plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
   }),
   merge(commonConfig(env), {
     target: "web",

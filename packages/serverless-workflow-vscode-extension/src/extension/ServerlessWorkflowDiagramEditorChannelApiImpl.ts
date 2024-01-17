@@ -27,10 +27,12 @@ import {
 import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
+import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/notifications/VsCodeNotificationsChannelApiImpl";
 import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
+import { VsCodeWorkspaceChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/workspace/VsCodeWorkspaceChannelApiImpl";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import {
   ResourceContent,
@@ -38,7 +40,6 @@ import {
   ResourceContentService,
   ResourceListRequest,
   ResourcesList,
-  WorkspaceChannelApi,
   WorkspaceEdit,
 } from "@kie-tools-core/workspace/dist/api";
 import {
@@ -46,10 +47,6 @@ import {
   ServerlessWorkflowDiagramEditorEnvelopeApi,
 } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { FileLanguage, SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import {
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   getJsonStateNameFromOffset,
   getJsonStateNameOffset,
@@ -70,9 +67,9 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
   constructor(
     private readonly editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceChannelApi,
+    vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsChannelApi,
+    vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>,
@@ -83,9 +80,9 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     this.defaultApiImpl = new DefaultVsCodeKieEditorChannelApiImpl(
       editor,
       resourceContentService,
-      workspaceApi,
+      vscodeWorkspace,
       backendProxy,
-      notificationsApi,
+      vscodeNotifications,
       javaCodeCompletionApi,
       viewType,
       i18n
@@ -126,20 +123,26 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     this.defaultApiImpl.kogitoNotifications_createNotification(notification);
   }
 
-  public kogitoNotifications_removeNotifications(path: string): void {
-    this.defaultApiImpl.kogitoNotifications_removeNotifications(path);
+  public kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.defaultApiImpl.kogitoNotifications_removeNotifications(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
-  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
+  public kogitoNotifications_setNotifications(
+    normalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    notifications: Notification[]
+  ): void {
+    this.defaultApiImpl.kogitoNotifications_setNotifications(
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+      notifications
+    );
   }
 
   public kogitoWorkspace_newEdit(edit: WorkspaceEdit): void {
     this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 
-  public kogitoWorkspace_openFile(path: string): void {
-    this.defaultApiImpl.kogitoWorkspace_openFile(path);
+  public kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot: string): void {
+    this.defaultApiImpl.kogitoWorkspace_openFile(normalizedPosixPathRelativeToTheWorkspaceRoot);
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {

@@ -23,7 +23,7 @@ const packageJson = require("./package.json");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const { EnvironmentPlugin } = require("webpack");
+const { EnvironmentPlugin, ProvidePlugin } = require("webpack");
 const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const swEditorAssets = require("@kie-tools/serverless-workflow-diagram-editor-assets");
@@ -70,6 +70,10 @@ module.exports = async (env) => {
       },
     },
     plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
       new EnvironmentPlugin({
         WEBPACK_REPLACE__targetOrigin: router_targetOrigin,
         WEBPACK_REPLACE__relativePath: router_relativePath,

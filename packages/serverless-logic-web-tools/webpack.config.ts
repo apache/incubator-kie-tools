@@ -63,6 +63,7 @@ export default async (env: any, argv: any) => {
       target: "webworker",
       plugins: [
         new ProvidePlugin({
+          process: require.resolve("process/browser.js"),
           Buffer: ["buffer", "Buffer"],
         }),
         new EnvironmentPlugin({
@@ -162,6 +163,7 @@ export default async (env: any, argv: any) => {
             ],
           }),
           new ProvidePlugin({
+            process: require.resolve("process/browser.js"),
             Buffer: ["buffer", "Buffer"],
           }),
           new MonacoWebpackPlugin({

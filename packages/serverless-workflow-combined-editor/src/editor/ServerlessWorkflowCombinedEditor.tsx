@@ -79,7 +79,7 @@ interface Props {
 }
 
 export type ServerlessWorkflowCombinedEditorRef = {
-  setContent(path: string, content: string): Promise<void>;
+  setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void>;
   colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void;
   moveCursorToPosition(position: Position): void;
 };
@@ -203,17 +203,17 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     forwardedRef,
     () => {
       return {
-        setContent: async (path: string, content: string) => {
+        setContent: async (normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) => {
           try {
-            const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
-            const dotExtension = match ? match[0] : extname(path);
+            const match = /\.sw\.(json|yml|yaml)$/.exec(normalizedPosixPathRelativeToTheWorkspaceRoot.toLowerCase());
+            const dotExtension = match ? match[0] : extname(normalizedPosixPathRelativeToTheWorkspaceRoot);
             const extension = dotExtension.slice(1);
-            const fileName = basename(path);
+            const fileName = basename(normalizedPosixPathRelativeToTheWorkspaceRoot);
             const getFileContentsFn = async () => content;
 
-            setFile({ content, path });
+            setFile({ content, path: normalizedPosixPathRelativeToTheWorkspaceRoot });
             setEmbeddedTextEditorFile({
-              path: path,
+              normalizedPosixPathRelativeToTheWorkspaceRoot,
               getFileContents: getFileContentsFn,
               isReadOnly: props.isReadOnly,
               fileExtension: extension,
@@ -221,7 +221,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
             });
 
             setEmbeddedDiagramEditorFile({
-              path: path,
+              normalizedPosixPathRelativeToTheWorkspaceRoot,
               getFileContents: getFileContentsFn,
               isReadOnly: true,
               fileExtension: extension,

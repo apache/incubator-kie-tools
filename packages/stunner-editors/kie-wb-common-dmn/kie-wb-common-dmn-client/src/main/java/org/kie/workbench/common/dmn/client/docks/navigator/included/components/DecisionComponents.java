@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package org.kie.workbench.common.dmn.client.docks.navigator.included.components;
@@ -41,7 +41,6 @@ import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
-import org.kie.workbench.common.stunner.core.util.FileUtils;
 import org.uberfire.client.mvp.UberElemental;
 
 import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.determineImportType;
@@ -254,7 +253,7 @@ public class DecisionComponents {
         final String modelName = anImport.getName().getValue();
         final String namespace = anImport.getNamespace();
         final String importType = anImport.getImportType();
-        final String path = FileUtils.getFileName(anImport.getLocationURI().getValue());
+        final String path = anImport.getLocationURI().getValue();
         return new DMNIncludedModel(modelName, "", path, namespace, importType, 0, 0);
     }
 

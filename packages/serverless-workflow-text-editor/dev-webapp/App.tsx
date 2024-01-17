@@ -81,7 +81,7 @@ export const App = () => {
     }
 
     const devWebAppSwfLanguageService = new DevWebAppSwfLanguageService();
-    return devWebAppSwfLanguageService.getLs(embeddedEditorFile.path!);
+    return devWebAppSwfLanguageService.getLs(embeddedEditorFile.normalizedPosixPathRelativeToTheWorkspaceRoot!);
   }, [embeddedEditorFile]);
 
   const apiImpl = useMemo(() => {
@@ -129,13 +129,13 @@ export const App = () => {
     const content = await editor.getContent();
     const lsDiagnostics = await swfLanguageService.getDiagnostics({
       content: content,
-      uriPath: embeddedEditorFile.path!,
+      uriPath: embeddedEditorFile.normalizedPosixPathRelativeToTheWorkspaceRoot!,
     });
 
     const notifications = lsDiagnostics.map(
       (lsDiagnostic) =>
         ({
-          path: "", // empty to not group them by path, as we're only validating one file.
+          normalizedPosixPathRelativeToTheWorkspaceRoot: "", // empty to not group them by path, as we're only validating one file.
           severity: lsDiagnostic.severity === DiagnosticSeverity.Error ? "ERROR" : "WARNING",
           message: `${lsDiagnostic.message} [Line ${lsDiagnostic.range.start.line + 1}]`,
           type: "PROBLEM",
@@ -151,14 +151,14 @@ export const App = () => {
     window.alert(JSON.stringify(notifications, undefined, 2));
   }, [editor, embeddedEditorFile, swfLanguageService]);
 
-  const onSetContent = useCallback((path: string, content: string) => {
-    const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
-    const dotExtension = match ? match[0] : extname(path);
+  const onSetContent = useCallback((normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) => {
+    const match = /\.sw\.(json|yml|yaml)$/.exec(normalizedPosixPathRelativeToTheWorkspaceRoot.toLowerCase());
+    const dotExtension = match ? match[0] : extname(normalizedPosixPathRelativeToTheWorkspaceRoot);
     const extension = dotExtension.slice(1);
-    const fileName = basename(path);
+    const fileName = basename(normalizedPosixPathRelativeToTheWorkspaceRoot);
 
     setEmbeddedEditorFile({
-      path: path,
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
       getFileContents: async () => content,
       isReadOnly: false,
       fileExtension: extension,

@@ -74,15 +74,15 @@ export function activate(context: vscode.ExtensionContext) {
       const buffer = fs.readFileSync(file.fsPath);
       const parsedPath = path.parse(file.fsPath);
       const base64FileName = `${parsedPath.name}${parsedPath.ext}.base64png`;
-      const base64AbsoluteFilePath = path.join(parsedPath.dir, base64FileName);
-      fs.writeFileSync(base64AbsoluteFilePath, buffer.toString("base64"));
+      const base64AbsoluteFsPath = path.join(parsedPath.dir, base64FileName);
+      fs.writeFileSync(base64AbsoluteFsPath, buffer.toString("base64"));
 
       vscode.window.showInformationMessage("Generated the Base64 file with success!", "Open").then((selected) => {
         if (!selected) {
           return;
         }
 
-        vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(base64AbsoluteFilePath));
+        vscode.commands.executeCommand("vscode.open", vscode.Uri.file(base64AbsoluteFsPath));
       });
     })
   );

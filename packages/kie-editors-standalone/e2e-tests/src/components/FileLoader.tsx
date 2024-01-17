@@ -46,7 +46,14 @@ export const FileLoader: React.FC<Props> = (props: Props) => {
         readUploadedFileAsText(file).then((fileContent) =>
           props.setFiles((files) => [
             ...files,
-            { name: file.name, value: { path: file.name, type: ContentType.TEXT, content: fileContent } },
+            {
+              name: file.name,
+              value: {
+                normalizedPosixPathRelativeToTheWorkspaceRoot: file.name,
+                type: ContentType.TEXT,
+                content: fileContent,
+              },
+            },
           ])
         );
       });

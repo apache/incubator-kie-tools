@@ -58,80 +58,83 @@ interface Props {
  * @param props
  * @constructor
  */
-export function Sidebar(props: Props) {
+export function Sidebar({ editorEnvelopeLocator, editor, setFile, file, fileExtension, accept }: Props) {
   /**
    * A state which indicates the Editor dirty state
    */
-  const isDirty = useDirtyState(props.editor!);
+  const isDirty = useDirtyState(editor!);
 
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const onDownload = useCallback(() => {
-    props.editor?.getStateControl().setSavedCommand();
-    props.editor?.getContent().then((content) => {
+    editor?.getStateControl().setSavedCommand();
+    editor?.getContent().then((content) => {
       if (downloadRef.current) {
         const fileBlob = new Blob([content], { type: "text/plain" });
         downloadRef.current.href = URL.createObjectURL(fileBlob)!;
-        downloadRef.current.download = `${props.file.fileName}.${props.fileExtension}`;
+        downloadRef.current.download = `${file.fileName}.${fileExtension}`;
         downloadRef.current.click();
       }
     });
-  }, [props.editor]);
+  }, [editor, file.fileName, fileExtension]);
 
-  const [fileName, setFileName] = useState(props.file.fileName);
+  const [fileName, setFileName] = useState(file.fileName);
   const onChangeName = useCallback(() => {
-    props.setFile({
-      ...props.file,
+    setFile({
+      ...file,
       fileName,
     });
-  }, [props.file, fileName]);
+  }, [file, fileName, setFile]);
 
   const onNewFile = useCallback(() => {
     setFileName("new-file");
-    props.setFile({
+    setFile({
       isReadOnly: false,
-      fileExtension: props.fileExtension,
+      fileExtension: fileExtension,
       fileName: "new-file",
       getFileContents: () => Promise.resolve(""),
-      path: `new-file.${props.fileExtension}`,
+      normalizedPosixPathRelativeToTheWorkspaceRoot: `new-file.${fileExtension}`,
     });
-  }, []);
+  }, [fileExtension, setFile]);
 
   const onOpenSample = useCallback(() => {
     setFileName("sample");
-    props.setFile({
+    setFile({
       isReadOnly: false,
-      fileExtension: props.fileExtension,
+      fileExtension: fileExtension,
       fileName: "sample",
-      getFileContents: () => fetch(`examples/sample.${props.fileExtension}`).then((response) => response.text()),
-      path: `sample.${props.fileExtension}`,
+      getFileContents: () => fetch(`examples/sample.${fileExtension}`).then((response) => response.text()),
+      normalizedPosixPathRelativeToTheWorkspaceRoot: `sample.${fileExtension}`,
     });
-  }, []);
+  }, [fileExtension, setFile]);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const onOpenFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!inputRef.current!.files) {
-      return;
-    }
+  const onOpenFile = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!inputRef.current!.files) {
+        return;
+      }
 
-    const currentFile = inputRef.current!.files![0];
-    if (!props.editorEnvelopeLocator.hasMappingFor(currentFile.name)) {
-      return;
-    }
+      const currentFile = inputRef.current!.files![0];
+      if (!editorEnvelopeLocator.hasMappingFor(currentFile.name)) {
+        return;
+      }
 
-    setFileName(removeFileExtension(currentFile.name));
-    props.setFile({
-      isReadOnly: false,
-      fileExtension: extractFileExtension(currentFile.name)!,
-      fileName: removeFileExtension(currentFile.name),
-      path: currentFile.name,
-      getFileContents: () =>
-        new Promise<string | undefined>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = (event: any) => resolve(event.target.result as string);
-          reader.readAsText(currentFile);
-        }),
-    });
-  }, []);
+      setFileName(removeFileExtension(currentFile.name));
+      setFile({
+        isReadOnly: false,
+        fileExtension: extractFileExtension(currentFile.name)!,
+        fileName: removeFileExtension(currentFile.name),
+        normalizedPosixPathRelativeToTheWorkspaceRoot: currentFile.name,
+        getFileContents: () =>
+          new Promise<string | undefined>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (event: any) => resolve(event.target.result as string);
+            reader.readAsText(currentFile);
+          }),
+      });
+    },
+    [editorEnvelopeLocator, setFile]
+  );
 
   return (
     <div>
@@ -161,7 +164,7 @@ export function Sidebar(props: Props) {
               <a className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-a"}>
                 Open File
                 <input
-                  accept={props.accept}
+                  accept={accept}
                   className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-open-file pf-c-button"}
                   type="file"
                   aria-label="File selection"

@@ -75,11 +75,11 @@ export class Base64PngEditorInterface implements Editor {
 
   /**
    * Set the Editor content
-   * @param path The file path that is being open.
+   * @param normalizedPosixPathRelativeToTheWorkspaceRoot The file normalizedPosixPathRelativeToTheWorkspaceRoot that is being open.
    * @param content The file content in a string format.
    */
-  public setContent(path: string, content: string): Promise<void> {
-    return this.editorRef.current!.setContent(path, content)!;
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
+    return this.editorRef.current!.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content)!;
   }
 
   /**
