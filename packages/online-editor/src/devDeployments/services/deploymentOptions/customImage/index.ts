@@ -67,7 +67,7 @@ ${IngressYaml()}
               {
                 op: "add",
                 path: "/spec/template/spec/containers/0/args",
-                value: ["./dev-deployment-upload-service && ${{ parameters.command }}"],
+                value: [`dev-deployment-upload-service && \${{ parameters.command }}`],
               },
             ],
           },

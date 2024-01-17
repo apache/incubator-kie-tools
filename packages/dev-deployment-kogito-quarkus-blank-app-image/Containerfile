@@ -5,15 +5,15 @@
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
-# 
+#
 #  http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License. 
+# under the License.
 
 # Defaults to quay.io/kie-tools/dev-deployment-base-image (check env/index.js)
 ARG BUILDER_IMAGE_ARG
@@ -35,4 +35,4 @@ EXPOSE 8080
 
 ENTRYPOINT ["/bin/bash", "-c"]
 
-CMD ["./dev-deployment-upload-service && ./mvnw quarkus:dev -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.non-application-root-path=${ROOT_PATH}/q -Dquarkus.http.root-path=${ROOT_PATH}"]
+CMD ["dev-deployment-upload-service && ./mvnw quarkus:dev -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.non-application-root-path=${ROOT_PATH}/q -Dquarkus.http.root-path=${ROOT_PATH}"]

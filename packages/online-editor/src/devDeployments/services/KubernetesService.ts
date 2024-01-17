@@ -229,8 +229,6 @@ export class KubernetesService {
       return resultYaml;
     });
 
-    console.log({ processedYamls });
-
     return await callK8sApiServer({
       k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
       k8sResourceYamls: parseK8sResourceYamls(processedYamls),

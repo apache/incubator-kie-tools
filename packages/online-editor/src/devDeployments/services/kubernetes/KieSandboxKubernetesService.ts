@@ -180,8 +180,6 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
       },
     ];
 
-    console.log({ actions });
-
     let resources = [];
     try {
       resources = await this.kubernetesService.applyResourceYamls({

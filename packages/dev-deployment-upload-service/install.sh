@@ -7,20 +7,20 @@
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
-# 
+#
 #  http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License. 
+# under the License.
 
 # The install script is based off of the Apache-licensed script from helm,
 # a tool for managing Charts: https://github.com/helm/helm/blob/main/scripts/get-helm-3
 
-: ${DDUS_BASE_DOWNLOAD_URL:="https://localhost:9001"}
+: ${DDUS_KIE_SANDBOX_URL:="https://localhost:9001"}
 : ${DDUS_BINARY_NAME:="dev-deployment-upload-service"}
 : ${DDUS_GLOBAL_INSTALL_DIR:="/usr/local/bin"}
 : ${DDUS_LOCAL_INSTALL_DIR:="$HOME/.local/bin"}
@@ -31,6 +31,9 @@
 HAS_CURL="$(type "curl" &> /dev/null && echo true || echo false)"
 HAS_WGET="$(type "wget" &> /dev/null && echo true || echo false)"
 HAS_OPENSSL="$(type "openssl" &> /dev/null && echo true || echo false)"
+HAS_SHASUM="$(type "shasum" &> /dev/null && echo true || echo false)"
+HAS_SHA256SUM="$(type "sha256sum" &> /dev/null && echo true || echo false)"
+HAS_GZIP="$(type "gzip" &> /dev/null && echo true || echo false)"
 
 # Discovers the architecture for this system.
 initArch() {
@@ -79,8 +82,13 @@ verifySupported() {
     exit 1
   fi
 
-  if [ "${DDUS_VERIFY_CHECKSUM}" == "true" ] && [ "${HAS_OPENSSL}" != "true" ]; then
-    echo "In order to verify checksum, openssl must first be installed."
+  if [ "${HAS_GZIP}" != "true" ]; then
+    echo "gzip is required to unpack binaries"
+    exit 1
+  fi
+
+  if [ "${DDUS_VERIFY_CHECKSUM}" == "true" ] && [ "${HAS_OPENSSL}" != "true" ] && [ "${HAS_SHASUM}" != "true" ] && [ "${HAS_SHA256SUM}" != "true" ]; then
+    echo "In order to verify checksum, openssl or shasum must first be installed."
     echo "Please install openssl or set DDUS_VERIFY_CHECKSUM=false in your environment."
     exit 1
   fi
@@ -103,7 +111,7 @@ checkInstalledVersion() {
 downloadFile() {
   DDUS_BIN_FILE="dev-deployment-upload-service-$OS-$ARCH"
   DDUS_DOWNLOAD_FILE="$DDUS_BIN_FILE.tar.gz"
-  DOWNLOAD_URL="$DDUS_BASE_DOWNLOAD_URL/dev-deployments/upload-service/$DDUS_DOWNLOAD_FILE"
+  DOWNLOAD_URL="$DDUS_KIE_SANDBOX_URL/dev-deployments/upload-service/$DDUS_DOWNLOAD_FILE"
   CHECKSUM_URL="$DOWNLOAD_URL.sha256"
   DDUS_TMP_ROOT="$(mktemp -dt dev-deployment-upload-service-install-XXXXXX)"
   DDUS_TMP_FILE="$DDUS_TMP_ROOT/$DDUS_DOWNLOAD_FILE"
@@ -122,7 +130,13 @@ downloadFile() {
 verifyFile() {
   if [ "${DDUS_VERIFY_CHECKSUM}" == "true" ]; then
     printf "Verifying checksum... "
-    local sum=$(openssl sha1 -sha256 ${DDUS_TMP_FILE} | awk '{print $2}')
+    if [ "${HAS_OPENSSL}" == "true" ]; then
+      sum=$(openssl sha1 -sha256 ${DDUS_TMP_FILE} | awk '{print $2}')
+    elif [ "${HAS_SHASUM}" == "true" ]; then
+      sum=$(shasum -a 256 ${DDUS_TMP_FILE} | awk '{print $1}')
+    else
+      sum=$(sha256sum ${DDUS_TMP_FILE} | awk '{print $1}')
+    fi
     local expected_sum=$(cat ${DDUS_SUM_FILE})
     if [ "$sum" != "$expected_sum" ]; then
       echo "SHA sum of ${DDUS_TMP_FILE} does not match. Aborting."
@@ -139,11 +153,13 @@ installFile() {
   tar xf "$DDUS_TMP_FILE" -C "$DDUS_TMP"
   if [ "${DDUS_USE_ROOT}" == "true" ]; then
     echo "Preparing to install $DDUS_BIN_FILE into ${DDUS_GLOBAL_INSTALL_DIR}"
+    runAsRoot mkdir -p "$DDUS_GLOBAL_INSTALL_DIR"
     runAsRoot cp "$DDUS_TMP/$DDUS_BIN_FILE" "$DDUS_GLOBAL_INSTALL_DIR/$DDUS_BINARY_NAME"
     echo "$DDUS_BINARY_NAME installed into $DDUS_GLOBAL_INSTALL_DIR/$DDUS_BINARY_NAME" and available globally.
   else
     echo "No root access, installing for current user only."
     echo "Preparing to install $DDUS_BINARY_NAME into ${DDUS_LOCAL_INSTALL_DIR}"
+    mkdir -p "$DDUS_LOCAL_INSTALL_DIR"
     cp "$DDUS_TMP/$DDUS_BIN_FILE" "$DDUS_LOCAL_INSTALL_DIR/$DDUS_BINARY_NAME"
     echo "$DDUS_BINARY_NAME installed into $DDUS_LOCAL_INSTALL_DIR/$DDUS_BINARY_NAME".
   fi
@@ -174,9 +190,11 @@ fail_trap() {
 # Tests the installed client to make sure it is working.
 testVersion() {
   set +e
+  sleep 2
+  source $HOME/.bashrc
   DDUS="$(command -v $DDUS_BINARY_NAME)"
   if [ "$?" = "1" ]; then
-    echo "$DDUS_BINARY_NAME not found. Is $DDUS_GLOBAL_INSTALL_DIR or $DDUS_LOCAL_INSTALL_DIR on your "'$PATH?'
+    echo "$DDUS_BINARY_NAME not found. Is $DDUS_GLOBAL_INSTALL_DIR or $DDUS_LOCAL_INSTALL_DIR in your "'$PATH?'
     exit 1
   fi
   set -e
