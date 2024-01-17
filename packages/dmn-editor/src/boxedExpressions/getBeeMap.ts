@@ -268,10 +268,10 @@ export type InvocationParameterCell = (NameCell & TypeRefCell) & { type: "invoca
 type ListCell = { type: "list" };
 type FunctionDefinitionCell = { type: "functionDefinition" };
 type ForCell = { type: "for" };
-type EveryCell = (NameCell & TypeRefCell) & { type: "every" };
-type SomeCell = (NameCell & TypeRefCell) & { type: "some" };
-type ConditionalCell = (NameCell & TypeRefCell) & { type: "conditional" };
-type FilterCell = (NameCell & TypeRefCell) & { type: "filter" };
+type EveryCell = { type: "every" };
+type SomeCell = { type: "some" };
+type ConditionalCell = { type: "conditional" };
+type FilterCell = { type: "filter" };
 
 export type CellContent =
   | LiteralExpressionCell
@@ -371,12 +371,12 @@ export function getDmnObject(paths: Path[], decesionObject: DMN15__tDecision): A
       case "decisionTable":
         if (path.header === "input") {
           if (path.row < 0) {
-            return (decesionObject as DMN15__tDecisionTable).input?.[path.row].inputExpression;
+            return (decesionObject as DMN15__tDecisionTable).input?.[path.column].inputExpression;
           }
           return (decesionObject as DMN15__tDecisionTable).rule?.[path.row].inputEntry?.[path.column];
         }
         if (path.row < 0) {
-          return (decesionObject as DMN15__tDecisionTable).output?.[path.row];
+          return (decesionObject as DMN15__tDecisionTable).output?.[path.column];
         }
         return (decesionObject as DMN15__tDecisionTable).rule?.[path.row].outputEntry?.[path.column];
       case "context":

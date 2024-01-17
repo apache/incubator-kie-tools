@@ -32,7 +32,9 @@ import { SingleNodeProperties } from "./SingleNodeProperties";
 import {
   BeePanelType,
   CellContent,
+  ContextExpressionVariableCell,
   DecisionTableCell,
+  InvocationParameterCell,
   LiteralExpressionCell,
   RelationCell,
   generateBeeMap,
@@ -123,35 +125,55 @@ export function BeePropertiesPanel() {
               (dmnObject as DMN15__tLiteralExpression).text = newContent.text;
               break;
             case "context":
-              (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
-              (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+              if (newContent["@_name"]) {
+                (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+              }
+              if (newContent["@_typeRef"]) {
+                (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+              }
               break;
             case "decisionTable":
               if (newContent.cell === "rule") {
                 (dmnObject as DMN15__tUnaryTests | DMN15__tLiteralExpression).text = newContent.text;
               }
               if (newContent.cell === "outputHeader") {
-                (dmnObject as DMN15__tOutputClause)["@_name"] = newContent["@_name"];
-                (dmnObject as DMN15__tOutputClause)["@_typeRef"] = newContent["@_typeRef"];
+                if (newContent["@_name"]) {
+                  (dmnObject as DMN15__tOutputClause)["@_name"] = newContent["@_name"];
+                }
+                if (newContent["@_typeRef"]) {
+                  (dmnObject as DMN15__tOutputClause)["@_typeRef"] = newContent["@_typeRef"];
+                }
               }
               if (newContent.cell === "inputHeader") {
-                (dmnObject as DMN15__tInputClause).inputExpression.text = newContent.inputExpression.text;
-                (dmnObject as DMN15__tInputClause).inputExpression["@_typeRef"] =
-                  newContent.inputExpression["@_typeRef"];
+                if (newContent.inputExpression.text) {
+                  (dmnObject as DMN15__tInputClause).inputExpression.text = newContent.inputExpression.text;
+                }
+                if (newContent.inputExpression["@_typeRef"]) {
+                  (dmnObject as DMN15__tInputClause).inputExpression["@_typeRef"] =
+                    newContent.inputExpression["@_typeRef"];
+                }
               }
               break;
             case "relation":
               if (newContent.cell === "header") {
-                (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
-                (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+                if (newContent["@_name"]) {
+                  (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+                }
+                if (newContent["@_typeRef"]) {
+                  (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+                }
               }
               if (newContent.cell === "content") {
                 (dmnObject as DMN15__tLiteralExpression).text = newContent.text;
               }
               break;
             case "invocation":
-              (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
-              (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+              if (newContent["@_name"]) {
+                (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+              }
+              if (newContent["@_typeRef"]) {
+                (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+              }
               break;
           }
         }
@@ -196,14 +218,33 @@ export function BeePropertiesPanel() {
                       isReadonly={false} // TODO: LUIZ
                       shouldCommitOnBlur={true}
                       className={"pf-c-form-control"}
-                      onRenamed={(newName) => {
-                        // setState((state) => {
-                        //   renameDrgElement({
-                        //     definitions: state.dmn.model.definitions,
-                        //     index,
-                        //     newName,
-                        //   });
-                        // });
+                      onRenamed={(newContent) => {
+                        switch (selectedObjectPath!.type) {
+                          case "context":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              "@_name": newContent,
+                            } as ContextExpressionVariableCell);
+                          case "decisionTable":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              "@_name": newContent,
+                              cell: "outputHeader",
+                            } as DecisionTableCell);
+                          case "relation":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              "@_name": newContent,
+                              cell: "header",
+                            } as RelationCell);
+                          case "invocation":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              "@_name": newContent,
+                            } as InvocationParameterCell);
+                          default:
+                            return;
+                        }
                       }}
                       allUniqueNames={allFeelVariableUniqueNames}
                     />
@@ -213,11 +254,32 @@ export function BeePropertiesPanel() {
                       heightRef={dmnEditorRootElementRef}
                       typeRef={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_typeRef"]}
                       onChange={(newTypeRef) => {
-                        // setState((state) => {
-                        //   const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
-                        //   drgElement.variable ??= { "@_name": decision["@_name"] };
-                        //   drgElement.variable["@_typeRef"] = newTypeRef;
-                        // });
+                        switch (selectedObjectPath!.type) {
+                          case "context":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              "@_typeRef": newTypeRef,
+                            } as ContextExpressionVariableCell);
+                          case "decisionTable":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              "@_typeRef": newTypeRef,
+                              cell: "outputHeader",
+                            } as DecisionTableCell);
+                          case "relation":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              "@_typeRef": newTypeRef,
+                              cell: "header",
+                            } as RelationCell);
+                          case "invocation":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              "@_typeRef": newTypeRef,
+                            } as InvocationParameterCell);
+                          default:
+                            return;
+                        }
                       }}
                     />
                   </FormGroup>
@@ -272,14 +334,22 @@ export function BeePropertiesPanel() {
                       isReadonly={false} // TODO: LUIZ
                       shouldCommitOnBlur={true}
                       className={"pf-c-form-control"}
-                      onRenamed={(newName) => {
-                        // setState((state) => {
-                        //   renameDrgElement({
-                        //     definitions: state.dmn.model.definitions,
-                        //     index,
-                        //     newName,
-                        //   });
-                        // });
+                      onRenamed={(newContent) => {
+                        switch (selectedObjectPath!.type) {
+                          case "decisionTable":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              inputExpression: {
+                                text: { __$$text: newContent },
+                                "@_typeRef": (selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression[
+                                  "@_typeRef"
+                                ],
+                              },
+                              cell: "inputHeader",
+                            } as DecisionTableCell);
+                          default:
+                            return;
+                        }
                       }}
                       allUniqueNames={allFeelVariableUniqueNames}
                     />
@@ -289,11 +359,23 @@ export function BeePropertiesPanel() {
                       heightRef={dmnEditorRootElementRef}
                       typeRef={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression["@_typeRef"]}
                       onChange={(newTypeRef) => {
-                        // setState((state) => {
-                        //   const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
-                        //   drgElement.variable ??= { "@_name": decision["@_name"] };
-                        //   drgElement.variable["@_typeRef"] = newTypeRef;
-                        // });
+                        switch (selectedObjectPath!.type) {
+                          case "decisionTable":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              inputExpression: {
+                                text: {
+                                  __$$text:
+                                    (selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression.text
+                                      ?.__$$text ?? "",
+                                },
+                                "@_typeRef": newTypeRef,
+                              },
+                              cell: "inputHeader",
+                            } as DecisionTableCell);
+                          default:
+                            return;
+                        }
                       }}
                     />
                   </FormGroup>
