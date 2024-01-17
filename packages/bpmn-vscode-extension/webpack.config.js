@@ -40,9 +40,15 @@ const commonConfig = (env) =>
 
 module.exports = async (env) => [
   merge(commonConfig(env), {
-    target: "web",
+    target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
+    },
+  }),
+  merge(commonConfig(env), {
+    target: "webworker",
+    entry: {
+      "extension/extensionWeb": "./src/extension/extension.ts",
     },
     plugins: [
       new ProvidePlugin({
@@ -60,6 +66,10 @@ module.exports = async (env) => [
       rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
       new CopyWebpackPlugin({
         patterns: [
           {

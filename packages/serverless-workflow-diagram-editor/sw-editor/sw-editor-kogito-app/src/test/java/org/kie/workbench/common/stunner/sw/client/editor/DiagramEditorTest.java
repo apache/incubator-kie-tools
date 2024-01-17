@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.PostResizeCallback;
@@ -45,6 +44,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasVi
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
+import org.kie.workbench.common.stunner.core.client.api.JsCanvasWrapper;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.AbstractSelectionControl;
@@ -141,7 +141,7 @@ public class DiagramEditorTest {
     private Graph graph;
 
     @Mock
-    private JsCanvas jsCanvas;
+    private JsCanvasWrapper jsCanvas;
 
     @Mock
     private AbstractSelectionControl selectionControl;

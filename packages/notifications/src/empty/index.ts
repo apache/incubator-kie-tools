@@ -17,4 +17,4 @@
  * under the License.
  */
 
-export * from "./VsCodeNotificationsChannelApiImpl";
+export type keep = true;

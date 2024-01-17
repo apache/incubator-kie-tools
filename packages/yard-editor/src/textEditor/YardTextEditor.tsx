@@ -46,7 +46,10 @@ const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditor
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
 
   const controller: YardTextEditorApi = useMemo<YardTextEditorApi>(() => {
-    if (file.path.endsWith(".yard.yaml") || file.path.endsWith(".yard.yml")) {
+    if (
+      file.normalizedPosixPathRelativeToTheWorkspaceRoot.endsWith(".yard.yaml") ||
+      file.normalizedPosixPathRelativeToTheWorkspaceRoot.endsWith(".yard.yml")
+    ) {
       return new YardTextEditorController(
         file.content,
         onContentChange,
@@ -56,7 +59,7 @@ const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditor
         setValidationErrors
       );
     }
-    throw new Error(`Unsupported extension '${file.path}'`);
+    throw new Error(`Unsupported extension '${file.normalizedPosixPathRelativeToTheWorkspaceRoot}'`);
   }, [editorEnvelopeCtx.operatingSystem, file, onContentChange, isReadOnly, setValidationErrors]);
 
   useEffect(() => {

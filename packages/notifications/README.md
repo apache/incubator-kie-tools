@@ -20,18 +20,6 @@ The library is separated into two submodules:
   - `import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api"`
   - `import { NotificationType } from "@kie-tools-core/notifications/dist/api"`
 
-- vscode
-
-  All the classes needed to use in vscode channel implementation
-
-  to use the vscode classes:
-
-  ```ts
-  import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/vscode";
-
-  const api: NotificationsChannelApi = new VsCodeNotificationsChannelApiImpl(workspaceApi, i18n);
-  ```
-
 ## API
 
 Notifications main attributes:

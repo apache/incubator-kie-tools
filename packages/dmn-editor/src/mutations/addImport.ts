@@ -19,7 +19,6 @@
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15__tDefinitions, DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 
 export function addImport({
   definitions,
@@ -30,15 +29,23 @@ export function addImport({
     name: string;
     namespace: string;
     xmlns: string;
-    locationURI: string;
+    normalizedPathRelativeToThisDmn: string;
   };
 }) {
+  const isAlreadyUsingExplicitRelativePathNotation =
+    includedModel.normalizedPathRelativeToThisDmn.startsWith("./") ||
+    includedModel.normalizedPathRelativeToThisDmn.startsWith("../");
+
+  const posixPathExplicitlyRelativeToThisDmn = isAlreadyUsingExplicitRelativePathNotation
+    ? includedModel.normalizedPathRelativeToThisDmn // If the included model is located in a parent directory, we leave it that way because that is explicit enough already.
+    : `./${includedModel.normalizedPathRelativeToThisDmn}`; // Always use this notation to make it explicit that we're using thisDmn's location as reference.
+
   const newImport: DMN15__tImport = {
     "@_id": generateUuid(),
     "@_name": includedModel.name.trim(),
     "@_importType": includedModel.xmlns,
     "@_namespace": includedModel.namespace,
-    "@_locationURI": includedModel.locationURI,
+    "@_locationURI": posixPathExplicitlyRelativeToThisDmn,
   };
 
   definitions.import ??= [];

@@ -26,6 +26,8 @@ import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completi
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
 import { DefaultVsCodeKieEditorChannelApiImpl } from "./DefaultVsCodeKieEditorChannelApiImpl";
+import { VsCodeWorkspaceChannelApiImpl } from "./workspace/VsCodeWorkspaceChannelApiImpl";
+import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 
 /**
  * Produces instances of KogitoEditorChannelApi to be used if we want to provide the extension a Channel API with
@@ -36,9 +38,9 @@ export interface VsCodeKieEditorChannelApiProducer {
    * Method to obtain the KogitoEditorChannelApi instance.
    * @param editor
    * @param resourceContentService
-   * @param workspaceApi
+   * @param vscodeWorkspace
    * @param backendProxy
-   * @param notificationsApi
+   * @param vscodeNotifications
    * @param javaCodeCompletionApi
    * @param viewType
    * @param i18n
@@ -46,9 +48,9 @@ export interface VsCodeKieEditorChannelApiProducer {
   get(
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceChannelApi,
+    vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsChannelApi,
+    vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>
@@ -59,9 +61,9 @@ export class DefaultVsCodeEditorChannelApiProducer implements VsCodeKieEditorCha
   get(
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceChannelApi,
+    vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsChannelApi,
+    vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>
@@ -69,9 +71,9 @@ export class DefaultVsCodeEditorChannelApiProducer implements VsCodeKieEditorCha
     return new DefaultVsCodeKieEditorChannelApiImpl(
       editor,
       resourceContentService,
-      workspaceApi,
+      vscodeWorkspace,
       backendProxy,
-      notificationsApi,
+      vscodeNotifications,
       javaCodeCompletionApi,
       viewType,
       i18n

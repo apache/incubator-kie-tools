@@ -23,7 +23,7 @@ import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
 import { EditorToolbar } from "./Toolbar/EditorToolbar";
 import { useOnlineI18n } from "../i18n";
-import { ChannelType, DEFAULT_WORKING_DIR_BASE_PATH } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -63,7 +63,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { useEnv } from "../env/hooks/EnvContext";
 import { useSettings } from "../settings/SettingsContext";
 import { EditorEnvelopeLocatorFactory } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
-import { relative } from "path";
+import * as __path from "path";
 
 export interface Props {
   workspaceId: string;
@@ -168,7 +168,7 @@ export function EditorPage(props: Props) {
 
           // FIXME: KOGITO-7958: PMML Editor doesn't work well after this is called. Can't edit using multiple tabs.
           setEmbeddedEditorFile({
-            path: workspaceFilePromise.data.workspaceFile.relativePath,
+            normalizedPosixPathRelativeToTheWorkspaceRoot: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
             isReadOnly: false,
             fileExtension: workspaceFilePromise.data.workspaceFile.extension,
@@ -275,7 +275,7 @@ export function EditorPage(props: Props) {
     async (request: ResourceContentRequest) => {
       return workspaces.resourceContentGet({
         workspaceId: props.workspaceId,
-        relativePath: request.path,
+        relativePath: request.normalizedPosixPathRelativeToTheWorkspaceRoot, // This is the "normalized posix path relative to the workspace root", or here in the KIE Sandbox context, just "relativePath", as it is assumed that all "relativePaths" are relative to the workspace root.
         opts: request.opts,
       });
     },
@@ -299,19 +299,18 @@ export function EditorPage(props: Props) {
   }, [alertsDispatch]);
 
   const handleOpenFile = useCallback(
-    async (absolutePath: string) => {
+    async (normalizedPosixPathRelativeToTheWorkspaceRoot: string) => {
       if (!workspaceFilePromise.data) {
         return;
       }
-      const relativePath = relative(DEFAULT_WORKING_DIR_BASE_PATH, absolutePath);
       const file = await workspaces.getFile({
         workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
-        relativePath,
+        relativePath: normalizedPosixPathRelativeToTheWorkspaceRoot,
       });
 
       if (!file) {
         throw new Error(
-          `Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceFile.workspaceId}'`
+          `Can't find ${normalizedPosixPathRelativeToTheWorkspaceRoot} on Workspace '${workspaceFilePromise.data.workspaceFile.workspaceId}'`
         );
       }
 
@@ -497,7 +496,7 @@ Error details: ${err}`);
                             editorEnvelopeLocator={settingsAwareEditorEnvelopeLocator}
                             channelType={ChannelType.ONLINE_MULTI_FILE}
                             locale={locale}
-                            workingDirBasePath={""}
+                            workspaceRootAbsolutePosixPath={DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH}
                           />
                         )}
                       </EditorPageDockDrawer>
