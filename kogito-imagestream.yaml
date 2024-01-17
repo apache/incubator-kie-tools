@@ -132,27 +132,6 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-data-index-infinispan
-      annotations:
-        openshift.io/display-name: Runtime image for the Kogito Data Index Service for Infinispan persistence provider
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for the Kogito Data Index Service with Infinispan
-            iconClass: icon-jbpm
-            tags: kogito,data-index,data-index-infinispan
-            supports: persistence backed by Infinispan Server
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-data-index-infinispan:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
       name: kogito-data-index-ephemeral
       annotations:
         openshift.io/display-name: Runtime image for the Kogito Data Index Service for ephemeral PostgreSQL persistence provider
@@ -171,27 +150,6 @@ items:
           from:
             kind: DockerImage
             name: quay.io/kiegroup/kogito-data-index-ephemeral:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-data-index-mongodb
-      annotations:
-        openshift.io/display-name: Runtime image for the Kogito Data Index Service for MongoDB persistence provider
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for the Kogito Data Index Service with Mongodb
-            iconClass: icon-jbpm
-            tags: kogito,data-index,data-index-mongodb
-            supports: persistence backed by Mongodb server
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-data-index-mongodb:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:
@@ -216,90 +174,6 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-trusty-infinispan
-      annotations:
-        openshift.io/display-name: Runtime image for the Kogito Trusty Service for Infinispan persistence provider
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for the Kogito Trusty Service with Infinispan
-            iconClass: icon-jbpm
-            tags: kogito,trusty,trusty-infinispan
-            supports: persistence backed by Infinispan server
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-trusty-infinispan:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-trusty-redis
-      annotations:
-        openshift.io/display-name: Runtime image for the Kogito Trusty Service for Redis persistence provider
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for the Kogito Trusty Service with Redis
-            iconClass: icon-jbpm
-            tags: kogito,trusty,trusty-redis
-            supports: persistence backed by Redis server
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-trusty-redis:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-trusty-postgresql
-      annotations:
-        openshift.io/display-name: Runtime image for the Kogito Trusty Service for PostgreSQL persistence provider
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for the Kogito Trusty Service with PostgreSQL
-            iconClass: icon-jbpm
-            tags: kogito,trusty,trusty-postgresql
-            supports: persistence backed by PostgreSQL RDBMS
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-trusty-postgresql:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-trusty-ui
-      annotations:
-        openshift.io/display-name: Runtime image for the Kogito Trusty UI Service
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for the Kogito Trusty UI Service
-            iconClass: icon-jbpm
-            tags: kogito,trusty-ui
-            supports: Audit UI
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-trusty-ui:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
       name: kogito-jit-runner
       annotations:
         openshift.io/display-name: Runtime image for the Kogito JIT Runner
@@ -321,27 +195,6 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-explainability
-      annotations:
-        openshift.io/display-name: Runtime image for the Kogito Explainability Service
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for the Kogito Explainability Service
-            iconClass: icon-jbpm
-            tags: kogito,explainability
-            supports: explainability for decisions
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-explainability:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
       name: kogito-jobs-service-ephemeral
       annotations:
         openshift.io/display-name: Runtime image for Kogito in memory Jobs Service
@@ -360,48 +213,6 @@ items:
           from:
             kind: DockerImage
             name: quay.io/kiegroup/kogito-jobs-service-ephemeral:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-jobs-service-infinispan
-      annotations:
-        openshift.io/display-name: Runtime image for Kogito Jobs Service based on Infinispan
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for Kogito Jobs Service based on Infinispan
-            iconClass: icon-jbpm
-            tags: kogito,jobs-service
-            supports: out-of-box process timers
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-jobs-service-infinispan:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-jobs-service-mongodb
-      annotations:
-        openshift.io/display-name: Runtime image for Kogito Jobs Service based on Mongodb
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for Kogito Jobs Service based on Mongodb
-            iconClass: icon-jbpm
-            tags: kogito,jobs-service
-            supports: out-of-box process timers
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-jobs-service-mongodb:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:

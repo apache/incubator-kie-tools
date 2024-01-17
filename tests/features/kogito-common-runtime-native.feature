@@ -1,5 +1,4 @@
 @quay.io/kiegroup/kogito-runtime-native
-@rhpam-7/rhpam-kogito-runtime-native-rhel8
 Feature: Kogito-runtime-native feature.
 
   Scenario: Verify if the binary build is finished as expected and if it is listening on the expected port with quarkus native

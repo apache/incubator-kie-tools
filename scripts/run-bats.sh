@@ -29,12 +29,6 @@ else
     rm -rf bats-core
 fi
 
-echo  "----> running bats on kogito-trusty-common"
-./bats/bin/bats modules/kogito-trusty-common/tests/bats
-
-echo "----> running bats on kogito-explainability"
-./bats/bin/bats modules/kogito-explainability/tests/bats
-
 echo "----> running bats on kogito-graalvm-scripts"
 ./bats/bin/bats modules/kogito-graalvm-scripts/common/tests/bats
 
@@ -49,9 +43,6 @@ echo "----> running bats on kogito-management-console"
 
 echo "----> running bats on kogito-task-console"
 ./bats/bin/bats modules/kogito-task-console/tests/bats/
-
-echo "----> running bats on kogito-trusty-ui"
-./bats/bin/bats modules/kogito-trusty-ui/tests/bats/
 
 echo "----> running bats on kogito-maven"
 ./bats/bin/bats modules/kogito-maven/tests/bats

@@ -44,9 +44,6 @@ jobs:
       - name: validate kogito imagestream
         run: |
           ${HOME}/openshift-template-validator-linux-amd64 validate -f kogito-imagestream.yaml
-      - name: validate logic imagestream
-        run: |
-          ${HOME}/openshift-template-validator-linux-amd64 validate -f logic-imagestream.yaml
 
   shellcheck:
     concurrency:

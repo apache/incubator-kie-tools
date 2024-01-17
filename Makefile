@@ -55,26 +55,6 @@ ifneq ($(ignore_test),true)
 	tests/shell/run.sh ${image_name} "quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}"
 endif
 
-# Build all images
-.PHONY: build-prod
-# start to build the images
-build-prod:
-	@for iname in $(shell make list arg=--prod); do make build-prod-image image_name=$${iname}; done
-
-
-.PHONY: build-prod-image
-image_name=
-build-prod-image: clone-repos _build-prod-image
-
-_build-prod-image:
-ifneq ($(ignore_build),true)
-	scripts/build-kogito-apps-components.sh ${image_name} ${KOGITO_APPS_TARGET_BRANCH} ${KOGITO_APPS_TARGET_URI};
-	scripts/build-product-image.sh "build" $(image_name) ${build_options} ${BUILD_ENGINE}
-endif
-# if ignore_test is set to true, ignore the tests
-ifneq ($(ignore_test),true)
-	scripts/build-product-image.sh "test" $(image_name) ${test_options}
-endif
 
 # push images to quay.io, this requires permissions under kiegroup organization
 .PHONY: push
@@ -116,9 +96,3 @@ push-local-registry:
 .PHONY: bats
 bats:
 	./scripts/run-bats.sh
-
-.PHONY: container-build-osbs
-prod_component=
-container-build-osbs:
-	echo "calling RHPAM container-build-osbs......................................"
-	$(CEKIT_CMD) --descriptor $(prod_component).yaml --redhat build ${build_options} osbs --assume-yes ${osbs_options}

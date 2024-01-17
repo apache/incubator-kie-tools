@@ -25,12 +25,8 @@ IMAGE_NAME="$2"
 KOGITO_EXAMPLES_REPO_NAME='incubator-kie-kogito-examples'
 KOGITO_EXAMPLES_FOLDER_NAME='kogito-examples' # many tests rely on location /tmp/kogito-examples
 
-prod=""
 if [ -n "${IMAGE_NAME}" ]; then
-    if [[ ${IMAGE_NAME} =~ rhpam|logic* ]]; then
-        prod="--prod"
-    fi
-    if python ../../scripts/list-images.py ${prod} -is ${IMAGE_NAME}; then
+    if python ../../scripts/list-images.py -is ${IMAGE_NAME}; then
         echo "Target image is supporting services, skipping examples build"
         exit 0
     fi

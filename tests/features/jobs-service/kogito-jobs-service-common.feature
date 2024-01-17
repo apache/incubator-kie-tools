@@ -1,5 +1,3 @@
-@quay.io/kiegroup/kogito-jobs-service-infinispan
-@quay.io/kiegroup/kogito-jobs-service-mongodb
 @quay.io/kiegroup/kogito-jobs-service-ephemeral
 @quay.io/kiegroup/kogito-jobs-service-postgresql
 @quay.io/kiegroup/kogito-jobs-service-allinone

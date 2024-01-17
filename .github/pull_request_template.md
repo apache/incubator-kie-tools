@@ -18,9 +18,6 @@ How to retest this PR or trigger a specific build:
 
 - <b>(Re)run Jenkins tests</b>  
   Please add comment: <b>Jenkins [test|retest] this</b>
-
-- <b>Prod tests</b>  
-  Please add comment: <b>Jenkins (re)run [prod|Prod|PROD]</b>
 </details>
 
 <details>

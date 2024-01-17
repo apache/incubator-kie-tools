@@ -52,13 +52,10 @@ Table of Contents
         - [Kogito Runtime Native Image Example](#kogito-runtime-native-image-example)
   - [Kogito Component Images](#kogito-component-images)
     - [Kogito Data Index Component Images](#kogito-data-index-component-images)
-    - [Kogito Explainability Component Image](#kogito-explainability-component-image)
-    - [Kogito Trusty Component Image](#kogito-trusty-component-image)
     - [Kogito Jobs Service Component Images](#kogito-jobs-service-component-images)
       - [Jobs Services All-in-one](#jobs-services-all-in-one)
     - [Kogito Management Console Component Image](#kogito-management-console-component-image)
     - [Kogito Task Console Component Image](#kogito-task-console-component-image)
-    - [Kogito Trusty UI Component Image](#kogito-trusty-ui-component-image)
     - [Kogito JIT Runner Component Image](#kogito-jit-runner-component-image)
   - [Using Kogito Images to Deploy Apps on OpenShift](#using-kogito-images-to-deploy-apps-on-openshift)
     - [Using released images](#using-released-images)
@@ -84,7 +81,7 @@ To interact with Kogito images, you would need to install the needed dependencie
     * Moby Engine or Docker CE
         * Podman can be use to build the images, but at this moment CeKit does not support it, so images build with podman
             cannot be tested with CeKit.
-    * [CeKit 3.6.0+](https://docs.cekit.io/en/latest/): 
+    * [CeKit 4.8.0+](https://docs.cekit.io/en/latest/): 
         * CeKit also has its own dependencies:
             * python packages: docker, docker-squash, odcs-client. 
             * All of those can be handled with pip, including CeKit.
@@ -170,7 +167,7 @@ For more information about what is installed on this image, take a look [here](k
 **modules.install** section. 
 
 
-#### Kogito SWF (Serverless Workflow) Builder Image usage
+#### SonataFlow Builder Image usage
 
 ##### Using as a builder
 
@@ -205,7 +202,7 @@ Replace `<local_workflow_path>` with your local filesystem containing your workf
 
 After the image bootstrap, you can access [http://localhost:8080/q/swagger-ui](http://localhost:8080/q/swagger-ui) and test the workflow application right away!
 
-##### Using the Kogito SWF Builder Image nightly image
+##### Using the SonataFlow Builder Image nightly image
 
 The nightly builder image has been built and optimized with an internal nightly build of the Quarkus Platform.  
 There are 2 environment variables that should not be changed when using it:
@@ -602,24 +599,15 @@ Order has been created Order[12345] with assigned approver JOHN
 
 The Kogito Component Images can be considered as lightweight images that will complement the Kogito core engine 
 by providing extra capabilities, like managing the processes on a web UI or providing persistence layer to the Kogito applications.
-Today we have 16 Kogito Component Images:
+Today we have the following Kogito Component Images:
 
-* [quay.io/kiegroup/kogito-data-index-infinispan](https://quay.io/kiegroup/kogito-data-index-infinispan)
 * [quay.io/kiegroup/kogito-data-index-ephemeral](https://quay.io/kiegroup/kogito-data-index-ephemeral)
-* [quay.io/kiegroup/kogito-data-index-mongodb](https://quay.io/kiegroup/kogito-data-index-mongodb)
 * [quay.io/kiegroup/kogito-data-index-postgresql](https://quay.io/kiegroup/kogito-data-index-postgresql)
-* [quay.io/kiegroup/kogito-trusty-infinispan](https://quay.io/kiegroup/kogito-trusty-infinispan)
-* [quay.io/kiegroup/kogito-trusty-redis](https://quay.io/kiegroup/kogito-trusty-redis)
-* [quay.io/kiegroup/kogito-trusty-postgresql](https://quay.io/kiegroup/kogito-trusty-postgresql)
-* [quay.io/kiegroup/kogito-explainability](https://quay.io/kiegroup/kogito-explainability)
 * [quay.io/kiegroup/kogito-jobs-service-ephemeral](https://quay.io/kiegroup/kogito-jobs-service-ephemeral) 
-* [quay.io/kiegroup/kogito-jobs-service-infinispan](https://quay.io/kiegroup/kogito-jobs-service-infinispan)
-* [quay.io/kiegroup/kogito-jobs-service-mongodb](https://quay.io/kiegroup/kogito-jobs-service-mongodb)
 * [quay.io/kiegroup/kogito-jobs-service-postgresql](https://quay.io/kiegroup/kogito-jobs-service-postgresql)
 * [quay.io/kiegroup/kogito-jobs-service-allinone](https://quay.io/kiegroup/kogito-jobs-service-allinone)
 * [quay.io/kiegroup/kogito-management-console](https://quay.io/kiegroup/kogito-management-console)
 * [quay.io/kiegroup/kogito-task-console](https://quay.io/kiegroup/kogito-task-console)
-* [quay.io/kiegroup/kogito-trusty-ui](https://quay.io/kiegroup/kogito-trusty-ui)
 * [quay.io/kiegroup/kogito-jit-runner](https://quay.io/kiegroup/kogito-jit-runner)
 
 
@@ -630,39 +618,14 @@ For more information please visit this (link)(https://docs.jboss.org/kogito/rele
 The Data Index Service depends on a running Infinispan, MongoDB or PostgreSQL.
 The Persistence service can be switched by using its corresponding image
 
-- Infinispan: quay.io/kiegroup/kogito-data-index-infinispan
-  [image.yaml](kogito-data-index-infinispan-image.yaml)
 - Ephemeral PostgreSQL: quay.io/kiegroup/kogito-data-index-ephemeral
   [image.yaml](kogito-data-index-ephemeral-image.yaml)
-- Mongodb: quay.io/kiegroup/kogito-data-index-mongodb 
-  [image.yaml](kogito-data-index-mongodb-image.yaml)
-- Oracle: quay.io/kiegroup/kogito-data-index-oracle
-  [image.yaml](kogito-data-index-oracle-image.yaml)
 - PostgreSQL: quay.io/kiegroup/kogito-data-index-postgresql
   [image.yaml](kogito-data-index-postgresql-image.yaml)
-
-
-Basic usage with Infinispan:
-```bash
-$ docker run -it --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
-```
 
 Basic usage with Ephemeral PostgreSQL:
 ```bash
 $ docker run -it quay.io/kiegroup/kogito-data-index-ephemeral:latest
-```
-
-Basic usage with Mongodb:
-```bash
-$ docker run -it --env QUARKUS_MONGODB_CONNECTION_STRING=mongodb://localhost:27017 quay.io/kiegroup/kogito-data-index-mongodb:latest
-```
-
-Basic usage with Oracle:
-```bash
-$ docker run -it --env QUARKUS_DATASOURCE_JDBC_URL="jdbc:oracle:thin://localhost:1521/kogito"  \
-    --env QUARKUS_DATASOURCE_USERNAME="kogito" \
-    --env QUARKUS_DATASOURCE_PASSWORD="secret" \
-    quay.io/kiegroup/kogito-data-index-oracle:latest
 ```
 
 Basic usage with PostgreSQL:
@@ -676,77 +639,12 @@ $ docker run -it --env QUARKUS_DATASOURCE_JDBC_URL="jdbc:postgresql://localhost:
 To enable debug just use this env while running this image:
 
 ```bash
-$ docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
+$ docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-postgresql:latest
 ```
 You should notice a few debug messages present in the system output.
 
 
 The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Data Index Service 
-to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
-
-### Kogito Explainability Component Image
-
-The Explainability Service aims to provide explainability on the decisions that have been taken by kogito runtime applications. 
-
-Basic usage
-```bash
-$ docker run -it quay.io/kiegroup/kogito-explainability:latest
-```
-
-To enable debug just use this env while running this image:
-
-```bash
-docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-explainability:latest
-```
-You should notice a few debug messages being printed in the system output.
-
-To know what configurations this image accepts please take a look [here](kogito-explainability-image.yaml) on the **envs** section.
-
-The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Explainability Service 
-to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
-
-
-### Kogito Trusty Component Image
-
-The Trusty Service aims at collecting tracing information by one or more Kogito runtime services and provides analytical capabilities on top of the collected data. 
-The Trusty Service depends on a running Infinispan, Redis Server or PostgreSQL RDBMS.
-The Trusty service can be switched by using its corresponding image
-
-- Infinispan: quay.io/kiegroup/kogito-trusty-infinispan
-    [image.yaml](kogito-trusty-infinispan-image.yaml)
-- Redis: quay.io/kiegroup/kogito-trusty-redis
-    [image.yaml](kogito-trusty-redis-image.yaml)
-- PostgreSQL: quay.io/kiegroup/kogito-trusty-postgresql
-    [image.yaml](kogito-trusty-postgresql-image.yaml)
-
-Basic usage with Infinispan:
-```bash
-$ docker run -it --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-trusty-infinispan:latest
-```
-
-Basic usage with Redis:
-```bash
-$ docker run -it --env KOGITO_PERSISTENCE_REDIS_URL=redis://localhost:6379 quay.io/kiegroup/kogito-trusty-redis:latest
-```
-
-Basic usage with PostgreSQL:
-```bash
-$ docker run -it --env QUARKUS_DATASOURCE_JDBC_URL="jdbc:postgresql://localhost:5432/quarkus"  \
-    --env QUARKUS_DATASOURCE_USERNAME="kogito" \
-    --env QUARKUS_DATASOURCE_PASSWORD="secret" \
-    quay.io/kiegroup/kogito-trusty-postgresql:latest
-```
-
-To enable debug just use this env while running this image:
-
-```bash
-docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-trusty:latest
-```
-You should notice a few debug messages being printed in the system output.
-
-To know what configurations this image accepts please take a look [here](kogito-trusty-image.yaml) on the **envs** section.
-
-The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Trusty Service 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
 ### Kogito Jobs Service Component Images
@@ -759,8 +657,6 @@ For more information please visit this [link](https://github.com/apache/incubato
 Today, the Jobs service contains four images:
 
 - [ephemeral](kogito-jobs-service-ephemeral-image.yaml)
-- [infinispan](kogito-jobs-service-infinispan-image.yaml)
-- [mongodb](kogito-jobs-service-mongodb-image.yaml)
 - [postgresql](kogito-jobs-service-postgresql-image.yaml)
 - [all-in-one](kogito-jobs-service-allinone-image.yaml)
 
@@ -773,7 +669,7 @@ $ docker run -it quay.io/kiegroup/kogito-jobs-service-ephemeral:latest
 To enable debug on the Jobs Service images, set the ` SCRIPT_DEBUG` to `true`, example: 
 
 ```bash
-docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service-infinispan:latest
+docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service-postgresql:latest
 ```
 
 You should notice a few debug messages being printed in the system output.
@@ -877,31 +773,6 @@ To know what configurations this image accepts please take a look [here](kogito-
 The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Task Console
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
-### Kogito Trusty UI Component Image
-
-The Kogito Trusty UI provides an audit tool that allows you to retrieve and inspect the decisions that have been taken by Kogito Runtime Services.
-It depends on the Kogito Trusty Service on which the Trusty UI will connect to so it can be able to retrieve the information to display.
-
-To work correctly, the Kogito Trusty UI needs the Kogito Trusty Service url. If not provided, it will try to connect to the default one (http://localhost:8180).
-
-Basic usage:
-
-```bash
-$ docker run -it --env KOGITO_TRUSTY_ENDPOINT=trusty-service-url:9090 quay.io/kiegroup/kogito-trusty-ui:latest
-```
-
-To enable debug just use this env while running this image:
-
-```bash
-docker run -it --env SCRIPT_DEBUG=true --env KOGITO_TRUSTY_ENDPOINT=trusty-service-url:9090 quay.io/kiegroup/kogito-trusty-ui:latest
-```
-You should notice a few debug messages being printed in the system output.
-
-To know what configurations this image accepts please take a look [here](kogito-trusty-ui-image.yaml) on the **envs** section.
-
-The [Kogito Operator](https://github.com/apache/incubator-kie-kogito-operator) can be used to deploy the Kogito Trusty UI 
-to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
-
 ### Kogito JIT Runner Component Image
 
 The Kogito JIT Runner provides a tool that allows you to submit a DMN model and evaluate it on the fly with a simple HTTP request. You can find more details on JIT [here](https://github.com/apache/incubator-kie-kogito-apps/tree/main/jitexecutor).
@@ -951,16 +822,9 @@ $ oc create -f https://raw.githubusercontent.com/apache/incubator-kie-kogito-ima
 imagestream.image.openshift.io/kogito-runtime-native created
 imagestream.image.openshift.io/kogito-runtime-jvm created
 imagestream.image.openshift.io/kogito-s2i-builder created
-imagestream.image.openshift.io/kogito-data-index-infinispan created
 imagestream.image.openshift.io/kogito-data-index-ephemeral created
-imagestream.image.openshift.io/kogito-data-index-mongodb created
 imagestream.image.openshift.io/kogito-data-index-postgresql created
-imagestream.image.openshift.io/kogito-trusty-infinispan created
-imagestream.image.openshift.io/kogito-trusty-redis created
-imagestream.image.openshift.io/kogito-trusty-postgresql created
 imagestream.image.openshift.io/kogito-jobs-service-ephemeral created
-imagestream.image.openshift.io/kogito-jobs-service-infinispan created
-imagestream.image.openshift.io/kogito-jobs-service-mongodb created
 imagestream.image.openshift.io/kogito-jobs-service-postgresql created
 imagestream.image.openshift.io/kogito-jobs-service-allinone created
 imagestream.image.openshift.io/kogito-management-console created
@@ -1145,22 +1009,12 @@ With this Makefile you can:
      $ make build-image image_name=kogito-s2i-builder
      $ make build-image image_name=kogito-runtime-jvm-ubi8
      $ make build-image image_name=kogito-runtime-native
-     $ make build-image image_name=kogito-data-index-infinispan
      $ make build-image image_name=kogito-data-index-ephemeral
-     $ make build-image image_name=kogito-data-index-mongodb
-     $ make build-image image_name=kogito-data-index-oracle
      $ make build-image image_name=kogito-data-index-postgresql
-     $ make build-image image_name=kogito-trusty-infinispan
-     $ make build-image image_name=kogito-trusty-redis
-     $ make build-image image_name=kogito-trusty-postgresql
-     $ make build-image image_name=kogito-explainability
      $ make build-image image_name=kogito-jobs-service-ephemeral
-     $ make build-image image_name=kogito-jobs-service-infinispan
-     $ make build-image image_name=kogito-jobs-service-mongodb
      $ make build-image image_name=kogito-jobs-service-postgresql
      $ make build-image image_name=kogito-jobs-service-allinone
      $ make build-image image_name=kogito-management-console
-     $ make build-image image_name=kogito-trusty-ui
      $ make build-image image_name=kogito-jit-runner
      ```
   
@@ -1217,30 +1071,20 @@ To better understand the CeKit Modules, please visit this [link](https://docs.ce
 Below you can find all modules used to build the Kogito Images
 
 - [kogito-data-index-common](modules/kogito-data-index-common): Data Index common module.
-- [kogito-data-index-infinispan](modules/kogito-data-index-infinispan): Installs and Configure the infinispan data-index jar inside the image.
 - [kogito-data-index-ephemeral](modules/kogito-data-index-ephemeral): Installs and Configure the ephemeral PostgreSQL data-index jar inside the image.
-- [kogito-data-index-mongodb](modules/kogito-data-index-mongodb): Installs and Configure the mongodb data-index jar inside the image.
-- [kogito-data-index-oracle](modules/kogito-data-index-oracle): Installs and Configure the Oracle data-index jar inside the image.
 - [kogito-data-index-postgresql](modules/kogito-data-index-postgresql): Installs and Configure the PostgreSQL data-index jar inside the image.
-- [kogito-trusty-infinispan](modules/kogito-trusty-infinispan): Installs and Configure the infinispan trusty jar inside the image.
-- [kogito-trusty-redis](modules/kogito-trusty-redis): Installs and Configure the redis trusty jar inside the image.
-- [kogito-trusty-postgresql](modules/kogito-trusty-postgresql): Installs and Configure the PostgreSQL trusty jar inside the image.
-- [kogito-explainability](modules/kogito-explainability): Installs and Configure the explainability jar inside the image.
 - [kogito-epel](modules/kogito-epel): Configures the epel repository on the target image.
 - [kogito-graalvm-installer](modules/kogito-graalvm-installer): Installs the GraalVM on the target Image.
 - [kogito-graalvm-scripts](modules/kogito-graalvm-scripts): Configures the GraalVM on the target image and provides custom configuration script. 
 - [kogito-image-dependencies](modules/kogito-image-dependencies): Installs rpm packages on the target image. Contains common dependencies for Kogito Images.
 - [kogito-jobs-service-common](modules/kogito-jobs-service-common): Job service common module
 - [kogito-jobs-service-ephemeral](modules/kogito-jobs-service-ephemeral): Installs and Configure the in-memory jobs-service jar inside the image
-- [kogito-jobs-service-infinispan](modules/kogito-jobs-service-infinispan): Installs and Configure the infinispan jobs-service jar inside the image
-- [kogito-jobs-service-mongodb](modules/kogito-jobs-service-mongodb): Installs and Configure the mongodb jobs-service jar inside the image
 - [kogito-jobs-service-postgresql](modules/kogito-jobs-service-postgresql): Installs and Configure the postgresql jobs-service jar inside the image
 - [kogito-jobs-service-allinone](modules/kogito-jobs-service-all-in-one): Provides the runner script that supports all jobs-service flavors
 - [kogito-kubernetes-client](modules/kogito-kubernetes-client): Provides a simple wrapper to interact with Kubernetes API.
 - [kogito-launch-scripts](modules/kogito-launch-scripts): Main script for all images, it contains the startup script for Kogito Images
 - [kogito-logging](modules/kogito-logging): Provides common logging functions.
 - [kogito-management-console](modules/kogito-management-console): Installs and Configure the management-console jar inside the image
-- [kogito-trusty-ui](modules/kogito-trusty-ui): Installs and Configure the trusty-ui jar inside the image
 - [kogito-jit-runner](modules/kogito-jit-runner): Installs and Configure the jit-runner jar inside the image
 - [kogito-maven](modules/kogito-maven): Installs and configure Maven on the S2I images, also provides custom configuration script.
 - [kogito-openjdk](modules/kogito-openjdk): Provides OpenJDK and JRE.
@@ -1254,22 +1098,12 @@ Below you can find all modules used to build the Kogito Images
 For each image, we use a specific *-image.yaml file.
 Please inspect the image files to learn which modules are being installed on each image:
 
-- [quay.io/kiegroup/kogito-data-index-infinispan](kogito-data-index-infinispan-image.yaml)
 - [quay.io/kiegroup/kogito-data-index-ephemeral](kogito-data-index-ephemeral-image.yaml)
-- [quay.io/kiegroup/kogito-data-index-mongodb](kogito-data-index-mongodb-image.yaml)
-- [quay.io/kiegroup/kogito-data-index-oracle](kogito-data-index-oracle-image.yaml)
 - [quay.io/kiegroup/kogito-data-index-postgresql](kogito-data-index-postgresql-image.yaml)
-- [quay.io/kiegroup/kogito-trusty-infinispan](kogito-trusty-infinispan-image.yaml)
-- [quay.io/kiegroup/kogito-trusty-redis](kogito-trusty-redis-image.yaml)
-- [quay.io/kiegroup/kogito-trusty-postgresql](kogito-trusty-postgresql-image.yaml)
-- [quay.io/kiegroup/kogito-explainability](kogito-explainability-image.yaml)
 - [quay.io/kiegroup/kogito-jobs-service-ephemeral](kogito-jobs-service-ephemeral-image.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-infinispan](kogito-jobs-service-infinispan-image.yaml)
-- [quay.io/kiegroup/kogito-jobs-service-mongodb](kogito-jobs-service-mongodb-image.yaml)
 - [quay.io/kiegroup/kogito-jobs-service-postgresql](kogito-jobs-service-postgresql-image.yaml)
 - [quay.io/kiegroup/kogito-jobs-service-allinone](kogito-jobs-service-allinone-image.yaml) 
 - [quay.io/kiegroup/kogito-management-console](kogito-management-console-image.yaml)
-- [quay.io/kiegroup/kogito-trusty-ui](kogito-trusty-ui-image.yaml)
 - [quay.io/kiegroup/kogito-jit-runner](kogito-jit-runner-image.yaml)
 - [quay.io/kiegroup/kogito-runtime-jvm](kogito-runtime-jvm-image.yaml)
 - [quay.io/kiegroup/kogito-runtime-native](kogito-runtime-native-image.yaml)
@@ -1372,8 +1206,8 @@ For example, if we are creating a new image called quay.io/kiegroup/kogito-moon-
 example:
 
 ```text
-@quay.io/kiegroup/kogito-data-index-infinispan
-Feature: Kogito-data-index-infinispan feature.
+@quay.io/kiegroup/kogito-data-index-postgresql
+Feature: Kogito-data-index-postgresql feature.
     ...
     Scenarios......
 ```

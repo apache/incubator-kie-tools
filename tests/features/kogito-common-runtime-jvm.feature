@@ -1,5 +1,4 @@
 @quay.io/kiegroup/kogito-runtime-jvm
-@rhpam-7/rhpam-kogito-runtime-jvm-rhel8
 Feature: kogito-runtime-jvm feature.
 
   Scenario: verify if the java installation is correct

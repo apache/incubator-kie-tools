@@ -33,7 +33,6 @@ sys.dont_write_bytecode = True
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Kogito Version Manager - List Images by Community and Product version')
-    parser.add_argument('--prod', default=False, action='store_true', help='List product images')
     parser.add_argument('--swf-builder', default=False, action='store_true', help='List swf builder images')
     parser.add_argument('-s', '--supporting-services', default=False, action='store_true',
                         help='List Supporting Services images')
@@ -44,13 +43,11 @@ if __name__ == "__main__":
 
     images = []
     if args.is_supporting_services_or_swf_builder:
-        common.is_supporting_services_or_swf_builder(args.is_supporting_services_or_swf_builder, args.prod)
+        common.is_supporting_services_or_swf_builder(args.is_supporting_services_or_swf_builder)
     elif args.supporting_services:
-        images = common.get_supporting_services_images(args.prod)
-    elif args.prod:
-        images = common.get_prod_images()
+        images = common.get_supporting_services_images()
     elif args.swf_builder:
-        images = common.get_swf_builder_images(args.prod)
+        images = common.get_swf_builder_images()
     else:
         images = common.get_community_images()
 

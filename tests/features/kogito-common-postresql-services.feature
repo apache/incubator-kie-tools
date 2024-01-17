@@ -1,4 +1,3 @@
-@quay.io/kiegroup/kogito-trusty-postgresql
 @quay.io/kiegroup/kogito-data-index-postgresql
 Feature: Kogito-data-index postgresql feature.
 

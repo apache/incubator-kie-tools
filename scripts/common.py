@@ -30,12 +30,10 @@ MODULE_FILENAME = "module.yaml"
 MODULES_DIR = "modules"
 
 COMMUNITY_PREFIX = 'kogito-'
-PRODUCT_PREFIX = 'logic-'
 
 # imagestream file that contains all images, this file aldo needs to be updated.
 PROJECT_VERSIONS_MODULE = "modules/kogito-project-versions/module.yaml"
 IMAGE_STREAM_FILENAME = "kogito-imagestream.yaml"
-PROD_IMAGE_STREAM_FILENAME = "logic-imagestream.yaml"
 KOGITO_VERSION_ENV_KEY = "KOGITO_VERSION"
 KOGITO_VERSION_LABEL_NAME = "org.kie.kogito.version"
 
@@ -48,19 +46,14 @@ BEHAVE_BASE_DIR = 'tests/features'
 CLONE_REPO_SCRIPT = 'tests/test-apps/clone-repo.sh'
 SETUP_MAVEN_SCRIPT = 'scripts/setup-maven.sh'
 
-SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral", "kogito-data-index-infinispan",
-                              "kogito-data-index-mongodb", "kogito-data-index-oracle",
-                              "kogito-data-index-postgresql", "kogito-explainability",
+SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral", 
+                              "kogito-data-index-postgresql", 
                               "kogito-jit-runner", "kogito-jobs-service-ephemeral",
-                              "kogito-jobs-service-infinispan", "kogito-jobs-service-mongodb",
                               "kogito-jobs-service-postgresql", "kogito-jobs-service-allinone",
-                              "kogito-management-console", "kogito-task-console",
-                              "kogito-trusty-infinispan", "kogito-trusty-postgresql",
-                              "kogito-trusty-redis", "kogito-trusty-ui"}
+                              "kogito-management-console", "kogito-task-console"
+                              }
 
-PROD_SUPPORTING_SERVICES_IMAGES = {"logic-data-index-ephemeral-rhel8"}
 SWF_BUILDER_IMAGES = {"kogito-swf-builder", "kogito-base-builder", "kogito-swf-devmode"}
-PROD_SWF_BUILDER_IMAGES = {"logic-swf-devmode-rhel8", "logic-swf-builder-rhel8"}
 
 
 def yaml_loader():
@@ -84,15 +77,6 @@ def update_community_images_version(target_version):
         update_image_version_tag_in_yaml_file(target_version, "{}-image.yaml".format(img))
 
 
-def update_prod_image_version(target_version):
-    """
-    Update logic-*-image.yaml files version tag.
-    :param target_version: version used to update the files
-    """
-    for img in sorted(get_prod_images()):
-        update_image_version_tag_in_yaml_file(target_version, "{}-image.yaml".format(img))
-
-
 def update_image_version_tag_in_yaml_file(target_version, yaml_file):
     """
     Update root version tag in yaml file.
@@ -110,15 +94,12 @@ def update_image_version_tag_in_yaml_file(target_version, yaml_file):
     except TypeError as err:
         print("Unexpected error:", err)
 
-def update_image_stream(target_version, prod=False):
+def update_image_stream(target_version):
     """
     Update the imagestream file, it will update the tag name, version and image tag.
-    :param prod: if the imagestream is the prod version
     :param target_version: version used to update the imagestream file;
     """
     image_stream_filename = IMAGE_STREAM_FILENAME
-    if prod:
-        image_stream_filename = PROD_IMAGE_STREAM_FILENAME
     print("Updating ImageStream images version from file {0} to version {1}".format(image_stream_filename,
                                                                                     target_version))
     try:
@@ -160,23 +141,10 @@ def get_community_module_dirs():
     """
     community_modules = []
     for module_path in get_all_module_dirs():
-        if "{0}".format(os.path.relpath(module_path, MODULES_DIR)).startswith(COMMUNITY_PREFIX) and os.path.basename(module_path) != "prod":
+        if "{0}".format(os.path.relpath(module_path, MODULES_DIR)).startswith(COMMUNITY_PREFIX):
             community_modules.append(module_path)
 
     return community_modules
-
-
-
-def get_prod_module_dirs():
-    """
-    Retrieve the Logic module directories
-    """
-    prod_modules = []
-    for module_path in get_all_module_dirs():
-        if "{0}".format(os.path.relpath(module_path, MODULES_DIR)).startswith(PRODUCT_PREFIX) or ("{0}".format(os.path.relpath(module_path, MODULES_DIR)).startswith(COMMUNITY_PREFIX) and os.path.basename(module_path) == "prod"):
-            prod_modules.append(module_path)
-
-    return prod_modules
 
 
 def get_images(prefix):
@@ -202,41 +170,26 @@ def get_community_images():
     return get_images(COMMUNITY_PREFIX)
 
 
-def get_prod_images():
-    """
-    Retrieve the Prod images' names
-    """
-    return get_images(PRODUCT_PREFIX)
-
-
-def get_supporting_services_images(is_prod_image):
+def get_supporting_services_images():
     """
     Retrieve the Supporting Services images' names
     """
-    if is_prod_image:
-        return PROD_SUPPORTING_SERVICES_IMAGES
     return SUPPORTING_SERVICES_IMAGES
 
 
-def is_supporting_services_or_swf_builder(image_name, prod=False):
+def is_supporting_services_or_swf_builder(image_name):
     """
     Raise an error if the given image is not a supporting service
     """
     found = False
-    if prod:
-        if image_name not in PROD_SUPPORTING_SERVICES_IMAGES:
-            raise RuntimeError('{} is not a productized supporting service'.format(image_name))
-    else:
-        if image_name not in SUPPORTING_SERVICES_IMAGES and image_name not in SWF_BUILDER_IMAGES:
-            raise RuntimeError('{} is not a supporting service or a swf builder image.'.format(image_name))
+    if image_name not in SUPPORTING_SERVICES_IMAGES and image_name not in SWF_BUILDER_IMAGES:
+        raise RuntimeError('{} is not a supporting service or a swf builder image.'.format(image_name))
 
 
-def get_swf_builder_images(is_prod_image):
+def get_swf_builder_images():
     """
     Raise an error if the given image is not a supporting service
     """
-    if is_prod_image:
-            return PROD_SWF_BUILDER_IMAGES
     return SWF_BUILDER_IMAGES
 
 
@@ -261,18 +214,14 @@ def get_project_versions_module_data():
         raise
 
 
-def update_kogito_modules_version(target_version, prod=False):
+def update_kogito_modules_version(target_version):
     """
     Update every Kogito module.yaml to the given version.
-    :param prod: if the module to be updated is prod version.
     :param target_version: version used to update all Kogito module.yaml files
     """
     modules = []
     current_version = retrieve_version()
-    if prod:
-        modules = get_prod_module_dirs()
-    else:
-        modules = get_community_module_dirs()
+    modules = get_community_module_dirs()
 
     for module_dir in modules:
         update_kogito_module_version(module_dir, current_version, target_version)
@@ -299,13 +248,13 @@ def update_kogito_module_version(module_dir, old_version, target_version):
     except TypeError:
         raise
 
-def update_quarkus_platform_version_in_build(quarkus_platform_version, prod=False):
+def update_quarkus_platform_version_in_build(quarkus_platform_version):
     """
     Update quarkus_platform_version version into images/modules
     :param quarkus_platform_version: quarkus version to set
     """
-    update_env_value(QUARKUS_PLATFORM_VERSION_ENV_KEY, quarkus_platform_version, prod)
-    update_label_value(QUARKUS_PLATFORM_VERSION_LABEL_NAME, quarkus_platform_version, prod)
+    update_env_value(QUARKUS_PLATFORM_VERSION_ENV_KEY, quarkus_platform_version)
+    update_label_value(QUARKUS_PLATFORM_VERSION_LABEL_NAME, quarkus_platform_version)
 
 def update_quarkus_platform_version_in_behave_tests_repository_paths(quarkus_platform_version):
     """
@@ -342,13 +291,13 @@ def update_examples_uri_in_behave_tests(examples_uri):
     replacement = examples_uri
     update_in_behave_tests(pattern, replacement)
 
-def update_artifacts_version_in_build(artifacts_version, prod=False):
+def update_artifacts_version_in_build(artifacts_version):
     """
     Update artifacts version into modules / images
     :param artifacts_version: artifacts version to set
     """
-    update_env_value(KOGITO_VERSION_ENV_KEY, artifacts_version, prod)
-    update_label_value(KOGITO_VERSION_LABEL_NAME, artifacts_version, prod)
+    update_env_value(KOGITO_VERSION_ENV_KEY, artifacts_version)
+    update_label_value(KOGITO_VERSION_LABEL_NAME, artifacts_version)
 
 def update_artifacts_version_in_behave_tests(artifacts_version):
     """
@@ -415,17 +364,16 @@ def update_maven_mirror_url_in_quarkus_plugin_behave_tests(mirror_url):
         "MAVEN_MIRROR_URL", mirror_url)
     update_in_behave_tests(pattern, replacement)
 
-def update_maven_repo_env_value(repo_url, replace_default_repository, prod=False):
+def update_maven_repo_env_value(repo_url, replace_default_repository):
     """
     Update the given maven repository value for all images/modules.
     :param repo_url: Maven repository url
     :param replace_default_repository: Set to true if default repository needs to be overidden
-    :param prod: if the module to be updated is prod version.
     """
     env_name = "MAVEN_REPO_URL"
     if replace_default_repository:
         env_name = "DEFAULT_MAVEN_REPO_URL"
-    update_env_value(env_name, repo_url, prod)
+    update_env_value(env_name, repo_url)
 
 
 def ignore_maven_self_signed_certificate_in_behave_tests():
@@ -500,7 +448,7 @@ def update_maven_repo_in_setup_maven(repo_url, replace_default_repository):
         replacement = 'export MAVEN_REPO_URL="{}"'.format(repo_url)
     update_in_file(SETUP_MAVEN_SCRIPT, pattern, replacement)
 
-def update_env_value(env_name, env_value, prod=False):
+def update_env_value(env_name, env_value):
     """
     Update environment value into the given yaml module/image file
     :param env_name: environment variable name to update
@@ -509,12 +457,8 @@ def update_env_value(env_name, env_value, prod=False):
 
     images = []
     modules = []
-    if prod:
-        images = get_prod_images()
-        modules = get_prod_module_dirs()
-    else:
-        images = get_community_images()
-        modules = get_community_module_dirs()
+    images = get_community_images()
+    modules = get_community_module_dirs()
 
     for image_name in images:
         image_filename = "{}-image.yaml".format(image_name)
@@ -591,7 +535,7 @@ def update_env_value_in_build_config_modules(env_name, new_value, ignore_empty =
         except TypeError:
             raise
 
-def update_label_value(label_name, label_value, prod=False):
+def update_label_value(label_name, label_value):
     """
     Update label value in all module / image files 
     :param label_name: label name to update
@@ -600,12 +544,8 @@ def update_label_value(label_name, label_value, prod=False):
 
     images = []
     modules = []
-    if prod:
-        images = get_prod_images()
-        modules = get_prod_module_dirs()
-    else:
-        images = get_community_images()
-        modules = get_community_module_dirs()
+    images = get_community_images()
+    modules = get_community_module_dirs()
 
     for image_name in images:
         image_filename = "{}-image.yaml".format(image_name)
@@ -706,7 +646,4 @@ def update_field_in_dict(data, key, new_value, ignore_empty = False):
 if __name__ == "__main__":
     print("Community modules:")
     for m in get_community_module_dirs():
-        print("module {}".format(m))
-    print("\nProd modules:")
-    for m in get_prod_module_dirs():
         print("module {}".format(m))

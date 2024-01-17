@@ -462,20 +462,6 @@ teardown() {
     [ "${result}" = "${expected}" ]
 }
 
-
-@test "test if the Quarkus platform properties are correctly returned for prod version" {
-    QUARKUS_PLATFORM_VERSION="1.2.3.4"
-    JBOSS_IMAGE_NAME="rhpam-7/kogito-builder"
-
-    result=$(get_quarkus_platform_properties)
-
-    expected=" -DplatformGroupId=com.redhat.quarkus.platform -DplatformArtifactId=quarkus-bom -DplatformVersion=1.2.3.4"
-
-    echo "result  : $result"
-    echo "expected: $expected"
-    [ "${result}" = "${expected}" ]
-}
-
 @test "Check if the expected message is printed if native build is enabled" {
     QUARKUS_PLATFORM_VERSION="1.2.3.4"
     JBOSS_IMAGE_NAME="rhpam-7/kogito-builder"
