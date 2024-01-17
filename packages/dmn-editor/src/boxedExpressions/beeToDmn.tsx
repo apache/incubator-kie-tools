@@ -230,7 +230,7 @@ export function beeToDmn(
             expression: r.cells.map((cell) => ({
               __$$element: "literalExpression",
               text: { __$$text: cell.content },
-              id: cell.id,
+              "@_id": cell.id,
             })),
           };
         }),

@@ -29,21 +29,37 @@ import { useCallback, useMemo } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
-import { BeePanelType, generateBeeMap, getBeePropertiesPanel } from "../boxedExpressions/getBeeMap";
+import {
+  BeePanelType,
+  CellContent,
+  DecisionTableCell,
+  LiteralExpressionCell,
+  RelationCell,
+  generateBeeMap,
+  getBeePropertiesPanel,
+  getDmnObject,
+} from "../boxedExpressions/getBeeMap";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
   DMN15__tInformationItem,
   DMN15__tInputClause,
   DMN15__tLiteralExpression,
+  DMN15__tOutputClause,
+  DMN15__tUnaryTests,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Form, FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
+import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
+import { useDmnEditor } from "../DmnEditorContext";
+import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
+import { AllExpressions } from "../dataTypes/DataTypeSpec";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
-  const { nodesById } = useDmnEditorDerivedStore();
+  const { allFeelVariableUniqueNames, nodesById } = useDmnEditorDerivedStore();
+  const { dmnEditorRootElementRef } = useDmnEditor();
 
   const shouldDisplayDecisionOrBkmProps = useMemo(
     () => selectedObjectId === undefined || (selectedObjectId && selectedObjectId === activeDrgElementId),
@@ -74,15 +90,20 @@ export function BeePropertiesPanel() {
     return beeMap?.get(selectedObjectId ?? "");
   }, [beeMap, selectedObjectId]);
 
+  const selectedObjectPath = useMemo(
+    () => selectedObjectInfos?.path[selectedObjectInfos.path.length - 1],
+    [selectedObjectInfos?.path]
+  );
+
   const propertiesPanel = useMemo(() => {
-    if (!selectedObjectInfos) {
+    if (!selectedObjectPath) {
       return;
     }
-    return getBeePropertiesPanel(selectedObjectInfos.path[selectedObjectInfos.path.length - 1]);
-  }, [selectedObjectInfos]);
+    return getBeePropertiesPanel(selectedObjectPath);
+  }, [selectedObjectPath]);
 
   const updateBee = useCallback(
-    (newContent: { "@_name"?: string }) => {
+    (newContent: CellContent) => {
       dmnEditorStoreApi.setState((state) => {
         const dmnObject = state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0];
 
@@ -92,13 +113,51 @@ export function BeePropertiesPanel() {
           ).encapsulatedLogic!.expression = { __$$element: "functionDefinition" };
         }
         if (dmnObject?.__$$element === "decision") {
-          (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tDecision).expression = {
-            __$$element: "functionDefinition",
-          };
+          const dmnObject = getDmnObject(
+            selectedObjectInfos?.path ?? [],
+            state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tDecision
+          );
+
+          switch (newContent.type) {
+            case "literalExpression":
+              (dmnObject as DMN15__tLiteralExpression).text = newContent.text;
+              break;
+            case "context":
+              (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+              (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+              break;
+            case "decisionTable":
+              if (newContent.cell === "rule") {
+                (dmnObject as DMN15__tUnaryTests | DMN15__tLiteralExpression).text = newContent.text;
+              }
+              if (newContent.cell === "outputHeader") {
+                (dmnObject as DMN15__tOutputClause)["@_name"] = newContent["@_name"];
+                (dmnObject as DMN15__tOutputClause)["@_typeRef"] = newContent["@_typeRef"];
+              }
+              if (newContent.cell === "inputHeader") {
+                (dmnObject as DMN15__tInputClause).inputExpression.text = newContent.inputExpression.text;
+                (dmnObject as DMN15__tInputClause).inputExpression["@_typeRef"] =
+                  newContent.inputExpression["@_typeRef"];
+              }
+              break;
+            case "relation":
+              if (newContent.cell === "header") {
+                (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+                (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+              }
+              if (newContent.cell === "content") {
+                (dmnObject as DMN15__tLiteralExpression).text = newContent.text;
+              }
+              break;
+            case "invocation":
+              (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+              (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+              break;
+          }
         }
       });
     },
-    [dmnEditorStoreApi, node?.data.index]
+    [dmnEditorStoreApi, node?.data.index, selectedObjectInfos?.path]
   );
 
   return (
@@ -112,11 +171,10 @@ export function BeePropertiesPanel() {
         >
           <DrawerHead>
             {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node.id} />}
-            {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && <div>{`Nothing to show`}</div>}
-            {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && <div>{selectedObjectId}</div>}
-            {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && (
+            {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && <div></div>}
+            {/* {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && (
               <div>{JSON.stringify(beeMap?.get(selectedObjectId ?? ""))}</div>
-            )}
+            )} */}
             <DrawerActions>
               <DrawerCloseButton
                 onClick={() => {
@@ -130,31 +188,37 @@ export function BeePropertiesPanel() {
               {propertiesPanel?.panelType === BeePanelType.NAME_TYPE && (
                 <FormSection title={propertiesPanel?.title ?? ""}>
                   <FormGroup label="Name">
-                    <TextArea
-                      aria-label={"Name"}
-                      type={"text"}
-                      isDisabled={false} // TODO: LUIZ
-                      value={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_name"] ?? ""}
-                      onChange={(newContent) => {
-                        // updateBee(newContent);
+                    <InlineFeelNameInput
+                      enableAutoFocusing={false}
+                      isPlain={false}
+                      id={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_id"] ?? ""}
+                      name={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_name"] ?? ""}
+                      isReadonly={false} // TODO: LUIZ
+                      shouldCommitOnBlur={true}
+                      className={"pf-c-form-control"}
+                      onRenamed={(newName) => {
+                        // setState((state) => {
+                        //   renameDrgElement({
+                        //     definitions: state.dmn.model.definitions,
+                        //     index,
+                        //     newName,
+                        //   });
+                        // });
                       }}
-                      placeholder={"Enter name"}
-                      style={{ resize: "vertical", minHeight: "40px" }}
-                      rows={6}
+                      allUniqueNames={allFeelVariableUniqueNames}
                     />
                   </FormGroup>
-                  <FormGroup label="Type">
-                    <TextArea
-                      aria-label={"Type"}
-                      type={"text"}
-                      isDisabled={false} // TODO: LUIZ
-                      value={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_typeRef"] ?? ""}
-                      onChange={(newContent) => {
-                        // updateBee(newContent);
+                  <FormGroup label="Data type">
+                    <TypeRefSelector
+                      heightRef={dmnEditorRootElementRef}
+                      typeRef={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_typeRef"]}
+                      onChange={(newTypeRef) => {
+                        // setState((state) => {
+                        //   const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
+                        //   drgElement.variable ??= { "@_name": decision["@_name"] };
+                        //   drgElement.variable["@_typeRef"] = newTypeRef;
+                        // });
                       }}
-                      placeholder={"Select type"}
-                      style={{ resize: "vertical", minHeight: "40px" }}
-                      rows={6}
                     />
                   </FormGroup>
                 </FormSection>
@@ -168,7 +232,27 @@ export function BeePropertiesPanel() {
                       isDisabled={false} // TODO: LUIZ
                       value={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.text?.__$$text ?? ""}
                       onChange={(newContent) => {
-                        // updateBee(newContent);
+                        switch (selectedObjectPath!.type) {
+                          case "literalExpression":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              text: { __$$text: newContent },
+                            } as LiteralExpressionCell);
+                          case "decisionTable":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              text: { __$$text: newContent },
+                              cell: "rule",
+                            } as DecisionTableCell);
+                          case "relation":
+                            return updateBee({
+                              type: selectedObjectPath!.type,
+                              text: { __$$text: newContent },
+                              cell: "content",
+                            } as RelationCell);
+                          default:
+                            return;
+                        }
                       }}
                       placeholder={"Enter the expression content..."}
                       style={{ resize: "vertical", minHeight: "40px" }}
@@ -180,31 +264,37 @@ export function BeePropertiesPanel() {
               {propertiesPanel?.panelType === BeePanelType.DECISION__TABLE_INPUT_HEADER && (
                 <FormSection title={propertiesPanel?.title ?? ""}>
                   <FormGroup label="Name">
-                    <TextArea
-                      aria-label={"Name"}
-                      type={"text"}
-                      isDisabled={false} // TODO: LUIZ
-                      value={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression.text?.__$$text ?? ""}
-                      onChange={(newContent) => {
-                        // updateBee(newContent);
+                    <InlineFeelNameInput
+                      enableAutoFocusing={false}
+                      isPlain={false}
+                      id={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression["@_id"] ?? ""}
+                      name={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression.text?.__$$text ?? ""}
+                      isReadonly={false} // TODO: LUIZ
+                      shouldCommitOnBlur={true}
+                      className={"pf-c-form-control"}
+                      onRenamed={(newName) => {
+                        // setState((state) => {
+                        //   renameDrgElement({
+                        //     definitions: state.dmn.model.definitions,
+                        //     index,
+                        //     newName,
+                        //   });
+                        // });
                       }}
-                      placeholder={"Enter the Literal expression content..."}
-                      style={{ resize: "vertical", minHeight: "40px" }}
-                      rows={6}
+                      allUniqueNames={allFeelVariableUniqueNames}
                     />
                   </FormGroup>
-                  <FormGroup label="Type">
-                    <TextArea
-                      aria-label={"Type"}
-                      type={"text"}
-                      isDisabled={false} // TODO: LUIZ
-                      value={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression["@_typeRef"] ?? ""}
-                      onChange={(newContent) => {
-                        // updateBee(newContent);
+                  <FormGroup label="Data type">
+                    <TypeRefSelector
+                      heightRef={dmnEditorRootElementRef}
+                      typeRef={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression["@_typeRef"]}
+                      onChange={(newTypeRef) => {
+                        // setState((state) => {
+                        //   const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
+                        //   drgElement.variable ??= { "@_name": decision["@_name"] };
+                        //   drgElement.variable["@_typeRef"] = newTypeRef;
+                        // });
                       }}
-                      placeholder={"Select type"}
-                      style={{ resize: "vertical", minHeight: "40px" }}
-                      rows={6}
                     />
                   </FormGroup>
                 </FormSection>
