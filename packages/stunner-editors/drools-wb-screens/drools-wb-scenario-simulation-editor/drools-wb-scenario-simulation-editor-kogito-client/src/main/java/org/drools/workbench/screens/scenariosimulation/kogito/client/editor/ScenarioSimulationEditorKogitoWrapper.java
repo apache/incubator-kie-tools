@@ -215,7 +215,6 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
 
     private void ensureScenarioGridIsSet() {
         scenarioSimulationEditorPresenter.getView().setScenarioGridWidgetAsContent();
-        scenarioSimulationEditorPresenter.showDocks();
         scenarioSimulationEditorPresenter.getView().setScenarioTabBarVisibility(true);
     }
 
@@ -418,9 +417,9 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
                                                                false);
             dataManagementStrategy = new KogitoDMODataManagementStrategy(kogitoOracle);
         } else {
-            dataManagementStrategy = new KogitoDMNDataManagementStrategy(scenarioSimulationEditorPresenter.getEventBus(),
-                                                                         dmnDataManager,
-                                                                         scenarioSimulationKogitoDMNMarshallerService);
+            dataManagementStrategy = new KogitoDMNDataManagementStrategy(dmnDataManager,
+                                                                         scenarioSimulationKogitoDMNMarshallerService,
+                                                                         scenarioSimulationEditorPresenter);
         }
         dataManagementStrategy.setModel(model);
         scenarioSimulationEditorPresenter.getModelSuccessCallbackMethod(dataManagementStrategy, model);

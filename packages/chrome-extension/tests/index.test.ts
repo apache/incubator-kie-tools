@@ -53,6 +53,18 @@ describe("discoverCurrentGitHubPageType", () => {
     expect(type).toStrictEqual(GitHubPageType.EDIT);
   });
 
+  test("repo home", async () => {
+    setWindowLocationPathname("github.com/organization/repositoryName");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.REPO_HOME);
+  });
+
+  test("repo home with branch", async () => {
+    setWindowLocationPathname("github.com/organization/repositoryName/tree/main");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.REPO_HOME);
+  });
+
   test("pr home", async () => {
     setWindowLocationPathname("/org/repo/pull/1");
     const type = index.discoverCurrentGitHubPageType();
@@ -69,18 +81,6 @@ describe("discoverCurrentGitHubPageType", () => {
     setWindowLocationPathname("/org/repo/pull/1/commits");
     const type = index.discoverCurrentGitHubPageType();
     expect(type).toStrictEqual(GitHubPageType.PR_FILES_OR_COMMITS);
-  });
-
-  test("tree repo", async () => {
-    setWindowLocationPathname("/user/repo/tree/some_ref");
-    const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR);
-  });
-
-  test("tree repo root", async () => {
-    setWindowLocationPathname("/user/repo");
-    const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.CAN_OPEN_REPO_IN_EXTERNAL_EDITOR);
   });
 
   test("any", async () => {
