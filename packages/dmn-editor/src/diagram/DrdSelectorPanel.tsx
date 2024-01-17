@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { addOrGetDrd, getDefaultDrdName } from "../mutations/addOrGetDrd";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";

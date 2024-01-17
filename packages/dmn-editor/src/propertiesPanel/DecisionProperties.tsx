@@ -24,12 +24,12 @@ import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
+import { useCallback } from "react";
 
 export function DecisionProperties({
   decision,
@@ -44,8 +44,6 @@ export function DecisionProperties({
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
-
-  const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
@@ -71,7 +69,7 @@ export function DecisionProperties({
               });
             });
           }}
-          allUniqueNames={allFeelVariableUniqueNames}
+          allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>
 

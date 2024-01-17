@@ -17,27 +17,11 @@
  * under the License.
  */
 
-import * as React from "react";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { useDmnEditorStoreApi } from "../../store/StoreContext";
+import fastDeepEqual from "fast-deep-equal";
 
-export function EditExpressionNodePanel(props: { isVisible: boolean; id: string }) {
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
-
-  return (
-    <>
-      {props.isVisible && (
-        <Label
-          onClick={() =>
-            dmnEditorStoreApi.setState((state) => {
-              state.dispatch(state).boxedExpressionEditor.open(props.id);
-            })
-          }
-          className={"kie-dmn-editor--edit-expression-node-panel"}
-        >
-          Edit
-        </Label>
-      )}
-    </>
-  );
-}
+/**
+ * This function is the reason why nodes and edges are memoized. Without it, the prev and next objects are compared as
+ * references, and they'll always be different, resulting in every node and edge re-rendering for every change. By
+ * comparing the values inside the objects, we avoid re-rendering unnecessarily.
+ */
+export const propsHaveSameValuesDeep = fastDeepEqual;

@@ -18,15 +18,16 @@
  */
 
 import { useEffect } from "react";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 
 export function useFocusableElement(
   ref: React.RefObject<HTMLInputElement>,
   id: string | undefined,
   before?: (cb: () => void) => void
 ) {
-  const focus = useDmnEditorStore((s) => s.focus);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const shoudFocus = useDmnEditorStore((s) => s.focus.consumableId === id);
 
   useEffect(() => {
     if (!id) {
@@ -41,8 +42,8 @@ export function useFocusableElement(
       });
     };
 
-    if (focus.consumableId === id && ref.current) {
+    if (shoudFocus && ref.current) {
       before?.(cb) ?? cb();
     }
-  }, [before, dmnEditorStoreApi, focus.consumableId, id, ref]);
+  }, [before, dmnEditorStoreApi, id, ref, shoudFocus]);
 }

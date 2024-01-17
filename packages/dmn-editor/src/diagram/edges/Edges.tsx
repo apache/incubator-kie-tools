@@ -31,6 +31,8 @@ import { useIsHovered } from "../useIsHovered";
 import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
 import { useAlwaysVisibleEdgeUpdatersAtNodeBorders } from "./useAlwaysVisibleEdgeUpdatersAtNodeBorders";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
+import { propsHaveSameValuesDeep } from "../memoization/memoization";
+import { useRef } from "react";
 
 export type DmnDiagramEdgeData = {
   dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
@@ -136,6 +138,9 @@ const interactionStrokeProps: Partial<React.SVGAttributes<SVGPathElement>> = {
 };
 
 export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
+  const renderCount = useRef<number>(0);
+  renderCount.current++;
+
   const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
@@ -152,9 +157,9 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
   const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
-  const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
-  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, sourceNode, targetNode, waypoints);
+  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
+
+  console.log(`re-rendering edge --> count: ${renderCount.current}`);
 
   return (
     <>
@@ -168,6 +173,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
         onDoubleClick={onDoubleClick}
       />
       <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
+
       {props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
           edgeId={props.id}
@@ -179,9 +185,12 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
       {isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
-});
+}, propsHaveSameValuesDeep);
 
 export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
+  const renderCount = useRef<number>(0);
+  renderCount.current++;
+
   const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
@@ -198,9 +207,9 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
   const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
-  const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
-  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, sourceNode, targetNode, waypoints);
+  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
+
+  console.log(`re-rendering edge --> count: ${renderCount.current}`);
 
   return (
     <>
@@ -214,6 +223,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         onDoubleClick={onDoubleClick}
       />
       <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
+
       {props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
           edgeId={props.id}
@@ -225,9 +235,12 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
       {isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
-});
+}, propsHaveSameValuesDeep);
 
 export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
+  const renderCount = useRef<number>(0);
+  renderCount.current++;
+
   const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
@@ -244,9 +257,9 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
   const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
-  const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
-  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, sourceNode, targetNode, waypoints);
+  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
+
+  console.log(`re-rendering edge --> count: ${renderCount.current}`);
 
   return (
     <>
@@ -265,6 +278,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         className={`kie-dmn-editor--edge ${className}`}
         centerToConnectionPoint={false}
       />
+
       {props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
           edgeId={props.id}
@@ -276,9 +290,12 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
       {isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
-});
+}, propsHaveSameValuesDeep);
 
 export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
+  const renderCount = useRef<number>(0);
+  renderCount.current++;
+
   const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
@@ -295,9 +312,9 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
   const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
-  const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
-  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, sourceNode, targetNode, waypoints);
+  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
+
+  console.log(`re-rendering edge --> count: ${renderCount.current}`);
 
   return (
     <>
@@ -311,6 +328,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
         onDoubleClick={onDoubleClick}
       />
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
+
       {props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
           edgeId={props.id}
@@ -322,4 +340,4 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
       {isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
-});
+}, propsHaveSameValuesDeep);

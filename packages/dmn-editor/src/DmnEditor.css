@@ -318,17 +318,54 @@
 }
 /* (end) version popover */
 
-/* (begin) overlays panel toggle */
-.kie-dmn-editor--overlay-panel-popover .pf-c-popover__body {
+/* (begin) autolayout panel toggle */
+.kie-dmn-editor--autolayoutpanel-popover .pf-c-popover__body {
   padding: 0;
 }
-.kie-dmn-editor--overlays-panel-toggle {
-  margin-right: 16px;
+.kie-dmn-editor--autolayout-panel-toggle {
   width: 42px;
   background: #fff;
   border-radius: 40px;
   border: 1px solid black;
 }
+.kie-dmn-editor--autolayout-panel-toggle:not(:last-child) {
+  margin-right: 16px;
+}
+
+.kie-dmn-editor--autolayout-panel-toggle:hover {
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--autolayout-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--autolayout-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--autolayout-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+/* (end) autolayout panel toggle *
+/
+/* (begin) autolayout panel toggle */
+.kie-dmn-editor--autolayout-panel-popover .pf-c-popover__body {
+  padding: 0;
+}
+.kie-dmn-editor--overlays-panel-toggle {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--overlays-panel-toggle:not(:last-child) {
+  margin-right: 16px;
+}
+
 .kie-dmn-editor--overlays-panel-toggle:hover {
   box-shadow: -4px 4px 2px 0px rgb(127 127 127);
 }

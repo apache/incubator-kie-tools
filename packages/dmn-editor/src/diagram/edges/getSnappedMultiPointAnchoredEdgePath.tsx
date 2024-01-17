@@ -26,38 +26,34 @@ import * as RF from "reactflow";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { snapPoint } from "../SnapGrid";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
-import {
-  getLineRectangleIntersectionPoint,
-  getHandlePosition,
-  getNodeCenterPoint,
-  pointsToPath,
-} from "../maths/DmnMaths";
-import { getDiscretelyAutoPositionedEdgeParamsForRfNodes } from "../maths/Maths";
+import { getLineRectangleIntersectionPoint, getHandlePosition, pointsToPath } from "../maths/DmnMaths";
+import { getBoundsCenterPoint } from "../maths/Maths";
+import { Bounds, getDiscretelyAutoPositionedEdgeParams } from "../maths/Maths";
 import { AutoPositionedEdgeMarker } from "./AutoPositionedEdgeMarker";
 import { SnapGrid } from "../../store/Store";
 
 export function getSnappedMultiPointAnchoredEdgePath({
   snapGrid,
   dmnEdge,
-  sourceNode,
-  targetNode,
+  sourceNodeBounds,
+  targetNodeBounds,
   dmnShapeSource,
   dmnShapeTarget,
 }: {
   snapGrid: SnapGrid;
   dmnEdge: DMNDI15__DMNEdge | undefined;
-  sourceNode: RF.Node<any, string | undefined> | undefined;
-  targetNode: RF.Node<any, string | undefined> | undefined;
+  sourceNodeBounds: Bounds | undefined;
+  targetNodeBounds: Bounds | undefined;
   dmnShapeSource: DMNDI15__DMNShape | undefined;
   dmnShapeTarget: DMNDI15__DMNShape | undefined;
 }) {
-  if (!sourceNode || !targetNode) {
+  if (!sourceNodeBounds || !targetNodeBounds) {
     return { path: undefined, points: [] };
   }
 
   const points: DC__Point[] = new Array(Math.max(2, dmnEdge?.["di:waypoint"]?.length ?? 0));
 
-  const discreteAuto = getDiscretelyAutoPositionedEdgeParamsForRfNodes(sourceNode, targetNode);
+  const discreteAuto = getDiscretelyAutoPositionedEdgeParams(sourceNodeBounds, targetNodeBounds);
 
   if (dmnEdge?.["@_id"]?.endsWith(AutoPositionedEdgeMarker.BOTH)) {
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
@@ -83,9 +79,9 @@ export function getSnappedMultiPointAnchoredEdgePath({
     const secondWaypoint = points[1] ?? dmnEdge["di:waypoint"][1];
     const sourceHandlePoint = getSnappedHandlePosition(
       dmnShapeSource!,
-      sourceNode,
+      sourceNodeBounds,
       firstWaypoint,
-      points.length === 2 ? getNodeCenterPoint(targetNode) : snapPoint(snapGrid, secondWaypoint)
+      points.length === 2 ? getBoundsCenterPoint(targetNodeBounds) : snapPoint(snapGrid, secondWaypoint)
     );
     points[0] ??= sourceHandlePoint;
 
@@ -93,9 +89,9 @@ export function getSnappedMultiPointAnchoredEdgePath({
     const secondToLastWaypoint = points[points.length - 2] ?? dmnEdge["di:waypoint"][dmnEdge["di:waypoint"].length - 2];
     const targetHandlePoint = getSnappedHandlePosition(
       dmnShapeTarget!,
-      targetNode,
+      targetNodeBounds,
       lastWaypoint,
-      points.length === 2 ? getNodeCenterPoint(sourceNode) : snapPoint(snapGrid, secondToLastWaypoint)
+      points.length === 2 ? getBoundsCenterPoint(sourceNodeBounds) : snapPoint(snapGrid, secondToLastWaypoint)
     );
     points[points.length - 1] ??= targetHandlePoint;
   }
@@ -112,17 +108,17 @@ export function getSnappedMultiPointAnchoredEdgePath({
 
 export function getSnappedHandlePosition(
   shape: DMNDI15__DMNShape,
-  snappedNode: RF.Node,
+  snappedNode: Bounds,
   originalHandleWaypoint: DC__Point,
   snappedSecondWaypoint: DC__Point
 ): DC__Point {
   const { handlePosition } = getHandlePosition({ shapeBounds: shape["dc:Bounds"], waypoint: originalHandleWaypoint });
 
-  const centerHandleWaypoint = getNodeCenterPoint(snappedNode);
+  const centerHandleWaypoint = getBoundsCenterPoint(snappedNode);
 
   const nodeRectangle = {
-    x: snappedNode.positionAbsolute?.x ?? 0,
-    y: snappedNode.positionAbsolute?.y ?? 0,
+    x: snappedNode.x ?? 0,
+    y: snappedNode.y ?? 0,
     width: snappedNode.width ?? 0,
     height: snappedNode.height ?? 0,
   };

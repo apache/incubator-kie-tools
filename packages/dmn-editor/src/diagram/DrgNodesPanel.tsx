@@ -17,26 +17,25 @@
  * under the License.
  */
 
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { DiagramNodesPanel, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { buildXmlHref } from "../xml/xmlHrefs";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DiagramNodesPanel } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Unpacked } from "../tsExt/tsExt";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
-import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { buildXmlHref } from "../xml/xmlHrefs";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE = "kie-dmn-editor--drg-node";
 
 export function DrgNodesPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
-  const { dmnShapesByHref } = useDmnEditorDerivedStore();
+  const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexes().dmnShapesByHref);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 

@@ -24,15 +24,13 @@ import {
   DC__Point,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import * as RF from "reactflow";
+import { SnapGrid } from "../../store/Store";
+import { snapBoundsDimensions, snapBoundsPosition } from "../SnapGrid";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
 import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { NodeDmnObjects } from "../nodes/Nodes";
 import { getCenter } from "./Maths";
-import { SnapGrid } from "../../store/Store";
-import { snapBoundsDimensions, snapBoundsPosition, snapShapePosition } from "../SnapGrid";
-import { MIN_NODE_SIZES } from "../nodes/DefaultSizes";
 
 export const DEFAULT_INTRACTION_WIDTH = 40;
 export const CONTAINER_NODES_DESIRABLE_PADDING = 60;
@@ -41,12 +39,7 @@ export function getDistance(a: DC__Point, b: DC__Point) {
   return Math.sqrt(Math.pow(a["@_x"] - b["@_x"], 2) + Math.pow(a["@_y"] - b["@_y"], 2));
 }
 
-export function getNodeCenterPoint(node: RF.Node | undefined): DC__Point {
-  const { x, y } = getCenter(node?.positionAbsolute?.x, node?.positionAbsolute?.y, node?.width, node?.height);
-  return { "@_x": x, "@_y": y };
-}
-
-export function getBoundsCenterPoint(bounds: DC__Bounds): DC__Point {
+export function getDmnBoundsCenterPoint(bounds: DC__Bounds): DC__Point {
   const { x, y } = getCenter(bounds["@_x"], bounds["@_y"], bounds["@_width"], bounds["@_height"]);
   return { "@_x": x, "@_y": y };
 }
@@ -59,7 +52,7 @@ export function getPointForHandle({
   handle: PositionalNodeHandleId;
 }): DC__Point {
   if (handle === PositionalNodeHandleId.Center) {
-    return getBoundsCenterPoint(bounds);
+    return getDmnBoundsCenterPoint(bounds);
   } else if (handle === PositionalNodeHandleId.Top) {
     return { "@_x": bounds["@_x"] + bounds["@_width"] / 2, "@_y": bounds["@_y"] };
   } else if (handle === PositionalNodeHandleId.Right) {
@@ -209,7 +202,7 @@ export function getContainmentRelationship({
   const { x: bx, y: by } = snapBoundsPosition(snapGrid, bounds);
   const { width: bw, height: bh } = snapBoundsDimensions(snapGrid, bounds, boundsMinSizes(snapGrid));
 
-  const center = getBoundsCenterPoint({
+  const center = getDmnBoundsCenterPoint({
     "@_height": bh,
     "@_width": bw,
     "@_x": bx,

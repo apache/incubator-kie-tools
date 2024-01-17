@@ -38,6 +38,7 @@ import { addOrGetDrd } from "./addOrGetDrd";
 import { Unpacked } from "../tsExt/tsExt";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
+import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMarker";
 
 export function addEdge({
   definitions,
@@ -64,7 +65,12 @@ export function addEdge({
     shapeId: string | undefined;
     index: number;
   };
-  edge: { type: EdgeType; targetHandle: PositionalNodeHandleId; sourceHandle: PositionalNodeHandleId };
+  edge: {
+    type: EdgeType;
+    targetHandle: PositionalNodeHandleId;
+    sourceHandle: PositionalNodeHandleId;
+    autoPositionedEdgeMarker: AutoPositionedEdgeMarker | undefined;
+  };
   keepWaypoints: boolean;
 }) {
   if (!_checkIsValidConnection(sourceNode, targetNode, edge.type)) {
@@ -168,7 +174,9 @@ export function addEdge({
 
   const newDmnEdge: Unpacked<typeof diagramElements> = {
     __$$element: "dmndi:DMNEdge",
-    "@_id": withoutDiscreteAutoPosinitioningMarker(removedDmnEdge?.["@_id"] ?? generateUuid()),
+    "@_id":
+      withoutDiscreteAutoPosinitioningMarker(removedDmnEdge?.["@_id"] ?? generateUuid()) +
+      (edge.autoPositionedEdgeMarker ?? ""),
     "@_dmnElementRef": existingEdgeId ?? newEdgeId,
     "@_sourceElement": sourceNode.shapeId,
     "@_targetElement": targetNode.shapeId,

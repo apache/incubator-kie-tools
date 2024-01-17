@@ -17,24 +17,29 @@
  * under the License.
  */
 
+import { useMemo } from "react";
 import * as RF from "reactflow";
-import { useCallback, useMemo } from "react";
-import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
-import { useDmnEditorStore } from "../../store/Store";
+import { useDmnEditorStore } from "../../store/StoreContext";
 import { DmnDiagramEdgeData } from "./Edges";
+import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
 
 export function useKieEdgePath(
   source: string | undefined,
   target: string | undefined,
   data: DmnDiagramEdgeData | undefined
 ) {
-  const diagram = useDmnEditorStore((s) => s.diagram);
-  const sourceNode = RF.useStore(
-    useCallback((store) => (source ? store.nodeInternals.get(source) : undefined), [source])
-  );
-  const targetNode = RF.useStore(
-    useCallback((store) => (target ? store.nodeInternals.get(target) : undefined), [target])
-  );
+  const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+
+  const sourceNodeX = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.positionAbsolute?.x : undefined));
+  const sourceNodeY = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.positionAbsolute?.y : undefined));
+  const sourceNodeWidth = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.width : undefined));
+  const sourceNodeHeight = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.height : undefined));
+
+  const targetNodeX = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.positionAbsolute?.x : undefined));
+  const targetNodeY = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.positionAbsolute?.y : undefined));
+  const targetNodeWidth = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.width : undefined));
+  const targetNodeHeight = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.height : undefined));
+
   const dmnEdge = data?.dmnEdge;
   const dmnShapeSource = data?.dmnShapeSource;
   const dmnShapeTarget = data?.dmnShapeTarget;
@@ -42,13 +47,26 @@ export function useKieEdgePath(
   return useMemo(
     () =>
       getSnappedMultiPointAnchoredEdgePath({
-        snapGrid: diagram.snapGrid,
+        snapGrid,
         dmnEdge,
-        sourceNode,
-        targetNode,
+        sourceNodeBounds: { x: sourceNodeX, y: sourceNodeY, width: sourceNodeWidth, height: sourceNodeHeight },
+        targetNodeBounds: { x: targetNodeX, y: targetNodeY, width: targetNodeWidth, height: targetNodeHeight },
         dmnShapeSource,
         dmnShapeTarget,
       }),
-    [diagram.snapGrid, dmnEdge, dmnShapeSource, dmnShapeTarget, sourceNode, targetNode]
+    [
+      dmnEdge,
+      dmnShapeSource,
+      dmnShapeTarget,
+      snapGrid,
+      sourceNodeHeight,
+      sourceNodeWidth,
+      sourceNodeX,
+      sourceNodeY,
+      targetNodeHeight,
+      targetNodeWidth,
+      targetNodeX,
+      targetNodeY,
+    ]
   );
 }

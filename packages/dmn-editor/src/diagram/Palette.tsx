@@ -22,7 +22,8 @@ import * as React from "react";
 import { useCallback } from "react";
 import { NodeType } from "./connections/graphStructure";
 import { NODE_TYPES } from "./nodes/NodeTypes";
-import { DiagramNodesPanel, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DiagramNodesPanel } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds } from "./maths/DmnMaths";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -83,7 +84,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
         },
       });
 
-      state.dispatch.diagram.setNodeStatus(state, newNodeId, { selected: true });
+      state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
     });
   }, [diagram.drdIndex, dmnEditorStoreApi, rfStoreApi]);
 
@@ -101,7 +102,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
           <div ref={drdSelectorPopoverRef} style={{ position: "absolute", left: "56px", height: "100%", zIndex: -1 }} />
           <InlineFeelNameInput
             validate={() => true}
-            allUniqueNames={new Map()}
+            allUniqueNames={() => new Map()}
             name={drd?.["@_name"] ?? ""}
             id={diagram.drdIndex + ""}
             onRenamed={(newName) => {

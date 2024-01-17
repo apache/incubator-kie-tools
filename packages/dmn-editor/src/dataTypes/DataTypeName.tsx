@@ -23,12 +23,13 @@ import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/d
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
 import { TypeRefLabel } from "./TypeRefLabel";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameItemDefinition } from "../mutations/renameItemDefinition";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { UniqueNameIndex } from "../Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { State } from "../store/Store";
 
 export function DataTypeName({
   isReadonly,
@@ -46,7 +47,7 @@ export function DataTypeName({
   isActive: boolean;
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;
-  allUniqueNames: UniqueNameIndex;
+  allUniqueNames: (s: State) => UniqueNameIndex;
   enableAutoFocusing?: boolean;
 }) {
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
@@ -54,9 +55,11 @@ export function DataTypeName({
   );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { allDataTypesById, importsByNamespace } = useDmnEditorDerivedStore();
-
-  const dataType = allDataTypesById.get(itemDefinition["@_id"]!);
+  const { externalModelsByNamespace } = useExternalModels();
+  const dataType = useDmnEditorStore((s) =>
+    s.computed(s).getDataTypes(externalModelsByNamespace).allDataTypesById.get(itemDefinition["@_id"]!)
+  );
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
 
   const feelQNameToDisplay = buildFeelQNameFromNamespace({
     namedElement: itemDefinition,
@@ -76,11 +79,11 @@ export function DataTypeName({
           definitions: state.dmn.model.definitions,
           newName,
           itemDefinitionId: itemDefinition["@_id"]!,
-          allDataTypesById,
+          allDataTypesById: state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById,
         });
       });
     },
-    [allDataTypesById, dmnEditorStoreApi, isReadonly, itemDefinition]
+    [dmnEditorStoreApi, externalModelsByNamespace, isReadonly, itemDefinition]
   );
 
   const _shouldCommitOnBlur = shouldCommitOnBlur ?? true; // Defaults to true

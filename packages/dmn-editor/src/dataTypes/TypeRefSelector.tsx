@@ -23,14 +23,15 @@ import * as React from "react";
 import { useMemo, useRef, useState } from "react";
 import { TypeRefLabel } from "./TypeRefLabel";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
-import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DmnEditorTab } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DataType } from "./DataTypes";
 import { builtInFeelTypeNames, builtInFeelTypes } from "./BuiltInFeelTypes";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
 export type OnCreateDataType = (newDataTypeName: string) => void;
@@ -47,8 +48,10 @@ export function TypeRefSelector(props: {
   menuAppendTo?: "parent";
 }) {
   const [isOpen, setOpen] = useState(false);
-
-  const { allTopLevelDataTypesByFeelName } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
+  const allTopLevelDataTypesByFeelName = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
+  );
 
   const selectedDataType = useMemo(() => {
     return props.typeRef ? allTopLevelDataTypesByFeelName.get(props.typeRef) : undefined;
