@@ -26,7 +26,7 @@
     "test:e2e:clean": "rimraf ./dist-e2e-tests && rimraf ./test-resources && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
     "test:e2e:clean:offline": "rimraf ./dist-e2e-tests && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
     "test:e2e:offline": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test:e2e:clean:offline\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --offline --yarn -c max -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js\"",
-    "watch": "webpack --env dev"
+    "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {
     "@kie-tools-core/backend": "workspace:*",
@@ -122,13 +122,13 @@
     },
     "configurationDefaults": {
       "[yaml]": {
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": "off"
       },
       "[yard-json]": {
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": "off"
       },
       "[yard-yaml]": {
-        "editor.wordBasedSuggestions": false
+        "editor.wordBasedSuggestions": "off"
       },
       "files.associations": {
         "*.yard.yaml": "yaml",

@@ -17,24 +17,24 @@
  * under the License.
  */
 
-import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
+import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as __path from "path";
 import * as vscode from "vscode";
-import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
-import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import {
   configurationTokenKeys,
   definitelyPosixPath,
   getInterpolatedConfigurationValue,
 } from "./ConfigurationInterpolation";
+import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
+import { VsCodeI18n } from "./i18n";
+import { VsCodeWorkspaceChannelApiImpl } from "./workspace/VsCodeWorkspaceChannelApiImpl";
 
 const encoder = new TextEncoder();
 
 export async function generateSvg(args: {
   editorStore: VsCodeKieEditorStore;
-  workspaceApi: WorkspaceChannelApi;
+  vscodeWorkspace: VsCodeWorkspaceChannelApiImpl;
   vsCodeI18n: I18n<VsCodeI18n>;
   displayNotification: boolean;
   editorEnvelopeLocator: EditorEnvelopeLocator;
@@ -94,7 +94,7 @@ export async function generateSvg(args: {
         return;
       }
 
-      args.workspaceApi.kogitoWorkspace_openFile(svgUri.path);
+      args.vscodeWorkspace.openFile(svgUri.fsPath);
     });
   }
 }

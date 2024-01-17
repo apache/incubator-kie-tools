@@ -48,12 +48,19 @@ export const allPmmlImportNamespaces = new Set([
   "http://www.dmg.org/PMML-1_1",
 ]);
 
-export function getPmmlNamespace({ fileRelativePath }: { fileRelativePath: string }) {
-  return buildXmlHref({ namespace: KIE_PMML_NAMESPACE, id: fileRelativePath });
+export function getPmmlNamespace({
+  normalizedPosixPathRelativeToTheOpenFile,
+}: {
+  normalizedPosixPathRelativeToTheOpenFile: string;
+}) {
+  return buildXmlHref({ namespace: KIE_PMML_NAMESPACE, id: normalizedPosixPathRelativeToTheOpenFile });
 }
 
 export function getPmmlNamespaceFromDmnImport({ dmnImport }: { dmnImport: DMN15__tImport }) {
   return dmnImport["@_locationURI"]
-    ? getPmmlNamespace({ fileRelativePath: dmnImport["@_locationURI"] })
+    ? getPmmlNamespace({
+        // We need to normalize the path here because they're always stored as explicit relative paths starting with `./` or `../`
+        normalizedPosixPathRelativeToTheOpenFile: __path.normalize(dmnImport["@_locationURI"]),
+      })
     : dmnImport["@_namespace"];
 }

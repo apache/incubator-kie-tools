@@ -361,7 +361,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       const path = decisionNameByDecisionId?.get(sourceId) ?? "";
       return messages.map((message: any) => ({
         type: "PROBLEM",
-        path,
+        normalizedPosixPathRelativeToTheWorkspaceRoot: path,
         severity: message.severity,
         message: `${message.messageType}: ${message.message}`,
       }));

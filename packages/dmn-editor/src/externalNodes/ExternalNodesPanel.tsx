@@ -181,7 +181,11 @@ export function ExternalNodesPanel() {
                     {`)`}
                     <br />
                     <small>
-                      <i>{onRequestToResolvePath?.(externalDmn.relativePath) ?? externalDmn.relativePath ?? ""}</i>
+                      <i>
+                        {onRequestToResolvePath?.(externalDmn.normalizedPosixPathRelativeToTheOpenFile) ??
+                          externalDmn.normalizedPosixPathRelativeToTheOpenFile ??
+                          ""}
+                      </i>
                     </small>
                   </div>
                   {nodes}

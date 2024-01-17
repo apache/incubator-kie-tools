@@ -17,34 +17,14 @@
  * under the License.
  */
 
-import {
-  WorkspaceEdit,
-  ResourceContent,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
-  WorkspaceChannelApi,
-} from "../api";
 import * as vscode from "vscode";
 
-export class VsCodeWorkspaceChannelApiImpl implements WorkspaceChannelApi {
-  public kogitoWorkspace_openFile(path: string) {
+export class VsCodeWorkspaceChannelApiImpl {
+  public openFile(absoluteFsPath: string) {
     try {
-      vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(path));
+      vscode.commands.executeCommand("vscode.open", vscode.Uri.file(absoluteFsPath));
     } catch (e) {
-      throw new Error(`Cannot open file at: ${path}.`);
+      throw new Error(`Cannot open file at: ${absoluteFsPath}.`);
     }
-  }
-
-  public async kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent> {
-    throw new Error("This is not implemented yet.");
-  }
-
-  public async kogitoWorkspace_newEdit(edit: WorkspaceEdit) {
-    throw new Error("This is not implemented yet.");
-  }
-
-  public async kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList> {
-    throw new Error("This is not implemented yet.");
   }
 }
