@@ -30,7 +30,7 @@
     "copy-install-script:win32": "pnpm powershell \"Copy-Item install.sh dist\"",
     "install": "go mod tidy",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "serve": "npx http-server dist --port 8092",
+    "serve": "serve -p 8092",
     "start": "make start",
     "start:dev": "run-script-os",
     "start:dev:darwin": "pnpm build:dev && open ./dev/index.html && docker run -it -p 8091:8091 $(docker build -q . -f ./dev/Containerfile)",
@@ -41,7 +41,8 @@
     "@kie-tools/root-env": "workspace:*",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6"
+    "run-script-os": "^1.1.6",
+    "serve": "^14.2.1"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

@@ -132,12 +132,16 @@ verifyFile() {
     printf "Verifying checksum... "
     if [ "${HAS_OPENSSL}" == "true" ]; then
       sum=$(openssl sha1 -sha256 ${DDUS_TMP_FILE} | awk '{print $2}')
+      echo ${sum}
     elif [ "${HAS_SHASUM}" == "true" ]; then
       sum=$(shasum -a 256 ${DDUS_TMP_FILE} | awk '{print $1}')
+      echo ${sum}
     else
       sum=$(sha256sum ${DDUS_TMP_FILE} | awk '{print $1}')
+      echo ${sum}
     fi
     local expected_sum=$(cat ${DDUS_SUM_FILE})
+    echo ${expected_sum}
     if [ "$sum" != "$expected_sum" ]; then
       echo "SHA sum of ${DDUS_TMP_FILE} does not match. Aborting."
       exit 1

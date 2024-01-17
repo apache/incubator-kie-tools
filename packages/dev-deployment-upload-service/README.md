@@ -4,6 +4,29 @@ This package used on KIE Sandbox's Dev deployments feature, and should be the fi
 
 The "Dev deployments upload service" runs an HTTP server that accepts ZIP file uploads to the `/upload` endpoint. When an upload is done, the application will unzip the file at the configured location and exit with a 0 code. If anything goes wrong during execution, it will exit with code 1 and a helpful message will be printed to stderr.
 
+### Installation:
+
+#### Via built binaries
+
+Extract the .tar.gz file and copy the binary to your `/usr/local/bin` directory:
+
+```bash
+tar xf dist/dev-deployment-upload-service-<OS>-<ARCH>.tar.gz -C /usr/local/bin
+```
+
+You may need to run the command as root using `sudo`.
+
+#### Via install script
+
+- Run an http server for the built files:
+  ```bash
+  npx http-server -p 8081 dist
+  ```
+- In another terminal, run the installer script:
+  ```bash
+  export DDUS_KIE_SANDBOX_URL=http://localhost:8092; curl -k http://localhost:8092/install.sh | bash
+  ```
+
 ### Usage:
 
 ```
