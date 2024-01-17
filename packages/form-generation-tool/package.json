@@ -12,6 +12,9 @@
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
+  "bin": {
+    "form-generation-tool": "src/cli/cli.js"
+  },
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",
   "files": [
