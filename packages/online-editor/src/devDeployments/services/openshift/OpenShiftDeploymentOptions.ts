@@ -37,7 +37,7 @@ export function OpenShiftDeploymentOptions(args: DeploymentOptionArgs): Array<De
         skipActionsIfFalse: true,
         resourcePatches: [
           {
-            targetKinds: ["Deployment"],
+            testFilters: [{ op: "test", path: "/kind", value: "Deployment" }],
             jsonPatches: [
               {
                 op: "add",

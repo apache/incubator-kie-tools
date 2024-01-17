@@ -17,13 +17,17 @@
   ],
   "scripts": {
     "build": "run-script-os",
+    "build:checksum": "make checksum",
     "build:darwin": "make darwin",
     "build:darwin:amd64": "make darwin-amd64",
     "build:darwin:arm64": "make darwin-arm64",
-    "build:dev": "pnpm build:linux && pnpm build:darwin:amd64 && pnpm build:darwin:arm64 && pnpm build:win32",
-    "build:linux": "make linux",
-    "build:prod": "pnpm build:linux && pnpm build:darwin:amd64 && pnpm build:darwin:arm64 && pnpm build:win32",
-    "build:win32": "make win32",
+    "build:dev": "rimraf dist && pnpm build:linux && pnpm build:darwin:amd64 && pnpm build:darwin:arm64 && pnpm build:win32 && pnpm build:checksum && pnpm copy-install-script",
+    "build:linux": "make linux-amd64",
+    "build:prod": "rimraf dist && pnpm build:linux && pnpm build:darwin:amd64 && pnpm build:darwin:arm64 && pnpm build:win32 && pnpm build:checksum && pnpm copy-install-script",
+    "build:win32": "make windows-amd64",
+    "copy-install-script": "run-script-os",
+    "copy-install-script:darwin:linux": "cp installDevDeploymentUploadService.sh dist",
+    "copy-install-script:win32": "pnpm powershell \"Copy-Item installDevDeploymentUploadService.sh dist\"",
     "install": "go mod tidy",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "serve": "npx http-server dist --port 8092",
@@ -36,6 +40,7 @@
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "cross-env": "^7.0.3",
+    "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"
   },
   "kieTools": {

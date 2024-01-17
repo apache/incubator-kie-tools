@@ -32,14 +32,12 @@ export const requiredAnnotations = {
 export function KieSandboxDevDeploymentRequiredPatches(): ResourcePatch[] {
   return [
     {
-      targetKinds: ["*"],
       jsonPatches: [
         { op: "checkType", path: "/metadata/labels", type: "null" },
         { op: "add", path: "/metadata/labels", value: {} },
       ],
     },
     {
-      targetKinds: ["*"],
       jsonPatches: [
         {
           op: "add",
@@ -54,14 +52,12 @@ export function KieSandboxDevDeploymentRequiredPatches(): ResourcePatch[] {
       ],
     },
     {
-      targetKinds: ["*"],
       jsonPatches: [
         { op: "checkType", path: "/metadata/annotations", type: "null" },
         { op: "add", path: "/metadata/annotations", value: {} },
       ],
     },
     {
-      targetKinds: ["*"],
       jsonPatches: [
         {
           op: "add",

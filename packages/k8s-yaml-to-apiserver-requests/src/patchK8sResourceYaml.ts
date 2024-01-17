@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Operation, applyPatch, getValueByPointer } from "fast-json-patch";
+import { Operation, TestOperation, applyPatch, getValueByPointer } from "fast-json-patch";
 import { parseK8sResourceYamls } from "./parseK8sResourceYamls";
 import * as jsYaml from "js-yaml";
 import { TokenMap, interpolateK8sResourceYaml } from "./interpolateK8sResourceYaml";
@@ -32,7 +32,7 @@ export type CheckTypeOperation = {
 export type PatchOperation = Operation | CheckTypeOperation;
 
 export type ResourcePatch = {
-  targetKinds: string[];
+  testFilters?: TestOperation<any>[];
   jsonPatches: PatchOperation[];
 };
 
@@ -70,23 +70,30 @@ export function patchK8sResourceYaml(k8sResourceYaml: string, patches: ResourceP
   const parsedAndPatchedYamls = parseK8sResourceYamls(k8sResourceYaml.split("\n---\n")).map((resource) => {
     let updatedResource = resource;
     for (const patch of patches) {
-      if (patch.targetKinds.includes(resource.kind) || patch.targetKinds.includes("*")) {
-        for (const jsonPatch of patch.jsonPatches) {
-          if (jsonPatch.op === "checkType") {
-            const value = getValueByPointer(updatedResource, jsonPatch.path);
-            if (isValueOfType(jsonPatch.type, value)) {
-              continue;
-            } else {
-              break;
+      try {
+        const testFiltersResults = !patch.testFilters
+          ? true
+          : applyPatch(updatedResource, patch.testFilters, false, false).every(({ test }) => Boolean(test));
+        if (testFiltersResults) {
+          for (const jsonPatch of patch.jsonPatches) {
+            if (jsonPatch.op === "checkType") {
+              const value = getValueByPointer(updatedResource, jsonPatch.path);
+              if (isValueOfType(jsonPatch.type, value)) {
+                continue;
+              } else {
+                break;
+              }
+            }
+            try {
+              const { newDocument } = applyPatch(updatedResource, [jsonPatch], false, false);
+              updatedResource = newDocument;
+            } catch (e) {
+              consoleDebugMessage(`Failed to apply patch -> \n${JSON.stringify(jsonPatch)}`);
             }
           }
-          try {
-            const { newDocument } = applyPatch(updatedResource, [jsonPatch], false, false);
-            updatedResource = newDocument;
-          } catch (e) {
-            consoleDebugMessage(`Failed to apply patch -> \n${JSON.stringify(jsonPatch)}`);
-          }
         }
+      } catch (e) {
+        consoleDebugMessage(`Failed to test filters -> \n${JSON.stringify(patch.testFilters)}`);
       }
     }
     return updatedResource;

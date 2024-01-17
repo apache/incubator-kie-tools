@@ -44,7 +44,7 @@ export type DeploymentParameter = {
 );
 
 export function shouldSkipAction(parameter: DeploymentParameter, value: any) {
-  // Non boolean type or configured to not skip actions if value is false
+  // Non boolean type or configured to not skip actions if value is false shouldn't skip
   if (parameter.type !== "boolean" || !parameter.skipActionsIfFalse) {
     return false;
   }

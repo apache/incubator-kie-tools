@@ -37,7 +37,7 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
         skipActionsIfFalse: true,
         resourcePatches: [
           {
-            targetKinds: ["Deployment"],
+            testFilters: [{ op: "test", path: "/kind", value: "Deployment" }],
             jsonPatches: [
               {
                 op: "add",
@@ -58,7 +58,7 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
     appendYamls: [IngressYaml()],
     resourcePatches: [
       {
-        targetKinds: ["Deployment"],
+        testFilters: [{ op: "test", path: "/kind", value: "Deployment" }],
         jsonPatches: [
           {
             op: "add",

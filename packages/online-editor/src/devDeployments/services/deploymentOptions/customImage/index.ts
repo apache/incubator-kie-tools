@@ -42,7 +42,7 @@ ${IngressYaml()}
         type: "text",
         resourcePatches: [
           {
-            targetKinds: ["Deployment"],
+            testFilters: [{ op: "test", path: "/kind", value: "Deployment" }],
             jsonPatches: [
               {
                 op: "replace",
@@ -62,7 +62,7 @@ ${IngressYaml()}
         type: "text",
         resourcePatches: [
           {
-            targetKinds: ["Deployment"],
+            testFilters: [{ op: "test", path: "/kind", value: "Deployment" }],
             jsonPatches: [
               {
                 op: "add",
