@@ -34,6 +34,7 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
@@ -117,7 +118,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 	assert.Equal(t, 1, workflow.Status.RecoverFailureAttempts)
 
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.NotEmpty(t, deployment.Spec.Template.ObjectMeta.Annotations["kubectl.kubernetes.io/restartedAt"])
+	assert.NotEmpty(t, deployment.Spec.Template.ObjectMeta.Annotations[metadata.RestartedAt])
 }
 
 func Test_newDevProfile(t *testing.T) {

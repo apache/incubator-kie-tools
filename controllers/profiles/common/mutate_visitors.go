@@ -27,6 +27,7 @@ import (
 	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
@@ -140,15 +141,12 @@ func WorkflowPropertiesMutateVisitor(ctx context.Context, catalog discovery.Serv
 // This method can be used as an alternative to the Kubernetes ConfigMap refresher.
 //
 // See: https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
-func RolloutDeploymentIfCMChangedMutateVisitor(cmOperationResult controllerutil.OperationResult) MutateVisitor {
+func RolloutDeploymentIfCMChangedMutateVisitor(cm *v1.ConfigMap) MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
-			if cmOperationResult == controllerutil.OperationResultUpdated {
-				deployment := object.(*appsv1.Deployment)
-				err := kubeutil.MarkDeploymentToRollout(deployment)
-				return err
-			}
-			return nil
+			deployment := object.(*appsv1.Deployment)
+			err := kubeutil.AnnotateDeploymentConfigChecksum(deployment, cm)
+			return err
 		}
 	}
 }

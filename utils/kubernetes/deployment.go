@@ -20,12 +20,18 @@
 package kubernetes
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"time"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/klog/v2"
 )
 
 const (
@@ -97,8 +103,59 @@ func MarkDeploymentToRollout(deployment *appsv1.Deployment) error {
 	if deployment.Spec.Template.ObjectMeta.Annotations == nil {
 		deployment.Spec.Template.ObjectMeta.Annotations = make(map[string]string)
 	}
-	deployment.Spec.Template.ObjectMeta.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
+
+	klog.V(log.I).Infof("Triggering restart of %s", deployment.Name)
+	deployment.Spec.Template.ObjectMeta.Annotations[metadata.RestartedAt] = time.Now().Format(time.RFC3339)
 	return nil
+}
+
+// AnnotateDeploymentConfigChecksum adds the checksum/config annotation to the template annotations of the Deployment to set the current configuration.
+// If the checksum has changed from the previous value, the restartedAt annotation is also added and a new rollout is started.
+// Code adapted from here: https://github.com/kubernetes/kubectl/blob/release-1.26/pkg/polymorphichelpers/objectrestarter.go#L44
+func AnnotateDeploymentConfigChecksum(deployment *appsv1.Deployment, cm *v1.ConfigMap) error {
+	if deployment.Spec.Paused {
+		return errors.New("can't restart paused deployment (run rollout resume first)")
+	}
+	if deployment.Spec.Template.ObjectMeta.Annotations == nil {
+		deployment.Spec.Template.ObjectMeta.Annotations = make(map[string]string)
+	}
+
+	currentChecksum, ok := deployment.Spec.Template.ObjectMeta.Annotations[metadata.Checksum]
+	if !ok {
+		currentChecksum = ""
+	}
+	newChecksum, err := configMapChecksum(cm)
+	if err != nil {
+		return err
+	}
+	if newChecksum != currentChecksum {
+		klog.V(log.I).Infof("Updating checksum of %s", deployment.Name)
+		deployment.Spec.Template.ObjectMeta.Annotations[metadata.Checksum] = newChecksum
+		if currentChecksum != "" {
+			klog.V(log.I).Infof("Triggering rollout of %s", deployment.Name)
+			deployment.Spec.Template.ObjectMeta.Annotations[metadata.RestartedAt] = time.Now().Format(time.RFC3339)
+		}
+	} else {
+		klog.V(log.I).Infof("Skipping update of deployment %s, checksum unchanged", deployment.Name)
+	}
+	return nil
+}
+
+func configMapChecksum(cm *v1.ConfigMap) (string, error) {
+	props, hasKey := cm.Data[workflowproj.ApplicationPropertiesFileName]
+	if !hasKey {
+		props = ""
+	}
+
+	hash := sha256.New()
+	_, err := hash.Write([]byte(props))
+	if err != nil {
+		return "", err
+	}
+
+	hashInBytes := hash.Sum(nil)
+	hashString := hex.EncodeToString(hashInBytes)
+	return hashString, nil
 }
 
 // GetContainerByName returns a pointer to the Container within the given Deployment.
