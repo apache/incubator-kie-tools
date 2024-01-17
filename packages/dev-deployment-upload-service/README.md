@@ -1,8 +1,10 @@
-# Dev deployments upload service
+# Dev Deployment Upload Service
 
-This package used on KIE Sandbox's Dev deployments feature, and should be the first command to run when a deployed container spins up.
+This package is used on the KIE Sandbox's Dev deployments feature and should be the first command to run when a deployed container spins up.
 
-The "Dev deployments upload service" runs an HTTP server that accepts ZIP file uploads to the `/upload` endpoint. When an upload is done, the application will unzip the file at the configured location and exit with a 0 code. If anything goes wrong during execution, it will exit with code 1 and a helpful message will be printed to stderr.
+The Dev Deployment Upload Service runs an HTTP server that accepts ZIP file uploads to the `/upload` endpoint. You can check that the service is ready to accept uploads via the `/upload-status` endpoint.
+
+When an upload is done, the application will unzip the file at the configured location and exit with a 0 code. If anything goes wrong during execution, it will exit with code 1 and a helpful message will be printed to stderr.
 
 ### Installation:
 
@@ -18,14 +20,28 @@ You may need to run the command as root using `sudo`.
 
 #### Via install script
 
-- Run an http server for the built files:
+- Run a server for the built files:
   ```bash
-  npx http-server -p 8081 dist
+  pnpm serve
   ```
 - In another terminal, run the installer script:
   ```bash
-  export DDUS_KIE_SANDBOX_URL=http://localhost:8092; curl -k http://localhost:8092/install.sh | bash
+  export DDUS_KIE_SANDBOX_URL=http://localhost:8092; curl http://localhost:8092/install.sh | bash
   ```
+
+#### From KIE Sandbox
+
+If you have a KIE Sandbox instance running at `<kie-sandbox-url>` you may install the Dev Deployment Upload Service with:
+
+```bash
+export DDUS_KIE_SANDBOX_URL=<kie-sandbox-url>; curl -k <kie-sandbox-url>/dev-deployments/upload-service/install.sh | bash
+```
+
+Example:
+
+```bash
+export DDUS_KIE_SANDBOX_URL=https://localhost:9001; curl -k https://localhost:9001/dev-deployments/upload-service/install.sh | bash
+```
 
 ### Usage:
 
