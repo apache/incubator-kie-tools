@@ -15,6 +15,7 @@ runs:
       shell: bash
       run: |
         echo "Removing large packages"
+        sudo apt-get update
         sudo apt-get remove -y '^dotnet-.*'
         sudo apt-get remove -y '^llvm-.*'
         sudo apt-get remove -y 'php.*'
