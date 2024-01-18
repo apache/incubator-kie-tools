@@ -101,17 +101,27 @@ export function BeePropertiesPanel() {
     return getBeePropertiesPanel(selectedObjectPath);
   }, [selectedObjectPath]);
 
+  /**
+   * fix bug on unique names - decision table input
+                fix bug on <Undefined> data types
+                fix focus???
+   */
+
+  // TODO: CHANGE TO IF/ELSE = REMOVE SWITCH!
+  // TODO CHECK ALL CASES! MISSING
   const updateDmnObject = useCallback((dmnObject: AllExpressionsWithoutTypes, newContent: AllCellContent) => {
     switch (newContent.type) {
       case "literalExpression":
         (dmnObject as DMN15__tLiteralExpression).text = newContent.text;
         break;
       case "context":
-        if (newContent["@_name"]) {
-          (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
-        }
-        if (newContent["@_typeRef"]) {
-          (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+        if (newContent.cell === "variable") {
+          if (newContent["@_name"]) {
+            (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+          }
+          if (newContent["@_typeRef"]) {
+            (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+          }
         }
         break;
       case "decisionTable":
@@ -127,11 +137,11 @@ export function BeePropertiesPanel() {
           }
         }
         if (newContent.cell === "inputHeader") {
-          if (newContent.text) {
-            (dmnObject as DMN15__tLiteralExpression).text = newContent.text;
+          if (newContent.inputExpression.text) {
+            (dmnObject as DMN15__tInputClause).inputExpression.text = newContent.inputExpression.text;
           }
-          if (newContent["@_typeRef"]) {
-            (dmnObject as DMN15__tLiteralExpression)["@_typeRef"] = newContent["@_typeRef"];
+          if (newContent.inputExpression["@_typeRef"]) {
+            (dmnObject as DMN15__tInputClause).inputExpression["@_typeRef"] = newContent.inputExpression?.["@_typeRef"];
           }
         }
         break;
@@ -149,11 +159,13 @@ export function BeePropertiesPanel() {
         }
         break;
       case "invocation":
-        if (newContent["@_name"]) {
-          (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
-        }
-        if (newContent["@_typeRef"]) {
-          (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+        if (newContent.cell === "parameter") {
+          if (newContent["@_name"]) {
+            (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+          }
+          if (newContent["@_typeRef"]) {
+            (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+          }
         }
         break;
     }
@@ -207,11 +219,6 @@ export function BeePropertiesPanel() {
               />
             </DrawerActions>
             <Form>
-              {/* 
-                fix bug on unique names - decision table input
-                fix bug on <Undefined> data types
-                fix focus???
-              */}
               <FormSection>
                 <FormGroup label="ID">
                   <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
@@ -219,8 +226,7 @@ export function BeePropertiesPanel() {
                   </ClipboardCopy>
                 </FormGroup>
               </FormSection>
-
-              {propertiesPanel?.type === BeePanelType.NAME_TYPE && (
+              {propertiesPanel?.type === BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL && (
                 <FormSection title={propertiesPanel?.title ?? ""}>
                   <FormGroup label="Name">
                     <InlineFeelNameInput
@@ -232,24 +238,40 @@ export function BeePropertiesPanel() {
                       shouldCommitOnBlur={true}
                       className={"pf-c-form-control"}
                       onRenamed={(newContent) => {
-                        if (selectedObjectPath!.type === "context" || selectedObjectPath!.type === "invocation") {
-                          updateBee<BeePanelType.NAME_TYPE>({
+                        if (selectedObjectPath!.type === "context") {
+                          updateBee<BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL>({
                             type: selectedObjectPath!.type,
+                            cell: "variable",
                             "@_name": newContent,
                           });
                         }
                         if (selectedObjectPath!.type === "decisionTable") {
                           updateBee({
                             type: selectedObjectPath!.type,
-                            "@_name": newContent,
                             cell: "outputHeader",
+                            "@_label": "",
+                            "@_name": newContent,
+                            "@_typeRef": "",
+                            defaultOutputEntry: {},
+                            description: { __$$text: "" },
+                            outputValues: { text: { __$$text: "" } },
                           });
                         }
                         if (selectedObjectPath!.type === "relation") {
                           updateBee({
                             type: selectedObjectPath!.type,
-                            "@_name": newContent,
                             cell: "header",
+                            "@_name": newContent,
+                          });
+                        }
+                        if (selectedObjectPath!.type === "invocation") {
+                          updateBee<BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL>({
+                            type: selectedObjectPath!.type,
+                            cell: "parameter",
+                            "@_label": "",
+                            "@_name": newContent,
+                            "@_typeRef": "",
+                            description: { __$$text: "" },
                           });
                         }
                       }}
@@ -262,24 +284,42 @@ export function BeePropertiesPanel() {
                       typeRef={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_typeRef"]}
                       isDisabled={isReadonly}
                       onChange={(newTypeRef) => {
-                        if (selectedObjectPath!.type === "context" || selectedObjectPath!.type === "invocation") {
-                          updateBee<BeePanelType.NAME_TYPE>({
+                        if (selectedObjectPath!.type === "context") {
+                          updateBee<BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL>({
                             type: selectedObjectPath!.type,
+                            cell: "variable",
+                            "@_name": "",
                             "@_typeRef": newTypeRef,
                           });
                         }
                         if (selectedObjectPath!.type === "decisionTable") {
                           updateBee({
                             type: selectedObjectPath!.type,
-                            "@_typeRef": newTypeRef,
                             cell: "outputHeader",
+                            "@_label": "",
+                            "@_name": "",
+                            "@_typeRef": newTypeRef,
+                            defaultOutputEntry: {},
+                            description: { __$$text: "" },
+                            outputValues: { text: { __$$text: "" } },
                           });
                         }
                         if (selectedObjectPath!.type === "relation") {
                           updateBee({
                             type: selectedObjectPath!.type,
-                            "@_typeRef": newTypeRef,
                             cell: "header",
+                            "@_name": "",
+                            "@_typeRef": newTypeRef,
+                          });
+                        }
+                        if (selectedObjectPath!.type === "invocation") {
+                          updateBee<BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL>({
+                            type: selectedObjectPath!.type,
+                            cell: "parameter",
+                            "@_label": "",
+                            "@_name": "",
+                            "@_typeRef": newTypeRef,
+                            description: { __$$text: "" },
                           });
                         }
                       }}
@@ -287,20 +327,20 @@ export function BeePropertiesPanel() {
                   </FormGroup>
                 </FormSection>
               )}
-              {propertiesPanel?.type === BeePanelType.TEXT && (
+              {propertiesPanel?.type === BeePanelType.EXPLANGUAGE_LABEL_DESCRIPTION_TEXT_CELL && (
                 <FormSection title={propertiesPanel?.title ?? ""}>
                   <FormGroup label="Content">
                     <CellContentTextArea
                       initialValue={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.text?.__$$text ?? ""}
                       type={selectedObjectPath!.type}
-                      onChange={updateBee<BeePanelType.TEXT>}
+                      onChange={updateBee<BeePanelType.EXPLANGUAGE_LABEL_DESCRIPTION_TEXT_CELL>}
                       expressionPath={selectedObjectInfos?.expressionPath ?? []}
                       isReadonly={isReadonly}
                     />
                   </FormGroup>
                 </FormSection>
               )}
-              {propertiesPanel?.type === BeePanelType.DECISION__TABLE_INPUT_HEADER && (
+              {propertiesPanel?.type === BeePanelType.DECISION_TABLE_INPUT_HEADER_CELL && (
                 <FormSection title={propertiesPanel?.title ?? ""}>
                   <FormGroup label="Name">
                     <InlineFeelNameInput
@@ -313,10 +353,13 @@ export function BeePropertiesPanel() {
                       className={"pf-c-form-control"}
                       onRenamed={(newContent) => {
                         if (selectedObjectPath!.type === "decisionTable") {
-                          updateBee<BeePanelType.DECISION__TABLE_INPUT_HEADER>({
+                          updateBee<BeePanelType.DECISION_TABLE_INPUT_HEADER_CELL>({
                             type: selectedObjectPath!.type,
-                            text: { __$$text: newContent },
                             cell: "inputHeader",
+                            inputExpression: {
+                              text: { __$$text: newContent },
+                            },
+                            inputValues: { text: { __$$text: "" } },
                           });
                         }
                       }}
@@ -330,10 +373,14 @@ export function BeePropertiesPanel() {
                       isDisabled={isReadonly}
                       onChange={(newTypeRef) => {
                         if (selectedObjectPath!.type === "decisionTable") {
-                          updateBee<BeePanelType.DECISION__TABLE_INPUT_HEADER>({
+                          updateBee<BeePanelType.DECISION_TABLE_INPUT_HEADER_CELL>({
                             type: selectedObjectPath!.type,
-                            "@_typeRef": newTypeRef,
                             cell: "inputHeader",
+                            inputExpression: {
+                              text: { __$$text: "" },
+                              "@_typeRef": newTypeRef,
+                            },
+                            inputValues: { text: { __$$text: "" } },
                           });
                         }
                       }}
@@ -352,7 +399,10 @@ export function BeePropertiesPanel() {
 function CellContentTextArea(props: {
   initialValue: string;
   type: AllExpressionTypes;
-  onChange: (cellContent: CellContent[BeePanelType.TEXT], expressionPath: ExpressionPath[]) => void;
+  onChange: (
+    cellContent: CellContent[BeePanelType.EXPLANGUAGE_LABEL_DESCRIPTION_TEXT_CELL],
+    expressionPath: ExpressionPath[]
+  ) => void;
   expressionPath: ExpressionPath[];
   isReadonly: boolean;
 }) {
