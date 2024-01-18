@@ -30,14 +30,10 @@ import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import {
+  AllCellContent,
   BeePanelType,
   CellContent,
-  ContextExpressionVariableCell,
-  DecisionTableCell,
   ExpressionPath,
-  InvocationParameterCell,
-  LiteralExpressionCell,
-  RelationCell,
   generateBeeMap,
   getBeePropertiesPanel,
   getDmnObject,
@@ -57,6 +53,7 @@ import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditor } from "../DmnEditorContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { AllExpressionTypes, AllExpressionsWithoutTypes } from "../dataTypes/DataTypeSpec";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -104,7 +101,7 @@ export function BeePropertiesPanel() {
     return getBeePropertiesPanel(selectedObjectPath);
   }, [selectedObjectPath]);
 
-  const updateDmnObject = useCallback((dmnObject: AllExpressionsWithoutTypes, newContent: CellContent) => {
+  const updateDmnObject = useCallback((dmnObject: AllExpressionsWithoutTypes, newContent: AllCellContent) => {
     switch (newContent.type) {
       case "literalExpression":
         (dmnObject as DMN15__tLiteralExpression).text = newContent.text;
@@ -163,7 +160,10 @@ export function BeePropertiesPanel() {
   }, []);
 
   const updateBee = useCallback(
-    (newContent: CellContent, expressionPath = selectedObjectInfos?.expressionPath) => {
+    <PropertiesPanel extends keyof CellContent>(
+      newContent: CellContent[PropertiesPanel],
+      expressionPath = selectedObjectInfos?.expressionPath
+    ) => {
       dmnEditorStoreApi.setState((state) => {
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "businessKnowledgeModel") {
           const dmnObject = getDmnObject(
@@ -209,10 +209,17 @@ export function BeePropertiesPanel() {
             <Form>
               {/* 
                 fix bug on unique names - decision table input
-                add ID
-                add question
-                add description
+                fix bug on <Undefined> data types
+                fix focus???
               */}
+              <FormSection>
+                <FormGroup label="ID">
+                  <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+                    {selectedObjectId}
+                  </ClipboardCopy>
+                </FormGroup>
+              </FormSection>
+
               {propertiesPanel?.type === BeePanelType.NAME_TYPE && (
                 <FormSection title={propertiesPanel?.title ?? ""}>
                   <FormGroup label="Name">
@@ -225,31 +232,25 @@ export function BeePropertiesPanel() {
                       shouldCommitOnBlur={true}
                       className={"pf-c-form-control"}
                       onRenamed={(newContent) => {
-                        switch (selectedObjectPath!.type) {
-                          case "context":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              "@_name": newContent,
-                            } as ContextExpressionVariableCell);
-                          case "decisionTable":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              "@_name": newContent,
-                              cell: "outputHeader",
-                            } as DecisionTableCell);
-                          case "relation":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              "@_name": newContent,
-                              cell: "header",
-                            } as RelationCell);
-                          case "invocation":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              "@_name": newContent,
-                            } as InvocationParameterCell);
-                          default:
-                            return;
+                        if (selectedObjectPath!.type === "context" || selectedObjectPath!.type === "invocation") {
+                          updateBee<BeePanelType.NAME_TYPE>({
+                            type: selectedObjectPath!.type,
+                            "@_name": newContent,
+                          });
+                        }
+                        if (selectedObjectPath!.type === "decisionTable") {
+                          updateBee({
+                            type: selectedObjectPath!.type,
+                            "@_name": newContent,
+                            cell: "outputHeader",
+                          });
+                        }
+                        if (selectedObjectPath!.type === "relation") {
+                          updateBee({
+                            type: selectedObjectPath!.type,
+                            "@_name": newContent,
+                            cell: "header",
+                          });
                         }
                       }}
                       allUniqueNames={allFeelVariableUniqueNames}
@@ -261,31 +262,25 @@ export function BeePropertiesPanel() {
                       typeRef={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_typeRef"]}
                       isDisabled={isReadonly}
                       onChange={(newTypeRef) => {
-                        switch (selectedObjectPath!.type) {
-                          case "context":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              "@_typeRef": newTypeRef,
-                            } as ContextExpressionVariableCell);
-                          case "decisionTable":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              "@_typeRef": newTypeRef,
-                              cell: "outputHeader",
-                            } as DecisionTableCell);
-                          case "relation":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              "@_typeRef": newTypeRef,
-                              cell: "header",
-                            } as RelationCell);
-                          case "invocation":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              "@_typeRef": newTypeRef,
-                            } as InvocationParameterCell);
-                          default:
-                            return;
+                        if (selectedObjectPath!.type === "context" || selectedObjectPath!.type === "invocation") {
+                          updateBee<BeePanelType.NAME_TYPE>({
+                            type: selectedObjectPath!.type,
+                            "@_typeRef": newTypeRef,
+                          });
+                        }
+                        if (selectedObjectPath!.type === "decisionTable") {
+                          updateBee({
+                            type: selectedObjectPath!.type,
+                            "@_typeRef": newTypeRef,
+                            cell: "outputHeader",
+                          });
+                        }
+                        if (selectedObjectPath!.type === "relation") {
+                          updateBee({
+                            type: selectedObjectPath!.type,
+                            "@_typeRef": newTypeRef,
+                            cell: "header",
+                          });
                         }
                       }}
                     />
@@ -298,7 +293,7 @@ export function BeePropertiesPanel() {
                     <CellContentTextArea
                       initialValue={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.text?.__$$text ?? ""}
                       type={selectedObjectPath!.type}
-                      onChange={updateBee}
+                      onChange={updateBee<BeePanelType.TEXT>}
                       expressionPath={selectedObjectInfos?.expressionPath ?? []}
                       isReadonly={isReadonly}
                     />
@@ -317,15 +312,12 @@ export function BeePropertiesPanel() {
                       shouldCommitOnBlur={true}
                       className={"pf-c-form-control"}
                       onRenamed={(newContent) => {
-                        switch (selectedObjectPath!.type) {
-                          case "decisionTable":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              text: { __$$text: newContent },
-                              cell: "inputHeader",
-                            } as DecisionTableCell);
-                          default:
-                            return;
+                        if (selectedObjectPath!.type === "decisionTable") {
+                          updateBee<BeePanelType.DECISION__TABLE_INPUT_HEADER>({
+                            type: selectedObjectPath!.type,
+                            text: { __$$text: newContent },
+                            cell: "inputHeader",
+                          });
                         }
                       }}
                       allUniqueNames={allFeelVariableUniqueNames}
@@ -337,15 +329,12 @@ export function BeePropertiesPanel() {
                       typeRef={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression["@_typeRef"]}
                       isDisabled={isReadonly}
                       onChange={(newTypeRef) => {
-                        switch (selectedObjectPath!.type) {
-                          case "decisionTable":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              "@_typeRef": newTypeRef,
-                              cell: "inputHeader",
-                            } as DecisionTableCell);
-                          default:
-                            return;
+                        if (selectedObjectPath!.type === "decisionTable") {
+                          updateBee<BeePanelType.DECISION__TABLE_INPUT_HEADER>({
+                            type: selectedObjectPath!.type,
+                            "@_typeRef": newTypeRef,
+                            cell: "inputHeader",
+                          });
                         }
                       }}
                     />
@@ -363,7 +352,7 @@ export function BeePropertiesPanel() {
 function CellContentTextArea(props: {
   initialValue: string;
   type: AllExpressionTypes;
-  onChange: (cellContent: CellContent, expressionPath: ExpressionPath[]) => void;
+  onChange: (cellContent: CellContent[BeePanelType.TEXT], expressionPath: ExpressionPath[]) => void;
   expressionPath: ExpressionPath[];
   isReadonly: boolean;
 }) {
@@ -402,7 +391,7 @@ function CellContentTextArea(props: {
                 {
                   type: props.type,
                   text: { __$$text: textAreaValue },
-                } as LiteralExpressionCell,
+                },
                 expressionPath
               );
               break;
@@ -412,7 +401,7 @@ function CellContentTextArea(props: {
                   type: props.type,
                   text: { __$$text: textAreaValue },
                   cell: "rule",
-                } as DecisionTableCell,
+                },
                 expressionPath
               );
               break;
@@ -422,7 +411,7 @@ function CellContentTextArea(props: {
                   type: props.type,
                   text: { __$$text: textAreaValue },
                   cell: "content",
-                } as RelationCell,
+                },
                 expressionPath
               );
               break;
