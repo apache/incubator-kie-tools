@@ -13,11 +13,6 @@ on:
 
 env:
   GO_VERSION: 1.19
-  # Kubernetes version should aligned with OCP LTS, aka OCP 4.10 (k8s 1.23) for now
-  # https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.23.md
-  # WARNING: kindest/node is not always existing with given version ...
-  KUBERNETES_VERSION: v1.26.3
-  MINIKUBE_VERSION: v1.31.1
   DEBUG: true
 
 jobs:
@@ -27,7 +22,7 @@ jobs:
       cancel-in-progress: true
     timeout-minutes: 120
     runs-on: ubuntu-latest
-    name: End-to-end tests (Minikube)
+    name: End-to-end tests (Kind)
     steps:
       - name: Install package
         run: |
@@ -50,45 +45,13 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Cache Minikube Download
-        id: cache-minikube-download
-        uses: actions/cache@v3
-        with:
-          key: ${{ runner.os }}-minikube-${{ env.MINIKUBE_VERSION }}
-          path: |
-            ~/.minikube/download/
+      - name: Setup Kind cluster
+        run: |
+          make create-cluster
 
-      - name: Setup Minikube cluster
+      - name: Set OPERATOR_IMAGE_NAME to point to Kind's local registry
         run: |
-          # Install minikube at $HOME/.local/bin
-          ./hack/ci/install-minikube.sh $HOME/.local/bin
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          minikube start --kubernetes-version ${{ env.KUBERNETES_VERSION }} --addons=registry --insecure-registry=localhost:5000,192.168.0.0/16 --cpus=max --memory=max
-      
-      - name: Wait for Minikube up and running
-        run: |
-          minikube ssh cat /lib/systemd/system/docker.service
-          kubectl get pods -A
-          set -x
-          MINIKUBE_COMPONENTS=(etcd kube-apiserver kube-controller-manager kube-scheduler)
-          for component in "${MINIKUBE_COMPONENTS[@]}"
-          do
-            echo "Check component '${component}' is in 'Running' state"
-            COMPONENT_NAME=${component} timeout 60s bash -c 'kubectl get pods -l tier=control-plane -l component=${COMPONENT_NAME} -n kube-system && while [[ "$(kubectl get pods -l tier=control-plane -l component=${COMPONENT_NAME} -n kube-system -o jsonpath={.items[0].status.phase})" != "Running" ]] ; do sleep 2 &&  kubectl get pods -l tier=control-plane -l component=${COMPONENT_NAME} -n kube-system -o jsonpath={.items[0].status.phase}; done'
-          done
-
-      
-      - name: Wait for Minikube registry
-        run: |
-          kubectl get pods -A
-          timeout 60s bash -c 'kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system && while [[ "$(kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system -o jsonpath={.items[0].status.phase})" != "Running" ]] ; do sleep 2 && kubectl get pods -l kubernetes.io/minikube-addons=registry -l actual-registry=true -n kube-system -o jsonpath={.items[0].status.phase}; done'
-          
-
-      - name: Retrieve Minikube registry
-        run: |
-          minikube_registry="$(minikube ip):5000"
-          echo "MINIKUBE_REGISTRY=${minikube_registry}" >> $GITHUB_ENV
-          echo "OPERATOR_IMAGE_NAME=${minikube_registry}/kogito-serverless-operator:0.0.1" >> $GITHUB_ENV
+          echo "OPERATOR_IMAGE_NAME=127.0.0.1:5001/kogito-serverless-operator:0.0.1" >> $GITHUB_ENV
 
       - name: Setup Python for cekit
         uses: actions/setup-python@v4
@@ -99,12 +62,12 @@ jobs:
       - name: Build operator image
         run: |
           pip install cekit==4.5.0
-          pip install odcs podman behave lxml krb5
-          make container-build BUILDER=podman IMG=${{ env.OPERATOR_IMAGE_NAME }}
+          pip install odcs docker python-docker behave lxml krb5 docker-squash
+          make container-build BUILDER=docker IMG=${{ env.OPERATOR_IMAGE_NAME }}
 
-      - name: Load image in Minikube
+      - name: Load image in Kind
         run: |
-          podman push --tls-verify=false ${{ env.OPERATOR_IMAGE_NAME }}
+          kind load docker-image 127.0.0.1:5001/kogito-serverless-operator:0.0.1
 
       - name: Check pods
         run: |
@@ -115,3 +78,17 @@ jobs:
       - name: Run tests
         run: |
           make test-e2e
+
+      - name: Export kind logs
+        if: always()
+        run: |
+          mkdir -p /tmp/kind/logs
+          kind export logs --loglevel=debug /tmp/kind/logs
+
+      - name: Upload kind logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: kind-logs-${{ env.JOB_NAME }}-${{ github.run_id }}
+          path: /tmp/kind/logs
+          retention-days: 1

@@ -248,6 +248,7 @@ ENVTEST ?= $(LOCALBIN)/setup-envtest
 ## Tool Versions
 KUSTOMIZE_VERSION ?= v4.5.2
 CONTROLLER_TOOLS_VERSION ?= v0.9.2
+KIND_VERSION ?= v0.20.0
 
 KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
 .PHONY: kustomize
@@ -350,3 +351,16 @@ test-e2e: install-operator-sdk
 
 .PHONY: before-pr
 before-pr: test generate-all
+
+
+.PHONY: install-kind
+install-kind:
+	command -v kind >/dev/null || go install sigs.k8s.io/kind@$(KIND_VERSION)
+
+.PHONY: create-cluster
+create-cluster: install-kind
+	kind get clusters | grep kind >/dev/null || ./hack/ci/create-kind-cluster-with-registry.sh
+
+.PHONY: delete-cluster
+delete-cluster: install-kind
+	kind delete cluster && docker rm -f kind-registry
