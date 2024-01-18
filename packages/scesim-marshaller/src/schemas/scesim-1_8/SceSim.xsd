@@ -95,17 +95,6 @@
         minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
- <!-- <xsd:complexType name="ScenarioType">
-    <xsd:sequence>
-      <xsd:element type="factMappingValuesType" name="factMappingValues" />
-    </xsd:sequence>
-  </xsd:complexType>
-  <xsd:complexType name="BackgroundDataType">
-    <xsd:sequence>
-      <xsd:element type="factMappingValuesType" name="factMappingValues" />
-    </xsd:sequence>
-  </xsd:complexType>
--->
   <xsd:complexType name="FactMappingValuesTypes">
     <xsd:sequence>
       <xsd:element type="factMappingValuesType" name="factMappingValues" />
