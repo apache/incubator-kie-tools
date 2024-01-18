@@ -32,6 +32,8 @@ import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageSer
 import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "./ServerlessWorkflowDiagramEditorChannelApiImpl";
 import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
+import { VsCodeWorkspaceChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/workspace/VsCodeWorkspaceChannelApiImpl";
+import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/notifications/VsCodeNotificationsChannelApiImpl";
 
 export class ServerlessWorkflowDiagramEditorChannelApiProducer implements VsCodeKieEditorChannelApiProducer {
   constructor(
@@ -44,9 +46,9 @@ export class ServerlessWorkflowDiagramEditorChannelApiProducer implements VsCode
   get(
     editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceChannelApi,
+    vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsChannelApi,
+    vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>
@@ -54,9 +56,9 @@ export class ServerlessWorkflowDiagramEditorChannelApiProducer implements VsCode
     return new ServerlessWorkflowDiagramEditorChannelApiImpl(
       editor,
       resourceContentService,
-      workspaceApi,
+      vscodeWorkspace,
       backendProxy,
-      notificationsApi,
+      vscodeNotifications,
       javaCodeCompletionApi,
       viewType,
       i18n,

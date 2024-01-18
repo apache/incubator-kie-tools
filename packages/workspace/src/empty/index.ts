@@ -17,4 +17,4 @@
  * under the License.
  */
 
-export { VsCodeWorkspaceChannelApiImpl } from "./VsCodeWorkspaceChannelApiImpl";
+export type keep = true;

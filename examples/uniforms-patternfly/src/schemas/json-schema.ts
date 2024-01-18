@@ -55,6 +55,7 @@ const schema = {
           type: "string",
           format: "date-time",
           max: "2000-04-04T10:30:00.000Z",
+          description: "this is date and time field",
         },
       },
       disabled: false,

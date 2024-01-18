@@ -72,6 +72,10 @@ module.exports = async (env) => [
           },
         ],
       }),
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
+      }),
     ],
     module: {
       rules: [...patternflyBase.webpackModuleRules],

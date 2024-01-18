@@ -41,6 +41,8 @@ export class GwtEditorWrapper implements Editor {
   private readonly stateControlService: GwtStateControlService;
   private readonly kieBcEditorsI18n: I18n<KieBcEditorsI18n>;
 
+  public normalizedPosixPathRelativeToTheWorkspaceRoot: string;
+
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
@@ -85,9 +87,10 @@ export class GwtEditorWrapper implements Editor {
     return this.gwtEditor.getContent().then((content) => this.textFormatter.format(content));
   }
 
-  public setContent(path: string, content: string) {
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) {
+    this.normalizedPosixPathRelativeToTheWorkspaceRoot = normalizedPosixPathRelativeToTheWorkspaceRoot;
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
-    return this.gwtEditor.setContent(path, content.trim());
+    return this.gwtEditor.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content.trim());
   }
 
   public selectStateByName(name: string | null) {

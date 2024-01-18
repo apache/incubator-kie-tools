@@ -23,7 +23,7 @@ import {
   EnvelopeContentType,
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api";
-import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
+import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
@@ -37,6 +37,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "test.dmn",
   };
 
   const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [
@@ -89,10 +90,10 @@ describe("EmbeddedEditor::ONLINE", () => {
       "kogitoEditor_contentChanged"
     );
 
-    editorRef.current?.setContent("path", "content");
+    editorRef.current?.setContent("test-path-relative-to-the-workspace-root", "content");
 
     expect(spyOnContentChangedNotification).toBeCalledWith(
-      { content: "content", path: "path" },
+      { content: "content", normalizedPosixPathRelativeToTheWorkspaceRoot: "test-path-relative-to-the-workspace-root" },
       { showLoadingOverlay: false }
     );
   });
@@ -206,7 +207,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "kogitoWorkspace_resourceContentRequest",
-      data: [{ path: "" }],
+      data: [{ normalizedPosixPathRelativeToTheWorkspaceRoot: "" } as ResourceContent],
     });
 
     expect(onResourceContentRequest).toBeCalled();
@@ -232,7 +233,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "kogitoWorkspace_resourceListRequest",
-      data: [{ pattern: "", paths: [] }],
+      data: [{ pattern: "", normalizedPosixPathsRelativeToTheWorkspaceRoot: [] } as ResourcesList],
     });
 
     expect(onResourceListRequest).toBeCalled();

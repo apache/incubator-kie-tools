@@ -43,7 +43,7 @@ export class DummyEditor implements Editor {
     return Promise.resolve();
   }
 
-  public setContent(path: string, content: string) {
+  public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string) {
     return this.ref!.setContent(content);
   }
 

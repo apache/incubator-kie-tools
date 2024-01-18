@@ -55,8 +55,8 @@ public class SwitchStateShape extends StateShape implements HasConditionsAndHasD
         if (state.getTimeouts() != null && state.getTimeouts() instanceof WorkflowTimeouts) {
             getView().addChild(new CornerIcon(CLOCK,
                                               LEFT_FROM_RIGHT_TOP_CORNER,
-                                              getTranslation(TIMEOUT_EVENT) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getEventTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_STATE) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout()));
+                                              getTranslation(TIMEOUT_EVENT) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getEventTimeout()) + "\r\n"
+                                                      + getTranslation(TIMEOUT_STATE) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout())));
         }
 
         if (state.getStateDataFilter() != null) {

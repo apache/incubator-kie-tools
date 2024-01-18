@@ -54,9 +54,9 @@ public class EventStateShape extends StateShape implements HasDataFilter {
         if (state.getTimeouts() != null && state.getTimeouts() instanceof WorkflowTimeouts) {
             getView().addChild(new CornerIcon(CLOCK,
                                               RIGHT_TOP_CORNER,
-                                              getTranslation(TIMEOUT_EVENT) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getEventTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_STATE) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getStateExecTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_ACTION) + ": " + ((WorkflowTimeouts)state.getTimeouts()).getActionExecTimeout()));
+                                              getTranslation(TIMEOUT_EVENT) + ": " + truncate(((WorkflowTimeouts)state.getTimeouts()).getEventTimeout()) + "\r\n"
+                                                      + getTranslation(TIMEOUT_STATE) + ": " + truncate(((WorkflowTimeouts)state.getTimeouts()).getStateExecTimeout()) + "\r\n"
+                                                      + getTranslation(TIMEOUT_ACTION) + ": " + truncate(((WorkflowTimeouts)state.getTimeouts()).getActionExecTimeout())));
         }
 
         if (state.getStateDataFilter() != null) {

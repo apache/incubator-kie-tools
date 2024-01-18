@@ -23,7 +23,11 @@ import swfTextEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/sw
 import { createEditor, Editor, ServerlessWorkflowType, StandaloneEditorApi } from "../common/Editor";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  KogitoEditorChannelApi,
+} from "@kie-tools-core/editor/dist/api";
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import {
   SwfPreviewOptionsChannelApiImpl,
@@ -56,6 +60,7 @@ const createEnvelopeServer = (
         {
           origin: self.origin,
           envelopeServerId: self.id,
+          workspaceRootAbsolutePsixPath: DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
         },
         {
           resourcesPathPrefix: "",

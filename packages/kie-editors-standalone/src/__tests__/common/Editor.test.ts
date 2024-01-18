@@ -41,7 +41,7 @@ describe("createEditor", () => {
 
   const stateControl = new StateControl();
 
-  test("setContent calls envelope with path and content", () => {
+  test("setContent calls envelope with normalized posix path relative to the workspace root, and content", () => {
     const editor = createEditor(
       envelopeServer.envelopeApi,
       stateControl,
@@ -59,7 +59,7 @@ describe("createEditor", () => {
     editor.setContent("my-path", "my-content");
     expect(spyOnContentChangedNotification).toHaveBeenCalledWith(
       {
-        path: "my-path",
+        normalizedPosixPathRelativeToTheWorkspaceRoot: "my-path",
         content: "my-content",
       },
       { showLoadingOverlay: true }
