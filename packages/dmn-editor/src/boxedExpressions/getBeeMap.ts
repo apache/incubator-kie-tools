@@ -100,7 +100,7 @@ interface FilterExpressionPath extends PathType {
   row: "in" | "match";
 }
 
-type Path =
+export type ExpressionPath =
   | LiteralExpressionPath
   | ContextExpressionPath
   | DecisionTableHeaderPath
@@ -117,9 +117,13 @@ type Path =
 /**
  * A map of "@_id" to cell (expression) and its path in the expression hierarchy
  */
-type BeeMap = Map<string, { expressionPath: Path[]; cell: AllExpressionsWithoutTypes }>;
+type BeeMap = Map<string, { expressionPath: ExpressionPath[]; cell: AllExpressionsWithoutTypes }>;
 
-export function generateBeeMap(expression: AllExpressions, parentMap: BeeMap, parentExpressionPath: Path[]): BeeMap {
+export function generateBeeMap(
+  expression: AllExpressions,
+  parentMap: BeeMap,
+  parentExpressionPath: ExpressionPath[]
+): BeeMap {
   const map: BeeMap = parentMap ? parentMap : new Map();
   switch (expression?.__$$element) {
     case "literalExpression":
@@ -308,7 +312,7 @@ export enum BeePanelType {
   NONE,
 }
 
-export function getBeePropertiesPanel(selectedObjectPath: Path): {
+export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
   type: BeePanelType;
   title?: string;
 } {
@@ -368,7 +372,7 @@ export function getBeePropertiesPanel(selectedObjectPath: Path): {
 }
 
 export function getDmnObject(
-  paths: Path[],
+  paths: ExpressionPath[],
   expressionRoot: AllExpressions | undefined
 ): AllExpressionsWithoutTypes | undefined {
   if (!expressionRoot) {

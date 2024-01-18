@@ -25,7 +25,7 @@ import {
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
@@ -34,6 +34,7 @@ import {
   CellContent,
   ContextExpressionVariableCell,
   DecisionTableCell,
+  ExpressionPath,
   InvocationParameterCell,
   LiteralExpressionCell,
   RelationCell,
@@ -55,10 +56,11 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditor } from "../DmnEditorContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { AllExpressionsWithoutTypes } from "../dataTypes/DataTypeSpec";
+import { AllExpressionTypes, AllExpressionsWithoutTypes } from "../dataTypes/DataTypeSpec";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { allFeelVariableUniqueNames, nodesById } = useDmnEditorDerivedStore();
   const { dmnEditorRootElementRef } = useDmnEditor();
@@ -68,9 +70,11 @@ export function BeePropertiesPanel() {
     [activeDrgElementId, selectedObjectId]
   );
 
-  const node = useMemo(() => {
-    return activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined;
-  }, [activeDrgElementId, nodesById]);
+  const node = useMemo(
+    () => (activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined),
+    [activeDrgElementId, nodesById]
+  );
+  const isReadonly = !!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace;
 
   const expression = useMemo(() => {
     if (!node?.data.dmnObject) {
@@ -84,13 +88,9 @@ export function BeePropertiesPanel() {
     }
   }, [node?.data.dmnObject]);
 
-  const beeMap = useMemo(() => {
-    return expression ? generateBeeMap(expression, new Map(), []) : undefined;
-  }, [expression]);
+  const beeMap = useMemo(() => (expression ? generateBeeMap(expression, new Map(), []) : undefined), [expression]);
 
-  const selectedObjectInfos = useMemo(() => {
-    return beeMap?.get(selectedObjectId ?? "");
-  }, [beeMap, selectedObjectId]);
+  const selectedObjectInfos = useMemo(() => beeMap?.get(selectedObjectId ?? ""), [beeMap, selectedObjectId]);
 
   const selectedObjectPath = useMemo(
     () => selectedObjectInfos?.expressionPath[selectedObjectInfos.expressionPath.length - 1],
@@ -163,11 +163,11 @@ export function BeePropertiesPanel() {
   }, []);
 
   const updateBee = useCallback(
-    (newContent: CellContent) => {
+    (newContent: CellContent, expressionPath = selectedObjectInfos?.expressionPath) => {
       dmnEditorStoreApi.setState((state) => {
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "businessKnowledgeModel") {
           const dmnObject = getDmnObject(
-            selectedObjectInfos?.expressionPath ?? [],
+            expressionPath ?? [],
             (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tBusinessKnowledgeModel)
               ?.encapsulatedLogic?.expression
           );
@@ -175,7 +175,7 @@ export function BeePropertiesPanel() {
         }
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "decision") {
           const dmnObject = getDmnObject(
-            selectedObjectInfos?.expressionPath ?? [],
+            expressionPath ?? [],
             (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tDecision)?.expression
           );
           dmnObject && updateDmnObject(dmnObject, newContent);
@@ -207,6 +207,12 @@ export function BeePropertiesPanel() {
               />
             </DrawerActions>
             <Form>
+              {/* 
+                fix bug on unique names - decision table input
+                add ID
+                add question
+                add description
+              */}
               {propertiesPanel?.type === BeePanelType.NAME_TYPE && (
                 <FormSection title={propertiesPanel?.title ?? ""}>
                   <FormGroup label="Name">
@@ -215,7 +221,7 @@ export function BeePropertiesPanel() {
                       isPlain={false}
                       id={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_id"] ?? ""}
                       name={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_name"] ?? ""}
-                      isReadonly={false} // TODO: LUIZ
+                      isReadonly={isReadonly}
                       shouldCommitOnBlur={true}
                       className={"pf-c-form-control"}
                       onRenamed={(newContent) => {
@@ -253,7 +259,7 @@ export function BeePropertiesPanel() {
                     <TypeRefSelector
                       heightRef={dmnEditorRootElementRef}
                       typeRef={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_typeRef"]}
-                      isDisabled={false} // TODO: LUIZ
+                      isDisabled={isReadonly}
                       onChange={(newTypeRef) => {
                         switch (selectedObjectPath!.type) {
                           case "context":
@@ -289,37 +295,12 @@ export function BeePropertiesPanel() {
               {propertiesPanel?.type === BeePanelType.TEXT && (
                 <FormSection title={propertiesPanel?.title ?? ""}>
                   <FormGroup label="Content">
-                    <TextArea
-                      aria-label={"Content"}
-                      type={"text"}
-                      isDisabled={false} // TODO: LUIZ
-                      value={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.text?.__$$text ?? ""}
-                      onChange={(newContent) => {
-                        switch (selectedObjectPath!.type) {
-                          case "literalExpression":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              text: { __$$text: newContent },
-                            } as LiteralExpressionCell);
-                          case "decisionTable":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              text: { __$$text: newContent },
-                              cell: "rule",
-                            } as DecisionTableCell);
-                          case "relation":
-                            return updateBee({
-                              type: selectedObjectPath!.type,
-                              text: { __$$text: newContent },
-                              cell: "content",
-                            } as RelationCell);
-                          default:
-                            return;
-                        }
-                      }}
-                      placeholder={"Enter the expression content..."}
-                      style={{ resize: "vertical", minHeight: "40px" }}
-                      rows={6}
+                    <CellContentTextArea
+                      initialValue={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.text?.__$$text ?? ""}
+                      type={selectedObjectPath!.type}
+                      onChange={updateBee}
+                      expressionPath={selectedObjectInfos?.expressionPath ?? []}
+                      isReadonly={isReadonly}
                     />
                   </FormGroup>
                 </FormSection>
@@ -332,7 +313,7 @@ export function BeePropertiesPanel() {
                       isPlain={false}
                       id={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression["@_id"] ?? ""}
                       name={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression.text?.__$$text ?? ""}
-                      isReadonly={false} // TODO: LUIZ
+                      isReadonly={isReadonly}
                       shouldCommitOnBlur={true}
                       className={"pf-c-form-control"}
                       onRenamed={(newContent) => {
@@ -354,7 +335,7 @@ export function BeePropertiesPanel() {
                     <TypeRefSelector
                       heightRef={dmnEditorRootElementRef}
                       typeRef={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression["@_typeRef"]}
-                      isDisabled={false} // TODO: LUIZ
+                      isDisabled={isReadonly}
                       onChange={(newTypeRef) => {
                         switch (selectedObjectPath!.type) {
                           case "decisionTable":
@@ -375,6 +356,85 @@ export function BeePropertiesPanel() {
           </DrawerHead>
         </DrawerPanelContent>
       )}
+    </>
+  );
+}
+
+function CellContentTextArea(props: {
+  initialValue: string;
+  type: AllExpressionTypes;
+  onChange: (cellContent: CellContent, expressionPath: ExpressionPath[]) => void;
+  expressionPath: ExpressionPath[];
+  isReadonly: boolean;
+}) {
+  // used to save the expression path value until the flush operation
+  const [expressionPath, setExpressionPath] = useState(props.expressionPath);
+  const [textAreaValue, setTextAreaValue] = useState("");
+  const [isEditing, setEditing] = useState(false);
+
+  React.useEffect(() => {
+    if (!isEditing) {
+      setTextAreaValue(props.initialValue);
+    }
+  }, [props.initialValue, isEditing]);
+
+  React.useEffect(() => {
+    if (!isEditing) {
+      setExpressionPath(props.expressionPath);
+    }
+  }, [props.expressionPath, isEditing]);
+
+  return (
+    <>
+      <TextArea
+        aria-label={"Content"}
+        type={"text"}
+        isDisabled={props.isReadonly}
+        value={textAreaValue}
+        onChange={(newContent) => {
+          setTextAreaValue(newContent);
+          setEditing(true);
+        }}
+        onBlur={() => {
+          switch (props.type) {
+            case "literalExpression":
+              props.onChange(
+                {
+                  type: props.type,
+                  text: { __$$text: textAreaValue },
+                } as LiteralExpressionCell,
+                expressionPath
+              );
+              break;
+            case "decisionTable":
+              props.onChange(
+                {
+                  type: props.type,
+                  text: { __$$text: textAreaValue },
+                  cell: "rule",
+                } as DecisionTableCell,
+                expressionPath
+              );
+              break;
+            case "relation":
+              props.onChange(
+                {
+                  type: props.type,
+                  text: { __$$text: textAreaValue },
+                  cell: "content",
+                } as RelationCell,
+                expressionPath
+              );
+              break;
+            default:
+              break;
+          }
+          setEditing(false);
+        }}
+        placeholder={"Enter the expression content..."}
+        style={{ resize: "vertical", minHeight: "40px" }}
+        rows={6}
+      />
     </>
   );
 }
