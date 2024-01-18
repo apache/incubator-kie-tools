@@ -35,7 +35,7 @@ declare let window: CustomWindow;
 export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
-  public createEditor(
+  public async createEditor(
     ctx: KogitoEditorEnvelopeContextType<BpmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<BpmnEditor> {
@@ -72,6 +72,7 @@ export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorCh
       this.gwtEditorEnvelopeConfig
     );
 
-    return factory.createEditor(ctx, initArgs);
+    const editor = await factory.createEditor(ctx, initArgs);
+    return editor;
   }
 }

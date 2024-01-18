@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -40,7 +40,7 @@ public class HasCollectionsTest extends HasTranslationGeneralTest {
 
     @Test
     public void testGetCollectionsAllNull() {
-        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + ": ∞",
+        assertTranslations(TEST_STRING + ": undefined\r\n" + TEST_STRING + ": ∞",
                            hasCollections.getCollections(state),
                            INPUT_COLLECTION,
                            FOR_EACH_BATCH_SIZE);
@@ -67,7 +67,7 @@ public class HasCollectionsTest extends HasTranslationGeneralTest {
     @Test
     public void testGetCollectionsShortOutputCollection() {
         state.setOutputCollection(SHORT_VALUE);
-        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + ": " + SHORT_VALUE + "\r\n" + TEST_STRING + ": ∞",
+        assertTranslations(TEST_STRING + ": undefined\r\n" + TEST_STRING + ": " + SHORT_VALUE + "\r\n" + TEST_STRING + ": ∞",
                            hasCollections.getCollections(state),
                            INPUT_COLLECTION,
                            OUTPUT_COLLECTION,
@@ -77,7 +77,7 @@ public class HasCollectionsTest extends HasTranslationGeneralTest {
     @Test
     public void testGetCollectionsLongOutputCollection() {
         state.setOutputCollection(LONG_VALUE);
-        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + ": " + TRUNCATE_VALUE + "\r\n" + TEST_STRING + ": ∞",
+        assertTranslations(TEST_STRING + ": undefined\r\n" + TEST_STRING + ": " + TRUNCATE_VALUE + "\r\n" + TEST_STRING + ": ∞",
                            hasCollections.getCollections(state),
                            INPUT_COLLECTION,
                            OUTPUT_COLLECTION,
@@ -87,7 +87,7 @@ public class HasCollectionsTest extends HasTranslationGeneralTest {
     @Test
     public void testGetCollectionsIterationParam() {
         state.setIterationParam(SHORT_VALUE);
-        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + ": " + SHORT_VALUE + "\r\n" + TEST_STRING + ": ∞",
+        assertTranslations(TEST_STRING + ": undefined\r\n" + TEST_STRING + ": " + SHORT_VALUE + "\r\n" + TEST_STRING + ": ∞",
                            hasCollections.getCollections(state),
                            INPUT_COLLECTION,
                            ITERATION_PARAMETER,
@@ -97,7 +97,7 @@ public class HasCollectionsTest extends HasTranslationGeneralTest {
     @Test
     public void testGetCollectionsLongIterationParam() {
         state.setIterationParam(LONG_VALUE);
-        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + ": " + TRUNCATE_VALUE + "\r\n" + TEST_STRING + ": ∞",
+        assertTranslations(TEST_STRING + ": undefined\r\n" + TEST_STRING + ": " + TRUNCATE_VALUE + "\r\n" + TEST_STRING + ": ∞",
                            hasCollections.getCollections(state),
                            INPUT_COLLECTION,
                            ITERATION_PARAMETER,
@@ -107,7 +107,7 @@ public class HasCollectionsTest extends HasTranslationGeneralTest {
     @Test
     public void testIsDefaultBatchSizeInteger() {
         state.setBatchSize(Integer.valueOf(5));
-        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + ": 5",
+        assertTranslations(TEST_STRING + ": undefined\r\n" + TEST_STRING + ": 5",
                            hasCollections.getCollections(state),
                            INPUT_COLLECTION,
                            FOR_EACH_BATCH_SIZE);
@@ -116,7 +116,7 @@ public class HasCollectionsTest extends HasTranslationGeneralTest {
     @Test
     public void testIsDefaultBatchSizeString() {
         state.setBatchSize("7");
-        assertTranslations(TEST_STRING + ": null\r\n" + TEST_STRING + ": 7",
+        assertTranslations(TEST_STRING + ": undefined\r\n" + TEST_STRING + ": 7",
                            hasCollections.getCollections(state),
                            INPUT_COLLECTION,
                            FOR_EACH_BATCH_SIZE);

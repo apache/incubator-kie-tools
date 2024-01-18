@@ -48,18 +48,26 @@ export type EvaluationResults = Record<string, any>;
 export type ValidationMessages = Record<string, any>;
 export type OnDmnModelChange = (model: DmnLatestModel) => void;
 
-export type OnRequestToJumpToPath = (relativePath: string) => void;
-export type OnRequestToResolvePath = (relativePath: string) => string;
+export type OnRequestToJumpToPath = (normalizedPosixPathRelativeToTheOpenFile: string) => void;
+export type OnRequestToResolvePath = (normalizedPosixPathRelativeToTheOpenFile: string) => string;
+
+/** @returns a list of paths relative to the open file. */
 export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
-export type OnRequestExternalModelByPath = (relativePath: string) => Promise<ExternalModel | null>;
-export type ExternalModelsIndex = Record<string, ExternalModel | undefined>;
+
+export type OnRequestExternalModelByPath = (
+  normalizedPosixPathRelativeToTheOpenFile: string
+) => Promise<ExternalModel | null>;
+export type ExternalModelsIndex = Record<
+  string /** normalizedPosixPathRelativeToTheOpenFile */,
+  ExternalModel | undefined
+>;
 export type ExternalModel = ({ type: "dmn" } & ExternalDmn) | ({ type: "pmml" } & ExternalPmml);
 
-export type ExternalDmnsIndex = Map<string, ExternalDmn>;
-export type ExternalDmn = { model: DmnLatestModel; relativePath: string; svg: string };
+export type ExternalDmnsIndex = Map<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn>;
+export type ExternalDmn = { model: DmnLatestModel; normalizedPosixPathRelativeToTheOpenFile: string; svg: string };
 
-export type ExternalPmmlsIndex = Map<string, ExternalPmml>;
-export type ExternalPmml = { model: PMML; relativePath: string };
+export type ExternalPmmlsIndex = Map<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalPmml>;
+export type ExternalPmml = { model: PMML; normalizedPosixPathRelativeToTheOpenFile: string };
 
 export type DmnEditorProps = {
   /**

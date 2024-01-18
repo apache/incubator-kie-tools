@@ -36,21 +36,29 @@ export type InternalProps = Props & {
   defaultModelName?: string;
 };
 
-export const EditorComponent = (props: InternalProps) => {
+export const EditorComponent = ({
+  id,
+  initialContent,
+  openEditor,
+  origin,
+  readOnly,
+  defaultModelName,
+  resources,
+}: InternalProps) => {
   const [isDirty, setDirty] = useState(false);
   const editorRef = useRef<StandaloneEditorApi>(null);
-  const [modelName, setModelName] = useState(props.defaultModelName ?? "Untitled");
+  const [modelName, setModelName] = useState(defaultModelName ?? "Untitled");
   const [files, setFiles] = useState<UploadedFile[]>([]);
 
   const editorContainerDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const e = props.openEditor({
+    const e = openEditor({
       container: editorContainerDivRef.current!,
-      initialContent: props.initialContent,
-      readOnly: props.readOnly,
-      origin: props.origin,
-      resources: props.resources,
+      initialContent: initialContent,
+      readOnly: readOnly,
+      origin: origin,
+      resources: resources,
     });
 
     e.subscribeToContentChanges(setDirty);
@@ -59,10 +67,13 @@ export const EditorComponent = (props: InternalProps) => {
     return () => {
       e.close();
     };
-  }, [props.id, props.readOnly, props.origin, props.resources, props.initialContent]);
+  }, [id, readOnly, origin, resources, initialContent, openEditor]);
 
   const setEditorContents = useCallback((resource: UploadedFile) => {
-    editorRef.current?.setContent(resource.value.path, resource.value.content ?? "");
+    editorRef.current?.setContent(
+      resource.value.normalizedPosixPathRelativeToTheWorkspaceRoot,
+      resource.value.content ?? ""
+    );
     setModelName(resource.name);
   }, []);
 
@@ -76,7 +87,17 @@ export const EditorComponent = (props: InternalProps) => {
 
   const editorSave = async () => {
     const content = await editorRef.current?.getContent();
-    setFiles([...files, { name: modelName, value: { path: modelName, type: ContentType.TEXT, content } }]);
+    setFiles([
+      ...files,
+      {
+        name: modelName,
+        value: {
+          normalizedPosixPathRelativeToTheWorkspaceRoot: modelName,
+          type: ContentType.TEXT,
+          content,
+        },
+      },
+    ]);
     editorRef.current?.markAsSaved();
   };
 
@@ -130,7 +151,7 @@ export const EditorComponent = (props: InternalProps) => {
         onView={setEditorContents}
         files={files}
         setFiles={setFiles}
-        ouiaId={props.id}
+        ouiaId={id}
       />
       {isDirty && (
         <div id="dirty" data-ouia-component-type="content-dirty">
@@ -139,9 +160,9 @@ export const EditorComponent = (props: InternalProps) => {
       )}
       {buttons}
       <div
-        id={props.id}
+        id={id}
         data-ouia-component-type="editor"
-        data-ouia-component-id={props.id}
+        data-ouia-component-id={id}
         ref={editorContainerDivRef}
         style={{ flex: "1 1 auto" }}
       />

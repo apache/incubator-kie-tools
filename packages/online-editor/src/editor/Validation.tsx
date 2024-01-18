@@ -79,7 +79,7 @@ export function useFileValidation(
               }
               const notifications: Notification[] = validationResults.map((validationResult: any) => ({
                 type: "PROBLEM",
-                path: "",
+                normalizedPosixPathRelativeToTheWorkspaceRoot: "",
                 severity: "ERROR",
                 message: validationResult,
               }));
@@ -124,7 +124,7 @@ export function useFileValidation(
               setNotifications(i18n.terms.validation, "", [
                 {
                   type: "ALERT",
-                  path: "",
+                  normalizedPosixPathRelativeToTheWorkspaceRoot: "",
                   severity: "WARNING",
                   message:
                     "Validation checks are temporarily supported only on DMN 1.2 or below. For full access to this feature, use the Legacy DMN Editor.",
@@ -176,7 +176,7 @@ export function useFileValidation(
                     }
                     return {
                       type: "PROBLEM",
-                      path,
+                      normalizedPosixPathRelativeToTheWorkspaceRoot: path,
                       severity: validationResult.severity,
                       message: `${validationResult.messageType}: ${validationResult.message}`,
                     };

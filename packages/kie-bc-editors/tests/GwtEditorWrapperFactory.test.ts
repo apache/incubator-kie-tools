@@ -22,7 +22,11 @@ import { GwtLanguageData, Resource } from "@kie-tools/kie-bc-editors/dist/common
 import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
 import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/common";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
-import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  KogitoEditorChannelApi,
+} from "@kie-tools-core/editor/dist/api";
 import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors/dist/common/GwtEditorWrapper";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { XmlFormatter } from "@kie-tools/kie-bc-editors/dist/common/XmlFormatter";
@@ -115,6 +119,7 @@ describe("GwtEditorWrapperFactory", () => {
         initialLocale: "en",
         isReadOnly: false,
         channel: ChannelType.ONLINE,
+        workspaceRootAbsolutePosixPath: DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
       }
     );
 

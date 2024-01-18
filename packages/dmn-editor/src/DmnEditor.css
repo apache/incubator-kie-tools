@@ -621,7 +621,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   background: white;
   margin-left: -1px;
   height: 40px;
-  width: 192px;
+  width: 160px;
   justify-content: center;
 }
 .kie-dmn-editor--boxed-expression-back > .pf-c-label__content::before {
@@ -675,7 +675,8 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
   border-bottom: 1px solid lightgray;
 }
 .kie-dmn-editor--boxed-expression-header {
-  padding: 16px;
+  padding: 14px;
+  padding-left: 0;
 }
 .kie-dmn-editor--data-type-panel-header {
   padding: 0 16px 0 16px;

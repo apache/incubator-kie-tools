@@ -66,6 +66,7 @@ export default async (env: any, argv: any) => {
       target: "webworker",
       plugins: [
         new ProvidePlugin({
+          process: require.resolve("process/browser.js"),
           Buffer: ["buffer", "Buffer"],
         }),
         new CopyPlugin({

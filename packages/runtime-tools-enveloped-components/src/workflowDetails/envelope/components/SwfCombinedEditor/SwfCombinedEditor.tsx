@@ -24,7 +24,6 @@ import {
   EditorEnvelopeLocator,
   EnvelopeContentType,
   EnvelopeMapping,
-  KogitoEditorChannelApi,
 } from "@kie-tools-core/editor/dist/api";
 import { Card, CardHeader, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -83,10 +82,12 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
 
   const embeddedFile: EmbeddedEditorFile = useMemo(() => {
     return {
+      normalizedPosixPathRelativeToTheWorkspaceRoot: `workflow.sw.${getFileType()}`,
       getFileContents: /* istanbul ignore next */ async () => Promise.resolve(getFileContent()),
       isReadOnly: true,
       fileExtension: `sw.${getFileType()}`,
-      fileName: `*.sw.${getFileType()}`,
+      fileName: `workflow.sw.${getFileType()}`,
+      path: `*.sw.${getFileType()}`,
     };
   }, [source]);
 

@@ -182,9 +182,7 @@
           <dmn:binding>
             <dmn:parameter id="_4B93E8C8-A092-4EAC-B23A-CC138225ACC3" name="pmt"/>
             <dmn:literalExpression id="_51ACEC3C-4207-4F5F-8FDD-9EDAA3270E60">
-              <dmn:text>(Requested Product.Amount*((Requested
-                Product.Rate/100)/12))/(1-(1/(1+(Requested Product.Rate/100)/12)**-Requested
-                Product.Term))</dmn:text>
+              <dmn:text>(Requested Product.Amount * ((Requested Product.Rate/100)/12)) / (1-(1/(1+(Requested Product.Rate/100)/12) ** -Requested Product.Term))</dmn:text>
             </dmn:literalExpression>
           </dmn:binding>
           <dmn:binding>
@@ -210,8 +208,8 @@
       <dmn:contextEntry>
         <dmn:literalExpression id="_3F95EFD0-94D7-4D1A-9EA9-C8E12982D7E8">
           <dmn:text>if Client PITI &lt;= Lender Acceptable PITI()
-            then "Sufficient"
-            else "Insufficient"</dmn:text>
+  then "Sufficient"
+  else "Insufficient"</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
@@ -225,7 +223,7 @@
       <dmn:formalParameter id="_DF691F86-AD12-46BA-B149-AC875836A116" name="insurance" typeRef="number"/>
       <dmn:formalParameter id="_9E2E257F-90EB-4FC4-8DD9-089784E7579E" name="income" typeRef="number"/>
       <dmn:literalExpression id="_A32ED4A5-7B89-40F7-BE25-CDB636FE071C">
-        <dmn:text>(pmt+tax+insurance)/income</dmn:text>
+        <dmn:text>(pmt+tax+insurance) / income</dmn:text>
       </dmn:literalExpression>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
@@ -269,8 +267,8 @@
       <dmn:contextEntry>
         <dmn:literalExpression id="_D1F96102-4158-45BB-8C9A-B7A3BE2C0206">
           <dmn:text>if Client DTI &lt;= Lender Acceptable DTI()
-            then "Sufficient"
-            else "Insufficient"</dmn:text>
+  then "Sufficient"
+  else "Insufficient"</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
@@ -288,7 +286,7 @@
         </dmn:inputExpression>
       </dmn:input>
       <dmn:output id="_9C201FAB-B49C-4D22-900B-B4E82D5469FB"/>
-      <dmn:annotation name=""/>
+      <dmn:annotation name="Annotations"/>
       <dmn:rule id="_AED703E1-8E56-4D27-A511-3875AD1D122E">
         <dmn:inputEntry id="_E2C9F30B-D529-48D8-A51C-A2ACCC8109B3">
           <dmn:text>&gt;= 750</dmn:text>
@@ -376,7 +374,7 @@
       </dmn:input>
       <dmn:output id="_B895B095-C3D6-48B4-8A50-D2D3B8CC6A45" name="Qualification" typeRef="string"/>
       <dmn:output id="_A8D2D3B1-07B3-4619-8DE0-F923F511058B" name="Reason" typeRef="string"/>
-      <dmn:annotation name=""/>
+      <dmn:annotation name="Annotations"/>
       <dmn:rule id="_B49E1642-F352-4D2E-92B6-E5DFA59AAFAC">
         <dmn:inputEntry id="_6C83C446-1A9A-4FFC-B30C-23915FF9CC43">
           <dmn:text>"Poor", "Bad"</dmn:text>
@@ -451,8 +449,7 @@
           <dmn:text>"Not Qualified"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_F0BD7DC2-A1B6-4CF4-95D0-906DBB540EFC">
-          <dmn:text>"Debt to income ratio is too high AND mortgage payment to income ratio is too
-            high."</dmn:text>
+          <dmn:text>"Debt to income ratio is too high AND mortgage payment to income ratio is too high."</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text/>
@@ -517,70 +514,70 @@
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_08A9C33D-719F-4B05-AC42-D15464798BC4">
             <kie:width>50</kie:width>
-            <kie:width>100</kie:width>
-            <kie:width>1280</kie:width>
+            <kie:width>120</kie:width>
+            <kie:width>1255</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_EB658586-C3C8-488E-8118-E69E31583106">
             <kie:width>50</kie:width>
-            <kie:width>100</kie:width>
-            <kie:width>1110</kie:width>
+            <kie:width>120</kie:width>
+            <kie:width>1065</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_6E79E4D9-BBFB-4E90-8AA3-A6C153C3C946"/>
           <kie:ComponentWidths dmnElementRef="_51ACEC3C-4207-4F5F-8FDD-9EDAA3270E60">
-            <kie:width>1110</kie:width>
+            <kie:width>1065</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_5D050B8D-DF55-45FD-988B-9C56BED53D5B">
-            <kie:width>1110</kie:width>
+            <kie:width>1065</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_14C44A69-56DB-4B68-B757-4225C80E4D88">
-            <kie:width>1110</kie:width>
+            <kie:width>1065</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_0DB5DE05-A2AD-4013-B191-DC1D1637A132">
-            <kie:width>1110</kie:width>
+            <kie:width>1065</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_3F95EFD0-94D7-4D1A-9EA9-C8E12982D7E8">
-            <kie:width>1280</kie:width>
+            <kie:width>1255</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_A32ED4A5-7B89-40F7-BE25-CDB636FE071C">
-            <kie:width>300</kie:width>
+            <kie:width>440</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_D33D9AEA-49DF-489F-98EC-4B42FF8C2027">
             <kie:width>50</kie:width>
-            <kie:width>300</kie:width>
+            <kie:width>440</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_5F9FEA4E-B3FC-4BC2-913E-36B8071FA777">
             <kie:width>50</kie:width>
             <kie:width>100</kie:width>
-            <kie:width>802</kie:width>
+            <kie:width>782</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_4A7FC8E0-25EF-4DAF-845A-93BD89C2BC8C">
             <kie:width>50</kie:width>
             <kie:width>100</kie:width>
-            <kie:width>632</kie:width>
+            <kie:width>612</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_F0E80900-1964-4142-9A05-73E7A2E0F2CD"/>
           <kie:ComponentWidths dmnElementRef="_3D0A1979-E59A-483F-BDA8-138F99BA5AB3">
-            <kie:width>632</kie:width>
+            <kie:width>612</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_D985F886-71C0-4F65-8808-2CEF366BECC8">
-            <kie:width>632</kie:width>
+            <kie:width>612</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_D1F96102-4158-45BB-8C9A-B7A3BE2C0206">
-            <kie:width>802</kie:width>
+            <kie:width>782</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_4ACEFFF0-AD2C-4DB8-9BAD-7BCCFB03F295">
             <kie:width>50</kie:width>
-            <kie:width>224</kie:width>
-            <kie:width>226</kie:width>
-            <kie:width>335</kie:width>
+            <kie:width>133</kie:width>
+            <kie:width>147</kie:width>
+            <kie:width>100</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_EF7F404A-939E-4889-95D8-E4053DD1EED9">
             <kie:width>50</kie:width>
-            <kie:width>227</kie:width>
-            <kie:width>125</kie:width>
-            <kie:width>125</kie:width>
-            <kie:width>135</kie:width>
-            <kie:width>681</kie:width>
+            <kie:width>242</kie:width>
+            <kie:width>142</kie:width>
+            <kie:width>140</kie:width>
+            <kie:width>140</kie:width>
+            <kie:width>705</kie:width>
             <kie:width>100</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_064FA88E-B06F-4944-85C3-DA86C3F660DD">
@@ -650,7 +647,7 @@
           <dmndi:StrokeColor red="0" green="0" blue="0"/>
           <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="315" y="198" width="136" height="62"/>
+        <dc:Bounds x="317" y="224" width="136" height="62"/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
       <dmndi:DMNShape id="dmnshape-drg-_2FE51DB1-3083-4BF7-AA71-0B0065310E72" dmnElementRef="_2FE51DB1-3083-4BF7-AA71-0B0065310E72" isCollapsed="false">
@@ -716,22 +713,22 @@
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_77BA409B-E00D-4FBC-B522-8F656D4F6F0E" dmnElementRef="_77BA409B-E00D-4FBC-B522-8F656D4F6F0E">
         <di:waypoint x="383.0607476635514" y="391.5"/>
-        <di:waypoint x="383" y="260"/>
+        <di:waypoint x="385" y="286"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_4D441C11-7042-49CF-A42C-17A4348A7F29" dmnElementRef="_4D441C11-7042-49CF-A42C-17A4348A7F29">
         <di:waypoint x="167.09345794392524" y="255.17105263157896"/>
-        <di:waypoint x="315" y="229"/>
+        <di:waypoint x="317" y="255"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_3217D655-4484-4733-A9AE-4F9CF30D9924" dmnElementRef="_3217D655-4484-4733-A9AE-4F9CF30D9924">
         <di:waypoint x="167.09345794392524" y="359"/>
-        <di:waypoint x="383" y="260"/>
+        <di:waypoint x="385" y="286"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_31A1B6B2-A2A6-4E03-B898-26573A5CF3BA" dmnElementRef="_31A1B6B2-A2A6-4E03-B898-26573A5CF3BA">
         <di:waypoint x="1030" y="389.5"/>
         <di:waypoint x="1031" y="287"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_A3E95B32-2EFD-40AD-B5E4-0A73A1542011" dmnElementRef="_A3E95B32-2EFD-40AD-B5E4-0A73A1542011">
-        <di:waypoint x="383" y="229"/>
+        <di:waypoint x="385" y="255"/>
         <di:waypoint x="600" y="151"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-drg-_0B992F01-BA77-4F06-A830-D8948B467272" dmnElementRef="_0B992F01-BA77-4F06-A830-D8948B467272">

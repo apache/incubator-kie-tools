@@ -91,8 +91,8 @@ public class DMNCardsGridComponent {
         return kogitoChannelHelper.isIncludedModelLinkEnabled();
     }
 
-    public void openPathLink(final String pathLink) {
-        workspaceService.openFile(pathLink);
+    public void openPathLink(final String normalizedPosixPathRelativeToTheOpenFile) {
+        workspaceService.openFile(normalizedPosixPathRelativeToTheOpenFile);
     }
 
     private List<CardComponent> cards(final List<BaseIncludedModelActiveRecord> includes) {
