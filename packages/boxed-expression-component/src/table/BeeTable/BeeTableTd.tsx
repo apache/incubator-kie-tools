@@ -46,6 +46,7 @@ export interface BeeTableTdProps<R extends object> {
   column: ReactTable.ColumnInstance<R>;
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
+  onDataCellClick?: (columnID: string) => void;
 }
 
 export type HoverInfo =
@@ -67,6 +68,7 @@ export function BeeTableTd<R extends object>({
   resizerStopBehavior,
   onRowAdded,
   lastColumnMinWidth,
+  onDataCellClick,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -212,11 +214,16 @@ export function BeeTableTd<R extends object>({
     [column.isWidthConstant, hoverInfo.isHovered, isActive, isResizing, resizingWidth?.isPivoting]
   );
 
+  const onClick = useCallback(() => {
+    return onDataCellClick?.(column.id);
+  }, [column, onDataCellClick]);
+
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <td
         onMouseDown={onMouseDown}
         onDoubleClick={onDoubleClick}
+        onClick={onClick}
         ref={tdRef}
         tabIndex={-1}
         className={`${cssClass} ${cssClasses}`}

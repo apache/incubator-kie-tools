@@ -1099,11 +1099,44 @@ function TestScenarioTable({
     [updateTestScenarioModel]
   );
 
-  const onHeaderClick = useCallback((columnKey: string) => {
-    console.log(columnKey);
+  /** Behavior to apply when a DataCell is clicked */
+  const onDataCellClick = useCallback(
+    (_columnID: string) => {
+      updateSelectedColumnFactMapping(null);
+    },
+    [updateSelectedColumnFactMapping]
+  );
 
-    tableColumns.allColumns.forEach((column) => console.log(column.columns));
-  }, []);
+  const onHeaderClick = useCallback(
+    (columnKey: string) => {
+      console.log(columnKey);
+      if (
+        columnKey == TestScenarioTableColumnHeaderGroup.EXPECT ||
+        columnKey == TestScenarioTableColumnHeaderGroup.GIVEN
+      ) {
+        console.log("Here set nothing selected");
+        updateSelectedColumnFactMapping(null);
+        return;
+      }
+
+      if (
+        columnKey.toUpperCase().startsWith(TestScenarioTableColumnFieldGroup.GIVEN) ||
+        columnKey.toUpperCase().startsWith(TestScenarioTableColumnFieldGroup.EXPECT)
+      ) {
+        /* Here, I should retrive the first column of that given istance, for the case with an instance with a single property */
+        console.log("need to search the correct factMapping");
+      }
+
+      const modelDescriptor = isBackground
+        ? (tableData as SceSim__backgroundType).scesimModelDescriptor
+        : (tableData as SceSim__simulationType).scesimModelDescriptor;
+      const selectedFactMapping = modelDescriptor.factMappings.FactMapping!.find(
+        (factMapping) => factMapping.expressionIdentifier.name?.__$$text == columnKey
+      );
+      updateSelectedColumnFactMapping(selectedFactMapping ?? null);
+    },
+    [tableData, updateSelectedColumnFactMapping]
+  );
 
   return (
     <div className={"test-scenario-table"}>
@@ -1118,6 +1151,7 @@ function TestScenarioTable({
         onCellUpdates={onCellUpdates}
         onColumnAdded={onColumnAdded}
         onColumnDeleted={onColumnDeleted}
+        onDataCellClick={onDataCellClick}
         onHeaderClick={onHeaderClick}
         onRowAdded={onRowAdded}
         onRowDeleted={onRowDeleted}

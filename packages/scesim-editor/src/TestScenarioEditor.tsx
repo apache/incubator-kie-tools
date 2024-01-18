@@ -246,12 +246,14 @@ function TestScenarioMainPanel({
 
   const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
   const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
+  const [selectedColumnFactMapping, setSelectedColumnFactMapping] = useState<SceSim__FactMappingType | null>(null);
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
   const onTabChanged = useCallback((_event, tab) => {
     setTab(tab);
+    setSelectedColumnFactMapping(null);
   }, []);
 
   const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
@@ -289,25 +291,30 @@ function TestScenarioMainPanel({
       if (factsMappings[i].className!.__$$text === "java.lang.Void") {
         continue;
       }
-      const dataObject = dataObjects.find((value) => value.id === factsMappings[i]["factAlias"].__$$text);
+      const dataObject = dataObjects.find((value) => value.id === factsMappings[i].factIdentifier!.name!.__$$text);
+      const propertyID = factsMappings[i]
+        .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
+        .join(".");
+      //TODO double check const propertyName = factsMappings[i].expressionElements!.ExpressionElement!.slice(-1)[0].step.__$$text
+      const propertyName = factsMappings[i].expressionAlias!.__$$text;
       if (dataObject) {
-        if (!dataObject.children?.some((value) => value.id === factsMappings[i]["expressionAlias"]?.__$$text)) {
+        if (!dataObject.children?.some((value) => value.id === propertyID)) {
           dataObject.children!.push({
-            id: factsMappings[i]["expressionAlias"]!.__$$text,
-            name: factsMappings[i]["expressionAlias"]!.__$$text,
-            customBadgeContent: factsMappings[i]["className"].__$$text,
+            id: propertyID,
+            name: propertyName,
+            customBadgeContent: factsMappings[i].className.__$$text,
           });
         }
       } else {
         dataObjects.push({
-          id: factsMappings[i]["factAlias"].__$$text,
-          name: factsMappings[i]["factAlias"].__$$text,
-          customBadgeContent: factsMappings[i]["factIdentifier"]!["className"]!.__$$text,
+          id: factsMappings[i].factIdentifier!.name!.__$$text,
+          name: factsMappings[i].factAlias!.__$$text,
+          customBadgeContent: factsMappings[i].factIdentifier!.className!.__$$text,
           children: [
             {
-              id: factsMappings[i]["expressionAlias"]!.__$$text,
-              name: factsMappings[i]["expressionAlias"]!.__$$text,
-              customBadgeContent: factsMappings[i]["className"].__$$text,
+              id: propertyID,
+              name: propertyName,
+              customBadgeContent: factsMappings[i].className.__$$text,
             },
           ],
         });
@@ -354,6 +361,7 @@ function TestScenarioMainPanel({
                 fileName={fileName}
                 onDrawerClose={closeDockPanel}
                 onUpdateSettingField={updateSettingField}
+                selectedColumnFactMapping={selectedColumnFactMapping}
                 selectedDock={dockPanel.selected}
                 testScenarioSettings={{
                   assetType: scesimModel.ScenarioSimulationModel.settings!.type!.__$$text,
@@ -364,6 +372,7 @@ function TestScenarioMainPanel({
                   kieSessionRule: scesimModel.ScenarioSimulationModel.settings!.dmoSession?.__$$text,
                   ruleFlowGroup: scesimModel.ScenarioSimulationModel.settings!.ruleFlowGroup?.__$$text,
                 }}
+                updateTestScenarioModel={updateTestScenarioModel}
               />
             }
           >
@@ -399,6 +408,7 @@ function TestScenarioMainPanel({
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.simulation}
                         scrollableParentRef={scenarioTableScrollableElementRef}
+                        updateSelectedColumnFactMapping={setSelectedColumnFactMapping}
                         updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
@@ -427,6 +437,7 @@ function TestScenarioMainPanel({
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.background}
                         scrollableParentRef={backgroundTableScrollableElementRef}
+                        updateSelectedColumnFactMapping={setSelectedColumnFactMapping}
                         updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
