@@ -13,7 +13,7 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "bin": {
-    "form-generation-tool": "src/cli/cli.js"
+    "form-generation-tool": "bin.js"
   },
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",

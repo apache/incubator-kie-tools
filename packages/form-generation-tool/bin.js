@@ -21,4 +21,4 @@
 /**
  * This file is used as entry point of the form-generation-tool cli command
  */
-require("../../dist/index");
+require("./dist/index");
