@@ -886,7 +886,7 @@ th {
 .react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid {
   border-color: red !important;
 }
-.react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid > g * {
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid > * {
   stroke: rgba(255, 0, 0, 0.2) !important;
   fill: rgba(164, 0, 0, 0.1) !important;
 }
@@ -898,12 +898,12 @@ th {
   border-color: #006ba4 !important;
   filter: drop-shadow(2px 2px 2px #006ba477);
 }
-.react-flow__node > .kie-dmn-editor--node-shape.drop-target > g * {
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target > * {
   stroke: #006ba4 !important;
   fill: rgba(0, 107, 164, 0.1) !important;
 }
 
-.react-flow__node.selected:not(.react-flow__node-node_unknown) > .kie-dmn-editor--node-shape > g * {
+.react-flow__node.selected:not(.react-flow__node-node_unknown) > .kie-dmn-editor--node-shape > * {
   stroke: #006ba4 !important;
 }
 

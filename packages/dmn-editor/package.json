@@ -43,6 +43,7 @@
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-styles": "^4.92.6",
+    "@visx/text": "^3.3.0",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "immer": "^10.0.3",

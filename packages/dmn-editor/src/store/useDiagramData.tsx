@@ -326,6 +326,10 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         return newNode ? [newNode] : [];
       }),
       ...(thisDmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) => {
+        if (dmnObject.__$$element === "association") {
+          return [];
+        }
+
         const newNode = ackNode({ type: "xml-qname", localPart: dmnObject["@_id"]! }, dmnObject, index);
         return newNode ? [newNode] : [];
       }),

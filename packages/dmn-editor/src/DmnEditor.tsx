@@ -1,7 +1,28 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
+import * as ReactDOM from "react-dom";
+import * as RF from "reactflow";
 import { useCallback, useEffect, useImperativeHandle, useRef, useState, useMemo } from "react";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
@@ -10,7 +31,7 @@ import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infras
 import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
 import { BoxedExpression } from "./boxedExpressions/BoxedExpression";
 import { DataTypes } from "./dataTypes/DataTypes";
-import { Diagram } from "./diagram/Diagram";
+import { Diagram, DiagramRef } from "./diagram/Diagram";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
 import { IncludedModels } from "./includedModels/IncludedModels";
 import { DiagramPropertiesPanel } from "./propertiesPanel/DiagramPropertiesPanel";
@@ -38,10 +59,15 @@ import { original } from "immer";
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
+import { DmnDiagramSvg } from "./svg/DmnDiagramSvg";
+
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
+
+const SVG_PADDING = 20;
 
 export type DmnEditorRef = {
   reset: (mode: DmnLatestModel) => void;
+  getDiagramSvg: () => Promise<string | undefined>;
 };
 
 export type EvaluationResults = Record<string, any>;
@@ -140,16 +166,53 @@ export const DmnEditorInternal = ({
   const { boxedExpressionEditor, dmn, navigation, dispatch, diagram } = useDmnEditorStore((s) => s);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { isDiagramEditingInProgress } = useDmnEditorDerivedStore();
+  const { isDiagramEditingInProgress, importsByNamespace } = useDmnEditorDerivedStore();
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
+
+  // Refs
+
+  const diagramRef = useRef<DiagramRef>(null);
+  const diagramContainerRef = useRef<HTMLDivElement>(null);
+  const beeContainerRef = useRef<HTMLDivElement>(null);
 
   // Allow imperativelly controlling the Editor.
   useImperativeHandle(
     forwardRef,
     () => ({
       reset: (model) => dispatch.dmn.reset(model),
+      getDiagramSvg: async () => {
+        const nodes = diagramRef.current?.getReactFlowInstance()?.getNodes();
+        const edges = diagramRef.current?.getReactFlowInstance()?.getEdges();
+        if (!nodes || !edges) {
+          return undefined;
+        }
+
+        const bounds = RF.getRectOfNodes(nodes);
+
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("width", bounds.width + SVG_PADDING * 2 + "");
+        svg.setAttribute("height", bounds.height + SVG_PADDING * 2 + "");
+
+        // We're still on React 17.
+        // eslint-disable-next-line react/no-deprecated
+        ReactDOM.render(
+          // Indepdent of where the nodes are located, they'll always be rendered at the top-left corner of the SVG
+          <g transform={`translate(${-bounds.x + SVG_PADDING} ${-bounds.y + SVG_PADDING})`}>
+            <DmnDiagramSvg
+              nodes={nodes}
+              edges={edges}
+              snapGrid={diagram.snapGrid}
+              importsByNamespace={importsByNamespace}
+              thisDmn={dmnEditorStoreApi.getState().dmn}
+            />
+          </g>,
+          svg
+        );
+
+        return new XMLSerializer().serializeToString(svg);
+      },
     }),
-    [dispatch.dmn]
+    [diagram.snapGrid, dispatch.dmn, dmnEditorStoreApi, importsByNamespace]
   );
 
   // Make sure the DMN Editor reacts to props changing.
@@ -205,9 +268,6 @@ export const DmnEditorInternal = ({
     },
     [dmnEditorStoreApi]
   );
-
-  const diagramContainerRef = useRef<HTMLDivElement>(null);
-  const beeContainerRef = useRef<HTMLDivElement>(null);
 
   const tabTitle = useMemo(() => {
     return {
@@ -265,7 +325,7 @@ export const DmnEditorInternal = ({
                     <DrawerContentBody>
                       <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
                         {originalVersion && <DmnVersionLabel version={originalVersion} />}
-                        <Diagram container={diagramContainerRef} />
+                        <Diagram ref={diagramRef} container={diagramContainerRef} />
                       </div>
                     </DrawerContentBody>
                   </DrawerContent>
