@@ -203,7 +203,7 @@ function TestScenarioTable({
         return model;
       });
     },
-    [updateTestScenarioModel]
+    [isBackground, retrieveModelDescriptor, updateTestScenarioModel]
   );
 
   /* It determines the column data based on the given FactMapping (Scesim column representation).
@@ -375,7 +375,7 @@ function TestScenarioTable({
         );
         return tableRow;
       }),
-    [tableColumns.allColumns, tableData.scesimData]
+    [retrieveRowsData, tableColumns.allColumns, tableData.scesimData]
   );
 
   /** TABLE'S CONTEXT MENU MANAGEMENT */
@@ -606,7 +606,14 @@ function TestScenarioTable({
         });
       });
     },
-    [isBackground, retrieveFactMappingValueIndexByIdentifiers, updateTestScenarioModel]
+    [
+      columnIndexStart,
+      isBackground,
+      retrieveFactMappingValueIndexByIdentifiers,
+      retrieveModelDescriptor,
+      retrieveRowsDataFromModel,
+      updateTestScenarioModel,
+    ]
   );
 
   const getNextAvailablePrefixedName = useCallback(
@@ -756,6 +763,9 @@ function TestScenarioTable({
           .filter((factMapping) => factMapping.factAlias!.__$$text.startsWith("INSTANCE-"))
           .map((factMapping) => factMapping.factAlias!.__$$text);
 
+        const isNewInstance =
+          isInstance || selectedColumnFactMapping.factIdentifier.className?.__$$text === "java.lang.Void";
+
         const newFactMapping = {
           expressionIdentifier: {
             name: { __$$text: `_${uuid()}`.toLocaleUpperCase() },
@@ -763,17 +773,17 @@ function TestScenarioTable({
           },
           factIdentifier: {
             name: {
-              __$$text: isInstance
+              __$$text: isNewInstance
                 ? getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE")
                 : selectedColumnFactMapping.factIdentifier.name!.__$$text,
             },
             className: {
-              __$$text: isInstance ? "java.lang.Void" : selectedColumnFactMapping.factIdentifier.className!.__$$text,
+              __$$text: isNewInstance ? "java.lang.Void" : selectedColumnFactMapping.factIdentifier.className!.__$$text,
             },
           },
           className: { __$$text: "java.lang.Void" },
           factAlias: {
-            __$$text: isInstance
+            __$$text: isNewInstance
               ? getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE")
               : selectedColumnFactMapping.factAlias.__$$text,
           },
@@ -844,13 +854,15 @@ function TestScenarioTable({
       });
     },
     [
-      TestScenarioTableColumnFieldGroup,
-      TestScenarioTableColumnInstanceGroup,
       determineNewColumnTargetIndex,
       determineSelectedColumnIndex,
       getNextAvailablePrefixedName,
       isBackground,
+      retrieveModelDescriptor,
+      retrieveRowsDataFromModel,
       updateTestScenarioModel,
+      TestScenarioTableColumnFieldGroup,
+      TestScenarioTableColumnInstanceGroup,
     ]
   );
 
@@ -960,11 +972,14 @@ function TestScenarioTable({
       });
     },
     [
-      TestScenarioTableColumnInstanceGroup,
+      columnIndexStart,
       determineSelectedColumnIndex,
       isBackground,
       retrieveFactMappingValueIndexByIdentifiers,
+      retrieveModelDescriptor,
+      retrieveRowsDataFromModel,
       updateTestScenarioModel,
+      TestScenarioTableColumnInstanceGroup,
     ]
   );
 
@@ -1019,7 +1034,7 @@ function TestScenarioTable({
         };
       });
     },
-    [updateTestScenarioModel]
+    [isBackground, updateTestScenarioModel]
   );
 
   /**
@@ -1051,7 +1066,7 @@ function TestScenarioTable({
         };
       });
     },
-    [updateTestScenarioModel]
+    [isBackground, updateTestScenarioModel]
   );
 
   /**
@@ -1096,10 +1111,12 @@ function TestScenarioTable({
         };
       });
     },
-    [updateTestScenarioModel]
+    [isBackground, updateTestScenarioModel]
   );
 
-  /** Behavior to apply when a DataCell is clicked */
+  /**
+   * Behavior to apply when a DataCell is clicked
+   */
   const onDataCellClick = useCallback(
     (_columnID: string) => {
       updateSelectedColumnFactMapping(null);
@@ -1114,28 +1131,43 @@ function TestScenarioTable({
         columnKey == TestScenarioTableColumnHeaderGroup.EXPECT ||
         columnKey == TestScenarioTableColumnHeaderGroup.GIVEN
       ) {
-        console.log("Here set nothing selected");
         updateSelectedColumnFactMapping(null);
         return;
-      }
-
-      if (
-        columnKey.toUpperCase().startsWith(TestScenarioTableColumnFieldGroup.GIVEN) ||
-        columnKey.toUpperCase().startsWith(TestScenarioTableColumnFieldGroup.EXPECT)
-      ) {
-        /* Here, I should retrive the first column of that given istance, for the case with an instance with a single property */
-        console.log("need to search the correct factMapping");
       }
 
       const modelDescriptor = isBackground
         ? (tableData as SceSim__backgroundType).scesimModelDescriptor
         : (tableData as SceSim__simulationType).scesimModelDescriptor;
+
+      if (
+        columnKey.startsWith(TestScenarioTableColumnFieldGroup.GIVEN.toUpperCase()) ||
+        columnKey.toUpperCase().startsWith(TestScenarioTableColumnFieldGroup.EXPECT.toUpperCase())
+      ) {
+        const selectedInstanceGroup = tableColumns.instancesGroup.find((instance) => instance.id === columnKey);
+        if (
+          selectedInstanceGroup?.columns?.length === 1 &&
+          selectedInstanceGroup?.columns[0].dataType === "<Undefined>"
+        ) {
+          const propertyID = selectedInstanceGroup?.columns[0].id;
+          let selectedFactMapping;
+          if (propertyID) {
+            selectedFactMapping = modelDescriptor.factMappings.FactMapping!.find(
+              (factMapping) => factMapping.expressionIdentifier.name?.__$$text === propertyID
+            );
+          }
+          updateSelectedColumnFactMapping(selectedFactMapping ?? null);
+        } else {
+          updateSelectedColumnFactMapping(null);
+        }
+        return;
+      }
+
       const selectedFactMapping = modelDescriptor.factMappings.FactMapping!.find(
         (factMapping) => factMapping.expressionIdentifier.name?.__$$text == columnKey
       );
       updateSelectedColumnFactMapping(selectedFactMapping ?? null);
     },
-    [tableData, updateSelectedColumnFactMapping]
+    [tableColumns.instancesGroup, tableData, updateSelectedColumnFactMapping]
   );
 
   return (
