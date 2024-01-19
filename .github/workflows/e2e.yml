@@ -12,8 +12,8 @@ on:
       - ".ci/jenkins/**"
 
 env:
-  GO_VERSION: 1.19
-  DEBUG: true
+  GO_VERSION: 1.21
+  KIND_VERSION: v0.20.0
 
 jobs:
   e2e:
@@ -47,23 +47,15 @@ jobs:
 
       - name: Setup Kind cluster
         run: |
-          make create-cluster
+          make KIND_VERSION=${{ env.KIND_VERSION }} create-cluster
 
       - name: Set OPERATOR_IMAGE_NAME to point to Kind's local registry
         run: |
           echo "OPERATOR_IMAGE_NAME=127.0.0.1:5001/kogito-serverless-operator:0.0.1" >> $GITHUB_ENV
 
-      - name: Setup Python for cekit
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      # TODO: cache this installation
       - name: Build operator image
         run: |
-          pip install cekit==4.5.0
-          pip install odcs docker python-docker behave lxml krb5 docker-squash
-          make container-build BUILDER=docker IMG=${{ env.OPERATOR_IMAGE_NAME }}
+          make docker-build IMG=${{ env.OPERATOR_IMAGE_NAME }}
 
       - name: Load image in Kind
         run: |

@@ -16,7 +16,9 @@
 # under the License.
 
 # Build the manager binary
-FROM docker.io/library/golang:1.19.9 as builder
+FROM docker.io/library/golang:1.21.6 as builder
+
+ARG SOURCE_DATE_EPOCH
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -40,12 +42,18 @@ COPY version/ version/
 COPY log/ log/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags=-buildid= -a -o manager main.go
 
-FROM registry.access.redhat.com/ubi8/ubi-micro:latest
+FROM registry.access.redhat.com/ubi9/ubi-micro:9.3-9
+
+ARG SOURCE_DATE_EPOCH
+
 WORKDIR /usr/local/bin
 
 COPY --from=builder /workspace/manager /usr/local/bin/manager
+# We force a timestamp to the output to guarantee a reproducible build, once we have BuildKit 0.12, this won't be needed anymore.
+# The workaround to force the date format is because docker cli is expecting an int from this parameter (the timestamp).
+RUN touch -d $(date '+%FT%H:%M:%S' -d @${SOURCE_DATE_EPOCH}) /usr/local/bin/manager
 
 USER 65532:65532
 

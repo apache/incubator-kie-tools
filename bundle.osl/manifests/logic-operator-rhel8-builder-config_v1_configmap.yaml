@@ -8,7 +8,7 @@ data:
     CLI add extension command\nARG QUARKUS_ADD_EXTENSION_ARGS\n  \n# Copy from build
     context to skeleton resources project\nCOPY --chmod=644 * ./resources/\n\nRUN
     /home/kogito/launch/build-app.sh ./resources\n  \n#=============================\n#
-    Runtime Run\n#=============================\nFROM registry.access.redhat.com/ubi8/openjdk-17:latest\n\nENV
+    Runtime Run\n#=============================\nFROM registry.access.redhat.com/ubi9/openjdk-17:latest\n\nENV
     LANG='en_US.UTF-8' LANGUAGE='en_US:en'\n  \n# We make four distinct layers so
     if there are application changes the library layers can be re-used\nCOPY --from=builder
     --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/lib/ /deployments/lib/\nCOPY

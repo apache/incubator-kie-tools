@@ -1,6 +1,6 @@
 - name: operator-builder
   version: 1.0.0
-  from: golang:1.19.9
+  from: golang:1.21.6
   description: Builder Image for the Operator
 
   modules:
@@ -12,7 +12,7 @@
 
 - name: kogito-serverless-operator
   version: 2.0.0-snapshot
-  from: registry.access.redhat.com/ubi8/ubi-micro:latest
+  from: registry.access.redhat.com/ubi9/ubi-micro:latest
   description: Runtime Image for the Operator
 
   artifacts:
