@@ -37,6 +37,9 @@ import { TreeView, TreeViewDataItem } from "@patternfly/react-core/dist/js/compo
 import { TreeViewSearch } from "@patternfly/react-core/dist/js/components/TreeView/";
 import { WarningTriangleIcon } from "@patternfly/react-icons/dist/esm/icons/warning-triangle-icon";
 
+import { SceSimModel } from "@kie-tools/scesim-marshaller";
+import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
+
 import { TestScenarioDataObject, TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
@@ -45,9 +48,13 @@ import "./TestScenarioDrawerDataObjectsPanel.css";
 function TestScenarioDataObjectsPanel({
   assetType,
   dataObjects,
+  selectedColumnFactMapping,
+  updateTestScenarioModel,
 }: {
   assetType: string;
   dataObjects: TestScenarioDataObject[];
+  selectedColumnFactMapping: SceSim__FactMappingType | null;
+  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
@@ -56,9 +63,39 @@ function TestScenarioDataObjectsPanel({
   const [treeViewActiveItems, setTreeViewActiveItems] = useState<TreeViewDataItem[]>([]);
 
   useEffect(() => {
-    setFilteredItems({ items: dataObjects, isFiltered: false });
     setAllExpanded(false);
+    setTreeViewActiveItems([]);
   }, [dataObjects]);
+
+  useEffect(() => {
+    console.log(dataObjects);
+    console.log(selectedColumnFactMapping);
+
+    if (
+      !selectedColumnFactMapping ||
+      selectedColumnFactMapping.expressionIdentifier.type?.__$$text == "OTHER" ||
+      selectedColumnFactMapping.className.__$$text == "java.lang.Void"
+    ) {
+      setFilteredItems({ items: dataObjects, isFiltered: false });
+      setTreeViewActiveItems([]);
+      return;
+    }
+    const input = selectedColumnFactMapping?.expressionAlias!.__$$text;
+    const filtered = dataObjects.map((object) => Object.assign({}, object)).filter((item) => filterItems(item, input));
+    setFilteredItems({ items: filtered, isFiltered: true });
+    const propertyID = selectedColumnFactMapping
+      .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
+      .join(".");
+
+    const treeViewItemToActivate = filtered
+      .reduce((acc: TestScenarioDataObject[], item) => {
+        return item.children ? acc.concat(item.children) : acc;
+      }, [])
+      .filter((item) => item.id === propertyID);
+
+    console.log(treeViewItemToActivate);
+    setTreeViewActiveItems(treeViewItemToActivate);
+  }, [dataObjects, selectedColumnFactMapping]);
 
   const filterItems = useCallback((item, input) => {
     if (item.name.toLowerCase().includes(input.toLowerCase())) {
@@ -83,6 +120,8 @@ function TestScenarioDataObjectsPanel({
         const filtered = dataObjects
           .map((object) => Object.assign({}, object))
           .filter((item) => filterItems(item, input));
+
+        console.log(filtered);
         setFilteredItems({ items: filtered, isFiltered: true });
       }
     },
@@ -91,7 +130,12 @@ function TestScenarioDataObjectsPanel({
 
   const onSelectTreeViewItem = useCallback((_event, treeViewItem: TreeViewDataItem) => {
     console.log(treeViewItem);
+
     setTreeViewActiveItems([treeViewItem]);
+  }, []);
+
+  const onInsertDataObjectClick = useCallback((_event) => {
+    setTreeViewActiveItems([]);
   }, []);
 
   const onAllExpandedToggle = useCallback((_event) => {
@@ -158,7 +202,11 @@ function TestScenarioDataObjectsPanel({
       </div>
       <Divider />
       <div className={"kie-scesim-editor-drawer-data-objects--button-container"}>
-        <Button isDisabled={treeViewActiveItems.length < 1} variant="primary">
+        <Button
+          isDisabled={!(selectedColumnFactMapping != null && treeViewActiveItems.length == 1)}
+          onClick={onInsertDataObjectClick}
+          variant="primary"
+        >
           {i18n.drawer.dataObjects.insertDataObject}
         </Button>
         <Button

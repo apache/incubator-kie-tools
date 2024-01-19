@@ -29,6 +29,9 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
+import { SceSimModel } from "@kie-tools/scesim-marshaller";
+import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
+
 import TestScenarioDrawerDataObjectsPanel from "./TestScenarioDrawerDataObjectsPanel";
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
@@ -45,15 +48,19 @@ function TestScenarioDrawerPanel({
   fileName,
   onDrawerClose,
   onUpdateSettingField,
+  selectedColumnFactMapping,
   selectedDock,
   testScenarioSettings,
+  updateTestScenarioModel,
 }: {
   dataObjects: TestScenarioDataObject[];
   fileName: string;
   onDrawerClose: () => void;
   onUpdateSettingField: (field: string, value: boolean | string) => void;
+  selectedColumnFactMapping: SceSim__FactMappingType | null;
   selectedDock: TestScenarioEditorDock;
   testScenarioSettings: TestScenarioSettings;
+  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
@@ -93,6 +100,8 @@ function TestScenarioDrawerPanel({
                 <TestScenarioDrawerDataObjectsPanel
                   assetType={testScenarioSettings.assetType}
                   dataObjects={dataObjects}
+                  selectedColumnFactMapping={selectedColumnFactMapping}
+                  updateTestScenarioModel={updateTestScenarioModel}
                 />
               );
             case TestScenarioEditorDock.SETTINGS:

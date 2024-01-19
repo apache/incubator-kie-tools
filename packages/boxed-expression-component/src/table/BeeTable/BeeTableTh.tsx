@@ -92,7 +92,8 @@ export function BeeTableTh<R extends object>({
         beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex,
         groupType: groupType,
         columnsCount: 1,
-        insertDirection: InsertRowColumnsDirection.AboveOrRight,
+        insertDirection:
+          hoverInfo.part === "left" ? InsertRowColumnsDirection.BelowOrLeft : InsertRowColumnsDirection.AboveOrRight,
         currentIndex: columnIndex,
       });
 
