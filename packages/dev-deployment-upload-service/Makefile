@@ -1,7 +1,7 @@
 LDFLAGS := "-w"
 DDUS_VERSION?=0.0.0
 
-build-all: linux-amd64 darwin-amd64 darwin-arm64 win32-amd64
+build-all: linux-amd64 darwin-amd64 darwin-arm64 win32-amd64 checksum
 
 linux-amd64:
 	cross-env GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o dist/dev-deployment-upload-service-linux-amd64 main.go
@@ -21,7 +21,7 @@ win32-amd64:
 
 checksum:
 ifeq ($(OS),Windows_NT)
-	echo "Nothing to do"
+	powershell -NoProfile -ExecutionPolicy Unrestricted -Command "./scripts/generateChecksumsWindows.ps1"
 else
 	for f in $$(find dist/*.tar.gz -type f 2>/dev/null) ; do \
 		shasum -a 256 "$${f}" | awk '{print $$1}' > "$${f}.sha256" ; \
