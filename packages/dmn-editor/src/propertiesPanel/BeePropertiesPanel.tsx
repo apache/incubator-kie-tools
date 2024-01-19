@@ -29,15 +29,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
-import {
-  AllCellContent,
-  BeePanelType,
-  CellContent,
-  ExpressionPath,
-  generateBeeMap,
-  getBeePropertiesPanel,
-  getDmnObject,
-} from "../boxedExpressions/getBeeMap";
+import { ExpressionPath, generateBeeMap, getBeePropertiesPanel, getDmnObject } from "../boxedExpressions/getBeeMap";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
@@ -226,8 +218,8 @@ export function BeePropertiesPanel() {
                   </ClipboardCopy>
                 </FormGroup>
               </FormSection>
-              {propertiesPanel?.type === BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL && (
-                <FormSection title={propertiesPanel?.title ?? ""}>
+              {selectedObjectPath?.type === BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL && (
+                <FormSection title={propertiesPanel}>
                   <FormGroup label="Name">
                     <InlineFeelNameInput
                       enableAutoFocusing={false}
@@ -327,8 +319,8 @@ export function BeePropertiesPanel() {
                   </FormGroup>
                 </FormSection>
               )}
-              {propertiesPanel?.type === BeePanelType.EXPLANGUAGE_LABEL_DESCRIPTION_TEXT_CELL && (
-                <FormSection title={propertiesPanel?.title ?? ""}>
+              {selectedObjectPath?.type === BeePanelType.EXPLANGUAGE_LABEL_DESCRIPTION_TEXT_CELL && (
+                <FormSection title={propertiesPanel}>
                   <FormGroup label="Content">
                     <CellContentTextArea
                       initialValue={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.text?.__$$text ?? ""}
@@ -340,8 +332,8 @@ export function BeePropertiesPanel() {
                   </FormGroup>
                 </FormSection>
               )}
-              {propertiesPanel?.type === BeePanelType.DECISION_TABLE_INPUT_HEADER_CELL && (
-                <FormSection title={propertiesPanel?.title ?? ""}>
+              {selectedObjectPath?.type === BeePanelType.DECISION_TABLE_INPUT_HEADER_CELL && (
+                <FormSection title={propertiesPanel}>
                   <FormGroup label="Name">
                     <InlineFeelNameInput
                       enableAutoFocusing={false}
