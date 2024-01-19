@@ -373,7 +373,6 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools-core/k8s-yaml-to-apiserver-requests" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
-  "@kie-tools/online-editor" -> "@kie-tools/dev-deployment-upload-service" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/dmn-editor-envelope" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];

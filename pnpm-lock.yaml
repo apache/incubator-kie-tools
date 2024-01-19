@@ -5990,9 +5990,6 @@ importers:
       "@kie-tools/cors-proxy-api":
         specifier: workspace:*
         version: link:../cors-proxy-api
-      "@kie-tools/dev-deployment-upload-service":
-        specifier: workspace:*
-        version: link:../dev-deployment-upload-service
       "@kie-tools/dmn-editor-envelope":
         specifier: workspace:*
         version: link:../dmn-editor-envelope

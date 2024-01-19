@@ -745,7 +745,6 @@
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/kubernetes-bridge", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
-      { "source": "@kie-tools/online-editor", "target": "@kie-tools/dev-deployment-upload-service", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/dmn-editor-envelope", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/form-dmn", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
