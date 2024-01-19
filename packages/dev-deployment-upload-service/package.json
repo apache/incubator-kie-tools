@@ -34,7 +34,7 @@
     "serve:linux:darwin": "serve -c dev/serve.json -p $(build-env devDeploymentUploadService.dev.port)",
     "serve:win32": "pnpm powershell \"serve -c dev/serve.json -p $(build-env devDeploymentUploadService.dev.port)\"",
     "start": "make start",
-    "start:dev": "pnpm build:dev && docker run -it --add-host=host.docker.internal:host-gateway -p 8091:8091 $(docker build --no-cache --build-arg INSTALL_SCRIPT_PORT=$(build-env devDeploymentUploadService.dev.port) -q . -f ./dev/Containerfile)"
+    "start:dev": "pnpm build:prod && docker run -it --add-host=host.docker.internal:host-gateway -p 8091:8091 $(docker build --no-cache --build-arg INSTALL_SCRIPT_PORT=$(build-env devDeploymentUploadService.dev.port) -q . -f ./dev/Containerfile)"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
