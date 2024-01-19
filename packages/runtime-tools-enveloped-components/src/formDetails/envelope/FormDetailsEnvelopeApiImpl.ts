@@ -21,7 +21,7 @@ import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { FormDetailsEnvelopeViewApi } from "./FormDetailsEnvelopeView";
 import { Association, FormDetailsChannelApi, FormDetailsEnvelopeApi } from "../api";
 import { FormDetailsEnvelopeContext } from "./FormDetailsEnvelopeContext";
-import { FormInfo } from "../../formsList";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 /**
  * Implementation of the FormDetailsEnvelopeApi

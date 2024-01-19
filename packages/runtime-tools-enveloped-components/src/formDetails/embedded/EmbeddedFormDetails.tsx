@@ -23,7 +23,7 @@ import { FormDetailsApi, FormDetailsChannelApi, FormDetailsEnvelopeApi, FormDeta
 import { FormDetailsChannelApiImpl } from "./FormDetailsChannelApiImpl";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { init } from "../envelope";
-import { FormInfo } from "../../formsList";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 export interface Props {
   targetOrigin: string;
   driver: FormDetailsDriver;

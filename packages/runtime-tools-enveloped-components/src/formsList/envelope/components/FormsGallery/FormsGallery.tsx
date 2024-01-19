@@ -21,7 +21,6 @@ import React from "react";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
-import { FormInfo } from "../../../api/FormsListEnvelopeApi";
 import FormCard from "../FormCard/FormCard";
 import { FormsListDriver } from "../../../api/FormsListDriver";
 import {
@@ -29,6 +28,7 @@ import {
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/src/types";
 
 export interface FormsGalleryProps {
   driver: FormsListDriver;

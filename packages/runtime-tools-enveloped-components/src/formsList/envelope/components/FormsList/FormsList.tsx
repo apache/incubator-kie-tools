@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormsListDriver } from "../../../api/FormsListDriver";
 import FormsListToolbar from "../FormsListToolbar/FormsListToolbar";
-import { FormInfo, FormFilter } from "../../../api/FormsListEnvelopeApi";
+import { FormFilter } from "../../../api/FormsListEnvelopeApi";
 import FormsTable from "../FormsTable/FormsTable";
 import FormsGallery from "../FormsGallery/FormsGallery";
 import { BarsIcon, ThIcon } from "@patternfly/react-icons/dist/js/icons";
@@ -33,6 +33,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/src/types";
 
 export interface FormsListProps {
   isEnvelopeConnectedToChannel: boolean;

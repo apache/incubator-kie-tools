@@ -17,12 +17,8 @@
  * under the License.
  */
 
-import {
-  CustomDashboardListDriver,
-  CustomDashboardListChannelApi,
-  CustomDashboardFilter,
-  CustomDashboardInfo,
-} from "../api";
+import { CustomDashboardListDriver, CustomDashboardListChannelApi, CustomDashboardFilter } from "../api";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 /**
  * Implementation of the CustomDashboardListChannelApiImpl delegating to a CustomDashboardListDriver

@@ -20,7 +20,8 @@
 import React, { useCallback, useEffect, useImperativeHandle, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { BallBeat } from "react-pure-loaders";
-import { Form, FormOpened, FormOpenedState } from "../../../api";
+import { Form } from "@kie-tools/runtime-tools-gateway-api/src/types";
+import { FormOpened, FormOpenedState } from "../../../api";
 import ReactFormRenderer from "../ReactFormRenderer/ReactFormRenderer";
 import HtmlFormRenderer from "../HtmlFormRenderer/HtmlFormRenderer";
 import "../styles.css";

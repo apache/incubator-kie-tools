@@ -24,7 +24,7 @@ import FormDetails from "./components/FormDetails/FormDetails";
 import FormDetailsEnvelopeViewDriver from "./FormDetailsEnvelopeViewDriver";
 import "@patternfly/patternfly/patternfly.css";
 import FormDetailsContextProvider from "./components/contexts/FormDetailsContextProvider";
-import { FormInfo } from "../../formsList";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export interface FormDetailsEnvelopeViewApi {
   initialize: (formData?: FormInfo) => void;

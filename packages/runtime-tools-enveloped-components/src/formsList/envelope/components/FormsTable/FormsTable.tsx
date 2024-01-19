@@ -21,11 +21,12 @@ import React, { useEffect, useState } from "react";
 import { DataTable, DataTableColumn } from "@kie-tools/runtime-tools-components/dist/components/DataTable";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { FormInfo, FormsListDriver } from "../../../api";
+import { FormsListDriver } from "../../../api";
 import { getFormNameColumn, getDateColumn, getFormTypeColumn } from "../FormsListUtils/FormsListUtils";
 import _ from "lodash";
 import { ISortBy } from "@patternfly/react-table/dist/js/components/Table";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/src/types";
 
 export interface FormsTableProps {
   driver: FormsListDriver;

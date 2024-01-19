@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Form } from "../../../../api";
+import { Form } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { v4 as uuidv4 } from "uuid";
 
 export function buildTestContext(form: Form) {

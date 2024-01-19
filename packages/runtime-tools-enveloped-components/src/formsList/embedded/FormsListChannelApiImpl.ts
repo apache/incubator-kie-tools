@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { FormsListDriver, FormsListChannelApi, FormFilter, FormInfo } from "../api";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { FormsListDriver, FormsListChannelApi, FormFilter } from "../api";
 
 /**
  * Implementation of the FormsListChannelApiImpl delegating to a FormsListDriver

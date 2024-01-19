@@ -18,12 +18,8 @@
  */
 
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import {
-  CustomDashboardFilter,
-  CustomDashboardListChannelApi,
-  CustomDashboardListDriver,
-  CustomDashboardInfo,
-} from "../api";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { CustomDashboardFilter, CustomDashboardListChannelApi, CustomDashboardListDriver } from "../api";
 
 /**
  * Implementation of CustomDashboardListDriver that delegates calls to the channel Api

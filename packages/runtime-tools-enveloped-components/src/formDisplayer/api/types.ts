@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { Form } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+
 export interface FormDisplayerInitArgs {
   form: Form;
   data?: any;
@@ -64,25 +66,4 @@ export interface FormResources {
   styles: {
     [key: string]: string;
   };
-}
-interface FormConfiguration {
-  schema: string;
-  resources: FormResources;
-}
-
-export interface Form {
-  formInfo: FormInfo;
-  source: string;
-  configuration: FormConfiguration;
-}
-
-export enum FormType {
-  HTML = "HTML",
-  TSX = "TSX",
-}
-
-export interface FormInfo {
-  name: string;
-  type: FormType;
-  lastModified: Date;
 }

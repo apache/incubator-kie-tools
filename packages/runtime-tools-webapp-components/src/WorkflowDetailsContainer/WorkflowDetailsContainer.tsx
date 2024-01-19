@@ -26,6 +26,7 @@ import { useWorkflowDetailsGatewayApi, WorkflowDetailsGatewayApi } from "../Work
 interface WorkflowListContainerProps {
   workflowInstance: WorkflowInstance;
   onOpenWorkflowInstanceDetails: (workflowId: string) => void;
+  targetOrigin?: string;
 }
 
 export const WorkflowDetailsContainer: React.FC<WorkflowListContainerProps & OUIAProps> = ({
@@ -33,6 +34,7 @@ export const WorkflowDetailsContainer: React.FC<WorkflowListContainerProps & OUI
   onOpenWorkflowInstanceDetails,
   ouiaId,
   ouiaSafe,
+  targetOrigin,
 }) => {
   const gatewayApi: WorkflowDetailsGatewayApi = useWorkflowDetailsGatewayApi();
 
@@ -51,7 +53,7 @@ export const WorkflowDetailsContainer: React.FC<WorkflowListContainerProps & OUI
     <EmbeddedWorkflowDetails
       {...componentOuiaProps(ouiaId, "workflow-list-container", ouiaSafe)}
       driver={gatewayApi}
-      targetOrigin={window.location.origin}
+      targetOrigin={targetOrigin || window.location.origin}
       workflowInstance={workflowInstance}
     />
   );

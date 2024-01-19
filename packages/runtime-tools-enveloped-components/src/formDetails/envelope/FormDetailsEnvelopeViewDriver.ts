@@ -18,7 +18,8 @@
  */
 
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { Form, FormContent, FormDetailsChannelApi, FormDetailsDriver } from "../api";
+import { Form, FormContent } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { FormDetailsChannelApi, FormDetailsDriver } from "../api";
 
 /**
  * Implementation of FormDetailsDriver that delegates calls to the channel Api

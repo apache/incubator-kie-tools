@@ -31,11 +31,10 @@ import {
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import isEmpty from "lodash/isEmpty";
 import React, { useEffect, useRef, useState } from "react";
-import { Form } from "../../../api";
+import { Form, FormInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { FormDetailsDriver } from "../../../api/FormDetailsDriver";
 import FormDisplayerContainer from "../../containers/FormDisplayerContainer/FormDisplayerContainer";
 import FormEditor from "../FormEditor/FormEditor";
-import { FormInfo } from "../../../../formsList";
 
 export interface FormDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -103,7 +102,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
       }}
     >
       <DrawerHead style={{ height: "100%" }}>
-        {formContent && Object.keys(formContent)[0].length > 0 && (
+        {formContent && Object.keys(formContent)[0] && Object.keys(formContent)[0].length > 0 && (
           <span>
             <FormDisplayerContainer formContent={formContent} targetOrigin={targetOrigin} />
           </span>

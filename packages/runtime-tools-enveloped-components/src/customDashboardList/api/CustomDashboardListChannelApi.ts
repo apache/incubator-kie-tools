@@ -17,7 +17,9 @@
  * under the License.
  */
 
-import { CustomDashboardFilter, CustomDashboardInfo } from "./CustomDashboardListEnvelopeApi";
+import { CustomDashboardFilter } from "./CustomDashboardListEnvelopeApi";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-gateway-api/src/types";
+
 /**
  * Channel Api for CustomDashboard List
  */

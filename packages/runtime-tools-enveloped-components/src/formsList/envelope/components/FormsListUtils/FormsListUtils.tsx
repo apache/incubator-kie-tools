@@ -20,8 +20,8 @@
 import React from "react";
 import Moment from "react-moment";
 import { DataTableColumn } from "@kie-tools/runtime-tools-components/dist/components/DataTable";
-import { FormInfo } from "../../../api/FormsListEnvelopeApi";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/src/types";
 
 export const getFormTypeLabel = (value: string) => {
   switch (value) {
