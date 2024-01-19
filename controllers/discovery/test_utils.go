@@ -58,6 +58,11 @@ const (
 
 	knServiceName1 = "knServiceName1"
 	knBrokerName1  = "knBrokerName1"
+
+	openShiftRouteName1 = "openShiftRouteName1"
+	openShiftRouteHost1 = "openshiftroutehost1"
+
+	openShiftDeploymentConfigName1 = "openShiftDeploymentConfigName1"
 )
 
 func mockService(namespace string, name string, labels *map[string]string, selectorLabels *map[string]string) *corev1.Service {

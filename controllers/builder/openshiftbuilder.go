@@ -23,6 +23,8 @@ import (
 	"context"
 	"strings"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/openshift"
+
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
 	buildclientv1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
@@ -78,7 +80,7 @@ type openshiftBuilderManager struct {
 }
 
 func newOpenShiftBuilderManager(managerContext buildManagerContext, cliConfig *rest.Config) (BuildManager, error) {
-	buildClient, err := buildclientv1.NewForConfig(cliConfig)
+	buildClient, err := openshift.NewOpenShiftBuildClient(cliConfig)
 	if err != nil {
 		return nil, err
 	}

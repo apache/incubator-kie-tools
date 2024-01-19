@@ -194,6 +194,14 @@ var KnativeServicesTestValues = map[string]*ResourceUri{
 		WithQueryParam("label-a", "value-a").
 		WithQueryParam("label-b", "value-b").
 		WithPort("custom-port-value").Build(),
+
+	"knative:services.v1.serving.knative.dev/my-namespace/my-function?path=/myKnativeFunction": NewResourceUriBuilder(KnativeScheme).
+		Kind("services").
+		Version("v1").
+		Group("serving.knative.dev").
+		Namespace("my-namespace").
+		Name("my-function").
+		WithQueryParam("path", "/myKnativeFunction").Build(),
 }
 
 var KnativeBrokersTestValues = map[string]*ResourceUri{
@@ -224,6 +232,44 @@ var KnativeBrokersTestValues = map[string]*ResourceUri{
 	"knative:brokers.v1.eventing.knative.dev/my-namespace/my-broker/another": nil,
 }
 
+var OpenshiftRoutesTestValues = map[string]*ResourceUri{
+	"openshift:routes.v1.route.openshift.io": nil,
+
+	"openshift:routes.v1.route.openshift.io/my-route": NewResourceUriBuilder(OpenshiftScheme).
+		Kind("routes").
+		Group("route.openshift.io").
+		Version("v1").
+		Name("my-route").
+		Build(),
+
+	"openshift:routes.v1.route.openshift.io/my-namespace/my-route": NewResourceUriBuilder(OpenshiftScheme).
+		Kind("routes").
+		Group("route.openshift.io").
+		Version("v1").
+		Namespace("my-namespace").
+		Name("my-route").
+		Build(),
+}
+
+var OpenshiftDeploymentConfigsTestValues = map[string]*ResourceUri{
+	"openshift:deploymentconfigs.v1.apps.openshift.io": nil,
+
+	"openshift:deploymentconfigs.v1.apps.openshift.io/my-deployment-config": NewResourceUriBuilder(OpenshiftScheme).
+		Kind("deploymentconfigs").
+		Group("apps.openshift.io").
+		Version("v1").
+		Name("my-deployment-config").
+		Build(),
+
+	"openshift:deploymentconfigs.v1.apps.openshift.io/my-namespace/my-deployment-config": NewResourceUriBuilder(OpenshiftScheme).
+		Kind("deploymentconfigs").
+		Group("apps.openshift.io").
+		Version("v1").
+		Namespace("my-namespace").
+		Name("my-deployment-config").
+		Build(),
+}
+
 func TestParseKubernetesServicesURI(t *testing.T) {
 	for k, v := range KubernetesServicesTestValues {
 		doTestParseURI(t, k, v)
@@ -238,6 +284,18 @@ func TestParseKnativeServicesURI(t *testing.T) {
 
 func TestParseKnativeBrokersURI(t *testing.T) {
 	for k, v := range KnativeBrokersTestValues {
+		doTestParseURI(t, k, v)
+	}
+}
+
+func TestParseOpenshiftRoutesURI(t *testing.T) {
+	for k, v := range OpenshiftRoutesTestValues {
+		doTestParseURI(t, k, v)
+	}
+}
+
+func TestParseOpenshiftDeploymentConfigsURI(t *testing.T) {
+	for k, v := range OpenshiftDeploymentConfigsTestValues {
 		doTestParseURI(t, k, v)
 	}
 }

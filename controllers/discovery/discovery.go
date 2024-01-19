@@ -87,10 +87,11 @@ type sonataFlowServiceCatalog struct {
 }
 
 // NewServiceCatalog returns a new ServiceCatalog configured to resolve kubernetes, knative, and openshift resource addresses.
-func NewServiceCatalog(cli client.Client, knDiscoveryClient *KnDiscoveryClient) ServiceCatalog {
+func NewServiceCatalog(cli client.Client, knDiscoveryClient *KnDiscoveryClient, openShiftDiscoveryClient *OpenShiftDiscoveryClient) ServiceCatalog {
 	return &sonataFlowServiceCatalog{
 		kubernetesCatalog: newK8SServiceCatalog(cli),
 		knativeCatalog:    newKnServiceCatalog(knDiscoveryClient),
+		openshiftCatalog:  newOpenShiftServiceCatalog(openShiftDiscoveryClient),
 	}
 }
 
@@ -98,6 +99,7 @@ func NewServiceCatalogForConfig(cli client.Client, cfg *rest.Config) ServiceCata
 	return &sonataFlowServiceCatalog{
 		kubernetesCatalog: newK8SServiceCatalog(cli),
 		knativeCatalog:    newKnServiceCatalogForConfig(cfg),
+		openshiftCatalog:  newOpenShiftServiceCatalogForClientAndConfig(cli, cfg),
 	}
 }
 
@@ -108,7 +110,7 @@ func (c *sonataFlowServiceCatalog) Query(ctx context.Context, uri ResourceUri, o
 	case KnativeScheme:
 		return c.knativeCatalog.Query(ctx, uri, outputFormat)
 	case OpenshiftScheme:
-		return "", fmt.Errorf("openshift service discovery is not yet implemented")
+		return c.openshiftCatalog.Query(ctx, uri, outputFormat)
 	default:
 		return "", fmt.Errorf("unknown scheme was provided for service discovery: %s", uri.Scheme)
 	}

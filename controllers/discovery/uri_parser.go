@@ -29,10 +29,13 @@ import (
 
 const (
 	// valid namespace, name, or label name.
-	dns1123LabelFmt         string = "[a-z0-9]([-a-z0-9]*[a-z0-9])?"
-	namespaceAndNamePattern        = "^/((" + dns1123LabelFmt + ")+)(/(" + dns1123LabelFmt + ")+)?"
-	queryStringPattern             = "^(\\?((" + dns1123LabelFmt + ")+\\=(" + dns1123LabelFmt + ")+)" +
-		"(&(" + dns1123LabelFmt + ")+\\=(" + dns1123LabelFmt + ")+)*)?$"
+	dns1123LabelFmt string = "[a-z0-9]([-a-z0-9]*[a-z0-9])?"
+	queryParamName         = "[a-zA-Z0-9][-a-zAz0-9]*"
+	queryParamValue        = "[/a-zA-Z0-9][/-a-zAz0-9]*"
+
+	namespaceAndNamePattern = "^/((" + dns1123LabelFmt + ")+)(/(" + dns1123LabelFmt + ")+)?"
+	queryStringPattern      = "^(\\?((" + queryParamName + ")+\\=(" + queryParamValue + ")+)" +
+		"(&(" + queryParamName + ")+\\=(" + queryParamValue + ")+)*)?$"
 
 	kubernetesGroupsPattern = "^(" + kubernetesServices +
 		"|" + kubernetesPods +
@@ -63,7 +66,7 @@ func ParseUri(uri string) (*ResourceUri, error) {
 	} else if knativeSimplifiedServiceExpr.MatchString(uri) {
 		return parseKnativeSimplifiedServiceUri(uri)
 	} else if split := openshiftGroupsExpr.Split(uri, -1); len(split) == 2 {
-		return parseOpenshiftUri(openshiftGroupsExpr.FindString(uri), split[1])
+		return parseOpenshiftUri(uri, openshiftGroupsExpr.FindString(uri), split[1])
 	}
 	return nil, fmt.Errorf("invalid uri: %s, not correspond to any of the available schemes format: %s, %s, %s", uri, KubernetesScheme, KnativeScheme, OpenshiftScheme)
 }
@@ -165,6 +168,18 @@ func parseGVK(schemaGvk string) (*v1.GroupVersionKind, error) {
 			Version: "v1",
 			Kind:    "brokers",
 		}, nil
+	case openshiftRoutes:
+		return &v1.GroupVersionKind{
+			Group:   "route.openshift.io",
+			Version: "v1",
+			Kind:    "routes",
+		}, nil
+	case openshiftDeploymentConfigs:
+		return &v1.GroupVersionKind{
+			Group:   "apps.openshift.io",
+			Version: "v1",
+			Kind:    "deploymentconfigs",
+		}, nil
 	default:
 		return nil, fmt.Errorf("unknown schema and gvk: %s", schemaGvk)
 	}
@@ -212,6 +227,16 @@ func parseKnativeSimplifiedServiceUri(uri string) (*ResourceUri, error) {
 	}
 }
 
-func parseOpenshiftUri(findString string, s string) (*ResourceUri, error) {
-	return nil, fmt.Errorf("openshit is parsing not yet implemented")
+func parseOpenshiftUri(uri string, schemaAndGroup string, after string) (*ResourceUri, error) {
+	if namespace, name, gvk, queryParams, err := parseNamespaceNameGVKAndQueryParams(uri, schemaAndGroup, after); err != nil {
+		return nil, err
+	} else {
+		return &ResourceUri{
+			Scheme:      OpenshiftScheme,
+			GVK:         *gvk,
+			Namespace:   namespace,
+			Name:        name,
+			QueryParams: queryParams,
+		}, nil
+	}
 }

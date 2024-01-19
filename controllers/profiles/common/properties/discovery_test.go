@@ -47,11 +47,11 @@ func Test_generateDiscoveryProperties(t *testing.T) {
 		Functions: []model.Function{
 			{
 				Name:      "knServiceInvocation1",
-				Operation: "knative:services.v1.serving.knative.dev/namespace1/my-kn-service1?path=knative-function1",
+				Operation: "knative:services.v1.serving.knative.dev/namespace1/my-kn-service1?path=/knative-function1",
 			},
 			{
 				Name:      "knServiceInvocation2",
-				Operation: "knative:services.v1.serving.knative.dev/my-kn-service3?path=knative-function3",
+				Operation: "knative:services.v1.serving.knative.dev/my-kn-service3?path=/knative-function3",
 			},
 		},
 	}

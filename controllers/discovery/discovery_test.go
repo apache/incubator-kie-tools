@@ -65,7 +65,7 @@ func doTestQueryKubernetesService(t *testing.T, outputFormat string, expectedUri
 	service.Spec.Type = corev1.ServiceTypeNodePort
 	service.Spec.ClusterIP = "10.1.5.18"
 	cli := fake.NewClientBuilder().WithRuntimeObjects(service).Build()
-	ctg := NewServiceCatalog(cli, newKnDiscoveryClient(nil, nil))
+	ctg := NewServiceCatalog(cli, nil, nil)
 	doTestQuery(t, ctg, *NewResourceUriBuilder(KubernetesScheme).
 		Kind("services").
 		Version("v1").
@@ -86,7 +86,7 @@ func doTestQueryKubernetesPod(t *testing.T, outputFormat string, expectedUri str
 		*mockContainerWithPorts("container1Name", mockContainerPort(httpProtocol, tcp, defaultHttpPort)))
 	pod.Status.PodIP = "10.1.12.13"
 	cli := fake.NewClientBuilder().WithRuntimeObjects(pod).Build()
-	ctg := NewServiceCatalog(cli, newKnDiscoveryClient(nil, nil))
+	ctg := NewServiceCatalog(cli, nil, nil)
 	doTestQuery(t, ctg, *NewResourceUriBuilder(KubernetesScheme).
 		Kind("pods").
 		Version("v1").
@@ -116,7 +116,7 @@ func doTesQueryKubernetesDeploymentWithService(t *testing.T, outputFormat string
 	service.Spec.Type = corev1.ServiceTypeNodePort
 
 	cli := fake.NewClientBuilder().WithRuntimeObjects(deployment, service).Build()
-	ctg := NewServiceCatalog(cli, newKnDiscoveryClient(nil, nil))
+	ctg := NewServiceCatalog(cli, nil, nil)
 
 	doTestQuery(t, ctg, *NewResourceUriBuilder(KubernetesScheme).
 		Group("apps").
@@ -142,7 +142,7 @@ func doTestQueryKubernetesDeploymentWithoutService(t *testing.T, outputFormat st
 	}
 
 	deployment := mockDeployment(namespace1, deployment1Name, nil, &selector)
-	ctg := NewServiceCatalog(fake.NewClientBuilder().WithRuntimeObjects(deployment).Build(), newKnDiscoveryClient(nil, nil))
+	ctg := NewServiceCatalog(fake.NewClientBuilder().WithRuntimeObjects(deployment).Build(), nil, nil)
 
 	uri := *NewResourceUriBuilder(KubernetesScheme).
 		Group("apps").
@@ -176,7 +176,7 @@ func doTestQueryKubernetesStatefulSetWithService(t *testing.T, outputFormat stri
 	service.Spec.Type = corev1.ServiceTypeNodePort
 
 	cli := fake.NewClientBuilder().WithRuntimeObjects(statefulSet, service).Build()
-	ctg := NewServiceCatalog(cli, newKnDiscoveryClient(nil, nil))
+	ctg := NewServiceCatalog(cli, nil, nil)
 
 	doTestQuery(t, ctg, *NewResourceUriBuilder(KubernetesScheme).
 		Group("apps").
@@ -202,7 +202,7 @@ func doTestQueryKubernetesStatefulSetWithoutService(t *testing.T, outputFormat s
 	}
 
 	statefulSet := mockStatefulSet(namespace1, statefulSet1Name, nil, &selector)
-	ctg := NewServiceCatalog(fake.NewClientBuilder().WithRuntimeObjects(statefulSet).Build(), newKnDiscoveryClient(nil, nil))
+	ctg := NewServiceCatalog(fake.NewClientBuilder().WithRuntimeObjects(statefulSet).Build(), nil, nil)
 
 	uri := *NewResourceUriBuilder(KubernetesScheme).
 		Group("apps").
@@ -237,7 +237,7 @@ func doTestQueryKubernetesIngress(t *testing.T, hostName string, ip string, tls 
 		ingress.Spec.TLS = []v1.IngressTLS{{}}
 	}
 	cli := fake.NewClientBuilder().WithRuntimeObjects(ingress).Build()
-	ctg := NewServiceCatalog(cli, newKnDiscoveryClient(nil, nil))
+	ctg := NewServiceCatalog(cli, nil, nil)
 	doTestQuery(t, ctg, *NewResourceUriBuilder(KubernetesScheme).
 		Kind("ingresses").
 		Group("networking.k8s.io").
