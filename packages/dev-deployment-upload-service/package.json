@@ -22,7 +22,7 @@
     "build-all:win32": "pnpm powershell \"cross-env DDUS_VERSION=$(build-env root.version) make build-all\"",
     "build-checksum": "run-script-os",
     "build-checksum:linux:darwin": "make checksum",
-    "build-checksum:win32": "pnpm powershell \"./scripts/generateCheckSumsWindows.ps1\"",
+    "build-checksum:win32": "pnpm powershell \"./scripts/generateChecksumsWindows.ps1\"",
     "build-install-script:dev": "node scripts/generateInstallScript.js --dev",
     "build-install-script:prod": "node scripts/generateInstallScript.js",
     "build:darwin:amd64": "cross-env DDUS_VERSION=$(build-env root.version) make darwin-amd64",
