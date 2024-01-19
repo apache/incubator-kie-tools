@@ -7,7 +7,7 @@
     {
       "run_at": "document_idle",
       "js": ["content_scripts/github.js"],
-      "matches": ["https://*.github.com/*"],
+      "matches": ["https://*/*", "http://*/*"],
       "all_frames": true
     }
   ],
