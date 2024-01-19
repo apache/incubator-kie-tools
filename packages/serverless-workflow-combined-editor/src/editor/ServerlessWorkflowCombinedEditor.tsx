@@ -116,6 +116,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const { editor: textEditor, editorRef: textEditorRef } = useEditorRef();
   const { editor: diagramEditor, editorRef: diagramEditorRef } = useEditorRef();
 
+  const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
+
   const [previewOptions] = useSharedValue<SwfPreviewOptions>(
     editorEnvelopeCtx.channelApi?.shared.kogitoSwfPreviewOptions_get
   );
@@ -131,6 +133,18 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const isStandalone = useMemo(() => props.channelType === ChannelType.STANDALONE, [props.channelType]);
 
   const targetOrigin = useMemo(() => (isVscode ? "vscode" : window.location.origin), [isVscode]);
+
+  const applyEditorTheme = useCallback(
+    (theme: EditorTheme) => Promise.all([textEditor?.setTheme(theme), diagramEditor?.setTheme(theme)]),
+    [textEditor, diagramEditor]
+  );
+
+  useEffect(() => {
+    if (theme === undefined) {
+      return;
+    }
+    applyEditorTheme(theme);
+  }, [theme, applyEditorTheme]);
 
   const isCombinedEditorReady = useMemo(() => {
     if (previewOptions?.editorMode === "diagram") {
@@ -241,9 +255,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           await Promise.all([textEditor?.redo(), diagramEditor?.redo()]);
         },
         validate: async (): Promise<Notification[]> => textEditor?.validate() ?? [],
-        setTheme: async (theme: EditorTheme) => {
-          await Promise.all([textEditor?.setTheme(theme), diagramEditor?.setTheme(theme)]);
-        },
+        setTheme: async (theme: EditorTheme) => applyEditorTheme(theme),
         colorNodes: (nodeNames: string[], color: string, colorConnectedEnds: boolean) => {
           colorNodes(nodeNames, color, colorConnectedEnds);
         },
@@ -252,7 +264,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         },
       };
     },
-    [diagramEditor, file, props.isReadOnly, textEditor, textEditorEnvelopeApi]
+    [diagramEditor, file, props.isReadOnly, textEditor, textEditorEnvelopeApi, applyEditorTheme]
   );
 
   useStateControlSubscription(

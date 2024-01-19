@@ -18,20 +18,26 @@
  */
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import * as React from "react";
+import { useState } from "react";
+import { EditorTheme } from "../../editor/dist/api";
 import "./HistoryButtons.scss";
 
 interface HistoryButtonsProps {
   undo: () => Promise<void>;
   redo: () => Promise<void>;
   download: () => Promise<void>;
+  setTheme: (theme: EditorTheme) => Promise<void>;
   validate: () => Promise<void>;
   isDirty: boolean;
 }
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
+  const [theme, setTheme] = useState<EditorTheme>(EditorTheme.LIGHT);
+
   return (
     <div className="history-buttons ignore-onclickoutside">
       <Split hasGutter={true}>
@@ -54,6 +60,18 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
           <Button variant="secondary" onClick={props.download} ouiaId="redo-button">
             Download
           </Button>
+        </SplitItem>
+        <SplitItem className="history-buttons__theme-switch">
+          <Switch
+            id="theme"
+            label="Dark"
+            labelOff="Light"
+            checked={theme === EditorTheme.DARK}
+            onChange={(checked) => {
+              setTheme(checked ? EditorTheme.DARK : EditorTheme.LIGHT);
+              props.setTheme(checked ? EditorTheme.DARK : EditorTheme.LIGHT);
+            }}
+          />
         </SplitItem>
         {props.isDirty && (
           <SplitItem className="history-buttons__edited-indicator">
