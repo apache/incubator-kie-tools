@@ -17,6 +17,8 @@
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.3
 
+ARG INSTALL_SCRIPT_PORT=8092
+
 EXPOSE 8091
 
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=/tmp/unzip-at
@@ -24,6 +26,8 @@ ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8091
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH="/"
 
-COPY ../dist/dev-deployment-upload-service-linux-amd64 /usr/local/bin/dev-deployment-upload-service
+RUN microdnf install -y tar gzip findutils
 
-CMD ["/bin/bash", "-c", "dev-deployment-upload-service && cd /tmp/unzip-at && echo 'Done!'"]
+RUN curl http://host.docker.internal:$INSTALL_SCRIPT_PORT/apache/incubator-kie-tools/releases/download/0.0.0/getDevDeploymentUploadService.sh | sed 's/localhost/host.docker.internal/' | bash
+
+CMD dev-deployment-upload-service && find /tmp/unzip-at | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/" && echo 'Done!'

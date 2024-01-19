@@ -140,13 +140,6 @@ export default async (env: any, argv: any) => {
                 from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
                 to: "./images",
               },
-              {
-                from: path.join(
-                  path.dirname(require.resolve("@kie-tools/dev-deployment-upload-service/package.json")),
-                  "/dist"
-                ),
-                to: "./dev-deployments/upload-service",
-              },
             ],
           }),
           new ProvidePlugin({

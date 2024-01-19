@@ -13,7 +13,7 @@ When an upload is done, the application will unzip the file at the configured lo
 Extract the .tar.gz file and copy the binary to your `/usr/local/bin` directory:
 
 ```bash
-tar xf dist/dev-deployment-upload-service-<OS>-<ARCH>.tar.gz -C /usr/local/bin
+tar xf dist/dev-deployment-upload-service-<OS>-<ARCH>-<VERSION>.tar.gz -C /usr/local/bin
 ```
 
 You may need to run the command as root using `sudo`.
@@ -26,22 +26,8 @@ You may need to run the command as root using `sudo`.
   ```
 - In another terminal, run the installer script:
   ```bash
-  export DDUS_KIE_SANDBOX_URL=http://localhost:8092; curl http://localhost:8092/install.sh | bash
+  curl http://localhost:8092/getDevDeploymentUploadService.sh | bash
   ```
-
-#### From KIE Sandbox
-
-If you have a KIE Sandbox instance running at `<kie-sandbox-url>` you may install the Dev Deployment Upload Service with:
-
-```bash
-export DDUS_KIE_SANDBOX_URL=<kie-sandbox-url>; curl -k <kie-sandbox-url>/dev-deployments/upload-service/install.sh | bash
-```
-
-Example:
-
-```bash
-export DDUS_KIE_SANDBOX_URL=https://localhost:9001; curl -k https://localhost:9001/dev-deployments/upload-service/install.sh | bash
-```
 
 ### Usage:
 

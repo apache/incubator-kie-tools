@@ -20,7 +20,8 @@
 # The install script is based off of the Apache-licensed script from helm,
 # a tool for managing Charts: https://github.com/helm/helm/blob/main/scripts/get-helm-3
 
-: ${DDUS_KIE_SANDBOX_URL:="https://localhost:9001"}
+: ${DDUS_DOWNLOAD_URL:="<DOWNLOAD_URL>"}
+: ${DDUS_VERSION:="<VERSION>"}
 : ${DDUS_BINARY_NAME:="dev-deployment-upload-service"}
 : ${DDUS_GLOBAL_INSTALL_DIR:="/usr/local/bin"}
 : ${DDUS_LOCAL_INSTALL_DIR:="$HOME/.local/bin"}
@@ -110,8 +111,8 @@ checkInstalledVersion() {
 # Downloads the binary package and also the checksum for that binary.
 downloadFile() {
   DDUS_BIN_FILE="dev-deployment-upload-service-$OS-$ARCH"
-  DDUS_DOWNLOAD_FILE="$DDUS_BIN_FILE.tar.gz"
-  DOWNLOAD_URL="$DDUS_KIE_SANDBOX_URL/dev-deployments/upload-service/$DDUS_DOWNLOAD_FILE"
+  DDUS_DOWNLOAD_FILE="$DDUS_BIN_FILE-$DDUS_VERSION.tar.gz"
+  DOWNLOAD_URL="$DDUS_DOWNLOAD_URL/$DDUS_DOWNLOAD_FILE"
   CHECKSUM_URL="$DOWNLOAD_URL.sha256"
   DDUS_TMP_ROOT="$(mktemp -dt dev-deployment-upload-service-install-XXXXXX)"
   DDUS_TMP_FILE="$DDUS_TMP_ROOT/$DDUS_DOWNLOAD_FILE"
@@ -155,18 +156,15 @@ installFile() {
   DDUS_TMP="$DDUS_TMP_ROOT/bin"
   mkdir -p "$DDUS_TMP"
   tar xf "$DDUS_TMP_FILE" -C "$DDUS_TMP"
-  if [ "${DDUS_USE_ROOT}" == "true" ]; then
-    echo "Preparing to install $DDUS_BIN_FILE into ${DDUS_GLOBAL_INSTALL_DIR}"
-    runAsRoot mkdir -p "$DDUS_GLOBAL_INSTALL_DIR"
-    runAsRoot cp "$DDUS_TMP/$DDUS_BIN_FILE" "$DDUS_GLOBAL_INSTALL_DIR/$DDUS_BINARY_NAME"
-    echo "$DDUS_BINARY_NAME installed into $DDUS_GLOBAL_INSTALL_DIR/$DDUS_BINARY_NAME" and available globally.
+  if [ $EUID -eq 0 ] || [ "${DDUS_USE_ROOT}" == "true" ]; then
+    INSTALL_DIR=$DDUS_GLOBAL_INSTALL_DIR
   else
-    echo "No root access, installing for current user only."
-    echo "Preparing to install $DDUS_BINARY_NAME into ${DDUS_LOCAL_INSTALL_DIR}"
-    mkdir -p "$DDUS_LOCAL_INSTALL_DIR"
-    cp "$DDUS_TMP/$DDUS_BIN_FILE" "$DDUS_LOCAL_INSTALL_DIR/$DDUS_BINARY_NAME"
-    echo "$DDUS_BINARY_NAME installed into $DDUS_LOCAL_INSTALL_DIR/$DDUS_BINARY_NAME".
+    INSTALL_DIR=$DDUS_LOCAL_INSTALL_DIR
   fi
+  echo "Preparing to install $DDUS_BIN_FILE into ${INSTALL_DIR}"
+  runAsRoot mkdir -p "$INSTALL_DIR"
+  runAsRoot cp "$DDUS_TMP/$DDUS_BIN_FILE" "$INSTALL_DIR/$DDUS_BINARY_NAME"
+  echo "$DDUS_BINARY_NAME installed into $INSTALL_DIR/$DDUS_BINARY_NAME".
 }
 
 # Cleanup temporary files
@@ -194,7 +192,7 @@ fail_trap() {
 # Tests the installed client to make sure it is working.
 testVersion() {
   set +e
-  sleep 2
+  sleep 1
   source $HOME/.bashrc
   DDUS="$(command -v $DDUS_BINARY_NAME)"
   if [ "$?" = "1" ]; then

@@ -1,4 +1,0 @@
-{
-  "public": "dist",
-  "redirects": [{ "source": "/dev-deployments/upload-service/:filename", "destination": "/:filename" }]
-}

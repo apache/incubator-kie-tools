@@ -1,0 +1,6 @@
+{
+  "public": "dist",
+  "rewrites": [
+    { "source": "/apache/incubator-kie-tools/releases/download/:releaseVersion/:filename", "destination": "/:filename" }
+  ]
+}

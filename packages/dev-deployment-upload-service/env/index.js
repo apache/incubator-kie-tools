@@ -17,11 +17,36 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+const buildEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([buildEnv], {
+  vars: varsWithName({
+    DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadPath: {
+      default: `apache/incubator-kie-tools/releases/download/${buildEnv.env.root.version}`,
+      description: "Download path for the Dev Deployment Upload Service binary package.",
+    },
+    DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadHost: {
+      default: `https://github.com`,
+      description: "Download host for the Dev Deployment Upload Service binary package.",
+    },
+    DEV_DEPLOYMENT_UPLOAD_SERVICE__devServerPort: {
+      default: 8092,
+      description: "Port where the dev file server should run",
+    },
+  }),
   get env() {
-    return {};
+    return {
+      devDeploymentUploadService: {
+        dev: {
+          port: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__devServerPort),
+        },
+        url: {
+          path: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadPath),
+          host: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadHost),
+        },
+      },
+    };
   },
 });
