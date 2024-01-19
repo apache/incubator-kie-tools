@@ -615,7 +615,7 @@ Today we have the following Kogito Component Images:
 
 The Data Index Service aims at capturing and indexing data produced by one more Kogito runtime services. 
 For more information please visit this (link)(https://docs.jboss.org/kogito/release/latest/html_single/#proc-kogito-travel-agency-enable-data-index_kogito-deploying-on-openshift). 
-The Data Index Service depends on a running Infinispan, MongoDB or PostgreSQL.
+The Data Index Service depends on a PostgreSQL instance.
 The Persistence service can be switched by using its corresponding image
 
 - Ephemeral PostgreSQL: quay.io/kiegroup/kogito-data-index-ephemeral
@@ -639,7 +639,7 @@ $ docker run -it --env QUARKUS_DATASOURCE_JDBC_URL="jdbc:postgresql://localhost:
 To enable debug just use this env while running this image:
 
 ```bash
-$ docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_HOSTS=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-postgresql:latest
+$ docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-data-index-postgresql:latest
 ```
 You should notice a few debug messages present in the system output.
 
@@ -675,16 +675,13 @@ docker run -it --env SCRIPT_DEBUG=true quay.io/kiegroup/kogito-jobs-service-post
 You should notice a few debug messages being printed in the system output.
 
 The ephemeral image does not have external dependencies like a backend persistence provider, it uses in-memory persistence
-while working with Jobs Services `allinone`, `infinispan`, `mongodb` and `postgresql` variants, it will need to 
-have an Infinispan, MongoDB or PostgreSQL server, respectively, previously running.
+while working with Jobs Services `postgresql` variant, it will need to have a PostgreSQL server previously running.
 
 #### Jobs Services All-in-one 
 
 The Jobs Services All in One image provides the option to run any supported variant that we have at disposal, which are:
 
 - PostgreSQL
-- Infinispan
-- MongoDB
 - Ephemeral (default if no variant is specified)
 
 There are 3 exposed environment variables that can be used to configure the behaviour, which are:

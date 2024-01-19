@@ -23,10 +23,6 @@ version: "999-SNAPSHOT"
 artifacts:
   - path: /tmp/build/jobs-service-inmemory-all-in-one/jobs-service-inmemory-quarkus-app.zip
     name: jobs-service-inmemory-quarkus-app.zip
-  - path: /tmp/build/jobs-service-mongodb-all-in-one/jobs-service-mongodb-quarkus-app.zip
-    name: jobs-service-mongodb-quarkus-app.zip
-  - path: /tmp/build/jobs-service-infinispan-all-in-one/jobs-service-infinispan-quarkus-app.zip
-    name: jobs-service-infinispan-quarkus-app.zip
   - path: /tmp/build/jobs-service-postgresql-all-in-one/jobs-service-postgresql-quarkus-app.zip
     name: jobs-service-postgresql-quarkus-app.zip
 

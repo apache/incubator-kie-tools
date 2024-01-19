@@ -33,7 +33,7 @@ labels:
   - name: "io.k8s.display-name"
     value: "Kogito Jobs Service All-in-One"
   - name: "io.openshift.tags"
-    value: "kogito,jobs-service,postgresql,mongodb,infinispan,ephemeral"
+    value: "kogito,jobs-service,postgresql,ephemeral"
   - name: "io.openshift.expose-services"
     value: "8080:http"
 
@@ -45,8 +45,8 @@ envs:
     example: "true"
     description: "By default Jobs Service doesn't integrate with message systems (e.g. Kafka). Set this variable to true to enable the events add-on."
   - name: "JOBS_SERVICE_PERSISTENCE"
-    example: "mongodb"
-    description: "The all in one image contains all the supported jdbc plugins for Jobs Service, ephemeral, postgresql, mongodb and infinispan, if empty, defaults to ephemeral"
+    example: "postgresql"
+    description: "The all in one image contains all the supported jdbc plugins for Jobs Service, ephemeral and postgresql, if empty, defaults to ephemeral"
 
 packages:
   manager: microdnf

@@ -30,7 +30,7 @@ if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     printenv
 fi
 
-allowed_jobs_service_flavors=("ephemeral" "mongodb" "infinispan" "postgresql")
+allowed_jobs_service_flavors=("ephemeral" "postgresql")
 jobs_service_flavor="ephemeral"
 if [[ ! "${allowed_jobs_service_flavors[*]}" =~ ${JOBS_SERVICE_PERSISTENCE,,} ]]; then
   log_warning "${JOBS_SERVICE_PERSISTENCE,,} is not supported, the allowed flavors are [${allowed_jobs_service_flavors[*]}], defaulting to ${jobs_service_flavor}"

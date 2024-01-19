@@ -72,9 +72,7 @@ case ${imageName} in
     "kogito-jobs-service-allinone")
         extended_context="-all-in-one"
         contextDir="jobs-service/jobs-service-inmemory"
-        contextDir="${contextDir} jobs-service/jobs-service-infinispan"
         contextDir="${contextDir} jobs-service/jobs-service-postgresql"
-        contextDir="${contextDir} jobs-service/jobs-service-mongodb"
         ;;
     "kogito-jit-runner")
         contextDir="jitexecutor/jitexecutor-runner"
