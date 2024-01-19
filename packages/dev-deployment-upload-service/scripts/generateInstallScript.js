@@ -29,11 +29,10 @@ const contents = baseInstallScriptFile.toString();
 const version = buildEnv.env.root.version;
 const downloadPath = devDeploymentUploadServiceEnv.env.devDeploymentUploadService.url.path;
 const downloadHost = devDeploymentUploadServiceEnv.env.devDeploymentUploadService.url.host;
-const devServerPort = devDeploymentUploadServiceEnv.env.devDeploymentUploadService.dev.port;
 
 let downloadUrl = `${downloadHost}/${downloadPath}`;
 if (argv[2] === "--dev") {
-  downloadUrl = `http://localhost:${devServerPort}/${downloadPath}`;
+  downloadUrl = `http://localhost:8080/${downloadPath}`;
 }
 
 if (!fs.existsSync("dist")) {
