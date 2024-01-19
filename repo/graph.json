@@ -129,10 +129,8 @@
       { "id": "pmml-vscode-extension" },
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-gateway-api" },
-      { "id": "@kie-tools/runtime-tools-dev-ui-webapp" },
-      { "id": "@kie-tools/runtime-tools-monitoring-webapp" },
-      { "id": "@kie-tools/runtime-tools-webapp-components" },
       { "id": "@kie-tools/runtime-tools-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-webapp-components" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -151,6 +149,8 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
+      { "id": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" },
+      { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
@@ -775,26 +775,6 @@
       { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
-        "source": "@kie-tools/runtime-tools-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-monitoring-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-monitoring-webapp",
-        "target": "@kie-tools/dashbuilder-client",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-webapp-components",
-        "target": "@kie-tools/runtime-tools-enveloped-components",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/runtime-tools-enveloped-components",
         "target": "@kie-tools-core/monaco-editor",
         "weight": 1
@@ -817,6 +797,11 @@
       {
         "source": "@kie-tools/runtime-tools-enveloped-components",
         "target": "@kie-tools/serverless-workflow-combined-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-webapp-components",
+        "target": "@kie-tools/runtime-tools-enveloped-components",
         "weight": 1
       },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
@@ -932,6 +917,21 @@
       {
         "source": "@kie-tools/serverless-workflow-language-service",
         "target": "@kie-tools/serverless-workflow-jq-expressions",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
+        "target": "@kie-tools/dashbuilder-client",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
         "weight": 1
       },
       {
@@ -1077,10 +1077,8 @@
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
     ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
-    ["@kie-tools/runtime-tools-dev-ui-webapp", "packages/runtime-tools-dev-ui-webapp"],
     ["@kie-tools/runtime-tools-enveloped-components", "packages/runtime-tools-enveloped-components"],
     ["@kie-tools/runtime-tools-gateway-api", "packages/runtime-tools-gateway-api"],
-    ["@kie-tools/runtime-tools-monitoring-webapp", "packages/runtime-tools-monitoring-webapp"],
     ["@kie-tools/runtime-tools-webapp-components", "packages/runtime-tools-webapp-components"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
@@ -1114,6 +1112,11 @@
       "packages/serverless-logic-web-tools-swf-dev-mode-image-env"
     ],
     ["@kie-tools/serverless-workflow-combined-editor", "packages/serverless-workflow-combined-editor"],
+    [
+      "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
+      "packages/serverless-workflow-dev-ui-monitoring-webapp"
+    ],
+    ["@kie-tools/serverless-workflow-dev-ui-webapp", "packages/serverless-workflow-dev-ui-webapp"],
     ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],
     ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
