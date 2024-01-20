@@ -27,10 +27,9 @@
     "install": "go mod tidy",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "start": "make start",
-    "start-test-servers": "node scripts/runTestServers.js",
-    "stop-test-servers": "node scripts/runTestServers.js --cleanup",
-    "test": "jest --silent --verbose",
-    "test:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"pnpm test\""
+    "start-test-servers": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"node scripts/runTestServers.js\"",
+    "stop-test-servers": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"node scripts/runTestServers.js --cleanup\"",
+    "test": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"jest --silent --verbose\""
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",

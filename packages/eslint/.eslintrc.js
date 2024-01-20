@@ -70,6 +70,16 @@ module.exports = {
       },
     },
     {
+      files: ["**/tests/**/*.js"],
+      extends: ["eslint:recommended"],
+      env: {
+        browser: false,
+        node: true,
+        amd: true,
+        jest: true,
+      },
+    },
+    {
       files: ["*.ts", "*.tsx"],
       rules: {
         "no-restricted-imports": [

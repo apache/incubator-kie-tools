@@ -21,7 +21,7 @@ module.exports = {
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?|js?|ts?)$",
   transform: {},
   globals: { fetch, Response, Request },
 };
