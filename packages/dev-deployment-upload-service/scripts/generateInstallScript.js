@@ -32,7 +32,7 @@ const downloadHost = devDeploymentUploadServiceEnv.env.devDeploymentUploadServic
 
 let downloadUrl = `${downloadHost}/${downloadPath}`;
 if (argv[2] === "--dev") {
-  downloadUrl = `http://localhost:8080/${downloadPath}`;
+  downloadUrl = `http://localhost:8090/${downloadPath}`;
 }
 
 if (!fs.existsSync("dist")) {
