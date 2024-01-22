@@ -17,9 +17,10 @@
  * under the License.
  */
 
-const execSync = require("child_process").execSync;
+const { execSync } = require("child_process");
+const path = require("path");
 
-const filePath = `${__dirname}/test.zip`;
+const filePath = path.join(process.cwd(), "tests/test.zip");
 
 describe("Test built images individually", () => {
   beforeAll(() => {

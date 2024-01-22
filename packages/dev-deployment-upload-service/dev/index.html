@@ -34,7 +34,10 @@
   <footer>
     <script>
       const urlParams = new URLSearchParams(window.location.search);
-      const port = urlParams.get("port");
+      const port = parseInt(urlParams.get("port"));
+      if (Number.isNaN(port)) {
+        return;
+      }
       document.getElementById("form").attributes.action = `http://localhost:${port}/upload?apiKey=dev`;
     </script>
   </footer>
