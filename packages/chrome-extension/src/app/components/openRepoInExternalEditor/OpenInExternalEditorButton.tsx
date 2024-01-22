@@ -28,7 +28,7 @@ export function OpenInExternalEditorButton(props: { className: string; pageType:
   const repoUrl = useMemo(() => {
     if (props.pageType === GitHubPageType.PR_HOME || props.pageType === GitHubPageType.PR_FILES_OR_COMMITS) {
       const prInfo = parsePrInfo(globals.dependencies);
-      return `https://github.com/${prInfo.org}/${prInfo.repo}/tree/${prInfo.gitRef}`;
+      return `${window.location.origin}/${prInfo.org}/${prInfo.repo}/tree/${prInfo.gitRef}`;
     }
 
     return window.location.href;

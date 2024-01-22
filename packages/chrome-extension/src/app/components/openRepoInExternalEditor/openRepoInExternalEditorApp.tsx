@@ -33,31 +33,35 @@ import { KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS } from "../../const
 export function renderOpenRepoInExternalEditorApp(
   args: Globals & { className: string; pageType: GitHubPageType; container: () => HTMLElement }
 ) {
-  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-  // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup(args.id);
+  if (args.container()) {
+    // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+    // Without this method you can observe duplicated elements when using back/forward browser buttons.
+    cleanup(args.id);
 
-  ReactDOM.render(
-    <Main
-      id={args.id}
-      editorEnvelopeLocator={args.editorEnvelopeLocator}
-      dependencies={args.dependencies}
-      logger={args.logger}
-      githubAuthTokenCookieName={args.githubAuthTokenCookieName}
-      extensionIconUrl={args.extensionIconUrl}
-      resourceContentServiceFactory={args.resourceContentServiceFactory}
-      externalEditorManager={args.externalEditorManager}
-    >
-      {ReactDOM.createPortal(
-        <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
-        GitHubPageType.REPO_HOME === args.pageType
-          ? openRepoInExternalEditorContainerFromRepositoryHome(args.id, args.container())
-          : openRepoInExternalEditorContainer(args.id, args.container())
-      )}
-    </Main>,
-    createAndGetMainContainer(args.id, args.dependencies.all.body()),
-    () => args.logger.log("Mounted.")
-  );
+    ReactDOM.render(
+      <Main
+        id={args.id}
+        editorEnvelopeLocator={args.editorEnvelopeLocator}
+        dependencies={args.dependencies}
+        logger={args.logger}
+        githubAuthTokenCookieName={args.githubAuthTokenCookieName}
+        extensionIconUrl={args.extensionIconUrl}
+        resourceContentServiceFactory={args.resourceContentServiceFactory}
+        externalEditorManager={args.externalEditorManager}
+      >
+        {ReactDOM.createPortal(
+          <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
+          GitHubPageType.REPO_HOME === args.pageType
+            ? openRepoInExternalEditorContainerFromRepositoryHome(args.id, args.container())
+            : openRepoInExternalEditorContainer(args.id, args.container())
+        )}
+      </Main>,
+      createAndGetMainContainer(args.id, args.dependencies.all.body()),
+      () => args.logger.log("Mounted.")
+    );
+  } else {
+    console.warn("We support kie-tools chrome-extension only for the latest GitHub UI instance.");
+  }
 }
 
 function cleanup(id: string) {

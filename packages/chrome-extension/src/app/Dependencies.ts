@@ -62,7 +62,7 @@ export class Dependencies {
 
   public readonly openRepoInExternalEditor = {
     buttonContainerOnRepoHome: () => {
-      return document.querySelector("#repository-details-container .pagehead-actions") as HTMLElement | null;
+      return document.querySelector(".pagehead-actions") as HTMLElement | null;
     },
     buttonContainerOnRepoFilesList: () => {
       return document.querySelector(".d-flex.gap-2")?.parentElement as HTMLElement | null;
