@@ -302,7 +302,6 @@ export function getNodeTypeFromDmnObject(dmnObject: NodeDmnObjects) {
   }
 
   const type = switchExpression(dmnObject.__$$element, {
-    // Normal nodes
     inputData: NODE_TYPES.inputData,
     decision: NODE_TYPES.decision,
     businessKnowledgeModel: NODE_TYPES.bkm,
@@ -310,8 +309,6 @@ export function getNodeTypeFromDmnObject(dmnObject: NodeDmnObjects) {
     decisionService: NODE_TYPES.decisionService,
     group: NODE_TYPES.group,
     textAnnotation: NODE_TYPES.textAnnotation,
-    // No nodes associated with
-    association: undefined,
     default: undefined,
   });
 

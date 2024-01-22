@@ -20,6 +20,7 @@
 import {
   ChannelType,
   EditorEnvelopeLocator,
+  EditorTheme,
   EnvelopeContentType,
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api";
@@ -173,6 +174,13 @@ export const App = () => {
     [onSetContent]
   );
 
+  const onSetTheme = useCallback(
+    async (theme: EditorTheme) => {
+      editor?.setTheme(theme);
+    },
+    [editor]
+  );
+
   return (
     <Page>
       {!embeddedEditorFile && (
@@ -184,7 +192,14 @@ export const App = () => {
       {embeddedEditorFile && (
         <>
           <PageSection padding={{ default: "noPadding" }}>
-            <HistoryButtons undo={onUndo} redo={onRedo} download={onDownload} validate={onValidate} isDirty={isDirty} />
+            <HistoryButtons
+              undo={onUndo}
+              redo={onRedo}
+              download={onDownload}
+              validate={onValidate}
+              isDirty={isDirty}
+              setTheme={onSetTheme}
+            />
           </PageSection>
           <PageSection padding={{ default: "noPadding" }} isFilled={true} hasOverflowScroll={false}>
             <div className="editor-container">
