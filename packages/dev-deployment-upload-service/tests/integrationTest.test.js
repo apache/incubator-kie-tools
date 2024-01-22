@@ -17,7 +17,7 @@
  * under the License.
  */
 
-const { execSync } = require("child_process");
+const { execSync, execFileSync } = require("child_process");
 const path = require("path");
 
 const filePath = path.join(process.cwd(), "tests/test.zip");
@@ -27,9 +27,15 @@ describe("Test built images individually", () => {
     execSync("pnpm start-test-servers && wait-on -t 2m http://localhost:8092/upload-status");
   });
   it("buildtime install", async () => {
-    const response = execSync(
-      `curl -X POST -H "Content-Type: multipart/form-data" -F "myFile=@${filePath}" http://localhost:8091/upload?apiKey=dev`
-    ).toString();
+    const response = execFileSync("curl", [
+      "-X",
+      "POST",
+      "-H",
+      "Content-Type: multipart/form-data",
+      "-F",
+      `myFile=@${filePath}`,
+      "http://localhost:8091/upload?apiKey=dev",
+    ]).toString();
     const dockerLogs = execSync(`docker logs ddus-buildtime-install`)
       .toString()
       .replace(/http:\/\/.*:/, "<ddus-fileserver-ip>:");
@@ -37,9 +43,15 @@ describe("Test built images individually", () => {
     expect(dockerLogs).toMatchSnapshot();
   });
   it("runtime install", async () => {
-    const response = execSync(
-      `curl -X POST -H "Content-Type: multipart/form-data" -F "myFile=@${filePath}" http://localhost:8092/upload?apiKey=dev`
-    ).toString();
+    const response = execFileSync("curl", [
+      "-X",
+      "POST",
+      "-H",
+      "Content-Type: multipart/form-data",
+      "-F",
+      `myFile=@${filePath}`,
+      "http://localhost:8092/upload?apiKey=dev",
+    ]).toString();
     const dockerLogs = execSync(`docker logs ddus-runtime-install`)
       .toString()
       .replace(/http:\/\/.*:/, "<ddus-fileserver-ip>:");
