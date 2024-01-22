@@ -272,16 +272,6 @@ export function generateBeeMap(
   }
 }
 
-export enum BeePanelField {
-  DESCRIPTION = "description",
-  EXPRESSION_LANGUAGE = "expressionLanguage",
-  KIE_CONSTRAINT_TYPE = "kieConstraintType",
-  LABEL = "label",
-  NAME = "name",
-  TEXT = "text",
-  TYPE_REF = "typeRef",
-}
-
 export enum CellType {
   CONTENT = "content",
   EXPRESSION = "expression",
@@ -426,32 +416,6 @@ export type AllCells =
   | EveryCells
   | ConditionalCells
   | FilterCells;
-
-export type AllCellsByType = {
-  [x in ContextExpressionCells["type"]]: Omit<ContextExpressionCells, "type">;
-} & {
-  [x in DecisionTableCells["type"]]: Omit<DecisionTableCells, "type">;
-} & {
-  [x in FunctionDefinitionCells["type"]]: Omit<FunctionDefinitionCells, "type">;
-} & {
-  [x in InvocationCells["type"]]: Omit<InvocationCells, "type">;
-} & {
-  [x in LiteralExpressionCells["type"]]: Omit<LiteralExpressionCells, "type">;
-} & {
-  [x in RelationCells["type"]]: Omit<RelationCells, "type">;
-} & {
-  [x in ListCells["type"]]: Omit<ListCells, "type">;
-} & {
-  [x in ForCells["type"]]: Omit<ForCells, "type">;
-} & {
-  [x in SomeCells["type"]]: Omit<SomeCells, "type">;
-} & {
-  [x in EveryCells["type"]]: Omit<EveryCells, "type">;
-} & {
-  [x in ConditionalCells["type"]]: Omit<ConditionalCells, "type">;
-} & {
-  [x in FilterCells["type"]]: Omit<FilterCells, "type">;
-};
 
 // TODO: COMPLETE
 export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): string | undefined {

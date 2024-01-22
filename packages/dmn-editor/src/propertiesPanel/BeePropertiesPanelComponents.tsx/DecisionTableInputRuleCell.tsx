@@ -19,6 +19,6 @@
 
 import * as React from "react";
 
-export function DecisionTableCell() {
+export function DecisionTableInputRuleCell() {
   return <></>;
 }

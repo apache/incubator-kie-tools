@@ -19,6 +19,6 @@
 
 import * as React from "react";
 
-export function ExpressionLanguageLabelDescriptionTextCell() {
+export function LiteralExpressionContentCell() {
   return <></>;
 }
