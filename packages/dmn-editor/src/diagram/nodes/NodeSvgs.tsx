@@ -22,6 +22,8 @@ import * as RF from "reactflow";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
 import { DEFAULT_NODE_FILL, DEFAULT_NODE_STROKE_COLOR, DEFAULT_NODE_STROKE_WIDTH } from "./NodeStyle";
 
+export type NodeLabelPosition = "center-center" | "top-center" | "center-left" | "top-left";
+
 export type NodeSvgProps = RF.Dimensions &
   RF.XYPosition & {
     fillColor?: string;
@@ -81,7 +83,7 @@ export function InputDataNodeSvg(__props: NodeSvgProps) {
         })();
 
   return (
-    <g>
+    <>
       <rect
         {...props}
         x={x}
@@ -95,7 +97,7 @@ export function InputDataNodeSvg(__props: NodeSvgProps) {
         rx={rx}
         ry={ry}
       />
-    </g>
+    </>
   );
 }
 
@@ -103,7 +105,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps) {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
 
   return (
-    <g>
+    <>
       <rect
         x={x}
         y={y}
@@ -115,7 +117,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         {...props}
       />
-    </g>
+    </>
   );
 }
 
@@ -123,7 +125,7 @@ export function BkmNodeSvg(__props: NodeSvgProps) {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
   const bevel = 25;
   return (
-    <g>
+    <>
       <polygon
         {...props}
         points={`${bevel},0 0,${bevel} 0,${height} ${width - bevel},${height} ${width},${height - bevel}, ${width},0`}
@@ -133,7 +135,7 @@ export function BkmNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
-    </g>
+    </>
   );
 }
 
@@ -145,7 +147,7 @@ export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
   const straightLines = `M${width},${height} L${width},0 L0,0 L0,${height}`;
   const bottomWave = `Q${width / 4},${height + amplitude} ${width / 2},${height} T${width},${height}`;
   return (
-    <g>
+    <>
       <path
         {...props}
         d={`${straightLines} ${bottomWave} Z`}
@@ -155,7 +157,7 @@ export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
-    </g>
+    </>
   );
 }
 
@@ -197,7 +199,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
   } = _interactionRectProps;
 
   return (
-    <g>
+    <>
       {!isCollapsed && (
         <>
           <path
@@ -267,7 +269,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
           </text>
         </>
       )}
-    </g>
+    </>
   );
 });
 
@@ -275,7 +277,7 @@ export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props: _props } = normalize(__props);
   const { showPlaceholder, ...props } = _props;
   return (
-    <g>
+    <>
       <rect
         x={x}
         y={y}
@@ -302,7 +304,7 @@ export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?
           Text
         </text>
       )}
-    </g>
+    </>
   );
 }
 
@@ -322,7 +324,7 @@ export const GroupNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { st
 
     const strokeDasharray = props.strokeDasharray ?? "14,10,3,10";
     return (
-      <g>
+      <>
         <rect
           {...props}
           x={x}
@@ -351,7 +353,7 @@ export const GroupNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { st
           ry={"30"}
           className={containerNodeInteractionRectCssClassName}
         />
-      </g>
+      </>
     );
   }
 );
@@ -360,7 +362,7 @@ export const UnknownNodeSvg = (_props: NodeSvgProps & { strokeDasharray?: string
   const { strokeWidth, x, y, width, height, props } = normalize(_props);
   const strokeDasharray = props.strokeDasharray ?? "2,4";
   return (
-    <g>
+    <>
       <rect
         {...props}
         x={x}
@@ -373,6 +375,6 @@ export const UnknownNodeSvg = (_props: NodeSvgProps & { strokeDasharray?: string
         strokeWidth={strokeWidth}
         strokeDasharray={strokeDasharray}
       />
-    </g>
+    </>
   );
 };

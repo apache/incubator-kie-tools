@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,11 +18,7 @@
  * under the License.
  */
 
-
-package org.kie.workbench.common.stunner.sw.client.shapes;
-
-public interface HasTranslation {
-
-    String getTranslation(String constant);
-
-}
+/**
+ * This file is used as entry point of the form-generation-tool cli command
+ */
+require("./dist/index");

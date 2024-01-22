@@ -64,14 +64,14 @@ public class CallbackStateShape extends StateShape implements HasActions,
         if (state.getTimeouts() != null && state.getTimeouts() instanceof WorkflowTimeouts) {
             getView().addChild(new CornerIcon(CLOCK,
                                               CENTER_TOP,
-                                              getTranslation(TIMEOUT_EVENT) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getEventTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_STATE) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout() + "\r\n"
-                                                      + getTranslation(TIMEOUT_ACTION) + ": " + ((WorkflowTimeouts) state.getTimeouts()).getActionExecTimeout()));
+                                              getTranslation(TIMEOUT_EVENT) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getEventTimeout()) + "\r\n"
+                                                      + getTranslation(TIMEOUT_STATE) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout()) + "\r\n"
+                                                      + getTranslation(TIMEOUT_ACTION) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getActionExecTimeout())));
         }
 
         getView().addChild(new CornerIcon(EVENT,
                                           LEFT_FROM_RIGHT_TOP_CORNER,
-                                          getTranslation(EVENT_REFERENCE) + ": " + state.getEventRef()));
+                                          getTranslation(EVENT_REFERENCE) + ": " + truncate(state.getEventRef())));
 
         getView().addChild(new CornerIcon(SERVICE,
                                           RIGHT_TOP_CORNER,
@@ -82,7 +82,7 @@ public class CallbackStateShape extends StateShape implements HasActions,
                                               BOTTOM_FROM_RIGHT_TOP_CORNER,
                                               getStateDataFilter(state.getStateDataFilter())
                                                       + "\r\n\r\n"
-                                                      + getEventFilter(state.getEventDataFilter())));
+                                                      + truncate(getEventFilter(state.getEventDataFilter()))));
         }
 
         if (null != state.getAction() && hasSubflows(new ActionNode[]{state.getAction()})) {

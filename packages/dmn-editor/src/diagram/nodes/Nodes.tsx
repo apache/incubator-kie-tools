@@ -67,9 +67,18 @@ import { drag } from "d3-drag";
 import { updateDecisionServiceDividerLine } from "../../mutations/updateDecisionServiceDividerLine";
 import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { useNodeStyle } from "./NodeStyle";
+import { getNodeLabelPosition, useNodeStyle } from "./NodeStyle";
 
-export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]> | null;
+export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
+  ? E["__$$element"] extends Filter
+    ? E
+    : never
+  : never;
+
+export type NodeDmnObjects =
+  | null
+  | Unpacked<DMN15__tDefinitions["drgElement"]>
+  | ElementFilter<Unpacked<DMN15__tDefinitions["artifact"]>, "textAnnotation" | "group">;
 
 export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObjectNamespace: string | undefined;
@@ -136,7 +145,7 @@ export const InputDataNode = React.memo(
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, inputData["@_name"]);
 
-    const { fontStyle, shapeStyle } = useNodeStyle({
+    const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
       isEnabled: diagram.overlays.enableStyles,
@@ -176,11 +185,12 @@ export const InputDataNode = React.memo(
             namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
+            position={getNodeLabelPosition(type as NodeType)}
             value={inputData["@_label"] ?? inputData["@_name"]}
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
-            fontStyle={fontStyle}
+            fontCssProperties={fontCssProperties}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -254,7 +264,7 @@ export const DecisionNode = React.memo(
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, decision["@_name"]);
 
-    const { fontStyle, shapeStyle } = useNodeStyle({
+    const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
       isEnabled: diagram.overlays.enableStyles,
@@ -297,11 +307,12 @@ export const DecisionNode = React.memo(
             namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
+            position={getNodeLabelPosition(type as NodeType)}
             value={decision["@_label"] ?? decision["@_name"]}
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
-            fontStyle={fontStyle}
+            fontCssProperties={fontCssProperties}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -375,7 +386,7 @@ export const BkmNode = React.memo(
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, bkm["@_name"]);
 
-    const { fontStyle, shapeStyle } = useNodeStyle({
+    const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
       isEnabled: diagram.overlays.enableStyles,
@@ -418,11 +429,12 @@ export const BkmNode = React.memo(
             namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
+            position={getNodeLabelPosition(type as NodeType)}
             value={bkm["@_label"] ?? bkm["@_name"]}
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
-            fontStyle={fontStyle}
+            fontCssProperties={fontCssProperties}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -483,7 +495,7 @@ export const KnowledgeSourceNode = React.memo(
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
-    const { fontStyle, shapeStyle } = useNodeStyle({
+    const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
       isEnabled: diagram.overlays.enableStyles,
@@ -522,7 +534,7 @@ export const KnowledgeSourceNode = React.memo(
           <EditableNodeLabel
             namedElement={knowledgeSource}
             namedElementQName={dmnObjectQName}
-            position={"center-left"}
+            position={getNodeLabelPosition(type as NodeType)}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
@@ -530,7 +542,7 @@ export const KnowledgeSourceNode = React.memo(
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
-            fontStyle={fontStyle}
+            fontCssProperties={fontCssProperties}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -583,7 +595,7 @@ export const TextAnnotationNode = React.memo(
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
-    const { fontStyle, shapeStyle } = useNodeStyle({
+    const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
       isEnabled: diagram.overlays.enableStyles,
@@ -623,7 +635,7 @@ export const TextAnnotationNode = React.memo(
             id={textAnnotation["@_id"]}
             namedElement={undefined}
             namedElementQName={undefined}
-            position={"top-left"}
+            position={getNodeLabelPosition(type as NodeType)}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
@@ -631,7 +643,7 @@ export const TextAnnotationNode = React.memo(
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
-            fontStyle={fontStyle}
+            fontCssProperties={fontCssProperties}
           />
           {isHovered && (
             <NodeResizerHandle
@@ -768,7 +780,7 @@ export const DecisionServiceNode = React.memo(
       shape.index,
     ]);
 
-    const { fontStyle, shapeStyle } = useNodeStyle({
+    const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
       isEnabled: diagram.overlays.enableStyles,
@@ -813,14 +825,14 @@ export const DecisionServiceNode = React.memo(
           <EditableNodeLabel
             namedElement={decisionService}
             namedElementQName={dmnObjectQName}
-            position={"top-center"}
+            position={getNodeLabelPosition(type as NodeType)}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
-            fontStyle={fontStyle}
+            fontCssProperties={fontCssProperties}
           />
           {selected && !dragging && !isCollapsed && (
             <NodeResizerHandle
@@ -906,7 +918,7 @@ export const GroupNode = React.memo(
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
-    const { fontStyle, shapeStyle } = useNodeStyle({
+    const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
       isEnabled: diagram.overlays.enableStyles,
@@ -943,7 +955,7 @@ export const GroupNode = React.memo(
             id={group["@_id"]}
             namedElement={undefined}
             namedElementQName={undefined}
-            position={"top-left"}
+            position={getNodeLabelPosition(type as NodeType)}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={group["@_label"] ?? group["@_name"]}
@@ -951,7 +963,7 @@ export const GroupNode = React.memo(
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
-            fontStyle={fontStyle}
+            fontCssProperties={fontCssProperties}
           />
           {selected && !dragging && (
             <NodeResizerHandle
@@ -1001,7 +1013,7 @@ export const UnknownNode = React.memo(
           <EditableNodeLabel
             namedElement={undefined}
             namedElementQName={undefined}
-            position={"center-center"}
+            position={getNodeLabelPosition(type as NodeType)}
             isEditing={false}
             setEditing={() => {}}
             value={`? `}

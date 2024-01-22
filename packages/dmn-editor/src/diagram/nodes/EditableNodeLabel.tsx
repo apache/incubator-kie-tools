@@ -33,6 +33,7 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import "./EditableNodeLabel.css";
 import { useFocusableElement } from "../../focus/useFocusableElement";
 import { flushSync } from "react-dom";
+import { NodeLabelPosition } from "./NodeSvgs";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -50,7 +51,7 @@ export function EditableNodeLabel({
   shouldCommitOnBlur,
   skipValidation,
   allUniqueNames,
-  fontStyle,
+  fontCssProperties: fontStyle,
 }: {
   id?: string;
   shouldCommitOnBlur?: boolean;
@@ -58,14 +59,14 @@ export function EditableNodeLabel({
   truncate?: boolean;
   namedElement?: DMN15__tNamedElement;
   namedElementQName?: XmlQName;
-  position?: "center-center" | "top-center" | "center-left" | "top-left";
+  position: NodeLabelPosition;
   isEditing: boolean;
   value: string | undefined;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChange: OnEditableNodeLabelChange;
   skipValidation?: boolean;
   allUniqueNames: UniqueNameIndex;
-  fontStyle?: React.CSSProperties;
+  fontCssProperties?: React.CSSProperties;
 }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { importsByNamespace } = useDmnEditorDerivedStore();
@@ -211,10 +212,8 @@ export function EditableNodeLabel({
     )
   );
 
-  const positionClass = position ?? "center-center";
-
   return (
-    <div className={`kie-dmn-editor--editable-node-name-input ${positionClass} ${grow ? "grow" : ""}`}>
+    <div className={`kie-dmn-editor--editable-node-name-input ${position} ${grow ? "grow" : ""}`}>
       {(isEditing && (
         <input
           spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.
