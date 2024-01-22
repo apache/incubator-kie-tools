@@ -65,6 +65,7 @@ public class RunTests {
                                         .withDockerfile(Paths.get(getScriptDirPath(), "resources/greet", "Dockerfile"))
                                         .withBuildArg("BUILDER_IMAGE_TAG", getTestImage()))
                         .withExposedPorts(8080)
+                        .withEnv("KOGITO_SERVICE_URL", "http://localhost:8080")
                         .waitingFor(Wait.forHttp("/jsongreet"))
                         .withLogConsumer(logConsumer);
 
@@ -93,6 +94,7 @@ public class RunTests {
                                                         "resources/greet-with-inputschema", "Dockerfile"))
                                         .withBuildArg("BUILDER_IMAGE_TAG", getTestImage()))
                         .withExposedPorts(8080)
+                        .withEnv("KOGITO_SERVICE_URL", "http://localhost:8080")
                         .waitingFor(Wait.forHttp("/greeting"))
                         .withLogConsumer(logConsumer);
 
