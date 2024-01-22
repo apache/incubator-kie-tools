@@ -98,7 +98,10 @@ module.exports = async (env) =>
           },
           { from: "./src/static", to: "./static" },
           { from: "./src/components/styles.css", to: "./components/styles.css" },
-          { from: "./node_modules/@kie-tools/runtime-tools-monitoring-webapp/dist", to: "./monitoring-webapp" },
+          {
+            from: "./node_modules/@kie-tools/serverless-workflow-dev-ui-monitoring-webapp/dist",
+            to: "./monitoring-webapp",
+          },
           {
             from: "./node_modules/@kie-tools/runtime-tools-enveloped-components/dist/customDashboardView",
             to: "./custom-dashboard-view",
