@@ -27,4 +27,8 @@ export class Logger {
   public log(...args: any[]) {
     console.debug(`[${this.extensionName}] -> `, ...args);
   }
+
+  public warn(...args: any[]) {
+    console.warn(`[${this.extensionName}] -> `, ...args);
+  }
 }

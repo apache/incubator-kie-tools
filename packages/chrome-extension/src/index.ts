@@ -91,37 +91,66 @@ function init(globals: Globals) {
   const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
 
+  if (!globals.dependencies.all.octiconMarkGitHub()) {
+    globals.logger.warn("This is not the GitHub web page.");
+    return;
+  }
+
   if (pageType === GitHubPageType.ANY) {
-    globals.logger.log(`This GitHub page is not supported.`);
+    globals.logger.log(`This GitHub web page is not supported.`);
     return;
   }
 
   if (pageType === GitHubPageType.EDIT) {
     renderSingleEditorApp({ ...globals, fileInfo });
   } else if (pageType === GitHubPageType.VIEW) {
-    renderSingleEditorReadonlyApp({
-      ...globals,
-      pageType,
-      className: "btn ml-2 d-none d-md-block",
-      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()!,
-      fileInfo,
-    });
+    if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()) {
+      globals.logger.warn(
+        "The extension can not display all buttons properly. Please be sure you use the extension with the latest GitHub instance."
+      );
+    } else {
+      renderSingleEditorReadonlyApp({
+        ...globals,
+        pageType,
+        className: "btn ml-2 d-none d-md-block",
+        container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()!,
+        fileInfo,
+      });
+    }
   } else if (pageType === GitHubPageType.PR_FILES_OR_COMMITS) {
-    renderPrEditorsApp({ ...globals });
+    if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()) {
+      globals.logger.warn(
+        "The extension can not display all buttons properly. Please be sure you use the extension with the latest GitHub instance."
+      );
+    } else {
+      renderPrEditorsApp({ ...globals });
+    }
   } else if (pageType === GitHubPageType.PR_HOME) {
-    renderOpenRepoInExternalEditorApp({
-      ...globals,
-      pageType,
-      className: "btn btn-sm",
-      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!,
-    });
+    if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()) {
+      globals.logger.warn(
+        "The extension can not display all buttons properly. Please be sure you use the extension with the latest GitHub instance."
+      );
+    } else {
+      renderOpenRepoInExternalEditorApp({
+        ...globals,
+        pageType,
+        className: "btn btn-sm",
+        container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!,
+      });
+    }
   } else if (pageType === GitHubPageType.REPO_HOME) {
-    renderOpenRepoInExternalEditorApp({
-      ...globals,
-      pageType,
-      className: "btn btn-sm",
-      container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()!,
-    });
+    if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()) {
+      globals.logger.warn(
+        "The extension can not display all buttons properly. Please be sure you use the extension with the latest GitHub instance."
+      );
+    } else {
+      renderOpenRepoInExternalEditorApp({
+        ...globals,
+        pageType,
+        className: "btn btn-sm",
+        container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()!,
+      });
+    }
   } else {
     throw new Error(`Unknown GitHubPageType ${pageType}`);
   }

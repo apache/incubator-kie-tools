@@ -34,34 +34,30 @@ import { OpenInExternalEditorButton } from "../openRepoInExternalEditor/OpenInEx
 import { GitHubPageType } from "../../github/GitHubPageType";
 
 export function renderPrEditorsApp(args: Globals) {
-  if (args.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()) {
-    // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-    // Without this method you can observe duplicated elements when using back/forward browser buttons.
-    cleanup(args.id);
+  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
+  // Without this method you can observe duplicated elements when using back/forward browser buttons.
+  cleanup(args.id);
 
-    ReactDOM.render(
-      <Main
-        id={args.id}
-        editorEnvelopeLocator={args.editorEnvelopeLocator}
-        dependencies={args.dependencies}
-        logger={args.logger}
-        githubAuthTokenCookieName={args.githubAuthTokenCookieName}
-        extensionIconUrl={args.extensionIconUrl}
-        resourceContentServiceFactory={args.resourceContentServiceFactory}
-        externalEditorManager={args.externalEditorManager}
-      >
-        <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} />
-        {ReactDOM.createPortal(
-          <OpenInExternalEditorButton className={"btn btn-sm"} pageType={GitHubPageType.PR_FILES_OR_COMMITS} />,
-          openRepoInExternalEditorContainer(args.id, args.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!)
-        )}
-      </Main>,
-      createAndGetMainContainer(args.id, args.dependencies.all.body()),
-      () => args.logger.log("Mounted.")
-    );
-  } else {
-    console.warn("We support kie-tools chrome-extension only for the latest GitHub UI instance.");
-  }
+  ReactDOM.render(
+    <Main
+      id={args.id}
+      editorEnvelopeLocator={args.editorEnvelopeLocator}
+      dependencies={args.dependencies}
+      logger={args.logger}
+      githubAuthTokenCookieName={args.githubAuthTokenCookieName}
+      extensionIconUrl={args.extensionIconUrl}
+      resourceContentServiceFactory={args.resourceContentServiceFactory}
+      externalEditorManager={args.externalEditorManager}
+    >
+      <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} />
+      {ReactDOM.createPortal(
+        <OpenInExternalEditorButton className={"btn btn-sm"} pageType={GitHubPageType.PR_FILES_OR_COMMITS} />,
+        openRepoInExternalEditorContainer(args.id, args.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!)
+      )}
+    </Main>,
+    createAndGetMainContainer(args.id, args.dependencies.all.body()),
+    () => args.logger.log("Mounted.")
+  );
 }
 
 export function parsePrInfo(dependencies: Dependencies): PrInfo {

@@ -73,6 +73,9 @@ export class Dependencies {
   };
 
   public readonly all = {
+    octiconMarkGitHub: () => {
+      return document.querySelector(".octicon-mark-github") as HTMLElement | null;
+    },
     notificationIndicator: () => {
       return (document.querySelector(".notification-indicator") ??
         document.querySelector(".AppHeader-search")) as HTMLElement | null;

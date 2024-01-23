@@ -54,7 +54,6 @@ export function getCookie(name: string) {
 }
 
 export function getGitHubApiBaseUrl(baseUrl: string) {
-  console.error("base url:" + baseUrl);
   let apiBaseUrl;
   if (baseUrl.indexOf("https://") === 0) {
     apiBaseUrl = "https://api." + baseUrl.slice(8);
@@ -65,7 +64,6 @@ export function getGitHubApiBaseUrl(baseUrl: string) {
     return;
   }
 
-  console.error("api base url:" + apiBaseUrl);
   return apiBaseUrl;
 }
 
