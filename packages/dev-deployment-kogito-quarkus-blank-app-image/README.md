@@ -1,10 +1,8 @@
 # Dev Deployment Base Image
 
-## Arguments
+## Build arguments
 
-- `BUILDER_IMAGE_ARG`: The image used for building this image (defaults to `dev-deployment-base-image`).
-- `QUARKUS_PLATFORM_VERSION_ARG`: Quarkus version to be used when building the image.
-- `KOGITO_RUNTIME_VERSION_ARG`: Kogito runtime version to be used when building the image.
+- `BUILDER_IMAGE_ARG`: The base image used for building this image (defaults to `dev-deployment-base-image`).
 
 ## Environment variables
 

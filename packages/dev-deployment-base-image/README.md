@@ -1,8 +1,8 @@
 # Dev Deployment Base Image
 
-## Arguments
+## Build arguments
 
-- `BUILDER_IMAGE_ARG`: The image used for building this image.
+- `BUILDER_IMAGE_ARG`: The base image used for building this image (defaults to `registry.access.redhat.com/ubi9/openjdk-11:1.17`).
 
 ## Environment variables
 

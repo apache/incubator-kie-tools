@@ -22,11 +22,16 @@ You may need to run the command as root using `sudo`.
 
 - Run a server for the built files:
   ```bash
-  pnpm serve
+  pnpm build:dev
+  pnpm start-test-servers
   ```
 - In another terminal, run the installer script:
   ```bash
   curl http://localhost:8092/getDevDeploymentUploadService.sh | bash
+  ```
+- After installed, you may stop the test servers:
+  ```bash
+  pnpm stop-test-servers
   ```
 
 ### Usage:
@@ -83,5 +88,5 @@ DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR='/tmp/upload-service-dev' \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT='8091' \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY='dev' \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH='/' \
-pnpm start:dev
+pnpm start
 ```
