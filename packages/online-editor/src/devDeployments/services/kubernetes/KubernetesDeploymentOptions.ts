@@ -28,8 +28,8 @@ import { IngressYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/IngressY
 export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<DeploymentOption> {
   const kogitoQuarkusBlankAppOpts: DeploymentOptionOpts = {
     parameters: {
-      includDmnFormWebapp: {
-        id: "includDmnFormWebapp",
+      includeDmnFormWebapp: {
+        id: "includeDmnFormWebapp",
         name: "Include DMN Form Webapp",
         description: "Wether to deploy the DMN Form Webapp as a sidecar container or not",
         type: "boolean",
