@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { BeeMap, DeepPartial, getDmnObject } from "../../boxedExpressions/getBeeMap";
-import { DescriptionField, ExpressionLanguageField, KieConstraintTypeField, LabelField, TextField } from "./Fields";
+import { KieConstraintTypeField, NameField, TextAreaField, TextInputField, TypeRefField } from "./Fields";
 import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
@@ -29,14 +29,16 @@ import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
   DMN15__tOutputClause,
-  DMN15__tUnaryTests,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { useDmnEditor } from "../../DmnEditorContext";
 
 export function DecisionTableOutputHeaderCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
-  const { nodesById } = useDmnEditorDerivedStore();
+  const { allFeelVariableUniqueNames, nodesById } = useDmnEditorDerivedStore();
+  const { dmnEditorRootElementRef } = useDmnEditor();
 
   const node = useMemo(
     () => (activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined),
@@ -49,83 +51,79 @@ export function DecisionTableOutputHeaderCell(props: { beeMap?: BeeMap; isReadon
 
   const updateDmnObject = useCallback(
     (dmnObject: DMN15__tOutputClause, newContent: DeepPartial<DMN15__tOutputClause>) => {
+      // NAME
+      if (newContent["@_name"]) {
+        dmnObject["@_name"] = newContent?.["@_name"];
+      }
+
+      // TYPEREF
+      if (newContent["@_typeRef"]) {
+        dmnObject["@_typeRef"] = newContent?.["@_typeRef"];
+      }
+
       // LABEL
       if (newContent["@_label"]) {
         dmnObject["@_label"] = newContent?.["@_label"];
       }
 
       // DESCRIPTION
-      if (newContent?.description?.__$$text && dmnObject?.description) {
+      if (newContent.description?.__$$text) {
+        dmnObject.description ??= { __$$text: "" };
         dmnObject.description = newContent.description as { __$$text: string };
-      } else if (newContent?.description?.__$$text) {
-        dmnObject = {
-          ...dmnObject,
-          description: newContent.description as { __$$text: string },
-        };
       }
 
       // DEFAULT OUTPUT ENTRY
-      if (!dmnObject.defaultOutputEntry) {
-        dmnObject.defaultOutputEntry = newContent.defaultOutputEntry;
-      }
       if (newContent.defaultOutputEntry) {
         // DESCRIPTION
-        if (newContent.defaultOutputEntry?.description && dmnObject.defaultOutputEntry?.description) {
+        if (newContent.defaultOutputEntry?.description) {
+          dmnObject.defaultOutputEntry ??= { description: { __$$text: "" } };
+          dmnObject.defaultOutputEntry.description ??= { __$$text: "" };
           dmnObject.defaultOutputEntry.description = newContent.defaultOutputEntry.description;
-        } else {
-          dmnObject.defaultOutputEntry = {
-            ...dmnObject.defaultOutputEntry,
-            description: newContent.defaultOutputEntry.description,
-          };
         }
 
         // TEXT
-        if (newContent.defaultOutputEntry?.text && dmnObject.defaultOutputEntry?.text) {
+        if (newContent.defaultOutputEntry?.text) {
+          dmnObject.defaultOutputEntry ??= { text: { __$$text: "" } };
           dmnObject.defaultOutputEntry.text = newContent.defaultOutputEntry.text;
-        } else {
-          dmnObject.defaultOutputEntry = { ...dmnObject.defaultOutputEntry, text: newContent.defaultOutputEntry.text };
         }
 
         // TYPEREF
         if (newContent.defaultOutputEntry["@_typeRef"]) {
+          dmnObject.defaultOutputEntry ??= { ["@_typeRef"]: "" };
           dmnObject.defaultOutputEntry["@_typeRef"] = newContent.defaultOutputEntry?.["@_typeRef"];
         }
 
         // LABEL
         if (newContent.defaultOutputEntry["@_label"]) {
+          dmnObject.defaultOutputEntry ??= { ["@_label"]: "" };
           dmnObject.defaultOutputEntry["@_label"] = newContent.defaultOutputEntry?.["@_label"];
         }
       }
 
-      // DEFAULT OUTPUT VALUES
-      if (!dmnObject.outputValues) {
-        dmnObject = { ...dmnObject, outputValues: newContent.outputValues as DMN15__tUnaryTests };
-      }
+      // OUTPUT VALUES
       if (newContent.outputValues) {
         // DESCRIPTION
-        if (newContent.outputValues?.description && dmnObject.outputValues?.description) {
+        if (newContent.outputValues?.description) {
+          dmnObject.outputValues ??= { description: { __$$text: "" }, text: { __$$text: "" } };
+          dmnObject.outputValues.description ??= { __$$text: "" };
           dmnObject.outputValues.description = newContent.outputValues.description;
-        } else {
-          dmnObject.outputValues = {
-            ...dmnObject.outputValues!,
-            description: newContent.outputValues.description,
-          };
         }
 
         // TEXT
-        if (newContent.outputValues?.text && dmnObject.outputValues?.text) {
+        if (newContent.outputValues?.text) {
+          dmnObject.outputValues ??= { text: { __$$text: "" } };
           dmnObject.outputValues.text = newContent.outputValues.text;
-        } else {
-          dmnObject.outputValues = { ...dmnObject.outputValues, text: newContent.outputValues.text! };
         }
 
         // TYPEREF
         if (newContent.outputValues["@_typeRef"]) {
+          dmnObject.outputValues ??= { ["@_typeRef"]: "", text: { __$$text: "" } };
           dmnObject.outputValues["@_typeRef"] = newContent.outputValues?.["@_typeRef"];
         }
 
         // LABEL
         if (newContent.outputValues["@_label"]) {
+          dmnObject.outputValues ??= { ["@_label"]: "", text: { __$$text: "" } };
           dmnObject.outputValues["@_label"] = newContent.outputValues?.["@_label"];
         }
       }
@@ -165,12 +163,29 @@ export function DecisionTableOutputHeaderCell(props: { beeMap?: BeeMap; isReadon
 
   return (
     <>
-      <LabelField
+      <NameField
         isReadonly={props.isReadonly}
-        label={cell?.["@_label"] ?? ""}
-        onChange={(newLabel: string) => updateBee({ "@_label": newLabel })}
+        id={cell?.["@_id"] ?? ""}
+        name={cell?.["@_name"] ?? ""}
+        allUniqueNames={allFeelVariableUniqueNames}
+        onChange={(newTypeRef) => updateBee({ "@_name": newTypeRef })}
       />
-      <DescriptionField
+      <TypeRefField
+        isReadonly={props.isReadonly}
+        dmnEditorRootElementRef={dmnEditorRootElementRef}
+        typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        onChange={(newTypeRef) => updateBee({ "@_typeRef": newTypeRef })}
+      />
+      <TextInputField
+        title={"Label"}
+        isReadonly={props.isReadonly}
+        initialValue={cell?.["@_label"] ?? ""}
+        onChange={(newLabel: string) => updateBee({ "@_label": newLabel })}
+        expressionPath={selectedObjectInfos?.expressionPath ?? []}
+      />
+
+      <TextAreaField
+        title={"Description"}
         isReadonly={props.isReadonly}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         initialValue={cell?.description?.__$$text ?? ""}
@@ -186,25 +201,31 @@ export function DecisionTableOutputHeaderCell(props: { beeMap?: BeeMap; isReadon
         />
         {isDefaultOutputEntryExpanded && (
           <>
-            <ExpressionLanguageField
+            <TextInputField
+              title={"Expression Language"}
               isReadonly={props.isReadonly}
-              expressionLanguage={defaultOutputEntry?.["@_expressionLanguage"] ?? ""}
+              initialValue={defaultOutputEntry?.["@_expressionLanguage"] ?? ""}
               onChange={(newExpressionLanguage) =>
                 updateBee({ defaultOutputEntry: { "@_expressionLanguage": newExpressionLanguage } })
               }
+              expressionPath={selectedObjectInfos?.expressionPath ?? []}
             />
-            <TextField
+            <TextAreaField
+              title={"Content"}
               isReadonly={props.isReadonly}
               initialValue={defaultOutputEntry?.text?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newText) => updateBee({ defaultOutputEntry: { text: { __$$text: newText } } })}
             />
-            <LabelField
+            <TextInputField
+              title={"Label"}
               isReadonly={props.isReadonly}
-              label={defaultOutputEntry?.["@_label"] ?? ""}
+              initialValue={defaultOutputEntry?.["@_label"] ?? ""}
               onChange={(newLabel) => updateBee({ defaultOutputEntry: { "@_label": newLabel } })}
+              expressionPath={selectedObjectInfos?.expressionPath ?? []}
             />
-            <DescriptionField
+            <TextAreaField
+              title={"Description"}
               isReadonly={props.isReadonly}
               initialValue={defaultOutputEntry?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -225,25 +246,31 @@ export function DecisionTableOutputHeaderCell(props: { beeMap?: BeeMap; isReadon
         />
         {isOutputValuesExpanded && (
           <>
-            <ExpressionLanguageField
+            <TextInputField
+              title={"Expression Language"}
               isReadonly={props.isReadonly}
-              expressionLanguage={outputValues?.["@_expressionLanguage"] ?? ""}
+              initialValue={outputValues?.["@_expressionLanguage"] ?? ""}
               onChange={(newExpressionLanguage) =>
                 updateBee({ outputValues: { "@_expressionLanguage": newExpressionLanguage } })
               }
+              expressionPath={selectedObjectInfos?.expressionPath ?? []}
             />
-            <TextField
+            <TextAreaField
+              title={"Content"}
               isReadonly={props.isReadonly}
               initialValue={outputValues?.text?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newText) => updateBee({ outputValues: { text: { __$$text: newText } } })}
             />
-            <LabelField
+            <TextInputField
+              title={"Label"}
               isReadonly={props.isReadonly}
-              label={outputValues?.["@_label"] ?? ""}
+              initialValue={outputValues?.["@_label"] ?? ""}
               onChange={(newLabel) => updateBee({ outputValues: { "@_label": newLabel } })}
+              expressionPath={selectedObjectInfos?.expressionPath ?? []}
             />
-            <DescriptionField
+            <TextAreaField
+              title={"Description"}
               isReadonly={props.isReadonly}
               initialValue={outputValues?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}

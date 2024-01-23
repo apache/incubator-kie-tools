@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DescriptionField, LabelField, NameField, TypeRefField } from "./Fields";
+import { NameField, TypeRefField } from "./Fields";
 import { UniqueNameIndex } from "../../Dmn15Spec";
 import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -46,7 +46,7 @@ export function FunctionDefinitionParameterCell(props: {
 }) {
   return (
     <>
-      {props.formalParameter?.map((parameter, i) => (
+      {/* {props.formalParameter?.map((parameter, i) => (
         <FormGroup label={`Parameter ${parameter.name}`} key={i}>
           <NameField
             isReadonly={parameter.isReadonly}
@@ -69,7 +69,7 @@ export function FunctionDefinitionParameterCell(props: {
             onChange={parameter.onChangeDescription}
           />
         </FormGroup>
-      ))}
+      ))} */}
     </>
   );
 }

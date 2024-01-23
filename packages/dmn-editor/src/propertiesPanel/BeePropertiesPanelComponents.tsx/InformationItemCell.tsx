@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { DescriptionField, LabelField, NameField, TypeRefField } from "./Fields";
+import { NameField, TextAreaField, TextInputField, TypeRefField } from "./Fields";
 import { BeeMap, DeepPartial, getDmnObject } from "../../boxedExpressions/getBeeMap";
 import {
   DMN15__tBusinessKnowledgeModel,
@@ -38,7 +38,6 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
  */
 export function InformationItemCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { allFeelVariableUniqueNames, nodesById } = useDmnEditorDerivedStore();
   const { dmnEditorRootElementRef } = useDmnEditor();
@@ -62,13 +61,9 @@ export function InformationItemCell(props: { beeMap?: BeeMap; isReadonly: boolea
       if (newContent?.["@_label"]) {
         dmnObject["@_label"] = newContent["@_label"];
       }
-      if (newContent?.description?.__$$text && dmnObject?.description) {
+      if (newContent.description?.__$$text) {
+        dmnObject.description ??= { __$$text: "" };
         dmnObject.description = newContent.description as { __$$text: string };
-      } else if (newContent?.description?.__$$text) {
-        dmnObject = {
-          ...dmnObject,
-          description: newContent.description as { __$$text: string },
-        };
       }
     },
     []
@@ -114,12 +109,15 @@ export function InformationItemCell(props: { beeMap?: BeeMap; isReadonly: boolea
         typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
         onChange={(newTypeRef: string) => updateBee({ "@_typeRef": newTypeRef })}
       />
-      <LabelField
+      <TextInputField
+        title={"Label"}
         isReadonly={props.isReadonly}
-        label={cell["@_label"] ?? ""}
+        initialValue={cell["@_label"] ?? ""}
         onChange={(newLabel: string) => updateBee({ "@_label": newLabel })}
+        expressionPath={selectedObjectInfos?.expressionPath ?? []}
       />
-      <DescriptionField
+      <TextAreaField
+        title={"Description"}
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}

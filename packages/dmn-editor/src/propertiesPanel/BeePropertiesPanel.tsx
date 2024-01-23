@@ -38,6 +38,7 @@ import { DecisionTableOutputHeaderCell } from "./BeePropertiesPanelComponents.ts
 import { LiteralExpressionContentCell } from "./BeePropertiesPanelComponents.tsx/LiteralExpressionContentCell";
 import { ExpressionRootCell } from "./BeePropertiesPanelComponents.tsx/ExpressionRoot";
 import { UnaryTestCell } from "./BeePropertiesPanelComponents.tsx/UnaryTestCell";
+import { AllExpressions } from "../dataTypes/DataTypeSpec";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -56,39 +57,35 @@ export function BeePropertiesPanel() {
   );
   const isReadonly = !!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace;
 
-  const expression = useMemo(() => {
+  const beeMap = useMemo(() => {
     if (!node?.data.dmnObject) {
       return undefined;
     }
+
+    let expression: AllExpressions | undefined;
     if (node?.data.dmnObject.__$$element === "businessKnowledgeModel") {
-      return node.data.dmnObject.encapsulatedLogic?.expression;
+      expression = node.data.dmnObject.encapsulatedLogic?.expression;
     }
     if (node?.data.dmnObject.__$$element === "decision") {
-      return node.data.dmnObject.expression;
+      expression = node.data.dmnObject.expression;
     }
+
+    return expression ? generateBeeMap(expression, new Map(), []) : undefined;
   }, [node?.data.dmnObject]);
 
-  const beeMap = useMemo(() => (expression ? generateBeeMap(expression, new Map(), []) : undefined), [expression]);
-
-  const selectedObjectInfos = useMemo(() => beeMap?.get(selectedObjectId ?? ""), [beeMap, selectedObjectId]);
-
-  const selectedObjectPath = useMemo(
-    () => selectedObjectInfos?.expressionPath[selectedObjectInfos.expressionPath.length - 1],
-    [selectedObjectInfos?.expressionPath]
-  );
-
   const propertiesPanel = useMemo(() => {
+    const selectedObjectInfos = beeMap?.get(selectedObjectId ?? "");
+    const selectedObjectPath = selectedObjectInfos?.expressionPath[selectedObjectInfos.expressionPath.length - 1];
     if (!selectedObjectPath) {
       return;
     }
     return getBeePropertiesPanel(selectedObjectPath);
-  }, [selectedObjectPath]);
+  }, [beeMap, selectedObjectId]);
 
   /**
    * fix bug on unique names - decision table input
     fix focus???
    */
-
   return (
     <>
       {node && (
@@ -133,9 +130,6 @@ export function BeePropertiesPanel() {
                   {/* {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS && (
                     <FunctionDefinitionParameterCell />
                   )} */}
-                  {/* {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_ROOT && (
-                  <FunctionDefinitionRootCell />
-                )} */}
                   {propertiesPanel?.component === BeePropertiesPanelComponent.INFORMATION_ITEM_CELL && (
                     <InformationItemCell beeMap={beeMap} isReadonly={isReadonly} />
                   )}

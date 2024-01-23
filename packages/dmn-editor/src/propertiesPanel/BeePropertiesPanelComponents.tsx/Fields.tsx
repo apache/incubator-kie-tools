@@ -27,43 +27,10 @@ import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TypeRefSelector } from "../../dataTypes/TypeRefSelector";
 
-export function DescriptionField(props: {
-  initialValue: string;
-  onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;
-  expressionPath: ExpressionPath[];
-  isReadonly: boolean;
-}) {
-  return (
-    <FormGroup label="Description">
-      <TextAreaField {...props} />
-    </FormGroup>
-  );
-}
-
-export function ExpressionLanguageField(props: {
-  expressionLanguage: string;
-  onChange: (newLabel: string) => void;
-  isReadonly: boolean;
-}) {
-  return (
-    <FormGroup label="Expression Language">
-      <TextInput value={props.expressionLanguage} onChange={props.onChange}></TextInput>
-    </FormGroup>
-  );
-}
-
 export function KieConstraintTypeField() {
   return (
     <FormGroup label="Constraint">
       <div>TODO</div>
-    </FormGroup>
-  );
-}
-
-export function LabelField(props: { label: string; onChange: (newLabel: string) => void; isReadonly: boolean }) {
-  return (
-    <FormGroup label="Label">
-      <TextInput value={props.label} onChange={props.onChange}></TextInput>
     </FormGroup>
   );
 }
@@ -92,24 +59,11 @@ export function NameField(props: {
   );
 }
 
-export function TextField(props: {
-  initialValue: string;
-  onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;
-  expressionPath: ExpressionPath[];
-  isReadonly: boolean;
-}) {
-  return (
-    <FormGroup label="Content">
-      <TextAreaField {...props} />
-    </FormGroup>
-  );
-}
-
 export function TypeRefField(props: {
   typeRef: string;
   isReadonly: boolean;
   dmnEditorRootElementRef: React.RefObject<HTMLElement>;
-  onChange: (newTypeRef: string) => void;
+  onChange?: (newTypeRef: string) => void;
 }) {
   return (
     <FormGroup label="Type">
@@ -117,17 +71,18 @@ export function TypeRefField(props: {
         heightRef={props.dmnEditorRootElementRef}
         typeRef={props.typeRef}
         isDisabled={props.isReadonly}
-        onChange={props.onChange}
+        onChange={(newValue: string) => props.onChange?.(newValue)}
       />
     </FormGroup>
   );
 }
 
-function TextAreaField(props: {
+export function TextInputField(props: {
   initialValue: string;
   onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;
   expressionPath: ExpressionPath[];
   isReadonly: boolean;
+  title: string;
 }) {
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
@@ -147,7 +102,53 @@ function TextAreaField(props: {
   }, [props.expressionPath, isEditing]);
 
   return (
-    <>
+    <FormGroup title={props.title}>
+      <TextInput
+        aria-label={"Content"}
+        type={"text"}
+        isDisabled={props.isReadonly}
+        value={textAreaValue}
+        onChange={(newContent) => {
+          setTextAreaValue(newContent);
+          setEditing(true);
+        }}
+        onBlur={() => {
+          props.onChange(textAreaValue, expressionPath);
+        }}
+        placeholder={"Enter the expression content..."}
+        style={{ resize: "vertical", minHeight: "40px" }}
+        rows={6}
+      />
+    </FormGroup>
+  );
+}
+
+export function TextAreaField(props: {
+  initialValue: string;
+  onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;
+  expressionPath: ExpressionPath[];
+  isReadonly: boolean;
+  title: string;
+}) {
+  // used to save the expression path value until the flush operation
+  const [expressionPath, setExpressionPath] = useState(props.expressionPath);
+  const [textAreaValue, setTextAreaValue] = useState("");
+  const [isEditing, setEditing] = useState(false);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setTextAreaValue(props.initialValue);
+    }
+  }, [props.initialValue, isEditing]);
+
+  useEffect(() => {
+    if (!isEditing) {
+      setExpressionPath(props.expressionPath);
+    }
+  }, [props.expressionPath, isEditing]);
+
+  return (
+    <FormGroup label={props.title}>
       <TextArea
         aria-label={"Content"}
         type={"text"}
@@ -164,6 +165,6 @@ function TextAreaField(props: {
         style={{ resize: "vertical", minHeight: "40px" }}
         rows={6}
       />
-    </>
+    </FormGroup>
   );
 }

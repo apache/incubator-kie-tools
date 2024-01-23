@@ -19,14 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import {
-  DescriptionField,
-  ExpressionLanguageField,
-  KieConstraintTypeField,
-  LabelField,
-  TextField,
-  TypeRefField,
-} from "./Fields";
+import { KieConstraintTypeField, TextAreaField, TextInputField, TypeRefField } from "./Fields";
 import { BeeMap, DeepPartial, getDmnObject } from "../../boxedExpressions/getBeeMap";
 import {
   DMN15__tBusinessKnowledgeModel,
@@ -65,27 +58,16 @@ export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
     if (newContent?.["@_expressionLanguage"]) {
       dmnObject["@_expressionLanguage"] = newContent["@_expressionLanguage"];
     }
-    if (newContent?.text?.__$$text && dmnObject?.text) {
+    if (newContent.text?.__$$text) {
+      dmnObject.text ??= { __$$text: "" };
       dmnObject.text = newContent.text as { __$$text: string };
-    } else if (newContent?.text?.__$$text) {
-      dmnObject = {
-        ...dmnObject,
-        text: newContent.text as { __$$text: string },
-      };
-    }
-    if (newContent?.["@_typeRef"]) {
-      dmnObject["@_typeRef"] = newContent["@_typeRef"];
     }
     if (newContent?.["@_label"]) {
       dmnObject["@_label"] = newContent["@_label"];
     }
-    if (newContent?.description?.__$$text && dmnObject?.description) {
+    if (newContent.description?.__$$text) {
+      dmnObject.description ??= { __$$text: "" };
       dmnObject.description = newContent.description as { __$$text: string };
-    } else if (newContent?.description?.__$$text) {
-      dmnObject = {
-        ...dmnObject,
-        description: newContent.description as { __$$text: string },
-      };
     }
   }, []);
 
@@ -116,29 +98,34 @@ export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
 
   return (
     <>
-      <ExpressionLanguageField
+      <TextInputField
+        title={"Expression Language"}
         isReadonly={props.isReadonly}
-        expressionLanguage={cell["@_expressionLanguage"] ?? ""}
-        onChange={(newExpressionLanguage: string) => updateBee({ "@_typeRef": newExpressionLanguage })}
+        initialValue={cell["@_expressionLanguage"] ?? ""}
+        onChange={(newExpressionLanguage: string) => updateBee({ "@_expressionLanguage": newExpressionLanguage })}
+        expressionPath={selectedObjectInfos?.expressionPath ?? []}
       />
-      <TextField
+      <TextAreaField
+        title={"Content"}
         isReadonly={props.isReadonly}
         initialValue={cell.text?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newText: string) => updateBee({ text: { __$$text: newText } })}
       />
       <TypeRefField
-        isReadonly={props.isReadonly}
+        isReadonly={true}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-        onChange={(newTypeRef: string) => updateBee({ "@_typeRef": newTypeRef })}
       />
-      <LabelField
+      <TextInputField
+        title={"Label"}
         isReadonly={props.isReadonly}
-        label={cell["@_label"] ?? ""}
+        initialValue={cell["@_label"] ?? ""}
         onChange={(newLabel: string) => updateBee({ "@_label": newLabel })}
+        expressionPath={selectedObjectInfos?.expressionPath ?? []}
       />
-      <DescriptionField
+      <TextAreaField
+        title={"Description"}
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
