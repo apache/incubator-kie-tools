@@ -251,6 +251,12 @@ function TestScenarioMainPanel({
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
+  /** Not strictly necessary */
+  useEffect(() => {
+    setTab(TestScenarioEditorTab.EDITOR);
+    setSelectedColumnFactMapping(null);
+  }, [scesimModel]);
+
   const onTabChanged = useCallback((_event, tab) => {
     setTab(tab);
     setSelectedColumnFactMapping(null);
