@@ -30,13 +30,26 @@ After the command has finished, go to `packages/form-generation-tool/dist` folde
 
 ## Running the CLI
 
-In the command line just execute the CLI binary:
+If you built the `form-generation-tool` package as described above locally, then in the command line just execute the CLI binary:
 
 ```shell script
 ./form-generation-cli-linux
 ```
 
-This command will start a wizard to help you generate the forms:
+For those, who do not want to build `form-generation-tool` package locally, they can install last published version and then run it:
+
+```shell script
+npm i -g @kie-tools/form-generation-tool
+form-generation-tool
+```
+
+For those, who want to try `form-generation-tool` without instalation they can start it as:
+
+```shell script
+npx @kie-tools/form-generation-tool
+```
+
+All commands will start a wizard to help you generate the forms:
 
 1. First set the path to your Kogito Project.
 

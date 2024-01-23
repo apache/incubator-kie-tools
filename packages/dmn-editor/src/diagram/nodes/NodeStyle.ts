@@ -20,9 +20,11 @@
 import React, { useMemo } from "react";
 import { DMNDI15__DMNStyle } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeType } from "../connections/graphStructure";
+import { NODE_TYPES } from "./NodeTypes";
+import { NodeLabelPosition } from "./NodeSvgs";
 
 export interface NodeStyle {
-  fontStyle: React.CSSProperties;
+  fontCssProperties: React.CSSProperties;
   shapeStyle: ShapeStyle;
 }
 
@@ -63,57 +65,43 @@ export function useNodeStyle(args: {
   nodeType?: NodeType;
   isEnabled?: boolean;
 }): NodeStyle {
-  const fillColor = useMemo(() => {
-    const blue = args.dmnStyle?.["dmndi:FillColor"]?.["@_blue"];
-    const green = args.dmnStyle?.["dmndi:FillColor"]?.["@_green"];
-    const red = args.dmnStyle?.["dmndi:FillColor"]?.["@_red"];
+  const fillColor = useMemo(
+    () => getNodeShapeFillColor({ dmnStyle: args.dmnStyle, nodeType: args.nodeType, isEnabled: args.isEnabled }),
+    [args.dmnStyle, args.isEnabled, args.nodeType]
+  );
 
-    const opacity =
-      args.nodeType === "node_decisionService" ||
-      args.nodeType === "node_group" ||
-      args.nodeType === "node_textAnnotation"
-        ? 0.1
-        : DEFAULT_NODE_OPACITY;
-    if (!args.isEnabled || blue === undefined || green === undefined || red === undefined) {
-      return `rgba(${DEFAULT_NODE_RED_FILL}, ${DEFAULT_NODE_GREEN_FILL}, ${DEFAULT_NODE_BLUE_FILL}, ${opacity})`;
-    }
+  const strokeColor = useMemo(
+    () => getNodeShapeStrokeColor({ dmnStyle: args.dmnStyle, isEnabled: args.isEnabled }),
+    [args.dmnStyle, args.isEnabled]
+  );
 
-    return `rgba(${red}, ${green}, ${blue}, ${opacity})`;
-  }, [args.dmnStyle, args.nodeType, args.isEnabled]);
-  const strokeColor = useMemo(() => {
-    const blue = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_blue"];
-    const green = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_green"];
-    const red = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_red"];
+  const dmnFontStyle = useMemo(
+    () => getDmnFontStyle({ dmnStyle: args.dmnStyle, isEnabled: args.isEnabled }),
+    [args.dmnStyle, args.isEnabled]
+  );
 
-    if (!args.isEnabled || blue === undefined || green === undefined || red === undefined) {
-      return DEFAULT_NODE_STROKE_COLOR;
-    }
-    return `rgba(${red}, ${green}, ${blue}, 1)`;
-  }, [args.dmnStyle, args.isEnabled]);
+  return useMemo(
+    () =>
+      getNodeStyle({
+        fillColor,
+        strokeColor,
+        dmnFontStyle,
+      }),
+    [fillColor, dmnFontStyle, strokeColor]
+  );
+}
 
-  const fontProperties = useMemo(() => {
-    const blue = args.dmnStyle?.["dmndi:FontColor"]?.["@_blue"];
-    const green = args.dmnStyle?.["dmndi:FontColor"]?.["@_green"];
-    const red = args.dmnStyle?.["dmndi:FontColor"]?.["@_red"];
-
-    const fontColor =
-      !args.isEnabled || blue === undefined || green === undefined || red === undefined
-        ? DEFAULT_FONT_COLOR
-        : `rgba(${red}, ${green}, ${blue}, 1)`;
-
-    return {
-      bold: args.isEnabled ? args.dmnStyle?.["@_fontBold"] ?? false : false,
-      italic: args.isEnabled ? args.dmnStyle?.["@_fontItalic"] ?? false : false,
-      underline: args.isEnabled ? args.dmnStyle?.["@_fontUnderline"] ?? false : false,
-      strikeThrough: args.isEnabled ? args.dmnStyle?.["@_fontStrikeThrough"] ?? false : false,
-      family: args.isEnabled ? args.dmnStyle?.["@_fontFamily"] : undefined,
-      size: args.isEnabled ? args.dmnStyle?.["@_fontSize"] : undefined,
-      color: fontColor,
-    };
-  }, [args.dmnStyle, args.isEnabled]);
-
+export function getNodeStyle({
+  fillColor,
+  strokeColor,
+  dmnFontStyle,
+}: {
+  fillColor: string;
+  strokeColor: string;
+  dmnFontStyle: DmnFontStyle;
+}): NodeStyle {
   return {
-    fontStyle: getFonteStyle(fontProperties),
+    fontCssProperties: getFontCssProperties(dmnFontStyle),
     shapeStyle: {
       fillColor,
       strokeColor,
@@ -122,21 +110,111 @@ export function useNodeStyle(args: {
   };
 }
 
-export function getFonteStyle(fontProperties?: DmnFontStyle): React.CSSProperties {
+export function getNodeShapeFillColor(args: {
+  dmnStyle?: DMNDI15__DMNStyle | undefined;
+  nodeType?: NodeType | undefined;
+  isEnabled?: boolean | undefined;
+}) {
+  const blue = args.dmnStyle?.["dmndi:FillColor"]?.["@_blue"];
+  const green = args.dmnStyle?.["dmndi:FillColor"]?.["@_green"];
+  const red = args.dmnStyle?.["dmndi:FillColor"]?.["@_red"];
+
+  const opacity =
+    args.nodeType === NODE_TYPES.decisionService ||
+    args.nodeType === NODE_TYPES.group ||
+    args.nodeType === NODE_TYPES.textAnnotation
+      ? 0.1
+      : DEFAULT_NODE_OPACITY;
+
+  if (!args.isEnabled || blue === undefined || green === undefined || red === undefined) {
+    return `rgba(${DEFAULT_NODE_RED_FILL}, ${DEFAULT_NODE_GREEN_FILL}, ${DEFAULT_NODE_BLUE_FILL}, ${opacity})`;
+  }
+
+  return `rgba(${red}, ${green}, ${blue}, ${opacity})`;
+}
+
+export function getNodeShapeStrokeColor(args: {
+  dmnStyle?: DMNDI15__DMNStyle | undefined;
+  isEnabled?: boolean | undefined;
+}) {
+  const blue = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_blue"];
+  const green = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_green"];
+  const red = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_red"];
+
+  if (!args.isEnabled || blue === undefined || green === undefined || red === undefined) {
+    return DEFAULT_NODE_STROKE_COLOR;
+  }
+  return `rgba(${red}, ${green}, ${blue}, 1)`;
+}
+
+export function getDmnFontStyle(args: {
+  dmnStyle?: DMNDI15__DMNStyle | undefined;
+  isEnabled?: boolean | undefined;
+}): DmnFontStyle {
+  const blue = args.dmnStyle?.["dmndi:FontColor"]?.["@_blue"];
+  const green = args.dmnStyle?.["dmndi:FontColor"]?.["@_green"];
+  const red = args.dmnStyle?.["dmndi:FontColor"]?.["@_red"];
+
+  const fontColor =
+    !args.isEnabled || blue === undefined || green === undefined || red === undefined
+      ? DEFAULT_FONT_COLOR
+      : `rgba(${red}, ${green}, ${blue}, 1)`;
+
+  return {
+    bold: args.isEnabled ? args.dmnStyle?.["@_fontBold"] ?? false : false,
+    italic: args.isEnabled ? args.dmnStyle?.["@_fontItalic"] ?? false : false,
+    underline: args.isEnabled ? args.dmnStyle?.["@_fontUnderline"] ?? false : false,
+    strikeThrough: args.isEnabled ? args.dmnStyle?.["@_fontStrikeThrough"] ?? false : false,
+    family: args.isEnabled ? args.dmnStyle?.["@_fontFamily"] : undefined,
+    size: args.isEnabled ? args.dmnStyle?.["@_fontSize"] : undefined,
+    color: fontColor,
+  };
+}
+
+export function getFontCssProperties(dmnFontStyle?: DmnFontStyle): React.CSSProperties {
   let textDecoration = "";
-  if (fontProperties?.underline) {
+  if (dmnFontStyle?.underline) {
     textDecoration += "underline ";
   }
-  if (fontProperties?.strikeThrough) {
+  if (dmnFontStyle?.strikeThrough) {
     textDecoration += "line-through";
   }
 
+  // Using default values here ensures that the editable Diagram rendered by ReactFlow and the SVG generated are the closest possible.
   return {
-    fontWeight: fontProperties?.bold ? "bold" : "",
-    fontStyle: fontProperties?.italic ? "italic" : "",
-    fontFamily: fontProperties?.family,
+    fontWeight: dmnFontStyle?.bold ? "bold" : "",
+    fontStyle: dmnFontStyle?.italic ? "italic" : "",
+    fontFamily: dmnFontStyle?.family ?? "arial",
     textDecoration,
-    fontSize: fontProperties?.size,
-    color: fontProperties?.color,
+    fontSize: dmnFontStyle?.size ?? "16px",
+    color: dmnFontStyle?.color ?? "black",
+    lineHeight: "1.5em", // This needs to be em `em` otherwise `@visx/text` breaks when generating the SVG.
   };
+}
+
+export function getNodeLabelPosition(nodeType: NodeType): NodeLabelPosition {
+  switch (nodeType) {
+    case NODE_TYPES.inputData:
+      return "center-center";
+    case NODE_TYPES.decision:
+      return "center-center";
+    case NODE_TYPES.bkm:
+      return "center-center";
+    case NODE_TYPES.decisionService:
+      return "top-center";
+    case NODE_TYPES.knowledgeSource:
+      return "center-left";
+    case NODE_TYPES.textAnnotation:
+      return "top-left";
+    case NODE_TYPES.group:
+      return "top-left";
+    case NODE_TYPES.unknown:
+      return "center-center";
+    default:
+      assertUnreachable(nodeType);
+  }
+}
+
+export function assertUnreachable(_x: never): never {
+  throw new Error("Didn't expect to get here: " + _x);
 }

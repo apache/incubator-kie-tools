@@ -87,6 +87,7 @@ const SwfCombinedEditor: React.FC<ISwfCombinedEditorProps & OUIAProps> = ({
       isReadOnly: true,
       fileExtension: `sw.${getFileType()}`,
       fileName: `workflow.sw.${getFileType()}`,
+      path: `*.sw.${getFileType()}`,
     };
   }, [source]);
 

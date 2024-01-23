@@ -115,6 +115,7 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     theme,
     editorEnvelopeCtx.channelApi,
     editorEnvelopeCtx.operatingSystem,
+    isReadOnly,
   ]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
