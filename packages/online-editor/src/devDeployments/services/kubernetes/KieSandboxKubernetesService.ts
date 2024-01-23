@@ -167,8 +167,8 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     }
 
     const actions: ResourceActions[] | undefined = [
-      ...(args.deploymentOption.parameters
-        ?.filter((parameter) => !shouldSkipAction(parameter, args.parametersTokenMap.parameters[parameter.id]))
+      ...(Object.values(args.deploymentOption.parameters ?? {})
+        .filter((parameter) => !shouldSkipAction(parameter, args.parametersTokenMap.parameters[parameter.id]))
         .map((parameter) => ({
           resourcePatches: parameter.resourcePatches,
           appendYamls: parameter.appendYamls,

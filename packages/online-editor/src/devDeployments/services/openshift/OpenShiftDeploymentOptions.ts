@@ -22,13 +22,14 @@ import { DeploymentOption, DeploymentOptionOpts, DeploymentParameter } from "../
 import { CustomImageOption } from "../deploymentOptions/customImage";
 import { KogitoQuarkusBlankAppOption } from "../deploymentOptions/kogitoQuarkusBlankApp";
 import { FormWebappServiceYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/FormWebappServiceYaml";
-import { RouteYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/RouteYaml";
+import { RouteYaml as KogitoQuarkusBlankAppRouteYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/RouteYaml";
 import { FormWebappRouteYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/FormWebappRouteYaml";
+import { RouteYaml as CustomImageRouteYaml } from "../deploymentOptions/customImage/RouteYaml";
 
 export function OpenShiftDeploymentOptions(args: DeploymentOptionArgs): Array<DeploymentOption> {
   const kogitoQuarkusBlankAppOpts: DeploymentOptionOpts = {
-    parameters: [
-      {
+    parameters: {
+      includDmnFormWebapp: {
         id: "includDmnFormWebapp",
         name: "Include DMN Form Webapp",
         description: "Wether to deploy the DMN Form Webapp as a sidecar container or not",
@@ -54,8 +55,11 @@ export function OpenShiftDeploymentOptions(args: DeploymentOptionArgs): Array<De
         ],
         appendYamls: [FormWebappServiceYaml(), FormWebappRouteYaml()],
       },
-    ],
-    appendYamls: [RouteYaml()],
+    },
+    appendYamls: [KogitoQuarkusBlankAppRouteYaml()],
   };
-  return [KogitoQuarkusBlankAppOption(args, kogitoQuarkusBlankAppOpts), CustomImageOption(args)];
+  const customImageOptionOpts: DeploymentOptionOpts = {
+    appendYamls: [CustomImageRouteYaml()],
+  };
+  return [KogitoQuarkusBlankAppOption(args, kogitoQuarkusBlankAppOpts), CustomImageOption(args, customImageOptionOpts)];
 }

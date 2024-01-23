@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export const routeYaml = () => `
+export const RouteYaml = () => `
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:

@@ -55,7 +55,7 @@ export function shouldSkipAction(parameter: DeploymentParameter, value: any) {
 }
 
 export type DeploymentOptionOpts = {
-  parameters?: Array<DeploymentParameter>;
+  parameters?: Record<string, DeploymentParameter>;
   resourcePatches?: ResourcePatch[];
   appendYamls?: string[];
 };

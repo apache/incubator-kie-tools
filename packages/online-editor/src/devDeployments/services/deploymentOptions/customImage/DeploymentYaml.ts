@@ -51,10 +51,6 @@ spec:
             - containerPort: 8080
               protocol: TCP
           env:
-            - name: BASE_URL
-              value: http://localhost/\${{ devDeployment.uniqueName }}
-            - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH
-              value: \${{ devDeployment.uniqueName }}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
               value: \${{ devDeployment.uploadService.apiKey }}
 `;

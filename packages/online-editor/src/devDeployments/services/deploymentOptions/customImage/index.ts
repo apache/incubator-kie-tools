@@ -18,23 +18,22 @@
  */
 
 import { DeploymentOptionArgs } from "../../types";
-import { DeploymentOption } from "../types";
+import { DeploymentOption, DeploymentOptionOpts } from "../types";
 import { DeploymentYaml } from "./DeploymentYaml";
 import { IngressYaml } from "./IngressYaml";
 import { ServiceYaml } from "./ServiceYaml";
 
-export function CustomImageOption(args: DeploymentOptionArgs): DeploymentOption {
+export function CustomImageOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
   return {
     name: "Custom Image",
     content: `
 ${DeploymentYaml(args)}
 ---
 ${ServiceYaml()}
----
-${IngressYaml()}
 `,
-    parameters: [
-      {
+    ...opts,
+    parameters: {
+      dockerImage: {
         id: "dockerImage",
         name: "Docker Image",
         description: "The URL of the Docker Image to be used for the container",
@@ -53,12 +52,11 @@ ${IngressYaml()}
           },
         ],
       },
-      {
+      command: {
         id: "command",
         name: "Command",
         description: "The command to be executed when the container starts",
-        defaultValue:
-          "mvn quarkus:dev -Dquarkus.http.non-application-root-path=/${{ devDeployment.uniqueName }}/q -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}",
+        defaultValue: "mvn quarkus:dev",
         type: "text",
         resourcePatches: [
           {
@@ -73,6 +71,7 @@ ${IngressYaml()}
           },
         ],
       },
-    ],
+      ...(opts?.parameters ?? {}),
+    },
   };
 }

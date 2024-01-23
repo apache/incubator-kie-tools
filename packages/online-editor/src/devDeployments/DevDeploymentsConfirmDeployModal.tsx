@@ -70,11 +70,16 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       authSession?.type === CloudAuthSessionType.OpenShift
         ? OpenShiftDeploymentOptions(deploymentOptionsArgs)
         : KubernetesDeploymentOptions(deploymentOptionsArgs),
-    [authSession?.type, deploymentOptionsArgs]
+    [authSession, deploymentOptionsArgs]
   );
+
   const [deploymentOption, setDeploymentOption] = useState<DeploymentOption>(availableDeploymentOptions[0]);
   const [deploymentParameters, setDeploymentParameters] = useState<Record<string, string | number | boolean>>({});
   const [isDeploymentOptionsDropdownOpen, setDeploymentOptionsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    setDeploymentOption(availableDeploymentOptions[0]);
+  }, [availableDeploymentOptions]);
 
   const deployStartedErrorAlert = useGlobalAlert(
     useCallback(
@@ -154,7 +159,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
 
   useEffect(() => {
     setDeploymentParameters(
-      deploymentOption.parameters?.reduce(
+      Object.values(deploymentOption.parameters ?? {}).reduce(
         (parametersValues, parameter) => ({
           ...parametersValues,
           [parameter.id]: parameter.defaultValue,
@@ -175,7 +180,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
     return (
       (deploymentOption &&
         deploymentOption.parameters &&
-        deploymentOption.parameters.map((parameter) => {
+        Object.values(deploymentOption.parameters).map((parameter) => {
           if (parameter.type === "boolean") {
             return (
               <FormGroup

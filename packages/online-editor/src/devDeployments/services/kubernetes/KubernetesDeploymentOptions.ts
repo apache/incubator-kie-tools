@@ -27,8 +27,8 @@ import { IngressYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/IngressY
 
 export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<DeploymentOption> {
   const kogitoQuarkusBlankAppOpts: DeploymentOptionOpts = {
-    parameters: [
-      {
+    parameters: {
+      includDmnFormWebapp: {
         id: "includDmnFormWebapp",
         name: "Include DMN Form Webapp",
         description: "Wether to deploy the DMN Form Webapp as a sidecar container or not",
@@ -54,7 +54,54 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
         ],
         appendYamls: [FormWebappServiceYaml(), FormWebappIngressYaml()],
       },
+    },
+    resourcePatches: [
+      {
+        testFilters: [{ op: "test", path: "/kind", value: "Deployment" }],
+        jsonPatches: [
+          {
+            op: "add",
+            path: "/spec/template/spec/containers/0/env/-",
+            value: { name: "BASE_URL", value: "http://localhost/${{ devDeployment.uniqueName }}" },
+          },
+          {
+            op: "add",
+            path: "/spec/template/spec/containers/0/env/-",
+            value: { name: "ROOT_PATH", value: "/${{ devDeployment.uniqueName }}" },
+          },
+          {
+            op: "add",
+            path: "/spec/template/spec/containers/0/env/-",
+            value: { name: "DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH", value: "${{ devDeployment.uniqueName }}" },
+          },
+        ],
+      },
     ],
+    appendYamls: [IngressYaml()],
+  };
+  const customImageOptionOpts: DeploymentOptionOpts = {
+    parameters: {
+      command: {
+        id: "command",
+        name: "Command",
+        description: "The command to be executed when the container starts",
+        defaultValue:
+          "mvn quarkus:dev -Dquarkus.http.non-application-root-path=/${{ devDeployment.uniqueName }}/q -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}",
+        type: "text",
+        resourcePatches: [
+          {
+            testFilters: [{ op: "test", path: "/kind", value: "Deployment" }],
+            jsonPatches: [
+              {
+                op: "add",
+                path: "/spec/template/spec/containers/0/args",
+                value: [`dev-deployment-upload-service && \${{ parameters.command }}`],
+              },
+            ],
+          },
+        ],
+      },
+    },
     appendYamls: [IngressYaml()],
     resourcePatches: [
       {
@@ -79,5 +126,5 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
       },
     ],
   };
-  return [KogitoQuarkusBlankAppOption(args, kogitoQuarkusBlankAppOpts), CustomImageOption(args)];
+  return [KogitoQuarkusBlankAppOption(args, kogitoQuarkusBlankAppOpts), CustomImageOption(args, customImageOptionOpts)];
 }
