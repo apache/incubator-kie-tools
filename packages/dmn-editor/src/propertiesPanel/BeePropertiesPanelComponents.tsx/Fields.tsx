@@ -112,12 +112,14 @@ export function TypeRefField(props: {
   onChange: (newTypeRef: string) => void;
 }) {
   return (
-    <TypeRefSelector
-      heightRef={props.dmnEditorRootElementRef}
-      typeRef={props.typeRef}
-      isDisabled={props.isReadonly}
-      onChange={props.onChange}
-    />
+    <FormGroup label="Type">
+      <TypeRefSelector
+        heightRef={props.dmnEditorRootElementRef}
+        typeRef={props.typeRef}
+        isDisabled={props.isReadonly}
+        onChange={props.onChange}
+      />
+    </FormGroup>
   );
 }
 

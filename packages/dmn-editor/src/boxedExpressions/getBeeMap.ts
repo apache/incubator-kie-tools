@@ -40,88 +40,88 @@ interface PathType {
   type: AllExpressionTypes;
 }
 
-interface LiteralExpressionPath extends PathType {
-  type: "literalExpression";
+interface ConditionalExpressionPath extends PathType {
+  type: "conditional";
+  row?: "if" | "else" | "then";
 }
 
 interface ContextExpressionPath extends PathType {
   type: "context";
-  row: number;
-  column: "variable" | "expression";
+  row?: number;
+  column?: "variable" | "expression";
 }
 
-interface DecisionTableHeaderPath extends PathType {
+interface DecisionTablePath extends PathType {
   type: "decisionTable";
-  header: "input" | "output";
-  row: number;
-  column: number;
-}
-
-interface RelationExpressionPath extends PathType {
-  type: "relation";
-  row: number;
-  column: number;
-}
-
-interface InvocationExpressionPath extends PathType {
-  type: "invocation";
-  row: number;
-  column: "parameter" | "expression";
-}
-
-interface ListExpressionPath extends PathType {
-  type: "list";
-  row: number;
-}
-
-interface FunctionDefinitionExpressionPath extends PathType {
-  type: "functionDefinition";
-  parameterIndex: number;
-}
-
-interface ForExpressionPath extends PathType {
-  type: "for";
-  row: "in" | "return";
+  header?: "input" | "output";
+  row?: number;
+  column?: number;
 }
 
 interface EveryExpressionPath extends PathType {
   type: "every";
-  row: "in" | "statisfies";
-}
-
-interface SomeExpressionPath extends PathType {
-  type: "some";
-  row: "in" | "statisfies";
-}
-
-interface ConditionalExpressionPath extends PathType {
-  type: "conditional";
-  row: "if" | "else" | "then";
+  row?: "in" | "statisfies";
 }
 
 interface FilterExpressionPath extends PathType {
   type: "filter";
-  row: "in" | "match";
+  row?: "in" | "match";
+}
+
+interface ForExpressionPath extends PathType {
+  type: "for";
+  row?: "in" | "return";
+}
+
+interface FunctionDefinitionExpressionPath extends PathType {
+  type: "functionDefinition";
+  parameterIndex?: number;
+}
+
+interface InvocationExpressionPath extends PathType {
+  type: "invocation";
+  row?: number;
+  column?: "parameter" | "expression";
+}
+
+interface ListExpressionPath extends PathType {
+  type: "list";
+  row?: number;
+}
+
+interface LiteralExpressionPath extends PathType {
+  type: "literalExpression";
+}
+
+interface RelationExpressionPath extends PathType {
+  type: "relation";
+  row?: number;
+  column?: number;
+}
+
+interface SomeExpressionPath extends PathType {
+  type: "some";
+  row?: "in" | "statisfies";
 }
 
 export type ExpressionPath =
-  | LiteralExpressionPath
+  | ConditionalExpressionPath
   | ContextExpressionPath
-  | DecisionTableHeaderPath
-  | RelationExpressionPath
+  | DecisionTablePath
+  | EveryExpressionPath
+  | FilterExpressionPath
+  | ForExpressionPath
+  | FunctionDefinitionExpressionPath
   | InvocationExpressionPath
   | ListExpressionPath
-  | FunctionDefinitionExpressionPath
-  | ForExpressionPath
-  | EveryExpressionPath
-  | SomeExpressionPath
-  | ConditionalExpressionPath
-  | FilterExpressionPath;
+  | LiteralExpressionPath
+  | RelationExpressionPath
+  | SomeExpressionPath;
 
 /**
  * A map of "@_id" to cell (expression) and its path in the expression hierarchy
  */
-type BeeMap = Map<string, { expressionPath: ExpressionPath[]; cell: AllExpressionsWithoutTypes }>;
+export type BeeMap = Map<string, { expressionPath: ExpressionPath[]; cell: AllExpressionsWithoutTypes }>;
 
 export function generateBeeMap(
   expression: AllExpressions,
@@ -130,35 +130,37 @@ export function generateBeeMap(
 ): BeeMap {
   const map: BeeMap = parentMap ? parentMap : new Map();
   switch (expression?.__$$element) {
-    case "literalExpression":
+    case "conditional":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "literalExpression" }],
+          expressionPath: [...parentExpressionPath, { type: "conditional" }],
           cell: expression,
         });
+      generateBeeMap(expression.if.expression, map, [...parentExpressionPath, { type: "conditional", row: "if" }]);
+      generateBeeMap(expression.else.expression, map, [...parentExpressionPath, { type: "conditional", row: "else" }]);
+      generateBeeMap(expression.then.expression, map, [...parentExpressionPath, { type: "conditional", row: "then" }]);
       return map;
-    case "invocation":
-      expression.binding?.forEach((b, row) => {
-        b.parameter["@_id"] &&
-          map.set(b.parameter["@_id"], {
-            expressionPath: [...parentExpressionPath, { type: "invocation", row, column: "parameter" }],
-            cell: b.parameter,
-          });
-        b.expression &&
-          generateBeeMap(b.expression, map, [
-            ...parentExpressionPath,
-            { type: "invocation", row, column: "expression" },
-          ]);
-      });
-      expression.expression;
-      expression.expression &&
-        expression.expression["@_id"] &&
-        map.set(expression.expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "invocation", row: -1, column: "expression" }],
-          cell: expression.expression,
+    case "context":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "context" }],
+          cell: expression,
         });
+      expression.contextEntry?.forEach((ce, row) => {
+        ce.variable?.["@_id"] &&
+          map.set(ce.variable["@_id"], {
+            expressionPath: [...parentExpressionPath, { type: "context", row, column: "variable" }],
+            cell: ce.variable,
+          });
+        generateBeeMap(ce.expression, map, [...parentExpressionPath, { type: "context", row, column: "expression" }]);
+      });
       return map;
     case "decisionTable":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "decisionTable" }],
+          cell: expression,
+        });
       expression.output.forEach(
         (o, column) =>
           o["@_id"] &&
@@ -193,17 +195,43 @@ export function generateBeeMap(
         );
       });
       return map;
-    case "context":
-      expression.contextEntry?.forEach((ce, row) => {
-        ce.variable?.["@_id"] &&
-          map.set(ce.variable["@_id"], {
-            expressionPath: [...parentExpressionPath, { type: "context", row, column: "variable" }],
-            cell: ce.variable,
-          });
-        generateBeeMap(ce.expression, map, [...parentExpressionPath, { type: "context", row, column: "expression" }]);
-      });
+    case "every":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "every" }],
+          cell: expression,
+        });
+      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "every", row: "in" }]);
+      generateBeeMap(expression.satisfies.expression, map, [
+        ...parentExpressionPath,
+        { type: "every", row: "statisfies" },
+      ]);
+      return map;
+    case "filter":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "filter" }],
+          cell: expression,
+        });
+      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "filter", row: "in" }]);
+      generateBeeMap(expression.match.expression, map, [...parentExpressionPath, { type: "filter", row: "match" }]);
+      return map;
+    case "for":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "for" }],
+          cell: expression,
+        });
+      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "for", row: "in" }]);
+      generateBeeMap(expression.return.expression, map, [...parentExpressionPath, { type: "for", row: "return" }]);
       return map;
     case "functionDefinition":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "functionDefinition" }],
+          cell: expression,
+        });
+
       if (expression.expression?.["@_id"]) {
         generateBeeMap(expression.expression, map, [
           ...parentExpressionPath,
@@ -218,7 +246,55 @@ export function generateBeeMap(
           });
       });
       return map;
+    case "invocation":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "invocation" }],
+          cell: expression,
+        });
+      expression.binding?.forEach((b, row) => {
+        b.parameter["@_id"] &&
+          map.set(b.parameter["@_id"], {
+            expressionPath: [...parentExpressionPath, { type: "invocation", row, column: "parameter" }],
+            cell: b.parameter,
+          });
+        b.expression &&
+          generateBeeMap(b.expression, map, [
+            ...parentExpressionPath,
+            { type: "invocation", row, column: "expression" },
+          ]);
+      });
+      // function call
+      expression.expression &&
+        expression.expression["@_id"] &&
+        map.set(expression.expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "invocation", row: -1, column: "expression" }],
+          cell: expression.expression,
+        });
+      return map;
+    case "list":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "list" }],
+          cell: expression,
+        });
+      expression.expression?.forEach((e, row) =>
+        generateBeeMap(e, map, [...parentExpressionPath, { type: "list", row }])
+      );
+      return map;
+    case "literalExpression":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "literalExpression" }],
+          cell: expression,
+        });
+      return map;
     case "relation":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "relation" }],
+          cell: expression,
+        });
       expression.column?.forEach(
         (c, column) =>
           c["@_id"] &&
@@ -237,37 +313,17 @@ export function generateBeeMap(
         })
       );
       return map;
-    case "list":
-      expression.expression?.forEach((e, row) =>
-        generateBeeMap(e, map, [...parentExpressionPath, { type: "list", row }])
-      );
-      return map;
-    case "for":
-      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "for", row: "in" }]);
-      generateBeeMap(expression.return.expression, map, [...parentExpressionPath, { type: "for", row: "return" }]);
-      return map;
-    case "every":
-      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "every", row: "in" }]);
-      generateBeeMap(expression.satisfies.expression, map, [
-        ...parentExpressionPath,
-        { type: "every", row: "statisfies" },
-      ]);
-      return map;
     case "some":
+      expression["@_id"] &&
+        map.set(expression["@_id"], {
+          expressionPath: [...parentExpressionPath, { type: "some" }],
+          cell: expression,
+        });
       generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "some", row: "in" }]);
       generateBeeMap(expression.satisfies.expression, map, [
         ...parentExpressionPath,
         { type: "some", row: "statisfies" },
       ]);
-      return map;
-    case "conditional":
-      generateBeeMap(expression.if.expression, map, [...parentExpressionPath, { type: "conditional", row: "if" }]);
-      generateBeeMap(expression.else.expression, map, [...parentExpressionPath, { type: "conditional", row: "else" }]);
-      generateBeeMap(expression.then.expression, map, [...parentExpressionPath, { type: "conditional", row: "then" }]);
-      return map;
-    case "filter":
-      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "filter", row: "in" }]);
-      generateBeeMap(expression.match.expression, map, [...parentExpressionPath, { type: "filter", row: "match" }]);
       return map;
   }
 }
@@ -280,6 +336,7 @@ export enum BeePropertiesPanelComponent {
   FUNCTION_DEFINITION_PARAMETERS,
   FUNCTION_DEFINITION_ROOT,
   INFORMATION_ITEM_CELL,
+  INVOCATION_CALLED_FUNCTION,
   LITERAL_EXPRESSION_CONTENT,
   UNARY_TEST,
 }
@@ -498,7 +555,7 @@ export type AllCells =
   | ConditionalExpressionCells
   | FilterExpressionCells;
 
-type DeepPartial<T> = T extends object
+export type DeepPartial<T> = T extends object
   ? {
       [P in keyof T]?: Partial<T[P]>;
     }
@@ -512,13 +569,16 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
   title: string;
 } {
   if (selectedObjectPath.type === "context") {
+    if (!selectedObjectPath.column) {
+      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Context" };
+    }
     if (selectedObjectPath.column === "variable") {
       return { component: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL, title: "Boxed Context Variable" };
     }
-    return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Context" };
+    // selectedObjectPath.column === "expression" is handled by the nested expression
   }
   if (selectedObjectPath.type === "decisionTable") {
-    if (selectedObjectPath.header === "input") {
+    if (selectedObjectPath.header === "input" && selectedObjectPath.row) {
       if (selectedObjectPath.row < 0) {
         return {
           component: BeePropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER,
@@ -527,7 +587,7 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
       }
       return { component: BeePropertiesPanelComponent.UNARY_TEST, title: "Decision Table Input Cell" };
     }
-    if (selectedObjectPath.header === "output") {
+    if (selectedObjectPath.header === "output" && selectedObjectPath.row) {
       if (selectedObjectPath.row < 0) {
         return {
           component: BeePropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER,
@@ -539,12 +599,24 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
     return { component: BeePropertiesPanelComponent.DECISION_TABLE_ROOT, title: "Decision Table" };
   }
   if (selectedObjectPath.type === "functionDefinition") {
-    if (selectedObjectPath.parameterIndex < -1) {
-      return { component: BeePropertiesPanelComponent.DECISION_TABLE_ROOT, title: "Function Definition" };
+    if (!selectedObjectPath.parameterIndex) {
+      return { component: BeePropertiesPanelComponent.FUNCTION_DEFINITION_ROOT, title: "Function Definition" };
     }
     return { component: BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS, title: "Function Parameters" };
   }
   if (selectedObjectPath.type === "invocation") {
+    if (!selectedObjectPath.row || !selectedObjectPath.column) {
+      return {
+        component: BeePropertiesPanelComponent.EXPRESSION_ROOT,
+        title: "Boxed Invocation",
+      };
+    }
+    if (selectedObjectPath.row < 0) {
+      return {
+        component: BeePropertiesPanelComponent.INVOCATION_CALLED_FUNCTION,
+        title: "Boxed Invocation Call",
+      };
+    }
     if (selectedObjectPath.column === "parameter") {
       return {
         component: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
@@ -554,17 +626,18 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
     if (selectedObjectPath.column === "expression") {
       return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Boxed Invocation" };
     }
-    return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Invocation" };
   }
   if (selectedObjectPath.type === "literalExpression") {
     return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Literal Expression" };
   }
   if (selectedObjectPath.type === "relation") {
+    if (!selectedObjectPath.row) {
+      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Relation" };
+    }
     if (selectedObjectPath.row < 0) {
       return { component: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL, title: "Boxed Relation Header" };
     }
     return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Boxed Relation Cell" };
-    // TODO: ROOT
   }
   // TODO: LIST, FOR, SOME, EVERY, CONDITIONAL, FILTER;
   return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "" };
@@ -578,67 +651,128 @@ export function getDmnObject(
     return;
   }
   return paths.reduce((expressionToEdit: AllExpressionsWithoutTypes, path) => {
-    switch (path.type) {
-      case "filter":
-        if (path.row === "in") {
-          return (expressionToEdit as DMN15__tFilter).in.expression;
-        }
-        return (expressionToEdit as DMN15__tFilter).match.expression;
-      case "literalExpression":
-        return expressionToEdit as DMN15__tLiteralExpression;
-      case "invocation":
-        if (path.column === "parameter") {
-          return (expressionToEdit as DMN15__tInvocation).binding?.[path.row].parameter;
-        }
-        return (expressionToEdit as DMN15__tInvocation).binding?.[path.row].expression;
-      case "decisionTable":
-        if (path.header === "input") {
-          if (path.row < 0) {
-            return (expressionToEdit as DMN15__tDecisionTable).input?.[path.column];
-          }
-          return (expressionToEdit as DMN15__tDecisionTable).rule?.[path.row].inputEntry?.[path.column];
-        }
+    if (path.type === "conditional") {
+      // root
+      if (!path.row) {
+        return expressionToEdit as DMN15__tConditional;
+      }
+      if (path.row === "if") {
+        return (expressionToEdit as DMN15__tConditional).if.expression;
+      }
+      if (path.row === "else") {
+        return (expressionToEdit as DMN15__tConditional).else.expression;
+      }
+      return (expressionToEdit as DMN15__tConditional).then.expression;
+    }
+    if (path.type === "context") {
+      // root
+      if (!path.row || !path.column) {
+        return expressionToEdit as DMN15__tContext;
+      }
+      if (path.column === "expression") {
+        return (expressionToEdit as DMN15__tContext).contextEntry?.[path.row].expression;
+      }
+      return (expressionToEdit as DMN15__tContext).contextEntry?.[path.row].variable;
+    }
+    if (path.type === "decisionTable") {
+      // root
+      if (!path.row || !path.column) {
+        return expressionToEdit as DMN15__tDecisionTable;
+      }
+      if (path.header === "input") {
         if (path.row < 0) {
-          return (expressionToEdit as DMN15__tDecisionTable).output?.[path.column];
+          return (expressionToEdit as DMN15__tDecisionTable).input?.[path.column];
         }
-        return (expressionToEdit as DMN15__tDecisionTable).rule?.[path.row].outputEntry?.[path.column];
-      case "context":
-        if (path.column === "expression") {
-          return (expressionToEdit as DMN15__tContext).contextEntry?.[path.row].expression;
-        }
-        return (expressionToEdit as DMN15__tContext).contextEntry?.[path.row].variable;
-      case "functionDefinition":
+        return (expressionToEdit as DMN15__tDecisionTable).rule?.[path.row].inputEntry?.[path.column];
+      }
+      if (path.row < 0) {
+        return (expressionToEdit as DMN15__tDecisionTable).output?.[path.column];
+      }
+      return (expressionToEdit as DMN15__tDecisionTable).rule?.[path.row].outputEntry?.[path.column];
+    }
+    if (path.type === "every") {
+      // root
+      if (!path.row) {
+        return expressionToEdit as DMN15__tQuantified;
+      }
+      if (path.row === "in") {
+        return (expressionToEdit as DMN15__tQuantified).in.expression;
+      }
+      return (expressionToEdit as DMN15__tQuantified).satisfies.expression;
+    }
+    if (path.type === "filter") {
+      // root
+      if (!path.row) {
+        return expressionToEdit as DMN15__tFilter;
+      }
+      if (path.row === "in") {
+        return (expressionToEdit as DMN15__tFilter).in.expression;
+      }
+      return (expressionToEdit as DMN15__tFilter).match.expression;
+    }
+    if (path.type === "for") {
+      // root
+      if (!path.row) {
+        return expressionToEdit as DMN15__tFor;
+      }
+      if (path.row === "in") {
+        return (expressionToEdit as DMN15__tFor).in.expression;
+      }
+      return (expressionToEdit as DMN15__tFor).return.expression;
+    }
+    if (path.type === "functionDefinition") {
+      // root
+      if (!path.parameterIndex) {
+        return expressionToEdit as DMN15__tFunctionDefinition;
+      }
+      if (path.parameterIndex < 0) {
         return (expressionToEdit as DMN15__tFunctionDefinition).expression;
-      case "relation":
-        if (path.row < 0) {
-          return (expressionToEdit as DMN15__tRelation).column?.[path.column];
-        }
-        return (expressionToEdit as DMN15__tRelation).row?.[path.row].expression?.[path.column];
-      case "list":
-        return (expressionToEdit as DMN15__tList).expression?.[path.row];
-      case "for":
-        if (path.row === "in") {
-          return (expressionToEdit as DMN15__tFor).in.expression;
-        }
-        return (expressionToEdit as DMN15__tFor).return.expression;
-      case "every":
-        if (path.row === "in") {
-          return (expressionToEdit as DMN15__tQuantified).in.expression;
-        }
-        return (expressionToEdit as DMN15__tQuantified).satisfies.expression;
-      case "some":
-        if (path.row === "in") {
-          return (expressionToEdit as DMN15__tQuantified).in.expression;
-        }
-        return (expressionToEdit as DMN15__tQuantified).satisfies.expression;
-      case "conditional":
-        if (path.row === "if") {
-          return (expressionToEdit as DMN15__tConditional).if.expression;
-        }
-        if (path.row === "else") {
-          return (expressionToEdit as DMN15__tConditional).else.expression;
-        }
-        return (expressionToEdit as DMN15__tConditional).then.expression;
+      }
+      return expressionToEdit as DMN15__tFunctionDefinition;
+    }
+    if (path.type === "invocation") {
+      // root
+      if (!path.row || !path.column) {
+        return expressionToEdit as DMN15__tInvocation;
+      }
+      if (path.column === "parameter") {
+        return (expressionToEdit as DMN15__tInvocation).binding?.[path.row].parameter;
+      }
+      if (path.column === "expression" && path.row >= 0) {
+        return (expressionToEdit as DMN15__tInvocation).binding?.[path.row].expression;
+      }
+      // function call
+      return (expressionToEdit as DMN15__tInvocation).expression;
+    }
+    if (path.type === "list") {
+      // root
+      if (!path.row) {
+        return expressionToEdit as DMN15__tList;
+      }
+      return (expressionToEdit as DMN15__tList).expression?.[path.row];
+    }
+    if (path.type === "literalExpression") {
+      return expressionToEdit as DMN15__tLiteralExpression;
+    }
+    if (path.type === "relation") {
+      // root
+      if (!path.row || !path.column) {
+        return expressionToEdit as DMN15__tRelation;
+      }
+      if (path.row < 0) {
+        return (expressionToEdit as DMN15__tRelation).column?.[path.column];
+      }
+      return (expressionToEdit as DMN15__tRelation).row?.[path.row].expression?.[path.column];
+    }
+    if (path.type === "some") {
+      // root
+      if (!path.row) {
+        return expressionToEdit as DMN15__tQuantified;
+      }
+      if (path.row === "in") {
+        return (expressionToEdit as DMN15__tQuantified).in.expression;
+      }
+      return (expressionToEdit as DMN15__tQuantified).satisfies.expression;
     }
   }, expressionRoot);
 }

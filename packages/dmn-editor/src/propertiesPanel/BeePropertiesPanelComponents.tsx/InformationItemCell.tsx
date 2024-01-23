@@ -18,50 +18,112 @@
  */
 
 import * as React from "react";
+import { useCallback, useMemo } from "react";
 import { DescriptionField, LabelField, NameField, TypeRefField } from "./Fields";
-import { UniqueNameIndex } from "../../Dmn15Spec";
-import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { BeeMap, DeepPartial, getDmnObject } from "../../boxedExpressions/getBeeMap";
+import {
+  DMN15__tBusinessKnowledgeModel,
+  DMN15__tDecision,
+  DMN15__tInformationItem,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { useDmnEditor } from "../../DmnEditorContext";
+import { buildXmlHref } from "../../xml/xmlHrefs";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 /**
  * This component implements a form to change an object with the DMN15__tInformationItem type
  * It's used for: ContextExpressionVariableCell, InvocationExpressionParametersCell and RelationExpressionHeaderCell
  */
-export function InformationItemCell(props: {
-  id: string;
-  name: string;
-  typeRef: string;
-  label: string;
-  description: string;
-  isReadonly: boolean;
-  allUniqueNames: UniqueNameIndex;
-  dmnEditorRootElementRef: React.RefObject<HTMLElement>;
-  expressionPath: ExpressionPath[];
-  onChangeName: (newName: string) => void;
-  onChangeTypeRef: (newTypeRef: string) => void;
-  onChangeLabel: (newLabel: string) => void;
-  onChangeDescription: (newDescription: string) => void;
-}) {
+export function InformationItemCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+  const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+  const { allFeelVariableUniqueNames, nodesById } = useDmnEditorDerivedStore();
+  const { dmnEditorRootElementRef } = useDmnEditor();
+  const node = useMemo(
+    () => (activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined),
+    [activeDrgElementId, nodesById]
+  );
+  const selectedObjectInfos = useMemo(
+    () => props.beeMap?.get(selectedObjectId ?? ""),
+    [props.beeMap, selectedObjectId]
+  );
+
+  const updateDmnObject = useCallback(
+    (dmnObject: DMN15__tInformationItem, newContent: DeepPartial<DMN15__tInformationItem>) => {
+      if (newContent?.["@_name"]) {
+        dmnObject["@_name"] = newContent["@_name"];
+      }
+      if (newContent?.["@_typeRef"]) {
+        dmnObject["@_typeRef"] = newContent["@_typeRef"];
+      }
+      if (newContent?.["@_label"]) {
+        dmnObject["@_label"] = newContent["@_label"];
+      }
+      if (newContent?.description?.__$$text && dmnObject?.description) {
+        dmnObject.description = newContent.description as { __$$text: string };
+      } else if (newContent?.description?.__$$text) {
+        dmnObject = {
+          ...dmnObject,
+          description: newContent.description as { __$$text: string },
+        };
+      }
+    },
+    []
+  );
+
+  const updateBee = useCallback(
+    (newContent: DeepPartial<DMN15__tInformationItem>, expressionPath = selectedObjectInfos?.expressionPath) => {
+      dmnEditorStoreApi.setState((state) => {
+        if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "businessKnowledgeModel") {
+          const dmnObject = getDmnObject(
+            expressionPath ?? [],
+            (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tBusinessKnowledgeModel)
+              ?.encapsulatedLogic?.expression
+          );
+          dmnObject && updateDmnObject(dmnObject as DMN15__tInformationItem, newContent);
+        }
+        if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "decision") {
+          const dmnObject = getDmnObject(
+            expressionPath ?? [],
+            (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tDecision)?.expression
+          );
+          dmnObject && updateDmnObject(dmnObject as DMN15__tInformationItem, newContent);
+        }
+      });
+    },
+    [dmnEditorStoreApi, node?.data.index, selectedObjectInfos?.expressionPath, updateDmnObject]
+  );
+
+  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInformationItem, [selectedObjectInfos?.cell]);
+
   return (
     <>
       <NameField
         isReadonly={props.isReadonly}
-        id={props.id}
-        name={props.name}
-        allUniqueNames={props.allUniqueNames}
-        onChange={props.onChangeName}
+        id={cell["@_id"] ?? ""}
+        name={cell["@_name"] ?? ""}
+        allUniqueNames={allFeelVariableUniqueNames}
+        onChange={(newName: string) => updateBee({ "@_name": newName })}
       />
       <TypeRefField
         isReadonly={props.isReadonly}
-        dmnEditorRootElementRef={props.dmnEditorRootElementRef}
-        typeRef={props.typeRef}
-        onChange={props.onChangeTypeRef}
+        dmnEditorRootElementRef={dmnEditorRootElementRef}
+        typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        onChange={(newTypeRef: string) => updateBee({ "@_typeRef": newTypeRef })}
       />
-      <LabelField isReadonly={props.isReadonly} label={props.label} onChange={props.onChangeLabel} />
+      <LabelField
+        isReadonly={props.isReadonly}
+        label={cell["@_label"] ?? ""}
+        onChange={(newLabel: string) => updateBee({ "@_label": newLabel })}
+      />
       <DescriptionField
         isReadonly={props.isReadonly}
-        initialValue={props.description}
-        expressionPath={props.expressionPath}
-        onChange={props.onChangeDescription}
+        initialValue={cell.description?.__$$text ?? ""}
+        expressionPath={selectedObjectInfos?.expressionPath ?? []}
+        onChange={(newDescription: string) => updateBee({ description: { __$$text: newDescription } })}
       />
     </>
   );
