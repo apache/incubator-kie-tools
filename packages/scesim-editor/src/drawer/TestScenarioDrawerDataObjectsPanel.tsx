@@ -61,41 +61,55 @@ function TestScenarioDataObjectsPanel({
   const [allExpanded, setAllExpanded] = useState(false);
   const [filteredItems, setFilteredItems] = useState({ items: dataObjects, isFiltered: false });
   const [treeViewActiveItems, setTreeViewActiveItems] = useState<TreeViewDataItem[]>([]);
+  const [selectorEnabled, setSelectorEnabled] = useState(true);
 
   useEffect(() => {
-    setAllExpanded(false);
-    setTreeViewActiveItems([]);
-  }, [dataObjects]);
-
-  useEffect(() => {
-    console.log(dataObjects);
-    console.log(selectedColumnFactMapping);
-
-    if (
-      !selectedColumnFactMapping ||
-      selectedColumnFactMapping.expressionIdentifier.type?.__$$text == "OTHER" ||
-      selectedColumnFactMapping.className.__$$text == "java.lang.Void"
-    ) {
+    if (!selectedColumnFactMapping || selectedColumnFactMapping.expressionIdentifier.type?.__$$text == "OTHER") {
       setFilteredItems({ items: dataObjects, isFiltered: false });
       setTreeViewActiveItems([]);
+      setSelectorEnabled(true);
       return;
     }
-    const input = selectedColumnFactMapping?.expressionAlias!.__$$text;
-    const filtered = dataObjects.map((object) => Object.assign({}, object)).filter((item) => filterItems(item, input));
+
+    const expressionElements = selectedColumnFactMapping?.expressionElements?.ExpressionElement?.map(
+      (element) => element.step.__$$text
+    );
+    expressionElements?.splice(0, 1);
+    const fieldName =
+      expressionElements && expressionElements.length > 0
+        ? expressionElements?.join(".")
+        : selectedColumnFactMapping?.expressionAlias!.__$$text;
+    const factIdentifier = selectedColumnFactMapping?.factIdentifier!.name!.__$$text;
+    console.log(selectedColumnFactMapping);
+    console.log(dataObjects);
+    const filtered = dataObjects
+      .map((object) => Object.assign({}, object))
+      .filter((dataObject) => filterTypesItems(dataObject, factIdentifier));
     setFilteredItems({ items: filtered, isFiltered: true });
-    const propertyID = selectedColumnFactMapping
-      .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
-      .join(".");
 
-    const treeViewItemToActivate = filtered
-      .reduce((acc: TestScenarioDataObject[], item) => {
-        return item.children ? acc.concat(item.children) : acc;
-      }, [])
-      .filter((item) => item.id === propertyID);
+    console.log(filtered);
 
-    console.log(treeViewItemToActivate);
-    setTreeViewActiveItems(treeViewItemToActivate);
+    if (selectedColumnFactMapping.className.__$$text !== "java.lang.Void") {
+      const propertyID = selectedColumnFactMapping
+        .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
+        .join(".");
+
+      const treeViewItemToActivate = filtered
+        .reduce((acc: TestScenarioDataObject[], item) => {
+          return item.children ? acc.concat(item.children) : acc;
+        }, [])
+        .filter((item) => item.id === propertyID);
+
+      setTreeViewActiveItems(treeViewItemToActivate);
+      setSelectorEnabled(false);
+    } else {
+      setTreeViewActiveItems([]);
+    }
   }, [dataObjects, selectedColumnFactMapping]);
+
+  const filterTypesItems = useCallback((dataObject, factIdentifierName?) => {
+    return factIdentifierName && dataObject.name.toLowerCase() === factIdentifierName.toLowerCase();
+  }, []);
 
   const filterItems = useCallback((item, input) => {
     if (item.name.toLowerCase().includes(input.toLowerCase())) {
@@ -121,7 +135,6 @@ function TestScenarioDataObjectsPanel({
           .map((object) => Object.assign({}, object))
           .filter((item) => filterItems(item, input));
 
-        console.log(filtered);
         setFilteredItems({ items: filtered, isFiltered: true });
       }
     },
@@ -129,8 +142,6 @@ function TestScenarioDataObjectsPanel({
   );
 
   const onSelectTreeViewItem = useCallback((_event, treeViewItem: TreeViewDataItem) => {
-    console.log(treeViewItem);
-
     setTreeViewActiveItems([treeViewItem]);
   }, []);
 
@@ -142,11 +153,34 @@ function TestScenarioDataObjectsPanel({
     setAllExpanded((prev) => !prev);
   }, []);
 
+  const determineInsertDataObjectStatus = useCallback(() => {
+    const propertyID = selectedColumnFactMapping?.expressionElements?.ExpressionElement?.map(
+      (expressionElement) => expressionElement.step.__$$text
+    ).join(".");
+    if (selectedColumnFactMapping == null) {
+      return {
+        message: "Please select an column's field header to add or change a Type in the table.",
+        enabled: false,
+      };
+    } else if (treeViewActiveItems.length != 1) {
+      return { message: "Please select a single field to assign it in the selected column", enabled: false };
+    } else if (treeViewActiveItems.length == 1 && treeViewActiveItems[0].id === propertyID) {
+      return { message: "The column is already assigned to the selected Field.", enabled: false };
+    } else {
+      return { message: "Click here to assign the selected field to the focused column.", enabled: true };
+    }
+  }, [selectedColumnFactMapping, treeViewActiveItems]);
+
   const toolbar = (
     <Toolbar style={{ padding: 0 }}>
       <ToolbarContent style={{ padding: 0 }}>
         <ToolbarItem widths={{ default: "100%" }}>
-          <TreeViewSearch onSearch={onSearchTreeView} id="input-search" name="search-input" />
+          <TreeViewSearch
+            onSearch={onSearchTreeView}
+            id="input-search"
+            name="search-input"
+            disabled={!selectorEnabled}
+          />
         </ToolbarItem>
       </ToolbarContent>
     </Toolbar>
@@ -202,23 +236,25 @@ function TestScenarioDataObjectsPanel({
       </div>
       <Divider />
       <div className={"kie-scesim-editor-drawer-data-objects--button-container"}>
-        <Button
-          isDisabled={!(selectedColumnFactMapping != null && treeViewActiveItems.length == 1)}
-          onClick={onInsertDataObjectClick}
-          variant="primary"
-        >
-          {i18n.drawer.dataObjects.insertDataObject}
-        </Button>
+        <Tooltip content={determineInsertDataObjectStatus().message}>
+          <Button
+            isAriaDisabled={!determineInsertDataObjectStatus().enabled}
+            onClick={onInsertDataObjectClick}
+            variant="primary"
+          >
+            {i18n.drawer.dataObjects.insertDataObject}
+          </Button>
+        </Tooltip>
         <Button
           onClick={() => setTreeViewActiveItems([])}
-          isDisabled={treeViewActiveItems.length < 1}
+          isDisabled={treeViewActiveItems.length < 1 || !selectorEnabled}
           variant="secondary"
         >
           {i18n.drawer.dataObjects.clearSelection}
         </Button>
         <Button
           onClick={onAllExpandedToggle}
-          isDisabled={filteredItems.items.length < 1 || filteredItems.isFiltered}
+          isDisabled={filteredItems.items.length < 1 || filteredItems.isFiltered || !selectorEnabled}
           variant="link"
         >
           {allExpanded ? i18n.drawer.dataObjects.collapseAll : i18n.drawer.dataObjects.expandAll}

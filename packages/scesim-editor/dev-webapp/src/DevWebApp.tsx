@@ -104,7 +104,6 @@ export function DevWebApp() {
   ];
 
   const onExampleDropdownToggle = useCallback((isOpen: boolean) => {
-    console.log(isOpen);
     setExampleDropdownIsOpen(isOpen);
   }, []);
 
