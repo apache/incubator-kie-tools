@@ -26,9 +26,6 @@ const (
 	PersistenceTypePostgreSQL        = "postgresql"
 	PersistenceTypeEphemeral         = "ephemeral"
 
-	DataIndexServiceURLProperty = "mp.messaging.outgoing.kogito-processinstances-events.url"
-	DataIndexServiceURLProtocol = "http"
-
 	JobServiceRequestEventsURL       = "mp.messaging.outgoing.kogito-job-service-job-request-events.url"
 	JobServiceRequestEventsConnector = "mp.messaging.outgoing.kogito-job-service-job-request-events.connector"
 	JobServiceStatusChangeEvents     = "kogito.jobs-service.http.job-status-change-events"
@@ -36,9 +33,12 @@ const (
 	JobServiceURLProtocol            = "http"
 	JobServiceDataSourceReactiveURL  = "quarkus.datasource.reactive.url"
 
-	KogitoProcessInstancesEnabled         = "kogito.events.processinstances.enabled"
-	KogitoProcessDefinitionsEnabled       = "kogito.events.processdefinitions.enabled"
-	KogitoEventsUserTaskEnabled           = "kogito.events.usertasks.enabled"
+	KogitoProcessEventsProtocol           = "http"
+	KogitoProcessInstancesEventsURL       = "mp.messaging.outgoing.kogito-processinstances-events.url"
+	KogitoProcessInstancesEventsEnabled   = "kogito.events.processinstances.enabled"
+	KogitoProcessDefinitionsEventsURL     = "mp.messaging.outgoing.kogito-processdefinitions-events.url"
+	KogitoProcessDefinitionsEventsEnabled = "kogito.events.processdefinitions.enabled"
+	KogitoUserTasksEventsEnabled          = "kogito.events.usertasks.enabled"
 	KogitoEventsVariablesEnabled          = "kogito.events.variables.enabled"
 	KogitoServiceURLProperty              = "kogito.service.url"
 	KogitoServiceURLProtocol              = "http"

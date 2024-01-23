@@ -20,10 +20,9 @@
 package services
 
 import (
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-
-	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 
 	"github.com/magiconair/properties"
 )
@@ -33,7 +32,7 @@ var (
 	disabled = false
 )
 
-var _ = Describe("Platform properties", func() {
+var _ = Describe("PlatformServiceHandler properties", func() {
 
 	var _ = Context("for service properties", func() {
 
@@ -41,7 +40,7 @@ var _ = Describe("Platform properties", func() {
 
 			DescribeTable("Job Service",
 				func(plfm *operatorapi.SonataFlowPlatform, expectedProperties *properties.Properties) {
-					js := NewJobService(plfm)
+					js := NewJobServiceHandler(plfm)
 					handler, err := NewServiceAppPropertyHandler(js)
 					Expect(err).NotTo(HaveOccurred())
 					p, err := properties.LoadString(handler.Build())
@@ -49,7 +48,7 @@ var _ = Describe("Platform properties", func() {
 					p.Sort()
 					Expect(p).To(Equal(expectedProperties))
 				},
-				Entry("with an empty spec", generatePlatform(emptyJobServiceSpec()),
+				Entry("with an empty spec", generatePlatform(emptyJobServiceSpec(), setPlatformName("foo"), setPlatformNamespace("default")),
 					generateJobServiceDeploymentDevProperties()),
 				Entry("with enabled field undefined and with ephemeral persistence",
 					generatePlatform(setJobServiceEnabledValue(nil), setPlatformName("foo"), setPlatformNamespace("default")),
@@ -78,7 +77,7 @@ var _ = Describe("Platform properties", func() {
 			)
 
 			DescribeTable("Data Index", func(plfm *operatorapi.SonataFlowPlatform, expectedProperties *properties.Properties) {
-				di := NewDataIndexService(plfm)
+				di := NewDataIndexHandler(plfm)
 				handler, err := NewServiceAppPropertyHandler(di)
 				Expect(err).NotTo(HaveOccurred())
 				p, err := properties.LoadString(handler.Build())
@@ -86,7 +85,7 @@ var _ = Describe("Platform properties", func() {
 				p.Sort()
 				Expect(p).To(Equal(expectedProperties))
 			},
-				Entry("with ephemeral persistence", generatePlatform(emptyDataIndexServiceSpec()), generateDataIndexDeploymentProperties()),
+				Entry("with ephemeral persistence", generatePlatform(emptyDataIndexServiceSpec(), setPlatformName("foo"), setPlatformNamespace("default")), generateDataIndexDeploymentProperties()),
 				Entry("with postgreSQL persistence", generatePlatform(emptyDataIndexServiceSpec(), setPlatformName("foo"), setPlatformNamespace("default"), setJobServiceJDBC("jdbc:postgresql://postgres:5432/sonataflow?currentSchema=myschema")),
 					generateDataIndexDeploymentProperties()),
 			)
@@ -98,6 +97,7 @@ var _ = Describe("Platform properties", func() {
 
 func generateJobServiceDeploymentDevProperties() *properties.Properties {
 	p := properties.NewProperties()
+	p.Set("kogito.service.url", "http://foo-jobs-service.default")
 	p.Set("quarkus.devservices.enabled", "false")
 	p.Set("quarkus.http.host", "0.0.0.0")
 	p.Set("quarkus.http.port", "8080")
@@ -109,6 +109,7 @@ func generateJobServiceDeploymentDevProperties() *properties.Properties {
 
 func generateDataIndexDeploymentProperties() *properties.Properties {
 	p := properties.NewProperties()
+	p.Set("kogito.service.url", "http://foo-data-index-service.default")
 	p.Set("quarkus.devservices.enabled", "false")
 	p.Set("quarkus.http.host", "0.0.0.0")
 	p.Set("quarkus.http.port", "8080")
@@ -120,6 +121,7 @@ func generateDataIndexDeploymentProperties() *properties.Properties {
 
 func generateJobServiceDeploymentWithPostgreSQLProperties() *properties.Properties {
 	p := properties.NewProperties()
+	p.Set("kogito.service.url", "http://foo-jobs-service.default")
 	p.Set("quarkus.devservices.enabled", "false")
 	p.Set("quarkus.http.host", "0.0.0.0")
 	p.Set("quarkus.http.port", "8080")
@@ -132,6 +134,7 @@ func generateJobServiceDeploymentWithPostgreSQLProperties() *properties.Properti
 
 func generateJobServiceDeploymentWithDataIndexAndEphemeralProperties() *properties.Properties {
 	p := properties.NewProperties()
+	p.Set("kogito.service.url", "http://foo-jobs-service.default")
 	p.Set("kogito.jobs-service.http.job-status-change-events", "true")
 	p.Set("mp.messaging.outgoing.kogito-job-service-job-status-events-http.url", "http://foo-data-index-service.default/jobs")
 	p.Set("quarkus.devservices.enabled", "false")
@@ -145,6 +148,7 @@ func generateJobServiceDeploymentWithDataIndexAndEphemeralProperties() *properti
 
 func generateJobServiceDeploymentWithDataIndexAndPostgreSQLProperties() *properties.Properties {
 	p := properties.NewProperties()
+	p.Set("kogito.service.url", "http://foo-jobs-service.default")
 	p.Set("kogito.jobs-service.http.job-status-change-events", "true")
 	p.Set("mp.messaging.outgoing.kogito-job-service-job-status-events-http.url", "http://foo-data-index-service.default/jobs")
 	p.Set("quarkus.devservices.enabled", "false")

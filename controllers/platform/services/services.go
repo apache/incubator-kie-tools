@@ -34,7 +34,7 @@ import (
 	"github.com/imdario/mergo"
 )
 
-type Platform interface {
+type PlatformServiceHandler interface {
 	// GetContainerName returns the name of the service's container in the deployment.
 	GetContainerName() string
 	// GetServiceImageName returns the image name of the service's container. It takes in the service and persistence types and returns a string
@@ -46,21 +46,21 @@ type Platform interface {
 	GetServiceCmName() string
 	// GetEnvironmentVariables returns the env variables to be injected to the service container
 	GetEnvironmentVariables() []corev1.EnvVar
-	// GetResourceLimits returns the pod's memory and CPU resource requirements
+	// GetPodResourceRequirements returns the pod's memory and CPU resource requirements
 	// Values for job service taken from
 	// https://github.com/parodos-dev/orchestrator-helm-chart/blob/52d09eda56fdbed3060782df29847c97f172600f/charts/orchestrator/values.yaml#L68-L72
 	GetPodResourceRequirements() corev1.ResourceRequirements
-	// GetReplicaCountForService Returns the default pod replica count for the given service
+	// GetReplicaCount Returns the default pod replica count for the given service
 	GetReplicaCount() int32
 
 	// MergeContainerSpec performs a merge with override using the containerSpec argument and the expected values based on the service's pod template specifications. The returning
 	// object is the merged result
 	MergeContainerSpec(containerSpec *corev1.Container) (*corev1.Container, error)
 
-	//ConfigurePersistence sets the persistence's image and environment values when it is defined in the Persistence field of the service, overriding any existing value.
+	// ConfigurePersistence sets the persistence's image and environment values when it is defined in the Persistence field of the service, overriding any existing value.
 	ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container
 
-	//MergePodSpec performs a merge with override between the podSpec argument and the expected values based on the service's pod template specification. The returning
+	// MergePodSpec performs a merge with override between the podSpec argument and the expected values based on the service's pod template specification. The returning
 	// object is the result of the merge
 	MergePodSpec(podSpec corev1.PodSpec) (corev1.PodSpec, error)
 	// GenerateWorkflowProperties returns a property object that contains the service's application properties required by workflows
@@ -69,19 +69,19 @@ type Platform interface {
 	GenerateServiceProperties() (*properties.Properties, error)
 }
 
-type DataIndex struct {
+type DataIndexHandler struct {
 	platform *operatorapi.SonataFlowPlatform
 }
 
-func NewDataIndexService(platform *operatorapi.SonataFlowPlatform) Platform {
-	return DataIndex{platform: platform}
+func NewDataIndexHandler(platform *operatorapi.SonataFlowPlatform) PlatformServiceHandler {
+	return DataIndexHandler{platform: platform}
 }
 
-func (d DataIndex) GetContainerName() string {
+func (d DataIndexHandler) GetContainerName() string {
 	return constants.DataIndexServiceName
 }
 
-func (d DataIndex) GetServiceImageName(persistenceName string) string {
+func (d DataIndexHandler) GetServiceImageName(persistenceName string) string {
 	var tag = version.GetMajorMinor()
 	var suffix = ""
 	if version.IsSnapshot() {
@@ -93,11 +93,11 @@ func (d DataIndex) GetServiceImageName(persistenceName string) string {
 	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.DataIndexName, persistenceName+suffix, tag)
 }
 
-func (d DataIndex) GetServiceName() string {
+func (d DataIndexHandler) GetServiceName() string {
 	return fmt.Sprintf("%s-%s", d.platform.Name, constants.DataIndexServiceName)
 }
 
-func (d DataIndex) GetEnvironmentVariables() []corev1.EnvVar {
+func (d DataIndexHandler) GetEnvironmentVariables() []corev1.EnvVar {
 	return []corev1.EnvVar{
 		{
 			Name:  "KOGITO_DATA_INDEX_QUARKUS_PROFILE",
@@ -114,7 +114,7 @@ func (d DataIndex) GetEnvironmentVariables() []corev1.EnvVar {
 	}
 }
 
-func (d DataIndex) GetPodResourceRequirements() corev1.ResourceRequirements {
+func (d DataIndexHandler) GetPodResourceRequirements() corev1.ResourceRequirements {
 	return corev1.ResourceRequirements{
 		Limits: corev1.ResourceList{
 			corev1.ResourceCPU:    resource.MustParse("100m"),
@@ -123,14 +123,13 @@ func (d DataIndex) GetPodResourceRequirements() corev1.ResourceRequirements {
 	}
 }
 
-func (d DataIndex) MergePodSpec(podSpec corev1.PodSpec) (corev1.PodSpec, error) {
+func (d DataIndexHandler) MergePodSpec(podSpec corev1.PodSpec) (corev1.PodSpec, error) {
 	c := podSpec.DeepCopy()
 	err := mergo.Merge(c, d.platform.Spec.Services.DataIndex.PodTemplate.PodSpec.ToPodSpec(), mergo.WithOverride)
 	return *c, err
 }
 
-func (d DataIndex) ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container {
-
+func (d DataIndexHandler) ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container {
 	if d.platform.Spec.Services.DataIndex.Persistence != nil && d.platform.Spec.Services.DataIndex.Persistence.PostgreSql != nil {
 		c := containerSpec.DeepCopy()
 		c.Image = d.GetServiceImageName(constants.PersistenceTypePostgreSQL)
@@ -140,24 +139,24 @@ func (d DataIndex) ConfigurePersistence(containerSpec *corev1.Container) *corev1
 	return containerSpec
 }
 
-func (d DataIndex) MergeContainerSpec(containerSpec *corev1.Container) (*corev1.Container, error) {
+func (d DataIndexHandler) MergeContainerSpec(containerSpec *corev1.Container) (*corev1.Container, error) {
 	c := containerSpec.DeepCopy()
 	err := mergo.Merge(c, d.platform.Spec.Services.DataIndex.PodTemplate.Container.ToContainer(), mergo.WithOverride)
 	return c, err
 }
 
-func (d DataIndex) GetReplicaCount() int32 {
+func (d DataIndexHandler) GetReplicaCount() int32 {
 	if d.platform.Spec.Services.DataIndex.PodTemplate.Replicas != nil {
 		return *d.platform.Spec.Services.DataIndex.PodTemplate.Replicas
 	}
 	return 1
 }
 
-func (d DataIndex) GetServiceCmName() string {
+func (d DataIndexHandler) GetServiceCmName() string {
 	return fmt.Sprintf("%s-props", d.GetServiceName())
 }
 
-func (d DataIndex) configurePostgreSqlEnv(postgresql *operatorapi.PersistencePostgreSql, databaseSchema, databaseNamespace string) []corev1.EnvVar {
+func (d DataIndexHandler) configurePostgreSqlEnv(postgresql *operatorapi.PersistencePostgreSql, databaseSchema, databaseNamespace string) []corev1.EnvVar {
 	dataSourcePort := constants.DefaultPostgreSQLPort
 	databaseName := "sonataflow"
 	dataSourceURL := postgresql.JdbcUrl
@@ -225,33 +224,36 @@ func (d DataIndex) configurePostgreSqlEnv(postgresql *operatorapi.PersistencePos
 	}
 }
 
-func (d DataIndex) GenerateWorkflowProperties() (*properties.Properties, error) {
+func (d DataIndexHandler) GenerateWorkflowProperties() (*properties.Properties, error) {
 	props := properties.NewProperties()
 	if d.platform.Spec.Services.DataIndex != nil {
-		props.Set(constants.DataIndexServiceURLProperty, fmt.Sprintf("%s://%s.%s/processes", constants.DataIndexServiceURLProtocol, d.GetServiceName(), d.platform.Namespace))
+		dataIndexUrl := generateServiceURL(constants.KogitoProcessEventsProtocol, d.platform.Namespace, d.GetServiceName())
+		props.Set(constants.KogitoProcessDefinitionsEventsURL, fmt.Sprintf("%s/definitions", dataIndexUrl))
+		props.Set(constants.KogitoProcessInstancesEventsURL, fmt.Sprintf("%s/processes", dataIndexUrl))
 	}
 	return props, nil
 }
 
-func (d DataIndex) GenerateServiceProperties() (*properties.Properties, error) {
+func (d DataIndexHandler) GenerateServiceProperties() (*properties.Properties, error) {
 	props := properties.NewProperties()
+	props.Set(constants.KogitoServiceURLProperty, generateServiceURL(constants.KogitoServiceURLProtocol, d.platform.Namespace, d.GetServiceName()))
 	props.Set(constants.DataIndexKafkaSmallRyeHealthProperty, "false")
 	return props, nil
 }
 
-type JobService struct {
+type JobServiceHandler struct {
 	platform *operatorapi.SonataFlowPlatform
 }
 
-func NewJobService(platform *operatorapi.SonataFlowPlatform) Platform {
-	return JobService{platform: platform}
+func NewJobServiceHandler(platform *operatorapi.SonataFlowPlatform) PlatformServiceHandler {
+	return JobServiceHandler{platform: platform}
 }
 
-func (j JobService) GetContainerName() string {
+func (j JobServiceHandler) GetContainerName() string {
 	return constants.JobServiceName
 }
 
-func (j JobService) GetServiceImageName(persistenceName string) string {
+func (j JobServiceHandler) GetServiceImageName(persistenceName string) string {
 	var tag = version.GetMajorMinor()
 	var suffix = ""
 	if version.IsSnapshot() {
@@ -263,15 +265,15 @@ func (j JobService) GetServiceImageName(persistenceName string) string {
 	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.JobServiceName, persistenceName+suffix, tag)
 }
 
-func (j JobService) GetServiceName() string {
+func (j JobServiceHandler) GetServiceName() string {
 	return fmt.Sprintf("%s-%s", j.platform.Name, constants.JobServiceName)
 }
 
-func (j JobService) GetServiceCmName() string {
+func (j JobServiceHandler) GetServiceCmName() string {
 	return fmt.Sprintf("%s-props", j.GetServiceName())
 }
 
-func (j JobService) GetEnvironmentVariables() []corev1.EnvVar {
+func (j JobServiceHandler) GetEnvironmentVariables() []corev1.EnvVar {
 	return []corev1.EnvVar{
 		{
 			Name:  "QUARKUS_HTTP_CORS",
@@ -284,7 +286,7 @@ func (j JobService) GetEnvironmentVariables() []corev1.EnvVar {
 	}
 }
 
-func (j JobService) GetPodResourceRequirements() corev1.ResourceRequirements {
+func (j JobServiceHandler) GetPodResourceRequirements() corev1.ResourceRequirements {
 	return corev1.ResourceRequirements{
 		Requests: corev1.ResourceList{
 			corev1.ResourceCPU:    resource.MustParse("250m"),
@@ -297,17 +299,17 @@ func (j JobService) GetPodResourceRequirements() corev1.ResourceRequirements {
 	}
 }
 
-func (j JobService) GetReplicaCount() int32 {
+func (j JobServiceHandler) GetReplicaCount() int32 {
 	return 1
 }
 
-func (j JobService) MergeContainerSpec(containerSpec *corev1.Container) (*corev1.Container, error) {
+func (j JobServiceHandler) MergeContainerSpec(containerSpec *corev1.Container) (*corev1.Container, error) {
 	c := containerSpec.DeepCopy()
 	err := mergo.Merge(c, j.platform.Spec.Services.JobService.PodTemplate.Container.ToContainer(), mergo.WithOverride)
 	return c, err
 }
 
-func (j JobService) ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container {
+func (j JobServiceHandler) ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container {
 
 	if j.platform.Spec.Services.JobService.Persistence != nil && j.platform.Spec.Services.JobService.Persistence.PostgreSql != nil {
 		c := containerSpec.DeepCopy()
@@ -318,13 +320,13 @@ func (j JobService) ConfigurePersistence(containerSpec *corev1.Container) *corev
 	return containerSpec
 }
 
-func (j JobService) MergePodSpec(podSpec corev1.PodSpec) (corev1.PodSpec, error) {
+func (j JobServiceHandler) MergePodSpec(podSpec corev1.PodSpec) (corev1.PodSpec, error) {
 	c := podSpec.DeepCopy()
 	err := mergo.Merge(c, j.platform.Spec.Services.JobService.PodTemplate.PodSpec.ToPodSpec(), mergo.WithOverride)
 	return *c, err
 }
 
-func (j JobService) configurePostgreSqlEnv(postgresql *operatorapi.PersistencePostgreSql, databaseSchema, databaseNamespace string) []corev1.EnvVar {
+func (j JobServiceHandler) configurePostgreSqlEnv(postgresql *operatorapi.PersistencePostgreSql, databaseSchema, databaseNamespace string) []corev1.EnvVar {
 	dataSourcePort := constants.DefaultPostgreSQLPort
 	databaseName := "sonataflow"
 	dataSourceURL := postgresql.JdbcUrl
@@ -389,8 +391,9 @@ func (j JobService) configurePostgreSqlEnv(postgresql *operatorapi.PersistencePo
 	}
 }
 
-func (j JobService) GenerateServiceProperties() (*properties.Properties, error) {
+func (j JobServiceHandler) GenerateServiceProperties() (*properties.Properties, error) {
 	props := properties.NewProperties()
+	props.Set(constants.KogitoServiceURLProperty, generateServiceURL(constants.KogitoServiceURLProtocol, j.platform.Namespace, j.GetServiceName()))
 	props.Set(constants.JobServiceKafkaSmallRyeHealthProperty, "false")
 	// add data source reactive URL
 	jspec := j.platform.Spec.Services.JobService
@@ -402,18 +405,17 @@ func (j JobService) GenerateServiceProperties() (*properties.Properties, error) 
 		props.Set(constants.JobServiceDataSourceReactiveURL, dataSourceReactiveURL)
 	}
 	if dataIndexEnabled(j.platform) {
-		di := NewDataIndexService(j.platform)
+		di := NewDataIndexHandler(j.platform)
 		props.Set(constants.JobServiceStatusChangeEvents, "true")
-		props.Set(constants.JobServiceStatusChangeEventsURL, fmt.Sprintf("%s://%s.%s/jobs", constants.DataIndexServiceURLProtocol, di.GetServiceName(), j.platform.Namespace))
+		props.Set(constants.JobServiceStatusChangeEventsURL, fmt.Sprintf("%s/jobs", generateServiceURL(constants.KogitoProcessEventsProtocol, j.platform.Namespace, di.GetServiceName())))
 	}
 	props.Sort()
 	return props, nil
 }
 
-func (j JobService) GenerateWorkflowProperties() (*properties.Properties, error) {
+func (j JobServiceHandler) GenerateWorkflowProperties() (*properties.Properties, error) {
 	props := properties.NewProperties()
-	// add data source reactive URL
-	props.Set(constants.JobServiceRequestEventsURL, fmt.Sprintf("%s://%s.%s/v2/jobs/events", constants.JobServiceURLProtocol, j.GetServiceName(), j.platform.Namespace))
+	props.Set(constants.JobServiceRequestEventsURL, fmt.Sprintf("%s/v2/jobs/events", generateServiceURL(constants.KogitoProcessEventsProtocol, j.platform.Namespace, j.GetServiceName())))
 	return props, nil
 }
 
@@ -424,4 +426,14 @@ func dataIndexEnabled(platform *operatorapi.SonataFlowPlatform) bool {
 
 func jobServiceEnabled(platform *operatorapi.SonataFlowPlatform) bool {
 	return platform != nil && platform.Spec.Services.JobService != nil && platform.Spec.Services.JobService.Enabled != nil && *platform.Spec.Services.JobService.Enabled
+}
+
+func generateServiceURL(protocol string, namespace string, name string) string {
+	var serviceUrl string
+	if len(namespace) > 0 {
+		serviceUrl = fmt.Sprintf("%s://%s.%s", protocol, name, namespace)
+	} else {
+		serviceUrl = fmt.Sprintf("%s://%s", protocol, name)
+	}
+	return serviceUrl
 }

@@ -47,7 +47,7 @@ var (
 
 type serviceAppPropertyHandler struct {
 	userProperties           string
-	platform                 Platform
+	serviceHandler           PlatformServiceHandler
 	defaultMutableProperties *properties.Properties
 }
 
@@ -59,9 +59,9 @@ type ServiceAppPropertyHandler interface {
 // NewServiceAppPropertyHandler creates the default service configurations property handler
 // The set of properties is initialized with the operator provided immutable properties.
 // The set of defaultMutableProperties is initialized with the operator provided properties that the user might override.
-func NewServiceAppPropertyHandler(ps Platform) (ServiceAppPropertyHandler, error) {
+func NewServiceAppPropertyHandler(serviceHandler PlatformServiceHandler) (ServiceAppPropertyHandler, error) {
 	handler := &serviceAppPropertyHandler{}
-	props, err := ps.GenerateServiceProperties()
+	props, err := serviceHandler.GenerateServiceProperties()
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func (a *serviceAppPropertyHandler) Build() string {
 		props, propErr = properties.LoadString(a.userProperties)
 	}
 	if propErr != nil {
-		klog.V(log.D).InfoS("Can't load user's property", "service", a.platform.GetServiceName(), "properties", a.userProperties)
+		klog.V(log.D).InfoS("Can't load user's property", "service", a.serviceHandler.GetServiceName(), "properties", a.userProperties)
 		props = properties.NewProperties()
 	}
 	props = utils.NewApplicationPropertiesBuilder().
@@ -158,10 +158,12 @@ func generateReactiveURL(postgresSpec *operatorapi.PersistencePostgreSql, schema
 // Never nil.
 func GenerateDataIndexWorkflowProperties(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (*properties.Properties, error) {
 	props := properties.NewProperties()
-	props.Set(constants.KogitoProcessInstancesEnabled, "false")
+	props.Set(constants.KogitoProcessDefinitionsEventsEnabled, "false")
+	props.Set(constants.KogitoProcessInstancesEventsEnabled, "false")
 	if workflow != nil && !profiles.IsDevProfile(workflow) && dataIndexEnabled(platform) {
-		props.Set(constants.KogitoProcessInstancesEnabled, "true")
-		di := NewDataIndexService(platform)
+		props.Set(constants.KogitoProcessDefinitionsEventsEnabled, "true")
+		props.Set(constants.KogitoProcessInstancesEventsEnabled, "true")
+		di := NewDataIndexHandler(platform)
 		p, err := di.GenerateWorkflowProperties()
 		if err != nil {
 			return nil, err
@@ -182,7 +184,7 @@ func GenerateJobServiceWorkflowProperties(workflow *operatorapi.SonataFlow, plat
 	props.Set(constants.JobServiceRequestEventsConnector, constants.QuarkusHTTP)
 	props.Set(constants.JobServiceRequestEventsURL, fmt.Sprintf("%s://localhost/v2/jobs/events", constants.JobServiceURLProtocol))
 	if workflow != nil && !profiles.IsDevProfile(workflow) && jobServiceEnabled(platform) {
-		js := NewJobService(platform)
+		js := NewJobServiceHandler(platform)
 		p, err := js.GenerateWorkflowProperties()
 		if err != nil {
 			return nil, err

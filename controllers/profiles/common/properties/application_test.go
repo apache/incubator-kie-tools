@@ -124,7 +124,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithNoUserOverrides(t *testing.T)
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 11, len(generatedProps.Keys()))
+	assert.Equal(t, 9, len(generatedProps.Keys()))
 	assert.Equal(t, "value1", generatedProps.GetString("property1", ""))
 	assert.Equal(t, "value2", generatedProps.GetString("property2", ""))
 	assert.Equal(t, "http://greeting.default", generatedProps.GetString("kogito.service.url", ""))
@@ -133,9 +133,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithNoUserOverrides(t *testing.T)
 	assert.Equal(t, "false", generatedProps.GetString("org.kie.kogito.addons.knative.eventing.health-enabled", ""))
 	assert.Equal(t, "false", generatedProps.GetString("quarkus.devservices.enabled", ""))
 	assert.Equal(t, "false", generatedProps.GetString("quarkus.kogito.devservices.enabled", ""))
-	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessDefinitionsEnabled, ""))
-	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoEventsUserTaskEnabled, ""))
-	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoEventsVariablesEnabled, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
 }
 
 func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T) {
@@ -159,7 +157,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 		Build())
 	generatedProps.DisableExpansion = true
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 25, len(generatedProps.Keys()))
+	assert.Equal(t, 23, len(generatedProps.Keys()))
 	assertHasProperty(t, generatedProps, "property1", "value1")
 	assertHasProperty(t, generatedProps, "property2", "value2")
 
@@ -183,9 +181,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 	assertHasProperty(t, generatedProps, "org.kie.kogito.addons.knative.eventing.health-enabled", "false")
 	assertHasProperty(t, generatedProps, "quarkus.devservices.enabled", "false")
 	assertHasProperty(t, generatedProps, "quarkus.kogito.devservices.enabled", "false")
-	assertHasProperty(t, generatedProps, constants.KogitoProcessDefinitionsEnabled, "false")
-	assertHasProperty(t, generatedProps, constants.KogitoEventsUserTaskEnabled, "false")
-	assertHasProperty(t, generatedProps, constants.KogitoEventsVariablesEnabled, "false")
+	assertHasProperty(t, generatedProps, constants.KogitoUserTasksEventsEnabled, "false")
 }
 
 func assertHasProperty(t *testing.T, props *properties.Properties, expectedProperty string, expectedValue string) {
@@ -218,7 +214,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 14, len(generatedProps.Keys()))
+	assert.Equal(t, 13, len(generatedProps.Keys()))
 	assert.Equal(t, "value1", generatedProps.GetString("property1", ""))
 	assert.Equal(t, "value2", generatedProps.GetString("property2", ""))
 
@@ -230,11 +226,12 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.Equal(t, "false", generatedProps.GetString("org.kie.kogito.addons.knative.eventing.health-enabled", ""))
 	assert.Equal(t, "false", generatedProps.GetString("quarkus.devservices.enabled", ""))
 	assert.Equal(t, "false", generatedProps.GetString("quarkus.kogito.devservices.enabled", ""))
-	assert.Equal(t, "", generatedProps.GetString(constants.DataIndexServiceURLProperty, ""))
 	assert.Equal(t, "http://localhost/v2/jobs/events", generatedProps.GetString(constants.JobServiceRequestEventsURL, ""))
-	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessDefinitionsEnabled, ""))
-	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoEventsUserTaskEnabled, ""))
-	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoEventsVariablesEnabled, ""))
+	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsEnabled, ""))
+	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessInstancesEventsEnabled, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
 
 	// prod profile enables config of outgoing events url
 	workflow.SetAnnotations(map[string]string{metadata.Profile: string(metadata.ProdProfile)})
@@ -243,8 +240,12 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
 	assert.Equal(t, 15, len(generatedProps.Keys()))
-	assert.Equal(t, "http://"+platform.Name+"-"+constants.DataIndexServiceName+"."+platform.Namespace+"/processes", generatedProps.GetString(constants.DataIndexServiceURLProperty, ""))
+	assert.Equal(t, "http://"+platform.Name+"-"+constants.DataIndexServiceName+"."+platform.Namespace+"/definitions", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
+	assert.Equal(t, "true", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsEnabled, ""))
+	assert.Equal(t, "http://"+platform.Name+"-"+constants.DataIndexServiceName+"."+platform.Namespace+"/processes", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
+	assert.Equal(t, "true", generatedProps.GetString(constants.KogitoProcessInstancesEventsEnabled, ""))
 	assert.Equal(t, "http://"+platform.Name+"-"+constants.JobServiceName+"."+platform.Namespace+"/v2/jobs/events", generatedProps.GetString(constants.JobServiceRequestEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceDataSourceReactiveURL, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEvents, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
@@ -255,8 +256,12 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 14, len(generatedProps.Keys()))
-	assert.Equal(t, "", generatedProps.GetString(constants.DataIndexServiceURLProperty, ""))
+	assert.Equal(t, 13, len(generatedProps.Keys()))
+	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsEnabled, ""))
+	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessInstancesEventsEnabled, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
 	assert.Equal(t, "http://"+platform.Name+"-"+constants.JobServiceName+"."+platform.Namespace+"/v2/jobs/events", generatedProps.GetString(constants.JobServiceRequestEventsURL, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEvents, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
@@ -267,53 +272,16 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 14, len(generatedProps.Keys()))
-	assert.Equal(t, "", generatedProps.GetString(constants.DataIndexServiceURLProperty, ""))
+	assert.Equal(t, 13, len(generatedProps.Keys()))
+	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsEnabled, ""))
+	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessInstancesEventsURL, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoProcessInstancesEventsEnabled, ""))
+	assert.Equal(t, "false", generatedProps.GetString(constants.KogitoUserTasksEventsEnabled, ""))
 	assert.Equal(t, "http://localhost/v2/jobs/events", generatedProps.GetString(constants.JobServiceRequestEventsURL, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceDataSourceReactiveURL, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEvents, ""))
 	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
-
-	// check that the reactive URL is generated from the postgreSQL JDBC URL when not provided
-	platform.Spec.Services.JobService = &operatorapi.ServiceSpec{
-		Enabled: &enabled,
-		Persistence: &operatorapi.PersistenceOptions{
-			PostgreSql: &operatorapi.PersistencePostgreSql{
-				ServiceRef: &operatorapi.PostgreSqlServiceOptions{
-					Name: "jobs-service",
-				},
-			},
-		},
-	}
-	props, err = NewAppPropertyHandler(workflow, platform)
-	assert.NoError(t, err)
-	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
-	assert.NoError(t, propsErr)
-	assert.Equal(t, 14, len(generatedProps.Keys()))
-	assert.Equal(t, "", generatedProps.GetString(constants.DataIndexServiceURLProperty, ""))
-	assert.Equal(t, "http://"+platform.Name+"-"+constants.JobServiceName+"."+platform.Namespace+"/v2/jobs/events", generatedProps.GetString(constants.JobServiceRequestEventsURL, ""))
-	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEvents, ""))
-	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
-
-	// check that the reactive URL is generated from the postgreSQL JDBC URL when provided
-	platform.Spec.Services.JobService = &operatorapi.ServiceSpec{
-		Enabled: &enabled,
-		Persistence: &operatorapi.PersistenceOptions{
-			PostgreSql: &operatorapi.PersistencePostgreSql{
-				JdbcUrl: "jdbc:postgresql://timeouts-showcase-database:5432/postgres?currentSchema=jobs-service",
-			},
-		},
-	}
-	props, err = NewAppPropertyHandler(workflow, platform)
-	assert.NoError(t, err)
-	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
-	assert.NoError(t, propsErr)
-	assert.Equal(t, 14, len(generatedProps.Keys()))
-	assert.Equal(t, "", generatedProps.GetString(constants.DataIndexServiceURLProperty, ""))
-	assert.Equal(t, "http://sonataflow-platform-jobs-service.default/v2/jobs/events", generatedProps.GetString(constants.JobServiceRequestEventsURL, ""))
-	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEvents, ""))
-	assert.Equal(t, "", generatedProps.GetString(constants.JobServiceStatusChangeEventsURL, ""))
-
 }
 
 var _ = Describe("Platform properties", func() {
@@ -477,18 +445,17 @@ var _ = Describe("Platform properties", func() {
 func generateJobServiceWorkflowDevProperties() *properties.Properties {
 	if jobServiceDevProperties == nil {
 		jobServiceDevProperties = properties.NewProperties()
-		jobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
-		jobServiceDevProperties.Set("quarkus.devservices.enabled", "false")
 		jobServiceDevProperties.Set("kogito.service.url", "http://foo.default")
-		jobServiceDevProperties.Set("quarkus.kogito.devservices.enabled", "false")
 		jobServiceDevProperties.Set("quarkus.http.host", "0.0.0.0")
 		jobServiceDevProperties.Set("quarkus.http.port", "8080")
-		jobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+		jobServiceDevProperties.Set("quarkus.devservices.enabled", "false")
+		jobServiceDevProperties.Set("quarkus.kogito.devservices.enabled", "false")
 		jobServiceDevProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+		jobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+		jobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		jobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		jobServiceDevProperties.Set("kogito.events.processinstances.enabled", "false")
 		jobServiceDevProperties.Set("kogito.events.usertasks.enabled", "false")
-		jobServiceDevProperties.Set("kogito.events.variables.enabled", "false")
-		jobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
 		jobServiceDevProperties.Sort()
 	}
 	return jobServiceDevProperties
@@ -497,18 +464,17 @@ func generateJobServiceWorkflowDevProperties() *properties.Properties {
 func generateJobServiceWorkflowProductionProperties() *properties.Properties {
 	if jobServiceProdProperties == nil {
 		jobServiceProdProperties = properties.NewProperties()
-		jobServiceProdProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		jobServiceProdProperties.Set("kogito.events.processdefinitions.enabled", "false")
-		jobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		jobServiceProdProperties.Set("kogito.service.url", "http://foo.default")
 		jobServiceProdProperties.Set("quarkus.http.host", "0.0.0.0")
 		jobServiceProdProperties.Set("quarkus.http.port", "8080")
-		jobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://foo-jobs-service.default/v2/jobs/events")
-		jobServiceProdProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+		jobServiceProdProperties.Set("quarkus.kogito.devservices.enabled", "false")
 		jobServiceProdProperties.Set("quarkus.devservices.enabled", "false")
+		jobServiceProdProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+		jobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		jobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://foo-jobs-service.default/v2/jobs/events")
+		jobServiceProdProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		jobServiceProdProperties.Set("kogito.events.processinstances.enabled", "false")
 		jobServiceProdProperties.Set("kogito.events.usertasks.enabled", "false")
-		jobServiceProdProperties.Set("kogito.events.variables.enabled", "false")
-		jobServiceProdProperties.Set("kogito.service.url", "http://foo.default")
 		jobServiceProdProperties.Sort()
 	}
 	return jobServiceProdProperties
@@ -517,18 +483,18 @@ func generateJobServiceWorkflowProductionProperties() *properties.Properties {
 func generateDataIndexWorkflowDevProperties() *properties.Properties {
 	if dataIndexDevProperties == nil {
 		dataIndexDevProperties = properties.NewProperties()
-		dataIndexDevProperties.Set("kogito.events.variables.enabled", "false")
-		dataIndexDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		dataIndexDevProperties.Set("kogito.service.url", "http://foo.default")
+		dataIndexDevProperties.Set("quarkus.http.host", "0.0.0.0")
+		dataIndexDevProperties.Set("quarkus.http.port", "8080")
 		dataIndexDevProperties.Set("quarkus.devservices.enabled", "false")
 		dataIndexDevProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		dataIndexDevProperties.Set("kogito.service.url", "http://foo.default")
 		dataIndexDevProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
-		dataIndexDevProperties.Set("quarkus.http.port", "8080")
+		//TODO revisar, pero para el dev profile esto no va
+		dataIndexDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		dataIndexDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
 		dataIndexDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		dataIndexDevProperties.Set("kogito.events.processinstances.enabled", "false")
 		dataIndexDevProperties.Set("kogito.events.usertasks.enabled", "false")
-		dataIndexDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
-		dataIndexDevProperties.Set("quarkus.http.host", "0.0.0.0")
 		dataIndexDevProperties.Sort()
 	}
 	return dataIndexDevProperties
@@ -537,19 +503,19 @@ func generateDataIndexWorkflowDevProperties() *properties.Properties {
 func generateDataIndexWorkflowProductionProperties() *properties.Properties {
 	if dataIndexProdProperties == nil {
 		dataIndexProdProperties = properties.NewProperties()
-		dataIndexProdProperties.Set("kogito.events.variables.enabled", "false")
-		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		dataIndexProdProperties.Set("kogito.service.url", "http://foo.default")
+		dataIndexProdProperties.Set("quarkus.http.host", "0.0.0.0")
+		dataIndexProdProperties.Set("quarkus.http.port", "8080")
 		dataIndexProdProperties.Set("quarkus.devservices.enabled", "false")
 		dataIndexProdProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		dataIndexProdProperties.Set("kogito.service.url", "http://foo.default")
 		dataIndexProdProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-processdefinitions-events.url", "http://foo-data-index-service.default/definitions")
 		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-processinstances-events.url", "http://foo-data-index-service.default/processes")
-		dataIndexProdProperties.Set("quarkus.http.port", "8080")
-		dataIndexProdProperties.Set("kogito.events.processdefinitions.enabled", "false")
+		dataIndexProdProperties.Set("kogito.events.processdefinitions.enabled", "true")
 		dataIndexProdProperties.Set("kogito.events.processinstances.enabled", "true")
 		dataIndexProdProperties.Set("kogito.events.usertasks.enabled", "false")
-		dataIndexProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
-		dataIndexProdProperties.Set("quarkus.http.host", "0.0.0.0")
 		dataIndexProdProperties.Sort()
 	}
 	return dataIndexProdProperties
@@ -558,18 +524,17 @@ func generateDataIndexWorkflowProductionProperties() *properties.Properties {
 func generateDataIndexAndJobServiceWorkflowDevProperties() *properties.Properties {
 	if dataIndexJobServiceDevProperties == nil {
 		dataIndexJobServiceDevProperties = properties.NewProperties()
-		dataIndexJobServiceDevProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		dataIndexJobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
-		dataIndexJobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		dataIndexJobServiceDevProperties.Set("kogito.service.url", "http://foo.default")
 		dataIndexJobServiceDevProperties.Set("quarkus.http.host", "0.0.0.0")
 		dataIndexJobServiceDevProperties.Set("quarkus.http.port", "8080")
-		dataIndexJobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
-		dataIndexJobServiceDevProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+		dataIndexJobServiceDevProperties.Set("quarkus.kogito.devservices.enabled", "false")
 		dataIndexJobServiceDevProperties.Set("quarkus.devservices.enabled", "false")
+		dataIndexJobServiceDevProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+		dataIndexJobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		dataIndexJobServiceDevProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://localhost/v2/jobs/events")
+		dataIndexJobServiceDevProperties.Set("kogito.events.processdefinitions.enabled", "false")
 		dataIndexJobServiceDevProperties.Set("kogito.events.processinstances.enabled", "false")
 		dataIndexJobServiceDevProperties.Set("kogito.events.usertasks.enabled", "false")
-		dataIndexJobServiceDevProperties.Set("kogito.events.variables.enabled", "false")
-		dataIndexJobServiceDevProperties.Set("kogito.service.url", "http://foo.default")
 		dataIndexJobServiceDevProperties.Sort()
 	}
 	return dataIndexJobServiceDevProperties
@@ -578,18 +543,18 @@ func generateDataIndexAndJobServiceWorkflowDevProperties() *properties.Propertie
 func generateDataIndexAndJobServiceWorkflowProductionProperties() *properties.Properties {
 	if dataIndexJobServiceProdProperties == nil {
 		dataIndexJobServiceProdProperties = properties.NewProperties()
-		dataIndexJobServiceProdProperties.Set("quarkus.kogito.devservices.enabled", "false")
-		dataIndexJobServiceProdProperties.Set("kogito.events.processdefinitions.enabled", "false")
-		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		dataIndexJobServiceProdProperties.Set("kogito.service.url", "http://foo.default")
 		dataIndexJobServiceProdProperties.Set("quarkus.http.host", "0.0.0.0")
 		dataIndexJobServiceProdProperties.Set("quarkus.http.port", "8080")
-		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://foo-jobs-service.default/v2/jobs/events")
-		dataIndexJobServiceProdProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+		dataIndexJobServiceProdProperties.Set("quarkus.kogito.devservices.enabled", "false")
 		dataIndexJobServiceProdProperties.Set("quarkus.devservices.enabled", "false")
+		dataIndexJobServiceProdProperties.Set("org.kie.kogito.addons.knative.eventing.health-enabled", "false")
+		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.connector", "quarkus-http")
+		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-job-service-job-request-events.url", "http://foo-jobs-service.default/v2/jobs/events")
+		dataIndexJobServiceProdProperties.Set("kogito.events.processdefinitions.enabled", "true")
 		dataIndexJobServiceProdProperties.Set("kogito.events.processinstances.enabled", "true")
 		dataIndexJobServiceProdProperties.Set("kogito.events.usertasks.enabled", "false")
-		dataIndexJobServiceProdProperties.Set("kogito.events.variables.enabled", "false")
-		dataIndexJobServiceProdProperties.Set("kogito.service.url", "http://foo.default")
+		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-processdefinitions-events.url", "http://foo-data-index-service.default/definitions")
 		dataIndexJobServiceProdProperties.Set("mp.messaging.outgoing.kogito-processinstances-events.url", "http://foo-data-index-service.default/processes")
 		dataIndexJobServiceProdProperties.Sort()
 	}

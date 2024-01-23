@@ -127,7 +127,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 
 		// Check data index deployment
 		dep := &appsv1.Deployment{}
-		di := services.NewDataIndexService(ksp)
+		di := services.NewDataIndexHandler(ksp)
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: di.GetServiceName(), Namespace: ksp.Namespace}, dep))
 
 		env := corev1.EnvVar{
@@ -179,7 +179,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 			},
 		}
 
-		di := services.NewDataIndexService(ksp)
+		di := services.NewDataIndexHandler(ksp)
 
 		// Create a fake client to mock API calls.
 		cl := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(ksp).WithStatusSubresource(ksp).Build()
@@ -295,7 +295,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 
 		// Check data index deployment
 		dep := &appsv1.Deployment{}
-		js := services.NewJobService(ksp)
+		js := services.NewJobServiceHandler(ksp)
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: js.GetServiceName(), Namespace: ksp.Namespace}, dep))
 
 		assert.Len(t, dep.Spec.Template.Spec.Containers, 1)
@@ -345,7 +345,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 			},
 		}
 
-		js := services.NewJobService(ksp)
+		js := services.NewJobServiceHandler(ksp)
 
 		// Create a fake client to mock API calls.
 		cl := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(ksp).WithStatusSubresource(ksp).Build()
@@ -420,8 +420,8 @@ func TestSonataFlowPlatformController(t *testing.T) {
 			JobService: &v1alpha08.ServiceSpec{},
 		}
 
-		di := services.NewDataIndexService(ksp)
-		js := services.NewJobService(ksp)
+		di := services.NewDataIndexHandler(ksp)
+		js := services.NewJobServiceHandler(ksp)
 		// Create a fake client to mock API calls.
 		cl := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(ksp).WithStatusSubresource(ksp).Build()
 		// Create a SonataFlowPlatformReconciler object with the scheme and fake client.

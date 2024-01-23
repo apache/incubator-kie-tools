@@ -63,13 +63,13 @@ func (action *serviceAction) Handle(ctx context.Context, platform *operatorapi.S
 	}
 
 	if platform.Spec.Services.DataIndex != nil {
-		if err := createServiceComponents(ctx, action.client, platform, services.NewDataIndexService(platform)); err != nil {
+		if err := createServiceComponents(ctx, action.client, platform, services.NewDataIndexHandler(platform)); err != nil {
 			return nil, err
 		}
 	}
 
 	if platform.Spec.Services.JobService != nil {
-		if err := createServiceComponents(ctx, action.client, platform, services.NewJobService(platform)); err != nil {
+		if err := createServiceComponents(ctx, action.client, platform, services.NewJobServiceHandler(platform)); err != nil {
 			return nil, err
 		}
 	}
@@ -77,17 +77,17 @@ func (action *serviceAction) Handle(ctx context.Context, platform *operatorapi.S
 	return platform, nil
 }
 
-func createServiceComponents(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, ps services.Platform) error {
-	if err := createConfigMap(ctx, client, platform, ps); err != nil {
+func createServiceComponents(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
+	if err := createConfigMap(ctx, client, platform, psh); err != nil {
 		return err
 	}
-	if err := createDeployment(ctx, client, platform, ps); err != nil {
+	if err := createDeployment(ctx, client, platform, psh); err != nil {
 		return err
 	}
-	return createService(ctx, client, platform, ps)
+	return createService(ctx, client, platform, psh)
 }
 
-func createDeployment(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, ps services.Platform) error {
+func createDeployment(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
 	readyProbe := &corev1.Probe{
 		ProbeHandler: corev1.ProbeHandler{
 			HTTPGet: &corev1.HTTPGetAction{
@@ -105,9 +105,9 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 	liveProbe := readyProbe.DeepCopy()
 	liveProbe.ProbeHandler.HTTPGet.Path = common.QuarkusHealthPathLive
 	dataDeployContainer := &corev1.Container{
-		Image:          ps.GetServiceImageName(constants.PersistenceTypeEphemeral),
-		Env:            ps.GetEnvironmentVariables(),
-		Resources:      ps.GetPodResourceRequirements(),
+		Image:          psh.GetServiceImageName(constants.PersistenceTypeEphemeral),
+		Env:            psh.GetEnvironmentVariables(),
+		Resources:      psh.GetPodResourceRequirements(),
 		ReadinessProbe: readyProbe,
 		LivenessProbe:  liveProbe,
 		Ports: []corev1.ContainerPort{
@@ -125,17 +125,17 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 			},
 		},
 	}
-	dataDeployContainer = ps.ConfigurePersistence(dataDeployContainer)
-	dataDeployContainer, err := ps.MergeContainerSpec(dataDeployContainer)
+	dataDeployContainer = psh.ConfigurePersistence(dataDeployContainer)
+	dataDeployContainer, err := psh.MergeContainerSpec(dataDeployContainer)
 	if err != nil {
 		return err
 	}
 
 	// immutable
-	dataDeployContainer.Name = ps.GetContainerName()
+	dataDeployContainer.Name = psh.GetContainerName()
 
-	replicas := ps.GetReplicaCount()
-	lbl, selectorLbl := getLabels(platform, ps)
+	replicas := psh.GetReplicaCount()
+	lbl, selectorLbl := getLabels(platform, psh)
 	dataDeploySpec := appsv1.DeploymentSpec{
 		Selector: &metav1.LabelSelector{
 			MatchLabels: selectorLbl,
@@ -152,7 +152,7 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 						VolumeSource: corev1.VolumeSource{
 							ConfigMap: &corev1.ConfigMapVolumeSource{
 								LocalObjectReference: corev1.LocalObjectReference{
-									Name: ps.GetServiceCmName(),
+									Name: psh.GetServiceCmName(),
 								},
 							},
 						},
@@ -162,7 +162,7 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 		},
 	}
 
-	dataDeploySpec.Template.Spec, err = ps.MergePodSpec(dataDeploySpec.Template.Spec)
+	dataDeploySpec.Template.Spec, err = psh.MergePodSpec(dataDeploySpec.Template.Spec)
 	if err != nil {
 		return err
 	}
@@ -171,7 +171,7 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 	dataDeploy := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: platform.Namespace,
-			Name:      ps.GetServiceName(),
+			Name:      psh.GetServiceName(),
 			Labels:    lbl,
 		}}
 	if err := controllerutil.SetControllerReference(platform, dataDeploy, client.Scheme()); err != nil {
@@ -192,8 +192,8 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 	return nil
 }
 
-func createService(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, ps services.Platform) error {
-	lbl, selectorLbl := getLabels(platform, ps)
+func createService(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
+	lbl, selectorLbl := getLabels(platform, psh)
 	dataSvcSpec := corev1.ServiceSpec{
 		Ports: []corev1.ServicePort{
 			{
@@ -208,7 +208,7 @@ func createService(ctx context.Context, client client.Client, platform *operator
 	dataSvc := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: platform.Namespace,
-			Name:      ps.GetServiceName(),
+			Name:      psh.GetServiceName(),
 			Labels:    lbl,
 		}}
 	if err := controllerutil.SetControllerReference(platform, dataSvc, client.Scheme()); err != nil {
@@ -229,26 +229,26 @@ func createService(ctx context.Context, client client.Client, platform *operator
 	return nil
 }
 
-func getLabels(platform *operatorapi.SonataFlowPlatform, ps services.Platform) (map[string]string, map[string]string) {
+func getLabels(platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) (map[string]string, map[string]string) {
 	lbl := map[string]string{
 		workflowproj.LabelApp:     platform.Name,
-		workflowproj.LabelService: ps.GetServiceName(),
+		workflowproj.LabelService: psh.GetServiceName(),
 	}
 	selectorLbl := map[string]string{
-		workflowproj.LabelService: ps.GetServiceName(),
+		workflowproj.LabelService: psh.GetServiceName(),
 	}
 	return lbl, selectorLbl
 }
 
-func createConfigMap(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, ps services.Platform) error {
-	handler, err := services.NewServiceAppPropertyHandler(ps)
+func createConfigMap(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
+	handler, err := services.NewServiceAppPropertyHandler(psh)
 	if err != nil {
 		return err
 	}
-	lbl, _ := getLabels(platform, ps)
+	lbl, _ := getLabels(platform, psh)
 	configMap := &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      ps.GetServiceCmName(),
+			Name:      psh.GetServiceCmName(),
 			Namespace: platform.Namespace,
 			Labels:    lbl,
 		},
