@@ -36,6 +36,11 @@ export type ResourcePatch = {
   jsonPatches: PatchOperation[];
 };
 
+// Because the characters '~' (%x7E) and '/' (%x2F) have special
+// meanings in JSON Pointer, '~' needs to be encoded as '~0' and '/'
+// needs to be encoded as '~1' when these characters appear in a
+// reference token.
+// https://datatracker.ietf.org/doc/html/rfc6901#section-3
 export function encodeJsonPatchSubpath(path: string) {
   return path.replaceAll("~", "~0").replaceAll("/", "~1");
 }

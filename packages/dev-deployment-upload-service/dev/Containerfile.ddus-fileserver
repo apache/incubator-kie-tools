@@ -17,6 +17,8 @@
 
 FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.3
 
+ARG DDUS_VERSION="0.0.0"
+
 RUN microdnf -y install httpd \
   && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/Listen 80/Listen 8090/' /etc/httpd/conf/httpd.conf \
@@ -28,7 +30,7 @@ RUN microdnf -y install httpd \
   && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html \
   && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html
 
-COPY dist/* /var/www/html/apache/incubator-kie-tools/releases/download/0.0.0/
+COPY dist/* /var/www/html/apache/incubator-kie-tools/releases/download/${DDUS_VERSION}/
 
 EXPOSE 8090
 
