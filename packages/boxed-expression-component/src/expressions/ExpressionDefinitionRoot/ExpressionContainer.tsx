@@ -66,9 +66,9 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   // Selecting the Expression container should reset the selectObject
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject("");
+      beeGwtService?.selectObject(expression.id);
     }
-  }, [beeGwtService, isActive]);
+  }, [beeGwtService, isActive, expression.id]);
 
   const addContextExpressionToVariables = useCallback(
     (contextExpressionDefinition: ContextExpressionDefinition) => {

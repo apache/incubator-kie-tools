@@ -70,6 +70,8 @@ export function PmmlFunctionExpression({
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameters);
 
+  const parametersId = useMemo(() => generateUuid(), []);
+
   const beeTableColumns = useMemo<ReactTable.Column<PMML_ROWTYPE>[]>(() => {
     return [
       {
@@ -81,7 +83,7 @@ export function PmmlFunctionExpression({
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: "parameters" as any,
+            accessor: parametersId as any,
             label: "parameters",
             isRowIndexColumn: false,
             dataType: undefined as any,
@@ -111,7 +113,7 @@ export function PmmlFunctionExpression({
         ],
       },
     ];
-  }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
+  }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader, parametersId]);
 
   const headerVisibility = useMemo(() => {
     return functionExpression.isNested
@@ -271,11 +273,11 @@ function PmmlFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
   const { beeGwtService } = useBoxedExpressionEditor();
 
   // Selecting the PMML function parameters should reset the selectObject
-  useEffect(() => {
-    if (isActive) {
-      beeGwtService?.selectObject("");
-    }
-  }, [beeGwtService, isActive]);
+  // useEffect(() => {
+  //   if (isActive) {
+  //     beeGwtService?.selectObject("");
+  //   }
+  // }, [beeGwtService, isActive]);
 
   return (
     <div className={"pmml-function-expression-label"}>

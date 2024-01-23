@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableContextMenuAllowedOperationsConditions,
@@ -54,6 +54,7 @@ import { ContextEntryInfoCell } from "../ContextExpression";
 import "./InvocationExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
+import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -83,6 +84,20 @@ export function InvocationExpression(
       setParametersResizingWidth(newResizingWidth);
     }
   }, []);
+
+  const { containerCellCoordinates } = useBeeTableCoordinates();
+  const { isActive } = useBeeTableSelectableCellRef(
+    containerCellCoordinates?.rowIndex ?? 0,
+    containerCellCoordinates?.columnIndex ?? 0,
+    undefined
+  );
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject();
+    }
+  }, [beeGwtService, isActive]);
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -137,6 +152,8 @@ export function InvocationExpression(
     [setExpression]
   );
 
+  const calledFunctionId = useMemo(() => generateUuid(), []);
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
@@ -147,7 +164,7 @@ export function InvocationExpression(
         width: undefined,
         columns: [
           {
-            accessor: "functionName" as keyof ROWTYPE,
+            accessor: calledFunctionId as any,
             label: invocationExpression.invokedFunction.name ?? "Function name",
             isRowIndexColumn: false,
             isInlineEditable: true,
@@ -185,13 +202,14 @@ export function InvocationExpression(
       invocationExpression.invokedFunction.name,
       parametersWidth,
       setParametersWidth,
+      calledFunctionId,
     ]
   );
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
-        if (u.column.originalId === "functionName") {
+        if (u.column.originalId === calledFunctionId) {
           setExpression((prev: InvocationExpressionDefinition) => ({
             ...prev,
             invokedFunction: {
@@ -208,7 +226,7 @@ export function InvocationExpression(
         }
       }
     },
-    [setExpression]
+    [setExpression, calledFunctionId]
   );
 
   const headerVisibility = useMemo(

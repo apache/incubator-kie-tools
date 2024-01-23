@@ -18,15 +18,18 @@
  */
 
 import * as React from "react";
-import { DescriptionField, ExpressionLanguageField, LabelField, TextField } from "./Fields";
+import { DescriptionField, ExpressionLanguageField, KieConstraintTypeField, LabelField, TextField } from "./Fields";
 import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
 
 /**
- * Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">
- * This component implements a form to change an object with the DMN15__tLiteralExpression type
- * It's used for: DecisionTableOutputRuleCell, InvocationExpressionCallCell, LiteralExpressionCells, RelationExpressionContentCell
+ * Pick<
+    DMN15__tUnaryTests,
+    "@_expressionLanguage" | "@_kie:constraintType" | "@_label" | "description" | "text"
+  >;
+ * This component implements a form to change an object with the DMN15__tUnaryTests type
+ * It's used for: DecisionTableInputRuleCell
  */
-export function LiteralExpressionContentCell(props: {
+export function UnaryTestCell(props: {
   text: string;
   expressionLanguage: string;
   label: string;
@@ -58,6 +61,7 @@ export function LiteralExpressionContentCell(props: {
         expressionPath={props.expressionPath}
         onChange={props.onChangeDescription}
       />
+      <KieConstraintTypeField />
     </>
   );
 }

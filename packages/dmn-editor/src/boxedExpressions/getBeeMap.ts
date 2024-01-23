@@ -272,46 +272,50 @@ export function generateBeeMap(
   }
 }
 
-export enum CellType {
-  CONTENT = "content",
-  EXPRESSION = "expression",
-  HEADER = "header",
-  INPUT_HEADER = "inputHeader",
-  OUTPUT_HEADER = "outputHeader",
-  PARAMETER = "parameter",
-  ROOT = "root",
-  INPUT_RULE = "inputRule",
-  OUTPUT_RULE = "outputRule",
-  VARIABLE = "variable",
+export enum BeePropertiesPanelComponent {
+  DECISION_TABLE_INPUT_HEADER,
+  DECISION_TABLE_OUTPUT_HEADER,
+  DECISION_TABLE_ROOT,
+  EXPRESSION_ROOT,
+  FUNCTION_DEFINITION_PARAMETERS,
+  FUNCTION_DEFINITION_ROOT,
+  INFORMATION_ITEM_CELL,
+  LITERAL_EXPRESSION_CONTENT,
+  UNARY_TEST,
 }
 
 interface CellIdentification {
   type: AllExpressionTypes;
+  cell: BeePropertiesPanelComponent;
+  content: any;
 }
-
-// LITERAL - START
-interface LiteralExpressionCells extends CellIdentification {
-  type: "literalExpression";
-  [CellType.CONTENT]: Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">;
-}
-// LITERAL - END
 
 // CONTEXT - START
-interface ContextExpressionCells extends CellIdentification {
+type ContextExpressionCells = ContextExpressionRootCell | ContextExpressionVariableCell;
+interface ContextExpressionRootCell extends CellIdentification {
   type: "context";
-  [CellType.ROOT]: Pick<DMN15__tContext, "@_label" | "description">;
-  [CellType.VARIABLE]: Pick<DMN15__tInformationItem, "@_label" | "@_name" | "@_typeRef" | "description">;
+  cell: BeePropertiesPanelComponent.EXPRESSION_ROOT;
+  content: Pick<DMN15__tContext, "@_label" | "description">;
+}
+interface ContextExpressionVariableCell extends CellIdentification {
+  type: "context";
+  cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL;
+  content: Pick<DMN15__tInformationItem, "@_label" | "@_name" | "@_typeRef" | "description">;
 }
 // CONTEXT - END
 
 // DECISION TABLE - START
-interface DecisionTableCells extends CellIdentification {
+type DecisionTableCells =
+  | DecisionTableInputHeaderCell
+  | DecisionTableInputRuleCell
+  | DecisionTableOutputHeaderCell
+  | DecisionTableOutputRuleCell
+  | DecisionTableRootCell;
+
+interface DecisionTableInputHeaderCell extends CellIdentification {
   type: "decisionTable";
-  [CellType.ROOT]: Pick<
-    DMN15__tDecisionTable,
-    "@_aggregation" | "@_hitPolicy" | "@_label" | "@_outputLabel" | "description"
-  >;
-  [CellType.INPUT_HEADER]: Pick<DMN15__tInputClause, "@_label" | "description"> & {
+  cell: BeePropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER;
+  content: Pick<DMN15__tInputClause, "@_label" | "description"> & {
     inputExpression: Pick<
       DMN15__tLiteralExpression,
       "@_expressionLanguage" | "@_label" | "description" | "text" | "@_typeRef"
@@ -321,85 +325,162 @@ interface DecisionTableCells extends CellIdentification {
       "@_expressionLanguage" | "@_kie:constraintType" | "@_label" | "description" | "text"
     >;
   };
-  [CellType.OUTPUT_HEADER]: Pick<DMN15__tOutputClause, "@_label" | "@_name" | "@_typeRef" | "description"> & {
+}
+
+interface DecisionTableInputRuleCell extends CellIdentification {
+  type: "decisionTable";
+  cell: BeePropertiesPanelComponent.UNARY_TEST;
+  content: Pick<
+    DMN15__tUnaryTests,
+    "@_expressionLanguage" | "@_kie:constraintType" | "@_label" | "description" | "text"
+  >;
+}
+
+interface DecisionTableOutputHeaderCell extends CellIdentification {
+  type: "decisionTable";
+  cell: BeePropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER;
+  content: Pick<DMN15__tOutputClause, "@_label" | "@_name" | "@_typeRef" | "description"> & {
     outputValues: Pick<
       DMN15__tUnaryTests,
       "@_expressionLanguage" | "@_kie:constraintType" | "@_label" | "description" | "text"
     >;
     defaultOutputEntry: Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">;
   };
-  [CellType.INPUT_RULE]: Pick<DMN15__tUnaryTests, "@_expressionLanguage" | "@_label" | "description" | "text">;
-  [CellType.OUTPUT_RULE]: Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">;
 }
+
+interface DecisionTableOutputRuleCell extends CellIdentification {
+  type: "decisionTable";
+  cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT;
+  content: Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">;
+}
+
+interface DecisionTableRootCell extends CellIdentification {
+  type: "decisionTable";
+  cell: BeePropertiesPanelComponent.DECISION_TABLE_ROOT;
+  content: Pick<DMN15__tDecisionTable, "@_aggregation" | "@_hitPolicy" | "@_label" | "@_outputLabel" | "description">;
+}
+
 // DECISION TABLE - END
 
-// RELATION - START
-interface RelationCells extends CellIdentification {
-  type: "relation";
-  [CellType.ROOT]: Pick<DMN15__tRelation, "@_label" | "description">;
-  [CellType.HEADER]: Pick<DMN15__tInformationItem, "@_label" | "@_name" | "@_typeRef" | "description">;
-  [CellType.CONTENT]: Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">;
-}
-// RELATION - END
-
-// INVOCATION - START
-interface InvocationCells extends CellIdentification {
-  type: "invocation";
-  [CellType.ROOT]: Pick<DMN15__tInvocation, "@_label" | "description">;
-  [CellType.EXPRESSION]: Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">;
-  [CellType.PARAMETER]: Pick<DMN15__tInformationItem, "@_label" | "@_name" | "@_typeRef" | "description">;
-}
-// INVOCATION - END
-
 // FUNCTION - START
-interface FunctionDefinitionCells extends CellIdentification {
+type FunctionDefinitionCells = FunctionDefinitionRootCell | FunctionDefinitionParametersCell;
+
+interface FunctionDefinitionRootCell extends CellIdentification {
   type: "functionDefinition";
-  [CellType.ROOT]: Pick<DMN15__tFunctionDefinition, "@_kind" | "@_label" | "description">;
-  [CellType.PARAMETER]: {
-    formalParameters: Pick<DMN15__tInformationItem, "@_label" | "@_name" | "@_typeRef" | "description">[];
+  cell: BeePropertiesPanelComponent.FUNCTION_DEFINITION_ROOT;
+  content: Pick<DMN15__tFunctionDefinition, "@_kind" | "@_label" | "description">;
+}
+
+interface FunctionDefinitionParametersCell extends CellIdentification {
+  type: "functionDefinition";
+  cell: BeePropertiesPanelComponent.FUNCTION_DEFINITION_ROOT;
+  content: {
+    formalParameter: Array<Pick<DMN15__tInformationItem, "@_label" | "@_name" | "@_typeRef" | "description">>;
   };
 }
 // FUNCTION - END
 
+// INVOCATION - START
+type InvocationExpressionCells =
+  | InvocationExpressionRootCell
+  | InvocationExpressionCallCell
+  | InvocationExpressionParametersCell;
+interface InvocationExpressionRootCell extends CellIdentification {
+  type: "invocation";
+  cell: BeePropertiesPanelComponent.EXPRESSION_ROOT;
+  content: Pick<DMN15__tInvocation, "@_label" | "description">;
+}
+interface InvocationExpressionCallCell extends CellIdentification {
+  type: "invocation";
+  cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT;
+  content: Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">;
+}
+
+interface InvocationExpressionParametersCell extends CellIdentification {
+  type: "invocation";
+  cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL;
+  content: Pick<DMN15__tInformationItem, "@_label" | "@_name" | "@_typeRef" | "description">;
+}
+// INVOCATION - END
+
+// LITERAL - START
+interface LiteralExpressionCells extends CellIdentification {
+  type: "literalExpression";
+  cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT;
+  content: Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">;
+}
+// LITERAL - END
+
+// RELATION - START
+type RelationExpressionCells =
+  | RelationExpressionRootCell
+  | RelationExpressionHeaderCell
+  | RelationExpressionContentCell;
+
+interface RelationExpressionRootCell extends CellIdentification {
+  type: "relation";
+  cell: BeePropertiesPanelComponent.EXPRESSION_ROOT;
+  content: Pick<DMN15__tRelation, "@_label" | "description">;
+}
+interface RelationExpressionHeaderCell extends CellIdentification {
+  type: "relation";
+  cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL;
+  content: Pick<DMN15__tInformationItem, "@_label" | "@_name" | "@_typeRef" | "description">;
+}
+
+interface RelationExpressionContentCell extends CellIdentification {
+  type: "relation";
+  cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT;
+  content: Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">;
+}
+
+// RELATION - END
+
 // LIST - START
-interface ListCells extends CellIdentification {
+interface ListExpressionCells extends CellIdentification {
   type: "list";
-  [CellType.ROOT]: Pick<DMN15__tList, "@_label" | "description">;
+  cell: BeePropertiesPanelComponent.EXPRESSION_ROOT;
+  content: Pick<DMN15__tList, "@_label" | "description">;
 }
 // LIST - END
 
 // For - START
-interface ForCells extends CellIdentification {
+interface ForExpressionCells extends CellIdentification {
   type: "for";
-  [CellType.ROOT]: Pick<DMN15__tFor, "@_label" | "description">;
+  cell: BeePropertiesPanelComponent.EXPRESSION_ROOT;
+  content: Pick<DMN15__tFor, "@_label" | "description">;
 }
 // For - END
 
 // Every - START
-interface EveryCells extends CellIdentification {
+interface EveryExpressionCells extends CellIdentification {
   type: "every";
-  [CellType.ROOT]: Pick<DMN15__tQuantified, "@_label" | "description">;
+  cell: BeePropertiesPanelComponent.EXPRESSION_ROOT;
+  content: Pick<DMN15__tQuantified, "@_label" | "description">;
 }
 // Every - END
 
 // Some - START
-interface SomeCells extends CellIdentification {
+interface SomeExpressionCells extends CellIdentification {
   type: "some";
-  [CellType.ROOT]: Pick<DMN15__tQuantified, "@_label" | "description">;
+  cell: BeePropertiesPanelComponent.EXPRESSION_ROOT;
+  content: Pick<DMN15__tQuantified, "@_label" | "description">;
 }
 // Some - END
 
 // Conditional - START
-interface ConditionalCells extends CellIdentification {
+interface ConditionalExpressionCells extends CellIdentification {
   type: "conditional";
-  [CellType.ROOT]: Pick<DMN15__tConditional, "@_label" | "description">;
+  cell: BeePropertiesPanelComponent.EXPRESSION_ROOT;
+  content: Pick<DMN15__tConditional, "@_label" | "description">;
 }
 // Conditional - END
 
 // Filter - START
-interface FilterCells extends CellIdentification {
+interface FilterExpressionCells extends CellIdentification {
   type: "filter";
-  [CellType.ROOT]: Pick<DMN15__tFilter, "@_label" | "description">;
+  cell: BeePropertiesPanelComponent.EXPRESSION_ROOT;
+  content: Pick<DMN15__tFilter, "@_label" | "description">;
 }
 // Filter - END
 
@@ -407,67 +488,86 @@ export type AllCells =
   | ContextExpressionCells
   | DecisionTableCells
   | FunctionDefinitionCells
-  | InvocationCells
+  | InvocationExpressionCells
   | LiteralExpressionCells
-  | RelationCells
-  | ListCells
-  | ForCells
-  | SomeCells
-  | EveryCells
-  | ConditionalCells
-  | FilterCells;
+  | RelationExpressionCells
+  | ListExpressionCells
+  | ForExpressionCells
+  | SomeExpressionCells
+  | EveryExpressionCells
+  | ConditionalExpressionCells
+  | FilterExpressionCells;
+
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: Partial<T[P]>;
+    }
+  : T;
+
+export type AllCellsWithPartialContent = DeepPartial<AllCells>;
 
 // TODO: COMPLETE
-export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): string | undefined {
-  if (selectedObjectPath.type === "literalExpression") {
-    return "Literal Expression";
-  }
-  if (selectedObjectPath.type === "invocation") {
-    if (selectedObjectPath.column === "parameter") {
-      return "Boxed Invocation Parameter";
+export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
+  component: BeePropertiesPanelComponent;
+  title: string;
+} {
+  if (selectedObjectPath.type === "context") {
+    if (selectedObjectPath.column === "variable") {
+      return { component: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL, title: "Boxed Context Variable" };
     }
-    if (selectedObjectPath.column === "expression") {
-      return "Boxed Invocation";
-    }
-    return "Boxed Invocation";
+    return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Context" };
   }
   if (selectedObjectPath.type === "decisionTable") {
     if (selectedObjectPath.header === "input") {
       if (selectedObjectPath.row < 0) {
-        return "Decision Table Input Header";
+        return {
+          component: BeePropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER,
+          title: "Decision Table Input Header",
+        };
       }
-      return "Decision Table Input Cell";
+      return { component: BeePropertiesPanelComponent.UNARY_TEST, title: "Decision Table Input Cell" };
     }
     if (selectedObjectPath.header === "output") {
       if (selectedObjectPath.row < 0) {
-        return "Decision Table Output Header";
+        return {
+          component: BeePropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER,
+          title: "Decision Table Output Header",
+        };
       }
-      return "Decision Table Output Cell";
+      return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Decision Table Output Cell" };
     }
-    return "Decision Table";
-  }
-  if (selectedObjectPath.type === "context") {
-    if (selectedObjectPath.column === "variable") {
-      return "Boxed Context Variable";
-    }
-    return "Boxed Context";
+    return { component: BeePropertiesPanelComponent.DECISION_TABLE_ROOT, title: "Decision Table" };
   }
   if (selectedObjectPath.type === "functionDefinition") {
     if (selectedObjectPath.parameterIndex < -1) {
-      return "Function Definition";
+      return { component: BeePropertiesPanelComponent.DECISION_TABLE_ROOT, title: "Function Definition" };
     }
-
-    return "Function Parameters";
+    return { component: BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS, title: "Function Parameters" };
+  }
+  if (selectedObjectPath.type === "invocation") {
+    if (selectedObjectPath.column === "parameter") {
+      return {
+        component: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+        title: "Boxed Invocation Parameter",
+      };
+    }
+    if (selectedObjectPath.column === "expression") {
+      return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Boxed Invocation" };
+    }
+    return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Invocation" };
+  }
+  if (selectedObjectPath.type === "literalExpression") {
+    return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Literal Expression" };
   }
   if (selectedObjectPath.type === "relation") {
     if (selectedObjectPath.row < 0) {
-      return "Boxed Relation Header";
+      return { component: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL, title: "Boxed Relation Header" };
     }
-    return "Boxed Relation Cell";
+    return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Boxed Relation Cell" };
     // TODO: ROOT
   }
   // TODO: LIST, FOR, SOME, EVERY, CONDITIONAL, FILTER;
-  return;
+  return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "" };
 }
 
 export function getDmnObject(

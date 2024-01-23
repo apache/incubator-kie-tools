@@ -29,10 +29,18 @@ import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
-import { ExpressionPath, generateBeeMap, getBeePropertiesPanel, getDmnObject } from "../boxedExpressions/getBeeMap";
+import {
+  AllCellsWithPartialContent,
+  BeePropertiesPanelComponent,
+  generateBeeMap,
+  getBeePropertiesPanel,
+  getDmnObject,
+} from "../boxedExpressions/getBeeMap";
 import {
   DMN15__tBusinessKnowledgeModel,
+  DMN15__tContext,
   DMN15__tDecision,
+  DMN15__tFunctionDefinition,
   DMN15__tInformationItem,
   DMN15__tInputClause,
   DMN15__tLiteralExpression,
@@ -40,12 +48,17 @@ import {
   DMN15__tUnaryTests,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Form, FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditor } from "../DmnEditorContext";
-import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { AllExpressionTypes, AllExpressionsWithoutTypes } from "../dataTypes/DataTypeSpec";
+import { AllExpressionsWithoutTypes } from "../dataTypes/DataTypeSpec";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { InformationItemCell } from "./BeePropertiesPanelComponents.tsx/InformationItemCell";
+import { DecisionTableInputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableInputHeaderCell";
+import { DecisionTableOutputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableOutputHeaderCell";
+import { FunctionDefinitionParameterCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionParametersCell";
+import { LiteralExpressionContentCell } from "./BeePropertiesPanelComponents.tsx/LiteralExpressionContentCell";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { ExpressionRootCell } from "./BeePropertiesPanelComponents.tsx/ExpressionRoot";
+import { UnaryTestCell } from "./BeePropertiesPanelComponents.tsx/UnaryTestCell";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -95,79 +108,87 @@ export function BeePropertiesPanel() {
 
   /**
    * fix bug on unique names - decision table input
-                fix bug on <Undefined> data types
-                fix focus???
+    fix focus???
    */
 
   // TODO: CHANGE TO IF/ELSE = REMOVE SWITCH!
   // TODO CHECK ALL CASES! MISSING
-  const updateDmnObject = useCallback((dmnObject: AllExpressionsWithoutTypes, newContent: AllCellContent) => {
-    switch (newContent.type) {
-      case "literalExpression":
-        (dmnObject as DMN15__tLiteralExpression).text = newContent.text;
-        break;
-      case "context":
-        if (newContent.cell === "variable") {
-          if (newContent["@_name"]) {
-            (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+  const updateDmnObject = useCallback(
+    (dmnObject: AllExpressionsWithoutTypes, newContent: AllCellsWithPartialContent) => {
+      if (newContent.type === "context") {
+        if (newContent.cell === BeePropertiesPanelComponent.INFORMATION_ITEM_CELL) {
+          if (newContent.content?.["@_name"]) {
+            (dmnObject as DMN15__tInformationItem)["@_name"] = newContent.content["@_name"];
           }
-          if (newContent["@_typeRef"]) {
-            (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+          if (newContent.content?.["@_typeRef"]) {
+            (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent.content["@_typeRef"];
           }
         }
-        break;
-      case "decisionTable":
-        if (newContent.cell === "rule") {
-          (dmnObject as DMN15__tUnaryTests | DMN15__tLiteralExpression).text = newContent.text;
+      }
+      if (newContent.type === "decisionTable") {
+        if (newContent.cell === BeePropertiesPanelComponent.UNARY_TEST && newContent.content?.text) {
+          (dmnObject as DMN15__tUnaryTests).text = newContent.content.text;
         }
-        if (newContent.cell === "outputHeader") {
-          if (newContent["@_name"]) {
-            (dmnObject as DMN15__tOutputClause)["@_name"] = newContent["@_name"];
-          }
-          if (newContent["@_typeRef"]) {
-            (dmnObject as DMN15__tOutputClause)["@_typeRef"] = newContent["@_typeRef"];
-          }
+        if (newContent.cell === BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && newContent.content?.text) {
+          (dmnObject as DMN15__tLiteralExpression).text = newContent.content.text;
         }
-        if (newContent.cell === "inputHeader") {
-          if (newContent.inputExpression.text) {
-            (dmnObject as DMN15__tInputClause).inputExpression.text = newContent.inputExpression.text;
+        if (newContent.cell === BeePropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER) {
+          if (newContent.content?.["@_name"]) {
+            (dmnObject as DMN15__tOutputClause)["@_name"] = newContent.content["@_name"];
           }
-          if (newContent.inputExpression["@_typeRef"]) {
-            (dmnObject as DMN15__tInputClause).inputExpression["@_typeRef"] = newContent.inputExpression?.["@_typeRef"];
+          if (newContent.content?.["@_typeRef"]) {
+            (dmnObject as DMN15__tOutputClause)["@_typeRef"] = newContent.content["@_typeRef"];
           }
         }
-        break;
-      case "relation":
-        if (newContent.cell === "header") {
-          if (newContent["@_name"]) {
-            (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
+        if (newContent.cell === BeePropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER) {
+          if (newContent.content?.inputExpression?.text) {
+            (dmnObject as DMN15__tInputClause).inputExpression.text = newContent.content.inputExpression.text;
           }
-          if (newContent["@_typeRef"]) {
-            (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
-          }
-        }
-        if (newContent.cell === "content") {
-          (dmnObject as DMN15__tLiteralExpression).text = newContent.text;
-        }
-        break;
-      case "invocation":
-        if (newContent.cell === "parameter") {
-          if (newContent["@_name"]) {
-            (dmnObject as DMN15__tInformationItem)["@_name"] = newContent["@_name"];
-          }
-          if (newContent["@_typeRef"]) {
-            (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent["@_typeRef"];
+          if (newContent.content?.inputExpression?.["@_typeRef"]) {
+            (dmnObject as DMN15__tInputClause).inputExpression["@_typeRef"] =
+              newContent.content.inputExpression?.["@_typeRef"];
           }
         }
-        break;
-    }
-  }, []);
+      }
+      if (newContent.type === "functionDefinition") {
+        // TODO
+      }
+      if (newContent.type === "invocation") {
+        if (newContent.cell === BeePropertiesPanelComponent.INFORMATION_ITEM_CELL) {
+          if (newContent.content?.["@_name"]) {
+            (dmnObject as DMN15__tInformationItem)["@_name"] = newContent.content["@_name"];
+          }
+          if (newContent.content?.["@_typeRef"]) {
+            (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent.content["@_typeRef"];
+          }
+        }
+      }
+      if (newContent.type === "literalExpression") {
+        if (newContent.cell === BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT) {
+          if (newContent.content?.text) {
+            (dmnObject as DMN15__tLiteralExpression).text = newContent.content.text;
+          }
+        }
+      }
+      if (newContent.type === "relation") {
+        if (newContent.cell === BeePropertiesPanelComponent.INFORMATION_ITEM_CELL) {
+          if (newContent.content?.["@_name"]) {
+            (dmnObject as DMN15__tInformationItem)["@_name"] = newContent.content["@_name"];
+          }
+          if (newContent.content?.["@_typeRef"]) {
+            (dmnObject as DMN15__tInformationItem)["@_typeRef"] = newContent.content["@_typeRef"];
+          }
+        }
+        if (newContent.cell === BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && newContent.content) {
+          (dmnObject as DMN15__tLiteralExpression).text = newContent.content.text;
+        }
+      }
+    },
+    []
+  );
 
   const updateBee = useCallback(
-    <PropertiesPanel extends keyof CellContent>(
-      newContent: CellContent[PropertiesPanel],
-      expressionPath = selectedObjectInfos?.expressionPath
-    ) => {
+    (newContent: AllCellsWithPartialContent, expressionPath = selectedObjectInfos?.expressionPath) => {
       dmnEditorStoreApi.setState((state) => {
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "businessKnowledgeModel") {
           const dmnObject = getDmnObject(
@@ -211,261 +232,294 @@ export function BeePropertiesPanel() {
               />
             </DrawerActions>
             <Form>
-              <FormSection>
-                <FormGroup label="ID">
-                  <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
-                    {selectedObjectId}
-                  </ClipboardCopy>
-                </FormGroup>
+              <FormGroup label="ID">
+                <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+                  {selectedObjectId}
+                </ClipboardCopy>
+              </FormGroup>
+              <FormSection title={propertiesPanel?.title ?? ""}>
+                {propertiesPanel?.component === BeePropertiesPanelComponent.EXPRESSION_ROOT && (
+                  <ExpressionRootCell
+                    isReadonly={isReadonly}
+                    expressionPath={selectedObjectInfos?.expressionPath ?? []}
+                    description={
+                      (selectedObjectInfos?.cell as Pick<DMN15__tContext, "@_label" | "description">)?.description
+                        ?.__$$text ?? ""
+                    }
+                    onChangeDescription={(newDescription: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.EXPRESSION_ROOT,
+                        content: { description: { __$$text: newDescription } },
+                      })
+                    }
+                    label={
+                      (selectedObjectInfos?.cell as Pick<DMN15__tContext, "@_label" | "description">)?.["@_label"] ?? ""
+                    }
+                    onChangeLabel={(newLabel: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.EXPRESSION_ROOT,
+                        content: { "@_label": newLabel },
+                      })
+                    }
+                  />
+                )}
+                {propertiesPanel?.component === BeePropertiesPanelComponent.INFORMATION_ITEM_CELL && (
+                  <InformationItemCell
+                    isReadonly={isReadonly}
+                    id={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_id"] ?? ""}
+                    allUniqueNames={allFeelVariableUniqueNames}
+                    dmnEditorRootElementRef={dmnEditorRootElementRef}
+                    expressionPath={selectedObjectInfos?.expressionPath ?? []}
+                    description={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.description?.__$$text ?? ""}
+                    onChangeDescription={(newDescription: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+                        content: { description: { __$$text: newDescription } },
+                      })
+                    }
+                    label={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_label"] ?? ""}
+                    onChangeLabel={(newLabel: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+                        content: { "@_label": newLabel },
+                      })
+                    }
+                    name={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_name"] ?? ""}
+                    onChangeName={(newName: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+                        content: { "@_name": newName },
+                      })
+                    }
+                    typeRef={
+                      (selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_typeRef"] ??
+                      DmnBuiltInDataType.Undefined
+                    }
+                    onChangeTypeRef={(newTypeRef: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+                        content: { "@_typeRef": newTypeRef },
+                      })
+                    }
+                  />
+                )}
+
+                {propertiesPanel?.component === BeePropertiesPanelComponent.UNARY_TEST && (
+                  <UnaryTestCell
+                    isReadonly={isReadonly}
+                    expressionPath={selectedObjectInfos?.expressionPath ?? []}
+                    description={(selectedObjectInfos?.cell as DMN15__tUnaryTests)?.description?.__$$text ?? ""}
+                    onChangeDescription={(newDescription: string) =>
+                      updateBee({
+                        type: "literalExpression",
+                        cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+                        content: { description: { __$$text: newDescription } },
+                      })
+                    }
+                    label={(selectedObjectInfos?.cell as DMN15__tUnaryTests)?.["@_label"] ?? ""}
+                    onChangeLabel={(newLabel: string) =>
+                      updateBee({
+                        type: "literalExpression",
+                        cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+                        content: { "@_label": newLabel },
+                      })
+                    }
+                    expressionLanguage={
+                      (selectedObjectInfos?.cell as DMN15__tUnaryTests)?.["@_expressionLanguage"] ?? ""
+                    }
+                    onChangeExpressionLanguage={(newExpressionLanguage: string) =>
+                      updateBee({
+                        type: "literalExpression",
+                        cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+                        content: { "@_expressionLanguage": newExpressionLanguage },
+                      })
+                    }
+                    text={(selectedObjectInfos?.cell as DMN15__tUnaryTests)?.text?.__$$text ?? ""}
+                    onChangeText={(newText: string) =>
+                      updateBee({
+                        type: "literalExpression",
+                        cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+                        content: { text: { __$$text: newText } },
+                      })
+                    }
+                  />
+                )}
+                {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER && (
+                  <DecisionTableInputHeaderCell
+                    isReadonly={isReadonly}
+                    expressionPath={selectedObjectInfos?.expressionPath ?? []}
+                    description={
+                      (selectedObjectInfos?.cell as Pick<DMN15__tInputClause, "@_label" | "description">)?.description
+                        ?.__$$text ?? ""
+                    }
+                    onChangeDescription={(newDescription: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+                        content: { description: { __$$text: newDescription } },
+                      })
+                    }
+                    label={
+                      (selectedObjectInfos?.cell as Pick<DMN15__tInputClause, "@_label" | "description">)?.[
+                        "@_label"
+                      ] ?? ""
+                    }
+                    onChangeLabel={(newLabel: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+                        content: { "@_label": newLabel },
+                      })
+                    }
+                    inputExpression={{
+                      description: "",
+                      expressionLanguage: "",
+                      label: "",
+                      text: "",
+                      onChangeDescription: () => {},
+                      onChangeExpressionLanguage: () => {},
+                      onChangeLabel: () => {},
+                      onChangeText: () => {},
+                    }}
+                    inputValues={{
+                      description: "",
+                      expressionLanguage: "",
+                      label: "",
+                      text: "",
+                      onChangeDescription: () => {},
+                      onChangeExpressionLanguage: () => {},
+                      onChangeLabel: () => {},
+                      onChangeText: () => {},
+                    }}
+                  />
+                )}
+                {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER && (
+                  <DecisionTableOutputHeaderCell
+                    isReadonly={isReadonly}
+                    expressionPath={selectedObjectInfos?.expressionPath ?? []}
+                    description={
+                      (selectedObjectInfos?.cell as Pick<DMN15__tOutputClause, "@_label" | "description">)?.description
+                        ?.__$$text ?? ""
+                    }
+                    onChangeDescription={(newDescription: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+                        content: { description: { __$$text: newDescription } },
+                      })
+                    }
+                    label={
+                      (selectedObjectInfos?.cell as Pick<DMN15__tOutputClause, "@_label" | "description">)?.[
+                        "@_label"
+                      ] ?? ""
+                    }
+                    onChangeLabel={(newLabel: string) =>
+                      updateBee({
+                        type: "context",
+                        cell: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+                        content: { "@_label": newLabel },
+                      })
+                    }
+                    defaultOutputEntry={{
+                      description: "",
+                      expressionLanguage: "",
+                      label: "",
+                      text: "",
+                      onChangeDescription: () => {},
+                      onChangeExpressionLanguage: () => {},
+                      onChangeLabel: () => {},
+                      onChangeText: () => {},
+                    }}
+                    outputValues={{
+                      description: "",
+                      expressionLanguage: "",
+                      label: "",
+                      text: "",
+                      onChangeDescription: () => {},
+                      onChangeExpressionLanguage: () => {},
+                      onChangeLabel: () => {},
+                      onChangeText: () => {},
+                    }}
+                  />
+                )}
+                {/* {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_ROOT && (
+                  <DecisionTableRootCell />
+                )} */}
+                {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS && (
+                  <FunctionDefinitionParameterCell
+                    formalParameter={(selectedObjectInfos?.cell as DMN15__tFunctionDefinition).formalParameter?.map(
+                      (parameter, i) => ({
+                        id: parameter["@_id"] ?? "",
+                        name: parameter["@_name"] ?? "",
+                        typeRef: parameter["@_typeRef"] ?? "",
+                        label: parameter["@_label"] ?? "",
+                        description: parameter.description?.__$$text ?? "",
+                        isReadonly: isReadonly,
+                        allUniqueNames: allFeelVariableUniqueNames,
+                        dmnEditorRootElementRef,
+                        expressionPath: selectedObjectInfos?.expressionPath ?? [],
+                        onChangeName: (newName: string) => {},
+                        onChangeTypeRef: (newTypeRef: string) => {},
+                        onChangeLabel: (newLabel: string) => {},
+                        onChangeDescription: (newDescription: string) => {},
+                      })
+                    )}
+                  />
+                )}
+                {/* {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_ROOT && (
+                  <FunctionDefinitionRootCell />
+                )} */}
+                {propertiesPanel?.component === BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && (
+                  <LiteralExpressionContentCell
+                    isReadonly={isReadonly}
+                    expressionPath={selectedObjectInfos?.expressionPath ?? []}
+                    description={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.description?.__$$text ?? ""}
+                    onChangeDescription={(newDescription: string) =>
+                      updateBee({
+                        type: "literalExpression",
+                        cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+                        content: { description: { __$$text: newDescription } },
+                      })
+                    }
+                    label={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.["@_label"] ?? ""}
+                    onChangeLabel={(newLabel: string) =>
+                      updateBee({
+                        type: "literalExpression",
+                        cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+                        content: { "@_label": newLabel },
+                      })
+                    }
+                    expressionLanguage={
+                      (selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.["@_expressionLanguage"] ?? ""
+                    }
+                    onChangeExpressionLanguage={(newExpressionLanguage: string) =>
+                      updateBee({
+                        type: "literalExpression",
+                        cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+                        content: { "@_expressionLanguage": newExpressionLanguage },
+                      })
+                    }
+                    text={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.text?.__$$text ?? ""}
+                    onChangeText={(newText: string) =>
+                      updateBee({
+                        type: "literalExpression",
+                        cell: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+                        content: { text: { __$$text: newText } },
+                      })
+                    }
+                  />
+                )}
               </FormSection>
-              {selectedObjectPath?.type === BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL && (
-                <FormSection title={propertiesPanel}>
-                  <FormGroup label="Name">
-                    <InlineFeelNameInput
-                      enableAutoFocusing={false}
-                      isPlain={false}
-                      id={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_id"] ?? ""}
-                      name={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_name"] ?? ""}
-                      isReadonly={isReadonly}
-                      shouldCommitOnBlur={true}
-                      className={"pf-c-form-control"}
-                      onRenamed={(newContent) => {
-                        if (selectedObjectPath!.type === "context") {
-                          updateBee<BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL>({
-                            type: selectedObjectPath!.type,
-                            cell: "variable",
-                            "@_name": newContent,
-                          });
-                        }
-                        if (selectedObjectPath!.type === "decisionTable") {
-                          updateBee({
-                            type: selectedObjectPath!.type,
-                            cell: "outputHeader",
-                            "@_label": "",
-                            "@_name": newContent,
-                            "@_typeRef": "",
-                            defaultOutputEntry: {},
-                            description: { __$$text: "" },
-                            outputValues: { text: { __$$text: "" } },
-                          });
-                        }
-                        if (selectedObjectPath!.type === "relation") {
-                          updateBee({
-                            type: selectedObjectPath!.type,
-                            cell: "header",
-                            "@_name": newContent,
-                          });
-                        }
-                        if (selectedObjectPath!.type === "invocation") {
-                          updateBee<BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL>({
-                            type: selectedObjectPath!.type,
-                            cell: "parameter",
-                            "@_label": "",
-                            "@_name": newContent,
-                            "@_typeRef": "",
-                            description: { __$$text: "" },
-                          });
-                        }
-                      }}
-                      allUniqueNames={allFeelVariableUniqueNames}
-                    />
-                  </FormGroup>
-                  <FormGroup label="Data type">
-                    <TypeRefSelector
-                      heightRef={dmnEditorRootElementRef}
-                      typeRef={(selectedObjectInfos?.cell as DMN15__tInformationItem)?.["@_typeRef"]}
-                      isDisabled={isReadonly}
-                      onChange={(newTypeRef) => {
-                        if (selectedObjectPath!.type === "context") {
-                          updateBee<BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL>({
-                            type: selectedObjectPath!.type,
-                            cell: "variable",
-                            "@_name": "",
-                            "@_typeRef": newTypeRef,
-                          });
-                        }
-                        if (selectedObjectPath!.type === "decisionTable") {
-                          updateBee({
-                            type: selectedObjectPath!.type,
-                            cell: "outputHeader",
-                            "@_label": "",
-                            "@_name": "",
-                            "@_typeRef": newTypeRef,
-                            defaultOutputEntry: {},
-                            description: { __$$text: "" },
-                            outputValues: { text: { __$$text: "" } },
-                          });
-                        }
-                        if (selectedObjectPath!.type === "relation") {
-                          updateBee({
-                            type: selectedObjectPath!.type,
-                            cell: "header",
-                            "@_name": "",
-                            "@_typeRef": newTypeRef,
-                          });
-                        }
-                        if (selectedObjectPath!.type === "invocation") {
-                          updateBee<BeePanelType.LABEL_NAME_TYPE_DESCRIPTION_CELL>({
-                            type: selectedObjectPath!.type,
-                            cell: "parameter",
-                            "@_label": "",
-                            "@_name": "",
-                            "@_typeRef": newTypeRef,
-                            description: { __$$text: "" },
-                          });
-                        }
-                      }}
-                    />
-                  </FormGroup>
-                </FormSection>
-              )}
-              {selectedObjectPath?.type === BeePanelType.EXPLANGUAGE_LABEL_DESCRIPTION_TEXT_CELL && (
-                <FormSection title={propertiesPanel}>
-                  <FormGroup label="Content">
-                    <CellContentTextArea
-                      initialValue={(selectedObjectInfos?.cell as DMN15__tLiteralExpression)?.text?.__$$text ?? ""}
-                      type={selectedObjectPath!.type}
-                      onChange={updateBee<BeePanelType.EXPLANGUAGE_LABEL_DESCRIPTION_TEXT_CELL>}
-                      expressionPath={selectedObjectInfos?.expressionPath ?? []}
-                      isReadonly={isReadonly}
-                    />
-                  </FormGroup>
-                </FormSection>
-              )}
-              {selectedObjectPath?.type === BeePanelType.DECISION_TABLE_INPUT_HEADER_CELL && (
-                <FormSection title={propertiesPanel}>
-                  <FormGroup label="Name">
-                    <InlineFeelNameInput
-                      enableAutoFocusing={false}
-                      isPlain={false}
-                      id={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression["@_id"] ?? ""}
-                      name={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression.text?.__$$text ?? ""}
-                      isReadonly={isReadonly}
-                      shouldCommitOnBlur={true}
-                      className={"pf-c-form-control"}
-                      onRenamed={(newContent) => {
-                        if (selectedObjectPath!.type === "decisionTable") {
-                          updateBee<BeePanelType.DECISION_TABLE_INPUT_HEADER_CELL>({
-                            type: selectedObjectPath!.type,
-                            cell: "inputHeader",
-                            inputExpression: {
-                              text: { __$$text: newContent },
-                            },
-                            inputValues: { text: { __$$text: "" } },
-                          });
-                        }
-                      }}
-                      allUniqueNames={allFeelVariableUniqueNames}
-                    />
-                  </FormGroup>
-                  <FormGroup label="Data type">
-                    <TypeRefSelector
-                      heightRef={dmnEditorRootElementRef}
-                      typeRef={(selectedObjectInfos?.cell as DMN15__tInputClause)?.inputExpression["@_typeRef"]}
-                      isDisabled={isReadonly}
-                      onChange={(newTypeRef) => {
-                        if (selectedObjectPath!.type === "decisionTable") {
-                          updateBee<BeePanelType.DECISION_TABLE_INPUT_HEADER_CELL>({
-                            type: selectedObjectPath!.type,
-                            cell: "inputHeader",
-                            inputExpression: {
-                              text: { __$$text: "" },
-                              "@_typeRef": newTypeRef,
-                            },
-                            inputValues: { text: { __$$text: "" } },
-                          });
-                        }
-                      }}
-                    />
-                  </FormGroup>
-                </FormSection>
-              )}
             </Form>
           </DrawerHead>
         </DrawerPanelContent>
       )}
-    </>
-  );
-}
-
-function CellContentTextArea(props: {
-  initialValue: string;
-  type: AllExpressionTypes;
-  onChange: (
-    cellContent: CellContent[BeePanelType.EXPLANGUAGE_LABEL_DESCRIPTION_TEXT_CELL],
-    expressionPath: ExpressionPath[]
-  ) => void;
-  expressionPath: ExpressionPath[];
-  isReadonly: boolean;
-}) {
-  // used to save the expression path value until the flush operation
-  const [expressionPath, setExpressionPath] = useState(props.expressionPath);
-  const [textAreaValue, setTextAreaValue] = useState("");
-  const [isEditing, setEditing] = useState(false);
-
-  React.useEffect(() => {
-    if (!isEditing) {
-      setTextAreaValue(props.initialValue);
-    }
-  }, [props.initialValue, isEditing]);
-
-  React.useEffect(() => {
-    if (!isEditing) {
-      setExpressionPath(props.expressionPath);
-    }
-  }, [props.expressionPath, isEditing]);
-
-  return (
-    <>
-      <TextArea
-        aria-label={"Content"}
-        type={"text"}
-        isDisabled={props.isReadonly}
-        value={textAreaValue}
-        onChange={(newContent) => {
-          setTextAreaValue(newContent);
-          setEditing(true);
-        }}
-        onBlur={() => {
-          switch (props.type) {
-            case "literalExpression":
-              props.onChange(
-                {
-                  type: props.type,
-                  text: { __$$text: textAreaValue },
-                },
-                expressionPath
-              );
-              break;
-            case "decisionTable":
-              props.onChange(
-                {
-                  type: props.type,
-                  text: { __$$text: textAreaValue },
-                  cell: "rule",
-                },
-                expressionPath
-              );
-              break;
-            case "relation":
-              props.onChange(
-                {
-                  type: props.type,
-                  text: { __$$text: textAreaValue },
-                  cell: "content",
-                },
-                expressionPath
-              );
-              break;
-            default:
-              break;
-          }
-          setEditing(false);
-        }}
-        placeholder={"Enter the expression content..."}
-        style={{ resize: "vertical", minHeight: "40px" }}
-        rows={6}
-      />
     </>
   );
 }

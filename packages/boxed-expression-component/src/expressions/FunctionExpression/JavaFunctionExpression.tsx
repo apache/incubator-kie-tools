@@ -83,6 +83,7 @@ export function JavaFunctionExpression({
   );
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameters);
+  const parametersId = useMemo(() => generateUuid(), []);
 
   const beeTableColumns = useMemo<ReactTable.Column<JAVA_ROWTYPE>[]>(() => {
     return [
@@ -95,7 +96,7 @@ export function JavaFunctionExpression({
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: "parameters" as any,
+            accessor: parametersId as any,
             label: "parameters",
             isRowIndexColumn: false,
             dataType: undefined as any,
@@ -132,6 +133,7 @@ export function JavaFunctionExpression({
     functionExpression.name,
     parametersColumnHeader,
     setClassAndMethodNamesWidth,
+    parametersId,
   ]);
 
   const headerVisibility = useMemo(() => {
@@ -313,11 +315,11 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
   const { beeGwtService } = useBoxedExpressionEditor();
 
   // Selecting the Java function parameters should reset the selectObject
-  useEffect(() => {
-    if (isActive) {
-      beeGwtService?.selectObject("");
-    }
-  }, [beeGwtService, isActive]);
+  // useEffect(() => {
+  //   if (isActive) {
+  //     beeGwtService?.selectObject("");
+  //   }
+  // }, [beeGwtService, isActive]);
 
   const getParameterLabelHelp = useCallback((): React.ReactNode => {
     if (props.rowIndex === 0) {

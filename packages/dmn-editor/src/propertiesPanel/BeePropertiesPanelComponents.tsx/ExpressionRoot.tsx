@@ -18,39 +18,24 @@
  */
 
 import * as React from "react";
-import { DescriptionField, ExpressionLanguageField, LabelField, TextField } from "./Fields";
+import { DescriptionField, LabelField } from "./Fields";
 import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
 
 /**
- * Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">
- * This component implements a form to change an object with the DMN15__tLiteralExpression type
- * It's used for: DecisionTableOutputRuleCell, InvocationExpressionCallCell, LiteralExpressionCells, RelationExpressionContentCell
+ * This component implements a form to change an object with the { "@_label"?: "string", "description": { "__$$text": string } } type
+ * It's used for: ContextExpressionRoot, InvocationExpressionRootCell, RelationExpressionRootCell, ListExpressionCells, ForExpressionCells,
+ * EveryExpressionCells, SomeExpressionCells, ConditionalExpressionCells, FilterExpressionCells
  */
-export function LiteralExpressionContentCell(props: {
-  text: string;
-  expressionLanguage: string;
+export function ExpressionRootCell(props: {
   label: string;
   description: string;
   isReadonly: boolean;
   expressionPath: ExpressionPath[];
-  onChangeText: (newText: string) => void;
-  onChangeExpressionLanguage: (newExpressionLanguage: string) => void;
   onChangeLabel: (newLabel: string) => void;
   onChangeDescription: (newDescription: string) => void;
 }) {
   return (
     <>
-      <ExpressionLanguageField
-        isReadonly={props.isReadonly}
-        expressionLanguage={props.expressionLanguage}
-        onChange={props.onChangeExpressionLanguage}
-      />
-      <TextField
-        isReadonly={props.isReadonly}
-        initialValue={props.text}
-        expressionPath={props.expressionPath}
-        onChange={props.onChangeText}
-      />
       <LabelField isReadonly={props.isReadonly} label={props.label} onChange={props.onChangeLabel} />
       <DescriptionField
         isReadonly={props.isReadonly}

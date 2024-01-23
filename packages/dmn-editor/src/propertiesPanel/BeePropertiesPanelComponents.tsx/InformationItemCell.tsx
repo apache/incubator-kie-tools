@@ -18,38 +18,43 @@
  */
 
 import * as React from "react";
-import { DescriptionField, ExpressionLanguageField, LabelField, TextField } from "./Fields";
+import { DescriptionField, LabelField, NameField, TypeRefField } from "./Fields";
+import { UniqueNameIndex } from "../../Dmn15Spec";
 import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
 
 /**
- * Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">
- * This component implements a form to change an object with the DMN15__tLiteralExpression type
- * It's used for: DecisionTableOutputRuleCell, InvocationExpressionCallCell, LiteralExpressionCells, RelationExpressionContentCell
+ * This component implements a form to change an object with the DMN15__tInformationItem type
+ * It's used for: ContextExpressionVariableCell, InvocationExpressionParametersCell and RelationExpressionHeaderCell
  */
-export function LiteralExpressionContentCell(props: {
-  text: string;
-  expressionLanguage: string;
+export function InformationItemCell(props: {
+  id: string;
+  name: string;
+  typeRef: string;
   label: string;
   description: string;
   isReadonly: boolean;
+  allUniqueNames: UniqueNameIndex;
+  dmnEditorRootElementRef: React.RefObject<HTMLElement>;
   expressionPath: ExpressionPath[];
-  onChangeText: (newText: string) => void;
-  onChangeExpressionLanguage: (newExpressionLanguage: string) => void;
+  onChangeName: (newName: string) => void;
+  onChangeTypeRef: (newTypeRef: string) => void;
   onChangeLabel: (newLabel: string) => void;
   onChangeDescription: (newDescription: string) => void;
 }) {
   return (
     <>
-      <ExpressionLanguageField
+      <NameField
         isReadonly={props.isReadonly}
-        expressionLanguage={props.expressionLanguage}
-        onChange={props.onChangeExpressionLanguage}
+        id={props.id}
+        name={props.name}
+        allUniqueNames={props.allUniqueNames}
+        onChange={props.onChangeName}
       />
-      <TextField
+      <TypeRefField
         isReadonly={props.isReadonly}
-        initialValue={props.text}
-        expressionPath={props.expressionPath}
-        onChange={props.onChangeText}
+        dmnEditorRootElementRef={props.dmnEditorRootElementRef}
+        typeRef={props.typeRef}
+        onChange={props.onChangeTypeRef}
       />
       <LabelField isReadonly={props.isReadonly} label={props.label} onChange={props.onChangeLabel} />
       <DescriptionField
