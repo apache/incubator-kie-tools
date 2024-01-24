@@ -1298,13 +1298,6 @@ export function TopRightCornerPanels() {
     });
   }, [dmnEditorStoreApi]);
 
-  // FIXME: TIAGO: Remove this
-  const toggleAutolayoutPanel = useCallback(() => {
-    dmnEditorStoreApi.setState((state) => {
-      state.diagram.autolayoutPanel.isOpen = !state.diagram.autolayoutPanel.isOpen;
-    });
-  }, [dmnEditorStoreApi]);
-
   useLayoutEffect(() => {
     dmnEditorStoreApi.setState((state) => {
       if (state.diagram.overlaysPanel.isOpen) {
@@ -1316,21 +1309,6 @@ export function TopRightCornerPanels() {
         }, 300); // That's the animation duration to open/close the properties panel.
       }
       state.diagram.overlaysPanel.isOpen = false;
-    });
-  }, [dmnEditorStoreApi, diagram.propertiesPanel.isOpen]);
-
-  // FIXME: TIAGO: Remove this
-  useLayoutEffect(() => {
-    dmnEditorStoreApi.setState((state) => {
-      if (state.diagram.autolayoutPanel.isOpen) {
-        // This is necessary to make sure that the Popover is open at the correct position.
-        setTimeout(() => {
-          dmnEditorStoreApi.setState((state) => {
-            state.diagram.autolayoutPanel.isOpen = true;
-          });
-        }, 300); // That's the animation duration to open/close the properties panel.
-      }
-      state.diagram.autolayoutPanel.isOpen = false;
     });
   }, [dmnEditorStoreApi, diagram.propertiesPanel.isOpen]);
 

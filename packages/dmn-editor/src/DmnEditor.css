@@ -318,10 +318,7 @@
 }
 /* (end) version popover */
 
-/* (begin) autolayout panel toggle */
-.kie-dmn-editor--autolayoutpanel-popover .pf-c-popover__body {
-  padding: 0;
-}
+/* (begin) autolayout panel button */
 .kie-dmn-editor--autolayout-panel-toggle {
   width: 42px;
   background: #fff;
