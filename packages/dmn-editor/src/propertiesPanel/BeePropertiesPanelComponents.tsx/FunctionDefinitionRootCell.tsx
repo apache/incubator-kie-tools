@@ -29,11 +29,6 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-/**
- * This component implements a form to change an object with the { "@_label"?: "string", "description": { "__$$text": string } } type
- * It's used for: ContextExpressionRoot, InvocationExpressionRootCell, RelationExpressionRootCell, ListExpressionCells, ForExpressionCells,
- * EveryExpressionCells, SomeExpressionCells, ConditionalExpressionCells, FilterExpressionCells
- */
 type FunctionDefinitionRoot = Pick<DMN15__tFunctionDefinition, "@_kind" | "@_typeRef" | "description">;
 
 export function FunctionDefinitionRootCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {

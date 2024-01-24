@@ -30,10 +30,6 @@ import { useUpdateBee } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
-/**
- * This component implements a form to change an object with the DMN15__tInformationItem type
- * It's used for: ContextExpressionVariableCell, InvocationExpressionParametersCell and RelationExpressionHeaderCell
- */
 export function InformationItemCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
   const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();

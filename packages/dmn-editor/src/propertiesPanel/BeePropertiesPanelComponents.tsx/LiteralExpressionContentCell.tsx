@@ -29,11 +29,6 @@ import { useUpdateBee } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
-/**
- * Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">
- * This component implements a form to change an object with the DMN15__tLiteralExpression type
- * It's used for: DecisionTableOutputRuleCell, InvocationExpressionCallCell, LiteralExpressionCells, RelationExpressionContentCell
- */
 export function LiteralExpressionContentCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
   const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { dmnEditorRootElementRef } = useDmnEditor();

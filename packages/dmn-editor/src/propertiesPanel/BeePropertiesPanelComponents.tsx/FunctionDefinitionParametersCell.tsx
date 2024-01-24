@@ -33,10 +33,6 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 
-/**
- * This component implements a form to change an object with the DMN15__tInformationItem type
- * It's used for: ContextExpressionVariableCell, InvocationExpressionParametersCell and RelationExpressionHeaderCell
- */
 export function FunctionDefinitionParameterCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
   const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { dmnEditorRootElementRef } = useDmnEditor();

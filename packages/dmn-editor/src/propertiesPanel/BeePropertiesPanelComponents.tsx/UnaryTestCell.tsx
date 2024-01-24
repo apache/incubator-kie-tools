@@ -35,10 +35,6 @@ import { useUpdateBee } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
-/**
- * This component implements a form to change an object with the DMN15__tUnaryTests type
- * It's used for: DecisionTableInputRuleCell
- */
 export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
   const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { dmnEditorRootElementRef } = useDmnEditor();

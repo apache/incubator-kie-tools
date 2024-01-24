@@ -29,11 +29,6 @@ import { useUpdateBee } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
-/**
- * This component implements a form to change an object with the { "@_label"?: "string", "description": { "__$$text": string } } type
- * It's used for: ContextExpressionRoot, InvocationExpressionRootCell, RelationExpressionRootCell, ListExpressionCells, ForExpressionCells,
- * EveryExpressionCells, SomeExpressionCells, ConditionalExpressionCells, FilterExpressionCells
- */
 type ExpressionRoot = Pick<AllExpressionsWithoutTypes, "description" | "@_typeRef">;
 
 export function ExpressionRootCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
