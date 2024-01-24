@@ -19,20 +19,23 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { TextAreaField, TextInputField, TypeRefField } from "./Fields";
+import { DescriptionField, TextInputField, TypeRefField } from "./Fields";
 import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { DMN15__tDecisionTable } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DecisionTableExpressionDefinitionBuiltInAggregation,
+  DmnBuiltInDataType,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useUpdateBee } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
-/**
- * Pick<DMN15__tDecisionTable, "@_label" | "@_outputLabel" | "description">
- */
-type DecisionTableRoot = Pick<DMN15__tDecisionTable, "@_label" | "description" | "@_typeRef" | "@_outputLabel">;
+type DecisionTableRoot = Pick<
+  DMN15__tDecisionTable,
+  "@_label" | "description" | "@_typeRef" | "@_outputLabel" | "@_aggregation" | "@_hitPolicy"
+>;
 
 export function DecisionTableRootCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
   const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
@@ -64,6 +67,14 @@ export function DecisionTableRootCell(props: { beeMap?: BeeMap; isReadonly: bool
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
+      <TextInputField title={"Hit Policy"} isReadonly={true} initialValue={cell["@_hitPolicy"] ?? ""} />
+      {cell["@_hitPolicy"] === "COLLECT" && (
+        <TextInputField
+          title={"Aggregation"}
+          isReadonly={true}
+          initialValue={cell["@_aggregation"] ?? DecisionTableExpressionDefinitionBuiltInAggregation["<None>"]}
+        />
+      )}
       <TypeRefField
         isReadonly={true}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
@@ -71,13 +82,13 @@ export function DecisionTableRootCell(props: { beeMap?: BeeMap; isReadonly: bool
       />
       <TextInputField
         title={"Output Label"}
+        placeholder={"Enter a output label..."}
         isReadonly={props.isReadonly}
         initialValue={cell["@_outputLabel"] ?? ""}
         onChange={(newOutputLabel: string) => updateBee({ "@_outputLabel": newOutputLabel })}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
       />
-      <TextAreaField
-        title={"Description"}
+      <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}

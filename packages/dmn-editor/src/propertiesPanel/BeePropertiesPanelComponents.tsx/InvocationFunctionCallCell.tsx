@@ -48,6 +48,7 @@ export function InvocationFunctionCallCell(props: { beeMap?: BeeMap; isReadonly:
     <>
       <TextInputField
         title={"Function to be called"}
+        placeholder="Enter the function name..."
         isReadonly={props.isReadonly}
         initialValue={cell.text?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}

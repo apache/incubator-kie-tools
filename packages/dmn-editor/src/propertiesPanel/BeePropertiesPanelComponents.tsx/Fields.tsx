@@ -35,6 +35,33 @@ export function KieConstraintTypeField() {
   );
 }
 
+export function ContentField(props: {
+  initialValue: string;
+  onChange?: (newTextValue: string, expressionPath?: ExpressionPath[]) => void;
+  expressionPath?: ExpressionPath[];
+  isReadonly: boolean;
+}) {
+  return <TextInputField {...props} title="Content" placeholder="Enter the content..." />;
+}
+
+export function DescriptionField(props: {
+  initialValue: string;
+  onChange?: (newTextValue: string, expressionPath?: ExpressionPath[]) => void;
+  expressionPath?: ExpressionPath[];
+  isReadonly: boolean;
+}) {
+  return <TextInputField {...props} title="Description" placeholder="Enter a description..." />;
+}
+
+export function ExpressionLanguageField(props: {
+  initialValue: string;
+  onChange?: (newTextValue: string, expressionPath?: ExpressionPath[]) => void;
+  expressionPath?: ExpressionPath[];
+  isReadonly: boolean;
+}) {
+  return <TextInputField {...props} title="Expression Language" placeholder="Enter the expression language..." />;
+}
+
 export function NameField(props: {
   id: string;
   name: string;
@@ -79,10 +106,11 @@ export function TypeRefField(props: {
 
 export function TextInputField(props: {
   initialValue: string;
-  onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;
-  expressionPath: ExpressionPath[];
+  onChange?: (newTextValue: string, expressionPath?: ExpressionPath[]) => void;
+  expressionPath?: ExpressionPath[];
   isReadonly: boolean;
   title: string;
+  placeholder?: string;
 }) {
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
@@ -113,10 +141,10 @@ export function TextInputField(props: {
           setEditing(true);
         }}
         onBlur={() => {
-          props.onChange(textInputValue, expressionPath);
+          props.onChange?.(textInputValue, expressionPath);
           setEditing(false);
         }}
-        placeholder={"Enter the expression content..."}
+        placeholder={props.placeholder ?? "Enter the expression content..."}
         style={{ resize: "vertical", minHeight: "40px" }}
         rows={6}
       />
@@ -130,6 +158,7 @@ export function TextAreaField(props: {
   expressionPath: ExpressionPath[];
   isReadonly: boolean;
   title: string;
+  placeholder?: string;
 }) {
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
@@ -163,7 +192,7 @@ export function TextAreaField(props: {
           props.onChange(textAreaValue, expressionPath);
           setEditing(false);
         }}
-        placeholder={"Enter the expression content..."}
+        placeholder={props.placeholder ?? "Enter the expression content..."}
         style={{ resize: "vertical", minHeight: "40px" }}
         rows={6}
       />

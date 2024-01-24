@@ -19,24 +19,24 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { TextAreaField, TypeRefField } from "./Fields";
+import { DescriptionField, TextInputField, TypeRefField } from "./Fields";
 import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { useDmnEditorStore } from "../../store/Store";
-import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useUpdateBee } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 /**
  * This component implements a form to change an object with the { "@_label"?: "string", "description": { "__$$text": string } } type
  * It's used for: ContextExpressionRoot, InvocationExpressionRootCell, RelationExpressionRootCell, ListExpressionCells, ForExpressionCells,
  * EveryExpressionCells, SomeExpressionCells, ConditionalExpressionCells, FilterExpressionCells
  */
-type ExpressionRoot = Pick<AllExpressionsWithoutTypes, "@_label" | "description" | "@_typeRef">;
+type FunctionDefinitionRoot = Pick<DMN15__tFunctionDefinition, "@_kind" | "@_typeRef" | "description">;
 
-export function ExpressionRootCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
+export function FunctionDefinitionRootCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
   const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
@@ -44,7 +44,7 @@ export function ExpressionRootCell(props: { beeMap?: BeeMap; isReadonly: boolean
     [props.beeMap, selectedObjectId]
   );
 
-  const updateBee = useUpdateBee<ExpressionRoot>(
+  const updateBee = useUpdateBee<FunctionDefinitionRoot>(
     useCallback((dmnObject, newContent) => {
       if (newContent.description?.__$$text !== undefined) {
         dmnObject.description ??= { __$$text: "" };
@@ -54,7 +54,7 @@ export function ExpressionRootCell(props: { beeMap?: BeeMap; isReadonly: boolean
     props.beeMap
   );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as ExpressionRoot, [selectedObjectInfos?.cell]);
+  const cell = useMemo(() => selectedObjectInfos?.cell as FunctionDefinitionRoot, [selectedObjectInfos?.cell]);
 
   return (
     <>
@@ -63,13 +63,13 @@ export function ExpressionRootCell(props: { beeMap?: BeeMap; isReadonly: boolean
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
+      <TextInputField title={"Kind"} isReadonly={true} initialValue={cell["@_kind"] ?? ""} />
       <TypeRefField
         isReadonly={true}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
       />
-      <TextAreaField
-        title={"Description"}
+      <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}

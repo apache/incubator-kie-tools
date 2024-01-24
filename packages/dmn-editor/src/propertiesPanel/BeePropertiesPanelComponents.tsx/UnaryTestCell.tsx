@@ -19,7 +19,13 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { KieConstraintTypeField, TextAreaField, TextInputField, TypeRefField } from "./Fields";
+import {
+  ContentField,
+  DescriptionField,
+  ExpressionLanguageField,
+  KieConstraintTypeField,
+  TypeRefField,
+} from "./Fields";
 import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { DMN15__tUnaryTests } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
@@ -73,8 +79,7 @@ export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
       />
-      <TextInputField
-        title={"Expression Language"}
+      <ExpressionLanguageField
         isReadonly={props.isReadonly}
         initialValue={cell["@_expressionLanguage"] ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -82,8 +87,7 @@ export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
           updateBee({ "@_expressionLanguage": newExpressionLanguage }, expressionPath)
         }
       />
-      <TextAreaField
-        title={"Content"}
+      <ContentField
         isReadonly={props.isReadonly}
         initialValue={cell.text?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -91,8 +95,7 @@ export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
           updateBee({ text: { __$$text: newText } }, expressionPath)
         }
       />
-      <TextAreaField
-        title={"Description"}
+      <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}

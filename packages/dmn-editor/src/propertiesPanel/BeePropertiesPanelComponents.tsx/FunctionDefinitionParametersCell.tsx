@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { NameField, TextAreaField, TypeRefField } from "./Fields";
+import { DescriptionField, NameField, TypeRefField } from "./Fields";
 import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { useDmnEditorStore } from "../../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
@@ -116,8 +116,7 @@ export function FunctionDefinitionParameterCell(props: { beeMap?: BeeMap; isRead
                   updateBee({ formalParameter } as any, undefined, i);
                 }}
               />
-              <TextAreaField
-                title={"Description"}
+              <DescriptionField
                 isReadonly={props.isReadonly}
                 initialValue={parameter.description?.__$$text ?? ""}
                 expressionPath={selectedObjectInfos?.expressionPath ?? []}

@@ -340,6 +340,7 @@ export enum BeePropertiesPanelComponent {
   DECISION_TABLE_ROOT,
   EXPRESSION_ROOT,
   FUNCTION_DEFINITION_PARAMETERS,
+  FUNCTION_DEFINITION_ROOT,
   INFORMATION_ITEM_CELL,
   INVOCATION_FUNCTION_CALL,
   LITERAL_EXPRESSION_CONTENT,
@@ -416,7 +417,7 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
 
   if (selectedObjectPath.type === "functionDefinition") {
     if (selectedObjectPath.parameterIndex === undefined) {
-      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Function Definition" };
+      return { component: BeePropertiesPanelComponent.FUNCTION_DEFINITION_ROOT, title: "Function Definition" };
     }
     return { component: BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS, title: "Function Parameters" };
   }

@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { TextAreaField, TextInputField, TypeRefField } from "./Fields";
+import { ContentField, DescriptionField, ExpressionLanguageField, TypeRefField } from "./Fields";
 import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
@@ -73,8 +73,7 @@ export function LiteralExpressionContentCell(props: { beeMap?: BeeMap; isReadonl
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
       />
-      <TextInputField
-        title={"Expression Language"}
+      <ExpressionLanguageField
         isReadonly={props.isReadonly}
         initialValue={cell["@_expressionLanguage"] ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -82,8 +81,7 @@ export function LiteralExpressionContentCell(props: { beeMap?: BeeMap; isReadonl
           updateBee({ "@_expressionLanguage": newExpressionLanguage }, expressionPath)
         }
       />
-      <TextAreaField
-        title={"Content"}
+      <ContentField
         isReadonly={props.isReadonly}
         initialValue={cell.text?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -91,8 +89,7 @@ export function LiteralExpressionContentCell(props: { beeMap?: BeeMap; isReadonl
           updateBee({ text: { __$$text: newText } }, expressionPath)
         }
       />
-      <TextAreaField
-        title={"Description"}
+      <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}

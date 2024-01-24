@@ -20,7 +20,14 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
-import { KieConstraintTypeField, NameField, TextAreaField, TextInputField, TypeRefField } from "./Fields";
+import {
+  ContentField,
+  DescriptionField,
+  ExpressionLanguageField,
+  KieConstraintTypeField,
+  NameField,
+  TypeRefField,
+} from "./Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/Store";
 import { DMN15__tInputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -105,8 +112,7 @@ export function DecisionTableInputHeaderCell(props: { beeMap?: BeeMap; isReadonl
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
-      <TextAreaField
-        title={"Description"}
+      <DescriptionField
         isReadonly={props.isReadonly}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         initialValue={cell?.description?.__$$text ?? ""}
@@ -136,8 +142,7 @@ export function DecisionTableInputHeaderCell(props: { beeMap?: BeeMap; isReadonl
               dmnEditorRootElementRef={dmnEditorRootElementRef}
               typeRef={inputExpression?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
             />
-            <TextInputField
-              title={"Expression Language"}
+            <ExpressionLanguageField
               isReadonly={props.isReadonly}
               initialValue={inputExpression?.["@_expressionLanguage"] ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -145,8 +150,7 @@ export function DecisionTableInputHeaderCell(props: { beeMap?: BeeMap; isReadonl
                 updateBee({ inputExpression: { "@_expressionLanguage": newExpressionLanguage } }, expressionPath)
               }
             />
-            <TextAreaField
-              title={"Description"}
+            <DescriptionField
               isReadonly={props.isReadonly}
               initialValue={inputExpression?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -172,8 +176,7 @@ export function DecisionTableInputHeaderCell(props: { beeMap?: BeeMap; isReadonl
               dmnEditorRootElementRef={dmnEditorRootElementRef}
               typeRef={inputExpression?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
             />
-            <TextInputField
-              title={"Expression Language"}
+            <ExpressionLanguageField
               isReadonly={props.isReadonly}
               initialValue={inputValues?.["@_expressionLanguage"] ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -181,8 +184,7 @@ export function DecisionTableInputHeaderCell(props: { beeMap?: BeeMap; isReadonl
                 updateBee({ inputValues: { "@_expressionLanguage": newExpressionLanguage } }, expressionPath)
               }
             />
-            <TextAreaField
-              title={"Content"}
+            <ContentField
               isReadonly={props.isReadonly}
               initialValue={inputValues?.text?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -190,8 +192,7 @@ export function DecisionTableInputHeaderCell(props: { beeMap?: BeeMap; isReadonl
                 updateBee({ inputValues: { text: { __$$text: newText } } }, expressionPath)
               }
             />
-            <TextAreaField
-              title={"Description"}
+            <DescriptionField
               isReadonly={props.isReadonly}
               initialValue={inputValues?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}

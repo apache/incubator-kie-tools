@@ -36,12 +36,13 @@ import { InformationItemCell } from "./BeePropertiesPanelComponents.tsx/Informat
 import { DecisionTableInputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableInputHeaderCell";
 import { DecisionTableOutputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableOutputHeaderCell";
 import { LiteralExpressionContentCell } from "./BeePropertiesPanelComponents.tsx/LiteralExpressionContentCell";
-import { ExpressionRootCell } from "./BeePropertiesPanelComponents.tsx/ExpressionRoot";
+import { ExpressionRootCell } from "./BeePropertiesPanelComponents.tsx/ExpressionRootCell";
 import { UnaryTestCell } from "./BeePropertiesPanelComponents.tsx/UnaryTestCell";
 import { AllExpressions } from "../dataTypes/DataTypeSpec";
 import { DecisionTableRootCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableRootCell";
 import { InvocationFunctionCallCell } from "./BeePropertiesPanelComponents.tsx/InvocationFunctionCallCell";
 import { FunctionDefinitionParameterCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionParametersCell";
+import { FunctionDefinitionRootCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionRootCell";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -127,6 +128,9 @@ export function BeePropertiesPanel() {
                   )}
                   {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS && (
                     <FunctionDefinitionParameterCell beeMap={beeMap} isReadonly={isReadonly} />
+                  )}
+                  {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_ROOT && (
+                    <FunctionDefinitionRootCell beeMap={beeMap} isReadonly={isReadonly} />
                   )}
                   {propertiesPanel?.component === BeePropertiesPanelComponent.INFORMATION_ITEM_CELL && (
                     <InformationItemCell beeMap={beeMap} isReadonly={isReadonly} />
