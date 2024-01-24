@@ -179,8 +179,8 @@ export const InputDataNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
-          {`render count: ${renderCount.current}`}
-          <br />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
           <OutgoingStuffNodePanel
@@ -308,8 +308,8 @@ export const DecisionNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
-          {`render count: ${renderCount.current}`}
-          <br />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           {!isExternal && (
             <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={decision["@_id"]!} />
@@ -440,8 +440,8 @@ export const BkmNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
-          {`render count: ${renderCount.current}`}
-          <br />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={bkm["@_id"]!} />}
           <OutgoingStuffNodePanel
@@ -558,8 +558,8 @@ export const KnowledgeSourceNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
-          {`render count: ${renderCount.current}`}
-          <br />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           <OutgoingStuffNodePanel
             isVisible={!isTargeted && shouldActLikeHovered}
@@ -668,8 +668,8 @@ export const TextAnnotationNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
-          {`render count: ${renderCount.current}`}
-          <br />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           <OutgoingStuffNodePanel
             isVisible={!isTargeted && shouldActLikeHovered}
@@ -859,8 +859,8 @@ export const DecisionServiceNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
-          {`render count: ${renderCount.current}`}
-          <br />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <InfoNodePanel isVisible={!isTargeted && selected && !dragging} />
           <OutgoingStuffNodePanel
             isVisible={!isTargeted && selected && !dragging}
@@ -996,8 +996,8 @@ export const GroupNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
-          {`render count: ${renderCount.current}`}
-          <br />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <OutgoingStuffNodePanel
             isVisible={!isTargeted && selected && !dragging}
             nodeTypes={outgoingStructure[NODE_TYPES.group].nodes}
@@ -1068,8 +1068,8 @@ export const UnknownNode = React.memo(
         <RF.Handle key={"unknown"} id={"unknown"} type={"source"} style={{ opacity: 0 }} position={RF.Position.Top} />
 
         <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--unknown-node ${className}`} tabIndex={-1}>
-          {`render count: ${renderCount.current}`}
-          <br />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
           <EditableNodeLabel
