@@ -41,6 +41,7 @@ import { UnaryTestCell } from "./BeePropertiesPanelComponents.tsx/UnaryTestCell"
 import { AllExpressions } from "../dataTypes/DataTypeSpec";
 import { DecisionTableRootCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableRootCell";
 import { InvocationFunctionCallCell } from "./BeePropertiesPanelComponents.tsx/InvocationFunctionCallCell";
+import { FunctionDefinitionParameterCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionParametersCell";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -66,7 +67,7 @@ export function BeePropertiesPanel() {
 
     let expression: AllExpressions | undefined;
     if (node?.data.dmnObject.__$$element === "businessKnowledgeModel") {
-      expression = node.data.dmnObject.encapsulatedLogic?.expression;
+      expression = { __$$element: "functionDefinition", ...node.data.dmnObject.encapsulatedLogic };
     }
     if (node?.data.dmnObject.__$$element === "decision") {
       expression = node.data.dmnObject.expression;
@@ -112,11 +113,6 @@ export function BeePropertiesPanel() {
             {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && (
               <Form>
                 <FormSection title={propertiesPanel?.title ?? ""}>
-                  <FormGroup label="ID">
-                    <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
-                      {selectedObjectId}
-                    </ClipboardCopy>
-                  </FormGroup>
                   {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER && (
                     <DecisionTableInputHeaderCell beeMap={beeMap} isReadonly={isReadonly} />
                   )}
@@ -129,9 +125,9 @@ export function BeePropertiesPanel() {
                   {propertiesPanel?.component === BeePropertiesPanelComponent.EXPRESSION_ROOT && (
                     <ExpressionRootCell beeMap={beeMap} isReadonly={isReadonly} />
                   )}
-                  {/* {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS && (
-                    <FunctionDefinitionParameterCell />
-                  )} */}
+                  {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS && (
+                    <FunctionDefinitionParameterCell beeMap={beeMap} isReadonly={isReadonly} />
+                  )}
                   {propertiesPanel?.component === BeePropertiesPanelComponent.INFORMATION_ITEM_CELL && (
                     <InformationItemCell beeMap={beeMap} isReadonly={isReadonly} />
                   )}

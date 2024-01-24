@@ -26,6 +26,8 @@ import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useUpdateBee } from "./useUpdateBee";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
 /**
  * Pick<DMN15__tLiteralExpression, "@_expressionLanguage" | "@_label" | "description" | "text">
@@ -61,6 +63,11 @@ export function LiteralExpressionContentCell(props: { beeMap?: BeeMap; isReadonl
 
   return (
     <>
+      <FormGroup label="ID">
+        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+          {selectedObjectId}
+        </ClipboardCopy>
+      </FormGroup>
       <TypeRefField
         isReadonly={true}
         dmnEditorRootElementRef={dmnEditorRootElementRef}

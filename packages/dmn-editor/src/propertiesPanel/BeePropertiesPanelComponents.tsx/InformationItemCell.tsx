@@ -27,6 +27,8 @@ import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useUpdateBee } from "./useUpdateBee";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
 /**
  * This component implements a form to change an object with the DMN15__tInformationItem type
@@ -58,6 +60,11 @@ export function InformationItemCell(props: { beeMap?: BeeMap; isReadonly: boolea
 
   return (
     <>
+      <FormGroup label="ID">
+        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+          {selectedObjectId}
+        </ClipboardCopy>
+      </FormGroup>
       <NameField
         isReadonly={props.isReadonly}
         id={cell["@_id"] ?? ""}

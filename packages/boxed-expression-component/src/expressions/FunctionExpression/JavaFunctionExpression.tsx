@@ -83,7 +83,7 @@ export function JavaFunctionExpression({
   );
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameters);
-  const parametersId = useMemo(() => generateUuid(), []);
+  const parametersId = useMemo(() => `${functionExpression.id}-parameters`, [functionExpression.id]);
 
   const beeTableColumns = useMemo<ReactTable.Column<JAVA_ROWTYPE>[]>(() => {
     return [

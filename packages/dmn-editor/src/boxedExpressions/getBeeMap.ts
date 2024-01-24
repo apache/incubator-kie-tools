@@ -24,15 +24,11 @@ import {
   DMN15__tFilter,
   DMN15__tFor,
   DMN15__tFunctionDefinition,
-  DMN15__tInformationItem,
-  DMN15__tInputClause,
   DMN15__tInvocation,
   DMN15__tList,
   DMN15__tLiteralExpression,
-  DMN15__tOutputClause,
   DMN15__tQuantified,
   DMN15__tRelation,
-  DMN15__tUnaryTests,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { AllExpressionTypes, AllExpressions, AllExpressionsWithoutTypes } from "../dataTypes/DataTypeSpec";
 
@@ -121,7 +117,10 @@ export type ExpressionPath =
 /**
  * A map of "@_id" to cell (expression) and its path in the expression hierarchy
  */
-export type BeeMap = Map<string, { expressionPath: ExpressionPath[]; cell: AllExpressionsWithoutTypes }>;
+export type BeeMap = Map<
+  string,
+  { expressionPath: ExpressionPath[]; cell: AllExpressionsWithoutTypes | AllExpressionsWithoutTypes[] }
+>;
 
 export function generateBeeMap(
   expression: AllExpressions,
@@ -240,13 +239,18 @@ export function generateBeeMap(
           { type: "functionDefinition", parameterIndex: -1 },
         ]);
       }
-      expression.formalParameter?.forEach((fp, parameterIndex) => {
-        fp["@_id"] &&
-          map.set(fp["@_id"], {
-            expressionPath: [...parentExpressionPath, { type: "functionDefinition", parameterIndex: parameterIndex }],
-            cell: fp,
-          });
+
+      map.set(`${expression["@_id"]}-parameters`, {
+        expressionPath: [...parentExpressionPath, { type: "functionDefinition", parameterIndex: 0 }],
+        cell: expression.formalParameter ?? [],
       });
+      // expression.formalParameter?.forEach((fp, parameterIndex) => {
+      //   fp["@_id"] &&
+      //     map.set(fp["@_id"], {
+      //       expressionPath: [...parentExpressionPath, { type: "functionDefinition", parameterIndex: parameterIndex }],
+      //       cell: fp,
+      //     });
+      // });
       return map;
     case "invocation":
       expression["@_id"] &&
@@ -471,7 +475,7 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
 
 export function getDmnObjectByPath(
   paths: ExpressionPath[],
-  expressionRoot: AllExpressions | undefined
+  expressionRoot: AllExpressionsWithoutTypes | undefined
 ): AllExpressionsWithoutTypes | undefined {
   if (!expressionRoot) {
     return;

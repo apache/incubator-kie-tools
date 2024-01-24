@@ -29,7 +29,7 @@ import { buildXmlHref } from "../../xml/xmlHrefs";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
 
 export function useUpdateBee<T extends AllExpressionsWithoutTypes>(
-  updateDmnObject: (dmnObject: T, newContent: DeepPartial<T>) => void,
+  updateDmnObject: (dmnObject: T, newContent: DeepPartial<T>, ...args: any[]) => void,
   beeMap?: BeeMap
 ) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -44,23 +44,24 @@ export function useUpdateBee<T extends AllExpressionsWithoutTypes>(
   const updateBee = useCallback(
     (
       newContent: DeepPartial<T>,
-      expressionPath: ExpressionPath[] | undefined = selectedObjectInfos?.expressionPath
+      expressionPath: ExpressionPath[] | undefined = selectedObjectInfos?.expressionPath,
+      ...args
     ) => {
       dmnEditorStoreApi.setState((state) => {
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "businessKnowledgeModel") {
           const dmnObject = getDmnObjectByPath(
             expressionPath ?? [],
             (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tBusinessKnowledgeModel)
-              ?.encapsulatedLogic?.expression
+              ?.encapsulatedLogic
           );
-          dmnObject && updateDmnObject(dmnObject as T, newContent);
+          dmnObject && updateDmnObject(dmnObject as T, newContent, args);
         }
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "decision") {
           const dmnObject = getDmnObjectByPath(
             expressionPath ?? [],
             (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tDecision)?.expression
           );
-          dmnObject && updateDmnObject(dmnObject as T, newContent);
+          dmnObject && updateDmnObject(dmnObject as T, newContent, args);
         }
       });
     },

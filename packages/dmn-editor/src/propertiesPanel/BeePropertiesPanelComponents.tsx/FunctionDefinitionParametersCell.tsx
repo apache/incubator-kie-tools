@@ -18,58 +18,119 @@
  */
 
 import * as React from "react";
-import { NameField, TypeRefField } from "./Fields";
-import { UniqueNameIndex } from "../../Dmn15Spec";
-import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
-import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { useCallback, useMemo, useState } from "react";
+import { NameField, TextAreaField, TypeRefField } from "./Fields";
+import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { useDmnEditorStore } from "../../store/Store";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { useDmnEditor } from "../../DmnEditorContext";
+import { useUpdateBee } from "./useUpdateBee";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
+import {
+  DMN15__tFunctionDefinition,
+  DMN15__tInformationItem,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 
 /**
  * This component implements a form to change an object with the DMN15__tInformationItem type
  * It's used for: ContextExpressionVariableCell, InvocationExpressionParametersCell and RelationExpressionHeaderCell
  */
-export function FunctionDefinitionParameterCell(props: {
-  formalParameter?: Array<{
-    id: string;
-    name: string;
-    typeRef: string;
-    label: string;
-    description: string;
-    isReadonly: boolean;
-    allUniqueNames: UniqueNameIndex;
-    dmnEditorRootElementRef: React.RefObject<HTMLElement>;
-    expressionPath: ExpressionPath[];
-    onChangeName: (newName: string) => void;
-    onChangeTypeRef: (newTypeRef: string) => void;
-    onChangeLabel: (newLabel: string) => void;
-    onChangeDescription: (newDescription: string) => void;
-  }>;
-}) {
+export function FunctionDefinitionParameterCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
+  const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+  const { dmnEditorRootElementRef } = useDmnEditor();
+  const selectedObjectInfos = useMemo(
+    () => props.beeMap?.get(selectedObjectId ?? ""),
+    [props.beeMap, selectedObjectId]
+  );
+
+  const updateBee = useUpdateBee<DMN15__tFunctionDefinition>(
+    useCallback((dmnObject, newContent, parameterIndex: number) => {
+      dmnObject.formalParameter ??= [];
+      if (newContent.formalParameter?.[parameterIndex]?.["@_name"] !== undefined) {
+        dmnObject.formalParameter[parameterIndex] ??= { "@_name": "" };
+        dmnObject.formalParameter[parameterIndex]["@_name"] = newContent.formalParameter![parameterIndex]!["@_name"];
+      }
+      if (newContent.formalParameter![parameterIndex]?.["@_typeRef"] !== undefined) {
+        dmnObject.formalParameter[parameterIndex] ??= { "@_typeRef": "", "@_name": "" };
+        dmnObject.formalParameter[parameterIndex]["@_typeRef"] =
+          newContent.formalParameter![parameterIndex]!["@_typeRef"];
+      }
+      if (newContent.formalParameter![parameterIndex]?.description?.__$$text !== undefined) {
+        dmnObject.formalParameter[parameterIndex] ??= { description: { __$$text: "" }, "@_name": "" };
+        dmnObject.formalParameter[parameterIndex].description ??= { __$$text: "" };
+        dmnObject.formalParameter[parameterIndex].description = newContent.formalParameter![parameterIndex]!
+          .description as { __$$text: string };
+      }
+    }, []),
+    props.beeMap
+  );
+
+  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInformationItem[], [selectedObjectInfos?.cell]);
+  const [isParameterExpanded, setParameterExpaded] = useState<boolean[]>([]);
+
   return (
     <>
-      {/* {props.formalParameter?.map((parameter, i) => (
-        <FormGroup label={`Parameter ${parameter.name}`} key={i}>
-          <NameField
-            isReadonly={parameter.isReadonly}
-            id={parameter.id}
-            name={parameter.name}
-            allUniqueNames={parameter.allUniqueNames}
-            onChange={parameter.onChangeName}
+      {cell?.map((parameter, i) => (
+        <FormSection key={i}>
+          <PropertiesPanelHeader
+            expands={true}
+            fixed={false}
+            isSectionExpanded={isParameterExpanded[i] ?? false}
+            toogleSectionExpanded={() =>
+              setParameterExpaded((prev) => {
+                const newExpanded = [...prev];
+                newExpanded[i] = !(newExpanded[i] ?? false);
+                return newExpanded;
+              })
+            }
+            title={`Parameter ${parameter["@_name"]}`}
           />
-          <TypeRefField
-            isReadonly={parameter.isReadonly}
-            dmnEditorRootElementRef={parameter.dmnEditorRootElementRef}
-            typeRef={parameter.typeRef}
-            onChange={parameter.onChangeTypeRef}
-          />
-          <LabelField isReadonly={parameter.isReadonly} label={parameter.label} onChange={parameter.onChangeLabel} />
-          <DescriptionField
-            isReadonly={parameter.isReadonly}
-            initialValue={parameter.description}
-            expressionPath={parameter.expressionPath}
-            onChange={parameter.onChangeDescription}
-          />
-        </FormGroup>
-      ))} */}
+
+          {isParameterExpanded[i] && (
+            <>
+              <FormGroup label="ID">
+                <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+                  {selectedObjectId}
+                </ClipboardCopy>
+              </FormGroup>
+              <NameField
+                isReadonly={props.isReadonly}
+                id={parameter["@_id"] ?? ""}
+                name={parameter["@_name"] ?? ""}
+                allUniqueNames={new Map()}
+                onChange={(newName: string) => {
+                  const formalParameter = [];
+                  formalParameter[i] = { "@_name": newName };
+                  updateBee({ formalParameter }, undefined, i);
+                }}
+              />
+              <TypeRefField
+                isReadonly={props.isReadonly}
+                dmnEditorRootElementRef={dmnEditorRootElementRef}
+                typeRef={parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+                onChange={(newTypeRef) => {
+                  const formalParameter = [];
+                  formalParameter[i] = { "@_typeRef": newTypeRef };
+                  updateBee({ formalParameter } as any, undefined, i);
+                }}
+              />
+              <TextAreaField
+                title={"Description"}
+                isReadonly={props.isReadonly}
+                initialValue={parameter.description?.__$$text ?? ""}
+                expressionPath={selectedObjectInfos?.expressionPath ?? []}
+                onChange={(newDescription: string, expressionPath: ExpressionPath[]) => {
+                  const formalParameter = [];
+                  formalParameter[i] = { description: { __$$text: newDescription } };
+                  updateBee({ formalParameter } as any, expressionPath, i);
+                }}
+              />
+            </>
+          )}
+        </FormSection>
+      ))}
     </>
   );
 }

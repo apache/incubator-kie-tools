@@ -26,6 +26,8 @@ import { useDmnEditorStore } from "../../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useUpdateBee } from "./useUpdateBee";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
 /**
  * Pick<DMN15__tDecisionTable, "@_label" | "@_outputLabel" | "description">
@@ -57,6 +59,11 @@ export function DecisionTableRootCell(props: { beeMap?: BeeMap; isReadonly: bool
 
   return (
     <>
+      <FormGroup label="ID">
+        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+          {selectedObjectId}
+        </ClipboardCopy>
+      </FormGroup>
       <TypeRefField
         isReadonly={true}
         dmnEditorRootElementRef={dmnEditorRootElementRef}

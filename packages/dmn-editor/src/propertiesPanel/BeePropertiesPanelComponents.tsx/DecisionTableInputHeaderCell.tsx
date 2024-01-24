@@ -21,13 +21,14 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { KieConstraintTypeField, NameField, TextAreaField, TextInputField, TypeRefField } from "./Fields";
-import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
+import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/Store";
 import { DMN15__tInputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { useUpdateBee } from "./useUpdateBee";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 
 export function DecisionTableInputHeaderCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
   const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
@@ -99,6 +100,11 @@ export function DecisionTableInputHeaderCell(props: { beeMap?: BeeMap; isReadonl
 
   return (
     <>
+      <FormGroup label="ID">
+        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+          {selectedObjectId}
+        </ClipboardCopy>
+      </FormGroup>
       <TextAreaField
         title={"Description"}
         isReadonly={props.isReadonly}

@@ -69,8 +69,7 @@ export function PmmlFunctionExpression({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameters);
-
-  const parametersId = useMemo(() => generateUuid(), []);
+  const parametersId = useMemo(() => `${functionExpression.id}-parameters`, [functionExpression.id]);
 
   const beeTableColumns = useMemo<ReactTable.Column<PMML_ROWTYPE>[]>(() => {
     return [
