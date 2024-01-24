@@ -33,6 +33,12 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/log"
 )
 
+const (
+	testImgSecond         = "alpine"
+	testImgSecondTag      = "alpine:latest"
+	testImgSecondLocalTag = "localhost:5000/alpine:latest"
+)
+
 func TestRegistryDockerIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(DockerTestSuite))
 }
@@ -65,20 +71,20 @@ func dockerPullTagPushOnRegistryContainer(suite *DockerTestSuite) bool {
 	dockerSocketConn := suite.Docker.Connection
 	d := common.Docker{Connection: dockerSocketConn}
 
-	err := d.PullImage(common.TEST_IMG_SECOND)
+	err := d.PullImage(testImgSecond)
 	time.Sleep(2 * time.Second) // needed on CI
 	if err != nil {
 		assert.Fail(suite.T(), "Pull Image Failed", err)
 		return false
 	}
 
-	err = d.TagImage(common.TEST_IMG_SECOND_TAG, common.TEST_IMG_SECOND_LOCAL_TAG)
+	err = d.TagImage(testImgSecondTag, testImgSecondLocalTag)
 	if err != nil {
 		assert.Fail(suite.T(), "Tag Image Failed", err)
 		return false
 	}
 
-	err = d.PushImage(common.TEST_IMG_SECOND_LOCAL_TAG, common.REGISTRY_CONTAINER_URL_FROM_DOCKER_SOCKET, "", "")
+	err = d.PushImage(testImgSecondLocalTag, common.RegistryContainerUrlFromDockerSocket, "", "")
 	if err != nil {
 		assert.Fail(suite.T(), "Push Image Failed", err)
 		return false

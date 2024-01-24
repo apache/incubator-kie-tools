@@ -35,20 +35,12 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/log"
 )
 
-const REGISTRY_IMG = "registry"
-const REGISTRY_IMG_FULL = "docker.io/library/registry"
-const REGISTRY_IMG_FULL_TAG = "docker.io/library/registry:latest"
-const REGISTRY_CONTAINER_URL_FROM_DOCKER_SOCKET = "tcp://localhost:5000"
-const REGISTRY_CONTAINER_URL = "http://localhost:5000"
-const TEST_IMG = "busybox"
-const TEST_REGISTRY_REPO = "localhost:5000/"
-const TEST_REPO = "docker.io/library/"
-const LATEST_TAG = "latest"
-const TEST_IMG_TAG = "busybox:latest"
-const TEST_IMG_SECOND = "alpine"
-const TEST_IMG_SECOND_TAG = "alpine:latest"
-const TEST_IMG_SECOND_LOCAL_TAG = "localhost:5000/alpine:latest"
-const TEST_IMG_LOCAL_TAG = "localhost:5000/busybox:latest"
+const (
+	RegistryContainerUrlFromDockerSocket = "tcp://localhost:5000"
+	RegistryImg                          = "registry"
+	registryImgFullTag                   = "docker.io/library/registry:latest"
+	registryContainerUrl                 = "http://localhost:5000"
+)
 
 type Registry interface {
 	StartRegistry()
@@ -121,7 +113,7 @@ func (r *RegistryContainer) url(pathTemplate string, args ...interface{}) string
 }
 
 func GetRegistryContainer() (RegistryContainer, error) {
-	registryContainerConnection, err := GetRegistryConnection(REGISTRY_CONTAINER_URL, "", "")
+	registryContainerConnection, err := GetRegistryConnection(registryContainerUrl, "", "")
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "Can't connect to the RegistryContainer")
 		return RegistryContainer{}, err

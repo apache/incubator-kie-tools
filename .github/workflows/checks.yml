@@ -84,10 +84,10 @@ jobs:
         uses: actions/checkout@v3
 
       # since we now have to download container-builder deps, we need these packages installed before generating our types.
-      # we should be able to remove this after https://issues.redhat.com/browse/KOGITO-9106
       - name: Install packages
         run: |
-          sudo apt-get -y install \
+          sudo apt-get update &&\
+          sudo apt-get -y install --no-install-recommends \
           btrfs-progs \
           libgpgme-dev \
           libbtrfs-dev \

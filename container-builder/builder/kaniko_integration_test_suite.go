@@ -63,7 +63,7 @@ func (suite *KanikoDockerTestSuite) TearDownSuite() {
 	} else {
 		suite.LocalRegistry.StopRegistry()
 	}
-	purged, err := suite.Docker.PurgeContainer("", common.REGISTRY_IMG)
+	purged, err := suite.Docker.PurgeContainer("", common.RegistryImg)
 	klog.V(log.I).InfoS("Purged containers", "containers", purged)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "Purged registry")

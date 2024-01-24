@@ -33,6 +33,12 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/log"
 )
 
+const (
+	testImg         = "busybox"
+	latestTag       = "latest"
+	testImgLocalTag = "localhost:5000/busybox:latest"
+)
+
 func TestDockerIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(DockerTestSuite))
 }
@@ -44,22 +50,21 @@ func (suite *DockerTestSuite) TestImagesOperationsOnDockerRegistryForTest() {
 	repos, err := registryContainer.GetRepositories()
 	initialSize := len(repos)
 	assert.Nil(suite.T(), err)
-
-	pullErr := suite.Docker.PullImage(common.TEST_IMG + ":" + common.LATEST_TAG)
+	pullErr := suite.Docker.PullImage(testImg + ":" + latestTag)
 	if pullErr != nil {
 		klog.V(log.E).ErrorS(pullErr, "Pull Error")
 	}
 	assert.Nil(suite.T(), pullErr, "Pull image failed")
 	time.Sleep(2 * time.Second) // Needed on CI
-	assert.True(suite.T(), suite.LocalRegistry.IsImagePresent(common.TEST_IMG), "Test image not found in the registry after the pull")
-	tagErr := suite.Docker.TagImage(common.TEST_IMG, common.TEST_IMG_LOCAL_TAG)
+	assert.True(suite.T(), suite.LocalRegistry.IsImagePresent(testImg), "Test image not found in the registry after the pull")
+	tagErr := suite.Docker.TagImage(testImg, testImgLocalTag)
 	if tagErr != nil {
 		klog.V(log.E).ErrorS(tagErr, "Tag Error")
 	}
 
 	assert.Nil(suite.T(), tagErr, "Tag image failed")
 	time.Sleep(2 * time.Second) // Needed on CI
-	pushErr := suite.Docker.PushImage(common.TEST_IMG_LOCAL_TAG, common.REGISTRY_CONTAINER_URL_FROM_DOCKER_SOCKET, "", "")
+	pushErr := suite.Docker.PushImage(testImgLocalTag, common.RegistryContainerUrlFromDockerSocket, "", "")
 	if pushErr != nil {
 		klog.V(log.E).ErrorS(pushErr, "Push Error")
 	}
@@ -72,8 +77,8 @@ func (suite *DockerTestSuite) TestImagesOperationsOnDockerRegistryForTest() {
 	assert.NotNil(suite.T(), repos)
 	assert.True(suite.T(), len(repos) == initialSize+1)
 
-	digest, erroDIgest := registryContainer.Connection.ManifestDigest(common.TEST_IMG, common.LATEST_TAG)
+	digest, erroDIgest := registryContainer.Connection.ManifestDigest(testImg, latestTag)
 	assert.Nil(suite.T(), erroDIgest)
 	assert.NotNil(suite.T(), digest)
-	assert.NotNil(suite.T(), registryContainer.DeleteImage(common.TEST_IMG, common.LATEST_TAG), "Delete Image not allowed")
+	assert.NotNil(suite.T(), registryContainer.DeleteImage(testImg, latestTag), "Delete Image not allowed")
 }

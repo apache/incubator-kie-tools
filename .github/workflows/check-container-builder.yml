@@ -54,11 +54,12 @@ jobs:
       cancel-in-progress: true
     timeout-minutes: 120
     name: Integration tests (${{ matrix.container-engine }})
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Install packages
         run: |
-          sudo apt-get -y install \
+          sudo apt-get update &&\
+          sudo apt-get -y install --no-install-recommends \
           libgpgme-dev \
           libbtrfs-dev \
           libdevmapper-dev
