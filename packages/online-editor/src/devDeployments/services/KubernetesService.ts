@@ -238,11 +238,14 @@ export class KubernetesService {
     });
   }
 
-  public newResourceName(prefix: string): string {
+  public static newResourceName(prefix: string, suffix?: string): string {
+    if (suffix) {
+      return `${prefix}-${suffix}`;
+    }
     const randomPart = Math.random().toString(36).substring(2, 9);
     const milliseconds = new Date().getMilliseconds();
-    const suffix = `${randomPart}${milliseconds}`;
-    return `${prefix}-${suffix}`;
+    const randomSuffix = `${randomPart}${milliseconds}`;
+    return `${prefix}-${randomSuffix}`;
   }
 
   public extractDeploymentState(args: { deployment?: DeploymentResource }): DeploymentState {

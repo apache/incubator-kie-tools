@@ -20,7 +20,6 @@
 import { DeploymentOptionArgs } from "../../types";
 import { DeploymentOption, DeploymentOptionOpts } from "../types";
 import { DeploymentYaml } from "./DeploymentYaml";
-import { IngressYaml } from "./IngressYaml";
 import { ServiceYaml } from "./ServiceYaml";
 
 export function CustomImageOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
@@ -52,10 +51,39 @@ ${ServiceYaml()}
           },
         ],
       },
+      containerPort: {
+        id: "containerPort",
+        name: "Container Port",
+        description: "The port that is exposed by the container",
+        defaultValue: 8080,
+        type: "number",
+        resourcePatches: [
+          {
+            testFilters: [{ op: "test", path: "/kind", value: "Deployment" }],
+            jsonPatches: [
+              {
+                op: "replace",
+                path: "/spec/template/spec/containers/0/ports/0/containerPort",
+                value: "${{ parameters.containerPort }}",
+              },
+            ],
+          },
+          {
+            testFilters: [{ op: "test", path: "/kind", value: "Service" }],
+            jsonPatches: [
+              {
+                op: "replace",
+                path: "/spec/ports/0/targetPort",
+                value: "${{ parameters.containerPort }}",
+              },
+            ],
+          },
+        ],
+      },
       command: {
         id: "command",
         name: "Command",
-        description: "The command to be executed when the container starts",
+        description: "The command to be executed when the container starts (passed as args to the Deployment)",
         defaultValue: "mvn quarkus:dev",
         type: "text",
         resourcePatches: [
@@ -65,7 +93,7 @@ ${ServiceYaml()}
               {
                 op: "add",
                 path: "/spec/template/spec/containers/0/args",
-                value: [`dev-deployment-upload-service && \${{ parameters.command }}`],
+                value: ["dev-deployment-upload-service && ${{ parameters.command }}"],
               },
             ],
           },

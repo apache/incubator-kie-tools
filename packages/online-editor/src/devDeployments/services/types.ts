@@ -20,6 +20,17 @@
 import { K8sResourceYaml, ResourcePatch } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { DeploymentState } from "./common";
 
+/**
+ * Replaces leaf nodes of T with V
+ */
+export type RecursiveReplace<T, V> = {
+  [P in keyof T]: T[P] extends (infer U)[]
+    ? RecursiveReplace<U, V>[]
+    : T[P] extends number | string | symbol | undefined
+    ? V
+    : RecursiveReplace<T[P], V>;
+};
+
 export type KieSandboxDeployment = {
   name: string;
   routeUrl: string;

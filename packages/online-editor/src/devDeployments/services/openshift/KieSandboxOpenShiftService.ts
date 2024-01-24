@@ -27,7 +27,10 @@ import {
 import { DeployArgs, KieSandboxDevDeploymentsService } from "../KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { KieSandboxDeployment, ResourceActions, defaultAnnotationTokens, defaultLabelTokens } from "../types";
-import { KieSandboxDevDeploymentRequiredPatches } from "../deploymentOptions/KieSandboxDevDeploymentRequiredPatches";
+import {
+  K8S_RESOURCE_CREATED_BY,
+  KieSandboxDevDeploymentRequiredPatches,
+} from "../deploymentOptions/KieSandboxDevDeploymentRequiredPatches";
 import { shouldSkipAction } from "../deploymentOptions/types";
 
 export const openShiftResourcesApi = {
@@ -121,7 +124,7 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
           deployment.metadata.name &&
           deployment.metadata.annotations &&
           deployment.metadata.labels &&
-          deployment.metadata.labels[defaultLabelTokens.createdBy] === "kie-tools" &&
+          deployment.metadata.labels[defaultLabelTokens.createdBy] === K8S_RESOURCE_CREATED_BY &&
           routes.some((route) => route.metadata.name === deployment.metadata.name)
       )
       .map((deployment) => {

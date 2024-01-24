@@ -19,6 +19,8 @@
 
 import { ResourcePatch, encodeJsonPatchSubpath } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 
+export const K8S_RESOURCE_CREATED_BY = "kie-tools";
+
 export const requiredLabels = {
   createdBy: "tools.kie.org/created-by",
   partOf: "tools.kie.org/part-of",
@@ -42,7 +44,7 @@ export function KieSandboxDevDeploymentRequiredPatches(): ResourcePatch[] {
         {
           op: "add",
           path: `/metadata/labels/${encodeJsonPatchSubpath(requiredLabels.createdBy)}`,
-          value: "${{ devDeployment.createdBy }}",
+          value: K8S_RESOURCE_CREATED_BY,
         },
         {
           op: "add",

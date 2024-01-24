@@ -142,7 +142,6 @@ export function DevDeploymentsContextProvider(props: Props) {
           labels: defaultLabelTokens,
           annotations: defaultAnnotationTokens,
           uniqueName: service.newResourceName(),
-          createdBy: "kie-tools",
           uploadService: {
             apiKey: uuid(),
           },

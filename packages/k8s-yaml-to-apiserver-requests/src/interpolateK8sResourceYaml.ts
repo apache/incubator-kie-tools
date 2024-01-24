@@ -32,7 +32,7 @@ function escapeRegex(regexInput: string) {
   return regexInput.replace(/[/\-\\^$*+?.()|[\]{}]/g, "\\$&");
 }
 
-function flattenTokenMap(
+export function flattenTokenMap(
   obj: Record<string, any>,
   parent: any = undefined,
   res: Record<string, string> = {}

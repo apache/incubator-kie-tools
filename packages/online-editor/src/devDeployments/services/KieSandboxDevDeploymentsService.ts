@@ -57,7 +57,6 @@ export type KieSandboxDevDeploymentsServiceType = KieSandboxDevDeploymentsServic
 };
 
 export const RESOURCE_PREFIX = "dev-deployment";
-export const RESOURCE_OWNER = "kie-tools";
 export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 export const LIVENESS_TIMEOUT = 15000;
 
@@ -191,7 +190,7 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
   }
 
   public newResourceName(): string {
-    return this.kubernetesService.newResourceName(RESOURCE_PREFIX);
+    return KubernetesService.newResourceName(RESOURCE_PREFIX);
   }
 
   public async listServices(): Promise<ServiceResource[]> {

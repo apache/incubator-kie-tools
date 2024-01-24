@@ -32,8 +32,7 @@ metadata:
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
 spec:
   ports:
-    - name: 8081-tcp
-      protocol: TCP
+    - protocol: TCP
       port: 8081
       targetPort: 8081
   selector:

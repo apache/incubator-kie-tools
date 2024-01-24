@@ -32,7 +32,10 @@ import {
 } from "../KubernetesService";
 import { DeployArgs, KieSandboxDevDeploymentsService } from "../KieSandboxDevDeploymentsService";
 import { SelfSubjectAccessReviewYaml } from "./resources/SelfSubjectAccessReviewYaml";
-import { KieSandboxDevDeploymentRequiredPatches } from "../deploymentOptions/KieSandboxDevDeploymentRequiredPatches";
+import {
+  K8S_RESOURCE_CREATED_BY,
+  KieSandboxDevDeploymentRequiredPatches,
+} from "../deploymentOptions/KieSandboxDevDeploymentRequiredPatches";
 import { shouldSkipAction } from "../deploymentOptions/types";
 
 export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService {
@@ -125,7 +128,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
             deployment.metadata.name &&
             deployment.metadata.annotations &&
             deployment.metadata.labels &&
-            deployment.metadata.labels[defaultLabelTokens.createdBy] === "kie-tools" &&
+            deployment.metadata.labels[defaultLabelTokens.createdBy] === K8S_RESOURCE_CREATED_BY &&
             ingresses.some((ingress) => ingress.metadata.name === deployment.metadata.name)
         )
         .map((deployment) => {

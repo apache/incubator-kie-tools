@@ -24,7 +24,6 @@ import InfoAltIcon from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { useRoutes } from "../navigation/Hooks";
 import { MastheadBrand } from "@patternfly/react-core/dist/js/components/Masthead";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";

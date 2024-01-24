@@ -38,6 +38,7 @@ import { OpenShiftDeploymentOptions } from "./services/openshift/OpenShiftDeploy
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { DevDeploymentsTokensList } from "./DevDeploymentsTokensList";
 
 interface Props {
   workspaceFile: WorkspaceFile;
@@ -222,23 +223,25 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
               </FormGroup>
             );
           } else if (parameter.type === "number") {
-            <FormGroup
-              label={<b>{parameter.name}:</b>}
-              key={parameter.id}
-              helperText={
-                <small>
-                  <i>{parameter.description}</i>
-                </small>
-              }
-            >
-              <TextInput
-                id={parameter.id}
-                value={Number(deploymentParameters[parameter.id])}
-                aria-label={parameter.name}
-                type="number"
-                onChange={(value) => updateParameters(parameter, Number(value))}
-              />
-            </FormGroup>;
+            return (
+              <FormGroup
+                label={<b>{parameter.name}:</b>}
+                key={parameter.id}
+                helperText={
+                  <small>
+                    <i>{parameter.description}</i>
+                  </small>
+                }
+              >
+                <TextInput
+                  id={parameter.id}
+                  value={Number(deploymentParameters[parameter.id])}
+                  aria-label={parameter.name}
+                  type="number"
+                  onChange={(value) => updateParameters(parameter, Number(value))}
+                />
+              </FormGroup>
+            );
           }
         })) ??
       []
@@ -248,7 +251,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
   return (
     <Modal
       data-testid={"confirm-deploy-modal"}
-      variant={ModalVariant.medium}
+      variant={ModalVariant.large}
       title={i18n.devDeployments.deployConfirmModal.title}
       isOpen={devDeployments.confirmDeployModalState.isOpen}
       aria-label={"Confirm deploy modal"}
@@ -311,6 +314,19 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
           <b>{`'${authSession.namespace}'`}</b>
           &nbsp;
           {`namespace.`}
+        </>
+      )}
+      <br />
+      {authSession && (
+        <>
+          <br />
+          <p>
+            <i>
+              You can use tokens with pre-computed values for your resources and parameters. Check a list of the
+              available tokens below:
+            </i>
+          </p>
+          <DevDeploymentsTokensList workspaceFile={props.workspaceFile} authSession={authSession} />
         </>
       )}
     </Modal>
