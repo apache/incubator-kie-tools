@@ -67,6 +67,12 @@ jobs:
           kubectl get pods -A
 
       # TODO: install the operator-sdk first, then cache the installation
+
+      - name: Deploy operator
+        run: |
+          make deploy IMG=${{ env.OPERATOR_IMAGE_NAME }}
+          kubectl wait pod -A -l control-plane=controller-manager --for condition=Ready
+
       - name: Run tests
         run: |
           make test-e2e

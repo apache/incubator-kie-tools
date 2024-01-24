@@ -218,6 +218,10 @@ func GetSonataFlowE2eOrderProcessingFolder() string {
 	return e2eSamples + sonataFlowOrderProcessingFolder
 }
 
+func GetSonataFlowE2EPlatformServicesDirectory() string {
+	return filepath.Join(getTestDataDir(), "platform", "services")
+}
+
 // getTestDataDir gets the testdata directory containing every sample out there from test/testdata.
 // It should be used for every testing unit within the module.
 func getTestDataDir() string {
