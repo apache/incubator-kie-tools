@@ -238,7 +238,7 @@ export function DataTypePanel({
                   isActive={false}
                   editMode={"hover"}
                   isReadonly={dataType.namespace !== thisDmnsNamespace}
-                  allUniqueNames={() => allUniqueNames}
+                  onGetAllUniqueNames={() => allUniqueNames}
                 />
               </div>
             </FlexItem>

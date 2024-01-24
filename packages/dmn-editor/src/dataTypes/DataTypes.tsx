@@ -256,7 +256,7 @@ export function DataTypes() {
                             isActive={isActive}
                             editMode={"double-click"}
                             enableAutoFocusing={false} // Let the auto-focusing mechanism go for the title component
-                            allUniqueNames={() => allTopLevelItemDefinitionUniqueNames}
+                            onGetAllUniqueNames={() => allTopLevelItemDefinitionUniqueNames}
                           />
                         )) || (
                           <>

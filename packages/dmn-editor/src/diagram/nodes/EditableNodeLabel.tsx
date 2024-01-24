@@ -50,7 +50,7 @@ export function EditableNodeLabel({
   grow,
   shouldCommitOnBlur,
   skipValidation,
-  allUniqueNames,
+  onGetAllUniqueNames,
   fontCssProperties,
 }: {
   id?: string;
@@ -65,7 +65,7 @@ export function EditableNodeLabel({
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChange: OnEditableNodeLabelChange;
   skipValidation?: boolean;
-  allUniqueNames: (s: State) => UniqueNameIndex;
+  onGetAllUniqueNames: (s: State) => UniqueNameIndex;
   fontCssProperties?: React.CSSProperties;
 }) {
   const displayValue = useDmnEditorStore((s) => {
@@ -135,7 +135,7 @@ export function EditableNodeLabel({
     return DMN15_SPEC.namedElement.isValidName(
       namedElement?.["@_id"] ?? generateUuid(),
       internalValue,
-      allUniqueNames(s)
+      onGetAllUniqueNames(s)
     );
   });
 

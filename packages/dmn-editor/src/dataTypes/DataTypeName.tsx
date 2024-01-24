@@ -38,7 +38,7 @@ export function DataTypeName({
   editMode,
   relativeToNamespace,
   shouldCommitOnBlur,
-  allUniqueNames,
+  onGetAllUniqueNames,
   enableAutoFocusing,
 }: {
   isReadonly: boolean;
@@ -47,7 +47,7 @@ export function DataTypeName({
   isActive: boolean;
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;
-  allUniqueNames: (s: State) => UniqueNameIndex;
+  onGetAllUniqueNames: (s: State) => UniqueNameIndex;
   enableAutoFocusing?: boolean;
 }) {
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
@@ -98,7 +98,7 @@ export function DataTypeName({
           shouldCommitOnBlur={_shouldCommitOnBlur}
           name={feelQNameToDisplay.full}
           onRenamed={onRenamed}
-          allUniqueNames={allUniqueNames}
+          allUniqueNames={onGetAllUniqueNames}
         />
       )}
       {editMode === "double-click" && (
@@ -129,7 +129,7 @@ export function DataTypeName({
               localPart: itemDefinition["@_name"],
               prefix: feelQNameToDisplay.prefix,
             }}
-            allUniqueNames={allUniqueNames}
+            onGetAllUniqueNames={onGetAllUniqueNames}
           />
           {!isEditingLabel && (
             <TypeRefLabel

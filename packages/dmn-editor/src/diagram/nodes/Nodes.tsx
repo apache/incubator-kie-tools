@@ -196,7 +196,7 @@ export const InputDataNode = React.memo(
             position={getNodeLabelPosition(type as NodeType)}
             value={inputData["@_label"] ?? inputData["@_name"]}
             onChange={setName}
-            allUniqueNames={getAllFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
@@ -327,7 +327,7 @@ export const DecisionNode = React.memo(
             position={getNodeLabelPosition(type as NodeType)}
             value={decision["@_label"] ?? decision["@_name"]}
             onChange={setName}
-            allUniqueNames={getAllFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
@@ -457,7 +457,7 @@ export const BkmNode = React.memo(
             position={getNodeLabelPosition(type as NodeType)}
             value={bkm["@_label"] ?? bkm["@_name"]}
             onChange={setName}
-            allUniqueNames={getAllFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
@@ -575,7 +575,7 @@ export const KnowledgeSourceNode = React.memo(
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
             onChange={setName}
             skipValidation={true}
-            allUniqueNames={getAllFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
@@ -686,7 +686,7 @@ export const TextAnnotationNode = React.memo(
             value={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
             onChange={setText}
             skipValidation={true}
-            allUniqueNames={getAllFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
@@ -875,7 +875,7 @@ export const DecisionServiceNode = React.memo(
             setEditing={setEditingLabel}
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
-            allUniqueNames={getAllFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
@@ -1013,7 +1013,7 @@ export const GroupNode = React.memo(
             value={group["@_label"] ?? group["@_name"]}
             onChange={setName}
             skipValidation={true}
-            allUniqueNames={useCallback(() => new Map(), [])}
+            onGetAllUniqueNames={useCallback(() => new Map(), [])}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
@@ -1081,7 +1081,7 @@ export const UnknownNode = React.memo(
             value={`? `}
             onChange={() => {}}
             skipValidation={false}
-            allUniqueNames={useCallback(() => new Map(), [])}
+            onGetAllUniqueNames={useCallback(() => new Map(), [])}
             shouldCommitOnBlur={true}
           />
           {selected && !dragging && (

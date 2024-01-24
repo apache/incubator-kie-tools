@@ -363,7 +363,7 @@ export function ItemComponentsTable({
                               isActive={false}
                               itemDefinition={dt.itemDefinition}
                               isReadonly={dt.namespace !== thisDmnsNamespace}
-                              allUniqueNames={() => allUniqueNamesAtLevel}
+                              onGetAllUniqueNames={() => allUniqueNamesAtLevel}
                             />
                           </div>
                         </div>
