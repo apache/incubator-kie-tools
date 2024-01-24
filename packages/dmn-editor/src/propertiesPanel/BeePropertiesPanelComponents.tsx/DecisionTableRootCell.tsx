@@ -20,17 +20,12 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { TextAreaField, TextInputField, TypeRefField } from "./Fields";
-import { BeeMap, DeepPartial, getDmnObject } from "../../boxedExpressions/getBeeMap";
-import {
-  DMN15__tBusinessKnowledgeModel,
-  DMN15__tDecision,
-  DMN15__tDecisionTable,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
-import { buildXmlHref } from "../../xml/xmlHrefs";
+import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { DMN15__tDecisionTable } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { useDmnEditorStore } from "../../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
+import { useUpdateBee } from "./useUpdateBee";
 
 /**
  * Pick<DMN15__tDecisionTable, "@_label" | "@_outputLabel" | "description">
@@ -38,51 +33,24 @@ import { useDmnEditor } from "../../DmnEditorContext";
 type DecisionTableRoot = Pick<DMN15__tDecisionTable, "@_label" | "description" | "@_typeRef" | "@_outputLabel">;
 
 export function DecisionTableRootCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
-  const { nodesById } = useDmnEditorDerivedStore();
+  const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { dmnEditorRootElementRef } = useDmnEditor();
-  const node = useMemo(
-    () => (activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined),
-    [activeDrgElementId, nodesById]
-  );
   const selectedObjectInfos = useMemo(
     () => props.beeMap?.get(selectedObjectId ?? ""),
     [props.beeMap, selectedObjectId]
   );
 
-  const updateDmnObject = useCallback((dmnObject: DecisionTableRoot, newContent: DeepPartial<DecisionTableRoot>) => {
-    if (newContent?.["@_label"]) {
-      dmnObject["@_label"] = newContent["@_label"];
-    }
-    // DESCRIPTION
-    if (newContent.description?.__$$text) {
-      dmnObject.description ??= { __$$text: "" };
-      dmnObject.description = newContent.description as { __$$text: string };
-    }
-  }, []);
-
-  const updateBee = useCallback(
-    (newContent: DeepPartial<DecisionTableRoot>, expressionPath = selectedObjectInfos?.expressionPath) => {
-      dmnEditorStoreApi.setState((state) => {
-        if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "businessKnowledgeModel") {
-          const dmnObject = getDmnObject(
-            expressionPath ?? [],
-            (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tBusinessKnowledgeModel)
-              ?.encapsulatedLogic?.expression
-          );
-          dmnObject && updateDmnObject(dmnObject as DecisionTableRoot, newContent);
-        }
-        if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "decision") {
-          const dmnObject = getDmnObject(
-            expressionPath ?? [],
-            (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tDecision)?.expression
-          );
-          dmnObject && updateDmnObject(dmnObject as DecisionTableRoot, newContent);
-        }
-      });
-    },
-    [dmnEditorStoreApi, node?.data.index, selectedObjectInfos?.expressionPath, updateDmnObject]
+  const updateBee = useUpdateBee<DecisionTableRoot>(
+    useCallback((dmnObject, newContent) => {
+      if (newContent?.["@_outputLabel"] !== undefined) {
+        dmnObject["@_outputLabel"] = newContent["@_outputLabel"];
+      }
+      if (newContent.description?.__$$text !== undefined) {
+        dmnObject.description ??= { __$$text: "" };
+        dmnObject.description = newContent.description as { __$$text: string };
+      }
+    }, []),
+    props.beeMap
   );
 
   const cell = useMemo(() => selectedObjectInfos?.cell as DecisionTableRoot, [selectedObjectInfos?.cell]);
@@ -95,10 +63,10 @@ export function DecisionTableRootCell(props: { beeMap?: BeeMap; isReadonly: bool
         typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
       />
       <TextInputField
-        title={"Label"}
+        title={"Output Label"}
         isReadonly={props.isReadonly}
-        initialValue={cell["@_label"] ?? ""}
-        onChange={(newLabel: string) => updateBee({ "@_label": newLabel })}
+        initialValue={cell["@_outputLabel"] ?? ""}
+        onChange={(newOutputLabel: string) => updateBee({ "@_outputLabel": newOutputLabel })}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
       />
       <TextAreaField
@@ -106,7 +74,9 @@ export function DecisionTableRootCell(props: { beeMap?: BeeMap; isReadonly: bool
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
-        onChange={(newDescription: string) => updateBee({ description: { __$$text: newDescription } })}
+        onChange={(newDescription: string, expressionPath: ExpressionPath[]) =>
+          updateBee({ description: { __$$text: newDescription } }, expressionPath)
+        }
       />
     </>
   );

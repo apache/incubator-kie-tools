@@ -86,12 +86,12 @@ export function TextInputField(props: {
 }) {
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
-  const [textAreaValue, setTextAreaValue] = useState("");
+  const [textInputValue, setTextInputValue] = useState("");
   const [isEditing, setEditing] = useState(false);
 
   useEffect(() => {
     if (!isEditing) {
-      setTextAreaValue(props.initialValue);
+      setTextInputValue(props.initialValue);
     }
   }, [props.initialValue, isEditing]);
 
@@ -102,18 +102,19 @@ export function TextInputField(props: {
   }, [props.expressionPath, isEditing]);
 
   return (
-    <FormGroup title={props.title}>
+    <FormGroup label={props.title}>
       <TextInput
         aria-label={"Content"}
         type={"text"}
         isDisabled={props.isReadonly}
-        value={textAreaValue}
+        value={textInputValue}
         onChange={(newContent) => {
-          setTextAreaValue(newContent);
+          setTextInputValue(newContent);
           setEditing(true);
         }}
         onBlur={() => {
-          props.onChange(textAreaValue, expressionPath);
+          props.onChange(textInputValue, expressionPath);
+          setEditing(false);
         }}
         placeholder={"Enter the expression content..."}
         style={{ resize: "vertical", minHeight: "40px" }}
@@ -160,6 +161,7 @@ export function TextAreaField(props: {
         }}
         onBlur={() => {
           props.onChange(textAreaValue, expressionPath);
+          setEditing(false);
         }}
         placeholder={"Enter the expression content..."}
         style={{ resize: "vertical", minHeight: "40px" }}

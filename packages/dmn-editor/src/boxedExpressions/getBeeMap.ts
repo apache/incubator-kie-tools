@@ -430,7 +430,7 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
   return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "" };
 }
 
-export function getDmnObject(
+export function getDmnObjectByPath(
   paths: ExpressionPath[],
   expressionRoot: AllExpressions | undefined
 ): AllExpressionsWithoutTypes | undefined {
