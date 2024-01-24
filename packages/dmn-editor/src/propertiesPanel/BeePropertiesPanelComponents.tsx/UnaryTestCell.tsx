@@ -28,10 +28,6 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { useUpdateBee } from "./useUpdateBee";
 
 /**
- * Pick<
-    DMN15__tUnaryTests,
-    "@_expressionLanguage" | "@_kie:constraintType" | "@_label" | "description" | "text"
-  >;
  * This component implements a form to change an object with the DMN15__tUnaryTests type
  * It's used for: DecisionTableInputRuleCell
  */
@@ -65,6 +61,11 @@ export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
 
   return (
     <>
+      <TypeRefField
+        isReadonly={true}
+        dmnEditorRootElementRef={dmnEditorRootElementRef}
+        typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+      />
       <TextInputField
         title={"Expression Language"}
         isReadonly={props.isReadonly}
@@ -82,11 +83,6 @@ export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
         onChange={(newText: string, expressionPath: ExpressionPath[]) =>
           updateBee({ text: { __$$text: newText } }, expressionPath)
         }
-      />
-      <TypeRefField
-        isReadonly={true}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
       />
       <TextAreaField
         title={"Description"}

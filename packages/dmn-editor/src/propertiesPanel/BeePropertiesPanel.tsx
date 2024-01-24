@@ -39,6 +39,8 @@ import { LiteralExpressionContentCell } from "./BeePropertiesPanelComponents.tsx
 import { ExpressionRootCell } from "./BeePropertiesPanelComponents.tsx/ExpressionRoot";
 import { UnaryTestCell } from "./BeePropertiesPanelComponents.tsx/UnaryTestCell";
 import { AllExpressions } from "../dataTypes/DataTypeSpec";
+import { DecisionTableRootCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableRootCell";
+import { InvocationFunctionCallCell } from "./BeePropertiesPanelComponents.tsx/InvocationFunctionCallCell";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -83,8 +85,8 @@ export function BeePropertiesPanel() {
   }, [beeMap, selectedObjectId]);
 
   /**
-   * fix bug on unique names - decision table input
-    fix focus???
+   * fix bug on unique names
+   * fix focus???
    */
   return (
     <>
@@ -121,9 +123,9 @@ export function BeePropertiesPanel() {
                   {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER && (
                     <DecisionTableOutputHeaderCell beeMap={beeMap} isReadonly={isReadonly} />
                   )}
-                  {/* {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_ROOT && (
-                  <DecisionTableRootCell />
-                )} */}
+                  {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_ROOT && (
+                    <DecisionTableRootCell beeMap={beeMap} isReadonly={isReadonly} />
+                  )}
                   {propertiesPanel?.component === BeePropertiesPanelComponent.EXPRESSION_ROOT && (
                     <ExpressionRootCell beeMap={beeMap} isReadonly={isReadonly} />
                   )}
@@ -132,6 +134,9 @@ export function BeePropertiesPanel() {
                   )} */}
                   {propertiesPanel?.component === BeePropertiesPanelComponent.INFORMATION_ITEM_CELL && (
                     <InformationItemCell beeMap={beeMap} isReadonly={isReadonly} />
+                  )}
+                  {propertiesPanel?.component === BeePropertiesPanelComponent.INVOCATION_FUNCTION_CALL && (
+                    <InvocationFunctionCallCell beeMap={beeMap} isReadonly={isReadonly} />
                   )}
                   {propertiesPanel?.component === BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && (
                     <LiteralExpressionContentCell beeMap={beeMap} isReadonly={isReadonly} />

@@ -152,7 +152,10 @@ export function InvocationExpression(
     [setExpression]
   );
 
-  const calledFunctionId = useMemo(() => generateUuid(), []);
+  const invokedFunctionId = useMemo(
+    () => invocationExpression.invokedFunction.id,
+    [invocationExpression.invokedFunction.id]
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
@@ -164,7 +167,7 @@ export function InvocationExpression(
         width: undefined,
         columns: [
           {
-            accessor: calledFunctionId as any,
+            accessor: invokedFunctionId as any,
             label: invocationExpression.invokedFunction.name ?? "Function name",
             isRowIndexColumn: false,
             isInlineEditable: true,
@@ -202,14 +205,14 @@ export function InvocationExpression(
       invocationExpression.invokedFunction.name,
       parametersWidth,
       setParametersWidth,
-      calledFunctionId,
+      invokedFunctionId,
     ]
   );
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
-        if (u.column.originalId === calledFunctionId) {
+        if (u.column.originalId === invokedFunctionId) {
           setExpression((prev: InvocationExpressionDefinition) => ({
             ...prev,
             invokedFunction: {
@@ -226,7 +229,7 @@ export function InvocationExpression(
         }
       }
     },
-    [setExpression, calledFunctionId]
+    [setExpression, invokedFunctionId]
   );
 
   const headerVisibility = useMemo(

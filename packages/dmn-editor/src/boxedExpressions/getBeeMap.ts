@@ -337,7 +337,7 @@ export enum BeePropertiesPanelComponent {
   EXPRESSION_ROOT,
   FUNCTION_DEFINITION_PARAMETERS,
   INFORMATION_ITEM_CELL,
-  INVOCATION_CALLED_FUNCTION,
+  INVOCATION_FUNCTION_CALL,
   LITERAL_EXPRESSION_CONTENT,
   UNARY_TEST,
 }
@@ -348,11 +348,16 @@ export type DeepPartial<T> = T extends object
     }
   : T;
 
-// TODO: COMPLETE
 export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
   component: BeePropertiesPanelComponent;
   title: string;
 } {
+  if (selectedObjectPath.type === "conditional") {
+    if (selectedObjectPath.row === undefined) {
+      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Conditional" };
+    }
+  }
+
   if (selectedObjectPath.type === "context") {
     if (selectedObjectPath.column === undefined) {
       return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Context" };
@@ -362,6 +367,7 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
     }
     // selectedObjectPath.column === "expression" is handled by the nested expression
   }
+
   if (selectedObjectPath.type === "decisionTable") {
     if (selectedObjectPath.row === undefined) {
       return { component: BeePropertiesPanelComponent.DECISION_TABLE_ROOT, title: "Decision Table" };
@@ -385,12 +391,32 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
       return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Decision Table Output Cell" };
     }
   }
+
+  if (selectedObjectPath.type === "every") {
+    if (selectedObjectPath.row === undefined) {
+      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Every" };
+    }
+  }
+
+  if (selectedObjectPath.type === "filter") {
+    if (selectedObjectPath.row === undefined) {
+      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Filter" };
+    }
+  }
+
+  if (selectedObjectPath.type === "for") {
+    if (selectedObjectPath.row === undefined) {
+      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed For" };
+    }
+  }
+
   if (selectedObjectPath.type === "functionDefinition") {
     if (selectedObjectPath.parameterIndex === undefined) {
       return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Function Definition" };
     }
     return { component: BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS, title: "Function Parameters" };
   }
+
   if (selectedObjectPath.type === "invocation") {
     if (selectedObjectPath.row === undefined || selectedObjectPath.column === undefined) {
       return {
@@ -400,8 +426,8 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
     }
     if (selectedObjectPath.row < 0) {
       return {
-        component: BeePropertiesPanelComponent.INVOCATION_CALLED_FUNCTION,
-        title: "Boxed Invocation Call",
+        component: BeePropertiesPanelComponent.INVOCATION_FUNCTION_CALL,
+        title: "Boxed Invocation Called Function",
       };
     }
     if (selectedObjectPath.column === "parameter") {
@@ -414,9 +440,17 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
       return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Boxed Invocation" };
     }
   }
+
+  if (selectedObjectPath.type === "list") {
+    if (selectedObjectPath.row === undefined) {
+      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed List" };
+    }
+  }
+
   if (selectedObjectPath.type === "literalExpression") {
     return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Literal Expression" };
   }
+
   if (selectedObjectPath.type === "relation") {
     if (selectedObjectPath.row === undefined) {
       return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Relation" };
@@ -426,7 +460,12 @@ export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
     }
     return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Boxed Relation Cell" };
   }
-  // TODO: LIST, FOR, SOME, EVERY, CONDITIONAL, FILTER;
+
+  if (selectedObjectPath.type === "some") {
+    if (selectedObjectPath.row === undefined) {
+      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Some" };
+    }
+  }
   return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "" };
 }
 

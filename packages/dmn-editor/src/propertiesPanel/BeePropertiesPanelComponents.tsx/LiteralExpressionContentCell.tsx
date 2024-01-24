@@ -61,6 +61,11 @@ export function LiteralExpressionContentCell(props: { beeMap?: BeeMap; isReadonl
 
   return (
     <>
+      <TypeRefField
+        isReadonly={true}
+        dmnEditorRootElementRef={dmnEditorRootElementRef}
+        typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+      />
       <TextInputField
         title={"Expression Language"}
         isReadonly={props.isReadonly}
@@ -78,11 +83,6 @@ export function LiteralExpressionContentCell(props: { beeMap?: BeeMap; isReadonl
         onChange={(newText: string, expressionPath: ExpressionPath[]) =>
           updateBee({ text: { __$$text: newText } }, expressionPath)
         }
-      />
-      <TypeRefField
-        isReadonly={true}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
       />
       <TextAreaField
         title={"Description"}
