@@ -20,34 +20,29 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { DescriptionField, TextInputField, TypeRefField } from "./Fields";
-import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { BoxedExpressionIndex, ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { useDmnEditorStore } from "../../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
-import { useUpdateBee } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 type FunctionDefinitionRoot = Pick<DMN15__tFunctionDefinition, "@_kind" | "@_typeRef" | "description">;
 
-export function FunctionDefinitionRootCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
-  const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+export function FunctionDefinitionRootCell(props: {
+  boxedExpressionIndex?: BoxedExpressionIndex;
+  isReadonly: boolean;
+}) {
+  const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
-    () => props.beeMap?.get(selectedObjectId ?? ""),
-    [props.beeMap, selectedObjectId]
+    () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
+    [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updateBee = useUpdateBee<FunctionDefinitionRoot>(
-    useCallback((dmnObject, newContent) => {
-      if (newContent.description?.__$$text !== undefined) {
-        dmnObject.description ??= { __$$text: "" };
-        dmnObject.description = newContent.description as { __$$text: string };
-      }
-    }, []),
-    props.beeMap
-  );
+  const updater = useBoxedExpressionUpdater<FunctionDefinitionRoot>(selectedObjectInfos?.expressionPath ?? []);
 
   const cell = useMemo(() => selectedObjectInfos?.cell as FunctionDefinitionRoot, [selectedObjectInfos?.cell]);
 
@@ -69,7 +64,10 @@ export function FunctionDefinitionRootCell(props: { beeMap?: BeeMap; isReadonly:
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newDescription: string, expressionPath: ExpressionPath[]) =>
-          updateBee({ description: { __$$text: newDescription } }, expressionPath)
+          updater((dmnObject) => {
+            dmnObject.description ??= { __$$text: "" };
+            dmnObject.description.__$$text = newDescription;
+          })
         }
       />
     </>

@@ -18,7 +18,7 @@
  */
 
 import { useCallback, useMemo } from "react";
-import { BeeMap, DeepPartial, ExpressionPath, getDmnObjectByPath } from "../../boxedExpressions/getBeeMap";
+import { ExpressionPath, getDmnObjectByPath } from "../../boxedExpressions/getBeeMap";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
@@ -28,25 +28,19 @@ import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { buildXmlHref } from "../../xml/xmlHrefs";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
 
-export function useUpdateBee<T extends AllExpressionsWithoutTypes>(
-  updateDmnObject: (dmnObject: T, newContent: DeepPartial<T>, ...args: any[]) => void,
-  beeMap?: BeeMap
+export function useBoxedExpressionUpdater<T extends AllExpressionsWithoutTypes>(
+  expressionPath: ExpressionPath[] | undefined
 ) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+  const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
   const { nodesById } = useDmnEditorDerivedStore();
   const node = useMemo(
     () => (activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined),
     [activeDrgElementId, nodesById]
   );
-  const selectedObjectInfos = useMemo(() => beeMap?.get(selectedObjectId ?? ""), [beeMap, selectedObjectId]);
 
-  const updateBee = useCallback(
-    (
-      newContent: DeepPartial<T>,
-      expressionPath: ExpressionPath[] | undefined = selectedObjectInfos?.expressionPath,
-      ...args
-    ) => {
+  return useCallback(
+    (consumer: (dmnObject: T) => void) => {
       dmnEditorStoreApi.setState((state) => {
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "businessKnowledgeModel") {
           const dmnObject = getDmnObjectByPath(
@@ -54,19 +48,17 @@ export function useUpdateBee<T extends AllExpressionsWithoutTypes>(
             (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tBusinessKnowledgeModel)
               ?.encapsulatedLogic
           );
-          dmnObject && updateDmnObject(dmnObject as T, newContent, args);
+          dmnObject && consumer(dmnObject as T);
         }
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "decision") {
           const dmnObject = getDmnObjectByPath(
             expressionPath ?? [],
             (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as DMN15__tDecision)?.expression
           );
-          dmnObject && updateDmnObject(dmnObject as T, newContent, args);
+          dmnObject && consumer(dmnObject as T);
         }
       });
     },
-    [dmnEditorStoreApi, node?.data.index, selectedObjectInfos?.expressionPath, updateDmnObject]
+    [dmnEditorStoreApi, expressionPath, node?.data.index]
   );
-
-  return updateBee;
 }

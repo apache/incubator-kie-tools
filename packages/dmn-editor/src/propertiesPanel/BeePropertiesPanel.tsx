@@ -29,7 +29,11 @@ import { useMemo } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
-import { BeePropertiesPanelComponent, generateBeeMap, getBeePropertiesPanel } from "../boxedExpressions/getBeeMap";
+import {
+  BoxedExpressionPropertiesPanelComponent,
+  generateBoxedExpressionIndex,
+  getBoxedExpressionPropertiesPanelComponent,
+} from "../boxedExpressions/getBeeMap";
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { InformationItemCell } from "./BeePropertiesPanelComponents.tsx/InformationItemCell";
 import { DecisionTableInputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableInputHeaderCell";
@@ -42,11 +46,13 @@ import { DecisionTableRootCell } from "./BeePropertiesPanelComponents.tsx/Decisi
 import { InvocationFunctionCallCell } from "./BeePropertiesPanelComponents.tsx/InvocationFunctionCallCell";
 import { FunctionDefinitionParameterCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionParametersCell";
 import { FunctionDefinitionRootCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionRootCell";
+import { NoneCell } from "./BeePropertiesPanelComponents.tsx/NoneCell";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+  const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
+  const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
   const { nodesById } = useDmnEditorDerivedStore();
 
   const shouldDisplayDecisionOrBkmProps = useMemo(
@@ -60,7 +66,7 @@ export function BeePropertiesPanel() {
   );
   const isReadonly = !!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace;
 
-  const beeMap = useMemo(() => {
+  const boxedExpressionIndex = useMemo(() => {
     if (!node?.data.dmnObject) {
       return undefined;
     }
@@ -73,22 +79,18 @@ export function BeePropertiesPanel() {
       expression = node.data.dmnObject.expression;
     }
 
-    return expression ? generateBeeMap(expression, new Map(), []) : undefined;
+    return expression ? generateBoxedExpressionIndex(expression, new Map(), []) : undefined;
   }, [node?.data.dmnObject]);
 
-  const propertiesPanel = useMemo(() => {
-    const selectedObjectInfos = beeMap?.get(selectedObjectId ?? "");
+  const boxedExpressionPropertiesPanelComponent = useMemo(() => {
+    const selectedObjectInfos = boxedExpressionIndex?.get(selectedObjectId ?? "");
     const selectedObjectPath = selectedObjectInfos?.expressionPath[selectedObjectInfos.expressionPath.length - 1];
     if (!selectedObjectPath) {
       return;
     }
-    return getBeePropertiesPanel(selectedObjectPath);
-  }, [beeMap, selectedObjectId]);
+    return getBoxedExpressionPropertiesPanelComponent(selectedObjectPath);
+  }, [boxedExpressionIndex, selectedObjectId]);
 
-  /**
-   * fix bug on unique names
-   * fix focus???
-   */
   return (
     <>
       {node && (
@@ -112,36 +114,55 @@ export function BeePropertiesPanel() {
             </DrawerActions>
             {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && (
               <Form>
-                <FormSection title={propertiesPanel?.title ?? ""}>
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER && (
-                    <DecisionTableInputHeaderCell beeMap={beeMap} isReadonly={isReadonly} />
+                <FormSection title={boxedExpressionPropertiesPanelComponent?.title ?? ""}>
+                  {(boxedExpressionPropertiesPanelComponent === undefined ||
+                    boxedExpressionPropertiesPanelComponent?.component ===
+                      BoxedExpressionPropertiesPanelComponent.NONE) && <NoneCell />}
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER && (
+                    <DecisionTableInputHeaderCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER && (
-                    <DecisionTableOutputHeaderCell beeMap={beeMap} isReadonly={isReadonly} />
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER && (
+                    <DecisionTableOutputHeaderCell
+                      boxedExpressionIndex={boxedExpressionIndex}
+                      isReadonly={isReadonly}
+                    />
                   )}
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.DECISION_TABLE_ROOT && (
-                    <DecisionTableRootCell beeMap={beeMap} isReadonly={isReadonly} />
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_ROOT && (
+                    <DecisionTableRootCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.EXPRESSION_ROOT && (
-                    <ExpressionRootCell beeMap={beeMap} isReadonly={isReadonly} />
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT && (
+                    <ExpressionRootCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS && (
-                    <FunctionDefinitionParameterCell beeMap={beeMap} isReadonly={isReadonly} />
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS && (
+                    <FunctionDefinitionParameterCell
+                      boxedExpressionIndex={boxedExpressionIndex}
+                      isReadonly={isReadonly}
+                    />
                   )}
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.FUNCTION_DEFINITION_ROOT && (
-                    <FunctionDefinitionRootCell beeMap={beeMap} isReadonly={isReadonly} />
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.FUNCTION_DEFINITION_ROOT && (
+                    <FunctionDefinitionRootCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.INFORMATION_ITEM_CELL && (
-                    <InformationItemCell beeMap={beeMap} isReadonly={isReadonly} />
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.INFORMATION_ITEM_CELL && (
+                    <InformationItemCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.INVOCATION_FUNCTION_CALL && (
-                    <InvocationFunctionCallCell beeMap={beeMap} isReadonly={isReadonly} />
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.INVOCATION_FUNCTION_CALL && (
+                    <InvocationFunctionCallCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && (
-                    <LiteralExpressionContentCell beeMap={beeMap} isReadonly={isReadonly} />
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && (
+                    <LiteralExpressionContentCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
-                  {propertiesPanel?.component === BeePropertiesPanelComponent.UNARY_TEST && (
-                    <UnaryTestCell beeMap={beeMap} isReadonly={isReadonly} />
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.UNARY_TEST && (
+                    <UnaryTestCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
                 </FormSection>
               </Form>

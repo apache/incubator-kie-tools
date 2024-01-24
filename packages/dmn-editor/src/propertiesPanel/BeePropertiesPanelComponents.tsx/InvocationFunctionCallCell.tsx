@@ -18,29 +18,24 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { TextInputField } from "./Fields";
-import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
 import { useDmnEditorStore } from "../../store/Store";
-import { useUpdateBee } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-export function InvocationFunctionCallCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
-  const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+export function InvocationFunctionCallCell(props: {
+  boxedExpressionIndex?: BoxedExpressionIndex;
+  isReadonly: boolean;
+}) {
+  const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
-    () => props.beeMap?.get(selectedObjectId ?? ""),
-    [props.beeMap, selectedObjectId]
+    () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
+    [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updateBee = useUpdateBee<DMN15__tLiteralExpression>(
-    useCallback((dmnObject, newContent) => {
-      if (newContent.text?.__$$text !== undefined) {
-        dmnObject.text ??= { __$$text: "" };
-        dmnObject.text = newContent.text as { __$$text: string };
-      }
-    }, []),
-    props.beeMap
-  );
+  const updater = useBoxedExpressionUpdater<DMN15__tLiteralExpression>(selectedObjectInfos?.expressionPath ?? []);
 
   const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tLiteralExpression, [selectedObjectInfos?.cell]);
 
@@ -52,8 +47,10 @@ export function InvocationFunctionCallCell(props: { beeMap?: BeeMap; isReadonly:
         isReadonly={props.isReadonly}
         initialValue={cell.text?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
-        onChange={(newDescription: string, expressionPath: ExpressionPath[]) =>
-          updateBee({ text: { __$$text: newDescription } }, expressionPath)
+        onChange={(newDescription: string) =>
+          updater((dmnObject) => {
+            dmnObject.text = { __$$text: newDescription };
+          })
         }
       />
     </>

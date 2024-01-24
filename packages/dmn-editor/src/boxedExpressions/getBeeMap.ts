@@ -117,17 +117,17 @@ export type ExpressionPath =
 /**
  * A map of "@_id" to cell (expression) and its path in the expression hierarchy
  */
-export type BeeMap = Map<
+export type BoxedExpressionIndex = Map<
   string,
   { expressionPath: ExpressionPath[]; cell: AllExpressionsWithoutTypes | AllExpressionsWithoutTypes[] }
 >;
 
-export function generateBeeMap(
+export function generateBoxedExpressionIndex(
   expression: AllExpressions,
-  parentMap: BeeMap,
+  parentMap: BoxedExpressionIndex,
   parentExpressionPath: ExpressionPath[]
-): BeeMap {
-  const map: BeeMap = parentMap ? parentMap : new Map();
+): BoxedExpressionIndex {
+  const map: BoxedExpressionIndex = parentMap ? parentMap : new Map();
   switch (expression?.__$$element) {
     case "conditional":
       expression["@_id"] &&
@@ -135,9 +135,18 @@ export function generateBeeMap(
           expressionPath: [...parentExpressionPath, { type: "conditional" }],
           cell: expression,
         });
-      generateBeeMap(expression.if.expression, map, [...parentExpressionPath, { type: "conditional", row: "if" }]);
-      generateBeeMap(expression.else.expression, map, [...parentExpressionPath, { type: "conditional", row: "else" }]);
-      generateBeeMap(expression.then.expression, map, [...parentExpressionPath, { type: "conditional", row: "then" }]);
+      generateBoxedExpressionIndex(expression.if.expression, map, [
+        ...parentExpressionPath,
+        { type: "conditional", row: "if" },
+      ]);
+      generateBoxedExpressionIndex(expression.else.expression, map, [
+        ...parentExpressionPath,
+        { type: "conditional", row: "else" },
+      ]);
+      generateBoxedExpressionIndex(expression.then.expression, map, [
+        ...parentExpressionPath,
+        { type: "conditional", row: "then" },
+      ]);
       return map;
     case "context":
       expression["@_id"] &&
@@ -153,7 +162,10 @@ export function generateBeeMap(
             expressionPath: [...parentExpressionPath, { type: "context", row, column: "variable" }],
             cell: ce.variable,
           });
-        generateBeeMap(ce.expression, map, [...parentExpressionPath, { type: "context", row, column: "expression" }]);
+        generateBoxedExpressionIndex(ce.expression, map, [
+          ...parentExpressionPath,
+          { type: "context", row, column: "expression" },
+        ]);
       });
       return map;
     case "decisionTable":
@@ -202,8 +214,11 @@ export function generateBeeMap(
           expressionPath: [...parentExpressionPath, { type: "every" }],
           cell: expression,
         });
-      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "every", row: "in" }]);
-      generateBeeMap(expression.satisfies.expression, map, [
+      generateBoxedExpressionIndex(expression.in.expression, map, [
+        ...parentExpressionPath,
+        { type: "every", row: "in" },
+      ]);
+      generateBoxedExpressionIndex(expression.satisfies.expression, map, [
         ...parentExpressionPath,
         { type: "every", row: "statisfies" },
       ]);
@@ -214,8 +229,14 @@ export function generateBeeMap(
           expressionPath: [...parentExpressionPath, { type: "filter" }],
           cell: expression,
         });
-      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "filter", row: "in" }]);
-      generateBeeMap(expression.match.expression, map, [...parentExpressionPath, { type: "filter", row: "match" }]);
+      generateBoxedExpressionIndex(expression.in.expression, map, [
+        ...parentExpressionPath,
+        { type: "filter", row: "in" },
+      ]);
+      generateBoxedExpressionIndex(expression.match.expression, map, [
+        ...parentExpressionPath,
+        { type: "filter", row: "match" },
+      ]);
       return map;
     case "for":
       expression["@_id"] &&
@@ -223,8 +244,14 @@ export function generateBeeMap(
           expressionPath: [...parentExpressionPath, { type: "for" }],
           cell: expression,
         });
-      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "for", row: "in" }]);
-      generateBeeMap(expression.return.expression, map, [...parentExpressionPath, { type: "for", row: "return" }]);
+      generateBoxedExpressionIndex(expression.in.expression, map, [
+        ...parentExpressionPath,
+        { type: "for", row: "in" },
+      ]);
+      generateBoxedExpressionIndex(expression.return.expression, map, [
+        ...parentExpressionPath,
+        { type: "for", row: "return" },
+      ]);
       return map;
     case "functionDefinition":
       expression["@_id"] &&
@@ -234,7 +261,7 @@ export function generateBeeMap(
         });
 
       if (expression.expression?.["@_id"]) {
-        generateBeeMap(expression.expression, map, [
+        generateBoxedExpressionIndex(expression.expression, map, [
           ...parentExpressionPath,
           { type: "functionDefinition", parameterIndex: -1 },
         ]);
@@ -244,13 +271,6 @@ export function generateBeeMap(
         expressionPath: [...parentExpressionPath, { type: "functionDefinition", parameterIndex: 0 }],
         cell: expression.formalParameter ?? [],
       });
-      // expression.formalParameter?.forEach((fp, parameterIndex) => {
-      //   fp["@_id"] &&
-      //     map.set(fp["@_id"], {
-      //       expressionPath: [...parentExpressionPath, { type: "functionDefinition", parameterIndex: parameterIndex }],
-      //       cell: fp,
-      //     });
-      // });
       return map;
     case "invocation":
       expression["@_id"] &&
@@ -265,7 +285,7 @@ export function generateBeeMap(
             cell: b.parameter,
           });
         b.expression &&
-          generateBeeMap(b.expression, map, [
+          generateBoxedExpressionIndex(b.expression, map, [
             ...parentExpressionPath,
             { type: "invocation", row, column: "expression" },
           ]);
@@ -285,7 +305,7 @@ export function generateBeeMap(
           cell: expression,
         });
       expression.expression?.forEach((e, row) =>
-        generateBeeMap(e, map, [...parentExpressionPath, { type: "list", row }])
+        generateBoxedExpressionIndex(e, map, [...parentExpressionPath, { type: "list", row }])
       );
       return map;
     case "literalExpression":
@@ -325,8 +345,11 @@ export function generateBeeMap(
           expressionPath: [...parentExpressionPath, { type: "some" }],
           cell: expression,
         });
-      generateBeeMap(expression.in.expression, map, [...parentExpressionPath, { type: "some", row: "in" }]);
-      generateBeeMap(expression.satisfies.expression, map, [
+      generateBoxedExpressionIndex(expression.in.expression, map, [
+        ...parentExpressionPath,
+        { type: "some", row: "in" },
+      ]);
+      generateBoxedExpressionIndex(expression.satisfies.expression, map, [
         ...parentExpressionPath,
         { type: "some", row: "statisfies" },
       ]);
@@ -334,7 +357,7 @@ export function generateBeeMap(
   }
 }
 
-export enum BeePropertiesPanelComponent {
+export enum BoxedExpressionPropertiesPanelComponent {
   DECISION_TABLE_INPUT_HEADER,
   DECISION_TABLE_OUTPUT_HEADER,
   DECISION_TABLE_ROOT,
@@ -345,133 +368,152 @@ export enum BeePropertiesPanelComponent {
   INVOCATION_FUNCTION_CALL,
   LITERAL_EXPRESSION_CONTENT,
   UNARY_TEST,
+  NONE,
 }
 
-export type DeepPartial<T> = T extends object
-  ? {
-      [P in keyof T]?: Partial<T[P]>;
-    }
-  : T;
-
-export function getBeePropertiesPanel(selectedObjectPath: ExpressionPath): {
-  component: BeePropertiesPanelComponent;
+export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: ExpressionPath): {
+  component: BoxedExpressionPropertiesPanelComponent;
   title: string;
 } {
   if (selectedObjectPath.type === "conditional") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Conditional" };
+      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Conditional" };
     }
   }
 
   if (selectedObjectPath.type === "context") {
     if (selectedObjectPath.column === undefined) {
-      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Context" };
+      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Context" };
     }
     if (selectedObjectPath.column === "variable") {
-      return { component: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL, title: "Boxed Context Variable" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.INFORMATION_ITEM_CELL,
+        title: "Boxed Context Variable",
+      };
     }
     // selectedObjectPath.column === "expression" is handled by the nested expression
   }
 
   if (selectedObjectPath.type === "decisionTable") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BeePropertiesPanelComponent.DECISION_TABLE_ROOT, title: "Decision Table" };
+      return { component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_ROOT, title: "Decision Table" };
     }
     if (selectedObjectPath.header === "input") {
       if (selectedObjectPath.row < 0) {
         return {
-          component: BeePropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER,
+          component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER,
           title: "Decision Table Input Header",
         };
       }
-      return { component: BeePropertiesPanelComponent.UNARY_TEST, title: "Decision Table Input Cell" };
+      return { component: BoxedExpressionPropertiesPanelComponent.UNARY_TEST, title: "Decision Table Input Cell" };
     }
     if (selectedObjectPath.header === "output") {
       if (selectedObjectPath.row < 0) {
         return {
-          component: BeePropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER,
+          component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER,
           title: "Decision Table Output Header",
         };
       }
-      return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Decision Table Output Cell" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+        title: "Decision Table Output Cell",
+      };
     }
   }
 
   if (selectedObjectPath.type === "every") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Every" };
+      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Every" };
     }
   }
 
   if (selectedObjectPath.type === "filter") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Filter" };
+      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Filter" };
     }
   }
 
   if (selectedObjectPath.type === "for") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed For" };
+      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed For" };
     }
   }
 
   if (selectedObjectPath.type === "functionDefinition") {
     if (selectedObjectPath.parameterIndex === undefined) {
-      return { component: BeePropertiesPanelComponent.FUNCTION_DEFINITION_ROOT, title: "Function Definition" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.FUNCTION_DEFINITION_ROOT,
+        title: "Function Definition",
+      };
     }
-    return { component: BeePropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS, title: "Function Parameters" };
+    return {
+      component: BoxedExpressionPropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS,
+      title: "Function Parameters",
+    };
   }
 
   if (selectedObjectPath.type === "invocation") {
     if (selectedObjectPath.row === undefined || selectedObjectPath.column === undefined) {
       return {
-        component: BeePropertiesPanelComponent.EXPRESSION_ROOT,
+        component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
         title: "Boxed Invocation",
       };
     }
     if (selectedObjectPath.row < 0) {
       return {
-        component: BeePropertiesPanelComponent.INVOCATION_FUNCTION_CALL,
+        component: BoxedExpressionPropertiesPanelComponent.INVOCATION_FUNCTION_CALL,
         title: "Boxed Invocation Called Function",
       };
     }
     if (selectedObjectPath.column === "parameter") {
       return {
-        component: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL,
+        component: BoxedExpressionPropertiesPanelComponent.INFORMATION_ITEM_CELL,
         title: "Boxed Invocation Parameter",
       };
     }
     if (selectedObjectPath.column === "expression") {
-      return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Boxed Invocation" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+        title: "Boxed Invocation",
+      };
     }
   }
 
   if (selectedObjectPath.type === "list") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed List" };
+      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed List" };
     }
   }
 
   if (selectedObjectPath.type === "literalExpression") {
-    return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Literal Expression" };
+    return {
+      component: BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+      title: "Literal Expression",
+    };
   }
 
   if (selectedObjectPath.type === "relation") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Relation" };
+      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Relation" };
     }
     if (selectedObjectPath.row < 0) {
-      return { component: BeePropertiesPanelComponent.INFORMATION_ITEM_CELL, title: "Boxed Relation Header" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.INFORMATION_ITEM_CELL,
+        title: "Boxed Relation Header",
+      };
     }
-    return { component: BeePropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT, title: "Boxed Relation Cell" };
+    return {
+      component: BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+      title: "Boxed Relation Cell",
+    };
   }
 
   if (selectedObjectPath.type === "some") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Some" };
+      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Some" };
     }
   }
-  return { component: BeePropertiesPanelComponent.EXPRESSION_ROOT, title: "" };
+  return { component: BoxedExpressionPropertiesPanelComponent.NONE, title: "" };
 }
 
 export function getDmnObjectByPath(

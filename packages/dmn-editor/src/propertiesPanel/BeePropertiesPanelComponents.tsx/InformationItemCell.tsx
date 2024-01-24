@@ -18,39 +18,28 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { DescriptionField, NameField, TypeRefField } from "./Fields";
-import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
-import { useDmnEditor } from "../../DmnEditorContext";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { useUpdateBee } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { useDmnEditor } from "../../DmnEditorContext";
 
-export function InformationItemCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
-  const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+export function InformationItemCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
+  const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
   const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
-    () => props.beeMap?.get(selectedObjectId ?? ""),
-    [props.beeMap, selectedObjectId]
+    () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
+    [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updateBee = useUpdateBee<DMN15__tInformationItem>(
-    useCallback((dmnObject, newContent) => {
-      if (newContent?.["@_name"] !== undefined) {
-        dmnObject["@_name"] = newContent["@_name"];
-      }
-      if (newContent.description?.__$$text !== undefined) {
-        dmnObject.description ??= { __$$text: "" };
-        dmnObject.description = newContent.description as { __$$text: string };
-      }
-    }, []),
-    props.beeMap
-  );
+  const updater = useBoxedExpressionUpdater<DMN15__tInformationItem>(selectedObjectInfos?.expressionPath ?? []);
 
   const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInformationItem, [selectedObjectInfos?.cell]);
 
@@ -66,19 +55,26 @@ export function InformationItemCell(props: { beeMap?: BeeMap; isReadonly: boolea
         id={cell["@_id"] ?? ""}
         name={cell["@_name"] ?? ""}
         allUniqueNames={allFeelVariableUniqueNames}
-        onChange={(newName: string) => updateBee({ "@_name": newName })}
+        onChange={(newName: string) =>
+          updater((dmnObject) => {
+            dmnObject["@_name"] = newName;
+          })
+        }
       />
       <TypeRefField
         isReadonly={true}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        dmnEditorRootElementRef={dmnEditorRootElementRef}
       />
       <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
-        onChange={(newDescription: string, expressionPath: ExpressionPath[]) =>
-          updateBee({ description: { __$$text: newDescription } }, expressionPath)
+        onChange={(newDescription: string) =>
+          updater((dmnObject) => {
+            dmnObject.description ??= { __$$text: "" };
+            dmnObject.description.__$$text = newDescription;
+          })
         }
       />
     </>

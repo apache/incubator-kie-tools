@@ -18,13 +18,13 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { DescriptionField, NameField, TypeRefField } from "./Fields";
-import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
 import { useDmnEditorStore } from "../../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
-import { useUpdateBee } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import {
@@ -33,35 +33,18 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 
-export function FunctionDefinitionParameterCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
-  const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+export function FunctionDefinitionParameterCell(props: {
+  boxedExpressionIndex?: BoxedExpressionIndex;
+  isReadonly: boolean;
+}) {
+  const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
-    () => props.beeMap?.get(selectedObjectId ?? ""),
-    [props.beeMap, selectedObjectId]
+    () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
+    [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updateBee = useUpdateBee<DMN15__tFunctionDefinition>(
-    useCallback((dmnObject, newContent, parameterIndex: number) => {
-      dmnObject.formalParameter ??= [];
-      if (newContent.formalParameter?.[parameterIndex]?.["@_name"] !== undefined) {
-        dmnObject.formalParameter[parameterIndex] ??= { "@_name": "" };
-        dmnObject.formalParameter[parameterIndex]["@_name"] = newContent.formalParameter![parameterIndex]!["@_name"];
-      }
-      if (newContent.formalParameter![parameterIndex]?.["@_typeRef"] !== undefined) {
-        dmnObject.formalParameter[parameterIndex] ??= { "@_typeRef": "", "@_name": "" };
-        dmnObject.formalParameter[parameterIndex]["@_typeRef"] =
-          newContent.formalParameter![parameterIndex]!["@_typeRef"];
-      }
-      if (newContent.formalParameter![parameterIndex]?.description?.__$$text !== undefined) {
-        dmnObject.formalParameter[parameterIndex] ??= { description: { __$$text: "" }, "@_name": "" };
-        dmnObject.formalParameter[parameterIndex].description ??= { __$$text: "" };
-        dmnObject.formalParameter[parameterIndex].description = newContent.formalParameter![parameterIndex]!
-          .description as { __$$text: string };
-      }
-    }, []),
-    props.beeMap
-  );
+  const updater = useBoxedExpressionUpdater<DMN15__tFunctionDefinition>(selectedObjectInfos?.expressionPath ?? []);
 
   const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInformationItem[], [selectedObjectInfos?.cell]);
   const [isParameterExpanded, setParameterExpaded] = useState<boolean[]>([]);
@@ -97,9 +80,11 @@ export function FunctionDefinitionParameterCell(props: { beeMap?: BeeMap; isRead
                 name={parameter["@_name"] ?? ""}
                 allUniqueNames={new Map()}
                 onChange={(newName: string) => {
-                  const formalParameter = [];
-                  formalParameter[i] = { "@_name": newName };
-                  updateBee({ formalParameter }, undefined, i);
+                  updater((dmnObject) => {
+                    dmnObject.formalParameter ??= [];
+                    dmnObject.formalParameter[i] ??= { "@_name": "" };
+                    dmnObject.formalParameter[i]["@_name"] = newName;
+                  });
                 }}
               />
               <TypeRefField
@@ -107,19 +92,23 @@ export function FunctionDefinitionParameterCell(props: { beeMap?: BeeMap; isRead
                 dmnEditorRootElementRef={dmnEditorRootElementRef}
                 typeRef={parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
                 onChange={(newTypeRef) => {
-                  const formalParameter = [];
-                  formalParameter[i] = { "@_typeRef": newTypeRef };
-                  updateBee({ formalParameter } as any, undefined, i);
+                  updater((dmnObject) => {
+                    dmnObject.formalParameter ??= [];
+                    dmnObject.formalParameter[i] ??= { "@_name": "", "@_typeRef": "" };
+                    dmnObject.formalParameter[i]["@_typeRef"] = newTypeRef;
+                  });
                 }}
               />
               <DescriptionField
                 isReadonly={props.isReadonly}
                 initialValue={parameter.description?.__$$text ?? ""}
                 expressionPath={selectedObjectInfos?.expressionPath ?? []}
-                onChange={(newDescription: string, expressionPath: ExpressionPath[]) => {
-                  const formalParameter = [];
-                  formalParameter[i] = { description: { __$$text: newDescription } };
-                  updateBee({ formalParameter } as any, expressionPath, i);
+                onChange={(newDescription: string) => {
+                  updater((dmnObject) => {
+                    dmnObject.formalParameter ??= [];
+                    dmnObject.formalParameter[i] ??= { "@_name": "", description: { __$$text: "" } };
+                    dmnObject.formalParameter[i].description!.__$$text = newDescription;
+                  });
                 }}
               />
             </>

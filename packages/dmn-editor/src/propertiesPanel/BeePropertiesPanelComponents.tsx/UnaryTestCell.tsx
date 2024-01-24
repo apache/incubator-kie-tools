@@ -18,48 +18,24 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
-import {
-  ContentField,
-  DescriptionField,
-  ExpressionLanguageField,
-  KieConstraintTypeField,
-  TypeRefField,
-} from "./Fields";
-import { BeeMap, ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { useMemo } from "react";
+import { DescriptionField, ExpressionLanguageField, KieConstraintTypeField } from "./Fields";
+import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
 import { DMN15__tUnaryTests } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
-import { useDmnEditor } from "../../DmnEditorContext";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { useUpdateBee } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
-export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
-  const { selectedObjectId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
-  const { dmnEditorRootElementRef } = useDmnEditor();
+export function UnaryTestCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
+  const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
 
   const selectedObjectInfos = useMemo(
-    () => props.beeMap?.get(selectedObjectId ?? ""),
-    [props.beeMap, selectedObjectId]
+    () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
+    [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updateBee = useUpdateBee<DMN15__tUnaryTests>(
-    useCallback((dmnObject, newContent) => {
-      if (newContent?.["@_expressionLanguage"] !== undefined) {
-        dmnObject["@_expressionLanguage"] = newContent["@_expressionLanguage"];
-      }
-      if (newContent.text?.__$$text !== undefined) {
-        dmnObject.text ??= { __$$text: "" };
-        dmnObject.text = newContent.text as { __$$text: string };
-      }
-      if (newContent.description?.__$$text !== undefined) {
-        dmnObject.description ??= { __$$text: "" };
-        dmnObject.description = newContent.description as { __$$text: string };
-      }
-    }, []),
-    props.beeMap
-  );
+  const updater = useBoxedExpressionUpdater<DMN15__tUnaryTests>(selectedObjectInfos?.expressionPath ?? []);
 
   const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tUnaryTests, [selectedObjectInfos?.cell]);
 
@@ -70,33 +46,25 @@ export function UnaryTestCell(props: { beeMap?: BeeMap; isReadonly: boolean }) {
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
-      <TypeRefField
-        isReadonly={true}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-      />
       <ExpressionLanguageField
         isReadonly={props.isReadonly}
         initialValue={cell["@_expressionLanguage"] ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
-        onChange={(newExpressionLanguage: string, expressionPath: ExpressionPath[]) =>
-          updateBee({ "@_expressionLanguage": newExpressionLanguage }, expressionPath)
-        }
-      />
-      <ContentField
-        isReadonly={props.isReadonly}
-        initialValue={cell.text?.__$$text ?? ""}
-        expressionPath={selectedObjectInfos?.expressionPath ?? []}
-        onChange={(newText: string, expressionPath: ExpressionPath[]) =>
-          updateBee({ text: { __$$text: newText } }, expressionPath)
+        onChange={(newExpressionLanguage: string) =>
+          updater((dmnObject) => {
+            dmnObject["@_expressionLanguage"] = newExpressionLanguage;
+          })
         }
       />
       <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
-        onChange={(newDescription: string, expressionPath: ExpressionPath[]) =>
-          updateBee({ description: { __$$text: newDescription } }, expressionPath)
+        onChange={(newDescription: string) =>
+          updater((dmnObject) => {
+            dmnObject.description ??= { __$$text: "" };
+            dmnObject.description.__$$text = newDescription;
+          })
         }
       />
       <KieConstraintTypeField />
