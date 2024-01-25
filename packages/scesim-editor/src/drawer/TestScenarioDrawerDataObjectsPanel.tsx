@@ -87,7 +87,7 @@ function TestScenarioDataObjectsPanel({
       (element) => element.step.__$$text
     );
     expressionElements?.splice(0, 1);
-    const factIdentifier = selectedColumnMetadata?.factMapping.factIdentifier!.name!.__$$text;
+    const factIdentifier = selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement![0].step.__$$text;
     console.log(selectedColumnMetadata);
     console.log(dataObjects);
 
@@ -112,7 +112,7 @@ function TestScenarioDataObjectsPanel({
     setSelectorEnabled(false);
   }, [selectedColumnMetadata]);
 
-  const filterTypesItems = useCallback((dataObject, factIdentifierName?) => {
+  const filterTypesItems = useCallback((dataObject, factIdentifierName) => {
     return factIdentifierName && dataObject.name.toLowerCase() === factIdentifierName.toLowerCase();
   }, []);
 

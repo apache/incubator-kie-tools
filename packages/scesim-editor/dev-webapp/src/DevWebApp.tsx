@@ -28,6 +28,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 import "./DevWebApp.css";
+import { dmnBasedScesim, ruleBasedScesim } from "./ExternalModels";
 
 export function DevWebApp() {
   const ref = useRef<TestScenarioEditorRef>(null);
@@ -80,9 +81,7 @@ export function DevWebApp() {
     }
   }, []);
 
-  const onOpenStaticScesimExample = useCallback(async (fileName: string) => {
-    const res = await fetch("/examples/" + fileName);
-    const content = await res.text();
+  const onOpenStaticScesimExample = useCallback((fileName: string, content: string) => {
     ref.current?.setContent(fileName, content);
   }, []);
 
@@ -90,16 +89,16 @@ export function DevWebApp() {
     <DropdownItem
       key="action"
       component="button"
-      onClick={() => onOpenStaticScesimExample("TrafficViolationTest.scesim")}
+      onClick={() => onOpenStaticScesimExample("TrafficViolationTest.scesim", dmnBasedScesim)}
     >
-      DMN-Based: TrafficViolation
+      DMN-Based: TrafficViolationTest
     </DropdownItem>,
     <DropdownItem
       key="action"
       component="button"
-      onClick={() => onOpenStaticScesimExample("Are they old enough.scesim")}
+      onClick={() => onOpenStaticScesimExample("AreTheyOldEnoughTest.scesim", ruleBasedScesim)}
     >
-      Rule-Based: Are they old enough
+      Rule-Based: AreTheyOldEnoughTest
     </DropdownItem>,
   ];
 
