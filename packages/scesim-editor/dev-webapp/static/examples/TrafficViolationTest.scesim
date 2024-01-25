@@ -196,7 +196,7 @@
           <expressionAlias>value</expressionAlias>
           <genericTypes/>
           <columnWidth>114</columnWidth>
-          <factMappingValueType>EXPRESSION</factMappingValueType>
+          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
       </factMappings>
     </scesimModelDescriptor>
