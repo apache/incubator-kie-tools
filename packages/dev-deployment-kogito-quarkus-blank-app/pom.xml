@@ -91,7 +91,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-decisions</artifactId>
+      <artifactId>kogito-quarkus</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.kie.kogito</groupId>

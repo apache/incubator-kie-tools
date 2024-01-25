@@ -42,18 +42,6 @@ pipeline {
         DEV_DEPLOYMENT_BASE_IMAGE__account = 'kie-tools'
         DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
         DEV_DEPLOYMENT_BASE_IMAGE__buildTags = "latest ${params.TAG}"
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'quay.io'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'kie-tools'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'dev-deployment-dmn-form-webapp-image'
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags = "latest ${params.TAG}"
-        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
-        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
-        ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
-        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.TAG}"
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.TAG}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 

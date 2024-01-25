@@ -17,8 +17,19 @@
  * under the License.
  */
 
-import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { K8sResourceYaml, ResourcePatch } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { DeploymentState } from "./common";
+
+/**
+ * Replaces leaf nodes of T with V
+ */
+export type RecursiveReplace<T, V> = {
+  [P in keyof T]: T[P] extends (infer U)[]
+    ? RecursiveReplace<U, V>[]
+    : T[P] extends number | string | symbol | undefined
+    ? V
+    : RecursiveReplace<T[P], V>;
+};
 
 export type KieSandboxDeployment = {
   name: string;
@@ -67,8 +78,6 @@ export const defaultAnnotationTokens: AnnotationTokens = {
   workspaceName: "tools.kie.org/workspace-name",
 } as const;
 
-export const CREATED_BY_KIE_TOOLS = "kie-tools";
-
 export const TOKENS_PREFIX = "devDeployment";
 
 export type Tokens = DevDeploymentTokens & {
@@ -81,10 +90,14 @@ export type Tokens = DevDeploymentTokens & {
 
 export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;
 
-export type ResourceArgs = {
+export type DeploymentOptionArgs = {
+  kogitoQuarkusBlankAppImageUrl: string;
   baseImageUrl: string;
-  formWebappImageUrl: string;
+  dmnFormWebappImageUrl: string;
   imagePullPolicy: string;
-  quarkusPlatformVersion: string;
-  kogitoRuntimeVersion: string;
+};
+
+export type ResourceActions = {
+  resourcePatches?: ResourcePatch[];
+  appendYamls?: string[];
 };

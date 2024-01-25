@@ -5,37 +5,34 @@
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
-# 
+#
 #  http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License. 
+# under the License.
 
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/openjdk-11:1.15
+# Defaults to registry.access.redhat.com/ubi9/openjdk-11 (check env/index.js)
+ARG BUILDER_IMAGE_ARG
 
-ARG QUARKUS_PLATFORM_VERSION
-ARG KOGITO_RUNTIME_VERSION
+FROM --platform=linux/amd64 ${BUILDER_IMAGE_ARG}
 
-ENV ROOT_PATH=""
-ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=/tmp/kogito/quarkus-app/src/main/resources
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME/app
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
 
 USER 1000
 
-RUN mkdir -p -m 777 /tmp/kogito
+RUN mkdir -p -m 777 $HOME/app
 
-COPY --chown=1000:1000 dist-dev/quarkus-app /tmp/kogito/quarkus-app/
-COPY --chown=1000:1000 dist-dev/upload-service/dev-deployment-upload-service /tmp/kogito/quarkus-app/
+COPY --chown=1000:1000 dist-dev/dev-deployment-upload-service /usr/local/bin
 
-WORKDIR /tmp/kogito/quarkus-app/
-
-RUN ./mvnw clean package -B -ntp -Dmaven.test.skip -Dmaven.repo.local=/tmp/kogito/.m2/repository -DQUARKUS_PLATFORM_VERSION=${QUARKUS_PLATFORM_VERSION} -DKOGITO_RUNTIME_VERSION=${KOGITO_RUNTIME_VERSION} -Dquarkus.http.non-application-root-path=${ROOT_PATH}/q -Dquarkus.http.root-path=${ROOT_PATH} \
-  && chmod -R 777 /tmp/kogito/
+WORKDIR $HOME/app/
 
 EXPOSE 8080
 
-ENTRYPOINT ["/bin/bash", "-c", "./dev-deployment-upload-service && ./mvnw quarkus:dev -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -DQUARKUS_PLATFORM_VERSION=${QUARKUS_PLATFORM_VERSION} -DKOGITO_RUNTIME_VERSION=${KOGITO_RUNTIME_VERSION} -Dquarkus.http.non-application-root-path=${ROOT_PATH}/q -Dquarkus.http.root-path=${ROOT_PATH}"]
+ENTRYPOINT ["/bin/bash", "-c"]
+
+CMD ["dev-deployment-upload-service && pwd && ls -la"]

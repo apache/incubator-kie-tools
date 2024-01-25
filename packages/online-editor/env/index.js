@@ -93,6 +93,22 @@ module.exports = composeEnv(
         default: "daily-dev",
         description: "Image tag to be used by Dev deployments when deploying models.",
       },
+      ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry: {
+        default: "quay.io",
+        description: "Image registry to be used by Dev deployments when deploying models.",
+      },
+      ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount: {
+        default: "kie-tools",
+        description: "Image account to be used by Dev deployments when deploying models.",
+      },
+      ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName: {
+        default: "dev-deployment-kogito-quarkus-blank-app-image",
+        description: "Image name to be used by Dev deployments when deploying models.",
+      },
+      ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag: {
+        default: "daily-dev",
+        description: "Image tag to be used by Dev deployments when deploying models.",
+      },
       ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry: {
         default: "quay.io",
         description: "Image registry to be used by Dev deployments to display a form for deployed DMN models.",
@@ -154,6 +170,12 @@ module.exports = composeEnv(
             registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageRegistry),
             account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageAccount),
             name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageName),
+          },
+          kogitoQuarkusBlankAppImage: {
+            tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag),
+            registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry),
+            account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount),
+            name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName),
           },
           dmnFormWebappImage: {
             tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag),

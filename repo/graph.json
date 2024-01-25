@@ -92,12 +92,13 @@
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
       { "id": "@kie-tools/dev-deployment-base-image" },
-      { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app" },
       { "id": "@kie-tools/dev-deployment-upload-service" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp" },
       { "id": "@kie-tools/form-dmn" },
       { "id": "@kie-tools/form" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp-image" },
+      { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app" },
+      { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" },
       { "id": "@kie-tools/dmn-editor" },
       { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
@@ -609,21 +610,15 @@
       { "source": "@kie-tools/dashbuilder-viewer-image-env", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dev-deployment-base-image",
-        "target": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dev-deployment-base-image",
         "target": "@kie-tools/dev-deployment-upload-service",
         "weight": 1
       },
       { "source": "@kie-tools/dev-deployment-base-image", "target": "@kie-tools/image-builder", "weight": 1 },
       {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
+        "source": "@kie-tools/dev-deployment-base-image",
         "target": "@kie-tools/maven-config-setup-helper",
         "weight": 1
       },
-      { "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dev-deployment-upload-service", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dev-deployment-dmn-form-webapp",
@@ -643,6 +638,22 @@
       {
         "source": "@kie-tools/dev-deployment-dmn-form-webapp-image",
         "target": "@kie-tools/image-builder",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
+        "target": "@kie-tools/maven-config-setup-helper",
+        "weight": 1
+      },
+      { "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app", "target": "@kie-tools/root-env", "weight": 1 },
+      {
+        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
+        "target": "@kie-tools/dev-deployment-base-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
+        "target": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
         "weight": 1
       },
       { "source": "@kie-tools/dmn-editor", "target": "@kie-tools-core/react-hooks", "weight": 1 },
@@ -734,7 +745,6 @@
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/kubernetes-bridge", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
-      { "source": "@kie-tools/online-editor", "target": "@kie-tools/dev-deployment-upload-service", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/dmn-editor-envelope", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/form-dmn", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
@@ -998,6 +1008,10 @@
     ["@kie-tools/dev-deployment-dmn-form-webapp", "packages/dev-deployment-dmn-form-webapp"],
     ["@kie-tools/dev-deployment-dmn-form-webapp-image", "packages/dev-deployment-dmn-form-webapp-image"],
     ["@kie-tools/dev-deployment-kogito-quarkus-blank-app", "packages/dev-deployment-kogito-quarkus-blank-app"],
+    [
+      "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
+      "packages/dev-deployment-kogito-quarkus-blank-app-image"
+    ],
     ["@kie-tools/dev-deployment-upload-service", "packages/dev-deployment-upload-service"],
     ["@kie-tools/dmn-editor", "packages/dmn-editor"],
     ["@kie-tools/dmn-editor-envelope", "packages/dmn-editor-envelope"],
