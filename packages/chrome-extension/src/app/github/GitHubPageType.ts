@@ -21,7 +21,7 @@ export enum GitHubPageType {
   VIEW,
   EDIT,
   PR_FILES_OR_COMMITS,
-  ANY,
+  CAN_NOT_BE_DETERMINED_FROM_URL,
   PR_HOME,
   REPO_HOME,
 }

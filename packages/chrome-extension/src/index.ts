@@ -92,12 +92,7 @@ function init(globals: Globals) {
   const pageType = discoverCurrentGitHubPageType();
 
   if (!globals.dependencies.all.octiconMarkGitHub()) {
-    globals.logger.warn("This is not the GitHub web page.");
-    return;
-  }
-
-  if (pageType === GitHubPageType.ANY) {
-    globals.logger.log(`This GitHub web page is not supported.`);
+    globals.logger.warn(`This is not the GitHub web page. '${window.location.pathname}'`);
     return;
   }
 
@@ -106,7 +101,7 @@ function init(globals: Globals) {
   } else if (pageType === GitHubPageType.VIEW) {
     if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoFilesList()) {
       globals.logger.warn(
-        "The extension can not display all buttons properly. Please be sure you use the extension with the latest GitHub instance."
+        "The extension stopped working for this asset view. Please be sure you explore the asset with the latest GitHub instance."
       );
     } else {
       renderSingleEditorReadonlyApp({
@@ -120,7 +115,7 @@ function init(globals: Globals) {
   } else if (pageType === GitHubPageType.PR_FILES_OR_COMMITS) {
     if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()) {
       globals.logger.warn(
-        "The extension can not display all buttons properly. Please be sure you use the extension with the latest GitHub instance."
+        "The extension stopped working for this pull request view. Please be sure you explore the pull request on the latest GitHub instance."
       );
     } else {
       renderPrEditorsApp({ ...globals });
@@ -128,7 +123,7 @@ function init(globals: Globals) {
   } else if (pageType === GitHubPageType.PR_HOME) {
     if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()) {
       globals.logger.warn(
-        "The extension can not display all buttons properly. Please be sure you use the extension with the latest GitHub instance."
+        "The extension stopped working for this pull request view. Please be sure you explore the pull request on the latest GitHub instance."
       );
     } else {
       renderOpenRepoInExternalEditorApp({
@@ -141,9 +136,24 @@ function init(globals: Globals) {
   } else if (pageType === GitHubPageType.REPO_HOME) {
     if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()) {
       globals.logger.warn(
-        "The extension can not display all buttons properly. Please be sure you use the extension with the latest GitHub instance."
+        "The extension stopped working for this repository view. Please be sure you explore the repository on the latest GitHub instance."
       );
     } else {
+      renderOpenRepoInExternalEditorApp({
+        ...globals,
+        pageType,
+        className: "btn btn-sm",
+        container: () => globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()!,
+      });
+    }
+  } else if (pageType === GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL) {
+    // if user uses [GITHUBINSTANCE_BASE_URL]/[ORG]/[REPO] we can not determine it from the url, but it may be still valid scenario for this chrome-extension
+    if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()) {
+      globals.logger.warn(
+        "The extension stopped working for this view. Please be sure you explore repository, asset or pull request on the latest GitHub instance."
+      );
+    } else {
+      // presence of the 'buttonContainerOnRepoHome' locator should mean, user is really on the repository home screen view
       renderOpenRepoInExternalEditorApp({
         ...globals,
         pageType,
@@ -206,11 +216,10 @@ export function discoverCurrentGitHubPageType() {
     return GitHubPageType.VIEW;
   }
 
-  const isOrgSlashRepo = window.location.pathname.split("/").length === 3;
   const isOrgSlashRepoSlashTreeSlashName =
     window.location.pathname.split("/tree/").length === 2 && !window.location.pathname.split("/tree/")[1].includes("/");
 
-  if (isOrgSlashRepo || isOrgSlashRepoSlashTreeSlashName) {
+  if (isOrgSlashRepoSlashTreeSlashName) {
     return GitHubPageType.REPO_HOME;
   }
 
@@ -226,7 +235,7 @@ export function discoverCurrentGitHubPageType() {
     return GitHubPageType.PR_HOME;
   }
 
-  return GitHubPageType.ANY;
+  return GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL;
 }
 
 export * from "./ExternalEditorManager";
