@@ -64,6 +64,7 @@ function cleanup(id: string) {
   Array.from(document.querySelectorAll(`.${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS}.${id}`)).forEach(
     (e) => {
       removeAllChildren(e);
+      e.remove();
     }
   );
 }
