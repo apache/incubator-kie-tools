@@ -125,6 +125,12 @@ export type TestScenarioSettings = {
   ruleFlowGroup?: string;
 };
 
+export type TestScenarioSelectedColumnMetaData = {
+  factMapping: SceSim__FactMappingType;
+  index: number;
+  isBackground: boolean;
+};
+
 /* Sub-Components */
 
 function TestScenarioCreationPanel({
@@ -246,19 +252,14 @@ function TestScenarioMainPanel({
 
   const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
   const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
-  const [selectedColumnFactMapping, setSelectedColumnFactMapping] = useState<SceSim__FactMappingType | null>(null);
+  const [selectedColumnMetadata, setSelectedColumnMetaData] = useState<TestScenarioSelectedColumnMetaData | null>(null);
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    setTab(TestScenarioEditorTab.EDITOR);
-    setSelectedColumnFactMapping(null);
-  }, [scesimModel]);
-
   const onTabChanged = useCallback((_event, tab) => {
     setTab(tab);
-    setSelectedColumnFactMapping(null);
+    setSelectedColumnMetaData(null);
   }, []);
 
   const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
@@ -285,8 +286,7 @@ function TestScenarioMainPanel({
        That makes sense for previously created scesim files */
 
     const factsMappings: SceSim__FactMappingType[] =
-      scesimModel!.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]!["factMappings"]!["FactMapping"] ??
-      [];
+      scesimModel!.ScenarioSimulationModel.simulation.scesimModelDescriptor!.factMappings!.FactMapping ?? [];
 
     const dataObjects: TestScenarioDataObject[] = [];
 
@@ -297,11 +297,15 @@ function TestScenarioMainPanel({
         continue;
       }
       const dataObject = dataObjects.find((value) => value.id === factsMappings[i].factIdentifier!.name!.__$$text);
-      const propertyID = factsMappings[i]
-        .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
-        .join(".");
-      //TODO double check const propertyName = factsMappings[i].expressionElements!.ExpressionElement!.slice(-1)[0].step.__$$text
-      const propertyName = factsMappings[i].expressionAlias!.__$$text;
+      const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length == 1;
+      const propertyID = isSimpleTypeFact
+        ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
+        : factsMappings[i]
+            .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
+            .join(".");
+      const propertyName = isSimpleTypeFact
+        ? "value"
+        : factsMappings[i].expressionElements!.ExpressionElement!.slice(-1)[0].step.__$$text;
       if (dataObject) {
         if (!dataObject.children?.some((value) => value.id === propertyID)) {
           dataObject.children!.push({
@@ -366,7 +370,7 @@ function TestScenarioMainPanel({
                 fileName={fileName}
                 onDrawerClose={closeDockPanel}
                 onUpdateSettingField={updateSettingField}
-                selectedColumnFactMapping={selectedColumnFactMapping}
+                selectedColumnMetaData={selectedColumnMetadata}
                 selectedDock={dockPanel.selected}
                 testScenarioSettings={{
                   assetType: scesimModel.ScenarioSimulationModel.settings!.type!.__$$text,
@@ -413,7 +417,7 @@ function TestScenarioMainPanel({
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.simulation}
                         scrollableParentRef={scenarioTableScrollableElementRef}
-                        updateSelectedColumnFactMapping={setSelectedColumnFactMapping}
+                        updateSelectedColumnMetaData={setSelectedColumnMetaData}
                         updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
@@ -442,7 +446,7 @@ function TestScenarioMainPanel({
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.background}
                         scrollableParentRef={backgroundTableScrollableElementRef}
-                        updateSelectedColumnFactMapping={setSelectedColumnFactMapping}
+                        updateSelectedColumnMetaData={setSelectedColumnMetaData}
                         updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
