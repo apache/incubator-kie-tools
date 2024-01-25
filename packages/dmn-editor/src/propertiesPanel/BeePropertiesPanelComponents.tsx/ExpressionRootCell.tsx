@@ -19,12 +19,10 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DescriptionField, TypeRefField } from "./Fields";
+import { DescriptionField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
 import { useDmnEditorStore } from "../../store/Store";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -33,7 +31,6 @@ type ExpressionRoot = Pick<AllExpressionsWithoutTypes, "description" | "@_typeRe
 
 export function ExpressionRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
-  const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
     [props.boxedExpressionIndex, selectedObjectId]
@@ -50,11 +47,6 @@ export function ExpressionRootCell(props: { boxedExpressionIndex?: BoxedExpressi
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
-      <TypeRefField
-        isReadonly={true}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-      />
       <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}

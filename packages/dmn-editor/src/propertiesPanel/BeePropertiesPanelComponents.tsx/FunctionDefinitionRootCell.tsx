@@ -18,12 +18,10 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
-import { DescriptionField, TextInputField, TypeRefField } from "./Fields";
-import { BoxedExpressionIndex, ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { useMemo } from "react";
+import { DescriptionField, TextInputField } from "./Fields";
+import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
 import { useDmnEditorStore } from "../../store/Store";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -36,7 +34,6 @@ export function FunctionDefinitionRootCell(props: {
   isReadonly: boolean;
 }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
-  const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
     [props.boxedExpressionIndex, selectedObjectId]
@@ -54,16 +51,11 @@ export function FunctionDefinitionRootCell(props: {
         </ClipboardCopy>
       </FormGroup>
       <TextInputField title={"Kind"} isReadonly={true} initialValue={cell["@_kind"] ?? ""} />
-      <TypeRefField
-        isReadonly={true}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-      />
       <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
-        onChange={(newDescription: string, expressionPath: ExpressionPath[]) =>
+        onChange={(newDescription: string) =>
           updater((dmnObject) => {
             dmnObject.description ??= { __$$text: "" };
             dmnObject.description.__$$text = newDescription;

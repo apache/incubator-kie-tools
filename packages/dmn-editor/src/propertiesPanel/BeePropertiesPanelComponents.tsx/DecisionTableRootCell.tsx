@@ -19,15 +19,11 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DescriptionField, TextInputField, TypeRefField } from "./Fields";
+import { DescriptionField, TextInputField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
 import { DMN15__tDecisionTable } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
-import {
-  DecisionTableExpressionDefinitionBuiltInAggregation,
-  DmnBuiltInDataType,
-} from "@kie-tools/boxed-expression-component/dist/api";
-import { useDmnEditor } from "../../DmnEditorContext";
+import { DecisionTableExpressionDefinitionBuiltInAggregation } from "@kie-tools/boxed-expression-component/dist/api";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -39,7 +35,6 @@ type DecisionTableRoot = Pick<
 
 export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
-  const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
     [props.boxedExpressionIndex, selectedObjectId]
@@ -64,11 +59,6 @@ export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpre
           initialValue={cell["@_aggregation"] ?? DecisionTableExpressionDefinitionBuiltInAggregation["<None>"]}
         />
       )}
-      <TypeRefField
-        isReadonly={true}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-      />
       <TextInputField
         title={"Output Label"}
         placeholder={"Enter a output label..."}

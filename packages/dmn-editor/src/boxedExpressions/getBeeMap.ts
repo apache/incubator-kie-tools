@@ -34,6 +34,7 @@ import { AllExpressionTypes, AllExpressions, AllExpressionsWithoutTypes } from "
 
 interface PathType {
   type: AllExpressionTypes;
+  root: string;
 }
 
 interface ConditionalExpressionPath extends PathType {
@@ -132,26 +133,26 @@ export function generateBoxedExpressionIndex(
     case "conditional":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "conditional" }],
+          expressionPath: [...parentExpressionPath, { type: "conditional", root: expression["@_id"] }],
           cell: expression,
         });
       generateBoxedExpressionIndex(expression.if.expression, map, [
         ...parentExpressionPath,
-        { type: "conditional", row: "if" },
+        { type: "conditional", row: "if", root: expression["@_id"]! },
       ]);
       generateBoxedExpressionIndex(expression.else.expression, map, [
         ...parentExpressionPath,
-        { type: "conditional", row: "else" },
+        { type: "conditional", row: "else", root: expression["@_id"]! },
       ]);
       generateBoxedExpressionIndex(expression.then.expression, map, [
         ...parentExpressionPath,
-        { type: "conditional", row: "then" },
+        { type: "conditional", row: "then", root: expression["@_id"]! },
       ]);
       return map;
     case "context":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "context" }],
+          expressionPath: [...parentExpressionPath, { type: "context", root: expression["@_id"] }],
           cell: expression,
         });
       expression.contextEntry?.forEach((ce, row) => {
@@ -159,33 +160,42 @@ export function generateBoxedExpressionIndex(
         id &&
           ce.variable &&
           map.set(id, {
-            expressionPath: [...parentExpressionPath, { type: "context", row, column: "variable" }],
+            expressionPath: [
+              ...parentExpressionPath,
+              { type: "context", row, column: "variable", root: expression["@_id"]! },
+            ],
             cell: ce.variable,
           });
         generateBoxedExpressionIndex(ce.expression, map, [
           ...parentExpressionPath,
-          { type: "context", row, column: "expression" },
+          { type: "context", row, column: "expression", root: expression["@_id"]! },
         ]);
       });
       return map;
     case "decisionTable":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "decisionTable" }],
+          expressionPath: [...parentExpressionPath, { type: "decisionTable", root: expression["@_id"] }],
           cell: expression,
         });
       expression.output.forEach(
         (o, column) =>
           o["@_id"] &&
           map.set(o["@_id"], {
-            expressionPath: [...parentExpressionPath, { type: "decisionTable", header: "output", row: -1, column }],
+            expressionPath: [
+              ...parentExpressionPath,
+              { type: "decisionTable", header: "output", row: -1, column, root: expression["@_id"]! },
+            ],
             cell: o,
           })
       );
       expression.input?.forEach((i, column) => {
         i["@_id"] &&
           map.set(i["@_id"], {
-            expressionPath: [...parentExpressionPath, { type: "decisionTable", header: "input", row: -1, column }],
+            expressionPath: [
+              ...parentExpressionPath,
+              { type: "decisionTable", header: "input", row: -1, column, root: expression["@_id"]! },
+            ],
             cell: i,
           });
       });
@@ -194,7 +204,10 @@ export function generateBoxedExpressionIndex(
           (ro, column) =>
             ro["@_id"] &&
             map.set(ro["@_id"], {
-              expressionPath: [...parentExpressionPath, { type: "decisionTable", header: "output", row, column }],
+              expressionPath: [
+                ...parentExpressionPath,
+                { type: "decisionTable", header: "output", row, column, root: expression["@_id"]! },
+              ],
               cell: ro,
             })
         );
@@ -202,7 +215,10 @@ export function generateBoxedExpressionIndex(
           (ri, column) =>
             ri["@_id"] &&
             map.set(ri["@_id"], {
-              expressionPath: [...parentExpressionPath, { type: "decisionTable", header: "input", row, column }],
+              expressionPath: [
+                ...parentExpressionPath,
+                { type: "decisionTable", header: "input", row, column, root: expression["@_id"]! },
+              ],
               cell: ri,
             })
         );
@@ -211,121 +227,133 @@ export function generateBoxedExpressionIndex(
     case "every":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "every" }],
+          expressionPath: [...parentExpressionPath, { type: "every", root: expression["@_id"] }],
           cell: expression,
         });
       generateBoxedExpressionIndex(expression.in.expression, map, [
         ...parentExpressionPath,
-        { type: "every", row: "in" },
+        { type: "every", row: "in", root: expression["@_id"]! },
       ]);
       generateBoxedExpressionIndex(expression.satisfies.expression, map, [
         ...parentExpressionPath,
-        { type: "every", row: "statisfies" },
+        { type: "every", row: "statisfies", root: expression["@_id"]! },
       ]);
       return map;
     case "filter":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "filter" }],
+          expressionPath: [...parentExpressionPath, { type: "filter", root: expression["@_id"] }],
           cell: expression,
         });
       generateBoxedExpressionIndex(expression.in.expression, map, [
         ...parentExpressionPath,
-        { type: "filter", row: "in" },
+        { type: "filter", row: "in", root: expression["@_id"]! },
       ]);
       generateBoxedExpressionIndex(expression.match.expression, map, [
         ...parentExpressionPath,
-        { type: "filter", row: "match" },
+        { type: "filter", row: "match", root: expression["@_id"]! },
       ]);
       return map;
     case "for":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "for" }],
+          expressionPath: [...parentExpressionPath, { type: "for", root: expression["@_id"] }],
           cell: expression,
         });
       generateBoxedExpressionIndex(expression.in.expression, map, [
         ...parentExpressionPath,
-        { type: "for", row: "in" },
+        { type: "for", row: "in", root: expression["@_id"]! },
       ]);
       generateBoxedExpressionIndex(expression.return.expression, map, [
         ...parentExpressionPath,
-        { type: "for", row: "return" },
+        { type: "for", row: "return", root: expression["@_id"]! },
       ]);
       return map;
     case "functionDefinition":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "functionDefinition" }],
+          expressionPath: [...parentExpressionPath, { type: "functionDefinition", root: expression["@_id"] }],
           cell: expression,
         });
 
       if (expression.expression?.["@_id"]) {
         generateBoxedExpressionIndex(expression.expression, map, [
           ...parentExpressionPath,
-          { type: "functionDefinition", parameterIndex: -1 },
+          { type: "functionDefinition", parameterIndex: -1, root: expression["@_id"]! },
         ]);
       }
 
       map.set(`${expression["@_id"]}-parameters`, {
-        expressionPath: [...parentExpressionPath, { type: "functionDefinition", parameterIndex: 0 }],
+        expressionPath: [
+          ...parentExpressionPath,
+          { type: "functionDefinition", parameterIndex: 0, root: expression["@_id"]! },
+        ],
         cell: expression.formalParameter ?? [],
       });
       return map;
     case "invocation":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "invocation" }],
+          expressionPath: [...parentExpressionPath, { type: "invocation", root: expression["@_id"] }],
           cell: expression,
         });
       expression.binding?.forEach((b, row) => {
         b.parameter["@_id"] &&
           map.set(b.parameter["@_id"], {
-            expressionPath: [...parentExpressionPath, { type: "invocation", row, column: "parameter" }],
+            expressionPath: [
+              ...parentExpressionPath,
+              { type: "invocation", row, column: "parameter", root: expression["@_id"]! },
+            ],
             cell: b.parameter,
           });
         b.expression &&
           generateBoxedExpressionIndex(b.expression, map, [
             ...parentExpressionPath,
-            { type: "invocation", row, column: "expression" },
+            { type: "invocation", row, column: "expression", root: expression["@_id"]! },
           ]);
       });
       // function call
       expression.expression &&
         expression.expression["@_id"] &&
         map.set(expression.expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "invocation", row: -1, column: "expression" }],
+          expressionPath: [
+            ...parentExpressionPath,
+            { type: "invocation", row: -1, column: "expression", root: expression["@_id"]! },
+          ],
           cell: expression.expression,
         });
       return map;
     case "list":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "list" }],
+          expressionPath: [...parentExpressionPath, { type: "list", root: expression["@_id"] }],
           cell: expression,
         });
       expression.expression?.forEach((e, row) =>
-        generateBoxedExpressionIndex(e, map, [...parentExpressionPath, { type: "list", row }])
+        generateBoxedExpressionIndex(e, map, [
+          ...parentExpressionPath,
+          { type: "list", row, root: expression["@_id"]! },
+        ])
       );
       return map;
     case "literalExpression":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "literalExpression" }],
+          expressionPath: [...parentExpressionPath, { type: "literalExpression", root: expression["@_id"] }],
           cell: expression,
         });
       return map;
     case "relation":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "relation" }],
+          expressionPath: [...parentExpressionPath, { type: "relation", root: expression["@_id"] }],
           cell: expression,
         });
       expression.column?.forEach(
         (c, column) =>
           c["@_id"] &&
           map.set(c["@_id"], {
-            expressionPath: [...parentExpressionPath, { type: "relation", row: -1, column }],
+            expressionPath: [...parentExpressionPath, { type: "relation", row: -1, column, root: expression["@_id"]! }],
             cell: c,
           })
       );
@@ -333,7 +361,7 @@ export function generateBoxedExpressionIndex(
         r.expression?.forEach((re, column) => {
           re["@_id"] &&
             map.set(re["@_id"], {
-              expressionPath: [...parentExpressionPath, { type: "relation", row, column }],
+              expressionPath: [...parentExpressionPath, { type: "relation", row, column, root: expression["@_id"]! }],
               cell: r,
             });
         })
@@ -342,16 +370,16 @@ export function generateBoxedExpressionIndex(
     case "some":
       expression["@_id"] &&
         map.set(expression["@_id"], {
-          expressionPath: [...parentExpressionPath, { type: "some" }],
+          expressionPath: [...parentExpressionPath, { type: "some", root: expression["@_id"] }],
           cell: expression,
         });
       generateBoxedExpressionIndex(expression.in.expression, map, [
         ...parentExpressionPath,
-        { type: "some", row: "in" },
+        { type: "some", row: "in", root: expression["@_id"]! },
       ]);
       generateBoxedExpressionIndex(expression.satisfies.expression, map, [
         ...parentExpressionPath,
-        { type: "some", row: "statisfies" },
+        { type: "some", row: "statisfies", root: expression["@_id"]! },
       ]);
       return map;
   }
@@ -518,7 +546,7 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
 
 export function getDmnObjectByPath(
   paths: ExpressionPath[],
-  expressionRoot: AllExpressionsWithoutTypes | undefined
+  expressionRoot?: AllExpressionsWithoutTypes
 ): AllExpressionsWithoutTypes | undefined {
   if (!expressionRoot) {
     return;
