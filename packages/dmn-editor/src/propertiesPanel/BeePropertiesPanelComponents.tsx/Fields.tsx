@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InlineFeelNameInput } from "../../feel/InlineFeelNameInput";
 import { UniqueNameIndex } from "../../Dmn15Spec";
@@ -26,7 +26,6 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TypeRefSelector } from "../../dataTypes/TypeRefSelector";
-import { FeelInput } from "@kie-tools/feel-input-component";
 
 export function KieConstraintTypeField() {
   return (
@@ -44,62 +43,6 @@ export function ContentField(props: {
 }) {
   return <TextInputField {...props} title="Content" placeholder="Enter the content..." />;
 }
-
-// export function ContentField({
-//   onChange,
-//   ...props
-// }: {
-//   initialValue: string;
-//   onChange: (newTextValue: string) => void;
-//   expressionPath: ExpressionPath[];
-//   isReadonly: boolean;
-// }) {
-//   const [preview, setPreview] = useState(props.initialValue ?? "");
-//   const [editingValue, setEditingValue] = useState(props.initialValue);
-//   const onFeelChange = useCallback((_, content, preview) => {
-//     setEditingValue?.(content.trim());
-//     setPreview(preview);
-//   }, []);
-
-//   const onFeelBlur = useCallback(
-//     (value: string) => {
-//       onChange?.(value.trim());
-//     },
-//     [onChange]
-//   );
-
-//   const monacoOptions = useMemo(
-//     () => ({
-//       fixedOverflowWidgets: true,
-//       lineNumbers: "off",
-//       fontSize: 16,
-//       renderLineHighlight: "none",
-//       lineDecorationsWidth: 1,
-//       automaticLayout: true,
-//       "semanticHighlighting.enabled": true,
-//     }),
-//     []
-//   );
-
-//   return (
-//     <FormGroup label={"Content"}>
-//       {props.isReadonly &&
-//         (props.initialValue ? (
-//           <span className="editable-cell-value pf-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
-//         ) : (
-//           <p style={{ fontStyle: "italic" }}>{`<None>`}</p>
-//         ))}
-//       <FeelInput
-//         value={props.isReadonly ? props.initialValue : editingValue}
-//         onChange={onFeelChange}
-//         onBlur={onFeelBlur}
-//         onPreviewChanged={setPreview}
-//         enabled={!props.isReadonly}
-//         options={monacoOptions as any}
-//       />
-//     </FormGroup>
-//   );
-// }
 
 export function DescriptionField(props: {
   initialValue: string;
