@@ -91,8 +91,10 @@ function init(globals: Globals) {
   const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
 
-  if (!globals.dependencies.all.octiconMarkGitHub()) {
-    globals.logger.warn(`This is not the GitHub web page. '${window.location.pathname}'`);
+  if (!globals.dependencies.all.octiconMarkGitHub() || pageType === GitHubPageType.NOT_SUPPORTED) {
+    globals.logger.warn(
+      `This is not supported GitHub web page. '${window.location.origin}${window.location.pathname}'`
+    );
     return;
   }
 
@@ -150,7 +152,7 @@ function init(globals: Globals) {
     // if user uses [GITHUBINSTANCE_BASE_URL]/[ORG]/[REPO] we can not determine it from the url, but it may be still valid scenario for this chrome-extension
     if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()) {
       globals.logger.warn(
-        "The extension stopped working for this view. Please be sure you explore repository, asset or pull request on the latest GitHub instance."
+        `The extension stopped working for this view '${window.location.origin}${window.location.pathname}'. Please be sure you explore repository, asset or pull request on the latest GitHub instance.`
       );
     } else {
       // presence of the 'buttonContainerOnRepoHome' locator should mean, user is really on the repository home screen view
@@ -233,6 +235,13 @@ export function discoverCurrentGitHubPageType() {
 
   if (pathnameMatches(`.*/.*/pull/[0-9]+.*`)) {
     return GitHubPageType.PR_HOME;
+  }
+
+  if (
+    ["/tree/", "/pull/", "/blob/", "/edit/"].some((pathnamePart) => window.location.pathname.includes(pathnamePart))
+  ) {
+    // if pathanme containing one of these substrings didn't match previous `if` statements, then it is not supperted by our extension
+    return GitHubPageType.NOT_SUPPORTED;
   }
 
   return GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL;
