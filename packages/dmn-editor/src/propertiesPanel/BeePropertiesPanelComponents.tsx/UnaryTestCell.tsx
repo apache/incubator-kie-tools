@@ -103,7 +103,12 @@ export function UnaryTestCell(props: { boxedExpressionIndex?: BoxedExpressionInd
             typeRef={itemDefinition["@_name"] ?? DmnBuiltInDataType.Undefined}
           />
           <FormGroup label="Constraint">
-            <Constraints isReadonly={true} itemDefinition={itemDefinition} editItemDefinition={() => {}} />
+            <Constraints
+              isReadonly={true}
+              itemDefinition={itemDefinition}
+              editItemDefinition={() => {}}
+              renderOnPropertiesPanel={true}
+            />
           </FormGroup>
         </>
       )}

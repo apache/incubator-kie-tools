@@ -36,12 +36,15 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { Constraints } from "../../dataTypes/Constraints";
 
 export function DecisionTableInputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadonly: boolean;
 }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
+  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
   const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
@@ -53,6 +56,11 @@ export function DecisionTableInputHeaderCell(props: {
   const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInputClause, [selectedObjectInfos?.cell]);
   const inputExpression = useMemo(() => cell.inputExpression, [cell.inputExpression]);
   const inputValues = useMemo(() => cell.inputValues, [cell.inputValues]);
+
+  const inputExpressionItemDefinition = useMemo(() => {
+    return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(inputExpression?.["@_typeRef"] ?? "") ?? "")
+      ?.itemDefinition;
+  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, inputExpression]);
 
   const [isInputExpressionExpanded, setInputExpressionExpanded] = useState(true);
   const [isInputValuesExpanded, setInputValuesExpanded] = useState(false);
@@ -106,9 +114,21 @@ export function DecisionTableInputHeaderCell(props: {
                 updater((dmnObject) => {
                   dmnObject.inputExpression ??= {};
                   dmnObject.inputExpression["@_typeRef"] = newTypeRef;
+                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues["@_typeRef"] = newTypeRef;
                 })
               }
             />
+            {inputExpressionItemDefinition && (
+              <FormGroup label="Constraint">
+                <Constraints
+                  isReadonly={true}
+                  itemDefinition={inputExpressionItemDefinition}
+                  editItemDefinition={() => {}}
+                  renderOnPropertiesPanel={true}
+                />
+              </FormGroup>
+            )}
             <ExpressionLanguageField
               isReadonly={props.isReadonly}
               initialValue={inputExpression?.["@_expressionLanguage"] ?? ""}
@@ -151,7 +171,8 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.inputExpression["@_expressionLanguage"] = newExpressionLanguage;
+                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues["@_expressionLanguage"] = newExpressionLanguage;
                 })
               }
             />
@@ -179,7 +200,6 @@ export function DecisionTableInputHeaderCell(props: {
                 })
               }
             />
-            <KieConstraintTypeField />
           </>
         )}
       </FormSection>

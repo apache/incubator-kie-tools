@@ -37,11 +37,11 @@ export function KieConstraintTypeField() {
 
 export function ContentField(props: {
   initialValue: string;
-  onChange?: (newTextValue: string, expressionPath?: ExpressionPath[]) => void;
-  expressionPath?: ExpressionPath[];
+  onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;
+  expressionPath: ExpressionPath[];
   isReadonly: boolean;
 }) {
-  return <TextInputField {...props} title="Content" placeholder="Enter the content..." />;
+  return <TextAreaField {...props} title="Content" placeholder="Enter the content..." />;
 }
 
 export function DescriptionField(props: {
@@ -142,6 +142,9 @@ export function TextInputField(props: {
           setEditing(true);
         }}
         onBlur={() => {
+          if (props.initialValue === textInputValue) {
+            return;
+          }
           props.onChange?.(textInputValue, expressionPath);
           setEditing(false);
         }}
@@ -190,6 +193,9 @@ export function TextAreaField(props: {
           setEditing(true);
         }}
         onBlur={() => {
+          if (props.initialValue === textAreaValue) {
+            return;
+          }
           props.onChange(textAreaValue, expressionPath);
           setEditing(false);
         }}

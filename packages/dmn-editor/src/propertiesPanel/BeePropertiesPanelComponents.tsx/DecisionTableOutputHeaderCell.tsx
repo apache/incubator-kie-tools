@@ -36,12 +36,15 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { Constraints } from "../../dataTypes/Constraints";
 
 export function DecisionTableOutputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadonly: boolean;
 }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
+  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
   const { dmnEditorRootElementRef } = useDmnEditor();
 
   const selectedObjectInfos = useMemo(
@@ -54,6 +57,11 @@ export function DecisionTableOutputHeaderCell(props: {
   const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tOutputClause, [selectedObjectInfos?.cell]);
   const defaultOutputEntry = useMemo(() => cell.defaultOutputEntry, [cell.defaultOutputEntry]);
   const outputValues = useMemo(() => cell.outputValues, [cell.outputValues]);
+
+  const itemDefinition = useMemo(() => {
+    return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(cell?.["@_typeRef"] ?? "") ?? "")
+      ?.itemDefinition;
+  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, cell]);
 
   const [isDefaultOutputEntryExpanded, setDefaultOutputEntryExpanded] = useState(false);
   const [isOutputValuesExpanded, setOutputValuesExpanded] = useState(false);
@@ -72,20 +80,30 @@ export function DecisionTableOutputHeaderCell(props: {
         allUniqueNames={new Map()}
         onChange={(newName) =>
           updater((dmnObject) => {
-            dmnObject["@_name"] ??= newName;
+            dmnObject["@_name"] = newName;
           })
         }
       />
       <TypeRefField
-        isReadonly={true}
+        isReadonly={props.isReadonly}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
         onChange={(newTypeRef) =>
           updater((dmnObject) => {
-            dmnObject["@_typeRef"] ??= newTypeRef;
+            dmnObject["@_typeRef"] = newTypeRef;
           })
         }
       />
+      {itemDefinition && (
+        <FormGroup label="Constraint">
+          <Constraints
+            isReadonly={true}
+            itemDefinition={itemDefinition}
+            editItemDefinition={() => {}}
+            renderOnPropertiesPanel={true}
+          />
+        </FormGroup>
+      )}
       <DescriptionField
         isReadonly={props.isReadonly}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -125,7 +143,8 @@ export function DecisionTableOutputHeaderCell(props: {
               onChange={(newText) =>
                 updater((dmnObject) => {
                   dmnObject.defaultOutputEntry ??= { text: { __$$text: "" } };
-                  dmnObject.defaultOutputEntry.text!.__$$text = newText;
+                  dmnObject.defaultOutputEntry.text ??= { __$$text: "" };
+                  dmnObject.defaultOutputEntry.text.__$$text = newText;
                 })
               }
             />
@@ -136,7 +155,8 @@ export function DecisionTableOutputHeaderCell(props: {
               onChange={(newDescription) =>
                 updater((dmnObject) => {
                   dmnObject.defaultOutputEntry ??= { description: { __$$text: "" } };
-                  dmnObject.defaultOutputEntry.description!.__$$text = newDescription;
+                  dmnObject.defaultOutputEntry.description ??= { __$$text: "" };
+                  dmnObject.defaultOutputEntry.description.__$$text = newDescription;
                 })
               }
             />
@@ -187,7 +207,6 @@ export function DecisionTableOutputHeaderCell(props: {
                 })
               }
             />
-            <KieConstraintTypeField />
           </>
         )}
       </FormSection>

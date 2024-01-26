@@ -38,6 +38,7 @@ export function ConstraintsEnum({
   typeHelper,
   onSave,
   isDisabled,
+  renderOnPropertiesPanel,
 }: ConstraintComponentProps) {
   const enumValues = useMemo(() => isEnum(value, typeHelper.check) ?? [""], [typeHelper.check, value]);
   const [valuesUuid, setValuesUuid] = useState((enumValues ?? [""])?.map((_) => generateUuid()));
@@ -164,18 +165,24 @@ export function ConstraintsEnum({
         </div>
       </div>
       {!(isDisabled || isReadonly) && (
-        <Button
-          onClick={() => onAdd()}
-          variant={ButtonVariant.link}
-          icon={<PlusCircleIcon />}
-          style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
-        >
-          Add value
-        </Button>
+        <>
+          <Button
+            onClick={() => onAdd()}
+            variant={ButtonVariant.link}
+            icon={<PlusCircleIcon />}
+            style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
+          >
+            Add value
+          </Button>{" "}
+        </>
       )}
-      <br />
-      <br />
-      <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
+      {!renderOnPropertiesPanel && (
+        <>
+          <br />
+          <br />
+          <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
+        </>
+      )}
     </div>
   );
 }
