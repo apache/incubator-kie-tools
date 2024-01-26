@@ -111,11 +111,11 @@ export const sumDiffDs = `<definitions
     <typeRef>number</typeRef>
   </itemComponent>
 </itemDefinition>
-<itemDefinition id="_2B4E9593-3239-4E04-A213-345F0AA0AF9E" name="Marital_Statuss" isCollection="false">
-  <itemComponent id="_3EF27B7D-3378-429E-B6DB-B856F5EB0AEE" name="Diff" isCollection="false">
-    <typeRef>string</typeRef>
+<itemDefinition id="_2B4E9593-3239-4E04-A213-345F0AA0AF9E" name="Fine" isCollection="false">
+  <itemComponent id="_3EF27B7D-3378-429E-B6DB-B856F5EB0AEE" name="Value" isCollection="false">
+    <typeRef>number</typeRef>
     <allowedValues id="_5BD13D9D-412F-4E6B-914A-3D8AAAC6A701">
-      <text>&quot;M&quot;,&quot;D&quot;,&quot;S&quot;</text>
+      <text>100,500,1000</text>
     </allowedValues>
   </itemComponent>
 </itemDefinition>

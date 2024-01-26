@@ -44,7 +44,6 @@ import {
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -304,22 +303,6 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
   const label = useMemo(() => {
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
-
-  const { isActive } = useBeeTableSelectableCellRef(
-    props.rowIndex,
-    props.columnIndex,
-    undefined,
-    useCallback(() => label, [label])
-  );
-
-  const { beeGwtService } = useBoxedExpressionEditor();
-
-  // Selecting the Java function parameters should reset the selectObject
-  // useEffect(() => {
-  //   if (isActive) {
-  //     beeGwtService?.selectObject("");
-  //   }
-  // }, [beeGwtService, isActive]);
 
   const getParameterLabelHelp = useCallback((): React.ReactNode => {
     if (props.rowIndex === 0) {

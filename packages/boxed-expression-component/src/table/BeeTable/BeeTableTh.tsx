@@ -109,7 +109,7 @@ export function BeeTableTh<R extends object>({
 
   useEffect(() => {
     if (isActive) {
-      if (column.isRowIndexColumn && groupType === "annotation") {
+      if (column.isRowIndexColumn || groupType === "annotation") {
         beeGwtService?.selectObject("");
       } else {
         beeGwtService?.selectObject(columnKey);
