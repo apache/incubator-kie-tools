@@ -251,18 +251,17 @@ function TestScenarioMainPanel({
   const { i18n } = useTestScenarioEditorI18n();
 
   const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
-  const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
+  const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
   const [selectedColumnMetadata, setSelectedColumnMetaData] = useState<TestScenarioSelectedColumnMetaData | null>(null);
+  const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
   const onTabChanged = useCallback((_event, tab) => {
-    setTab(tab);
     setSelectedColumnMetaData(null);
+    setTab(tab);
   }, []);
-
-  const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
 
   const closeDockPanel = useCallback(() => {
     setDockPanel((prev) => {
@@ -273,6 +272,13 @@ function TestScenarioMainPanel({
   const openDockPanel = useCallback((selected: TestScenarioEditorDock) => {
     setDockPanel({ isOpen: true, selected: selected });
   }, []);
+
+  useEffect(() => {
+    setDockPanel({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
+    setSelectedColumnMetaData(null);
+    setTab(TestScenarioEditorTab.EDITOR);
+    console.log("LOL");
+  }, [fileName]);
 
   /** This is TEMPORARY */
   const dataObjectsFromScesim = useMemo(() => {
@@ -296,7 +302,8 @@ function TestScenarioMainPanel({
       if (factsMappings[i].className!.__$$text === "java.lang.Void") {
         continue;
       }
-      const dataObject = dataObjects.find((value) => value.id === factsMappings[i].factIdentifier!.name!.__$$text);
+      const factID = factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text;
+      const dataObject = dataObjects.find((value) => value.id === factID);
       const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length == 1;
       const propertyID = isSimpleTypeFact
         ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
@@ -316,7 +323,7 @@ function TestScenarioMainPanel({
         }
       } else {
         dataObjects.push({
-          id: factsMappings[i].factIdentifier!.name!.__$$text,
+          id: factID,
           name: factsMappings[i].factAlias!.__$$text,
           customBadgeContent: factsMappings[i].factIdentifier!.className!.__$$text,
           children: [

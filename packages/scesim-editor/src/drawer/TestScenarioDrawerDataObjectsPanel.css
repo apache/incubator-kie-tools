@@ -35,6 +35,13 @@
   overflow: scroll;
 }
 
+.kie-scesim-editor-drawer-data-objects--selector-disabled {
+  height: 500px;
+  overflow: scroll;
+  opacity: 0.25;
+  pointer-events: none;
+}
+
 .kie-scesim-editor-drawer-data-objects--selector-title {
   margin-top: 10px;
 }
