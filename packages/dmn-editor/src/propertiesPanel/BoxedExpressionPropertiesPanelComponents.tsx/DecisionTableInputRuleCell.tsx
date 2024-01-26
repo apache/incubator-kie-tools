@@ -74,6 +74,24 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
+      {headerItemDefinition && (
+        <>
+          <TypeRefField
+            title={"Input header type"}
+            isReadonly={true}
+            dmnEditorRootElementRef={dmnEditorRootElementRef}
+            typeRef={headerItemDefinition["@_name"] ?? DmnBuiltInDataType.Undefined}
+          />
+          <FormGroup label="Constraint">
+            <Constraints
+              isReadonly={true}
+              itemDefinition={headerItemDefinition}
+              editItemDefinition={() => {}}
+              renderOnPropertiesPanel={true}
+            />
+          </FormGroup>
+        </>
+      )}
       <ExpressionLanguageField
         isReadonly={props.isReadonly}
         initialValue={cell["@_expressionLanguage"] ?? ""}
@@ -95,24 +113,6 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
           })
         }
       />
-      {headerItemDefinition && (
-        <>
-          <TypeRefField
-            title={"Input header type"}
-            isReadonly={true}
-            dmnEditorRootElementRef={dmnEditorRootElementRef}
-            typeRef={headerItemDefinition["@_name"] ?? DmnBuiltInDataType.Undefined}
-          />
-          <FormGroup label="Constraint">
-            <Constraints
-              isReadonly={true}
-              itemDefinition={headerItemDefinition}
-              editItemDefinition={() => {}}
-              renderOnPropertiesPanel={true}
-            />
-          </FormGroup>
-        </>
-      )}
     </>
   );
 }
