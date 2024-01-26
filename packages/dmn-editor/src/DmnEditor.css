@@ -937,7 +937,9 @@ th {
   fill: rgba(0, 107, 164, 0.1) !important;
 }
 
-.react-flow__node.selected:not(.react-flow__node-node_unknown) > .kie-dmn-editor--node-shape > * {
+.react-flow__node.selected:not(.react-flow__node-node_unknown):not(.react-flow__node-node_textAnnotation)
+  > .kie-dmn-editor--node-shape
+  > * {
   stroke: #006ba4 !important;
 }
 
