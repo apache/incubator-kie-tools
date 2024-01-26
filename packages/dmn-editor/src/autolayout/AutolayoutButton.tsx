@@ -289,35 +289,47 @@ export function AutolayoutButton() {
 
       const dependents = parentNodes.filter((p) => p.hasDependencyTo({ id: node.id }));
       for (const dependent of dependents) {
-        fakeEdgesForElk.add({
-          id: `${generateUuid()}${FAKE_MARKER}__fake`,
-          sources: [node.id],
-          targets: [dependent.elkNode.id],
-        });
-
-        for (const p of nodeParentsById.get(node.id) ?? []) {
+        // Not all nodes are present in all DRD
+        if (nodesById.has(node.id) && nodesById.has(dependent.elkNode.id)) {
           fakeEdgesForElk.add({
             id: `${generateUuid()}${FAKE_MARKER}__fake`,
-            sources: [p],
+            sources: [node.id],
             targets: [dependent.elkNode.id],
           });
+        }
+
+        for (const p of nodeParentsById.get(node.id) ?? []) {
+          // Not all nodes are present in all DRD
+          if (nodesById.has(p) && nodesById.has(dependent.elkNode.id)) {
+            fakeEdgesForElk.add({
+              id: `${generateUuid()}${FAKE_MARKER}__fake`,
+              sources: [p],
+              targets: [dependent.elkNode.id],
+            });
+          }
         }
       }
 
       const dependencies = parentNodes.filter((p) => p.isDependencyOf({ id: node.id }));
       for (const dependency of dependencies) {
-        fakeEdgesForElk.add({
-          id: `${generateUuid()}${FAKE_MARKER}__fake`,
-          sources: [dependency.elkNode.id],
-          targets: [node.id],
-        });
-
-        for (const p of nodeParentsById.get(node.id) ?? []) {
+        // Not all nodes are present in all DRD
+        if (nodesById.has(node.id) && nodesById.has(dependency.elkNode.id)) {
           fakeEdgesForElk.add({
             id: `${generateUuid()}${FAKE_MARKER}__fake`,
             sources: [dependency.elkNode.id],
-            targets: [p],
+            targets: [node.id],
           });
+        }
+
+        for (const p of nodeParentsById.get(node.id) ?? []) {
+          // Not all nodes are present in all DRD
+          if (nodesById.has(p) && nodesById.has(dependency.elkNode.id)) {
+            fakeEdgesForElk.add({
+              id: `${generateUuid()}${FAKE_MARKER}__fake`,
+              sources: [dependency.elkNode.id],
+              targets: [p],
+            });
+          }
         }
       }
     }
@@ -325,11 +337,18 @@ export function AutolayoutButton() {
     // 5. Concatenate real and fake edges to pass to ELK.
     const elkEdges = [
       ...fakeEdgesForElk,
-      ...[...edgesById.values()].map((e) => ({
-        id: e.id,
-        sources: [e.source],
-        targets: [e.target],
-      })),
+      ...[...edgesById.values()].flatMap((e) => {
+        // Not all nodes are present in all DRD
+        if (nodesById.has(e.source) && nodesById.has(e.target)) {
+          return {
+            id: e.id,
+            sources: [e.source],
+            targets: [e.target],
+          };
+        } else {
+          return [];
+        }
+      }),
     ];
 
     // 6. Run ELK.
