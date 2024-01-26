@@ -69,7 +69,11 @@ export function useFunctionExpressionControllerCell(functionKind: FunctionExpres
         if (kind === FunctionExpressionDefinitionKind.Feel) {
           return {
             name: prev.name,
-            id: generateUuid(),
+            id:
+              // This ternary prevents the generation of an new id due to `functionKindSelectionCallback` setTimeout
+              (prev as FunctionExpressionDefinition)?.functionKind !== FunctionExpressionDefinitionKind.Feel
+                ? generateUuid()
+                : prev.id ?? generateUuid(),
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Feel,
             dataType: DmnBuiltInDataType.Undefined,
@@ -83,7 +87,11 @@ export function useFunctionExpressionControllerCell(functionKind: FunctionExpres
         } else if (kind === FunctionExpressionDefinitionKind.Java) {
           return {
             name: prev.name,
-            id: generateUuid(),
+            id:
+              // This ternary prevents the generation of an new id due to `functionKindSelectionCallback` setTimeout
+              (prev as FunctionExpressionDefinition)?.functionKind !== FunctionExpressionDefinitionKind.Java
+                ? generateUuid()
+                : prev.id ?? generateUuid(),
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Java,
             dataType: DmnBuiltInDataType.Undefined,
@@ -93,7 +101,11 @@ export function useFunctionExpressionControllerCell(functionKind: FunctionExpres
         } else if (kind === FunctionExpressionDefinitionKind.Pmml) {
           return {
             name: prev.name,
-            id: generateUuid(),
+            id:
+              // This ternary prevents the generation of an new id due to `functionKindSelectionCallback` setTimeout
+              (prev as FunctionExpressionDefinition)?.functionKind !== FunctionExpressionDefinitionKind.Pmml
+                ? generateUuid()
+                : prev.id ?? generateUuid(),
             logicType: ExpressionDefinitionLogicType.Function,
             functionKind: FunctionExpressionDefinitionKind.Pmml,
             dataType: DmnBuiltInDataType.Undefined,
