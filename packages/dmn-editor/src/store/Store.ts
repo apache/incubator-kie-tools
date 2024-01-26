@@ -25,16 +25,14 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { ExternalModelsIndex } from "../DmnEditor";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
-import {
-  computeAllFeelVariableUniqueNames,
-  computeDataTypes,
-  computeDiagramData,
-  computeExternalModelsByType,
-  computeImportsByNamespace,
-  computeIndexes,
-  computeIsDropTargetNodeValidForSelection,
-} from "./ComputedState";
 import { ComputedStateCache } from "./ComputedStateCache";
+import { computeAllFeelVariableUniqueNames } from "./computed/computeAllFeelVariableUniqueNames";
+import { computeDataTypes } from "./computed/computeDataTypes";
+import { computeDiagramData } from "./computed/computeDiagramData";
+import { computeExternalModelsByType } from "./computed/computeExternalModelsByType";
+import { computeImportsByNamespace } from "./computed/computeImportsByNamespace";
+import { computeIndexes } from "./computed/computeIndexes";
+import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 

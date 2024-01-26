@@ -479,8 +479,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
           // --------- This is where we draw the line between the diagram and the model.
 
-          state.diagram.ongoingConnection = undefined;
-
           const { id, href: newDmnObejctHref } = addConnectedNode({
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
@@ -504,6 +502,11 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
           state.diagram._selectedNodes = [newDmnObejctHref];
           state.focus.consumableId = id;
+        });
+
+        // Indepdent of what happens in the state mutation above, we always need to reset the `ongoingConnection` at the end here.
+        dmnEditorStoreApi.setState((state) => {
+          state.diagram.ongoingConnection = undefined;
         });
       },
       [dmnEditorStoreApi, container, reactFlowInstance, externalModelsByNamespace]

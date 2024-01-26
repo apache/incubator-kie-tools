@@ -21,10 +21,11 @@ import * as React from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { addOrGetDrd, getDefaultDrdName } from "../mutations/addOrGetDrd";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 
 export function DrdSelectorPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -34,6 +35,23 @@ export function DrdSelectorPanel() {
 
   return (
     <>
+      <Button variant={ButtonVariant.tertiary} style={{ width: "100%" }}>
+        <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} alignItems={{ default: "alignItemsCenter" }}>
+          <FlexItem style={{ width: "20px" }} />
+          <FlexItem>
+            View DRG
+            <br />
+            <small style={{ fontSize: "0.8em" }}>With automatic layout</small>
+          </FlexItem>
+          <FlexItem style={{ width: "20px" }}>
+            <ArrowRightIcon />
+          </FlexItem>
+        </Flex>
+      </Button>
+      <br />
+      <br />
+      <hr />
+      <br />
       <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
         <TextContent>
           <Text component="h3">DRDs</Text>

@@ -49,7 +49,7 @@ import { Computed, DmnEditorTab, createDmnEditorStore, defaultStaticState } from
 import { DmnEditorStoreApiContext, StoreApiType, useDmnEditorStore, useDmnEditorStoreApi } from "./store/StoreContext";
 import { DmnDiagramSvg } from "./svg/DmnDiagramSvg";
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
-import { INITIAL_COMPUTED_CACHE } from "./store/ComputedState";
+import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
