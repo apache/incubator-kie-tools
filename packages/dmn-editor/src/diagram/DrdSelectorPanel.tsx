@@ -91,7 +91,7 @@ export function DrdSelectorPanel() {
                 });
               }}
             >
-              {drd["@_name"] || getDefaultDrdName({ drdIndex: i })}
+              {`${i + 1}. ${drd["@_name"] || getDefaultDrdName({ drdIndex: i })}`}
             </button>
             <br />
           </React.Fragment>

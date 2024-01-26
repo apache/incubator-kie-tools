@@ -45,12 +45,14 @@ export function InlineFeelNameInput({
   onKeyDown,
   saveInvalidValue,
   enableAutoFocusing,
+  prefix,
   ...inputProps
 }: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
   id: string;
   onRenamed: OnInlineFeelNameRenamed;
   name: string;
   isReadonly: boolean;
+  prefix?: string;
   isPlain: boolean;
   shouldCommitOnBlur: boolean;
   allUniqueNames: (s: State) => UniqueNameIndex;
@@ -102,56 +104,59 @@ export function InlineFeelNameInput({
   const _placeholder = placeholder ?? "Enter a name...";
 
   return (
-    <input
-      spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.
-      ref={inputRef}
-      key={id}
-      style={{
-        ...(isPlain ? { border: 0, outline: "none", background: "transparent" } : {}),
-        flexGrow: 1,
-        display: "inline",
-        width: "100%",
-        ...(isValid ? {} : invalidInlineFeelNameStyle),
-        ..._style,
-      }}
-      size={2 + Math.max(0, _placeholder?.length ?? 0, name.length)}
-      onInput={(e) => {
-        (e.target as any).size = 2 + Math.max(0, _placeholder?.length ?? 0, (e.target as any).value.length ?? 0);
-      }}
-      disabled={isReadonly}
-      placeholder={_placeholder}
-      onChange={(e) => updateIsValidFlag(e.currentTarget.value)}
-      defaultValue={name}
-      onFocus={(e) => {
-        previouslyFocusedElement.current = document.activeElement ?? undefined; // Save potential focused element.
-      }}
-      onKeyDown={(e) => {
-        onKeyDown?.(e);
-        e.stopPropagation();
+    <>
+      <span>{prefix}</span>
+      <input
+        spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.
+        ref={inputRef}
+        key={id}
+        style={{
+          ...(isPlain ? { border: 0, outline: "none", background: "transparent" } : {}),
+          flexGrow: 1,
+          display: "inline",
+          width: "100%",
+          ...(isValid ? {} : invalidInlineFeelNameStyle),
+          ..._style,
+        }}
+        size={2 + Math.max(0, _placeholder?.length ?? 0, name.length)}
+        onInput={(e) => {
+          (e.target as any).size = 2 + Math.max(0, _placeholder?.length ?? 0, (e.target as any).value.length ?? 0);
+        }}
+        disabled={isReadonly}
+        placeholder={_placeholder}
+        onChange={(e) => updateIsValidFlag(e.currentTarget.value)}
+        defaultValue={name}
+        onFocus={(e) => {
+          previouslyFocusedElement.current = document.activeElement ?? undefined; // Save potential focused element.
+        }}
+        onKeyDown={(e) => {
+          onKeyDown?.(e);
+          e.stopPropagation();
 
-        if (e.key === "Enter") {
-          e.preventDefault();
-          const isValid = updateIsValidFlag(e.currentTarget.value);
-          if (isValid || saveInvalidValue) {
-            onRenamed(e.currentTarget.value);
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const isValid = updateIsValidFlag(e.currentTarget.value);
+            if (isValid || saveInvalidValue) {
+              onRenamed(e.currentTarget.value);
+            }
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            e.currentTarget.value = name;
+            updateIsValidFlag(e.currentTarget.value);
+            e.currentTarget.blur();
           }
-        } else if (e.key === "Escape") {
-          e.preventDefault();
-          e.currentTarget.value = name;
-          updateIsValidFlag(e.currentTarget.value);
-          e.currentTarget.blur();
-        }
-      }}
-      onBlur={(e) => {
-        if ((isValid || saveInvalidValue) && shouldCommitOnBlur) {
-          onRenamed(e.currentTarget.value);
-        } else {
-          e.currentTarget.value = name;
-          updateIsValidFlag(e.currentTarget.value);
-        }
-        restoreFocus();
-      }}
-      {..._inputProps}
-    />
+        }}
+        onBlur={(e) => {
+          if ((isValid || saveInvalidValue) && shouldCommitOnBlur) {
+            onRenamed(e.currentTarget.value);
+          } else {
+            e.currentTarget.value = name;
+            updateIsValidFlag(e.currentTarget.value);
+          }
+          restoreFocus();
+        }}
+        {..._inputProps}
+      />
+    </>
   );
 }

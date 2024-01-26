@@ -104,6 +104,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             validate={() => true}
             allUniqueNames={() => new Map()}
             name={drd?.["@_name"] ?? ""}
+            prefix={`${diagram.drdIndex + 1}.`}
             id={diagram.drdIndex + ""}
             onRenamed={(newName) => {
               dmnEditorStoreApi.setState((state) => {
