@@ -69,7 +69,7 @@ import { addShape } from "../mutations/addShape";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
 import { EdgeDeletionMode, deleteEdge } from "../mutations/deleteEdge";
-import { NodeDeletionMode, deleteNode } from "../mutations/deleteNode";
+import { NodeDeletionMode, canRemoveNodeFromDrdOnly, deleteNode } from "../mutations/deleteNode";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
@@ -700,6 +700,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 deleteNode({
                   definitions: state.dmn.model.definitions,
                   drdIndex: state.diagram.drdIndex,
+                  dmnObjectNamespace: node.data.dmnObjectNamespace,
                   dmnObjectQName: node.data.dmnObjectQName,
                   dmnObjectId: node.data.dmnObject?.["@_id"],
                   nodeNature: nodeNatures[node.type as NodeType],
@@ -1406,7 +1407,7 @@ export function KeyboardShortcuts(props: {}) {
   const rfStoreApi = RF.useStoreApi();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-  const rf = RF.useReactFlow();
+  const rf = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
   // Reset position to origin
   const space = RF.useKeyPress(["Space"]);
@@ -1483,7 +1484,7 @@ export function KeyboardShortcuts(props: {}) {
 
     navigator.clipboard.writeText(JSON.stringify(clipboard)).then(() => {
       dmnEditorStoreApi.setState((state) => {
-        // Delete edges first
+        // Delete edges
         [...copiedEdgesById.values(), ...danglingEdgesById.values()].forEach((edge) => {
           deleteEdge({
             definitions: state.dmn.model.definitions,
@@ -1497,7 +1498,7 @@ export function KeyboardShortcuts(props: {}) {
           });
         });
 
-        // Then delete nodes
+        // Delete nodes
         rfStoreApi
           .getState()
           .getNodes()
@@ -1506,6 +1507,7 @@ export function KeyboardShortcuts(props: {}) {
               deleteNode({
                 definitions: state.dmn.model.definitions,
                 drdIndex: state.diagram.drdIndex,
+                dmnObjectNamespace: node.data.dmnObjectNamespace,
                 dmnObjectQName: node.data.dmnObjectQName,
                 dmnObjectId: node.data.dmnObject?.["@_id"],
                 nodeNature: nodeNatures[node.type as NodeType],
@@ -1704,14 +1706,33 @@ export function KeyboardShortcuts(props: {}) {
       return;
     }
 
+    const nodesById = rf
+      .getNodes()
+      .reduce((acc, s) => acc.set(s.id, s), new Map<string, RF.Node<DmnDiagramNodeData>>());
+
     dmnEditorStoreApi.setState((state) => {
       const selectedNodeIds = new Set(state.diagram._selectedNodes);
       for (const edge of rf.getEdges()) {
-        if (selectedNodeIds.has(edge.source) || selectedNodeIds.has(edge.target)) {
+        if (
+          (selectedNodeIds.has(edge.source) &&
+            canRemoveNodeFromDrdOnly({
+              definitions: state.dmn.model.definitions,
+              drdIndex: state.diagram.drdIndex,
+              dmnObjectNamespace: nodesById.get(edge.source)!.data.dmnObjectNamespace,
+              dmnObjectId: nodesById.get(edge.source)!.data.dmnObject?.["@_id"],
+            })) ||
+          (selectedNodeIds.has(edge.target) &&
+            canRemoveNodeFromDrdOnly({
+              definitions: state.dmn.model.definitions,
+              drdIndex: state.diagram.drdIndex,
+              dmnObjectNamespace: nodesById.get(edge.target)!.data.dmnObjectNamespace,
+              dmnObjectId: nodesById.get(edge.target)!.data.dmnObject?.["@_id"],
+            }))
+        ) {
           deleteEdge({
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
-            edge: { id: edge.id, dmnObject: edge.data.dmnObject },
+            edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
             mode: EdgeDeletionMode.FROM_DRD_ONLY,
           });
           state.dispatch(state).diagram.setEdgeStatus(edge.id, { selected: false, draggingWaypoint: false });
@@ -1719,19 +1740,23 @@ export function KeyboardShortcuts(props: {}) {
       }
 
       for (const node of rf.getNodes().filter((s) => s.selected)) {
-        deleteNode({
+        const { deletedShape } = deleteNode({
           definitions: state.dmn.model.definitions,
           drdIndex: state.diagram.drdIndex,
+          dmnObjectNamespace: node.data.dmnObjectNamespace,
           dmnObjectQName: node.data.dmnObjectQName,
           dmnObjectId: node.data.dmnObject?.["@_id"],
           nodeNature: nodeNatures[node.type as NodeType],
           mode: NodeDeletionMode.FROM_DRD_ONLY,
         });
-        state.dispatch(state).diagram.setNodeStatus(node.id, {
-          selected: false,
-          dragging: false,
-          resizing: false,
-        });
+
+        if (deletedShape) {
+          state.dispatch(state).diagram.setNodeStatus(node.id, {
+            selected: false,
+            dragging: false,
+            resizing: false,
+          });
+        }
       }
     });
   }, [x, dmnEditorStoreApi, rf]);

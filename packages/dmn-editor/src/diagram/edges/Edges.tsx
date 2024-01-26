@@ -39,9 +39,7 @@ export type DmnDiagramEdgeData = {
   dmnObject: {
     namespace: string;
     id: string;
-    type:
-      | Unpacked<DMN15__tDefinitions["artifact"]>["__$$element"]
-      | Unpacked<DMN15__tDefinitions["drgElement"]>["__$$element"];
+    type: Unpacked<DMN15__tDefinitions["artifact" | "drgElement"]>["__$$element"];
     requirementType: "informationRequirement" | "knowledgeRequirement" | "authorityRequirement" | "association";
     index: number;
   };

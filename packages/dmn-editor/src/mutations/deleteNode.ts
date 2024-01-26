@@ -17,12 +17,14 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeNature } from "./NodeNature";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { buildXmlHref } from "../xml/xmlHrefs";
+import { Unpacked } from "../tsExt/tsExt";
 
 export enum NodeDeletionMode {
   FORM_DRG_AND_DRD,
@@ -35,25 +37,48 @@ export function deleteNode({
   nodeNature,
   dmnObjectId,
   dmnObjectQName,
+  dmnObjectNamespace,
   mode,
 }: {
   definitions: DMN15__tDefinitions;
   drdIndex: number;
   nodeNature: NodeNature;
+  dmnObjectNamespace: string | undefined;
   dmnObjectId: string | undefined;
   dmnObjectQName: XmlQName;
   mode: NodeDeletionMode;
-}) {
+}): {
+  deletedDmnObject: Unpacked<DMN15__tDefinitions["drgElement" | "artifact"]> | undefined;
+  deletedShape: DMNDI15__DMNShape | undefined;
+} {
   const { diagramElements, widthsExtension } = addOrGetDrd({ definitions, drdIndex });
 
-  // Edges need to be deleted by a separate call to `deleteEdge` prior to this.
+  //
+  // NOTE
+  //
+  // Edges are NOT deleted here. Edges need to be deleted by separate calls to `deleteEdge`.
+
+  if (
+    mode === NodeDeletionMode.FROM_DRD_ONLY &&
+    !canRemoveNodeFromDrdOnly({
+      definitions,
+      drdIndex,
+      dmnObjectNamespace,
+      dmnObjectId,
+    })
+  ) {
+    console.warn("DMN MUTATION: Cannot hide a Decision that's contained by a Decision Service from a DRD.");
+    return { deletedDmnObject: undefined, deletedShape: undefined };
+  }
 
   // delete the DMNShape
   const shapeDmnElementRef = buildXmlQName(dmnObjectQName);
-  diagramElements?.splice(
+  const deletedShape = diagramElements?.splice(
     (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === shapeDmnElementRef),
     1
-  );
+  )[0];
+
+  let deletedDmnObject: Unpacked<DMN15__tDefinitions["drgElement" | "artifact"]>[] | undefined;
 
   // External or unknown nodes don't have a dmnObject associated with it, just the shape..
   if (!dmnObjectQName.prefix) {
@@ -61,13 +86,13 @@ export function deleteNode({
     if (nodeNature === NodeNature.ARTIFACT) {
       if (mode === NodeDeletionMode.FORM_DRG_AND_DRD) {
         const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId);
-        definitions.artifact?.splice(nodeIndex, 1);
+        deletedDmnObject = definitions.artifact?.splice(nodeIndex, 1);
       }
     } else if (nodeNature === NodeNature.DRG_ELEMENT) {
       const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId);
       const node =
         mode === NodeDeletionMode.FORM_DRG_AND_DRD
-          ? definitions.drgElement?.splice(nodeIndex, 1)
+          ? (deletedDmnObject = definitions.drgElement?.splice(nodeIndex, 1))
           : [definitions.drgElement?.[nodeIndex]];
 
       const deletedIdsOnDrgElementTree = getNewDmnIdRandomizer()
@@ -86,4 +111,38 @@ export function deleteNode({
   }
 
   repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+
+  return { deletedDmnObject: deletedDmnObject?.[0], deletedShape };
+}
+export function canRemoveNodeFromDrdOnly({
+  definitions,
+  drdIndex,
+  dmnObjectNamespace,
+  dmnObjectId,
+}: {
+  dmnObjectNamespace: string | undefined;
+  dmnObjectId: string | undefined;
+  definitions: DMN15__tDefinitions;
+  drdIndex: number;
+}) {
+  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
+
+  const dmnObjectHref = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectId! });
+
+  const containingDecisionService = definitions.drgElement?.find(
+    (drgElement) =>
+      drgElement.__$$element === "decisionService" &&
+      [...(drgElement.encapsulatedDecision ?? []), ...(drgElement.outputDecision ?? [])].some(
+        (dd) => dd["@_href"] === dmnObjectHref
+      )
+  );
+
+  const isContainingDecisionServicePresentInTheDrd =
+    containingDecisionService &&
+    diagramElements.some(
+      (s) =>
+        s.__$$element === "dmndi:DMNShape" &&
+        s["@_dmnElementRef"] === buildXmlQName({ type: "xml-qname", localPart: containingDecisionService["@_id"]! })
+    );
+  return !containingDecisionService || !isContainingDecisionServicePresentInTheDrd;
 }

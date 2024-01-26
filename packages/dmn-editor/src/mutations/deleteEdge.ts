@@ -50,7 +50,7 @@ export function deleteEdge({
 
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const dmnObjects: DMN15__tDefinitions["artifact"] | DMN15__tDefinitions["drgElement"] =
+  const dmnObjects: DMN15__tDefinitions["drgElement" | "artifact"] =
     switchExpression(edge?.dmnObject.type, {
       association: definitions.artifact,
       default: definitions.drgElement,
