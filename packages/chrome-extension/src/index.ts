@@ -114,13 +114,13 @@ function init(globals: Globals) {
         fileInfo,
       });
     }
-  } else if (pageType === GitHubPageType.PR_FILES_OR_COMMITS) {
+  } else if (pageType === GitHubPageType.PR_FILES || pageType === GitHubPageType.PR_COMMITS) {
     if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()) {
       globals.logger.warn(
         "The extension stopped working for this pull request view. Please be sure you explore the pull request on the latest GitHub instance."
       );
     } else {
-      renderPrEditorsApp({ ...globals });
+      renderPrEditorsApp({ ...globals, pageType });
     }
   } else if (pageType === GitHubPageType.PR_HOME) {
     if (!globals.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()) {
@@ -226,11 +226,11 @@ export function discoverCurrentGitHubPageType() {
   }
 
   if (pathnameMatches(`.*/.*/pull/[0-9]+/files.*`)) {
-    return GitHubPageType.PR_FILES_OR_COMMITS;
+    return GitHubPageType.PR_FILES;
   }
 
   if (pathnameMatches(`.*/.*/pull/[0-9]+/commits.*`)) {
-    return GitHubPageType.PR_FILES_OR_COMMITS;
+    return GitHubPageType.PR_COMMITS;
   }
 
   if (pathnameMatches(`.*/.*/pull/[0-9]+.*`)) {

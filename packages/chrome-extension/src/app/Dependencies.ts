@@ -92,8 +92,11 @@ export class Dependencies {
     edit__githubTextAreaWithFileContents: () => {
       return document.getElementById("kie-tools__initial-content") as HTMLTextAreaElement | null;
     },
-    pr__mutationObserverTarget: () => {
+    pr__filesMutationObserverTarget: () => {
       return document.getElementById("files") as HTMLElement | null;
+    },
+    pr__commitsMutationObserverTarget: () => {
+      return document.getElementById("commits_bucket") as HTMLElement | null;
     },
     pr__openWithExternalEditorLinkContainer: (container: HTMLElement) => {
       return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;

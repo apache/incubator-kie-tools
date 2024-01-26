@@ -26,7 +26,11 @@ import { GitHubPageType } from "../../github/GitHubPageType";
 export function OpenInExternalEditorButton(props: { className: string; pageType: GitHubPageType }) {
   const globals = useGlobals();
   const repoUrl = useMemo(() => {
-    if (props.pageType === GitHubPageType.PR_HOME || props.pageType === GitHubPageType.PR_FILES_OR_COMMITS) {
+    if (
+      props.pageType === GitHubPageType.PR_HOME ||
+      props.pageType === GitHubPageType.PR_FILES ||
+      props.pageType === GitHubPageType.PR_COMMITS
+    ) {
       const prInfo = parsePrInfo(globals.dependencies);
       return `${window.location.origin}/${prInfo.org}/${prInfo.repo}/tree/${prInfo.gitRef}`;
     }

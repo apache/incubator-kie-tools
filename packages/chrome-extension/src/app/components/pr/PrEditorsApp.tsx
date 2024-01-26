@@ -24,8 +24,9 @@ import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { Dependencies } from "../../Dependencies";
 import { getOriginalFilePath, IsolatedPrEditor, PrInfo } from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";
+import { GitHubPageType } from "../../github/GitHubPageType";
 
-export function PrEditorsApp(props: { prInfo: PrInfo }) {
+export function PrEditorsApp(props: { prInfo: PrInfo; pageType: GitHubPageType }) {
   const globals = useGlobals();
 
   const [prFileContainers, setPrFileContainers] = useState<HTMLElement[]>([]);
@@ -51,10 +52,15 @@ export function PrEditorsApp(props: { prInfo: PrInfo }) {
       setPrFileContainers(newContainers);
     });
 
-    observer.observe(globals.dependencies.all.pr__mutationObserverTarget()!, {
-      childList: true,
-      subtree: true,
-    });
+    observer.observe(
+      props.pageType === GitHubPageType.PR_FILES
+        ? globals.dependencies.all.pr__filesMutationObserverTarget()!
+        : globals.dependencies.all.pr__commitsMutationObserverTarget()!,
+      {
+        childList: true,
+        subtree: true,
+      }
+    );
 
     return () => {
       observer.disconnect();
