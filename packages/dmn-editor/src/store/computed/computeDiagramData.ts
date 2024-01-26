@@ -305,7 +305,9 @@ export function computeDiagramData(
     .sort((a, b) => Number(b.type === NODE_TYPES.group) - Number(a.type === NODE_TYPES.group));
 
   // Selected edges go to the end of the array. This is necessary because z-index doesn't work on SVGs.
-  const sortedEdges = edges.sort((a, b) => Number(selectedEdges.has(a.id)) - Number(selectedEdges.has(b.id)));
+  const sortedEdges = edges
+    .filter((e) => nodesById.has(e.source) && nodesById.has(e.target))
+    .sort((a, b) => Number(selectedEdges.has(a.id)) - Number(selectedEdges.has(b.id)));
 
   // console.timeEnd("nodes");
   if (diagram.overlays.enableNodeHierarchyHighlight) {

@@ -1619,11 +1619,9 @@ export function KeyboardShortcuts(props: {}) {
     const allNodeIds = rfStoreApi
       .getState()
       .getNodes()
-      .reduce((acc, s) => acc.set(s.id, s), new Map<string, RF.Node<DmnDiagramNodeData>>());
+      .map((s) => s.id);
 
-    const allEdgeIds = rfStoreApi
-      .getState()
-      .edges.flatMap((e) => (allNodeIds.has(e.source) || allNodeIds.has(e.target) ? e.id : []));
+    const allEdgeIds = rfStoreApi.getState().edges.map((s) => s.id);
 
     dmnEditorStoreApi.setState((state) => {
       const allSelectedNodesSet = new Set(state.diagram._selectedNodes);
@@ -1631,14 +1629,12 @@ export function KeyboardShortcuts(props: {}) {
 
       // If everything is selected, deselect everything.
       if (
-        [...allNodeIds.keys()].every(
-          (id) => allSelectedNodesSet.has(id) && allEdgeIds.every((id) => allSelectedEdgesSet.has(id))
-        )
+        allNodeIds.every((id) => allSelectedNodesSet.has(id) && allEdgeIds.every((id) => allSelectedEdgesSet.has(id)))
       ) {
         state.diagram._selectedNodes = [];
         state.diagram._selectedEdges = [];
       } else {
-        state.diagram._selectedNodes = [...allNodeIds.keys()];
+        state.diagram._selectedNodes = allNodeIds;
         state.diagram._selectedEdges = allEdgeIds;
       }
     });
