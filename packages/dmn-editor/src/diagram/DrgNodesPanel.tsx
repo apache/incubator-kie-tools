@@ -30,6 +30,7 @@ import { DiagramNodesPanel } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Unpacked } from "../tsExt/tsExt";
 import { buildXmlHref } from "../xml/xmlHrefs";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE = "kie-dmn-editor--drg-node";
 
@@ -96,6 +97,8 @@ export function DrgNodesPanel() {
             <TimesIcon />
           </Button>
         </Flex>
+
+        <Divider style={{ marginBottom: "12px" }} />
 
         <SearchInput
           style={{ marginBottom: "12px", height: "36px" }}
