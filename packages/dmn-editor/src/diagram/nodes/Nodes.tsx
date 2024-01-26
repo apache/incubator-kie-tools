@@ -211,7 +211,7 @@ export const InputDataNode = React.memo(
           <DataTypeNodePanel
             isVisible={!isTargeted && shouldActLikeHovered}
             variable={inputData.variable}
-            namespace={dmnObjectNamespace}
+            dmnObjectNamespace={dmnObjectNamespace}
             shape={shape}
             onCreate={onCreateDataType}
             onChange={onTypeRefChange}
@@ -342,7 +342,7 @@ export const DecisionNode = React.memo(
           <DataTypeNodePanel
             isVisible={!isTargeted && shouldActLikeHovered}
             variable={decision.variable}
-            namespace={dmnObjectNamespace}
+            dmnObjectNamespace={dmnObjectNamespace}
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
@@ -472,7 +472,7 @@ export const BkmNode = React.memo(
           <DataTypeNodePanel
             isVisible={!isTargeted && shouldActLikeHovered}
             variable={bkm.variable}
-            namespace={dmnObjectNamespace}
+            dmnObjectNamespace={dmnObjectNamespace}
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
@@ -891,7 +891,7 @@ export const DecisionServiceNode = React.memo(
           <DataTypeNodePanel
             isVisible={!isTargeted && selected && !dragging}
             variable={decisionService.variable}
-            namespace={dmnObjectNamespace}
+            dmnObjectNamespace={dmnObjectNamespace}
             shape={shape}
             onCreate={onCreateDataType}
             onChange={onTypeRefChange}

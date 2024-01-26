@@ -24,7 +24,8 @@ import { resolveTypeRef } from "./resolveTypeRef";
 
 export function useResolvedTypeRef(typeRef: string | undefined, relativeToNamespace: string | undefined) {
   const { externalModelsByNamespace } = useExternalModels();
-  const allTopLevelDataTypesByFeelName = useDmnEditorStore((s) => {
+
+  return useDmnEditorStore((s) => {
     const thisDmnsNamespace = s.dmn.model.definitions["@_namespace"];
     return resolveTypeRef({
       typeRef: typeRef || DmnBuiltInDataType.Undefined,
@@ -36,6 +37,4 @@ export function useResolvedTypeRef(typeRef: string | undefined, relativeToNamesp
       relativeToNamespace: thisDmnsNamespace,
     });
   });
-
-  return allTopLevelDataTypesByFeelName;
 }

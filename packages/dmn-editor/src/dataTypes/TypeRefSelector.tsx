@@ -49,35 +49,34 @@ export function TypeRefSelector(props: {
 }) {
   const [isOpen, setOpen] = useState(false);
   const { externalModelsByNamespace } = useExternalModels();
-  const allTopLevelDataTypesByFeelName = useDmnEditorStore(
-    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
+  const selectedDataType = useDmnEditorStore((s) =>
+    props.typeRef
+      ? s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName.get(props.typeRef)
+      : undefined
   );
 
-  const selectedDataType = useMemo(() => {
-    return props.typeRef ? allTopLevelDataTypesByFeelName.get(props.typeRef) : undefined;
-  }, [allTopLevelDataTypesByFeelName, props.typeRef]);
-
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
-  const { customDataTypes, externalDataTypes } = useMemo(() => {
+  const { customDataTypes, externalDataTypes } = useDmnEditorStore((state) => {
     const customDataTypes: DataType[] = [];
     const externalDataTypes: DataType[] = [];
 
-    [...allTopLevelDataTypesByFeelName.values()].forEach((s) => {
-      if (s.parentId) {
-        return; // Not top-level.
-      }
+    [...state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName.values()].forEach(
+      (s) => {
+        if (s.parentId) {
+          return; // Not top-level.
+        }
 
-      if (s.namespace === thisDmnsNamespace) {
-        customDataTypes.push(s);
-      } else {
-        externalDataTypes.push(s);
+        if (s.namespace === state.dmn.model.definitions["@_namespace"]) {
+          customDataTypes.push(s);
+        } else {
+          externalDataTypes.push(s);
+        }
       }
-    });
+    );
 
     return { customDataTypes, externalDataTypes };
-  }, [allTopLevelDataTypesByFeelName, thisDmnsNamespace]);
+  });
 
   const exists = selectedDataType || (props.typeRef && builtInFeelTypeNames.has(props.typeRef));
 

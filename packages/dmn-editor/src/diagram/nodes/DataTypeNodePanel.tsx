@@ -38,7 +38,7 @@ export function DataTypeNodePanel(props: {
   shape: DMNDI15__DMNShape | undefined;
   onChange: OnTypeRefChange;
   onCreate?: OnCreateDataType;
-  namespace: string | undefined;
+  dmnObjectNamespace: string | undefined;
 }) {
   const enableDataTypesToolbarOnNodes = useDmnEditorStore((s) => s.diagram.overlays.enableDataTypesToolbarOnNodes);
 
@@ -46,8 +46,10 @@ export function DataTypeNodePanel(props: {
 
   const resolvedTypeRef = useResolvedTypeRef(
     props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
-    props.namespace
+    props.dmnObjectNamespace
   );
+
+  const isExternalNode = !!props.dmnObjectNamespace;
 
   return (
     <>
@@ -61,7 +63,7 @@ export function DataTypeNodePanel(props: {
           onDoubleClick={stopPropagation}
           onMouseLeave={stopPropagation}
         >
-          <div>
+          <div style={{ background: isExternalNode ? "rgb(240, 240, 240)" : undefined }}>
             <TypeRefSelector
               zoom={0.8}
               heightRef={dmnEditorRootElementRef}
@@ -69,6 +71,7 @@ export function DataTypeNodePanel(props: {
               onChange={props.onChange}
               onCreate={props.onCreate}
               menuAppendTo={"parent"}
+              isDisabled={isExternalNode}
             />
           </div>
         </div>
