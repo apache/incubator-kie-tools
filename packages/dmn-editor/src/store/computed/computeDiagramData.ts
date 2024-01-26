@@ -333,6 +333,7 @@ function ackRequirementEdges(
   const namespace = drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace;
 
   for (const dmnObject of drgElements ?? []) {
+    // information requirements
     if (dmnObject.__$$element === "decision") {
       (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
         const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
