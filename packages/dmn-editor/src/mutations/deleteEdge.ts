@@ -36,6 +36,11 @@ export function deleteEdge({
   drdIndex: number;
   edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
 }) {
+  if (edge.dmnObject.namespace !== definitions["@_namespace"]) {
+    console.debug("DMN MUTATION: Can't delete an edge that's from an external node.");
+    return { dmnEdge: undefined };
+  }
+
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
   const dmnObjects: DMN15__tDefinitions["artifact"] | DMN15__tDefinitions["drgElement"] =
@@ -46,7 +51,7 @@ export function deleteEdge({
 
   const dmnObjectIndex = dmnObjects.findIndex((d) => d["@_id"] === edge.dmnObject.id);
   if (dmnObjectIndex < 0) {
-    throw new Error(`Can't find DMN element with ID ${edge.dmnObject.id}`);
+    throw new Error(`DMN MUTATION: Can't find DMN element with ID ${edge.dmnObject.id}`);
   }
 
   const requirements =

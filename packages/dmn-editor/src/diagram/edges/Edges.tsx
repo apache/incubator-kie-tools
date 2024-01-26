@@ -37,6 +37,7 @@ import { useRef } from "react";
 export type DmnDiagramEdgeData = {
   dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
   dmnObject: {
+    namespace: string;
     id: string;
     type:
       | Unpacked<DMN15__tDefinitions["artifact"]>["__$$element"]

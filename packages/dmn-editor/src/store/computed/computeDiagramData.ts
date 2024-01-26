@@ -32,7 +32,7 @@ import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glit
 import { NODE_TYPES } from "../../diagram/nodes/NodeTypes";
 import { DmnDiagramNodeData, NodeDmnObjects } from "../../diagram/nodes/Nodes";
 import { Unpacked } from "../../tsExt/tsExt";
-import { buildXmlHref } from "../../xml/xmlHrefs";
+import { buildXmlHref, parseXmlHref } from "../../xml/xmlHrefs";
 import { TypeOrReturnType } from "../ComputedStateCache";
 import { Computed, State } from "../Store";
 
@@ -42,6 +42,20 @@ export const NODE_LAYERS = {
   DECISION_SERVICE_NODE: 2000, // We need a difference > 1000 here, since ReactFlow will add 1000 to the z-index when a node is selected.
   NESTED_NODES: 4000,
 };
+
+type AckEdge = (args: {
+  id: string;
+  dmnObject: DmnDiagramEdgeData["dmnObject"];
+  type: EdgeType;
+  source: string;
+  target: string;
+}) => RF.Edge<DmnDiagramEdgeData>;
+
+type AckNode = (
+  dmnObjectQName: XmlQName,
+  dmnObject: NodeDmnObjects,
+  index: number
+) => RF.Node<DmnDiagramNodeData> | undefined;
 
 export function computeDiagramData(
   diagram: State["diagram"],
@@ -69,19 +83,10 @@ export function computeDiagramData(
     selectedEdges: new Set(diagram._selectedEdges),
   };
 
-  function ackEdge({
-    id,
-    type,
-    dmnObject,
-    source,
-    target,
-  }: {
-    id: string;
-    dmnObject: DmnDiagramEdgeData["dmnObject"];
-    type: EdgeType;
-    source: string;
-    target: string;
-  }): RF.Edge<DmnDiagramEdgeData> {
+  // console.time("edges");
+  const edges: RF.Edge<DmnDiagramEdgeData>[] = [];
+
+  const ackEdge: AckEdge = ({ id, type, dmnObject, source, target }) => {
     const data = {
       dmnObject,
       dmnEdge: id ? indexes.dmnEdgesByDmnElementRef.get(id) : undefined,
@@ -97,105 +102,43 @@ export function computeDiagramData(
       target,
       selected: selectedEdges.has(id),
     };
+
     edgesById.set(edge.id, edge);
     if (edge.selected) {
       selectedEdgesById.set(edge.id, edge);
     }
+
+    edges.push(edge);
+
     return edge;
-  }
+  };
 
-  // console.time("edges");
-  const edges: RF.Edge<DmnDiagramEdgeData>[] = [
-    // information requirements
-    ...(definitions.drgElement ?? []).reduce<RF.Edge<DmnDiagramEdgeData>[]>((acc, dmnObject) => {
-      if (dmnObject.__$$element === "decision") {
-        acc.push(
-          ...(dmnObject.informationRequirement ?? []).map((ir, index) =>
-            ackEdge({
-              id: ir["@_id"] ?? "",
-              dmnObject: {
-                type: dmnObject.__$$element,
-                id: dmnObject["@_id"] ?? "",
-                requirementType: "informationRequirement",
-                index,
-              },
-              type: EDGE_TYPES.informationRequirement,
-              source: (ir.requiredDecision ?? ir.requiredInput)!["@_href"],
-              target: buildXmlHref({ id: dmnObject["@_id"]! }),
-            })
-          )
-        );
-      }
-      // knowledge requirements
-      if (dmnObject.__$$element === "decision" || dmnObject.__$$element === "businessKnowledgeModel") {
-        acc.push(
-          ...(dmnObject.knowledgeRequirement ?? []).map((kr, index) =>
-            ackEdge({
-              id: kr["@_id"] ?? "",
-              dmnObject: {
-                type: dmnObject.__$$element,
-                id: dmnObject["@_id"] ?? "",
-                requirementType: "knowledgeRequirement",
-                index,
-              },
-              type: EDGE_TYPES.knowledgeRequirement,
-              source: kr.requiredKnowledge["@_href"],
-              target: buildXmlHref({ id: dmnObject["@_id"]! }),
-            })
-          )
-        );
-      }
-      // authority requirements
-      if (
-        dmnObject.__$$element === "decision" ||
-        dmnObject.__$$element === "businessKnowledgeModel" ||
-        dmnObject.__$$element === "knowledgeSource"
-      ) {
-        acc.push(
-          ...(dmnObject.authorityRequirement ?? []).map((ar, index) =>
-            ackEdge({
-              id: ar["@_id"] ?? "",
-              dmnObject: {
-                type: dmnObject.__$$element,
-                id: dmnObject["@_id"] ?? "",
-                requirementType: "authorityRequirement",
-                index,
-              },
-              type: EDGE_TYPES.authorityRequirement,
-              source: (ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)!["@_href"],
-              target: buildXmlHref({ id: dmnObject["@_id"]! }),
-            })
-          )
-        );
-      }
-      return acc;
-    }, []),
-    // associations
-    ...(definitions.artifact ?? []).flatMap((dmnObject, index) =>
-      dmnObject.__$$element === "association"
-        ? [
-            ackEdge({
-              id: dmnObject["@_id"] ?? "",
-              dmnObject: {
-                type: dmnObject.__$$element,
-                id: dmnObject["@_id"] ?? "",
-                requirementType: "association",
-                index,
-              },
-              type: EDGE_TYPES.association,
-              source: dmnObject.sourceRef?.["@_href"],
-              target: dmnObject.targetRef?.["@_href"],
-            }),
-          ]
-        : []
-    ),
-  ];
+  // requirements
+  ackRequirementEdges(definitions["@_namespace"], definitions["@_namespace"], definitions.drgElement, ackEdge);
 
-  // Selected edges go to the end of the array. This is necessary because z-index doesn't work on SVGs.
-  const sortedEdges = edges.sort((a, b) => Number(selectedEdges.has(a.id)) - Number(selectedEdges.has(b.id)));
+  // associations
+  (definitions.artifact ?? []).forEach((dmnObject, index) => {
+    if (dmnObject.__$$element !== "association") {
+      return;
+    }
+
+    ackEdge({
+      id: dmnObject["@_id"] ?? "",
+      dmnObject: {
+        namespace: definitions["@_namespace"],
+        type: dmnObject.__$$element,
+        id: dmnObject["@_id"] ?? "",
+        requirementType: "association",
+        index,
+      },
+      type: EDGE_TYPES.association,
+      source: dmnObject.sourceRef?.["@_href"],
+      target: dmnObject.targetRef?.["@_href"],
+    });
+  });
 
   // console.timeEnd("edges");
-  function ackNode(dmnObjectQName: XmlQName, dmnObject: NodeDmnObjects, index: number) {
+  const ackNode: AckNode = (dmnObjectQName, dmnObject, index) => {
     const type = getNodeTypeFromDmnObject(dmnObject);
     if (!type) {
       return undefined;
@@ -257,7 +200,7 @@ export function computeDiagramData(
       selectedNodeTypes.add(newNode.type as NodeType);
     }
     return newNode;
-  }
+  };
 
   const localNodes: RF.Node<DmnDiagramNodeData>[] = [
     ...(definitions.drgElement ?? []).flatMap((dmnObject, index) => {
@@ -292,6 +235,27 @@ export function computeDiagramData(
     }
   }
 
+  const externalDrgElementsByIdByNamespace = [...externalModelTypesByNamespace.dmns.entries()].reduce(
+    (acc, [namespace, externalDmn]) => {
+      // Taking advantage of the loop to add the edges here...
+      ackRequirementEdges(
+        definitions["@_namespace"],
+        externalDmn.model.definitions["@_namespace"],
+        externalDmn.model.definitions.drgElement,
+        ackEdge
+      );
+
+      return acc.set(
+        namespace,
+        (externalDmn.model.definitions.drgElement ?? []).reduce(
+          (acc, e, index) => acc.set(e["@_id"]!, { element: e, index }),
+          new Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>()
+        )
+      );
+    },
+    new Map<string, Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>>()
+  );
+
   const externalNodes = [...indexes.dmnShapesByHref.entries()].flatMap(([href, shape]) => {
     if (nodesById.get(href)) {
       return [];
@@ -314,8 +278,8 @@ export function computeDiagramData(
       return newNode ? [newNode] : [];
     }
 
-    const externalDmn = externalModelTypesByNamespace.dmns.get(namespace);
-    if (!externalDmn) {
+    const externalDrgElementsById = externalDrgElementsByIdByNamespace.get(namespace);
+    if (!externalDrgElementsById) {
       console.warn(
         `DMN DIAGRAM: Found a shape that references an external node from a namespace that is not provided on this DMN's external DMNs mapping.`,
         shape
@@ -323,12 +287,6 @@ export function computeDiagramData(
       const newNode = ackNode(shape.dmnElementRefQName, null, -1);
       return newNode ? [newNode] : [];
     }
-
-    // FIMXE: Tiago --> Performance concern!
-    const externalDrgElementsById = (externalDmn.model.definitions.drgElement ?? []).reduce(
-      (acc, e, index) => acc.set(e["@_id"]!, { element: e, index }),
-      new Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>()
-    );
 
     const externalDrgElement = externalDrgElementsById.get(shape.dmnElementRefQName.localPart);
     if (!externalDrgElement) {
@@ -346,6 +304,9 @@ export function computeDiagramData(
     .sort((a, b) => Number(b.type === NODE_TYPES.decisionService) - Number(a.type === NODE_TYPES.decisionService))
     .sort((a, b) => Number(b.type === NODE_TYPES.group) - Number(a.type === NODE_TYPES.group));
 
+  // Selected edges go to the end of the array. This is necessary because z-index doesn't work on SVGs.
+  const sortedEdges = edges.sort((a, b) => Number(selectedEdges.has(a.id)) - Number(selectedEdges.has(b.id)));
+
   // console.timeEnd("nodes");
   if (diagram.overlays.enableNodeHierarchyHighlight) {
     assignClassesToHighlightedHierarchyNodes(diagram._selectedNodes, nodesById, edges);
@@ -361,6 +322,78 @@ export function computeDiagramData(
     selectedEdgesById,
     drgElementsWithoutVisualRepresentationOnCurrentDrd,
   };
+}
+
+function ackRequirementEdges(
+  thisDmnsNamespace: string,
+  drgElementsNamespace: string,
+  drgElements: DMN15__tDefinitions["drgElement"],
+  ackEdge: AckEdge
+) {
+  const namespace = drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace;
+
+  for (const dmnObject of drgElements ?? []) {
+    if (dmnObject.__$$element === "decision") {
+      (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
+        const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
+        ackEdge({
+          id: ir["@_id"] ?? "",
+          dmnObject: {
+            namespace: drgElementsNamespace,
+            type: dmnObject.__$$element,
+            id: dmnObject["@_id"] ?? "",
+            requirementType: "informationRequirement",
+            index,
+          },
+          type: EDGE_TYPES.informationRequirement,
+          source: buildXmlHref({ namespace: irHref.namespace ?? namespace, id: irHref.id }),
+          target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
+        });
+      });
+    }
+    // knowledge requirements
+    if (dmnObject.__$$element === "decision" || dmnObject.__$$element === "businessKnowledgeModel") {
+      (dmnObject.knowledgeRequirement ?? []).forEach((kr, index) => {
+        const krHref = parseXmlHref(kr.requiredKnowledge["@_href"]);
+        ackEdge({
+          id: kr["@_id"] ?? "",
+          dmnObject: {
+            namespace: drgElementsNamespace,
+            type: dmnObject.__$$element,
+            id: dmnObject["@_id"] ?? "",
+            requirementType: "knowledgeRequirement",
+            index,
+          },
+          type: EDGE_TYPES.knowledgeRequirement,
+          source: buildXmlHref({ namespace: krHref.namespace ?? namespace, id: krHref.id }),
+          target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
+        });
+      });
+    }
+    // authority requirements
+    if (
+      dmnObject.__$$element === "decision" ||
+      dmnObject.__$$element === "businessKnowledgeModel" ||
+      dmnObject.__$$element === "knowledgeSource"
+    ) {
+      (dmnObject.authorityRequirement ?? []).forEach((ar, index) => {
+        const arHref = parseXmlHref((ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)!["@_href"]);
+        ackEdge({
+          id: ar["@_id"] ?? "",
+          dmnObject: {
+            namespace: drgElementsNamespace,
+            type: dmnObject.__$$element,
+            id: dmnObject["@_id"] ?? "",
+            requirementType: "authorityRequirement",
+            index,
+          },
+          type: EDGE_TYPES.authorityRequirement,
+          source: buildXmlHref({ namespace: arHref.namespace ?? namespace, id: arHref.id }),
+          target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
+        });
+      });
+    }
+  }
 }
 
 export function assignClassesToHighlightedHierarchyNodes(

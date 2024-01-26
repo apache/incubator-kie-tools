@@ -469,8 +469,14 @@ export function AutolayoutButton() {
         }
 
         const edge = s.computed(s).getDiagramData(externalModelsByNamespace).edgesById.get(elkEdge.id)!;
+
         const sourceNode = s.computed(s).getDiagramData(externalModelsByNamespace).nodesById.get(elkEdge.sources[0])!;
         const targetNode = s.computed(s).getDiagramData(externalModelsByNamespace).nodesById.get(elkEdge.targets[0])!;
+
+        // If the target is an external node, we don't have to create the edge.
+        if (targetNode.data.dmnObjectQName.prefix) {
+          continue;
+        }
 
         addEdge({
           definitions: s.dmn.model.definitions,
