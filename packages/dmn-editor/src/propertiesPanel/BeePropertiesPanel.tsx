@@ -50,6 +50,7 @@ import { NoneCell } from "./BeePropertiesPanelComponents.tsx/NoneCell";
 import { DecisionTableOutputRuleCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableOutputRuleCell";
 import { ContextInformationItemCell } from "./BeePropertiesPanelComponents.tsx/ContextInformationItemCell";
 import { InvocationInformationItemCell } from "./BeePropertiesPanelComponents.tsx/InvocationInformationItemCell";
+import { SelectExpressionCell } from "./BeePropertiesPanelComponents.tsx/SelectExpressionCell";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -105,7 +106,6 @@ export function BeePropertiesPanel() {
         >
           <DrawerHead>
             {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node.id} />}
-            {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && <></>}
             <DrawerActions>
               <DrawerCloseButton
                 onClick={() => {
@@ -115,13 +115,16 @@ export function BeePropertiesPanel() {
                 }}
               />
             </DrawerActions>
-            {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && (
+            {!shouldDisplayDecisionOrBkmProps && (
               <Form>
                 <FormSection title={boxedExpressionPropertiesPanelComponent?.title ?? ""}>
-                  {(boxedExpressionPropertiesPanelComponent === undefined ||
+                  {(((selectedObjectId === undefined || selectedObjectId === "") &&
+                    boxedExpressionPropertiesPanelComponent === undefined) ||
                     boxedExpressionPropertiesPanelComponent?.component ===
                       BoxedExpressionPropertiesPanelComponent.NONE) && <NoneCell />}
-
+                  {selectedObjectId !== "" && boxedExpressionPropertiesPanelComponent === undefined && (
+                    <SelectExpressionCell selectedObjectId={selectedObjectId!} />
+                  )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.CONTEXT_INFORMATION_ITEM_CELL && (
                     <ContextInformationItemCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />

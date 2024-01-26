@@ -20,14 +20,7 @@
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
-import {
-  ContentField,
-  DescriptionField,
-  ExpressionLanguageField,
-  KieConstraintTypeField,
-  NameField,
-  TypeRefField,
-} from "./Fields";
+import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "./Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/Store";
 import { DMN15__tInputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";

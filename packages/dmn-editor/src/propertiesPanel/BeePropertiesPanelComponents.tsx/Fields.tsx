@@ -27,14 +27,6 @@ import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TypeRefSelector } from "../../dataTypes/TypeRefSelector";
 
-export function KieConstraintTypeField() {
-  return (
-    <FormGroup label="Constraint">
-      <div>TODO</div>
-    </FormGroup>
-  );
-}
-
 export function ContentField(props: {
   initialValue: string;
   onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;

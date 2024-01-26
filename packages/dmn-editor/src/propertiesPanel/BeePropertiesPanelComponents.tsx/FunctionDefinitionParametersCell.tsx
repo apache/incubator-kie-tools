@@ -32,6 +32,7 @@ import {
   DMN15__tInformationItem,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
 
 export function FunctionDefinitionParameterCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -51,7 +52,12 @@ export function FunctionDefinitionParameterCell(props: {
 
   return (
     <>
-      {cell?.map((parameter, i) => (
+      {cell.length === 0 && (
+        <>
+          <Text>{"Empty parameters list"}</Text>
+        </>
+      )}
+      {cell.map((parameter, i) => (
         <FormSection key={i}>
           <PropertiesPanelHeader
             expands={true}

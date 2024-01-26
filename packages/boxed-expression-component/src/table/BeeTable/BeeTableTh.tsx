@@ -109,13 +109,13 @@ export function BeeTableTh<R extends object>({
 
   useEffect(() => {
     if (isActive) {
-      if (column.isRowIndexColumn) {
+      if (column.isRowIndexColumn && groupType === "annotation") {
         beeGwtService?.selectObject("");
       } else {
         beeGwtService?.selectObject(columnKey);
       }
     }
-  }, [beeGwtService, column.isRowIndexColumn, columnKey, isActive]);
+  }, [beeGwtService, column.isRowIndexColumn, columnKey, groupType, isActive]);
 
   const _thRef = useRef<HTMLTableCellElement>(null);
   const thRef = forwardRef ?? _thRef;

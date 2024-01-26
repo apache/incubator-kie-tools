@@ -20,12 +20,19 @@
 import * as React from "react";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 
-export function NoneCell() {
+export function SelectExpressionCell(props: { selectedObjectId: string }) {
   return (
     <>
-      <Title headingLevel={"h2"}>{"Empty panel"}</Title>
-      <Text>{"The selected cell can't be edited using the properties panel."}</Text>
+      <Title headingLevel={"h2"}>{"Select expression"}</Title>
+      <Text>{"The selected cell still doesn't have an expresison associate with it."}</Text>
+      <FormGroup label="ID">
+        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+          {props.selectedObjectId}
+        </ClipboardCopy>
+      </FormGroup>
     </>
   );
 }
