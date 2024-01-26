@@ -50,6 +50,7 @@ func ImageDeploymentMutateVisitor(workflow *operatorapi.SonataFlow, image string
 			deployment := object.(*appsv1.Deployment)
 			_, idx := kubeutil.GetContainerByName(operatorapi.DefaultContainerName, &deployment.Spec.Template.Spec)
 			deployment.Spec.Template.Spec.Containers[idx].Image = image
+			deployment.Spec.Template.Spec.Containers[idx].ImagePullPolicy = kubeutil.GetImagePullPolicy(image)
 			return nil
 		}
 	}

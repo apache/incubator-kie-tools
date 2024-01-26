@@ -151,7 +151,6 @@ func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, erro
 			FailureThreshold:    healthStartedFailureThreshold,
 			PeriodSeconds:       healthStartedPeriodSeconds,
 		},
-		ImagePullPolicy: corev1.PullAlways,
 		SecurityContext: kubeutil.SecurityDefaults(),
 	}
 	// Merge with flowContainer

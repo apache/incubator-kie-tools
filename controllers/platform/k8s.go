@@ -104,12 +104,14 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 	}
 	liveProbe := readyProbe.DeepCopy()
 	liveProbe.ProbeHandler.HTTPGet.Path = common.QuarkusHealthPathLive
+	imageTag := psh.GetServiceImageName(constants.PersistenceTypeEphemeral)
 	dataDeployContainer := &corev1.Container{
-		Image:          psh.GetServiceImageName(constants.PersistenceTypeEphemeral),
-		Env:            psh.GetEnvironmentVariables(),
-		Resources:      psh.GetPodResourceRequirements(),
-		ReadinessProbe: readyProbe,
-		LivenessProbe:  liveProbe,
+		Image:           imageTag,
+		ImagePullPolicy: kubeutil.GetImagePullPolicy(imageTag),
+		Env:             psh.GetEnvironmentVariables(),
+		Resources:       psh.GetPodResourceRequirements(),
+		ReadinessProbe:  readyProbe,
+		LivenessProbe:   liveProbe,
 		Ports: []corev1.ContainerPort{
 			{
 				Name:          utils.HttpScheme,
@@ -117,7 +119,6 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 				Protocol:      corev1.ProtocolTCP,
 			},
 		},
-		ImagePullPolicy: corev1.PullAlways,
 		VolumeMounts: []corev1.VolumeMount{
 			{
 				Name:      "application-config",
