@@ -387,7 +387,9 @@ export function generateBoxedExpressionIndex(
 
 export enum BoxedExpressionPropertiesPanelComponent {
   DECISION_TABLE_INPUT_HEADER,
+  DECISION_TABLE_INPUT_RULE,
   DECISION_TABLE_OUTPUT_HEADER,
+  DECISION_TABLE_OUTPUT_RULE,
   DECISION_TABLE_ROOT,
   EXPRESSION_ROOT,
   FUNCTION_DEFINITION_PARAMETERS,
@@ -395,7 +397,6 @@ export enum BoxedExpressionPropertiesPanelComponent {
   INFORMATION_ITEM_CELL,
   INVOCATION_FUNCTION_CALL,
   LITERAL_EXPRESSION_CONTENT,
-  UNARY_TEST,
   NONE,
 }
 
@@ -433,7 +434,10 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
           title: "Decision Table Input Header",
         };
       }
-      return { component: BoxedExpressionPropertiesPanelComponent.UNARY_TEST, title: "Decision Table Input Cell" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_INPUT_RULE,
+        title: "Decision Table Input Cell",
+      };
     }
     if (selectedObjectPath.header === "output") {
       if (selectedObjectPath.row < 0) {
@@ -443,7 +447,7 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
         };
       }
       return {
-        component: BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
+        component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_OUTPUT_RULE,
         title: "Decision Table Output Cell",
       };
     }

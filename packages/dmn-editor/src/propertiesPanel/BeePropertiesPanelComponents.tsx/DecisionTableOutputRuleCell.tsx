@@ -21,32 +21,33 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, ExpressionLanguageField, TypeRefField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
-import { DMN15__tDecisionTable, DMN15__tUnaryTests } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DMN15__tDecisionTable,
+  DMN15__tLiteralExpression,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { Constraints } from "../../dataTypes/Constraints";
-import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { useDmnEditor } from "../../DmnEditorContext";
 
-export function UnaryTestCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
+export function DecisionTableOutputRuleCell(props: {
+  boxedExpressionIndex?: BoxedExpressionIndex;
+  isReadonly: boolean;
+}) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
+  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
   const { dmnEditorRootElementRef } = useDmnEditor();
-
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
-  const cellPath = useMemo(
-    () => selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1],
-    [selectedObjectInfos?.expressionPath]
-  );
-
-  const itemDefinition = useMemo(() => {
+  const headerItemDefinition = useMemo(() => {
+    const cellPath = selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1];
     if (cellPath && cellPath.root) {
       const root = props.boxedExpressionIndex?.get(cellPath.root);
       if (
@@ -55,16 +56,21 @@ export function UnaryTestCell(props: { boxedExpressionIndex?: BoxedExpressionInd
       ) {
         return allDataTypesById.get(
           allTopLevelItemDefinitionUniqueNames.get(
-            (root?.cell as DMN15__tDecisionTable)?.input?.[cellPath.column ?? 0].inputExpression["@_typeRef"] ?? ""
+            (root?.cell as DMN15__tDecisionTable)?.output?.[cellPath.column ?? 0]["@_typeRef"] ?? ""
           ) ?? ""
         )?.itemDefinition;
       }
     }
-  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, cellPath, props.boxedExpressionIndex]);
+  }, [
+    allDataTypesById,
+    allTopLevelItemDefinitionUniqueNames,
+    props.boxedExpressionIndex,
+    selectedObjectInfos?.expressionPath,
+  ]);
 
-  const updater = useBoxedExpressionUpdater<DMN15__tUnaryTests>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<DMN15__tLiteralExpression>(selectedObjectInfos?.expressionPath ?? []);
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tUnaryTests, [selectedObjectInfos?.cell]);
+  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tLiteralExpression, [selectedObjectInfos?.cell]);
 
   return (
     <>
@@ -73,6 +79,24 @@ export function UnaryTestCell(props: { boxedExpressionIndex?: BoxedExpressionInd
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
+      {headerItemDefinition && (
+        <>
+          <TypeRefField
+            title={"Output header type"}
+            isReadonly={true}
+            dmnEditorRootElementRef={dmnEditorRootElementRef}
+            typeRef={headerItemDefinition["@_name"] ?? DmnBuiltInDataType.Undefined}
+          />
+          <FormGroup label="Constraint">
+            <Constraints
+              isReadonly={true}
+              itemDefinition={headerItemDefinition}
+              editItemDefinition={() => {}}
+              renderOnPropertiesPanel={true}
+            />
+          </FormGroup>
+        </>
+      )}
       <ExpressionLanguageField
         isReadonly={props.isReadonly}
         initialValue={cell["@_expressionLanguage"] ?? ""}
@@ -94,24 +118,6 @@ export function UnaryTestCell(props: { boxedExpressionIndex?: BoxedExpressionInd
           })
         }
       />
-      {itemDefinition && (
-        <>
-          <TypeRefField
-            title={cellPath?.type === "decisionTable" ? "Input header type" : "Type"}
-            isReadonly={true}
-            dmnEditorRootElementRef={dmnEditorRootElementRef}
-            typeRef={itemDefinition["@_name"] ?? DmnBuiltInDataType.Undefined}
-          />
-          <FormGroup label="Constraint">
-            <Constraints
-              isReadonly={true}
-              itemDefinition={itemDefinition}
-              editItemDefinition={() => {}}
-              renderOnPropertiesPanel={true}
-            />
-          </FormGroup>
-        </>
-      )}
     </>
   );
 }

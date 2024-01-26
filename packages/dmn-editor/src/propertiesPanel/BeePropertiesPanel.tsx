@@ -40,13 +40,14 @@ import { DecisionTableInputHeaderCell } from "./BeePropertiesPanelComponents.tsx
 import { DecisionTableOutputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableOutputHeaderCell";
 import { LiteralExpressionContentCell } from "./BeePropertiesPanelComponents.tsx/LiteralExpressionContentCell";
 import { ExpressionRootCell } from "./BeePropertiesPanelComponents.tsx/ExpressionRootCell";
-import { UnaryTestCell } from "./BeePropertiesPanelComponents.tsx/UnaryTestCell";
+import { DecisionTableInputRule } from "./BeePropertiesPanelComponents.tsx/DecisionTableInputRuleCell";
 import { AllExpressions } from "../dataTypes/DataTypeSpec";
 import { DecisionTableRootCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableRootCell";
 import { InvocationFunctionCallCell } from "./BeePropertiesPanelComponents.tsx/InvocationFunctionCallCell";
 import { FunctionDefinitionParameterCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionParametersCell";
 import { FunctionDefinitionRootCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionRootCell";
 import { NoneCell } from "./BeePropertiesPanelComponents.tsx/NoneCell";
+import { DecisionTableOutputRuleCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableOutputRuleCell";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -123,11 +124,19 @@ export function BeePropertiesPanel() {
                     <DecisionTableInputHeaderCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_INPUT_RULE && (
+                    <DecisionTableInputRule boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                  )}
+                  {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER && (
                     <DecisionTableOutputHeaderCell
                       boxedExpressionIndex={boxedExpressionIndex}
                       isReadonly={isReadonly}
                     />
+                  )}
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_OUTPUT_RULE && (
+                    <DecisionTableOutputRuleCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_ROOT && (
@@ -159,10 +168,6 @@ export function BeePropertiesPanel() {
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && (
                     <LiteralExpressionContentCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
-                  )}
-                  {boxedExpressionPropertiesPanelComponent?.component ===
-                    BoxedExpressionPropertiesPanelComponent.UNARY_TEST && (
-                    <UnaryTestCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
                 </FormSection>
               </Form>
