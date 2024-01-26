@@ -74,18 +74,18 @@ describe("discoverCurrentGitHubPageType", () => {
   test("pr files", async () => {
     setWindowLocationPathname("/org/repo/pull/1/files");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.PR_FILES_OR_COMMITS);
+    expect(type).toStrictEqual(GitHubPageType.PR_FILES);
   });
 
   test("pr commit", async () => {
     setWindowLocationPathname("/org/repo/pull/1/commits");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.PR_FILES_OR_COMMITS);
+    expect(type).toStrictEqual(GitHubPageType.PR_COMMITS);
   });
 
   test("any", async () => {
     setWindowLocationPathname("/");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.ANY);
+    expect(type).toStrictEqual(GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL);
   });
 });
