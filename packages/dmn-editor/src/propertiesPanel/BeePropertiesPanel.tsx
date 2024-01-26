@@ -35,7 +35,7 @@ import {
   getBoxedExpressionPropertiesPanelComponent,
 } from "../boxedExpressions/getBeeMap";
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { InformationItemCell } from "./BeePropertiesPanelComponents.tsx/InformationItemCell";
+import { RelationInformationItemCell } from "./BeePropertiesPanelComponents.tsx/RelationInformationItemCell";
 import { DecisionTableInputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableInputHeaderCell";
 import { DecisionTableOutputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableOutputHeaderCell";
 import { LiteralExpressionContentCell } from "./BeePropertiesPanelComponents.tsx/LiteralExpressionContentCell";
@@ -48,6 +48,8 @@ import { FunctionDefinitionParameterCell } from "./BeePropertiesPanelComponents.
 import { FunctionDefinitionRootCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionRootCell";
 import { NoneCell } from "./BeePropertiesPanelComponents.tsx/NoneCell";
 import { DecisionTableOutputRuleCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableOutputRuleCell";
+import { ContextInformationItemCell } from "./BeePropertiesPanelComponents.tsx/ContextInformationItemCell";
+import { InvocationInformationItemCell } from "./BeePropertiesPanelComponents.tsx/InvocationInformationItemCell";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -119,6 +121,11 @@ export function BeePropertiesPanel() {
                   {(boxedExpressionPropertiesPanelComponent === undefined ||
                     boxedExpressionPropertiesPanelComponent?.component ===
                       BoxedExpressionPropertiesPanelComponent.NONE) && <NoneCell />}
+
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.CONTEXT_INFORMATION_ITEM_CELL && (
+                    <ContextInformationItemCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                  )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER && (
                     <DecisionTableInputHeaderCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
@@ -158,16 +165,23 @@ export function BeePropertiesPanel() {
                     <FunctionDefinitionRootCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
-                    BoxedExpressionPropertiesPanelComponent.INFORMATION_ITEM_CELL && (
-                    <InformationItemCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
-                  )}
-                  {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.INVOCATION_FUNCTION_CALL && (
                     <InvocationFunctionCallCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.INVOCATION_INFORMATION_ITEM_CELL && (
+                    <InvocationInformationItemCell
+                      boxedExpressionIndex={boxedExpressionIndex}
+                      isReadonly={isReadonly}
+                    />
+                  )}
+                  {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && (
                     <LiteralExpressionContentCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
+                  )}
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.RELATION_INFORMATION_ITEM_CELL && (
+                    <RelationInformationItemCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
                 </FormSection>
               </Form>

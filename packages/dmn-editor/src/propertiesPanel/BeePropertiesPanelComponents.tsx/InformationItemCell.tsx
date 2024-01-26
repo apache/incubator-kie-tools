@@ -24,24 +24,33 @@ import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
-import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
+import { Constraints } from "../../dataTypes/Constraints";
 
-export function InformationItemCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
+export function InformationItemCell(props: {
+  boxedExpressionIndex?: BoxedExpressionIndex;
+  isReadonly: boolean;
+  onNameChange: (newName: string) => void;
+  onTypeRefChange: (newTypeRef: string) => void;
+  onDescriptionChange: (newDescription: string) => void;
+}) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
-  const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
   const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<DMN15__tInformationItem>(selectedObjectInfos?.expressionPath ?? []);
-
   const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInformationItem, [selectedObjectInfos?.cell]);
+
+  const itemDefinition = useMemo(() => {
+    return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(cell?.["@_typeRef"] ?? "") ?? "")
+      ?.itemDefinition;
+  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, cell]);
 
   return (
     <>
@@ -54,28 +63,30 @@ export function InformationItemCell(props: { boxedExpressionIndex?: BoxedExpress
         isReadonly={props.isReadonly}
         id={cell["@_id"] ?? ""}
         name={cell["@_name"] ?? ""}
-        allUniqueNames={allFeelVariableUniqueNames}
-        onChange={(newName: string) =>
-          updater((dmnObject) => {
-            dmnObject["@_name"] = newName;
-          })
-        }
+        allUniqueNames={new Map()}
+        onChange={props.onNameChange}
       />
       <TypeRefField
-        isReadonly={true}
+        isReadonly={props.isReadonly}
         typeRef={cell["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
+        onChange={props.onTypeRefChange}
       />
+      {itemDefinition && (
+        <FormGroup label="Constraint">
+          <Constraints
+            isReadonly={true}
+            itemDefinition={itemDefinition}
+            editItemDefinition={() => {}}
+            renderOnPropertiesPanel={true}
+          />
+        </FormGroup>
+      )}
       <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
-        onChange={(newDescription: string) =>
-          updater((dmnObject) => {
-            dmnObject.description ??= { __$$text: "" };
-            dmnObject.description.__$$text = newDescription;
-          })
-        }
+        onChange={props.onDescriptionChange}
       />
     </>
   );

@@ -386,6 +386,7 @@ export function generateBoxedExpressionIndex(
 }
 
 export enum BoxedExpressionPropertiesPanelComponent {
+  CONTEXT_INFORMATION_ITEM_CELL,
   DECISION_TABLE_INPUT_HEADER,
   DECISION_TABLE_INPUT_RULE,
   DECISION_TABLE_OUTPUT_HEADER,
@@ -394,9 +395,10 @@ export enum BoxedExpressionPropertiesPanelComponent {
   EXPRESSION_ROOT,
   FUNCTION_DEFINITION_PARAMETERS,
   FUNCTION_DEFINITION_ROOT,
-  INFORMATION_ITEM_CELL,
   INVOCATION_FUNCTION_CALL,
+  INVOCATION_INFORMATION_ITEM_CELL,
   LITERAL_EXPRESSION_CONTENT,
+  RELATION_INFORMATION_ITEM_CELL,
   NONE,
 }
 
@@ -416,7 +418,7 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
     }
     if (selectedObjectPath.column === "variable") {
       return {
-        component: BoxedExpressionPropertiesPanelComponent.INFORMATION_ITEM_CELL,
+        component: BoxedExpressionPropertiesPanelComponent.CONTEXT_INFORMATION_ITEM_CELL,
         title: "Boxed Context Variable",
       };
     }
@@ -499,7 +501,7 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
     }
     if (selectedObjectPath.column === "parameter") {
       return {
-        component: BoxedExpressionPropertiesPanelComponent.INFORMATION_ITEM_CELL,
+        component: BoxedExpressionPropertiesPanelComponent.INVOCATION_INFORMATION_ITEM_CELL,
         title: "Boxed Invocation Parameter",
       };
     }
@@ -530,7 +532,7 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
     }
     if (selectedObjectPath.row < 0) {
       return {
-        component: BoxedExpressionPropertiesPanelComponent.INFORMATION_ITEM_CELL,
+        component: BoxedExpressionPropertiesPanelComponent.RELATION_INFORMATION_ITEM_CELL,
         title: "Boxed Relation Header",
       };
     }
