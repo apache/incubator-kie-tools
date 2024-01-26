@@ -27,6 +27,7 @@ import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circl
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { DiagramNodesPanel } from "../store/Store";
+import { getDrdId } from "./drd/drdId";
 
 export function DrdSelectorPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -72,6 +73,7 @@ export function DrdSelectorPanel() {
               state.diagram.drdIndex = newIndex;
               state.diagram.drdSelector.isOpen = false;
               state.diagram.openNodesPanel = DiagramNodesPanel.DRG_NODES;
+              state.focus.consumableId = getDrdId({ drdIndex: newIndex });
             });
           }}
         >

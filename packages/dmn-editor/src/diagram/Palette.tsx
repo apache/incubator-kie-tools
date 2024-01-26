@@ -46,6 +46,7 @@ import { DrgNodesPanel } from "./DrgNodesPanel";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
+import { getDrdId } from "./drd/drdId";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -105,7 +106,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             allUniqueNames={() => new Map()}
             name={drd?.["@_name"] ?? ""}
             prefix={`${diagram.drdIndex + 1}.`}
-            id={diagram.drdIndex + ""}
+            id={getDrdId({ drdIndex: diagram.drdIndex })}
             onRenamed={(newName) => {
               dmnEditorStoreApi.setState((state) => {
                 const drd = addOrGetDrd({ definitions: state.dmn.model.definitions, drdIndex: diagram.drdIndex });
