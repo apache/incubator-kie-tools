@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, NameField, TypeRefField } from "./Fields";
-import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
+import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionMap";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";

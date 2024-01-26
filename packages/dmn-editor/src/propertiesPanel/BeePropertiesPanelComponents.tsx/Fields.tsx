@@ -23,7 +23,7 @@ import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InlineFeelNameInput } from "../../feel/InlineFeelNameInput";
 import { UniqueNameIndex } from "../../Dmn15Spec";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { ExpressionPath } from "../../boxedExpressions/getBeeMap";
+import { ExpressionPath } from "../../boxedExpressions/boxedExpressionMap";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TypeRefSelector } from "../../dataTypes/TypeRefSelector";
 

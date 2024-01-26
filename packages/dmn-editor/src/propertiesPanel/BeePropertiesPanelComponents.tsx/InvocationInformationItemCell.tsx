@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
+import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionMap";
 import {
   DMN15__tInformationItem,
   DMN15__tInvocation,

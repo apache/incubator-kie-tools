@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
+import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionMap";
 import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "./Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/Store";

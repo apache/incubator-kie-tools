@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField } from "./Fields";
-import { BoxedExpressionIndex } from "../../boxedExpressions/getBeeMap";
+import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionMap";
 import { useDmnEditorStore } from "../../store/Store";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";

@@ -33,7 +33,7 @@ import {
   BoxedExpressionPropertiesPanelComponent,
   generateBoxedExpressionIndex,
   getBoxedExpressionPropertiesPanelComponent,
-} from "../boxedExpressions/getBeeMap";
+} from "../boxedExpressions/boxedExpressionMap";
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { RelationInformationItemCell } from "./BeePropertiesPanelComponents.tsx/RelationInformationItemCell";
 import { DecisionTableInputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableInputHeaderCell";
