@@ -236,7 +236,7 @@ export function discoverCurrentGitHubPageType() {
   if (
     ["/tree/", "/pull/", "/blob/", "/edit/"].some((pathnamePart) => window.location.pathname.includes(pathnamePart))
   ) {
-    // if pathanme containing one of these substrings didn't match previous `if` statements, then it is not supperted by our extension
+    // if pathanme containing one of these substrings and didn't match previous `if` statements, then it is not supperted by our extension
     return GitHubPageType.NOT_SUPPORTED;
   }
 
