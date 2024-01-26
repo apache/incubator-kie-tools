@@ -91,6 +91,8 @@ function init(globals: Globals) {
   const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
 
+  console.error(pageType + "----------->");
+
   if (!globals.dependencies.all.octiconMarkGitHub() || pageType === GitHubPageType.NOT_SUPPORTED) {
     globals.logger.warn(
       `This is not supported GitHub web page. '${window.location.origin}${window.location.pathname}'`
@@ -206,6 +208,8 @@ function switchHiddenCss(id: string, dependencies: Dependencies, editorEnvelopeL
 }
 
 export function discoverCurrentGitHubPageType() {
+  console.error(window.location.pathname + "<--------------");
+
   if (pathnameMatches(`.*/.*/edit/.*`)) {
     return GitHubPageType.EDIT;
   }
@@ -229,14 +233,14 @@ export function discoverCurrentGitHubPageType() {
     return GitHubPageType.PR_COMMITS;
   }
 
-  if (pathnameMatches(`.*/.*/pull/[0-9]+.*`)) {
+  if (pathnameMatches(`^.*/.*/pull/[0-9]+$`)) {
     return GitHubPageType.PR_HOME;
   }
 
-  if (
-    ["/tree/", "/pull/", "/blob/", "/edit/"].some((pathnamePart) => window.location.pathname.includes(pathnamePart))
-  ) {
+  if (["/tree/", "/pull/"].some((pathnamePart) => window.location.pathname.includes(pathnamePart))) {
     // if pathanme containing one of these substrings and didn't match previous `if` statements, then it is not supperted by our extension
+    // .../tree/main/some/folders/only
+    // .../pull/1/checks
     return GitHubPageType.NOT_SUPPORTED;
   }
 
