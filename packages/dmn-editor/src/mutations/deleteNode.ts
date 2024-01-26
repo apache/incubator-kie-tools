@@ -24,18 +24,25 @@ import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopula
 import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
+export enum NodeDeletionMode {
+  FORM_DRG_AND_DRD,
+  FROM_DRD_ONLY,
+}
+
 export function deleteNode({
   definitions,
   drdIndex,
   nodeNature,
   dmnObjectId,
   dmnObjectQName,
+  mode,
 }: {
   definitions: DMN15__tDefinitions;
   drdIndex: number;
   nodeNature: NodeNature;
   dmnObjectId: string | undefined;
   dmnObjectQName: XmlQName;
+  mode: NodeDeletionMode;
 }) {
   const { diagramElements, widthsExtension } = addOrGetDrd({ definitions, drdIndex });
 
@@ -52,18 +59,19 @@ export function deleteNode({
   if (!dmnObjectQName.prefix) {
     // Delete the dmnObject itself
     if (nodeNature === NodeNature.ARTIFACT) {
-      definitions.artifact?.splice(
-        (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId),
-        1
-      );
+      if (mode === NodeDeletionMode.FORM_DRG_AND_DRD) {
+        const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId);
+        definitions.artifact?.splice(nodeIndex, 1);
+      }
     } else if (nodeNature === NodeNature.DRG_ELEMENT) {
-      const deleted = definitions.drgElement?.splice(
-        (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId),
-        1
-      );
+      const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId);
+      const node =
+        mode === NodeDeletionMode.FORM_DRG_AND_DRD
+          ? definitions.drgElement?.splice(nodeIndex, 1)
+          : [definitions.drgElement?.[nodeIndex]];
 
       const deletedIdsOnDrgElementTree = getNewDmnIdRandomizer()
-        .ack({ json: deleted, type: "DMN15__tDefinitions", attr: "drgElement" })
+        .ack({ json: node, type: "DMN15__tDefinitions", attr: "drgElement" })
         .getOriginalIds();
 
       // Delete widths

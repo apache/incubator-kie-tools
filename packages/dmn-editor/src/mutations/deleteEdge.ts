@@ -27,14 +27,21 @@ import { addOrGetDrd } from "./addOrGetDrd";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 
+export enum EdgeDeletionMode {
+  FORM_DRG_AND_DRD,
+  FROM_DRD_ONLY,
+}
+
 export function deleteEdge({
   definitions,
   drdIndex,
   edge,
+  mode,
 }: {
   definitions: DMN15__tDefinitions;
   drdIndex: number;
   edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
+  mode: EdgeDeletionMode;
 }) {
   if (edge.dmnObject.namespace !== definitions["@_namespace"]) {
     console.debug("DMN MUTATION: Can't delete an edge that's from an external node.");
@@ -54,19 +61,21 @@ export function deleteEdge({
     throw new Error(`DMN MUTATION: Can't find DMN element with ID ${edge.dmnObject.id}`);
   }
 
-  const requirements =
-    switchExpression(edge?.dmnObject.requirementType, {
-      // Casting to DMN15__tDecision because if has all types of requirement, but not necessarily that's true.
-      informationRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).informationRequirement,
-      knowledgeRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).knowledgeRequirement,
-      authorityRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).authorityRequirement,
-      association: dmnObjects,
-    }) ?? [];
+  if (mode === EdgeDeletionMode.FORM_DRG_AND_DRD) {
+    const requirements =
+      switchExpression(edge?.dmnObject.requirementType, {
+        // Casting to DMN15__tDecision because if has all types of requirement, but not necessarily that's true.
+        informationRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).informationRequirement,
+        knowledgeRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).knowledgeRequirement,
+        authorityRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).authorityRequirement,
+        association: dmnObjects,
+      }) ?? [];
 
-  // Deleting the requirement
-  const requirementIndex = (requirements ?? []).findIndex((d) => d["@_id"] === edge.id);
-  if (requirementIndex >= 0) {
-    requirements?.splice(requirementIndex, 1);
+    // Deleting the requirement
+    const requirementIndex = (requirements ?? []).findIndex((d) => d["@_id"] === edge.id);
+    if (requirementIndex >= 0) {
+      requirements?.splice(requirementIndex, 1);
+    }
   }
 
   // Deleting the DMNEdge's
