@@ -41,27 +41,26 @@ export function UnaryTestCell(props: { boxedExpressionIndex?: BoxedExpressionInd
   );
 
   const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
+  const cellPath = useMemo(
+    () => selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1],
+    [selectedObjectInfos?.expressionPath]
+  );
 
   const itemDefinition = useMemo(() => {
-    const path = [...(selectedObjectInfos?.expressionPath ?? [])];
-    const currentPath = path.pop();
-    if (currentPath && currentPath.root) {
-      const root = props.boxedExpressionIndex?.get(currentPath.root);
-      const type = root?.expressionPath[(root?.expressionPath?.length ?? 1) - 1].type;
-      if (type === "decisionTable" && currentPath.type === "decisionTable") {
-        const typeRef = (root?.cell as DMN15__tDecisionTable).input?.[currentPath.column ?? 0].inputExpression[
-          "@_typeRef"
-        ];
-        const typeRefId = allTopLevelItemDefinitionUniqueNames.get(typeRef ?? "");
-        return allDataTypesById.get(typeRefId ?? "")?.itemDefinition;
+    if (cellPath && cellPath.root) {
+      const root = props.boxedExpressionIndex?.get(cellPath.root);
+      if (
+        root?.expressionPath[root.expressionPath.length - 1]?.type === "decisionTable" &&
+        cellPath.type === "decisionTable"
+      ) {
+        return allDataTypesById.get(
+          allTopLevelItemDefinitionUniqueNames.get(
+            (root?.cell as DMN15__tDecisionTable)?.input?.[cellPath.column ?? 0].inputExpression["@_typeRef"] ?? ""
+          ) ?? ""
+        )?.itemDefinition;
       }
     }
-  }, [
-    allDataTypesById,
-    allTopLevelItemDefinitionUniqueNames,
-    props.boxedExpressionIndex,
-    selectedObjectInfos?.expressionPath,
-  ]);
+  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, cellPath, props.boxedExpressionIndex]);
 
   const updater = useBoxedExpressionUpdater<DMN15__tUnaryTests>(selectedObjectInfos?.expressionPath ?? []);
 
@@ -98,7 +97,7 @@ export function UnaryTestCell(props: { boxedExpressionIndex?: BoxedExpressionInd
       {itemDefinition && (
         <>
           <TypeRefField
-            title={"Column type"}
+            title={cellPath?.type === "decisionTable" ? "Input header type" : "Type"}
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={itemDefinition["@_name"] ?? DmnBuiltInDataType.Undefined}

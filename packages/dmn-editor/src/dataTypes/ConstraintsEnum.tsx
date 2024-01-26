@@ -163,14 +163,16 @@ export function ConstraintsEnum({
           </ul>
         </div>
       </div>
-      <Button
-        onClick={() => onAdd()}
-        variant={ButtonVariant.link}
-        icon={<PlusCircleIcon />}
-        style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
-      >
-        Add value
-      </Button>
+      {!(isDisabled || isReadonly) && (
+        <Button
+          onClick={() => onAdd()}
+          variant={ButtonVariant.link}
+          icon={<PlusCircleIcon />}
+          style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
+        >
+          Add value
+        </Button>
+      )}
       <br />
       <br />
       <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
@@ -230,7 +232,7 @@ function EnumElement({
         className={"kie-dmn-editor--documentation-link--row-remove"}
         variant={"plain"}
         icon={<TimesIcon />}
-        onClick={() => onRemove()}
+        onClick={() => !isDisabled && onRemove()}
       />
       {hovered && <Tooltip content={"Remove"} reference={removeButtonRef} />}
     </div>
