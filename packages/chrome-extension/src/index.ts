@@ -91,8 +91,6 @@ function init(globals: Globals) {
   const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
 
-  console.error(pageType + "----------->");
-
   if (!globals.dependencies.all.octiconMarkGitHub() || pageType === GitHubPageType.NOT_SUPPORTED) {
     globals.logger.warn(
       `This is not supported GitHub web page. '${window.location.origin}${window.location.pathname}'`
@@ -208,8 +206,6 @@ function switchHiddenCss(id: string, dependencies: Dependencies, editorEnvelopeL
 }
 
 export function discoverCurrentGitHubPageType() {
-  console.error(window.location.pathname + "<--------------");
-
   if (pathnameMatches(`.*/.*/edit/.*`)) {
     return GitHubPageType.EDIT;
   }
