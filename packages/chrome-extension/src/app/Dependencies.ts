@@ -98,6 +98,9 @@ export class Dependencies {
     pr__commitsMutationObserverTarget: () => {
       return document.getElementById("commits_bucket") as HTMLElement | null;
     },
+    pr__homeMutationObserverTarget: () => {
+      return document.querySelector(".pull-discussion-timeline") as HTMLElement | null;
+    },
     pr__openWithExternalEditorLinkContainer: (container: HTMLElement) => {
       return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
     },
