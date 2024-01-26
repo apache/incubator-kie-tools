@@ -113,6 +113,7 @@ export function ConstraintsEnum({
           index={index}
           style={{ alignItems: "center" }}
           handlerStyle={{ margin: "0px 10px" }}
+          isDisabled={isReadonly || isDisabled}
         >
           <li style={{ marginLeft: "20px", listStyleType: "initial" }}>
             <EnumElement
@@ -233,14 +234,16 @@ function EnumElement({
         onKeyDown,
       })}
 
-      <Button
-        ref={removeButtonRef}
-        style={{ opacity: hovered ? "100%" : "0" }}
-        className={"kie-dmn-editor--documentation-link--row-remove"}
-        variant={"plain"}
-        icon={<TimesIcon />}
-        onClick={() => !isDisabled && onRemove()}
-      />
+      {!isDisabled && (
+        <Button
+          ref={removeButtonRef}
+          style={{ opacity: hovered ? "100%" : "0" }}
+          className={"kie-dmn-editor--documentation-link--row-remove"}
+          variant={"plain"}
+          icon={<TimesIcon />}
+          onClick={() => !isDisabled && onRemove()}
+        />
+      )}
       {hovered && <Tooltip content={"Remove"} reference={removeButtonRef} />}
     </div>
   );
