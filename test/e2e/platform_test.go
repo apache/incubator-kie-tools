@@ -27,6 +27,9 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test/utils"
+
+	//nolint:golint
+	//nolint:revive
 	. "github.com/onsi/ginkgo/v2"
 
 	//nolint:golint

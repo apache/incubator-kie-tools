@@ -20,10 +20,12 @@
 package e2e
 
 import (
+	"bytes"
 	"fmt"
 	"math/rand"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
@@ -38,7 +40,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("SonataFlow Operator", func() {
+var _ = Describe("SonataFlow Operator", Ordered, func() {
 
 	var targetNamespace string
 	BeforeEach(func() {
@@ -135,6 +137,77 @@ var _ = Describe("SonataFlow Operator", func() {
 				return err
 			}, 2*time.Minute, time.Second).Should(Succeed())
 		})
+
 	})
+
+})
+
+var _ = Describe("Validate the persistence ", Ordered, func() {
+
+	var (
+		ns string
+	)
+
+	BeforeEach(func() {
+		ns = fmt.Sprintf("test-%d", rand.Intn(1024)+1)
+		cmd := exec.Command("kubectl", "create", "namespace", ns)
+		_, err := utils.Run(cmd)
+		Expect(err).NotTo(HaveOccurred())
+	})
+	AfterEach(func() {
+		// Remove platform CR if it exists
+		if len(ns) > 0 {
+			cmd := exec.Command("kubectl", "delete", "namespace", ns, "--wait")
+			_, err := utils.Run(cmd)
+			Expect(err).NotTo(HaveOccurred())
+		}
+
+	})
+
+	DescribeTable("when deploying a SonataFlow CR with PostgreSQL persistence", func(testcaseDir string) {
+		By("Deploy the CR")
+		var manifests []byte
+		EventuallyWithOffset(1, func() error {
+			var err error
+			cmd := exec.Command("kubectl", "kustomize", testcaseDir)
+			manifests, err = utils.Run(cmd)
+			return err
+		}, time.Minute, time.Second).Should(Succeed())
+		cmd := exec.Command("kubectl", "create", "-n", ns, "-f", "-")
+		cmd.Stdin = bytes.NewBuffer(manifests)
+		_, err := utils.Run(cmd)
+		Expect(err).NotTo(HaveOccurred())
+		By("Wait for SonatatFlow CR to complete deployment")
+		// wait for service deployments to be ready
+		EventuallyWithOffset(1, func() error {
+			cmd = exec.Command("kubectl", "wait", "pod", "-n", ns, "-l", "sonataflow.org/workflow-app=callbackstatetimeouts", "--for", "condition=Ready", "--timeout=5s")
+			out, err := utils.Run(cmd)
+			GinkgoWriter.Printf("%s\n", string(out))
+			return err
+		}, 10*time.Minute, 5).Should(Succeed())
+
+		By("Evaluate status of the workflow's pod database connection health endpoint")
+		cmd = exec.Command("kubectl", "get", "pod", "-l", "sonataflow.org/workflow-app=callbackstatetimeouts", "-n", ns, "-ojsonpath={.items[*].metadata.name}")
+		output, err := utils.Run(cmd)
+		Expect(err).NotTo(HaveOccurred())
+		EventuallyWithOffset(1, func() bool {
+			for _, pn := range strings.Split(string(output), " ") {
+				h, err := getHealthFromPod(pn, ns)
+				if err != nil {
+					continue
+				}
+				Expect(h.Status).To(Equal(upStatus), "Pod health is not UP")
+				for _, c := range h.Checks {
+					if c.Name == "Database connections health check" {
+						Expect(c.Status).To(Equal(upStatus), "Pod's database connection is not UP")
+						return true
+					}
+				}
+			}
+			return false
+		}, 10*time.Minute).Should(BeTrue())
+	},
+		Entry("defined in the workflow from an existing kubernetes service as a reference", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("by_service")),
+	)
 
 })

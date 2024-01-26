@@ -160,26 +160,37 @@ func GetSonataFlowBuilderConfig(namespace string) *corev1.ConfigMap {
 	return cm
 }
 
-func GetBaseSonataFlow(namespace string) *operatorapi.SonataFlow {
-	return GetSonataFlow(sonataFlowSampleYamlCR, namespace)
+func NewSonataFlow(filePath string, namespace string, options ...func(*operatorapi.SonataFlow)) *operatorapi.SonataFlow {
+	sf := GetSonataFlow(filePath, namespace)
+	for _, f := range options {
+		f(sf)
+	}
+	return sf
+}
+
+func SetDevProfile(workflow *operatorapi.SonataFlow) {
+	workflow.Annotations["sonataflow.org/profile"] = "dev"
+}
+
+func SetProdProfile(workflow *operatorapi.SonataFlow) {
+	workflow.Annotations["sonataflow.org/profile"] = "prod"
+}
+
+func GetBaseSonataFlow(namespace string, options ...*func(*operatorapi.SonataFlow)) *operatorapi.SonataFlow {
+	return NewSonataFlow(sonataFlowSampleYamlCR, namespace)
 }
 
 func GetBaseSonataFlowWithDevProfile(namespace string) *operatorapi.SonataFlow {
-	workflow := GetBaseSonataFlow(namespace)
-	workflow.Annotations["sonataflow.org/profile"] = "dev"
-	return workflow
+	return NewSonataFlow(sonataFlowSampleYamlCR, namespace, SetDevProfile)
 }
 
 func GetBaseSonataFlowWithProdProfile(namespace string) *operatorapi.SonataFlow {
-	workflow := GetBaseSonataFlow(namespace)
-	workflow.Annotations["sonataflow.org/profile"] = "prod"
-	return workflow
+	return NewSonataFlow(sonataFlowSampleYamlCR, namespace, SetProdProfile)
 }
 
 // GetBaseSonataFlowWithProdOpsProfile gets a base workflow that has a pre-built image set in podTemplate.
 func GetBaseSonataFlowWithProdOpsProfile(namespace string) *operatorapi.SonataFlow {
-	workflow := GetSonataFlow(SonataFlowSimpleOpsYamlCR, namespace)
-	return workflow
+	return NewSonataFlow(SonataFlowSimpleOpsYamlCR, namespace)
 }
 
 func GetBasePlatformInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
@@ -220,6 +231,9 @@ func GetSonataFlowE2eOrderProcessingFolder() string {
 
 func GetSonataFlowE2EPlatformServicesDirectory() string {
 	return filepath.Join(getTestDataDir(), "platform", "services")
+}
+func GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory(subdir string) string {
+	return filepath.Join(getTestDataDir(), "persistence", "workflow", subdir)
 }
 
 // getTestDataDir gets the testdata directory containing every sample out there from test/testdata.

@@ -35,13 +35,40 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+// sonataflow_operator_namespace store the ns where the Operator and Operand will be executed
+const sonataflow_operator_namespace = "sonataflow-operator-system"
+
 type health struct {
+	Status string  `json:"status"`
+	Checks []check `json:"checks"`
+}
+
+type check struct {
+	Name   string `json:"name"`
 	Status string `json:"status"`
 }
 
 var (
 	upStatus string = "UP"
 )
+
+func getHealthFromPod(name, namespace string) (*health, error) {
+	// iterate over all containers to find the one that responds to the HTTP health endpoint
+	Expect(name).NotTo(BeEmpty(), "pod name is empty")
+	cmd := exec.Command("kubectl", "get", "pod", name, "-n", namespace, "-o", `jsonpath={.spec.containers[*].name}`)
+	output, err := utils.Run(cmd)
+	Expect(err).NotTo(HaveOccurred())
+	var errs error
+	for _, cname := range strings.Split(string(output), " ") {
+		var h *health
+		h, err = getHealthStatusInContainer(name, cname, namespace)
+		if err == nil {
+			return h, nil
+		}
+		errs = fmt.Errorf("%v; %w", err, errs)
+	}
+	return nil, errs
+}
 
 func verifyHealthStatusInPod(name string, namespace string) {
 	// iterate over all containers to find the one that responds to the HTTP health endpoint

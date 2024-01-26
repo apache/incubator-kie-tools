@@ -21,17 +21,22 @@ package services
 
 import (
 	"fmt"
-	"strconv"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/persistence"
 	"github.com/magiconair/properties"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/version"
 	"github.com/imdario/mergo"
+)
+
+const (
+	quarkusHibernateORMDatabaseGeneration string = "QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION"
+	quarkusFlywayMigrateAtStart           string = "QUARKUS_FLYWAY_MIGRATE_AT_START"
 )
 
 type PlatformServiceHandler interface {
@@ -137,7 +142,9 @@ func (d DataIndexHandler) ConfigurePersistence(containerSpec *corev1.Container) 
 	if d.platform.Spec.Services.DataIndex.Persistence != nil && d.platform.Spec.Services.DataIndex.Persistence.PostgreSql != nil {
 		c := containerSpec.DeepCopy()
 		c.Image = d.GetServiceImageName(constants.PersistenceTypePostgreSQL)
-		c.Env = append(c.Env, d.configurePostgreSqlEnv(d.platform.Spec.Services.DataIndex.Persistence.PostgreSql, d.GetServiceName(), d.platform.Namespace)...)
+		c.Env = append(c.Env, persistence.ConfigurePostgreSqlEnv(d.platform.Spec.Services.DataIndex.Persistence.PostgreSql, d.GetServiceName(), d.platform.Namespace)...)
+		// specific to DataIndex
+		c.Env = append(c.Env, corev1.EnvVar{Name: quarkusHibernateORMDatabaseGeneration, Value: "update"}, corev1.EnvVar{Name: quarkusFlywayMigrateAtStart, Value: "true"})
 		return c
 	}
 	return containerSpec
@@ -158,74 +165,6 @@ func (d DataIndexHandler) GetReplicaCount() int32 {
 
 func (d DataIndexHandler) GetServiceCmName() string {
 	return fmt.Sprintf("%s-props", d.GetServiceName())
-}
-
-func (d DataIndexHandler) configurePostgreSqlEnv(postgresql *operatorapi.PersistencePostgreSql, databaseSchema, databaseNamespace string) []corev1.EnvVar {
-	dataSourcePort := constants.DefaultPostgreSQLPort
-	databaseName := "sonataflow"
-	dataSourceURL := postgresql.JdbcUrl
-	if postgresql.ServiceRef != nil {
-		if len(postgresql.ServiceRef.DatabaseSchema) > 0 {
-			databaseSchema = postgresql.ServiceRef.DatabaseSchema
-		}
-		if len(postgresql.ServiceRef.Namespace) > 0 {
-			databaseNamespace = postgresql.ServiceRef.Namespace
-		}
-		if postgresql.ServiceRef.Port != nil {
-			dataSourcePort = *postgresql.ServiceRef.Port
-		}
-		if len(postgresql.ServiceRef.DatabaseName) > 0 {
-			databaseName = postgresql.ServiceRef.DatabaseName
-		}
-		dataSourceURL = "jdbc:" + constants.PersistenceTypePostgreSQL + "://" + postgresql.ServiceRef.Name + "." + databaseNamespace + ":" + strconv.Itoa(dataSourcePort) + "/" + databaseName + "?currentSchema=" + databaseSchema
-	}
-	secretRef := corev1.LocalObjectReference{
-		Name: postgresql.SecretRef.Name,
-	}
-	quarkusDatasourceUsername := "POSTGRESQL_USER"
-	if len(postgresql.SecretRef.UserKey) > 0 {
-		quarkusDatasourceUsername = postgresql.SecretRef.UserKey
-	}
-	quarkusDatasourcePassword := "POSTGRESQL_PASSWORD"
-	if len(postgresql.SecretRef.PasswordKey) > 0 {
-		quarkusDatasourcePassword = postgresql.SecretRef.PasswordKey
-	}
-	return []corev1.EnvVar{
-		{
-			Name: "QUARKUS_DATASOURCE_USERNAME",
-			ValueFrom: &corev1.EnvVarSource{
-				SecretKeyRef: &corev1.SecretKeySelector{
-					Key:                  quarkusDatasourceUsername,
-					LocalObjectReference: secretRef,
-				},
-			},
-		},
-		{
-			Name: "QUARKUS_DATASOURCE_PASSWORD",
-			ValueFrom: &corev1.EnvVarSource{
-				SecretKeyRef: &corev1.SecretKeySelector{
-					Key:                  quarkusDatasourcePassword,
-					LocalObjectReference: secretRef,
-				},
-			},
-		},
-		{
-			Name:  "QUARKUS_DATASOURCE_DB_KIND",
-			Value: constants.PersistenceTypePostgreSQL,
-		},
-		{
-			Name:  "QUARKUS_HIBERNATE_ORM_DATABASE_GENERATION",
-			Value: "update",
-		},
-		{
-			Name:  "QUARKUS_FLYWAY_MIGRATE_AT_START",
-			Value: "true",
-		},
-		{
-			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
-			Value: dataSourceURL,
-		},
-	}
 }
 
 func (d DataIndexHandler) GenerateWorkflowProperties() (*properties.Properties, error) {
@@ -318,7 +257,9 @@ func (j JobServiceHandler) ConfigurePersistence(containerSpec *corev1.Container)
 	if j.platform.Spec.Services.JobService.Persistence != nil && j.platform.Spec.Services.JobService.Persistence.PostgreSql != nil {
 		c := containerSpec.DeepCopy()
 		c.Image = j.GetServiceImageName(constants.PersistenceTypePostgreSQL)
-		c.Env = append(c.Env, j.configurePostgreSqlEnv(j.platform.Spec.Services.JobService.Persistence.PostgreSql, j.GetServiceName(), j.platform.Namespace)...)
+		c.Env = append(c.Env, persistence.ConfigurePostgreSqlEnv(j.platform.Spec.Services.JobService.Persistence.PostgreSql, j.GetServiceName(), j.platform.Namespace)...)
+		// Specific to Job Service
+		c.Env = append(c.Env, corev1.EnvVar{Name: quarkusFlywayMigrateAtStart, Value: "true"})
 		return c
 	}
 	return containerSpec
@@ -328,71 +269,6 @@ func (j JobServiceHandler) MergePodSpec(podSpec corev1.PodSpec) (corev1.PodSpec,
 	c := podSpec.DeepCopy()
 	err := mergo.Merge(c, j.platform.Spec.Services.JobService.PodTemplate.PodSpec.ToPodSpec(), mergo.WithOverride)
 	return *c, err
-}
-
-func (j JobServiceHandler) configurePostgreSqlEnv(postgresql *operatorapi.PersistencePostgreSql, databaseSchema, databaseNamespace string) []corev1.EnvVar {
-	dataSourcePort := constants.DefaultPostgreSQLPort
-	databaseName := "sonataflow"
-	dataSourceURL := postgresql.JdbcUrl
-	if postgresql.ServiceRef != nil {
-		if len(postgresql.ServiceRef.DatabaseSchema) > 0 {
-			databaseSchema = postgresql.ServiceRef.DatabaseSchema
-		}
-		if len(postgresql.ServiceRef.Namespace) > 0 {
-			databaseNamespace = postgresql.ServiceRef.Namespace
-		}
-		if postgresql.ServiceRef.Port != nil {
-			dataSourcePort = *postgresql.ServiceRef.Port
-		}
-		if len(postgresql.ServiceRef.DatabaseName) > 0 {
-			databaseName = postgresql.ServiceRef.DatabaseName
-		}
-		dataSourceURL = "jdbc:" + constants.PersistenceTypePostgreSQL + "://" + postgresql.ServiceRef.Name + "." + databaseNamespace + ":" + strconv.Itoa(dataSourcePort) + "/" + databaseName + "?currentSchema=" + databaseSchema
-	}
-
-	secretRef := corev1.LocalObjectReference{
-		Name: postgresql.SecretRef.Name,
-	}
-	quarkusDatasourceUsername := "POSTGRESQL_USER"
-	if len(postgresql.SecretRef.UserKey) > 0 {
-		quarkusDatasourceUsername = postgresql.SecretRef.UserKey
-	}
-	quarkusDatasourcePassword := "POSTGRESQL_PASSWORD"
-	if len(postgresql.SecretRef.PasswordKey) > 0 {
-		quarkusDatasourcePassword = postgresql.SecretRef.PasswordKey
-	}
-	return []corev1.EnvVar{
-		{
-			Name: "QUARKUS_DATASOURCE_USERNAME",
-			ValueFrom: &corev1.EnvVarSource{
-				SecretKeyRef: &corev1.SecretKeySelector{
-					Key:                  quarkusDatasourceUsername,
-					LocalObjectReference: secretRef,
-				},
-			},
-		},
-		{
-			Name: "QUARKUS_DATASOURCE_PASSWORD",
-			ValueFrom: &corev1.EnvVarSource{
-				SecretKeyRef: &corev1.SecretKeySelector{
-					Key:                  quarkusDatasourcePassword,
-					LocalObjectReference: secretRef,
-				},
-			},
-		},
-		{
-			Name:  "QUARKUS_DATASOURCE_DB_KIND",
-			Value: constants.PersistenceTypePostgreSQL,
-		},
-		{
-			Name:  "QUARKUS_FLYWAY_MIGRATE_AT_START",
-			Value: "true",
-		},
-		{
-			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
-			Value: dataSourceURL,
-		},
-	}
 }
 
 func (j JobServiceHandler) GenerateServiceProperties() (*properties.Properties, error) {
