@@ -19,45 +19,44 @@
 
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionMap";
+import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "./Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/Store";
-import { DMN15__tOutputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DMN15__tInputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditor } from "../../DmnEditorContext";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { Constraints } from "../../dataTypes/Constraints";
 
-export function DecisionTableOutputHeaderCell(props: {
+export function DecisionTableInputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadonly: boolean;
 }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
   const { dmnEditorRootElementRef } = useDmnEditor();
-
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<DMN15__tOutputClause>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<DMN15__tInputClause>(selectedObjectInfos?.expressionPath ?? []);
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tOutputClause, [selectedObjectInfos?.cell]);
-  const defaultOutputEntry = useMemo(() => cell.defaultOutputEntry, [cell.defaultOutputEntry]);
-  const outputValues = useMemo(() => cell.outputValues, [cell.outputValues]);
+  const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInputClause, [selectedObjectInfos?.cell]);
+  const inputExpression = useMemo(() => cell.inputExpression, [cell.inputExpression]);
+  const inputValues = useMemo(() => cell.inputValues, [cell.inputValues]);
 
-  const itemDefinition = useMemo(() => {
-    return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(cell?.["@_typeRef"] ?? "") ?? "")
+  const inputExpressionItemDefinition = useMemo(() => {
+    return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(inputExpression?.["@_typeRef"] ?? "") ?? "")
       ?.itemDefinition;
-  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, cell]);
+  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, inputExpression]);
 
-  const [isDefaultOutputEntryExpanded, setDefaultOutputEntryExpanded] = useState(false);
-  const [isOutputValuesExpanded, setOutputValuesExpanded] = useState(false);
+  const [isInputExpressionExpanded, setInputExpressionExpanded] = useState(true);
+  const [isInputValuesExpanded, setInputValuesExpanded] = useState(false);
 
   return (
     <>
@@ -66,37 +65,6 @@ export function DecisionTableOutputHeaderCell(props: {
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
-      <NameField
-        isReadonly={props.isReadonly}
-        id={cell?.["@_id"] ?? ""}
-        name={cell?.["@_name"] ?? ""}
-        allUniqueNames={new Map()}
-        onChange={(newName) =>
-          updater((dmnObject) => {
-            dmnObject["@_name"] = newName;
-          })
-        }
-      />
-      <TypeRefField
-        isReadonly={props.isReadonly}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-        onChange={(newTypeRef) =>
-          updater((dmnObject) => {
-            dmnObject["@_typeRef"] = newTypeRef;
-          })
-        }
-      />
-      {itemDefinition && (
-        <FormGroup label="Constraint">
-          <Constraints
-            isReadonly={true}
-            itemDefinition={itemDefinition}
-            editItemDefinition={() => {}}
-            renderOnPropertiesPanel={true}
-          />
-        </FormGroup>
-      )}
       <DescriptionField
         isReadonly={props.isReadonly}
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
@@ -112,44 +80,68 @@ export function DecisionTableOutputHeaderCell(props: {
         <PropertiesPanelHeader
           expands={true}
           fixed={false}
-          isSectionExpanded={isDefaultOutputEntryExpanded}
-          toogleSectionExpanded={() => setDefaultOutputEntryExpanded((prev) => !prev)}
-          title={"Default Output Entry"}
+          isSectionExpanded={isInputExpressionExpanded}
+          toogleSectionExpanded={() => setInputExpressionExpanded((prev) => !prev)}
+          title={"Input Expression"}
         />
-        {isDefaultOutputEntryExpanded && (
+        {isInputExpressionExpanded && (
           <>
-            <ExpressionLanguageField
+            <NameField
+              id={inputExpression["@_id"] ?? ""}
               isReadonly={props.isReadonly}
-              initialValue={defaultOutputEntry?.["@_expressionLanguage"] ?? ""}
-              expressionPath={selectedObjectInfos?.expressionPath ?? []}
-              onChange={(newExpressionLanguage) =>
+              name={inputExpression?.text?.__$$text ?? ""}
+              allUniqueNames={new Map()}
+              onChange={(newName) =>
                 updater((dmnObject) => {
-                  dmnObject.defaultOutputEntry ??= {};
-                  dmnObject.defaultOutputEntry["@_expressionLanguage"] = newExpressionLanguage;
+                  dmnObject.inputExpression ??= {};
+                  dmnObject.inputExpression.text ??= { __$$text: "" };
+                  dmnObject.inputExpression.text.__$$text = newName;
                 })
               }
             />
-            <ContentField
+            <TypeRefField
               isReadonly={props.isReadonly}
-              initialValue={defaultOutputEntry?.text?.__$$text ?? ""}
-              expressionPath={selectedObjectInfos?.expressionPath ?? []}
-              onChange={(newText) =>
+              dmnEditorRootElementRef={dmnEditorRootElementRef}
+              typeRef={inputExpression?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+              onChange={(newTypeRef) =>
                 updater((dmnObject) => {
-                  dmnObject.defaultOutputEntry ??= { text: { __$$text: "" } };
-                  dmnObject.defaultOutputEntry.text ??= { __$$text: "" };
-                  dmnObject.defaultOutputEntry.text.__$$text = newText;
+                  dmnObject.inputExpression ??= {};
+                  dmnObject.inputExpression["@_typeRef"] = newTypeRef;
+                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues["@_typeRef"] = newTypeRef;
+                })
+              }
+            />
+            {inputExpressionItemDefinition && (
+              <FormGroup label="Constraint">
+                <Constraints
+                  isReadonly={true}
+                  itemDefinition={inputExpressionItemDefinition}
+                  editItemDefinition={() => {}}
+                  renderOnPropertiesPanel={true}
+                />
+              </FormGroup>
+            )}
+            <ExpressionLanguageField
+              isReadonly={props.isReadonly}
+              initialValue={inputExpression?.["@_expressionLanguage"] ?? ""}
+              expressionPath={selectedObjectInfos?.expressionPath ?? []}
+              onChange={(newExpressionLanguage) =>
+                updater((dmnObject) => {
+                  dmnObject.inputExpression ??= {};
+                  dmnObject.inputExpression["@_expressionLanguage"] = newExpressionLanguage;
                 })
               }
             />
             <DescriptionField
               isReadonly={props.isReadonly}
-              initialValue={defaultOutputEntry?.description?.__$$text ?? ""}
+              initialValue={inputExpression?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription) =>
                 updater((dmnObject) => {
-                  dmnObject.defaultOutputEntry ??= { description: { __$$text: "" } };
-                  dmnObject.defaultOutputEntry.description ??= { __$$text: "" };
-                  dmnObject.defaultOutputEntry.description.__$$text = newDescription;
+                  dmnObject.inputExpression ??= {};
+                  dmnObject.inputExpression.description ??= { __$$text: "" };
+                  dmnObject.inputExpression.description.__$$text = newDescription;
                 })
               }
             />
@@ -160,43 +152,44 @@ export function DecisionTableOutputHeaderCell(props: {
         <PropertiesPanelHeader
           expands={true}
           fixed={false}
-          isSectionExpanded={isOutputValuesExpanded}
-          toogleSectionExpanded={() => setOutputValuesExpanded((prev) => !prev)}
-          title={"Output Values"}
+          isSectionExpanded={isInputValuesExpanded}
+          toogleSectionExpanded={() => setInputValuesExpanded((prev) => !prev)}
+          title={"Input Values"}
         />
-        {isOutputValuesExpanded && (
+        {isInputValuesExpanded && (
           <>
             <ExpressionLanguageField
               isReadonly={props.isReadonly}
-              initialValue={outputValues?.["@_expressionLanguage"] ?? ""}
+              initialValue={inputValues?.["@_expressionLanguage"] ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.outputValues ??= { text: { __$$text: "" } };
-                  dmnObject.outputValues["@_expressionLanguage"] = newExpressionLanguage;
+                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues["@_expressionLanguage"] = newExpressionLanguage;
                 })
               }
             />
             <ContentField
               isReadonly={props.isReadonly}
-              initialValue={outputValues?.text?.__$$text ?? ""}
+              initialValue={inputValues?.text?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newText) =>
                 updater((dmnObject) => {
-                  dmnObject.outputValues ??= { text: { __$$text: "" } };
-                  dmnObject.outputValues.text.__$$text = newText;
+                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues.text ??= { __$$text: "" };
+                  dmnObject.inputValues.text.__$$text = newText;
                 })
               }
             />
             <DescriptionField
               isReadonly={props.isReadonly}
-              initialValue={outputValues?.description?.__$$text ?? ""}
+              initialValue={inputValues?.description?.__$$text ?? ""}
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newDescription: string) =>
                 updater((dmnObject) => {
-                  dmnObject.outputValues ??= { text: { __$$text: "" } };
-                  dmnObject.outputValues.description ??= { __$$text: "" };
-                  dmnObject.outputValues.description.__$$text = newDescription;
+                  dmnObject.inputValues ??= { text: { __$$text: "" } };
+                  dmnObject.inputValues.description ??= { __$$text: "" };
+                  dmnObject.inputValues.description.__$$text = newDescription;
                 })
               }
             />

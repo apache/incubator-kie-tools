@@ -19,17 +19,13 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DescriptionField, TextInputField } from "./Fields";
-import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionMap";
+import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
+import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
-import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
-import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { InformationItemCell } from "./InformationItemCell";
 
-type FunctionDefinitionRoot = Pick<DMN15__tFunctionDefinition, "@_kind" | "@_typeRef" | "description">;
-
-export function FunctionDefinitionRootCell(props: {
+export function RelationInformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadonly: boolean;
 }) {
@@ -39,28 +35,28 @@ export function FunctionDefinitionRootCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<FunctionDefinitionRoot>(selectedObjectInfos?.expressionPath ?? []);
-
-  const cell = useMemo(() => selectedObjectInfos?.cell as FunctionDefinitionRoot, [selectedObjectInfos?.cell]);
+  const updater = useBoxedExpressionUpdater<DMN15__tInformationItem>(selectedObjectInfos?.expressionPath ?? []);
 
   return (
     <>
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
-          {selectedObjectId}
-        </ClipboardCopy>
-      </FormGroup>
-      <TextInputField title={"Kind"} isReadonly={true} initialValue={cell["@_kind"] ?? ""} />
-      <DescriptionField
-        isReadonly={props.isReadonly}
-        initialValue={cell.description?.__$$text ?? ""}
-        expressionPath={selectedObjectInfos?.expressionPath ?? []}
-        onChange={(newDescription: string) =>
+      <InformationItemCell
+        {...props}
+        onDescriptionChange={(newDescription) => {
           updater((dmnObject) => {
             dmnObject.description ??= { __$$text: "" };
             dmnObject.description.__$$text = newDescription;
-          })
-        }
+          });
+        }}
+        onNameChange={(newName) => {
+          updater((dmnObject) => {
+            dmnObject["@_name"] = newName;
+          });
+        }}
+        onTypeRefChange={(newTypeRef) => {
+          updater((dmnObject) => {
+            dmnObject["@_typeRef"] = newTypeRef;
+          });
+        }}
       />
     </>
   );

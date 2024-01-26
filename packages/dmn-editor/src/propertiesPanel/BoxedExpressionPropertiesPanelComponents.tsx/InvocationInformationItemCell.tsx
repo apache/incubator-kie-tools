@@ -19,13 +19,16 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionMap";
-import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
+import {
+  DMN15__tInformationItem,
+  DMN15__tInvocation,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { InformationItemCell } from "./InformationItemCell";
 
-export function RelationInformationItemCell(props: {
+export function InvocationInformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadonly: boolean;
 }) {
@@ -35,7 +38,17 @@ export function RelationInformationItemCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
+  const cellPath = useMemo(
+    () => selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1],
+    [selectedObjectInfos?.expressionPath]
+  );
+  const rootPath = useMemo(
+    () => props.boxedExpressionIndex?.get(cellPath?.root ?? "")?.expressionPath,
+    [cellPath?.root, props.boxedExpressionIndex]
+  );
+
   const updater = useBoxedExpressionUpdater<DMN15__tInformationItem>(selectedObjectInfos?.expressionPath ?? []);
+  const rootExpressionUpdater = useBoxedExpressionUpdater<DMN15__tInvocation>(rootPath ?? []);
 
   return (
     <>
@@ -55,6 +68,14 @@ export function RelationInformationItemCell(props: {
         onTypeRefChange={(newTypeRef) => {
           updater((dmnObject) => {
             dmnObject["@_typeRef"] = newTypeRef;
+          });
+          rootExpressionUpdater((dmnObject) => {
+            if (cellPath?.type === "invocation") {
+              const expression = (dmnObject as DMN15__tInvocation).binding![cellPath.row ?? 0].expression;
+              if (expression) {
+                expression["@_typeRef"] = newTypeRef;
+              }
+            }
           });
         }}
       />

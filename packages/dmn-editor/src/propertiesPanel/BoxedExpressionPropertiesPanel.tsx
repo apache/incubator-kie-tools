@@ -29,30 +29,30 @@ import { useMemo } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
+import { generateBoxedExpressionIndex } from "../boxedExpressions/boxedExpressionIndex";
+import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
+import { RelationInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/RelationInformationItemCell";
+import { DecisionTableInputHeaderCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableInputHeaderCell";
+import { DecisionTableOutputHeaderCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableOutputHeaderCell";
+import { LiteralExpressionContentCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/LiteralExpressionContentCell";
+import { ExpressionRootCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/ExpressionRootCell";
+import { DecisionTableInputRule } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableInputRuleCell";
+import { AllExpressions } from "../dataTypes/DataTypeSpec";
+import { DecisionTableRootCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableRootCell";
+import { InvocationFunctionCallCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/InvocationFunctionCallCell";
+import { FunctionDefinitionParameterCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/FunctionDefinitionParametersCell";
+import { FunctionDefinitionRootCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/FunctionDefinitionRootCell";
+import { NoneCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/NoneCell";
+import { DecisionTableOutputRuleCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableOutputRuleCell";
+import { ContextInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/ContextInformationItemCell";
+import { InvocationInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/InvocationInformationItemCell";
+import { SelectExpressionCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/SelectExpressionCell";
 import {
   BoxedExpressionPropertiesPanelComponent,
-  generateBoxedExpressionIndex,
   getBoxedExpressionPropertiesPanelComponent,
-} from "../boxedExpressions/boxedExpressionMap";
-import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { RelationInformationItemCell } from "./BeePropertiesPanelComponents.tsx/RelationInformationItemCell";
-import { DecisionTableInputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableInputHeaderCell";
-import { DecisionTableOutputHeaderCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableOutputHeaderCell";
-import { LiteralExpressionContentCell } from "./BeePropertiesPanelComponents.tsx/LiteralExpressionContentCell";
-import { ExpressionRootCell } from "./BeePropertiesPanelComponents.tsx/ExpressionRootCell";
-import { DecisionTableInputRule } from "./BeePropertiesPanelComponents.tsx/DecisionTableInputRuleCell";
-import { AllExpressions } from "../dataTypes/DataTypeSpec";
-import { DecisionTableRootCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableRootCell";
-import { InvocationFunctionCallCell } from "./BeePropertiesPanelComponents.tsx/InvocationFunctionCallCell";
-import { FunctionDefinitionParameterCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionParametersCell";
-import { FunctionDefinitionRootCell } from "./BeePropertiesPanelComponents.tsx/FunctionDefinitionRootCell";
-import { NoneCell } from "./BeePropertiesPanelComponents.tsx/NoneCell";
-import { DecisionTableOutputRuleCell } from "./BeePropertiesPanelComponents.tsx/DecisionTableOutputRuleCell";
-import { ContextInformationItemCell } from "./BeePropertiesPanelComponents.tsx/ContextInformationItemCell";
-import { InvocationInformationItemCell } from "./BeePropertiesPanelComponents.tsx/InvocationInformationItemCell";
-import { SelectExpressionCell } from "./BeePropertiesPanelComponents.tsx/SelectExpressionCell";
+} from "./BoxedExpressionPropertiesPanelComponents.tsx/getBoxedExpressionPropertiesPanelComponent";
 
-export function BeePropertiesPanel() {
+export function BoxedExpressionPropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);

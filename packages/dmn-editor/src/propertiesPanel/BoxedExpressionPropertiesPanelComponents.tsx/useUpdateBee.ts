@@ -18,7 +18,7 @@
  */
 
 import { useCallback, useMemo } from "react";
-import { ExpressionPath, getDmnObjectByPath } from "../../boxedExpressions/boxedExpressionMap";
+import { ExpressionPath, getDmnObjectByPath } from "../../boxedExpressions/boxedExpressionIndex";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,

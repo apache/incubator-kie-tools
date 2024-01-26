@@ -19,16 +19,13 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionMap";
-import {
-  DMN15__tInformationItem,
-  DMN15__tInvocation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
+import { DMN15__tContext, DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/Store";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { InformationItemCell } from "./InformationItemCell";
 
-export function InvocationInformationItemCell(props: {
+export function ContextInformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadonly: boolean;
 }) {
@@ -48,7 +45,7 @@ export function InvocationInformationItemCell(props: {
   );
 
   const updater = useBoxedExpressionUpdater<DMN15__tInformationItem>(selectedObjectInfos?.expressionPath ?? []);
-  const rootExpressionUpdater = useBoxedExpressionUpdater<DMN15__tInvocation>(rootPath ?? []);
+  const rootExpressionUpdater = useBoxedExpressionUpdater<DMN15__tContext>(rootPath ?? []);
 
   return (
     <>
@@ -70,8 +67,8 @@ export function InvocationInformationItemCell(props: {
             dmnObject["@_typeRef"] = newTypeRef;
           });
           rootExpressionUpdater((dmnObject) => {
-            if (cellPath?.type === "invocation") {
-              const expression = (dmnObject as DMN15__tInvocation).binding![cellPath.row ?? 0].expression;
+            if (cellPath?.type === "context") {
+              const expression = (dmnObject as DMN15__tContext).contextEntry![cellPath.row ?? 0].expression;
               if (expression) {
                 expression["@_typeRef"] = newTypeRef;
               }

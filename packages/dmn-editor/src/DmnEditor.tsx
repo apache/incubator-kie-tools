@@ -46,7 +46,7 @@ import {
 } from "./store/Store";
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
+import { BoxedExpressionPropertiesPanel } from "./propertiesPanel/BoxedExpressionPropertiesPanel";
 import { DmnEditorDerivedStoreContextProvider, useDmnEditorDerivedStore } from "./store/DerivedStore";
 import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
 import { DmnEditorExternalModelsContextProvider } from "./includedModels/DmnEditorDependenciesContext";
@@ -305,7 +305,7 @@ export const DmnEditorInternal = ({
   }, [dmn.model.definitions.import?.length, dmn.model.definitions.itemDefinition?.length]);
 
   const diagramPropertiesPanel = useMemo(() => <DiagramPropertiesPanel />, []);
-  const beePropertiesPanel = useMemo(() => <BeePropertiesPanel />, []);
+  const beePropertiesPanel = useMemo(() => <BoxedExpressionPropertiesPanel />, []);
 
   return (
     <div ref={dmnEditorRootElementRef} className={"kie-dmn-editor--root"}>
