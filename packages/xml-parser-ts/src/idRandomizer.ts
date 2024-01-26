@@ -52,23 +52,18 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     attr,
     __$$element,
   }: {
-    json: any;
+    json: any | undefined;
     type: X;
     attr: keyof M[X];
     __$$element?: string;
     parentJson?: any;
   }): XmlParserTsIdRandomizer<M> {
-    if (json === undefined) {
-      console.debug(`ID RANDOMIZER: ack: ${String(type)}.${String(attr)}: ${json}. skip.`);
-      return this;
-    }
-
     const rootMetaProp = this.args.meta[type][attr];
-    const resolvedRootMetaPropTypeName = this.args.elements[__$$element ?? json.__$$element] ?? rootMetaProp.type;
+    const resolvedRootMetaPropTypeName = this.args.elements[__$$element ?? json?.__$$element] ?? rootMetaProp.type;
 
     // Array
     if (rootMetaProp.isArray) {
-      for (const j of json as any[]) {
+      for (const j of (json ?? []) as any[]) {
         const resolvedMetaTypeName = this.args.elements[__$$element ?? j.__$$element] ?? resolvedRootMetaPropTypeName;
         const resolvedMetaType = this.args.meta[resolvedMetaTypeName];
 
@@ -85,14 +80,16 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
 
     // Object
     else if (this.args.meta[resolvedRootMetaPropTypeName]) {
-      const resolvedMetaType = this.args.meta[resolvedRootMetaPropTypeName];
-      for (const metaPropName in resolvedMetaType) {
-        this.ack({
-          json: json[metaPropName],
-          parentJson: json,
-          attr: metaPropName,
-          type: resolvedRootMetaPropTypeName,
-        });
+      if (json !== undefined) {
+        const resolvedMetaType = this.args.meta[resolvedRootMetaPropTypeName];
+        for (const metaPropName in resolvedMetaType) {
+          this.ack({
+            json: json[metaPropName],
+            parentJson: json,
+            attr: metaPropName,
+            type: resolvedRootMetaPropTypeName,
+          });
+        }
       }
     }
 
@@ -102,29 +99,38 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
 
       // ID, IDREF
       if (rootMetaProp.xsdType === "xsd:ID" || rootMetaProp.xsdType === "xsd:IDREF") {
-        const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
-          console.debug(
-            `ID RANDOMIZER: [ID,IDREF] Updating id from ${parentJson[attr]} to ${newId} @ (${String(type)}.${String(
-              attr
-            )}: ${json})`
-          );
-          return (parentJson[attr] = newId);
-        };
-        this.updaters.set(json, [...(this.updaters.get(json) ?? []), u]);
+        // On leaf values, `json` is the string representing an xsd:ID or an xsd:IDREF.
+        // When `json` === undefined it means that an object that has an xsd:ID property doesn't have an id.
+        // In other words `parentJson` is an undentified object.
+        // The second condition of this if statement allows attributing an id to an xsd:ID property
+        // that previously wasn't defined.
+        if (json !== undefined || (json === undefined && rootMetaProp.xsdType === "xsd:ID")) {
+          const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
+            console.debug(
+              `ID RANDOMIZER: [ID,IDREF] Updating id from ${parentJson[attr]} to ${newId} @ (${String(type)}.${String(
+                attr
+              )}: ${json})`
+            );
+            return (parentJson[attr] = newId);
+          };
+          this.updaters.set(json, [...(this.updaters.get(json) ?? []), u]);
+        }
       }
 
       // QName
       else if (rootMetaProp.xsdType === "xsd:QName") {
-        const qname = parseXmlQName(json);
-        const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
-          console.debug(
-            `ID RANDOMIZER: [QName] Updating id from ${qname.localPart} to ${newId} @ (${String(type)}.${String(
-              attr
-            )}: ${json})`
-          );
-          return (parentJson[attr] = buildXmlQName({ ...qname, localPart: newId }));
-        };
-        this.updaters.set(qname.localPart, [...(this.updaters.get(qname.localPart) ?? []), u]);
+        if (json !== undefined) {
+          const qname = parseXmlQName(json);
+          const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
+            console.debug(
+              `ID RANDOMIZER: [QName] Updating id from ${qname.localPart} to ${newId} @ (${String(type)}.${String(
+                attr
+              )}: ${json})`
+            );
+            return (parentJson[attr] = buildXmlQName({ ...qname, localPart: newId }));
+          };
+          this.updaters.set(qname.localPart, [...(this.updaters.get(qname.localPart) ?? []), u]);
+        }
       }
 
       // Custom matchers
@@ -150,9 +156,18 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
 
   public randomize(): void {
     for (const [id, us] of this.updaters) {
-      const newId = this.args.newIdGenerator();
-      for (const u of us) {
-        u({ newId });
+      // Generates new unique id's for all properties of type xsd:ID that were undefined.
+      if (id === undefined) {
+        for (const u of us) {
+          u({ newId: this.args.newIdGenerator() });
+        }
+      }
+      // Generates a new id an updates all references to the old one with the same value.
+      else {
+        const newId = this.args.newIdGenerator();
+        for (const u of us) {
+          u({ newId });
+        }
       }
     }
   }
