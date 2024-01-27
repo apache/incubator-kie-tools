@@ -404,6 +404,51 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 },
               },
             });
+
+            // When adding a Decision Service to a DRD, we need to bring all its encapsulated and output Decisions with it, already formatted with autolayout.
+            if (drgElement.__$$element === "decisionService") {
+              const defaultDecisionDimensions = DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid);
+
+              let i = 0;
+              for (const decision of [
+                ...(drgElement.outputDecision ?? []),
+                ...(drgElement.encapsulatedDecision ?? []),
+              ]) {
+                i++;
+
+                const decisionHref = parseXmlHref(decision["@_href"]);
+
+                const decisionQNamePrefix = decisionHref.namespace
+                  ? getXmlNamespaceDeclarationName({
+                      model: state.dmn.model.definitions,
+                      namespace: decisionHref.namespace,
+                    })
+                  : undefined;
+
+                // If there's a shape for this Decision in the DRD already, we don't need to add anything.
+                // If not, we add a new shape for it.
+                if (!state.computed(state).indexes().dmnShapesByHref.has(decision["@_href"])) {
+                  addShape({
+                    definitions: state.dmn.model.definitions,
+                    drdIndex: state.diagram.drdIndex,
+                    nodeType,
+                    shape: {
+                      "@_dmnElementRef": buildXmlQName({
+                        type: "xml-qname",
+                        localPart: decisionHref.id,
+                        prefix: decisionQNamePrefix,
+                      }),
+                      "dc:Bounds": {
+                        "@_x": dropPoint.x + 40 * i,
+                        "@_y": dropPoint.y + 40 * i,
+                        "@_width": defaultDecisionDimensions["@_width"],
+                        "@_height": defaultDecisionDimensions["@_height"],
+                      },
+                    },
+                  });
+                }
+              }
+            }
           });
 
           console.debug(`DMN DIAGRAM: Adding DRG node`, JSON.stringify(drgElement));

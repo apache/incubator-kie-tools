@@ -362,12 +362,11 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
               s.computed(s).importsByNamespace(),
             ]),
 
-          getAllFeelVariableUniqueNames: () => {
-            return computedCache.cached("getAllFeelVariableUniqueNames", computeAllFeelVariableUniqueNames, [
+          getAllFeelVariableUniqueNames: () =>
+            computedCache.cached("getAllFeelVariableUniqueNames", computeAllFeelVariableUniqueNames, [
               s.dmn.model.definitions.drgElement,
               s.dmn.model.definitions.import,
-            ]);
-          },
+            ]),
 
           getExternalModelTypesByNamespace: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
             computedCache.cached("getExternalModelTypesByNamespace", computeExternalModelsByType, [
