@@ -100,7 +100,7 @@ export function FunctionDefinitionParameterCell(props: {
                 onTypeRefChange={(newTypeRef) =>
                   updater((dmnObject) => {
                     dmnObject.formalParameter ??= [];
-                    dmnObject.formalParameter[i] ??= { "@_name": "", "@_typeRef": "" };
+                    dmnObject.formalParameter[i] ??= { "@_name": "" };
                     dmnObject.formalParameter[i]["@_typeRef"] = newTypeRef;
                   })
                 }
@@ -113,6 +113,7 @@ export function FunctionDefinitionParameterCell(props: {
                   updater((dmnObject) => {
                     dmnObject.formalParameter ??= [];
                     dmnObject.formalParameter[i] ??= { "@_name": "", description: { __$$text: "" } };
+                    dmnObject.formalParameter[i].description ??= { __$$text: "" };
                     dmnObject.formalParameter[i].description!.__$$text = newDescription;
                   });
                 }}

@@ -27,12 +27,12 @@ export function SelectExpressionCell(props: { selectedObjectId: string }) {
   return (
     <>
       <Title headingLevel={"h2"}>{"Select expression"}</Title>
-      <Text>{"The selected cell still doesn't have an expresison associate with it."}</Text>
       <FormGroup label="ID">
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {props.selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
+      <Text>{"The selected cell still doesn't have an expresison associate with it."}</Text>
     </>
   );
 }
