@@ -152,9 +152,10 @@ export const InputDataNode = React.memo(
     });
 
     const isCollection = useMemo(() => {
-      return allDataTypesById.get(
-        allTopLevelItemDefinitionUniqueNames.get(inputData.variable?.["@_typeRef"] ?? "") ?? ""
-      )?.itemDefinition?.["@_isCollection"];
+      return (
+        allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(inputData.variable?.["@_typeRef"] ?? "") ?? "")
+          ?.itemDefinition?.["@_isCollection"] ?? false
+      );
     }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, inputData.variable]);
 
     return (
@@ -279,9 +280,10 @@ export const DecisionNode = React.memo(
     });
 
     const isCollection = useMemo(() => {
-      return allDataTypesById.get(
-        allTopLevelItemDefinitionUniqueNames.get(decision.variable?.["@_typeRef"] ?? "") ?? ""
-      )?.itemDefinition?.["@_isCollection"];
+      return (
+        allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(decision.variable?.["@_typeRef"] ?? "") ?? "")
+          ?.itemDefinition?.["@_isCollection"] ?? false
+      );
     }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, decision.variable]);
 
     return (
