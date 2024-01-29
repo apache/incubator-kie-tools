@@ -28,6 +28,7 @@ interface WorkflowFormContainerProps {
   onResetForm: () => void;
   onStartWorkflowSuccess: (workflowId: string) => void;
   onStartWorkflowError: (error: any) => void;
+  targetOrigin?: string;
 }
 export const WorkflowFormContainer: React.FC<WorkflowFormContainerProps & OUIAProps> = ({
   workflowDefinitionData,
@@ -36,6 +37,7 @@ export const WorkflowFormContainer: React.FC<WorkflowFormContainerProps & OUIAPr
   onResetForm,
   ouiaId,
   ouiaSafe,
+  targetOrigin,
 }) => {
   const gatewayApi: WorkflowFormGatewayApi = useWorkflowFormGatewayApi();
 
@@ -55,12 +57,17 @@ export const WorkflowFormContainer: React.FC<WorkflowFormContainerProps & OUIAPr
             .then((id: string) => {
               onStartWorkflowSuccess(id);
             })
-            .catch((error: any) => {
-              onStartWorkflowError(error);
+            .catch((error) => {
+              const message =
+                (error?.response?.data?.message &&
+                  error?.response?.data?.message + " " + error?.response?.data?.cause) ||
+                error?.message ||
+                "Unknown error. More details in the developer tools console.";
+              onStartWorkflowError(message);
             });
         },
       }}
-      targetOrigin={window.location.origin}
+      targetOrigin={targetOrigin || window.location.origin}
       workflowDefinition={{
         workflowName: workflowDefinitionData.workflowName,
         endpoint: workflowDefinitionData.endpoint,

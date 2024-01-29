@@ -25,12 +25,14 @@ import { useWorkflowDefinitionListGatewayApi, WorkflowDefinitionListGatewayApi }
 
 interface WorkflowDefinitionListContainerProps {
   onOpenWorkflowForm: (workflowDefinition: WorkflowDefinition) => void;
+  targetOrigin?: string;
 }
 
 export const WorkflowDefinitionListContainer: React.FC<WorkflowDefinitionListContainerProps & OUIAProps> = ({
   onOpenWorkflowForm,
   ouiaId,
   ouiaSafe,
+  targetOrigin,
 }) => {
   const gatewayApi: WorkflowDefinitionListGatewayApi = useWorkflowDefinitionListGatewayApi();
 
@@ -50,7 +52,7 @@ export const WorkflowDefinitionListContainer: React.FC<WorkflowDefinitionListCon
     <EmbeddedWorkflowDefinitionList
       {...componentOuiaProps(ouiaId, "workflow-definitions-container", ouiaSafe)}
       driver={gatewayApi}
-      targetOrigin={window.location.origin}
+      targetOrigin={targetOrigin || window.location.origin}
     />
   );
 };
