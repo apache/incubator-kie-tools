@@ -29,7 +29,7 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as React from "react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
 import { DmnEditorTab, DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
@@ -141,8 +141,8 @@ export const InputDataNode = React.memo(
       [dmnEditorStoreApi, index, inputData]
     );
 
-    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
-
+    const { allFeelVariableUniqueNames, allTopLevelItemDefinitionUniqueNames, allDataTypesById } =
+      useDmnEditorDerivedStore();
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, inputData["@_name"]);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
@@ -151,10 +151,17 @@ export const InputDataNode = React.memo(
       isEnabled: diagram.overlays.enableStyles,
     });
 
+    const isCollection = useMemo(() => {
+      return allDataTypesById.get(
+        allTopLevelItemDefinitionUniqueNames.get(inputData.variable?.["@_typeRef"] ?? "") ?? ""
+      )?.itemDefinition?.["@_isCollection"];
+    }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, inputData.variable]);
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <InputDataNodeSvg
+            isCollection={isCollection}
             {...nodeDimensions}
             x={0}
             y={0}
@@ -260,7 +267,8 @@ export const DecisionNode = React.memo(
       [decision, dmnEditorStoreApi, index]
     );
 
-    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+    const { allFeelVariableUniqueNames, allTopLevelItemDefinitionUniqueNames, allDataTypesById } =
+      useDmnEditorDerivedStore();
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, decision["@_name"]);
 
@@ -270,10 +278,17 @@ export const DecisionNode = React.memo(
       isEnabled: diagram.overlays.enableStyles,
     });
 
+    const isCollection = useMemo(() => {
+      return allDataTypesById.get(
+        allTopLevelItemDefinitionUniqueNames.get(decision.variable?.["@_typeRef"] ?? "") ?? ""
+      )?.itemDefinition?.["@_isCollection"];
+    }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, decision.variable]);
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <DecisionNodeSvg
+            isCollection={isCollection}
             {...nodeDimensions}
             x={0}
             y={0}
