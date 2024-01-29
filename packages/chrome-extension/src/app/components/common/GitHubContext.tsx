@@ -54,17 +54,14 @@ export function getCookie(name: string) {
 }
 
 export function getGitHubApiBaseUrl(baseUrl: string) {
-  let apiBaseUrl;
-  if (baseUrl.indexOf("https://") === 0) {
-    apiBaseUrl = "https://api." + baseUrl.slice(8);
-  } else if (baseUrl.indexOf("http://") === 0) {
-    apiBaseUrl = "http://api." + baseUrl.slice(7);
+  if (baseUrl.startsWith("https://")) {
+    return "https://api." + baseUrl.slice(8);
+  } else if (baseUrl.startsWith("http://")) {
+    return "http://api." + baseUrl.slice(7);
   } else {
-    console.error("Not supported protocol");
+    console.error(`Unsupported protocol for GitHub API base URL: ${baseUrl}`);
     return;
   }
-
-  return apiBaseUrl;
 }
 
 let octokitInstance: Octokit;
