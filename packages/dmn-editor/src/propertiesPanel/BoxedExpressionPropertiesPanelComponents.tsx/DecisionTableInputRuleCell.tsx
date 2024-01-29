@@ -41,7 +41,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const headerItemDefinition = useMemo(() => {
+  const headerType = useMemo(() => {
     const cellPath = selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1];
     if (cellPath && cellPath.root) {
       const root = props.boxedExpressionIndex?.get(cellPath.root);
@@ -49,11 +49,11 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         root?.expressionPath[root.expressionPath.length - 1]?.type === "decisionTable" &&
         cellPath.type === "decisionTable"
       ) {
-        return allDataTypesById.get(
+        const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
             (root?.cell as DMN15__tDecisionTable)?.input?.[cellPath.column ?? 0].inputExpression["@_typeRef"] ?? ""
-          ) ?? ""
-        )?.itemDefinition;
+          ) ?? "";
+        return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
     }
   }, [
@@ -74,18 +74,22 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
-      {headerItemDefinition && (
+      {headerType && (
         <>
           <TypeRefField
             title={"Input header type"}
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
-            typeRef={headerItemDefinition["@_name"] ?? DmnBuiltInDataType.Undefined}
+            typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef ?? DmnBuiltInDataType.Undefined}
           />
+        </>
+      )}
+      {headerType?.itemDefinition && (
+        <>
           <FormGroup label="Constraint">
             <Constraints
               isReadonly={true}
-              itemDefinition={headerItemDefinition}
+              itemDefinition={headerType.itemDefinition}
               editItemDefinition={() => {}}
               renderOnPropertiesPanel={true}
             />
