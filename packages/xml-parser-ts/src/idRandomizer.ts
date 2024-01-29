@@ -154,7 +154,7 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     return this;
   }
 
-  public randomize(): void {
+  public randomize(args?: { skipAlreadyAttributedIds?: boolean }): void {
     for (const [id, us] of this.updaters) {
       // Generates new unique id's for all properties of type xsd:ID that were undefined.
       if (id === undefined) {
@@ -163,7 +163,7 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
         }
       }
       // Generates a new id an updates all references to the old one with the same value.
-      else {
+      else if (!args?.skipAlreadyAttributedIds) {
         const newId = this.args.newIdGenerator();
         for (const u of us) {
           u({ newId });

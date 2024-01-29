@@ -37,7 +37,7 @@ export function normalize(model: State["dmn"]["model"]) {
       type: "DMN15__tDefinitions",
       attr: "dmndi:DMNDI",
     })
-    .randomize();
+    .randomize({ skipAlreadyAttributedIds: true });
 
   return model;
 }
