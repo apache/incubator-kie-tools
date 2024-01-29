@@ -7,8 +7,8 @@
     {
       "run_at": "document_idle",
       "js": ["content_scripts/github.js"],
-      "matches": ["https://*.github.com/*"],
-      "all_frames": true
+      "matches": ["https://*/*", "http://*/*"],
+      "all_frames": false
     }
   ],
   "icons": { "16": "resources/icon_16.png", "48": "resources/icon_48.png", "128": "resources/icon_128.png" },

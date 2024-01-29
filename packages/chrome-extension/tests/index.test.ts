@@ -56,13 +56,19 @@ describe("discoverCurrentGitHubPageType", () => {
   test("repo home", async () => {
     setWindowLocationPathname("github.com/organization/repositoryName");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.REPO_HOME);
+    expect(type).toStrictEqual(GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL);
   });
 
   test("repo home with branch", async () => {
     setWindowLocationPathname("github.com/organization/repositoryName/tree/main");
     const type = index.discoverCurrentGitHubPageType();
     expect(type).toStrictEqual(GitHubPageType.REPO_HOME);
+  });
+
+  test("repo folder with branch", async () => {
+    setWindowLocationPathname("github.com/organization/repositoryName/tree/main/some/folders/here");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.NOT_SUPPORTED);
   });
 
   test("pr home", async () => {
@@ -74,18 +80,24 @@ describe("discoverCurrentGitHubPageType", () => {
   test("pr files", async () => {
     setWindowLocationPathname("/org/repo/pull/1/files");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.PR_FILES_OR_COMMITS);
+    expect(type).toStrictEqual(GitHubPageType.PR_FILES);
   });
 
   test("pr commit", async () => {
     setWindowLocationPathname("/org/repo/pull/1/commits");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.PR_FILES_OR_COMMITS);
+    expect(type).toStrictEqual(GitHubPageType.PR_COMMITS);
+  });
+
+  test("pr checks", async () => {
+    setWindowLocationPathname("/org/repo/pull/1/checks");
+    const type = index.discoverCurrentGitHubPageType();
+    expect(type).toStrictEqual(GitHubPageType.NOT_SUPPORTED);
   });
 
   test("any", async () => {
     setWindowLocationPathname("/");
     const type = index.discoverCurrentGitHubPageType();
-    expect(type).toStrictEqual(GitHubPageType.ANY);
+    expect(type).toStrictEqual(GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL);
   });
 });

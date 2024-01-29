@@ -50,7 +50,7 @@ export function renderOpenRepoInExternalEditorApp(
     >
       {ReactDOM.createPortal(
         <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
-        GitHubPageType.REPO_HOME === args.pageType
+        GitHubPageType.REPO_HOME === args.pageType || GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL === args.pageType
           ? openRepoInExternalEditorContainerFromRepositoryHome(args.id, args.container())
           : openRepoInExternalEditorContainer(args.id, args.container())
       )}
@@ -64,6 +64,7 @@ function cleanup(id: string) {
   Array.from(document.querySelectorAll(`.${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS}.${id}`)).forEach(
     (e) => {
       removeAllChildren(e);
+      e.remove();
     }
   );
 }
