@@ -45,14 +45,12 @@ export function InlineFeelNameInput({
   onKeyDown,
   saveInvalidValue,
   enableAutoFocusing,
-  prefix,
   ...inputProps
 }: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
   id: string;
   onRenamed: OnInlineFeelNameRenamed;
   name: string;
   isReadonly: boolean;
-  prefix?: string;
   isPlain: boolean;
   shouldCommitOnBlur: boolean;
   allUniqueNames: (s: State) => UniqueNameIndex;
@@ -105,8 +103,6 @@ export function InlineFeelNameInput({
 
   return (
     <>
-      <span>{prefix}</span>
-      &nbsp;
       <input
         spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.
         ref={inputRef}
