@@ -25,7 +25,7 @@ import { snapShapeDimensions, snapShapePosition } from "../../diagram/SnapGrid";
 import { EdgeType, NodeType } from "../../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../../diagram/edges/EdgeTypes";
 import { DmnDiagramEdgeData } from "../../diagram/edges/Edges";
-import { EdgeVisitor, NodeVisitor, getAdjMatrix, traverse } from "../../diagram/graph/graph";
+import { DrgEdge, EdgeVisitor, NodeVisitor, getAdjMatrix, traverse } from "../../diagram/graph/graph";
 import { getNodeTypeFromDmnObject } from "../../diagram/maths/DmnMaths";
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "../../diagram/nodes/DefaultSizes";
 import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../../diagram/nodes/NodeSvgs";
@@ -86,6 +86,8 @@ export function computeDiagramData(
   // console.time("edges");
   const edges: RF.Edge<DmnDiagramEdgeData>[] = [];
 
+  const drgEdges: DrgEdge[] = [];
+
   const ackEdge: AckEdge = ({ id, type, dmnObject, source, target }) => {
     const data = {
       dmnObject,
@@ -110,6 +112,8 @@ export function computeDiagramData(
 
     edges.push(edge);
 
+    drgEdges.push({ id, sourceId: source, targetId: target, dmnObject });
+
     return edge;
   };
 
@@ -123,11 +127,11 @@ export function computeDiagramData(
     }
 
     ackEdge({
-      id: dmnObject["@_id"] ?? "",
+      id: dmnObject["@_id"]!,
       dmnObject: {
         namespace: definitions["@_namespace"],
         type: dmnObject.__$$element,
-        id: dmnObject["@_id"] ?? "",
+        id: dmnObject["@_id"]!,
         requirementType: "association",
         index,
       },
@@ -311,10 +315,11 @@ export function computeDiagramData(
 
   // console.timeEnd("nodes");
   if (diagram.overlays.enableNodeHierarchyHighlight) {
-    assignClassesToHighlightedHierarchyNodes(diagram._selectedNodes, nodesById, edges);
+    assignClassesToHighlightedHierarchyNodes(diagram._selectedNodes, nodesById, edgesById, drgEdges);
   }
 
   return {
+    drgEdges,
     nodes: sortedNodes,
     edges: sortedEdges,
     edgesById,
@@ -340,11 +345,11 @@ function ackRequirementEdges(
       (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
         const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
         ackEdge({
-          id: ir["@_id"] ?? "",
+          id: ir["@_id"]!,
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,
-            id: dmnObject["@_id"] ?? "",
+            id: dmnObject["@_id"]!,
             requirementType: "informationRequirement",
             index,
           },
@@ -359,11 +364,11 @@ function ackRequirementEdges(
       (dmnObject.knowledgeRequirement ?? []).forEach((kr, index) => {
         const krHref = parseXmlHref(kr.requiredKnowledge["@_href"]);
         ackEdge({
-          id: kr["@_id"] ?? "",
+          id: kr["@_id"]!,
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,
-            id: dmnObject["@_id"] ?? "",
+            id: dmnObject["@_id"]!,
             requirementType: "knowledgeRequirement",
             index,
           },
@@ -382,11 +387,11 @@ function ackRequirementEdges(
       (dmnObject.authorityRequirement ?? []).forEach((ar, index) => {
         const arHref = parseXmlHref((ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)!["@_href"]);
         ackEdge({
-          id: ar["@_id"] ?? "",
+          id: ar["@_id"]!,
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,
-            id: dmnObject["@_id"] ?? "",
+            id: dmnObject["@_id"]!,
             requirementType: "authorityRequirement",
             index,
           },
@@ -402,7 +407,8 @@ function ackRequirementEdges(
 export function assignClassesToHighlightedHierarchyNodes(
   selected: string[],
   nodesById: Map<string, RF.Node>,
-  edges: RF.Edge[]
+  edgesById: Map<string, RF.Edge>,
+  drgEdges: DrgEdge[]
 ) {
   const nodeVisitor: NodeVisitor = (nodeId, traversalDirection) => {
     const node = nodesById.get(nodeId);
@@ -412,11 +418,14 @@ export function assignClassesToHighlightedHierarchyNodes(
   };
 
   const edgeVisitor: EdgeVisitor = (edge, traversalDirection) => {
-    edge.className = `hierarchy ${traversalDirection}`;
+    const rfEdge = edgesById.get(edge.id);
+    if (rfEdge) {
+      rfEdge.className = `hierarchy ${traversalDirection}`;
+    }
   };
 
   const __selectedSet = new Set(selected);
-  const __adjMatrix = getAdjMatrix(edges);
+  const __adjMatrix = getAdjMatrix(drgEdges);
 
   traverse(__adjMatrix, __selectedSet, selected, "up", nodeVisitor, edgeVisitor);
   traverse(__adjMatrix, __selectedSet, selected, "down", nodeVisitor, edgeVisitor); // Traverse "down" after "up" because when there's a cycle, highlighting a node as a dependency is preferable.

@@ -103,10 +103,11 @@ export function AutolayoutButton() {
     const snapGrid = state.diagram.snapGrid;
     const nodesById = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById;
     const edgesById = state.computed(state).getDiagramData(externalModelsByNamespace).edgesById;
-    const nodes = [...nodesById.values()];
-    const edges = [...edgesById.values()];
+    const nodes = state.computed(state).getDiagramData(externalModelsByNamespace).nodes;
+    const edges = state.computed(state).getDiagramData(externalModelsByNamespace).edges;
+    const drgEdges = state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges;
 
-    const adjMatrix = getAdjMatrix(edges);
+    const adjMatrix = getAdjMatrix(drgEdges);
 
     // 1. First we populate the `parentNodesById` map so that we know exactly what parent nodes we're dealing with. Decision Service nodes have two fake nodes to represent Output and Encapsulated sections.
     for (const node of nodes) {

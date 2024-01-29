@@ -25,14 +25,17 @@ import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { Unpacked } from "../tsExt/tsExt";
+import { DrgEdge } from "../diagram/graph/graph";
+import { EdgeDeletionMode, deleteEdge } from "./deleteEdge";
 
 export enum NodeDeletionMode {
-  FORM_DRG_AND_DRD,
-  FROM_DRD_ONLY,
+  FORM_DRG_AND_ALL_DRDS,
+  FROM_CURRENT_DRD_ONLY,
 }
 
 export function deleteNode({
   definitions,
+  drgEdges,
   drdIndex,
   nodeNature,
   dmnObjectId,
@@ -41,6 +44,7 @@ export function deleteNode({
   mode,
 }: {
   definitions: DMN15__tDefinitions;
+  drgEdges: DrgEdge[];
   drdIndex: number;
   nodeNature: NodeNature;
   dmnObjectNamespace: string | undefined;
@@ -49,17 +53,10 @@ export function deleteNode({
   mode: NodeDeletionMode;
 }): {
   deletedDmnObject: Unpacked<DMN15__tDefinitions["drgElement" | "artifact"]> | undefined;
-  deletedShape: DMNDI15__DMNShape | undefined;
+  deletedDmnShapeOnCurrentDrd: DMNDI15__DMNShape | undefined;
 } {
-  const { diagramElements, widthsExtension } = addOrGetDrd({ definitions, drdIndex });
-
-  //
-  // NOTE
-  //
-  // Edges are NOT deleted here. Edges need to be deleted by separate calls to `deleteEdge`.
-
   if (
-    mode === NodeDeletionMode.FROM_DRD_ONLY &&
+    mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
     !canRemoveNodeFromDrdOnly({
       definitions,
       drdIndex,
@@ -68,52 +65,97 @@ export function deleteNode({
     })
   ) {
     console.warn("DMN MUTATION: Cannot hide a Decision that's contained by a Decision Service from a DRD.");
-    return { deletedDmnObject: undefined, deletedShape: undefined };
+    return { deletedDmnObject: undefined, deletedDmnShapeOnCurrentDrd: undefined };
   }
 
-  // delete the DMNShape
-  const shapeDmnElementRef = buildXmlQName(dmnObjectQName);
-  const deletedShape = diagramElements?.splice(
-    (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === shapeDmnElementRef),
-    1
-  )[0];
+  // A DRD doesn't necessarily renders all edges of the DRG, so we need to look for what DRG edges to delete when deleting a node from any DRD.
+  if (mode === NodeDeletionMode.FORM_DRG_AND_ALL_DRDS) {
+    const nodeId = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectId! });
+    for (let i = 0; i < drgEdges.length; i++) {
+      const drgEdge = drgEdges[i];
+      // Only delete edges that end at or start from the node being deleted.
+      if (drgEdge.sourceId === nodeId || drgEdge.targetId === nodeId) {
+        deleteEdge({
+          definitions,
+          drdIndex,
+          mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+          edge: {
+            id: drgEdge.id,
+            dmnObject: drgEdge.dmnObject,
+          },
+        });
+      }
+    }
+  }
 
-  let deletedDmnObject: Unpacked<DMN15__tDefinitions["drgElement" | "artifact"]>[] | undefined;
+  let dmnObject: Unpacked<DMN15__tDefinitions["drgElement" | "artifact"]> | undefined;
 
   // External or unknown nodes don't have a dmnObject associated with it, just the shape..
   if (!dmnObjectQName.prefix) {
     // Delete the dmnObject itself
     if (nodeNature === NodeNature.ARTIFACT) {
-      if (mode === NodeDeletionMode.FORM_DRG_AND_DRD) {
+      if (mode === NodeDeletionMode.FORM_DRG_AND_ALL_DRDS) {
         const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId);
-        deletedDmnObject = definitions.artifact?.splice(nodeIndex, 1);
+        dmnObject = definitions.artifact?.splice(nodeIndex, 1)?.[0];
       }
     } else if (nodeNature === NodeNature.DRG_ELEMENT) {
       const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId);
-      const node =
-        mode === NodeDeletionMode.FORM_DRG_AND_DRD
-          ? (deletedDmnObject = definitions.drgElement?.splice(nodeIndex, 1))
-          : [definitions.drgElement?.[nodeIndex]];
-
-      const deletedIdsOnDrgElementTree = getNewDmnIdRandomizer()
-        .ack({ json: node, type: "DMN15__tDefinitions", attr: "drgElement" })
-        .getOriginalIds();
-
-      // Delete widths
-      widthsExtension["kie:ComponentWidths"] = widthsExtension["kie:ComponentWidths"]?.filter(
-        (w) => !deletedIdsOnDrgElementTree.has(w["@_dmnElementRef"]!)
-      );
+      dmnObject =
+        mode === NodeDeletionMode.FORM_DRG_AND_ALL_DRDS
+          ? definitions.drgElement?.splice(nodeIndex, 1)?.[0]
+          : definitions.drgElement?.[nodeIndex];
     } else if (nodeNature === NodeNature.UNKNOWN) {
       // Ignore. There's no dmnObject here.
     } else {
       throw new Error(`Unknown node nature '${nodeNature}'.`);
     }
+
+    if (!dmnObject) {
+      throw new Error(`DMN MUTATION: Can't delete DMN object that doesn't exist: ID=${dmnObjectId}`);
+    }
+  }
+
+  const shapeDmnElementRef = buildXmlQName(dmnObjectQName);
+
+  // Deleting the DMNShape's
+  let deletedDmnShapeOnCurrentDrd: DMNDI15__DMNShape | undefined;
+
+  const deletedIdsOnDmnObjectTree = dmnObject
+    ? getNewDmnIdRandomizer()
+        .ack({ json: [dmnObject], type: "DMN15__tDefinitions", attr: "drgElement" })
+        .getOriginalIds()
+    : new Set<string>();
+
+  const drdCount = (definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? []).length;
+  for (let i = 0; i < drdCount; i++) {
+    if (mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY && i !== drdIndex) {
+      continue;
+    }
+
+    const { diagramElements, widthsExtension } = addOrGetDrd({ definitions, drdIndex: i });
+    const dmnShapeIndex = (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === shapeDmnElementRef);
+    if (dmnShapeIndex >= 0) {
+      if (i === drdIndex) {
+        deletedDmnShapeOnCurrentDrd = diagramElements[dmnShapeIndex];
+      }
+
+      diagramElements?.splice(dmnShapeIndex, 1);
+    }
+
+    // Delete widths
+    widthsExtension["kie:ComponentWidths"] = widthsExtension["kie:ComponentWidths"]?.filter(
+      (w) => !deletedIdsOnDmnObjectTree.has(w["@_dmnElementRef"]!) // Only works because xsd:IDs are exactly the same as QNames when the QName is not prefixed.
+    );
   }
 
   repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
 
-  return { deletedDmnObject: deletedDmnObject?.[0], deletedShape };
+  return {
+    deletedDmnObject: mode === NodeDeletionMode.FORM_DRG_AND_ALL_DRDS ? dmnObject : undefined,
+    deletedDmnShapeOnCurrentDrd,
+  };
 }
+
 export function canRemoveNodeFromDrdOnly({
   definitions,
   drdIndex,

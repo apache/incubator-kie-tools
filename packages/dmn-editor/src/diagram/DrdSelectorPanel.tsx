@@ -83,7 +83,7 @@ export function DrdSelectorPanel() {
       <Divider style={{ marginBottom: "8px" }} />
       <div className={"kie-dmn-editor--drd-list"}>
         {thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.map((drd, i) => (
-          <React.Fragment key={drd["@_id"] ?? i}>
+          <React.Fragment key={drd["@_id"]!}>
             <button
               className={i === diagram.drdIndex ? "active" : undefined}
               onClick={() => {

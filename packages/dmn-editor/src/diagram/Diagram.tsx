@@ -567,7 +567,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
         const ongoingConnectionHierarchy = buildHierarchy({
           nodeId: state.diagram.ongoingConnection?.nodeId,
-          edges: reactFlowInstance?.getEdges() ?? [],
+          edges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
         });
 
         return (
@@ -743,13 +743,14 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 console.debug(`DMN DIAGRAM: 'onNodesChange' --> remove '${change.id}'`);
                 const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(change.id)!;
                 deleteNode({
+                  drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                   definitions: state.dmn.model.definitions,
                   drdIndex: state.diagram.drdIndex,
                   dmnObjectNamespace: node.data.dmnObjectNamespace,
                   dmnObjectQName: node.data.dmnObjectQName,
                   dmnObjectId: node.data.dmnObject?.["@_id"],
                   nodeNature: nodeNatures[node.type as NodeType],
-                  mode: NodeDeletionMode.FORM_DRG_AND_DRD,
+                  mode: NodeDeletionMode.FORM_DRG_AND_ALL_DRDS,
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
@@ -920,7 +921,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     definitions: state.dmn.model.definitions,
                     drdIndex: state.diagram.drdIndex,
                     edge: { id: change.id, dmnObject: edge.data.dmnObject },
-                    mode: EdgeDeletionMode.FORM_DRG_AND_DRD,
+                    mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
                   });
                   state.dispatch(state).diagram.setEdgeStatus(change.id, { selected: false, draggingWaypoint: false });
                 }
@@ -998,16 +999,16 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             keepWaypoints: true,
           });
 
-          // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints!
+          // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints on the same DRD.
           if (newDmnEdge["@_dmnElementRef"] !== oldEdge.id) {
-            const { dmnEdge: deletedDmnEdge } = deleteEdge({
+            const { deletedDmnEdgeOnCurrentDrd } = deleteEdge({
               definitions: state.dmn.model.definitions,
               drdIndex: state.diagram.drdIndex,
               edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
-              mode: EdgeDeletionMode.FORM_DRG_AND_DRD,
+              mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
             });
 
-            const deletedWaypoints = deletedDmnEdge?.["di:waypoint"];
+            const deletedWaypoints = deletedDmnEdgeOnCurrentDrd?.["di:waypoint"];
 
             if (oldEdge.source !== newConnection.source && deletedWaypoints) {
               newDmnEdge["di:waypoint"] = [newDmnEdge["di:waypoint"]![0], ...deletedWaypoints.slice(1)];
@@ -1451,6 +1452,7 @@ export function SelectionStatus() {
 export function KeyboardShortcuts(props: {}) {
   const rfStoreApi = RF.useStoreApi();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const rf = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
@@ -1535,7 +1537,7 @@ export function KeyboardShortcuts(props: {}) {
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
             edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
-            mode: EdgeDeletionMode.FORM_DRG_AND_DRD,
+            mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
           });
           state.dispatch(state).diagram.setEdgeStatus(edge.id, {
             selected: false,
@@ -1550,13 +1552,14 @@ export function KeyboardShortcuts(props: {}) {
           .forEach((node: RF.Node<DmnDiagramNodeData>) => {
             if (copiedNodesById.has(node.id)) {
               deleteNode({
+                drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                 definitions: state.dmn.model.definitions,
                 drdIndex: state.diagram.drdIndex,
                 dmnObjectNamespace: node.data.dmnObjectNamespace,
                 dmnObjectQName: node.data.dmnObjectQName,
                 dmnObjectId: node.data.dmnObject?.["@_id"],
                 nodeNature: nodeNatures[node.type as NodeType],
-                mode: NodeDeletionMode.FORM_DRG_AND_DRD,
+                mode: NodeDeletionMode.FORM_DRG_AND_ALL_DRDS,
               });
               state.dispatch(state).diagram.setNodeStatus(node.id, {
                 selected: false,
@@ -1567,7 +1570,7 @@ export function KeyboardShortcuts(props: {}) {
           });
       });
     });
-  }, [cut, dmnEditorStoreApi, rfStoreApi]);
+  }, [cut, dmnEditorStoreApi, rfStoreApi, externalModelsByNamespace]);
 
   // Copy
   const copy = RF.useKeyPress(["Meta+c"]);
@@ -1778,21 +1781,22 @@ export function KeyboardShortcuts(props: {}) {
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
             edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
-            mode: EdgeDeletionMode.FROM_DRD_ONLY,
+            mode: EdgeDeletionMode.FROM_CURRENT_DRD_ONLY,
           });
           state.dispatch(state).diagram.setEdgeStatus(edge.id, { selected: false, draggingWaypoint: false });
         }
       }
 
       for (const node of rf.getNodes().filter((s) => s.selected)) {
-        const { deletedShape } = deleteNode({
+        const { deletedDmnShapeOnCurrentDrd: deletedShape } = deleteNode({
+          drgEdges: [], // Deleting from DRD only.
           definitions: state.dmn.model.definitions,
           drdIndex: state.diagram.drdIndex,
           dmnObjectNamespace: node.data.dmnObjectNamespace,
           dmnObjectQName: node.data.dmnObjectQName,
           dmnObjectId: node.data.dmnObject?.["@_id"],
           nodeNature: nodeNatures[node.type as NodeType],
-          mode: NodeDeletionMode.FROM_DRD_ONLY,
+          mode: NodeDeletionMode.FROM_CURRENT_DRD_ONLY,
         });
 
         if (deletedShape) {

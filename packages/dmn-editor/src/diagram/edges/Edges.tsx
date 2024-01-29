@@ -17,32 +17,22 @@
  * under the License.
  */
 
-import {
-  DMN15__tDefinitions,
-  DMNDI15__DMNEdge,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as React from "react";
+import { useRef } from "react";
 import * as RF from "reactflow";
-import { Unpacked } from "../../tsExt/tsExt";
-import { PotentialWaypoint, Waypoints } from "./Waypoints";
-import { useKieEdgePath } from "./useKieEdgePath";
-import { useIsHovered } from "../useIsHovered";
-import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
-import { useAlwaysVisibleEdgeUpdatersAtNodeBorders } from "./useAlwaysVisibleEdgeUpdatersAtNodeBorders";
+import { DrgEdge } from "../graph/graph";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
 import { propsHaveSameValuesDeep } from "../memoization/memoization";
-import { useRef } from "react";
+import { useIsHovered } from "../useIsHovered";
+import { PotentialWaypoint, Waypoints } from "./Waypoints";
+import { useAlwaysVisibleEdgeUpdatersAtNodeBorders } from "./useAlwaysVisibleEdgeUpdatersAtNodeBorders";
+import { useKieEdgePath } from "./useKieEdgePath";
+import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
 
 export type DmnDiagramEdgeData = {
   dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
-  dmnObject: {
-    namespace: string;
-    id: string;
-    type: Unpacked<DMN15__tDefinitions["artifact" | "drgElement"]>["__$$element"];
-    requirementType: "informationRequirement" | "knowledgeRequirement" | "authorityRequirement" | "association";
-    index: number;
-  };
+  dmnObject: DrgEdge["dmnObject"];
   dmnShapeSource: DMNDI15__DMNShape | undefined;
   dmnShapeTarget: DMNDI15__DMNShape | undefined;
 };
