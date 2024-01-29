@@ -33,13 +33,15 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
+import { Constraints } from "../../dataTypes/Constraints";
+import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 
 export function FunctionDefinitionParameterCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadonly: boolean;
 }) {
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
-  const { dmnEditorRootElementRef } = useDmnEditor();
+
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
     [props.boxedExpressionIndex, selectedObjectId]
@@ -52,6 +54,11 @@ export function FunctionDefinitionParameterCell(props: {
 
   return (
     <>
+      <FormGroup label="ID">
+        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+          {selectedObjectId}
+        </ClipboardCopy>
+      </FormGroup>
       {cell.length === 0 && (
         <>
           <Text>{"Empty parameters list"}</Text>
@@ -72,14 +79,8 @@ export function FunctionDefinitionParameterCell(props: {
             }
             title={`Parameter ${parameter["@_name"]}`}
           />
-
           {isParameterExpanded[i] && (
             <>
-              <FormGroup label="ID">
-                <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
-                  {selectedObjectId}
-                </ClipboardCopy>
-              </FormGroup>
               <NameField
                 isReadonly={props.isReadonly}
                 id={parameter["@_id"] ?? ""}
@@ -93,17 +94,16 @@ export function FunctionDefinitionParameterCell(props: {
                   });
                 }}
               />
-              <TypeRefField
+              <FunctionDefinitionParameterTypeRef
+                parameter={parameter}
                 isReadonly={props.isReadonly}
-                dmnEditorRootElementRef={dmnEditorRootElementRef}
-                typeRef={parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-                onChange={(newTypeRef) => {
+                onTypeRefChange={(newTypeRef) =>
                   updater((dmnObject) => {
                     dmnObject.formalParameter ??= [];
                     dmnObject.formalParameter[i] ??= { "@_name": "", "@_typeRef": "" };
                     dmnObject.formalParameter[i]["@_typeRef"] = newTypeRef;
-                  });
-                }}
+                  })
+                }
               />
               <DescriptionField
                 isReadonly={props.isReadonly}
@@ -121,6 +121,41 @@ export function FunctionDefinitionParameterCell(props: {
           )}
         </FormSection>
       ))}
+    </>
+  );
+}
+
+function FunctionDefinitionParameterTypeRef(props: {
+  parameter: DMN15__tInformationItem;
+  isReadonly: boolean;
+  onTypeRefChange: (newTypeRef: string) => void;
+}) {
+  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
+  const { dmnEditorRootElementRef } = useDmnEditor();
+
+  const itemDefinition = useMemo(() => {
+    return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(props.parameter?.["@_typeRef"] ?? "") ?? "")
+      ?.itemDefinition;
+  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, props.parameter]);
+
+  return (
+    <>
+      <TypeRefField
+        isReadonly={props.isReadonly}
+        dmnEditorRootElementRef={dmnEditorRootElementRef}
+        typeRef={props.parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        onChange={props.onTypeRefChange}
+      />
+      {itemDefinition && (
+        <FormGroup label="Constraint">
+          <Constraints
+            isReadonly={true}
+            itemDefinition={itemDefinition}
+            editItemDefinition={() => {}}
+            renderOnPropertiesPanel={true}
+          />
+        </FormGroup>
+      )}
     </>
   );
 }
