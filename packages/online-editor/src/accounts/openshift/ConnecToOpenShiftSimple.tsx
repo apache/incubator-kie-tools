@@ -31,7 +31,7 @@ import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
-import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import {

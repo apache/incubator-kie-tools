@@ -36,12 +36,12 @@ import {
   mapSerializer,
   authSessionBroadcastChannel,
 } from "./AuthSessionApi";
-import { KieSandboxOpenShiftService } from "../devDeployments/services/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { isGitAuthProvider, isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
-import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 import { deleteOlderAuthSessionsStorage, migrateAuthSessions } from "./AuthSessionMigrations";
 
 export type AuthSessionsContextType = {

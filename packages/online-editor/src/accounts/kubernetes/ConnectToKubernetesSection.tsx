@@ -25,7 +25,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
 import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList";
-import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 import { EMPTY_KUBERNETES_CONNECTION } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { ConnectToLocalKubernetesClusterWizard } from "./ConnectToLocalKubernetesClusterWizard";
 import { KubernetesService, isKubernetesConnectionValid } from "../../devDeployments/services/KubernetesService";

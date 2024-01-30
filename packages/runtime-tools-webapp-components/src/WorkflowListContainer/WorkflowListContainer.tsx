@@ -29,6 +29,7 @@ interface WorkflowListContainerProps {
   onOpenWorkflowDetails: (args: { workflowId: string; state: WorkflowListState }) => void;
   onOpenTriggerCloudEvent?: () => void;
   onOpenTriggerCloudEventForWorkflow?: (workflowId: string) => void;
+  targetOrigin?: string;
 }
 
 export const WorkflowListContainer: React.FC<WorkflowListContainerProps & OUIAProps> = ({
@@ -38,6 +39,7 @@ export const WorkflowListContainer: React.FC<WorkflowListContainerProps & OUIAPr
   onOpenTriggerCloudEventForWorkflow,
   ouiaId,
   ouiaSafe,
+  targetOrigin,
 }) => {
   const gatewayApi: WorkflowListGatewayApi = useWorkflowListGatewayApi();
 
@@ -67,7 +69,7 @@ export const WorkflowListContainer: React.FC<WorkflowListContainerProps & OUIAPr
     <EmbeddedWorkflowList
       {...componentOuiaProps(ouiaId, "workflow-list-container", ouiaSafe)}
       driver={gatewayApi}
-      targetOrigin={window.location.origin}
+      targetOrigin={targetOrigin || window.location.origin}
       initialState={initialState}
     />
   );

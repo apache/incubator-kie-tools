@@ -159,10 +159,24 @@ export const InputDataNode = React.memo(
 
     const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
 
+    const { externalModelsByNamespace } = useExternalModels();
+
+    const isCollection = useDmnEditorStore((s) => {
+      const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = s
+        .computed(s)
+        .getDataTypes(externalModelsByNamespace);
+
+      return (
+        allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(inputData.variable?.["@_typeRef"] ?? "") ?? "")
+          ?.itemDefinition?.["@_isCollection"] ?? false
+      );
+    });
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
           <InputDataNodeSvg
+            isCollection={isCollection}
             {...nodeDimensions}
             x={0}
             y={0}
@@ -286,10 +300,25 @@ export const DecisionNode = React.memo(
     });
 
     const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
+
+    const { externalModelsByNamespace } = useExternalModels();
+
+    const isCollection = useDmnEditorStore((s) => {
+      const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = s
+        .computed(s)
+        .getDataTypes(externalModelsByNamespace);
+
+      return (
+        allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(decision.variable?.["@_typeRef"] ?? "") ?? "")
+          ?.itemDefinition?.["@_isCollection"] ?? false
+      );
+    });
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
           <DecisionNodeSvg
+            isCollection={isCollection}
             {...nodeDimensions}
             x={0}
             y={0}

@@ -140,13 +140,6 @@ export default async (env: any, argv: any) => {
                 from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
                 to: "./images",
               },
-              {
-                from: path.join(
-                  path.dirname(require.resolve("@kie-tools/dev-deployment-upload-service/package.json")),
-                  "/dist"
-                ),
-                to: "./dev-deployments/upload-service",
-              },
             ],
           }),
           new ProvidePlugin({
@@ -173,7 +166,7 @@ export default async (env: any, argv: any) => {
         ],
       }),
       devServer: {
-        https: buildEnv.onlineEditor.dev.https,
+        server: buildEnv.onlineEditor.dev.https ? "https" : "http",
         port: buildEnv.onlineEditor.dev.port,
         historyApiFallback: false,
         static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
@@ -181,6 +174,7 @@ export default async (env: any, argv: any) => {
         client: {
           overlay: false,
         },
+        allowedHosts: "all",
       },
     },
   ];

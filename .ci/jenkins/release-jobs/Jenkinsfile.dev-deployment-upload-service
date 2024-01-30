@@ -1,0 +1,190 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+pipeline {
+    agent {
+        docker {
+            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            args '--shm-size=2g --privileged --group-add docker'
+        }
+    }
+
+    options {
+        timeout(time: 60, unit: 'MINUTES')
+    }
+
+    parameters {
+        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
+        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
+    }
+
+    environment {
+        KIE_TOOLS_BUILD__runLinters = 'false'
+        KIE_TOOLS_BUILD__runTests = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
+        KIE_TOOLS_BUILD__buildContainerImages = 'true'
+
+        PNPM_FILTER_STRING = '-F @kie-tools/dev-deployment-upload-service...'
+    }
+
+    stages {
+        stage('Load local shared scripts') {
+            steps {
+                script {
+                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+                }
+            }
+        }
+
+        stage('Start required services for build and tests (DinD, Xvfb, Fluxbox)') {
+            steps {
+                script {
+                    buildUtils.startRequiredServices()
+                }
+            }
+        }
+
+        stage('Clean workspace before build') {
+            steps {
+                cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Checkout kie-tools') {
+            steps {
+                script {
+                    githubUtils.checkoutRepo(
+                        "http://github.com/${pipelineVars.githubRepositorySlug}.git",
+                        "${params.BASE_REF}",
+                        "${pipelineVars.kieToolsBotGithubCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Setup PNPM') {
+            steps {
+                script {
+                    buildUtils.setupPnpm()
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                    }
+                }
+            }
+        }
+
+        stage('Upload Dev Deployment Upload Service assets') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    // macOS - amd64 - tar.gz
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-amd64-${params.TAG}.tar.gz",
+                        "dev-deployment-upload-service-darwin-amd64-${params.TAG}.tar.gz",
+                        'application/tar+gzip',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                    // macOS - amd64 - tar.gz.sha256
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-amd64-${params.TAG}.tar.gz.sha256",
+                        "dev-deployment-upload-service-darwin-amd64-${params.TAG}.tar.gz.sha256",
+                        'text/plain',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                    // macOS - arm64 - tar.gz
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-arm64-${params.TAG}.tar.gz",
+                        "dev-deployment-upload-service-darwin-arm64-${params.TAG}.tar.gz",
+                        'application/tar+gzip',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                    // macOS - arm64 - tar.gz.sha256
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-darwin-arm64-${params.TAG}.tar.gz.sha256",
+                        "dev-deployment-upload-service-darwin-arm64-${params.TAG}.tar.gz.sha256",
+                        'text/plain',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                    // linux - amd64 - tar.gz
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.TAG}.tar.gz",
+                        "dev-deployment-upload-service-linux-amd64-${params.TAG}.tar.gz",
+                        'application/tar+gzip',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                    // linux - amd64 - tar.gz.sha256
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64-${params.TAG}.tar.gz.sha256",
+                        "dev-deployment-upload-service-linux-amd64-${params.TAG}.tar.gz.sha256",
+                        'text/plain',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                    // windows - amd64 - tar.gz
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.TAG}.tar.gz",
+                        "dev-deployment-upload-service-windows-amd64-${params.TAG}.tar.gz",
+                        'application/tar+gzip',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                    // windows - amd64 - tar.gz.sha256
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "packages/dev-deployment-upload-service/dist/dev-deployment-upload-service-windows-amd64-${params.TAG}.tar.gz.sha256",
+                        "dev-deployment-upload-service-windows-amd64-${params.TAG}.tar.gz.sha256",
+                        'text/plain',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs(deleteDirs: true)
+        }
+    }
+}
