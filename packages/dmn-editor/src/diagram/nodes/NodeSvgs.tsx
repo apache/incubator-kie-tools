@@ -384,7 +384,7 @@ export const UnknownNodeSvg = (_props: NodeSvgProps & { strokeDasharray?: string
 function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom" }) {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
 
-  const positionX = x + width / 2;
+  const xPosition = x + width / 2;
   const xSpacing = 7;
   const y1Position = props.anchor === "bottom" ? y + height - 4 : y + 4;
   const y2Position = props.anchor === "bottom" ? y + height - 18 : y + 18;
@@ -393,8 +393,8 @@ function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom"
     <>
       <line
         {...props}
-        x1={positionX - xSpacing}
-        x2={positionX - xSpacing}
+        x1={xPosition - xSpacing}
+        x2={xPosition - xSpacing}
         y1={y1Position}
         y2={y2Position}
         strokeWidth={strokeWidth}
@@ -403,8 +403,8 @@ function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom"
       />
       <line
         {...props}
-        x1={positionX}
-        x2={positionX}
+        x1={xPosition}
+        x2={xPosition}
         y1={y1Position}
         y2={y2Position}
         strokeWidth={strokeWidth}
@@ -413,8 +413,8 @@ function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom"
       />
       <line
         {...props}
-        x1={positionX + xSpacing}
-        x2={positionX + xSpacing}
+        x1={xPosition + xSpacing}
+        x2={xPosition + xSpacing}
         y1={y1Position}
         y2={y2Position}
         strokeWidth={strokeWidth}
