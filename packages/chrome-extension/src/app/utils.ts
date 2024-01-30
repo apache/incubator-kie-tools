@@ -89,6 +89,7 @@ export function iframeFullscreenContainer(id: string, container: HTMLElement) {
 }
 
 export function kogitoMenuContainer(id: string, container: HTMLElement) {
+  cleanupDuplicateElements(id, [KOGITO_MENU_CONTAINER_CLASS]);
   const element = () => document.querySelector(`.${KOGITO_MENU_CONTAINER_CLASS}.${id}`)!;
 
   if (!element()) {
@@ -158,6 +159,16 @@ export function waitForElementToBeReady(selector: string) {
     observer.observe(document.body, {
       childList: true,
       subtree: true,
+    });
+  });
+}
+
+// Necessary because GitHub apparently "caches" DOM structures between changes on History.
+// Without this method you can observe duplicated elements when using back/forward browser buttons.
+export function cleanupDuplicateElements(id: string, selectors: string[]) {
+  selectors.forEach((selector) => {
+    Array.from(document.querySelectorAll(`.${selector}.${id}`)).forEach((e) => {
+      removeAllChildren(e);
     });
   });
 }

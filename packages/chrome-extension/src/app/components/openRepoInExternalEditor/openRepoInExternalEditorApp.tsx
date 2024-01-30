@@ -24,18 +24,25 @@ import {
   createAndGetMainContainer,
   openRepoInExternalEditorContainer,
   openRepoInExternalEditorContainerFromRepositoryHome,
-  removeAllChildren,
 } from "../../utils";
 import { OpenInExternalEditorButton } from "./OpenInExternalEditorButton";
 import { GitHubPageType } from "../../github/GitHubPageType";
 import { KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS } from "../../constants";
+import { cleanupDuplicateElements, waitForElementToBeReady } from "../../utils";
 
-export function renderOpenRepoInExternalEditorApp(
+export async function renderOpenRepoInExternalEditorApp(
   args: Globals & { className: string; pageType: GitHubPageType; container: () => HTMLElement }
 ) {
-  // Necessary because GitHub apparently "caches" DOM structures between changes on History.
-  // Without this method you can observe duplicated elements when using back/forward browser buttons.
-  cleanup(args.id);
+  // wait for the dom element to be ready before rendering.
+  await waitForElementToBeReady("#repository-details-container");
+  // Checking whether this text editor exists is a good way to determine if the page is "ready",
+  // because that would mean that the user could see the default GitHub page.
+  if (!args.dependencies.openRepoInExternalEditor.buttonContainerOnRepoHome()) {
+    args.logger.log(`Doesn't look like the GitHub page is ready yet.`);
+    return;
+  }
+
+  cleanupDuplicateElements(args.id, [KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS]);
 
   ReactDOM.render(
     <Main
@@ -57,13 +64,5 @@ export function renderOpenRepoInExternalEditorApp(
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()),
     () => args.logger.log("Mounted.")
-  );
-}
-
-function cleanup(id: string) {
-  Array.from(document.querySelectorAll(`.${KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS}.${id}`)).forEach(
-    (e) => {
-      removeAllChildren(e);
-    }
   );
 }
