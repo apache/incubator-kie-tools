@@ -41,7 +41,7 @@ export function renderPrEditorsApp(
     container: () => HTMLElement;
   }
 ) {
-    const prEditorSelectorsArray = [
+  const prEditorSelectorsArray = [
     KOGITO_IFRAME_CONTAINER_PR_CLASS,
     KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS,
     KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
@@ -95,4 +95,3 @@ export function parsePrInfo(dependencies: Dependencies): PrInfo {
     gitRef: prInfos[5],
   };
 }
-

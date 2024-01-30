@@ -66,4 +66,3 @@ export async function renderOpenRepoInExternalEditorApp(
     () => args.logger.log("Mounted.")
   );
 }
-
