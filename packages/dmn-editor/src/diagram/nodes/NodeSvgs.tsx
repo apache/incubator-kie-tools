@@ -66,7 +66,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
   };
 }
 
-export function InputDataNodeSvg(__props: NodeSvgProps) {
+export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
   const rx =
     typeof height === "number"
@@ -97,11 +97,12 @@ export function InputDataNodeSvg(__props: NodeSvgProps) {
         rx={rx}
         ry={ry}
       />
+      {props.isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
     </>
   );
 }
 
-export function DecisionNodeSvg(__props: NodeSvgProps) {
+export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
 
   return (
@@ -117,6 +118,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         {...props}
       />
+      {props.isCollection && <NodeCollectionMarker {...__props} anchor="top" />}
     </>
   );
 }
@@ -378,3 +380,47 @@ export const UnknownNodeSvg = (_props: NodeSvgProps & { strokeDasharray?: string
     </>
   );
 };
+
+function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom" }) {
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+
+  const xPosition = x + width / 2;
+  const xSpacing = 7;
+  const y1Position = props.anchor === "bottom" ? y + height - 4 : y + 4;
+  const y2Position = props.anchor === "bottom" ? y + height - 18 : y + 18;
+
+  return (
+    <>
+      <line
+        {...props}
+        x1={xPosition - xSpacing}
+        x2={xPosition - xSpacing}
+        y1={y1Position}
+        y2={y2Position}
+        strokeWidth={strokeWidth}
+        fill={fillColor ?? DEFAULT_NODE_FILL}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+      />
+      <line
+        {...props}
+        x1={xPosition}
+        x2={xPosition}
+        y1={y1Position}
+        y2={y2Position}
+        strokeWidth={strokeWidth}
+        fill={fillColor ?? DEFAULT_NODE_FILL}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+      />
+      <line
+        {...props}
+        x1={xPosition + xSpacing}
+        x2={xPosition + xSpacing}
+        y1={y1Position}
+        y2={y2Position}
+        strokeWidth={strokeWidth}
+        fill={fillColor ?? DEFAULT_NODE_FILL}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+      />
+    </>
+  );
+}
