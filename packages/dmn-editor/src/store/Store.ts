@@ -97,9 +97,6 @@ export interface State {
     overlaysPanel: {
       isOpen: boolean;
     };
-    autolayoutPanel: {
-      isOpen: boolean;
-    };
     openNodesPanel: DiagramNodesPanel;
     drdSelector: {
       isOpen: boolean;
@@ -193,9 +190,6 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     },
     overlaysPanel: {
       isOpen: false,
-    },
-    autolayoutPanel: {
-      isOpen: true,
     },
     openNodesPanel: DiagramNodesPanel.NONE,
     drdSelector: {

@@ -148,8 +148,6 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
 
-  console.log(`re-rendering edge --> count: ${renderCount.current}`);
-
   return (
     <>
       <InformationRequirementPath
@@ -198,8 +196,6 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
 
-  console.log(`re-rendering edge --> count: ${renderCount.current}`);
-
   return (
     <>
       <KnowledgeRequirementPath
@@ -247,8 +243,6 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
-
-  console.log(`re-rendering edge --> count: ${renderCount.current}`);
 
   return (
     <>
@@ -302,8 +296,6 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, props.source, props.target, waypoints);
-
-  console.log(`re-rendering edge --> count: ${renderCount.current}`);
 
   return (
     <>

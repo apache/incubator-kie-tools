@@ -451,8 +451,6 @@ function IncludedModelCard({
 
   const { externalModelsByNamespace } = useExternalModels();
 
-  useCallback((s: State) => s.computed(s).getAllFeelVariableUniqueNames(), []);
-
   const rename = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {
       dmnEditorStoreApi.setState((state) => {
