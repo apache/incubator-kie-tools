@@ -37,23 +37,6 @@ export function DrdSelectorPanel() {
 
   return (
     <>
-      <Button variant={ButtonVariant.tertiary} style={{ width: "100%" }}>
-        <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} alignItems={{ default: "alignItemsCenter" }}>
-          <FlexItem style={{ width: "20px" }} />
-          <FlexItem>
-            View DRG
-            <br />
-            <small style={{ fontSize: "0.8em" }}>With automatic layout</small>
-          </FlexItem>
-          <FlexItem style={{ width: "20px" }}>
-            <ArrowRightIcon />
-          </FlexItem>
-        </Flex>
-      </Button>
-      <br />
-      <br />
-      <hr />
-      <br />
       <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
         <TextContent>
           <Text component="h3">DRDs</Text>
