@@ -34,16 +34,20 @@ import { OpenInExternalEditorButton } from "../openRepoInExternalEditor/OpenInEx
 import { GitHubPageType } from "../../github/GitHubPageType";
 import { cleanupDuplicateElements } from "../../utils";
 
-export function renderPrEditorsApp(args: Globals) {
-  const prEditorSelectorsArray = [
+export function renderPrEditorsApp(
+  args: Globals & {
+    className: string;
+    pageType: GitHubPageType.PR_COMMITS | GitHubPageType.PR_FILES | GitHubPageType.PR_HOME;
+    container: () => HTMLElement;
+  }
+) {
+    const prEditorSelectorsArray = [
     KOGITO_IFRAME_CONTAINER_PR_CLASS,
     KOGITO_VIEW_ORIGINAL_LINK_CONTAINER_PR_CLASS,
     KOGITO_TOOLBAR_CONTAINER_PR_CLASS,
     KOGITO_OPEN_REPO_IN_EXTERNAL_EDITOR_CONTAINER_CLASS,
   ];
-
   cleanupDuplicateElements(args.id, prEditorSelectorsArray);
-
   ReactDOM.render(
     <Main
       id={args.id}
@@ -55,10 +59,10 @@ export function renderPrEditorsApp(args: Globals) {
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} />
+      <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} pageType={args.pageType} />
       {ReactDOM.createPortal(
-        <OpenInExternalEditorButton className={"btn btn-sm"} pageType={GitHubPageType.PR_FILES_OR_COMMITS} />,
-        openRepoInExternalEditorContainer(args.id, args.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!)
+        <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
+        openRepoInExternalEditorContainer(args.id, args.container()!)
       )}
     </Main>,
     createAndGetMainContainer(args.id, args.dependencies.all.body()),
@@ -91,3 +95,4 @@ export function parsePrInfo(dependencies: Dependencies): PrInfo {
     gitRef: prInfos[5],
   };
 }
+

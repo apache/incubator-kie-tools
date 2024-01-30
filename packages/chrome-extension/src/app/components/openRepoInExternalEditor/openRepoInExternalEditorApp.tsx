@@ -57,7 +57,7 @@ export async function renderOpenRepoInExternalEditorApp(
     >
       {ReactDOM.createPortal(
         <OpenInExternalEditorButton className={args.className} pageType={args.pageType} />,
-        GitHubPageType.REPO_HOME === args.pageType
+        GitHubPageType.REPO_HOME === args.pageType || GitHubPageType.CAN_NOT_BE_DETERMINED_FROM_URL === args.pageType
           ? openRepoInExternalEditorContainerFromRepositoryHome(args.id, args.container())
           : openRepoInExternalEditorContainer(args.id, args.container())
       )}
@@ -66,3 +66,4 @@ export async function renderOpenRepoInExternalEditorApp(
     () => args.logger.log("Mounted.")
   );
 }
+
