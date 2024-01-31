@@ -96,6 +96,7 @@ runs:
         ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
         colima stop
         colima delete
+        which ssh
         colima start --memory 4 --network-address --verbose
       # QEMU is reinstalled due to this bug: https://github.com/lima-vm/lima/issues/1742
 
