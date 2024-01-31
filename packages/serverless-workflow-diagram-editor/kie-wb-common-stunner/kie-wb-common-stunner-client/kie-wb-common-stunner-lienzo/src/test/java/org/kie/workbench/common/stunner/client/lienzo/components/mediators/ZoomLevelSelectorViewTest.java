@@ -33,11 +33,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerColorTheme;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementNameProvider;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -165,5 +168,35 @@ public class ZoomLevelSelectorViewTest {
     public void testDestroy() {
         tested.destroy();
         verify(items, times(1)).destroyAll();
+    }
+
+    @Test
+    public void testApplyThemeLight() {
+        StunnerColorTheme theme = mock(StunnerColorTheme.class);
+        when(theme.isDarkTheme()).thenReturn(false);
+        StunnerTheme.setTheme(theme);
+
+        tested.init(presenter);
+        tested.applyTheme();
+
+        assertEquals(ZoomLevelSelectorView.LIGHT_STYLE, tested.previewButton.className);
+        assertEquals(ZoomLevelSelectorView.LIGHT_STYLE, tested.resetButton.className);
+        assertEquals(ZoomLevelSelectorView.LIGHT_STYLE, tested.increaseButton.className);
+        assertEquals(ZoomLevelSelectorView.LIGHT_STYLE, tested.decreaseButton.className);
+    }
+
+    @Test
+    public void testApplyThemeDark() {
+        StunnerColorTheme theme = mock(StunnerColorTheme.class);
+        when(theme.isDarkTheme()).thenReturn(true);
+        StunnerTheme.setTheme(theme);
+
+        tested.init(presenter);
+        tested.applyTheme();
+
+        assertEquals(ZoomLevelSelectorView.DARK_STYLE, tested.previewButton.className);
+        assertEquals(ZoomLevelSelectorView.DARK_STYLE, tested.resetButton.className);
+        assertEquals(ZoomLevelSelectorView.DARK_STYLE, tested.increaseButton.className);
+        assertEquals(ZoomLevelSelectorView.DARK_STYLE, tested.decreaseButton.className);
     }
 }

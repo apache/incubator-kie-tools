@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 
 public class WiresConnectorViewExt<T>
         extends WiresConnectorView<T>
@@ -107,8 +108,9 @@ public class WiresConnectorViewExt<T>
     public T setTitle(final String title) {
         return Optional.ofNullable(title)
                 .map(t -> label.map(l -> l.configure(text -> {
-                                                         text.setFillColor("white");
-                                                         text.setStrokeColor("white");
+                                                         text.setFillColor(StunnerTheme.getTheme().getEdgeTextFillColor());
+                                                         text.setStrokeColor(StunnerTheme.getTheme().getEdgeTextStrokeColor());
+                                                         text.setStrokeWidth(0.70);
                                                          text.setFontFamily("Verdana");
                                                          text.setFontSize(10);
                                                          text.setText(t);

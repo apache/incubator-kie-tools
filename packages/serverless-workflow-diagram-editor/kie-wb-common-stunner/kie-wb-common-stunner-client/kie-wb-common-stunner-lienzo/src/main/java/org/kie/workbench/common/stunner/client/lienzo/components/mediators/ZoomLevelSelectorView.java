@@ -38,6 +38,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.uberfire.mvp.Command;
 
@@ -47,6 +48,8 @@ public class ZoomLevelSelectorView
         implements ZoomLevelSelector.View {
 
     static final String CSS_DROP_UP = "dropup";
+    static final String LIGHT_STYLE = "button-light";
+    static final String DARK_STYLE = "button-dark";
 
     @Inject
     @DataField
@@ -142,6 +145,18 @@ public class ZoomLevelSelectorView
     @Override
     public void updatePreviewButton(boolean enabled) {
         previewButton.disabled = (!enabled);
+    }
+
+    @Override
+    public void applyTheme() {
+        String className = StunnerTheme.getTheme().isDarkTheme() ? DARK_STYLE : LIGHT_STYLE;
+
+        if (null == previewButton.className || !previewButton.className.equals(className)) {
+            previewButton.className =
+                    resetButton.className =
+                            increaseButton.className =
+                                    decreaseButton.className = className;
+        }
     }
 
     @EventHandler("previewButton")
