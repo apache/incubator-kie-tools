@@ -35,6 +35,10 @@ import {
   CloudEventRequest,
   KOGITO_BUSINESS_KEY,
   WorkflowResponse,
+  CustomDashboardInfo,
+  FormInfo,
+  Form,
+  FormContent,
 } from "../types";
 import { ApolloClient } from "apollo-client";
 import { buildWorkflowListWhereArgument } from "./QueryUtils";
@@ -616,6 +620,32 @@ export const startWorkflowRest = (
   });
 };
 
+export const getCustomDashboard = (customDashboardFilter: string[]): Promise<CustomDashboardInfo[]> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get("/customDashboard/list", {
+        params: {
+          names: customDashboardFilter.join(";"),
+        },
+      })
+      .then((result) => {
+        resolve(result.data);
+      })
+      .catch((error) => reject(error));
+  });
+};
+
+export const getCustomDashboardContent = (name: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`/customDashboard/${name}`)
+      .then((result) => {
+        resolve(result.data);
+      })
+      .catch((error) => reject(error));
+  });
+};
+
 export const getCustomWorkflowSchemaFromApi = async (
   api: OpenAPI.Document,
   workflowName: string
@@ -659,5 +689,42 @@ export const getCustomWorkflowSchema = async (
         resolve(await getCustomWorkflowSchemaFromApi(response, workflowName));
       })
       .catch((err) => reject(err));
+  });
+};
+
+export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get("/forms/list", {
+        params: {
+          names: formFilter.join(";"),
+        },
+      })
+      .then((result) => {
+        resolve(result.data);
+      })
+      .catch((error) => reject(error));
+  });
+};
+
+export const getFormContent = (formName: string): Promise<Form> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`/forms/${formName}`)
+      .then((result) => {
+        resolve(result.data);
+      })
+      .catch((error) => reject(error));
+  });
+};
+
+export const saveFormContent = (formName: string, content: FormContent): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`/forms/${formName}`, content)
+      .then((result) => {
+        resolve();
+      })
+      .catch((error) => reject(error));
   });
 };

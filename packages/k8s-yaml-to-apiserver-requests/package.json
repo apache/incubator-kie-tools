@@ -23,6 +23,7 @@
     "start": "ts-node ./dev/main.ts"
   },
   "dependencies": {
+    "fast-json-patch": "^3.1.1",
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {

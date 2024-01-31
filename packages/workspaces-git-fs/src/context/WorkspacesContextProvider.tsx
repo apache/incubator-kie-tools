@@ -457,7 +457,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const prepareZip = useCallback(
-    async (args: { workspaceId: string; onlyExtensions?: string[] }) =>
+    async (args: { workspaceId: string; onlyExtensions?: string[]; globPattern?: string }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_prepareZip(args)
       ),

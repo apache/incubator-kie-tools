@@ -19,7 +19,7 @@
 
 import gql from "graphql-tag";
 
-const GET_PROCESS_INSTANCES = gql`
+export const GET_PROCESS_INSTANCES = gql`
   query getProcessInstances(
     $where: ProcessInstanceArgument
     $offset: Int
@@ -47,7 +47,7 @@ const GET_PROCESS_INSTANCES = gql`
   }
 `;
 
-const GET_CHILD_INSTANCES = gql`
+export const GET_CHILD_INSTANCES = gql`
   query getChildInstances($rootProcessInstanceId: String) {
     ProcessInstances(where: { rootProcessInstanceId: { equal: $rootProcessInstanceId } }) {
       id
@@ -70,7 +70,7 @@ const GET_CHILD_INSTANCES = gql`
   }
 `;
 
-const GET_PROCESS_INSTANCE = gql`
+export const GET_PROCESS_INSTANCE = gql`
   query getProcessInstanceById($id: String) {
     ProcessInstances(where: { id: { equal: $id } }) {
       id
@@ -121,7 +121,7 @@ const GET_PROCESS_INSTANCE = gql`
   }
 `;
 
-const GET_COLUMN_PICKER_ATTRIBUTES = gql`
+export const GET_COLUMN_PICKER_ATTRIBUTES = gql`
   query getColumnPickerAttributes($columnPickerType: String!) {
     __type(name: $columnPickerType) {
       name
@@ -143,7 +143,7 @@ const GET_COLUMN_PICKER_ATTRIBUTES = gql`
   }
 `;
 
-const GET_QUERY_TYPES = gql`
+export const GET_QUERY_TYPES = gql`
   query getQueryTypes {
     __schema {
       queryType: types {
@@ -168,7 +168,7 @@ const GET_QUERY_TYPES = gql`
   }
 `;
 
-const GET_QUERY_FIELDS = gql`
+export const GET_QUERY_FIELDS = gql`
   query getQueryFields {
     __type(name: "Query") {
       name
@@ -191,7 +191,7 @@ const GET_QUERY_FIELDS = gql`
   }
 `;
 
-const GET_INPUT_FIELDS_FROM_QUERY = gql`
+export const GET_INPUT_FIELDS_FROM_QUERY = gql`
   query getInputFieldsFromQuery($currentQuery: String!) {
     __type(name: $currentQuery) {
       name
@@ -212,7 +212,7 @@ const GET_INPUT_FIELDS_FROM_QUERY = gql`
   }
 `;
 
-const GET_INPUT_FIELDS_FROM_TYPES = gql`
+export const GET_INPUT_FIELDS_FROM_TYPES = gql`
   query getInputFieldsFromType($type: String!) {
     __type(name: $type) {
       name
@@ -237,7 +237,7 @@ const GET_INPUT_FIELDS_FROM_TYPES = gql`
   }
 `;
 
-const GET_USER_TASKS_BY_STATES = gql`
+export const GET_USER_TASKS_BY_STATES = gql`
   query getUserTasksByStates($state: [String!], $orderBy: UserTaskInstanceOrderBy) {
     UserTaskInstances(where: { state: { in: $state } }, orderBy: $orderBy) {
       id
@@ -267,7 +267,7 @@ const GET_USER_TASKS_BY_STATES = gql`
   }
 `;
 
-const GET_USER_TASK = gql`
+export const GET_USER_TASK = gql`
   query getUserTaskById($id: String) {
     UserTaskInstances(where: { id: { equal: $id } }) {
       id
@@ -296,7 +296,7 @@ const GET_USER_TASK = gql`
   }
 `;
 
-const GET_TASKS_FOR_USER = gql`
+export const GET_TASKS_FOR_USER = gql`
   query getTasksForUser(
     $whereArgument: UserTaskInstanceArgument
     $offset: Int
@@ -330,7 +330,7 @@ const GET_TASKS_FOR_USER = gql`
   }
 `;
 
-const GET_JOBS_BY_PROC_INST_ID = gql`
+export const GET_JOBS_BY_PROC_INST_ID = gql`
   query getJobsByProcessInstanceId($processInstanceId: String) {
     Jobs(where: { processInstanceId: { equal: $processInstanceId } }) {
       id
@@ -353,7 +353,7 @@ const GET_JOBS_BY_PROC_INST_ID = gql`
   }
 `;
 
-const GET_JOBS_WITH_FILTERS = gql`
+export const GET_JOBS_WITH_FILTERS = gql`
   query getJobsWithFilters($values: [JobStatus], $orderBy: JobOrderBy, $offset: Int, $limit: Int) {
     Jobs(where: { status: { in: $values } }, orderBy: $orderBy, pagination: { offset: $offset, limit: $limit }) {
       id
@@ -375,24 +375,24 @@ const GET_JOBS_WITH_FILTERS = gql`
   }
 `;
 
-const ABORT_PROCESS_INSTANCE = gql`
+export const ABORT_PROCESS_INSTANCE = gql`
   mutation abortProcessInstance($processId: String) {
     ProcessInstanceAbort(id: $processId)
   }
 `;
 
-const SKIP_PROCESS_INSTANCE = gql`
+export const SKIP_PROCESS_INSTANCE = gql`
   mutation skipProcessInstance($processId: String) {
     ProcessInstanceSkip(id: $processId)
   }
 `;
 
-const RETRY_PROCESS_INSTANCE = gql`
+export const RETRY_PROCESS_INSTANCE = gql`
   mutation retryProcessInstance($processId: String) {
     ProcessInstanceRetry(id: $processId)
   }
 `;
-const GET_PROCESS_INSTANCE_SVG = gql`
+export const GET_PROCESS_INSTANCE_SVG = gql`
   query getProcessInstanceSVG($processId: String) {
     ProcessInstances(where: { id: { equal: $processId } }) {
       diagram
@@ -400,7 +400,7 @@ const GET_PROCESS_INSTANCE_SVG = gql`
   }
 `;
 
-const GET_PROCESS_INSTANCE_NODES = gql`
+export const GET_PROCESS_INSTANCE_NODES = gql`
   query getProcessInstanceNodeDefinitions($processId: String) {
     ProcessInstances(where: { id: { equal: $processId } }) {
       nodeDefinitions {
@@ -414,36 +414,36 @@ const GET_PROCESS_INSTANCE_NODES = gql`
   }
 `;
 
-const TRIGGER_PROCESS_NODE_INSTANCE = gql`
+export const TRIGGER_PROCESS_NODE_INSTANCE = gql`
   mutation handleNodeTrigger($processId: String, $nodeId: String) {
     NodeInstanceTrigger(id: $processId, nodeId: $nodeId)
   }
 `;
 
-const CANCEL_PROCESS_NODE_INSTANCE = gql`
+export const CANCEL_PROCESS_NODE_INSTANCE = gql`
   mutation handleNodeInstanceCancel($processId: String, $nodeInstanceId: String) {
     NodeInstanceCancel(id: $processId, nodeInstanceId: $nodeInstanceId)
   }
 `;
 
-const RETRIGGER_PROCESS_NODE_INSTANCE = gql`
+export const RETRIGGER_PROCESS_NODE_INSTANCE = gql`
   mutation handleNodeInstanceRetrigger($processId: String, $nodeInstanceId: String) {
     NodeInstanceRetrigger(id: $processId, nodeInstanceId: $nodeInstanceId)
   }
 `;
 
-const UPDATE_PROCESS_VARBALES = gql`
+export const UPDATE_PROCESS_VARBALES = gql`
   mutation handleProcessVariableUpdate($processId: String, $processInstanceVariables: String) {
     ProcessInstanceUpdateVariables(id: $processId, variables: $processInstanceVariables)
   }
 `;
-const CANCEL_JOB = gql`
+export const CANCEL_JOB = gql`
   mutation jobCancel($jobId: String) {
     JobCancel(id: $jobId)
   }
 `;
 
-const RESCHEDULE_JOB = gql`
+export const RESCHEDULE_JOB = gql`
   mutation handleJobReschedule($jobId: String, $data: String) {
     JobReschedule(id: $jobId, data: $data)
   }

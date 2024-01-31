@@ -49,7 +49,7 @@ import {
 import { OperatingSystem, getOperatingSystem } from "@kie-tools-core/operating-system";
 import { SelectOs } from "../../os/SelectOs";
 import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
-import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 import { Tab, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { useRoutes } from "../../navigation/Hooks";

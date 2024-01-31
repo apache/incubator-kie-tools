@@ -421,11 +421,9 @@ export function EditorToolbarWithWorkspace(
                     </ResponsiveDropdown>
                   </ToolbarItem>
                   <ToolbarItem visibility={hideWhenSmall}>
-                    {props.workspaceFile.extension === "dmn" && (
-                      <ToolbarGroup>
-                        <ExtendedServicesButtons workspace={props.workspace} workspaceFile={props.workspaceFile} />
-                      </ToolbarGroup>
-                    )}
+                    <ToolbarGroup>
+                      <ExtendedServicesButtons workspace={props.workspace} workspaceFile={props.workspaceFile} />
+                    </ToolbarGroup>
                   </ToolbarItem>
                   {props.workspace.descriptor.origin.kind !== WorkspaceKind.LOCAL && (
                     <ToolbarItem>

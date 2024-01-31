@@ -18,16 +18,19 @@
  */
 
 import {
-  parseK8sResourceYaml,
+  parseK8sResourceYamls,
   buildK8sApiServerEndpointsByResourceKind,
   callK8sApiServer,
   K8sApiServerEndpointByResourceKind,
-  interpolateK8sResourceYamls,
+  interpolateK8sResourceYaml,
   TokenMap,
   K8sResourceYaml,
+  patchK8sResourceYaml,
+  appendK8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import Path from "path";
 import { DeploymentState } from "./common";
+import { ResourceActions } from "./types";
 
 export interface KubernetesConnection {
   namespace: string;
@@ -197,24 +200,52 @@ export class KubernetesService {
     });
   }
 
-  public async applyResourceYamls(k8sResourceYamls: string[], tokens?: TokenMap) {
-    const interpolatedYamls = tokens
-      ? k8sResourceYamls.map((yamlContent) => interpolateK8sResourceYamls(yamlContent, tokens))
-      : k8sResourceYamls;
+  public async applyResourceYamls(args: {
+    k8sResourceYamls: string[];
+    actions?: ResourceActions[];
+    tokens?: TokenMap;
+    parametersTokens?: TokenMap;
+  }) {
+    const processedYamls = args.k8sResourceYamls.map((yamlContent) => {
+      let resultYaml = yamlContent;
+
+      args.actions?.forEach(({ appendYamls }) => {
+        if (appendYamls) {
+          resultYaml = appendYamls.reduce(
+            (yaml, yamlToAppend) => appendK8sResourceYaml(yaml, yamlToAppend),
+            resultYaml
+          );
+        }
+      });
+
+      args.actions?.forEach(({ resourcePatches }) => {
+        if (resourcePatches) {
+          resultYaml = patchK8sResourceYaml(resultYaml, resourcePatches, args.parametersTokens);
+        }
+      });
+
+      resultYaml = interpolateK8sResourceYaml(resultYaml, args.tokens);
+
+      return resultYaml;
+    });
+
     return await callK8sApiServer({
       k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
-      k8sResourceYamls: parseK8sResourceYaml(interpolatedYamls),
+      k8sResourceYamls: parseK8sResourceYamls(processedYamls),
       k8sApiServerUrl: this.args.connection.host,
       k8sNamespace: this.args.connection.namespace,
       k8sServiceAccountToken: this.args.connection.token,
     });
   }
 
-  public newResourceName(prefix: string): string {
+  public static newResourceName(prefix: string, suffix?: string): string {
+    if (suffix) {
+      return `${prefix}-${suffix}`;
+    }
     const randomPart = Math.random().toString(36).substring(2, 9);
     const milliseconds = new Date().getMilliseconds();
-    const suffix = `${randomPart}${milliseconds}`;
-    return `${prefix}-${suffix}`;
+    const randomSuffix = `${randomPart}${milliseconds}`;
+    return `${prefix}-${randomSuffix}`;
   }
 
   public extractDeploymentState(args: { deployment?: DeploymentResource }): DeploymentState {

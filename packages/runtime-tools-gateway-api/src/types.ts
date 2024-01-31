@@ -229,3 +229,45 @@ export interface CloudEventHeaders {
 
   extensions: Record<string, string>;
 }
+
+export interface CustomDashboardInfo {
+  name: string;
+  path: string;
+  lastModified: Date;
+}
+
+export interface FormResources {
+  scripts: {
+    [key: string]: string;
+  };
+  styles: {
+    [key: string]: string;
+  };
+}
+
+export enum FormType {
+  HTML = "HTML",
+  TSX = "TSX",
+}
+
+interface FormConfiguration {
+  schema: string;
+  resources: FormResources;
+}
+
+export interface Form {
+  formInfo: FormInfo;
+  source: string;
+  configuration: FormConfiguration;
+}
+
+export interface FormContent {
+  source: string;
+  configuration: FormConfiguration;
+}
+
+export interface FormInfo {
+  name: string;
+  type: FormType;
+  lastModified: Date;
+}

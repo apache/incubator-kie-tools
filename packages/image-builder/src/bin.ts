@@ -95,7 +95,7 @@ function buildArchImage(args: ArgsType & { arch: "arm64" | "amd64" }, imageFullN
 
   createAndUseDockerBuilder();
 
-  const buildPlatformCommand = `docker buildx build --load --platform ${platform} ${
+  const buildPlatformCommand = `docker buildx build --progress=plain --load --platform ${platform} ${
     args.push ? "--push" : ""
   } ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")} ${args.buildArg
     .map((arg: string) => `--build-arg ${arg}`)
@@ -105,7 +105,7 @@ function buildArchImage(args: ArgsType & { arch: "arm64" | "amd64" }, imageFullN
 }
 
 function buildNativeImage(args: ArgsType, imageFullNames: string[]) {
-  const buildNativeCommand = `${args.engine} build ${args.push ? "--push" : ""} ${imageFullNames
+  const buildNativeCommand = `${args.engine} build --progress=plain ${args.push ? "--push" : ""} ${imageFullNames
     .map((fullName) => `-t ${fullName}`)
     .join(" ")} ${args.buildArg.map((arg: string) => `--build-arg ${arg}`).join(" ")} ${args.context} -f ${
     args.containerfile

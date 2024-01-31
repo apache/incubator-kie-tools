@@ -34,7 +34,7 @@ import {
   CloudAuthSessionType,
   KubernetesAuthSession,
 } from "../../authSessions/AuthSessionApi";
-import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
+import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import {
   KubernetesConnection,

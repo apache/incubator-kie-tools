@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { K8sResourceYaml, TokenMap } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import {
   DeploymentResource,
@@ -30,11 +30,13 @@ import {
 import { KieSandboxDeployment, Tokens, defaultLabelTokens } from "./types";
 import { DeploymentState, HealthStatus } from "./common";
 import { UploadStatus, getUploadStatus, postUpload } from "./KieSandboxDevDeploymentsUploadAppApi";
+import { DeploymentOption } from "./deploymentOptions/types";
 
 export interface DeployArgs {
   workspaceZipBlob: Blob;
   tokenMap: { devDeployment: Tokens };
-  deploymentOptionContent: string;
+  parametersTokenMap: { parameters: TokenMap };
+  deploymentOption: DeploymentOption;
 }
 
 export type KieSandboxDevDeploymentsServiceProps = {
@@ -55,7 +57,6 @@ export type KieSandboxDevDeploymentsServiceType = KieSandboxDevDeploymentsServic
 };
 
 export const RESOURCE_PREFIX = "dev-deployment";
-export const RESOURCE_OWNER = "kie-tools";
 export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 export const LIVENESS_TIMEOUT = 15000;
 
@@ -189,7 +190,7 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
   }
 
   public newResourceName(): string {
-    return this.kubernetesService.newResourceName(RESOURCE_PREFIX);
+    return KubernetesService.newResourceName(RESOURCE_PREFIX);
   }
 
   public async listServices(): Promise<ServiceResource[]> {
