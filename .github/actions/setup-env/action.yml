@@ -88,7 +88,6 @@ runs:
         </plist>
         EOF
 
-        codesign --sign - --entitlements entitlements.xml --force /usr/local/bin/qemu-system-$(uname -m | sed -e s/arm64/aarch64/)
         mkdir -p ~/.docker/cli-plugins
         ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
         brew install docker-Buildx
