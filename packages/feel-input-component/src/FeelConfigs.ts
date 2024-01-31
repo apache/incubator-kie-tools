@@ -1185,22 +1185,6 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         examples: ["reverse( [1,2,3] ) = [3,2,1]"],
       },
       {
-        label: "round up(n,scale)",
-        insertText: "round up($1, $2)",
-        description:
-          "Returns `n` with given `scale` and rounding mode round up. If at least one of `n` or `scale` is null, the result is null.",
-        parameters: [
-          ["n", `\`number\``],
-          ["scale", `\`number\``],
-        ],
-        examples: [
-          "round up( 5.5, 0 ) = 6",
-          "round up( -5.5, 0 ) = -6",
-          "round up( 1.121, 2 ) = 1.13",
-          "round up( -1.126, 2 ) = -1.13",
-        ],
-      },
-      {
         label: "round down(n,scale)",
         insertText: "round down($1, $2)",
         description:
@@ -1214,6 +1198,22 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "round down( -5.5, 0 ) = -5",
           "round down( 1.121, 2 ) = 1.12",
           "round down( -1.126, 2 ) = -1.12",
+        ],
+      },
+      {
+        label: "round half down(n,scale)",
+        insertText: "round half down($1, $2)",
+        description:
+          "Returns `n` with given `scale` and rounding mode round half down. If at least one of `n` or `scale` is null, the result is null.",
+        parameters: [
+          ["n", `\`number\``],
+          ["scale", `\`number\``],
+        ],
+        examples: [
+          "round half down( 5.5, 0 ) = 5",
+          "round half down( -5.5, 0 ) = -5",
+          "round half down( 1.121, 2 ) = 1.12",
+          "round half down( -1.126, 2 ) = -1.13",
         ],
       },
       {
@@ -1233,19 +1233,19 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
-        label: "round half down(n,scale)",
-        insertText: "round half down($1, $2)",
+        label: "round up(n,scale)",
+        insertText: "round up($1, $2)",
         description:
-          "Returns `n` with given `scale` and rounding mode round half down. If at least one of `n` or `scale` is null, the result is null.",
+          "Returns `n` with given `scale` and rounding mode round up. If at least one of `n` or `scale` is null, the result is null.",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
         ],
         examples: [
-          "round half down( 5.5, 0 ) = 5",
-          "round half down( -5.5, 0 ) = -5",
-          "round half down( 1.121, 2 ) = 1.12",
-          "round half down( -1.126, 2 ) = -1.13",
+          "round up( 5.5, 0 ) = 6",
+          "round up( -5.5, 0 ) = -6",
+          "round up( 1.121, 2 ) = 1.13",
+          "round up( -1.126, 2 ) = -1.13",
         ],
       },
       {
