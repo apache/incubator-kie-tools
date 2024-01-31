@@ -58,8 +58,6 @@ export const ELK_OPTIONS = {
   "elk.nodePlacement.bk.fixedAlignment": "LEFTDOWN",
   "elk.nodePlacement.bk.edgeStraightening": "IMPROVE_STRAIGHTNESS",
   //
-  "considerModelOrder.strategy": "PREFER_NODES",
-  "crossingMinimization.forceNodeModelOrder": "true",
   "layering.strategy": "LONGEST_PATH_SOURCE",
 };
 
