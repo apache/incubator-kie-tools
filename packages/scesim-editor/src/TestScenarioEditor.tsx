@@ -111,6 +111,7 @@ export type TestScenarioDataObject = {
 export type TestScenarioEditorRef = {
   /* TODO Convert these to Promises */
   getContent(): string;
+  getDiagramSvg: () => Promise<string | undefined>;
   setContent(pathRelativeToTheWorkspaceRoot: string, content: string): void;
 };
 

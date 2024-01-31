@@ -7232,6 +7232,106 @@ importers:
         specifier: ^5.9.0
         version: 5.9.0
 
+  packages/scesim-editor-envelope:
+    dependencies:
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/envelope":
+        specifier: workspace:*
+        version: link:../envelope
+      "@kie-tools-core/envelope-bus":
+        specifier: workspace:*
+        version: link:../envelope-bus
+      "@kie-tools-core/notifications":
+        specifier: workspace:*
+        version: link:../notifications
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
+      "@kie-tools-core/workspace":
+        specifier: workspace:*
+        version: link:../workspace
+      "@kie-tools/boxed-expression-component":
+        specifier: workspace:*
+        version: link:../boxed-expression-component
+      "@kie-tools/scesim-editor":
+        specifier: workspace:*
+        version: link:../scesim-editor
+      "@kie-tools/scesim-marshaller":
+        specifier: workspace:*
+        version: link:../scesim-marshaller
+      "@kie-tools/xml-parser-ts":
+        specifier: workspace:*
+        version: link:../xml-parser-ts
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+      react-dom:
+        specifier: ^17.0.2
+        version: 17.0.2(react@17.0.2)
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.23.0
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.22.20(@babel/core@7.23.0)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.22.15(@babel/core@7.23.0)
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@testing-library/jest-dom":
+        specifier: ^5.16.1
+        version: 5.16.1
+      "@testing-library/react":
+        specifier: ^11.2.6
+        version: 11.2.7(react-dom@17.0.2)(react@17.0.2)
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/jest-when":
+        specifier: ^2.7.4
+        version: 2.7.4
+      "@types/react":
+        specifier: ^17.0.6
+        version: 17.0.21
+      "@types/react-dom":
+        specifier: ^17.0.5
+        version: 17.0.8
+      "@types/testing-library__jest-dom":
+        specifier: ^5.9.1
+        version: 5.9.5
+      "@types/testing-library__react":
+        specifier: ^9.1.2
+        version: 9.1.3
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      jest-when:
+        specifier: ^3.5.0
+        version: 3.5.0(jest@26.6.3)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
   packages/scesim-marshaller:
     dependencies:
       "@kie-tools/xml-parser-ts":
@@ -11683,7 +11783,7 @@ packages:
       { integrity: sha512-rAdDousTwxbIxbz5I7GEQ3lUip+xVCXooZNbsydCWs3xA7ZsYOv+CFRdzGxRX78BmQHu9B1Eso59AOZQOJDEdQ== }
     engines: { node: ">=6.9.0" }
     dependencies:
-      "@babel/types": 7.21.5
+      "@babel/types": 7.23.0
       jsesc: 2.5.2
       source-map: 0.5.7
     dev: true
@@ -11925,19 +12025,6 @@ packages:
       semver: 6.3.1
     dev: true
 
-  /@babel/helper-create-regexp-features-plugin@7.21.8(@babel/core@7.18.10):
-    resolution:
-      { integrity: sha512-zGuSdedkFtsFHGbexAvNuipg1hbtitDLo2XE8/uf6Y9sOQV1xsYX/2pNbtedp/X0eU1pIt+kGvaqHCowkRbS5g== }
-    engines: { node: ">=6.9.0" }
-    peerDependencies:
-      "@babel/core": ^7.0.0
-    dependencies:
-      "@babel/core": 7.18.10
-      "@babel/helper-annotate-as-pure": 7.22.5
-      regexpu-core: 5.3.2
-      semver: 6.3.1
-    dev: true
-
   /@babel/helper-create-regexp-features-plugin@7.21.8(@babel/core@7.23.0):
     resolution:
       { integrity: sha512-zGuSdedkFtsFHGbexAvNuipg1hbtitDLo2XE8/uf6Y9sOQV1xsYX/2pNbtedp/X0eU1pIt+kGvaqHCowkRbS5g== }
@@ -11946,6 +12033,32 @@ packages:
       "@babel/core": ^7.0.0
     dependencies:
       "@babel/core": 7.23.0
+      "@babel/helper-annotate-as-pure": 7.22.5
+      regexpu-core: 5.3.2
+      semver: 6.3.1
+    dev: true
+
+  /@babel/helper-create-regexp-features-plugin@7.22.15(@babel/core@7.16.12):
+    resolution:
+      { integrity: sha512-29FkPLFjn4TPEa3RE7GpW+qbE8tlsu3jntNYNfcGsc49LphF1PQIiD+vMZ1z1xVOKt+93khA9tc2JBs3kBjA7w== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0
+    dependencies:
+      "@babel/core": 7.16.12
+      "@babel/helper-annotate-as-pure": 7.22.5
+      regexpu-core: 5.3.2
+      semver: 6.3.1
+    dev: true
+
+  /@babel/helper-create-regexp-features-plugin@7.22.15(@babel/core@7.18.10):
+    resolution:
+      { integrity: sha512-29FkPLFjn4TPEa3RE7GpW+qbE8tlsu3jntNYNfcGsc49LphF1PQIiD+vMZ1z1xVOKt+93khA9tc2JBs3kBjA7w== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0
+    dependencies:
+      "@babel/core": 7.18.10
       "@babel/helper-annotate-as-pure": 7.22.5
       regexpu-core: 5.3.2
       semver: 6.3.1
@@ -12136,9 +12249,9 @@ packages:
       "@babel/helper-simple-access": 7.21.5
       "@babel/helper-split-export-declaration": 7.18.6
       "@babel/helper-validator-identifier": 7.19.1
-      "@babel/template": 7.20.7
-      "@babel/traverse": 7.21.5
-      "@babel/types": 7.21.5
+      "@babel/template": 7.22.15
+      "@babel/traverse": 7.23.0
+      "@babel/types": 7.23.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -12453,9 +12566,9 @@ packages:
       { integrity: sha512-9ZDoqtfY7AuEOt3cxchfii6C7GDyyMBffktR5B2jvWv8u2+efwvpnVKXMWzNehqy68tKgAfSwfdw/lWpthS2bw== }
     engines: { node: ">=6.9.0" }
     dependencies:
-      "@babel/template": 7.20.7
-      "@babel/traverse": 7.21.5
-      "@babel/types": 7.21.5
+      "@babel/template": 7.22.15
+      "@babel/traverse": 7.23.0
+      "@babel/types": 7.23.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -12509,7 +12622,7 @@ packages:
     engines: { node: ">=6.0.0" }
     hasBin: true
     dependencies:
-      "@babel/types": 7.21.5
+      "@babel/types": 7.23.0
     dev: true
 
   /@babel/parser@7.18.4:
@@ -13288,7 +13401,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.16.12
-      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.16.12)
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.16.12)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -13301,7 +13414,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.18.10
-      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.18.10)
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.18.10)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -13314,7 +13427,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.23.0
-      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.23.0)
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.23.0)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -14175,13 +14288,11 @@ packages:
       "@babel/helper-compilation-targets": 7.22.15
       "@babel/helper-environment-visitor": 7.22.20
       "@babel/helper-function-name": 7.23.0
-      "@babel/helper-optimise-call-expression": 7.18.6
+      "@babel/helper-optimise-call-expression": 7.22.5
       "@babel/helper-plugin-utils": 7.22.5
-      "@babel/helper-replace-supers": 7.21.5
+      "@babel/helper-replace-supers": 7.22.20(@babel/core@7.18.10)
       "@babel/helper-split-export-declaration": 7.22.6
       globals: 11.12.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@babel/plugin-transform-classes@7.22.15(@babel/core@7.23.0):
@@ -14325,7 +14436,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.16.12
-      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.16.12)
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.16.12)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -14337,7 +14448,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.18.10
-      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.18.10)
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.18.10)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -14349,7 +14460,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.23.0
-      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.23.0)
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.23.0)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -14453,7 +14564,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.18.10
-      "@babel/helper-builder-binary-assignment-operator-visitor": 7.21.5
+      "@babel/helper-builder-binary-assignment-operator-visitor": 7.22.15
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -14966,7 +15077,7 @@ packages:
       "@babel/core": ^7.0.0
     dependencies:
       "@babel/core": 7.18.10
-      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.18.10)
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.18.10)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -15102,9 +15213,7 @@ packages:
     dependencies:
       "@babel/core": 7.18.10
       "@babel/helper-plugin-utils": 7.22.5
-      "@babel/helper-replace-supers": 7.21.5
-    transitivePeerDependencies:
-      - supports-color
+      "@babel/helper-replace-supers": 7.22.20(@babel/core@7.18.10)
     dev: true
 
   /@babel/plugin-transform-object-super@7.22.5(@babel/core@7.23.0):
@@ -15593,7 +15702,7 @@ packages:
     dependencies:
       "@babel/core": 7.18.10
       "@babel/helper-plugin-utils": 7.22.5
-      regenerator-transform: 0.15.1
+      regenerator-transform: 0.15.2
     dev: true
 
   /@babel/plugin-transform-regenerator@7.22.10(@babel/core@7.23.0):
@@ -16010,7 +16119,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.18.10
-      "@babel/helper-create-regexp-features-plugin": 7.21.8(@babel/core@7.18.10)
+      "@babel/helper-create-regexp-features-plugin": 7.22.15(@babel/core@7.18.10)
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -16633,9 +16742,9 @@ packages:
       { integrity: sha512-I8j/x8kHUrbYRTUxXrrMbfCa7jxkE7tZre39x3kjr9hvI82cK1FfqLygotcWN5kdPGWcLdWMHpSBavse5tWw3w== }
     engines: { node: ">=6.9.0" }
     dependencies:
-      "@babel/code-frame": 7.21.4
-      "@babel/parser": 7.21.8
-      "@babel/types": 7.21.5
+      "@babel/code-frame": 7.22.13
+      "@babel/parser": 7.23.0
+      "@babel/types": 7.23.0
     dev: true
 
   /@babel/template@7.18.10:
@@ -32780,6 +32889,7 @@ packages:
     resolution:
       { integrity: sha512-e1BM1qnDbMRG3ll2U9dSK0UMHuWOs3pY3AtcFsmvwPtKL3MML/Q86i+GilLfvqEs4GW+ExB91tQ3Ig9noDIZ+A== }
     engines: { node: ">=0.10.0" }
+    deprecated: Please upgrade to v0.1.7
     dependencies:
       kind-of: 3.2.2
     dev: true
@@ -32788,6 +32898,7 @@ packages:
     resolution:
       { integrity: sha512-m5hnHTkcVsPfqx3AKlyttIPb7J+XykHvJP2B9bZDjlhLIoEq4XoK64Vg7boZlVWYK6LUY94dYPEE7Lh0ZkZKcQ== }
     engines: { node: ">=0.10.0" }
+    deprecated: Please upgrade to v1.0.1
     dependencies:
       kind-of: 6.0.3
     dev: true
@@ -32893,6 +33004,7 @@ packages:
     resolution:
       { integrity: sha512-+w9D5ulSoBNlmw9OHn3U2v51SyoCd0he+bB3xMl62oijhrspxowjU+AIcDY0N3iEJbUEkB15IlMASQsxYigvXg== }
     engines: { node: ">=0.10.0" }
+    deprecated: Please upgrade to v0.1.5
     dependencies:
       kind-of: 3.2.2
     dev: true
@@ -32901,6 +33013,7 @@ packages:
     resolution:
       { integrity: sha512-jbRXy1FmtAoCjQkVmIVYwuuqDFUbaOeDjmed1tOGPrsMhtJA4rD9tkgA0F1qJ3gRFRXcHYVkdeaP50Q5rE/jLQ== }
     engines: { node: ">=0.10.0" }
+    deprecated: Please upgrade to v1.0.1
     dependencies:
       kind-of: 6.0.3
     dev: true
