@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import { useCallback } from "react";
 import {
   Editor,
   EditorFactory,
@@ -28,9 +29,8 @@ import {
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { TestScenarioEditorRoot } from "./TestScenarioEditorRoot";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { useCallback } from "react";
+import { TestScenarioEditorRoot } from "./TestScenarioEditorRoot";
 
 export class TestScenarioEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
   public createEditor(
