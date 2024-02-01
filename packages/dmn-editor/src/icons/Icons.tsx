@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import {
+  AlternativeInputDataNodeSvg,
   BkmNodeSvg,
   DecisionNodeSvg,
   DecisionServiceNodeSvg,
@@ -38,21 +39,27 @@ const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // Th
 const nodeSvgProps = { width: 200, height: 120, x: 16, y: 48, strokeWidth: 16 };
 const nodeSvgViewboxSize = nodeSvgProps.width + 2 * nodeSvgProps.strokeWidth;
 
-export function RoundSvg({ children }: React.PropsWithChildren<{}>) {
+export function RoundSvg({ children, withoutPadding }: React.PropsWithChildren<{ withoutPadding?: boolean }>) {
   return (
     <svg
       className={"kie-dmn-editor--round-svg-container"}
       viewBox={`0 0 ${nodeSvgViewboxSize} ${nodeSvgViewboxSize}`}
-      style={{ padding: `${svgViewboxPadding}px` }}
+      style={withoutPadding ? {} : { padding: `${svgViewboxPadding}px` }}
     >
       {children}
     </svg>
   );
 }
 
-export function NodeIcon(nodeType?: NodeType) {
+export function NodeIcon({
+  isAlternativeInputDataShape,
+  nodeType,
+}: {
+  isAlternativeInputDataShape?: boolean;
+  nodeType?: NodeType;
+}) {
   return switchExpression(nodeType, {
-    [NODE_TYPES.inputData]: InputDataIcon,
+    [NODE_TYPES.inputData]: isAlternativeInputDataShape ? AlternativeInputDataIcon : InputDataIcon,
     [NODE_TYPES.decision]: DecisionIcon,
     [NODE_TYPES.bkm]: BkmIcon,
     [NODE_TYPES.knowledgeSource]: KnowledgeSourceIcon,
@@ -68,6 +75,14 @@ export function InputDataIcon() {
   return (
     <RoundSvg>
       <InputDataNodeSvg {...nodeSvgProps} />
+    </RoundSvg>
+  );
+}
+
+export function AlternativeInputDataIcon() {
+  return (
+    <RoundSvg withoutPadding={true}>
+      <AlternativeInputDataNodeSvg {...nodeSvgProps} isIcon={true} width={80} height={100} strokeWidth={8} />
     </RoundSvg>
   );
 }

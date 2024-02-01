@@ -41,6 +41,7 @@ import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { Unpacked } from "../tsExt/tsExt";
 import { NodeVisitor, EdgeVisitor, getAdjMatrix, traverse } from "../diagram/graph/graph";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "../Dmn15Spec";
+import { useAlternativeInputDataShape } from "../alternativeInputData/useAlternative";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -54,6 +55,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
+  const isAlternativeInputDataShape = useAlternativeInputDataShape();
 
   const { dmnEdgesByDmnElementRef, dmnShapesByHref, hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects } =
     useMemo(() => {
@@ -296,7 +298,13 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         position: snapShapePosition(diagram.snapGrid, shape),
         data,
         zIndex: NODE_LAYERS.NODES,
-        style: { ...snapShapeDimensions(diagram.snapGrid, shape, MIN_NODE_SIZES[type](diagram.snapGrid)) },
+        style: {
+          ...snapShapeDimensions(
+            diagram.snapGrid,
+            shape,
+            MIN_NODE_SIZES[type]({ snapGrid: diagram.snapGrid, isAlternativeInputDataShape })
+          ),
+        },
       };
 
       if (dmnObject?.__$$element === "decisionService") {
@@ -434,6 +442,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
     dmnEdgesByDmnElementRef,
     dmnShapesByHref,
     externalDmnsByNamespace,
+    isAlternativeInputDataShape,
   ]);
 
   return {

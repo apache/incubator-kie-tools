@@ -254,7 +254,11 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
-  const Icon = expression ? NodeIcon(getNodeTypeFromDmnObject(expression.drgElement)) : () => <></>;
+  const Icon = useMemo(
+    () =>
+      expression?.drgElement ? NodeIcon({ nodeType: getNodeTypeFromDmnObject(expression.drgElement) }) : () => <></>,
+    [expression?.drgElement]
+  );
 
   return (
     <>

@@ -29,6 +29,7 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { ExternalNodesPanel } from "../externalNodes/ExternalNodesPanel";
 import { MigrationIcon } from "@patternfly/react-icons/dist/js/icons/migration-icon";
 import {
+  AlternativeInputDataIcon,
   BkmIcon,
   DecisionIcon,
   DecisionServiceIcon,
@@ -45,6 +46,7 @@ import { DrgNodesPanel } from "./DrgNodesPanel";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
+import { useAlternativeInputDataShape } from "../alternativeInputData/useAlternative";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -59,6 +61,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const thisDmn = useDmnEditorStore((s) => s.dmn.model);
   const rfStoreApi = RF.useStoreApi();
+  const isAlternativeInputDataShape = useAlternativeInputDataShape();
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -151,7 +154,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
             draggable={true}
           >
-            <InputDataIcon />
+            {isAlternativeInputDataShape ? <AlternativeInputDataIcon /> : <InputDataIcon />}
           </div>
           <div
             title="Decision"

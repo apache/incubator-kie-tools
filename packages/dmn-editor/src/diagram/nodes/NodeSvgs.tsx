@@ -102,6 +102,48 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
   );
 }
 
+export function AlternativeInputDataNodeSvg(__props: NodeSvgProps & { isIcon: boolean; isCollection?: boolean }) {
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+
+  const bevel = 25;
+  const arrowStartingX = 6;
+  const arrowStartingY = 10;
+
+  return (
+    <>
+      <polygon
+        {...props}
+        points={`0,0 0,${height} ${width},${height} ${width},${bevel} ${width - bevel},0 ${width - bevel},0`}
+        fill={fillColor ?? DEFAULT_NODE_FILL}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+        strokeLinejoin={"round"}
+        strokeWidth={strokeWidth}
+        transform={props.isIcon ? `translate(80, 60)` : `translate(${x},${y})`}
+      />
+      {!props.isIcon && (
+        <>
+          <polygon
+            {...props}
+            points={`${width - bevel},0 ${width - bevel},${bevel} ${width},${bevel}`}
+            fill={fillColor ?? DEFAULT_NODE_FILL}
+            stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+            strokeLinejoin={"round"}
+            strokeWidth={strokeWidth}
+          />
+          <polygon
+            {...props}
+            points={`${arrowStartingX},${arrowStartingY} ${arrowStartingX},20 20,20 20,26 30,15 20,4 20,${arrowStartingY} `}
+            fill={fillColor ?? DEFAULT_NODE_FILL}
+            stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+            strokeLinejoin={"round"}
+            strokeWidth={strokeWidth}
+          />
+        </>
+      )}
+    </>
+  );
+}
+
 export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
 

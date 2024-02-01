@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import { useMemo } from "react";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Unpacked } from "../tsExt/tsExt";
 import { TypeRefLabel } from "../dataTypes/TypeRefLabel";
@@ -40,11 +41,17 @@ export function DmnObjectListItem({
   relativeToNamespace: string;
 }) {
   const { importsByNamespace, allTopLevelDataTypesByFeelName } = useDmnEditorDerivedStore();
+  const nodeIconProps = useMemo(
+    () => (dmnObject ? { nodeType: getNodeTypeFromDmnObject(dmnObject) } : {}),
+    [dmnObject]
+  );
+
   if (!dmnObject) {
     return <>{dmnObjectHref}</>;
   }
 
-  const Icon = NodeIcon(getNodeTypeFromDmnObject(dmnObject));
+  const Icon = NodeIcon(nodeIconProps);
+
   return (
     <Flex
       alignItems={{ default: "alignItemsCenter" }}

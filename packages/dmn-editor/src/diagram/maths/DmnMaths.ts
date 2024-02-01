@@ -201,13 +201,13 @@ export function getContainmentRelationship({
   container: DC__Bounds;
   divingLineLocalY?: number;
   snapGrid: SnapGrid;
-  containerMinSizes: (snapGrid: SnapGrid) => DC__Dimension;
-  boundsMinSizes: (snapGrid: SnapGrid) => DC__Dimension;
+  containerMinSizes: (args: { snapGrid: SnapGrid; isAlternativeInputDataShape?: boolean }) => DC__Dimension;
+  boundsMinSizes: (args: { snapGrid: SnapGrid; isAlternativeInputDataShape?: boolean }) => DC__Dimension;
 }): { isInside: true; section: "upper" | "lower" } | { isInside: false } {
   const { x: cx, y: cy } = snapBoundsPosition(snapGrid, container);
-  const { width: cw, height: ch } = snapBoundsDimensions(snapGrid, container, containerMinSizes(snapGrid));
+  const { width: cw, height: ch } = snapBoundsDimensions(snapGrid, container, containerMinSizes({ snapGrid }));
   const { x: bx, y: by } = snapBoundsPosition(snapGrid, bounds);
-  const { width: bw, height: bh } = snapBoundsDimensions(snapGrid, bounds, boundsMinSizes(snapGrid));
+  const { width: bw, height: bh } = snapBoundsDimensions(snapGrid, bounds, boundsMinSizes({ snapGrid }));
 
   const center = getBoundsCenterPoint({
     "@_height": bh,

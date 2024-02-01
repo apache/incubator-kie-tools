@@ -50,11 +50,13 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { UnknownProperties } from "./UnknownProperties";
 import "./SingleNodeProperties.css";
+import { useAlternativeInputDataShape } from "../alternativeInputData/useAlternative";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { nodesById } = useDmnEditorDerivedStore();
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
+  const isAlternativeInputDataShape = useAlternativeInputDataShape();
 
   const node = useMemo(() => {
     return nodesById.get(nodeId);
@@ -64,7 +66,10 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
     return <>Node not found: {nodeId}</>;
   }
 
-  const Icon = NodeIcon(getNodeTypeFromDmnObject(node!.data!.dmnObject!));
+  const Icon = NodeIcon({
+    isAlternativeInputDataShape,
+    nodeType: getNodeTypeFromDmnObject(node!.data!.dmnObject!),
+  });
 
   return (
     <Form>

@@ -39,7 +39,6 @@ export function GlobalDiagramProperties() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const [isGlobalSectionExpanded, setGlobalSectionExpanded] = useState<boolean>(true);
   const [isIdNamespaceSectionExpanded, setIdNamespaceSectionExpanded] = useState<boolean>(true);
-
   const isAlternative = useDmnEditorStore((s) => isAlternativeInputDataShape(s));
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();

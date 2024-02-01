@@ -43,6 +43,7 @@ import { EditExpressionNodePanel } from "./EditExpressionNodePanel";
 import { EditableNodeLabel, OnEditableNodeLabelChange, useEditableNodeLabel } from "./EditableNodeLabel";
 import { InfoNodePanel } from "./InfoNodePanel";
 import {
+  AlternativeInputDataNodeSvg,
   BkmNodeSvg,
   DecisionNodeSvg,
   DecisionServiceNodeSvg,
@@ -68,7 +69,7 @@ import { updateDecisionServiceDividerLine } from "../../mutations/updateDecision
 import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { getNodeLabelPosition, useNodeStyle } from "./NodeStyle";
-import { useAlternativeInputDataShape } from "../../alternativeInputData/useAlternative";
+import { isAlternativeInputDataShape, useAlternativeInputDataShape } from "../../alternativeInputData/useAlternative";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -107,6 +108,7 @@ export const InputDataNode = React.memo(
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
+    const isAlternativeInputDataShape = useAlternativeInputDataShape();
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -120,7 +122,14 @@ export const InputDataNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
+    const nodeDimensions = useNodeDimensions(
+      type as NodeType,
+      diagram.snapGrid,
+      id,
+      shape,
+      isExternal,
+      isAlternativeInputDataShape
+    );
 
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
@@ -162,15 +171,28 @@ export const InputDataNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <InputDataNodeSvg
-            isCollection={isCollection}
-            {...nodeDimensions}
-            x={0}
-            y={0}
-            strokeWidth={shapeStyle.strokeWidth}
-            fillColor={shapeStyle.fillColor}
-            strokeColor={shapeStyle.strokeColor}
-          />
+          {isAlternativeInputDataShape ? (
+            <AlternativeInputDataNodeSvg
+              isCollection={isCollection}
+              {...nodeDimensions}
+              x={0}
+              y={0}
+              strokeWidth={shapeStyle.strokeWidth}
+              fillColor={shapeStyle.fillColor}
+              strokeColor={shapeStyle.strokeColor}
+              isIcon={false}
+            />
+          ) : (
+            <InputDataNodeSvg
+              isCollection={isCollection}
+              {...nodeDimensions}
+              x={0}
+              y={0}
+              strokeWidth={shapeStyle.strokeWidth}
+              fillColor={shapeStyle.fillColor}
+              strokeColor={shapeStyle.strokeColor}
+            />
+          )}
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
@@ -207,6 +229,7 @@ export const InputDataNode = React.memo(
               snapGrid={diagram.snapGrid}
               nodeId={id}
               nodeShapeIndex={shape.index}
+              isAlternativeInputDataShape={isAlternativeInputDataShape}
             />
           )}
           <DataTypeNodePanel
@@ -235,7 +258,6 @@ export const DecisionNode = React.memo(
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
-    const isAlternative = useAlternativeInputDataShape();
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
@@ -1077,8 +1099,12 @@ export function NodeResizerHandle(props: {
   nodeId: string;
   nodeType: NodeType;
   nodeShapeIndex: number;
+  isAlternativeInputDataShape?: boolean;
 }) {
-  const minSize = MIN_NODE_SIZES[props.nodeType](props.snapGrid);
+  const minSize = MIN_NODE_SIZES[props.nodeType]({
+    snapGrid: props.snapGrid,
+    isAlternativeInputDataShape: props.isAlternativeInputDataShape,
+  });
   return (
     <RF.NodeResizeControl style={resizerControlStyle} minWidth={minSize["@_width"]} minHeight={minSize["@_height"]}>
       <div
@@ -1109,7 +1135,8 @@ function useNodeDimensions(
   snapGrid: SnapGrid,
   id: string,
   shape: DMNDI15__DMNShape,
-  isExternal: boolean
+  isExternal: boolean,
+  isAlternativeInputDataShape?: boolean
 ): RF.Dimensions {
   const node = RF.useStore((s) => s.nodeInternals.get(id));
   if (!node) {
@@ -1120,7 +1147,10 @@ function useNodeDimensions(
     return DECISION_SERVICE_COLLAPSED_DIMENSIONS;
   }
 
-  const minSizes = MIN_NODE_SIZES[node.type as NodeType](snapGrid);
+  const minSizes = MIN_NODE_SIZES[type]({
+    snapGrid,
+    isAlternativeInputDataShape,
+  });
 
   return {
     width: node.width ?? snapShapeDimensions(snapGrid, shape, minSizes).width,
