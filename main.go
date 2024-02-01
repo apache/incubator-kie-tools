@@ -115,6 +115,16 @@ func main() {
 		klog.V(log.E).ErrorS(err, "unable to create controller", "controller", "SonataFlowPlatform")
 		os.Exit(1)
 	}
+	if err = (&controllers.SonataFlowClusterPlatformReconciler{
+		Client:   mgr.GetClient(),
+		Scheme:   mgr.GetScheme(),
+		Reader:   mgr.GetAPIReader(),
+		Config:   mgr.GetConfig(),
+		Recorder: mgr.GetEventRecorderFor("cluster-platform-controller"),
+	}).SetupWithManager(mgr); err != nil {
+		klog.V(log.E).ErrorS(err, "unable to create controller", "controller", "SonataFlowClusterPlatform")
+		os.Exit(1)
+	}
 	//+kubebuilder:scaffold:builder
 
 	if utils.IsOpenShift() {

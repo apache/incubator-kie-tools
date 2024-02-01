@@ -23,6 +23,10 @@ import (
 	"context"
 	"testing"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -30,12 +34,6 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
-
-	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
 
 var (
@@ -79,7 +77,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
-		assert.Nil(t, ksp.Spec.Services.DataIndex)
+		assert.Nil(t, ksp.Spec.Services)
 		assert.Equal(t, v1alpha08.PlatformClusterKubernetes, ksp.Status.Cluster)
 
 		assert.Equal(t, v1alpha08.PlatformCreatingReason, ksp.Status.GetTopLevelCondition().Reason)
@@ -89,7 +87,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		namespace := t.Name()
 		// Create a SonataFlowPlatform object with metadata and spec.
 		ksp := test.GetBasePlatformInReadyPhase(namespace)
-		ksp.Spec.Services = v1alpha08.ServicesPlatformSpec{
+		ksp.Spec.Services = &v1alpha08.ServicesPlatformSpec{
 			DataIndex: &v1alpha08.ServiceSpec{},
 		}
 
@@ -168,7 +166,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		// Create a SonataFlowPlatform object with metadata and spec.
 		ksp := test.GetBasePlatformInReadyPhase(namespace)
 		var replicas int32 = 2
-		ksp.Spec.Services = v1alpha08.ServicesPlatformSpec{
+		ksp.Spec.Services = &v1alpha08.ServicesPlatformSpec{
 			DataIndex: &v1alpha08.ServiceSpec{
 				PodTemplate: v1alpha08.PodTemplateSpec{
 					Replicas: &replicas,
@@ -257,7 +255,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		namespace := t.Name()
 		// Create a SonataFlowPlatform object with metadata and spec.
 		ksp := test.GetBasePlatformInReadyPhase(namespace)
-		ksp.Spec.Services = v1alpha08.ServicesPlatformSpec{
+		ksp.Spec.Services = &v1alpha08.ServicesPlatformSpec{
 			JobService: &v1alpha08.ServiceSpec{},
 		}
 
@@ -334,7 +332,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		// Create a SonataFlowPlatform object with metadata and spec.
 		ksp := test.GetBasePlatformInReadyPhase(namespace)
 		var replicas int32 = 2
-		ksp.Spec.Services = v1alpha08.ServicesPlatformSpec{
+		ksp.Spec.Services = &v1alpha08.ServicesPlatformSpec{
 			JobService: &v1alpha08.ServiceSpec{
 				PodTemplate: v1alpha08.PodTemplateSpec{
 					Replicas: &replicas,
@@ -415,7 +413,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		namespace := t.Name()
 		// Create a SonataFlowPlatform object with metadata and spec.
 		ksp := test.GetBasePlatformInReadyPhase(namespace)
-		ksp.Spec.Services = v1alpha08.ServicesPlatformSpec{
+		ksp.Spec.Services = &v1alpha08.ServicesPlatformSpec{
 			DataIndex:  &v1alpha08.ServiceSpec{},
 			JobService: &v1alpha08.ServiceSpec{},
 		}
@@ -474,5 +472,126 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NotContains(t, dep.Spec.Template.Spec.Containers[0].Env, envDBKind)
 		assert.NotContains(t, dep.Spec.Template.Spec.Containers[0].Env, envDataIndex)
 
+	})
+	t.Run("verify that a basic reconcile of a cluster platform is performed without error", func(t *testing.T) {
+		namespace := t.Name()
+
+		// Create a SonataFlowClusterPlatform object with metadata and spec.
+		kscp := test.GetBaseClusterPlatformInReadyPhase(namespace)
+
+		// Create a SonataFlowPlatform object with metadata and spec.
+		ksp := test.GetBasePlatformInReadyPhase(namespace)
+		ksp.Spec.Services = &v1alpha08.ServicesPlatformSpec{
+			DataIndex:  &v1alpha08.ServiceSpec{},
+			JobService: &v1alpha08.ServiceSpec{},
+		}
+		ksp2 := test.GetBasePlatformInReadyPhase(namespace)
+		ksp2.Name = "ksp2"
+
+		// Create a fake client to mock API calls.
+		cl := test.NewSonataFlowClientBuilder().WithRuntimeObjects(kscp, ksp, ksp2).WithStatusSubresource(kscp, ksp, ksp2).Build()
+
+		// Create a SonataFlowPlatformReconciler object with the scheme and fake client.
+		r := &SonataFlowPlatformReconciler{cl, cl, cl.Scheme(), &rest.Config{}, &record.FakeRecorder{}}
+
+		// Mock request to simulate Reconcile() being called on an event for a
+		// watched resource .
+		req := reconcile.Request{
+			NamespacedName: types.NamespacedName{
+				Name:      ksp.Name,
+				Namespace: ksp.Namespace,
+			},
+		}
+		_, err := r.Reconcile(context.TODO(), req)
+		if err != nil {
+			t.Fatalf("reconcile: (%v)", err)
+		}
+
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
+		assert.Greater(t, len(ksp2.Status.Conditions), 0)
+		assert.Nil(t, ksp2.Status.ClusterPlatformRef)
+
+		// Create a SonataFlowClusterPlatformReconciler object with the scheme and fake client.
+		cr := &SonataFlowClusterPlatformReconciler{cl, cl, cl.Scheme(), &rest.Config{}, &record.FakeRecorder{}}
+
+		// Mock request to simulate Reconcile() being called on an event for a
+		// watched resource .
+		cReq := reconcile.Request{
+			NamespacedName: types.NamespacedName{
+				Name: kscp.Name,
+			},
+		}
+		_, err = cr.Reconcile(context.TODO(), cReq)
+		if err != nil {
+			t.Fatalf("reconcile: (%v)", err)
+		}
+
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: kscp.Name}, kscp))
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp.Name, Namespace: ksp.Namespace}, ksp))
+
+		// Perform some checks on the created CR
+		assert.True(t, ksp.Status.IsReady())
+		assert.True(t, kscp.Status.IsReady())
+		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
+		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
+		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
+		assert.NotNil(t, ksp.Spec.Services.DataIndex)
+		assert.NotNil(t, ksp.Spec.Services.DataIndex.Enabled)
+		assert.Equal(t, true, *ksp.Spec.Services.DataIndex.Enabled)
+		assert.Equal(t, v1alpha08.PlatformClusterKubernetes, ksp.Status.Cluster)
+		assert.Equal(t, "", ksp.Status.GetTopLevelCondition().Reason)
+		assert.Equal(t, kscp.Name, ksp.Status.ClusterPlatformRef.Name)
+		assert.Equal(t, kscp.Spec.PlatformRef.Name, ksp.Status.ClusterPlatformRef.PlatformRef.Name)
+		assert.Equal(t, kscp.Spec.PlatformRef.Namespace, ksp.Status.ClusterPlatformRef.PlatformRef.Namespace)
+
+		assert.NotNil(t, ksp.Status.ClusterPlatformRef)
+		assert.Nil(t, ksp.Status.ClusterPlatformRef.Services)
+
+		req2 := reconcile.Request{
+			NamespacedName: types.NamespacedName{
+				Name:      ksp2.Name,
+				Namespace: ksp2.Namespace,
+			},
+		}
+		_, err = r.Reconcile(context.TODO(), req2)
+		if err != nil {
+			t.Fatalf("reconcile: (%v)", err)
+		}
+
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp2.Name, Namespace: ksp2.Namespace}, ksp2))
+		assert.True(t, ksp2.Status.IsReady())
+		assert.NotNil(t, ksp2.Status.ClusterPlatformRef)
+		assert.Equal(t, kscp.Name, ksp2.Status.ClusterPlatformRef.Name)
+		assert.Equal(t, kscp.Spec.PlatformRef.Name, ksp2.Status.ClusterPlatformRef.PlatformRef.Name)
+		assert.Equal(t, kscp.Spec.PlatformRef.Namespace, ksp2.Status.ClusterPlatformRef.PlatformRef.Namespace)
+		assert.NotNil(t, ksp2.Status.ClusterPlatformRef.Services)
+		assert.NotNil(t, ksp2.Status.ClusterPlatformRef.Services.DataIndexRef)
+		assert.NotEmpty(t, ksp2.Status.ClusterPlatformRef.Services.DataIndexRef.Url)
+		assert.NotNil(t, ksp2.Status.ClusterPlatformRef.Services.JobServiceRef)
+		assert.NotEmpty(t, ksp2.Status.ClusterPlatformRef.Services.JobServiceRef.Url)
+
+		psDi := services.NewDataIndexHandler(ksp)
+		psDi2 := services.NewDataIndexHandler(ksp2)
+		assert.Equal(t, ksp2.Status.ClusterPlatformRef.Services.DataIndexRef.Url, psDi.GetLocalServiceBaseUrl())
+		assert.Equal(t, psDi.GetLocalServiceBaseUrl()+constants.KogitoProcessInstancesEventsPath, psDi2.GetServiceUrl())
+		psJs := services.NewJobServiceHandler(ksp)
+		psJs2 := services.NewJobServiceHandler(ksp2)
+		assert.Equal(t, ksp2.Status.ClusterPlatformRef.Services.JobServiceRef.Url, psJs.GetLocalServiceBaseUrl())
+		assert.Equal(t, psJs.GetLocalServiceBaseUrl()+constants.JobServiceURLPath, psJs2.GetServiceUrl())
+
+		ksp2.Spec.Services = &v1alpha08.ServicesPlatformSpec{}
+
+		assert.NoError(t, cl.Update(context.TODO(), ksp2))
+		_, err = r.Reconcile(context.TODO(), req2)
+		if err != nil {
+			t.Fatalf("reconcile: (%v)", err)
+		}
+
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp2.Name, Namespace: ksp2.Namespace}, ksp2))
+		assert.True(t, ksp2.Status.IsReady())
+		assert.NotNil(t, ksp2.Status.ClusterPlatformRef)
+		assert.Equal(t, kscp.Spec.PlatformRef.Name, ksp2.Status.ClusterPlatformRef.PlatformRef.Name)
+		assert.Equal(t, kscp.Spec.PlatformRef.Namespace, ksp2.Status.ClusterPlatformRef.PlatformRef.Namespace)
+		assert.Nil(t, ksp2.Status.ClusterPlatformRef.Services)
 	})
 }

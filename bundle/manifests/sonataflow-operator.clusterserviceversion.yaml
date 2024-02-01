@@ -88,6 +88,19 @@ metadata:
         },
         {
           "apiVersion": "sonataflow.org/v1alpha08",
+          "kind": "SonataFlowClusterPlatform",
+          "metadata": {
+            "name": "sonataflow-clusterplatform"
+          },
+          "spec": {
+            "platformRef": {
+              "name": "sonataflow-platform",
+              "namespace": "sonataflow-operator-system"
+            }
+          }
+        },
+        {
+          "apiVersion": "sonataflow.org/v1alpha08",
           "kind": "SonataFlowPlatform",
           "metadata": {
             "name": "sonataflow-platform"
@@ -166,6 +179,23 @@ spec:
           can be anything known only to internal builders.
         displayName: InnerBuild
         path: innerBuild
+      version: v1alpha08
+    - description: SonataFlowClusterPlatform is the Schema for the sonataflowclusterplatforms
+        API
+      displayName: Sonata Flow Cluster Platform
+      kind: SonataFlowClusterPlatform
+      name: sonataflowclusterplatforms.sonataflow.org
+      specDescriptors:
+      - description: Name of the SonataFlowPlatform
+        displayName: Platform_Name
+        path: platformRef.name
+      - description: Namespace of the SonataFlowPlatform
+        displayName: Platform_NS
+        path: platformRef.namespace
+      statusDescriptors:
+      - description: Version the operator version controlling this ClusterPlatform
+        displayName: version
+        path: version
       version: v1alpha08
     - description: SonataFlowPlatform is the descriptor for the workflow platform
         infrastructure.
@@ -382,6 +412,32 @@ spec:
           - sonataflow.org
           resources:
           - sonataflowbuilds/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflowclusterplatforms
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflowclusterplatforms/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflowclusterplatforms/status
           verbs:
           - get
           - patch

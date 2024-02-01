@@ -14,12 +14,12 @@
 
 package v1alpha08
 
-// ServicesPlatformSpec describes the desired service configuration for "prod" workflows.
+// ServicesPlatformSpec describes the desired service configuration for workflows without the `sonataflow.org/profile: dev` annotation.
 type ServicesPlatformSpec struct {
-	// Deploys the Data Index service for use by "prod" profile workflows.
+	// Deploys the Data Index service for use by workflows without the `sonataflow.org/profile: dev` annotation.
 	// +optional
 	DataIndex *ServiceSpec `json:"dataIndex,omitempty"`
-	// Deploys the Job service for use by "prod" profile workflows.
+	// Deploys the Job service for use by workflows without the `sonataflow.org/profile: dev` annotation.
 	// +optional
 	JobService *ServiceSpec `json:"jobService,omitempty"`
 }
@@ -27,7 +27,7 @@ type ServicesPlatformSpec struct {
 // ServiceSpec defines the desired state of a platform service
 // +k8s:openapi-gen=true
 type ServiceSpec struct {
-	// Determines whether "prod" profile workflows should be configured to use this service
+	// Determines whether workflows without the `sonataflow.org/profile: dev` annotation should be configured to use this service
 	// +optional
 	Enabled *bool `json:"enabled,omitempty"`
 	// Persists service to a datasource of choice. Ephemeral by default.

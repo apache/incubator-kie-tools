@@ -111,13 +111,15 @@ func setPlatformDefaults(p *operatorapi.SonataFlowPlatform, verbose bool) error 
 	}
 
 	// When dataIndex object set, default to enabled if bool not set
-	var enable = true
-	if p.Spec.Services.DataIndex != nil && p.Spec.Services.DataIndex.Enabled == nil {
-		p.Spec.Services.DataIndex.Enabled = &enable
-	}
-	// When the JobService field has a value, default to enabled if the `Enabled` field's value is nil
-	if p.Spec.Services.JobService != nil && p.Spec.Services.JobService.Enabled == nil {
-		p.Spec.Services.JobService.Enabled = &enable
+	if p.Spec.Services != nil {
+		var enable = true
+		if p.Spec.Services.DataIndex != nil && p.Spec.Services.DataIndex.Enabled == nil {
+			p.Spec.Services.DataIndex.Enabled = &enable
+		}
+		// When the JobService field has a value, default to enabled if the `Enabled` field's value is nil
+		if p.Spec.Services.JobService != nil && p.Spec.Services.JobService.Enabled == nil {
+			p.Spec.Services.JobService.Enabled = &enable
+		}
 	}
 	setStatusAdditionalInfo(p)
 

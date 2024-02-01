@@ -27,19 +27,15 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
-	"k8s.io/klog/v2"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
-
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
+	"github.com/davecgh/go-spew/spew"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
-
-	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
-
-	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"k8s.io/klog/v2"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -53,6 +49,7 @@ const (
 	sonataFlowPlatformYamlCR                  = "sonataflow.org_v1alpha08_sonataflowplatform.yaml"
 	sonataFlowPlatformWithCacheMinikubeYamlCR = "sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml"
 	sonataFlowPlatformForOpenshift            = "sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml"
+	sonataFlowClusterPlatformYamlCR           = "sonataflow.org_v1alpha08_sonataflowclusterplatform.yaml"
 	sonataFlowBuilderConfig                   = "sonataflow-operator-builder-config_v1_configmap.yaml"
 	sonataFlowBuildSucceed                    = "sonataflow.org_v1alpha08_sonataflowbuild.yaml"
 
@@ -84,6 +81,31 @@ func GetKubernetesResource(testFile string, resource client.Object) {
 		klog.V(log.E).ErrorS(err, "Unmarshal")
 		panic(err)
 	}
+}
+
+func getSonataFlowClusterPlatform(testFile string) *operatorapi.SonataFlowClusterPlatform {
+	kscp := &operatorapi.SonataFlowClusterPlatform{}
+	yamlFile, err := os.ReadFile(path.Join(getTestDataDir(), testFile))
+	if err != nil {
+		klog.V(log.E).ErrorS(err, "yamlFile.Get")
+		panic(err)
+	}
+	// Important: Here we are reading the CR deployment file from a given path and creating a &operatorapi.SonataFlowPlatform struct
+	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(kscp)
+	if err != nil {
+		klog.V(log.E).ErrorS(err, "Unmarshal")
+		panic(err)
+	}
+	klog.V(log.D).InfoS("Successfully read KSCP", "kscp", kscp)
+	kscp.Status.Manager().InitializeConditions()
+	return kscp
+}
+
+func GetSonataFlowClusterPlatformInReadyPhase(path string, namespace string) *operatorapi.SonataFlowClusterPlatform {
+	kscp := getSonataFlowClusterPlatform(path)
+	kscp.Spec.PlatformRef.Namespace = namespace
+	kscp.Status.Manager().MarkTrue(api.SucceedConditionType)
+	return kscp
 }
 
 func getSonataFlowPlatform(testFile string) *operatorapi.SonataFlowPlatform {
@@ -193,6 +215,10 @@ func GetBaseSonataFlowWithProdOpsProfile(namespace string) *operatorapi.SonataFl
 	return NewSonataFlow(SonataFlowSimpleOpsYamlCR, namespace)
 }
 
+func GetBaseClusterPlatformInReadyPhase(namespace string) *operatorapi.SonataFlowClusterPlatform {
+	return GetSonataFlowClusterPlatformInReadyPhase(sonataFlowClusterPlatformYamlCR, namespace)
+}
+
 func GetBasePlatformInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
 	return GetSonataFlowPlatformInReadyPhase(sonataFlowPlatformYamlCR, namespace)
 }
@@ -211,6 +237,10 @@ func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
 	platform.Spec.DevMode.BaseImage = "quay.io/customgroup/custom-swf-builder-nightly:42.43.7"
 	return platform
+}
+
+func GetBaseClusterPlatform() *operatorapi.SonataFlowClusterPlatform {
+	return getSonataFlowClusterPlatform(sonataFlowClusterPlatformYamlCR)
 }
 
 func GetBasePlatform() *operatorapi.SonataFlowPlatform {

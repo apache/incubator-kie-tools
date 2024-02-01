@@ -368,6 +368,121 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
+  name: sonataflowclusterplatforms.sonataflow.org
+spec:
+  group: sonataflow.org
+  names:
+    kind: SonataFlowClusterPlatform
+    listKind: SonataFlowClusterPlatformList
+    plural: sonataflowclusterplatforms
+    singular: sonataflowclusterplatform
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.platformRef.name
+      name: Platform_Name
+      type: string
+    - jsonPath: .spec.platformRef.namespace
+      name: Platform_NS
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Succeed')].status
+      name: Ready
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Succeed')].reason
+      name: Reason
+      type: string
+    name: v1alpha08
+    schema:
+      openAPIV3Schema:
+        description: SonataFlowClusterPlatform is the Schema for the sonataflowclusterplatforms
+          API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: SonataFlowClusterPlatformSpec defines the desired state of
+              SonataFlowClusterPlatform
+            properties:
+              platformRef:
+                description: SonataFlowPlatformRef defines which existing SonataFlowPlatform's
+                  supporting services should be used cluster-wide.
+                properties:
+                  name:
+                    description: Name of the SonataFlowPlatform
+                    type: string
+                  namespace:
+                    description: Namespace of the SonataFlowPlatform
+                    type: string
+                required:
+                - name
+                - namespace
+                type: object
+            required:
+            - platformRef
+            type: object
+          status:
+            description: SonataFlowClusterPlatformStatus defines the observed state
+              of SonataFlowClusterPlatform
+            properties:
+              conditions:
+                description: The latest available observations of a resource's current
+                  state.
+                items:
+                  description: Condition describes the common structure for conditions
+                    in our types
+                  properties:
+                    lastUpdateTime:
+                      description: The last time this condition was updated.
+                      format: date-time
+                      type: string
+                    message:
+                      description: A human-readable message indicating details about
+                        the transition.
+                      type: string
+                    reason:
+                      description: The reason for the condition's last transition.
+                      type: string
+                    status:
+                      description: Status of the condition, one of True, False, Unknown.
+                      type: string
+                    type:
+                      description: Type condition for the given object
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              observedGeneration:
+                description: The generation observed by the deployment controller.
+                format: int64
+                type: integer
+              version:
+                description: Version the operator version controlling this ClusterPlatform
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.2
+  creationTimestamp: null
   name: sonataflowplatforms.sonataflow.org
 spec:
   group: sonataflow.org
@@ -786,17 +901,18 @@ spec:
                 type: object
               services:
                 description: 'Services attributes for deploying supporting applications
-                  like Data Index. Only workflows with the proper annotation will
-                  be configured to use these service(s). `sonataflow.org/profile:
-                  prod`'
+                  like Data Index & Job Service. Only workflows without the `sonataflow.org/profile:
+                  dev` annotation will be configured to use these service(s). Setting
+                  this will override the use of any cluster-scoped services that might
+                  be defined via `SonataFlowClusterPlatform`.'
                 properties:
                   dataIndex:
-                    description: Deploys the Data Index service for use by "prod"
-                      profile workflows.
+                    description: 'Deploys the Data Index service for use by workflows
+                      without the `sonataflow.org/profile: dev` annotation.'
                     properties:
                       enabled:
-                        description: Determines whether "prod" profile workflows should
-                          be configured to use this service
+                        description: 'Determines whether workflows without the `sonataflow.org/profile:
+                          dev` annotation should be configured to use this service'
                         type: boolean
                       persistence:
                         description: Persists service to a datasource of choice. Ephemeral
@@ -8663,12 +8779,12 @@ spec:
                         type: object
                     type: object
                   jobService:
-                    description: Deploys the Job service for use by "prod" profile
-                      workflows.
+                    description: 'Deploys the Job service for use by workflows without
+                      the `sonataflow.org/profile: dev` annotation.'
                     properties:
                       enabled:
-                        description: Determines whether "prod" profile workflows should
-                          be configured to use this service
+                        description: 'Determines whether workflows without the `sonataflow.org/profile:
+                          dev` annotation should be configured to use this service'
                         type: boolean
                       persistence:
                         description: Persists service to a datasource of choice. Ephemeral
@@ -16546,6 +16662,51 @@ spec:
                 - kubernetes
                 - openshift
                 type: string
+              clusterPlatformRef:
+                description: ClusterPlatformRef information related to the (optional)
+                  active SonataFlowClusterPlatform
+                properties:
+                  name:
+                    description: Name of the active SonataFlowClusterPlatform
+                    type: string
+                  platformRef:
+                    description: PlatformRef displays which SonataFlowPlatform has
+                      been referenced by the active SonataFlowClusterPlatform
+                    properties:
+                      name:
+                        description: Name of the SonataFlowPlatform
+                        type: string
+                      namespace:
+                        description: Namespace of the SonataFlowPlatform
+                        type: string
+                    required:
+                    - name
+                    - namespace
+                    type: object
+                  services:
+                    description: Services displays which cluster-wide services are
+                      being used by this SonataFlowPlatform
+                    properties:
+                      dataIndexRef:
+                        description: DataIndexRef displays information on the cluster-wide
+                          Data Index service
+                        properties:
+                          url:
+                            description: Url displays the base url of a cluster-wide
+                              service
+                            type: string
+                        type: object
+                      jobServiceRef:
+                        description: JobServiceRef displays information on the cluster-wide
+                          Job Service
+                        properties:
+                          url:
+                            description: Url displays the base url of a cluster-wide
+                              service
+                            type: string
+                        type: object
+                    type: object
+                type: object
               conditions:
                 description: The latest available observations of a resource's current
                   state.
@@ -26171,6 +26332,32 @@ rules:
   - sonataflow.org
   resources:
   - sonataflowbuilds/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - sonataflow.org
+  resources:
+  - sonataflowclusterplatforms
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - sonataflow.org
+  resources:
+  - sonataflowclusterplatforms/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - sonataflow.org
+  resources:
+  - sonataflowclusterplatforms/status
   verbs:
   - get
   - patch

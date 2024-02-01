@@ -24,26 +24,26 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	clientr "github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/clusterplatform"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/klog/v2"
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-
-	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
-
-	clientr "github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
-
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
-
 	ctrlrun "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
-
-	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
+	"sigs.k8s.io/controller-runtime/pkg/handler"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
 
 // SonataFlowPlatformReconciler reconciles a SonataFlowPlatform object
@@ -114,6 +114,10 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 
 	target := instance.DeepCopy()
 
+	if err = r.SonataFlowPlatformUpdateStatus(ctx, req, target); err != nil {
+		return reconcile.Result{}, err
+	}
+
 	for _, a := range actions {
 		cli, _ := clientr.FromCtrlClientSchemeAndConfig(r.Client, r.Scheme, r.Config)
 		a.InjectClient(cli)
@@ -166,6 +170,51 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 
 }
 
+// If an active cluster platform exists, update platform.Status accordingly
+func (r *SonataFlowPlatformReconciler) SonataFlowPlatformUpdateStatus(ctx context.Context, req reconcile.Request, target *operatorapi.SonataFlowPlatform) error {
+	// Fetch the active SonataFlowClusterPlatform instance
+	sfcPlatform, err := clusterplatform.GetActiveClusterPlatform(ctx, r.Client)
+	if err != nil && !errors.IsNotFound(err) {
+		klog.V(log.E).ErrorS(err, "Failed to get active SonataFlowClusterPlatform")
+		return err
+	}
+
+	if sfcPlatform != nil {
+		sfPlatform := &operatorapi.SonataFlowPlatform{}
+
+		platformRef := sfcPlatform.Spec.PlatformRef
+		namespacedName := types.NamespacedName{Namespace: platformRef.Namespace, Name: platformRef.Name}
+		if req.NamespacedName == namespacedName {
+			sfPlatform = target.DeepCopy()
+		} else {
+			// retrieve referenced platform object
+			err := r.Reader.Get(ctx, namespacedName, sfPlatform)
+			if err != nil && !errors.IsNotFound(err) {
+				klog.V(log.E).ErrorS(err, "Failed to get referenced SonataFlowPlatform", namespacedName)
+				return err
+			}
+		}
+
+		target.Status.ClusterPlatformRef = &operatorapi.SonataFlowClusterPlatformRefStatus{
+			Name: sfcPlatform.Name,
+			PlatformRef: operatorapi.SonataFlowPlatformRef{
+				Name:      platformRef.Name,
+				Namespace: platformRef.Namespace,
+			},
+		}
+
+		tpsDI := services.NewDataIndexHandler(target)
+		tpsDI.SetServiceUrlInStatus(sfPlatform)
+
+		tpsJS := services.NewJobServiceHandler(target)
+		tpsJS.SetServiceUrlInStatus(sfPlatform)
+	} else {
+		target.Status.ClusterPlatformRef = nil
+	}
+
+	return nil
+}
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *SonataFlowPlatformReconciler) SetupWithManager(mgr ctrlrun.Manager) error {
 	return ctrlrun.NewControllerManagedBy(mgr).
@@ -173,5 +222,54 @@ func (r *SonataFlowPlatformReconciler) SetupWithManager(mgr ctrlrun.Manager) err
 		Owns(&appsv1.Deployment{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).
+		Watches(&operatorapi.SonataFlowPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapPlatformToPlatformRequests)).
+		Watches(&operatorapi.SonataFlowClusterPlatform{}, handler.EnqueueRequestsFromMapFunc(r.mapClusterPlatformToPlatformRequests)).
 		Complete(r)
+}
+
+// if active clusterplatform object is changed, reconcile all SonataFlowPlatforms in the cluster.
+func (r *SonataFlowPlatformReconciler) mapClusterPlatformToPlatformRequests(ctx context.Context, object client.Object) []reconcile.Request {
+	sfcPlatform := object.(*operatorapi.SonataFlowClusterPlatform)
+	if sfcPlatform != nil && clusterplatform.IsActive(sfcPlatform) {
+		return r.platformRequests(ctx, sfcPlatform, true)
+	}
+	return nil
+}
+
+// if actively referenced sonataflowplatform is changed, reconcile other SonataFlowPlatforms in the cluster.
+func (r *SonataFlowPlatformReconciler) mapPlatformToPlatformRequests(ctx context.Context, object client.Object) []reconcile.Request {
+	platform := object.(*operatorapi.SonataFlowPlatform)
+	sfcPlatform, err := clusterplatform.GetActiveClusterPlatform(ctx, r.Client)
+	if err != nil && !errors.IsNotFound(err) {
+		klog.V(log.E).ErrorS(err, "Failed to get active SonataFlowClusterPlatform")
+		return nil
+	}
+
+	if sfcPlatform != nil {
+		sfpcRefNsName := types.NamespacedName{Namespace: sfcPlatform.Spec.PlatformRef.Namespace, Name: sfcPlatform.Spec.PlatformRef.Name}
+		if client.ObjectKeyFromObject(platform) == sfpcRefNsName {
+			return r.platformRequests(ctx, sfcPlatform, false)
+		}
+	}
+	return nil
+}
+
+func (r *SonataFlowPlatformReconciler) platformRequests(ctx context.Context, sfcPlatform *operatorapi.SonataFlowClusterPlatform, allPlatforms bool) []reconcile.Request {
+	var plList operatorapi.SonataFlowPlatformList
+	if err := r.List(ctx, &plList, client.InNamespace("")); err != nil {
+		klog.V(log.E).ErrorS(err, "could not list SonataFlowPlatforms. "+
+			"SonataFlowPlatforms affected by changes to the active SonataFlowPlatform or SonataFlowClusterPlatform object will not be reconciled.")
+		return nil
+	}
+
+	sfpcRefNsName := types.NamespacedName{Namespace: sfcPlatform.Spec.PlatformRef.Namespace, Name: sfcPlatform.Spec.PlatformRef.Name}
+	var requests []reconcile.Request
+	for _, platform := range plList.Items {
+		sfpNsName := client.ObjectKeyFromObject(&platform)
+		// this check is required so that the cluster-referenced platform object doesn't infinitely reconcile
+		if sfpNsName != sfpcRefNsName || allPlatforms {
+			requests = append(requests, reconcile.Request{NamespacedName: sfpNsName})
+		}
+	}
+	return requests
 }

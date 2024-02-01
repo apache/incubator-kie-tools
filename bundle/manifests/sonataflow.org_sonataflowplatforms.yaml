@@ -422,17 +422,18 @@ spec:
                 type: object
               services:
                 description: 'Services attributes for deploying supporting applications
-                  like Data Index. Only workflows with the proper annotation will
-                  be configured to use these service(s). `sonataflow.org/profile:
-                  prod`'
+                  like Data Index & Job Service. Only workflows without the `sonataflow.org/profile:
+                  dev` annotation will be configured to use these service(s). Setting
+                  this will override the use of any cluster-scoped services that might
+                  be defined via `SonataFlowClusterPlatform`.'
                 properties:
                   dataIndex:
-                    description: Deploys the Data Index service for use by "prod"
-                      profile workflows.
+                    description: 'Deploys the Data Index service for use by workflows
+                      without the `sonataflow.org/profile: dev` annotation.'
                     properties:
                       enabled:
-                        description: Determines whether "prod" profile workflows should
-                          be configured to use this service
+                        description: 'Determines whether workflows without the `sonataflow.org/profile:
+                          dev` annotation should be configured to use this service'
                         type: boolean
                       persistence:
                         description: Persists service to a datasource of choice. Ephemeral
@@ -8299,12 +8300,12 @@ spec:
                         type: object
                     type: object
                   jobService:
-                    description: Deploys the Job service for use by "prod" profile
-                      workflows.
+                    description: 'Deploys the Job service for use by workflows without
+                      the `sonataflow.org/profile: dev` annotation.'
                     properties:
                       enabled:
-                        description: Determines whether "prod" profile workflows should
-                          be configured to use this service
+                        description: 'Determines whether workflows without the `sonataflow.org/profile:
+                          dev` annotation should be configured to use this service'
                         type: boolean
                       persistence:
                         description: Persists service to a datasource of choice. Ephemeral
@@ -16182,6 +16183,51 @@ spec:
                 - kubernetes
                 - openshift
                 type: string
+              clusterPlatformRef:
+                description: ClusterPlatformRef information related to the (optional)
+                  active SonataFlowClusterPlatform
+                properties:
+                  name:
+                    description: Name of the active SonataFlowClusterPlatform
+                    type: string
+                  platformRef:
+                    description: PlatformRef displays which SonataFlowPlatform has
+                      been referenced by the active SonataFlowClusterPlatform
+                    properties:
+                      name:
+                        description: Name of the SonataFlowPlatform
+                        type: string
+                      namespace:
+                        description: Namespace of the SonataFlowPlatform
+                        type: string
+                    required:
+                    - name
+                    - namespace
+                    type: object
+                  services:
+                    description: Services displays which cluster-wide services are
+                      being used by this SonataFlowPlatform
+                    properties:
+                      dataIndexRef:
+                        description: DataIndexRef displays information on the cluster-wide
+                          Data Index service
+                        properties:
+                          url:
+                            description: Url displays the base url of a cluster-wide
+                              service
+                            type: string
+                        type: object
+                      jobServiceRef:
+                        description: JobServiceRef displays information on the cluster-wide
+                          Job Service
+                        properties:
+                          url:
+                            description: Url displays the base url of a cluster-wide
+                              service
+                            type: string
+                        type: object
+                    type: object
+                type: object
               conditions:
                 description: The latest available observations of a resource's current
                   state.

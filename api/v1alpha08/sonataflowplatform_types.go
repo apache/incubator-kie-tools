@@ -41,11 +41,11 @@ type SonataFlowPlatformSpec struct {
 	// +optional
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="DevMode"
 	DevMode DevModePlatformSpec `json:"devMode,omitempty"`
-	// Services attributes for deploying supporting applications like Data Index.
-	// Only workflows with the proper annotation will be configured to use these service(s).
-	// `sonataflow.org/profile: prod`
+	// Services attributes for deploying supporting applications like Data Index & Job Service.
+	// Only workflows without the `sonataflow.org/profile: dev` annotation will be configured to use these service(s).
+	// Setting this will override the use of any cluster-scoped services that might be defined via `SonataFlowClusterPlatform`.
 	// +optional
-	Services ServicesPlatformSpec `json:"services,omitempty"`
+	Services *ServicesPlatformSpec `json:"services,omitempty"`
 }
 
 // PlatformCluster is the kind of orchestration cluster the platform is installed into
@@ -79,6 +79,35 @@ type SonataFlowPlatformStatus struct {
 	// Info generic information related to the build
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="info"
 	Info map[string]string `json:"info,omitempty"`
+	// ClusterPlatformRef information related to the (optional) active SonataFlowClusterPlatform
+	ClusterPlatformRef *SonataFlowClusterPlatformRefStatus `json:"clusterPlatformRef,omitempty"`
+}
+
+// SonataFlowClusterPlatformRefStatus information related to the (optional) active SonataFlowClusterPlatform
+// +k8s:openapi-gen=true
+type SonataFlowClusterPlatformRefStatus struct {
+	// Name of the active SonataFlowClusterPlatform
+	Name string `json:"name,omitempty"`
+	// PlatformRef displays which SonataFlowPlatform has been referenced by the active SonataFlowClusterPlatform
+	PlatformRef SonataFlowPlatformRef `json:"platformRef,omitempty"`
+	// Services displays which cluster-wide services are being used by this SonataFlowPlatform
+	Services *PlatformServicesStatus `json:"services,omitempty"`
+}
+
+// PlatformServicesStatus displays which cluster-wide services are being used by a SonataFlowPlatform
+// +k8s:openapi-gen=true
+type PlatformServicesStatus struct {
+	// DataIndexRef displays information on the cluster-wide Data Index service
+	DataIndexRef *PlatformServiceRefStatus `json:"dataIndexRef,omitempty"`
+	// JobServiceRef displays information on the cluster-wide Job Service
+	JobServiceRef *PlatformServiceRefStatus `json:"jobServiceRef,omitempty"`
+}
+
+// PlatformServiceRefStatus displays information on a cluster-wide service
+// +k8s:openapi-gen=true
+type PlatformServiceRefStatus struct {
+	// Url displays the base url of a cluster-wide service
+	Url string `json:"url,omitempty"`
 }
 
 func (in *SonataFlowPlatformStatus) GetTopLevelConditionType() api.ConditionType {

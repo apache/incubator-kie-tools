@@ -29,14 +29,13 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
+	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-
-	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
-	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
 )
 
 // NewServiceAction returns an action that deploys the services.
@@ -62,32 +61,36 @@ func (action *serviceAction) Handle(ctx context.Context, platform *operatorapi.S
 		return nil, err
 	}
 
-	if platform.Spec.Services.DataIndex != nil {
-		if err := createServiceComponents(ctx, action.client, platform, services.NewDataIndexHandler(platform)); err != nil {
-			return nil, err
+	if platform.Spec.Services != nil {
+		psDI := services.NewDataIndexHandler(platform)
+		if psDI.IsServiceSetInSpec() {
+			if err := createOrUpdateServiceComponents(ctx, action.client, platform, psDI); err != nil {
+				return nil, err
+			}
 		}
-	}
 
-	if platform.Spec.Services.JobService != nil {
-		if err := createServiceComponents(ctx, action.client, platform, services.NewJobServiceHandler(platform)); err != nil {
-			return nil, err
+		psJS := services.NewJobServiceHandler(platform)
+		if psJS.IsServiceSetInSpec() {
+			if err := createOrUpdateServiceComponents(ctx, action.client, platform, psJS); err != nil {
+				return nil, err
+			}
 		}
 	}
 
 	return platform, nil
 }
 
-func createServiceComponents(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
-	if err := createConfigMap(ctx, client, platform, psh); err != nil {
+func createOrUpdateServiceComponents(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
+	if err := createOrUpdateConfigMap(ctx, client, platform, psh); err != nil {
 		return err
 	}
-	if err := createDeployment(ctx, client, platform, psh); err != nil {
+	if err := createOrUpdateDeployment(ctx, client, platform, psh); err != nil {
 		return err
 	}
-	return createService(ctx, client, platform, psh)
+	return createOrUpdateService(ctx, client, platform, psh)
 }
 
-func createDeployment(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
+func createOrUpdateDeployment(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
 	readyProbe := &corev1.Probe{
 		ProbeHandler: corev1.ProbeHandler{
 			HTTPGet: &corev1.HTTPGetAction{
@@ -193,7 +196,7 @@ func createDeployment(ctx context.Context, client client.Client, platform *opera
 	return nil
 }
 
-func createService(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
+func createOrUpdateService(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
 	lbl, selectorLbl := getLabels(platform, psh)
 	dataSvcSpec := corev1.ServiceSpec{
 		Ports: []corev1.ServicePort{
@@ -241,7 +244,7 @@ func getLabels(platform *operatorapi.SonataFlowPlatform, psh services.PlatformSe
 	return lbl, selectorLbl
 }
 
-func createConfigMap(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
+func createOrUpdateConfigMap(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
 	handler, err := services.NewServiceAppPropertyHandler(psh)
 	if err != nil {
 		return err
