@@ -120,6 +120,7 @@ import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth
 import { buildHierarchy } from "./graph/graph";
 import { MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE } from "./DrgNodesPanel";
 import { Unpacked } from "../tsExt/tsExt";
+import { useAlternativeInputDataShape } from "../alternativeInputData/useAlternative";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 

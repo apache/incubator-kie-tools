@@ -32,11 +32,15 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { isAlternativeInputDataShape } from "../alternativeInputData/useAlternative";
 
 export function GlobalDiagramProperties() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const [isGlobalSectionExpanded, setGlobalSectionExpanded] = useState<boolean>(true);
   const [isIdNamespaceSectionExpanded, setIdNamespaceSectionExpanded] = useState<boolean>(true);
+
+  const isAlternative = useDmnEditorStore((s) => isAlternativeInputDataShape(s));
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -115,6 +119,24 @@ export function GlobalDiagramProperties() {
                   onChange={(newExprLang) =>
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions["@_expressionLanguage"] = newExprLang;
+                    })
+                  }
+                />
+              </FormGroup>
+              <FormGroup label="Alternative Input Data Node Shape">
+                <Checkbox
+                  id={"alternative-input-data-shape"}
+                  aria-label={"Alternative Input Data Shape"}
+                  isDisabled={false}
+                  placeholder={"Enter an expression language..."}
+                  isChecked={isAlternative}
+                  onChange={() =>
+                    dmnEditorStoreApi.setState((state) => {
+                      state.dmn.model.definitions["dmndi:DMNDI"] ??= {};
+                      state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
+                      state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][state.diagram.drdIndex][
+                        "@_useAlternativeInputDataShape"
+                      ] = !isAlternative;
                     })
                   }
                 />

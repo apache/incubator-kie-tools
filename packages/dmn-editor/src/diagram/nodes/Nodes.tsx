@@ -68,6 +68,7 @@ import { updateDecisionServiceDividerLine } from "../../mutations/updateDecision
 import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { getNodeLabelPosition, useNodeStyle } from "./NodeStyle";
+import { useAlternativeInputDataShape } from "../../alternativeInputData/useAlternative";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -234,6 +235,7 @@ export const DecisionNode = React.memo(
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
     const isResizing = useNodeResizing(id);
+    const isAlternative = useAlternativeInputDataShape();
 
     const diagram = useDmnEditorStore((s) => s.diagram);
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
