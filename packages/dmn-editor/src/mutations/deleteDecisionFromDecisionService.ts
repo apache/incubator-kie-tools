@@ -33,12 +33,14 @@ export function deleteDecisionFromDecisionService({
 
   const decision = definitions.drgElement?.find((s) => s["@_id"] === decisionId);
   if (decision?.__$$element !== "decision") {
-    throw new Error(`DRG Element with id '${decisionId}' is either not a Decision or doesn't exist.`);
+    throw new Error(`DMN MUTATION: DRG Element with id '${decisionId}' is either not a Decision or doesn't exist.`);
   }
 
   const decisionService = definitions.drgElement?.find((s) => s["@_id"] === decisionServiceId);
   if (decisionService?.__$$element !== "decisionService") {
-    throw new Error(`DRG Element with id '${decisionServiceId}' is either not a Decision Service or doesn't exist.`);
+    throw new Error(
+      `DMN MUTATION: DRG Element with id '${decisionServiceId}' is either not a Decision Service or doesn't exist.`
+    );
   }
 
   decisionService.outputDecision = (decisionService.outputDecision ?? []).filter(

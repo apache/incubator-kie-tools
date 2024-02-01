@@ -54,12 +54,12 @@ export function updateDecisionServiceDividerLine({
   const shape = diagramElements?.[shapeIndex] as DMNDI15__DMNShape | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
-    throw new Error("Cannot reposition divider line of non-existent shape bounds");
+    throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent shape bounds");
   }
 
   const ds = definitions.drgElement![drgElementIndex] as DMN15__tDecisionService;
   if (!ds) {
-    throw new Error("Cannot reposition divider line of non-existent Decision Service");
+    throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
   }
 
   const decisionMinSizes = MIN_NODE_SIZES[NODE_TYPES.decision](snapGrid);
