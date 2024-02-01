@@ -35,6 +35,9 @@ import { ColorPicker } from "./ColorPicker";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import "./ShapeOptions.css";
 
+const DEFAULT_FILL_COLOR = { "@_blue": 255, "@_green": 255, "@_red": 255 };
+const DEFAULT_STROKE_COLOR = { "@_blue": 0, "@_green": 0, "@_red": 0 };
+
 export function ShapeOptions({
   startExpanded,
   nodeIds,
@@ -46,178 +49,208 @@ export function ShapeOptions({
   isDimensioningEnabled: boolean;
   isPositioningEnabled: boolean;
 }) {
-  const [isShapeSectionExpanded, setShapeSectionExpanded] = useState<boolean>(startExpanded);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexes().dmnShapesByHref);
 
-  const shapes = useMemo(() => nodeIds.map((nodeId) => dmnShapesByHref.get(nodeId)), [dmnShapesByHref, nodeIds]);
-  // it only edits the first selected node
-  const shapesBound = useMemo(() => shapes[0]?.["dc:Bounds"], [shapes]);
-  const shapesStyle = useMemo(() => shapes.map((shape) => shape?.["di:Style"]), [shapes]);
+  const shapes = useDmnEditorStore((s) => nodeIds.map((nodeId) => s.computed(s).indexes().dmnShapesByHref.get(nodeId)));
+  const shapeStyles = useMemo(() => shapes.map((shape) => shape?.["di:Style"]), [shapes]);
 
-  const boundWidth = useMemo(() => +(shapesBound?.["@_width"]?.toFixed(2) ?? ""), [shapesBound]);
-  const boundHeight = useMemo(() => +(shapesBound?.["@_height"]?.toFixed(2) ?? ""), [shapesBound]);
-  const boundPositionX = useMemo(() => +(shapesBound?.["@_x"]?.toFixed(2) ?? ""), [shapesBound]);
-  const boundPositionY = useMemo(() => +(shapesBound?.["@_y"]?.toFixed(2) ?? ""), [shapesBound]);
+  // For when a single node is selected.
+  const shapeBound = useMemo(() => shapes[0]?.["dc:Bounds"], [shapes]);
+  const boundWidth = useMemo(() => +(shapeBound?.["@_width"]?.toFixed(2) ?? ""), [shapeBound]);
+  const boundHeight = useMemo(() => +(shapeBound?.["@_height"]?.toFixed(2) ?? ""), [shapeBound]);
+  const boundPositionX = useMemo(() => +(shapeBound?.["@_x"]?.toFixed(2) ?? ""), [shapeBound]);
+  const boundPositionY = useMemo(() => +(shapeBound?.["@_y"]?.toFixed(2) ?? ""), [shapeBound]);
 
   const fillColor = useMemo(() => {
-    const b = (shapesStyle[0]?.["dmndi:FillColor"]?.["@_blue"] ?? 255).toString(16);
-    const g = (shapesStyle[0]?.["dmndi:FillColor"]?.["@_green"] ?? 255).toString(16);
-    const r = (shapesStyle[0]?.["dmndi:FillColor"]?.["@_red"] ?? 255).toString(16);
+    const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_red"]).toString(16);
+    const g = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_green"] ?? DEFAULT_FILL_COLOR["@_green"]).toString(16);
+    const r = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_red"] ?? DEFAULT_FILL_COLOR["@_blue"]).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
-  }, [shapesStyle]);
-  const strokeColor = useMemo(() => {
-    const b = (shapesStyle[0]?.["dmndi:StrokeColor"]?.["@_blue"] ?? 0).toString(16);
-    const g = (shapesStyle[0]?.["dmndi:StrokeColor"]?.["@_green"] ?? 0).toString(16);
-    const r = (shapesStyle[0]?.["dmndi:StrokeColor"]?.["@_red"] ?? 0).toString(16);
-    return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
-  }, [shapesStyle]);
+  }, [shapeStyles]);
 
-  const editNodeBound = useCallback(
-    (callback: (bound?: DC__Bounds, state?: State) => void) => {
-      dmnEditorStoreApi.setState((state) => {
-        const { diagramElements } = addOrGetDrd({
-          definitions: state.dmn.model.definitions,
-          drdIndex: state.diagram.drdIndex,
-        });
-        const shape = diagramElements?.[shapes[0]?.index ?? 0] as DMNDI15__DMNShape | undefined;
-        callback(shape?.["dc:Bounds"], state);
+  const strokeColor = useMemo(() => {
+    const b = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_blue"] ?? DEFAULT_STROKE_COLOR["@_red"]).toString(16);
+    const g = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_green"] ?? DEFAULT_STROKE_COLOR["@_green"]).toString(16);
+    const r = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_red"] ?? DEFAULT_STROKE_COLOR["@_blue"]).toString(16);
+    return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
+  }, [shapeStyles]);
+
+  const [isShapeSectionExpanded, setShapeSectionExpanded] = useState<boolean>(startExpanded);
+
+  const setBounds = useCallback(
+    (callback: (bounds: DC__Bounds, state: State) => void) => {
+      dmnEditorStoreApi.setState((s) => {
+        const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
+
+        const index = nodeIds.map((nodeId) => s.computed(s).indexes().dmnShapesByHref.get(nodeId))[0]?.index ?? -1;
+        if (index < 0) {
+          throw new Error(`DMN Shape for '${nodeIds[0]}' does not exist.`);
+        }
+
+        const shape = diagramElements?.[index];
+
+        if (shape.__$$element !== "dmndi:DMNShape") {
+          throw new Error(`DMN Element with index ${index} is not a DMNShape.`);
+        }
+
+        shape["dc:Bounds"] ??= { "@_height": 0, "@_width": 0, "@_x": 0, "@_y": 0 };
+
+        callback(shape["dc:Bounds"], s);
       });
     },
-    [dmnEditorStoreApi, shapes]
+    [dmnEditorStoreApi, nodeIds]
   );
 
   const onChangeWidth = useCallback(
     (newWidth: string) => {
-      editNodeBound((bound) => {
-        bound!["@_width"] = +parseFloat(newWidth).toFixed(2);
+      setBounds((bounds) => {
+        bounds["@_width"] = +parseFloat(newWidth).toFixed(2);
       });
     },
-    [editNodeBound]
+    [setBounds]
   );
 
   const onChangeHeight = useCallback(
     (newHeight: string) => {
-      editNodeBound((bound) => {
-        bound!["@_height"] = +parseFloat(newHeight).toFixed(2);
+      setBounds((bounds) => {
+        bounds["@_height"] = +parseFloat(newHeight).toFixed(2);
       });
     },
-    [editNodeBound]
+    [setBounds]
   );
 
   const onChangePositionX = useCallback(
     (newX: string) => {
-      editNodeBound((bound) => {
-        bound!["@_x"] = +parseFloat(newX).toFixed(2);
+      setBounds((bounds) => {
+        bounds["@_x"] = +parseFloat(newX).toFixed(2);
       });
     },
-    [editNodeBound]
+    [setBounds]
   );
 
   const onChangePositionY = useCallback(
     (newY: string) => {
-      editNodeBound((bound) => {
-        bound!["@_y"] = +parseFloat(newY).toFixed(2);
+      setBounds((bounds) => {
+        bounds["@_y"] = +parseFloat(newY).toFixed(2);
       });
     },
-    [editNodeBound]
+    [setBounds]
   );
 
-  const editShapeStyle = useCallback(
-    (callback: (shape: DMNDI15__DMNShape[], state?: State) => void) => {
-      dmnEditorStoreApi.setState((state) => {
-        const { diagramElements } = addOrGetDrd({
-          definitions: state.dmn.model.definitions,
-          drdIndex: state.diagram.drdIndex,
+  const setShapeStyles = useCallback(
+    (callback: (shape: DMNDI15__DMNShape[], state: State) => void) => {
+      dmnEditorStoreApi.setState((s) => {
+        const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
+
+        const shapes = nodeIds.map((nodeId) => {
+          const shape = s.computed(s).indexes().dmnShapesByHref.get(nodeId);
+          if (!shape) {
+            throw new Error(`DMN Shape for '${nodeId}' does not exist.`);
+          }
+
+          return diagramElements[shape.index];
         });
-        const _shapes = shapes.map((shape) => diagramElements[shape?.index ?? 0]);
-        _shapes.forEach((_shape, i, _shapes) => {
-          _shapes[i]["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
-        });
-        callback(_shapes, state);
+
+        let i = 0;
+        for (const shape of shapes) {
+          if (shape.__$$element !== "dmndi:DMNShape") {
+            throw new Error(`DMN Element with index ${i++} is not a DMNShape.`);
+          }
+
+          shape["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
+        }
+
+        callback(shapes, s);
       });
     },
-    [dmnEditorStoreApi, shapes]
+    [dmnEditorStoreApi, nodeIds]
   );
 
-  const [temporaryStrokeColor, setTemporaryStrokeColor] = useState<string>("000000");
+  const [temporaryStrokeColor, setTemporaryStrokeColor] = useState<string | undefined>();
   const onChangeStrokeColor = useCallback(
     (newColor: string) => {
       setTemporaryStrokeColor(newColor.replace("#", ""));
-      editShapeStyle((shapes, state) => {
-        state!.diagram.isEditingStyle = true;
+      setShapeStyles((shapes, state) => {
+        state.diagram.isEditingStyle = true;
       });
     },
-    [editShapeStyle]
+    [setShapeStyles]
   );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const red = parseInt(temporaryStrokeColor.slice(0, 2), 16);
-      const green = parseInt(temporaryStrokeColor.slice(2, 4), 16);
-      const blue = parseInt(temporaryStrokeColor.slice(4, 6), 16);
-      editShapeStyle((shapes, state) => {
+      if (!temporaryStrokeColor) {
+        return;
+      }
+
+      setTemporaryStrokeColor(undefined);
+
+      setShapeStyles((shapes, state) => {
         shapes.forEach((shape) => {
-          if (
-            red !== shape?.["di:Style"]?.["dmndi:StrokeColor"]?.["@_red"] &&
-            green !== shape?.["di:Style"]?.["dmndi:StrokeColor"]?.["@_green"] &&
-            blue !== shape?.["di:Style"]?.["dmndi:StrokeColor"]?.["@_blue"]
-          ) {
-            state!.diagram.isEditingStyle = false;
-            shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
-            shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = red;
-            shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = green;
-            shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = blue;
-          }
+          state.diagram.isEditingStyle = false;
+          shape!["di:Style"]!["dmndi:StrokeColor"] ??= DEFAULT_STROKE_COLOR;
+          shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = parseInt(temporaryStrokeColor.slice(0, 2), 16);
+          shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = parseInt(temporaryStrokeColor.slice(2, 4), 16);
+          shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = parseInt(temporaryStrokeColor.slice(4, 6), 16);
         });
       });
     }, 0);
+
     return () => {
       clearTimeout(timeout);
     };
-  }, [editShapeStyle, temporaryStrokeColor]);
+  }, [setShapeStyles, temporaryStrokeColor]);
 
-  const [temporaryFillColor, setTemporaryFillColor] = useState<string>("ffffff");
+  const [temporaryFillColor, setTemporaryFillColor] = useState<string | undefined>();
   const onChangeFillColor = useCallback(
     (newColor: string) => {
       setTemporaryFillColor(newColor.replace("#", ""));
-      editShapeStyle((shapes, state) => {
-        state!.diagram.isEditingStyle = true;
+      setShapeStyles((shapes, state) => {
+        state.diagram.isEditingStyle = true;
       });
     },
-    [editShapeStyle]
+    [setShapeStyles]
   );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      const red = parseInt(temporaryFillColor.slice(0, 2), 16);
-      const green = parseInt(temporaryFillColor.slice(2, 4), 16);
-      const blue = parseInt(temporaryFillColor.slice(4, 6), 16);
-      editShapeStyle((shapes, state) => {
+      if (!temporaryFillColor) {
+        return;
+      }
+
+      setTemporaryFillColor(undefined);
+
+      setShapeStyles((shapes, state) => {
         shapes.forEach((shape) => {
-          if (
-            red !== shape?.["di:Style"]?.["dmndi:FillColor"]?.["@_red"] &&
-            green !== shape?.["di:Style"]?.["dmndi:FillColor"]?.["@_green"] &&
-            blue !== shape?.["di:Style"]?.["dmndi:FillColor"]?.["@_blue"]
-          ) {
-            state!.diagram.isEditingStyle = false;
-            shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_blue": 255, "@_green": 255, "@_red": 255 };
-            shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = red;
-            shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = green;
-            shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = blue;
-          }
+          state.diagram.isEditingStyle = false;
+          shape!["di:Style"]!["dmndi:FillColor"] ??= DEFAULT_FILL_COLOR;
+          shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = parseInt(temporaryFillColor.slice(0, 2), 16);
+          shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = parseInt(temporaryFillColor.slice(2, 4), 16);
+          shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = parseInt(temporaryFillColor.slice(4, 6), 16);
         });
       });
     }, 0);
+
     return () => {
       clearTimeout(timeout);
     };
-  }, [editShapeStyle, temporaryFillColor]);
+  }, [setShapeStyles, temporaryFillColor]);
 
   const onReset = useCallback(() => {
-    setTemporaryStrokeColor("000000");
-    setTemporaryFillColor("ffffff");
-  }, []);
+    setShapeStyles((shapes) => {
+      shapes.forEach((shape) => {
+        shape!["di:Style"]!["dmndi:FillColor"] ??= DEFAULT_FILL_COLOR;
+        shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = DEFAULT_FILL_COLOR["@_red"];
+        shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = DEFAULT_FILL_COLOR["@_green"];
+        shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = DEFAULT_FILL_COLOR["@_blue"];
+
+        shape!["di:Style"]!["dmndi:StrokeColor"] ??= DEFAULT_STROKE_COLOR;
+        shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = DEFAULT_STROKE_COLOR["@_red"];
+        shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = DEFAULT_STROKE_COLOR["@_green"];
+        shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = DEFAULT_STROKE_COLOR["@_blue"];
+      });
+    });
+  }, [setShapeStyles]);
 
   const strokeColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
   const fillColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
