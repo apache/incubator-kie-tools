@@ -28,78 +28,78 @@
   overflow-y: auto;
 }
 
-.button-light {
+.zoom-button-light {
   color: #212529;
   background-color: #f8f9fa;
   border-color: #f8f9fa;
 }
 
-.button-light:hover {
+.zoom-button-light:hover {
   color: #212529;
   background-color: #e2e6ea;
   border-color: #dae0e5;
 }
 
-.button-light:focus,
-.button-light.focus {
+.zoom-button-light:focus,
+.zoom-button-light.focus {
   box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
 }
 
-.button-light.disabled,
-.button-light:disabled {
+.zoom-button-light.disabled,
+.zoom-button-light:disabled {
   color: #a8a8a8;
   background-color: #f8f9fa;
   border-color: #f8f9fa;
 }
 
-.button-light:not(:disabled):not(.disabled):active,
-.button-light:not(:disabled):not(.disabled).active,
-.show > .button-light.dropdown-toggle {
+.zoom-button-light:not(:disabled):not(.disabled):active,
+.zoom-button-light:not(:disabled):not(.disabled).active,
+.show > .zoom-button-light.dropdown-toggle {
   color: #212529;
   background-color: #dae0e5;
   border-color: #d3d9df;
 }
 
-.button-light:not(:disabled):not(.disabled):active:focus,
-.button-light:not(:disabled):not(.disabled).active:focus,
-.show > .button-light.dropdown-toggle:focus {
+.zoom-button-light:not(:disabled):not(.disabled):active:focus,
+.zoom-button-light:not(:disabled):not(.disabled).active:focus,
+.show > .zoom-button-light.dropdown-toggle:focus {
   box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
 }
 
-.button-dark {
+.zoom-button-dark {
   color: #fff;
-  background-color: #292a2d;
+  background-color: #1f1f1f;
   border-color: #343a40;
 }
 
-.button-dark:hover {
+.zoom-button-dark:hover {
   color: #fff;
   background-color: #000000;
   border-color: #1d2124;
 }
 
-.button-dark:focus,
-.button-dark.focus {
+.zoom-button-dark:focus,
+.zoom-button-dark.focus {
   box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
 }
 
-.button-dark.disabled,
-.button-dark:disabled {
+.zoom-button-dark.disabled,
+.zoom-button-dark:disabled {
   color: #909090;
   background-color: #343a40;
   border-color: #343a40;
 }
 
-.button-dark:not(:disabled):not(.disabled):active,
-.button-dark:not(:disabled):not(.disabled).active,
-.show > .button-dark.dropdown-toggle {
+.zoom-button-dark:not(:disabled):not(.disabled):active,
+.zoom-button-dark:not(:disabled):not(.disabled).active,
+.show > .zoom-button-dark.dropdown-toggle {
   color: #fff;
   background-color: #1d2124;
   border-color: #171a1d;
 }
 
-.button-dark:not(:disabled):not(.disabled):active:focus,
-.button-dark:not(:disabled):not(.disabled).active:focus,
-.show > .button-dark.dropdown-toggle:focus {
+.zoom-button-dark:not(:disabled):not(.disabled):active:focus,
+.zoom-button-dark:not(:disabled):not(.disabled).active:focus,
+.show > .zoom-button-dark.dropdown-toggle:focus {
   box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
 }

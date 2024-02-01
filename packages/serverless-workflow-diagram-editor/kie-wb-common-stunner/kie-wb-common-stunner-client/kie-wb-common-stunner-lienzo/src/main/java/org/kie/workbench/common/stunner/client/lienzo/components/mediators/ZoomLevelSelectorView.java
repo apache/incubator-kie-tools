@@ -48,8 +48,8 @@ public class ZoomLevelSelectorView
         implements ZoomLevelSelector.View {
 
     static final String CSS_DROP_UP = "dropup";
-    static final String LIGHT_STYLE = "button-light";
-    static final String DARK_STYLE = "button-dark";
+    static final String LIGHT_STYLE = "zoom-button-light";
+    static final String DARK_STYLE = "zoom-button-dark";
 
     @Inject
     @DataField

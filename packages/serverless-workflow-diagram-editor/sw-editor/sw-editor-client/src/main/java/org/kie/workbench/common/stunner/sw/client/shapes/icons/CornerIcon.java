@@ -26,6 +26,8 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.PrimitiveTextTooltip;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
+import org.kie.workbench.common.stunner.sw.client.theme.ColorTheme;
 
 public class CornerIcon extends Group {
 
@@ -52,19 +54,19 @@ public class CornerIcon extends Group {
         MultiPath clockIcon = new MultiPath(icon)
                 .setScale(2)
                 .setStrokeWidth(0)
-                .setFillColor("#CCC")
+                .setFillColor(((ColorTheme) StunnerTheme.getTheme()).getCornerIconFillColor())
                 .setListening(false);
         add(clockIcon);
 
         mouseEnterHandler = border.addNodeMouseEnterHandler(event -> {
             createToolTip();
-            clockIcon.setFillColor("#4F5255");
+            clockIcon.setFillColor(((ColorTheme) StunnerTheme.getTheme()).getCornerIconHoverFillColor());
             border.getLayer().batch();
         });
         mouseExitHandler = border.addNodeMouseExitHandler(event -> {
             tooltipElement.destroy();
             tooltipElement = null;
-            clockIcon.setFillColor("#CCC");
+            clockIcon.setFillColor(((ColorTheme) StunnerTheme.getTheme()).getCornerIconFillColor());
             border.getLayer().batch();
         });
         mouseClickHandler = border.addNodeMouseClickHandler(
@@ -82,6 +84,7 @@ public class CornerIcon extends Group {
         tooltipElement.withText(t -> {
             t.setText(tooltipText);
             t.setFontSize(12);
+            t.setFillColor(((ColorTheme) StunnerTheme.getTheme()).getTooltipTextColor());
         });
         final Layer topLayer = getLayer().getScene().getTopLayer();
         topLayer.add(tooltipElement.asPrimitive());
