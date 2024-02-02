@@ -3,7 +3,7 @@ kind: Service
 metadata:
   creationTimestamp: null
   labels:
-    control-plane: controller-manager
+    control-plane: sonataflow-operator
   name: logic-operator-rhel8-controller-manager-metrics-service
 spec:
   ports:
@@ -12,6 +12,6 @@ spec:
     protocol: TCP
     targetPort: https
   selector:
-    control-plane: controller-manager
+    control-plane: sonataflow-operator
 status:
   loadBalancer: {}

@@ -53,7 +53,7 @@ func (data *Data) sonataFlowOperatorIsDeployed() (err error) {
 }
 
 //func (data *Data) sonataFlowOperatorHasPodsRunning(numberOfPods int, name, phase string) error {
-//	return framework.WaitForPodsWithLabel(data.Namespace, "control-plane", "controller-manager", numberOfPods, 1)
+//	return framework.WaitForPodsWithLabel(data.Namespace, "control-plane", "sonataflow-operator", numberOfPods, 1)
 //}
 //
 //func (data *Data) kogitoOperatorShouldBeInstalled() error {

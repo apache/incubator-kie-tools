@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    control-plane: controller-manager
+    control-plane: sonataflow-operator
   name: sonataflow-operator-system
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -26735,7 +26735,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    control-plane: controller-manager
+    control-plane: sonataflow-operator
   name: sonataflow-operator-controller-manager-metrics-service
   namespace: sonataflow-operator-system
 spec:
@@ -26745,26 +26745,26 @@ spec:
     protocol: TCP
     targetPort: https
   selector:
-    control-plane: controller-manager
+    control-plane: sonataflow-operator
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    control-plane: controller-manager
+    control-plane: sonataflow-operator
   name: sonataflow-operator-controller-manager
   namespace: sonataflow-operator-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      control-plane: controller-manager
+      control-plane: sonataflow-operator
   template:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
       labels:
-        control-plane: controller-manager
+        control-plane: sonataflow-operator
     spec:
       containers:
       - args:
