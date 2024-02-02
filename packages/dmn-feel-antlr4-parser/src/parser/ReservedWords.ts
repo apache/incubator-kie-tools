@@ -80,6 +80,7 @@ export class ReservedWords {
     "invoke",
     "is",
     "list contains",
+    "list replace",
     "log",
     "lower case",
     "matches",
