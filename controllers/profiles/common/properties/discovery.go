@@ -99,6 +99,8 @@ func generateDiscoveryProperties(ctx context.Context, catalog discovery.ServiceC
 					mpProperty := generateMicroprofileServiceCatalogProperty(plainUri)
 					klog.V(log.I).Infof("Generating microprofile service catalog property %s=%s.", mpProperty, address)
 					result.MustSet(mpProperty, address)
+					klog.V(log.I).Infof("Overriding the discoverable value as the managed property %s=%s.", k, address)
+					result.MustSet(k, address)
 				}
 			}
 		}

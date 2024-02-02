@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 	appsv1 "k8s.io/api/apps/v1"
@@ -112,7 +113,7 @@ func MarkDeploymentToRollout(deployment *appsv1.Deployment) error {
 // AnnotateDeploymentConfigChecksum adds the checksum/config annotation to the template annotations of the Deployment to set the current configuration.
 // If the checksum has changed from the previous value, the restartedAt annotation is also added and a new rollout is started.
 // Code adapted from here: https://github.com/kubernetes/kubectl/blob/release-1.26/pkg/polymorphichelpers/objectrestarter.go#L44
-func AnnotateDeploymentConfigChecksum(deployment *appsv1.Deployment, cm *v1.ConfigMap) error {
+func AnnotateDeploymentConfigChecksum(workflow *operatorapi.SonataFlow, deployment *appsv1.Deployment, userPropsCM *v1.ConfigMap, managedPropsCM *v1.ConfigMap) error {
 	if deployment.Spec.Paused {
 		return errors.New("can't restart paused deployment (run rollout resume first)")
 	}
@@ -124,7 +125,7 @@ func AnnotateDeploymentConfigChecksum(deployment *appsv1.Deployment, cm *v1.Conf
 	if !ok {
 		currentChecksum = ""
 	}
-	newChecksum, err := configMapChecksum(cm)
+	newChecksum, err := calculateHash(userPropsCM, managedPropsCM, workflow)
 	if err != nil {
 		return err
 	}
@@ -141,14 +142,19 @@ func AnnotateDeploymentConfigChecksum(deployment *appsv1.Deployment, cm *v1.Conf
 	return nil
 }
 
-func configMapChecksum(cm *v1.ConfigMap) (string, error) {
-	props, hasKey := cm.Data[workflowproj.ApplicationPropertiesFileName]
+func dataFromCM(cm *v1.ConfigMap, key string) string {
+	data, hasKey := cm.Data[key]
 	if !hasKey {
-		props = ""
+		return ""
 	}
+	return data
+}
 
+func calculateHash(userPropsCM, managedPropsCM *v1.ConfigMap, workflow *operatorapi.SonataFlow) (string, error) {
+	aggregatedProps := fmt.Sprintf("%s,%s", dataFromCM(userPropsCM, workflowproj.ApplicationPropertiesFileName),
+		dataFromCM(managedPropsCM, workflowproj.GetManagedPropertiesFileName(workflow)))
 	hash := sha256.New()
-	_, err := hash.Write([]byte(props))
+	_, err := hash.Write([]byte(aggregatedProps))
 	if err != nil {
 		return "", err
 	}

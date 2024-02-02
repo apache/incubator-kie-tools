@@ -41,6 +41,10 @@ import (
 // Can be used as a reference to keep the object immutable
 type ObjectCreator func(workflow *operatorapi.SonataFlow) (client.Object, error)
 
+// ObjectCreatorWithPlatform is the func equivalent to ObjectCreator to use when the resource being created needs a reference to the
+// SonataFlowPlatform
+type ObjectCreatorWithPlatform func(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (client.Object, error)
+
 const (
 	defaultHTTPServicePort = 80
 
@@ -209,13 +213,18 @@ func OpenShiftRouteCreator(workflow *operatorapi.SonataFlow) (client.Object, err
 	return route, err
 }
 
-// WorkflowPropsConfigMapCreator creates a ConfigMap to hold the external application properties
-func WorkflowPropsConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
-	props, err := properties.ImmutableApplicationProperties(workflow, nil)
+// UserPropsConfigMapCreator creates an empty ConfigMap to hold the user application properties
+func UserPropsConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
+	return workflowproj.CreateNewUserPropsConfigMap(workflow), nil
+}
+
+// ManagedPropsConfigMapCreator creates an empty ConfigMap to hold the external application properties
+func ManagedPropsConfigMapCreator(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (client.Object, error) {
+	props, err := properties.ImmutableApplicationProperties(workflow, platform)
 	if err != nil {
 		return nil, err
 	}
-	return workflowproj.CreateNewAppPropsConfigMap(workflow, props), nil
+	return workflowproj.CreateNewManagedPropsConfigMap(workflow, props), nil
 }
 
 func ConfigurePersistence(serviceContainer *corev1.Container, options *operatorapi.PersistenceOptions, defaultSchema, namespace string) *corev1.Container {

@@ -27,7 +27,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
@@ -39,50 +38,56 @@ import (
 
 func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
+	platform := test.GetBasePlatform()
 	// can't be new
-	cm, _ := WorkflowPropsConfigMapCreator(workflow)
-	cm.SetUID("1")
-	cm.SetResourceVersion("1")
-	reflectCm := cm.(*corev1.ConfigMap)
+	managedProps, _ := ManagedPropsConfigMapCreator(workflow, platform)
+	managedProps.SetUID("1")
+	managedProps.SetResourceVersion("1")
+	managedPropsCM := managedProps.(*corev1.ConfigMap)
 
-	visitor := WorkflowPropertiesMutateVisitor(context.TODO(), nil, workflow, nil)
-	mutateFn := visitor(cm)
+	userProps, _ := UserPropsConfigMapCreator(workflow)
+	userPropsCM := userProps.(*corev1.ConfigMap)
+	visitor := ManagedPropertiesMutateVisitor(context.TODO(), nil, workflow, nil, userPropsCM)
+	mutateFn := visitor(managedProps)
 
 	assert.NoError(t, mutateFn())
-	assert.NotEmpty(t, reflectCm.Data[workflowproj.ApplicationPropertiesFileName])
+	assert.Empty(t, managedPropsCM.Data[workflowproj.ApplicationPropertiesFileName])
+	assert.NotEmpty(t, managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)])
 
-	props := properties.MustLoadString(reflectCm.Data[workflowproj.ApplicationPropertiesFileName])
+	props := properties.MustLoadString(managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)])
 	assert.Equal(t, "8080", props.GetString("quarkus.http.port", ""))
 
 	// we change the properties to something different, we add ours and change the default
-	reflectCm.Data[workflowproj.ApplicationPropertiesFileName] = "quarkus.http.port=9090\nmy.new.prop=1"
-	visitor(reflectCm)
+	userPropsCM.Data[workflowproj.ApplicationPropertiesFileName] = "quarkus.http.port=9090\nmy.new.prop=1"
+	visitor(managedPropsCM)
 	assert.NoError(t, mutateFn())
 
 	// we should preserve the default, and still got ours
-	props = properties.MustLoadString(reflectCm.Data[workflowproj.ApplicationPropertiesFileName])
+	props = properties.MustLoadString(managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)])
 	assert.Equal(t, "8080", props.GetString("quarkus.http.port", ""))
 	assert.Equal(t, "0.0.0.0", props.GetString("quarkus.http.host", ""))
-	assert.Equal(t, "1", props.GetString("my.new.prop", ""))
+	assert.NotContains(t, "my.new.prop", props.Keys())
 }
 
 func Test_ensureWorkflowPropertiesConfigMapMutator_DollarReplacement(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
-	existingCM := &corev1.ConfigMap{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      workflow.Name,
-			Namespace: workflow.Namespace,
-			UID:       "0000-0001-0002-0003",
-		},
-		Data: map[string]string{
-			workflowproj.ApplicationPropertiesFileName: "mp.messaging.outgoing.kogito_outgoing_stream.url=${kubernetes:services.v1/event-listener}",
-		},
-	}
-	mutateVisitorFn := WorkflowPropertiesMutateVisitor(context.TODO(), nil, workflow, nil)
+	platform := test.GetBasePlatform()
+	managedProps, _ := ManagedPropsConfigMapCreator(workflow, platform)
+	managedProps.SetName(workflow.Name)
+	managedProps.SetNamespace(workflow.Namespace)
+	managedProps.SetUID("0000-0001-0002-0003")
+	managedPropsCM := managedProps.(*corev1.ConfigMap)
 
-	err := mutateVisitorFn(existingCM)()
+	userProps, _ := UserPropsConfigMapCreator(workflow)
+	userPropsCM := userProps.(*corev1.ConfigMap)
+	userPropsCM.Data[workflowproj.ApplicationPropertiesFileName] = "mp.messaging.outgoing.kogito_outgoing_stream.url=${kubernetes:services.v1/event-listener}"
+
+	mutateVisitorFn := ManagedPropertiesMutateVisitor(context.TODO(), nil, workflow, nil, userPropsCM)
+
+	err := mutateVisitorFn(managedPropsCM)()
 	assert.NoError(t, err)
-	assert.Contains(t, existingCM.Data[workflowproj.ApplicationPropertiesFileName], "${kubernetes:services.v1/event-listener}")
+	assert.NotContains(t, managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)], "mp.messaging.outgoing.kogito_outgoing_stream.url")
+	// assert.Contains(t, managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)], "${kubernetes:services.v1/event-listener}")
 }
 
 func TestMergePodSpec(t *testing.T) {

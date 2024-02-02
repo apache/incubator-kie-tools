@@ -75,36 +75,34 @@ func (a *appPropertyHandler) WithServiceDiscovery(ctx context.Context, catalog d
 }
 
 func (a *appPropertyHandler) Build() string {
-	var props *properties.Properties
+	var userProps *properties.Properties
 	var propErr error = nil
 	if len(a.userProperties) == 0 {
-		props = properties.NewProperties()
+		userProps = properties.NewProperties()
 	} else {
-		props, propErr = properties.LoadString(a.userProperties)
+		userProps, propErr = properties.LoadString(a.userProperties)
 	}
 	if propErr != nil {
 		klog.V(log.D).InfoS("Can't load user's property", "workflow", a.workflow.Name, "namespace", a.workflow.Namespace, "properties", a.userProperties)
-		props = properties.NewProperties()
+		userProps = properties.NewProperties()
 	}
 	// Disable expansions since it's not our responsibility
 	// Property expansion means resolving ${} within the properties and environment context. Quarkus will do that in runtime.
-	props.DisableExpansion = true
+	userProps.DisableExpansion = true
 
-	removeDiscoveryProperties(props)
+	removeDiscoveryProperties(userProps)
+	discoveryProps := properties.NewProperties()
 	if a.requireServiceDiscovery() {
 		// produce the MicroProfileConfigServiceCatalog properties for the service discovery property values if any.
-		discoveryProperties := generateDiscoveryProperties(a.ctx, a.catalog, props, a.workflow)
-		if discoveryProperties.Len() > 0 {
-			props.Merge(discoveryProperties)
-		}
+		discoveryProps.Merge(generateDiscoveryProperties(a.ctx, a.catalog, userProps, a.workflow))
 	}
-	props = utils.NewApplicationPropertiesBuilder().
-		WithInitialProperties(props).
+	userProps = utils.NewApplicationPropertiesBuilder().
+		WithInitialProperties(discoveryProps).
 		WithImmutableProperties(properties.MustLoadString(immutableApplicationProperties)).
 		WithDefaultMutableProperties(a.defaultMutableProperties).
 		Build()
 
-	return props.String()
+	return userProps.String()
 }
 
 // withKogitoServiceUrl adds the property kogitoServiceUrlProperty to the application properties.
@@ -135,13 +133,14 @@ func (a *appPropertyHandler) addDefaultMutableProperty(name string, value string
 }
 
 // NewAppPropertyHandler creates a property handler for a given workflow to execute in the provided platform.
-// This handler is intended to build the application properties required by the workflow to execute properly, note that
-// the produced properties might vary depending on the platfom, for example, if the job service managed by the platform
+// This handler is intended to build the managed application properties required by the workflow to execute properly together with
+// the user properties defined in the user-managed ConfigMap.
+// Note that the produced properties might vary depending on the platfom, for example, if the job service managed by the platform
 // a particular set of properties will be added, etc.
 // By default, the following properties are incorporated:
 // The set of immutable properties provided by the operator. (user can never change)
-// The set of defaultMutableProperties that are provided by the operator, and that the user might overwrite if it changes
-// the workflow ConfigMap. This set includes for example the required properties to connect with the data index and the
+// The set of defaultMutableProperties that are provided by the operator, and that the user cannot overwrite even if it changes
+// the user-managed ConfigMap. This set includes for example the required properties to connect with the data index and the
 // job service when any of these services are managed by the platform.
 func NewAppPropertyHandler(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (AppPropertyHandler, error) {
 	handler := &appPropertyHandler{

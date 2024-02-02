@@ -61,6 +61,7 @@ func Test_Handler_WorkflowMinimalAndProps(t *testing.T) {
 	assert.NotNil(t, proj.Properties)
 	assert.Equal(t, "minimal", proj.Workflow.Name)
 	assert.Equal(t, "minimal-props", proj.Properties.Name)
+	assert.NotEmpty(t, proj.Properties.Data["application.properties"])
 	assert.Equal(t, string(metadata.ProdProfile), proj.Workflow.Annotations[metadata.Profile])
 	assert.NotEmpty(t, proj.Properties.Data)
 }

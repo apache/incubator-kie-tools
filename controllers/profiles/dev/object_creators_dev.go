@@ -118,7 +118,7 @@ func ensureWorkflowDefConfigMapMutator(workflow *operatorapi.SonataFlow) common.
 }
 
 // mountDevConfigMapsMutateVisitor mounts the required configMaps in the Workflow Dev Deployment
-func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *corev1.ConfigMap, workflowResCMs []operatorapi.ConfigMapWorkflowResource) common.MutateVisitor {
+func mountDevConfigMapsMutateVisitor(workflow *operatorapi.SonataFlow, flowDefCM, userPropsCM, managedPropsCM *corev1.ConfigMap, workflowResCMs []operatorapi.ConfigMapWorkflowResource) common.MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			deployment := object.(*appsv1.Deployment)
@@ -129,7 +129,8 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *corev1.ConfigMap, workf
 
 			// defaultResourcesVolume holds every ConfigMap mount required on src/main/resources
 			defaultResourcesVolume := corev1.Volume{Name: configMapResourcesVolumeName, VolumeSource: corev1.VolumeSource{Projected: &corev1.ProjectedVolumeSource{}}}
-			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, propsCM.Name, corev1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName})
+			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, userPropsCM.Name, corev1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName})
+			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, managedPropsCM.Name, corev1.KeyToPath{Key: workflowproj.GetManagedPropertiesFileName(workflow), Path: workflowproj.GetManagedPropertiesFileName(workflow)})
 			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, flowDefCM.Name)
 
 			// resourceVolumes holds every resource that needs to be mounted on src/main/resources/<specific_dir>

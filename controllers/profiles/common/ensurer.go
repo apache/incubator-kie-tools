@@ -36,6 +36,9 @@ var _ ObjectEnsurer = &noopObjectEnsurer{}
 type ObjectEnsurer interface {
 	Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, visitors ...MutateVisitor) (client.Object, controllerutil.OperationResult, error)
 }
+type ObjectEnsurerWithPlatform interface {
+	Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform, visitors ...MutateVisitor) (client.Object, controllerutil.OperationResult, error)
+}
 
 // MutateVisitor is a visitor function that mutates the given object before performing any updates in the cluster.
 // It gets called after the objectEnforcer reference.
@@ -56,6 +59,14 @@ func NewObjectEnsurer(client client.Client, creator ObjectCreator) ObjectEnsurer
 	}
 }
 
+// NewObjectEnsurerWithPlatform see defaultObjectEnsurerWithPLatform
+func NewObjectEnsurerWithPlatform(client client.Client, creator ObjectCreatorWithPlatform) ObjectEnsurerWithPlatform {
+	return &defaultObjectEnsurerWithPlatform{
+		c:       client,
+		creator: creator,
+	}
+}
+
 // defaultObjectEnsurer provides the engine for a ReconciliationState that needs to create or update a given Kubernetes object during the reconciliation cycle.
 type defaultObjectEnsurer struct {
 	c       client.Client
@@ -66,6 +77,34 @@ func (d *defaultObjectEnsurer) Ensure(ctx context.Context, workflow *operatorapi
 	result := controllerutil.OperationResultNone
 
 	object, err := d.creator(workflow)
+	if err != nil {
+		return nil, result, err
+	}
+	if result, err = controllerutil.CreateOrPatch(ctx, d.c, object,
+		func() error {
+			for _, v := range visitors {
+				if visitorErr := v(object)(); visitorErr != nil {
+					return visitorErr
+				}
+			}
+			return controllerutil.SetControllerReference(workflow, object, d.c.Scheme())
+		}); err != nil {
+		return nil, result, err
+	}
+	klog.V(log.I).InfoS("Object operation finalized", "result", result, "kind", object.GetObjectKind().GroupVersionKind().String(), "name", object.GetName(), "namespace", object.GetNamespace())
+	return object, result, nil
+}
+
+// defaultObjectEnsurerWithPlatform is the equivalent of defaultObjectEnsurer for resources that require a reference to the SonataFlowPlatform
+type defaultObjectEnsurerWithPlatform struct {
+	c       client.Client
+	creator ObjectCreatorWithPlatform
+}
+
+func (d *defaultObjectEnsurerWithPlatform) Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, pl *operatorapi.SonataFlowPlatform, visitors ...MutateVisitor) (client.Object, controllerutil.OperationResult, error) {
+	result := controllerutil.OperationResultNone
+
+	object, err := d.creator(workflow, pl)
 	if err != nil {
 		return nil, result, err
 	}

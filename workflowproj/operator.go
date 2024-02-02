@@ -20,18 +20,22 @@
 package workflowproj
 
 import (
+	"fmt"
+
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 )
 
 const (
-	workflowConfigMapNameSuffix = "-props"
-	// ApplicationPropertiesFileName is the default application properties file name
-	ApplicationPropertiesFileName = "application.properties"
+	workflowUserConfigMapNameSuffix = "-props"
+	// ApplicationPropertiesFileName is the default application properties file name holding user properties
+	ApplicationPropertiesFileName      = "application.properties"
+	workflowManagedConfigMapNameSuffix = "-managed-props"
 	// LabelApp key to use among object selectors, "app" is used among k8s applications to group objects in some UI consoles
 	LabelApp = "app"
 	// LabelService key to use among object selectors
@@ -60,9 +64,23 @@ func SetTypeToObject(obj runtime.Object, s *runtime.Scheme) error {
 	return nil
 }
 
-// GetWorkflowPropertiesConfigMapName gets the default ConfigMap name that holds the application property for the given workflow
-func GetWorkflowPropertiesConfigMapName(workflow *operatorapi.SonataFlow) string {
-	return workflow.Name + workflowConfigMapNameSuffix
+// GetWorkflowUserPropertiesConfigMapName gets the default ConfigMap name that holds the user application property for the given workflow
+func GetWorkflowUserPropertiesConfigMapName(workflow *operatorapi.SonataFlow) string {
+	return workflow.Name + workflowUserConfigMapNameSuffix
+}
+
+// GetWorkflowManagedPropertiesConfigMapName gets the default ConfigMap name that holds the managed application property for the given workflow
+func GetWorkflowManagedPropertiesConfigMapName(workflow *operatorapi.SonataFlow) string {
+	return workflow.Name + workflowManagedConfigMapNameSuffix
+}
+
+// GetWorkflowManagedPropertiesConfigMapName gets the default ConfigMap name that holds the managed application property for the given workflow
+func GetManagedPropertiesFileName(workflow *operatorapi.SonataFlow) string {
+	profile := metadata.ProdProfile
+	if profiles.IsDevProfile(workflow) {
+		profile = metadata.DevProfile
+	}
+	return fmt.Sprintf("application-%s.properties", profile)
 }
 
 // SetDefaultLabels adds the default workflow application labels to the given object.
@@ -80,15 +98,27 @@ func GetDefaultLabels(workflow *operatorapi.SonataFlow) map[string]string {
 	}
 }
 
-// CreateNewAppPropsConfigMap creates a new ConfigMap object to hold the workflow application properties.
-func CreateNewAppPropsConfigMap(workflow *operatorapi.SonataFlow, properties string) *corev1.ConfigMap {
+// CreateNewUserPropsConfigMap creates a new empty ConfigMap object to hold the user application properties of the workflow.
+func CreateNewUserPropsConfigMap(workflow *operatorapi.SonataFlow) *corev1.ConfigMap {
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      GetWorkflowPropertiesConfigMapName(workflow),
+			Name:      GetWorkflowUserPropertiesConfigMapName(workflow),
 			Namespace: workflow.Namespace,
 			Labels:    GetDefaultLabels(workflow),
 		},
-		Data: map[string]string{ApplicationPropertiesFileName: properties},
+		Data: map[string]string{ApplicationPropertiesFileName: ""},
+	}
+}
+
+// CreateNewManagedPropsConfigMap creates a new ConfigMap object to hold the managed application properties of the workflos.
+func CreateNewManagedPropsConfigMap(workflow *operatorapi.SonataFlow, properties string) *corev1.ConfigMap {
+	return &corev1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      GetWorkflowManagedPropertiesConfigMapName(workflow),
+			Namespace: workflow.Namespace,
+			Labels:    GetDefaultLabels(workflow),
+		},
+		Data: map[string]string{GetManagedPropertiesFileName(workflow): properties},
 	}
 }
 

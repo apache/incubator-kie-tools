@@ -75,21 +75,23 @@ func NewProfileReconciler(client client.Client, cfg *rest.Config, recorder recor
 
 func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 	return &objectEnsurers{
-		deployment:          common.NewObjectEnsurer(support.C, deploymentCreator),
-		service:             common.NewObjectEnsurer(support.C, serviceCreator),
-		network:             common.NewNoopObjectEnsurer(),
-		definitionConfigMap: common.NewObjectEnsurer(support.C, workflowDefConfigMapCreator),
-		propertiesConfigMap: common.NewObjectEnsurer(support.C, common.WorkflowPropsConfigMapCreator),
+		deployment:            common.NewObjectEnsurer(support.C, deploymentCreator),
+		service:               common.NewObjectEnsurer(support.C, serviceCreator),
+		network:               common.NewNoopObjectEnsurer(),
+		definitionConfigMap:   common.NewObjectEnsurer(support.C, workflowDefConfigMapCreator),
+		userPropsConfigMap:    common.NewObjectEnsurer(support.C, common.UserPropsConfigMapCreator),
+		managedPropsConfigMap: common.NewObjectEnsurerWithPlatform(support.C, common.ManagedPropsConfigMapCreator),
 	}
 }
 
 func newObjectEnsurersOpenShift(support *common.StateSupport) *objectEnsurers {
 	return &objectEnsurers{
-		deployment:          common.NewObjectEnsurer(support.C, deploymentCreator),
-		service:             common.NewObjectEnsurer(support.C, serviceCreator),
-		network:             common.NewObjectEnsurer(support.C, common.OpenShiftRouteCreator),
-		definitionConfigMap: common.NewObjectEnsurer(support.C, workflowDefConfigMapCreator),
-		propertiesConfigMap: common.NewObjectEnsurer(support.C, common.WorkflowPropsConfigMapCreator),
+		deployment:            common.NewObjectEnsurer(support.C, deploymentCreator),
+		service:               common.NewObjectEnsurer(support.C, serviceCreator),
+		network:               common.NewObjectEnsurer(support.C, common.OpenShiftRouteCreator),
+		definitionConfigMap:   common.NewObjectEnsurer(support.C, workflowDefConfigMapCreator),
+		userPropsConfigMap:    common.NewObjectEnsurer(support.C, common.UserPropsConfigMapCreator),
+		managedPropsConfigMap: common.NewObjectEnsurerWithPlatform(support.C, common.ManagedPropsConfigMapCreator),
 	}
 }
 
@@ -106,11 +108,12 @@ func newStatusEnrichersOpenShift(support *common.StateSupport) *statusEnrichers 
 }
 
 type objectEnsurers struct {
-	deployment          common.ObjectEnsurer
-	service             common.ObjectEnsurer
-	network             common.ObjectEnsurer
-	definitionConfigMap common.ObjectEnsurer
-	propertiesConfigMap common.ObjectEnsurer
+	deployment            common.ObjectEnsurer
+	service               common.ObjectEnsurer
+	network               common.ObjectEnsurer
+	definitionConfigMap   common.ObjectEnsurer
+	userPropsConfigMap    common.ObjectEnsurer
+	managedPropsConfigMap common.ObjectEnsurerWithPlatform
 }
 
 type statusEnrichers struct {

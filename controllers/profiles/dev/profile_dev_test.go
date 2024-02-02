@@ -145,12 +145,16 @@ func Test_newDevProfile(t *testing.T) {
 	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
 	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
 
-	propCM := &corev1.ConfigMap{}
-	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowPropertiesConfigMapName(workflow)}, propCM)
-	assert.NotEmpty(t, propCM.Data[workflowproj.ApplicationPropertiesFileName])
+	userPropsCM := &corev1.ConfigMap{}
+	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowUserPropertiesConfigMapName(workflow)}, userPropsCM)
+	assert.Empty(t, userPropsCM.Data[workflowproj.ApplicationPropertiesFileName])
+
+	managedPropsCM := &corev1.ConfigMap{}
+	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowManagedPropertiesConfigMapName(workflow)}, managedPropsCM)
+	assert.NotEmpty(t, managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)])
 	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
 	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
-	assert.Contains(t, propCM.Data[workflowproj.ApplicationPropertiesFileName], "quarkus.http.port")
+	assert.Contains(t, managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)], "quarkus.http.port")
 
 	service := test.MustGetService(t, client, workflow)
 	assert.Equal(t, int32(constants.DefaultHTTPWorkflowPortInt), service.Spec.Ports[0].TargetPort.IntVal)
@@ -179,10 +183,14 @@ func Test_newDevProfile(t *testing.T) {
 	err = client.Update(context.TODO(), deployment)
 	assert.NoError(t, err)
 
-	propCM = &corev1.ConfigMap{}
-	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowPropertiesConfigMapName(workflow)}, propCM)
-	assert.NotEmpty(t, propCM.Data[workflowproj.ApplicationPropertiesFileName])
-	assert.Contains(t, propCM.Data[workflowproj.ApplicationPropertiesFileName], "quarkus.http.port")
+	userPropsCM = &corev1.ConfigMap{}
+	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowUserPropertiesConfigMapName(workflow)}, userPropsCM)
+	assert.Empty(t, userPropsCM.Data[workflowproj.ApplicationPropertiesFileName])
+
+	managedPropsCM = &corev1.ConfigMap{}
+	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowManagedPropertiesConfigMapName(workflow)}, managedPropsCM)
+	assert.NotEmpty(t, managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)])
+	assert.Contains(t, managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)], "quarkus.http.port")
 
 	// reconcile
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)

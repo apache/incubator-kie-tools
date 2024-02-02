@@ -28,6 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
@@ -64,7 +65,7 @@ func addOpenShiftImageTriggerDeploymentMutateVisitor(workflow *v1alpha08.SonataF
 }
 
 // mountDevConfigMapsMutateVisitor mounts the required configMaps in the Workflow Dev Deployment
-func mountProdConfigMapsMutateVisitor(propsCM *v1.ConfigMap) common.MutateVisitor {
+func mountProdConfigMapsMutateVisitor(workflow *operatorapi.SonataFlow, userPropsCM *v1.ConfigMap, managedPropsCM *v1.ConfigMap) common.MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			deployment := object.(*appsv1.Deployment)
@@ -77,12 +78,14 @@ func mountProdConfigMapsMutateVisitor(propsCM *v1.ConfigMap) common.MutateVisito
 				deployment.Spec.Template.Spec.Containers[idx].VolumeMounts = make([]v1.VolumeMount, 0, 1)
 			}
 
-			kubeutil.AddOrReplaceVolume(&deployment.Spec.Template.Spec,
-				kubeutil.VolumeConfigMap(constants.ConfigMapWorkflowPropsVolumeName, propsCM.Name, v1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}))
+			defaultResourcesVolume := v1.Volume{Name: constants.ConfigMapWorkflowPropsVolumeName, VolumeSource: v1.VolumeSource{Projected: &v1.ProjectedVolumeSource{}}}
+			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, userPropsCM.Name, v1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName})
+			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, managedPropsCM.Name, v1.KeyToPath{Key: workflowproj.GetManagedPropertiesFileName(workflow), Path: workflowproj.GetManagedPropertiesFileName(workflow)})
+			kubeutil.AddOrReplaceVolume(&deployment.Spec.Template.Spec, defaultResourcesVolume)
 			kubeutil.AddOrReplaceVolumeMount(idx, &deployment.Spec.Template.Spec,
 				kubeutil.VolumeMount(constants.ConfigMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
 
-			kubeutil.AnnotateDeploymentConfigChecksum(deployment, propsCM)
+			kubeutil.AnnotateDeploymentConfigChecksum(workflow, deployment, userPropsCM, managedPropsCM)
 			return nil
 		}
 	}

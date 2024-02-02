@@ -49,9 +49,16 @@ func (d *deploymentReconciler) reconcile(ctx context.Context, workflow *operator
 
 func (d *deploymentReconciler) reconcileWithBuiltImage(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
 	pl, _ := platform.GetActivePlatform(ctx, d.C, workflow.Namespace)
-	propsCM, _, err := d.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(ctx, d.StateSupport.Catalog, workflow, pl))
+	userPropsCM, _, err := d.ensurers.userPropsConfigMap.Ensure(ctx, workflow)
 	if err != nil {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the properties config map")
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the user properties config map")
+		_, err = d.PerformStatusUpdate(ctx, workflow)
+		return ctrl.Result{}, nil, err
+	}
+	managedPropsCM, _, err := d.ensurers.managedPropsConfigMap.Ensure(ctx, workflow, pl,
+		common.ManagedPropertiesMutateVisitor(ctx, d.StateSupport.Catalog, workflow, pl, userPropsCM.(*v1.ConfigMap)))
+	if err != nil {
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the managed properties config map")
 		_, err = d.PerformStatusUpdate(ctx, workflow)
 		return ctrl.Result{}, nil, err
 	}
@@ -60,7 +67,7 @@ func (d *deploymentReconciler) reconcileWithBuiltImage(ctx context.Context, work
 		d.ensurers.deployment.Ensure(
 			ctx,
 			workflow,
-			d.getDeploymentMutateVisitors(workflow, image, propsCM.(*v1.ConfigMap))...,
+			d.getDeploymentMutateVisitors(workflow, image, userPropsCM.(*v1.ConfigMap), managedPropsCM.(*v1.ConfigMap))...,
 		)
 	if err != nil {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to perform the deploy due to ", err)
@@ -75,7 +82,7 @@ func (d *deploymentReconciler) reconcileWithBuiltImage(ctx context.Context, work
 		return reconcile.Result{}, nil, err
 	}
 
-	objs := []client.Object{deployment, service, propsCM}
+	objs := []client.Object{deployment, service, managedPropsCM}
 
 	if deploymentOp == controllerutil.OperationResultCreated {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
@@ -100,17 +107,18 @@ func (d *deploymentReconciler) reconcileWithBuiltImage(ctx context.Context, work
 func (d *deploymentReconciler) getDeploymentMutateVisitors(
 	workflow *operatorapi.SonataFlow,
 	image string,
-	configMap *v1.ConfigMap) []common.MutateVisitor {
+	userPropsCM *v1.ConfigMap,
+	managedPropsCM *v1.ConfigMap) []common.MutateVisitor {
 	if utils.IsOpenShift() {
 		return []common.MutateVisitor{common.DeploymentMutateVisitor(workflow),
-			mountProdConfigMapsMutateVisitor(configMap),
+			mountProdConfigMapsMutateVisitor(workflow, userPropsCM, managedPropsCM),
 			addOpenShiftImageTriggerDeploymentMutateVisitor(workflow, image),
 			common.ImageDeploymentMutateVisitor(workflow, image),
-			common.RolloutDeploymentIfCMChangedMutateVisitor(configMap),
+			common.RolloutDeploymentIfCMChangedMutateVisitor(workflow, userPropsCM, managedPropsCM),
 		}
 	}
 	return []common.MutateVisitor{common.DeploymentMutateVisitor(workflow),
 		common.ImageDeploymentMutateVisitor(workflow, image),
-		mountProdConfigMapsMutateVisitor(configMap),
-		common.RolloutDeploymentIfCMChangedMutateVisitor(configMap)}
+		mountProdConfigMapsMutateVisitor(workflow, userPropsCM, managedPropsCM),
+		common.RolloutDeploymentIfCMChangedMutateVisitor(workflow, userPropsCM, managedPropsCM)}
 }

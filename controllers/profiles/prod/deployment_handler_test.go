@@ -26,6 +26,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/types"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 )
 
@@ -77,8 +78,12 @@ func Test_CheckDeploymentRolloutAfterCMChange(t *testing.T) {
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
 
+	userPropsCM := &corev1.ConfigMap{}
+	err = client.Get(context.TODO(), types.NamespacedName{Name: workflowproj.GetWorkflowUserPropertiesConfigMapName(workflow), Namespace: t.Name()}, userPropsCM)
+	assert.NoError(t, err)
+
 	// Second reconciliation, we do change the configmap and that must rollout the deployment
-	var cm *corev1.ConfigMap
+	var managedPropsCM *corev1.ConfigMap
 	var checksum string
 	for _, o := range objects {
 		if _, ok := o.(*v1.Deployment); ok {
@@ -89,16 +94,20 @@ func Test_CheckDeploymentRolloutAfterCMChange(t *testing.T) {
 			assert.NotContains(t, deployment.Spec.Template.ObjectMeta.Annotations, metadata.RestartedAt)
 		}
 		if _, ok := o.(*corev1.ConfigMap); ok {
-			cm = o.(*corev1.ConfigMap)
-			currentProps := cm.Data[workflowproj.ApplicationPropertiesFileName]
-			props, err := properties.LoadString(currentProps)
-			assert.Nil(t, err)
-			props.MustSet("test.property", "test.value")
-			cm.Data[workflowproj.ApplicationPropertiesFileName] = props.String()
+			cm := o.(*corev1.ConfigMap)
+			if cm.Name == workflowproj.GetWorkflowManagedPropertiesConfigMapName(workflow) {
+				managedPropsCM = cm
+			}
 		}
 	}
-	assert.NotNil(t, cm)
-	utilruntime.Must(client.Update(context.TODO(), cm))
+	assert.NotNil(t, managedPropsCM)
+
+	currentProps := userPropsCM.Data[workflowproj.ApplicationPropertiesFileName]
+	props, err := properties.LoadString(currentProps)
+	assert.Nil(t, err)
+	props.MustSet("test.property", "test.value")
+	userPropsCM.Data[workflowproj.ApplicationPropertiesFileName] = props.String()
+	utilruntime.Must(client.Update(context.TODO(), userPropsCM))
 	result, objects, err = handler.reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
@@ -131,9 +140,13 @@ func Test_CheckDeploymentUnchangedAfterCMChangeOtherKeys(t *testing.T) {
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
 
+	userPropsCM := &corev1.ConfigMap{}
+	err = client.Get(context.TODO(), types.NamespacedName{Name: workflowproj.GetWorkflowUserPropertiesConfigMapName(workflow), Namespace: t.Name()}, userPropsCM)
+	assert.NoError(t, err)
+
 	// Second reconciliation, we do change the configmap and that must not rollout the deployment
 	// because we're not updating the application.properties key
-	var cm *corev1.ConfigMap
+	var managedPropsCM *corev1.ConfigMap
 	var checksum string
 	for _, o := range objects {
 		if _, ok := o.(*v1.Deployment); ok {
@@ -144,12 +157,16 @@ func Test_CheckDeploymentUnchangedAfterCMChangeOtherKeys(t *testing.T) {
 			assert.NotContains(t, deployment.Spec.Template.ObjectMeta.Annotations, metadata.RestartedAt)
 		}
 		if _, ok := o.(*corev1.ConfigMap); ok {
-			cm = o.(*corev1.ConfigMap)
-			cm.Data["other.key"] = "useless.key = value"
+			cm := o.(*corev1.ConfigMap)
+			if cm.Name == workflowproj.GetWorkflowManagedPropertiesConfigMapName(workflow) {
+				managedPropsCM = cm
+			}
 		}
 	}
-	assert.NotNil(t, cm)
-	utilruntime.Must(client.Update(context.TODO(), cm))
+	assert.NotNil(t, managedPropsCM)
+
+	userPropsCM.Data["other.key"] = "useless.key = value"
+	utilruntime.Must(client.Update(context.TODO(), userPropsCM))
 	result, objects, err = handler.reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
@@ -157,13 +174,10 @@ func Test_CheckDeploymentUnchangedAfterCMChangeOtherKeys(t *testing.T) {
 	for _, o := range objects {
 		if _, ok := o.(*v1.Deployment); ok {
 			deployment := o.(*v1.Deployment)
-			// Commented while waiting for SRVLOGIC-195 to be addressed
-			// assert.NotContains(t, deployment.Spec.Template.ObjectMeta.Annotations, metadata.RestartedAt)
-			assert.Contains(t, deployment.Spec.Template.ObjectMeta.Annotations, metadata.Checksum)
+			assert.NotContains(t, deployment.Spec.Template.ObjectMeta.Annotations, metadata.RestartedAt)
 			newChecksum := deployment.Spec.Template.ObjectMeta.Annotations[metadata.Checksum]
 			assert.NotEmpty(t, newChecksum)
-			// Change to asssert.Equal when SRVLOGIC-195 is addressed
-			assert.NotEqual(t, newChecksum, checksum)
+			assert.Equal(t, newChecksum, checksum)
 			break
 		}
 	}
