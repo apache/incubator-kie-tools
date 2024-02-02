@@ -318,7 +318,7 @@
 }
 /* (end) version popover */
 
-/* (begin) autolayout panel button */
+/* (begin) autolayout panel toggle */
 .kie-dmn-editor--autolayout-panel-toggle {
   width: 42px;
   background: #fff;
@@ -347,12 +347,9 @@
 .kie-dmn-editor--autolayout-panel-toggle-button:active {
   filter: brightness(90%);
 }
-/* (end) autolayout panel toggle *
-/
-/* (begin) autolayout panel toggle */
-.kie-dmn-editor--autolayout-panel-popover .pf-c-popover__body {
-  padding: 0;
-}
+/* (end) autolayout panel toggle */
+
+/* (begin) overlays panel toggle */
 .kie-dmn-editor--overlays-panel-toggle {
   width: 42px;
   background: #fff;

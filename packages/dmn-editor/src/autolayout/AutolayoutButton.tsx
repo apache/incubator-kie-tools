@@ -234,7 +234,7 @@ export function AutolayoutButton() {
         },
       };
 
-      // FIXME: Tiago --> Improve performance here.
+      // FIXME: Tiago --> Improve performance here as part of https://github.com/apache/incubator-kie-issues/issues/451.
       const parents = [...parentNodesById.values()].filter(
         (p) => p.contains({ id: elkNode.id, bounds: node.data.shape["dc:Bounds"] }).isInside
       );
@@ -504,8 +504,6 @@ export function AutolayoutButton() {
           keepWaypoints: false,
         });
       }
-
-      // 11. After all nodes have been repositioned, it's time for the empty groups to be repositioned.
     });
   }, [dmnEditorStoreApi, externalModelsByNamespace]);
 
@@ -527,7 +525,7 @@ export async function runElk(
 
   const graph: Elk.ElkNode = {
     id: "root",
-    layoutOptions: (window as any).elkOptions ?? options, // FIXME: Tiago --> Remove this. Debug only.
+    layoutOptions: options,
     children: nodes,
     edges,
   };
