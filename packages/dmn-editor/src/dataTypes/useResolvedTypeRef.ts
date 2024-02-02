@@ -19,22 +19,22 @@
 
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { useDmnEditorStore } from "../store/Store";
+import { useDmnEditorStore } from "../store/StoreContext";
 import { resolveTypeRef } from "./resolveTypeRef";
 
 export function useResolvedTypeRef(typeRef: string | undefined, relativeToNamespace: string | undefined) {
-  const { allTopLevelDataTypesByFeelName, importsByNamespace } = useDmnEditorDerivedStore();
   const { externalModelsByNamespace } = useExternalModels();
 
-  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-
-  return resolveTypeRef({
-    typeRef: typeRef || DmnBuiltInDataType.Undefined,
-    namespace: relativeToNamespace || thisDmnsNamespace,
-    allTopLevelDataTypesByFeelName,
-    externalModelsByNamespace,
-    thisDmnsImportsByNamespace: importsByNamespace,
-    relativeToNamespace: thisDmnsNamespace,
+  return useDmnEditorStore((s) => {
+    const thisDmnsNamespace = s.dmn.model.definitions["@_namespace"];
+    return resolveTypeRef({
+      typeRef: typeRef || DmnBuiltInDataType.Undefined,
+      namespace: relativeToNamespace || thisDmnsNamespace,
+      allTopLevelDataTypesByFeelName: s.computed(s).getDataTypes(externalModelsByNamespace)
+        .allTopLevelDataTypesByFeelName,
+      externalModelsByNamespace,
+      thisDmnsImportsByNamespace: s.computed(s).importsByNamespace(),
+      relativeToNamespace: thisDmnsNamespace,
+    });
   });
 }
