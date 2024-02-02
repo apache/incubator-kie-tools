@@ -265,8 +265,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns `n` with rounding mode ceiling. If `n` is null the result is null.",
         parameters: [["n", `\`number\``]],
         examples: ["ceiling( 1.5 ) = 2", "ceiling( -1.5 ) = -1"],
-      } /*
-      {   === DMN 1.4 ===
+      },
+      {
         label: "ceiling(n, scale)",
         insertText: "ceiling($1, $2)",
         description:
@@ -276,7 +276,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["scale", `\`number\``],
         ],
         examples: ["ceiling( -1.56, 1 ) = -1.5"],
-      }, */,
+      },
       {
         label: "code(value)",
         insertText: "code($1)",
@@ -653,8 +653,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns `n` with rounding mode flooring. If `n` is null the result is null.",
         parameters: [["n", `\`number\``]],
         examples: ["floor(1.5) = 1"],
-      } /*
-      {   === DMN 1.4 ===
+      },
+      {
         label: "floor(n, scale)",
         insertText: "floor($1, $2)",
         description:
@@ -664,7 +664,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["scale", `\`number\``],
         ],
         examples: ["floor( -1.56, 1 ) = -1.6"],
-      }, */,
+      },
       {
         label: "get entries(m)",
         insertText: "get entries($1)",
@@ -1402,6 +1402,36 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Provides a string representation of the specified parameter",
         parameters: [["from", `Not null value`]],
         examples: ['string( 1.1 ) = "1.1"', "string( null ) = null"],
+      },
+      {
+        label: "string join(list)",
+        insertText: "string join($1)",
+        description:
+          "Returns a string which is composed by joining all the string elements from the `list` parameter. Null elements in the `list` parameter are ignored. If `list` is empty, the result is the empty string.",
+        parameters: [["list", `\`list\` of \`string\``]],
+        examples: [
+          'string join( ["a","b","c"] ) = "abc"',
+          'string join( ["a",null,"c"] ) = "ac"',
+          'string join([]) = ""',
+        ],
+      },
+      {
+        label: "string join(list, delimiter)",
+        insertText: "string join($1, $2)",
+        description:
+          "Returns a string which is composed by joining all the string elements from the `list` parameter, separated by the `delimiter`. The `delimiter` can be an empty string. Null elements in the `list` parameter are ignored. If `list` is empty, the result is the empty string. If `delimiter` is null, the string elements are joined without a separator.",
+        parameters: [
+          ["list", `\`list\` of \`string\``],
+          ["delimiter", `\`string\``],
+        ],
+        examples: [
+          'string join(["a","b","c"], "_and_") = "a_and_b_and_c"',
+          'string join(["a","b","c"], "") = "abc"',
+          'string join(["a","b","c"], null) = "abc"',
+          'string join(["a"], "X") = "a"',
+          'string join(["a",null,"c"], "X") = "aXc"',
+          'string join([], "X") = ""',
+        ],
       },
       {
         label: "sublist(list, start position)",
