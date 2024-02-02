@@ -30,7 +30,7 @@ if (argv.indexOf("--env") !== -1 && argv[argv.indexOf("--env") + 1] === "live") 
   process.env.STORYBOOK_BASE_WRAPPER_INTERNAL__liveReload = "true";
 }
 
-const storybook = spawn(`storybook`, storybookArgs);
+const storybook = spawn(`storybook`, [...storybookArgs, "-p", process.env.STORYBOOK_PORT ?? ""], { shell: true });
 
 storybook.stdout.setEncoding("utf8");
 storybook.stdout.on("data", (data) => {
