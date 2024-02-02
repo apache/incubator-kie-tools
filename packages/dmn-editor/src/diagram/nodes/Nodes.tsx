@@ -69,7 +69,7 @@ import { updateDecisionServiceDividerLine } from "../../mutations/updateDecision
 import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { getNodeLabelPosition, useNodeStyle } from "./NodeStyle";
-import { isAlternativeInputDataShape, useAlternativeInputDataShape } from "../../alternativeInputData/useAlternative";
+import { useAlternativeInputDataShape } from "../../alternativeInputData/useAlternative";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -211,18 +211,20 @@ export const InputDataNode = React.memo(
             nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
           />
-          <EditableNodeLabel
-            namedElement={inputData}
-            namedElementQName={dmnObjectQName}
-            isEditing={isEditingLabel}
-            setEditing={setEditingLabel}
-            position={getNodeLabelPosition(type as NodeType)}
-            value={inputData["@_label"] ?? inputData["@_name"]}
-            onChange={setName}
-            allUniqueNames={allFeelVariableUniqueNames}
-            shouldCommitOnBlur={true}
-            fontCssProperties={fontCssProperties}
-          />
+          {!isAlternativeInputDataShape && (
+            <EditableNodeLabel
+              namedElement={inputData}
+              namedElementQName={dmnObjectQName}
+              isEditing={isEditingLabel}
+              setEditing={setEditingLabel}
+              position={getNodeLabelPosition(type as NodeType)}
+              value={inputData["@_label"] ?? inputData["@_name"]}
+              onChange={setName}
+              allUniqueNames={allFeelVariableUniqueNames}
+              shouldCommitOnBlur={true}
+              fontCssProperties={fontCssProperties}
+            />
+          )}
           {isHovered && (
             <NodeResizerHandle
               nodeType={type as NodeType}
@@ -241,6 +243,20 @@ export const InputDataNode = React.memo(
             onChange={onTypeRefChange}
           />
         </div>
+        {isAlternativeInputDataShape && (
+          <EditableNodeLabel
+            namedElement={inputData}
+            namedElementQName={dmnObjectQName}
+            isEditing={isEditingLabel}
+            setEditing={setEditingLabel}
+            position={getNodeLabelPosition(type as NodeType)}
+            value={inputData["@_label"] ?? inputData["@_name"]}
+            onChange={setName}
+            allUniqueNames={allFeelVariableUniqueNames}
+            shouldCommitOnBlur={true}
+            fontCssProperties={fontCssProperties}
+          />
+        )}
       </>
     );
   }
