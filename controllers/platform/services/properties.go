@@ -24,6 +24,8 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	"k8s.io/klog/v2"
@@ -164,6 +166,7 @@ func GenerateDataIndexWorkflowProperties(workflow *operatorapi.SonataFlow, platf
 	if workflow != nil && !profiles.IsDevProfile(workflow) && di.IsServiceEnabled() {
 		props.Set(constants.KogitoProcessDefinitionsEventsEnabled, "true")
 		props.Set(constants.KogitoProcessInstancesEventsEnabled, "true")
+		props.Set(constants.KogitoDataIndexHealthCheckEnabled, "true")
 		di := NewDataIndexHandler(platform)
 		p, err := di.GenerateWorkflowProperties()
 		if err != nil {
@@ -186,6 +189,9 @@ func GenerateJobServiceWorkflowProperties(workflow *operatorapi.SonataFlow, plat
 	props.Set(constants.JobServiceRequestEventsURL, fmt.Sprintf("%s://localhost/v2/jobs/events", constants.JobServiceURLProtocol))
 	js := NewJobServiceHandler(platform)
 	if workflow != nil && !profiles.IsDevProfile(workflow) && js.IsServiceEnabled() {
+		if workflowdef.HasTimeouts(workflow) {
+			props.Set(constants.KogitoJobServiceHealthCheckEnabled, "true")
+		}
 		p, err := js.GenerateWorkflowProperties()
 		if err != nil {
 			return nil, err

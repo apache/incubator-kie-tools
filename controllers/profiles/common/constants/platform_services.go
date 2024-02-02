@@ -32,7 +32,7 @@ const (
 	JobServiceStatusChangeEventsURL  = "mp.messaging.outgoing.kogito-job-service-job-status-events-http.url"
 	JobServiceURLProtocol            = "http"
 	JobServiceDataSourceReactiveURL  = "quarkus.datasource.reactive.url"
-	JobServiceURLPath                = "/v2/jobs/events"
+	JobServiceJobEventsPath          = "/v2/jobs/events"
 
 	KogitoProcessEventsProtocol           = "http"
 	KogitoProcessInstancesEventsURL       = "mp.messaging.outgoing.kogito-processinstances-events.url"
@@ -42,7 +42,16 @@ const (
 	KogitoProcessDefinitionsEventsEnabled = "kogito.events.processdefinitions.enabled"
 	KogitoProcessDefinitionsEventsPath    = "/definitions"
 	KogitoUserTasksEventsEnabled          = "kogito.events.usertasks.enabled"
-	KogitoEventsVariablesEnabled          = "kogito.events.variables.enabled"
+	// KogitoDataIndexHealthCheckEnabled configures if a workflow must check for the data index availability as part
+	// of its start health check.
+	KogitoDataIndexHealthCheckEnabled = "kogito.data-index.health-enabled"
+	// KogitoDataIndexURL configures the data index url, this value can be used internally by the workflow.
+	KogitoDataIndexURL = "kogito.data-index.url"
+	// KogitoJobServiceHealthCheckEnabled configures if a workflow must check for the job service availability as part
+	// of its start health check.
+	KogitoJobServiceHealthCheckEnabled = "kogito.jobs-service.health-enabled"
+	// KogitoJobServiceURL configures the jobs service, this value can be used internally by the workflow.
+	KogitoJobServiceURL                   = "kogito.jobs-service.url"
 	KogitoServiceURLProperty              = "kogito.service.url"
 	KogitoServiceURLProtocol              = "http"
 	DataIndexKafkaSmallRyeHealthProperty  = `quarkus.smallrye-health.check."io.quarkus.kafka.client.health.KafkaHealthCheck".enabled`

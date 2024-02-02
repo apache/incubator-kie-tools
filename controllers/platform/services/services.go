@@ -81,8 +81,6 @@ type PlatformServiceHandler interface {
 	GetLocalServiceBaseUrl() string
 	// GetServiceBaseUrl returns the base url of the service, based on whether using local or cluster-scoped service.
 	GetServiceBaseUrl() string
-	// GetServiceUrl returns the service url, based on whether using local or cluster-scoped service.
-	GetServiceUrl() string
 	// IsServiceEnabled returns true if the service is enabled in either the spec or the status.clusterPlatformRef.
 	IsServiceEnabled() bool
 	// SetServiceUrlInStatus sets the service url in status. if reconciled instance does not have service set in spec AND
@@ -148,10 +146,6 @@ func (d DataIndexHandler) isServiceEnabledInStatus() bool {
 
 func (d DataIndexHandler) IsServiceEnabled() bool {
 	return d.IsServiceEnabledInSpec() || d.isServiceEnabledInStatus()
-}
-
-func (d DataIndexHandler) GetServiceUrl() string {
-	return d.GetServiceBaseUrl() + constants.KogitoProcessInstancesEventsPath
 }
 
 func (d DataIndexHandler) GetServiceBaseUrl() string {
@@ -236,8 +230,9 @@ func (d DataIndexHandler) GetServiceCmName() string {
 func (d DataIndexHandler) GenerateWorkflowProperties() (*properties.Properties, error) {
 	props := properties.NewProperties()
 	if d.IsServiceEnabled() {
+		props.Set(constants.KogitoDataIndexURL, d.GetServiceBaseUrl())
 		props.Set(constants.KogitoProcessDefinitionsEventsURL, d.GetServiceBaseUrl()+constants.KogitoProcessDefinitionsEventsPath)
-		props.Set(constants.KogitoProcessInstancesEventsURL, d.GetServiceUrl())
+		props.Set(constants.KogitoProcessInstancesEventsURL, d.GetServiceBaseUrl()+constants.KogitoProcessInstancesEventsPath)
 	}
 	return props, nil
 }
@@ -311,10 +306,6 @@ func (j JobServiceHandler) isServiceEnabledInStatus() bool {
 
 func (j JobServiceHandler) IsServiceEnabled() bool {
 	return j.IsServiceEnabledInSpec() || j.isServiceEnabledInStatus()
-}
-
-func (j JobServiceHandler) GetServiceUrl() string {
-	return j.GetServiceBaseUrl() + constants.JobServiceURLPath
 }
 
 func (j JobServiceHandler) GetServiceBaseUrl() string {
@@ -411,8 +402,8 @@ func (j JobServiceHandler) GenerateServiceProperties() (*properties.Properties, 
 func (j JobServiceHandler) GenerateWorkflowProperties() (*properties.Properties, error) {
 	props := properties.NewProperties()
 	if j.IsServiceEnabled() {
-		// add data source reactive URL
-		props.Set(constants.JobServiceRequestEventsURL, j.GetServiceUrl())
+		props.Set(constants.KogitoJobServiceURL, j.GetServiceBaseUrl())
+		props.Set(constants.JobServiceRequestEventsURL, j.GetServiceBaseUrl()+constants.JobServiceJobEventsPath)
 	}
 	return props, nil
 }
