@@ -44,9 +44,10 @@ import {
   useDmnEditorStore,
   useDmnEditorStoreApi,
 } from "./store/Store";
+import { normalize } from "./normalization/normalize";
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
+import { BoxedExpressionPropertiesPanel } from "./propertiesPanel/BoxedExpressionPropertiesPanel";
 import { DmnEditorDerivedStoreContextProvider, useDmnEditorDerivedStore } from "./store/DerivedStore";
 import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
 import { DmnEditorExternalModelsContextProvider } from "./includedModels/DmnEditorDependenciesContext";
@@ -222,8 +223,8 @@ export const DmnEditorInternal = ({
       if (model === original(state.dmn.model)) {
         return;
       }
-      state.dmn.model = model;
-      dmnModelBeforeEditingRef.current = model;
+      state.dmn.model = normalize(model);
+      dmnModelBeforeEditingRef.current = state.dmn.model;
     });
   }, [dmnEditorStoreApi, dispatch.dmn, model]);
 
@@ -305,7 +306,7 @@ export const DmnEditorInternal = ({
   }, [dmn.model.definitions.import?.length, dmn.model.definitions.itemDefinition?.length]);
 
   const diagramPropertiesPanel = useMemo(() => <DiagramPropertiesPanel />, []);
-  const beePropertiesPanel = useMemo(() => <BeePropertiesPanel />, []);
+  const beePropertiesPanel = useMemo(() => <BoxedExpressionPropertiesPanel />, []);
 
   return (
     <div ref={dmnEditorRootElementRef} className={"kie-dmn-editor--root"}>
@@ -359,7 +360,13 @@ export const DmnEditorInternal = ({
 };
 
 export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref<DmnEditorRef>) => {
-  const storeRef = React.useRef<StoreApiType>(createDmnEditorStore(props.model));
+  const store = useMemo(
+    () => createDmnEditorStore(props.model),
+    // Purposefully empty. This memoizes the initial value of the store
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  const storeRef = React.useRef<StoreApiType>(store);
 
   const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(({ args }) => {
     storeRef.current?.setState((state) => {

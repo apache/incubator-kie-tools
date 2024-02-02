@@ -60,6 +60,7 @@ export interface ConstraintComponentProps {
   typeHelper: TypeHelper;
   onSave: (value?: string) => void;
   isDisabled: boolean;
+  renderOnPropertiesPanel?: boolean;
 }
 
 enum ConstraintsType {
@@ -250,10 +251,12 @@ export function Constraints({
   isReadonly,
   itemDefinition,
   editItemDefinition,
+  renderOnPropertiesPanel,
 }: {
   isReadonly: boolean;
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
+  renderOnPropertiesPanel?: boolean;
 }) {
   const allowedValues = useMemo(() => itemDefinition?.allowedValues, [itemDefinition?.allowedValues]);
   const constraintValue = useMemo(
@@ -474,6 +477,7 @@ export function Constraints({
                 expressionValue={constraintValue}
                 onSave={onEnumChange}
                 isDisabled={!isConstraintEnabled.enumeration}
+                renderOnPropertiesPanel={renderOnPropertiesPanel}
               />
             )}
             {selectedConstraint === ConstraintsType.RANGE && (
@@ -485,6 +489,7 @@ export function Constraints({
                 value={isConstraintRange ? constraintValue : undefined}
                 onSave={onRangeChange}
                 isDisabled={!isConstraintEnabled.range}
+                renderOnPropertiesPanel={renderOnPropertiesPanel}
               />
             )}
             {selectedConstraint === ConstraintsType.EXPRESSION && (

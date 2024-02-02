@@ -19,7 +19,7 @@
 
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
@@ -69,6 +69,7 @@ export function PmmlFunctionExpression({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameters);
+  const parametersId = useMemo(() => `${functionExpression.id}-parameters`, [functionExpression.id]);
 
   const beeTableColumns = useMemo<ReactTable.Column<PMML_ROWTYPE>[]>(() => {
     return [
@@ -81,7 +82,7 @@ export function PmmlFunctionExpression({
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: "parameters" as any,
+            accessor: parametersId as any,
             label: "parameters",
             isRowIndexColumn: false,
             dataType: undefined as any,
@@ -111,7 +112,7 @@ export function PmmlFunctionExpression({
         ],
       },
     ];
-  }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
+  }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader, parametersId]);
 
   const headerVisibility = useMemo(() => {
     return functionExpression.isNested
@@ -260,21 +261,6 @@ function PmmlFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
   const label = useMemo(() => {
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
-
-  const { isActive } = useBeeTableSelectableCellRef(
-    props.rowIndex,
-    props.columnIndex,
-    undefined,
-    useCallback(() => label, [label])
-  );
-
-  const { beeGwtService } = useBoxedExpressionEditor();
-
-  useEffect(() => {
-    if (isActive) {
-      beeGwtService?.selectObject("");
-    }
-  }, [beeGwtService, isActive]);
 
   return (
     <div className={"pmml-function-expression-label"}>

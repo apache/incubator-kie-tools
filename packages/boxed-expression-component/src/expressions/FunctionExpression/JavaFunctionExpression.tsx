@@ -44,7 +44,6 @@ import {
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import {
   useBoxedExpressionEditor,
@@ -83,6 +82,7 @@ export function JavaFunctionExpression({
   );
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameters);
+  const parametersId = useMemo(() => `${functionExpression.id}-parameters`, [functionExpression.id]);
 
   const beeTableColumns = useMemo<ReactTable.Column<JAVA_ROWTYPE>[]>(() => {
     return [
@@ -95,7 +95,7 @@ export function JavaFunctionExpression({
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: "parameters" as any,
+            accessor: parametersId as any,
             label: "parameters",
             isRowIndexColumn: false,
             dataType: undefined as any,
@@ -132,6 +132,7 @@ export function JavaFunctionExpression({
     functionExpression.name,
     parametersColumnHeader,
     setClassAndMethodNamesWidth,
+    parametersId,
   ]);
 
   const headerVisibility = useMemo(() => {
@@ -302,21 +303,6 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
   const label = useMemo(() => {
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
-
-  const { isActive } = useBeeTableSelectableCellRef(
-    props.rowIndex,
-    props.columnIndex,
-    undefined,
-    useCallback(() => label, [label])
-  );
-
-  const { beeGwtService } = useBoxedExpressionEditor();
-
-  useEffect(() => {
-    if (isActive) {
-      beeGwtService?.selectObject("");
-    }
-  }, [beeGwtService, isActive]);
 
   const getParameterLabelHelp = useCallback((): React.ReactNode => {
     if (props.rowIndex === 0) {

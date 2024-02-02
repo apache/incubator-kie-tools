@@ -67,9 +67,8 @@ export function ContextExpression(
   }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { variables } = useBoxedExpressionEditor();
+  const { variables, decisionNodeId } = useBoxedExpressionEditor();
 
   const entryInfoWidth = useMemo(
     () => contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
@@ -240,7 +239,7 @@ export function ContextExpression(
 
   const beeTableAdditionalRow = useMemo(() => {
     return [
-      <ContextResultInfoCell key={"context-result-info"} />,
+      <ContextResultInfoCell key={"context-result-info"} parentElementId={contextExpression.parentElementId} />,
       <ContextResultExpressionCell
         key={"context-result-expression"}
         contextExpression={contextExpression}
@@ -444,7 +443,7 @@ export function ContextExpression(
   );
 }
 
-export function ContextResultInfoCell() {
+export function ContextResultInfoCell(props: { parentElementId: string }) {
   const { containerCellCoordinates } = useBeeTableCoordinates();
 
   const value = useMemo(() => {
@@ -464,11 +463,12 @@ export function ContextResultInfoCell() {
 
   const { beeGwtService } = useBoxedExpressionEditor();
 
+  // Selecting the context result cell should be the parent data type
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject(""); // FIXME: Tiago --> This should actually be the id of the parent expression, as the <result> of a context follows its parent's data type.
+      beeGwtService?.selectObject(props.parentElementId);
     }
-  }, [beeGwtService, isActive]);
+  }, [beeGwtService, isActive, props.parentElementId]);
 
   return <div className="context-result">{value}</div>;
 }

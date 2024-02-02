@@ -24,6 +24,7 @@ import { WithImmer, immer } from "zustand/middleware/immer";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
+import { normalize } from "../normalization/normalize";
 
 export interface DmnEditorDiagramNodeStatus {
   selected: boolean;
@@ -212,7 +213,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
   return create(
     immer<State>((set, get) => ({
       dmn: {
-        model,
+        model: normalize(model),
       },
       focus: {
         consumableId: undefined,

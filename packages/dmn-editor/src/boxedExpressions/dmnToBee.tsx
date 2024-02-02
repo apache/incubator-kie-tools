@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import {
   ContextExpressionDefinitionEntry,
   DecisionTableExpressionDefinitionBuiltInAggregation,
@@ -69,8 +88,14 @@ export function dmnToBee(
       })),
       rules: (expr.rule ?? []).map((r) => ({
         id: r["@_id"]!,
-        inputEntries: (r.inputEntry ?? []).map((i) => ({ id: i["@_id"]!, content: i.text?.__$$text ?? "" })),
-        outputEntries: (r.outputEntry ?? []).map((o) => ({ id: o["@_id"]!, content: o.text?.__$$text ?? "" })),
+        inputEntries: (r.inputEntry ?? []).map((i) => ({
+          id: i["@_id"]!,
+          content: i.text?.__$$text ?? "",
+        })),
+        outputEntries: (r.outputEntry ?? []).map((o) => ({
+          id: o["@_id"]!,
+          content: o.text?.__$$text ?? "",
+        })),
         annotationEntries: (r.annotationEntry ?? []).map((a) => a.text?.__$$text ?? ""),
       })),
     };
@@ -128,7 +153,7 @@ export function dmnToBee(
       dataType: expr["@_typeRef"] as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Context as const,
       name: expr["@_label"],
-      entryInfoWidth: widthsById.get(expr["@_id"] ?? "")?.[0],
+      entryInfoWidth: widthsById.get(expr["@_id"]!)?.[0],
       result,
       contextEntries,
     };
@@ -146,7 +171,7 @@ export function dmnToBee(
       dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Invocation as const,
       name: expr["@_label"],
-      entryInfoWidth: widthsById.get(expr["@_id"] ?? "")?.[0],
+      entryInfoWidth: widthsById.get(expr["@_id"]!)?.[0],
       invokedFunction: {
         id: calledFunction["@_id"]!,
         name: calledFunction.text?.__$$text ?? "",
@@ -211,7 +236,7 @@ export function dmnToBee(
           classFieldId: clazz?.expression?.["@_id"],
           methodName: (method?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
           methodFieldId: method?.expression?.["@_id"],
-          classAndMethodNamesWidth: widthsById.get(expr["@_id"] ?? "")?.[1],
+          classAndMethodNamesWidth: widthsById.get(expr["@_id"]!)?.[1],
         };
       }
       case "PMML": {

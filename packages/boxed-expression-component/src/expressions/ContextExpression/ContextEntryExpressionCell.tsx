@@ -26,10 +26,12 @@ import {
 } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
+  useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export interface ContextEntryExpressionCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
@@ -44,6 +46,16 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
   columnIndex,
 }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
+
+  const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject(contextEntries[rowIndex].entryExpression.id);
+    }
+  }, [beeGwtService, isActive, rowIndex, contextEntries]);
 
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {

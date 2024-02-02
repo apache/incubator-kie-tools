@@ -38,6 +38,7 @@ export function ConstraintsRange({
   typeHelper,
   onSave,
   isDisabled,
+  renderOnPropertiesPanel,
 }: ConstraintComponentProps) {
   const start = useMemo(
     () => typeHelper.recover(isRange(value ?? "", typeHelper.check)?.[0]) ?? "",
@@ -308,8 +309,12 @@ export function ConstraintsRange({
           </HelperText>
         </div>
       </div>
-      <br />
-      <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
+      {!renderOnPropertiesPanel && (
+        <>
+          <br />
+          <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
+        </>
+      )}
     </div>
   );
 }
