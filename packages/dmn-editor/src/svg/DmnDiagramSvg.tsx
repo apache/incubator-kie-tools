@@ -240,6 +240,17 @@ const SVG_NODE_LABEL_TEXT_ADDITIONAL_PADDING_TOP_LEFT = 8;
 
 export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>, labelPosition: NodeLabelPosition) {
   switch (labelPosition) {
+    case "center-bottom":
+      const cbTx = n.position.x! + n.width! / 2;
+      const cbTy = n.position.y! + n.height!;
+      const cbWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      return {
+        verticalAnchor: "middle",
+        textAnchor: "middle",
+        transform: `translate(${cbTx},${cbTy})`,
+        width: cbWidth,
+      } as const;
+
     case "center-center":
       const ccTx = n.position.x! + n.width! / 2;
       const ccTy = n.position.y! + n.height! / 2;

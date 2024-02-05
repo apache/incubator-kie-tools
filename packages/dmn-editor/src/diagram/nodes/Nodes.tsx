@@ -196,67 +196,75 @@ export const InputDataNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className} ${
-            dmnObjectQName.prefix ? "external" : ""
-          }`}
-          tabIndex={-1}
-          onDoubleClick={triggerEditing}
-          onKeyDown={triggerEditingIfEnter}
+          onDoubleClick={isAlternativeInputDataShape ? triggerEditing : undefined}
+          onKeyDown={isAlternativeInputDataShape ? triggerEditingIfEnter : undefined}
+          style={isAlternativeInputDataShape ? { display: "flex", flexDirection: "column" } : {}}
         >
-          <InfoNodePanel isVisible={!isTargeted && isHovered} />
+          <div
+            ref={ref}
+            className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className} ${
+              dmnObjectQName.prefix ? "external" : ""
+            }`}
+            tabIndex={-1}
+            onDoubleClick={triggerEditing}
+            onKeyDown={triggerEditingIfEnter}
+          >
+            <InfoNodePanel isVisible={!isTargeted && isHovered} />
 
-          <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && isHovered}
-            nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
-            edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
-          />
-          {!isAlternativeInputDataShape && (
+            <OutgoingStuffNodePanel
+              isVisible={!isConnecting && !isTargeted && isHovered}
+              nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
+              edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
+            />
+            {!isAlternativeInputDataShape && (
+              <EditableNodeLabel
+                namedElement={inputData}
+                namedElementQName={dmnObjectQName}
+                isEditing={isEditingLabel}
+                setEditing={setEditingLabel}
+                position={getNodeLabelPosition(type as NodeType)}
+                value={inputData["@_label"] ?? inputData["@_name"]}
+                onChange={setName}
+                allUniqueNames={allFeelVariableUniqueNames}
+                shouldCommitOnBlur={true}
+                fontCssProperties={fontCssProperties}
+              />
+            )}
+            {isHovered && (
+              <NodeResizerHandle
+                nodeType={type as NodeType}
+                snapGrid={diagram.snapGrid}
+                nodeId={id}
+                nodeShapeIndex={shape.index}
+                isAlternativeInputDataShape={isAlternativeInputDataShape}
+              />
+            )}
+            <DataTypeNodePanel
+              isVisible={!isTargeted && isHovered}
+              variable={inputData.variable}
+              namespace={dmnObjectNamespace}
+              shape={shape}
+              onCreate={onCreateDataType}
+              onChange={onTypeRefChange}
+            />
+          </div>
+          {isAlternativeInputDataShape && <div style={{ height: nodeDimensions.height, flexShrink: 0 }} />}
+          {isAlternativeInputDataShape && (
             <EditableNodeLabel
               namedElement={inputData}
               namedElementQName={dmnObjectQName}
               isEditing={isEditingLabel}
               setEditing={setEditingLabel}
-              position={getNodeLabelPosition(type as NodeType)}
+              position={getNodeLabelPosition(type as NodeType, isAlternativeInputDataShape)}
               value={inputData["@_label"] ?? inputData["@_name"]}
               onChange={setName}
               allUniqueNames={allFeelVariableUniqueNames}
               shouldCommitOnBlur={true}
               fontCssProperties={fontCssProperties}
+              height={nodeDimensions.height + 40}
             />
           )}
-          {isHovered && (
-            <NodeResizerHandle
-              nodeType={type as NodeType}
-              snapGrid={diagram.snapGrid}
-              nodeId={id}
-              nodeShapeIndex={shape.index}
-              isAlternativeInputDataShape={isAlternativeInputDataShape}
-            />
-          )}
-          <DataTypeNodePanel
-            isVisible={!isTargeted && isHovered}
-            variable={inputData.variable}
-            namespace={dmnObjectNamespace}
-            shape={shape}
-            onCreate={onCreateDataType}
-            onChange={onTypeRefChange}
-          />
         </div>
-        {isAlternativeInputDataShape && (
-          <EditableNodeLabel
-            namedElement={inputData}
-            namedElementQName={dmnObjectQName}
-            isEditing={isEditingLabel}
-            setEditing={setEditingLabel}
-            position={getNodeLabelPosition(type as NodeType)}
-            value={inputData["@_label"] ?? inputData["@_name"]}
-            onChange={setName}
-            allUniqueNames={allFeelVariableUniqueNames}
-            shouldCommitOnBlur={true}
-            fontCssProperties={fontCssProperties}
-          />
-        )}
       </>
     );
   }

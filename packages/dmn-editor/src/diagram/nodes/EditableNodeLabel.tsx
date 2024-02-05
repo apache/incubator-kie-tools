@@ -52,6 +52,7 @@ export function EditableNodeLabel({
   skipValidation,
   allUniqueNames,
   fontCssProperties: fontStyle,
+  height,
 }: {
   id?: string;
   shouldCommitOnBlur?: boolean;
@@ -67,6 +68,7 @@ export function EditableNodeLabel({
   skipValidation?: boolean;
   allUniqueNames: UniqueNameIndex;
   fontCssProperties?: React.CSSProperties;
+  height?: number;
 }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { importsByNamespace } = useDmnEditorDerivedStore();

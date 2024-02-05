@@ -22,7 +22,7 @@ import * as RF from "reactflow";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
 import { DEFAULT_NODE_FILL, DEFAULT_NODE_STROKE_COLOR, DEFAULT_NODE_STROKE_WIDTH } from "./NodeStyle";
 
-export type NodeLabelPosition = "center-center" | "top-center" | "center-left" | "top-left";
+export type NodeLabelPosition = "center-bottom" | "center-center" | "top-center" | "center-left" | "top-left";
 
 export type NodeSvgProps = RF.Dimensions &
   RF.XYPosition & {

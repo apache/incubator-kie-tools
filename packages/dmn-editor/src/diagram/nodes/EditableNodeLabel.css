@@ -14,6 +14,10 @@
   text-align: left;
   padding: 8px;
 }
+.kie-dmn-editor--editable-node-name-input.center-bottom {
+  text-align: center;
+  justify-content: center;
+}
 .kie-dmn-editor--editable-node-name-input.center-center {
   align-items: center;
   text-align: center;
