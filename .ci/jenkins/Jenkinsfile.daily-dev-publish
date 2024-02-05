@@ -39,6 +39,11 @@ pipeline {
         DEV_DEPLOYMENT_BASE_IMAGE__name = 'dev-deployment-base-image'
         DEV_DEPLOYMENT_BASE_IMAGE__buildTags = 'daily-dev'
 
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry = 'quay.io'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account = 'kie-tools'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'dev-deployment-kogito-quarkus-blank-app-image'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags = 'daily-dev'
+
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'quay.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'kie-tools'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'dev-deployment-dmn-form-webapp-image'
@@ -70,6 +75,11 @@ pipeline {
         CORS_PROXY_IMAGE__imageAccount = 'kie-tools'
         CORS_PROXY_IMAGE__imageName = 'cors-proxy-image'
         CORS_PROXY_IMAGE__imageBuildTags = 'daily-dev'
+
+        KIE_SANDBOX_HELM_CHART__registry = 'quay.io'
+        KIE_SANDBOX_HELM_CHART__account = 'kie-tools'
+        KIE_SANDBOX_HELM_CHART__name = 'kie-sandbox-helm-chart'
+        KIE_SANDBOX_HELM_CHART__tag = 'daily-dev'
 
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
         OPENSHIFT_PART_OF = 'daily-dev-kie-sandbox-app'
@@ -112,6 +122,7 @@ pipeline {
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
                     openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+                    helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
                 }
             }
         }
@@ -210,6 +221,19 @@ pipeline {
                         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
                         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
                         "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags}",
+                        "${pipelineVars.quayPushCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push dev-deployment-kogito-quarkus-blank-app-image to quay.io') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}/${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
                 }
@@ -365,6 +389,20 @@ pipeline {
                         "${env.DASHBUILDER__viewerImageBuildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
+                }
+            }
+        }
+
+        stage('Push kie-sandbox-helm-chart to quay.io') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        helmUtils.pushChartToRegistry(
+                            "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
+                            "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
+                            "${pipelineVars.quayPushCredentialsId}"
+                        )
+                    }
                 }
             }
         }

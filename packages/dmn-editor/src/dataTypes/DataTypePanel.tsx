@@ -27,7 +27,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { TypeRefSelector } from "./TypeRefSelector";
 import {
   Dropdown,
@@ -42,7 +42,6 @@ import { getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { UniqueNameIndex } from "../Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
@@ -51,6 +50,7 @@ import { original } from "immer";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "./useResolvedTypeRef";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function DataTypePanel({
   isReadonly,
@@ -162,9 +162,11 @@ export function DataTypePanel({
 
   const [dropdownOpenFor, setDropdownOpenFor] = useState<string | undefined>(undefined);
   const [topLevelDropdownOpen, setTopLevelDropdownOpen] = useState<boolean>(false);
-
-  const { importsByNamespace, allTopLevelItemDefinitionUniqueNames, allTopLevelDataTypesByFeelName } =
-    useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
+  const allTopLevelItemDefinitionUniqueNames = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+  );
 
   const allUniqueNames = useMemo(
     () =>
@@ -236,7 +238,7 @@ export function DataTypePanel({
                   isActive={false}
                   editMode={"hover"}
                   isReadonly={dataType.namespace !== thisDmnsNamespace}
-                  allUniqueNames={allUniqueNames}
+                  onGetAllUniqueNames={() => allUniqueNames}
                 />
               </div>
             </FlexItem>

@@ -21,8 +21,7 @@ import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { EmptyLabel } from "./Nodes";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import { useDmnEditorStore } from "../../store/Store";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { UniqueNameIndex } from "../../Dmn15Spec";
 import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -30,10 +29,11 @@ import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { DMN15_SPEC } from "../../Dmn15Spec";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import "./EditableNodeLabel.css";
 import { useFocusableElement } from "../../focus/useFocusableElement";
 import { flushSync } from "react-dom";
 import { NodeLabelPosition } from "./NodeSvgs";
+import "./EditableNodeLabel.css";
+import { State } from "../../store/Store";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -50,8 +50,8 @@ export function EditableNodeLabel({
   grow,
   shouldCommitOnBlur,
   skipValidation,
-  allUniqueNames,
-  fontCssProperties: fontStyle,
+  onGetAllUniqueNames,
+  fontCssProperties,
   textRef,
 }: {
   id?: string;
@@ -66,12 +66,29 @@ export function EditableNodeLabel({
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChange: OnEditableNodeLabelChange;
   skipValidation?: boolean;
-  allUniqueNames: UniqueNameIndex;
+  onGetAllUniqueNames: (s: State) => UniqueNameIndex;
   fontCssProperties?: React.CSSProperties;
   textRef?: React.RefObject<HTMLSpanElement>;
 }) {
-  const thisDmn = useDmnEditorStore((s) => s.dmn);
-  const { importsByNamespace } = useDmnEditorDerivedStore();
+  const displayValue = useDmnEditorStore((s) => {
+    if (!value) {
+      return undefined;
+    }
+
+    if (!namedElement || !namedElementQName) {
+      return value;
+    }
+
+    const feelName = buildFeelQNameFromXmlQName({
+      namedElement,
+      importsByNamespace: s.computed(s).importsByNamespace(),
+      model: s.dmn.model.definitions,
+      namedElementQName,
+      relativeToNamespace: s.dmn.model.definitions["@_namespace"],
+    });
+
+    return feelName.full;
+  });
 
   const isEditing = useMemo(() => {
     return !namedElementQName?.prefix && _isEditing; // Can't ever change the names of external nodes
@@ -88,26 +105,6 @@ export function EditableNodeLabel({
     },
     [_setEditing, namedElementQName?.prefix]
   );
-
-  const displayValue = useMemo(() => {
-    if (!value) {
-      return undefined;
-    }
-
-    if (!namedElement || !namedElementQName) {
-      return value;
-    }
-
-    const feelName = buildFeelQNameFromXmlQName({
-      namedElement,
-      importsByNamespace,
-      model: thisDmn.model.definitions,
-      namedElementQName,
-      relativeToNamespace: thisDmn.model.definitions["@_namespace"],
-    });
-
-    return feelName.full;
-  }, [value, namedElement, namedElementQName, importsByNamespace, thisDmn.model.definitions]);
 
   const [internalValue, setInternalValue] = useState(displayValue);
   useEffect(() => {
@@ -132,13 +129,17 @@ export function EditableNodeLabel({
     }, 0);
   }, []);
 
-  const isValid = useMemo(() => {
+  const isValid = useDmnEditorStore((s) => {
     if (skipValidation) {
       return true;
     }
 
-    return DMN15_SPEC.namedElement.isValidName(namedElement?.["@_id"] ?? generateUuid(), internalValue, allUniqueNames);
-  }, [skipValidation, namedElement, internalValue, allUniqueNames]);
+    return DMN15_SPEC.namedElement.isValidName(
+      namedElement?.["@_id"] ?? generateUuid(),
+      internalValue,
+      onGetAllUniqueNames(s)
+    );
+  });
 
   const onBlur = useCallback(() => {
     setEditing(false);
@@ -220,7 +221,7 @@ export function EditableNodeLabel({
         <input
           spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.
           style={{
-            ...fontStyle,
+            ...fontCssProperties,
             ...(isValid ? {} : invalidInlineFeelNameStyle),
           }}
           onMouseDownCapture={(e) => e.stopPropagation()} // Make sure mouse events stay inside the node.
@@ -236,7 +237,7 @@ export function EditableNodeLabel({
           ref={textRef}
           style={{
             whiteSpace: "pre-wrap",
-            ...fontStyle,
+            ...fontCssProperties,
             ...(isValid ? {} : invalidInlineFeelNameStyle),
           }}
         >
@@ -254,8 +255,12 @@ export function EditableNodeLabel({
 }
 
 export function useEditableNodeLabel(id: string | undefined) {
-  const focus = useDmnEditorStore((s) => s.focus);
-  const [isEditingLabel, setEditingLabel] = useState(!!id && !!focus.consumableId && focus.consumableId === id);
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const [isEditingLabel, setEditingLabel] = useState(
+    !!id && !!dmnEditorStoreApi.getState().focus.consumableId && dmnEditorStoreApi.getState().focus.consumableId === id
+  );
+
   const triggerEditing = useCallback<React.EventHandler<React.SyntheticEvent>>((e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -272,5 +277,8 @@ export function useEditableNodeLabel(id: string | undefined) {
     [triggerEditing]
   );
 
-  return { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter };
+  return useMemo(
+    () => ({ isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter }),
+    [isEditingLabel, triggerEditing, triggerEditingIfEnter]
+  );
 }

@@ -19,7 +19,6 @@
 
 import * as React from "react";
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
-import "./DocumentationLinksFormGroup.css";
 import { KIE__tAttachment } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { Namespaced } from "@kie-tools/xml-parser-ts";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -33,6 +32,7 @@ import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-righ
 import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Draggable, DragAndDrop, useDraggableItemContext } from "../draggable/Draggable";
+import "./DocumentationLinksFormGroup.css";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
 const PLACEHOLDER_URL = "http://";
@@ -374,7 +374,7 @@ function DocumentationLinksInput({
                   // reset the changedByToogle
                   updatedOnToogle.current = false;
                 }}
-                allUniqueNames={allUniqueNames}
+                allUniqueNames={() => allUniqueNames}
                 validate={validateTitle}
                 autoFocus={parentAutoFocus || autoFocus}
                 onKeyDown={(e) => {
@@ -400,7 +400,7 @@ function DocumentationLinksInput({
                   // reset the changedByToogle
                   updatedOnToogle.current = false;
                 }}
-                allUniqueNames={allUniqueNames}
+                allUniqueNames={() => allUniqueNames}
                 validate={validateUrl}
                 saveInvalidValue={true}
                 onKeyDown={(e) => {

@@ -23,7 +23,7 @@ import { Form, FormSection, FormGroup } from "@patternfly/react-core/dist/js/com
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
@@ -88,7 +88,7 @@ export function GlobalDiagramProperties() {
                       state.dmn.model.definitions["@_name"] = newName;
                     });
                   }}
-                  allUniqueNames={new Map()} // Right now, there's no way to know what are the unique names of all DMNs in the scope. So we let any name go.
+                  allUniqueNames={() => new Map()} // Right now, there's no way to know what are the unique names of all DMNs in the scope. So we let any name go.
                 />
               </FormGroup>
               <FormGroup label="Description">

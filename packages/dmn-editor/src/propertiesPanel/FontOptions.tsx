@@ -22,7 +22,8 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { PencilAltIcon } from "@patternfly/react-icons/dist/js/icons/pencil-alt-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
-import { State, useDmnEditorStoreApi } from "../store/Store";
+import { State } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { NumberInput } from "@patternfly/react-core/dist/js/components/NumberInput";
 import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { addOrGetDrd } from "../mutations/addOrGetDrd";
@@ -30,12 +31,11 @@ import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/com
 import { Select, SelectVariant, SelectOption } from "@patternfly/react-core/dist/js/components/Select";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import "./FontOptions.css";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { UndoAltIcon } from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ColorPicker } from "./ColorPicker";
+import "./FontOptions.css";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php
 // Array of [name, family]
@@ -67,7 +67,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const [isStyleSectionExpanded, setStyleSectionExpanded] = useState<boolean>(startExpanded);
 
-  const { dmnShapesByHref } = useDmnEditorDerivedStore();
+  const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexes().dmnShapesByHref);
   const shapes = useMemo(() => nodeIds.map((nodeId) => dmnShapesByHref.get(nodeId)), [dmnShapesByHref, nodeIds]);
   const shapesStyle = useMemo(() => shapes.map((shape) => shape?.["di:Style"]), [shapes]);
 
@@ -208,7 +208,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
     (newColor: string) => {
       setTemporaryFontColor(newColor.replace("#", ""));
       editShapeStyle((shapes, state) => {
-        state!.diagram.editingStyle = true;
+        state!.diagram.isEditingStyle = true;
       });
     },
     [editShapeStyle]
@@ -226,7 +226,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
             green !== shape?.["di:Style"]?.["dmndi:FontColor"]?.["@_green"] &&
             blue !== shape?.["di:Style"]?.["dmndi:FontColor"]?.["@_blue"]
           ) {
-            state!.diagram.editingStyle = false;
+            state!.diagram.isEditingStyle = false;
             shape!["di:Style"]!["dmndi:FontColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
             shape!["di:Style"]!["dmndi:FontColor"]["@_red"] = red;
             shape!["di:Style"]!["dmndi:FontColor"]["@_green"] = green;
@@ -243,7 +243,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const onReset = useCallback(() => {
     setTemporaryFontColor("000000");
     editShapeStyle((shapes, state) => {
-      state!.diagram.editingStyle = false;
+      state!.diagram.isEditingStyle = false;
       shapes.forEach((shape) => {
         shape["di:Style"]!["@_fontBold"] = undefined;
         shape["di:Style"]!["@_fontItalic"] = undefined;

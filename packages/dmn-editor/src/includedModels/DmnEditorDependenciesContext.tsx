@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import {
   OnRequestExternalModelsAvailableToInclude,
   OnRequestExternalModelByPath,
@@ -41,5 +41,18 @@ export function DmnEditorExternalModelsContextProvider(
   _props: React.PropsWithChildren<DmnEditorExternalModelsContextType>
 ) {
   const { children, ...props } = _props;
-  return <DmnEditorExternalModelsContext.Provider value={props}>{children}</DmnEditorExternalModelsContext.Provider>;
+
+  const value = useMemo<DmnEditorExternalModelsContextType>(() => {
+    return {
+      externalModelsByNamespace: props.externalModelsByNamespace,
+      onRequestExternalModelByPath: props.onRequestExternalModelByPath,
+      onRequestExternalModelsAvailableToInclude: props.onRequestExternalModelsAvailableToInclude,
+    };
+  }, [
+    props.externalModelsByNamespace,
+    props.onRequestExternalModelByPath,
+    props.onRequestExternalModelsAvailableToInclude,
+  ]);
+
+  return <DmnEditorExternalModelsContext.Provider value={value}>{children}</DmnEditorExternalModelsContext.Provider>;
 }

@@ -24,25 +24,29 @@ import {
   DrawerHead,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useMemo } from "react";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
-  const { nodesById } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
+  const node = useDmnEditorStore((s) =>
+    activeDrgElementId
+      ? s
+          .computed(s)
+          .getDiagramData(externalModelsByNamespace)
+          .nodesById.get(buildXmlHref({ id: activeDrgElementId }))
+      : undefined
+  );
 
   const shouldDisplayDecisionOrBkmProps = useMemo(
     () => selectedObjectId === undefined || (selectedObjectId && selectedObjectId === activeDrgElementId),
     [activeDrgElementId, selectedObjectId]
   );
-
-  const node = useMemo(() => {
-    return activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined;
-  }, [activeDrgElementId, nodesById]);
 
   return (
     <>

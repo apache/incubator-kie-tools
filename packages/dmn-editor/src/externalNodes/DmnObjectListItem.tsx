@@ -25,9 +25,10 @@ import { TypeRefLabel } from "../dataTypes/TypeRefLabel";
 import { NodeIcon } from "../icons/Icons";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { useDmnEditorStore } from "../store/StoreContext";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function DmnObjectListItem({
   dmnObject,
@@ -40,7 +41,12 @@ export function DmnObjectListItem({
   namespace: string;
   relativeToNamespace: string;
 }) {
-  const { importsByNamespace, allTopLevelDataTypesByFeelName } = useDmnEditorDerivedStore();
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
+  const { externalModelsByNamespace } = useExternalModels();
+  const allTopLevelDataTypesByFeelName = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
+  );
+
   const nodeIconProps = useMemo(
     () => (dmnObject ? { nodeType: getNodeTypeFromDmnObject(dmnObject) } : {}),
     [dmnObject]

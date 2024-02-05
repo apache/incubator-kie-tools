@@ -61,7 +61,7 @@ export function resizeNode({
   const shape = diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
-    throw new Error("Cannot resize non-existent shape bounds");
+    throw new Error("DMN MUTATION: Cannot resize non-existent shape bounds");
   }
 
   const limit = { x: 0, y: 0 };
@@ -125,7 +125,7 @@ export function resizeNode({
 
       const edge = diagramElements[edgeIndex] as DMNDI15__DMNEdge | undefined;
       if (!edge || !edge["di:waypoint"]) {
-        throw new Error("Cannot reposition non-existent edge");
+        throw new Error("DMN MUTATION: Cannot reposition non-existent edge");
       }
 
       const waypoint = switchExpression(args.waypointSelector, {

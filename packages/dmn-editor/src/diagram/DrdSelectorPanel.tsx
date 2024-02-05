@@ -18,13 +18,16 @@
  */
 
 import * as React from "react";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { addOrGetDrd, getDefaultDrdName } from "../mutations/addOrGetDrd";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
+import { DiagramNodesPanel } from "../store/Store";
+import { getDrdId } from "./drd/drdId";
 
 export function DrdSelectorPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -49,7 +52,11 @@ export function DrdSelectorPanel() {
                 definitions: state.dmn.model.definitions,
                 drdIndex: newIndex,
               });
+
               state.diagram.drdIndex = newIndex;
+              state.diagram.drdSelector.isOpen = false;
+              state.diagram.openNodesPanel = DiagramNodesPanel.DRG_NODES;
+              state.focus.consumableId = getDrdId({ drdIndex: newIndex });
             });
           }}
         >
@@ -59,7 +66,7 @@ export function DrdSelectorPanel() {
       <Divider style={{ marginBottom: "8px" }} />
       <div className={"kie-dmn-editor--drd-list"}>
         {thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.map((drd, i) => (
-          <React.Fragment key={drd["@_id"] ?? i}>
+          <React.Fragment key={drd["@_id"]!}>
             <button
               className={i === diagram.drdIndex ? "active" : undefined}
               onClick={() => {
@@ -69,7 +76,7 @@ export function DrdSelectorPanel() {
                 });
               }}
             >
-              {drd["@_name"] || getDefaultDrdName({ drdIndex: i })}
+              {`${i + 1}. ${drd["@_name"] || getDefaultDrdName({ drdIndex: i })}`}
             </button>
             <br />
           </React.Fragment>

@@ -20,7 +20,7 @@
 import * as RF from "reactflow";
 import { useState, useCallback, useMemo } from "react";
 import { addEdgeWaypoint } from "../../mutations/addEdgeWaypoint";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { snapPoint } from "../SnapGrid";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnDiagramNodeData } from "../nodes/Nodes";
@@ -33,7 +33,9 @@ export function usePotentialWaypointControls(
   edgeIndex: number | undefined,
   interactionPathRef: React.RefObject<SVGPathElement>
 ) {
-  const diagram = useDmnEditorStore((s) => s.diagram);
+  const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+  const drdIndex = useDmnEditorStore((s) => s.diagram.drdIndex);
+  const isDraggingWaypoint = useDmnEditorStore((s) => !!s.diagram.draggingWaypoints.find((e) => e === edgeId));
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const reactFlowInstance = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
@@ -65,11 +67,11 @@ export function usePotentialWaypointControls(
       return undefined;
     }
 
-    return snapPoint(diagram.snapGrid, {
+    return snapPoint(snapGrid, {
       "@_x": potentialWaypoint.point.x,
       "@_y": potentialWaypoint.point.y,
     });
-  }, [diagram.snapGrid, potentialWaypoint]);
+  }, [snapGrid, potentialWaypoint]);
 
   const onDoubleClick = useCallback(() => {
     if (!potentialWaypoint || !snappedPotentialWaypoint || edgeIndex === undefined) {
@@ -96,14 +98,14 @@ export function usePotentialWaypointControls(
     dmnEditorStoreApi.setState((state) => {
       addEdgeWaypoint({
         definitions: state.dmn.model.definitions,
-        drdIndex: diagram.drdIndex,
+        drdIndex,
         beforeIndex: i - 1,
         edgeIndex,
         waypoint: snappedPotentialWaypoint,
       });
     });
   }, [
-    diagram.drdIndex,
+    drdIndex,
     dmnEditorStoreApi,
     edgeIndex,
     isExistingWaypoint,
@@ -111,8 +113,6 @@ export function usePotentialWaypointControls(
     snappedPotentialWaypoint,
     waypoints,
   ]);
-
-  const isDraggingWaypoint = !!diagram.draggingWaypoints.find((e) => e === edgeId);
 
   const shouldReturnPotentialWaypoint =
     isEdgeSelected &&

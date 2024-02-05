@@ -23,14 +23,15 @@ import * as React from "react";
 import { useMemo, useRef, useState } from "react";
 import { TypeRefLabel } from "./TypeRefLabel";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
-import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DmnEditorTab } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DataType } from "./DataTypes";
 import { builtInFeelTypeNames, builtInFeelTypes } from "./BuiltInFeelTypes";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
 export type OnCreateDataType = (newDataTypeName: string) => void;
@@ -47,34 +48,35 @@ export function TypeRefSelector(props: {
   menuAppendTo?: "parent";
 }) {
   const [isOpen, setOpen] = useState(false);
-
-  const { allTopLevelDataTypesByFeelName } = useDmnEditorDerivedStore();
-
-  const selectedDataType = useMemo(() => {
-    return props.typeRef ? allTopLevelDataTypesByFeelName.get(props.typeRef) : undefined;
-  }, [allTopLevelDataTypesByFeelName, props.typeRef]);
+  const { externalModelsByNamespace } = useExternalModels();
+  const selectedDataType = useDmnEditorStore((s) =>
+    props.typeRef
+      ? s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName.get(props.typeRef)
+      : undefined
+  );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
-  const { customDataTypes, externalDataTypes } = useMemo(() => {
+  const { customDataTypes, externalDataTypes } = useDmnEditorStore((state) => {
     const customDataTypes: DataType[] = [];
     const externalDataTypes: DataType[] = [];
 
-    [...allTopLevelDataTypesByFeelName.values()].forEach((s) => {
-      if (s.parentId) {
-        return; // Not top-level.
-      }
+    [...state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName.values()].forEach(
+      (s) => {
+        if (s.parentId) {
+          return; // Not top-level.
+        }
 
-      if (s.namespace === thisDmnsNamespace) {
-        customDataTypes.push(s);
-      } else {
-        externalDataTypes.push(s);
+        if (s.namespace === state.dmn.model.definitions["@_namespace"]) {
+          customDataTypes.push(s);
+        } else {
+          externalDataTypes.push(s);
+        }
       }
-    });
+    );
 
     return { customDataTypes, externalDataTypes };
-  }, [allTopLevelDataTypesByFeelName, thisDmnsNamespace]);
+  });
 
   const exists = selectedDataType || (props.typeRef && builtInFeelTypeNames.has(props.typeRef));
 

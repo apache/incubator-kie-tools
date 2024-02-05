@@ -19,9 +19,9 @@
 
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { DiagramNodesPanel, DmnEditorTab, useDmnEditorStoreApi } from "../store/Store";
+import { DiagramNodesPanel, DmnEditorTab } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import {
   EmptyState,
@@ -39,6 +39,7 @@ import { EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER } from "../includedModels/Includ
 import { useDmnEditor } from "../DmnEditorContext";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export type ExternalNode = {
   externalDrgElementNamespace: string;
@@ -50,7 +51,12 @@ export const MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS =
 
 export function ExternalNodesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { dmnShapesByHref, externalDmnsByNamespace, importsByNamespace } = useDmnEditorDerivedStore();
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
+  const { externalModelsByNamespace } = useExternalModels();
+  const externalDmnsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
+  );
+  const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexes().dmnShapesByHref);
   const { onRequestToResolvePath } = useDmnEditor();
 
   const onDragStart = useCallback((event: React.DragEvent, externalNode: ExternalNode) => {

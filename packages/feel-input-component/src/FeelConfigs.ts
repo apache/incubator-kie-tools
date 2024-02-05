@@ -346,7 +346,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         examples: ["context merge( [{x:1}, {y:2}] ) = {x:1, y:2}", "context merge( [{x:1, y:0}, {y:2}] ) = {x:1, y:2}"],
       },
       {
-        label: "context put(context,key,value)",
+        label: "context put(context, key, value)",
         insertText: "context put($1, $2, $3)",
         description:
           "Returns a new `context` that includes the new entry, or overrides the existing value if an entry for the same key already exists in the supplied `context` parameter. A new entry is added as the last entry of the new context. If overriding an existing entry, the order of the keys maintains the same order as in the original context.",
@@ -362,7 +362,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
-        label: "context put(context,keys,value)",
+        label: "context put(context, keys, value)",
         insertText: "context put($1, $2, $3)",
         description:
           "Returns the composite of nested invocations to `context put()` for each item in keys hierarchy in `context`.",
@@ -777,6 +777,29 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         examples: ["list contains( [1,2,3], 2 ) = true"],
       },
       {
+        label: "list replace(list, position, newItem)",
+        insertText: "list replace($1, $2, $3)",
+        description: "Returns new list with `newItem` replaced at `position`.",
+        parameters: [
+          ["list", `\`list\``],
+          ["position", `\`number\``],
+          ["newItem", `Any type`],
+        ],
+        examples: ["list replace( [2, 4, 7, 8], 3, 6) = [2, 4, 6, 8]"],
+      },
+      {
+        label: "list replace(list, match, newItem)",
+        insertText: "list replace($1, $2, $3)",
+        description:
+          "Returns new list with `newItem` replaced at all positions where the `match` function returned `true`",
+        parameters: [
+          ["list", `\`list\``],
+          ["match", `boolean function(item, newItem)`],
+          ["newItem", `Any type`],
+        ],
+        examples: ["list replace( [2, 4, 7, 8], function(item, newItem) item < newItem, 5) = [5, 5, 7, 8]"],
+      },
+      {
         label: "log(number)",
         insertText: "log($1)",
         description: "Returns the natural logarithm (base e) of the `number` parameter",
@@ -1185,7 +1208,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         examples: ["reverse( [1,2,3] ) = [3,2,1]"],
       },
       {
-        label: "round down(n,scale)",
+        label: "round down(n, scale)",
         insertText: "round down($1, $2)",
         description:
           "Returns `n` with given `scale` and rounding mode round down. If at least one of `n` or `scale` is null, the result is null.",
@@ -1201,7 +1224,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
-        label: "round half down(n,scale)",
+        label: "round half down(n, scale)",
         insertText: "round half down($1, $2)",
         description:
           "Returns `n` with given `scale` and rounding mode round half down. If at least one of `n` or `scale` is null, the result is null.",
@@ -1217,7 +1240,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
-        label: "round half up(n,scale)",
+        label: "round half up(n, scale)",
         insertText: "round half up($1, $2)",
         description:
           "Returns `n` with given `scale` and rounding mode round half up. If at least one of `n` or `scale` is null, the result is null.",
@@ -1233,7 +1256,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
-        label: "round up(n,scale)",
+        label: "round up(n, scale)",
         insertText: "round up($1, $2)",
         description:
           "Returns `n` with given `scale` and rounding mode round up. If at least one of `n` or `scale` is null, the result is null.",

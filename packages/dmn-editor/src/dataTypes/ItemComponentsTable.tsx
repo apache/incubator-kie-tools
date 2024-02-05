@@ -26,7 +26,7 @@ import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { TypeRefSelector } from "./TypeRefSelector";
 import {
   Dropdown,
@@ -59,7 +59,6 @@ import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { resolveTypeRef } from "./resolveTypeRef";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
@@ -91,9 +90,12 @@ export function ItemComponentsTable({
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-  const { expandedItemComponentIds } = useDmnEditorStore((s) => s.dataTypesEditor);
-  const { allTopLevelDataTypesByFeelName, importsByNamespace } = useDmnEditorDerivedStore();
   const { externalModelsByNamespace } = useExternalModels();
+  const expandedItemComponentIds = useDmnEditorStore((s) => s.dataTypesEditor.expandedItemComponentIds);
+  const allTopLevelDataTypesByFeelName = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
+  );
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
@@ -361,7 +363,7 @@ export function ItemComponentsTable({
                               isActive={false}
                               itemDefinition={dt.itemDefinition}
                               isReadonly={dt.namespace !== thisDmnsNamespace}
-                              allUniqueNames={allUniqueNamesAtLevel}
+                              onGetAllUniqueNames={() => allUniqueNamesAtLevel}
                             />
                           </div>
                         </div>

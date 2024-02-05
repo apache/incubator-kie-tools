@@ -17,39 +17,24 @@
  * under the License.
  */
 
+import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as RF from "reactflow";
 
-export type Shape = {
+export type Bounds = {
   width: number | undefined | null;
   height: number | undefined | null;
   x: number | undefined | null;
   y: number | undefined | null;
 };
 
-// returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
-export function getDiscretelyAutoPositionedEdgeParamsForRfNodes(source: RF.Node, target: RF.Node) {
-  const src = {
-    x: source.positionAbsolute?.x,
-    y: source.positionAbsolute?.y,
-    width: source.width,
-    height: source.height,
-  };
-  const tgt = {
-    x: target.positionAbsolute?.x,
-    y: target.positionAbsolute?.y,
-    width: target.width,
-    height: target.height,
-  };
-  return getDiscretelyAutoPositionedEdgeParams(src, tgt);
-}
-
-export function getDiscretelyAutoPositionedEdgeParams(src: Shape, tgt: Shape) {
+export function getDiscretelyAutoPositionedEdgeParams(src: Bounds, tgt: Bounds) {
   const [sx, sy, sourcePos] = getPositionalHandlePosition(src, tgt);
   const [tx, ty, targetPos] = getPositionalHandlePosition(tgt, src);
   return { sx, sy, tx, ty, sourcePos, targetPos };
 }
+
 // returns the position (top, right, bottom, or right) passed node compared to
-export function getPositionalHandlePosition(a: Shape, b: Shape) {
+export function getPositionalHandlePosition(a: Bounds, b: Bounds) {
   const centerA = getCenter(a.x, a.y, a.width, a.height);
   const centerB = getCenter(b.x, b.y, b.width, b.height);
 
@@ -101,7 +86,7 @@ export function scaleFromCenter(
   };
 }
 
-function getHandleCoordsByPosition(node: Shape, handlePosition: RF.Position) {
+function getHandleCoordsByPosition(node: Bounds, handlePosition: RF.Position) {
   let handleX = 0;
   let handleY = 0;
 
@@ -125,4 +110,8 @@ function getHandleCoordsByPosition(node: Shape, handlePosition: RF.Position) {
   }
 
   return [(node?.x ?? 0) + handleX, (node?.y ?? 0) + handleY];
+}
+export function getBoundsCenterPoint(node: Bounds | undefined): DC__Point {
+  const { x, y } = getCenter(node?.x, node?.y, node?.width, node?.height);
+  return { "@_x": x, "@_y": y };
 }

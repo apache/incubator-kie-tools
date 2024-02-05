@@ -80,9 +80,6 @@ export function DragAndDrop({
   const [valuesKeys, setValuesKeys] = useState((values ?? [])?.map((_) => generateUuid()));
 
   useLayoutEffect(() => {
-    if (isDisabled) {
-      return;
-    }
     setValuesCopy((prev) => {
       if (values?.length !== prev.length) {
         setValuesKeys((values ?? [])?.map((_) => generateUuid()));

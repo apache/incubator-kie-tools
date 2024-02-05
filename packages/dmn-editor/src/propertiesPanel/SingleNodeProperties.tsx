@@ -30,8 +30,7 @@ import { DecisionServiceProperties } from "./DecisionServiceProperties";
 import { KnowledgeSourceProperties } from "./KnowledgeSourceProperties";
 import { TextAnnotationProperties } from "./TextAnnotationProperties";
 import { useMemo } from "react";
-import { useDmnEditorStoreApi } from "../store/Store";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import {
   DMN15__tBusinessKnowledgeModel,
@@ -49,18 +48,16 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { UnknownProperties } from "./UnknownProperties";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./SingleNodeProperties.css";
 import { useAlternativeInputDataShape } from "../alternativeInputData/useAlternative";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { nodesById } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
+  const node = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodesById.get(nodeId));
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
   const isAlternativeInputDataShape = useAlternativeInputDataShape();
-
-  const node = useMemo(() => {
-    return nodesById.get(nodeId);
-  }, [nodeId, nodesById]);
 
   if (!node) {
     return <>Node not found: {nodeId}</>;

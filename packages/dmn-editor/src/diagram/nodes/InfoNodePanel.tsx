@@ -20,7 +20,7 @@
 import * as React from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
-import { useDmnEditorStoreApi } from "../../store/Store";
+import { useDmnEditorStoreApi } from "../../store/StoreContext";
 
 export function InfoNodePanel(props: { isVisible: boolean }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();

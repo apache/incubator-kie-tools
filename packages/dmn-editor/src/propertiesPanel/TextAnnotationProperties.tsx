@@ -23,7 +23,7 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { updateTextAnnotation } from "../mutations/renameNode";
 
 export function TextAnnotationProperties({

@@ -30,25 +30,27 @@ import {
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { getPositionalHandlePosition } from "../maths/Maths";
 import { DecisionNodeSvg, BkmNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/NodeSvgs";
-import { getNodeCenterPoint, pointsToPath } from "../maths/DmnMaths";
+import { pointsToPath } from "../maths/DmnMaths";
+import { getBoundsCenterPoint } from "../maths/Maths";
 import { NodeType, getDefaultEdgeTypeBetween } from "./graphStructure";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DEFAULT_NODE_SIZES } from "../nodes/DefaultSizes";
-import { useDmnEditorStore } from "../../store/Store";
+import { useDmnEditorStore } from "../../store/StoreContext";
 import { useKieEdgePath } from "../edges/useKieEdgePath";
 import { PositionalNodeHandleId } from "./PositionalNodeHandles";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { useAlternativeInputDataShape } from "../../alternativeInputData/useAlternative";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
-  const diagram = useDmnEditorStore((s) => s.diagram);
-  const isAlternativeInputDataShape = useAlternativeInputDataShape();
-
-  const edgeId = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
-  const { edgesById } = useDmnEditorDerivedStore();
-  const edge = edgeId ? edgesById.get(edgeId) : undefined;
+  const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+  const { externalModelsByNamespace } = useExternalModels();
+  const edge = useDmnEditorStore((s) =>
+    s.diagram.edgeIdBeingUpdated
+      ? s.computed(s).getDiagramData(externalModelsByNamespace).edgesById.get(s.diagram.edgeIdBeingUpdated)
+      : undefined
+  );
   const kieEdgePath = useKieEdgePath(edge?.source, edge?.target, edge?.data);
-
+  const isAlternativeInputDataShape = useAlternativeInputDataShape();
   // This works because nodes are configured with:
   // - Source handles with ids matching EDGE_TYPES or NODE_TYPES
   // - Target handles with ids matching TargetHandleId
@@ -59,7 +61,12 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
     (k) => (PositionalNodeHandleId as any)[k] === fromHandle?.id
   );
 
-  const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);
+  const { "@_x": fromX, "@_y": fromY } = getBoundsCenterPoint({
+    x: fromNode?.positionAbsolute?.x,
+    y: fromNode?.positionAbsolute?.y,
+    width: fromNode?.width,
+    height: fromNode?.height,
+  });
 
   const connectionLinePath =
     edge && kieEdgePath.points
@@ -83,9 +90,9 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
   // Nodes
   else {
     const nodeType = handleId as NodeType;
-    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(diagram.snapGrid, { "@_x": toX, "@_y": toY });
+    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(snapGrid, { "@_x": toX, "@_y": toY });
 
-    const defaultSize = DEFAULT_NODE_SIZES[nodeType]({ snapGrid: diagram.snapGrid, isAlternativeInputDataShape });
+    const defaultSize = DEFAULT_NODE_SIZES[nodeType]({ snapGrid, isAlternativeInputDataShape });
     const [toXauto, toYauto] = getPositionalHandlePosition(
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
       { x: fromX, y: fromY, width: 1, height: 1 }

@@ -23,9 +23,9 @@ import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/component
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DC__Bounds, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { State, useDmnEditorStoreApi } from "../store/Store";
+import { State } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { addOrGetDrd } from "../mutations/addOrGetDrd";
 import { ArrowsAltVIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt-v-icon";
 import { ArrowsAltHIcon } from "@patternfly/react-icons/dist/js/icons/arrows-alt-h-icon";
@@ -34,7 +34,6 @@ import UndoAltIcon from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 import { ColorPicker } from "./ColorPicker";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import "./ShapeOptions.css";
-import { Color } from "../diagram/nodes/NodeStyle";
 
 export function ShapeOptions({
   startExpanded,
@@ -49,7 +48,7 @@ export function ShapeOptions({
 }) {
   const [isShapeSectionExpanded, setShapeSectionExpanded] = useState<boolean>(startExpanded);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { dmnShapesByHref } = useDmnEditorDerivedStore();
+  const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexes().dmnShapesByHref);
 
   const shapes = useMemo(() => nodeIds.map((nodeId) => dmnShapesByHref.get(nodeId)), [dmnShapesByHref, nodeIds]);
   // it only edits the first selected node
@@ -146,7 +145,7 @@ export function ShapeOptions({
     (newColor: string) => {
       setTemporaryStrokeColor(newColor.replace("#", ""));
       editShapeStyle((shapes, state) => {
-        state!.diagram.editingStyle = true;
+        state!.diagram.isEditingStyle = true;
       });
     },
     [editShapeStyle]
@@ -164,7 +163,7 @@ export function ShapeOptions({
             green !== shape?.["di:Style"]?.["dmndi:StrokeColor"]?.["@_green"] &&
             blue !== shape?.["di:Style"]?.["dmndi:StrokeColor"]?.["@_blue"]
           ) {
-            state!.diagram.editingStyle = false;
+            state!.diagram.isEditingStyle = false;
             shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_blue": 0, "@_green": 0, "@_red": 0 };
             shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = red;
             shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = green;
@@ -183,7 +182,7 @@ export function ShapeOptions({
     (newColor: string) => {
       setTemporaryFillColor(newColor.replace("#", ""));
       editShapeStyle((shapes, state) => {
-        state!.diagram.editingStyle = true;
+        state!.diagram.isEditingStyle = true;
       });
     },
     [editShapeStyle]
@@ -201,7 +200,7 @@ export function ShapeOptions({
             green !== shape?.["di:Style"]?.["dmndi:FillColor"]?.["@_green"] &&
             blue !== shape?.["di:Style"]?.["dmndi:FillColor"]?.["@_blue"]
           ) {
-            state!.diagram.editingStyle = false;
+            state!.diagram.isEditingStyle = false;
             shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_blue": 255, "@_green": 255, "@_red": 255 };
             shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = red;
             shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = green;

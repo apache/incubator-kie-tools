@@ -337,17 +337,48 @@
 }
 /* (end) version popover */
 
-/* (begin) overlays panel toggle */
-.kie-dmn-editor--overlay-panel-popover .pf-c-popover__body {
-  padding: 0;
-}
-.kie-dmn-editor--overlays-panel-toggle {
-  margin-right: 16px;
+/* (begin) autolayout panel toggle */
+.kie-dmn-editor--autolayout-panel-toggle {
   width: 42px;
   background: #fff;
   border-radius: 40px;
   border: 1px solid black;
 }
+.kie-dmn-editor--autolayout-panel-toggle:not(:last-child) {
+  margin-right: 16px;
+}
+
+.kie-dmn-editor--autolayout-panel-toggle:hover {
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--autolayout-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--autolayout-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--autolayout-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+/* (end) autolayout panel toggle */
+
+/* (begin) overlays panel toggle */
+.kie-dmn-editor--overlays-panel-toggle {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--overlays-panel-toggle:not(:last-child) {
+  margin-right: 16px;
+}
+
 .kie-dmn-editor--overlays-panel-toggle:hover {
   box-shadow: -4px 4px 2px 0px rgb(127 127 127);
 }
@@ -414,7 +445,8 @@
   left: 58px;
   overflow: auto;
   box-shadow: 0px 5px 10px 0px lightgray;
-  background: white;
+  background: rgb(255, 255, 255, 90%);
+  backdrop-filter: blur(4px);
   width: 400px;
 }
 .kie-dmn-editor--external-nodes-panel-toggle {
@@ -719,14 +751,13 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
 }
 .kie-dmn-editor--external-nodes-list-item {
   border-radius: 999px;
-  background: white;
 }
 .kie-dmn-editor--external-nodes-list-item:hover {
-  filter: brightness(95%);
+  background-color: rgba(0, 0, 0, 0.1);
   cursor: grab;
 }
 .kie-dmn-editor--external-nodes-list-item:active {
-  filter: brightness(90%);
+  background-color: rgba(0, 0, 0, 0.15);
   cursor: grabbing;
 }
 /* (end) external nodes */
@@ -922,7 +953,9 @@ th {
   fill: rgba(0, 107, 164, 0.1) !important;
 }
 
-.react-flow__node.selected:not(.react-flow__node-node_unknown) > .kie-dmn-editor--node-shape > * {
+.react-flow__node.selected:not(.react-flow__node-node_unknown):not(.react-flow__node-node_textAnnotation)
+  > .kie-dmn-editor--node-shape
+  > * {
   stroke: #006ba4 !important;
 }
 
