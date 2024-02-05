@@ -18,10 +18,9 @@
  */
 
 import * as RF from "reactflow";
-
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-
+import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DC__Bounds,
   DC__Dimension,
@@ -40,11 +39,16 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
+import { BlueprintIcon } from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
+import { MousePointerIcon } from "@patternfly/react-icons/dist/js/icons/mouse-pointer-icon";
+import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
 import { useDmnEditor } from "../DmnEditorContext";
+import { AutolayoutButton } from "../autolayout/AutolayoutButton";
+import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
+import { getDefaultExpressionDefinitionByLogicType } from "../boxedExpressions/getDefaultExpressionDefinitionByLogicType";
 import {
   DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
   DmnEditorDiagramClipboard,
@@ -64,17 +68,20 @@ import { addOrGetDrd } from "../mutations/addOrGetDrd";
 import { addShape } from "../mutations/addShape";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
-import { deleteEdge } from "../mutations/deleteEdge";
-import { deleteNode } from "../mutations/deleteNode";
+import { EdgeDeletionMode, deleteEdge } from "../mutations/deleteEdge";
+import { NodeDeletionMode, canRemoveNodeFromDrdOnly, deleteNode } from "../mutations/deleteNode";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
+import { updateExpression } from "../mutations/updateExpression";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { DiagramNodesPanel, SnapGrid, StoreApiType, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DiagramNodesPanel, SnapGrid } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
+import { Unpacked } from "../tsExt/tsExt";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
+import { MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE } from "./DrgNodesPanel";
 import { MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE, Palette } from "./Palette";
 import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
@@ -90,10 +97,11 @@ import {
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
+import { buildHierarchy } from "./graph/graph";
 import {
   CONTAINER_NODES_DESIRABLE_PADDING,
   getBounds,
-  getBoundsCenterPoint,
+  getDmnBoundsCenterPoint,
   getContainmentRelationship,
   getHandlePosition,
   getNodeTypeFromDmnObject,
@@ -111,15 +119,7 @@ import {
   TextAnnotationNode,
   UnknownNode,
 } from "./nodes/Nodes";
-import { BlueprintIcon } from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
-import { MousePointerIcon } from "@patternfly/react-icons/dist/js/icons/mouse-pointer-icon";
-import { updateExpression } from "../mutations/updateExpression";
-import { getDefaultExpressionDefinitionByLogicType } from "../boxedExpressions/getDefaultExpressionDefinitionByLogicType";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
-import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
-import { buildHierarchy } from "./graph/graph";
-import { MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE } from "./DrgNodesPanel";
-import { Unpacked } from "../tsExt/tsExt";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -128,6 +128,8 @@ const PAN_ON_DRAG = [1, 2];
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration: 400 };
 
 const DEFAULT_VIEWPORT = { x: 100, y: 0, zoom: 1 };
+
+const DELETE_NODE_KEY_CODES = ["Backspace", "Delete"];
 
 const nodeTypes: Record<NodeType, any> = {
   [NODE_TYPES.decisionService]: DecisionServiceNode,
@@ -156,25 +158,11 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     // Contexts
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const diagram = useDmnEditorStore((s) => s.diagram);
+    const { externalModelsByNamespace } = useExternalModels();
+    const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
     const thisDmn = useDmnEditorStore((s) => s.dmn);
 
     const { dmnModelBeforeEditingRef } = useDmnEditor();
-
-    const {
-      dmnShapesByHref,
-      nodesById,
-      selectedNodesById,
-      selectedEdgesById,
-      edgesById,
-      nodes,
-      edges,
-      isDropTargetNodeValidForSelection,
-      isDiagramEditingInProgress,
-      selectedNodeTypes,
-      externalDmnsByNamespace,
-      drgElementsWithoutVisualRepresentationOnCurrentDrd,
-    } = useDmnEditorDerivedStore();
 
     // State
 
@@ -199,38 +187,38 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     // Memos
 
     const rfSnapGrid = useMemo<[number, number]>(
-      () => (diagram.snapGrid.isEnabled ? [diagram.snapGrid.x, diagram.snapGrid.y] : [1, 1]),
-      [diagram.snapGrid.isEnabled, diagram.snapGrid.x, diagram.snapGrid.y]
+      () => (snapGrid.isEnabled ? [snapGrid.x, snapGrid.y] : [1, 1]),
+      [snapGrid.isEnabled, snapGrid.x, snapGrid.y]
     );
 
     // Callbacks
 
     const onConnect = useCallback<RF.OnConnect>(
-      (connection) => {
-        console.debug("DMN DIAGRAM: `onConnect`: ", connection);
-
-        const sourceNode = nodesById.get(connection.source!);
-        const targetNode = nodesById.get(connection.target!);
-        if (!sourceNode || !targetNode) {
-          throw new Error("Cannot create connection without target and source nodes!");
-        }
-
-        const sourceBounds = sourceNode.data.shape["dc:Bounds"];
-        const targetBounds = targetNode.data.shape["dc:Bounds"];
-        if (!sourceBounds || !targetBounds) {
-          throw new Error("Cannot create connection without target bounds!");
-        }
-
-        // --------- This is where we draw the line between the diagram and the model.
-
+      ({ source, target, sourceHandle, targetHandle }) => {
+        console.debug("DMN DIAGRAM: `onConnect`: ", { source, target, sourceHandle, targetHandle });
         dmnEditorStoreApi.setState((state) => {
+          const sourceNode = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(source!);
+          const targetNode = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(target!);
+          if (!sourceNode || !targetNode) {
+            throw new Error("Cannot create connection without target and source nodes!");
+          }
+
+          const sourceBounds = sourceNode.data.shape["dc:Bounds"];
+          const targetBounds = targetNode.data.shape["dc:Bounds"];
+          if (!sourceBounds || !targetBounds) {
+            throw new Error("Cannot create connection without target bounds!");
+          }
+
+          // --------- This is where we draw the line between the diagram and the model.
+
           addEdge({
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
             edge: {
-              type: connection.sourceHandle as EdgeType,
-              targetHandle: connection.targetHandle as PositionalNodeHandleId,
+              type: sourceHandle as EdgeType,
+              targetHandle: targetHandle as PositionalNodeHandleId,
               sourceHandle: PositionalNodeHandleId.Center,
+              autoPositionedEdgeMarker: undefined,
             },
             sourceNode: {
               type: sourceNode.type as NodeType,
@@ -251,7 +239,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           });
         });
       },
-      [dmnEditorStoreApi, nodesById]
+      [dmnEditorStoreApi, externalModelsByNamespace]
     );
 
     const getFirstNodeFittingBounds = useCallback(
@@ -340,17 +328,19 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           ) as ExternalNode;
 
           // --------- This is where we draw the line between the diagram and the model.
-
-          const externalDrgElement = (
-            externalDmnsByNamespace.get(externalNode.externalDrgElementNamespace)?.model.definitions.drgElement ?? []
-          ).find((s) => s["@_id"] === externalNode.externalDrgElementId);
-          if (!externalDrgElement) {
-            throw new Error(`Can't find DRG element with id '${externalNode.externalDrgElementId}'.`);
-          }
-
-          const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
-
           dmnEditorStoreApi.setState((state) => {
+            const externalDrgElement = (
+              state
+                .computed(state)
+                .getExternalModelTypesByNamespace(externalModelsByNamespace)
+                .dmns.get(externalNode.externalDrgElementNamespace)?.model.definitions.drgElement ?? []
+            ).find((s) => s["@_id"] === externalNode.externalDrgElementId);
+            if (!externalDrgElement) {
+              throw new Error(`Can't find DRG element with id '${externalNode.externalDrgElementId}'.`);
+            }
+
+            const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
+
             const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType](state.diagram.snapGrid);
 
             const namespaceName = getXmlNamespaceDeclarationName({
@@ -419,19 +409,20 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           console.debug(`DMN DIAGRAM: Adding DRG node`, JSON.stringify(drgElement));
         }
       },
-      [container, reactFlowInstance, dmnEditorStoreApi, externalDmnsByNamespace]
+      [container, reactFlowInstance, dmnEditorStoreApi, externalModelsByNamespace]
     );
 
+    const ongoingConnection = useDmnEditorStore((s) => s.diagram.ongoingConnection);
     useEffect(() => {
       const edgeUpdaterSource = document.querySelectorAll(
         ".react-flow__edgeupdater-source, .react-flow__edgeupdater-target"
       );
-      if (diagram.ongoingConnection) {
+      if (ongoingConnection) {
         edgeUpdaterSource.forEach((e) => e.classList.add("hidden"));
       } else {
         edgeUpdaterSource.forEach((e) => e.classList.remove("hidden"));
       }
-    }, [diagram.ongoingConnection]);
+    }, [ongoingConnection]);
 
     const onConnectStart = useCallback<RF.OnConnectStart>(
       (e, newConnection) => {
@@ -446,50 +437,50 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const onConnectEnd = useCallback(
       (e: MouseEvent) => {
         console.debug("DMN DIAGRAM: `onConnectEnd`");
-        dmnEditorStoreApi.setState((state) => {
-          state.diagram.ongoingConnection = undefined;
-        });
-
-        const targetIsPane = (e.target as Element | null)?.classList?.contains("react-flow__pane");
-        if (!targetIsPane || !container.current || !diagram.ongoingConnection || !reactFlowInstance) {
-          return;
-        }
-
-        const dropPoint = reactFlowInstance.screenToFlowPosition({
-          x: e.clientX,
-          y: e.clientY,
-        });
-
-        // only try to create node if source handle is compatible
-        if (!Object.values(NODE_TYPES).find((n) => n === diagram.ongoingConnection!.handleId)) {
-          return;
-        }
-
-        if (!diagram.ongoingConnection.nodeId) {
-          return;
-        }
-
-        const sourceNode = nodesById.get(diagram.ongoingConnection.nodeId);
-        if (!sourceNode) {
-          return;
-        }
-
-        const sourceNodeBounds = dmnShapesByHref.get(sourceNode.id)?.["dc:Bounds"];
-        if (!sourceNodeBounds) {
-          return;
-        }
-
-        const newNodeType = diagram.ongoingConnection.handleId as NodeType;
-        const sourceNodeType = sourceNode.type as NodeType;
-
-        const edge = getDefaultEdgeTypeBetween(sourceNodeType as NodeType, newNodeType);
-        if (!edge) {
-          throw new Error(`DMN DIAGRAM: Invalid structure: ${sourceNodeType} --(any)--> ${newNodeType}`);
-        }
-
-        // --------- This is where we draw the line between the diagram and the model.
 
         dmnEditorStoreApi.setState((state) => {
+          const targetIsPane = (e.target as Element | null)?.classList?.contains("react-flow__pane");
+          if (!targetIsPane || !container.current || !state.diagram.ongoingConnection || !reactFlowInstance) {
+            return;
+          }
+
+          const dropPoint = reactFlowInstance.screenToFlowPosition({
+            x: e.clientX,
+            y: e.clientY,
+          });
+
+          // only try to create node if source handle is compatible
+          if (!Object.values(NODE_TYPES).find((n) => n === state.diagram.ongoingConnection!.handleId)) {
+            return;
+          }
+
+          if (!state.diagram.ongoingConnection.nodeId) {
+            return;
+          }
+
+          const sourceNode = state
+            .computed(state)
+            .getDiagramData(externalModelsByNamespace)
+            .nodesById.get(state.diagram.ongoingConnection.nodeId);
+          if (!sourceNode) {
+            return;
+          }
+
+          const sourceNodeBounds = state.computed(state).indexes().dmnShapesByHref.get(sourceNode.id)?.["dc:Bounds"];
+          if (!sourceNodeBounds) {
+            return;
+          }
+
+          const newNodeType = state.diagram.ongoingConnection.handleId as NodeType;
+          const sourceNodeType = sourceNode.type as NodeType;
+
+          const edge = getDefaultEdgeTypeBetween(sourceNodeType as NodeType, newNodeType);
+          if (!edge) {
+            throw new Error(`DMN DIAGRAM: Invalid structure: ${sourceNodeType} --(any)--> ${newNodeType}`);
+          }
+
+          // --------- This is where we draw the line between the diagram and the model.
+
           const { id, href: newDmnObejctHref } = addConnectedNode({
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
@@ -514,8 +505,13 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           state.diagram._selectedNodes = [newDmnObejctHref];
           state.focus.consumableId = id;
         });
+
+        // Indepdent of what happens in the state mutation above, we always need to reset the `ongoingConnection` at the end here.
+        dmnEditorStoreApi.setState((state) => {
+          state.diagram.ongoingConnection = undefined;
+        });
       },
-      [dmnEditorStoreApi, container, diagram.ongoingConnection, reactFlowInstance, nodesById, dmnShapesByHref]
+      [dmnEditorStoreApi, container, reactFlowInstance, externalModelsByNamespace]
     );
 
     const isValidConnection = useCallback<RF.IsValidConnection>(
@@ -526,14 +522,18 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
         const ongoingConnectionHierarchy = buildHierarchy({
           nodeId: state.diagram.ongoingConnection?.nodeId,
-          edges: reactFlowInstance?.getEdges() ?? [],
+          edges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
         });
 
         return (
           // Reflexive edges are not allowed for DMN
           edgeOrConnection.source !== edgeOrConnection.target &&
           // Matches DMNs structure.
-          checkIsValidConnection(nodesById, edgeOrConnection, edgeType) &&
+          checkIsValidConnection(
+            state.computed(state).getDiagramData(externalModelsByNamespace).nodesById,
+            edgeOrConnection,
+            edgeType
+          ) &&
           // Does not form cycles.
           !!edgeOrConnection.target &&
           !ongoingConnectionHierarchy.dependencies.has(edgeOrConnection.target) &&
@@ -541,7 +541,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           !ongoingConnectionHierarchy.dependents.has(edgeOrConnection.source)
         );
       },
-      [dmnEditorStoreApi, reactFlowInstance, nodesById]
+      [dmnEditorStoreApi, externalModelsByNamespace, reactFlowInstance]
     );
 
     const onNodesChange = useCallback<RF.OnNodesChange>(
@@ -557,13 +557,16 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             switch (change.type) {
               case "add":
                 console.debug(`DMN DIAGRAM: 'onNodesChange' --> add '${change.item.id}'`);
-                state.dispatch.diagram.setNodeStatus(state, change.item.id, { selected: true });
+                state.dispatch(state).diagram.setNodeStatus(change.item.id, { selected: true });
                 break;
               case "dimensions":
                 console.debug(`DMN DIAGRAM: 'onNodesChange' --> dimensions '${change.id}'`);
-                state.dispatch.diagram.setNodeStatus(state, change.id, { resizing: change.resizing });
+                state.dispatch(state).diagram.setNodeStatus(change.id, { resizing: change.resizing });
                 if (change.dimensions) {
-                  const node = nodesById.get(change.id)!;
+                  const node = state
+                    .computed(state)
+                    .getDiagramData(externalModelsByNamespace)
+                    .nodesById.get(change.id)!;
                   // We only need to resize the node if its snapped dimensions change, as snapping is non-destructive.
                   const snappedShape = snapShapeDimensions(
                     state.diagram.snapGrid,
@@ -577,19 +580,25 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     resizeNode({
                       definitions: state.dmn.model.definitions,
                       drdIndex: state.diagram.drdIndex,
-                      dmnShapesByHref,
+                      dmnShapesByHref: state.computed(state).indexes().dmnShapesByHref,
                       snapGrid: state.diagram.snapGrid,
                       change: {
                         isExternal: !!node.data.dmnObjectQName.prefix,
                         nodeType: node.type as NodeType,
                         index: node.data.index,
                         shapeIndex: node.data.shape.index,
-                        sourceEdgeIndexes: edges.flatMap((e) =>
-                          e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                        ),
-                        targetEdgeIndexes: edges.flatMap((e) =>
-                          e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                        ),
+                        sourceEdgeIndexes: state
+                          .computed(state)
+                          .getDiagramData(externalModelsByNamespace)
+                          .edges.flatMap((e) =>
+                            e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                          ),
+                        targetEdgeIndexes: state
+                          .computed(state)
+                          .getDiagramData(externalModelsByNamespace)
+                          .edges.flatMap((e) =>
+                            e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                          ),
                         dimension: {
                           "@_width": change.dimensions?.width ?? 0,
                           "@_height": change.dimensions?.height ?? 0,
@@ -601,9 +610,12 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 break;
               case "position":
                 console.debug(`DMN DIAGRAM: 'onNodesChange' --> position '${change.id}'`);
-                state.dispatch.diagram.setNodeStatus(state, change.id, { dragging: change.dragging });
+                state.dispatch(state).diagram.setNodeStatus(change.id, { dragging: change.dragging });
                 if (change.positionAbsolute) {
-                  const node = nodesById.get(change.id)!;
+                  const node = state
+                    .computed(state)
+                    .getDiagramData(externalModelsByNamespace)
+                    .nodesById.get(change.id)!;
                   const { delta } = repositionNode({
                     definitions: state.dmn.model.definitions,
                     drdIndex: state.diagram.drdIndex,
@@ -611,14 +623,22 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     change: {
                       type: "absolute",
                       nodeType: node.type as NodeType,
-                      selectedEdges: [...selectedEdgesById.keys()],
+                      selectedEdges: [
+                        ...state.computed(state).getDiagramData(externalModelsByNamespace).selectedEdgesById.keys(),
+                      ],
                       shapeIndex: node.data.shape.index,
-                      sourceEdgeIndexes: edges.flatMap((e) =>
-                        e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                      ),
-                      targetEdgeIndexes: edges.flatMap((e) =>
-                        e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                      ),
+                      sourceEdgeIndexes: state
+                        .computed(state)
+                        .getDiagramData(externalModelsByNamespace)
+                        .edges.flatMap((e) =>
+                          e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                        ),
+                      targetEdgeIndexes: state
+                        .computed(state)
+                        .getDiagramData(externalModelsByNamespace)
+                        .edges.flatMap((e) =>
+                          e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                        ),
                       position: change.positionAbsolute,
                     },
                   });
@@ -635,7 +655,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     ];
 
                     for (let i = 0; i < nested.length; i++) {
-                      const nestedNode = nodesById.get(nested[i]["@_href"])!;
+                      const nestedNode = state
+                        .computed(state)
+                        .getDiagramData(externalModelsByNamespace)
+                        .nodesById.get(nested[i]["@_href"])!;
                       const snappedNestedNodeShapeWithAppliedDelta = snapShapePosition(
                         state.diagram.snapGrid,
                         offsetShapePosition(nestedNode.data.shape, delta)
@@ -647,14 +670,23 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                         change: {
                           type: "absolute",
                           nodeType: nestedNode.type as NodeType,
-                          selectedEdges: edges.map((e) => e.id),
+                          selectedEdges: state
+                            .computed(state)
+                            .getDiagramData(externalModelsByNamespace)
+                            .edges.map((e) => e.id),
                           shapeIndex: nestedNode.data.shape.index,
-                          sourceEdgeIndexes: edges.flatMap((e) =>
-                            e.source === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                          ),
-                          targetEdgeIndexes: edges.flatMap((e) =>
-                            e.target === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                          ),
+                          sourceEdgeIndexes: state
+                            .computed(state)
+                            .getDiagramData(externalModelsByNamespace)
+                            .edges.flatMap((e) =>
+                              e.source === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                            ),
+                          targetEdgeIndexes: state
+                            .computed(state)
+                            .getDiagramData(externalModelsByNamespace)
+                            .edges.flatMap((e) =>
+                              e.target === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                            ),
                           position: snappedNestedNodeShapeWithAppliedDelta,
                         },
                       });
@@ -664,35 +696,38 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 break;
               case "remove":
                 console.debug(`DMN DIAGRAM: 'onNodesChange' --> remove '${change.id}'`);
-                const node = nodesById.get(change.id)!;
+                const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(change.id)!;
                 deleteNode({
+                  drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                   definitions: state.dmn.model.definitions,
                   drdIndex: state.diagram.drdIndex,
+                  dmnObjectNamespace: node.data.dmnObjectNamespace,
                   dmnObjectQName: node.data.dmnObjectQName,
                   dmnObjectId: node.data.dmnObject?.["@_id"],
                   nodeNature: nodeNatures[node.type as NodeType],
+                  mode: NodeDeletionMode.FORM_DRG_AND_ALL_DRDS,
                 });
-                state.dispatch.diagram.setNodeStatus(state, node.id, {
+                state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
                   dragging: false,
                   resizing: false,
                 });
                 break;
               case "reset":
-                state.dispatch.diagram.setNodeStatus(state, change.item.id, {
+                state.dispatch(state).diagram.setNodeStatus(change.item.id, {
                   selected: false,
                   dragging: false,
                   resizing: false,
                 });
                 break;
               case "select":
-                state.dispatch.diagram.setNodeStatus(state, change.id, { selected: change.selected });
+                state.dispatch(state).diagram.setNodeStatus(change.id, { selected: change.selected });
                 break;
             }
           }
         });
       },
-      [reactFlowInstance, dmnEditorStoreApi, nodesById, dmnShapesByHref, edges, selectedEdgesById]
+      [reactFlowInstance, dmnEditorStoreApi, externalModelsByNamespace]
     );
 
     const resetToBeforeEditingBegan = useCallback(() => {
@@ -737,29 +772,38 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
     const onNodeDragStop = useCallback<RF.NodeDragHandler>(
       (e, node: RF.Node<DmnDiagramNodeData>) => {
-        console.debug("DMN DIAGRAM: `onNodeDragStop`");
-        const nodeBeingDragged = nodesById.get(nodeIdBeingDraggedRef.current!);
-        nodeIdBeingDraggedRef.current = null;
-        if (!nodeBeingDragged) {
-          return;
-        }
-
-        // Validate
-        const dropTargetNode = dmnEditorStoreApi.getState().diagram.dropTargetNode;
-        if (dropTargetNode && containment.has(dropTargetNode.type as NodeType) && !isDropTargetNodeValidForSelection) {
-          console.debug(
-            `DMN DIAGRAM: Invalid containment: '${[...selectedNodeTypes].join("', '")}' inside '${
-              dropTargetNode.type
-            }'. Ignoring nodes dropped.`
-          );
-          resetToBeforeEditingBegan();
-          return;
-        }
-
-        const selectedNodes = [...selectedNodesById.values()];
-
         try {
           dmnEditorStoreApi.setState((state) => {
+            console.debug("DMN DIAGRAM: `onNodeDragStop`");
+            const nodeBeingDragged = state
+              .computed(state)
+              .getDiagramData(externalModelsByNamespace)
+              .nodesById.get(nodeIdBeingDraggedRef.current!);
+            nodeIdBeingDraggedRef.current = null;
+            if (!nodeBeingDragged) {
+              return;
+            }
+
+            // Validate
+            const dropTargetNode = dmnEditorStoreApi.getState().diagram.dropTargetNode;
+            if (
+              dropTargetNode &&
+              containment.has(dropTargetNode.type as NodeType) &&
+              !state.computed(state).isDropTargetNodeValidForSelection
+            ) {
+              console.debug(
+                `DMN DIAGRAM: Invalid containment: '${[
+                  ...state.computed(state).getDiagramData(externalModelsByNamespace).selectedNodeTypes,
+                ].join("', '")}' inside '${dropTargetNode.type}'. Ignoring nodes dropped.`
+              );
+              resetToBeforeEditingBegan();
+              return;
+            }
+
+            const selectedNodes = [
+              ...state.computed(state).getDiagramData(externalModelsByNamespace).selectedNodesById.values(),
+            ];
+
             state.diagram.dropTargetNode = undefined;
 
             if (!node.dragging) {
@@ -768,7 +812,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
             // Un-parent
             if (nodeBeingDragged.data.parentRfNode) {
-              const p = nodesById.get(nodeBeingDragged.data.parentRfNode.id);
+              const p = state
+                .computed(state)
+                .getDiagramData(externalModelsByNamespace)
+                .nodesById.get(nodeBeingDragged.data.parentRfNode.id);
               if (p?.type === NODE_TYPES.decisionService && nodeBeingDragged.type === NODE_TYPES.decision) {
                 for (let i = 0; i < selectedNodes.length; i++) {
                   deleteDecisionFromDecisionService({
@@ -791,7 +838,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   definitions: state.dmn.model.definitions,
                   drdIndex: state.diagram.drdIndex,
                   decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
-                  decisionServiceId: nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
+                  decisionServiceId: state
+                    .computed(state)
+                    .getDiagramData(externalModelsByNamespace)
+                    .nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
                   snapGrid: state.diagram.snapGrid,
                 });
               }
@@ -806,14 +856,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           resetToBeforeEditingBegan();
         }
       },
-      [
-        dmnEditorStoreApi,
-        isDropTargetNodeValidForSelection,
-        nodesById,
-        resetToBeforeEditingBegan,
-        selectedNodeTypes,
-        selectedNodesById,
-      ]
+      [dmnEditorStoreApi, externalModelsByNamespace, resetToBeforeEditingBegan]
     );
 
     const onEdgesChange = useCallback<RF.OnEdgesChange>(
@@ -823,18 +866,19 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             switch (change.type) {
               case "select":
                 console.debug(`DMN DIAGRAM: 'onEdgesChange' --> select '${change.id}'`);
-                state.dispatch.diagram.setEdgeStatus(state, change.id, { selected: change.selected });
+                state.dispatch(state).diagram.setEdgeStatus(change.id, { selected: change.selected });
                 break;
               case "remove":
                 console.debug(`DMN DIAGRAM: 'onEdgesChange' --> remove '${change.id}'`);
-                const edge = edgesById.get(change.id);
+                const edge = state.computed(state).getDiagramData(externalModelsByNamespace).edgesById.get(change.id);
                 if (edge?.data) {
                   deleteEdge({
                     definitions: state.dmn.model.definitions,
                     drdIndex: state.diagram.drdIndex,
                     edge: { id: change.id, dmnObject: edge.data.dmnObject },
+                    mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
                   });
-                  state.dispatch.diagram.setEdgeStatus(state, change.id, { selected: false, draggingWaypoint: false });
+                  state.dispatch(state).diagram.setEdgeStatus(change.id, { selected: false, draggingWaypoint: false });
                 }
                 break;
               case "add":
@@ -844,39 +888,46 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           }
         });
       },
-      [dmnEditorStoreApi, edgesById]
+      [dmnEditorStoreApi, externalModelsByNamespace]
     );
 
     const onEdgeUpdate = useCallback<RF.OnEdgeUpdateFunc<DmnDiagramEdgeData>>(
       (oldEdge, newConnection) => {
         console.debug("DMN DIAGRAM: `onEdgeUpdate`", oldEdge, newConnection);
 
-        const sourceNode = nodesById.get(newConnection.source!);
-        const targetNode = nodesById.get(newConnection.target!);
-        if (!sourceNode || !targetNode) {
-          throw new Error("Cannot create connection without target and source nodes!");
-        }
-
-        const sourceBounds = sourceNode.data.shape["dc:Bounds"];
-        const targetBounds = targetNode.data.shape["dc:Bounds"];
-        if (!sourceBounds || !targetBounds) {
-          throw new Error("Cannot create connection without target bounds!");
-        }
-
-        // --------- This is where we draw the line between the diagram and the model.
-
-        const lastWaypoint = oldEdge.data?.dmnEdge
-          ? oldEdge.data!.dmnEdge!["di:waypoint"]![oldEdge.data!.dmnEdge!["di:waypoint"]!.length - 1]!
-          : getBoundsCenterPoint(targetBounds);
-        const firstWaypoint = oldEdge.data?.dmnEdge
-          ? oldEdge.data!.dmnEdge!["di:waypoint"]![0]!
-          : getBoundsCenterPoint(sourceBounds);
-
         dmnEditorStoreApi.setState((state) => {
+          const sourceNode = state
+            .computed(state)
+            .getDiagramData(externalModelsByNamespace)
+            .nodesById.get(newConnection.source!);
+          const targetNode = state
+            .computed(state)
+            .getDiagramData(externalModelsByNamespace)
+            .nodesById.get(newConnection.target!);
+          if (!sourceNode || !targetNode) {
+            throw new Error("Cannot create connection without target and source nodes!");
+          }
+
+          const sourceBounds = sourceNode.data.shape["dc:Bounds"];
+          const targetBounds = targetNode.data.shape["dc:Bounds"];
+          if (!sourceBounds || !targetBounds) {
+            throw new Error("Cannot create connection without target bounds!");
+          }
+
+          // --------- This is where we draw the line between the diagram and the model.
+
+          const lastWaypoint = oldEdge.data?.dmnEdge
+            ? oldEdge.data!.dmnEdge!["di:waypoint"]![oldEdge.data!.dmnEdge!["di:waypoint"]!.length - 1]!
+            : getDmnBoundsCenterPoint(targetBounds);
+          const firstWaypoint = oldEdge.data?.dmnEdge
+            ? oldEdge.data!.dmnEdge!["di:waypoint"]![0]!
+            : getDmnBoundsCenterPoint(sourceBounds);
+
           const { newDmnEdge } = addEdge({
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
             edge: {
+              autoPositionedEdgeMarker: undefined,
               type: oldEdge.type as EdgeType,
               targetHandle: ((newConnection.targetHandle as PositionalNodeHandleId) ??
                 getHandlePosition({ shapeBounds: targetBounds, waypoint: lastWaypoint })
@@ -903,15 +954,16 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             keepWaypoints: true,
           });
 
-          // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints!
+          // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints on the same DRD.
           if (newDmnEdge["@_dmnElementRef"] !== oldEdge.id) {
-            const { dmnEdge: deletedDmnEdge } = deleteEdge({
+            const { deletedDmnEdgeOnCurrentDrd } = deleteEdge({
               definitions: state.dmn.model.definitions,
               drdIndex: state.diagram.drdIndex,
               edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
+              mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
             });
 
-            const deletedWaypoints = deletedDmnEdge?.["di:waypoint"];
+            const deletedWaypoints = deletedDmnEdgeOnCurrentDrd?.["di:waypoint"];
 
             if (oldEdge.source !== newConnection.source && deletedWaypoints) {
               newDmnEdge["di:waypoint"] = [newDmnEdge["di:waypoint"]![0], ...deletedWaypoints.slice(1)];
@@ -933,7 +985,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           state.diagram.edgeIdBeingUpdated = undefined;
         });
       },
-      [dmnEditorStoreApi, nodesById]
+      [dmnEditorStoreApi, externalModelsByNamespace]
     );
 
     const onEdgeUpdateStart = useCallback(
@@ -962,8 +1014,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     // Override Reactflow's behavior by intercepting the keydown event using its `capture` variant.
     const handleRfKeyDownCapture = useCallback(
       (e: React.KeyboardEvent) => {
+        const s = dmnEditorStoreApi.getState();
+
         if (e.key === "Escape") {
-          if (isDiagramEditingInProgress && dmnModelBeforeEditingRef.current) {
+          if (s.computed(s).isDiagramEditingInProgress() && dmnModelBeforeEditingRef.current) {
             console.debug(
               "DMN DIAGRAM: Intercepting Escape pressed and preventing propagation. Reverting DMN model to what it was before editing began."
             );
@@ -972,14 +1026,20 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             e.preventDefault();
 
             resetToBeforeEditingBegan();
-          } else if (!diagram.ongoingConnection) {
+          } else if (!s.diagram.ongoingConnection) {
             dmnEditorStoreApi.setState((state) => {
-              if (selectedNodesById.size > 0 || selectedEdgesById.size > 0) {
+              if (
+                state.computed(s).getDiagramData(externalModelsByNamespace).selectedNodesById.size > 0 ||
+                state.computed(s).getDiagramData(externalModelsByNamespace).selectedEdgesById.size > 0
+              ) {
                 console.debug("DMN DIAGRAM: Esc pressed. Desselecting everything.");
                 state.diagram._selectedNodes = [];
                 state.diagram._selectedEdges = [];
                 e.preventDefault();
-              } else if (selectedNodesById.size <= 0 && selectedEdgesById.size <= 0) {
+              } else if (
+                state.computed(s).getDiagramData(externalModelsByNamespace).selectedNodesById.size <= 0 &&
+                state.computed(s).getDiagramData(externalModelsByNamespace).selectedEdgesById.size <= 0
+              ) {
                 console.debug("DMN DIAGRAM: Esc pressed. Closing all open panels.");
                 state.diagram.propertiesPanel.isOpen = false;
                 state.diagram.overlaysPanel.isOpen = false;
@@ -994,21 +1054,21 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           }
         }
       },
-      [
-        diagram.ongoingConnection,
-        dmnEditorStoreApi,
-        dmnModelBeforeEditingRef,
-        isDiagramEditingInProgress,
-        resetToBeforeEditingBegan,
-        selectedEdgesById.size,
-        selectedNodesById.size,
-      ]
+      [dmnEditorStoreApi, dmnModelBeforeEditingRef, externalModelsByNamespace, resetToBeforeEditingBegan]
     );
 
     const [showEmptyState, setShowEmptyState] = useState(true);
 
+    const nodes = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodes);
+    const edges = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).edges);
+    const drgElementsWithoutVisualRepresentationOnCurrentDrdLength = useDmnEditorStore(
+      (s) =>
+        s.computed(s).getDiagramData(externalModelsByNamespace).drgElementsWithoutVisualRepresentationOnCurrentDrd
+          .length
+    );
+
     const isEmptyStateShowing =
-      showEmptyState && nodes.length === 0 && drgElementsWithoutVisualRepresentationOnCurrentDrd.length === 0;
+      showEmptyState && nodes.length === 0 && drgElementsWithoutVisualRepresentationOnCurrentDrdLength === 0;
 
     return (
       <>
@@ -1060,6 +1120,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             fitViewOptions={FIT_VIEW_OPTIONS}
             attributionPosition={"bottom-right"}
             onInit={setReactFlowInstance}
+            deleteKeyCode={DELETE_NODE_KEY_CODES}
             // (begin)
             // Used to make the Palette work by dropping nodes on the Reactflow Canvas
             onDrop={onDrop}
@@ -1155,7 +1216,7 @@ function DmnDiagramEmptyState({
                     }),
                   });
 
-                  state.dispatch.boxedExpressionEditor.open(state, parseXmlHref(decisionNodeHref).id);
+                  state.dispatch(state).boxedExpressionEditor.open(parseXmlHref(decisionNodeHref).id);
                 });
               }}
             >
@@ -1219,20 +1280,15 @@ function DmnDiagramEmptyState({
 }
 
 export function SetConnectionToReactFlowStore(props: {}) {
-  const diagram = useDmnEditorStore((s) => s.diagram);
+  const ongoingConnection = useDmnEditorStore((s) => s.diagram.ongoingConnection);
   const rfStoreApi = RF.useStoreApi();
   useEffect(() => {
     rfStoreApi.setState({
-      connectionHandleId: diagram.ongoingConnection?.handleId,
-      connectionHandleType: diagram.ongoingConnection?.handleType,
-      connectionNodeId: diagram.ongoingConnection?.nodeId,
+      connectionHandleId: ongoingConnection?.handleId,
+      connectionHandleType: ongoingConnection?.handleType,
+      connectionNodeId: ongoingConnection?.nodeId,
     });
-  }, [
-    diagram.ongoingConnection?.handleId,
-    diagram.ongoingConnection?.handleType,
-    diagram.ongoingConnection?.nodeId,
-    rfStoreApi,
-  ]);
+  }, [ongoingConnection?.handleId, ongoingConnection?.handleType, ongoingConnection?.nodeId, rfStoreApi]);
 
   return <></>;
 }
@@ -1270,15 +1326,19 @@ export function TopRightCornerPanels() {
   return (
     <>
       <RF.Panel position={"top-right"} style={{ display: "flex" }}>
+        <aside className={"kie-dmn-editor--autolayout-panel-toggle"}>
+          <AutolayoutButton />
+        </aside>
         <aside className={"kie-dmn-editor--overlays-panel-toggle"}>
           <Popover
             className={"kie-dmn-editor--overlay-panel-popover"}
             key={`${diagram.overlaysPanel.isOpen}`}
             aria-label="Overlays Panel"
             position={"bottom-end"}
+            enableFlip={false}
+            flipBehavior={["bottom-end"]}
             hideOnOutsideClick={false}
             isVisible={diagram.overlaysPanel.isOpen}
-            enableFlip={true}
             bodyContent={<OverlaysPanel />}
           >
             <button className={"kie-dmn-editor--overlays-panel-toggle-button"} onClick={toggleOverlaysPanel}>
@@ -1301,14 +1361,20 @@ export function TopRightCornerPanels() {
 export function SelectionStatus() {
   const rfStoreApi = RF.useStoreApi();
 
-  const { selectedNodesById, selectedEdgesById } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
+  const selectedNodesCount = useDmnEditorStore(
+    (s) => s.computed(s).getDiagramData(externalModelsByNamespace).selectedNodesById.size
+  );
+  const selectedEdgesCount = useDmnEditorStore(
+    (s) => s.computed(s).getDiagramData(externalModelsByNamespace).selectedEdgesById.size
+  );
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   useEffect(() => {
-    if (selectedNodesById.size >= 2) {
+    if (selectedNodesCount >= 2) {
       rfStoreApi.setState({ nodesSelectionActive: true });
     }
-  }, [rfStoreApi, selectedNodesById.size]);
+  }, [rfStoreApi, selectedNodesCount]);
 
   const onClose = useCallback(
     (e: React.MouseEvent) => {
@@ -1323,14 +1389,14 @@ export function SelectionStatus() {
 
   return (
     <>
-      {(selectedNodesById.size + selectedEdgesById.size >= 2 && (
+      {(selectedNodesCount + selectedEdgesCount >= 2 && (
         <RF.Panel position={"top-center"}>
           <Label style={{ paddingLeft: "24px" }} onClose={onClose}>
-            {(selectedEdgesById.size === 0 && `${selectedNodesById.size} nodes selected`) ||
-              (selectedNodesById.size === 0 && `${selectedEdgesById.size} edges selected`) ||
-              `${selectedNodesById.size} node${selectedNodesById.size === 1 ? "" : "s"}, ${
-                selectedEdgesById.size
-              } edge${selectedEdgesById.size === 1 ? "" : "s"} selected`}
+            {(selectedEdgesCount === 0 && `${selectedNodesCount} nodes selected`) ||
+              (selectedNodesCount === 0 && `${selectedEdgesCount} edges selected`) ||
+              `${selectedNodesCount} node${selectedNodesCount === 1 ? "" : "s"}, ${selectedEdgesCount} edge${
+                selectedEdgesCount === 1 ? "" : "s"
+              } selected`}
           </Label>
         </RF.Panel>
       )) || <></>}
@@ -1341,10 +1407,11 @@ export function SelectionStatus() {
 export function KeyboardShortcuts(props: {}) {
   const rfStoreApi = RF.useStoreApi();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const diagram = useDmnEditorStore((s) => s.diagram);
+  const { externalModelsByNamespace } = useExternalModels();
 
-  const rf = RF.useReactFlow();
+  const rf = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
+  // Reset position to origin
   const space = RF.useKeyPress(["Space"]);
   useEffect(() => {
     if (!space) {
@@ -1354,6 +1421,7 @@ export function KeyboardShortcuts(props: {}) {
     rf.setViewport(DEFAULT_VIEWPORT, { duration: 200 });
   }, [rf, space]);
 
+  // Focus on node bounds
   const b = RF.useKeyPress(["b"]);
   useEffect(() => {
     if (!b) {
@@ -1381,6 +1449,7 @@ export function KeyboardShortcuts(props: {}) {
     );
   }, [b, rf]);
 
+  // Cancel action
   const esc = RF.useKeyPress(["Escape"]);
   useEffect(() => {
     if (!esc) {
@@ -1400,8 +1469,9 @@ export function KeyboardShortcuts(props: {}) {
 
       return rfState;
     });
-  }, [dmnEditorStoreApi, esc, rfStoreApi]);
+  }, [esc, dmnEditorStoreApi, rfStoreApi]);
 
+  // Cut
   const cut = RF.useKeyPress(["Meta+x"]);
   useEffect(() => {
     if (!cut) {
@@ -1416,33 +1486,37 @@ export function KeyboardShortcuts(props: {}) {
 
     navigator.clipboard.writeText(JSON.stringify(clipboard)).then(() => {
       dmnEditorStoreApi.setState((state) => {
-        // Delete edges first
+        // Delete edges
         [...copiedEdgesById.values(), ...danglingEdgesById.values()].forEach((edge) => {
           deleteEdge({
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
             edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
+            mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
           });
-          state.dispatch.diagram.setEdgeStatus(state, edge.id, {
+          state.dispatch(state).diagram.setEdgeStatus(edge.id, {
             selected: false,
             draggingWaypoint: false,
           });
         });
 
-        // Then delete nodes
+        // Delete nodes
         rfStoreApi
           .getState()
           .getNodes()
           .forEach((node: RF.Node<DmnDiagramNodeData>) => {
             if (copiedNodesById.has(node.id)) {
               deleteNode({
+                drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                 definitions: state.dmn.model.definitions,
                 drdIndex: state.diagram.drdIndex,
+                dmnObjectNamespace: node.data.dmnObjectNamespace,
                 dmnObjectQName: node.data.dmnObjectQName,
                 dmnObjectId: node.data.dmnObject?.["@_id"],
                 nodeNature: nodeNatures[node.type as NodeType],
+                mode: NodeDeletionMode.FORM_DRG_AND_ALL_DRDS,
               });
-              state.dispatch.diagram.setNodeStatus(state, node.id, {
+              state.dispatch(state).diagram.setNodeStatus(node.id, {
                 selected: false,
                 dragging: false,
                 resizing: false,
@@ -1451,8 +1525,9 @@ export function KeyboardShortcuts(props: {}) {
           });
       });
     });
-  }, [cut, dmnEditorStoreApi, rfStoreApi]);
+  }, [cut, dmnEditorStoreApi, rfStoreApi, externalModelsByNamespace]);
 
+  // Copy
   const copy = RF.useKeyPress(["Meta+c"]);
   useEffect(() => {
     if (!copy) {
@@ -1465,6 +1540,7 @@ export function KeyboardShortcuts(props: {}) {
     navigator.clipboard.writeText(JSON.stringify(clipboard));
   }, [copy, dmnEditorStoreApi, rfStoreApi]);
 
+  // Paste
   const paste = RF.useKeyPress(["Meta+v"]);
   useEffect(() => {
     if (!paste) {
@@ -1536,8 +1612,9 @@ export function KeyboardShortcuts(props: {}) {
         }
       });
     });
-  }, [dmnEditorStoreApi, paste]);
+  }, [paste, dmnEditorStoreApi]);
 
+  // Select/deselect all
   const selectAll = RF.useKeyPress(["a", "Meta+a"]);
   useEffect(() => {
     if (!selectAll) {
@@ -1566,8 +1643,9 @@ export function KeyboardShortcuts(props: {}) {
         state.diagram._selectedEdges = allEdgeIds;
       }
     });
-  }, [dmnEditorStoreApi, rfStoreApi, selectAll]);
+  }, [selectAll, dmnEditorStoreApi, rfStoreApi]);
 
+  // Create group wrapping selection
   const g = RF.useKeyPress(["g"]);
   useEffect(() => {
     if (!g) {
@@ -1596,10 +1674,11 @@ export function KeyboardShortcuts(props: {}) {
         },
       });
 
-      state.dispatch.diagram.setNodeStatus(state, newNodeId, { selected: true });
+      state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
     });
-  }, [dmnEditorStoreApi, g, rf]);
+  }, [g, dmnEditorStoreApi, rf]);
 
+  // Toggle hierarchy highlights
   const h = RF.useKeyPress(["h"]);
   useEffect(() => {
     if (!h) {
@@ -1609,8 +1688,9 @@ export function KeyboardShortcuts(props: {}) {
     dmnEditorStoreApi.setState((state) => {
       state.diagram.overlays.enableNodeHierarchyHighlight = !state.diagram.overlays.enableNodeHierarchyHighlight;
     });
-  }, [dmnEditorStoreApi, h]);
+  }, [h, dmnEditorStoreApi]);
 
+  // Show Properties panel
   const i = RF.useKeyPress(["i"]);
   useEffect(() => {
     if (!i) {
@@ -1620,7 +1700,70 @@ export function KeyboardShortcuts(props: {}) {
     dmnEditorStoreApi.setState((state) => {
       state.diagram.propertiesPanel.isOpen = !state.diagram.propertiesPanel.isOpen;
     });
-  }, [dmnEditorStoreApi, i]);
+  }, [i, dmnEditorStoreApi]);
+
+  // Hide from DRD
+  const x = RF.useKeyPress(["x"]);
+  useEffect(() => {
+    if (!x) {
+      return;
+    }
+
+    const nodesById = rf
+      .getNodes()
+      .reduce((acc, s) => acc.set(s.id, s), new Map<string, RF.Node<DmnDiagramNodeData>>());
+
+    dmnEditorStoreApi.setState((state) => {
+      const selectedNodeIds = new Set(state.diagram._selectedNodes);
+      for (const edge of rf.getEdges()) {
+        if (
+          (selectedNodeIds.has(edge.source) &&
+            canRemoveNodeFromDrdOnly({
+              definitions: state.dmn.model.definitions,
+              drdIndex: state.diagram.drdIndex,
+              dmnObjectNamespace: nodesById.get(edge.source)!.data.dmnObjectNamespace,
+              dmnObjectId: nodesById.get(edge.source)!.data.dmnObject?.["@_id"],
+            })) ||
+          (selectedNodeIds.has(edge.target) &&
+            canRemoveNodeFromDrdOnly({
+              definitions: state.dmn.model.definitions,
+              drdIndex: state.diagram.drdIndex,
+              dmnObjectNamespace: nodesById.get(edge.target)!.data.dmnObjectNamespace,
+              dmnObjectId: nodesById.get(edge.target)!.data.dmnObject?.["@_id"],
+            }))
+        ) {
+          deleteEdge({
+            definitions: state.dmn.model.definitions,
+            drdIndex: state.diagram.drdIndex,
+            edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
+            mode: EdgeDeletionMode.FROM_CURRENT_DRD_ONLY,
+          });
+          state.dispatch(state).diagram.setEdgeStatus(edge.id, { selected: false, draggingWaypoint: false });
+        }
+      }
+
+      for (const node of rf.getNodes().filter((s) => s.selected)) {
+        const { deletedDmnShapeOnCurrentDrd: deletedShape } = deleteNode({
+          drgEdges: [], // Deleting from DRD only.
+          definitions: state.dmn.model.definitions,
+          drdIndex: state.diagram.drdIndex,
+          dmnObjectNamespace: node.data.dmnObjectNamespace,
+          dmnObjectQName: node.data.dmnObjectQName,
+          dmnObjectId: node.data.dmnObject?.["@_id"],
+          nodeNature: nodeNatures[node.type as NodeType],
+          mode: NodeDeletionMode.FROM_CURRENT_DRD_ONLY,
+        });
+
+        if (deletedShape) {
+          state.dispatch(state).diagram.setNodeStatus(node.id, {
+            selected: false,
+            dragging: false,
+            resizing: false,
+          });
+        }
+      }
+    });
+  }, [x, dmnEditorStoreApi, rf]);
 
   return <></>;
 }

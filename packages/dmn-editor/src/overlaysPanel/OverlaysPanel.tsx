@@ -22,7 +22,7 @@ import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Slider } from "@patternfly/react-core/dist/js/components/Slider";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 
 const MIN_SNAP = 5;
 const MAX_SNAP = 50;
@@ -115,17 +115,6 @@ export function OverlaysPanel() {
             }
           />
         </FormGroup>
-        {/* <FormGroup label={"Custom node styles"}>
-          <Switch
-            aria-label={"ustom node styles"}
-            isChecked={diagram.overlays.enableCustomNodeStyles}
-            onChange={(newValue) =>
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.overlays.enableCustomNodeStyles = newValue;
-              })
-            }
-          />
-        </FormGroup> */}
         <FormGroup label={"Show data type toolbar on nodes"}>
           <Switch
             aria-label={"Show data type toolbar on nodes"}
@@ -140,10 +129,10 @@ export function OverlaysPanel() {
         <FormGroup label={"Enable styles"}>
           <Switch
             aria-label={"Show data type toolbar on nodes"}
-            isChecked={diagram.overlays.enableStyles}
+            isChecked={diagram.overlays.enableCustomNodeStyles}
             onChange={(newValue) =>
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.overlays.enableStyles = newValue;
+                state.diagram.overlays.enableCustomNodeStyles = newValue;
               })
             }
           />

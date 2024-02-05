@@ -17,29 +17,42 @@
  * under the License.
  */
 
-import * as RF from "reactflow";
-import { DmnDiagramEdgeData } from "../edges/Edges";
+import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Unpacked } from "../../tsExt/tsExt";
 
 export type AdjMatrix = Record<
   string,
-  undefined | Record<string, undefined | { direction: HierarchyDirection; edge: RF.Edge }>
+  undefined | Record<string, undefined | { direction: HierarchyDirection; edge: DrgEdge }>
 >;
 
 export type HierarchyDirection = "up" | "down";
 
-export function getAdjMatrix(edges: RF.Edge<any>[]): AdjMatrix {
+export type DrgEdge = {
+  sourceId: string;
+  targetId: string;
+  id: string;
+  dmnObject: {
+    namespace: string;
+    id: string;
+    type: Unpacked<DMN15__tDefinitions["artifact" | "drgElement"]>["__$$element"];
+    requirementType: "informationRequirement" | "knowledgeRequirement" | "authorityRequirement" | "association";
+    index: number;
+  };
+};
+
+export function getAdjMatrix(edges: DrgEdge[]): AdjMatrix {
   const __adjMatrix: AdjMatrix = {};
   for (const e of edges) {
-    __adjMatrix[e.source] ??= {};
-    __adjMatrix[e.target] ??= {};
-    __adjMatrix[e.source]![e.target] = { direction: "up", edge: e };
-    __adjMatrix[e.target]![e.source] = { direction: "down", edge: e };
+    __adjMatrix[e.sourceId] ??= {};
+    __adjMatrix[e.targetId] ??= {};
+    __adjMatrix[e.sourceId]![e.targetId] = { direction: "up", edge: e };
+    __adjMatrix[e.targetId]![e.sourceId] = { direction: "down", edge: e };
   }
   return __adjMatrix;
 }
 
 export type NodeVisitor = (nodeId: string, traversalDirection: HierarchyDirection) => void;
-export type EdgeVisitor = (edge: RF.Edge<DmnDiagramEdgeData>, traversalDirection: HierarchyDirection) => void;
+export type EdgeVisitor = (edge: DrgEdge, traversalDirection: HierarchyDirection) => void;
 
 export function traverse(
   __adjMatrix: AdjMatrix,
@@ -74,7 +87,7 @@ export function traverse(
       visited.add(curNodeId);
 
       // Only paint edges if at least one of the endpoints is not selected.
-      if (!(originalStartingNodeIds.has(edge.source) && originalStartingNodeIds.has(edge.target))) {
+      if (!(originalStartingNodeIds.has(edge.sourceId) && originalStartingNodeIds.has(edge.targetId))) {
         edgeVisitor?.(edge, traversalDirection);
       }
 
@@ -85,13 +98,7 @@ export function traverse(
   traverse(__adjMatrix, originalStartingNodeIds, nextNodeIds, traversalDirection, nodeVisitor, edgeVisitor, visited);
 }
 
-export function buildHierarchy({
-  nodeId,
-  edges,
-}: {
-  nodeId: string | undefined | null;
-  edges: RF.Edge<DmnDiagramEdgeData>[];
-}) {
+export function buildHierarchy({ nodeId, edges }: { nodeId: string | undefined | null; edges: DrgEdge[] }) {
   if (!nodeId) {
     return { dependencies: new Set<string>(), dependents: new Set<string>() };
   }

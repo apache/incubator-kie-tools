@@ -19,9 +19,10 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DMN15_SPEC } from "../Dmn15Spec";
-import { UniqueNameIndex } from "../Dmn15Spec";
+import { DMN15_SPEC, UniqueNameIndex } from "../Dmn15Spec";
 import { useFocusableElement } from "../focus/useFocusableElement";
+import { State } from "../store/Store";
+import { useDmnEditorStoreApi } from "../store/StoreContext";
 
 export type OnInlineFeelNameRenamed = (newName: string) => void;
 
@@ -52,7 +53,7 @@ export function InlineFeelNameInput({
   isReadonly: boolean;
   isPlain: boolean;
   shouldCommitOnBlur: boolean;
-  allUniqueNames: UniqueNameIndex;
+  allUniqueNames: (s: State) => UniqueNameIndex;
   placeholder?: string;
   saveInvalidValue?: boolean;
   validate?: typeof DMN15_SPEC.namedElement.isValidName;
@@ -75,14 +76,16 @@ export function InlineFeelNameInput({
     }, 0);
   }, []);
 
-  const [isValid, setValid] = useState(_validate(id, name, allUniqueNames));
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const [isValid, setValid] = useState(_validate(id, name, allUniqueNames(dmnEditorStoreApi.getState())));
   const updateIsValidFlag = useCallback(
     (name: string) => {
-      const isValid = _validate(id, name, allUniqueNames);
+      const isValid = _validate(id, name, allUniqueNames(dmnEditorStoreApi.getState()));
       setValid(isValid);
       return isValid;
     },
-    [_validate, allUniqueNames, id]
+    [_validate, allUniqueNames, dmnEditorStoreApi, id]
   );
 
   useEffect(() => {

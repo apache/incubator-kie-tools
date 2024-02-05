@@ -29,12 +29,12 @@ import {
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { State, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { State } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { DataTypesEmptyState } from "./DataTypesEmptyState";
 import { DataTypePanel } from "./DataTypePanel";
-import { findDataTypeById, getNewItemDefinition, isStruct } from "./DataTypeSpec";
+import { findDataTypeById, isStruct } from "./DataTypeSpec";
 import { DataTypeName } from "./DataTypeName";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { DMN15_SPEC } from "../Dmn15Spec";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
@@ -56,6 +56,7 @@ import {
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export type DataType = {
   itemDefinition: DMN15__tItemDefinition;
@@ -89,8 +90,14 @@ export function DataTypes() {
   const { activeItemDefinitionId } = useDmnEditorStore((s) => s.dataTypesEditor);
 
   const [filter, setFilter] = useState("");
-
-  const { allDataTypesById, dataTypesTree, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
+  const allTopLevelItemDefinitionUniqueNames = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+  );
+  const allDataTypesById = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allDataTypesById
+  );
+  const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
 
   const activeDataType = useMemo(() => {
     return activeItemDefinitionId ? allDataTypesById.get(activeItemDefinitionId) : undefined;
@@ -249,7 +256,7 @@ export function DataTypes() {
                             isActive={isActive}
                             editMode={"double-click"}
                             enableAutoFocusing={false} // Let the auto-focusing mechanism go for the title component
-                            allUniqueNames={allTopLevelItemDefinitionUniqueNames}
+                            onGetAllUniqueNames={() => allTopLevelItemDefinitionUniqueNames}
                           />
                         )) || (
                           <>

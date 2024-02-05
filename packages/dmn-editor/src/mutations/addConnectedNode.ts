@@ -29,7 +29,7 @@ import {
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMarker";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
-import { getBoundsCenterPoint } from "../diagram/maths/DmnMaths";
+import { getDmnBoundsCenterPoint } from "../diagram/maths/DmnMaths";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { NodeNature, nodeNatures } from "./NodeNature";
@@ -171,7 +171,7 @@ export function addConnectedNode({
     "@_dmnElementRef": newEdgeId,
     "@_sourceElement": sourceNode.shapeId,
     "@_targetElement": newShapeId,
-    "di:waypoint": [getBoundsCenterPoint(sourceNode.bounds), getBoundsCenterPoint(newNode.bounds)],
+    "di:waypoint": [getDmnBoundsCenterPoint(sourceNode.bounds), getDmnBoundsCenterPoint(newNode.bounds)],
   });
 
   repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });

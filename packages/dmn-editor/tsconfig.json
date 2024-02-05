@@ -1,8 +1,10 @@
 {
   "extends": "@kie-tools/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "esModuleInterop": true
+    "module": "ES6",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "outDir": "./dist"
   },
   "include": ["./src"]
 }

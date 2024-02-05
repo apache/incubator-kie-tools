@@ -23,7 +23,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { FontOptions } from "./FontOptions";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";

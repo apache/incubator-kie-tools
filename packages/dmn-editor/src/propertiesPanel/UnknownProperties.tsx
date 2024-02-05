@@ -20,19 +20,21 @@
 import * as React from "react";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { useDmnEditorStore } from "../store/Store";
+import { useDmnEditorStore } from "../store/StoreContext";
 import { useMemo } from "react";
 import { Unpacked } from "../tsExt/tsExt";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useDmnEditor } from "../DmnEditorContext";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function UnknownProperties(props: { shape: DMNDI15__DMNShape; dmnElementRefQName: XmlQName }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
-
-  const { externalDmnsByNamespace } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
+  const externalDmnsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
+  );
   const { onRequestToJumpToPath } = useDmnEditor();
 
   const content = useMemo(() => {

@@ -513,7 +513,7 @@ export class VariablesRepository {
         break;
 
       default:
-        throw new Error("Unknown or not supported type for expression.");
+      // throw new Error("Unknown or not supported type for expression.");
     }
   }
 
