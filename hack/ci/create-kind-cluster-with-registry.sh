@@ -64,9 +64,11 @@ fi
 #
 # We want a consistent name that works from both ends, so we tell containerd to
 # alias localhost:${reg_port} to the registry container when pulling images
-REGISTRY_DIR="/etc/containerd/certs.d/172.18.0.3:5000"
-# retrieve IP address of the container connected to the cluster network
+
+# Retrieve IP address of the container connected to the cluster network
 IP_ADDRESS=$(docker inspect --format='{{(index (index .NetworkSettings.Networks "kind") ).IPAddress}}' ${reg_name})
+
+REGISTRY_DIR="/etc/containerd/certs.d/${IP_ADDRESS}:5000"
 for node in $(kind get nodes); do
   docker exec "${node}" mkdir -p "${REGISTRY_DIR}"
   cat <<EOF | docker exec -i "${node}" cp /dev/stdin "${REGISTRY_DIR}/hosts.toml"
