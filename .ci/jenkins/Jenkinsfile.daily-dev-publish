@@ -122,7 +122,7 @@ pipeline {
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
                     openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
-                    hemlUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
+                    helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
                 }
             }
         }
