@@ -20,7 +20,7 @@
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { TypeRefLabel } from "./TypeRefLabel";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { DmnEditorTab } from "../store/Store";
@@ -35,24 +35,43 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 
 export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
 export type OnCreateDataType = (newDataTypeName: string) => void;
+export type OnToggle = (isExpanded: boolean) => void;
 
 export const typeRefSelectorLimitedSpaceStyle = { maxHeight: "600px", boxShadow: "none", overflowY: "scroll" };
 
-export function TypeRefSelector(props: {
+export function TypeRefSelector({
+  zoom,
+  heightRef,
+  onChange,
+  typeRef,
+  isDisabled,
+  menuAppendTo,
+  onCreate,
+  onToggle,
+}: {
   zoom?: number;
   heightRef: React.RefObject<HTMLElement>;
   isDisabled?: boolean;
   typeRef: string | undefined;
   onChange: OnTypeRefChange;
   onCreate?: OnCreateDataType;
+  onToggle?: OnToggle;
   menuAppendTo?: "parent";
 }) {
   const [isOpen, setOpen] = useState(false);
   const { externalModelsByNamespace } = useExternalModels();
   const selectedDataType = useDmnEditorStore((s) =>
-    props.typeRef
-      ? s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName.get(props.typeRef)
+    typeRef
+      ? s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName.get(typeRef)
       : undefined
+  );
+
+  const _onToggle = useCallback(
+    (isExpanded: boolean) => {
+      onToggle?.(isExpanded);
+      setOpen(isExpanded);
+    },
+    [onToggle]
   );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -78,17 +97,13 @@ export function TypeRefSelector(props: {
     return { customDataTypes, externalDataTypes };
   });
 
-  const exists = selectedDataType || (props.typeRef && builtInFeelTypeNames.has(props.typeRef));
+  const exists = selectedDataType || (typeRef && builtInFeelTypeNames.has(typeRef));
 
   const id = generateUuid();
 
   const toggleRef = useRef<HTMLButtonElement>(null);
 
-  const { maxHeight, direction } = useInViewSelect(
-    props.heightRef ?? { current: document.body },
-    toggleRef,
-    props.zoom ?? 1
-  );
+  const { maxHeight, direction } = useInViewSelect(heightRef ?? { current: document.body }, toggleRef, zoom ?? 1);
 
   return (
     <Flex
@@ -116,23 +131,23 @@ export function TypeRefSelector(props: {
       <Select
         toggleRef={toggleRef}
         className={!exists ? "kie-dmn-editor--type-ref-selector-invalid-value" : undefined}
-        isDisabled={props.isDisabled}
+        isDisabled={isDisabled}
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
-        onToggle={setOpen}
+        onToggle={_onToggle}
         onSelect={(e, v) => {
-          setOpen(false);
-          props.onChange(v as DmnBuiltInDataType);
+          _onToggle(false);
+          onChange(v as DmnBuiltInDataType);
         }}
-        selections={props.typeRef}
+        selections={typeRef}
         isOpen={isOpen}
         aria-labelledby={"Data types selector"}
         placeholderText={"Select a data type..."}
-        isCreatable={!!props.onCreate}
+        isCreatable={!!onCreate}
         isCreateOptionOnTop={false}
-        onCreateOption={props.onCreate}
+        onCreateOption={onCreate}
         isGrouped={true}
-        menuAppendTo={props.menuAppendTo ?? document.body}
+        menuAppendTo={menuAppendTo ?? document.body}
         maxHeight={maxHeight}
         direction={direction}
         onWheelCapture={(e) => e.stopPropagation()} // Necessary so that Reactflow doesn't mess with this event.

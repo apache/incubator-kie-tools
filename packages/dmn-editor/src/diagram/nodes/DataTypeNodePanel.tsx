@@ -24,7 +24,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditorStore } from "../../store/StoreContext";
-import { OnCreateDataType, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
+import { OnCreateDataType, OnToggle, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useResolvedTypeRef } from "../../dataTypes/useResolvedTypeRef";
 
@@ -38,6 +38,7 @@ export function DataTypeNodePanel(props: {
   shape: DMNDI15__DMNShape | undefined;
   onChange: OnTypeRefChange;
   onCreate?: OnCreateDataType;
+  onToggle?: OnToggle;
   dmnObjectNamespace: string | undefined;
 }) {
   const enableDataTypesToolbarOnNodes = useDmnEditorStore((s) => s.diagram.overlays.enableDataTypesToolbarOnNodes);
@@ -70,6 +71,7 @@ export function DataTypeNodePanel(props: {
               typeRef={resolvedTypeRef}
               onChange={props.onChange}
               onCreate={props.onCreate}
+              onToggle={props.onToggle}
               menuAppendTo={"parent"}
               isDisabled={isExternalNode}
             />

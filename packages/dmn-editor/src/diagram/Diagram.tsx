@@ -319,7 +319,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               },
             });
             state.diagram._selectedNodes = [newNodeId];
-            state.focus.consumableId = id;
+            state.focus.consumableId = newNodeId;
           });
         } else if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS)) {
           e.stopPropagation();
@@ -503,7 +503,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           });
 
           state.diagram._selectedNodes = [newDmnObejctHref];
-          state.focus.consumableId = id;
+          state.focus.consumableId = newDmnObejctHref;
         });
 
         // Indepdent of what happens in the state mutation above, we always need to reset the `ongoingConnection` at the end here.

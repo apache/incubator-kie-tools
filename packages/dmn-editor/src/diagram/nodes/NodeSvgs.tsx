@@ -67,7 +67,17 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
 }
 
 export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+  const {
+    strokeWidth,
+    x,
+    y,
+    width,
+    height,
+    fillColor,
+    strokeColor,
+    props: { isCollection, ...props },
+  } = normalize(__props);
+
   const rx =
     typeof height === "number"
       ? height / 2
@@ -97,13 +107,22 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
         rx={rx}
         ry={ry}
       />
-      {props.isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
+      {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
     </>
   );
 }
 
 export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+  const {
+    strokeWidth,
+    x,
+    y,
+    width,
+    height,
+    fillColor,
+    strokeColor,
+    props: { isCollection, ...props },
+  } = normalize(__props);
 
   return (
     <>
@@ -118,7 +137,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
         strokeLinejoin={"round"}
         {...props}
       />
-      {props.isCollection && <NodeCollectionMarker {...__props} anchor="top" />}
+      {isCollection && <NodeCollectionMarker {...__props} anchor="top" />}
     </>
   );
 }

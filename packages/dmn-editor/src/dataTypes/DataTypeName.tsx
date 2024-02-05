@@ -99,6 +99,7 @@ export function DataTypeName({
           name={feelQNameToDisplay.full}
           onRenamed={onRenamed}
           allUniqueNames={onGetAllUniqueNames}
+          enableAutoFocusing={enableAutoFocusing}
         />
       )}
       {editMode === "double-click" && (
@@ -115,6 +116,7 @@ export function DataTypeName({
           {/* Using this component here is not ideal, as we're not dealing with Node names, but it works well enough */}
           <EditableNodeLabel
             truncate={true}
+            enableAutoFocusing={enableAutoFocusing}
             grow={true}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
