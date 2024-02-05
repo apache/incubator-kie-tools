@@ -493,8 +493,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           const newNodeType = state.diagram.ongoingConnection.handleId as NodeType;
           const sourceNodeType = sourceNode.type as NodeType;
 
-          const edge = getDefaultEdgeTypeBetween(sourceNodeType as NodeType, newNodeType);
-          if (!edge) {
+          const edgeType = getDefaultEdgeTypeBetween(sourceNodeType as NodeType, newNodeType);
+          if (!edgeType) {
             throw new Error(`DMN DIAGRAM: Invalid structure: ${sourceNodeType} --(any)--> ${newNodeType}`);
           }
 
@@ -503,7 +503,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           const { id, href: newDmnObejctHref } = addConnectedNode({
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
-            edge,
+            edgeType,
             sourceNode: {
               href: sourceNode.id,
               type: sourceNodeType as NodeType,
@@ -1285,7 +1285,7 @@ function DmnDiagramEmptyState({
                   const { href: decisionNodeHref } = addConnectedNode({
                     definitions: state.dmn.model.definitions,
                     drdIndex: state.diagram.drdIndex,
-                    edge: EDGE_TYPES.informationRequirement,
+                    edgeType: EDGE_TYPES.informationRequirement,
                     sourceNode: {
                       href: inputDataNodeHref,
                       type: NODE_TYPES.inputData,

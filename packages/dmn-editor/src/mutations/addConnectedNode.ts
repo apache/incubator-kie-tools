@@ -43,13 +43,13 @@ export function addConnectedNode({
   drdIndex,
   sourceNode,
   newNode,
-  edge,
+  edgeType,
 }: {
   definitions: DMN15__tDefinitions;
   drdIndex: number;
   sourceNode: { type: NodeType; href: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
-  edge: EdgeType;
+  edgeType: EdgeType;
 }) {
   const newDmnObjectId = generateUuid();
   const newDmnObjectHref = buildXmlHref({ id: newDmnObjectId });
@@ -57,7 +57,7 @@ export function addConnectedNode({
   const nature = nodeNatures[newNode.type];
 
   if (nature === NodeNature.DRG_ELEMENT) {
-    const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge);
+    const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edgeType);
 
     definitions.drgElement ??= [];
     const variableBase = {
