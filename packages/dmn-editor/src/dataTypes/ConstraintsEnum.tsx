@@ -164,6 +164,7 @@ export function ConstraintsEnum({
         </div>
       </div>
       <Button
+        title={"Add"}
         onClick={() => onAdd()}
         variant={ButtonVariant.link}
         icon={<PlusCircleIcon />}
@@ -225,6 +226,7 @@ function EnumElement({
       })}
 
       <Button
+        title={"Remove"}
         ref={removeButtonRef}
         style={{ opacity: hovered ? "100%" : "0" }}
         className={"kie-dmn-editor--documentation-link--row-remove"}

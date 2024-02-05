@@ -164,6 +164,8 @@ export function DataTypes() {
 
   const [isAddDataTypeDropdownOpen, setAddDataTypeDropdownOpen] = useState(false);
 
+  const extraPropsForDropdownToggleAction = { title: "New Data Type" };
+
   return (
     <>
       {(dataTypesTree.length <= 0 && (
@@ -197,6 +199,7 @@ export function DataTypes() {
                           id="add-data-type-toggle"
                           splitButtonItems={[
                             <DropdownToggleAction
+                              {...extraPropsForDropdownToggleAction}
                               key="add-data-type-action"
                               aria-label="Add Data Type"
                               onClick={() =>

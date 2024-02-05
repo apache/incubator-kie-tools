@@ -276,7 +276,12 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         title={"Font"}
         action={
           <Tooltip content={"Reset"}>
-            <Button variant={ButtonVariant.plain} onClick={() => onReset()} style={{ paddingBottom: 0, paddingTop: 0 }}>
+            <Button
+              variant={ButtonVariant.plain}
+              onClick={() => onReset()}
+              style={{ paddingBottom: 0, paddingTop: 0 }}
+              title={"Reset"}
+            >
               <UndoAltIcon />
             </Button>
           </Tooltip>

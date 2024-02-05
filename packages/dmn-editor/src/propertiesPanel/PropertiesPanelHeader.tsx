@@ -56,6 +56,7 @@ export function PropertiesPanelHeader(props: {
         {props.expands && (
           <div className={"kie-dmn-editor--properties-panel-header-toogle-expanded"}>
             <Button
+              title={"Expand / collapse"}
               variant={ButtonVariant.plain}
               className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
               onClick={() => props.toogleSectionExpanded?.()}

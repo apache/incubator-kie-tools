@@ -154,6 +154,7 @@ export function ItemComponentsTable({
             {`Properties in '${parent.itemDefinition["@_name"]}'`}
             {!isReadonly && (
               <Button
+                title={"Add item component (at the top)"}
                 variant={ButtonVariant.link}
                 onClick={() =>
                   addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
@@ -316,6 +317,7 @@ export function ItemComponentsTable({
                           >
                             {isStruct(dt.itemDefinition) && (
                               <Button
+                                title={"Expand / collapse"}
                                 variant={ButtonVariant.link}
                                 style={{ padding: "0 8px 0 0" }}
                                 onClick={(e) =>
@@ -340,6 +342,7 @@ export function ItemComponentsTable({
                           <div style={{ width: `${addItemComponentButtonWidthInPxs}px` }}>
                             {!isReadonly && isStruct(dt.itemDefinition) && (
                               <Button
+                                title={"Add item component"}
                                 variant={ButtonVariant.link}
                                 style={{ padding: "0 8px 0 0" }}
                                 onClick={() => {
