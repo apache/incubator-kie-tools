@@ -52,7 +52,7 @@ export function EditableNodeLabel({
   skipValidation,
   allUniqueNames,
   fontCssProperties: fontStyle,
-  height,
+  textRef,
 }: {
   id?: string;
   shouldCommitOnBlur?: boolean;
@@ -68,7 +68,7 @@ export function EditableNodeLabel({
   skipValidation?: boolean;
   allUniqueNames: UniqueNameIndex;
   fontCssProperties?: React.CSSProperties;
-  height?: number;
+  textRef?: React.RefObject<HTMLSpanElement>;
 }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { importsByNamespace } = useDmnEditorDerivedStore();
@@ -233,6 +233,7 @@ export function EditableNodeLabel({
         />
       )) || (
         <span
+          ref={textRef}
           style={{
             whiteSpace: "pre-wrap",
             ...fontStyle,

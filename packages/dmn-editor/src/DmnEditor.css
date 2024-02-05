@@ -151,6 +151,25 @@
 }
 /* (end) external node */
 
+/* (begin) alternative input node */
+.kie-dmn-editor--selected-alternative-input-data-node:before {
+  content: "";
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 6px;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: var(--height);
+  backdrop-filter: blur(8px);
+}
+.kie-dmn-editor--selected-alternative-input-data-node:before {
+  border: 1px dashed #006ba4;
+  background-color: rgb(161 222 255 / 20%); /* Very slightly blue hue */
+}
+/* (end) alternative input node */
+
 /* (begin) textAnnotation, and unknown nodes */
 .react-flow__node-node_unknown.selected:before,
 .react-flow__node-node_textAnnotation.selected:before {

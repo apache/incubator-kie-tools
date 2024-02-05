@@ -168,9 +168,28 @@ export const InputDataNode = React.memo(
       );
     }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, inputData.variable]);
 
+    const alternativeEditableNodeRef = useRef<HTMLSpanElement>(null);
+    const alternativeCss = useMemo(() => {
+      // This is used to modify a css from a :before element.
+      // The --height is a css var which is used by the kie-dmn-editor--selected-alternative-input-data-node class.
+      return isAlternativeInputDataShape
+        ? ({
+            display: "flex",
+            flexDirection: "column",
+            "--height": `${
+              20 + nodeDimensions.height + (alternativeEditableNodeRef?.current?.getBoundingClientRect()?.height ?? 0)
+            }px`,
+          } as any)
+        : undefined;
+    }, [isAlternativeInputDataShape, nodeDimensions]);
+
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
+        <svg
+          className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""} ${
+            isAlternativeInputDataShape ? "alternative" : ""
+          } ${selected ? "selected" : ""}`}
+        >
           {isAlternativeInputDataShape ? (
             <AlternativeInputDataNodeSvg
               isCollection={isCollection}
@@ -196,19 +215,16 @@ export const InputDataNode = React.memo(
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          onDoubleClick={isAlternativeInputDataShape ? triggerEditing : undefined}
-          onKeyDown={isAlternativeInputDataShape ? triggerEditingIfEnter : undefined}
-          style={isAlternativeInputDataShape ? { display: "flex", flexDirection: "column" } : {}}
+          onDoubleClick={triggerEditing}
+          onKeyDown={triggerEditingIfEnter}
+          style={alternativeCss}
+          className={
+            isAlternativeInputDataShape && selected ? "kie-dmn-editor--selected-alternative-input-data-node" : ""
+          }
+          ref={ref}
+          tabIndex={-1}
         >
-          <div
-            ref={ref}
-            className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className} ${
-              dmnObjectQName.prefix ? "external" : ""
-            }`}
-            tabIndex={-1}
-            onDoubleClick={triggerEditing}
-            onKeyDown={triggerEditingIfEnter}
-          >
+          <div className={`kie-dmn-editor--node ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
             <InfoNodePanel isVisible={!isTargeted && isHovered} />
 
             <OutgoingStuffNodePanel
@@ -248,6 +264,7 @@ export const InputDataNode = React.memo(
               onChange={onTypeRefChange}
             />
           </div>
+          {/* Creates a div element with the node size to push down the <EditableNodeLabel /> */}
           {isAlternativeInputDataShape && <div style={{ height: nodeDimensions.height, flexShrink: 0 }} />}
           {isAlternativeInputDataShape && (
             <EditableNodeLabel
@@ -260,8 +277,9 @@ export const InputDataNode = React.memo(
               onChange={setName}
               allUniqueNames={allFeelVariableUniqueNames}
               shouldCommitOnBlur={true}
-              fontCssProperties={fontCssProperties}
-              height={nodeDimensions.height + 40}
+              // Keeps the text on top of the selected layer
+              fontCssProperties={{ ...fontCssProperties, zIndex: 2000 }}
+              textRef={alternativeEditableNodeRef}
             />
           )}
         </div>
