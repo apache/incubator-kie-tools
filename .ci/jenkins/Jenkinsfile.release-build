@@ -31,7 +31,7 @@ pipeline {
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
-        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false","kie_sandbox_helm_chart":"true"}')
+        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"dev_deployment_base_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_upload_service":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false","kie_sandbox_helm_chart":"true"}')
     }
 
     environment {
@@ -65,7 +65,9 @@ pipeline {
                 script {
                     runners = readJSON text: "${params.RUNNERS}"
                     env.DEV_DEPLOYMENT_BASE_IMAGE = runners.dev_deployment_base_image
+                    env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_kogito_quakus_blank_app_image
                     env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE = runners.dev_deployment_dmn_form_webapp_image
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE = runners.dev_deployment_upload_service
                     env.KIE_SANDBOX_IMAGE = runners.kie_sandbox_image
                     env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE = runners.kie_sandbox_extended_services_image
                     env.CORS_PROXY_IMAGE = runners.cors_proxy_image
@@ -91,7 +93,9 @@ pipeline {
             steps {
                 sh """
                 echo "dev_deployment_base_image: ${env.DEV_DEPLOYMENT_BASE_IMAGE}"
+                echo "dev_deployment_kogito_quakus_blank_app_image: ${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE}"
                 echo "dev_deployment_dmn_form_webapp_image: ${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE}"
+                echo "dev_deployment_upload_service: ${env.DEV_DEPLOYMENT_UPLOAD_SERVICE}"
                 echo "kie_sandbox_image: ${env.KIE_SANDBOX_IMAGE}"
                 echo "kie_sandbox_extended_services_image: ${env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE}"
                 echo "cors_proxy_image: ${env.CORS_PROXY_IMAGE}"
@@ -145,6 +149,45 @@ pipeline {
                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
                             string(name: 'TAG', value: "${params.TAG}")
+                        ]
+                    ).result
+                }
+            }
+        }
+
+        stage('Dev Deployment Kogito Quarkus Blank App Image') {
+            when {
+                expression { env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE == 'true' }
+            }
+            steps {
+                script {
+                    env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_JOB_RESULT = build(
+                        wait: true,
+                        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-kogito-quarkus-blank-app-image',
+                        parameters: [
+                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+                            string(name: 'TAG', value: "${params.TAG}")
+                        ]
+                    ).result
+                }
+            }
+        }
+
+        stage('Dev Deployment Upload Service') {
+            when {
+                expression { env.DEV_DEPLOYMENT_UPLOAD_SERVICE == 'true' }
+            }
+            steps {
+                script {
+                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_JOB_RESULT = build(
+                        wait: true,
+                        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-upload-service',
+                        parameters: [
+                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+                            string(name: 'TAG', value: "${params.TAG}"),
+                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
                         ]
                     ).result
                 }
