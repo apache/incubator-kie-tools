@@ -146,7 +146,7 @@ export function addConnectedNode({
       })
     );
   } else {
-    throw new Error(`Unknown node usage '${nature}'.`);
+    throw new Error(`DMN MUTATION: Unknown node usage '${nature}'.`);
   }
 
   const newShapeId = generateUuid();

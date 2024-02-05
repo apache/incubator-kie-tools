@@ -705,7 +705,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   dmnObjectQName: node.data.dmnObjectQName,
                   dmnObjectId: node.data.dmnObject?.["@_id"],
                   nodeNature: nodeNatures[node.type as NodeType],
-                  mode: NodeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+                  mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
@@ -876,7 +876,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     definitions: state.dmn.model.definitions,
                     drdIndex: state.diagram.drdIndex,
                     edge: { id: change.id, dmnObject: edge.data.dmnObject },
-                    mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+                    mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
                   });
                   state.dispatch(state).diagram.setEdgeStatus(change.id, { selected: false, draggingWaypoint: false });
                 }
@@ -960,7 +960,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               definitions: state.dmn.model.definitions,
               drdIndex: state.diagram.drdIndex,
               edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
-              mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+              mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
             });
 
             const deletedWaypoints = deletedDmnEdgeOnCurrentDrd?.["di:waypoint"];
@@ -1492,7 +1492,7 @@ export function KeyboardShortcuts(props: {}) {
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
             edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
-            mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+            mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
           });
           state.dispatch(state).diagram.setEdgeStatus(edge.id, {
             selected: false,
@@ -1514,7 +1514,7 @@ export function KeyboardShortcuts(props: {}) {
                 dmnObjectQName: node.data.dmnObjectQName,
                 dmnObjectId: node.data.dmnObject?.["@_id"],
                 nodeNature: nodeNatures[node.type as NodeType],
-                mode: NodeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+                mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
               });
               state.dispatch(state).diagram.setNodeStatus(node.id, {
                 selected: false,

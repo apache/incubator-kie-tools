@@ -42,12 +42,14 @@ export function addDecisionToDecisionService({
 
   const decision = definitions.drgElement?.find((s) => s["@_id"] === decisionId);
   if (decision?.__$$element !== "decision") {
-    throw new Error(`DRG Element with id '${decisionId}' is either not a Decision or doesn't exist.`);
+    throw new Error(`DMN MUTATION: DRG Element with id '${decisionId}' is either not a Decision or doesn't exist.`);
   }
 
   const decisionService = definitions.drgElement?.find((s) => s["@_id"] === decisionServiceId);
   if (decisionService?.__$$element !== "decisionService") {
-    throw new Error(`DRG Element with id '${decisionServiceId}' is either not a Decision Service or doesn't exist.`);
+    throw new Error(
+      `DMN MUTATION: DRG Element with id '${decisionServiceId}' is either not a Decision Service or doesn't exist.`
+    );
   }
 
   const diagram = addOrGetDrd({ definitions, drdIndex });
@@ -67,7 +69,7 @@ export function addDecisionToDecisionService({
     decisionService.outputDecision ??= [];
     decisionService.outputDecision.push({ "@_href": `#${decisionId}` });
   } else {
-    throw new Error(`Invalid section to add decision to: '${section}' `);
+    throw new Error(`DMN MUTATION: Invalid section to add decision to: '${section}' `);
   }
 
   repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService });
@@ -84,7 +86,7 @@ export function getSectionForDecisionInsideDecisionService({
 }): "output" | "encapsulated" {
   if (!decisionShape?.["dc:Bounds"] || !decisionServiceShape?.["dc:Bounds"]) {
     throw new Error(
-      `Can't determine Decision Service section for Decision '${decisionShape["@_dmnElementRef"]}' because it doens't have a DMNShape.`
+      `DMN MUTATION: Can't determine Decision Service section for Decision '${decisionShape["@_dmnElementRef"]}' because it doens't have a DMNShape.`
     );
   }
 
@@ -99,7 +101,7 @@ export function getSectionForDecisionInsideDecisionService({
 
   if (!contaimentRelationship.isInside) {
     throw new Error(
-      `Decision '${decisionShape["@_dmnElementRef"]}' can't be added to Decision Service '${decisionServiceShape["@_dmnElementRef"]}' because its shape is not visually contained by the Decision Service's shape.`
+      `DMN MUTATION: Decision '${decisionShape["@_dmnElementRef"]}' can't be added to Decision Service '${decisionServiceShape["@_dmnElementRef"]}' because its shape is not visually contained by the Decision Service's shape.`
     );
   }
 

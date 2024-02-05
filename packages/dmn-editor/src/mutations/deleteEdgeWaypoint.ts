@@ -35,12 +35,12 @@ export function deleteEdgeWaypoint({
 
   const diagramElement = diagramElements[edgeIndex];
   if (diagramElement.__$$element !== "dmndi:DMNEdge") {
-    throw new Error("Can't remove a waypoint from an element that is not a DMNEdge.");
+    throw new Error("DMN MUTATION: Can't remove a waypoint from an element that is not a DMNEdge.");
   }
 
   if (waypointIndex > (diagramElement["di:waypoint"]?.length ?? 0) - 1) {
     throw new Error(
-      `Can't remove waypoint with index '${waypointIndex}' from DMNEdge '${diagramElement["@_id"]}' because it doesn't exist.`
+      `DMN MUTATION: Can't remove waypoint with index '${waypointIndex}' from DMNEdge '${diagramElement["@_id"]}' because it doesn't exist.`
     );
   }
 

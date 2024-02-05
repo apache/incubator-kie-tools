@@ -80,7 +80,7 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
     } else if (r.type === "decisionIr") {
       inputDecisions.add(r.href);
     } else {
-      throw new Error(`Invalid type of element to be referenced by DecisionService: '${r.type}'`);
+      throw new Error(`DMN MUTATION: Invalid type of element to be referenced by DecisionService: '${r.type}'`);
     }
   }
 

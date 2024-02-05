@@ -63,7 +63,7 @@ export function repositionNode({
   const shape = diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
-    throw new Error("Cannot reposition non-existent shape bounds");
+    throw new Error("DMN MUTATION: Cannot reposition non-existent shape bounds");
   }
 
   let deltaX: number;
@@ -79,14 +79,14 @@ export function repositionNode({
     shapeBounds["@_x"] += change.offset.deltaX;
     shapeBounds["@_y"] += change.offset.deltaY;
   } else {
-    throw new Error(`Unknown type of node position change '${(change as any).type}'.`);
+    throw new Error(`DMN MUTATION: Unknown type of node position change '${(change as any).type}'.`);
   }
 
   const offsetEdges = (args: { edgeIndexes: number[]; waypoint: "last" | "first" }) => {
     for (const edgeIndex of args.edgeIndexes) {
       const edge = diagramElements[edgeIndex] as DMNDI15__DMNEdge | undefined;
       if (!edge || !edge["di:waypoint"]) {
-        throw new Error("Cannot reposition non-existent edge");
+        throw new Error("DMN MUTATION: Cannot reposition non-existent edge");
       }
 
       const isEdgeSelected = change.selectedEdges.indexOf(edge["@_dmnElementRef"]!) >= 0;

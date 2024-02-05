@@ -38,12 +38,12 @@ export function renameItemDefinition({
 }) {
   const dataType = allDataTypesById.get(itemDefinitionId);
   if (!dataType) {
-    throw new Error(`Can't rename unnexistent item definition. ID ${itemDefinitionId}`);
+    throw new Error(`DMN MUTATION: Can't rename unnexistent item definition. ID ${itemDefinitionId}`);
   }
 
   if (dataType.namespace !== definitions["@_namespace"]) {
     throw new Error(
-      `Can't rename an external item definition. ID ${itemDefinitionId}, Namespace: ${dataType.namespace}`
+      `DMN MUTATION: Can't rename an external item definition. ID ${itemDefinitionId}, Namespace: ${dataType.namespace}`
     );
   }
 

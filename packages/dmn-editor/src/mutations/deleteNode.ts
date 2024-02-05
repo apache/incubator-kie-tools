@@ -29,7 +29,7 @@ import { DrgEdge } from "../diagram/graph/graph";
 import { EdgeDeletionMode, deleteEdge } from "./deleteEdge";
 
 export enum NodeDeletionMode {
-  FORM_DRG_AND_ALL_DRDS,
+  FROM_DRG_AND_ALL_DRDS,
   FROM_CURRENT_DRD_ONLY,
 }
 
@@ -68,8 +68,9 @@ export function deleteNode({
     return { deletedDmnObject: undefined, deletedDmnShapeOnCurrentDrd: undefined };
   }
 
-  // A DRD doesn't necessarily renders all edges of the DRG, so we need to look for what DRG edges to delete when deleting a node from any DRD.
-  if (mode === NodeDeletionMode.FORM_DRG_AND_ALL_DRDS) {
+  if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
+    // Delete Edges
+    // A DRD doesn't necessarily renders all edges of the DRG, so we need to look for what DRG edges to delete when deleting a node from any DRD.
     const nodeId = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectId! });
     for (let i = 0; i < drgEdges.length; i++) {
       const drgEdge = drgEdges[i];
@@ -78,13 +79,25 @@ export function deleteNode({
         deleteEdge({
           definitions,
           drdIndex,
-          mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+          mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
           edge: {
             id: drgEdge.id,
             dmnObject: drgEdge.dmnObject,
           },
         });
       }
+    }
+
+    // Delete from containing Decision Services
+    const drgElements = definitions.drgElement ?? [];
+    for (let i = 0; i < drgElements.length; i++) {
+      const drgElement = drgElements[i];
+      if (drgElement.__$$element !== "decisionService") {
+        continue;
+      }
+
+      drgElement.outputDecision = drgElement.outputDecision?.filter((od) => od["@_href"] !== nodeId);
+      drgElement.encapsulatedDecision = drgElement.encapsulatedDecision?.filter((ed) => ed["@_href"] !== nodeId);
     }
   }
 
@@ -94,20 +107,20 @@ export function deleteNode({
   if (!dmnObjectQName.prefix) {
     // Delete the dmnObject itself
     if (nodeNature === NodeNature.ARTIFACT) {
-      if (mode === NodeDeletionMode.FORM_DRG_AND_ALL_DRDS) {
+      if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
         const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId);
         dmnObject = definitions.artifact?.splice(nodeIndex, 1)?.[0];
       }
     } else if (nodeNature === NodeNature.DRG_ELEMENT) {
       const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId);
       dmnObject =
-        mode === NodeDeletionMode.FORM_DRG_AND_ALL_DRDS
+        mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS
           ? definitions.drgElement?.splice(nodeIndex, 1)?.[0]
           : definitions.drgElement?.[nodeIndex];
     } else if (nodeNature === NodeNature.UNKNOWN) {
       // Ignore. There's no dmnObject here.
     } else {
-      throw new Error(`Unknown node nature '${nodeNature}'.`);
+      throw new Error(`DMN MUTATION: Unknown node nature '${nodeNature}'.`);
     }
 
     if (!dmnObject) {
@@ -151,7 +164,7 @@ export function deleteNode({
   repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
 
   return {
-    deletedDmnObject: mode === NodeDeletionMode.FORM_DRG_AND_ALL_DRDS ? dmnObject : undefined,
+    deletedDmnObject: mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS ? dmnObject : undefined,
     deletedDmnShapeOnCurrentDrd,
   };
 }
@@ -171,6 +184,7 @@ export function canRemoveNodeFromDrdOnly({
 
   const dmnObjectHref = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectId! });
 
+  // FIXME: Tiago --> A Decision can be contained by more than one Decision Service.
   const containingDecisionService = definitions.drgElement?.find(
     (drgElement) =>
       drgElement.__$$element === "decisionService" &&

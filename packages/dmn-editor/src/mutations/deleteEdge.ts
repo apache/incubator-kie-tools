@@ -28,7 +28,7 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
 
 export enum EdgeDeletionMode {
-  FORM_DRG_AND_ALL_DRDS,
+  FROM_DRG_AND_ALL_DRDS,
   FROM_CURRENT_DRD_ONLY,
 }
 
@@ -60,7 +60,7 @@ export function deleteEdge({
     throw new Error(`DMN MUTATION: Can't find DMN element with ID ${edge.dmnObject.id}`);
   }
 
-  if (mode === EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS) {
+  if (mode === EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
     const requirements =
       switchExpression(edge?.dmnObject.requirementType, {
         // Casting to DMN15__tDecision because if has all types of requirement, but not necessarily that's true.
