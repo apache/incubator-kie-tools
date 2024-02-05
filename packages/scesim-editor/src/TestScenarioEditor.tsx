@@ -34,21 +34,14 @@ import {
 
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
-import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
-import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
@@ -62,6 +55,7 @@ import { useTestScenarioEditorI18n } from "./i18n";
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
+import TestScenarioCreationPanel from "./creation/TestScenarioCreationPanel";
 
 /* Constants */
 
@@ -131,112 +125,6 @@ export type TestScenarioSelectedColumnMetaData = {
   index: number;
   isBackground: boolean;
 };
-
-/* Sub-Components */
-
-function TestScenarioCreationPanel({
-  onCreateScesimButtonClicked,
-}: {
-  onCreateScesimButtonClicked: (
-    assetType: string,
-    isStatelessSessionRule: boolean,
-    isTestSkipped: boolean,
-    kieSessionRule: string,
-    ruleFlowGroup: string
-  ) => void;
-}) {
-  const assetsOption = [
-    { value: "", label: "Select a type", disabled: true },
-    { value: TestScenarioType[TestScenarioType.DMN], label: "Decision (DMN)", disabled: false },
-    { value: TestScenarioType[TestScenarioType.RULE], label: "Rule (DRL)", disabled: false },
-  ];
-
-  const [assetType, setAssetType] = React.useState("");
-  const [kieSessionRule, setKieSessionRule] = React.useState("");
-  const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
-  const [isTestSkipped, setTestSkipped] = React.useState(false);
-  const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
-
-  return (
-    <EmptyState>
-      <EmptyStateIcon icon={CubesIcon} />
-      <Title headingLevel={"h6"} size={"md"}>
-        Create a new Test Scenario
-      </Title>
-      <Form isHorizontal className="kie-scesim-editor--creation-form">
-        <FormGroup label="Asset type" isRequired>
-          <FormSelect
-            value={assetType}
-            id="asset-type-select"
-            name="asset-type-select"
-            onChange={(value: string) => setAssetType(value)}
-          >
-            {assetsOption.map((option, index) => (
-              <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
-            ))}
-          </FormSelect>
-        </FormGroup>
-        {assetType === TestScenarioType[TestScenarioType.DMN] && (
-          <FormGroup label="Select DMN" isRequired>
-            <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
-              <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
-            </FormSelect>
-          </FormGroup>
-        )}
-        {assetType === TestScenarioType[TestScenarioType.RULE] && (
-          <>
-            <FormGroup label={"KIE Session"}>
-              <TextInput
-                placeholder={"<Optional>"}
-                onChange={(value) => setKieSessionRule(value)}
-                type="text"
-                value={kieSessionRule}
-              />
-            </FormGroup>
-            <FormGroup label={"Group"}>
-              <TextInput
-                placeholder={"<Optional>"}
-                onChange={(value) => setRuleFlowGroup(value)}
-                type="text"
-                value={ruleFlowGroup}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Checkbox
-                id="stateless-session-checkbox"
-                isChecked={isStatelessSessionRule}
-                label="Stateless Session"
-                onChange={(value) => {
-                  setStatelessSessionRule(value);
-                }}
-              />
-            </FormGroup>
-          </>
-        )}
-        <FormGroup>
-          <Checkbox
-            id="test-skipped-checkbox"
-            isChecked={isTestSkipped}
-            label="Skip this file during the test"
-            onChange={(value: boolean) => {
-              setTestSkipped(value);
-            }}
-          />
-        </FormGroup>
-      </Form>
-      <Button
-        variant="primary"
-        icon={<AddIcon />}
-        isDisabled={assetType == ""}
-        onClick={() =>
-          onCreateScesimButtonClicked(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
-        }
-      >
-        Create
-      </Button>
-    </EmptyState>
-  );
-}
 
 function TestScenarioMainPanel({
   fileName,
@@ -532,6 +420,7 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
     forwardRef,
     () => ({
       getContent: () => marshaller.builder.build(scesimModel),
+      getDiagramSvg: async () => undefined,
       setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) => {
         console.debug("SCESIM setContent called");
         console.debug("=== FILE CONTENT ===");

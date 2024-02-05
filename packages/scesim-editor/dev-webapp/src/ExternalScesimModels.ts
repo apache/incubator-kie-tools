@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export const ruleBasedScesim = `<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
+export const IS_OLD_ENOUGH_RULE = `<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
 <simulation>
   <scesimModelDescriptor>
     <factMappings>
@@ -382,7 +382,7 @@ export const ruleBasedScesim = `<ScenarioSimulationModel version="1.8" xmlns="ht
 </ScenarioSimulationModel>
 `;
 
-export const dmnBasedScesim = `<?xml version="1.0" encoding="UTF-8"?>
+export const TRAFFIC_VIOLATION_DMN = `<?xml version="1.0" encoding="UTF-8"?>
 <ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
   <simulation>
     <scesimModelDescriptor>

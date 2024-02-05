@@ -32,6 +32,25 @@ export const en: TestScenarioEditorI18n = {
     ruleDataRetrievedFromScesim:
       "Impossibile to retrieve the Java Classes from your project, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related Java Class data.",
   },
+  creationPanel: {
+    assetsGroup: "Asset type",
+    assetsOption: {
+      dmn: "Decision (DMN)",
+      noChoice: "Select a type",
+      rule: "Rule (DRL)",
+    },
+    autoPopulation: "Auto Populate table",
+    autoPopulationTooltip: "If checked, the table will be automatically populated based on the provided DMN data",
+    createButton: "Create",
+    dmnGroup: "Select DMN",
+    dmnNoChoice: "Select a DMN file",
+    kieSessionGroup: "KIE Session",
+    kieAgendaGroup: "Group",
+    optional: "Optional",
+    statelessSession: "Stateless Session",
+    testSkip: "Skip this file during the test",
+    title: "Create a new Test Scenario",
+  },
   drawer: {
     cheatSheet: {
       paragraph1: "To start off, use contextual menus in the table to insert or edit or delete new columns and rows.",

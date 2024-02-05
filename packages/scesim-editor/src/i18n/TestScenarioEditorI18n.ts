@@ -27,6 +27,25 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     dmnDataRetrievedFromScesim: string;
     ruleDataRetrievedFromScesim: string;
   };
+  creationPanel: {
+    assetsGroup: string;
+    assetsOption: {
+      dmn: string;
+      noChoice: string;
+      rule: string;
+    };
+    autoPopulation: string;
+    autoPopulationTooltip: string;
+    createButton: string;
+    dmnGroup: string;
+    dmnNoChoice: string;
+    kieSessionGroup: string;
+    kieAgendaGroup: string;
+    optional: string;
+    statelessSession: string;
+    testSkip: string;
+    title: string;
+  };
   drawer: {
     cheatSheet: {
       expression1DMN: string;

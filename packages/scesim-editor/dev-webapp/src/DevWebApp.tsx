@@ -27,8 +27,10 @@ import { Dropdown, DropdownToggle, DropdownItem } from "@patternfly/react-core/d
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
+import { LOAN_PRE_QUALIFICATION, TRAFFIC_VIOLATION } from "./ExternalDmnModels";
+import { IS_OLD_ENOUGH_RULE, TRAFFIC_VIOLATION_DMN } from "./ExternalScesimModels";
+
 import "./DevWebApp.css";
-import { dmnBasedScesim, ruleBasedScesim } from "./ExternalModels";
 
 export function DevWebApp() {
   const ref = useRef<TestScenarioEditorRef>(null);
@@ -89,14 +91,14 @@ export function DevWebApp() {
     <DropdownItem
       key="action"
       component="button"
-      onClick={() => onOpenStaticScesimExample("TrafficViolationTest.scesim", dmnBasedScesim)}
+      onClick={() => onOpenStaticScesimExample("TrafficViolationTest.scesim", TRAFFIC_VIOLATION_DMN)}
     >
       DMN-Based: TrafficViolationTest
     </DropdownItem>,
     <DropdownItem
       key="action"
       component="button"
-      onClick={() => onOpenStaticScesimExample("AreTheyOldEnoughTest.scesim", ruleBasedScesim)}
+      onClick={() => onOpenStaticScesimExample("AreTheyOldEnoughTest.scesim", IS_OLD_ENOUGH_RULE)}
     >
       Rule-Based: AreTheyOldEnoughTest
     </DropdownItem>,
@@ -111,6 +113,15 @@ export function DevWebApp() {
     const element = document.getElementById("toggle-basic");
     element?.focus();
   }, []);
+
+  // const onRequestExternalModelByPath = useCallback<Promise<string[]>>(async (path) => {
+  //   return availableModelsByPath[path] ?? null;
+  // }, []);
+
+  // const onRequestExternalModelsAvailableToInclude =
+  //   useCallback<DmnEditor.OnRequestExternalModelsAvailableToInclude>(async () => {
+  //     return Object.keys(availableModelsByPath);
+  //   }, []);
 
   return (
     <>
