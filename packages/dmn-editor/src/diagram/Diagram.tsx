@@ -75,7 +75,7 @@ import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { updateExpression } from "../mutations/updateExpression";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
-import { DiagramNodesPanel, SnapGrid } from "../store/Store";
+import { DiagramLhsPanel, SnapGrid } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Unpacked } from "../tsExt/tsExt";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
@@ -1071,7 +1071,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 console.debug("DMN DIAGRAM: Esc pressed. Closing all open panels.");
                 state.diagram.propertiesPanel.isOpen = false;
                 state.diagram.overlaysPanel.isOpen = false;
-                state.diagram.openNodesPanel = DiagramNodesPanel.NONE;
+                state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
                 e.preventDefault();
               } else {
                 // Let the
