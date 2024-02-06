@@ -157,15 +157,18 @@ public class DiagramEditor {
     }
 
     public final Promise<Void> setTheme(String theme) {
-        if (theme.equals(DarkMode.NAME)) {
-            StunnerTheme.setTheme(DarkMode.getInstance());
-        } else {
-            StunnerTheme.setTheme(LightMode.getInstance());
+        if (null != theme) {
+            if (theme.equals(DarkMode.NAME)) {
+                StunnerTheme.setTheme(DarkMode.getInstance());
+            } else {
+                StunnerTheme.setTheme(LightMode.getInstance());
+            }
+
+            reloadEditorContent();
         }
 
-        reloadEditorContent();
-
         return null;
+
     }
 
     void reloadEditorContent() {

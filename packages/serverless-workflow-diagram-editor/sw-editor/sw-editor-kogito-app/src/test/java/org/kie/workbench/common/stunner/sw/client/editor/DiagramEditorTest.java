@@ -271,6 +271,21 @@ public class DiagramEditorTest {
     }
 
     @Test
+    public void testSetThemeNull() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("injectExample");
+        doNothing().when(tested).reloadEditorContent();
+
+        tested.onStartup(new DefaultPlaceRequest());
+        tested.setContent("", rawJSON);
+        tested.setTheme(null);
+
+        verify(tested, times(0)).reloadEditorContent();
+        assertTrue(StunnerTheme.getTheme() instanceof LightMode);
+    }
+
+    @Test
     public void testScaleToFitWorkflow() {
         when(lienzoPanel.getWidePx()).thenReturn(500);
         when(lienzoPanel.getHighPx()).thenReturn(500);
