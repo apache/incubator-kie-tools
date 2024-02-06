@@ -32,6 +32,7 @@ import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { SnapGrid } from "../store/Store";
 import { addOrGetDrd } from "./addOrGetDrd";
+import { DECISION_SERVICE_DIVIDER_LINE_PADDING } from "./updateDecisionServiceDividerLine";
 
 export function resizeNode({
   definitions,
@@ -67,6 +68,10 @@ export function resizeNode({
   const limit = { x: 0, y: 0 };
   if (change.nodeType === NODE_TYPES.decisionService) {
     const ds = definitions.drgElement![change.index] as DMN15__tDecisionService;
+
+    const dividerLineY =
+      shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]?.["@_y"] ?? shapeBounds["@_y"];
+    limit.y = dividerLineY + DECISION_SERVICE_DIVIDER_LINE_PADDING;
 
     // We ignore handling the contents of the Decision Service when it is external
     if (!change.isExternal) {
