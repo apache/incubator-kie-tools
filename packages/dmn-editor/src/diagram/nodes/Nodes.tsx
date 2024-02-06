@@ -181,7 +181,7 @@ export const InputDataNode = React.memo(
     });
 
     const alternativeEditableNodeRef = useRef<HTMLSpanElement>(null);
-    const alternativeCss = useMemo(() => {
+    const alternativeSvgStyle = useMemo(() => {
       // This is used to modify a css from a :before element.
       // The --height is a css var which is used by the kie-dmn-editor--selected-alternative-input-data-node class.
       return isAlternativeInputDataShape
@@ -194,6 +194,11 @@ export const InputDataNode = React.memo(
           } as any)
         : undefined;
     }, [isAlternativeInputDataShape, nodeDimensions]);
+
+    const selectedAlternativeClass = useMemo(
+      () => (isAlternativeInputDataShape && selected ? "kie-dmn-editor--selected-alternative-input-data-node" : ""),
+      [isAlternativeInputDataShape, selected]
+    );
 
     return (
       <>
@@ -229,17 +234,15 @@ export const InputDataNode = React.memo(
         <div
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          style={alternativeCss}
-          className={
-            isAlternativeInputDataShape && selected ? "kie-dmn-editor--selected-alternative-input-data-node" : ""
-          }
+          style={alternativeSvgStyle}
+          className={selectedAlternativeClass}
           ref={ref}
           tabIndex={-1}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
           <div className={`kie-dmn-editor--node ${additionalClasses}`}>
-            <InfoNodePanel isVisible={!isTargeted && isHovered} />
+            <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
             <OutgoingStuffNodePanel
               isVisible={!isTargeted && shouldActLikeHovered}

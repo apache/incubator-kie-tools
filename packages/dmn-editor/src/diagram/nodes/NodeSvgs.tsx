@@ -102,7 +102,9 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
   );
 }
 
-export function AlternativeInputDataNodeSvg(__props: NodeSvgProps & { isIcon: boolean; isCollection?: boolean }) {
+export function AlternativeInputDataNodeSvg(
+  __props: NodeSvgProps & { isIcon: boolean; isCollection?: boolean; transform?: string }
+) {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
 
   const bevel = 25;
@@ -118,7 +120,7 @@ export function AlternativeInputDataNodeSvg(__props: NodeSvgProps & { isIcon: bo
         stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeLinejoin={"round"}
         strokeWidth={strokeWidth}
-        transform={props.isIcon ? `translate(80, 60)` : `translate(${x},${y})`}
+        transform={props.isIcon ? __props.transform : `translate(${x},${y})`}
       />
       {!props.isIcon && (
         <>

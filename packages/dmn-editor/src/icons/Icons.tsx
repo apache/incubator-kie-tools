@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import { useMemo } from "react";
 import {
   AlternativeInputDataNodeSvg,
   BkmNodeSvg,
@@ -37,14 +38,24 @@ const radius = 34;
 const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // This lets us create a square that will perfectly fit inside the button circle.
 
 const nodeSvgProps = { width: 200, height: 120, x: 16, y: 48, strokeWidth: 16 };
-const nodeSvgViewboxSize = nodeSvgProps.width + 2 * nodeSvgProps.strokeWidth;
 
-export function RoundSvg({ children, withoutPadding }: React.PropsWithChildren<{ withoutPadding?: boolean }>) {
+export function RoundSvg({
+  children,
+  hasPadding,
+  height,
+  viewBox,
+}: React.PropsWithChildren<{ hasPadding?: boolean; height?: number; viewBox?: number }>) {
+  const style = useMemo(() => (hasPadding ? { padding: `${svgViewboxPadding}px` } : { height }), [hasPadding, height]);
+
+  const nodeSvgViewboxSize = useMemo(() => {
+    return viewBox ?? nodeSvgProps.width + 2 * nodeSvgProps.strokeWidth;
+  }, [viewBox]);
+
   return (
     <svg
       className={"kie-dmn-editor--round-svg-container"}
       viewBox={`0 0 ${nodeSvgViewboxSize} ${nodeSvgViewboxSize}`}
-      style={withoutPadding ? {} : { padding: `${svgViewboxPadding}px` }}
+      style={style}
     >
       {children}
     </svg>
@@ -71,46 +82,53 @@ export function NodeIcon({
   });
 }
 
-export function InputDataIcon() {
+export function InputDataIcon(props: { hasPadding?: boolean; height?: number }) {
   return (
-    <RoundSvg>
+    <RoundSvg hasPadding={props.hasPadding ?? true} height={props.height}>
       <InputDataNodeSvg {...nodeSvgProps} />
     </RoundSvg>
   );
 }
 
-export function AlternativeInputDataIcon() {
+export function AlternativeInputDataIcon(props: { height?: number; viewBox?: number; transform?: string }) {
   return (
-    <RoundSvg withoutPadding={true}>
-      <AlternativeInputDataNodeSvg {...nodeSvgProps} isIcon={true} width={80} height={100} strokeWidth={8} />
+    <RoundSvg hasPadding={false} height={props.height} viewBox={props.viewBox}>
+      <AlternativeInputDataNodeSvg
+        {...nodeSvgProps}
+        isIcon={true}
+        width={80}
+        height={100}
+        strokeWidth={8}
+        transform={props.transform ?? "translate(80, 60)"}
+      />
     </RoundSvg>
   );
 }
 
 export function DecisionIcon() {
   return (
-    <RoundSvg>
+    <RoundSvg hasPadding={true}>
       <DecisionNodeSvg {...nodeSvgProps} />
     </RoundSvg>
   );
 }
 export function BkmIcon() {
   return (
-    <RoundSvg>
+    <RoundSvg hasPadding={true}>
       <BkmNodeSvg {...nodeSvgProps} />
     </RoundSvg>
   );
 }
 export function KnowledgeSourceIcon() {
   return (
-    <RoundSvg>
+    <RoundSvg hasPadding={true}>
       <KnowledgeSourceNodeSvg {...nodeSvgProps} />
     </RoundSvg>
   );
 }
 export function DecisionServiceIcon() {
   return (
-    <RoundSvg>
+    <RoundSvg hasPadding={true}>
       <DecisionServiceNodeSvg
         {...nodeSvgProps}
         y={12}
@@ -123,14 +141,14 @@ export function DecisionServiceIcon() {
 }
 export function GroupIcon() {
   return (
-    <RoundSvg>
+    <RoundSvg hasPadding={true}>
       <GroupNodeSvg {...nodeSvgProps} y={12} height={nodeSvgProps.width} strokeDasharray={"28,28"} />
     </RoundSvg>
   );
 }
 export function TextAnnotationIcon() {
   return (
-    <RoundSvg>
+    <RoundSvg hasPadding={true}>
       <TextAnnotationNodeSvg {...nodeSvgProps} showPlaceholder={true} />
     </RoundSvg>
   );
