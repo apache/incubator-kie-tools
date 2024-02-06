@@ -24,7 +24,7 @@ import {
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Computed } from "../store/Store";
-import { computeDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeDecisionServiceHrefsByDecisionHrefs";
+import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { computeIndexedDrd } from "../store/computed/computeIndexes";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
@@ -73,14 +73,15 @@ export function addExistingDecisionServiceToDrd({
     id: decisionService["@_id"]!,
   });
 
-  const decisionServiceHrefsByDecisionHrefsRelativeToThisDmn = computeDecisionServiceHrefsByDecisionHrefs({
-    thisDmnsNamespace,
-    drgElementsNamespace: decisionServiceNamespace,
-    drgElements: decisionServiceDmnDefinitions.drgElement,
-  });
+  const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
+    computeContainingDecisionServiceHrefsByDecisionHrefs({
+      thisDmnsNamespace,
+      drgElementsNamespace: decisionServiceNamespace,
+      drgElements: decisionServiceDmnDefinitions.drgElement,
+    });
 
   const doesThisDrdHaveConflictingDecisionService = containedDecisionHrefsRelativeToThisDmn.some((decisionHref) =>
-    (decisionServiceHrefsByDecisionHrefsRelativeToThisDmn.get(decisionHref) ?? []).some((d) =>
+    (containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn.get(decisionHref) ?? []).some((d) =>
       thisDmnsIndexedDrd.dmnShapesByHref.has(d)
     )
   );

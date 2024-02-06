@@ -387,23 +387,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 thisDmnsIndexedDrd: state.computed(state).indexedDrd(),
                 thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
               });
-            } else if (externalDrgElement.__$$element === "decision") {
-              // TODO: Tiago --> Add logic for Decision contained by DS.
-              const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
-              addShape({
-                definitions: state.dmn.model.definitions,
-                drdIndex: state.diagram.drdIndex,
-                nodeType: externalNodeType,
-                shape: {
-                  "@_dmnElementRef": xmlHrefToQName(externalNodeHref, state.dmn.model.definitions),
-                  "dc:Bounds": {
-                    "@_x": dropPoint.x,
-                    "@_y": dropPoint.y,
-                    "@_width": defaultExternalNodeDimensions["@_width"],
-                    "@_height": defaultExternalNodeDimensions["@_height"],
-                  },
-                },
-              });
             } else {
               const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
               addShape({
@@ -452,24 +435,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 thisDmnsDefinitions: state.dmn.model.definitions,
                 thisDmnsIndexedDrd: state.computed(state).indexedDrd(),
                 thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
-              });
-            } else if (drgElement.__$$element === "decision") {
-              // TODO: Tiago --> Add logic for Decision contained by DS.
-              const nodeType = getNodeTypeFromDmnObject(drgElement)!;
-              addShape({
-                definitions: state.dmn.model.definitions,
-                drdIndex: state.diagram.drdIndex,
-                nodeType,
-                shape: {
-                  "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
-                  "@_isCollapsed": false,
-                  "dc:Bounds": {
-                    "@_x": dropPoint.x,
-                    "@_y": dropPoint.y,
-                    "@_width": defaultNodeDimensions["@_width"],
-                    "@_height": defaultNodeDimensions["@_height"],
-                  },
-                },
               });
             } else {
               const nodeType = getNodeTypeFromDmnObject(drgElement)!;
