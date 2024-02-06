@@ -30,6 +30,7 @@ export type NodeSvgProps = RF.Dimensions &
     strokeColor?: string;
     strokeWidth?: number;
     isIcon?: boolean;
+    isCollection?: boolean;
   };
 
 export const ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches = { flag: false };
@@ -45,6 +46,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     fillColor: _fillColor,
     strokeColor: _strokeColor,
     isIcon: _isIcon,
+    isCollection: _isCollection,
     ...props
   } = _props;
 
@@ -65,12 +67,13 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     fillColor: _fillColor,
     strokeColor: _strokeColor,
     isIcon: _isIcon,
+    isCollection: _isCollection,
     props,
   };
 }
 
 export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, isCollection, props } = normalize(__props);
   const rx =
     typeof height === "number"
       ? height / 2
@@ -100,14 +103,12 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
         rx={rx}
         ry={ry}
       />
-      {props.isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
+      {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
     </>
   );
 }
 
-export function AlternativeInputDataNodeSvg(
-  __props: NodeSvgProps & { isIcon: boolean; isCollection?: boolean; transform?: string }
-) {
+export function AlternativeInputDataNodeSvg(__props: NodeSvgProps & { isIcon: boolean; transform?: string }) {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, isIcon, props } = normalize(__props);
 
   const bevel = 25;
@@ -150,7 +151,7 @@ export function AlternativeInputDataNodeSvg(
 }
 
 export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, isCollection, props } = normalize(__props);
 
   return (
     <>
@@ -165,7 +166,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
         strokeLinejoin={"round"}
         {...props}
       />
-      {props.isCollection && <NodeCollectionMarker {...__props} anchor="top" />}
+      {isCollection && <NodeCollectionMarker {...__props} anchor="top" />}
     </>
   );
 }
