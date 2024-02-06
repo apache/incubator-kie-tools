@@ -122,7 +122,7 @@ export function DrdSelectorPanel() {
                 >
                   <ToggleGroupItem
                     text="Classic"
-                    icon={<InputDataIcon padding={"1px 0 0 0"} height={22} />}
+                    icon={<InputDataIcon padding={"2px 0 0 0"} height={22} />}
                     buttonId="classic-input-node-shape"
                     isSelected={isAlternativeInputDataShape === false}
                     onChange={() =>
