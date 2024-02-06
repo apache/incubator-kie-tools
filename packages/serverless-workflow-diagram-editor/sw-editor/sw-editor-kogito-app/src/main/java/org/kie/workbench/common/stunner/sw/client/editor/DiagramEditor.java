@@ -168,7 +168,6 @@ public class DiagramEditor {
         }
 
         return null;
-
     }
 
     void reloadEditorContent() {
