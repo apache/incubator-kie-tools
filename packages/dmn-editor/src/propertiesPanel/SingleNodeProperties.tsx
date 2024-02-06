@@ -57,6 +57,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const node = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodesById.get(nodeId));
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
+  const nodeIds = useMemo(() => (node?.id ? [node.id] : []), [node?.id]);
 
   if (!node) {
     return <>Node not found: {nodeId}</>;
@@ -181,10 +182,10 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
           </>
         )}
 
-        <FontOptions startExpanded={false} nodeIds={[node.id]} />
+        <FontOptions startExpanded={false} nodeIds={nodeIds} />
         <ShapeOptions
           startExpanded={false}
-          nodeIds={[node.id]}
+          nodeIds={nodeIds}
           isDimensioningEnabled={true}
           isPositioningEnabled={true}
         />
