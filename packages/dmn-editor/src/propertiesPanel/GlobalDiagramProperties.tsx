@@ -32,15 +32,11 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
-import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
-import { AlternativeInputDataIcon, InputDataIcon } from "../icons/Icons";
 
 export function GlobalDiagramProperties() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const [isGlobalSectionExpanded, setGlobalSectionExpanded] = useState<boolean>(true);
   const [isIdNamespaceSectionExpanded, setIdNamespaceSectionExpanded] = useState<boolean>(true);
-  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -122,40 +118,6 @@ export function GlobalDiagramProperties() {
                     })
                   }
                 />
-              </FormGroup>
-              <FormGroup label="Input Data Shape">
-                <ToggleGroup aria-label="Tweak the shape for input data node">
-                  <ToggleGroupItem
-                    text="Classic"
-                    icon={<InputDataIcon hasPadding={false} height={22} />}
-                    buttonId="classic-input-node-shape"
-                    isSelected={isAlternativeInputDataShape === false}
-                    onChange={() =>
-                      dmnEditorStoreApi.setState((state) => {
-                        state.dmn.model.definitions["dmndi:DMNDI"] ??= {};
-                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
-                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][state.diagram.drdIndex][
-                          "@_useAlternativeInputDataShape"
-                        ] = false;
-                      })
-                    }
-                  />
-                  <ToggleGroupItem
-                    text="Alternative"
-                    icon={<AlternativeInputDataIcon height={22} viewBox={160} transform={"translate(40, 30)"} />}
-                    buttonId="alternative-input-node-shape"
-                    isSelected={isAlternativeInputDataShape === true}
-                    onChange={() =>
-                      dmnEditorStoreApi.setState((state) => {
-                        state.dmn.model.definitions["dmndi:DMNDI"] ??= {};
-                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
-                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][state.diagram.drdIndex][
-                          "@_useAlternativeInputDataShape"
-                        ] = true;
-                      })
-                    }
-                  />
-                </ToggleGroup>
               </FormGroup>
             </FormSection>
           </>
