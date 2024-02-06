@@ -29,6 +29,7 @@ export type NodeSvgProps = RF.Dimensions &
     fillColor?: string;
     strokeColor?: string;
     strokeWidth?: number;
+    isIcon?: boolean;
   };
 
 export const ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches = { flag: false };
@@ -43,6 +44,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     height: _height,
     fillColor: _fillColor,
     strokeColor: _strokeColor,
+    isIcon: _isIcon,
     ...props
   } = _props;
 
@@ -62,6 +64,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     height: height + (___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag ? 0 : 0.1),
     fillColor: _fillColor,
     strokeColor: _strokeColor,
+    isIcon: _isIcon,
     props,
   };
 }
@@ -105,7 +108,7 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
 export function AlternativeInputDataNodeSvg(
   __props: NodeSvgProps & { isIcon: boolean; isCollection?: boolean; transform?: string }
 ) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, isIcon, props } = normalize(__props);
 
   const bevel = 25;
   const arrowStartingX = 6;
@@ -120,9 +123,9 @@ export function AlternativeInputDataNodeSvg(
         stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         strokeLinejoin={"round"}
         strokeWidth={strokeWidth}
-        transform={props.isIcon ? __props.transform : `translate(${x},${y})`}
+        transform={isIcon ? __props.transform : `translate(${x},${y})`}
       />
-      {!props.isIcon && (
+      {!isIcon && (
         <>
           <polygon
             {...props}

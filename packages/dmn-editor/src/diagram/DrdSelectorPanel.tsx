@@ -21,7 +21,6 @@ import * as React from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { addOrGetDrd, getDefaultDrdName } from "../mutations/addOrGetDrd";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -29,12 +28,14 @@ import { DiagramNodesPanel } from "../store/Store";
 import { getDrdId } from "./drd/drdId";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Form, FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
+import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
+import { AlternativeInputDataIcon, InputDataIcon } from "../icons/Icons";
 
 export function DrdSelectorPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
+  const drdIndex = useDmnEditorStore((s) => s.diagram.drdIndex);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -43,7 +44,7 @@ export function DrdSelectorPanel() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "300px 200px",
+          gridTemplateColumns: "300px 300px",
           gridTemplateRows: "auto auto auto",
           gridTemplateAreas: `
           'header-list header-properties'
@@ -105,7 +106,7 @@ export function DrdSelectorPanel() {
 
         <div style={{ gridArea: "header-properties" }}>
           <Title headingLevel="h3" style={{ height: "36px" }}>
-            Properties
+            {getDefaultDrdName({ drdIndex })}
           </Title>
         </div>
         <div style={{ gridArea: "divider-properties" }}>
@@ -114,22 +115,49 @@ export function DrdSelectorPanel() {
         <div style={{ gridArea: "content-properties" }}>
           <Form>
             <FormSection>
-              <FormGroup label={"Input Node Shape"}>
-                <Switch
-                  id="reversed-switch"
-                  label="Alternative"
-                  labelOff="Classic"
-                  isChecked={isAlternativeInputDataShape}
-                  onChange={() =>
-                    dmnEditorStoreApi.setState((state) => {
-                      state.dmn.model.definitions["dmndi:DMNDI"] ??= {};
-                      state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
-                      state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][state.diagram.drdIndex][
-                        "@_useAlternativeInputDataShape"
-                      ] = !isAlternativeInputDataShape;
-                    })
-                  }
-                />
+              <FormGroup label={"Input Data node shape"}>
+                <ToggleGroup
+                  aria-label="Tweak the shape of the input data node"
+                  className={"kie-dmn-editor--drd-properties--input-data-node-shape"}
+                >
+                  <ToggleGroupItem
+                    text="Classic"
+                    icon={<InputDataIcon padding={"1px 0 0 0"} height={22} />}
+                    buttonId="classic-input-node-shape"
+                    isSelected={isAlternativeInputDataShape === false}
+                    onChange={() =>
+                      dmnEditorStoreApi.setState((state) => {
+                        state.dmn.model.definitions["dmndi:DMNDI"] ??= {};
+                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
+                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][state.diagram.drdIndex][
+                          "@_useAlternativeInputDataShape"
+                        ] = false;
+                      })
+                    }
+                  />
+                  <ToggleGroupItem
+                    text="Alternative"
+                    icon={
+                      <AlternativeInputDataIcon
+                        padding={"1px 0 0 0"}
+                        height={22}
+                        viewBox={160}
+                        transform={"translate(40, 30)"}
+                      />
+                    }
+                    buttonId="alternative-input-node-shape"
+                    isSelected={isAlternativeInputDataShape === true}
+                    onChange={() =>
+                      dmnEditorStoreApi.setState((state) => {
+                        state.dmn.model.definitions["dmndi:DMNDI"] ??= {};
+                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
+                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][state.diagram.drdIndex][
+                          "@_useAlternativeInputDataShape"
+                        ] = true;
+                      })
+                    }
+                  />
+                </ToggleGroup>
               </FormGroup>
             </FormSection>
           </Form>

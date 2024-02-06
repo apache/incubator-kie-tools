@@ -254,6 +254,10 @@
 .kie-dmn-editor--drd-list button:active {
   filter: brightness(90%);
 }
+.kie-dmn-editor--drd-properties--input-data-node-shape button {
+  height: 36px;
+}
+
 .kie-dmn-editor--palette {
   width: 42px;
   background: #fff;

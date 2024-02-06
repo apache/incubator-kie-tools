@@ -41,11 +41,14 @@ const nodeSvgProps = { width: 200, height: 120, x: 16, y: 48, strokeWidth: 16 };
 
 export function RoundSvg({
   children,
-  hasPadding,
+  padding,
   height,
   viewBox,
-}: React.PropsWithChildren<{ hasPadding?: boolean; height?: number; viewBox?: number }>) {
-  const style = useMemo(() => (hasPadding ? { padding: `${svgViewboxPadding}px` } : { height }), [hasPadding, height]);
+}: React.PropsWithChildren<{ padding?: string; height?: number; viewBox?: number }>) {
+  const style = useMemo(
+    () => (padding !== undefined ? { padding, height } : { padding: `${svgViewboxPadding}px`, height }),
+    [padding, height]
+  );
 
   const nodeSvgViewboxSize = useMemo(() => {
     return viewBox ?? nodeSvgProps.width + 2 * nodeSvgProps.strokeWidth;
@@ -82,17 +85,22 @@ export function NodeIcon({
   });
 }
 
-export function InputDataIcon(props: { hasPadding?: boolean; height?: number }) {
+export function InputDataIcon(props: { padding?: string; height?: number }) {
   return (
-    <RoundSvg hasPadding={props.hasPadding ?? true} height={props.height}>
+    <RoundSvg padding={props.padding} height={props.height}>
       <InputDataNodeSvg {...nodeSvgProps} />
     </RoundSvg>
   );
 }
 
-export function AlternativeInputDataIcon(props: { height?: number; viewBox?: number; transform?: string }) {
+export function AlternativeInputDataIcon(props: {
+  padding?: string;
+  height?: number;
+  viewBox?: number;
+  transform?: string;
+}) {
   return (
-    <RoundSvg hasPadding={false} height={props.height} viewBox={props.viewBox}>
+    <RoundSvg padding={props.padding ?? "0px"} height={props.height} viewBox={props.viewBox}>
       <AlternativeInputDataNodeSvg
         {...nodeSvgProps}
         isIcon={true}
@@ -107,28 +115,28 @@ export function AlternativeInputDataIcon(props: { height?: number; viewBox?: num
 
 export function DecisionIcon() {
   return (
-    <RoundSvg hasPadding={true}>
+    <RoundSvg>
       <DecisionNodeSvg {...nodeSvgProps} />
     </RoundSvg>
   );
 }
 export function BkmIcon() {
   return (
-    <RoundSvg hasPadding={true}>
+    <RoundSvg>
       <BkmNodeSvg {...nodeSvgProps} />
     </RoundSvg>
   );
 }
 export function KnowledgeSourceIcon() {
   return (
-    <RoundSvg hasPadding={true}>
+    <RoundSvg>
       <KnowledgeSourceNodeSvg {...nodeSvgProps} />
     </RoundSvg>
   );
 }
 export function DecisionServiceIcon() {
   return (
-    <RoundSvg hasPadding={true}>
+    <RoundSvg>
       <DecisionServiceNodeSvg
         {...nodeSvgProps}
         y={12}
@@ -141,14 +149,14 @@ export function DecisionServiceIcon() {
 }
 export function GroupIcon() {
   return (
-    <RoundSvg hasPadding={true}>
+    <RoundSvg>
       <GroupNodeSvg {...nodeSvgProps} y={12} height={nodeSvgProps.width} strokeDasharray={"28,28"} />
     </RoundSvg>
   );
 }
 export function TextAnnotationIcon() {
   return (
-    <RoundSvg hasPadding={true}>
+    <RoundSvg>
       <TextAnnotationNodeSvg {...nodeSvgProps} showPlaceholder={true} />
     </RoundSvg>
   );
