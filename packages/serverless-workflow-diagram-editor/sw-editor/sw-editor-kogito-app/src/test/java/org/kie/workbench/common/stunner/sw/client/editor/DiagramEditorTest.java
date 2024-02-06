@@ -264,7 +264,7 @@ public class DiagramEditorTest {
 
         tested.onStartup(new DefaultPlaceRequest());
         tested.setContent("", rawJSON);
-        tested.setTheme("dark");
+        tested.setTheme(DarkMode.NAME);
 
         verify(tested, times(1)).reloadEditorContent();
         assertTrue(StunnerTheme.getTheme() instanceof DarkMode);
@@ -280,6 +280,21 @@ public class DiagramEditorTest {
         tested.onStartup(new DefaultPlaceRequest());
         tested.setContent("", rawJSON);
         tested.setTheme(null);
+
+        verify(tested, times(0)).reloadEditorContent();
+        assertTrue(StunnerTheme.getTheme() instanceof LightMode);
+    }
+
+    @Test
+    public void testSetThemeSame() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("injectExample");
+        doNothing().when(tested).reloadEditorContent();
+
+        tested.onStartup(new DefaultPlaceRequest());
+        tested.setContent("", rawJSON);
+        tested.setTheme(LightMode.NAME);
 
         verify(tested, times(0)).reloadEditorContent();
         assertTrue(StunnerTheme.getTheme() instanceof LightMode);

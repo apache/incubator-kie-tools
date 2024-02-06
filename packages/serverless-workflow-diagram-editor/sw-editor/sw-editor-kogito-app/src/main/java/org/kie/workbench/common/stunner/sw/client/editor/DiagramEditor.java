@@ -100,6 +100,7 @@ public class DiagramEditor {
     private DocType currentDocType = DocType.JSON;
     private String currentPath;
     private String currentValue;
+    private String currentTheme = LightMode.NAME;
 
     @Inject
     private TranslationService translationService;
@@ -125,6 +126,7 @@ public class DiagramEditor {
     public void onStartup(final PlaceRequest place) {
         domainInitializer.initialize();
         stunnerEditor.setReadOnly(true);
+
         // Set default theme on startup
         StunnerTheme.setTheme(LightMode.getInstance());
     }
@@ -157,11 +159,13 @@ public class DiagramEditor {
     }
 
     public final Promise<Void> setTheme(String theme) {
-        if (null != theme) {
+        if (null != theme && !theme.equals(currentTheme)) {
             if (theme.equals(DarkMode.NAME)) {
                 StunnerTheme.setTheme(DarkMode.getInstance());
+                currentTheme = DarkMode.NAME;
             } else {
                 StunnerTheme.setTheme(LightMode.getInstance());
+                currentTheme = LightMode.NAME;
             }
 
             reloadEditorContent();
