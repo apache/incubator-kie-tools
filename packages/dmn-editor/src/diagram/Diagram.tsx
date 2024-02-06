@@ -120,7 +120,6 @@ import {
   UnknownNode,
 } from "./nodes/Nodes";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { useAlternativeInputDataShape } from "../alternativeInputData/useAlternative";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -162,7 +161,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const { externalModelsByNamespace } = useExternalModels();
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
     const thisDmn = useDmnEditorStore((s) => s.dmn);
-    const isAlternativeInputDataShape = useAlternativeInputDataShape();
+    const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
     const { dmnModelBeforeEditingRef } = useDmnEditor();
 
@@ -1171,7 +1170,7 @@ function DmnDiagramEmptyState({
   setShowEmptyState: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const isAlternativeInputDataShape = useAlternativeInputDataShape();
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   return (
     <Bullseye

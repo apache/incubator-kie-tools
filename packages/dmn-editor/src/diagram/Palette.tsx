@@ -47,7 +47,6 @@ import { DrgNodesPanel } from "./DrgNodesPanel";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
-import { useAlternativeInputDataShape } from "../alternativeInputData/useAlternative";
 import { getDrdId } from "./drd/drdId";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
@@ -63,7 +62,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const thisDmn = useDmnEditorStore((s) => s.dmn.model);
   const rfStoreApi = RF.useStoreApi();
-  const isAlternativeInputDataShape = useAlternativeInputDataShape();
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {

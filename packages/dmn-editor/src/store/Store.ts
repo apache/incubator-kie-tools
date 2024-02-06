@@ -33,6 +33,7 @@ import { computeExternalModelsByType } from "./computed/computeExternalModelsByT
 import { computeImportsByNamespace } from "./computed/computeImportsByNamespace";
 import { computeIndexes } from "./computed/computeIndexes";
 import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
+import { computeIsAlternativeInputDataShape } from "./computed/computeIsAlternativeInputDataShape";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
@@ -128,6 +129,8 @@ export type Computed = {
   indexes(): ReturnType<typeof computeIndexes>;
 
   getDiagramData(e: ExternalModelsIndex | undefined): ReturnType<typeof computeDiagramData>;
+
+  isAlternativeInputDataShape(): boolean;
 
   isDropTargetNodeValidForSelection(e: ExternalModelsIndex | undefined): boolean;
 
@@ -342,6 +345,12 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
             ]);
           },
 
+          isAlternativeInputDataShape: () =>
+            computedCache.cached("isAlternativeInputDataShape", computeIsAlternativeInputDataShape, [
+              s.diagram.drdIndex,
+              s.dmn.model.definitions["dmndi:DMNDI"],
+            ]),
+
           isDropTargetNodeValidForSelection: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
             computedCache.cached("isDropTargetNodeValidForSelection", computeIsDropTargetNodeValidForSelection, [
               s.diagram.dropTargetNode,
@@ -374,6 +383,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
               s.dmn.model.definitions,
               s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace),
               s.computed(s).indexes(),
+              s.computed(s).isAlternativeInputDataShape(),
             ]),
         };
       },

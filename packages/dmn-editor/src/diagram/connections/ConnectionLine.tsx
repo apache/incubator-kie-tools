@@ -39,7 +39,6 @@ import { useDmnEditorStore } from "../../store/StoreContext";
 import { useKieEdgePath } from "../edges/useKieEdgePath";
 import { PositionalNodeHandleId } from "./PositionalNodeHandles";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
-import { useAlternativeInputDataShape } from "../../alternativeInputData/useAlternative";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
   const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -50,7 +49,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
       : undefined
   );
   const kieEdgePath = useKieEdgePath(edge?.source, edge?.target, edge?.data);
-  const isAlternativeInputDataShape = useAlternativeInputDataShape();
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   // This works because nodes are configured with:
   // - Source handles with ids matching EDGE_TYPES or NODE_TYPES
   // - Target handles with ids matching TargetHandleId

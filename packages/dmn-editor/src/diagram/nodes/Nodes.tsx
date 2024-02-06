@@ -70,7 +70,6 @@ import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
-import { useAlternativeInputDataShape } from "../../alternativeInputData/useAlternative";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -119,7 +118,7 @@ export const InputDataNode = React.memo(
     const shouldActLikeHovered = useDmnEditorStore(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    const isAlternativeInputDataShape = useAlternativeInputDataShape();
+    const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);

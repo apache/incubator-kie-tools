@@ -33,13 +33,12 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { isAlternativeInputDataShape } from "../alternativeInputData/useAlternative";
 
 export function GlobalDiagramProperties() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const [isGlobalSectionExpanded, setGlobalSectionExpanded] = useState<boolean>(true);
   const [isIdNamespaceSectionExpanded, setIdNamespaceSectionExpanded] = useState<boolean>(true);
-  const isAlternative = useDmnEditorStore((s) => isAlternativeInputDataShape(s));
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -128,14 +127,14 @@ export function GlobalDiagramProperties() {
                   aria-label={"Alternative Input Data Shape"}
                   isDisabled={false}
                   placeholder={"Enter an expression language..."}
-                  isChecked={isAlternative}
+                  isChecked={isAlternativeInputDataShape}
                   onChange={() =>
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions["dmndi:DMNDI"] ??= {};
                       state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
                       state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][state.diagram.drdIndex][
                         "@_useAlternativeInputDataShape"
-                      ] = !isAlternative;
+                      ] = !isAlternativeInputDataShape;
                     })
                   }
                 />
