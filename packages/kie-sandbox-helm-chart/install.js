@@ -32,13 +32,10 @@ files.forEach((file) => {
   const doc = yaml.load(fs.readFileSync(file, "utf8"));
   doc.version = buildEnv.env.kieSandboxHelmChart.tag;
   doc.appVersion = buildEnv.env.kieSandboxHelmChart.tag;
-  if (!doc.version.match(/(\d+)\.(\d+)\.(\d+)/)) {
-    doc.version = "0.0.0-" + doc.version;
-  }
   if (doc.dependencies) {
     doc.dependencies = doc.dependencies.map((dep) => {
       if (["extended_services", "cors_proxy", "kie_sandbox"].includes(dep.name)) {
-        return { ...dep, version: doc.version };
+        return { ...dep, version: buildEnv.env.kieSandboxHelmChart.tag };
       }
       return dep;
     });

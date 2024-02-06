@@ -79,7 +79,7 @@ pipeline {
         KIE_SANDBOX_HELM_CHART__registry = 'quay.io'
         KIE_SANDBOX_HELM_CHART__account = 'kie-tools'
         KIE_SANDBOX_HELM_CHART__name = 'kie-sandbox-helm-chart'
-        KIE_SANDBOX_HELM_CHART__tag = 'daily-dev'
+        KIE_SANDBOX_HELM_CHART__tag = '0.0.0-daily-dev'
 
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
         OPENSHIFT_PART_OF = 'daily-dev-kie-sandbox-app'
