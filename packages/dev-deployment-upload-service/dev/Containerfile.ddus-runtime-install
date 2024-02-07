@@ -31,5 +31,5 @@ RUN microdnf install -y tar gzip findutils
 
 CMD curl $DDUS_FILESERVER_IP:8090/apache/incubator-kie-tools/releases/download/$DDUS_VERSION/getDevDeploymentUploadService.sh | sed 's/localhost:8090/$DDUS_FILESERVER_IP:8090/; s/https:\/\/github.com/http:\/\/$DDUS_FILESERVER_IP:8090/' | bash \
   && dev-deployment-upload-service \
-  && find /tmp/unzip-at | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/" \
+  && find /tmp/unzip-at | sort -k1 | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/" \
   && echo 'Done!'
