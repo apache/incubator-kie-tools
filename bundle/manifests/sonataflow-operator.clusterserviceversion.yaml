@@ -127,7 +127,7 @@ metadata:
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
     repository: https://github.com/apache/incubator-kie-kogito-serverless-operator
     support: Red Hat
-  name: sonataflow-operator.v2.0.0-snapshot
+  name: sonataflow-operator.v999.0.0-snapshot
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -793,4 +793,4 @@ spec:
   minKubeVersion: 1.23.0
   provider:
     name: Red Hat
-  version: 2.0.0-snapshot
+  version: 999.0.0-snapshot

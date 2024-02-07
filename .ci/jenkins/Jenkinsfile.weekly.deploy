@@ -1,0 +1,257 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+helper = null
+
+pipeline {
+    agent {
+        docker {
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
+    }
+
+    options {
+        timeout(time: 10, unit: 'HOURS')
+        timestamps()
+    }
+
+    environment {
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        PR_BRANCH_HASH = "${util.generateHash(10)}"
+
+        IMAGE_BUILD_PLATFORMS = 'linux/amd64,linux/arm64'
+
+        CONTAINER_ENGINE = 'docker'
+    }
+
+    stages {
+        stage('Setup pipeline') {
+            steps {
+                script {
+                    helper = load '.ci/jenkins/scripts/helper.groovy'
+                    helper.initPipeline()
+                }
+            }
+        }
+        stage('Initialize') {
+            steps {
+                script {
+                    helper.cleanGoPath()
+
+                    helper.updateDisplayName()
+
+                    checkoutRepo()
+
+                    // Login to final registry
+                    helper.loginRegistry()
+
+                    // Prepare for multiplatform build
+                    int freePort = cloud.findFreePort()
+                    env.localRegistryUrl = cloud.startLocalRegistry(freePort)
+
+                    // TODO docker buildx could be preinstalled onto the docker image
+                    cloud.prepareForDockerMultiplatformBuild([env.localRegistryUrl],[cloud.getDockerIOMirrorRegistryConfig()], false)
+
+                    env.PROJECT_VERSION = getOperatorVersion()
+                }
+            }
+            post {
+                success {
+                    script {
+                        properties.add('git.branch', helper.getBuildBranch())
+                        properties.add('git.author', helper.getGitAuthor())
+                        properties.add('project.version', getProjectVersion())
+                    }
+                }
+            }
+        }
+
+        stage('Update version') {
+            steps {
+                script {
+                    runPythonCommand("make bump-version new_version=${getProjectVersion()}")
+                }
+            }
+        }
+
+        stage('Test Operator') {
+            when {
+                expression {
+                    return helper.shouldLaunchTests()
+                }
+            }
+            steps {
+                runPythonCommand('make test')
+            }
+            post {
+                unsuccessful {
+                    script {
+                        util.archiveConsoleLog()
+                    }
+                }
+            }
+        }
+
+        stage('Build Operator') {
+            steps {
+                script {
+                    String tempBuiltImageTag = getTempBuiltImageTag()
+
+                    // Generate the Dockerfile
+                    runPythonCommand("make container-build BUILDER=${env.CONTAINER_ENGINE} IMG=${tempBuiltImageTag} ignore_tag=true build_options='--dry-run'")
+
+                    // Build multiplatform from generated Dockerfile
+                    dir('target/image') {
+                        cloud.dockerBuildMultiPlatformImages(tempBuiltImageTag, getImageBuildPlatforms(), true, 'Kogito Serverless Operator squashed image')
+                    }
+                }
+            }
+            post {
+                unsuccessful {
+                    script {
+                        util.archiveConsoleLog()
+                    }
+                }
+            }
+        }
+
+        stage('Push to registry') {
+            steps {
+                script {
+                    // Push the snapshot image to registry
+                    pushFinalImage(getTempBuiltImageTag(), getBuiltImage())
+
+                    // Tag with `latest` tag if asked for as parameter
+                    if (helper.isDeployLatestTag()) {
+                        pushFinalImage(getTempBuiltImageTag(), "${getOperatorImageName()}:weekly-latest"))
+                    }
+
+                    // Store image deployment information
+                    properties.add(helper.getImageRegistryProperty(), helper.getImageRegistry())
+                    properties.add(helper.getImageNamespaceProperty(), helper.getImageNamespace())
+                    properties.add(helper.getImageTagProperty(), getTempBuiltImageTag())
+                }
+            }
+        }
+
+        stage('Create and push a new tag') {
+            steps {
+                script {
+                    projectVersion = getProjectVersion(false)
+                    githubscm.setUserConfigFromCreds(helper.getGitAuthorPushCredsId())
+                    githubscm.tagRepository(projectVersion)
+                    githubscm.pushRemoteTag('origin', projectVersion, helper.getGitAuthorPushCredsId())
+                }
+            }
+        }
+
+        stage('Run e2e tests on Minikube') {
+            when {
+                expression {
+                    return helper.shouldLaunchTests()
+                }
+            }
+            steps {
+                script {
+                    launchE2ETestsJob('minikube')
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                properties.writeToFile(env.PROPERTIES_FILE_NAME)
+                archiveArtifacts(artifacts: env.PROPERTIES_FILE_NAME)
+            }
+        }
+        unsuccessful {
+            sendNotification()
+        }
+        cleanup {
+            script {
+                helper.cleanGoPath()
+                util.cleanNode(env.CONTAINER_ENGINE)
+                cloud.cleanDockerMultiplatformBuild()
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    if (params.SEND_NOTIFICATION) {
+        mailer.sendMarkdownTestSummaryNotification('Deploy', "[${helper.getBuildBranch()}] Kogito Serverless Operator", [env.KOGITO_CI_EMAIL_TO])
+    } else {
+        echo 'No notification sent per configuration'
+    }
+}
+
+void checkoutRepo() {
+    checkout(githubscm.resolveRepository(helper.getRepoName(), helper.getGitAuthor(), helper.getBuildBranch(), false, helper.getGitAuthorCredsId()))
+    // need to manually checkout branch since on a detached branch after checkout command
+    sh "git checkout ${helper.getBuildBranch()}"
+    checkoutDatetime = getCheckoutDatetime()
+    if (checkoutDatetime) {
+        sh "git checkout `git rev-list -n 1 --before=\"${checkoutDatetime}\" ${helper.getBuildBranch()}`"
+    }
+}
+
+String getOperatorVersion() {
+    return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorVersion)', returnStdout: true).trim()
+}
+
+String getOperatorImageName() {
+    return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorImageName)', returnStdout: true).trim()
+}
+
+String getBuiltImage() {
+    return "${getOperatorImageName()}:${getProjectVersion(false)}"
+}
+
+String getTempBuiltImageTag() {
+    return "${env.localRegistryUrl}/kogito-serverless-operator:${getProjectVersion(false)}"
+}
+
+void pushFinalImage(String oldImageName, String newImageName) {
+    cloud.skopeoCopyRegistryImages(oldImageName, newImageName, Integer.parseInt(env.MAX_REGISTRY_RETRIES))
+}
+
+void runPythonCommand(String cmd, boolean stdout = false) {
+    return sh(returnStdout: stdout, script: cmd)
+}
+
+void launchE2ETestsJob(String clusterName) {
+    String jobName = "kogito-serverless-operator.e2e.${clusterName}"
+    def buildParams = [
+        string(name: 'DISPLAY_NAME', value: params.DISPLAY_NAME),
+        string(name: 'BUILD_BRANCH_NAME', value: params.BUILD_BRANCH_NAME),
+        string(name: 'TEST_IMAGE_FULL_TAG', value: getBuiltImage())
+    ]
+    echo "Build ${jobName} with params ${buildParams}"
+    def job = build(job: "${jobName}", wait: true, parameters: buildParams, propagate: false)
+    if (job.result != 'SUCCESS') {
+        unstable("Tests on cluster ${clusterName} finished with result ${job.result}")
+    }
+}
+
+List getImageBuildPlatforms() {
+    return "${IMAGE_BUILD_PLATFORMS}".split(',') as List
+}
+
+String getCheckoutDatetime() {
+    return params.GIT_CHECKOUT_DATETIME
+}
+
+String getProjectVersionDate() {
+    def projectVersionDate = (getCheckoutDatetime() =~ /(\d{4}-\d{2}-\d{2})/)[0][0]
+    return projectVersionDate.replace('-', '')
+}
+
+String getProjectVersion(boolean keepSnapshotSuffix = true) {
+    def projectVersion = env.PROJECT_VERSION
+    if (keepSnapshotSuffix) {
+        return projectVersion.replace("-snapshot", "-${getProjectVersionDate()}-snapshot")
+    }
+    return projectVersion.replace("-snapshot", "-${getProjectVersionDate()}")
+}

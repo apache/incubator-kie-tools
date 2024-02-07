@@ -46,6 +46,9 @@ createSetupBranchJob()
 // Nightly
 setupDeployJob(JobType.NIGHTLY)
 
+// Weekly
+setupWeeklyDeployJob(JobType.OTHER)
+
 // Release
 setupDeployJob(JobType.RELEASE)
 setupPromoteJob(JobType.RELEASE)
@@ -195,5 +198,48 @@ void setupE2EJob(JobType jobType, String clusterName, Map extraEnv = [:]) {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout for the tests')
             stringParam('TEST_IMAGE_FULL_TAG', '', 'Image to test')
         }
+    }
+}
+
+void setupWeeklyDeployJob(JobType jobType) {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-serverless-operator.weekly-deploy', jobType, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Kogito Serverless Cloud Operator Weekly Deploy')
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
+
+        OPERATOR_IMAGE_NAME: 'kogito-serverless-operator',
+        MAX_REGISTRY_RETRIES: 3,
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+
+        TEST_CLUSTER_NAMES: clustersConfig.keySet().join(','),
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
+
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+
+            // Build&Test information
+            booleanParam('SKIP_TESTS', false, 'Skip tests')
+
+            // Deploy information
+            stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
+            stringParam('IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
+            booleanParam('DEPLOY_WITH_LATEST_TAG', false, 'Set to true if you want the deployed images to also be with the `weekly-latest` tag')
+
+            stringParam('GIT_CHECKOUT_DATETIME', '', 'Git checkout date and time - (Y-m-d H:i)')
+
+            booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
+        }
+    }
+
+    // Create E2E jobs
+    clustersConfig.each { clusterName, clusterEnv ->
+        setupE2EJob(jobType, clusterName, clusterEnv)
     }
 }
