@@ -191,7 +191,9 @@ export const InputDataNode = React.memo(
             display: "flex",
             flexDirection: "column",
             outline: "none",
-            "--height": `${nodeDimensions.height + 20 + (isEditingLabel ? 20 : alternativeEditableNodeHeight ?? 0)}px`,
+            "selected-alternative-input-data-node-shape--height": `${
+              nodeDimensions.height + 20 + (isEditingLabel ? 20 : alternativeEditableNodeHeight ?? 0)
+            }px`,
           } as any)
         : undefined;
       // The dependecy should be "nodeDimension" to trigger an adjustment on width changes as well.

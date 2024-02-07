@@ -506,7 +506,7 @@ export function AutolayoutButton() {
         });
       }
     });
-  }, [dmnEditorStoreApi, externalModelsByNamespace]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace, isAlternativeInputDataShape]);
 
   return (
     <button className={"kie-dmn-editor--autolayout-panel-toggle-button"} onClick={onApply}>
