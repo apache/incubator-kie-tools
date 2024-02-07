@@ -23,9 +23,9 @@ exports[`Test built images individually buildtime install 2`] = `
 [dev-deployment-upload-service] ℹ️  Shutting down HTTP server...
 [dev-deployment-upload-service] ✅ Shutdown completed successfully.
  |-unzip-at
+ | |-test.txt
  | |-testdir
  | | |-file.md
- | |-test.txt
 Done!
 "
 `;
@@ -57,9 +57,9 @@ dev-deployment-upload-service installed into /usr/local/bin/dev-deployment-uploa
 [dev-deployment-upload-service] ℹ️  Shutting down HTTP server...
 [dev-deployment-upload-service] ✅ Shutdown completed successfully.
  |-unzip-at
+ | |-test.txt
  | |-testdir
  | | |-file.md
- | |-test.txt
 Done!
 "
 `;
