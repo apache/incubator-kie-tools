@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function getDefaultDrdName({ drdIndex }: { drdIndex: number }) {
@@ -32,6 +33,7 @@ export function addOrGetDrd({ definitions, drdIndex }: { definitions: DMN15__tDe
   definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][drdIndex] ??= {};
 
   const defaultDiagram = definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][drdIndex];
+  defaultDiagram["@_id"] ??= generateUuid();
   defaultDiagram["@_name"] ??= defaultName;
   defaultDiagram["@_useAlternativeInputDataShape"] ??= false;
   defaultDiagram["dmndi:DMNDiagramElement"] ??= [];

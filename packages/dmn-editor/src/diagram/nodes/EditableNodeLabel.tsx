@@ -52,7 +52,7 @@ export function EditableNodeLabel({
   skipValidation,
   onGetAllUniqueNames,
   fontCssProperties,
-  textRef,
+  setAlternativeEditableNodeHeight,
 }: {
   id?: string;
   shouldCommitOnBlur?: boolean;
@@ -68,7 +68,7 @@ export function EditableNodeLabel({
   skipValidation?: boolean;
   onGetAllUniqueNames: (s: State) => UniqueNameIndex;
   fontCssProperties?: React.CSSProperties;
-  textRef?: React.RefObject<HTMLSpanElement>;
+  setAlternativeEditableNodeHeight?: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const displayValue = useDmnEditorStore((s) => {
     if (!value) {
@@ -234,7 +234,7 @@ export function EditableNodeLabel({
         />
       )) || (
         <span
-          ref={textRef}
+          ref={(ref) => setAlternativeEditableNodeHeight?.(ref?.clientHeight ?? 0)}
           style={{
             whiteSpace: "pre-wrap",
             ...fontCssProperties,

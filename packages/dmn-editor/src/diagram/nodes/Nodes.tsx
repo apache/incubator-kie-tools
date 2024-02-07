@@ -180,7 +180,7 @@ export const InputDataNode = React.memo(
       );
     });
 
-    const alternativeEditableNodeRef = useRef<HTMLSpanElement>(null);
+    const [alternativeEditableNodeHeight, setAlternativeEditableNodeHeight] = React.useState<number>(0);
     const alternativeSvgStyle = useMemo(() => {
       // This is used to modify a css from a :before element.
       // The --height is a css var which is used by the kie-dmn-editor--selected-alternative-input-data-node class.
@@ -188,12 +188,12 @@ export const InputDataNode = React.memo(
         ? ({
             display: "flex",
             flexDirection: "column",
-            "--height": `${
-              20 + nodeDimensions.height + (alternativeEditableNodeRef?.current?.getBoundingClientRect()?.height ?? 0)
-            }px`,
+            outline: "none",
+            "--height": `${nodeDimensions.height + 20 + (isEditingLabel ? 20 : alternativeEditableNodeHeight ?? 0)}px`,
           } as any)
         : undefined;
-    }, [isAlternativeInputDataShape, nodeDimensions]);
+      // The dependecy should be "nodeDimension" to trigger an adjustment on width changes as well.
+    }, [isAlternativeInputDataShape, nodeDimensions, isEditingLabel, alternativeEditableNodeHeight]);
 
     const selectedAlternativeClass = useMemo(
       () => (isAlternativeInputDataShape && selected ? "kie-dmn-editor--selected-alternative-input-data-node" : ""),
@@ -296,7 +296,7 @@ export const InputDataNode = React.memo(
               shouldCommitOnBlur={true}
               // Keeps the text on top of the selected layer
               fontCssProperties={{ ...fontCssProperties, zIndex: 2000 }}
-              textRef={alternativeEditableNodeRef}
+              setAlternativeEditableNodeHeight={setAlternativeEditableNodeHeight}
             />
           )}
         </div>
@@ -1253,19 +1253,19 @@ function useNodeDimensions(
   isExternal: boolean,
   isAlternativeInputDataShape?: boolean
 ): RF.Dimensions {
-  if (type === NODE_TYPES.decisionService && (isExternal || shape["@_isCollapsed"])) {
-    return DECISION_SERVICE_COLLAPSED_DIMENSIONS;
-  }
-
-  const minSizes = MIN_NODE_SIZES[type]({
-    snapGrid,
-    isAlternativeInputDataShape,
-  });
-
-  return {
-    width: snapShapeDimensions(snapGrid, shape, minSizes).width,
-    height: snapShapeDimensions(snapGrid, shape, minSizes).height,
-  };
+  return useMemo(() => {
+    if (type === NODE_TYPES.decisionService && (isExternal || shape["@_isCollapsed"])) {
+      return DECISION_SERVICE_COLLAPSED_DIMENSIONS;
+    }
+    const minSizes = MIN_NODE_SIZES[type]({
+      snapGrid,
+      isAlternativeInputDataShape,
+    });
+    return {
+      width: snapShapeDimensions(snapGrid, shape, minSizes).width,
+      height: snapShapeDimensions(snapGrid, shape, minSizes).height,
+    };
+  }, [isAlternativeInputDataShape, isExternal, shape, snapGrid, type]);
 }
 
 function useHoveredNodeAlwaysOnTop(
