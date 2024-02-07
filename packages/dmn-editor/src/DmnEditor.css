@@ -50,6 +50,7 @@
   top: 0;
   left: 0;
   overflow: visible;
+  z-index: 10000; /* Makes the data type node panel appear correctly, on top of the node */
 }
 .kie-dmn-editor--node:focus {
   outline: none;
@@ -612,13 +613,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead::before {
   border: 0;
 }
-.kie-dmn-editor--data-type-node-panel > div:hover {
-  backdrop-filter: brightness(95%);
-}
-.kie-dmn-editor--data-type-node-panel > div:active {
-  backdrop-filter: brightness(90%);
-}
-/*    edit button on decision and bkm nodes */
+/* edit button on decision and bkm nodes */
 .kie-dmn-editor--edit-expression-node-panel {
   position: absolute;
   padding: 4px 8px;
