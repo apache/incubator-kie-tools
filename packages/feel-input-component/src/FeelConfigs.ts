@@ -1162,6 +1162,19 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         examples: ["product( [2, 3, 4] ) = 24", "product( [] ) = null", "product( 2, 3, 4 ) = 24"],
       },
       {
+        label: "range(from)",
+        insertText: "range($1)",
+        description: "Convert from a range `string` to a `range`.",
+        parameters: [["from", `range \`string\``]],
+        examples: [
+          'range( "[18..21)" ) is [18..21)',
+          'range( "[2..)" ) is >=2',
+          'range( "(..2)" ) is <2',
+          'range( "" ) is null',
+          'range( "[..]" ) is null',
+        ],
+      },
+      {
         label: "remove(list, position)",
         insertText: "remove($1, $2)",
         description: "Creates a list with the removed element excluded from the specified `position`.",
