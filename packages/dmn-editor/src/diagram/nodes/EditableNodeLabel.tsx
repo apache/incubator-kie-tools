@@ -32,8 +32,8 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useFocusableElement } from "../../focus/useFocusableElement";
 import { flushSync } from "react-dom";
 import { NodeLabelPosition } from "./NodeSvgs";
-import "./EditableNodeLabel.css";
 import { State } from "../../store/Store";
+import "./EditableNodeLabel.css";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -52,6 +52,7 @@ export function EditableNodeLabel({
   skipValidation,
   onGetAllUniqueNames,
   fontCssProperties,
+  enableAutoFocusing,
 }: {
   id?: string;
   shouldCommitOnBlur?: boolean;
@@ -67,6 +68,7 @@ export function EditableNodeLabel({
   skipValidation?: boolean;
   onGetAllUniqueNames: (s: State) => UniqueNameIndex;
   fontCssProperties?: React.CSSProperties;
+  enableAutoFocusing?: boolean;
 }) {
   const displayValue = useDmnEditorStore((s) => {
     if (!value) {
@@ -199,7 +201,7 @@ export function EditableNodeLabel({
 
   useFocusableElement(
     ref,
-    id ?? namedElement?.["@_id"],
+    enableAutoFocusing ?? true ? id ?? namedElement?.["@_id"] : undefined,
     useCallback(
       (cb) => {
         setTimeout(() => {
@@ -207,7 +209,7 @@ export function EditableNodeLabel({
             setEditing(true);
           });
           cb();
-        });
+        }, 100);
       },
       [setEditing]
     )

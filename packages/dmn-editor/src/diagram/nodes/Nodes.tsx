@@ -33,7 +33,7 @@ import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as RF from "reactflow";
 import { OnCreateDataType, OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
 import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
@@ -69,6 +69,7 @@ import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -120,6 +121,7 @@ export const InputDataNode = React.memo(
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
+    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -203,6 +205,7 @@ export const InputDataNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
           />
           <EditableNodeLabel
+            id={id}
             namedElement={inputData}
             namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
@@ -229,6 +232,7 @@ export const InputDataNode = React.memo(
             shape={shape}
             onCreate={onCreateDataType}
             onChange={onTypeRefChange}
+            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
@@ -263,6 +267,7 @@ export const DecisionNode = React.memo(
       decision["@_id"]
     );
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
+    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -349,6 +354,7 @@ export const DecisionNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.decision].edges}
           />
           <EditableNodeLabel
+            id={id}
             namedElement={decision}
             namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
@@ -375,6 +381,7 @@ export const DecisionNode = React.memo(
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
+            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
@@ -409,6 +416,7 @@ export const BkmNode = React.memo(
       bkm["@_id"]
     );
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
+    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -479,6 +487,7 @@ export const BkmNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.bkm].edges}
           />
           <EditableNodeLabel
+            id={id}
             namedElement={bkm}
             namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
@@ -505,6 +514,7 @@ export const BkmNode = React.memo(
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
+            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
@@ -596,6 +606,7 @@ export const KnowledgeSourceNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].edges}
           />
           <EditableNodeLabel
+            id={id}
             namedElement={knowledgeSource}
             namedElementQName={dmnObjectQName}
             position={getNodeLabelPosition(type as NodeType)}
@@ -706,7 +717,7 @@ export const TextAnnotationNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.textAnnotation].edges}
           />
           <EditableNodeLabel
-            id={textAnnotation["@_id"]}
+            id={id}
             namedElement={undefined}
             namedElementQName={undefined}
             position={getNodeLabelPosition(type as NodeType)}
@@ -762,6 +773,8 @@ export const DecisionServiceNode = React.memo(
       decisionService["@_id"]
     );
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
+    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
+
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
@@ -897,6 +910,7 @@ export const DecisionServiceNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.decisionService].edges}
           />
           <EditableNodeLabel
+            id={id}
             namedElement={decisionService}
             namedElementQName={dmnObjectQName}
             position={getNodeLabelPosition(type as NodeType)}
@@ -924,6 +938,7 @@ export const DecisionServiceNode = React.memo(
             shape={shape}
             onCreate={onCreateDataType}
             onChange={onTypeRefChange}
+            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
@@ -1033,7 +1048,7 @@ export const GroupNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.group].edges}
           />
           <EditableNodeLabel
-            id={group["@_id"]}
+            id={id}
             namedElement={undefined}
             namedElementQName={undefined}
             position={getNodeLabelPosition(type as NodeType)}
@@ -1102,6 +1117,7 @@ export const UnknownNode = React.memo(
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
           <EditableNodeLabel
+            id={id}
             namedElement={undefined}
             namedElementQName={undefined}
             position={getNodeLabelPosition(type as NodeType)}
@@ -1193,22 +1209,25 @@ function useNodeDimensions(
 
 function useHoveredNodeAlwaysOnTop(
   ref: React.RefObject<HTMLDivElement | SVGElement>,
-  layer: number,
+  zIndex: number,
   shouldActLikeHovered: boolean,
   dragging: boolean,
   selected: boolean,
   isEditing: boolean
 ) {
-  useEffect(() => {
-    setTimeout(() => {
-      if (selected && !isEditing) {
-        ref.current?.focus();
-      }
-      if (ref.current) {
-        ref.current.parentElement!.style.zIndex = `${shouldActLikeHovered || dragging ? layer + 1000 + 1 : layer}`;
-      }
-    }, 0);
-  }, [dragging, shouldActLikeHovered, ref, selected, layer, isEditing]);
+  useLayoutEffect(() => {
+    const r = ref.current;
+
+    if (selected && !isEditing) {
+      r?.focus();
+    }
+
+    if (r) {
+      r.parentElement!.style.zIndex = `${
+        shouldActLikeHovered || dragging ? zIndex + NODE_LAYERS.NESTED_NODES + 1 : zIndex
+      }`;
+    }
+  }, [dragging, shouldActLikeHovered, ref, zIndex, selected, isEditing]);
 }
 
 export function useConnection(nodeId: string) {
