@@ -93,7 +93,6 @@ export function DrdSelectorPanel() {
                 onClick={() => {
                   dmnEditorStoreApi.setState((state) => {
                     state.diagram.drdIndex = i;
-                    // state.diagram.drdSelector.isOpen = false;
                   });
                 }}
               >
