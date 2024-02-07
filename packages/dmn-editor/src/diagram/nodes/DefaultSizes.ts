@@ -24,16 +24,13 @@ import { NodeType } from "../connections/graphStructure";
 import { NODE_TYPES } from "./NodeTypes";
 import { CONTAINER_NODES_DESIRABLE_PADDING } from "../maths/DmnMaths";
 
-export const MIN_NODE_SIZES: Record<
-  NodeType,
-  ({
-    snapGrid,
-    isAlternativeInputDataShape,
-  }: {
-    snapGrid: SnapGrid;
-    isAlternativeInputDataShape?: boolean;
-  }) => DC__Dimension
-> = {
+export type NodeSizes<T extends NodeType = NodeType> = {
+  [K in T]: K extends typeof NODE_TYPES.inputData
+    ? (args: { snapGrid: SnapGrid; isAlternativeInputDataShape: boolean }) => DC__Dimension
+    : (args: { snapGrid: SnapGrid }) => DC__Dimension;
+};
+
+export const MIN_NODE_SIZES: NodeSizes = {
   [NODE_TYPES.inputData]: ({ snapGrid, isAlternativeInputDataShape }) => {
     if (isAlternativeInputDataShape) {
       const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, NODE_MIN_WIDTH / 2, NODE_MIN_HEIGHT + 20);
@@ -107,16 +104,7 @@ export const MIN_NODE_SIZES: Record<
   },
 };
 
-export const DEFAULT_NODE_SIZES: Record<
-  NodeType,
-  ({
-    snapGrid,
-    isAlternativeInputDataShape,
-  }: {
-    snapGrid: SnapGrid;
-    isAlternativeInputDataShape?: boolean;
-  }) => DC__Dimension
-> = {
+export const DEFAULT_NODE_SIZES: NodeSizes = {
   [NODE_TYPES.inputData]: ({ snapGrid, isAlternativeInputDataShape }) => {
     if (isAlternativeInputDataShape) {
       const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, NODE_MIN_WIDTH / 2, NODE_MIN_HEIGHT + 20);

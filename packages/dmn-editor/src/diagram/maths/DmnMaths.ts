@@ -187,6 +187,7 @@ export function getContainmentRelationship({
   container,
   divingLineLocalY,
   snapGrid,
+  isAlternativeInputDataShape,
   containerMinSizes,
   boundsMinSizes,
 }: {
@@ -194,13 +195,22 @@ export function getContainmentRelationship({
   container: DC__Bounds;
   divingLineLocalY?: number;
   snapGrid: SnapGrid;
-  containerMinSizes: (args: { snapGrid: SnapGrid; isAlternativeInputDataShape?: boolean }) => DC__Dimension;
-  boundsMinSizes: (args: { snapGrid: SnapGrid; isAlternativeInputDataShape?: boolean }) => DC__Dimension;
+  isAlternativeInputDataShape: boolean;
+  containerMinSizes: (args: { snapGrid: SnapGrid; isAlternativeInputDataShape: boolean }) => DC__Dimension;
+  boundsMinSizes: (args: { snapGrid: SnapGrid; isAlternativeInputDataShape: boolean }) => DC__Dimension;
 }): { isInside: true; section: "upper" | "lower" } | { isInside: false } {
   const { x: cx, y: cy } = snapBoundsPosition(snapGrid, container);
-  const { width: cw, height: ch } = snapBoundsDimensions(snapGrid, container, containerMinSizes({ snapGrid }));
+  const { width: cw, height: ch } = snapBoundsDimensions(
+    snapGrid,
+    container,
+    containerMinSizes({ snapGrid, isAlternativeInputDataShape })
+  );
   const { x: bx, y: by } = snapBoundsPosition(snapGrid, bounds);
-  const { width: bw, height: bh } = snapBoundsDimensions(snapGrid, bounds, boundsMinSizes({ snapGrid }));
+  const { width: bw, height: bh } = snapBoundsDimensions(
+    snapGrid,
+    bounds,
+    boundsMinSizes({ snapGrid, isAlternativeInputDataShape })
+  );
 
   const center = getDmnBoundsCenterPoint({
     "@_height": bh,

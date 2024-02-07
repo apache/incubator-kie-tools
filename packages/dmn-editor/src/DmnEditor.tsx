@@ -207,6 +207,7 @@ export const DmnEditorInternal = ({
               snapGrid={state.diagram.snapGrid}
               importsByNamespace={state.computed(state).importsByNamespace()}
               thisDmn={state.dmn}
+              isAlternativeInputDataShape={state.computed(state).isAlternativeInputDataShape()}
             />
           </g>,
           svg

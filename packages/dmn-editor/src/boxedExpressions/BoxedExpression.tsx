@@ -96,33 +96,22 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   //
 
-  const thisDmn = useDmnEditorStore((s) => {
-    return s.dmn;
-  });
-  const diagram = useDmnEditorStore((s) => {
-    return s.diagram;
-  });
-  const boxedExpressionEditor = useDmnEditorStore((s) => {
-    return s.boxedExpressionEditor;
-  });
-  const externalDmnsByNamespace = useDmnEditorStore((s) => {
-    return s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns;
-  });
-  const dataTypesTree = useDmnEditorStore((s) => {
-    return s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree;
-  });
-  const allTopLevelDataTypesByFeelName = useDmnEditorStore((s) => {
-    return s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName;
-  });
-  const nodesById = useDmnEditorStore((s) => {
-    return s.computed(s).getDiagramData(externalModelsByNamespace).nodesById;
-  });
-  const importsByNamespace = useDmnEditorStore((s) => {
-    return s.computed(s).importsByNamespace();
-  });
-  const externalPmmlsByNamespace = useDmnEditorStore((s) => {
-    return s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).pmmls;
-  });
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
+  const diagram = useDmnEditorStore((s) => s.diagram);
+  const boxedExpressionEditor = useDmnEditorStore((s) => s.boxedExpressionEditor);
+  const externalDmnsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
+  );
+  const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
+  const allTopLevelDataTypesByFeelName = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
+  );
+  const nodesById = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodesById);
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
+  const externalPmmlsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).pmmls
+  );
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   //
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -273,11 +262,16 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
-  const Icon = useMemo(
-    () =>
-      expression?.drgElement ? NodeIcon({ nodeType: getNodeTypeFromDmnObject(expression.drgElement) }) : () => <></>,
-    [expression?.drgElement]
-  );
+  const Icon = useMemo(() => {
+    if (expression?.drgElement === undefined) {
+      throw new Error("A node Icon must exist for all types of node");
+    }
+    const nodeType = getNodeTypeFromDmnObject(expression.drgElement);
+    if (nodeType === undefined) {
+      throw new Error("Can't determine node icon with undefined node type");
+    }
+    return NodeIcon({ nodeType, isAlternativeInputDataShape });
+  }, [expression?.drgElement, isAlternativeInputDataShape]);
 
   return (
     <>

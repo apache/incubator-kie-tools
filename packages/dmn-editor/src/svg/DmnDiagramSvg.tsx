@@ -63,12 +63,14 @@ export function DmnDiagramSvg({
   snapGrid,
   thisDmn,
   importsByNamespace,
+  isAlternativeInputDataShape,
 }: {
   nodes: RF.Node<DmnDiagramNodeData>[];
   edges: RF.Edge<DmnDiagramEdgeData>[];
   snapGrid: SnapGrid;
   thisDmn: State["dmn"];
   importsByNamespace: TypeOrReturnType<Computed["importsByNamespace"]>;
+  isAlternativeInputDataShape: boolean;
 }) {
   const { nodesSvg, nodesById } = useMemo(() => {
     const nodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
@@ -192,7 +194,10 @@ export function DmnDiagramSvg({
                 lineHeight={fontStyle.lineHeight}
                 style={{ ...fontStyle }}
                 dy={`calc(1.5em * ${i})`}
-                {...getNodeLabelSvgTextAlignmentProps(node, getNodeLabelPosition(node.type as NodeType))}
+                {...getNodeLabelSvgTextAlignmentProps(
+                  node,
+                  getNodeLabelPosition({ nodeType: node.type as NodeType, isAlternativeInputDataShape })
+                )}
               >
                 {labelLine}
               </Text>
@@ -203,7 +208,7 @@ export function DmnDiagramSvg({
     });
 
     return { nodesSvg, nodesById };
-  }, [importsByNamespace, nodes, thisDmn.model.definitions]);
+  }, [importsByNamespace, isAlternativeInputDataShape, nodes, thisDmn.model.definitions]);
 
   return (
     <>

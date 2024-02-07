@@ -35,7 +35,11 @@ export function DrdSelectorPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
-  const drdIndex = useDmnEditorStore((s) => s.diagram.drdIndex);
+  const drdName = useDmnEditorStore(
+    (s) =>
+      s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[s.diagram.drdIndex]["@_name"] ||
+      getDefaultDrdName({ drdIndex: s.diagram.drdIndex })
+  );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -105,7 +109,7 @@ export function DrdSelectorPanel() {
 
         <div style={{ gridArea: "header-properties" }}>
           <Title headingLevel="h3" style={{ height: "36px" }}>
-            {getDefaultDrdName({ drdIndex })}
+            {drdName}
           </Title>
         </div>
         <div style={{ gridArea: "divider-properties" }}>

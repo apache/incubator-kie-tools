@@ -30,8 +30,6 @@ import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-co
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { DMN15_SPEC } from "../Dmn15Spec";
-import { useCallback } from "react";
-import { State } from "../store/Store";
 
 export function DmnObjectListItem({
   dmnObject,
@@ -49,6 +47,7 @@ export function DmnObjectListItem({
   const allTopLevelDataTypesByFeelName = useDmnEditorStore(
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
   );
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   const displayName = dmnObject
     ? buildFeelQNameFromNamespace({
@@ -67,12 +66,16 @@ export function DmnObjectListItem({
     )
   );
 
-  const nodeIconProps = useMemo(
-    () => (dmnObject ? { nodeType: getNodeTypeFromDmnObject(dmnObject) } : {}),
-    [dmnObject]
-  );
-
-  const Icon = dmnObject ? NodeIcon(nodeIconProps) : () => <></>;
+  const Icon = useMemo(() => {
+    if (dmnObject === undefined) {
+      throw new Error("Icon can't be defined without a DMN object");
+    }
+    const nodeType = getNodeTypeFromDmnObject(dmnObject);
+    if (nodeType === undefined) {
+      throw new Error("Can't determine node icon with undefined node type");
+    }
+    return NodeIcon({ nodeType, isAlternativeInputDataShape });
+  }, [dmnObject, isAlternativeInputDataShape]);
 
   return !dmnObject ? (
     <>{dmnObjectHref}</>

@@ -120,7 +120,7 @@ export function AutolayoutButton() {
         const idOfFakeNodeForOutputSection = `${node.id}${FAKE_MARKER}dsOutput`;
         const idOfFakeNodeForEncapsulatedSection = `${node.id}${FAKE_MARKER}dsEncapsulated`;
 
-        const dsSize = MIN_NODE_SIZES[NODE_TYPES.decisionService]({ snapGrid, isAlternativeInputDataShape });
+        const dsSize = MIN_NODE_SIZES[NODE_TYPES.decisionService]({ snapGrid });
         parentNodesById.set(node.id, {
           elkNode: {
             id: node.id,
@@ -179,7 +179,7 @@ export function AutolayoutButton() {
           targets: [idOfFakeNodeForOutputSection],
         });
       } else if (node.data?.dmnObject?.__$$element === "group") {
-        const groupSize = DEFAULT_NODE_SIZES[NODE_TYPES.group]({ snapGrid, isAlternativeInputDataShape });
+        const groupSize = DEFAULT_NODE_SIZES[NODE_TYPES.group]({ snapGrid });
         const groupBounds = node.data.shape["dc:Bounds"];
         parentNodesById.set(node.id, {
           decisionServiceSection: "n/a",
@@ -201,6 +201,7 @@ export function AutolayoutButton() {
               bounds: bounds!,
               container: groupBounds!,
               snapGrid,
+              isAlternativeInputDataShape,
               containerMinSizes: MIN_NODE_SIZES[NODE_TYPES.group],
               boundsMinSizes: MIN_NODE_SIZES[nodesById.get(id)?.type as NodeType],
             }).isInside,

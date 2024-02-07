@@ -39,6 +39,13 @@ const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // Th
 
 const nodeSvgProps = { width: 200, height: 120, x: 16, y: 48, strokeWidth: 16 };
 
+export type NodeIcons =
+  | { isAlternativeInputDataShape: boolean; nodeType: typeof NODE_TYPES.inputData }
+  | {
+      isAlternativeInputDataShape?: boolean;
+      nodeType: Exclude<NodeType, typeof NODE_TYPES.inputData>;
+    };
+
 export function RoundSvg({
   children,
   padding,
@@ -65,13 +72,7 @@ export function RoundSvg({
   );
 }
 
-export function NodeIcon({
-  isAlternativeInputDataShape,
-  nodeType,
-}: {
-  isAlternativeInputDataShape?: boolean;
-  nodeType?: NodeType;
-}) {
+export function NodeIcon({ isAlternativeInputDataShape, nodeType }: NodeIcons) {
   return switchExpression(nodeType, {
     [NODE_TYPES.inputData]: isAlternativeInputDataShape ? AlternativeInputDataIcon : InputDataIcon,
     [NODE_TYPES.decision]: DecisionIcon,
