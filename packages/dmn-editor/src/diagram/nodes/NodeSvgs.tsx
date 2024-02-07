@@ -108,8 +108,10 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
   );
 }
 
-export function AlternativeInputDataNodeSvg(__props: NodeSvgProps & { isIcon: boolean; transform?: string }) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, isIcon, props } = normalize(__props);
+export function AlternativeInputDataNodeSvg(
+  __props: NodeSvgProps & { isCollection?: boolean; isIcon: boolean; transform?: string }
+) {
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, isIcon, isCollection, props } = normalize(__props);
 
   const bevel = 25;
   const arrowStartingX = 6;
@@ -146,6 +148,7 @@ export function AlternativeInputDataNodeSvg(__props: NodeSvgProps & { isIcon: bo
           />
         </>
       )}
+      {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
     </>
   );
 }
