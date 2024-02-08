@@ -106,13 +106,7 @@ pipeline {
         stage('Load local shared scripts') {
             steps {
                 script {
-                    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
-                    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
-                    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
-                    openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
-                    dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
-                    helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
-                    zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
+                    loadLocalSharedScripts()
                 }
             }
         }
@@ -186,7 +180,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildPartial(params)
+                        buildPartial()
                     }
                 }
             }
@@ -552,17 +546,7 @@ pipeline {
             }
             steps {
                 script {
-                    appName = 'staging-kie-sandbox-extended-services'
-                    openShiftUtils.createOrUpdateApp(
-                        "${env.OPENSHIFT_NAMESPACE}",
-                        "${appName}",
-                        "${env.DEPLOY_TAG}",
-                        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageName}:${env.DEPLOY_TAG}",
-                        "${env.OPENSHIFT_PART_OF}",
-                        'golang',
-                        "${pipelineVars.openshiftCredentialsId}"
-                    )
-                    env.KIE_SANDBOX_EXTENDED_SERVICES_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", "${appName}", "${pipelineVars.openshiftCredentialsId}")
+                    deployKieSandboxExtendedServicesImageToOpenshift()
                 }
             }
         }
@@ -589,17 +573,7 @@ pipeline {
             }
             steps {
                 script {
-                    appName = 'staging-cors-proxy'
-                    openShiftUtils.createOrUpdateApp(
-                        "${env.OPENSHIFT_NAMESPACE}",
-                        "${appName}",
-                        "${env.DEPLOY_TAG}",
-                        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${env.DEPLOY_TAG}",
-                        "${env.OPENSHIFT_PART_OF}",
-                        'nodejs',
-                        "${pipelineVars.openshiftCredentialsId}"
-                    )
-                    env.KIE_SANDBOX_CORS_PROXY_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", "${appName}", "${pipelineVars.openshiftCredentialsId}")
+                    deployCorsProxyImageToOpenshift()
                 }
             }
         }
@@ -638,16 +612,7 @@ pipeline {
             }
             steps {
                 script {
-                    openShiftUtils.createOrUpdateApp(
-                        "${env.OPENSHIFT_NAMESPACE}",
-                        'staging-kie-sandbox',
-                        "${env.DEPLOY_TAG}",
-                        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}/${env.KIE_SANDBOX__imageName}:${env.DEPLOY_TAG}",
-                        "${env.OPENSHIFT_PART_OF}",
-                        'js',
-                        "${pipelineVars.openshiftCredentialsId}",
-                        './deployment.env'
-                    )
+                    deployKieSandboxImageToOpenshift()
                 }
             }
         }
@@ -655,13 +620,9 @@ pipeline {
         stage('Build (serverless-logic-web-tools-swf-dev-mode-image)') {
             steps {
                 dir('kie-tools') {
-                    sh '''#!/bin/bash -el
-                    export KIE_TOOLS_BUILD__runTests=true
-                    export KIE_TOOLS_BUILD__buildContainerImages=true
-                    docker system prune -af
-                    echo "Build @kie-tools/serverless-logic-web-tools-swf-dev-mode-image"
-                    pnpm -F @kie-tools/serverless-logic-web-tools-swf-dev-mode-image... --workspace-concurrency=1 build:prod
-                    '''.trim()
+                    script {
+                        buildServerlessLogicWebToolsSwfDevModeImage()
+                    }
                 }
             }
         }
@@ -685,13 +646,9 @@ pipeline {
         stage('Build (dev-deployment-base-image)') {
             steps {
                 dir('kie-tools') {
-                    sh '''#!/bin/bash -el
-                    export KIE_TOOLS_BUILD__runTests=true
-                    export KIE_TOOLS_BUILD__buildContainerImages=true
-                    docker system prune -af
-                    echo "Build @kie-tools/dev-deployment-base-image"
-                    pnpm -F @kie-tools/dev-deployment-base-image... --workspace-concurrency=1 build:prod
-                    '''.trim()
+                    script {
+                        buildDevDeploymentBaseImage()
+                    }
                 }
             }
         }
@@ -715,13 +672,9 @@ pipeline {
         stage('Build (dev-deployment-dmn-form-webapp-image)') {
             steps {
                 dir('kie-tools') {
-                    sh '''#!/bin/bash -el
-                    export KIE_TOOLS_BUILD__runTests=true
-                    export KIE_TOOLS_BUILD__buildContainerImages=true
-                    docker system prune -af
-                    echo "Build @kie-tools/dev-deployment-dmn-form-webapp-image"
-                    pnpm -F @kie-tools/dev-deployment-dmn-form-webapp-image... --workspace-concurrency=1 build:prod
-                    '''.trim()
+                    script {
+                        buildDevDeploymentDmnFormWebappImage()
+                    }
                 }
             }
         }
@@ -745,13 +698,9 @@ pipeline {
         stage('Build (serverless-logic-web-tools-base-builder-image)') {
             steps {
                 dir('kie-tools') {
-                    sh '''#!/bin/bash -el
-                    export KIE_TOOLS_BUILD__runTests=true
-                    export KIE_TOOLS_BUILD__buildContainerImages=true
-                    docker system prune -af
-                    echo "Build @kie-tools/serverless-logic-web-tools-base-builder-image"
-                    pnpm -F @kie-tools/serverless-logic-web-tools-base-builder-image... --workspace-concurrency=1 build:prod
-                    '''.trim()
+                    script {
+                        buildServerlessLogicWebToolsBaseBuilderImage()
+                    }
                 }
             }
         }
@@ -775,13 +724,9 @@ pipeline {
         stage('Build (dashbuilder-viewer-image)') {
             steps {
                 dir('kie-tools') {
-                    sh '''#!/bin/bash -el
-                    export KIE_TOOLS_BUILD__runTests=true
-                    export KIE_TOOLS_BUILD__buildContainerImages=true
-                    docker system prune -af
-                    echo "Build @kie-tools/dashbuilder-viewer-image"
-                    pnpm -F @kie-tools/dashbuilder-viewer-image... --workspace-concurrency=1 build:prod
-                    '''.trim()
+                    script {
+                        buildDashbuilderViewerImage()
+                    }
                 }
             }
         }
@@ -809,11 +754,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        helmUtils.pushChartToRegistry(
-                            "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
-                            "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
-                            "${pipelineVars.quayPushCredentialsId}"
-                        )
+                        pushKieSandboxHelmChartToQuay()
                     }
                 }
             }
@@ -827,7 +768,7 @@ pipeline {
     }
 }
 
-def buildPartial(params) {
+def buildPartial() {
     sh """#!/bin/bash -el
     export KIE_TOOLS_BUILD__runEndToEndTests=false
     export KIE_TOOLS_BUILD__runTests=false
@@ -864,6 +805,63 @@ def buildPartial(params) {
     """.trim()
 }
 
+def buildServerlessLogicWebToolsSwfDevModeImage() {
+    sh '''#!/bin/bash -el
+    export KIE_TOOLS_BUILD__runTests=true
+    export KIE_TOOLS_BUILD__buildContainerImages=true
+    docker system prune -af
+    echo "Build @kie-tools/serverless-logic-web-tools-swf-dev-mode-image"
+    pnpm -F @kie-tools/serverless-logic-web-tools-swf-dev-mode-image... --workspace-concurrency=1 build:prod
+    '''.trim()
+}
+
+def buildDevDeploymentBaseImage() {
+    sh '''#!/bin/bash -el
+    export KIE_TOOLS_BUILD__runTests=true
+    export KIE_TOOLS_BUILD__buildContainerImages=true
+    docker system prune -af
+    echo "Build @kie-tools/dev-deployment-base-image"
+    pnpm -F @kie-tools/dev-deployment-base-image... --workspace-concurrency=1 build:prod
+    '''.trim()
+}
+
+def buildDevDeploymentDmnFormWebappImage() {
+    sh '''#!/bin/bash -el
+    export KIE_TOOLS_BUILD__runTests=true
+    export KIE_TOOLS_BUILD__buildContainerImages=true
+    docker system prune -af
+    echo "Build @kie-tools/dev-deployment-dmn-form-webapp-image"
+    pnpm -F @kie-tools/dev-deployment-dmn-form-webapp-image... --workspace-concurrency=1 build:prod
+    '''.trim()
+}
+
+def buildServerlessLogicWebToolsBaseBuilderImage() {
+    sh '''#!/bin/bash -el
+    export KIE_TOOLS_BUILD__runTests=true
+    export KIE_TOOLS_BUILD__buildContainerImages=true
+    docker system prune -af
+    echo "Build @kie-tools/serverless-logic-web-tools-base-builder-image"
+    pnpm -F @kie-tools/serverless-logic-web-tools-base-builder-image... --workspace-concurrency=1 build:prod
+    '''.trim()
+}
+
+def buildDashbuilderViewerImage() {
+    sh '''#!/bin/bash -el
+    export KIE_TOOLS_BUILD__runTests=true
+    export KIE_TOOLS_BUILD__buildContainerImages=true
+    docker system prune -af
+    echo "Build @kie-tools/dashbuilder-viewer-image"
+    pnpm -F @kie-tools/dashbuilder-viewer-image... --workspace-concurrency=1 build:prod
+    '''.trim()
+}
+
+def pushKieSandboxHelmChartToQuay() {
+    helmUtils.pushChartToRegistry(
+        "${env.KIE_SANDBOX_HELM_CHART__registry}/${env.KIE_SANDBOX_HELM_CHART__account}",
+        "packages/kie-sandbox-helm-chart/dist/${env.KIE_SANDBOX_HELM_CHART__name}-${env.KIE_SANDBOX_HELM_CHART__tag}.tgz",
+        "${pipelineVars.quayPushCredentialsId}"
+    )
+}
 
 def deployOnlineEditor(String tag, String credentialsId) {
     DEPLOYMENT_DIR = "${tag}-prerelease"
@@ -905,4 +903,55 @@ def deployOnlineEditor(String tag, String credentialsId) {
     """.trim()
 
     githubUtils.pushObject('origin', 'main', "${credentialsId}")
+}
+
+def deployKieSandboxExtendedServicesImageToOpenshift() {
+    appName = 'staging-kie-sandbox-extended-services'
+    openShiftUtils.createOrUpdateApp(
+        "${env.OPENSHIFT_NAMESPACE}",
+        "${appName}",
+        "${env.DEPLOY_TAG}",
+        "${env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount}/${env.KIE_SANDBOX_EXTENDED_SERVICES__imageName}:${env.DEPLOY_TAG}",
+        "${env.OPENSHIFT_PART_OF}",
+        'golang',
+        "${pipelineVars.openshiftCredentialsId}"
+    )
+    env.KIE_SANDBOX_EXTENDED_SERVICES_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", "${appName}", "${pipelineVars.openshiftCredentialsId}")
+}
+
+def deployCorsProxyImageToOpenshift() {
+    appName = 'staging-cors-proxy'
+    openShiftUtils.createOrUpdateApp(
+        "${env.OPENSHIFT_NAMESPACE}",
+        "${appName}",
+        "${env.DEPLOY_TAG}",
+        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${env.DEPLOY_TAG}",
+        "${env.OPENSHIFT_PART_OF}",
+        'nodejs',
+        "${pipelineVars.openshiftCredentialsId}"
+    )
+    env.KIE_SANDBOX_CORS_PROXY_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", "${appName}", "${pipelineVars.openshiftCredentialsId}")
+}
+
+def deployKieSandboxImageToOpenshift() {
+    openShiftUtils.createOrUpdateApp(
+        "${env.OPENSHIFT_NAMESPACE}",
+        'staging-kie-sandbox',
+        "${env.DEPLOY_TAG}",
+        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}/${env.KIE_SANDBOX__imageName}:${env.DEPLOY_TAG}",
+        "${env.OPENSHIFT_PART_OF}",
+        'js',
+        "${pipelineVars.openshiftCredentialsId}",
+        './deployment.env'
+    )
+}
+
+def loadLocalSharedScripts() {
+    pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
+    buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
+    githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
+    openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
+    dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
+    helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
+    zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
 }
