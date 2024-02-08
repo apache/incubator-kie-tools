@@ -23,7 +23,7 @@ pipeline {
     }
 
     options {
-        timeout(time: 600, unit: 'MINUTES')
+        timeout(time: 900, unit: 'MINUTES')
     }
 
     parameters {
