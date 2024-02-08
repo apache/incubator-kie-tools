@@ -45,6 +45,9 @@ createSetupBranchJob()
 setupDeployJob(JobType.NIGHTLY)
 KogitoJobUtils.createEnvironmentIntegrationBranchNightlyJob(this, 'quarkus-lts')
 
+// Weekly jobs
+setupWeeklyDeployJob(JobType.OTHER)
+
 // Release jobs
 setupDeployJob(JobType.RELEASE)
 setupPromoteJob(JobType.RELEASE)
@@ -320,4 +323,57 @@ void setupQuarkusUpdateJob() {
     KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], [
         "python scripts/update-repository.py --quarkus-platform-version %new_version%"
     ])
+}
+
+void setupWeeklyDeployJob(JobType jobType) {
+    setupBuildImageJob(jobType)
+
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images.weekly-deploy', jobType, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Kogito Images Weekly Deploy')
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
+    jobParams.env.putAll([
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+
+        MAX_REGISTRY_RETRIES: 3,
+
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
+
+        MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
+
+        QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
+    ])
+
+    jobParams.env.put('IMAGES_LIST', 'kogito-swf-builder,kogito-swf-devmode')
+
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
+
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+
+            stringParam('APPS_URI', '', 'Git uri to the kogito-apps repository to use for tests.')
+            stringParam('APPS_REF', '', 'Git reference (branch/tag) to the kogito-apps repository to use for building. Default to BUILD_BRANCH_NAME.')
+
+            // Build&Test information
+            booleanParam('SKIP_TESTS', false, 'Skip tests')
+            stringParam('EXAMPLES_URI', '', 'Git uri to the kogito-examples repository to use for tests.')
+            stringParam('EXAMPLES_REF', '', 'Git reference (branch/tag) to the kogito-examples repository to use for tests.')
+
+            // Deploy information
+            booleanParam('IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
+            stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
+            stringParam('IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
+            stringParam('IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
+            booleanParam('DEPLOY_WITH_LATEST_TAG', false, 'Set to true if you want the deployed images to also be with the `latest` tag')
+
+            stringParam('GIT_CHECKOUT_DATETIME', '', 'Git checkout date and time - (Y-m-d H:i)')
+
+            booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
+        }
+    }
 }
