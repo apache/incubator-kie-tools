@@ -108,6 +108,7 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
         ry={ry}
       />
       {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
+      <NodeHiddenInformationMarker {...__props} />
     </>
   );
 }
@@ -438,6 +439,47 @@ function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom"
         y2={y2Position}
         strokeWidth={strokeWidth}
         fill={fillColor ?? DEFAULT_NODE_FILL}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+      />
+    </>
+  );
+}
+
+function NodeHiddenInformationMarker(__props: NodeSvgProps) {
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+
+  const dotRadius = 1;
+  const xPosition = x + width / 2;
+  const xSpacing = 7;
+  const yPosition = y + height - 11;
+
+  return (
+    <>
+      <circle
+        {...props}
+        r={dotRadius}
+        cx={xPosition - xSpacing}
+        cy={yPosition}
+        strokeWidth={strokeWidth}
+        fill={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+      />
+      <circle
+        {...props}
+        r={dotRadius}
+        cx={xPosition}
+        cy={yPosition}
+        strokeWidth={strokeWidth}
+        fill={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+      />
+      <circle
+        {...props}
+        r={dotRadius}
+        cx={xPosition + xSpacing}
+        cy={yPosition}
+        strokeWidth={strokeWidth}
+        fill={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
       />
     </>
