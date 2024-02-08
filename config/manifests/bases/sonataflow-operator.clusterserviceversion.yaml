@@ -69,7 +69,15 @@ spec:
       displayName: Sonata Flow Cluster Platform
       kind: SonataFlowClusterPlatform
       name: sonataflowclusterplatforms.sonataflow.org
+      resources:
+      - kind: SonataFlowPlatform
+        name: A SonataFlow Platform
+        version: sonataflow.org/v1alpha08
       specDescriptors:
+      - description: PlatformRef defines which existing SonataFlowPlatform's supporting
+          services should be used cluster-wide.
+        displayName: PlatformRef
+        path: platformRef
       - description: Name of the SonataFlowPlatform
         displayName: Platform_Name
         path: platformRef.name
@@ -120,6 +128,13 @@ spec:
           no build required)
         displayName: DevMode
         path: devMode
+      - description: 'Services attributes for deploying supporting applications like
+          Data Index & Job Service. Only workflows without the `sonataflow.org/profile:
+          dev` annotation will be configured to use these service(s). Setting this
+          will override the use of any cluster-scoped services that might be defined
+          via `SonataFlowClusterPlatform`.'
+        displayName: Services
+        path: services
       - description: PodTemplate describes the deployment details of this platform
           service instance.
         displayName: podTemplate
@@ -133,6 +148,10 @@ spec:
           or OpenShift)
         displayName: cluster
         path: cluster
+      - description: ClusterPlatformRef information related to the (optional) active
+          SonataFlowClusterPlatform
+        displayName: clusterPlatformRef
+        path: clusterPlatformRef
       - description: Info generic information related to the build
         displayName: info
         path: info

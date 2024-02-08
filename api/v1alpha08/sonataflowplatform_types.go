@@ -45,6 +45,7 @@ type SonataFlowPlatformSpec struct {
 	// Only workflows without the `sonataflow.org/profile: dev` annotation will be configured to use these service(s).
 	// Setting this will override the use of any cluster-scoped services that might be defined via `SonataFlowClusterPlatform`.
 	// +optional
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Services"
 	Services *ServicesPlatformSpec `json:"services,omitempty"`
 }
 
@@ -80,6 +81,7 @@ type SonataFlowPlatformStatus struct {
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="info"
 	Info map[string]string `json:"info,omitempty"`
 	// ClusterPlatformRef information related to the (optional) active SonataFlowClusterPlatform
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="clusterPlatformRef"
 	ClusterPlatformRef *SonataFlowClusterPlatformRefStatus `json:"clusterPlatformRef,omitempty"`
 }
 
