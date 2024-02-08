@@ -193,12 +193,16 @@ export const DmnEditorInternal = ({
         }
 
         const bounds = RF.getNodesBounds(nodes);
+        const state = dmnEditorStoreApi.getState();
 
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svg.setAttribute("width", bounds.width + SVG_PADDING * 2 + "");
-        svg.setAttribute("height", bounds.height + SVG_PADDING * 2 + "");
-
-        const state = dmnEditorStoreApi.getState();
+        svg.setAttribute(
+          "height",
+          // It's not possible to calculate the text height which is outside of the node
+          // for the alternative input data shape
+          bounds.height + (state.computed(state).isAlternativeInputDataShape() ? SVG_PADDING * 5 : SVG_PADDING * 2) + ""
+        );
 
         // We're still on React 17.
         // eslint-disable-next-line react/no-deprecated

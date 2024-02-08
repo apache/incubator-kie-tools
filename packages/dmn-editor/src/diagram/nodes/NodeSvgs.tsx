@@ -150,6 +150,7 @@ export function AlternativeInputDataNodeSvg(
             stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
             strokeLinejoin={"round"}
             strokeWidth={strokeWidth}
+            transform={`translate(${x},${y})`}
           />
           <polygon
             {...props}
@@ -158,6 +159,7 @@ export function AlternativeInputDataNodeSvg(
             stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
             strokeLinejoin={"round"}
             strokeWidth={strokeWidth}
+            transform={`translate(${x},${y})`}
           />
         </>
       )}
