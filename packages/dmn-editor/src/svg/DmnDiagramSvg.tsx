@@ -296,10 +296,10 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
   switch (labelPosition) {
     case "center-bottom":
       const cbTx = n.position.x! + n.width! / 2;
-      const cbTy = n.position.y! + n.height! + 20;
-      const cbWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
+      const cbTy = n.position.y! + n.height! + 10;
+      const cbWidth = n.width! - SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
-        verticalAnchor: "middle",
+        verticalAnchor: "start",
         textAnchor: "middle",
         transform: `translate(${cbTx},${cbTy})`,
         width: cbWidth,
