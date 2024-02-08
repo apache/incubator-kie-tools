@@ -40,7 +40,10 @@ import { BoxedExpression } from "./boxedExpressions/BoxedExpression";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram, DiagramRef } from "./diagram/Diagram";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
-import { DmnEditorExternalModelsContextProvider } from "./includedModels/DmnEditorDependenciesContext";
+import {
+  DmnEditorExternalModelsContextProvider,
+  useExternalModels,
+} from "./includedModels/DmnEditorDependenciesContext";
 import { IncludedModels } from "./includedModels/IncludedModels";
 import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 import { DiagramPropertiesPanel } from "./propertiesPanel/DiagramPropertiesPanel";
@@ -166,6 +169,7 @@ export const DmnEditorInternal = ({
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
+  const { externalModelsByNamespace } = useExternalModels();
 
   // Refs
 
@@ -208,6 +212,10 @@ export const DmnEditorInternal = ({
               importsByNamespace={state.computed(state).importsByNamespace()}
               thisDmn={state.dmn}
               isAlternativeInputDataShape={state.computed(state).isAlternativeInputDataShape()}
+              allDataTypesById={state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById}
+              allTopLevelItemDefinitionUniqueNames={
+                state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+              }
             />
           </g>,
           svg
@@ -216,7 +224,7 @@ export const DmnEditorInternal = ({
         return new XMLSerializer().serializeToString(svg);
       },
     }),
-    [dmnEditorStoreApi]
+    [dmnEditorStoreApi, externalModelsByNamespace]
   );
 
   // Make sure the DMN Editor reacts to props changing.

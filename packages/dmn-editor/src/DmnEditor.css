@@ -162,7 +162,7 @@
   top: -10px;
   left: -10px;
   width: calc(100% + 20px);
-  height: var(selected-alternative-input-data-node-shape--height);
+  height: var(--selected-alternative-input-data-node-shape--height);
   backdrop-filter: blur(8px);
 }
 .kie-dmn-editor--selected-alternative-input-data-node:before {

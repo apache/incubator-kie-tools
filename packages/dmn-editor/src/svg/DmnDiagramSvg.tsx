@@ -41,6 +41,7 @@ import {
   TextAnnotationNodeSvg,
   UnknownNodeSvg,
   NodeLabelPosition,
+  AlternativeInputDataNodeSvg,
 } from "../diagram/nodes/NodeSvgs";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { useMemo } from "react";
@@ -56,6 +57,8 @@ import { NodeType } from "../diagram/connections/graphStructure";
 import { buildFeelQNameFromXmlQName } from "../feel/buildFeelQName";
 import { Text } from "@visx/text";
 import { TypeOrReturnType } from "../store/ComputedStateCache";
+import { UniqueNameIndex } from "../Dmn15Spec";
+import { DataTypeIndex } from "../dataTypes/DataTypes";
 
 export function DmnDiagramSvg({
   nodes,
@@ -64,6 +67,8 @@ export function DmnDiagramSvg({
   thisDmn,
   importsByNamespace,
   isAlternativeInputDataShape,
+  allDataTypesById,
+  allTopLevelItemDefinitionUniqueNames,
 }: {
   nodes: RF.Node<DmnDiagramNodeData>[];
   edges: RF.Edge<DmnDiagramEdgeData>[];
@@ -71,6 +76,8 @@ export function DmnDiagramSvg({
   thisDmn: State["dmn"];
   importsByNamespace: TypeOrReturnType<Computed["importsByNamespace"]>;
   isAlternativeInputDataShape: boolean;
+  allDataTypesById: DataTypeIndex;
+  allTopLevelItemDefinitionUniqueNames: UniqueNameIndex;
 }) {
   const { nodesSvg, nodesById } = useMemo(() => {
     const nodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
@@ -90,6 +97,17 @@ export function DmnDiagramSvg({
 
       const { height, width, ...style } = node.style!;
 
+      const isCollection =
+        node.data?.dmnObject?.__$$element === "inputData"
+          ? allDataTypesById.get(
+              allTopLevelItemDefinitionUniqueNames.get(node.data.dmnObject.variable?.["@_typeRef"] ?? "") ?? ""
+            )?.itemDefinition?.["@_isCollection"] ?? false
+          : node.data?.dmnObject?.__$$element === "decision"
+          ? allDataTypesById.get(
+              allTopLevelItemDefinitionUniqueNames.get(node.data.dmnObject.variable?.["@_typeRef"] ?? "") ?? ""
+            )?.itemDefinition?.["@_isCollection"] ?? false
+          : false;
+
       const label =
         node.data?.dmnObject?.__$$element === "group"
           ? node.data.dmnObject?.["@_label"] ?? node.data?.dmnObject?.["@_name"] ?? "<Empty>"
@@ -105,16 +123,29 @@ export function DmnDiagramSvg({
 
       return (
         <g data-kie-dmn-node-id={node.id} key={node.id}>
-          {node.type === NODE_TYPES.inputData && (
-            <InputDataNodeSvg
-              width={node.width!}
-              height={node.height!}
-              x={node.positionAbsolute!.x}
-              y={node.positionAbsolute!.y}
-              {...style}
-              {...shapeStyle}
-            />
-          )}
+          {node.type === NODE_TYPES.inputData &&
+            (isAlternativeInputDataShape ? (
+              <AlternativeInputDataNodeSvg
+                width={node.width!}
+                height={node.height!}
+                x={node.positionAbsolute!.x}
+                y={node.positionAbsolute!.y}
+                {...style}
+                {...shapeStyle}
+                isIcon={false}
+                isCollection={isCollection}
+              />
+            ) : (
+              <InputDataNodeSvg
+                width={node.width!}
+                height={node.height!}
+                x={node.positionAbsolute!.x}
+                y={node.positionAbsolute!.y}
+                {...style}
+                {...shapeStyle}
+                isCollection={isCollection}
+              />
+            ))}
           {node.type === NODE_TYPES.decision && (
             <DecisionNodeSvg
               width={node.width!}
@@ -123,6 +154,7 @@ export function DmnDiagramSvg({
               y={node.positionAbsolute!.y}
               {...style}
               {...shapeStyle}
+              isCollection={isCollection}
             />
           )}
           {node.type === NODE_TYPES.bkm && (
@@ -208,7 +240,14 @@ export function DmnDiagramSvg({
     });
 
     return { nodesSvg, nodesById };
-  }, [importsByNamespace, isAlternativeInputDataShape, nodes, thisDmn.model.definitions]);
+  }, [
+    allDataTypesById,
+    allTopLevelItemDefinitionUniqueNames,
+    importsByNamespace,
+    isAlternativeInputDataShape,
+    nodes,
+    thisDmn.model.definitions,
+  ]);
 
   return (
     <>
@@ -257,7 +296,7 @@ export function getNodeLabelSvgTextAlignmentProps(n: RF.Node<DmnDiagramNodeData>
   switch (labelPosition) {
     case "center-bottom":
       const cbTx = n.position.x! + n.width! / 2;
-      const cbTy = n.position.y! + n.height!;
+      const cbTy = n.position.y! + n.height! + 20;
       const cbWidth = n.width! - 2 * SVG_NODE_LABEL_TEXT_PADDING_ALL;
       return {
         verticalAnchor: "middle",

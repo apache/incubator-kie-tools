@@ -141,7 +141,7 @@ export function AlternativeInputDataNodeSvg(
         strokeWidth={strokeWidth}
         transform={isIcon ? __props.transform : `translate(${x},${y})`}
       />
-      {!isIcon && (
+      {isIcon === false && (
         <>
           <polygon
             {...props}
