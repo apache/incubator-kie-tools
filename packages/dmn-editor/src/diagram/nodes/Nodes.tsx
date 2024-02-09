@@ -88,6 +88,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObject: T;
   shape: DMNDI15__DMNShape & { index: number };
   index: number;
+  hasHiddenNodes: boolean;
   /**
    * We don't use Reactflow's parenting mechanism because it is
    * too opinionated on how it deletes nodes/edges that are
@@ -98,7 +99,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
 
 export const InputDataNode = React.memo(
   ({
-    data: { dmnObject: inputData, shape, index, dmnObjectQName, dmnObjectNamespace },
+    data: { dmnObject: inputData, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenNodes },
     selected,
     dragging,
     zIndex,
@@ -185,6 +186,7 @@ export const InputDataNode = React.memo(
             strokeWidth={shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenNodes={hasHiddenNodes}
           />
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -243,7 +245,7 @@ export const InputDataNode = React.memo(
 
 export const DecisionNode = React.memo(
   ({
-    data: { parentRfNode, dmnObject: decision, shape, index, dmnObjectQName, dmnObjectNamespace },
+    data: { parentRfNode, dmnObject: decision, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenNodes },
     selected,
     dragging,
     zIndex,
@@ -330,6 +332,7 @@ export const DecisionNode = React.memo(
             strokeWidth={parentRfNode ? 3 : shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenNodes={hasHiddenNodes}
           />
         </svg>
 
@@ -392,7 +395,7 @@ export const DecisionNode = React.memo(
 
 export const BkmNode = React.memo(
   ({
-    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace },
+    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenNodes },
     selected,
     dragging,
     zIndex,
@@ -465,6 +468,7 @@ export const BkmNode = React.memo(
             strokeWidth={shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenNodes={hasHiddenNodes}
           />
         </svg>
 
@@ -525,7 +529,7 @@ export const BkmNode = React.memo(
 
 export const KnowledgeSourceNode = React.memo(
   ({
-    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName },
+    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName, hasHiddenNodes },
     selected,
     dragging,
     zIndex,
@@ -585,6 +589,7 @@ export const KnowledgeSourceNode = React.memo(
             strokeWidth={shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenNodes={hasHiddenNodes}
           />
         </svg>
 

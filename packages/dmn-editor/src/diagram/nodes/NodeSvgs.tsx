@@ -29,6 +29,7 @@ export type NodeSvgProps = RF.Dimensions &
     fillColor?: string;
     strokeColor?: string;
     strokeWidth?: number;
+    hasHiddenNodes?: boolean;
   };
 
 export const ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches = { flag: false };
@@ -43,6 +44,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     height: _height,
     fillColor: _fillColor,
     strokeColor: _strokeColor,
+    hasHiddenNodes: _hasHiddenNodes,
     ...props
   } = _props;
 
@@ -62,6 +64,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     height: height + (___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag ? 0 : 0.1),
     fillColor: _fillColor,
     strokeColor: _strokeColor,
+    hasHiddenNodes: _hasHiddenNodes,
     props,
   };
 }
@@ -75,6 +78,7 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
     height,
     fillColor,
     strokeColor,
+    hasHiddenNodes,
     props: { isCollection, ...props },
   } = normalize(__props);
 
@@ -108,7 +112,7 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
         ry={ry}
       />
       {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
-      <NodeHiddenInformationMarker {...__props} />
+      {hasHiddenNodes && <NodeHiddenInformationMarker {...__props} />}
     </>
   );
 }
@@ -122,6 +126,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
     height,
     fillColor,
     strokeColor,
+    hasHiddenNodes,
     props: { isCollection, ...props },
   } = normalize(__props);
 
@@ -139,12 +144,13 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
         {...props}
       />
       {isCollection && <NodeCollectionMarker {...__props} anchor="top" />}
+      {hasHiddenNodes && <NodeHiddenInformationMarker {...__props} />}
     </>
   );
 }
 
 export function BkmNodeSvg(__props: NodeSvgProps) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, hasHiddenNodes, props } = normalize(__props);
   const bevel = 25;
   return (
     <>
@@ -157,12 +163,23 @@ export function BkmNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
+      {hasHiddenNodes && <NodeHiddenInformationMarker {...__props} />}
     </>
   );
 }
 
 export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
-  const { strokeWidth, x, y, width, height: totalHeight, fillColor, strokeColor, props } = normalize(__props);
+  const {
+    strokeWidth,
+    x,
+    y,
+    width,
+    height: totalHeight,
+    fillColor,
+    strokeColor,
+    hasHiddenNodes,
+    props,
+  } = normalize(__props);
   const amplitude = 20;
   const height = totalHeight - amplitude / 2; // Need to leave some space for the wave at the bottom.
 
@@ -179,6 +196,7 @@ export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
+      {hasHiddenNodes && <NodeHiddenInformationMarker {...__props} />}
     </>
   );
 }
@@ -451,7 +469,7 @@ function NodeHiddenInformationMarker(__props: NodeSvgProps) {
   const dotRadius = 1;
   const xPosition = x + width / 2;
   const xSpacing = 7;
-  const yPosition = y + height - 11;
+  const yPosition = y + height - 18;
 
   return (
     <>
