@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ProcessInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface ProcessDetailsEnvelopeApi {
   processDetails__init(association: Association, initArgs: ProcessDetailsInitArgs);

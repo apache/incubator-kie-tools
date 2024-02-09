@@ -17,8 +17,9 @@
  * under the License.
  */
 
+import { SCHEMA_VERSION } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import Ajv, { ValidateFunction } from "ajv";
-import { SCHEMA_VERSION } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+
 /**
  * Defines a basic Form Validator
  *

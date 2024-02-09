@@ -17,34 +17,19 @@
  * under the License.
  */
 
-import { OpenAPI } from "openapi-types";
 import { GraphQL } from "../graphql";
+import { BulkProcessInstanceActionResponse, ProcessInstance, ProcessInstanceFilter, ProcessListSortBy } from "../types";
 import {
-  BulkProcessInstanceActionResponse,
   JobCancel,
   NodeInstance,
-  ProcessInstance,
   TriggerableNode,
-  ProcessInstanceFilter,
-  ProcessListSortBy,
   JobStatus,
   Job,
   JobsSortBy,
   OperationType,
-  CloudEventRequest,
-  KOGITO_BUSINESS_KEY,
-  CustomDashboardInfo,
-  FormInfo,
-  Form,
-  FormContent,
-  ProcessDefinition,
-  ProcessResponse,
-} from "../types";
+} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ApolloClient } from "apollo-client";
 import { buildProcessListWhereArgument } from "./QueryUtils";
-import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
-import SwaggerParser from "@apidevtools/swagger-parser";
 
 export const getProcessInstances = async (
   offset: number,

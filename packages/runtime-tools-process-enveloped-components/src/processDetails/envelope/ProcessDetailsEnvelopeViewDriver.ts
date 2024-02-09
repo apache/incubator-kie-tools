@@ -26,7 +26,7 @@ import {
   SvgErrorResponse,
   SvgSuccessResponse,
   TriggerableNode,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export default class ProcessDetailsEnvelopeViewDriver implements ProcessDetailsDriver {
   constructor(private readonly channelApi: MessageBusClientApi<ProcessDetailsChannelApi>) {}

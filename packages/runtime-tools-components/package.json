@@ -29,7 +29,7 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools/json-yaml-language-service": "workspace:*",
-    "@kie-tools/runtime-tools-swf-gateway-api": "workspace:*",
+    "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/uniforms-patternfly": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",

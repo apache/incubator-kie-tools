@@ -20,7 +20,7 @@ import React from "react";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ProcessInstanceIconCreator } from "../utils/ProcessListUtils";
-import { ProcessInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 interface ErrorPopoverProps {

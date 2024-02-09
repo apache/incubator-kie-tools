@@ -23,7 +23,7 @@ import { DiagramPreviewSize, ProcessDetailsChannelApi, ProcessDetailsInitArgs } 
 import ProcessDetails from "./components/ProcessDetails/ProcessDetails";
 import ProcessDetailsEnvelopeViewDriver from "./ProcessDetailsEnvelopeViewDriver";
 import "@patternfly/patternfly/patternfly.css";
-import { ProcessInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface ProcessDetailsEnvelopeViewApi {
   initialize: (initArgs: ProcessDetailsInitArgs) => void;

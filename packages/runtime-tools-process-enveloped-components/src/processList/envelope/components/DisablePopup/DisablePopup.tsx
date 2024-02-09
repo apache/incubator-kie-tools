@@ -18,7 +18,7 @@
  */
 import React, { ReactElement } from "react";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ProcessInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 interface DisablePopupProps {

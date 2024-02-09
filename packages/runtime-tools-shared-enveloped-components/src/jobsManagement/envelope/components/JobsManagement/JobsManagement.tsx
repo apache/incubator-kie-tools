@@ -43,10 +43,6 @@ import { formatForBulkListJob, setTitle } from "@kie-tools/runtime-tools-compone
 import { JobsDetailsModal } from "@kie-tools/runtime-tools-components/dist/components/JobsDetailsModal";
 import { JobsRescheduleModal } from "@kie-tools/runtime-tools-components/dist/components/JobsRescheduleModal";
 import { JobsCancelModal } from "@kie-tools/runtime-tools-components/dist/components/JobsCancelModal";
-// import {
-//   setTitle,
-//   formatForBulkListJob
-// } from '@kogito-apps/management-console-shared/dist/utils/Utils';
 
 interface JobsManagementProps {
   isEnvelopeConnectedToChannel: boolean;

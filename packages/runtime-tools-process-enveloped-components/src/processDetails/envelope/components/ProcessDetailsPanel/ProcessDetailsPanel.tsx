@@ -26,7 +26,7 @@ import React from "react";
 import { LevelDownAltIcon } from "@patternfly/react-icons/dist/js/icons/level-down-alt-icon";
 import { LevelUpAltIcon } from "@patternfly/react-icons/dist/js/icons/level-up-alt-icon";
 import { ProcessDetailsDriver } from "../../../api";
-import { ProcessInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import {
   ProcessInstanceIconCreator,

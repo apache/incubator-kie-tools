@@ -41,13 +41,14 @@ import {
   handleSkip,
   jobCancel,
 } from "../../../utils/Utils";
-import { Job, ProcessInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Job, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
 import { JobsDetailsModal } from "@kie-tools/runtime-tools-components/dist/components/JobsDetailsModal";
 import { JobsRescheduleModal } from "@kie-tools/runtime-tools-components/dist/components/JobsRescheduleModal";
 import { JobsCancelModal } from "@kie-tools/runtime-tools-components/dist/components/JobsCancelModal";
+import { jobToGenericJob } from "../../../../utils/Utils";
 
 export interface IOwnProps {
   data: Pick<ProcessInstance, "id" | "nodes" | "addons" | "error" | "serviceUrl" | "processId" | "state">;
@@ -467,7 +468,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
         isModalOpen={isDetailsModalOpen}
         handleModalToggle={handleJobDetailsModalToggle}
         modalAction={detailsAction}
-        job={selectedJob}
+        job={jobToGenericJob(selectedJob)}
       />
       {Object.keys(selectedJob).length > 0 && (
         <JobsRescheduleModal
@@ -475,7 +476,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           isModalOpen={isRescheduleModalOpen}
           handleModalToggle={handleRescheduleAction}
           modalAction={rescheduleActions}
-          job={selectedJob}
+          job={jobToGenericJob(selectedJob)}
           rescheduleError={rescheduleError}
           setRescheduleError={setRescheduleError}
           handleJobReschedule={handleJobReschedule}

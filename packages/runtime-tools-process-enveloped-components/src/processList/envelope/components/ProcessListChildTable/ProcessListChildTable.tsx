@@ -27,7 +27,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import DisablePopup from "../DisablePopup/DisablePopup";
 import ErrorPopover from "../ErrorPopover/ErrorPopover";
 import "../styles.css";
-import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
 import { EndpointLink } from "@kie-tools/runtime-tools-components/dist/components/EndpointLink";

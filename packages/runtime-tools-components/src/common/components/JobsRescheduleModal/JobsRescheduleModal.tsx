@@ -23,11 +23,11 @@ import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Tex
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Job } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import DateTimePicker from "react-datetime-picker";
 import { setTitle } from "../../utils/Utils";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
+import { Job } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import "../styles.css";
 
 interface IOwnProps {

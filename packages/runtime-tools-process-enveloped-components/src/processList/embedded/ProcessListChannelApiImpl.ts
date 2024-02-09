@@ -22,7 +22,7 @@ import {
   ProcessInstance,
   ProcessInstanceFilter,
   ProcessListSortBy,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { ProcessListChannelApi, ProcessListDriver } from "../api";
 
 export class ProcessListChannelApiImpl implements ProcessListChannelApi {

@@ -21,25 +21,27 @@ import { OpenAPI } from "openapi-types";
 import { GraphQL } from "../graphql";
 import {
   BulkWorkflowInstanceActionResponse,
-  JobCancel,
-  NodeInstance,
   WorkflowInstance,
-  TriggerableNode,
   WorkflowInstanceFilter,
   WorkflowListSortBy,
+  WorkflowDefinition,
+  CloudEventRequest,
+  WorkflowResponse,
+} from "../types";
+import {
+  JobCancel,
+  NodeInstance,
+  TriggerableNode,
   JobStatus,
   Job,
   JobsSortBy,
-  WorkflowDefinition,
   OperationType,
-  CloudEventRequest,
   KOGITO_BUSINESS_KEY,
-  WorkflowResponse,
   CustomDashboardInfo,
   FormInfo,
   Form,
   FormContent,
-} from "../types";
+} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ApolloClient } from "apollo-client";
 import { buildWorkflowListWhereArgument } from "./QueryUtils";
 import axios from "axios";

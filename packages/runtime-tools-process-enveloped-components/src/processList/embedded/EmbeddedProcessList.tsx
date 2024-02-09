@@ -23,7 +23,7 @@ import { ProcessListApi, ProcessListChannelApi, ProcessListEnvelopeApi, ProcessL
 import { ProcessListChannelApiImpl } from "./ProcessListChannelApiImpl";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { init } from "../envelope";
-import { ProcessListState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface Props {
   targetOrigin: string;

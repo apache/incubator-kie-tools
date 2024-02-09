@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,26 +17,11 @@
  * under the License.
  */
 
-import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-export interface ProcessListEnvelopeApi {
-  processList__init(association: Association, initArgs: ProcessListInitArgs): Promise<void>;
-}
-
-export interface Association {
-  origin: string;
-  envelopeServerId: string;
-}
-
-export interface QueryPage {
-  offset: number;
-  limit: number;
-}
-
-export interface ProcessListInitArgs {
-  initialState: ProcessListState;
-  singularProcessLabel: string;
-  pluralProcessLabel: string;
-  isWorkflow: boolean;
-  isTriggerCloudEventEnabled?: boolean;
-}
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {};
+  },
+});

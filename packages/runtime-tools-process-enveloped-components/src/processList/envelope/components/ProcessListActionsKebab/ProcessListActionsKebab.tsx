@@ -19,7 +19,7 @@
 import React, { useMemo, useState } from "react";
 import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { checkProcessInstanceState } from "../utils/ProcessListUtils";
-import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 interface ProcessListActionsKebabProps {

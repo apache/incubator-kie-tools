@@ -28,7 +28,7 @@ import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-
 import ProcessDetailsErrorModal from "../ProcessDetailsErrorModal/ProcessDetailsErrorModal";
 import "../styles.css";
 import { ProcessDetailsDriver } from "../../../api";
-import { ProcessInstance, TriggerableNode } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { ProcessInstance, TriggerableNode } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 

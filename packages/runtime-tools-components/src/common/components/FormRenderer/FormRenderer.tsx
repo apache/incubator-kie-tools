@@ -24,7 +24,10 @@ import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 import { FormAction, lookupValidator, ModelConversionTool } from "../../utils";
 import { FormFooter } from "../FormFooter";
 import "../styles.css";
-import { FormRendererApi } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+
+export interface FormRendererApi {
+  doReset: () => void;
+}
 
 interface IOwnProps {
   formSchema: any;

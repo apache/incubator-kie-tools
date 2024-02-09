@@ -136,6 +136,7 @@
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
       { "id": "@kie-tools/runtime-trusty-app" },
@@ -840,6 +841,11 @@
       },
       {
         "source": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "target": "@kie-tools/runtime-tools-swf-gateway-api",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
@@ -856,16 +862,23 @@
       },
       {
         "source": "@kie-tools/runtime-tools-components",
-        "target": "@kie-tools/runtime-tools-swf-gateway-api",
+        "target": "@kie-tools/runtime-tools-shared-gateway-api",
         "weight": 1
       },
       { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-process-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-process-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-process-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-swf-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-swf-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-swf-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
+      {
+        "source": "@kie-tools/runtime-tools-process-gateway-api",
+        "target": "@kie-tools/runtime-tools-shared-gateway-api",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-swf-gateway-api",
+        "target": "@kie-tools/runtime-tools-shared-gateway-api",
+        "weight": 1
+      },
+      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-swf-enveloped-components",
         "target": "@kie-tools/dashbuilder-client",
@@ -1195,6 +1208,7 @@
     ["@kie-tools/runtime-tools-process-enveloped-components", "packages/runtime-tools-process-enveloped-components"],
     ["@kie-tools/runtime-tools-process-gateway-api", "packages/runtime-tools-process-gateway-api"],
     ["@kie-tools/runtime-tools-shared-enveloped-components", "packages/runtime-tools-shared-enveloped-components"],
+    ["@kie-tools/runtime-tools-shared-gateway-api", "packages/runtime-tools-shared-gateway-api"],
     ["@kie-tools/runtime-tools-shared-webapp-components", "packages/runtime-tools-shared-webapp-components"],
     ["@kie-tools/runtime-tools-swf-enveloped-components", "packages/runtime-tools-swf-enveloped-components"],
     ["@kie-tools/runtime-tools-swf-gateway-api", "packages/runtime-tools-swf-gateway-api"],

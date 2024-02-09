@@ -18,7 +18,6 @@
  */
 
 import React from "react";
-import { Job } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 import { TextContent, Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
@@ -26,6 +25,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import Moment from "react-moment";
 import "../styles.css";
+import { Job } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 interface IOwnProps {
   actionType: string;
@@ -55,7 +55,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 <SplitItem>
                   <Text component={TextVariants.h6}>Workflow Id: </Text>{" "}
                 </SplitItem>
-                <SplitItem>{job.workflowId}</SplitItem>
+                <SplitItem>{job.resourceId}</SplitItem>
               </Split>
             </FlexItem>
             <FlexItem>
@@ -64,7 +64,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                   {" "}
                   <Text component={TextVariants.h6}>Workflow Instance Id: </Text>{" "}
                 </SplitItem>
-                <SplitItem>{job.workflowInstanceId}</SplitItem>
+                <SplitItem>{job.resourceInstanceId}</SplitItem>
               </Split>
             </FlexItem>
             <FlexItem>

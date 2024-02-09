@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 import React from "react";
 import { ClockIcon } from "@patternfly/react-icons/dist/js/icons/clock-icon";
 import { BanIcon } from "@patternfly/react-icons/dist/js/icons/ban-icon";
@@ -23,7 +24,7 @@ import { UndoIcon } from "@patternfly/react-icons/dist/js/icons/undo-icon";
 import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ProcessDetailsDriver } from "../api";
-import { Job, JobStatus, NodeInstance, ProcessInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Job, JobStatus, NodeInstance, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 
 export const JobsIconCreator = (state: JobStatus): JSX.Element => {

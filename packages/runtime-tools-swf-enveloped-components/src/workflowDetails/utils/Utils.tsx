@@ -18,7 +18,13 @@
  */
 
 import React from "react";
-import { JobStatus, Job, WorkflowInstance, NodeInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import {
+  JobStatus,
+  Job,
+  WorkflowInstance,
+  NodeInstance,
+  WorkflowInstanceState,
+} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ClockIcon } from "@patternfly/react-icons/dist/js/icons/clock-icon";
 import { BanIcon } from "@patternfly/react-icons/dist/js/icons/ban-icon";
@@ -26,6 +32,8 @@ import { UndoIcon } from "@patternfly/react-icons/dist/js/icons/undo-icon";
 import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { WorkflowDetailsDriver } from "../api";
+import { OnRunningIcon } from "@patternfly/react-icons/dist/js/icons/on-running-icon";
+import { PausedIcon } from "@patternfly/react-icons/dist/js/icons/paused-icon";
 
 export const JobsIconCreator = (state: JobStatus): JSX.Element => {
   switch (state) {
@@ -155,5 +163,54 @@ export const handleJobRescheduleUtil = async (
   } else if (response && response.modalTitle === "failure") {
     handleRescheduleAction();
     setRescheduleError(response.modalContent);
+  }
+};
+
+export const getWorkflowInstanceDescription = (workflowInstance: WorkflowInstance) => {
+  return {
+    id: workflowInstance.id,
+    name: workflowInstance.processName,
+    description: workflowInstance.businessKey,
+  };
+};
+
+/* tslint:disable:no-floating-promises */
+export const WorkflowInstanceIconCreator = (state: WorkflowInstanceState): JSX.Element => {
+  switch (state) {
+    case WorkflowInstanceState.Active:
+      return (
+        <>
+          <OnRunningIcon className="pf-u-mr-sm" />
+          Active
+        </>
+      );
+    case WorkflowInstanceState.Completed:
+      return (
+        <>
+          <CheckCircleIcon className="pf-u-mr-sm" color="var(--pf-global--success-color--100)" />
+          Completed
+        </>
+      );
+    case WorkflowInstanceState.Aborted:
+      return (
+        <>
+          <BanIcon className="pf-u-mr-sm" />
+          Aborted
+        </>
+      );
+    case WorkflowInstanceState.Suspended:
+      return (
+        <>
+          <PausedIcon className="pf-u-mr-sm" />
+          Suspended
+        </>
+      );
+    case WorkflowInstanceState.Error:
+      return (
+        <>
+          <ErrorCircleOIcon className="pf-u-mr-sm" color="var(--pf-global--danger-color--100)" />
+          Error
+        </>
+      );
   }
 };

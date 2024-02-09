@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useMemo, useState } from "react";
 import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ProcessDetailsDriver } from "../../../api";
 import { handleJobRescheduleUtil, jobCancel } from "../../../utils/Utils";
-import { Job } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { JobsDetailsModal } from "@kie-tools/runtime-tools-components/dist/components/JobsDetailsModal";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";

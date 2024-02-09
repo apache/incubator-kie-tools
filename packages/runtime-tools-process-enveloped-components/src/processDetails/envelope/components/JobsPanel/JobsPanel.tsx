@@ -33,7 +33,7 @@ import JobActionsKebab from "../JobActionsKebab/JobActionsKebab";
 import { JobsIconCreator } from "../../../utils/Utils";
 import { ProcessDetailsDriver } from "../../../api";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { Job } from "@kie-tools/runtime-tools-swf-gateway-api/src/types";
+import { Job } from "@kie-tools/runtime-tools-process-gateway-api/src/types";
 
 interface JobsPanelProps {
   jobs: Job[];

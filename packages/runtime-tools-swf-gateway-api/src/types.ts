@@ -17,47 +17,17 @@
  * under the License.
  */
 
-export enum JobStatus {
-  Error = "ERROR",
-  Executed = "EXECUTED",
-  Scheduled = "SCHEDULED",
-  Retry = "RETRY",
-  Canceled = "CANCELED",
-}
-
-export interface Job {
-  id: string;
-  workflowId: string;
-  workflowInstanceId: string;
-  rootWorkflowInstanceId?: string;
-  rootWorkflowId?: string;
-  status: JobStatus;
-  expirationTime: Date;
-  priority: number;
-  callbackEndpoint: string;
-  repeatInterval: number;
-  repeatLimit: number;
-  scheduledId: string;
-  retries: number;
-  lastUpdate: Date;
-  executionCounter?: number;
-  endpoint: string;
-  nodeInstanceId?: string;
-}
-
-export interface BulkCancel {
-  successJobs: Job[];
-  failedJobs: Job[];
-}
+import {
+  NodeInstance,
+  Milestone,
+  TriggerableNode,
+  OrderBy,
+  JsonType,
+} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface BulkWorkflowInstanceActionResponse {
   successWorkflowInstances: WorkflowInstance[];
   failedWorkflowInstances: WorkflowInstance[];
-}
-
-export interface JobCancel {
-  modalTitle: string;
-  modalContent: string;
 }
 
 export enum WorkflowInstanceState {
@@ -66,43 +36,6 @@ export enum WorkflowInstanceState {
   Aborted = "ABORTED",
   Suspended = "SUSPENDED",
   Error = "ERROR",
-}
-
-export enum TitleType {
-  SUCCESS = "success",
-  FAILURE = "failure",
-}
-
-export enum MilestoneStatus {
-  Available = "AVAILABLE",
-  Active = "ACTIVE",
-  Completed = "COMPLETED",
-}
-
-export interface NodeInstance {
-  __typename?: "NodeInstance";
-  id: string;
-  name: string;
-  type: string;
-  enter: Date;
-  exit?: Date;
-  definitionId: string;
-  nodeId: string;
-}
-
-export interface TriggerableNode {
-  id: number;
-  name: string;
-  type: string;
-  uniqueId: string;
-  nodeDefinitionId: string;
-}
-
-export interface Milestone {
-  __typename?: "Milestone";
-  id: string;
-  name: string;
-  status: MilestoneStatus;
 }
 
 export interface WorkflowInstanceError {
@@ -145,11 +78,6 @@ export interface WorkflowInstanceFilter {
   businessKey?: string[];
 }
 
-export enum OrderBy {
-  ASC = "ASC",
-  DESC = "DESC",
-}
-
 export interface WorkflowListSortBy {
   workflowName?: OrderBy;
   state?: OrderBy;
@@ -157,28 +85,9 @@ export interface WorkflowListSortBy {
   lastUpdate?: OrderBy;
 }
 
-export interface JobsSortBy {
-  status?: OrderBy;
-  expirationTime?: OrderBy;
-  priority?: OrderBy;
-  retries?: OrderBy;
-  lastUpdate?: OrderBy;
-  executionCounter?: OrderBy;
-}
-
 export interface WorkflowListState {
   filters: WorkflowInstanceFilter;
   sortBy: WorkflowListSortBy;
-}
-
-export interface SvgSuccessResponse {
-  svg: string;
-  error?: never;
-}
-
-export interface SvgErrorResponse {
-  error: string;
-  svg?: never;
 }
 
 export interface WorkflowDefinition {
@@ -186,29 +95,10 @@ export interface WorkflowDefinition {
   endpoint: string;
 }
 
-export type JsonType = { [key: string]: string | number | boolean };
-
 export interface WorkflowResponse {
   id: string;
   workflowdata: JsonType;
 }
-
-export enum SCHEMA_VERSION {
-  DRAFT_7 = "http://json-schema.org/draft-07/schema#",
-  DRAFT_2019_09 = "https://json-schema.org/draft/2019-09/schema",
-}
-export interface FormRendererApi {
-  doReset: () => void;
-}
-
-export enum OperationType {
-  ABORT = "ABORT",
-  SKIP = "SKIP",
-  RETRY = "RETRY",
-  CANCEL = "CANCEL",
-}
-export const KOGITO_PROCESS_REFERENCE_ID = "kogitoprocrefid";
-export const KOGITO_BUSINESS_KEY = "kogitobusinesskey";
 
 export enum CloudEventMethod {
   POST = "POST",
@@ -228,46 +118,4 @@ export interface CloudEventHeaders {
   source: string; // Source of the cloud event
 
   extensions: Record<string, string>;
-}
-
-export interface CustomDashboardInfo {
-  name: string;
-  path: string;
-  lastModified: Date;
-}
-
-export interface FormResources {
-  scripts: {
-    [key: string]: string;
-  };
-  styles: {
-    [key: string]: string;
-  };
-}
-
-export enum FormType {
-  HTML = "HTML",
-  TSX = "TSX",
-}
-
-interface FormConfiguration {
-  schema: string;
-  resources: FormResources;
-}
-
-export interface Form {
-  formInfo: FormInfo;
-  source: string;
-  configuration: FormConfiguration;
-}
-
-export interface FormContent {
-  source: string;
-  configuration: FormConfiguration;
-}
-
-export interface FormInfo {
-  name: string;
-  type: FormType;
-  lastModified: Date;
 }
