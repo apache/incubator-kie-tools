@@ -20,7 +20,7 @@
 import React from "react";
 import RuntimeToolsDevUIAppContext, { DevUIAppContextImpl } from "./DevUIAppContext";
 import { CustomLabels } from "../../api/CustomLabels";
-import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
 
 interface IOwnProps {
   devUIUrl: string;

@@ -1,0 +1,41 @@
+{
+  "private": true,
+  "name": "@kie-tools/runtime-cypress-ouia",
+  "version": "1.0.0",
+  "description": "This library provides a set of OUIA cypress commands",
+  "license": "Apache-2.0",
+  "author": "",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc --project ./tsconfig.json || echo error",
+    "build:prod": "pnpm run clean && pnpm run lint && pnpm run build",
+    "clean": "rimraf dist",
+    "precommit": "lint-staged",
+    "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
+    "lint": "eslint './src/**/*.ts{,x}'"
+  },
+  "devDependencies": {
+    "@kie-tools/tsconfig": "workspace:*",
+    "cypress": "^12.17.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.9.5"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "pnpm run format",
+      "pnpm run lint"
+    ]
+  }
+}

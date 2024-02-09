@@ -1,0 +1,27 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "declaration": false,
+    "declarationMap": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es6",
+    "esModuleInterop": true,
+    // TODO: Below configs are temporary! Fix TS errors and remove them.
+    "strict": false,
+    "strictNullChecks": false,
+    "noImplicitAny": false
+  },
+  "files": ["./src/index.ts"],
+  "include": ["./config/declare.d.ts", "src/**/*.ts", "src/**/*.tsx", "src/**/*.jsx", "src/**/*.js"],
+  "ts-node": {
+    "esm": true,
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "CommonJS"
+    }
+  }
+}

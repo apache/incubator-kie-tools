@@ -29,7 +29,7 @@ import "../../styles.css";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { useHistory } from "react-router-dom";
-import { CloudEventFormContainer } from "@kie-tools/runtime-tools-webapp-components/dist/CloudEventFormContainer";
+import { CloudEventFormContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventFormContainer";
 
 export interface CloudEventPageState {
   source?: CloudEventPageSource;

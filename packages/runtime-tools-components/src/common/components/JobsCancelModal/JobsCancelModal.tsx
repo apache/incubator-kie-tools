@@ -26,7 +26,7 @@ import { BulkList, IOperation } from "../BulkList";
 
 interface IOwnProps {
   actionType: string;
-  modalTitle: JSX.Element;
+  modalTitle?: JSX.Element;
   modalContent: string;
   handleModalToggle: () => void;
   isModalOpen: boolean;

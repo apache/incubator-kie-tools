@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/CloudEventForm";
+import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
 import { useSettings } from "../../settings/SettingsContext";
 import { useEnv } from "../../env/EnvContext";
 

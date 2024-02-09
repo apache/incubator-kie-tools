@@ -24,7 +24,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { useHistory } from "react-router-dom";
 import CustomDashboardViewContainer from "../../containers/CustomDashboardViewContainer/CustomDashboardViewContainer";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 export interface CustomDashboardViewPageState {
   data: CustomDashboardInfo;

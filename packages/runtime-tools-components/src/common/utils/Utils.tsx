@@ -25,11 +25,11 @@ import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circl
 import { OnRunningIcon } from "@patternfly/react-icons/dist/js/icons/on-running-icon";
 import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
 import { BulkListItem } from "../components/BulkList/BulkList";
-import { Job, WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { Job, WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import PausedIcon from "@patternfly/react-icons/dist/js/icons/paused-icon";
 
 export const setTitle = (titleStatus: string, titleText: string): JSX.Element => {
-  let icon = null;
+  let icon;
 
   switch (titleStatus) {
     case "success":

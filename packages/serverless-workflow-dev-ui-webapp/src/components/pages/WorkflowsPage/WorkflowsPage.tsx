@@ -23,9 +23,9 @@ import {
   ouiaPageTypeAndObjectId,
   OUIAProps,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { WorkflowDefinition, WorkflowListState } from "@kie-tools/runtime-tools-gateway-api/dist/types";
-import { WorkflowDefinitionListContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDefinitionListContainer";
-import { WorkflowListContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowListContainer";
+import { WorkflowDefinition, WorkflowListState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { WorkflowDefinitionListContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionListContainer";
+import { WorkflowListContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowListContainer";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
@@ -38,7 +38,7 @@ import "../../styles.css";
 import {
   useWorkflowListGatewayApi,
   WorkflowListGatewayApi,
-} from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowList";
+} from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
 
 interface MatchProps {
   instanceID: string;

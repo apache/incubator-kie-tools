@@ -1,0 +1,10 @@
+.skeleton {
+  &__flex-stripes {
+    &--padded {
+      padding: var(--pf-global--spacer--xs) var(--pf-global--spacer--xs);
+    }
+    &__item {
+      margin: var(--pf-global--spacer--xs);
+    }
+  }
+}

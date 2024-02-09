@@ -29,6 +29,7 @@ interface IOwnProps {
   pageNavOpen?: boolean;
   BrandAltText?: string;
   BrandClick?: () => void;
+  withHeader?: boolean;
 }
 
 const PageLayout: React.FC<IOwnProps & OUIAProps> = ({

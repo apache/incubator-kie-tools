@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { Job } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { Job } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 import { TextContent, Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";

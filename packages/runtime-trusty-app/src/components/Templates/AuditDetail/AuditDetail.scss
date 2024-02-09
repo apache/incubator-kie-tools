@@ -1,0 +1,19 @@
+.audit-detail {
+  &__nav {
+    margin-top: var(--pf-global--spacer--md);
+    &:not(.pf-m-scrollable) {
+      .pf-c-nav__item:first-child {
+        .pf-c-nav__link {
+          padding-left: 0;
+          &:before {
+            left: 0;
+          }
+        }
+      }
+    }
+
+    &__badge {
+      margin-left: var(--pf-global--spacer--sm);
+    }
+  }
+}

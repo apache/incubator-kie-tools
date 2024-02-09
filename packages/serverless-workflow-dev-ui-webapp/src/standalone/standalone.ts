@@ -21,8 +21,7 @@ import devUIEnvelopeIndex from "!!raw-loader!../../resources/iframe.html";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi } from "../api";
 import { RuntimeToolsDevUIChannelApiImpl } from "../standalone/RuntimeToolsDevUIChannelApiImpl";
-import { CustomLabels } from "../api/CustomLabels";
-import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
 
 export interface StandaloneDevUIApi {
   close: () => void;

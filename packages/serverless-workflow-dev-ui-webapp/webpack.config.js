@@ -103,7 +103,7 @@ module.exports = async (env) =>
             to: "./monitoring-webapp",
           },
           {
-            from: "./node_modules/@kie-tools/runtime-tools-enveloped-components/dist/customDashboardView",
+            from: "./node_modules/@kie-tools/runtime-tools-swf-enveloped-components/dist/customDashboardView",
             to: "./custom-dashboard-view",
           },
           {

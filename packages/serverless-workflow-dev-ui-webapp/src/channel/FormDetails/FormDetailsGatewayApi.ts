@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { getFormContent, saveFormContent } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
-import { Form, FormContent } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { getFormContent, saveFormContent } from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi";
+import { Form, FormContent } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 export interface FormDetailsGatewayApi {
   getFormContent: (formName: string) => Promise<Form>;
