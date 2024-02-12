@@ -107,10 +107,11 @@ export function deleteNode({
   if (!dmnObjectQName.prefix) {
     // Delete the dmnObject itself
     if (nodeNature === NodeNature.ARTIFACT) {
-      if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
-        const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId);
-        dmnObject = definitions.artifact?.splice(nodeIndex, 1)?.[0];
-      }
+      const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId);
+      dmnObject =
+        mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS
+          ? definitions.artifact?.splice(nodeIndex, 1)?.[0]
+          : definitions.artifact?.[nodeIndex];
     } else if (nodeNature === NodeNature.DRG_ELEMENT) {
       const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId);
       dmnObject =
