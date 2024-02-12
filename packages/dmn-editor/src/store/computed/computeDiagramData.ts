@@ -336,11 +336,10 @@ export function computeDiagramData(
     .filter((e) => nodesById.has(e.source) && nodesById.has(e.target))
     .sort((a, b) => Number(selectedEdges.has(a.id)) - Number(selectedEdges.has(b.id)));
 
+  // console.timeEnd("nodes");
   if (diagram.overlays.enableNodeHierarchyHighlight) {
     assignClassesToHighlightedHierarchyNodes(diagram._selectedNodes, nodesById, edgesById, drgEdges);
   }
-
-  // console.timeEnd("nodes");
 
   return {
     drgEdges,
