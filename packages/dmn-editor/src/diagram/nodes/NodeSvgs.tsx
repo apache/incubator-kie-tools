@@ -64,7 +64,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     height: height + (___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag ? 0 : 0.1),
     fillColor: _fillColor,
     strokeColor: _strokeColor,
-    hasHiddenNodes: _hasHiddenSource,
+    hasHiddenSource: _hasHiddenSource,
     props,
   };
 }
@@ -180,7 +180,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
     height,
     fillColor,
     strokeColor,
-    hasHiddenNodes,
+    hasHiddenSource,
     props: { isCollection, ...props },
   } = normalize(__props);
 
@@ -198,13 +198,13 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
         {...props}
       />
       {isCollection && <NodeCollectionMarker {...__props} anchor="top" />}
-      {hasHiddenNodes && <NodeHiddenInformationMarker {...__props} />}
+      {hasHiddenSource && <NodeHiddenInformationMarker {...__props} />}
     </>
   );
 }
 
 export function BkmNodeSvg(__props: NodeSvgProps) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, hasHiddenNodes, props } = normalize(__props);
+  const { strokeWidth, x, y, width, height, fillColor, strokeColor, hasHiddenSource, props } = normalize(__props);
   const bevel = 25;
   return (
     <>
@@ -217,7 +217,7 @@ export function BkmNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
-      {hasHiddenNodes && <NodeHiddenInformationMarker {...__props} />}
+      {hasHiddenSource && <NodeHiddenInformationMarker {...__props} />}
     </>
   );
 }
@@ -231,7 +231,7 @@ export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
     height: totalHeight,
     fillColor,
     strokeColor,
-    hasHiddenNodes,
+    hasHiddenSource,
     props,
   } = normalize(__props);
   const amplitude = 20;
@@ -250,7 +250,7 @@ export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
-      {hasHiddenNodes && <NodeHiddenInformationMarker {...__props} />}
+      {hasHiddenSource && <NodeHiddenInformationMarker {...__props} />}
     </>
   );
 }
