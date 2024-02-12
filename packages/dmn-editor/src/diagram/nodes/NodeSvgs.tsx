@@ -29,7 +29,7 @@ export type NodeSvgProps = RF.Dimensions &
     fillColor?: string;
     strokeColor?: string;
     strokeWidth?: number;
-    hasHiddenNodes?: boolean;
+    hasHiddenSource?: boolean;
   };
 
 export const ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches = { flag: false };
@@ -44,7 +44,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     height: _height,
     fillColor: _fillColor,
     strokeColor: _strokeColor,
-    hasHiddenNodes: _hasHiddenNodes,
+    hasHiddenSource: _hasHiddenSource,
     ...props
   } = _props;
 
@@ -64,7 +64,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     height: height + (___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag ? 0 : 0.1),
     fillColor: _fillColor,
     strokeColor: _strokeColor,
-    hasHiddenNodes: _hasHiddenNodes,
+    hasHiddenNodes: _hasHiddenSource,
     props,
   };
 }
