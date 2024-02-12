@@ -78,7 +78,6 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
     height,
     fillColor,
     strokeColor,
-    hasHiddenNodes,
     props: { isCollection, ...props },
   } = normalize(__props);
 
@@ -112,7 +111,6 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
         ry={ry}
       />
       {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
-      {hasHiddenNodes && <NodeHiddenInformationMarker {...__props} />}
     </>
   );
 }

@@ -99,7 +99,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
 
 export const InputDataNode = React.memo(
   ({
-    data: { dmnObject: inputData, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenSource },
+    data: { dmnObject: inputData, shape, index, dmnObjectQName, dmnObjectNamespace },
     selected,
     dragging,
     zIndex,
@@ -186,7 +186,6 @@ export const InputDataNode = React.memo(
             strokeWidth={shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
-            hasHiddenSource={hasHiddenSource}
           />
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
