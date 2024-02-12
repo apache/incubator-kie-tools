@@ -40,9 +40,7 @@ export type DrgEdge = {
   };
 };
 
-type NodeId = string & {};
-type TargetNodes = string & {};
-export type DrgNodes = Map<NodeId, Set<TargetNodes>>;
+export type DrgNodeIdsBySourceNodeId = Map<string, Set<string>>;
 
 export function getAdjMatrix(edges: DrgEdge[]): AdjMatrix {
   const __adjMatrix: AdjMatrix = {};

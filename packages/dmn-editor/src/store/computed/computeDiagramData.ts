@@ -25,7 +25,14 @@ import { snapShapeDimensions, snapShapePosition } from "../../diagram/SnapGrid";
 import { EdgeType, NodeType } from "../../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../../diagram/edges/EdgeTypes";
 import { DmnDiagramEdgeData } from "../../diagram/edges/Edges";
-import { DrgEdge, DrgNodes, EdgeVisitor, NodeVisitor, getAdjMatrix, traverse } from "../../diagram/graph/graph";
+import {
+  DrgEdge,
+  DrgNodeIdsBySourceNodeId,
+  EdgeVisitor,
+  NodeVisitor,
+  getAdjMatrix,
+  traverse,
+} from "../../diagram/graph/graph";
 import { getNodeTypeFromDmnObject } from "../../diagram/maths/DmnMaths";
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "../../diagram/nodes/DefaultSizes";
 import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../../diagram/nodes/NodeSvgs";
@@ -63,7 +70,7 @@ export function computeDiagramData(
   externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>,
   indexes: TypeOrReturnType<Computed["indexes"]>
 ) {
-  console.time("nodes");
+  // console.time("nodes");
   ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag =
     !___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag;
 
@@ -87,7 +94,7 @@ export function computeDiagramData(
   const edges: RF.Edge<DmnDiagramEdgeData>[] = [];
 
   const drgEdges: DrgEdge[] = [];
-  const drgNodes: DrgNodes = new Map();
+  const drgNodeIdsBySourceNodeId: DrgNodeIdsBySourceNodeId = new Map();
   const nodeHasHiddenSource: Set<string> = new Set();
 
   const ackEdge: AckEdge = ({ id, type, dmnObject, source, target }) => {
@@ -115,7 +122,7 @@ export function computeDiagramData(
     edges.push(edge);
 
     drgEdges.push({ id, sourceId: source, targetId: target, dmnObject });
-    drgNodes.set(source, drgNodes.get(source)?.add(target) ?? new Set([target]));
+    drgNodeIdsBySourceNodeId.set(source, drgNodeIdsBySourceNodeId.get(source)?.add(target) ?? new Set([target]));
 
     return edge;
   };
@@ -162,7 +169,7 @@ export function computeDiagramData(
     const _shape = indexes.dmnShapesByHref.get(id);
     if (!_shape) {
       drgElementsWithoutVisualRepresentationOnCurrentDrd.push(id);
-      drgNodes.get(id)?.forEach((id) => nodeHasHiddenSource.add(id));
+      drgNodeIdsBySourceNodeId.get(id)?.forEach((id) => nodeHasHiddenSource.add(id));
       return undefined;
     }
 
@@ -174,7 +181,7 @@ export function computeDiagramData(
       dmnObject,
       shape,
       index,
-      hasHiddenNodes: false,
+      hasHiddenSource: false,
       parentRfNode: undefined,
     };
 
@@ -226,7 +233,7 @@ export function computeDiagramData(
     }),
   ];
 
-  // Assign parents & z-index to NODES
+  // Assign parents, z-index and if it has an hidden source to NODES
   for (let i = 0; i < localNodes.length; i++) {
     const parent = parentIdsById.get(localNodes[i].id);
     if (parent) {
@@ -241,6 +248,10 @@ export function computeDiagramData(
       localNodes[i].zIndex = NODE_LAYERS.GROUP_NODE;
     } else if (localNodes[i].type === NODE_TYPES.decisionService) {
       localNodes[i].zIndex = NODE_LAYERS.DECISION_SERVICE_NODE;
+    }
+
+    if (nodeHasHiddenSource.has(localNodes[i].id)) {
+      localNodes[i].data.hasHiddenSource = true;
     }
   }
 
@@ -322,16 +333,11 @@ export function computeDiagramData(
     assignClassesToHighlightedHierarchyNodes(diagram._selectedNodes, nodesById, edgesById, drgEdges);
   }
 
-  for (const id of nodeHasHiddenSource) {
-    if (nodesById.has(id)) {
-      nodesById.get(id)!.data.hasHiddenNodes = true;
-    }
-  }
-  console.timeEnd("nodes");
+  // console.timeEnd("nodes");
 
   return {
     drgEdges,
-    drgNodes,
+    drgNodeIdsBySourceNodeId,
     nodes: sortedNodes,
     edges: sortedEdges,
     edgesById,

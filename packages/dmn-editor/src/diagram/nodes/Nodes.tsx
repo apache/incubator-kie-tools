@@ -88,7 +88,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObject: T;
   shape: DMNDI15__DMNShape & { index: number };
   index: number;
-  hasHiddenNodes: boolean;
+  hasHiddenSource: boolean;
   /**
    * We don't use Reactflow's parenting mechanism because it is
    * too opinionated on how it deletes nodes/edges that are
@@ -99,7 +99,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
 
 export const InputDataNode = React.memo(
   ({
-    data: { dmnObject: inputData, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenNodes },
+    data: { dmnObject: inputData, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenSource: hasHiddenNodes },
     selected,
     dragging,
     zIndex,
@@ -245,7 +245,15 @@ export const InputDataNode = React.memo(
 
 export const DecisionNode = React.memo(
   ({
-    data: { parentRfNode, dmnObject: decision, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenNodes },
+    data: {
+      parentRfNode,
+      dmnObject: decision,
+      shape,
+      index,
+      dmnObjectQName,
+      dmnObjectNamespace,
+      hasHiddenSource: hasHiddenNodes,
+    },
     selected,
     dragging,
     zIndex,
@@ -395,7 +403,7 @@ export const DecisionNode = React.memo(
 
 export const BkmNode = React.memo(
   ({
-    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenNodes },
+    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenSource: hasHiddenNodes },
     selected,
     dragging,
     zIndex,
@@ -529,7 +537,7 @@ export const BkmNode = React.memo(
 
 export const KnowledgeSourceNode = React.memo(
   ({
-    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName, hasHiddenNodes },
+    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName, hasHiddenSource: hasHiddenNodes },
     selected,
     dragging,
     zIndex,
