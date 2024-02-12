@@ -95,6 +95,7 @@ export function getSectionForDecisionInsideDecisionService({
     container: decisionServiceShape["dc:Bounds"],
     divingLineLocalY: getDecisionServiceDividerLineLocalY(decisionServiceShape),
     snapGrid,
+    isAlternativeInputDataShape: false,
     containerMinSizes: MIN_NODE_SIZES[NODE_TYPES.decisionService],
     boundsMinSizes: MIN_NODE_SIZES[NODE_TYPES.decision],
   });

@@ -30,6 +30,7 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { ExternalNodesPanel } from "../externalNodes/ExternalNodesPanel";
 import { MigrationIcon } from "@patternfly/react-icons/dist/js/icons/migration-icon";
 import {
+  AlternativeInputDataIcon,
   BkmIcon,
   DecisionIcon,
   DecisionServiceIcon,
@@ -61,6 +62,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const thisDmn = useDmnEditorStore((s) => s.dmn.model);
   const rfStoreApi = RF.useStoreApi();
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -154,7 +156,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
             draggable={true}
           >
-            <InputDataIcon />
+            {isAlternativeInputDataShape ? <AlternativeInputDataIcon /> : <InputDataIcon />}
           </div>
           <div
             title="Decision"

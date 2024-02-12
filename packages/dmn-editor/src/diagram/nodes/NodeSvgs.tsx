@@ -22,7 +22,7 @@ import * as RF from "reactflow";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
 import { DEFAULT_NODE_FILL, DEFAULT_NODE_STROKE_COLOR, DEFAULT_NODE_STROKE_WIDTH } from "./NodeStyle";
 
-export type NodeLabelPosition = "center-center" | "top-center" | "center-left" | "top-left";
+export type NodeLabelPosition = "center-bottom" | "center-center" | "top-center" | "center-left" | "top-left";
 
 export type NodeSvgProps = RF.Dimensions &
   RF.XYPosition & {
@@ -110,6 +110,62 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
         rx={rx}
         ry={ry}
       />
+      {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
+    </>
+  );
+}
+
+export function AlternativeInputDataNodeSvg(
+  __props: NodeSvgProps & { isCollection?: boolean; isIcon: boolean; transform?: string }
+) {
+  const {
+    strokeWidth,
+    x,
+    y,
+    width,
+    height,
+    fillColor,
+    strokeColor,
+    props: { isCollection, isIcon, ...props },
+  } = normalize(__props);
+
+  const bevel = 25;
+  const arrowStartingX = 6;
+  const arrowStartingY = 10;
+
+  return (
+    <>
+      <polygon
+        {...props}
+        points={`0,0 0,${height} ${width},${height} ${width},${bevel} ${width - bevel},0 ${width - bevel},0`}
+        fill={fillColor ?? DEFAULT_NODE_FILL}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+        strokeLinejoin={"round"}
+        strokeWidth={strokeWidth}
+        transform={isIcon ? __props.transform : `translate(${x},${y})`}
+      />
+      {isIcon === false && (
+        <>
+          <polygon
+            {...props}
+            points={`${width - bevel},0 ${width - bevel},${bevel} ${width},${bevel}`}
+            fill={fillColor ?? DEFAULT_NODE_FILL}
+            stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+            strokeLinejoin={"round"}
+            strokeWidth={strokeWidth}
+            transform={`translate(${x},${y})`}
+          />
+          <polygon
+            {...props}
+            points={`${arrowStartingX},${arrowStartingY} ${arrowStartingX},20 20,20 20,26 30,15 20,4 20,${arrowStartingY} `}
+            fill={fillColor ?? DEFAULT_NODE_FILL}
+            stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+            strokeLinejoin={"round"}
+            strokeWidth={strokeWidth}
+            transform={`translate(${x},${y})`}
+          />
+        </>
+      )}
       {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
     </>
   );

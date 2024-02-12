@@ -62,8 +62,8 @@ export function updateDecisionServiceDividerLine({
     throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
   }
 
-  const decisionMinSizes = MIN_NODE_SIZES[NODE_TYPES.decision](snapGrid);
-  const decisionServiceMinSizes = MIN_NODE_SIZES[NODE_TYPES.decisionService](snapGrid);
+  const decisionMinSizes = MIN_NODE_SIZES[NODE_TYPES.decision]({ snapGrid });
+  const decisionServiceMinSizes = MIN_NODE_SIZES[NODE_TYPES.decisionService]({ snapGrid });
 
   const snappedPosition = snapShapePosition(snapGrid, shape);
   const snappedDimensions = snapShapeDimensions(snapGrid, shape, decisionServiceMinSizes);

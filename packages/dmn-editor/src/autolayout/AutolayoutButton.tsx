@@ -33,7 +33,7 @@ import { addEdge } from "../mutations/addEdge";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { updateDecisionServiceDividerLine } from "../mutations/updateDecisionServiceDividerLine";
-import { useDmnEditorStoreApi } from "../store/StoreContext";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 
 const elk = new ELK();
 
@@ -85,6 +85,7 @@ const FAKE_MARKER = "__$FAKE$__";
 export function AutolayoutButton() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   const onApply = React.useCallback(async () => {
     const parentNodesById = new Map<string, AutolayoutParentNode>();
@@ -119,7 +120,7 @@ export function AutolayoutButton() {
         const idOfFakeNodeForOutputSection = `${node.id}${FAKE_MARKER}dsOutput`;
         const idOfFakeNodeForEncapsulatedSection = `${node.id}${FAKE_MARKER}dsEncapsulated`;
 
-        const dsSize = MIN_NODE_SIZES[NODE_TYPES.decisionService](snapGrid);
+        const dsSize = MIN_NODE_SIZES[NODE_TYPES.decisionService]({ snapGrid });
         parentNodesById.set(node.id, {
           elkNode: {
             id: node.id,
@@ -178,7 +179,7 @@ export function AutolayoutButton() {
           targets: [idOfFakeNodeForOutputSection],
         });
       } else if (node.data?.dmnObject?.__$$element === "group") {
-        const groupSize = DEFAULT_NODE_SIZES[NODE_TYPES.group](snapGrid);
+        const groupSize = DEFAULT_NODE_SIZES[NODE_TYPES.group]({ snapGrid });
         const groupBounds = node.data.shape["dc:Bounds"];
         parentNodesById.set(node.id, {
           decisionServiceSection: "n/a",
@@ -200,6 +201,7 @@ export function AutolayoutButton() {
               bounds: bounds!,
               container: groupBounds!,
               snapGrid,
+              isAlternativeInputDataShape,
               containerMinSizes: MIN_NODE_SIZES[NODE_TYPES.group],
               boundsMinSizes: MIN_NODE_SIZES[nodesById.get(id)?.type as NodeType],
             }).isInside,
@@ -218,7 +220,7 @@ export function AutolayoutButton() {
         return [];
       }
 
-      const defaultSize = DEFAULT_NODE_SIZES[node.type as NodeType](snapGrid);
+      const defaultSize = DEFAULT_NODE_SIZES[node.type as NodeType]({ snapGrid, isAlternativeInputDataShape });
       const elkNode: Elk.ElkNode = {
         id: node.id,
         width: node.data.shape["dc:Bounds"]?.["@_width"] ?? defaultSize["@_width"],
@@ -505,7 +507,7 @@ export function AutolayoutButton() {
         });
       }
     });
-  }, [dmnEditorStoreApi, externalModelsByNamespace]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace, isAlternativeInputDataShape]);
 
   return (
     <button className={"kie-dmn-editor--autolayout-panel-toggle-button"} onClick={onApply}>
