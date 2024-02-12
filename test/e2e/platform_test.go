@@ -87,7 +87,7 @@ var _ = Describe("Validate the persistence", Ordered, func() {
 				cmd = exec.Command("kubectl", "wait", "pod", "-n", targetNamespace, "-l", "app=sonataflow-platform", "--for", "condition=Ready", "--timeout=5s")
 				_, err = utils.Run(cmd)
 				return err
-			}, 10*time.Minute, 5).Should(Succeed())
+			}, 20*time.Minute, 5).Should(Succeed())
 			By("Evaluate status of service's health endpoint")
 			cmd = exec.Command("kubectl", "get", "pod", "-l", "app=sonataflow-platform", "-n", targetNamespace, "-ojsonpath={.items[*].metadata.name}")
 			output, err := utils.Run(cmd)
@@ -113,7 +113,7 @@ var _ = Describe("Validate the persistence", Ordered, func() {
 				Expect(sf).NotTo(BeEmpty(), "sonataflow name is empty")
 				EventuallyWithOffset(1, func() bool {
 					return verifyWorkflowIsInRunningStateInNamespace(sf, targetNamespace)
-				}, 5*time.Minute, 5).Should(BeTrue())
+				}, 10*time.Minute, 5).Should(BeTrue())
 			}
 		},
 			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), dev, ephemeral),

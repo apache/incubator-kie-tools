@@ -1,7 +1,7 @@
 openshift = null
 container = null
 properties = null
-minikube = null
+kind = null
 
 defaultImageParamsPrefix = 'IMAGE'
 baseImageParamsPrefix = 'BASE_IMAGE'
@@ -19,7 +19,7 @@ void initPipeline() {
     container.containerEngineTlsOptions = env.CONTAINER_ENGINE_TLS_OPTIONS ?: ''
     container.containerOpenshift = openshift
 
-    minikube = load '.ci/jenkins/scripts/minikube.groovy'
+    kind = load '.ci/jenkins/scripts/kind.groovy'
 }
 
 void updateDisplayName() {

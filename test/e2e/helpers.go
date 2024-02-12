@@ -84,6 +84,7 @@ func verifyHealthStatusInPod(name string, namespace string) {
 			Expect(h.Status).To(Equal(upStatus))
 			return
 		}
+
 		if len(errs.Error()) > 0 {
 			errs = fmt.Errorf("%v; %w", err, errs)
 		} else {
@@ -99,7 +100,17 @@ func getHealthStatusInContainer(podName string, containerName string, ns string)
 	cmd := exec.Command("kubectl", "exec", "-t", podName, "-n", ns, "-c", containerName, "--", "curl", "-s", "localhost:8080/q/health")
 	output, err := utils.Run(cmd)
 	Expect(err).NotTo(HaveOccurred())
-	err = json.Unmarshal(output, &h)
+	// On Apache CI Nodes, does not return valid JSON, hence we match first and last brackets by index and extract it
+	stringOutput := string(output)
+	startIndex := strings.Index(stringOutput, "{")
+	endIndex := strings.LastIndex(stringOutput, "}")
+	if startIndex == 0 {
+		stringOutput = stringOutput[startIndex : endIndex+1]
+	} else {
+		stringOutput = stringOutput[startIndex-1 : endIndex+1]
+	}
+	fmt.Printf("Parsed following JSON object from health Endpoint response: %v\n", stringOutput)
+	err = json.Unmarshal([]byte(stringOutput), &h)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute curl command against health endpoint in container %s:%v with output %s", containerName, err, output)
 	}

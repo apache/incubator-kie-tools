@@ -68,7 +68,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowSimpleOpsYamlCR), "-n", targetNamespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, 2*time.Minute, time.Second).Should(Succeed())
+			}, 3*time.Minute, time.Second).Should(Succeed())
 
 			By("check the workflow is in running state")
 			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState("simple", targetNamespace) }, 15*time.Minute, 30*time.Second).Should(BeTrue())
@@ -78,7 +78,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowSimpleOpsYamlCR), "-n", targetNamespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, 2*time.Minute, time.Second).Should(Succeed())
+			}, 3*time.Minute, time.Second).Should(Succeed())
 		})
 
 		It("should successfully deploy the Greeting Workflow in prod mode and verify if it's running", func() {
@@ -88,7 +88,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowGreetingsDataInputSchemaConfig), "-n", targetNamespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, 2*time.Minute, time.Second).Should(Succeed())
+			}, 3*time.Minute, time.Second).Should(Succeed())
 
 			By("creating an instance of the SonataFlow Operand(CR)")
 			EventuallyWithOffset(1, func() error {
@@ -96,7 +96,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowGreetingsWithDataInputSchemaCR), "-n", targetNamespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, 2*time.Minute, time.Second).Should(Succeed())
+			}, 3*time.Minute, time.Second).Should(Succeed())
 
 			By("check the workflow is in running state")
 			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState("greeting", targetNamespace) }, 15*time.Minute, 30*time.Second).Should(BeTrue())
@@ -106,7 +106,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					"test/testdata/"+test.SonataFlowGreetingsWithDataInputSchemaCR), "-n", targetNamespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, 2*time.Minute, time.Second).Should(Succeed())
+			}, 3*time.Minute, time.Second).Should(Succeed())
 		})
 
 		It("should successfully deploy the orderprocessing workflow in devmode and verify if it's running", func() {
@@ -117,7 +117,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					test.GetSonataFlowE2eOrderProcessingFolder()), "-n", targetNamespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, 2*time.Minute, time.Second).Should(Succeed())
+			}, 3*time.Minute, time.Second).Should(Succeed())
 
 			By("check the workflow is in running state")
 			EventuallyWithOffset(1, func() bool { return verifyWorkflowIsInRunningState("orderprocessing", targetNamespace) }, 10*time.Minute, 30*time.Second).Should(BeTrue())
@@ -135,7 +135,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 					test.GetSonataFlowE2eOrderProcessingFolder()), "-n", targetNamespace)
 				_, err := utils.Run(cmd)
 				return err
-			}, 2*time.Minute, time.Second).Should(Succeed())
+			}, 3*time.Minute, time.Second).Should(Succeed())
 		})
 
 	})
@@ -184,7 +184,7 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 			out, err := utils.Run(cmd)
 			GinkgoWriter.Printf("%s\n", string(out))
 			return err
-		}, 10*time.Minute, 5).Should(Succeed())
+		}, 12*time.Minute, 5).Should(Succeed())
 
 		By("Evaluate status of the workflow's pod database connection health endpoint")
 		cmd = exec.Command("kubectl", "get", "pod", "-l", "sonataflow.org/workflow-app=callbackstatetimeouts", "-n", ns, "-ojsonpath={.items[*].metadata.name}")
@@ -205,7 +205,7 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 				}
 			}
 			return false
-		}, 10*time.Minute).Should(BeTrue())
+		}, 12*time.Minute).Should(BeTrue())
 	},
 		Entry("defined in the workflow from an existing kubernetes service as a reference", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("by_service")),
 	)
