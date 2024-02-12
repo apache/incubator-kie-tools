@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import { useMemo } from "react";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Unpacked } from "../tsExt/tsExt";
 import { TypeRefLabel } from "../dataTypes/TypeRefLabel";
@@ -29,8 +30,6 @@ import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-co
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { DMN15_SPEC } from "../Dmn15Spec";
-import { useCallback } from "react";
-import { State } from "../store/Store";
 
 export function DmnObjectListItem({
   dmnObject,
@@ -48,6 +47,7 @@ export function DmnObjectListItem({
   const allTopLevelDataTypesByFeelName = useDmnEditorStore(
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
   );
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   const displayName = dmnObject
     ? buildFeelQNameFromNamespace({
@@ -66,7 +66,16 @@ export function DmnObjectListItem({
     )
   );
 
-  const Icon = dmnObject ? NodeIcon(getNodeTypeFromDmnObject(dmnObject)) : () => <></>;
+  const Icon = useMemo(() => {
+    if (dmnObject === undefined) {
+      throw new Error("Icon can't be defined without a DMN object");
+    }
+    const nodeType = getNodeTypeFromDmnObject(dmnObject);
+    if (nodeType === undefined) {
+      throw new Error("Can't determine node icon with undefined node type");
+    }
+    return NodeIcon({ nodeType, isAlternativeInputDataShape });
+  }, [dmnObject, isAlternativeInputDataShape]);
 
   return !dmnObject ? (
     <>{dmnObjectHref}</>

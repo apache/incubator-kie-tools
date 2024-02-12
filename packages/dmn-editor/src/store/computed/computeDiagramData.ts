@@ -61,7 +61,8 @@ export function computeDiagramData(
   diagram: State["diagram"],
   definitions: State["dmn"]["model"]["definitions"],
   externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>,
-  indexes: TypeOrReturnType<Computed["indexes"]>
+  indexes: TypeOrReturnType<Computed["indexes"]>,
+  isAlternativeInputDataShape: boolean
 ) {
   // console.time("nodes");
   ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag =
@@ -182,7 +183,13 @@ export function computeDiagramData(
       position: snapShapePosition(diagram.snapGrid, shape),
       data,
       zIndex: NODE_LAYERS.NODES,
-      style: { ...snapShapeDimensions(diagram.snapGrid, shape, MIN_NODE_SIZES[type](diagram.snapGrid)) },
+      style: {
+        ...snapShapeDimensions(
+          diagram.snapGrid,
+          shape,
+          MIN_NODE_SIZES[type]({ snapGrid: diagram.snapGrid, isAlternativeInputDataShape })
+        ),
+      },
     };
 
     if (dmnObject?.__$$element === "decisionService") {

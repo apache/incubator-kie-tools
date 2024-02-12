@@ -24,36 +24,49 @@ import { NodeType } from "../connections/graphStructure";
 import { NODE_TYPES } from "./NodeTypes";
 import { CONTAINER_NODES_DESIRABLE_PADDING } from "../maths/DmnMaths";
 
-export const MIN_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimension> = {
-  [NODE_TYPES.inputData]: (snapGrid) => {
+export type NodeSizes<T extends NodeType = NodeType> = {
+  [K in T]: K extends typeof NODE_TYPES.inputData
+    ? (args: { snapGrid: SnapGrid; isAlternativeInputDataShape: boolean }) => DC__Dimension
+    : (args: { snapGrid: SnapGrid }) => DC__Dimension;
+};
+
+export const MIN_NODE_SIZES: NodeSizes = {
+  [NODE_TYPES.inputData]: ({ snapGrid, isAlternativeInputDataShape }) => {
+    if (isAlternativeInputDataShape) {
+      const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, NODE_MIN_WIDTH / 2, NODE_MIN_HEIGHT + 20);
+      return {
+        "@_width": snappedMinSize.width,
+        "@_height": snappedMinSize.height,
+      };
+    }
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.decision]: (snapGrid) => {
+  [NODE_TYPES.decision]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.bkm]: (snapGrid) => {
+  [NODE_TYPES.bkm]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.knowledgeSource]: (snapGrid) => {
+  [NODE_TYPES.knowledgeSource]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.decisionService]: (snapGrid) => {
+  [NODE_TYPES.decisionService]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(
       snapGrid,
       NODE_MIN_WIDTH + CONTAINER_NODES_DESIRABLE_PADDING * 2,
@@ -64,14 +77,14 @@ export const MIN_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimens
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.textAnnotation]: (snapGrid) => {
+  [NODE_TYPES.textAnnotation]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, 200, 60);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.group]: (snapGrid) => {
+  [NODE_TYPES.group]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(
       snapGrid,
       NODE_MIN_WIDTH + CONTAINER_NODES_DESIRABLE_PADDING * 2,
@@ -82,7 +95,7 @@ export const MIN_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimens
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.unknown]: (snapGrid) => {
+  [NODE_TYPES.unknown]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
@@ -91,57 +104,64 @@ export const MIN_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimens
   },
 };
 
-export const DEFAULT_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimension> = {
-  [NODE_TYPES.inputData]: (snapGrid) => {
+export const DEFAULT_NODE_SIZES: NodeSizes = {
+  [NODE_TYPES.inputData]: ({ snapGrid, isAlternativeInputDataShape }) => {
+    if (isAlternativeInputDataShape) {
+      const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, NODE_MIN_WIDTH / 2, NODE_MIN_HEIGHT + 20);
+      return {
+        "@_width": snappedMinSize.width,
+        "@_height": snappedMinSize.height,
+      };
+    }
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.decision]: (snapGrid) => {
+  [NODE_TYPES.decision]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.bkm]: (snapGrid) => {
+  [NODE_TYPES.bkm]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.knowledgeSource]: (snapGrid) => {
+  [NODE_TYPES.knowledgeSource]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.decisionService]: (snapGrid) => {
+  [NODE_TYPES.decisionService]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, NODE_MIN_WIDTH * 2, NODE_MIN_WIDTH * 2); // This is not a mistake, we want the DecisionService node to be a bigger square.
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.textAnnotation]: (snapGrid) => {
+  [NODE_TYPES.textAnnotation]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, 200, 200);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.group]: (snapGrid) => {
+  [NODE_TYPES.group]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, NODE_MIN_WIDTH * 2, NODE_MIN_WIDTH * 2); // This is not a mistake, we want the Group node to be a bigger square.
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,
     };
   },
-  [NODE_TYPES.unknown]: (snapGrid) => {
+  [NODE_TYPES.unknown]: ({ snapGrid }) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,

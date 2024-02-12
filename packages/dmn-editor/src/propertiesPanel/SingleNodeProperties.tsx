@@ -56,13 +56,23 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const { externalModelsByNamespace } = useExternalModels();
   const node = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodesById.get(nodeId));
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const nodeIds = useMemo(() => (node?.id ? [node.id] : []), [node?.id]);
+
+  const Icon = useMemo(() => {
+    if (node?.data?.dmnObject === undefined) {
+      throw new Error("Icon can't be defined without a DMN object");
+    }
+    const nodeType = getNodeTypeFromDmnObject(node.data.dmnObject);
+    if (nodeType === undefined) {
+      throw new Error("Can't determine node icon with undefined node type");
+    }
+    return NodeIcon({ nodeType, isAlternativeInputDataShape });
+  }, [isAlternativeInputDataShape, node?.data.dmnObject]);
 
   if (!node) {
     return <>Node not found: {nodeId}</>;
   }
-
-  const Icon = NodeIcon(getNodeTypeFromDmnObject(node!.data!.dmnObject!));
 
   return (
     <Form>

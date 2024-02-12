@@ -40,7 +40,10 @@ import { BoxedExpression } from "./boxedExpressions/BoxedExpression";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram, DiagramRef } from "./diagram/Diagram";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
-import { DmnEditorExternalModelsContextProvider } from "./includedModels/DmnEditorDependenciesContext";
+import {
+  DmnEditorExternalModelsContextProvider,
+  useExternalModels,
+} from "./includedModels/DmnEditorDependenciesContext";
 import { IncludedModels } from "./includedModels/IncludedModels";
 import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 import { DiagramPropertiesPanel } from "./propertiesPanel/DiagramPropertiesPanel";
@@ -166,6 +169,7 @@ export const DmnEditorInternal = ({
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
+  const { externalModelsByNamespace } = useExternalModels();
 
   // Refs
 
@@ -189,12 +193,16 @@ export const DmnEditorInternal = ({
         }
 
         const bounds = RF.getNodesBounds(nodes);
+        const state = dmnEditorStoreApi.getState();
 
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svg.setAttribute("width", bounds.width + SVG_PADDING * 2 + "");
-        svg.setAttribute("height", bounds.height + SVG_PADDING * 2 + "");
-
-        const state = dmnEditorStoreApi.getState();
+        svg.setAttribute(
+          "height",
+          // It's not possible to calculate the text height which is outside of the node
+          // for the alternative input data shape
+          bounds.height + (state.computed(state).isAlternativeInputDataShape() ? SVG_PADDING * 5 : SVG_PADDING * 2) + ""
+        );
 
         // We're still on React 17.
         // eslint-disable-next-line react/no-deprecated
@@ -207,6 +215,11 @@ export const DmnEditorInternal = ({
               snapGrid={state.diagram.snapGrid}
               importsByNamespace={state.computed(state).importsByNamespace()}
               thisDmn={state.dmn}
+              isAlternativeInputDataShape={state.computed(state).isAlternativeInputDataShape()}
+              allDataTypesById={state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById}
+              allTopLevelItemDefinitionUniqueNames={
+                state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+              }
             />
           </g>,
           svg
@@ -215,7 +228,7 @@ export const DmnEditorInternal = ({
         return new XMLSerializer().serializeToString(svg);
       },
     }),
-    [dmnEditorStoreApi]
+    [dmnEditorStoreApi, externalModelsByNamespace]
   );
 
   // Make sure the DMN Editor reacts to props changing.

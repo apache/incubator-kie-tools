@@ -49,7 +49,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
       : undefined
   );
   const kieEdgePath = useKieEdgePath(edge?.source, edge?.target, edge?.data);
-
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   // This works because nodes are configured with:
   // - Source handles with ids matching EDGE_TYPES or NODE_TYPES
   // - Target handles with ids matching TargetHandleId
@@ -91,7 +91,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
     const nodeType = handleId as NodeType;
     const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(snapGrid, { "@_x": toX, "@_y": toY });
 
-    const defaultSize = DEFAULT_NODE_SIZES[nodeType](snapGrid);
+    const defaultSize = DEFAULT_NODE_SIZES[nodeType]({ snapGrid, isAlternativeInputDataShape });
     const [toXauto, toYauto] = getPositionalHandlePosition(
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
       { x: fromX, y: fromY, width: 1, height: 1 }

@@ -192,9 +192,19 @@ export function getFontCssProperties(dmnFontStyle?: DmnFontStyle): React.CSSProp
   };
 }
 
-export function getNodeLabelPosition(nodeType: NodeType): NodeLabelPosition {
+type NodeLabelPositionProps =
+  | { nodeType: Extract<NodeType, typeof NODE_TYPES.inputData>; isAlternativeInputDataShape: boolean }
+  | { nodeType: Exclude<NodeType, typeof NODE_TYPES.inputData>; isAlternativeInputDataShape?: boolean };
+
+export function getNodeLabelPosition({
+  nodeType,
+  isAlternativeInputDataShape,
+}: NodeLabelPositionProps): NodeLabelPosition {
   switch (nodeType) {
     case NODE_TYPES.inputData:
+      if (isAlternativeInputDataShape) {
+        return "center-bottom";
+      }
       return "center-center";
     case NODE_TYPES.decision:
       return "center-center";

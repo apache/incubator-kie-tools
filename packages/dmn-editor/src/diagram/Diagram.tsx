@@ -246,7 +246,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
       (
         nodeIdToIgnore: string,
         bounds: DC__Bounds,
-        minSizes: (snapGrid: SnapGrid) => DC__Dimension,
+        minSizes: (args: { snapGrid: SnapGrid; isAlternativeInputDataShape: boolean }) => DC__Dimension,
         snapGrid: SnapGrid
       ) =>
         reactFlowInstance
@@ -259,11 +259,15 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 bounds: bounds!,
                 container: node.data.shape["dc:Bounds"]!,
                 snapGrid,
+                isAlternativeInputDataShape: dmnEditorStoreApi
+                  .getState()
+                  .computed(dmnEditorStoreApi.getState())
+                  .isAlternativeInputDataShape(),
                 containerMinSizes: MIN_NODE_SIZES[node.type as NodeType],
                 boundsMinSizes: minSizes,
               }).isInside
           ),
-      [reactFlowInstance]
+      [reactFlowInstance, dmnEditorStoreApi]
     );
 
     const onDragOver = useCallback((e: React.DragEvent) => {
@@ -313,8 +317,14 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 bounds: {
                   "@_x": dropPoint.x,
                   "@_y": dropPoint.y,
-                  "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](state.diagram.snapGrid)["@_width"],
-                  "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](state.diagram.snapGrid)["@_height"],
+                  "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette]({
+                    snapGrid: state.diagram.snapGrid,
+                    isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                  })["@_width"],
+                  "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette]({
+                    snapGrid: state.diagram.snapGrid,
+                    isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                  })["@_height"],
                 },
               },
             });
@@ -341,7 +351,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
             const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
 
-            const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType](state.diagram.snapGrid);
+            const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType]({
+              snapGrid: state.diagram.snapGrid,
+              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+            });
 
             const namespaceName = getXmlNamespaceDeclarationName({
               model: state.dmn.model.definitions,
@@ -385,10 +398,16 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             DMN15__tDefinitions["drgElement"]
           >;
 
-          const nodeType = getNodeTypeFromDmnObject(drgElement)!;
+          const nodeType = getNodeTypeFromDmnObject(drgElement);
+          if (nodeType === undefined) {
+            throw new Error("DMN DIAGRAM: It wasn't possible to determine the node type");
+          }
 
           dmnEditorStoreApi.setState((state) => {
-            const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType](state.diagram.snapGrid);
+            const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType]({
+              snapGrid: state.diagram.snapGrid,
+              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+            });
             addShape({
               definitions: state.dmn.model.definitions,
               drdIndex: state.diagram.drdIndex,
@@ -496,8 +515,14 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               bounds: {
                 "@_x": dropPoint.x,
                 "@_y": dropPoint.y,
-                "@_width": DEFAULT_NODE_SIZES[newNodeType](state.diagram.snapGrid)["@_width"],
-                "@_height": DEFAULT_NODE_SIZES[newNodeType](state.diagram.snapGrid)["@_height"],
+                "@_width": DEFAULT_NODE_SIZES[newNodeType]({
+                  snapGrid: state.diagram.snapGrid,
+                  isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                })["@_width"],
+                "@_height": DEFAULT_NODE_SIZES[newNodeType]({
+                  snapGrid: state.diagram.snapGrid,
+                  isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                })["@_height"],
               },
             },
           });
@@ -571,7 +596,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   const snappedShape = snapShapeDimensions(
                     state.diagram.snapGrid,
                     node.data.shape,
-                    MIN_NODE_SIZES[node.type as NodeType](state.diagram.snapGrid)
+                    MIN_NODE_SIZES[node.type as NodeType]({
+                      snapGrid: state.diagram.snapGrid,
+                      isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                    })
                   );
                   if (
                     snappedShape.width !== change.dimensions.width ||
@@ -1194,8 +1222,12 @@ function DmnDiagramEmptyState({
                       bounds: {
                         "@_x": 100,
                         "@_y": 100,
-                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_width"],
-                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_height"],
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                          snapGrid: state.diagram.snapGrid,
+                        })["@_width"],
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                          snapGrid: state.diagram.snapGrid,
+                        })["@_height"],
                       },
                     },
                   });
@@ -1231,8 +1263,14 @@ function DmnDiagramEmptyState({
                   const inputDataNodeBounds: DC__Bounds = {
                     "@_x": 100,
                     "@_y": 300,
-                    "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](state.diagram.snapGrid)["@_width"],
-                    "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](state.diagram.snapGrid)["@_height"],
+                    "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
+                      snapGrid: state.diagram.snapGrid,
+                      isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                    })["@_width"],
+                    "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
+                      snapGrid: state.diagram.snapGrid,
+                      isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                    })["@_height"],
                   };
 
                   const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
@@ -1259,8 +1297,12 @@ function DmnDiagramEmptyState({
                       bounds: {
                         "@_x": 100,
                         "@_y": 100,
-                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_width"],
-                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_height"],
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                          snapGrid: state.diagram.snapGrid,
+                        })["@_width"],
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                          snapGrid: state.diagram.snapGrid,
+                        })["@_height"],
                       },
                     },
                   });

@@ -52,6 +52,7 @@ export function EditableNodeLabel({
   skipValidation,
   onGetAllUniqueNames,
   fontCssProperties,
+  setLabelHeight,
   enableAutoFocusing,
 }: {
   id?: string;
@@ -68,6 +69,7 @@ export function EditableNodeLabel({
   skipValidation?: boolean;
   onGetAllUniqueNames: (s: State) => UniqueNameIndex;
   fontCssProperties?: React.CSSProperties;
+  setLabelHeight?: React.Dispatch<React.SetStateAction<number>>;
   enableAutoFocusing?: boolean;
 }) {
   const displayValue = useDmnEditorStore((s) => {
@@ -234,6 +236,8 @@ export function EditableNodeLabel({
         />
       )) || (
         <span
+          // clientHeight isn't affected by the zoom in/out
+          ref={(ref) => setLabelHeight?.(ref?.clientHeight ?? 0)}
           style={{
             whiteSpace: "pre-wrap",
             ...fontCssProperties,
