@@ -29,7 +29,6 @@ export type NodeSvgProps = RF.Dimensions &
     fillColor?: string;
     strokeColor?: string;
     strokeWidth?: number;
-    hasHiddenSource?: boolean;
   };
 
 export const ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches = { flag: false };
@@ -44,7 +43,6 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     height: _height,
     fillColor: _fillColor,
     strokeColor: _strokeColor,
-    hasHiddenSource: _hasHiddenSource,
     ...props
   } = _props;
 
@@ -64,12 +62,11 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
     height: height + (___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag ? 0 : 0.1),
     fillColor: _fillColor,
     strokeColor: _strokeColor,
-    hasHiddenSource: _hasHiddenSource,
     props,
   };
 }
 
-export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
+export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection: boolean }) {
   const {
     strokeWidth,
     x,
@@ -116,7 +113,7 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
 }
 
 export function AlternativeInputDataNodeSvg(
-  __props: NodeSvgProps & { isCollection?: boolean; isIcon: boolean; transform?: string }
+  __props: NodeSvgProps & { isCollection: boolean; isIcon: boolean; transform?: string }
 ) {
   const {
     strokeWidth,
@@ -171,7 +168,7 @@ export function AlternativeInputDataNodeSvg(
   );
 }
 
-export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
+export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection: boolean; hasHiddenSource: boolean }) {
   const {
     strokeWidth,
     x,
@@ -180,8 +177,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
     height,
     fillColor,
     strokeColor,
-    hasHiddenSource,
-    props: { isCollection, ...props },
+    props: { isCollection, hasHiddenSource, ...props },
   } = normalize(__props);
 
   return (
@@ -203,8 +199,17 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
   );
 }
 
-export function BkmNodeSvg(__props: NodeSvgProps) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, hasHiddenSource, props } = normalize(__props);
+export function BkmNodeSvg(__props: NodeSvgProps & { hasHiddenSource: boolean }) {
+  const {
+    strokeWidth,
+    x,
+    y,
+    width,
+    height,
+    fillColor,
+    strokeColor,
+    props: { hasHiddenSource, ...props },
+  } = normalize(__props);
   const bevel = 25;
   return (
     <>
@@ -222,7 +227,7 @@ export function BkmNodeSvg(__props: NodeSvgProps) {
   );
 }
 
-export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
+export function KnowledgeSourceNodeSvg(__props: NodeSvgProps & { hasHiddenSource: boolean }) {
   const {
     strokeWidth,
     x,
@@ -231,8 +236,7 @@ export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
     height: totalHeight,
     fillColor,
     strokeColor,
-    hasHiddenSource,
-    props,
+    props: { hasHiddenSource, ...props },
   } = normalize(__props);
   const amplitude = 20;
   const height = totalHeight - amplitude / 2; // Need to leave some space for the wave at the bottom.

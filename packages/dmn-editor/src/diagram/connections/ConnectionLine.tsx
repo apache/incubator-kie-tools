@@ -120,6 +120,8 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
             y={toYsnapped}
             width={defaultSize["@_width"]}
             height={defaultSize["@_height"]}
+            isCollection={false}
+            hasHiddenSource={false}
           />
         </g>
       );
@@ -127,7 +129,13 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
       return (
         <g className={"pulse"}>
           {edgeSvg}
-          <BkmNodeSvg x={toXsnapped} y={toYsnapped} width={defaultSize["@_width"]} height={defaultSize["@_height"]} />
+          <BkmNodeSvg
+            x={toXsnapped}
+            y={toYsnapped}
+            width={defaultSize["@_width"]}
+            height={defaultSize["@_height"]}
+            hasHiddenSource={false}
+          />
         </g>
       );
     } else if (nodeType === NODE_TYPES.knowledgeSource) {
@@ -139,6 +147,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
             y={toYsnapped}
             width={defaultSize["@_width"]}
             height={defaultSize["@_height"]}
+            hasHiddenSource={false}
           />
         </g>
       );

@@ -117,9 +117,11 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                   viewBox={`0 0 ${nodeSvgViewboxSize} ${nodeSvgViewboxSize}`}
                   style={{ padding: `${svgViewboxPadding}px` }}
                 >
-                  {nodeType === NODE_TYPES.inputData && <InputDataNodeSvg {...nodeSvgProps} />}
-                  {nodeType === NODE_TYPES.decision && <DecisionNodeSvg {...nodeSvgProps} />}
-                  {nodeType === NODE_TYPES.bkm && <BkmNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.inputData && <InputDataNodeSvg {...nodeSvgProps} isCollection={false} />}
+                  {nodeType === NODE_TYPES.decision && (
+                    <DecisionNodeSvg {...nodeSvgProps} isCollection={false} hasHiddenSource={false} />
+                  )}
+                  {nodeType === NODE_TYPES.bkm && <BkmNodeSvg {...nodeSvgProps} hasHiddenSource={false} />}
                   {nodeType === NODE_TYPES.decisionService && (
                     <DecisionServiceNodeSvg
                       {...nodeSvgProps}
@@ -129,7 +131,9 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                       isReadonly={true}
                     />
                   )}
-                  {nodeType === NODE_TYPES.knowledgeSource && <KnowledgeSourceNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.knowledgeSource && (
+                    <KnowledgeSourceNodeSvg {...nodeSvgProps} hasHiddenSource={false} />
+                  )}
                   {nodeType === NODE_TYPES.textAnnotation && <TextAnnotationNodeSvg {...nodeSvgProps} />}
                   {nodeType === NODE_TYPES.group && <GroupNodeSvg {...nodeSvgProps} />}
                 </svg>

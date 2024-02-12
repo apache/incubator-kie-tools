@@ -220,6 +220,13 @@ export const DmnEditorInternal = ({
               allTopLevelItemDefinitionUniqueNames={
                 state.computed(state).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
               }
+              drgNodeIdsBySourceNodeId={
+                state.computed(state).getDiagramData(externalModelsByNamespace).drgNodeIdsBySourceNodeId
+              }
+              drgElementsWithoutVisualRepresentationOnCurrentDrd={
+                state.computed(state).getDiagramData(externalModelsByNamespace)
+                  .drgElementsWithoutVisualRepresentationOnCurrentDrd
+              }
             />
           </g>,
           svg
