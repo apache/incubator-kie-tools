@@ -81,10 +81,34 @@ Run the following commands:
   echo "$MINIKUBE_IP cors-proxy.local" | sudo tee -a /etc/hosts
   echo "$MINIKUBE_IP extended-services.local" | sudo tee -a /etc/hosts
   echo "$MINIKUBE_IP kie-sandbox.local" | sudo tee -a /etc/hosts
-
 ```
 
-Run above commands to add the custom hostnames to you hosts file. After this, KIE Sandbox should be accessible via http://kie-sandbox.local
+### Kubernetes install
+
+To install the chart with the release name `kie-sandbox`:
+
+```console
+$ helm install kie-sandbox ./src --values ./src/values-kubernetes-nginx.yaml --set global.clusterDomain="<YOUR_KUBERNETES_CLUSTER_DOMAIN>" --set global.ingressClass="<YOUR_KUBERNETES_INGRESS_CLASS>"
+```
+
+Following message should be displayed on your console.
+
+```console
+NAME: kie-sandbox
+LAST DEPLOYED: Wed Nov 29 17:09:04 2023
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. CORS Proxy available at:
+  http://cors-proxy.<YOUR_KUBERNETES_CLUSTER_DOMAIN>
+2. Extended Services available at:
+  http://extended-services.<YOUR_KUBERNETES_CLUSTER_DOMAIN>
+3. KIE Sandbox available at:
+  http://kie-sandbox.<YOUR_KUBERNETES_CLUSTER_DOMAIN>
+```
+
+No need to run any commands. KIE Sandbox should be accessible via https://kie-sandbox.<YOUR_KUBERNETES_CLUSTER_DOMAIN>
 
 ### OpenShift install
 
@@ -136,6 +160,13 @@ $ helm install kie-sandbox oci://quay.io/kie-tools/kie-sandbox-helm-chart --vers
 ```console
 $ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-minikube-nginx.yaml
+```
+
+### Kubernetes install
+
+```console
+$ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-kubernetes-nginx.yaml --set global.clusterDomain="<YOUR_KUBERNETES_CLUSTER_DOMAIN>" --set global.ingressClass="<YOUR_KUBERNETES_INGRESS_CLASS>"
 ```
 
 ### OpenShift install
