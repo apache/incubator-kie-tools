@@ -194,7 +194,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection: boolean;
         {...props}
       />
       {isCollection && <NodeCollectionMarker {...__props} anchor="top" />}
-      {hasHiddenSource && <NodeHiddenInformationMarker {...__props} />}
+      {hasHiddenSource && <NodeHiddenInformationMarker {...__props} anchor={"middle"} />}
     </>
   );
 }
@@ -222,7 +222,7 @@ export function BkmNodeSvg(__props: NodeSvgProps & { hasHiddenSource: boolean })
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
-      {hasHiddenSource && <NodeHiddenInformationMarker {...__props} />}
+      {hasHiddenSource && <NodeHiddenInformationMarker {...__props} anchor={"middle"} />}
     </>
   );
 }
@@ -254,7 +254,7 @@ export function KnowledgeSourceNodeSvg(__props: NodeSvgProps & { hasHiddenSource
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
-      {hasHiddenSource && <NodeHiddenInformationMarker {...__props} />}
+      {hasHiddenSource && <NodeHiddenInformationMarker {...__props} anchor={"left"} />}
     </>
   );
 }
@@ -521,13 +521,13 @@ function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom"
   );
 }
 
-function NodeHiddenInformationMarker(__props: NodeSvgProps) {
+function NodeHiddenInformationMarker(__props: NodeSvgProps & { anchor: "middle" | "left" }) {
   const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
 
   const dotRadius = 1;
-  const xPosition = x + width / 2;
+  const xPosition = props.anchor === "middle" ? x + width / 2 : x + width / 4;
   const xSpacing = 7;
-  const yPosition = y + height - 18;
+  const yPosition = props.anchor === "middle" ? y + height - 18 : y + height - 11;
 
   return (
     <>
