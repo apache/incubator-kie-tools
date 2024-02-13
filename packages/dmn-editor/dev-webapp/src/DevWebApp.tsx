@@ -34,9 +34,7 @@ import { DMN15_SPEC } from "../../src/Dmn15Spec";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { availableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
 
-const initialDmnMarshaller = getMarshaller(DEFAULT_DEV_WEBAPP_DMN, { upgradeTo: "latest" });
-
-const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
+export const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
   xmlns="${dmn15ns.get("")}"
   expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
@@ -45,7 +43,13 @@ const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
   name="DMN${generateUuid()}">
 </definitions>`;
 
-export function DevWebApp() {
+interface DevWebAppProps {
+  initialModel: string;
+}
+
+export function DevWebApp(props: DevWebAppProps) {
+  const initialDmnMarshaller = useMemo(() => getMarshaller(props.initialModel, { upgradeTo: "latest" }), []);
+
   const onDrop = useCallback((e: React.DragEvent) => {
     console.log("DMN Editor :: Dev webapp :: File(s) dropped! Opening it.");
 

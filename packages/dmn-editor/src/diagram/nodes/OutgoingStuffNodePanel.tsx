@@ -74,6 +74,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
+                title={edgeType}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
@@ -111,6 +112,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
+                title={nodeType}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}

@@ -17,22 +17,25 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { defineConfig } from "@playwright/test";
+import playwirghtBaseConfig from "@kie-tools/playwright-base/playwright.config";
+import merge from "lodash/merge";
+import { env } from "./env";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnEditor: {
-        dev: {
-          port: 3001,
-        },
-      },
-      dmnEditor: {
-        storybook: {
-          port: 6006,
-        },
-      },
-    };
+const buildEnv: any = env;
+
+const customConfig = defineConfig({
+  use: {
+    baseURL: `http://localhost:${buildEnv.dmnEditor.storybook.port}`,
+  },
+  /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
+  webServer: {
+    command: "pnpm storybook",
+    url: `http://localhost:${buildEnv.dmnEditor.storybook.port}/iframe.html?id=example-dmndevwebapp--empty-model`,
+    reuseExistingServer: !process.env.CI || true,
+    stdout: "pipe",
+    timeout: 180000,
   },
 });
+
+export default defineConfig(merge(playwirghtBaseConfig, customConfig));
