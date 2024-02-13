@@ -30,7 +30,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       },
       dmnEditor: {
         storybook: {
-          port: 6006,
+          port: 9900,
         },
       },
     };
