@@ -17,10 +17,10 @@
     "src"
   ],
   "scripts": {
-    "build-storybook": "storybook build",
     "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
     "build:dev-webapp": "rimraf ./dist-dev && webpack -c ./dev-webapp/webpack.config.js --env prod",
     "build:prod": "rimraf dist && pnpm copy:css && pnpm lint && tsc -p tsconfig.json && pnpm test && pnpm test:it",
+    "build:storybook": "storybook build -o dist-storybook",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
