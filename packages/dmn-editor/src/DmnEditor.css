@@ -50,6 +50,7 @@
   top: 0;
   left: 0;
   overflow: visible;
+  z-index: 10000; /* Makes the data type node panel appear correctly, on top of the node */
 }
 .kie-dmn-editor--node:focus {
   outline: none;
@@ -151,6 +152,25 @@
 }
 /* (end) external node */
 
+/* (begin) alternative input node */
+.kie-dmn-editor--selected-alternative-input-data-node:before {
+  content: "";
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 6px;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: var(--selected-alternative-input-data-node-shape--height);
+  backdrop-filter: blur(8px);
+}
+.kie-dmn-editor--selected-alternative-input-data-node:before {
+  border: 1px dashed #006ba4;
+  background-color: rgb(161 222 255 / 20%); /* Very slightly blue hue */
+}
+/* (end) alternative input node */
+
 /* (begin) textAnnotation, and unknown nodes */
 .react-flow__node-node_unknown.selected:before,
 .react-flow__node-node_textAnnotation.selected:before {
@@ -235,6 +255,10 @@
 .kie-dmn-editor--drd-list button:active {
   filter: brightness(90%);
 }
+.kie-dmn-editor--drd-properties--input-data-node-shape button {
+  height: 36px;
+}
+
 .kie-dmn-editor--palette {
   width: 42px;
   background: #fff;
@@ -589,13 +613,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead::before {
   border: 0;
 }
-.kie-dmn-editor--data-type-node-panel > div:hover {
-  backdrop-filter: brightness(95%);
-}
-.kie-dmn-editor--data-type-node-panel > div:active {
-  backdrop-filter: brightness(90%);
-}
-/*    edit button on decision and bkm nodes */
+/* edit button on decision and bkm nodes */
 .kie-dmn-editor--edit-expression-node-panel {
   position: absolute;
   padding: 4px 8px;

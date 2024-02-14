@@ -37,6 +37,10 @@ export const INITIAL_COMPUTED_CACHE: Cache<Computed> = {
     value: undefined,
     dependencies: [],
   },
+  isAlternativeInputDataShape: {
+    value: false,
+    dependencies: [],
+  },
   isDropTargetNodeValidForSelection: {
     value: undefined,
     dependencies: [],

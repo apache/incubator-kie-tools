@@ -38,21 +38,25 @@ runs:
     - name: "Merge PR changes (squashed)"
       id: merge_changes
       shell: bash
+      env:
+        PR_HEAD_REPO_NAME: ${{ github.event.pull_request.head.repo.name }}
+        PR_HEAD_LABEL: ${{ github.event.pull_request.head.label }}
+        HEAD_REF: ${{ github.head_ref  }}
       run: |
         echo "STEP: Merge PR changes (squashed)"
         cd ${{ inputs.path }}
         if [ ${{ github.event.pull_request }} ]; then
-          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+          USER=$(node -e "console.log('$PR_HEAD_LABEL'.match(/(.+)\:(.+)$/)[1])")
 
-          echo "Merge changes from $user/${{ github.head_ref }}"
-          git remote add $user https://github.com/$user/${{ github.event.pull_request.head.repo.name }}.git
-          git fetch $user ${{ github.head_ref }}
-
+          echo "Merge changes from $USER/$HEAD_REF"
+          git remote add $USER https://github.com/$USER/$PR_HEAD_REPO_NAME.git
+          git fetch $USER $HEAD_REF
+          
           echo "Before merging..."
           git log -n 1
           echo "base_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
-          git merge --squash $user/${{ github.head_ref }}
+          git merge --squash $USER/$HEAD_REF
           git commit --no-edit
 
           echo "After merging..."

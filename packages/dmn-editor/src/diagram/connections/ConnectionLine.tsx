@@ -43,13 +43,13 @@ import { useExternalModels } from "../../includedModels/DmnEditorDependenciesCon
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
   const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
   const { externalModelsByNamespace } = useExternalModels();
-  const edge = useDmnEditorStore((s) =>
+  const edgeBeingUpdated = useDmnEditorStore((s) =>
     s.diagram.edgeIdBeingUpdated
       ? s.computed(s).getDiagramData(externalModelsByNamespace).edgesById.get(s.diagram.edgeIdBeingUpdated)
       : undefined
   );
-  const kieEdgePath = useKieEdgePath(edge?.source, edge?.target, edge?.data);
-
+  const kieEdgePath = useKieEdgePath(edgeBeingUpdated?.source, edgeBeingUpdated?.target, edgeBeingUpdated?.data);
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   // This works because nodes are configured with:
   // - Source handles with ids matching EDGE_TYPES or NODE_TYPES
   // - Target handles with ids matching TargetHandleId
@@ -68,13 +68,13 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
   });
 
   const connectionLinePath =
-    edge && kieEdgePath.points
+    edgeBeingUpdated && kieEdgePath.points
       ? isUpdatingFromSourceHandle
         ? pointsToPath([{ "@_x": toX, "@_y": toY }, ...kieEdgePath.points.slice(1)]) // First point is being dragged
         : pointsToPath([...kieEdgePath.points.slice(0, -1), { "@_x": toX, "@_y": toY }]) // Last point is being dragged
       : `M${fromX},${fromY} L${toX},${toY}`;
 
-  const handleId = isUpdatingFromSourceHandle ? edge?.type : fromHandle?.id;
+  const handleId = isUpdatingFromSourceHandle ? edgeBeingUpdated?.type : edgeBeingUpdated?.type ?? fromHandle?.id;
 
   // Edges
   if (handleId === EDGE_TYPES.informationRequirement) {
@@ -91,20 +91,20 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
     const nodeType = handleId as NodeType;
     const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(snapGrid, { "@_x": toX, "@_y": toY });
 
-    const defaultSize = DEFAULT_NODE_SIZES[nodeType](snapGrid);
+    const defaultSize = DEFAULT_NODE_SIZES[nodeType]({ snapGrid, isAlternativeInputDataShape });
     const [toXauto, toYauto] = getPositionalHandlePosition(
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
       { x: fromX, y: fromY, width: 1, height: 1 }
     );
 
-    const edge = getDefaultEdgeTypeBetween(fromNode?.type as NodeType, handleId as NodeType);
-    if (!edge) {
+    const edgeType = getDefaultEdgeTypeBetween(fromNode?.type as NodeType, handleId as NodeType);
+    if (!edgeType) {
       throw new Error(`Invalid structure: ${fromNode?.type} --(any)--> ${handleId}`);
     }
 
     const path = `M${fromX},${fromY} L${toXauto},${toYauto}`;
 
-    const edgeSvg = switchExpression(edge, {
+    const edgeSvg = switchExpression(edgeType, {
       [EDGE_TYPES.informationRequirement]: <InformationRequirementPath d={path} />,
       [EDGE_TYPES.knowledgeRequirement]: <KnowledgeRequirementPath d={path} />,
       [EDGE_TYPES.authorityRequirement]: <AuthorityRequirementPath d={path} centerToConnectionPoint={false} />,

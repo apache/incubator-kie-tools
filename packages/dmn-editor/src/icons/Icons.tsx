@@ -18,7 +18,9 @@
  */
 
 import * as React from "react";
+import { useMemo } from "react";
 import {
+  AlternativeInputDataNodeSvg,
   BkmNodeSvg,
   DecisionNodeSvg,
   DecisionServiceNodeSvg,
@@ -36,23 +38,43 @@ const radius = 34;
 const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // This lets us create a square that will perfectly fit inside the button circle.
 
 const nodeSvgProps = { width: 200, height: 120, x: 16, y: 48, strokeWidth: 16 };
-const nodeSvgViewboxSize = nodeSvgProps.width + 2 * nodeSvgProps.strokeWidth;
 
-export function RoundSvg({ children }: React.PropsWithChildren<{}>) {
+export type NodeIcons =
+  | { isAlternativeInputDataShape: boolean; nodeType: typeof NODE_TYPES.inputData }
+  | {
+      isAlternativeInputDataShape?: boolean;
+      nodeType: Exclude<NodeType, typeof NODE_TYPES.inputData>;
+    };
+
+export function RoundSvg({
+  children,
+  padding,
+  height,
+  viewBox,
+}: React.PropsWithChildren<{ padding?: string; height?: number; viewBox?: number }>) {
+  const style = useMemo(
+    () => (padding !== undefined ? { padding, height } : { padding: `${svgViewboxPadding}px`, height }),
+    [padding, height]
+  );
+
+  const nodeSvgViewboxSize = useMemo(() => {
+    return viewBox ?? nodeSvgProps.width + 2 * nodeSvgProps.strokeWidth;
+  }, [viewBox]);
+
   return (
     <svg
       className={"kie-dmn-editor--round-svg-container"}
       viewBox={`0 0 ${nodeSvgViewboxSize} ${nodeSvgViewboxSize}`}
-      style={{ padding: `${svgViewboxPadding}px` }}
+      style={style}
     >
       {children}
     </svg>
   );
 }
 
-export function NodeIcon(nodeType?: NodeType) {
+export function NodeIcon({ isAlternativeInputDataShape, nodeType }: NodeIcons) {
   return switchExpression(nodeType, {
-    [NODE_TYPES.inputData]: InputDataIcon,
+    [NODE_TYPES.inputData]: isAlternativeInputDataShape ? AlternativeInputDataIcon : InputDataIcon,
     [NODE_TYPES.decision]: DecisionIcon,
     [NODE_TYPES.bkm]: BkmIcon,
     [NODE_TYPES.knowledgeSource]: KnowledgeSourceIcon,
@@ -64,10 +86,30 @@ export function NodeIcon(nodeType?: NodeType) {
   });
 }
 
-export function InputDataIcon() {
+export function InputDataIcon(props: { padding?: string; height?: number }) {
   return (
-    <RoundSvg>
+    <RoundSvg padding={props.padding} height={props.height}>
       <InputDataNodeSvg {...nodeSvgProps} />
+    </RoundSvg>
+  );
+}
+
+export function AlternativeInputDataIcon(props: {
+  padding?: string;
+  height?: number;
+  viewBox?: number;
+  transform?: string;
+}) {
+  return (
+    <RoundSvg padding={props.padding ?? "0px"} height={props.height} viewBox={props.viewBox}>
+      <AlternativeInputDataNodeSvg
+        {...nodeSvgProps}
+        isIcon={true}
+        width={80}
+        height={100}
+        strokeWidth={8}
+        transform={props.transform ?? "translate(80, 60)"}
+      />
     </RoundSvg>
   );
 }

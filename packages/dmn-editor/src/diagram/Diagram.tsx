@@ -246,7 +246,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
       (
         nodeIdToIgnore: string,
         bounds: DC__Bounds,
-        minSizes: (snapGrid: SnapGrid) => DC__Dimension,
+        minSizes: (args: { snapGrid: SnapGrid; isAlternativeInputDataShape: boolean }) => DC__Dimension,
         snapGrid: SnapGrid
       ) =>
         reactFlowInstance
@@ -259,11 +259,15 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 bounds: bounds!,
                 container: node.data.shape["dc:Bounds"]!,
                 snapGrid,
+                isAlternativeInputDataShape: dmnEditorStoreApi
+                  .getState()
+                  .computed(dmnEditorStoreApi.getState())
+                  .isAlternativeInputDataShape(),
                 containerMinSizes: MIN_NODE_SIZES[node.type as NodeType],
                 boundsMinSizes: minSizes,
               }).isInside
           ),
-      [reactFlowInstance]
+      [reactFlowInstance, dmnEditorStoreApi]
     );
 
     const onDragOver = useCallback((e: React.DragEvent) => {
@@ -313,13 +317,19 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 bounds: {
                   "@_x": dropPoint.x,
                   "@_y": dropPoint.y,
-                  "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](state.diagram.snapGrid)["@_width"],
-                  "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](state.diagram.snapGrid)["@_height"],
+                  "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette]({
+                    snapGrid: state.diagram.snapGrid,
+                    isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                  })["@_width"],
+                  "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette]({
+                    snapGrid: state.diagram.snapGrid,
+                    isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                  })["@_height"],
                 },
               },
             });
             state.diagram._selectedNodes = [newNodeId];
-            state.focus.consumableId = id;
+            state.focus.consumableId = newNodeId;
           });
         } else if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS)) {
           e.stopPropagation();
@@ -341,7 +351,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
             const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
 
-            const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType](state.diagram.snapGrid);
+            const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType]({
+              snapGrid: state.diagram.snapGrid,
+              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+            });
 
             const namespaceName = getXmlNamespaceDeclarationName({
               model: state.dmn.model.definitions,
@@ -385,10 +398,16 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             DMN15__tDefinitions["drgElement"]
           >;
 
-          const nodeType = getNodeTypeFromDmnObject(drgElement)!;
+          const nodeType = getNodeTypeFromDmnObject(drgElement);
+          if (nodeType === undefined) {
+            throw new Error("DMN DIAGRAM: It wasn't possible to determine the node type");
+          }
 
           dmnEditorStoreApi.setState((state) => {
-            const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType](state.diagram.snapGrid);
+            const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType]({
+              snapGrid: state.diagram.snapGrid,
+              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+            });
             addShape({
               definitions: state.dmn.model.definitions,
               drdIndex: state.diagram.drdIndex,
@@ -474,8 +493,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           const newNodeType = state.diagram.ongoingConnection.handleId as NodeType;
           const sourceNodeType = sourceNode.type as NodeType;
 
-          const edge = getDefaultEdgeTypeBetween(sourceNodeType as NodeType, newNodeType);
-          if (!edge) {
+          const edgeType = getDefaultEdgeTypeBetween(sourceNodeType as NodeType, newNodeType);
+          if (!edgeType) {
             throw new Error(`DMN DIAGRAM: Invalid structure: ${sourceNodeType} --(any)--> ${newNodeType}`);
           }
 
@@ -484,7 +503,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           const { id, href: newDmnObejctHref } = addConnectedNode({
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
-            edge,
+            edgeType,
             sourceNode: {
               href: sourceNode.id,
               type: sourceNodeType as NodeType,
@@ -496,14 +515,20 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               bounds: {
                 "@_x": dropPoint.x,
                 "@_y": dropPoint.y,
-                "@_width": DEFAULT_NODE_SIZES[newNodeType](state.diagram.snapGrid)["@_width"],
-                "@_height": DEFAULT_NODE_SIZES[newNodeType](state.diagram.snapGrid)["@_height"],
+                "@_width": DEFAULT_NODE_SIZES[newNodeType]({
+                  snapGrid: state.diagram.snapGrid,
+                  isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                })["@_width"],
+                "@_height": DEFAULT_NODE_SIZES[newNodeType]({
+                  snapGrid: state.diagram.snapGrid,
+                  isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                })["@_height"],
               },
             },
           });
 
           state.diagram._selectedNodes = [newDmnObejctHref];
-          state.focus.consumableId = id;
+          state.focus.consumableId = newDmnObejctHref;
         });
 
         // Indepdent of what happens in the state mutation above, we always need to reset the `ongoingConnection` at the end here.
@@ -571,7 +596,10 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   const snappedShape = snapShapeDimensions(
                     state.diagram.snapGrid,
                     node.data.shape,
-                    MIN_NODE_SIZES[node.type as NodeType](state.diagram.snapGrid)
+                    MIN_NODE_SIZES[node.type as NodeType]({
+                      snapGrid: state.diagram.snapGrid,
+                      isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                    })
                   );
                   if (
                     snappedShape.width !== change.dimensions.width ||
@@ -705,7 +733,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   dmnObjectQName: node.data.dmnObjectQName,
                   dmnObjectId: node.data.dmnObject?.["@_id"],
                   nodeNature: nodeNatures[node.type as NodeType],
-                  mode: NodeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+                  mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
@@ -876,7 +904,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     definitions: state.dmn.model.definitions,
                     drdIndex: state.diagram.drdIndex,
                     edge: { id: change.id, dmnObject: edge.data.dmnObject },
-                    mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+                    mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
                   });
                   state.dispatch(state).diagram.setEdgeStatus(change.id, { selected: false, draggingWaypoint: false });
                 }
@@ -960,7 +988,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               definitions: state.dmn.model.definitions,
               drdIndex: state.diagram.drdIndex,
               edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
-              mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+              mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
             });
 
             const deletedWaypoints = deletedDmnEdgeOnCurrentDrd?.["di:waypoint"];
@@ -1194,8 +1222,12 @@ function DmnDiagramEmptyState({
                       bounds: {
                         "@_x": 100,
                         "@_y": 100,
-                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_width"],
-                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_height"],
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                          snapGrid: state.diagram.snapGrid,
+                        })["@_width"],
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                          snapGrid: state.diagram.snapGrid,
+                        })["@_height"],
                       },
                     },
                   });
@@ -1231,8 +1263,14 @@ function DmnDiagramEmptyState({
                   const inputDataNodeBounds: DC__Bounds = {
                     "@_x": 100,
                     "@_y": 300,
-                    "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](state.diagram.snapGrid)["@_width"],
-                    "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](state.diagram.snapGrid)["@_height"],
+                    "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
+                      snapGrid: state.diagram.snapGrid,
+                      isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                    })["@_width"],
+                    "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
+                      snapGrid: state.diagram.snapGrid,
+                      isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                    })["@_height"],
                   };
 
                   const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
@@ -1247,7 +1285,7 @@ function DmnDiagramEmptyState({
                   const { href: decisionNodeHref } = addConnectedNode({
                     definitions: state.dmn.model.definitions,
                     drdIndex: state.diagram.drdIndex,
-                    edge: EDGE_TYPES.informationRequirement,
+                    edgeType: EDGE_TYPES.informationRequirement,
                     sourceNode: {
                       href: inputDataNodeHref,
                       type: NODE_TYPES.inputData,
@@ -1259,8 +1297,12 @@ function DmnDiagramEmptyState({
                       bounds: {
                         "@_x": 100,
                         "@_y": 100,
-                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_width"],
-                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](state.diagram.snapGrid)["@_height"],
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                          snapGrid: state.diagram.snapGrid,
+                        })["@_width"],
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                          snapGrid: state.diagram.snapGrid,
+                        })["@_height"],
                       },
                     },
                   });
@@ -1492,7 +1534,7 @@ export function KeyboardShortcuts(props: {}) {
             definitions: state.dmn.model.definitions,
             drdIndex: state.diagram.drdIndex,
             edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
-            mode: EdgeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+            mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
           });
           state.dispatch(state).diagram.setEdgeStatus(edge.id, {
             selected: false,
@@ -1514,7 +1556,7 @@ export function KeyboardShortcuts(props: {}) {
                 dmnObjectQName: node.data.dmnObjectQName,
                 dmnObjectId: node.data.dmnObject?.["@_id"],
                 nodeNature: nodeNatures[node.type as NodeType],
-                mode: NodeDeletionMode.FORM_DRG_AND_ALL_DRDS,
+                mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
               });
               state.dispatch(state).diagram.setNodeStatus(node.id, {
                 selected: false,

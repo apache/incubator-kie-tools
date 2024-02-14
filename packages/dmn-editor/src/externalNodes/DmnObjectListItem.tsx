@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import { useMemo } from "react";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Unpacked } from "../tsExt/tsExt";
 import { TypeRefLabel } from "../dataTypes/TypeRefLabel";
@@ -25,9 +26,10 @@ import { NodeIcon } from "../icons/Icons";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { DMN15_SPEC } from "../Dmn15Spec";
 
 export function DmnObjectListItem({
   dmnObject,
@@ -45,12 +47,39 @@ export function DmnObjectListItem({
   const allTopLevelDataTypesByFeelName = useDmnEditorStore(
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
   );
-  if (!dmnObject) {
-    return <>{dmnObjectHref}</>;
-  }
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
-  const Icon = NodeIcon(getNodeTypeFromDmnObject(dmnObject));
-  return (
+  const displayName = dmnObject
+    ? buildFeelQNameFromNamespace({
+        namedElement: dmnObject,
+        importsByNamespace,
+        namespace,
+        relativeToNamespace,
+      }).full
+    : dmnObjectHref;
+
+  const isValid = useDmnEditorStore((s) =>
+    DMN15_SPEC.namedElement.isValidName(
+      dmnObject?.["@_id"] ?? generateUuid(),
+      displayName,
+      s.computed(s).getAllFeelVariableUniqueNames()
+    )
+  );
+
+  const Icon = useMemo(() => {
+    if (dmnObject === undefined) {
+      throw new Error("Icon can't be defined without a DMN object");
+    }
+    const nodeType = getNodeTypeFromDmnObject(dmnObject);
+    if (nodeType === undefined) {
+      throw new Error("Can't determine node icon with undefined node type");
+    }
+    return NodeIcon({ nodeType, isAlternativeInputDataShape });
+  }, [dmnObject, isAlternativeInputDataShape]);
+
+  return !dmnObject ? (
+    <>{dmnObjectHref}</>
+  ) : (
     <Flex
       alignItems={{ default: "alignItemsCenter" }}
       justifyContent={{ default: "justifyContentFlexStart" }}
@@ -59,14 +88,7 @@ export function DmnObjectListItem({
       <div style={{ width: "40px", height: "40px", marginRight: 0 }}>
         <Icon />
       </div>
-      <div>{`${
-        buildFeelQNameFromNamespace({
-          namedElement: dmnObject,
-          importsByNamespace,
-          namespace,
-          relativeToNamespace,
-        }).full
-      }`}</div>
+      <div style={{ color: isValid ? undefined : "red" }}>{`${displayName}`}</div>
       <div>
         {dmnObject.__$$element !== "knowledgeSource" ? (
           <>

@@ -111,6 +111,7 @@ export class ReservedWords {
     "overlaps before",
     "overlaps",
     "product",
+    "range",
     "remove",
     "replace",
     "reverse",
