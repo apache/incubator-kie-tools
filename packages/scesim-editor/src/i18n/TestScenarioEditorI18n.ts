@@ -34,8 +34,8 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       noChoice: string;
       rule: string;
     };
-    autoPopulation: string;
-    autoPopulationTooltip: string;
+    autoFillTable: string;
+    autoFillTableTooltip: string;
     createButton: string;
     dmnGroup: string;
     dmnNoChoice: string;

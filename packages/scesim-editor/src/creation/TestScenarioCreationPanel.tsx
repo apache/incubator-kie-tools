@@ -28,13 +28,13 @@ import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
 import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 
 import { TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import "./TestScenarioCreationPanel.css";
 
@@ -58,7 +58,7 @@ function TestScenarioCreationPanel({
   ];
 
   const [assetType, setAssetType] = React.useState("");
-  const [isAutoPopulationEnabled, setAutoPopulationEnabled] = React.useState(false);
+  const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
   const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
   const [isTestSkipped, setTestSkipped] = React.useState(false);
   const [kieSessionRule, setKieSessionRule] = React.useState("");
@@ -73,13 +73,13 @@ function TestScenarioCreationPanel({
       <Form isHorizontal className="kie-scesim-editor--creation-form">
         <FormGroup label={i18n.creationPanel.assetsGroup} isRequired>
           <FormSelect
-            value={assetType}
             id="asset-type-select"
             name="asset-type-select"
             onChange={(value: string) => setAssetType(value)}
+            value={assetType}
           >
             {assetsOption.map((option, index) => (
-              <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
+              <FormSelectOption isDisabled={option.disabled} key={index} label={option.label} value={option.value} />
             ))}
           </FormSelect>
         </FormGroup>
@@ -92,12 +92,12 @@ function TestScenarioCreationPanel({
             </FormGroup>
             <FormGroup>
               <Checkbox
-                id="auto-population-checkbox"
-                isChecked={isAutoPopulationEnabled}
+                id="auto-fill-table-checkbox"
+                isChecked={isAutoFillTableEnabled}
                 label={
                   <>
-                    <span>{i18n.creationPanel.autoPopulation}</span>
-                    <Tooltip content={i18n.creationPanel.autoPopulationTooltip}>
+                    <span>{i18n.creationPanel.autoFillTable}</span>
+                    <Tooltip content={i18n.creationPanel.autoFillTableTooltip}>
                       <Icon className={"kie-scesim-editor-creation-panel--info-icon"} size="sm" status="info">
                         <HelpIcon />
                       </Icon>
@@ -105,7 +105,7 @@ function TestScenarioCreationPanel({
                   </>
                 }
                 onChange={(value: boolean) => {
-                  setAutoPopulationEnabled(value);
+                  setAutoFillTableEnabled(value);
                 }}
               />
             </FormGroup>
@@ -171,12 +171,12 @@ function TestScenarioCreationPanel({
         </FormGroup>
       </Form>
       <Button
-        variant="primary"
         icon={<AddIcon />}
         isDisabled={assetType == ""}
         onClick={() =>
           onCreateScesimButtonClicked(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
         }
+        variant="primary"
       >
         {i18n.creationPanel.createButton}
       </Button>
