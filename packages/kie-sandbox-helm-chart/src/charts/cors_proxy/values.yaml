@@ -45,10 +45,10 @@ service:
 # -- CORS Proxy Ingress configuration (https://kubernetes.io/docs/concepts/services-networking/ingress/)
 ingress:
   enabled: false
-  className: ""
+  className: "{{ .Values.global.kubernetesIngressClass }}"
   annotations: {}
   hosts:
-    - host: chart-example.local
+    - host: cors-proxy.{{ .Values.global.kubernetesClusterDomain }}
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -86,3 +86,5 @@ affinity: {}
 # @ignored
 global:
   openshiftRouteDomain: ocp-example.com
+  kubernetesIngressClass: nginx
+  kubernetesClusterDomain: ks-example.com

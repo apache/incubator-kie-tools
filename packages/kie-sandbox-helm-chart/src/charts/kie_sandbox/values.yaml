@@ -52,10 +52,10 @@ service:
 # -- KIE Sandbox Ingress configuration (https://kubernetes.io/docs/concepts/services-networking/ingress/)
 ingress:
   enabled: false
-  className: ""
+  className: "{{ .Values.global.kubernetesIngressClass }}"
   annotations: {}
   hosts:
-    - host: kie-sandbox.domain.com
+    - host: kie-sandbox.{{ .Values.global.kubernetesClusterDomain }}
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -88,3 +88,9 @@ tolerations: []
 
 # @ignored
 affinity: {}
+
+# @ignored
+global:
+  openshiftRouteDomain: ocp-example.com
+  kubernetesIngressClass: "nginx"
+  kubernetesClusterDomain: "ks-example.com"

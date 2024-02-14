@@ -7,10 +7,10 @@ global:
   # -- Which ingress source is being used (none/"minikube"/"kubernetes"/"openshift") Obs.: For NOTES generation only
   ingressSource: ""
 
-  # -- If using Kubernetes Ingress, set the Ingress class (i.e: nginx)
-  ingressClass: ""
-  # -- If using Kubernetes Ingress, set the cluster domain
-  clusterDomain: ""
+  # -- If using Minikube or Kubernetes, set the Ingress class (i.e: nginx)
+  kubernetesIngressClass: ""
+  # -- If using Minikube or Kubernetes, set the cluster domain
+  kubernetesClusterDomain: ""
 
   # -- If using OpenShift Routes, set the Route domain
   openshiftRouteDomain: ""
