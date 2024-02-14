@@ -92,5 +92,5 @@ affinity: {}
 # @ignored
 global:
   openshiftRouteDomain: ocp-example.com
-  kubernetesIngressClass: "nginx"
-  kubernetesClusterDomain: "ks-example.com"
+  kubernetesIngressClass: nginx
+  kubernetesClusterDomain: k8s-example.com

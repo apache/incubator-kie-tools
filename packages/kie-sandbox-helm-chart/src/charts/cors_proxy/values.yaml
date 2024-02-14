@@ -87,4 +87,4 @@ affinity: {}
 global:
   openshiftRouteDomain: ocp-example.com
   kubernetesIngressClass: nginx
-  kubernetesClusterDomain: ks-example.com
+  kubernetesClusterDomain: k8s-example.com
