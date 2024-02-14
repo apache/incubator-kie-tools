@@ -1,6 +1,6 @@
 {{- if not .Values.global.ingressSource }}
 
-In order to get {{ .Chart.Name }} running you need to run these commands:
+In order to get {{ .Release.Name }} running you need to run these commands:
 
 {{- if .Values.cors_proxy.ingress.enabled }}
 
