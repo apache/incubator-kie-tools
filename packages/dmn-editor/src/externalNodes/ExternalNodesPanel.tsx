@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { DiagramNodesPanel, DmnEditorTab } from "../store/Store";
+import { DiagramLhsPanel, DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { buildXmlHref } from "../xml/xmlHrefs";
@@ -108,7 +108,7 @@ export function ExternalNodesPanel() {
                 variant={ButtonVariant.plain}
                 onClick={() =>
                   dmnEditorStoreApi.setState((state) => {
-                    state.diagram.openNodesPanel = DiagramNodesPanel.NONE;
+                    state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
                   })
                 }
               >
