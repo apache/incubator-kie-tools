@@ -95,17 +95,17 @@ Run the following commands:
   echo "\n# Minikube KIE Sandbox Helm Chart hostnames" | sudo tee -a /etc/hosts
 {{- range $host := .Values.cors_proxy.ingress.hosts }}
   {{- range .paths }}
-  echo "$MINIKUBE_IP {{ $host.host }}" | sudo tee -a /etc/hosts
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
   {{- end }}
 {{- end }}
 {{- range $host := .Values.extended_services.ingress.hosts }}
   {{- range .paths }}
-  echo "$MINIKUBE_IP {{ $host.host }}" | sudo tee -a /etc/hosts
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
   {{- end }}
 {{- end }}
 {{- range $host := .Values.kie_sandbox.ingress.hosts }}
   {{- range .paths }}
-  echo "$MINIKUBE_IP {{ $host.host }}" | sudo tee -a /etc/hosts
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
   {{- end }}
 {{- end }}
 
