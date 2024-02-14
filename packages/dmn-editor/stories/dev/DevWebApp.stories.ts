@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { DevWebApp, EMPTY_DMN_15 } from "../dev-webapp/src/DevWebApp";
-import { DEFAULT_DEV_WEBAPP_DMN } from "../dev-webapp/src/DefaultDmn";
+import { DevWebApp, EMPTY_DMN_15 } from "../../dev-webapp/src/DevWebApp";
+import { DEFAULT_DEV_WEBAPP_DMN } from "../../dev-webapp/src/DefaultDmn";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof DevWebApp> = {
