@@ -150,7 +150,7 @@ func mountDevConfigMapsMutateVisitor(workflow *operatorapi.SonataFlow, flowDefCM
 			}
 
 			if len(deployment.Spec.Template.Spec.Volumes) == 0 {
-				deployment.Spec.Template.Spec.Volumes = make([]corev1.Volume, 0, len(resourceVolumes)+2)
+				deployment.Spec.Template.Spec.Volumes = make([]corev1.Volume, 0, len(resourceVolumes)+1)
 			}
 			kubeutil.AddOrReplaceVolume(&deployment.Spec.Template.Spec, defaultResourcesVolume)
 			kubeutil.AddOrReplaceVolume(&deployment.Spec.Template.Spec, resourceVolumes...)

@@ -101,19 +101,26 @@ func VolumeMountAdd(volumeMount []corev1.VolumeMount, name, mountPath string) []
 // AddOrReplaceVolume adds or removes the given volumes to the PodSpec.
 // If there's already a volume with the same name, it's replaced.
 func AddOrReplaceVolume(podSpec *corev1.PodSpec, volumes ...corev1.Volume) {
-	// indexing the volumes to add to the podSpec we avoid O(n) operation when searching for a volume to replace
-	volumesToAdd := make(map[string]corev1.Volume, len(volumes))
+	// volumes iterated here are read/constructed by the caller following the order defined in the original CRD, and that
+	// order must be preserved. If not preserved, in the reconciliation cycles an order change in the volumes might be
+	// interpreted as configuration change in the original resource, causing undesired side effects like creating
+	// a new ReplicaSet for a deployment with the subsequent pods spawning reported here.
+	volumesToAdd := make([]corev1.Volume, 0)
+	wasAdded := false
 	for _, volume := range volumes {
-		volumesToAdd[volume.Name] = volume
-	}
-	// replace
-	for i := range podSpec.Volumes {
-		if vol, ok := volumesToAdd[podSpec.Volumes[i].Name]; ok {
-			podSpec.Volumes[i] = vol
-			delete(volumesToAdd, vol.Name)
+		wasAdded = false
+		for i := 0; !wasAdded && i < len(podSpec.Volumes); i++ {
+			if volume.Name == podSpec.Volumes[i].Name {
+				// replace existing
+				podSpec.Volumes[i] = volume
+				wasAdded = true
+			}
+		}
+		if !wasAdded {
+			// remember to add it later in order
+			volumesToAdd = append(volumesToAdd, volume)
 		}
 	}
-	// append what's left
 	for _, volume := range volumesToAdd {
 		podSpec.Volumes = append(podSpec.Volumes, volume)
 	}
@@ -121,18 +128,26 @@ func AddOrReplaceVolume(podSpec *corev1.PodSpec, volumes ...corev1.Volume) {
 
 // AddOrReplaceVolumeMount same as AddOrReplaceVolume, but with VolumeMounts in a specific container
 func AddOrReplaceVolumeMount(containerIndex int, podSpec *corev1.PodSpec, mounts ...corev1.VolumeMount) {
-	mountsToAdd := make(map[string]corev1.VolumeMount, len(mounts))
+	// analogous to AddOrReplaceVolume function, the processing must be realized en order.
+	// see: AddOrReplaceVolume
+	mountsToAdd := make([]corev1.VolumeMount, 0)
+	wasAdded := false
+	container := &podSpec.Containers[containerIndex]
 	for _, mount := range mounts {
-		mountsToAdd[mount.Name] = mount
-	}
-	for i := range podSpec.Containers[containerIndex].VolumeMounts {
-		if mount, ok := mountsToAdd[podSpec.Containers[containerIndex].VolumeMounts[i].Name]; ok {
-			podSpec.Containers[containerIndex].VolumeMounts[i] = mount
-			delete(mountsToAdd, mount.Name)
+		wasAdded = false
+		for i := 0; !wasAdded && i < len(container.VolumeMounts); i++ {
+			if mount.Name == container.VolumeMounts[i].Name {
+				// replace existing
+				container.VolumeMounts[i] = mount
+				wasAdded = true
+			}
+		}
+		if !wasAdded {
+			// remember to add it later in order
+			mountsToAdd = append(mountsToAdd, mount)
 		}
 	}
-	// append what's left
 	for _, mount := range mountsToAdd {
-		podSpec.Containers[containerIndex].VolumeMounts = append(podSpec.Containers[containerIndex].VolumeMounts, mount)
+		container.VolumeMounts = append(container.VolumeMounts, mount)
 	}
 }

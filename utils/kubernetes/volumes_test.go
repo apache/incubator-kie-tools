@@ -15,7 +15,6 @@
 package kubernetes
 
 import (
-	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -46,9 +45,6 @@ func TestReplaceOrAddVolume(t *testing.T) {
 	AddOrReplaceVolume(&podSpec, volumes...)
 
 	assert.Len(t, podSpec.Volumes, 3)
-	sort.Slice(podSpec.Volumes, func(i, j int) bool {
-		return podSpec.Volumes[i].Name < podSpec.Volumes[j].Name
-	})
 	assert.Equal(t, "cmA", podSpec.Volumes[0].ConfigMap.Name)
 	assert.Equal(t, "cmB", podSpec.Volumes[1].ConfigMap.Name)
 	assert.Equal(t, "cmC", podSpec.Volumes[2].ConfigMap.Name)
@@ -69,9 +65,6 @@ func TestReplaceOrAddVolume_Append(t *testing.T) {
 	AddOrReplaceVolume(&podSpec, volumes...)
 
 	assert.Len(t, podSpec.Volumes, 2)
-	sort.Slice(podSpec.Volumes, func(i, j int) bool {
-		return podSpec.Volumes[i].Name < podSpec.Volumes[j].Name
-	})
 	assert.Equal(t, "cm1", podSpec.Volumes[0].ConfigMap.Name)
 	assert.Equal(t, "cmB", podSpec.Volumes[1].ConfigMap.Name)
 }
@@ -90,9 +83,6 @@ func TestReplaceOrAddVolume_EmptyVolumes(t *testing.T) {
 	AddOrReplaceVolume(&podSpec, volumes...)
 
 	assert.Len(t, podSpec.Volumes, 2)
-	sort.Slice(podSpec.Volumes, func(i, j int) bool {
-		return podSpec.Volumes[i].Name < podSpec.Volumes[j].Name
-	})
 	assert.Equal(t, "cm1", podSpec.Volumes[0].ConfigMap.Name)
 	assert.Equal(t, "cm2", podSpec.Volumes[1].ConfigMap.Name)
 }
@@ -114,9 +104,6 @@ func TestReplaceOrAddVolume_EmptyPodVolumes(t *testing.T) {
 	AddOrReplaceVolume(&podSpec, volumes...)
 
 	assert.Len(t, podSpec.Volumes, 3)
-	sort.Slice(podSpec.Volumes, func(i, j int) bool {
-		return podSpec.Volumes[i].Name < podSpec.Volumes[j].Name
-	})
 	assert.Equal(t, "cmA", podSpec.Volumes[0].ConfigMap.Name)
 	assert.Equal(t, "cmB", podSpec.Volumes[1].ConfigMap.Name)
 	assert.Equal(t, "cmC", podSpec.Volumes[2].ConfigMap.Name)
@@ -137,9 +124,6 @@ func TestAddOrReplaceVolumeMount(t *testing.T) {
 
 	AddOrReplaceVolumeMount(0, &podSpec, mounts...)
 	assert.Len(t, podSpec.Containers[0].VolumeMounts, 2)
-	sort.Slice(podSpec.Containers[0].VolumeMounts, func(i, j int) bool {
-		return podSpec.Containers[0].VolumeMounts[i].Name < podSpec.Containers[0].VolumeMounts[j].Name
-	})
 	assert.Equal(t, "/dev", podSpec.Containers[0].VolumeMounts[0].MountPath)
 	assert.Equal(t, "/tmp/any/path", podSpec.Containers[0].VolumeMounts[1].MountPath)
 }
