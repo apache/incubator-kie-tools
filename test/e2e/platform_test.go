@@ -117,9 +117,9 @@ var _ = Describe("Validate the persistence", Ordered, func() {
 			}
 		},
 			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), dev, ephemeral),
-			XEntry("with both Job Service and Data Index and ephemeral persistence and the workflow in a production profile", test.GetSonataFlowE2EPlatformServicesDirectory(), production, ephemeral),
+			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a production profile", test.GetSonataFlowE2EPlatformServicesDirectory(), production, ephemeral),
 			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), dev, postgreSQL),
-			XEntry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a production profile", test.GetSonataFlowE2EPlatformServicesDirectory(), production, postgreSQL),
+			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a production profile", test.GetSonataFlowE2EPlatformServicesDirectory(), production, postgreSQL),
 		)
 
 	})

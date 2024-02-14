@@ -138,7 +138,7 @@ func (c *containerBuilderManager) scheduleNewKanikoBuildWithContainerFile(build 
 		workflowDefinition: workflowDef,
 		workflow:           workflow,
 		dockerfile:         platform.GetCustomizedDockerfile(c.commonConfig.Data[c.commonConfig.Data[configKeyDefaultBuilderResourceName]], *c.platform),
-		imageTag:           workflowdef.GetWorkflowAppImageNameTag(workflow),
+		imageTag:           buildNamespacedImageTag(workflow),
 	}
 
 	if c.platform.Spec.Build.Config.Timeout == nil {
@@ -198,4 +198,11 @@ func newBuild(buildInput kanikoBuildInput, platform api.PlatformContainerBuild, 
 		WithResourceRequirements(buildInput.task.Resources).
 		WithBuildArgs(buildInput.task.BuildArgs).
 		WithEnvs(buildInput.task.Envs).Schedule()
+}
+
+// buildNamespacedImageTag For the kaniko build we prepend the namespace to the calculated image name/tag to avoid potential
+// collisions if the same workflows is deployed in a different namespace. In OpenShift this last is not needed since the
+// ImageStreams are already namespaced.
+func buildNamespacedImageTag(workflow *operatorapi.SonataFlow) string {
+	return workflow.Namespace + "/" + workflowdef.GetWorkflowAppImageNameTag(workflow)
 }
