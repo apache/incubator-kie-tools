@@ -32,7 +32,7 @@ test.describe("Create new node from existing one", () => {
       .getByTitle("Input Data", { exact: true })
       .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
 
-    await page.getByText("New Input Data").hover();
+    // await page.getByText("New Input Data").hover();
     await page
       .getByTitle("node_decision")
       .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
@@ -45,7 +45,7 @@ test.describe("Create new node from existing one", () => {
       .getByTitle("Input Data", { exact: true })
       .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
 
-    await page.getByText("New Input Data").hover();
+    // await page.getByText("New Input Data").hover();
     await page
       .getByTitle("node_knowledgeSource")
       .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
@@ -58,7 +58,7 @@ test.describe("Create new node from existing one", () => {
       .getByTitle("Input Data", { exact: true })
       .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 400 } });
 
-    await page.getByText("New Input Data").hover();
+    // await page.getByText("New Input Data").hover();
     await page
       .getByTitle("node_textAnnotation")
       .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });

@@ -37,7 +37,7 @@ test.describe("Connect two existing nodes", () => {
       .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
 
     // Connect these nodes
-    await page.getByText("New Input Data").hover();
+    // await page.getByText("New Input Data").hover();
     await page.getByTitle("edge_informationRequirement").locator("visible=true").dragTo(page.getByText("New Decision"));
 
     expect(await page.screenshot()).toMatchSnapshot();
@@ -53,7 +53,7 @@ test.describe("Connect two existing nodes", () => {
       .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
 
     // Connect these nodes
-    await page.getByText("New Input Data").hover();
+    // await page.getByText("New Input Data").hover();
     await page
       .getByTitle("edge_knowledgeRequirement")
       .locator("visible=true")
@@ -72,7 +72,7 @@ test.describe("Connect two existing nodes", () => {
       .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 400 } });
 
     // Connect these nodes
-    await page.getByText("New Input Data").hover();
+    // await page.getByText("New Input Data").hover();
     await page
       .getByTitle("edge_association")
       .locator("visible=true")
