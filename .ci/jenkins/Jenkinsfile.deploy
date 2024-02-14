@@ -190,10 +190,10 @@ pipeline {
                 }
             }
             parallel {
-                stage('Run tests on Minikube') {
+                stage('Run tests on Kind') {
                     steps {
                         script {
-                            launchE2ETestsJob('minikube')
+                            launchE2ETestsJob('kind')
                         }
                     }
                 }

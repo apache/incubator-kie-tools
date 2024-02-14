@@ -34,8 +34,8 @@ import org.kie.jenkins.jobdsl.Utils
 
 jenkins_path = '.ci/jenkins'
 clustersConfig = [
-    minikube: [
-        MINIKUBE_VERSION: '1.30.1',
+    kind: [
+        KIND_VERSION: 'v0.20.0',
         KUBERNETES_VERSION: '1.26.3',
     ],
 ]
