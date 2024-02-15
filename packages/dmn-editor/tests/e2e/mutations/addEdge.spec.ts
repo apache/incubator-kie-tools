@@ -19,7 +19,17 @@
 
 import { test, expect } from "@playwright/test";
 import { env } from "../../../env";
-import { DIAGRAM_CONTAINER } from "../constants";
+import {
+  ADD_ASSOCIATION,
+  ADD_AUTHORITY_REQUIREMENET,
+  ADD_INFORMATION_REQUIREMENT,
+  ADD_KNOWLEDGE_REQUIREMENT,
+  ASSOCIATION,
+  AUTHORITY_REQUIREMENET,
+  DIAGRAM_CONTAINER,
+  INFORMATION_REQUIREMENT,
+  KNOWLEDGE_REQUIREMENT,
+} from "../../../src/constants";
 
 test.beforeEach(async ({ page, browserName }, testInfo) => {
   test.skip(browserName === "webkit", "hover() and dragTo() cause troubles on webkit");
@@ -41,11 +51,9 @@ test.describe("Add edge", () => {
 
       // Connect these nodes
       // await page.getByText("New Input Data").hover();
-      await page
-        .getByTitle("Add Information Requirement edge")
-        .locator("visible=true")
-        .dragTo(page.getByText("New Decision"));
+      await page.getByTitle(ADD_INFORMATION_REQUIREMENT).locator("visible=true").dragTo(page.getByText("New Decision"));
 
+      expect(await page.getByTestId(INFORMATION_REQUIREMENT)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -61,10 +69,11 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Input Data").hover();
       await page
-        .getByTitle("Add Authority Requirement edge")
+        .getByTitle(ADD_AUTHORITY_REQUIREMENET)
         .locator("visible=true")
         .dragTo(page.getByText("New Knowledge Source"));
 
+      expect(await page.getByTestId(AUTHORITY_REQUIREMENET)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -80,10 +89,11 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Input Data").hover();
       await page
-        .getByTitle("Add Association edge")
+        .getByTitle(ADD_ASSOCIATION)
         .locator("visible=true")
         .dragTo(page.getByText("New text annotation"), { targetPosition: { x: 100, y: 100 } });
 
+      // expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
   });
@@ -101,10 +111,11 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Decision").first().hover();
       await page
-        .getByTitle("Add Information Requirement edge")
+        .getByTitle(ADD_INFORMATION_REQUIREMENT)
         .locator("visible=true")
         .dragTo(page.getByText("New Decision").first());
 
+      expect(await page.getByTestId(INFORMATION_REQUIREMENT)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -120,10 +131,11 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Decision").hover();
       await page
-        .getByTitle("Add Authority Requirement edge")
+        .getByTitle(ADD_AUTHORITY_REQUIREMENET)
         .locator("visible=true")
         .dragTo(page.getByText("New Knowledge Source"));
 
+      expect(await page.getByTestId(AUTHORITY_REQUIREMENET)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -139,10 +151,11 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Decision").hover();
       await page
-        .getByTitle("Add Association edge")
+        .getByTitle(ADD_ASSOCIATION)
         .locator("visible=true")
         .dragTo(page.getByText("New text annotation"), { targetPosition: { x: 100, y: 100 } });
 
+      // expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
   });
@@ -159,11 +172,9 @@ test.describe("Add edge", () => {
 
       // Connect these nodes
       // await page.getByText("New BKM").hover();
-      await page
-        .getByTitle("Add Knowledge Requirement edge")
-        .locator("visible=true")
-        .dragTo(page.getByText("New Decision"));
+      await page.getByTitle(ADD_KNOWLEDGE_REQUIREMENT).locator("visible=true").dragTo(page.getByText("New Decision"));
 
+      expect(await page.getByTestId(KNOWLEDGE_REQUIREMENT)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -179,10 +190,11 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New BKM").first().hover();
       await page
-        .getByTitle("Add Knowledge Requirement edge")
+        .getByTitle(ADD_KNOWLEDGE_REQUIREMENT)
         .locator("visible=true")
         .dragTo(page.getByText("New BKM").first());
 
+      expect(await page.getByTestId(KNOWLEDGE_REQUIREMENT)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -197,8 +209,9 @@ test.describe("Add edge", () => {
 
       // Connect these nodes
       // await page.getByText("New BKM").hover();
-      await page.getByTitle("Add Association edge").locator("visible=true").dragTo(page.getByText("New BKM"));
+      await page.getByTitle(ADD_ASSOCIATION).locator("visible=true").dragTo(page.getByText("New BKM"));
 
+      expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
   });

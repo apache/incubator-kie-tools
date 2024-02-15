@@ -38,6 +38,13 @@ import {
 } from "./NodeSvgs";
 import { NODE_TYPES } from "./NodeTypes";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
+import {
+  ADD_ASSOCIATION,
+  ADD_AUTHORITY_REQUIREMENET,
+  ADD_INFORMATION_REQUIREMENT,
+  ADD_KNOWLEDGE_REQUIREMENT,
+  ADD_UNKNOWN_EDGE,
+} from "../../constants";
 
 const handleButtonSize = 34; // That's the size of the button. This is a "magic number", as it was obtained from the rendered page.
 const svgViewboxPadding = Math.sqrt(Math.pow(handleButtonSize, 2) / 2) - handleButtonSize / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -64,19 +71,19 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
   const getEdgeActionTitle = React.useCallback((edgeType: string): string => {
     switch (edgeType) {
       case "edge_informationRequirement": {
-        return "Add Information Requirement edge";
+        return ADD_INFORMATION_REQUIREMENT;
       }
       case "edge_knowledgeRequirement": {
-        return "Add Knowledge Requirement edge";
+        return ADD_KNOWLEDGE_REQUIREMENT;
       }
       case "edge_authorityRequirement": {
-        return "Add Authority Requirement edge";
+        return ADD_AUTHORITY_REQUIREMENET;
       }
       case "edge_association": {
-        return "Add Association edge";
+        return ADD_ASSOCIATION;
       }
       default: {
-        return "Add Unkonw edge type";
+        return ADD_UNKNOWN_EDGE;
       }
     }
   }, []);

@@ -19,7 +19,13 @@
 
 import { test, expect } from "@playwright/test";
 import { env } from "../../../env";
-import { DIAGRAM_CONTAINER } from "../constants";
+import {
+  ASSOCIATION,
+  AUTHORITY_REQUIREMENET,
+  DIAGRAM_CONTAINER,
+  INFORMATION_REQUIREMENT,
+  KNOWLEDGE_REQUIREMENT,
+} from "../../../src/constants";
 
 test.beforeEach(async ({ page, browserName }, testInfo) => {
   test.skip(browserName === "webkit", "hover() and dragTo() cause troubles on webkit");
@@ -40,6 +46,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Add Decision node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
+      expect(await page.getByTestId(INFORMATION_REQUIREMENT)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -53,6 +60,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Add Knowledge Source node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
+      expect(await page.getByTestId(AUTHORITY_REQUIREMENET)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -66,6 +74,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Add Text Annotation node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
+      expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
   });
@@ -81,6 +90,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Add Decision node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
+      expect(await page.getByTestId(INFORMATION_REQUIREMENT)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -94,6 +104,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Add Knowledge Source node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
+      expect(await page.getByTestId(AUTHORITY_REQUIREMENET)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -107,6 +118,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Add Text Annotation node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
+      expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
   });
@@ -122,6 +134,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Add Decision node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
+      expect(await page.getByTestId(KNOWLEDGE_REQUIREMENT)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -135,6 +148,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Add Business Knowledge Model node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
+      expect(await page.getByTestId(KNOWLEDGE_REQUIREMENT)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
@@ -148,6 +162,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Add Text Annotation node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
+      expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
       expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
   });

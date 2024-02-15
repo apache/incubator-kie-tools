@@ -18,3 +18,17 @@
  */
 
 export const DIAGRAM_CONTAINER = "kie-dmn-editor--diagram-container";
+
+export const ASSOCIATION = "Association edge";
+export const ADD_ASSOCIATION = "Add " + ASSOCIATION;
+
+export const AUTHORITY_REQUIREMENET = "Authority Requiremenet edge";
+export const ADD_AUTHORITY_REQUIREMENET = "Add " + AUTHORITY_REQUIREMENET;
+
+export const INFORMATION_REQUIREMENT = "Information Requirement edge";
+export const ADD_INFORMATION_REQUIREMENT = "Add " + INFORMATION_REQUIREMENT;
+
+export const KNOWLEDGE_REQUIREMENT = "Knowledge Requiremenet edge";
+export const ADD_KNOWLEDGE_REQUIREMENT = "Add " + KNOWLEDGE_REQUIREMENT;
+
+export const ADD_UNKNOWN_EDGE = "Add Unkonw edge type";
