@@ -92,7 +92,7 @@ export const en: TestScenarioEditorI18n = {
       expression10DMN: "An empty cell is skipped from the evaluation.",
       title: "Cheatsheet",
     },
-    dataObjects: {
+    dataSelector: {
       clearSelection: "Clear selection",
       collapseAll: "Collapse all",
       dataObjectsDescriptionDMN: "DMN Nodes are Input or Decision nodes defined in your DMN asset.",
@@ -107,6 +107,12 @@ export const en: TestScenarioEditorI18n = {
       emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from project.",
       expandAll: "Expand all",
       insertDataObject: "Assign",
+      insertDataObjectTooltipColumnSelectionMessage:
+        "Please select an column's field header to add or change a Type in the table.",
+      insertDataObjectTooltipDataObjectSelectionMessage:
+        "Please select a single field to assign it in the selected column",
+      insertDataObjectTooltipDataObjectAlreadyAssignedMessage: "The column is already assigned to the selected Field.",
+      insertDataObjectTooltipDataObjectAssignMessage: "Click here to assign the selected field to the focused column.",
       titleDMN: "DMN Nodes selector",
       titleRule: "Java Classes selector",
     },
@@ -133,7 +139,7 @@ export const en: TestScenarioEditorI18n = {
   },
   sidebar: {
     cheatSheetTooltip: "CheatSheet: Useful information for Test Scenario Usage",
-    dataObjectsTooltip: "Selector: It provides a tool to edit your Scenarios",
+    dataSelectorTooltip: "Selector: It provides a tool to edit your Scenarios",
     settingsTooltip: "Setting: Properties of this Test Scenario asset",
   },
   tab: {

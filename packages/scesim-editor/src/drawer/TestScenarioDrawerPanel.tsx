@@ -31,7 +31,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 
 import { SceSimModel } from "@kie-tools/scesim-marshaller";
 
-import TestScenarioDrawerDataObjectsPanel from "./TestScenarioDrawerDataObjectsPanel";
+import TestScenarioDrawerDataSelectorPanel from "./TestScenarioDrawerDataSelectorPanel";
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
 import {
@@ -48,6 +48,7 @@ function TestScenarioDrawerPanel({
   fileName,
   onDrawerClose,
   onUpdateSettingField,
+  scesimModel,
   selectedColumnMetaData,
   selectedDock,
   testScenarioSettings,
@@ -57,6 +58,7 @@ function TestScenarioDrawerPanel({
   fileName: string;
   onDrawerClose: () => void;
   onUpdateSettingField: (field: string, value: boolean | string) => void;
+  scesimModel: SceSimModel;
   selectedColumnMetaData: TestScenarioSelectedColumnMetaData | null;
   selectedDock: TestScenarioEditorDock;
   testScenarioSettings: TestScenarioSettings;
@@ -78,8 +80,8 @@ function TestScenarioDrawerPanel({
                   return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
                   return testScenarioSettings.assetType === TestScenarioType[TestScenarioType.DMN]
-                    ? i18n.drawer.dataObjects.titleDMN
-                    : i18n.drawer.dataObjects.titleRule;
+                    ? i18n.drawer.dataSelector.titleDMN
+                    : i18n.drawer.dataSelector.titleRule;
                 case TestScenarioEditorDock.SETTINGS:
                   return i18n.drawer.settings.title;
                 default:
@@ -97,9 +99,10 @@ function TestScenarioDrawerPanel({
               return <TestScenarioDrawerCheatSheetPanel assetType={testScenarioSettings.assetType} />;
             case TestScenarioEditorDock.DATA_OBJECT:
               return (
-                <TestScenarioDrawerDataObjectsPanel
+                <TestScenarioDrawerDataSelectorPanel
                   assetType={testScenarioSettings.assetType}
                   dataObjects={dataObjects}
+                  scesimModel={scesimModel}
                   selectedColumnMetadata={selectedColumnMetaData}
                   updateTestScenarioModel={updateTestScenarioModel}
                 />

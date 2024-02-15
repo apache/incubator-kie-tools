@@ -166,7 +166,6 @@ function TestScenarioMainPanel({
     setDockPanel({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
     setSelectedColumnMetaData(null);
     setTab(TestScenarioEditorTab.EDITOR);
-    console.log("LOL");
   }, [fileName]);
 
   /** This is TEMPORARY */
@@ -266,6 +265,7 @@ function TestScenarioMainPanel({
                 fileName={fileName}
                 onDrawerClose={closeDockPanel}
                 onUpdateSettingField={updateSettingField}
+                scesimModel={scesimModel}
                 selectedColumnMetaData={selectedColumnMetadata}
                 selectedDock={dockPanel.selected}
                 testScenarioSettings={{

@@ -725,9 +725,28 @@ function TestScenarioTable({
           isInstance || selectedColumnFactMapping.factIdentifier.className?.__$$text === "java.lang.Void";
 
         const newFactMapping = {
+          className: { __$$text: "java.lang.Void" },
+          columnWidth: { __$$text: 150 },
+          expressionAlias: { __$$text: "PROPERTY" },
+          expressionElements: isNewInstance
+            ? undefined
+            : {
+                ExpressionElement: [
+                  {
+                    step: {
+                      __$$text: selectedColumnFactMapping.expressionElements!.ExpressionElement![0].step.__$$text,
+                    },
+                  },
+                ],
+              },
           expressionIdentifier: {
             name: { __$$text: `_${uuid()}`.toLocaleUpperCase() },
             type: { __$$text: selectedColumnFactMapping.expressionIdentifier.type!.__$$text },
+          },
+          factAlias: {
+            __$$text: isNewInstance
+              ? getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE")
+              : selectedColumnFactMapping.factAlias.__$$text,
           },
           factIdentifier: {
             name: {
@@ -739,14 +758,6 @@ function TestScenarioTable({
               __$$text: isNewInstance ? "java.lang.Void" : selectedColumnFactMapping.factIdentifier.className!.__$$text,
             },
           },
-          className: { __$$text: "java.lang.Void" },
-          factAlias: {
-            __$$text: isNewInstance
-              ? getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE")
-              : selectedColumnFactMapping.factAlias.__$$text,
-          },
-          expressionAlias: { __$$text: "PROPERTY" },
-          columnWidth: { __$$text: 150 },
           factMappingValueType: { __$$text: "NOT_EXPRESSION" },
         };
 
