@@ -254,7 +254,6 @@ $ helm-docs --document-dependency-values=true --chart-search-root=.
 | kie_sandbox.openshiftRoute         | object | `{"annotations":{},"enabled":false,"host":"kie-sandbox.{{ .Values.global.openshiftRouteDomain }}","tls":{"insecureEdgeTerminationPolicy":"None","termination":"edge"}}`                                                                                | KIE Sandbox OpenShift Route configuration (https://docs.openshift.com/container-platform/4.14/networking/routes/route-configuration.html)       |
 | kie_sandbox.service                | object | `{"nodePort":"","port":8080,"type":"ClusterIP"}`                                                                                                                                                                                                       | KIE Sandbox Service configuration (https://kubernetes.io/docs/concepts/services-networking/service/)                                            |
 | kie_sandbox.serviceAccount         | object | `{"annotations":{},"create":true,"name":""}`                                                                                                                                                                                                           | KIE Sandbox ServiceAccount configuration (https://kubernetes.io/docs/concepts/security/service-accounts/)                                       |
-|  |
 
 ---
 
