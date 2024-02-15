@@ -20,6 +20,6 @@ extended_services:
     enabled: true
 
 global:
-  ingressSource: "minikube"
+  ingressSource: "kubernetes"
   kubernetesIngressClass: nginx
-  kubernetesClusterDomain: local
+  kubernetesClusterDomain: k8s-example.com
