@@ -41,7 +41,7 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Input Data").hover();
       await page
-        .getByTitle("edge_informationRequirement")
+        .getByTitle("Add Information Requirement edge")
         .locator("visible=true")
         .dragTo(page.getByText("New Decision"));
 
@@ -60,7 +60,7 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Input Data").hover();
       await page
-        .getByTitle("edge_authorityRequirement")
+        .getByTitle("Add Authority Requirement edge")
         .locator("visible=true")
         .dragTo(page.getByText("New Knowledge Source"));
 
@@ -79,7 +79,7 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Input Data").hover();
       await page
-        .getByTitle("edge_association")
+        .getByTitle("Add Association edge")
         .locator("visible=true")
         .dragTo(page.getByText("New text annotation"), { targetPosition: { x: 100, y: 100 } });
 
@@ -100,7 +100,7 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Decision").first().hover();
       await page
-        .getByTitle("edge_informationRequirement")
+        .getByTitle("Add Information Requirement edge")
         .locator("visible=true")
         .dragTo(page.getByText("New Decision").first());
 
@@ -119,7 +119,7 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Decision").hover();
       await page
-        .getByTitle("edge_authorityRequirement")
+        .getByTitle("Add Authority Requirement edge")
         .locator("visible=true")
         .dragTo(page.getByText("New Knowledge Source"));
 
@@ -138,7 +138,7 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New Decision").hover();
       await page
-        .getByTitle("edge_association")
+        .getByTitle("Add Association edge")
         .locator("visible=true")
         .dragTo(page.getByText("New text annotation"), { targetPosition: { x: 100, y: 100 } });
 
@@ -158,7 +158,10 @@ test.describe("Add edge", () => {
 
       // Connect these nodes
       // await page.getByText("New BKM").hover();
-      await page.getByTitle("edge_knowledgeRequirement").locator("visible=true").dragTo(page.getByText("New Decision"));
+      await page
+        .getByTitle("Add Knowledge Requirement edge")
+        .locator("visible=true")
+        .dragTo(page.getByText("New Decision"));
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
     });
@@ -175,7 +178,7 @@ test.describe("Add edge", () => {
       // Connect these nodes
       // await page.getByText("New BKM").first().hover();
       await page
-        .getByTitle("edge_knowledgeRequirement")
+        .getByTitle("Add Knowledge Requirement edge")
         .locator("visible=true")
         .dragTo(page.getByText("New BKM").first());
 
@@ -193,7 +196,7 @@ test.describe("Add edge", () => {
 
       // Connect these nodes
       // await page.getByText("New BKM").hover();
-      await page.getByTitle("edge_association").locator("visible=true").dragTo(page.getByText("New BKM"));
+      await page.getByTitle("Add Association edge").locator("visible=true").dragTo(page.getByText("New BKM"));
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
     });

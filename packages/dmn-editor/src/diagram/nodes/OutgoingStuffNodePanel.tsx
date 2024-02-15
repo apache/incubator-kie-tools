@@ -61,6 +61,55 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
     [props.isVisible]
   );
 
+  const getEdgeActionTitle = React.useCallback((edgeType: string): string => {
+    switch (edgeType) {
+      case "edge_informationRequirement": {
+        return "Add Information Requirement edge";
+      }
+      case "edge_knowledgeRequirement": {
+        return "Add Knowledge Requirement edge";
+      }
+      case "edge_authorityRequirement": {
+        return "Add Authority Requirement edge";
+      }
+      case "edge_association": {
+        return "Add Association edge";
+      }
+      default: {
+        return "Add Unkonw edge type";
+      }
+    }
+  }, []);
+
+  const getNodeActionTtitle = React.useCallback((nodeType: string): string => {
+    switch (nodeType) {
+      case "node_inputData": {
+        return "Add Input Data node";
+      }
+      case "node_decision": {
+        return "Add Decision node";
+      }
+      case "node_bkm": {
+        return "Add Business Knowledge Model node";
+      }
+      case "node_decisionService": {
+        return "Add Decision Service node";
+      }
+      case "node_knowledgeSource": {
+        return "Add Knowledge Source node";
+      }
+      case "node_textAnnotation": {
+        return "Add Text Annotation node";
+      }
+      case "node_group": {
+        return "Add Group node";
+      }
+      default: {
+        return "Add Unkonw node type";
+      }
+    }
+  }, []);
+
   return (
     <>
       <Flex className={"kie-dmn-editor--outgoing-stuff-node-panel"} style={style}>
@@ -74,7 +123,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
-                title={edgeType}
+                title={getEdgeActionTitle(edgeType)}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
@@ -112,7 +161,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
-                title={nodeType}
+                title={getNodeActionTtitle(nodeType)}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}

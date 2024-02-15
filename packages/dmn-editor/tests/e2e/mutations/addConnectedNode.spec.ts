@@ -36,7 +36,7 @@ test.describe("Add connected node", () => {
 
       // await page.getByText("New Input Data").hover();
       await page
-        .getByTitle("node_decision")
+        .getByTitle("Add Decision node")
         .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
@@ -49,7 +49,7 @@ test.describe("Add connected node", () => {
 
       // await page.getByText("New Input Data").hover();
       await page
-        .getByTitle("node_knowledgeSource")
+        .getByTitle("Add Knowledge Source node")
         .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
@@ -62,7 +62,7 @@ test.describe("Add connected node", () => {
 
       // await page.getByText("New Input Data").hover();
       await page
-        .getByTitle("node_textAnnotation")
+        .getByTitle("Add Text Annotation node")
         .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
@@ -77,7 +77,7 @@ test.describe("Add connected node", () => {
 
       // await page.getByText("New Decision").hover();
       await page
-        .getByTitle("node_decision")
+        .getByTitle("Add Decision node")
         .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
@@ -90,7 +90,7 @@ test.describe("Add connected node", () => {
 
       // await page.getByText("New Decision").hover();
       await page
-        .getByTitle("node_knowledgeSource")
+        .getByTitle("Add Knowledge Source node")
         .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
@@ -103,7 +103,7 @@ test.describe("Add connected node", () => {
 
       // await page.getByText("New Decision").hover();
       await page
-        .getByTitle("node_textAnnotation")
+        .getByTitle("Add Text Annotation node")
         .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
@@ -118,7 +118,7 @@ test.describe("Add connected node", () => {
 
       // await page.getByText("New BKM").hover();
       await page
-        .getByTitle("node_decision")
+        .getByTitle("Add Decision node")
         .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
@@ -130,7 +130,9 @@ test.describe("Add connected node", () => {
         .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
 
       // await page.getByText("New BKM").hover();
-      await page.getByTitle("node_bkm").dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+      await page
+        .getByTitle("Add Business Knowledge Model node")
+        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
     });
@@ -142,7 +144,7 @@ test.describe("Add connected node", () => {
 
       // await page.getByText("New BKM").hover();
       await page
-        .getByTitle("node_textAnnotation")
+        .getByTitle("Add Text Annotation node")
         .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
 
       expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
