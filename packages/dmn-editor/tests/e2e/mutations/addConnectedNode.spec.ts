@@ -19,6 +19,7 @@
 
 import { test, expect } from "@playwright/test";
 import { env } from "../../../env";
+import { DIAGRAM_CONTAINER } from "../constants";
 
 test.beforeEach(async ({ page, browserName }, testInfo) => {
   test.skip(browserName === "webkit", "hover() and dragTo() cause troubles on webkit");
@@ -29,43 +30,43 @@ test.beforeEach(async ({ page, browserName }, testInfo) => {
 
 test.describe("Add connected node", () => {
   test.describe("From Input Data", () => {
-    test("Add Decision", async ({ page }) => {
+    test.only("Add Decision", async ({ page }) => {
       await page
         .getByTitle("Input Data", { exact: true })
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // await page.getByText("New Input Data").hover();
       await page
         .getByTitle("Add Decision node")
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
     test("Add Knowledge Source", async ({ page }) => {
       await page
         .getByTitle("Input Data", { exact: true })
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // await page.getByText("New Input Data").hover();
       await page
         .getByTitle("Add Knowledge Source node")
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
     test("Add Text Annotation", async ({ page }) => {
       await page
         .getByTitle("Input Data", { exact: true })
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 400 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
 
       // await page.getByText("New Input Data").hover();
       await page
         .getByTitle("Add Text Annotation node")
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
   });
 
@@ -73,40 +74,40 @@ test.describe("Add connected node", () => {
     test("Add Decision", async ({ page }) => {
       await page
         .getByTitle("Decision", { exact: true })
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // await page.getByText("New Decision").hover();
       await page
         .getByTitle("Add Decision node")
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
     test("Add Knoledge Source", async ({ page }) => {
       await page
         .getByTitle("Decision", { exact: true })
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // await page.getByText("New Decision").hover();
       await page
         .getByTitle("Add Knowledge Source node")
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
     test("Add Text Annotation", async ({ page }) => {
       await page
         .getByTitle("Decision", { exact: true })
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 400 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
 
       // await page.getByText("New Decision").hover();
       await page
         .getByTitle("Add Text Annotation node")
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
   });
 
@@ -114,40 +115,40 @@ test.describe("Add connected node", () => {
     test("Add Decision", async ({ page }) => {
       await page
         .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // await page.getByText("New BKM").hover();
       await page
         .getByTitle("Add Decision node")
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
     test("Add BKM", async ({ page }) => {
       await page
         .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // await page.getByText("New BKM").hover();
       await page
         .getByTitle("Add Business Knowledge Model node")
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
 
     test("Add Text Annotation", async ({ page }) => {
       await page
         .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 400 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
 
       // await page.getByText("New BKM").hover();
       await page
         .getByTitle("Add Text Annotation node")
-        .dragTo(page.getByTestId("rf__wrapper"), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId("rf__wrapper").screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
     });
   });
 });
