@@ -81,7 +81,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
     }
   }, []);
 
-  const getNodeActionTtitle = React.useCallback((nodeType: string): string => {
+  const getNodeActionTitle = React.useCallback((nodeType: string): string => {
     switch (nodeType) {
       case "node_inputData": {
         return "Add Input Data node";
@@ -161,7 +161,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
-                title={getNodeActionTtitle(nodeType)}
+                title={getNodeActionTitle(nodeType)}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
