@@ -65,9 +65,6 @@
       <xsd:element type="xsd:string" name="dmoSession" minOccurs="0" />
       <xsd:element type="xsd:string" name="dmnFilePath" minOccurs="0" />
       <xsd:element type="xsd:string" name="type" minOccurs="0" />
-      <xsd:element type="xsd:string" name="fileName" minOccurs="0" />
-      <xsd:element type="xsd:string" name="kieSession" minOccurs="0" />
-      <xsd:element type="xsd:string" name="kieBase" minOccurs="0" />
       <xsd:element type="xsd:string" name="ruleFlowGroup" minOccurs="0" />
       <xsd:element type="xsd:string" name="dmnNamespace" minOccurs="0" />
       <xsd:element type="xsd:string" name="dmnName" minOccurs="0" />
