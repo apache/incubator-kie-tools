@@ -1,7 +1,0 @@
-{
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "lib": ["DOM.Iterable", "es6", "dom", "es2018.promise", "es2019", "esnext"]
-  }
-}

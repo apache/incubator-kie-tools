@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import type { Meta, StoryObj } from "@storybook/react";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import "@patternfly/react-core/dist/styles/base.css";
@@ -34,7 +35,7 @@ import { DMN15_SPEC } from "../../src/Dmn15Spec";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { availableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
 
-export const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
+const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
   xmlns="${dmn15ns.get("")}"
   expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
@@ -47,7 +48,7 @@ interface DevWebAppProps {
   initialModel: string;
 }
 
-export function DevWebApp(props: DevWebAppProps) {
+function DevWebApp(props: DevWebAppProps) {
   const initialDmnMarshaller = useMemo(() => getMarshaller(props.initialModel, { upgradeTo: "latest" }), []);
 
   const onDrop = useCallback((e: React.DragEvent) => {
@@ -226,3 +227,27 @@ function makeid(length: number) {
   }
   return result;
 }
+
+// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
+const meta: Meta<typeof DevWebApp> = {
+  title: "Dev/Web App",
+  component: DevWebApp,
+  parameters: {},
+};
+
+export default meta;
+
+type Story = StoryObj<typeof DevWebApp>;
+
+// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
+export const LoanPreQualificationModel: Story = {
+  args: {
+    initialModel: DEFAULT_DEV_WEBAPP_DMN,
+  },
+};
+
+export const EmptyModel: Story = {
+  args: {
+    initialModel: EMPTY_DMN_15(),
+  },
+};

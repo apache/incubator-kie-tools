@@ -23,7 +23,7 @@ import { env } from "../../../env";
 test.beforeEach(async ({ page, browserName }, testInfo) => {
   test.skip(browserName === "webkit", "hover() and dragTo() cause troubles on webkit");
   await page.goto(
-    `http://localhost:${env.dmnEditor.storybook.port}/iframe.html?args=&id=example-dmndevwebapp--empty-model&viewMode=story`
+    `http://localhost:${env.dmnEditor.storybook.port}/iframe.html?args=&id=dev-web-app--empty-model&viewMode=story`
   );
 });
 
