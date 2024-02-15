@@ -246,7 +246,7 @@ export const InputDataNode = React.memo(
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
-          <div className={`kie-dmn-editor--node ${additionalClasses}`}>
+          <div className={`kie-dmn-editor--node ${additionalClasses}`} data-testid={inputData["@_name"] + " node"}>
             <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
             <OutgoingStuffNodePanel
@@ -431,6 +431,7 @@ export const DecisionNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-testid={decision["@_name"] + " node"}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -567,6 +568,7 @@ export const BkmNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-testid={bkm["@_name"] + " node"}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -693,6 +695,7 @@ export const KnowledgeSourceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-testid={knowledgeSource["@_name"] + " node"}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -809,6 +812,7 @@ export const TextAnnotationNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-testid={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text + " node"}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1007,6 +1011,7 @@ export const DecisionServiceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-testid={decisionService["@_name"] + " node"}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1152,6 +1157,7 @@ export const GroupNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-testid={group["@_name"] + " node"}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}

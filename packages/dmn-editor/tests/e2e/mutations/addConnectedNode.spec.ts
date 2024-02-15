@@ -27,8 +27,7 @@ import {
   KNOWLEDGE_REQUIREMENT,
 } from "../../../src/constants";
 
-test.beforeEach(async ({ page, browserName }, testInfo) => {
-  test.skip(browserName === "webkit", "hover() and dragTo() cause troubles on webkit");
+test.beforeEach(async ({ page }, testInfo) => {
   await page.goto(
     `http://localhost:${env.dmnEditor.storybook.port}/iframe.html?args=&id=dev-web-app--empty-model&viewMode=story`
   );
@@ -41,7 +40,8 @@ test.describe("Add connected node", () => {
         .getByTitle("Input Data", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
-      // await page.getByText("New Input Data").hover();
+      await page.getByTestId("New Input Data node").click();
+
       await page
         .getByTitle("Add Decision node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
@@ -55,7 +55,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Input Data", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
-      // await page.getByText("New Input Data").hover();
+      await page.getByTestId("New Input Data node").click();
       await page
         .getByTitle("Add Knowledge Source node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
@@ -69,7 +69,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Input Data", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
 
-      // await page.getByText("New Input Data").hover();
+      await page.getByTestId("New Input Data node").click();
       await page
         .getByTitle("Add Text Annotation node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
@@ -85,7 +85,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Decision", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
-      // await page.getByText("New Decision").hover();
+      await page.getByTestId("New Decision node").click();
       await page
         .getByTitle("Add Decision node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
@@ -99,7 +99,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Decision", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
-      // await page.getByText("New Decision").hover();
+      await page.getByTestId("New Decision node").click();
       await page
         .getByTitle("Add Knowledge Source node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
@@ -113,7 +113,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Decision", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
 
-      // await page.getByText("New Decision").hover();
+      await page.getByTestId("New Decision node").click();
       await page
         .getByTitle("Add Text Annotation node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
@@ -129,7 +129,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Business Knowledge Model", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
-      // await page.getByText("New BKM").hover();
+      await page.getByTestId("New BKM node").click();
       await page
         .getByTitle("Add Decision node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
@@ -143,7 +143,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Business Knowledge Model", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
-      // await page.getByText("New BKM").hover();
+      await page.getByTestId("New BKM node").click();
       await page
         .getByTitle("Add Business Knowledge Model node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
@@ -157,7 +157,7 @@ test.describe("Add connected node", () => {
         .getByTitle("Business Knowledge Model", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
 
-      // await page.getByText("New BKM").hover();
+      await page.getByTestId("New BKM node").click();
       await page
         .getByTitle("Add Text Annotation node")
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });

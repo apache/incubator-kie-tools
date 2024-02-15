@@ -31,8 +31,7 @@ import {
   KNOWLEDGE_REQUIREMENT,
 } from "../../../src/constants";
 
-test.beforeEach(async ({ page, browserName }, testInfo) => {
-  test.skip(browserName === "webkit", "hover() and dragTo() cause troubles on webkit");
+test.beforeEach(async ({ page }, testInfo) => {
   await page.goto(
     `http://localhost:${env.dmnEditor.storybook.port}/iframe.html?args=&id=dev-web-app--empty-model&viewMode=story`
   );
@@ -50,7 +49,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      // await page.getByText("New Input Data").hover();
+      await page.getByTestId("New Input Data node").click();
       await page.getByTitle(ADD_INFORMATION_REQUIREMENT).locator("visible=true").dragTo(page.getByText("New Decision"));
 
       expect(await page.getByTestId(INFORMATION_REQUIREMENT)).toBeAttached();
@@ -67,7 +66,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      // await page.getByText("New Input Data").hover();
+      await page.getByTestId("New Input Data node").click();
       await page
         .getByTitle(ADD_AUTHORITY_REQUIREMENET)
         .locator("visible=true")
@@ -87,7 +86,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
 
       // Connect these nodes
-      // await page.getByText("New Input Data").hover();
+      await page.getByTestId("New Input Data node").click();
       await page
         .getByTitle(ADD_ASSOCIATION)
         .locator("visible=true")
@@ -109,7 +108,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      // await page.getByText("New Decision").first().hover();
+      await page.getByTestId("New Decision node").click();
       await page
         .getByTitle(ADD_INFORMATION_REQUIREMENT)
         .locator("visible=true")
@@ -129,7 +128,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      // await page.getByText("New Decision").hover();
+      await page.getByTestId("New Decision node").click();
       await page
         .getByTitle(ADD_AUTHORITY_REQUIREMENET)
         .locator("visible=true")
@@ -149,7 +148,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
 
       // Connect these nodes
-      // await page.getByText("New Decision").hover();
+      await page.getByTestId("New Decision node").click();
       await page
         .getByTitle(ADD_ASSOCIATION)
         .locator("visible=true")
@@ -171,7 +170,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      // await page.getByText("New BKM").hover();
+      await page.getByTestId("New BKM node").click();
       await page.getByTitle(ADD_KNOWLEDGE_REQUIREMENT).locator("visible=true").dragTo(page.getByText("New Decision"));
 
       expect(await page.getByTestId(KNOWLEDGE_REQUIREMENT)).toBeAttached();
@@ -188,7 +187,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      // await page.getByText("New BKM").first().hover();
+      await page.getByTestId("New BKM node").click();
       await page
         .getByTitle(ADD_KNOWLEDGE_REQUIREMENT)
         .locator("visible=true")
@@ -208,7 +207,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      // await page.getByText("New BKM").hover();
+      await page.getByTestId("New BKM node").click();
       await page.getByTitle(ADD_ASSOCIATION).locator("visible=true").dragTo(page.getByText("New BKM"));
 
       expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
