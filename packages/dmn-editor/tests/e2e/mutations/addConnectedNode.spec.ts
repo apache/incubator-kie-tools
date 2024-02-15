@@ -30,7 +30,7 @@ test.beforeEach(async ({ page, browserName }, testInfo) => {
 
 test.describe("Add connected node", () => {
   test.describe("From Input Data", () => {
-    test.only("Add Decision", async ({ page }) => {
+    test("Add Decision", async ({ page }) => {
       await page
         .getByTitle("Input Data", { exact: true })
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
