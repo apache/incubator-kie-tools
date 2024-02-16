@@ -42,11 +42,11 @@ func ensurePath(path string) error {
 	return nil
 }
 
-func saveAsKubernetesManifest(object client.Object, savePath, prefix string) error {
+func saveAsKubernetesManifest(object client.Object, savePath string, prefix int) error {
 	if reflect.ValueOf(object).IsNil() {
 		return nil
 	}
-	filename := strings.ToLower(fmt.Sprintf("%s%s_%s%s",
+	filename := strings.ToLower(fmt.Sprintf("%02d-%s_%s%s",
 		prefix,
 		object.GetObjectKind().GroupVersionKind().Kind,
 		object.GetName(),

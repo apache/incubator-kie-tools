@@ -28,6 +28,8 @@ import (
 	"strings"
 	"testing"
 
+	"k8s.io/apimachinery/pkg/runtime/schema"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -140,17 +142,34 @@ func Test_Handler_WorklflowServiceAndPropsAndSpec_SaveAs(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, files, 4)
 
-	for _, f := range files {
-		if strings.HasSuffix(f.Name(), yamlFileExt) {
-			contents, err := os.ReadFile(path.Join(tmpPath, f.Name()))
-			assert.NoError(t, err)
-			decode := scheme.Codecs.UniversalDeserializer().Decode
-			k8sObj, _, err := decode(contents, nil, nil)
-			assert.NoError(t, err)
-			assert.NotNil(t, k8sObj)
-			assert.NotEmpty(t, k8sObj.GetObjectKind().GroupVersionKind().String())
-		}
+	expectedFiles := []string{
+		"01-configmap_service-props.yaml",
+		"02-configmap_01-service-resources.yaml",
+		"03-configmap_02-service-resources.yaml",
+		"04-sonataflow_service.yaml",
 	}
+	expectedKinds := []schema.GroupVersionKind{
+		{Group: "", Version: "v1", Kind: "ConfigMap"},
+		{Group: "", Version: "v1", Kind: "ConfigMap"},
+		{Group: "", Version: "v1", Kind: "ConfigMap"},
+		{Group: "sonataflow.org", Version: "v1alpha08", Kind: "SonataFlow"},
+	}
+
+	for i := 0; i < len(files); i++ {
+		assert.Equal(t, files[i].Name(), expectedFiles[i])
+		assertIsK8sObject(t, tmpPath, files[i].Name(), expectedKinds[i])
+	}
+}
+
+func assertIsK8sObject(t *testing.T, basePath string, fileName string, gvk schema.GroupVersionKind) {
+	contents, err := os.ReadFile(path.Join(basePath, fileName))
+	assert.NoError(t, err)
+	decode := scheme.Codecs.UniversalDeserializer().Decode
+	k8sObj, _, err := decode(contents, nil, nil)
+	assert.NoError(t, err)
+	assert.NotNil(t, k8sObj)
+	assert.NotEmpty(t, k8sObj.GetObjectKind().GroupVersionKind().String())
+	assert.Equal(t, gvk, k8sObj.GetObjectKind().GroupVersionKind())
 }
 
 func Test_Handler_WorkflowService_SaveAs(t *testing.T) {
@@ -170,6 +189,9 @@ func Test_Handler_WorkflowService_SaveAs(t *testing.T) {
 
 		for _, f := range files {
 			if strings.HasSuffix(f.Name(), yamlFileExt) {
+				// we have only one file produced in these test cases
+				prefix := fmt.Sprintf("%02d-", 1)
+				assert.True(t, strings.HasPrefix(f.Name(), prefix))
 				contents, err := os.ReadFile(path.Join(tmpPath, f.Name()))
 				assert.NoError(t, err)
 				decode := scheme.Codecs.UniversalDeserializer().Decode
