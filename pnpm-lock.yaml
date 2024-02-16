@@ -3361,6 +3361,9 @@ importers:
       immer:
         specifier: ^10.0.3
         version: 10.0.3(patch_hash=utu5oov26wz5mjuays57tp3ybu)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       moment:
         specifier: ^2.29.4
         version: 2.29.4
