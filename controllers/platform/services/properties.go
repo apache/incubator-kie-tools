@@ -165,6 +165,7 @@ func GenerateDataIndexWorkflowProperties(workflow *operatorapi.SonataFlow, platf
 	di := NewDataIndexHandler(platform)
 	if workflow != nil && !profiles.IsDevProfile(workflow) && di.IsServiceEnabled() {
 		props.Set(constants.KogitoProcessDefinitionsEventsEnabled, "true")
+		props.Set(constants.KogitoProcessDefinitionsEventsErrorsEnabled, "true")
 		props.Set(constants.KogitoProcessInstancesEventsEnabled, "true")
 		props.Set(constants.KogitoDataIndexHealthCheckEnabled, "true")
 		di := NewDataIndexHandler(platform)

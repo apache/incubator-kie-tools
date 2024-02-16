@@ -34,14 +34,15 @@ const (
 	JobServiceDataSourceReactiveURL  = "quarkus.datasource.reactive.url"
 	JobServiceJobEventsPath          = "/v2/jobs/events"
 
-	KogitoProcessEventsProtocol           = "http"
-	KogitoProcessInstancesEventsURL       = "mp.messaging.outgoing.kogito-processinstances-events.url"
-	KogitoProcessInstancesEventsEnabled   = "kogito.events.processinstances.enabled"
-	KogitoProcessInstancesEventsPath      = "/processes"
-	KogitoProcessDefinitionsEventsURL     = "mp.messaging.outgoing.kogito-processdefinitions-events.url"
-	KogitoProcessDefinitionsEventsEnabled = "kogito.events.processdefinitions.enabled"
-	KogitoProcessDefinitionsEventsPath    = "/definitions"
-	KogitoUserTasksEventsEnabled          = "kogito.events.usertasks.enabled"
+	KogitoProcessEventsProtocol                 = "http"
+	KogitoProcessInstancesEventsURL             = "mp.messaging.outgoing.kogito-processinstances-events.url"
+	KogitoProcessInstancesEventsEnabled         = "kogito.events.processinstances.enabled"
+	KogitoProcessInstancesEventsPath            = "/processes"
+	KogitoProcessDefinitionsEventsURL           = "mp.messaging.outgoing.kogito-processdefinitions-events.url"
+	KogitoProcessDefinitionsEventsEnabled       = "kogito.events.processdefinitions.enabled"
+	KogitoProcessDefinitionsEventsErrorsEnabled = "kogito.events.processdefinitions.errors.propagate"
+	KogitoProcessDefinitionsEventsPath          = "/definitions"
+	KogitoUserTasksEventsEnabled                = "kogito.events.usertasks.enabled"
 	// KogitoDataIndexHealthCheckEnabled configures if a workflow must check for the data index availability as part
 	// of its start health check.
 	KogitoDataIndexHealthCheckEnabled = "kogito.data-index.health-enabled"
