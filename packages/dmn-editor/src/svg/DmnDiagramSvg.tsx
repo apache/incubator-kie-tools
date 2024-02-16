@@ -59,7 +59,6 @@ import { Text } from "@visx/text";
 import { TypeOrReturnType } from "../store/ComputedStateCache";
 import { UniqueNameIndex } from "../Dmn15Spec";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
-import { DrgNodeIdsBySourceNodeId } from "../diagram/graph/graph";
 
 export function DmnDiagramSvg({
   nodes,
@@ -70,8 +69,6 @@ export function DmnDiagramSvg({
   isAlternativeInputDataShape,
   allDataTypesById,
   allTopLevelItemDefinitionUniqueNames,
-  drgNodeIdsBySourceNodeId,
-  drgElementsWithoutVisualRepresentationOnCurrentDrd,
 }: {
   nodes: RF.Node<DmnDiagramNodeData>[];
   edges: RF.Edge<DmnDiagramEdgeData>[];
@@ -81,18 +78,7 @@ export function DmnDiagramSvg({
   isAlternativeInputDataShape: boolean;
   allDataTypesById: DataTypeIndex;
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex;
-  drgNodeIdsBySourceNodeId: DrgNodeIdsBySourceNodeId;
-  drgElementsWithoutVisualRepresentationOnCurrentDrd: string[];
 }) {
-  const nodesWithHiddenSource = useMemo(() => {
-    return drgElementsWithoutVisualRepresentationOnCurrentDrd.reduce((acc, hiddenElementId) => {
-      drgNodeIdsBySourceNodeId.get(hiddenElementId)?.forEach((targetIds) => {
-        acc.add(targetIds);
-      });
-      return acc;
-    }, new Set<string>());
-  }, [drgElementsWithoutVisualRepresentationOnCurrentDrd, drgNodeIdsBySourceNodeId]);
-
   const { nodesSvg, nodesById } = useMemo(() => {
     const nodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
 
@@ -169,7 +155,7 @@ export function DmnDiagramSvg({
               {...style}
               {...shapeStyle}
               isCollection={isCollection}
-              hasHiddenSource={nodesWithHiddenSource.has(node.id) ?? false}
+              hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
             />
           )}
           {node.type === NODE_TYPES.bkm && (
@@ -180,7 +166,7 @@ export function DmnDiagramSvg({
               y={node.positionAbsolute!.y}
               {...style}
               {...shapeStyle}
-              hasHiddenSource={nodesWithHiddenSource.has(node.id) ?? false}
+              hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
             />
           )}
           {node.type === NODE_TYPES.knowledgeSource && (
@@ -191,7 +177,7 @@ export function DmnDiagramSvg({
               y={node.positionAbsolute!.y}
               {...style}
               {...shapeStyle}
-              hasHiddenSource={nodesWithHiddenSource.has(node.id) ?? false}
+              hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
             />
           )}
           {node.type === NODE_TYPES.decisionService && (

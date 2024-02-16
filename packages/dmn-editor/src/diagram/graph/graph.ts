@@ -40,7 +40,7 @@ export type DrgEdge = {
   };
 };
 
-export type DrgNodeIdsBySourceNodeId = Map<string, Set<string>>;
+export type DrgAdjacencyList = Map<string, { dependencies: Set<string> }>;
 
 export function getAdjMatrix(edges: DrgEdge[]): AdjMatrix {
   const __adjMatrix: AdjMatrix = {};

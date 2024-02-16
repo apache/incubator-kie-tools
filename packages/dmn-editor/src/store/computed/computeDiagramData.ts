@@ -25,14 +25,7 @@ import { snapShapeDimensions, snapShapePosition } from "../../diagram/SnapGrid";
 import { EdgeType, NodeType } from "../../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../../diagram/edges/EdgeTypes";
 import { DmnDiagramEdgeData } from "../../diagram/edges/Edges";
-import {
-  DrgEdge,
-  DrgNodeIdsBySourceNodeId,
-  EdgeVisitor,
-  NodeVisitor,
-  getAdjMatrix,
-  traverse,
-} from "../../diagram/graph/graph";
+import { DrgEdge, DrgAdjacencyList, EdgeVisitor, NodeVisitor, getAdjMatrix, traverse } from "../../diagram/graph/graph";
 import { getNodeTypeFromDmnObject } from "../../diagram/maths/DmnMaths";
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "../../diagram/nodes/DefaultSizes";
 import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../../diagram/nodes/NodeSvgs";
@@ -95,8 +88,7 @@ export function computeDiagramData(
   const edges: RF.Edge<DmnDiagramEdgeData>[] = [];
 
   const drgEdges: DrgEdge[] = [];
-  const drgNodeIdsBySourceNodeId: DrgNodeIdsBySourceNodeId = new Map();
-  const nodeHasHiddenSource: Set<string> = new Set();
+  const drgAdjacencyList: DrgAdjacencyList = new Map();
 
   const ackEdge: AckEdge = ({ id, type, dmnObject, source, target }) => {
     const data = {
@@ -123,7 +115,13 @@ export function computeDiagramData(
     edges.push(edge);
 
     drgEdges.push({ id, sourceId: source, targetId: target, dmnObject });
-    drgNodeIdsBySourceNodeId.set(source, drgNodeIdsBySourceNodeId.get(source)?.add(target) ?? new Set([target]));
+
+    const sourceAdjancyList = drgAdjacencyList.get(source);
+    if (!sourceAdjancyList) {
+      drgAdjacencyList.set(source, { dependencies: new Set([target]) });
+    } else {
+      sourceAdjancyList.dependencies.add(target);
+    }
 
     return edge;
   };
@@ -170,7 +168,6 @@ export function computeDiagramData(
     const _shape = indexes.dmnShapesByHref.get(id);
     if (!_shape) {
       drgElementsWithoutVisualRepresentationOnCurrentDrd.push(id);
-      drgNodeIdsBySourceNodeId.get(id)?.forEach((id) => nodeHasHiddenSource.add(id));
       return undefined;
     }
 
@@ -182,7 +179,9 @@ export function computeDiagramData(
       dmnObject,
       shape,
       index,
-      hasHiddenSource: false,
+
+      // Properties to be overridden
+      hasHiddenRequirements: false,
       parentRfNode: undefined,
     };
 
@@ -240,7 +239,7 @@ export function computeDiagramData(
     }),
   ];
 
-  // Assign parents, z-index and if it has an hidden source to NODES
+  // Assign parents & z-index to NODES
   for (let i = 0; i < localNodes.length; i++) {
     const parent = parentIdsById.get(localNodes[i].id);
     if (parent) {
@@ -255,10 +254,6 @@ export function computeDiagramData(
       localNodes[i].zIndex = NODE_LAYERS.GROUP_NODE;
     } else if (localNodes[i].type === NODE_TYPES.decisionService) {
       localNodes[i].zIndex = NODE_LAYERS.DECISION_SERVICE_NODE;
-    }
-
-    if (nodeHasHiddenSource.has(localNodes[i].id)) {
-      localNodes[i].data.hasHiddenSource = true;
     }
   }
 
@@ -336,6 +331,16 @@ export function computeDiagramData(
     .filter((e) => nodesById.has(e.source) && nodesById.has(e.target))
     .sort((a, b) => Number(selectedEdges.has(a.id)) - Number(selectedEdges.has(b.id)));
 
+  for (const elementWithoutVisualRepresentation of drgElementsWithoutVisualRepresentationOnCurrentDrd) {
+    // Set hasHiddenRequirements for the dependencies of all elements without visual representation
+    drgAdjacencyList.get(elementWithoutVisualRepresentation)?.dependencies?.forEach((dependencyNodeId) => {
+      const node = nodesById.get(dependencyNodeId);
+      if (node) {
+        node.data.hasHiddenRequirements = true;
+      }
+    });
+  }
+
   // console.timeEnd("nodes");
   if (diagram.overlays.enableNodeHierarchyHighlight) {
     assignClassesToHighlightedHierarchyNodes(diagram._selectedNodes, nodesById, edgesById, drgEdges);
@@ -343,7 +348,7 @@ export function computeDiagramData(
 
   return {
     drgEdges,
-    drgNodeIdsBySourceNodeId,
+    drgAdjacencyList,
     nodes: sortedNodes,
     edges: sortedEdges,
     edgesById,
