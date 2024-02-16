@@ -17,14 +17,13 @@
  * under the License.
  */
 
-import { Locator, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 
 import { env } from "../../../env";
 
 export class Diagram {
-  constructor(public page: Page, public baseURL: string) {
+  constructor(public page: Page) {
     this.page = page;
-    this.baseURL = baseURL;
   }
 
   public async openEmpty() {
@@ -35,5 +34,9 @@ export class Diagram {
 
   public getContainer() {
     return this.page.getByTestId("kie-dmn-editor--diagram-container");
+  }
+
+  public getEdge(fromNodeId: string | null, toNodeId: string | null) {
+    return this.page.getByRole("button", { name: `Edge from ${fromNodeId} to ${toNodeId}` });
   }
 }

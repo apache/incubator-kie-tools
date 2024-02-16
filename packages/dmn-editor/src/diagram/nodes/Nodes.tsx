@@ -246,7 +246,11 @@ export const InputDataNode = React.memo(
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
-          <div className={`kie-dmn-editor--node ${additionalClasses}`} data-testid={inputData["@_name"] + " node"}>
+          <div
+            className={`kie-dmn-editor--node ${additionalClasses}`}
+            title={inputData["@_name"]}
+            data-nodeid={`#${inputData["@_id"]}`}
+          >
             <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
             <OutgoingStuffNodePanel
@@ -431,7 +435,8 @@ export const DecisionNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-testid={decision["@_name"] + " node"}
+          title={decision["@_name"]}
+          data-nodeid={`#${decision["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -568,7 +573,8 @@ export const BkmNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-testid={bkm["@_name"] + " node"}
+          title={bkm["@_name"]}
+          data-nodeid={`#${bkm["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -695,7 +701,8 @@ export const KnowledgeSourceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-testid={knowledgeSource["@_name"] + " node"}
+          title={knowledgeSource["@_name"]}
+          data-nodeid={`#${knowledgeSource["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -812,7 +819,8 @@ export const TextAnnotationNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-testid={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text + " node"}
+          title={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
+          data-nodeid={`#${textAnnotation["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1011,7 +1019,8 @@ export const DecisionServiceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-testid={decisionService["@_name"] + " node"}
+          title={decisionService["@_name"]}
+          data-nodeid={`#${decisionService["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1157,7 +1166,8 @@ export const GroupNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-testid={group["@_name"] + " node"}
+          title={group["@_name"]}
+          data-nodeid={`#${group["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
