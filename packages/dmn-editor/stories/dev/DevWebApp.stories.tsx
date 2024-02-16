@@ -34,6 +34,7 @@ import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts
 import { DMN15_SPEC } from "../../src/Dmn15Spec";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { availableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
+import { Button } from "@patternfly/react-core";
 
 const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
@@ -44,12 +45,22 @@ const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
   name="DMN${generateUuid()}">
 </definitions>`;
 
-interface DevWebAppProps {
-  initialModel: string;
-}
+function DevWebApp() {
+  const [model, setModel] = useState<string>(EMPTY_DMN_15());
 
-function DevWebApp(props: DevWebAppProps) {
-  const initialDmnMarshaller = useMemo(() => getMarshaller(props.initialModel, { upgradeTo: "latest" }), []);
+  const setNewModel = useCallback((newModel) => {
+    setModel(newModel);
+  }, []);
+
+  const initialDmnMarshaller = useMemo(() => getMarshaller(model, { upgradeTo: "latest" }), [model]);
+
+  React.useEffect(() => {
+    setState({
+      marshaller: initialDmnMarshaller,
+      stack: [initialDmnMarshaller.parser.parse()],
+      pointer: 0,
+    });
+  }, [initialDmnMarshaller]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     console.log("DMN Editor :: Dev webapp :: File(s) dropped! Opening it.");
@@ -160,58 +171,70 @@ function DevWebApp(props: DevWebAppProps) {
 
   return (
     <>
-      <Page onDragOver={onDragOver} onDrop={onDrop}>
-        <PageSection variant={"light"} isFilled={false} padding={{ default: "padding" }}>
-          <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-            <FlexItem shrink={{ default: "shrink" }}>
-              <h3>DMN Editor :: Dev webapp </h3>
-            </FlexItem>
-            <FlexItem>
-              <h5>(Drag & drop a file anywhere to open it)</h5>
-            </FlexItem>
-            <FlexItem shrink={{ default: "shrink" }}>
-              <button disabled={!isUndoEnabled} style={{ opacity: isUndoEnabled ? 1 : 0.5 }} onClick={undo}>
-                {`Undo (${state.pointer})`}
-              </button>
-              &nbsp; &nbsp;
-              <button disabled={!isRedoEnabled} style={{ opacity: isRedoEnabled ? 1 : 0.5 }} onClick={redo}>
-                {`Redo (${state.stack.length - 1 - state.pointer})`}
-              </button>
-              &nbsp; &nbsp; | &nbsp; &nbsp;
-              <button onClick={reset}>Reset</button>
-              &nbsp; &nbsp;
-              <button onClick={copyAsXml}>Copy as XML</button>
-              &nbsp; &nbsp;
-              <button onClick={downloadAsXml}>Download as XML</button>
-            </FlexItem>
-          </Flex>
-          <a ref={downloadRef} />
-        </PageSection>
-        <hr />
-        <PageSection
-          variant={"light"}
-          isFilled={true}
-          hasOverflowScroll={true}
-          aria-label={"editor"}
-          padding={{ default: "noPadding" }}
-        >
-          <DmnEditor.DmnEditor
-            ref={ref}
-            model={currentModel}
-            originalVersion={state.marshaller.originalVersion}
-            onModelChange={onModelChange}
-            onRequestExternalModelByPath={onRequestExternalModelByPath}
-            onRequestExternalModelsAvailableToInclude={onRequestExternalModelsAvailableToInclude}
-            externalModelsByNamespace={externalModelsByNamespace}
-            externalContextName={`Dev webapp`}
-            externalContextDescription={`You're using the DMN Dev webapp, so there's only two simple external models that can be included.`}
-            validationMessages={validationMessages}
-            evaluationResults={evaluationResults}
-            issueTrackerHref={`https://github.com/kiegroup/kie-issues/issues/new`}
-            onRequestToJumpToPath={onRequestToJumpToPath}
-          />
-        </PageSection>
-      </Page>
+      <Flex>
+        <FlexItem>
+          <Button onClick={() => setNewModel(EMPTY_DMN_15())}>Empty</Button>
+        </FlexItem>
+        <FlexItem>
+          <Button onClick={() => setNewModel(DEFAULT_DEV_WEBAPP_DMN)}>Loan Pre Qualification</Button>
+        </FlexItem>
+      </Flex>
+      {model && (
+        <div style={{ width: "100vw", height: "100vh" }}>
+          <Page onDragOver={onDragOver} onDrop={onDrop}>
+            <PageSection variant={"light"} isFilled={false} padding={{ default: "padding" }}>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                <FlexItem shrink={{ default: "shrink" }}>
+                  <h3>DMN Editor :: Dev webapp </h3>
+                </FlexItem>
+                <FlexItem>
+                  <h5>(Drag & drop a file anywhere to open it)</h5>
+                </FlexItem>
+                <FlexItem shrink={{ default: "shrink" }}>
+                  <button disabled={!isUndoEnabled} style={{ opacity: isUndoEnabled ? 1 : 0.5 }} onClick={undo}>
+                    {`Undo (${state.pointer})`}
+                  </button>
+                  &nbsp; &nbsp;
+                  <button disabled={!isRedoEnabled} style={{ opacity: isRedoEnabled ? 1 : 0.5 }} onClick={redo}>
+                    {`Redo (${state.stack.length - 1 - state.pointer})`}
+                  </button>
+                  &nbsp; &nbsp; | &nbsp; &nbsp;
+                  <button onClick={reset}>Reset</button>
+                  &nbsp; &nbsp;
+                  <button onClick={copyAsXml}>Copy as XML</button>
+                  &nbsp; &nbsp;
+                  <button onClick={downloadAsXml}>Download as XML</button>
+                </FlexItem>
+              </Flex>
+              <a ref={downloadRef} />
+            </PageSection>
+            <hr />
+            <PageSection
+              variant={"light"}
+              isFilled={true}
+              hasOverflowScroll={true}
+              aria-label={"editor"}
+              padding={{ default: "noPadding" }}
+            >
+              <DmnEditor.DmnEditor
+                ref={ref}
+                model={currentModel}
+                originalVersion={state.marshaller.originalVersion}
+                onModelChange={onModelChange}
+                onRequestExternalModelByPath={onRequestExternalModelByPath}
+                onRequestExternalModelsAvailableToInclude={onRequestExternalModelsAvailableToInclude}
+                externalModelsByNamespace={externalModelsByNamespace}
+                externalContextName={`Dev webapp`}
+                externalContextDescription={`You're using the DMN Dev webapp, so there's only two simple external models that can be included.`}
+                validationMessages={validationMessages}
+                evaluationResults={evaluationResults}
+                issueTrackerHref={`https://github.com/kiegroup/kie-issues/issues/new`}
+                onRequestToJumpToPath={onRequestToJumpToPath}
+              />
+            </PageSection>
+          </Page>
+        </div>
+      )}
     </>
   );
 }
@@ -240,14 +263,6 @@ export default meta;
 type Story = StoryObj<typeof DevWebApp>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const LoanPreQualificationModel: Story = {
-  args: {
-    initialModel: DEFAULT_DEV_WEBAPP_DMN,
-  },
-};
-
-export const EmptyModel: Story = {
-  args: {
-    initialModel: EMPTY_DMN_15(),
-  },
+export const Playground: Story = {
+  args: {},
 };
