@@ -140,6 +140,7 @@ function TestScenarioMainPanel({
   const { i18n } = useTestScenarioEditorI18n();
 
   const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
+  const [dataObjects, setDataObjects] = useState<TestScenarioDataObject[]>([]);
   const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
   const [selectedColumnMetadata, setSelectedColumnMetaData] = useState<TestScenarioSelectedColumnMetaData | null>(null);
   const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
@@ -169,7 +170,7 @@ function TestScenarioMainPanel({
   }, [fileName]);
 
   /** This is TEMPORARY */
-  const dataObjectsFromScesim = useMemo(() => {
+  useEffect(() => {
     /* To create the Data Object arrays we need an external source, in details: */
     /* DMN Data: Retrieving DMN type from linked DMN file */
     /* Java classes: Retrieving Java classes info from the user projects */
@@ -225,18 +226,18 @@ function TestScenarioMainPanel({
       }
     }
 
-    return dataObjects;
-  }, [scesimModel]);
+    setDataObjects(dataObjects);
+  }, [scesimModel.ScenarioSimulationModel.settings.type]);
 
   /** It determines the Alert State */
   useEffect(() => {
-    const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text;
+    const assetType = scesimModel.ScenarioSimulationModel.settings!.type!.__$$text;
 
     let alertEnabled = false;
     let alertMessage = "";
     let alertVariant: "default" | "danger" | "warning" | "info" | "success" = "danger";
 
-    if (dataObjectsFromScesim.length > 0) {
+    if (dataObjects.length > 0) {
       alertMessage =
         assetType === TestScenarioType[TestScenarioType.DMN]
           ? i18n.alerts.dmnDataRetrievedFromScesim
@@ -252,7 +253,7 @@ function TestScenarioMainPanel({
     }
 
     setAlert({ enabled: alertEnabled, message: alertMessage, variant: alertVariant });
-  }, [dataObjectsFromScesim, i18n, scesimModel.ScenarioSimulationModel]);
+  }, [dataObjects, i18n, scesimModel.ScenarioSimulationModel.settings.type]);
 
   return (
     <>
@@ -261,7 +262,7 @@ function TestScenarioMainPanel({
           <DrawerContent
             panelContent={
               <TestScenarioDrawerPanel
-                dataObjects={dataObjectsFromScesim}
+                dataObjects={dataObjects}
                 fileName={fileName}
                 onDrawerClose={closeDockPanel}
                 onUpdateSettingField={updateSettingField}
