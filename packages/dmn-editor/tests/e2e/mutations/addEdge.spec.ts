@@ -108,7 +108,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      await page.getByTestId("New Decision node").click();
+      await page.getByTestId("New Decision node").nth(1).click();
       await page
         .getByTitle(ADD_INFORMATION_REQUIREMENT)
         .locator("visible=true")
@@ -187,7 +187,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      await page.getByTestId("New BKM node").click();
+      await page.getByTestId("New BKM node").nth(1).click();
       await page
         .getByTitle(ADD_KNOWLEDGE_REQUIREMENT)
         .locator("visible=true")
@@ -207,7 +207,7 @@ test.describe("Add edge", () => {
         .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
 
       // Connect these nodes
-      await page.getByTestId("New BKM node").click();
+      await page.getByTestId("New text annotation node").click();
       await page.getByTitle(ADD_ASSOCIATION).locator("visible=true").dragTo(page.getByText("New BKM"));
 
       expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
