@@ -326,7 +326,7 @@ export const DecisionNode = React.memo(
       index,
       dmnObjectQName,
       dmnObjectNamespace,
-      hasHiddenRequirements: hasHiddenRequirements,
+      hasHiddenRequirements,
     },
     selected,
     dragging,
@@ -482,14 +482,7 @@ export const DecisionNode = React.memo(
 
 export const BkmNode = React.memo(
   ({
-    data: {
-      dmnObject: bkm,
-      shape,
-      index,
-      dmnObjectQName,
-      dmnObjectNamespace,
-      hasHiddenRequirements: hasHiddenRequirements,
-    },
+    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenRequirements },
     selected,
     dragging,
     zIndex,
@@ -623,7 +616,7 @@ export const BkmNode = React.memo(
 
 export const KnowledgeSourceNode = React.memo(
   ({
-    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName, hasHiddenRequirements: hasHiddenRequirements },
+    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName, hasHiddenRequirements },
     selected,
     dragging,
     zIndex,
