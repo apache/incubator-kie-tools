@@ -38,13 +38,6 @@ import {
 } from "./NodeSvgs";
 import { NODE_TYPES } from "./NodeTypes";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
-import {
-  ADD_ASSOCIATION,
-  ADD_AUTHORITY_REQUIREMENET,
-  ADD_INFORMATION_REQUIREMENT,
-  ADD_KNOWLEDGE_REQUIREMENT,
-  ADD_UNKNOWN_EDGE,
-} from "../../constants";
 
 const handleButtonSize = 34; // That's the size of the button. This is a "magic number", as it was obtained from the rendered page.
 const svgViewboxPadding = Math.sqrt(Math.pow(handleButtonSize, 2) / 2) - handleButtonSize / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -70,45 +63,45 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
 
   const getEdgeActionTitle = React.useCallback((edgeType: string): string => {
     switch (edgeType) {
-      case "edge_informationRequirement": {
-        return ADD_INFORMATION_REQUIREMENT;
+      case EDGE_TYPES.informationRequirement: {
+        return "Add Information Requirement edge";
       }
-      case "edge_knowledgeRequirement": {
-        return ADD_KNOWLEDGE_REQUIREMENT;
+      case EDGE_TYPES.knowledgeRequirement: {
+        return "Add Knowledge Requirement edge";
       }
-      case "edge_authorityRequirement": {
-        return ADD_AUTHORITY_REQUIREMENET;
+      case EDGE_TYPES.authorityRequirement: {
+        return "Add Authority Requirement edge";
       }
-      case "edge_association": {
-        return ADD_ASSOCIATION;
+      case EDGE_TYPES.association: {
+        return "Add Association edge";
       }
       default: {
-        return ADD_UNKNOWN_EDGE;
+        return "Add Unknon edge type";
       }
     }
   }, []);
 
   const getNodeActionTitle = React.useCallback((nodeType: string): string => {
     switch (nodeType) {
-      case "node_inputData": {
+      case NODE_TYPES.inputData: {
         return "Add Input Data node";
       }
-      case "node_decision": {
+      case NODE_TYPES.decision: {
         return "Add Decision node";
       }
-      case "node_bkm": {
+      case NODE_TYPES.bkm: {
         return "Add Business Knowledge Model node";
       }
-      case "node_decisionService": {
+      case NODE_TYPES.decisionService: {
         return "Add Decision Service node";
       }
-      case "node_knowledgeSource": {
+      case NODE_TYPES.knowledgeSource: {
         return "Add Knowledge Source node";
       }
-      case "node_textAnnotation": {
+      case NODE_TYPES.textAnnotation: {
         return "Add Text Annotation node";
       }
-      case "node_group": {
+      case NODE_TYPES.group: {
         return "Add Group node";
       }
       default: {
@@ -131,6 +124,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 style={handleStyle}
                 position={RF.Position.Top}
                 title={getEdgeActionTitle(edgeType)}
+                data-testid={`add_${edgeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
@@ -169,6 +163,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 style={handleStyle}
                 position={RF.Position.Top}
                 title={getNodeActionTitle(nodeType)}
+                data-testid={`add_${nodeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}

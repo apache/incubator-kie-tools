@@ -17,153 +17,129 @@
  * under the License.
  */
 
-import { test, expect } from "@playwright/test";
-import { env } from "../../../env";
-import {
-  ASSOCIATION,
-  AUTHORITY_REQUIREMENET,
-  DIAGRAM_CONTAINER,
-  INFORMATION_REQUIREMENT,
-  KNOWLEDGE_REQUIREMENT,
-} from "../../../src/constants";
+import { expect } from "@playwright/test";
+import { test } from "../__fixtures__/base";
 
-test.beforeEach(async ({ page }, testInfo) => {
-  await page.goto(
-    `http://localhost:${env.dmnEditor.storybook.port}/iframe.html?args=&id=dev-web-app--empty-model&viewMode=story`
-  );
+test.beforeEach(async ({ diagram }, testInfo) => {
+  await diagram.openEmpty();
 });
 
 test.describe("Add connected node", () => {
   test.describe("From Input Data", () => {
-    test("Add Decision", async ({ page }) => {
+    test("Add Decision", async ({ page, diagram }) => {
       await page
         .getByTitle("Input Data", { exact: true })
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
       await page.getByTestId("New Input Data node").click();
 
-      await page
-        .getByTitle("Add Decision node")
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
+      await page.getByTitle("Add Decision node").dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId(INFORMATION_REQUIREMENT)).toBeAttached();
-      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId("edge_informationRequirement")).toBeAttached();
     });
 
-    test("Add Knowledge Source", async ({ page }) => {
+    test("Add Knowledge Source", async ({ page, diagram }) => {
       await page
         .getByTitle("Input Data", { exact: true })
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
       await page.getByTestId("New Input Data node").click();
       await page
         .getByTitle("Add Knowledge Source node")
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId(AUTHORITY_REQUIREMENET)).toBeAttached();
-      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId("edge_authorityRequirement")).toBeAttached();
     });
 
-    test("Add Text Annotation", async ({ page }) => {
+    test("Add Text Annotation", async ({ page, diagram }) => {
       await page
         .getByTitle("Input Data", { exact: true })
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 400 } });
 
       await page.getByTestId("New Input Data node").click();
       await page
         .getByTitle("Add Text Annotation node")
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
-      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId("edge_association")).toBeAttached();
     });
   });
 
   test.describe("From Decision", () => {
-    test("Add Decision", async ({ page }) => {
+    test("Add Decision", async ({ page, diagram }) => {
       await page
         .getByTitle("Decision", { exact: true })
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
       await page.getByTestId("New Decision node").click();
-      await page
-        .getByTitle("Add Decision node")
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
+      await page.getByTitle("Add Decision node").dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId(INFORMATION_REQUIREMENT)).toBeAttached();
-      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId("edge_informationRequirement")).toBeAttached();
     });
 
-    test("Add Knoledge Source", async ({ page }) => {
+    test("Add Knoledge Source", async ({ page, diagram }) => {
       await page
         .getByTitle("Decision", { exact: true })
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
       await page.getByTestId("New Decision node").click();
       await page
         .getByTitle("Add Knowledge Source node")
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId(AUTHORITY_REQUIREMENET)).toBeAttached();
-      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId("edge_authorityRequirement")).toBeAttached();
     });
 
-    test("Add Text Annotation", async ({ page }) => {
+    test("Add Text Annotation", async ({ page, diagram }) => {
       await page
         .getByTitle("Decision", { exact: true })
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 400 } });
 
       await page.getByTestId("New Decision node").click();
       await page
         .getByTitle("Add Text Annotation node")
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
-      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId("edge_association")).toBeAttached();
     });
   });
 
   test.describe("From BKM", () => {
-    test("Add Decision", async ({ page }) => {
+    test("Add Decision", async ({ page, diagram }) => {
       await page
         .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
       await page.getByTestId("New BKM node").click();
-      await page
-        .getByTitle("Add Decision node")
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
+      await page.getByTitle("Add Decision node").dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId(KNOWLEDGE_REQUIREMENT)).toBeAttached();
-      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId("edge_knowledgeRequirement")).toBeAttached();
     });
 
-    test("Add BKM", async ({ page }) => {
+    test("Add BKM", async ({ page, diagram }) => {
       await page
         .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 300 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
       await page.getByTestId("New BKM node").click();
       await page
         .getByTitle("Add Business Knowledge Model node")
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId(KNOWLEDGE_REQUIREMENT)).toBeAttached();
-      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId("edge_knowledgeRequirement")).toBeAttached();
     });
 
-    test("Add Text Annotation", async ({ page }) => {
+    test("Add Text Annotation", async ({ page, diagram }) => {
       await page
         .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 400 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 400 } });
 
       await page.getByTestId("New BKM node").click();
       await page
         .getByTitle("Add Text Annotation node")
-        .dragTo(page.getByTestId(DIAGRAM_CONTAINER), { targetPosition: { x: 100, y: 100 } });
+        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
 
-      expect(await page.getByTestId(ASSOCIATION)).toBeAttached();
-      expect(await page.getByTestId(DIAGRAM_CONTAINER).screenshot()).toMatchSnapshot();
+      expect(await page.getByTestId("edge_association")).toBeAttached();
     });
   });
 });

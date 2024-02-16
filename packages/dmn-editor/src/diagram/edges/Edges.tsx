@@ -29,7 +29,7 @@ import { PotentialWaypoint, Waypoints } from "./Waypoints";
 import { useAlwaysVisibleEdgeUpdatersAtNodeBorders } from "./useAlwaysVisibleEdgeUpdatersAtNodeBorders";
 import { useKieEdgePath } from "./useKieEdgePath";
 import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
-import { ASSOCIATION, AUTHORITY_REQUIREMENET, INFORMATION_REQUIREMENT, KNOWLEDGE_REQUIREMENT } from "../../constants";
+import { EDGE_TYPES } from "./EdgeTypes";
 
 export type DmnDiagramEdgeData = {
   dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
@@ -163,7 +163,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
       <InformationRequirementPath
         d={path}
         className={`kie-dmn-editor--edge ${className}`}
-        data-testid={INFORMATION_REQUIREMENT}
+        data-testid={EDGE_TYPES.informationRequirement}
       />
 
       {props.selected && !isConnecting && props.data?.dmnEdge && (
@@ -215,7 +215,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
       <KnowledgeRequirementPath
         d={path}
         className={`kie-dmn-editor--edge ${className}`}
-        data-testid={KNOWLEDGE_REQUIREMENT}
+        data-testid={EDGE_TYPES.knowledgeRequirement}
       />
 
       {props.selected && !isConnecting && props.data?.dmnEdge && (
@@ -269,7 +269,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         d={path}
         className={`kie-dmn-editor--edge ${className}`}
         centerToConnectionPoint={false}
-        data-testid={AUTHORITY_REQUIREMENET}
+        data-testid={EDGE_TYPES.authorityRequirement}
       />
 
       {props.selected && !isConnecting && props.data?.dmnEdge && (
@@ -318,7 +318,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
       />
-      <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} data-testid={ASSOCIATION} />
+      <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} data-testid={EDGE_TYPES.association} />
 
       {props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints

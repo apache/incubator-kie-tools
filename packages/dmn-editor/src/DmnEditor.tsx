@@ -56,7 +56,6 @@ import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { DIAGRAM_CONTAINER } from "./constants";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -340,7 +339,11 @@ export const DmnEditorInternal = ({
                 <Drawer isExpanded={isDiagramPropertiesPanelOpen} isInline={true} position={"right"}>
                   <DrawerContent panelContent={diagramPropertiesPanel}>
                     <DrawerContentBody>
-                      <div className={DIAGRAM_CONTAINER} ref={diagramContainerRef} data-testid={DIAGRAM_CONTAINER}>
+                      <div
+                        className={"kie-dmn-editor--diagram-container"}
+                        ref={diagramContainerRef}
+                        data-testid={"kie-dmn-editor--diagram-container"}
+                      >
                         {originalVersion && <DmnVersionLabel version={originalVersion} />}
                         <Diagram ref={diagramRef} container={diagramContainerRef} />
                       </div>
