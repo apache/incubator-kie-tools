@@ -1,13 +1,13 @@
 {{- if not .Values.global.ingressSource }}
 
-In order to get KIE Sandbox running you need to run these commands:
+In order to get {{ .Release.Name }} running you need to run these commands:
 
 {{- if .Values.cors_proxy.ingress.enabled }}
 
 1. CORS Proxy available at:
 {{- range $host := .Values.cors_proxy.ingress.hosts }}
   {{- range .paths }}
-  http{{ if $.Values.cors_proxy.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.cors_proxy.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- else }}
@@ -35,7 +35,7 @@ In order to get KIE Sandbox running you need to run these commands:
 2. Extended Services available at:
 {{- range $host := .Values.extended_services.ingress.hosts }}
   {{- range .paths }}
-  http{{ if $.Values.extended_services.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.extended_services.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- else }}
@@ -63,7 +63,7 @@ In order to get KIE Sandbox running you need to run these commands:
 3. KIE Sandbox available at:
 {{- range $host := .Values.kie_sandbox.ingress.hosts }}
   {{- range .paths }}
-  http{{ if $.Values.kie_sandbox.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.kie_sandbox.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- else }}
@@ -95,17 +95,17 @@ Run the following commands:
   echo "\n# Minikube KIE Sandbox Helm Chart hostnames" | sudo tee -a /etc/hosts
 {{- range $host := .Values.cors_proxy.ingress.hosts }}
   {{- range .paths }}
-  echo "$MINIKUBE_IP {{ $host.host }}" | sudo tee -a /etc/hosts
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
   {{- end }}
 {{- end }}
 {{- range $host := .Values.extended_services.ingress.hosts }}
   {{- range .paths }}
-  echo "$MINIKUBE_IP {{ $host.host }}" | sudo tee -a /etc/hosts
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
   {{- end }}
 {{- end }}
 {{- range $host := .Values.kie_sandbox.ingress.hosts }}
   {{- range .paths }}
-  echo "$MINIKUBE_IP {{ $host.host }}" | sudo tee -a /etc/hosts
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
   {{- end }}
 {{- end }}
 
@@ -123,7 +123,7 @@ Run the following commands:
 1. CORS Proxy available at:
 {{- range $host := .Values.cors_proxy.ingress.hosts }}
   {{- range .paths }}
-  http{{ if $.Values.cors_proxy.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.cors_proxy.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- end }}
@@ -131,7 +131,7 @@ Run the following commands:
 2. Extended Services available at:
 {{- range $host := .Values.extended_services.ingress.hosts }}
   {{- range .paths }}
-  http{{ if $.Values.extended_services.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.extended_services.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- end }}
@@ -139,7 +139,7 @@ Run the following commands:
 3. KIE Sandbox available at:
 {{- range $host := .Values.kie_sandbox.ingress.hosts }}
   {{- range .paths }}
-  http{{ if $.Values.kie_sandbox.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  http{{ if $.Values.kie_sandbox.ingress.tls }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
   {{- end }}
 {{- end }}
 {{- end }}

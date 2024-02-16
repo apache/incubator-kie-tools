@@ -22,7 +22,7 @@ import * as React from "react";
 import { useCallback } from "react";
 import { NodeType } from "./connections/graphStructure";
 import { NODE_TYPES } from "./nodes/NodeTypes";
-import { DiagramNodesPanel } from "../store/Store";
+import { DiagramLhsPanel } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds } from "./maths/DmnMaths";
@@ -122,13 +122,13 @@ export function Palette({ pulse }: { pulse: boolean }) {
           />
           <Popover
             className={"kie-dmn-editor--drd-selector-popover"}
-            key={`${diagram.drdSelector.isOpen}`}
+            key={DiagramLhsPanel.DRD_SELECTOR}
             aria-label={"DRD Selector Popover"}
-            isVisible={diagram.drdSelector.isOpen}
+            isVisible={diagram.openLhsPanel === DiagramLhsPanel.DRD_SELECTOR}
             reference={() => drdSelectorPopoverRef.current!}
             shouldClose={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.drdSelector.isOpen = false;
+                state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
               });
             }}
             position={"bottom-start"}
@@ -139,7 +139,10 @@ export function Palette({ pulse }: { pulse: boolean }) {
             title="DRD selector"
             onClick={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.drdSelector.isOpen = !state.diagram.drdSelector.isOpen;
+                state.diagram.openLhsPanel =
+                  state.diagram.openLhsPanel === DiagramLhsPanel.DRD_SELECTOR
+                    ? DiagramLhsPanel.NONE
+                    : DiagramLhsPanel.DRD_SELECTOR;
               });
             }}
           >
@@ -213,7 +216,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
         </aside>
         <br />
         <aside className={"kie-dmn-editor--drg-panel-toggle"}>
-          {diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES && (
+          {diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES && (
             <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
               <DrgNodesPanel />
             </div>
@@ -221,14 +224,14 @@ export function Palette({ pulse }: { pulse: boolean }) {
           <button
             title="DRG nodes"
             className={`kie-dmn-editor--drg-panel-toggle-button ${
-              diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES ? "active" : ""
+              diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES ? "active" : ""
             }`}
             onClick={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.openNodesPanel =
-                  state.diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES
-                    ? DiagramNodesPanel.NONE
-                    : DiagramNodesPanel.DRG_NODES;
+                state.diagram.openLhsPanel =
+                  state.diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES
+                    ? DiagramLhsPanel.NONE
+                    : DiagramLhsPanel.DRG_NODES;
               });
             }}
           >
@@ -237,7 +240,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
         </aside>
         <br />
         <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
-          {diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES && (
+          {diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES && (
             <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
               <ExternalNodesPanel />
             </div>
@@ -246,14 +249,14 @@ export function Palette({ pulse }: { pulse: boolean }) {
           <button
             title="External nodes"
             className={`kie-dmn-editor--external-nodes-panel-toggle-button ${
-              diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES ? "active" : ""
+              diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES ? "active" : ""
             }`}
             onClick={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.openNodesPanel =
-                  state.diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES
-                    ? DiagramNodesPanel.NONE
-                    : DiagramNodesPanel.EXTERNAL_NODES;
+                state.diagram.openLhsPanel =
+                  state.diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES
+                    ? DiagramLhsPanel.NONE
+                    : DiagramLhsPanel.EXTERNAL_NODES;
               });
             }}
           >

@@ -56,8 +56,9 @@ export interface SnapGrid {
   y: number;
 }
 
-export enum DiagramNodesPanel {
+export enum DiagramLhsPanel {
   NONE = "NONE",
+  DRD_SELECTOR = "DRD_SELECTOR",
   DRG_NODES = "DRG_NODES",
   EXTERNAL_NODES = "EXTERNAL_NODES",
 }
@@ -97,10 +98,7 @@ export interface State {
     overlaysPanel: {
       isOpen: boolean;
     };
-    openNodesPanel: DiagramNodesPanel;
-    drdSelector: {
-      isOpen: boolean;
-    };
+    openLhsPanel: DiagramLhsPanel;
     overlays: {
       enableNodeHierarchyHighlight: boolean;
       enableExecutionHitsHighlights: boolean;
@@ -193,10 +191,7 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     overlaysPanel: {
       isOpen: false,
     },
-    openNodesPanel: DiagramNodesPanel.NONE,
-    drdSelector: {
-      isOpen: false,
-    },
+    openLhsPanel: DiagramLhsPanel.NONE,
     overlays: {
       enableNodeHierarchyHighlight: false,
       enableExecutionHitsHighlights: false,
