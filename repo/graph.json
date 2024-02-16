@@ -128,18 +128,18 @@
       { "id": "@kie-tools/kn-plugin-workflow" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
-      { "id": "@kie-tools/runtime-cypress-ouia" },
-      { "id": "@kie-tools/runtime-management-console-webapp" },
+      { "id": "@kie-tools/runtime-tools-components" },
+      { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-cypress-ouia" },
+      { "id": "@kie-tools/runtime-tools-management-console-webapp" },
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
-      { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
-      { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
-      { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
-      { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
-      { "id": "@kie-tools/runtime-trusty-app" },
+      { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -778,25 +778,41 @@
       { "source": "@kie-tools/unitables", "target": "@kie-tools/dmn-runner", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools/pmml-editor", "weight": 1 },
-      { "source": "@kie-tools/runtime-cypress-ouia", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/editor", "weight": 1 },
       {
-        "source": "@kie-tools/runtime-management-console-webapp",
+        "source": "@kie-tools/runtime-tools-components",
+        "target": "@kie-tools/json-yaml-language-service",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-components",
+        "target": "@kie-tools/runtime-tools-shared-gateway-api",
+        "weight": 1
+      },
+      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-cypress-ouia", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-cypress-ouia", "target": "@kie-tools/tsconfig", "weight": 1 },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
         "target": "@kie-tools/runtime-tools-process-enveloped-components",
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-management-console-webapp",
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-enveloped-components",
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-management-console-webapp",
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-management-console-webapp",
-        "target": "@kie-tools/runtime-cypress-ouia",
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-cypress-ouia",
         "weight": 1
       },
       {
@@ -841,11 +857,6 @@
       },
       {
         "source": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "target": "@kie-tools/runtime-tools-swf-gateway-api",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
@@ -854,31 +865,16 @@
         "target": "@kie-tools/runtime-tools-components",
         "weight": 1
       },
-      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/editor", "weight": 1 },
-      {
-        "source": "@kie-tools/runtime-tools-components",
-        "target": "@kie-tools/json-yaml-language-service",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-components",
-        "target": "@kie-tools/runtime-tools-shared-gateway-api",
-        "weight": 1
-      },
-      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-process-gateway-api",
         "target": "@kie-tools/runtime-tools-shared-gateway-api",
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-tools-swf-gateway-api",
-        "target": "@kie-tools/runtime-tools-shared-gateway-api",
+        "source": "@kie-tools/runtime-tools-swf-webapp-components",
+        "target": "@kie-tools/runtime-tools-swf-enveloped-components",
         "weight": 1
       },
-      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-swf-enveloped-components",
         "target": "@kie-tools/dashbuilder-client",
@@ -891,17 +887,39 @@
       },
       {
         "source": "@kie-tools/runtime-tools-swf-enveloped-components",
+        "target": "@kie-tools/runtime-tools-swf-gateway-api",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-swf-enveloped-components",
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-tools-swf-webapp-components",
-        "target": "@kie-tools/runtime-tools-swf-enveloped-components",
+        "source": "@kie-tools/runtime-tools-swf-gateway-api",
+        "target": "@kie-tools/runtime-tools-shared-gateway-api",
         "weight": 1
       },
-      { "source": "@kie-tools/runtime-trusty-app", "target": "@kie-tools/kie-editors-standalone", "weight": 1 },
-      { "source": "@kie-tools/runtime-trusty-app", "target": "@kie-tools/runtime-tools-components", "weight": 1 },
-      { "source": "@kie-tools/runtime-trusty-app", "target": "@kie-tools/runtime-cypress-ouia", "weight": 1 },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-cypress-ouia",
+        "weight": 1
+      },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/scesim-marshaller", "weight": 1 },
       { "source": "@kie-tools/scesim-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
@@ -1202,18 +1220,18 @@
     ["pmml-vscode-extension", "packages/pmml-vscode-extension"],
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
-    ["@kie-tools/runtime-cypress-ouia", "packages/runtime-cypress-ouia"],
-    ["@kie-tools/runtime-management-console-webapp", "packages/runtime-management-console-webapp"],
     ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
+    ["@kie-tools/runtime-tools-cypress-ouia", "packages/runtime-tools-cypress-ouia"],
+    ["@kie-tools/runtime-tools-management-console-webapp", "packages/runtime-tools-management-console-webapp"],
     ["@kie-tools/runtime-tools-process-enveloped-components", "packages/runtime-tools-process-enveloped-components"],
     ["@kie-tools/runtime-tools-process-gateway-api", "packages/runtime-tools-process-gateway-api"],
+    ["@kie-tools/runtime-tools-swf-webapp-components", "packages/runtime-tools-swf-webapp-components"],
     ["@kie-tools/runtime-tools-shared-enveloped-components", "packages/runtime-tools-shared-enveloped-components"],
     ["@kie-tools/runtime-tools-shared-gateway-api", "packages/runtime-tools-shared-gateway-api"],
     ["@kie-tools/runtime-tools-shared-webapp-components", "packages/runtime-tools-shared-webapp-components"],
     ["@kie-tools/runtime-tools-swf-enveloped-components", "packages/runtime-tools-swf-enveloped-components"],
     ["@kie-tools/runtime-tools-swf-gateway-api", "packages/runtime-tools-swf-gateway-api"],
-    ["@kie-tools/runtime-tools-swf-webapp-components", "packages/runtime-tools-swf-webapp-components"],
-    ["@kie-tools/runtime-trusty-app", "packages/runtime-trusty-app"],
+    ["@kie-tools/runtime-tools-task-console-webapp", "packages/runtime-tools-task-console-webapp"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
     ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],

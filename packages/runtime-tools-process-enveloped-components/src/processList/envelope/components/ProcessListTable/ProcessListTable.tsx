@@ -30,11 +30,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import DisablePopup from "../DisablePopup/DisablePopup";
 import "../styles.css";
 import ErrorPopover from "../ErrorPopover/ErrorPopover";
-import {
-  ProcessInstance,
-  ProcessInstanceState,
-  TitleType,
-} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
@@ -45,6 +41,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
 import { EndpointLink } from "@kie-tools/runtime-tools-components/dist/components/EndpointLink";
+import { TitleType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface ProcessListTableProps {
   processInstances: ProcessInstance[];

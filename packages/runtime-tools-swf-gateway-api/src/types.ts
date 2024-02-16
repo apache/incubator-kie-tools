@@ -25,6 +25,53 @@ import {
   JsonType,
 } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
+export enum JobStatus {
+  Error = "ERROR",
+  Executed = "EXECUTED",
+  Scheduled = "SCHEDULED",
+  Retry = "RETRY",
+  Canceled = "CANCELED",
+}
+
+export interface Job {
+  id: string;
+  status: JobStatus;
+  expirationTime: Date;
+  priority: number;
+  callbackEndpoint: string;
+  repeatInterval: number;
+  repeatLimit: number;
+  scheduledId: string;
+  retries: number;
+  lastUpdate: Date;
+  executionCounter?: number;
+  endpoint: string;
+  nodeInstanceId?: string;
+  workflowId?: string;
+  workflowInstanceId?: string;
+  rootWorkflowId?: string;
+  rootWorkflowInstanceId?: string;
+}
+
+export interface BulkCancel {
+  successJobs: Job[];
+  failedJobs: Job[];
+}
+
+export interface JobCancel {
+  modalTitle: string;
+  modalContent: string;
+}
+
+export interface JobsSortBy {
+  status?: OrderBy;
+  expirationTime?: OrderBy;
+  priority?: OrderBy;
+  retries?: OrderBy;
+  lastUpdate?: OrderBy;
+  executionCounter?: OrderBy;
+}
+
 export interface BulkWorkflowInstanceActionResponse {
   successWorkflowInstances: WorkflowInstance[];
   failedWorkflowInstances: WorkflowInstance[];

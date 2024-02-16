@@ -34,12 +34,9 @@ import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outline
 import React, { useCallback, useState } from "react";
 import "../styles.css";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { WorkflowInstance, Job, NodeInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { NodeInstance } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { WorkflowInfoModal } from "@kie-tools/runtime-tools-components/dist/components/WorkflowInfoModal";
-import { JobsDetailsModal } from "@kie-tools/runtime-tools-components/dist/components/JobsDetailsModal";
-import { JobsRescheduleModal } from "@kie-tools/runtime-tools-components/dist/components/JobsRescheduleModal";
-import { JobsCancelModal } from "@kie-tools/runtime-tools-components/dist/components/JobsCancelModal";
 import { WorkflowDetailsDriver } from "../../../api";
 import {
   handleJobRescheduleUtil,
@@ -49,6 +46,10 @@ import {
   handleSkip,
   jobCancel,
 } from "../../../utils/Utils";
+import { Job, WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { JobsDetailsModal } from "../../../../jobsManagement/envelope/components/JobsDetailsModal";
+import { JobsRescheduleModal } from "../../../../jobsManagement/envelope/components/JobsRescheduleModal";
+import { JobsCancelModal } from "../../../../jobsManagement/envelope/components/JobsCancelModal";
 
 export interface IOwnProps {
   data: WorkflowInstance;

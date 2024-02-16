@@ -17,12 +17,12 @@
  * under the License.
  */
 
+import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import {
   BulkWorkflowInstanceActionResponse,
   WorkflowInstance,
   WorkflowInstanceFilter,
   WorkflowListSortBy,
-  OperationType,
 } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 export interface WorkflowListChannelApi {

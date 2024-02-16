@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Form } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface FormDisplayerInitArgs {
   form: Form;

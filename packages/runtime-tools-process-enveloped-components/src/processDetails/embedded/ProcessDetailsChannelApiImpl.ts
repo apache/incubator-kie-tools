@@ -17,15 +17,13 @@
  * under the License.
  */
 import {
-  Job,
-  JobCancel,
   NodeInstance,
-  ProcessInstance,
   SvgErrorResponse,
   SvgSuccessResponse,
   TriggerableNode,
-} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ProcessDetailsChannelApi, ProcessDetailsDriver } from "../api";
+import { Job, JobCancel, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export class ProcessDetailsChannelApiImpl implements ProcessDetailsChannelApi {
   constructor(private readonly driver: ProcessDetailsDriver) {}

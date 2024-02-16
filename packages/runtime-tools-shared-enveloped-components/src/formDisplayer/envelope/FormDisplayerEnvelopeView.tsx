@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useImperativeHandle, useRef, useState } from "react";
 import isEmpty from "lodash/isEmpty";
-import { Form } from "@kie-tools/runtime-tools-swf-gateway-api/src/types";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
 import {
   FormDisplayerChannelApi,
   FormSubmitContext,

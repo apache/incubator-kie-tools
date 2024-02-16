@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { getCustomDashboard } from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi";
 import { CustomDashboardFilter } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/customDashboardList";
 

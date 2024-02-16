@@ -21,7 +21,7 @@ import React, { useEffect, useState } from "react";
 import { DataTable, DataTableColumn } from "@kie-tools/runtime-tools-components/dist/components/DataTable";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { CustomDashboardListDriver } from "../../../api";
 import { getDashboardNameColumn, getDateColumn } from "../CustomDashboardListUtils/CustomDashboardListUtils";
 import _ from "lodash";

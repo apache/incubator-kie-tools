@@ -17,14 +17,9 @@
  * under the License.
  */
 
+import { Job, JobCancel, WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { WorkflowDetailsChannelApi, WorkflowDetailsDriver } from "../api";
-import {
-  WorkflowInstance,
-  Job,
-  JobCancel,
-  TriggerableNode,
-  NodeInstance,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { TriggerableNode, NodeInstance } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export class WorkflowDetailsChannelApiImpl implements WorkflowDetailsChannelApi {
   constructor(private readonly driver: WorkflowDetailsDriver) {}

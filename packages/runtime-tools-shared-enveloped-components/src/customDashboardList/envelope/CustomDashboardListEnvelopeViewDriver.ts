@@ -18,7 +18,7 @@
  */
 
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { CustomDashboardFilter, CustomDashboardListChannelApi, CustomDashboardListDriver } from "../api";
 
 /**

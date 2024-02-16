@@ -52,7 +52,6 @@ import {
   WorkflowInstance,
   WorkflowInstanceState,
   WorkflowInstanceFilter,
-  OperationType,
 } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import {
   BulkListType,
@@ -65,6 +64,7 @@ import { WorkflowListDriver } from "../../../api";
 import "../styles.css";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { formatForBulkListWorkflowInstance } from "../utils/WorkflowListUtils";
+import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 enum Category {
   STATUS = "Status",

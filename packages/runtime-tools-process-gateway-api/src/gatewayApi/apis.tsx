@@ -18,16 +18,17 @@
  */
 
 import { GraphQL } from "../graphql";
-import { BulkProcessInstanceActionResponse, ProcessInstance, ProcessInstanceFilter, ProcessListSortBy } from "../types";
 import {
   JobCancel,
-  NodeInstance,
-  TriggerableNode,
   JobStatus,
   Job,
   JobsSortBy,
-  OperationType,
-} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+  BulkProcessInstanceActionResponse,
+  ProcessInstance,
+  ProcessInstanceFilter,
+  ProcessListSortBy,
+} from "../types";
+import { NodeInstance, TriggerableNode, OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ApolloClient } from "apollo-client";
 import { buildProcessListWhereArgument } from "./QueryUtils";
 

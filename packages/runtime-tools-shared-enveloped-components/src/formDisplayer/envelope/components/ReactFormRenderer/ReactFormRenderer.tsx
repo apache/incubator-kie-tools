@@ -19,7 +19,7 @@
 
 import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import * as Babel from "@babel/standalone";
+import { transform } from "@babel/standalone";
 import ReactDOM from "react-dom";
 import * as Patternfly from "@patternfly/react-core/dist/js";
 import { FormResources } from "../../../api";
@@ -81,7 +81,7 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
         window.ReactDOM.render(element, target);
         `;
 
-        const reactCode = Babel.transform(content.trim(), {
+        const reactCode = transform(content.trim(), {
           presets: [
             "react",
             [

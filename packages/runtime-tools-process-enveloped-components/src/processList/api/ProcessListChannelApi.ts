@@ -19,11 +19,11 @@
 
 import {
   BulkProcessInstanceActionResponse,
-  OperationType,
   ProcessInstance,
   ProcessInstanceFilter,
   ProcessListSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface ProcessListChannelApi {
   processList__initialLoad(filter: ProcessInstanceFilter, sortBy: ProcessListSortBy): Promise<void>;

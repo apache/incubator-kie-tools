@@ -51,7 +51,6 @@ import { ProcessListDriver } from "../../../api";
 import "../styles.css";
 import { formatForBulkListProcessInstance } from "../utils/ProcessListUtils";
 import {
-  OperationType,
   ProcessInstance,
   ProcessInstanceFilter,
   ProcessInstanceState,
@@ -64,6 +63,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/components/BulkList";
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
+import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 enum Category {
   STATUS = "Status",

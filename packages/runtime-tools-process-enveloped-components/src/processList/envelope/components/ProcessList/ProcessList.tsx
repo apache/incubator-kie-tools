@@ -30,7 +30,6 @@ import {
 
 import "../styles.css";
 import {
-  OrderBy,
   ProcessInstance,
   ProcessInstanceFilter,
   ProcessInstanceState,
@@ -44,6 +43,7 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
+import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 interface ProcessListProps {
   isEnvelopeConnectedToChannel: boolean;

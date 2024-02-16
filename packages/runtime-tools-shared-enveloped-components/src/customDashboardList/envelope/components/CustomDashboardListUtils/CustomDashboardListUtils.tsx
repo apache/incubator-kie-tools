@@ -20,7 +20,7 @@
 import React from "react";
 import Moment from "react-moment";
 import { DataTableColumn } from "@kie-tools/runtime-tools-components/dist/components/DataTable";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export const getDashboardNameColumn = (
   selectDashboard: (customDashboardInfo: CustomDashboardInfo) => void

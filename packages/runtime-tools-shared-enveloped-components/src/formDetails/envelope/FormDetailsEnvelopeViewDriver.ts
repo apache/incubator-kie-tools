@@ -18,7 +18,7 @@
  */
 
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { Form, FormContent } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Form, FormContent } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormDetailsChannelApi, FormDetailsDriver } from "../api";
 
 /**

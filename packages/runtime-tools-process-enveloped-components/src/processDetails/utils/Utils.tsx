@@ -24,8 +24,9 @@ import { UndoIcon } from "@patternfly/react-icons/dist/js/icons/undo-icon";
 import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ProcessDetailsDriver } from "../api";
-import { Job, JobStatus, NodeInstance, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { NodeInstance } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
+import { Job, JobStatus, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export const JobsIconCreator = (state: JobStatus): JSX.Element => {
   switch (state) {

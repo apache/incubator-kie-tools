@@ -29,7 +29,7 @@ import accessibleStyles from "@patternfly/react-styles/css/utilities/Accessibili
 import { css } from "@patternfly/react-styles";
 
 import AboutModalBox from "../AboutModalBox/AboutModalBox";
-import userImage from "../../../static/avatar.svg";
+import userImage from "../../static/avatar.svg";
 import {
   ANONYMOUS_USER,
   LogoutUserContext,

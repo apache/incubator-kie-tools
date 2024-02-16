@@ -34,10 +34,11 @@ import {
   SwfPreviewOptionsChannelApiImpl,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/channel";
 import { useController } from "../../../hooks/useController";
-import { NodeInstance, WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { NodeInstance } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 import { ServerlessWorkflowCombinedEditorEnvelopeApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api/ServerlessWorkflowCombinedEditorEnvelopeApi";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 interface ISwfCombinedEditorProps {
   workflowInstance: Pick<WorkflowInstance, "source" | "nodes" | "error">;

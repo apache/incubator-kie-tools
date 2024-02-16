@@ -27,14 +27,11 @@ import React from "react";
 import { LevelDownAltIcon } from "@patternfly/react-icons/dist/js/icons/level-down-alt-icon";
 import { LevelUpAltIcon } from "@patternfly/react-icons/dist/js/icons/level-up-alt-icon";
 import { WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
-import {
-  getWorkflowInstanceDescription,
-  WorkflowInstanceIconCreator,
-} from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
 import { EndpointLink } from "@kie-tools/runtime-tools-components/dist/components/EndpointLink";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { WorkflowDetailsDriver } from "../../../api";
+import { WorkflowInstanceIconCreator, getWorkflowInstanceDescription } from "../../../utils/Utils";
 
 interface IOwnProps {
   workflowInstance: WorkflowInstance;

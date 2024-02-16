@@ -26,7 +26,7 @@ import { RedoIcon } from "@patternfly/react-icons/dist/js/icons/redo-icon";
 import { PlayIcon } from "@patternfly/react-icons/dist/js/icons/play-icon";
 import cloneDeep from "lodash/cloneDeep";
 import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Form } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { useFormDetailsContext } from "../contexts/FormDetailsContext";
 import { ResizableContent } from "../FormDetails/FormDetails";
 import "../styles.css";

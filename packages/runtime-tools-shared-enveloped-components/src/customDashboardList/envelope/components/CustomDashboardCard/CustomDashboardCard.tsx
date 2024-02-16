@@ -22,7 +22,7 @@ import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-componen
 import { TextVariants, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Card, CardBody, CardHeaderMain, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { FormGroup, Form } from "@patternfly/react-core/dist/js/components/Form";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { CustomDashboardListDriver } from "../../../api/CustomDashboardListDriver";
 import Moment from "react-moment";
 export interface CustomDashboardCardProps {

@@ -20,8 +20,6 @@
 import React from "react";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
-import { BulkListItem } from "../components/BulkList/BulkList";
-import { Job } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export const setTitle = (titleStatus: string, titleText: string): JSX.Element => {
   let icon;
@@ -54,18 +52,4 @@ export const constructObject = (obj: any, path: any, val: any) => {
     obj
   );
   lastObj[lastKey] = val;
-};
-
-export const formatForBulkListJob = (jobsList: (Job & { errorMessage?: string })[]): BulkListItem[] => {
-  const formattedItems: BulkListItem[] = [];
-  jobsList.forEach((item: Job & { errorMessage?: string }) => {
-    const formattedObj: BulkListItem = {
-      id: item.id,
-      name: item.resourceId,
-      description: item.id,
-      errorMessage: item.errorMessage ? item.errorMessage : undefined,
-    };
-    formattedItems.push(formattedObj);
-  });
-  return formattedItems;
 };

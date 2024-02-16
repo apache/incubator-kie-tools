@@ -39,11 +39,11 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/components/RequestDataEditor";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
+import { CloudEventMethod } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import {
-  CloudEventMethod,
   KOGITO_BUSINESS_KEY,
   KOGITO_PROCESS_REFERENCE_ID,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface CloudEventFormProps {
   driver: CloudEventFormDriver;

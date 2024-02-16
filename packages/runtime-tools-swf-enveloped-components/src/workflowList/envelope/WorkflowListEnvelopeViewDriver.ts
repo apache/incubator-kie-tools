@@ -23,9 +23,9 @@ import {
   WorkflowInstance,
   WorkflowInstanceFilter,
   WorkflowListSortBy,
-  OperationType,
 } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { WorkflowListChannelApi, WorkflowListDriver } from "../api";
+import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export default class WorkflowListEnvelopeViewDriver implements WorkflowListDriver {
   constructor(private readonly channelApi: MessageBusClientApi<WorkflowListChannelApi>) {}

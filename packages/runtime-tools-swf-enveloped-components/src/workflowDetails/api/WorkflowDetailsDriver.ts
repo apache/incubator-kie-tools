@@ -17,13 +17,8 @@
  * under the License.
  */
 
-import {
-  WorkflowInstance,
-  Job,
-  JobCancel,
-  TriggerableNode,
-  NodeInstance,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { TriggerableNode, NodeInstance } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { Job, JobCancel, WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 export interface WorkflowDetailsDriver {
   handleWorkflowAbort(workflowInstance: WorkflowInstance): Promise<void>;

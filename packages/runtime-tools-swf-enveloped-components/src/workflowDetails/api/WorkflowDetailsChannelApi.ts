@@ -17,13 +17,9 @@
  * under the License.
  */
 
-import {
-  WorkflowInstance,
-  Job,
-  JobCancel,
-  TriggerableNode,
-  NodeInstance,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { TriggerableNode, NodeInstance } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { Job, JobCancel, WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+
 export interface WorkflowDetailsChannelApi {
   workflowDetails__handleWorkflowAbort(workflowInstance: WorkflowInstance): Promise<void>;
   workflowDetails__cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel>;

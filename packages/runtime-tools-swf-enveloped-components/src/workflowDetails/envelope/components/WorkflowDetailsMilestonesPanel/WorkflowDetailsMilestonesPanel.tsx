@@ -26,7 +26,7 @@ import { TextContent, TextVariants, Text } from "@patternfly/react-core/dist/js/
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import "../styles.css";
-import { Milestone, MilestoneStatus } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Milestone, MilestoneStatus } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 interface IOwnProps {
   milestones?: Pick<Milestone, "id" | "name" | "status">[];

@@ -23,10 +23,10 @@ import { ProcessDetailsDriver } from "../../../api";
 import { handleJobRescheduleUtil, jobCancel } from "../../../utils/Utils";
 import { Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { JobsDetailsModal } from "@kie-tools/runtime-tools-components/dist/components/JobsDetailsModal";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
-import { JobsRescheduleModal } from "@kie-tools/runtime-tools-components/dist/components/JobsRescheduleModal";
-import { JobsCancelModal } from "@kie-tools/runtime-tools-components/dist/components/JobsCancelModal";
+import { JobsDetailsModal } from "../../../../jobsManagement/envelope/components/JobsDetailsModal";
+import { JobsRescheduleModal } from "../../../../jobsManagement/envelope/components/JobsRescheduleModal";
+import { JobsCancelModal } from "../../../../jobsManagement/envelope/components/JobsCancelModal";
 
 interface IOwnProps {
   job: Job;

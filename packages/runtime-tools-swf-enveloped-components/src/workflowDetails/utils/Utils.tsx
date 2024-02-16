@@ -18,13 +18,7 @@
  */
 
 import React from "react";
-import {
-  JobStatus,
-  Job,
-  WorkflowInstance,
-  NodeInstance,
-  WorkflowInstanceState,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { NodeInstance } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ClockIcon } from "@patternfly/react-icons/dist/js/icons/clock-icon";
 import { BanIcon } from "@patternfly/react-icons/dist/js/icons/ban-icon";
@@ -34,6 +28,12 @@ import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-cir
 import { WorkflowDetailsDriver } from "../api";
 import { OnRunningIcon } from "@patternfly/react-icons/dist/js/icons/on-running-icon";
 import { PausedIcon } from "@patternfly/react-icons/dist/js/icons/paused-icon";
+import {
+  Job,
+  JobStatus,
+  WorkflowInstance,
+  WorkflowInstanceState,
+} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 export const JobsIconCreator = (state: JobStatus): JSX.Element => {
   switch (state) {

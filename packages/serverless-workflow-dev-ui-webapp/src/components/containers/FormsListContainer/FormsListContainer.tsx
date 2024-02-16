@@ -24,7 +24,7 @@ import { FormsListGatewayApi } from "../../../channel/FormsList";
 import { useFormsListGatewayApi } from "../../../channel/FormsList/FormsListContext";
 import { useHistory } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { FormInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 const FormsListContainer: React.FC<OUIAProps> = () => {
   const history = useHistory();

@@ -21,7 +21,7 @@ import React from "react";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import CustomDashboardCard from "../CustomDashboardCard/CustomDashboardCard";
 import { CustomDashboardListDriver } from "../../../api/CustomDashboardListDriver";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";

@@ -17,44 +17,6 @@
  * under the License.
  */
 
-export enum JobStatus {
-  Error = "ERROR",
-  Executed = "EXECUTED",
-  Scheduled = "SCHEDULED",
-  Retry = "RETRY",
-  Canceled = "CANCELED",
-}
-
-export interface Job {
-  id: string;
-  status: JobStatus;
-  expirationTime: Date;
-  priority: number;
-  callbackEndpoint: string;
-  repeatInterval: number;
-  repeatLimit: number;
-  scheduledId: string;
-  retries: number;
-  lastUpdate: Date;
-  executionCounter?: number;
-  endpoint: string;
-  nodeInstanceId?: string;
-  resourceId?: string;
-  resourceInstanceId?: string;
-  rootResourceId?: string;
-  rootResourceInstanceId?: string;
-}
-
-export interface BulkCancel {
-  successJobs: Job[];
-  failedJobs: Job[];
-}
-
-export interface JobCancel {
-  modalTitle: string;
-  modalContent: string;
-}
-
 export enum TitleType {
   SUCCESS = "success",
   FAILURE = "failure",
@@ -95,15 +57,6 @@ export interface Milestone {
 export enum OrderBy {
   ASC = "ASC",
   DESC = "DESC",
-}
-
-export interface JobsSortBy {
-  status?: OrderBy;
-  expirationTime?: OrderBy;
-  priority?: OrderBy;
-  retries?: OrderBy;
-  lastUpdate?: OrderBy;
-  executionCounter?: OrderBy;
 }
 
 export interface SvgSuccessResponse {

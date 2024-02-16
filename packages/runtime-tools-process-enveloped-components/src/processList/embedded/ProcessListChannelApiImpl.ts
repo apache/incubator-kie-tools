@@ -18,12 +18,12 @@
  */
 import {
   BulkProcessInstanceActionResponse,
-  OperationType,
   ProcessInstance,
   ProcessInstanceFilter,
   ProcessListSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { ProcessListChannelApi, ProcessListDriver } from "../api";
+import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export class ProcessListChannelApiImpl implements ProcessListChannelApi {
   constructor(private readonly driver: ProcessListDriver) {}

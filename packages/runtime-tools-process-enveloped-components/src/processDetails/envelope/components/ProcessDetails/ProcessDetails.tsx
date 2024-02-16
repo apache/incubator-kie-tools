@@ -44,18 +44,16 @@ import ProcessVariables from "../ProcessVariables/ProcessVariables";
 import ProcessDetailsMilestonesPanel from "../ProcessDetailsMilestonesPanel/ProcessDetailsMilestonesPanel";
 import ProcessDetailsTimelinePanel from "../ProcessDetailsTimelinePanel/ProcessDetailsTimelinePanel";
 import {
-  Job,
-  ProcessInstance,
-  ProcessInstanceState,
   SvgErrorResponse,
   SvgSuccessResponse,
   TitleType,
-} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
+import { Job, ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 interface ProcessDetailsProps {
   isEnvelopeConnectedToChannel: boolean;

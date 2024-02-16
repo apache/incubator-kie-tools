@@ -18,7 +18,7 @@
  */
 
 import { CustomDashboardFilter } from "./CustomDashboardListEnvelopeApi";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/src/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
 
 /**
  * Channel Api for CustomDashboard List

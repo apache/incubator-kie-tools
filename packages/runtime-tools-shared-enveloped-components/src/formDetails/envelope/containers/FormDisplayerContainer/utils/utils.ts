@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Form } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { v4 as uuidv4 } from "uuid";
 
 export function buildTestContext(form: Form) {

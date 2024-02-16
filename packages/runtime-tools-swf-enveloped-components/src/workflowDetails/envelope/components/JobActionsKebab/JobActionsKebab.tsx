@@ -21,13 +21,13 @@ import React, { useState } from "react";
 import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Job } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
-import { JobsCancelModal } from "@kie-tools/runtime-tools-components/dist/components/JobsCancelModal";
-import { JobsDetailsModal } from "@kie-tools/runtime-tools-components/dist/components/JobsDetailsModal";
-import { JobsRescheduleModal } from "@kie-tools/runtime-tools-components/dist/components/JobsRescheduleModal";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { WorkflowDetailsDriver } from "../../../api";
 import { handleJobRescheduleUtil, jobCancel } from "../../../utils/Utils";
+import { JobsDetailsModal } from "../../../../jobsManagement/envelope/components/JobsDetailsModal";
+import { JobsRescheduleModal } from "../../../../jobsManagement/envelope/components/JobsRescheduleModal";
+import { JobsCancelModal } from "../../../../jobsManagement/envelope/components/JobsCancelModal";
 
 interface IOwnProps {
   job: Job;

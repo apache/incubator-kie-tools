@@ -31,7 +31,7 @@ import {
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import isEmpty from "lodash/isEmpty";
 import React, { useEffect, useRef, useState } from "react";
-import { Form, FormInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Form, FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormDetailsDriver } from "../../../api/FormDetailsDriver";
 import FormDisplayerContainer from "../../containers/FormDisplayerContainer/FormDisplayerContainer";
 import FormEditor from "../FormEditor/FormEditor";

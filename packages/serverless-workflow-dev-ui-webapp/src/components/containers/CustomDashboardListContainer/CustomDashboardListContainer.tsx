@@ -19,7 +19,7 @@
 
 import React, { useEffect } from "react";
 import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { EmbeddedCustomDashboardList } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/customDashboardList";
 import { CustomDashboardListGatewayApi } from "../../../channel/CustomDashboardList";
 import { useCustomDashboardListGatewayApi } from "../../../channel/CustomDashboardList/CustomDashboardListContext";

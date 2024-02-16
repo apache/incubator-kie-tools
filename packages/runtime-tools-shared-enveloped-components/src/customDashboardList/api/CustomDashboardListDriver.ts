@@ -18,7 +18,7 @@
  */
 
 import { CustomDashboardFilter } from "./CustomDashboardListEnvelopeApi";
-import { CustomDashboardInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 /**
  * Interface that defines a Driver for CustomDashboardList views.

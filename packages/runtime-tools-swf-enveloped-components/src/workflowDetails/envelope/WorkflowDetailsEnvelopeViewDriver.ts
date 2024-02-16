@@ -19,13 +19,8 @@
 
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { WorkflowDetailsChannelApi, WorkflowDetailsDriver } from "../api";
-import {
-  WorkflowInstance,
-  Job,
-  JobCancel,
-  TriggerableNode,
-  NodeInstance,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { TriggerableNode, NodeInstance } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { Job, JobCancel, WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 export default class WorkflowDetailsEnvelopeViewDriver implements WorkflowDetailsDriver {
   constructor(private readonly channelApi: MessageBusClientApi<WorkflowDetailsChannelApi>) {}

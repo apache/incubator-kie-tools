@@ -20,9 +20,8 @@
 import React, { useState } from "react";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ActionType, FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
-import { FormRendererApi } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
-import { FormRenderer } from "@kie-tools/runtime-tools-components/dist/components/FormRenderer";
+import { FormRenderer, FormRendererApi } from "@kie-tools/runtime-tools-components/dist/components/FormRenderer";
 import { WorkflowFormDriver } from "../../../api/WorkflowFormDriver";
 import { WorkflowDefinition } from "../../../api";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";

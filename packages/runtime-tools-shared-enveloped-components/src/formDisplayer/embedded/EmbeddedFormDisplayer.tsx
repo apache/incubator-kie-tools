@@ -28,7 +28,7 @@ import {
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
-import { Form } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export type Props = {
   targetOrigin: string;

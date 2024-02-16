@@ -18,7 +18,7 @@
  */
 
 import React, { useContext } from "react";
-import { Form } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface FormDetailsContext {
   updateContent(formContent: Form): void;

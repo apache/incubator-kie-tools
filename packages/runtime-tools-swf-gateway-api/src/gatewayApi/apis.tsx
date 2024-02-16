@@ -27,14 +27,14 @@ import {
   WorkflowDefinition,
   CloudEventRequest,
   WorkflowResponse,
-} from "../types";
-import {
-  JobCancel,
-  NodeInstance,
-  TriggerableNode,
   JobStatus,
   Job,
   JobsSortBy,
+  JobCancel,
+} from "../types";
+import {
+  NodeInstance,
+  TriggerableNode,
   OperationType,
   KOGITO_BUSINESS_KEY,
   CustomDashboardInfo,

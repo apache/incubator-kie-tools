@@ -22,7 +22,6 @@ import { WorkflowListDriver } from "../../../api";
 import {
   WorkflowInstance,
   WorkflowInstanceState,
-  OrderBy,
   WorkflowInstanceFilter,
   WorkflowListSortBy,
   WorkflowListState,
@@ -41,6 +40,7 @@ import _ from "lodash";
 import { alterOrderByObj, workflowListDefaultStatusFilter } from "../utils/WorkflowListUtils";
 
 import "../styles.css";
+import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 interface WorkflowListProps {
   isEnvelopeConnectedToChannel: boolean;

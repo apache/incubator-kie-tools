@@ -19,14 +19,12 @@
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ProcessDetailsChannelApi, ProcessDetailsDriver } from "../api";
 import {
-  Job,
-  JobCancel,
   NodeInstance,
-  ProcessInstance,
   SvgErrorResponse,
   SvgSuccessResponse,
   TriggerableNode,
-} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { Job, JobCancel, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export default class ProcessDetailsEnvelopeViewDriver implements ProcessDetailsDriver {
   constructor(private readonly channelApi: MessageBusClientApi<ProcessDetailsChannelApi>) {}

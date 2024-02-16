@@ -19,7 +19,7 @@
 
 import { FormFilter } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formsList";
 import { getForms } from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi";
-import { FormInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 /* eslint-disable @typescript-eslint/no-empty-interface */
 export interface FormsListGatewayApi {

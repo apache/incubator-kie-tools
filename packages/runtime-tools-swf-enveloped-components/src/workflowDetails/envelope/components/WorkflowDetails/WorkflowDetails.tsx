@@ -36,12 +36,7 @@ import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circl
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
-import {
-  Job,
-  WorkflowInstance,
-  WorkflowInstanceState,
-  TitleType,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { TitleType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { WorkflowInfoModal } from "@kie-tools/runtime-tools-components/dist/components/WorkflowInfoModal";
 import { WorkflowDetailsDriver } from "../../../api";
@@ -53,6 +48,7 @@ import WorkflowVariables from "../WorkflowVariables/WorkflowVariables";
 import WorkflowDetailsMilestonesPanel from "../WorkflowDetailsMilestonesPanel/WorkflowDetailsMilestonesPanel";
 import WorkflowDetailsTimelinePanel from "../WorkflowDetailsTimelinePanel/WorkflowDetailsTimelinePanel";
 import SwfCombinedEditor from "../SwfCombinedEditor/SwfCombinedEditor";
+import { Job, WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 interface WorkflowDetailsProps {
   isEnvelopeConnectedToChannel: boolean;

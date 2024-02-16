@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FormInfo } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 /**
  * Envelope Api

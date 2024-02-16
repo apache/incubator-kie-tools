@@ -21,11 +21,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ExpandableRowContent } from "@patternfly/react-table/dist/js/components/Table";
 import { TableComposable, Thead, Tbody, Tr, Th, Td } from "@patternfly/react-table/dist/js/components/TableComposable";
 import _ from "lodash";
-import {
-  WorkflowInstance,
-  TitleType,
-  WorkflowInstanceState,
-} from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { WorkflowInfoModal } from "@kie-tools/runtime-tools-components/dist/components/WorkflowInfoModal";
 import WorkflowListChildTable from "../WorkflowListChildTable/WorkflowListChildTable";
@@ -46,6 +42,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import DisablePopup from "../DisablePopup/DisablePopup";
 import "../styles.css";
 import ErrorPopover from "../ErrorPopover/ErrorPopover";
+import { TitleType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface WorkflowListTableProps {
   workflowInstances: WorkflowInstance[];
@@ -373,7 +370,7 @@ const WorkflowListTable: React.FC<WorkflowListTableProps & OUIAProps> = ({
                   },
                 };
               }
-              let styleParams = undefined;
+              let styleParams;
               switch (columnIndex) {
                 case 0:
                   styleParams = { width: "72px" };

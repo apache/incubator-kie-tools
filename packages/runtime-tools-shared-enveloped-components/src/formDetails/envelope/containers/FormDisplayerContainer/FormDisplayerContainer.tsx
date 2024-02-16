@@ -19,7 +19,7 @@
 
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Form } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { useFormDetailsContext } from "../../components/contexts/FormDetailsContext";
 import { buildTestContext } from "./utils/utils";
 import { EmbeddedFormDisplayer, FormDisplayerApi } from "../../../../formDisplayer";
