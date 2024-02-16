@@ -50,17 +50,15 @@ function DevWebApp() {
 
   const setNewModel = useCallback((newModel) => {
     setModel(newModel);
+    const marshaller = getMarshaller(newModel, { upgradeTo: "latest" });
+    setState({
+      marshaller,
+      stack: [marshaller.parser.parse()],
+      pointer: 0,
+    });
   }, []);
 
   const initialDmnMarshaller = useMemo(() => getMarshaller(model, { upgradeTo: "latest" }), [model]);
-
-  React.useEffect(() => {
-    setState({
-      marshaller: initialDmnMarshaller,
-      stack: [initialDmnMarshaller.parser.parse()],
-      pointer: 0,
-    });
-  }, [initialDmnMarshaller]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     console.log("DMN Editor :: Dev webapp :: File(s) dropped! Opening it.");
