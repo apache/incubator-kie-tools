@@ -52,6 +52,7 @@ function TestScenarioDrawerPanel({
   selectedColumnMetaData,
   selectedDock,
   testScenarioSettings,
+  updateSelectedColumnMetaData,
   updateTestScenarioModel,
 }: {
   dataObjects: TestScenarioDataObject[];
@@ -62,6 +63,7 @@ function TestScenarioDrawerPanel({
   selectedColumnMetaData: TestScenarioSelectedColumnMetaData | null;
   selectedDock: TestScenarioEditorDock;
   testScenarioSettings: TestScenarioSettings;
+  updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
   updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
@@ -104,6 +106,7 @@ function TestScenarioDrawerPanel({
                   dataObjects={dataObjects}
                   scesimModel={scesimModel}
                   selectedColumnMetadata={selectedColumnMetaData}
+                  updateSelectedColumnMetaData={updateSelectedColumnMetaData}
                   updateTestScenarioModel={updateTestScenarioModel}
                 />
               );

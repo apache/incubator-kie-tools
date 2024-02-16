@@ -910,6 +910,15 @@ function TestScenarioTable({
           });
         });
 
+        /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left */
+        const firstIndexOnTheLeft =
+          Math.min(...allFactMappingWithIndexesToRemove.map((item) => item.factMappingIndex!)) - 1;
+        updateSelectedColumnMetaData({
+          factMapping: JSON.parse(JSON.stringify(deepClonedFactMappings[firstIndexOnTheLeft])),
+          index: firstIndexOnTheLeft,
+          isBackground,
+        });
+
         return {
           ScenarioSimulationModel: {
             ...prevState.ScenarioSimulationModel,

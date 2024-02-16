@@ -278,6 +278,7 @@ function TestScenarioMainPanel({
                   kieSessionRule: scesimModel.ScenarioSimulationModel.settings!.dmoSession?.__$$text,
                   ruleFlowGroup: scesimModel.ScenarioSimulationModel.settings!.ruleFlowGroup?.__$$text,
                 }}
+                updateSelectedColumnMetaData={setSelectedColumnMetaData}
                 updateTestScenarioModel={updateTestScenarioModel}
               />
             }

@@ -64,12 +64,14 @@ function TestScenarioDataSelectorPanel({
   dataObjects,
   scesimModel,
   selectedColumnMetadata,
+  updateSelectedColumnMetaData,
   updateTestScenarioModel,
 }: {
   assetType: string;
   dataObjects: TestScenarioDataObject[];
   scesimModel: SceSimModel;
   selectedColumnMetadata: TestScenarioSelectedColumnMetaData | null;
+  updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
   updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
@@ -390,6 +392,13 @@ function TestScenarioDataSelectorPanel({
           };
 
           deepClonedRowsData[index].factMappingValues.FactMappingValue = newFactMappingValues;
+        });
+
+        /** Updating the selectedColumn */
+        updateSelectedColumnMetaData({
+          factMapping: JSON.parse(JSON.stringify(factMappingToUpdate)),
+          index: selectedColumnMetadata!.index,
+          isBackground: isBackground,
         });
 
         return {
