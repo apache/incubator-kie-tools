@@ -118,21 +118,21 @@ export function AlternativeInputDataIcon(props: {
 export function DecisionIcon() {
   return (
     <RoundSvg>
-      <DecisionNodeSvg {...nodeSvgProps} hasHiddenSource={false} isCollection={false} />
+      <DecisionNodeSvg {...nodeSvgProps} hasHiddenRequirements={false} isCollection={false} />
     </RoundSvg>
   );
 }
 export function BkmIcon() {
   return (
     <RoundSvg>
-      <BkmNodeSvg {...nodeSvgProps} hasHiddenSource={false} />
+      <BkmNodeSvg {...nodeSvgProps} hasHiddenRequirements={false} />
     </RoundSvg>
   );
 }
 export function KnowledgeSourceIcon() {
   return (
     <RoundSvg>
-      <KnowledgeSourceNodeSvg {...nodeSvgProps} hasHiddenSource={false} />
+      <KnowledgeSourceNodeSvg {...nodeSvgProps} hasHiddenRequirements={false} />
     </RoundSvg>
   );
 }
