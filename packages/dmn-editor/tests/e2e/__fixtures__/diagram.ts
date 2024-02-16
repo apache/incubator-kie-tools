@@ -19,17 +19,13 @@
 
 import { Page } from "@playwright/test";
 
-import { env } from "../../../env";
-
 export class Diagram {
-  constructor(public page: Page) {
+  constructor(public page: Page, public baseURL?: string) {
     this.page = page;
   }
 
   public async openEmpty() {
-    await this.page.goto(
-      `http://localhost:${env.dmnEditor.storybook.port}/iframe.html?args=&id=dev-web-app--empty-model&viewMode=story`
-    );
+    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=dev-web-app--empty-model&viewMode=story`);
   }
 
   public getContainer() {
