@@ -403,7 +403,9 @@ const server = new ApolloServer({
   playground: true,
 });
 
-server.applyMiddleware({ app });
+server.start().then(() => {
+  server.applyMiddleware({ app });
+});
 
 module.exports = {
   getApp: () => app,
