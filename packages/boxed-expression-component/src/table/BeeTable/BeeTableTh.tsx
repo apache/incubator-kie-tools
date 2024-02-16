@@ -42,6 +42,7 @@ export interface BeeTableThProps<R extends object> {
   className: string;
   thProps: Partial<ReactTable.TableHeaderProps>;
   onClick?: React.MouseEventHandler;
+  onHeaderKeyUp?: React.KeyboardEventHandler;
   isLastLevelColumn: boolean;
   rowIndex: number;
   rowSpan: number;
@@ -68,6 +69,7 @@ export function BeeTableTh<R extends object>({
   className,
   thProps,
   onClick,
+  onHeaderKeyUp,
   columnIndex,
   columnKey,
   rowIndex,
@@ -190,6 +192,7 @@ export function BeeTableTh<R extends object>({
         onMouseDown={onMouseDown}
         onDoubleClick={onDoubleClick}
         onClick={onClick}
+        onKeyUp={onHeaderKeyUp}
         className={`${className} ${cssClasses}`}
         tabIndex={-1}
       >

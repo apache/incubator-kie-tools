@@ -47,6 +47,7 @@ export interface BeeTableTdProps<R extends object> {
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
   onDataCellClick?: (columnID: string) => void;
+  onDataCellKeyUp?: (columnID: string) => void;
 }
 
 export type HoverInfo =
@@ -69,6 +70,7 @@ export function BeeTableTd<R extends object>({
   onRowAdded,
   lastColumnMinWidth,
   onDataCellClick,
+  onDataCellKeyUp,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -218,12 +220,17 @@ export function BeeTableTd<R extends object>({
     return onDataCellClick?.(column.id);
   }, [column, onDataCellClick]);
 
+  const onKeyUp = useCallback(() => {
+    return onDataCellKeyUp?.(column.id);
+  }, [column, onDataCellClick]);
+
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <td
         onMouseDown={onMouseDown}
         onDoubleClick={onDoubleClick}
         onClick={onClick}
+        onKeyUp={onKeyUp}
         ref={tdRef}
         tabIndex={-1}
         className={`${cssClass} ${cssClasses}`}

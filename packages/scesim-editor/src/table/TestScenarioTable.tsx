@@ -1178,7 +1178,9 @@ function TestScenarioTable({
         onColumnAdded={onColumnAdded}
         onColumnDeleted={onColumnDeleted}
         onDataCellClick={onDataCellClick}
+        onDataCellKeyUp={onDataCellClick}
         onHeaderClick={onHeaderClick}
+        onHeaderKeyUp={onHeaderClick}
         onRowAdded={onRowAdded}
         onRowDeleted={onRowDeleted}
         onRowDuplicated={onRowDuplicated}

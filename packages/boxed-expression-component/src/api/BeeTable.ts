@@ -70,8 +70,12 @@ export interface BeeTableProps<R extends object> {
   getColumnKey?: (column: ReactTable.ColumnInstance<R>) => string;
   /** Function to be executed when a column's header is clicked */
   onHeaderClick?: (columnKey: string) => void;
+  /** Function to be executed when a key up event occurs in a column's header */
+  onHeaderKeyUp?: (columnKey: string) => void;
   /** Function to be executed when a column's data cell is clicked */
   onDataCellClick?: (columnID: string) => void;
+  /** Function to be executed when a column's data cell is clicked */
+  onDataCellKeyUp?: (columnID: string) => void;
   /** Disable/Enable cell edits. Enabled by default */
   isReadOnly?: boolean;
   /** Enable keyboard navigation */

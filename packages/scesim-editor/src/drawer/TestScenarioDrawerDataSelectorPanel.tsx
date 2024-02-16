@@ -290,13 +290,13 @@ function TestScenarioDataSelectorPanel({
         ? assetType === TestScenarioType[TestScenarioType.DMN]
           ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
           : i18n.drawer.dataSelector.emptyDataObjectsTitleRule
-        : "No more properties";
+        : "No more properties"; //TODO CHANGE
     const description =
       dataObjects.length === 0
         ? assetType === TestScenarioType[TestScenarioType.DMN]
           ? i18n.drawer.dataSelector.emptyDataObjectsDescriptionDMN
           : i18n.drawer.dataSelector.emptyDataObjectsDescriptionRule
-        : "All the properties have been already assigned";
+        : "All the properties have been already assigned"; //TODO CHANGE
 
     {
       assetType === TestScenarioType[TestScenarioType.DMN]

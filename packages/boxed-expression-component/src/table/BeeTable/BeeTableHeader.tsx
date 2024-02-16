@@ -68,6 +68,8 @@ export interface BeeTableHeaderProps<R extends object> {
   onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
   /** Function to be executed when a column's header is clicked */
   onHeaderClick?: (columnKey: string) => void;
+  /** Function to be executed when a key up event occurs in a column's header */
+  onHeaderKeyUp?: (columnKey: string) => void;
   /** Option to enable or disable header edits */
   isEditableHeader: boolean;
   /** */
@@ -97,6 +99,7 @@ export function BeeTableHeader<R extends object>({
   isEditableHeader,
   onColumnAdded,
   onHeaderClick,
+  onHeaderKeyUp,
   shouldRenderRowIndexColumn,
   shouldShowRowsInlineControls,
   resizerStopBehavior,
@@ -191,6 +194,7 @@ export function BeeTableHeader<R extends object>({
             <BeeTableThResizable
               forwardRef={thRef}
               onHeaderClick={onHeaderClick}
+              onHeaderKeyUp={onHeaderKeyUp}
               resizerStopBehavior={resizerStopBehavior}
               rowSpan={rowSpan}
               shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
