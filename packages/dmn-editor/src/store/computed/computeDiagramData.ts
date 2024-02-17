@@ -116,11 +116,11 @@ export function computeDiagramData(
 
     drgEdges.push({ id, sourceId: source, targetId: target, dmnObject });
 
-    const sourceAdjancyList = drgAdjacencyList.get(source);
-    if (!sourceAdjancyList) {
-      drgAdjacencyList.set(source, { dependencies: new Set([target]) });
+    const targetAdjancyList = drgAdjacencyList.get(target);
+    if (!targetAdjancyList) {
+      drgAdjacencyList.set(target, { dependencies: new Set([source]) });
     } else {
-      sourceAdjancyList.dependencies.add(target);
+      targetAdjancyList.dependencies.add(source);
     }
 
     return edge;
@@ -331,14 +331,14 @@ export function computeDiagramData(
     .filter((e) => nodesById.has(e.source) && nodesById.has(e.target))
     .sort((a, b) => Number(selectedEdges.has(a.id)) - Number(selectedEdges.has(b.id)));
 
-  for (const elementWithoutVisualRepresentation of drgElementsWithoutVisualRepresentationOnCurrentDrd) {
-    // Set hasHiddenRequirements for the dependencies of all elements without visual representation
-    drgAdjacencyList.get(elementWithoutVisualRepresentation)?.dependencies?.forEach((dependencyNodeId) => {
-      const node = nodesById.get(dependencyNodeId);
-      if (node) {
+  // Search on the node list for the missing dependencies on the DRD.
+  for (const node of sortedNodes) {
+    for (const dependencyNodeId of drgAdjacencyList.get(node.id)?.dependencies ?? new Set()) {
+      if (!nodesById.get(dependencyNodeId)) {
         node.data.hasHiddenRequirements = true;
+        break;
       }
-    });
+    }
   }
 
   // console.timeEnd("nodes");
