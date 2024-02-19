@@ -26,8 +26,6 @@ execute:
   - script: configure
 
 envs:
-  - name: JBOSS_CONTAINER_JAVA_JVM_MODULE
-    value: /opt/container/java/jvm
   - name: JAVA_OPTIONS
     description: User specified Java options to be appended to generated options in JAVA_OPTS (internal use).
     example: "-verbose:class"

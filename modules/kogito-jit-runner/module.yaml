@@ -23,8 +23,9 @@ version: "999-SNAPSHOT"
 # see build-kogito-apps-components.sh script, responsible for build it.
 # called by the Makefile before builds
 artifacts:
-  - path: /tmp/build/jitexecutor-runner/jitexecutor-runner-quarkus-app.zip
-    name: jitexecutor-runner-quarkus-app.zip
+  - path: /tmp/build/jitexecutor-runner
+    dest: /home/kogito/bin
+    name: quarkus-app
 
 execute:
   - script: configure

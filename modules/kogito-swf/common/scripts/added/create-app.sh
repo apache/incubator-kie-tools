@@ -130,4 +130,12 @@ fi
 "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
   -nsu \
   -s "${MAVEN_SETTINGS_PATH}" \
-  clean dependency:go-offline io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":go-offline
+  -DskipTests=true \
+  -Dmaven.javadoc.skip=true \
+  clean dependency:go-offline io.quarkus.platform:quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":go-offline install
+
+# clean up
+"${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+  -nsu \
+  -s "${MAVEN_SETTINGS_PATH}" \
+  clean 

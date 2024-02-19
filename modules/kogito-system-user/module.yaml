@@ -26,6 +26,9 @@ execute:
 envs:
   - name: "KOGITO_HOME"
     value: "/home/kogito"
+  # Force override here since some images depends on OpenJDK, which sets home to /home/jboss. Might be worth removing the kogito user and keep jboss instead. TODO: open an issue to track it and link to Kogito Operator deprecation.
+  - name: "HOME"
+    value: "/home/kogito"
   - name: "USER"
     value: "kogito"
 

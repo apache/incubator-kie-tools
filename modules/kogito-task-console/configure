@@ -19,11 +19,9 @@
 #
 set -e
 
-SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname "${0}")
 ADDED_DIR="${SCRIPT_DIR}"/added
 
-unzip "${SOURCES_DIR}"/task-console-quarkus-app.zip -d "${KOGITO_HOME}"/bin/
 cp -rv "${ADDED_DIR}"/launch/* "${KOGITO_HOME}"/launch/
 
 chown -R 1001:0 "${KOGITO_HOME}"

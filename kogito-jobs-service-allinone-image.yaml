@@ -20,7 +20,7 @@ schema_version: 1
 
 name: "quay.io/kiegroup/kogito-jobs-service-allinone"
 version: "999-SNAPSHOT"
-from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
+from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.18"
 description: "Runtime image for Kogito Jobs Service with all available jdbc providers"
 
 labels:
@@ -48,18 +48,12 @@ envs:
     example: "postgresql"
     description: "The all in one image contains all the supported jdbc plugins for Jobs Service, ephemeral and postgresql, if empty, defaults to ephemeral"
 
-packages:
-  manager: microdnf
-
 modules:
   repositories:
     - path: modules
   install:
-    - name: org.kie.kogito.image.dependencies
     - name: org.kie.kogito.system.user
     - name: org.kie.kogito.logging
-    - name: org.kie.kogito.openjdk.headless
-      version: "17"
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.launch.scripts
     - name: org.kie.kogito.jobs.service.allinone

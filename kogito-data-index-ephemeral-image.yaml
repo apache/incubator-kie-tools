@@ -20,7 +20,7 @@ schema_version: 1
 
 name: "quay.io/kiegroup/kogito-data-index-ephemeral"
 version: "999-SNAPSHOT"
-from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
+from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.18"
 description: "Runtime image for Kogito Data Index Service for ephemeral PostgreSQL persistence provider"
 
 labels:
@@ -45,18 +45,12 @@ envs:
     value: "http-events-support"
     description: "Allows to change the event connection type. The possible values are :`kafka-events-support` or `http-events-support`(default)"
 
-packages:
-  manager: microdnf
-
 modules:
   repositories:
     - path: modules
   install:
-    - name: org.kie.kogito.image.dependencies
     - name: org.kie.kogito.system.user
     - name: org.kie.kogito.logging
-    - name: org.kie.kogito.openjdk.headless
-      version: "17"
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.launch.scripts
     - name: org.kie.kogito.dataindex.community.ephemeral
@@ -71,4 +65,3 @@ run:
   user: 1001
   cmd:
     - "/home/kogito/kogito-app-launch.sh"
-

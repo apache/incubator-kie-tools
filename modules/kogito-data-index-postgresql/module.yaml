@@ -23,9 +23,9 @@ version: "999-SNAPSHOT"
 # see build-kogito-apps-components.sh script, responsible for build it.
 # called by the Makefile before builds
 artifacts:
-  - path: /tmp/build/data-index-service-postgresql/data-index-service-postgresql-quarkus-app.zip
-    name: data-index-service-postgresql-quarkus-app.zip
+  - path: /tmp/build/data-index-service-postgresql
+    dest: /home/kogito/bin
+    name: quarkus-app
 
 execute:
   - script: configure
-

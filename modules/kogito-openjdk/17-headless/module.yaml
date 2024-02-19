@@ -35,6 +35,9 @@ envs:
     value: "openjdk"
   - name: "JAVA_VERSION"
     value: "17"
+  # Same env set by the openjdk image for modules that won't use it
+  - name: JBOSS_CONTAINER_JAVA_JVM_MODULE
+    value: /opt/container/java/jvm
 
 execute:
   - script: clean.sh

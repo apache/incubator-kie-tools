@@ -21,9 +21,5 @@ name: org.kie.kogito.swf.common.build
 version: "999-SNAPSHOT"
 description: "Kogito Serverless Workflow image build process"
 
-packages:
-  install:
-    - zip
-
 execute:
   - script: configure.sh

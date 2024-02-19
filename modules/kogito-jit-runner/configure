@@ -19,11 +19,8 @@
 #
 set -e
 
-SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname "${0}")
 ADDED_DIR="${SCRIPT_DIR}"/added
-
-unzip "${SOURCES_DIR}"/jitexecutor-runner-quarkus-app.zip -d "${KOGITO_HOME}"/bin/
 
 chown -R 1001:0 "${KOGITO_HOME}"
 chmod -R ug+rwX "${KOGITO_HOME}"

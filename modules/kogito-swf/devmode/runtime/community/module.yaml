@@ -40,9 +40,9 @@ envs:
 
 artifacts:
   - image: builder
-    path: /home/kogito/build_output/kogito-swf-quarkus-app.zip
+    path: /home/kogito/build_output/kogito-swf-quarkus-app.tar
   - image: builder
-    path: /home/kogito/build_output/kogito-swf-maven-repo.zip
+    path: /home/kogito/build_output/kogito-swf-maven-repo.tar
 
 execute:
   - script: configure.sh

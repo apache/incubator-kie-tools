@@ -23,9 +23,9 @@ version: "999-SNAPSHOT"
 # see build-kogito-apps-components.sh script, responsible for build it.
 # called by the Makefile before builds
 artifacts:
-  - path: /tmp/build/jobs-service-postgresql/jobs-service-postgresql-quarkus-app.zip
-    name: jobs-service-postgresql-quarkus-app.zip
+  - path: /tmp/build/jobs-service-postgresql
+    dest: /home/kogito/bin/postgresql
+    name: quarkus-app
 
 execute:
   - script: configure
-

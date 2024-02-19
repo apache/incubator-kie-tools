@@ -116,8 +116,7 @@ for ctx in ${contextDir}; do
     export YARN_CACHE_FOLDER=/tmp/cache/yarn/${ctx} # Fix for building yarn apps in parallel
     export CYPRESS_CACHE_FOLDER=/tmp/cache/cypress/${ctx} # https://docs.cypress.io/guides/getting-started/installing-cypress#Advanced
     eval ${mvn_command}
-    cd ${ctx}/target/
-    zip -r $(basename ${ctx})-quarkus-app.zip quarkus-app
-    cp -v $(basename ${ctx})-quarkus-app.zip ${target_tmp_dir}/
+    cd ${ctx}/target
+    cp -vr quarkus-app ${target_tmp_dir}/
     cd -
 done

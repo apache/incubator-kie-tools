@@ -20,7 +20,7 @@ schema_version: 1
 
 name: "quay.io/kiegroup/kogito-task-console"
 version: "999-SNAPSHOT"
-from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
+from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.18"
 description: "Runtime image for Kogito Task Console"
 
 labels:
@@ -45,18 +45,12 @@ envs:
     example: "http://data-index.service:8080"
     description: "Data Index service address, defaults to http://localhost:8180."
 
-packages:
-  manager: microdnf
-
 modules:
   repositories:
     - path: modules
   install:
-    - name: org.kie.kogito.image.dependencies
     - name: org.kie.kogito.system.user
     - name: org.kie.kogito.logging
-    - name: org.kie.kogito.openjdk.headless
-      version: "17"
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.launch.scripts
     - name: org.kie.kogito.task.console
@@ -70,4 +64,3 @@ run:
   user: 1001
   cmd:
     - "/home/kogito/kogito-app-launch.sh"
-

@@ -23,8 +23,9 @@ version: "999-SNAPSHOT"
 # see build-kogito-apps-components.sh script, responsible for build it.
 # called by the Makefile before builds
 artifacts:
-  - path: /tmp/build/task-console/task-console-quarkus-app.zip
-    name: task-console-quarkus-app.zip
+  - path: /tmp/build/task-console
+    dest: /home/kogito/bin
+    name: quarkus-app
 
 execute:
   - script: configure

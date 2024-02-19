@@ -21,14 +21,12 @@ name: org.kie.kogito.jobs.service.allinone
 version: "999-SNAPSHOT"
 
 artifacts:
-  - path: /tmp/build/jobs-service-inmemory-all-in-one/jobs-service-inmemory-quarkus-app.zip
-    name: jobs-service-inmemory-quarkus-app.zip
-  - path: /tmp/build/jobs-service-postgresql-all-in-one/jobs-service-postgresql-quarkus-app.zip
-    name: jobs-service-postgresql-quarkus-app.zip
-
-packages:
-  install:
-    - pam
+  - path: /tmp/build/jobs-service-inmemory-all-in-one
+    name: jobs-service-inmemory-all-in-one
+    dest: /home/kogito/bin/ephemeral
+  - path: /tmp/build/jobs-service-postgresql-all-in-one
+    name: jobs-service-postgresql-all-in-one
+    dest: /home/kogito/bin/postgresql
 
 execute:
   - script: configure

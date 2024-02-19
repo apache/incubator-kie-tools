@@ -19,13 +19,8 @@
 #
 set -e
 
-SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname "${0}")
 ADDED_DIR="${SCRIPT_DIR}"/added
-
-unzip "${SOURCES_DIR}"/jobs-service-inmemory-quarkus-app.zip -d "${KOGITO_HOME}"/bin/ephemeral
-unzip "${SOURCES_DIR}"/jobs-service-postgresql-quarkus-app.zip -d "${KOGITO_HOME}"/bin/postgresql
-
 
 mkdir "${KOGITO_HOME}"/bin/shared-libs/
 
