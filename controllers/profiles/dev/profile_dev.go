@@ -20,13 +20,13 @@
 package dev
 
 import (
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"

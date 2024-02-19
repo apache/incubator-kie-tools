@@ -28,7 +28,6 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 )
 
 const (
@@ -74,10 +73,10 @@ func GetWorkflowManagedPropertiesConfigMapName(workflow *operatorapi.SonataFlow)
 	return workflow.Name + workflowManagedConfigMapNameSuffix
 }
 
-// GetWorkflowManagedPropertiesConfigMapName gets the default ConfigMap name that holds the managed application property for the given workflow
+// GetManagedPropertiesFileName gets the default ConfigMap name that holds the managed application property for the given workflow
 func GetManagedPropertiesFileName(workflow *operatorapi.SonataFlow) string {
 	profile := metadata.ProdProfile
-	if profiles.IsDevProfile(workflow) {
+	if IsDevProfile(workflow) {
 		profile = metadata.DevProfile
 	}
 	return fmt.Sprintf("application-%s.properties", profile)

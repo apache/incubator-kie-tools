@@ -22,6 +22,7 @@ package prod
 import (
 	"time"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"k8s.io/client-go/rest"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
@@ -29,7 +30,6 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 )

@@ -24,14 +24,13 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
-
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 	"k8s.io/klog/v2"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 
 	"github.com/magiconair/properties"

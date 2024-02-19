@@ -301,3 +301,12 @@ func (w *workflowProjectHandler) addResourceConfigMapToProject(cm *corev1.Config
 	}
 	return nil
 }
+
+// IsDevProfile detects if the workflow is using the Dev profile or not
+func IsDevProfile(workflow *operatorapi.SonataFlow) bool {
+	profile := workflow.Annotations[metadata.Profile]
+	if len(profile) == 0 {
+		return false
+	}
+	return metadata.ProfileType(profile) == metadata.DevProfile
+}
