@@ -1,0 +1,167 @@
+{
+  "name": "extended-services-vscode-extension",
+  "version": "0.0.0",
+  "description": "Enhance KIE DMN and BPMN editors capabilities",
+  "license": "Apache-2.0",
+  "publisher": "kie-group",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "browser": "dist/extension/extension-browser.js",
+  "main": "dist/extension/extension-main.js",
+  "scripts": {
+    "build:dev": "pnpm clean && pnpm copy:extended-services-java && webpack --env dev",
+    "build:prod": "pnpm clean && pnpm copy:extended-services-java && webpack && pnpm pack:prod",
+    "clean": "rimraf dist && rimraf dist-dev && mkdir dist-dev",
+    "compile": "webpack",
+    "copy:extended-services-java": "cp -R ../extended-services-java/dist/extended-services-java ./dist-dev/extended-services-java",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. .",
+    "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/extended_services_vscode_extension_$npm_package_version.vsix",
+    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
+    "watch": "webpack"
+  },
+  "dependencies": {
+    "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools/extended-services-java": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/vscode": "1.67.0",
+    "@vscode/test-web": "^0.0.30",
+    "@vscode/vsce": "^2.22.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "node-fetch": "^3.3.1",
+    "rimraf": "^3.0.2",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
+  },
+  "engines": {
+    "vscode": "^1.67.0"
+  },
+  "displayName": "Apache KIE Extended Services",
+  "categories": [
+    "Other"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "category": "Extended-Services",
+        "command": "extended-services-vscode-extension.connectExtendedServices",
+        "title": "Connect Apache KIE Extended-Services",
+        "when": "extended-services-vscode-extension.connected"
+      },
+      {
+        "category": "Extended-Services",
+        "command": "extended-services-vscode-extension.disconnectExtendedServices",
+        "title": "Disconnect Apache KIE Extended-Services"
+      }
+    ],
+    "configuration": {
+      "properties": {
+        "extendedServices.connectionHeartbeatInterval": {
+          "default": 5,
+          "description": "Specifies the interval (in seconds) between each connection check.",
+          "format": "time",
+          "order": 2,
+          "type": "integer"
+        },
+        "extendedServices.enableAutorun": {
+          "default": true,
+          "description": "Automatically run a local instance of the service.",
+          "order": 0,
+          "type": "boolean"
+        },
+        "extendedServices.serviceURL": {
+          "default": "http://localhost:21345",
+          "description": "Specifies the service URL.",
+          "format": "uri",
+          "order": 1,
+          "type": "string"
+        }
+      },
+      "title": "Apache KIE Extended Services"
+    },
+    "icons": {
+      "extended-services-connected": {
+        "default": {
+          "fontCharacter": "\\E000",
+          "fontPath": "./static/extended-services-font.woff"
+        },
+        "description": "Connected to the Apache KIE Extended-Services"
+      },
+      "extended-services-disconnected": {
+        "default": {
+          "fontCharacter": "\\E001",
+          "fontPath": "./static/extended-services-font.woff"
+        },
+        "description": "Apache KIE Extended-Services are Disconnected"
+      }
+    },
+    "languages": [
+      {
+        "aliases": [
+          "bpmn",
+          "bpmn2",
+          "BPMN",
+          "BPMN2",
+          "Business Process Model and Notation"
+        ],
+        "extensions": [
+          ".bpmn",
+          ".bpmn2",
+          ".BPMN",
+          ".BPMN2"
+        ],
+        "id": "bpmn"
+      },
+      {
+        "aliases": [
+          "dmn",
+          "DMN",
+          "Decision Model and Notation"
+        ],
+        "extensions": [
+          ".dmn",
+          ".DMN"
+        ],
+        "id": "dmn"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "extended-services-vscode-extension.connectExtendedServices",
+          "when": "!extended-services-vscode-extension.connected"
+        },
+        {
+          "command": "extended-services-vscode-extension.disconnectExtendedServices",
+          "when": "extended-services-vscode-extension.connected"
+        }
+      ]
+    }
+  },
+  "activationEvents": [
+    "onLanguage:bpmn",
+    "onLanguage:dmn",
+    "onCustomEditor:kieKogitoWebviewEditorsBpmn",
+    "onCustomEditor:kieKogitoWebviewEditorsDmn"
+  ],
+  "icon": "icon.png",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  }
+}
