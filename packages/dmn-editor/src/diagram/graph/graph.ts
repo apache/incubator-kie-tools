@@ -40,6 +40,8 @@ export type DrgEdge = {
   };
 };
 
+export type DrgAdjacencyList = Map<string, { dependencies: Set<string> }>;
+
 export function getAdjMatrix(edges: DrgEdge[]): AdjMatrix {
   const __adjMatrix: AdjMatrix = {};
   for (const e of edges) {

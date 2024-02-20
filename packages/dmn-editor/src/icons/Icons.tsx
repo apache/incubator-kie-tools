@@ -89,7 +89,7 @@ export function NodeIcon({ isAlternativeInputDataShape, nodeType }: NodeIcons) {
 export function InputDataIcon(props: { padding?: string; height?: number }) {
   return (
     <RoundSvg padding={props.padding} height={props.height}>
-      <InputDataNodeSvg {...nodeSvgProps} />
+      <InputDataNodeSvg {...nodeSvgProps} isCollection={false} />
     </RoundSvg>
   );
 }
@@ -109,6 +109,7 @@ export function AlternativeInputDataIcon(props: {
         height={100}
         strokeWidth={8}
         transform={props.transform ?? "translate(80, 60)"}
+        isCollection={false}
       />
     </RoundSvg>
   );
@@ -117,21 +118,21 @@ export function AlternativeInputDataIcon(props: {
 export function DecisionIcon() {
   return (
     <RoundSvg>
-      <DecisionNodeSvg {...nodeSvgProps} />
+      <DecisionNodeSvg {...nodeSvgProps} hasHiddenRequirements={false} isCollection={false} />
     </RoundSvg>
   );
 }
 export function BkmIcon() {
   return (
     <RoundSvg>
-      <BkmNodeSvg {...nodeSvgProps} />
+      <BkmNodeSvg {...nodeSvgProps} hasHiddenRequirements={false} />
     </RoundSvg>
   );
 }
 export function KnowledgeSourceIcon() {
   return (
     <RoundSvg>
-      <KnowledgeSourceNodeSvg {...nodeSvgProps} />
+      <KnowledgeSourceNodeSvg {...nodeSvgProps} hasHiddenRequirements={false} />
     </RoundSvg>
   );
 }

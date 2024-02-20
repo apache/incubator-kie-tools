@@ -89,6 +89,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObject: T;
   shape: DMNDI15__DMNShape & { index: number };
   index: number;
+  hasHiddenRequirements: boolean;
   /**
    * We don't use Reactflow's parenting mechanism because it is
    * too opinionated on how it deletes nodes/edges that are
@@ -318,7 +319,15 @@ export const InputDataNode = React.memo(
 
 export const DecisionNode = React.memo(
   ({
-    data: { parentRfNode, dmnObject: decision, shape, index, dmnObjectQName, dmnObjectNamespace },
+    data: {
+      parentRfNode,
+      dmnObject: decision,
+      shape,
+      index,
+      dmnObjectQName,
+      dmnObjectNamespace,
+      hasHiddenRequirements,
+    },
     selected,
     dragging,
     zIndex,
@@ -410,6 +419,7 @@ export const DecisionNode = React.memo(
             strokeWidth={parentRfNode ? 3 : shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenRequirements={hasHiddenRequirements}
           />
         </svg>
 
@@ -472,7 +482,7 @@ export const DecisionNode = React.memo(
 
 export const BkmNode = React.memo(
   ({
-    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace },
+    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenRequirements },
     selected,
     dragging,
     zIndex,
@@ -545,6 +555,7 @@ export const BkmNode = React.memo(
             strokeWidth={shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenRequirements={hasHiddenRequirements}
           />
         </svg>
 
@@ -605,7 +616,7 @@ export const BkmNode = React.memo(
 
 export const KnowledgeSourceNode = React.memo(
   ({
-    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName },
+    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName, hasHiddenRequirements },
     selected,
     dragging,
     zIndex,
@@ -670,6 +681,7 @@ export const KnowledgeSourceNode = React.memo(
             strokeWidth={shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenRequirements={hasHiddenRequirements}
           />
         </svg>
 

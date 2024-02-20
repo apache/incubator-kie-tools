@@ -60,7 +60,7 @@ import {
   MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS,
 } from "../externalNodes/ExternalNodesPanel";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
-import { nodeNatures } from "../mutations/NodeNature";
+import { NodeNature, nodeNatures } from "../mutations/NodeNature";
 import { addConnectedNode } from "../mutations/addConnectedNode";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { addEdge } from "../mutations/addEdge";
@@ -1785,6 +1785,10 @@ export function KeyboardShortcuts(props: {}) {
       }
 
       for (const node of rf.getNodes().filter((s) => s.selected)) {
+        // Prevent hiding artifact nodes from DRD;
+        if (nodeNatures[node.type as NodeType] === NodeNature.ARTIFACT) {
+          continue;
+        }
         const { deletedDmnShapeOnCurrentDrd: deletedShape } = deleteNode({
           drgEdges: [], // Deleting from DRD only.
           definitions: state.dmn.model.definitions,
