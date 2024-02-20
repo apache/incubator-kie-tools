@@ -25,7 +25,7 @@ export class Diagram {
   }
 
   public async openEmpty() {
-    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=dev-web-app--empty-model&viewMode=story`);
+    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=use-cases-empty--empty&viewMode=story`);
   }
 
   public getContainer() {

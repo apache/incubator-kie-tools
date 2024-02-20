@@ -17,25 +17,23 @@
  * under the License.
  */
 
-import { defineConfig } from "@playwright/test";
-import playwirghtBaseConfig from "@kie-tools/playwright-base/playwright.config";
-import merge from "lodash/merge";
-import { env } from "./env";
+import * as React from "react";
+import type { Meta, StoryObj } from "@storybook/react";
+import * as DmnEditor from "../../../src/DmnEditor";
 
-const buildEnv: any = env;
+import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { EMPTY_DMN_15 } from "../DmnDiagramSources";
 
-const customConfig = defineConfig({
-  use: {
-    baseURL: `http://localhost:${buildEnv.dmnEditor.storybook.port}`,
+const meta: Meta<typeof DmnEditor.DmnEditor> = {
+  title: "Use cases/Empty",
+  component: DmnEditor.DmnEditor,
+};
+
+export default meta;
+type Story = StoryObj<typeof DmnEditor.DmnEditor>;
+
+export const Empty: Story = {
+  args: {
+    model: getMarshaller(EMPTY_DMN_15(), { upgradeTo: "latest" }).parser.parse(),
   },
-  /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
-  webServer: {
-    command: "pnpm start",
-    url: `http://localhost:${buildEnv.dmnEditor.storybook.port}/iframe.html?args=&id=use-cases-empty--empty&viewMode=story`,
-    reuseExistingServer: !process.env.CI || true,
-    stdout: "pipe",
-    timeout: 180000,
-  },
-});
-
-export default defineConfig(merge(playwirghtBaseConfig, customConfig));
+};

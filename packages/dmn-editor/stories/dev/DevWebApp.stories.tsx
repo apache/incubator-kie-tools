@@ -26,24 +26,12 @@ import "@patternfly/react-core/dist/styles/base.css";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
-import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
+import { LOAN_PRE_QUALIFICATION_DMN, EMPTY_DMN_15 } from "../useCases/DmnDiagramSources";
 import * as DmnEditor from "../../src/DmnEditor";
 import { DmnLatestModel, getMarshaller, DmnMarshaller } from "@kie-tools/dmn-marshaller";
 
-import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
-import { DMN15_SPEC } from "../../src/Dmn15Spec";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { availableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
 import { Button } from "@patternfly/react-core";
-
-const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
-<definitions
-  xmlns="${dmn15ns.get("")}"
-  expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
-  namespace="https://kie.org/dmn/${generateUuid()}"
-  id="${generateUuid()}"
-  name="DMN${generateUuid()}">
-</definitions>`;
 
 function DevWebApp() {
   const [model, setModel] = useState<string>(EMPTY_DMN_15());
@@ -174,7 +162,7 @@ function DevWebApp() {
           <Button onClick={() => setNewModel(EMPTY_DMN_15())}>Empty</Button>
         </FlexItem>
         <FlexItem>
-          <Button onClick={() => setNewModel(DEFAULT_DEV_WEBAPP_DMN)}>Loan Pre Qualification</Button>
+          <Button onClick={() => setNewModel(LOAN_PRE_QUALIFICATION_DMN)}>Loan Pre Qualification</Button>
         </FlexItem>
       </Flex>
       {model && (
@@ -261,6 +249,6 @@ export default meta;
 type Story = StoryObj<typeof DevWebApp>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Playground: Story = {
+export const WebApp: Story = {
   args: {},
 };
