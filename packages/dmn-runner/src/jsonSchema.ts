@@ -77,6 +77,17 @@ export function removeChangedPropertiesAndAdditionalProperties<T extends Validat
         return;
       }
 
+      // uniforms-patternfly saves date-time component value as a Date object and
+      // AJV handles data-time as an string, causing an error with keyword type.
+      // Also, the ajv.ErrorObject doesn't correctly type the parentSchema property
+      if (
+        error.keyword === "type" &&
+        (error.parentSchema as any)?.format === "date-time" &&
+        error.data instanceof Date
+      ) {
+        return;
+      }
+
       const pathList = error.dataPath
         .replace(/\['([^']+)'\]/g, "$1")
         .replace(/\[(\d+)\]/g, ".$1")
