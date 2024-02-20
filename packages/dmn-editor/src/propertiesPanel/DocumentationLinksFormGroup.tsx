@@ -202,7 +202,9 @@ export function DocumentationLinksFormGroup({
           <label className={"pf-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
             <span className={"pf-c-form__label-text"}>Documentation links</span>
           </label>
-          {!isReadonly && <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAdd} title={"Add documentation link"} />}
+          {!isReadonly && (
+            <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAdd} title={"Add documentation link"} />
+          )}
         </div>
       }
     >
