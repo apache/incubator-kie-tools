@@ -317,7 +317,7 @@ export function ItemComponentsTable({
                           >
                             {isStruct(dt.itemDefinition) && (
                               <Button
-                                title={"Expand / collapse"}
+                                title={"Expand / collapse item component"}
                                 variant={ButtonVariant.link}
                                 style={{ padding: "0 8px 0 0" }}
                                 onClick={(e) =>

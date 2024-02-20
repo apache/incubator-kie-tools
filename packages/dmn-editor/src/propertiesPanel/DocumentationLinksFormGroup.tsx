@@ -202,7 +202,7 @@ export function DocumentationLinksFormGroup({
           <label className={"pf-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
             <span className={"pf-c-form__label-text"}>Documentation links</span>
           </label>
-          {!isReadonly && <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAdd} title={"Add"} />}
+          {!isReadonly && <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAdd} title={"Add documentation link"} />}
         </div>
       }
     >
@@ -333,7 +333,7 @@ function DocumentationLinksInput({
     <React.Fragment>
       <div className={"kie-dmn-editor--documentation-link--row"}>
         <Button
-          title={"Expand / collapse"}
+          title={"Expand / collapse documentation link"}
           variant={ButtonVariant.plain}
           className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
           onClick={() => toogleExpanded(title, url)}
@@ -418,7 +418,7 @@ function DocumentationLinksInput({
         {hovered && (
           <Tooltip content={removeTooltip}>
             <Button
-              title={"Close"}
+              title={"Remove documentation link"}
               className={"kie-dmn-editor--documentation-link--row-remove"}
               variant={"plain"}
               icon={<TimesIcon />}
