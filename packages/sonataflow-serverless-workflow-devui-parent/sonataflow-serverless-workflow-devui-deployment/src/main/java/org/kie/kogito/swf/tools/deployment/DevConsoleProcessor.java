@@ -71,7 +71,7 @@ public class DevConsoleProcessor {
         CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
 
         cardPageBuildItem.addPage(Page.externalPageBuilder("Workflows")
-                .url(uiPath + "/index.html?page=Processes" + devUIUrlQueryParam + dataIndexUrlQueryParam, uiPath)
+                .url(uiPath + "/index.html?page=Workflows" + devUIUrlQueryParam + dataIndexUrlQueryParam, uiPath)
                 .isHtmlContent()
                 .icon("font-awesome-solid:diagram-project"));
 

@@ -28,7 +28,7 @@
   const dataIndexUrl = urlParams.get("dataIndexUrl");
 
   const devUI = RuntimeToolsDevUI.open({
-    container: document.getElementById("webapp"),
+    container: document.getElementById("envelope-app"),
     isDataIndexAvailable: true,
     dataIndexUrl: dataIndexUrl ? dataIndexUrl : "" + "/graphql",
     page: page,
