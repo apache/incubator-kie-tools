@@ -22,15 +22,12 @@ const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-// const { env } = require("./env");
-
-const HOST = process.env.HOST || "localhost";
-const PORT = process.env.PORT || "9000";
+const { env: buildEnv } = require("./env");
 
 const BG_IMAGES_DIRNAME = "bgimages";
 
 module.exports = async (env) => {
-  const dataIndexURL = env?.KOGITO_DATAINDEX_HTTP_URL ?? "http://localhost:4000/graphql";
+  const dataIndexURL = buildEnv.runtimeToolsManagementConsoleWebapp.kogitoDataIndexUrl;
   return merge(common(env), {
     entry: {
       app: path.resolve(__dirname, "src", "index.tsx"),
@@ -39,8 +36,8 @@ module.exports = async (env) => {
       static: {
         directory: "./dist",
       },
-      host: HOST,
-      port: PORT,
+      host: buildEnv.runtimeToolsManagementConsoleWebapp.host,
+      port: buildEnv.runtimeToolsManagementConsoleWebapp.port,
       compress: true,
       historyApiFallback: true,
       hot: true,
@@ -62,7 +59,7 @@ module.exports = async (env) => {
     },
     plugins: [
       new webpack.EnvironmentPlugin({
-        KOGITO_ENV_MODE: "DEV",
+        KOGITO_ENV_MODE: env.dev ? "DEV" : "PROD",
         KOGITO_DATAINDEX_HTTP_URL: dataIndexURL,
       }),
       new HtmlWebpackPlugin({

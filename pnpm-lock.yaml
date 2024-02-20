@@ -7607,9 +7607,9 @@ importers:
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
-      "@kie-tools/runtime-tools-cypress-ouia":
+      "@kie-tools/root-env":
         specifier: workspace:*
-        version: link:../runtime-tools-cypress-ouia
+        version: link:../root-env
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -7658,18 +7658,12 @@ importers:
       css-minimizer-webpack-plugin:
         specifier: ^5.0.1
         version: 5.0.1(webpack@5.88.2)
-      cypress:
-        specifier: ^13.5.1
-        version: 13.5.1
       enzyme:
         specifier: ^3.11.0
         version: 3.11.0
       enzyme-to-json:
         specifier: ^3.6.2
         version: 3.6.2(enzyme@3.11.0)
-      eslint-plugin-cypress:
-        specifier: ^2.13.3
-        version: 2.15.1(eslint@8.52.0)
       express:
         specifier: ^4.18.2
         version: 4.18.2
