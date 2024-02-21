@@ -91,7 +91,7 @@ export function ExternalNodesPanel() {
                   })
                 }
               >
-                Included model...
+                Include model...
               </Button>
             </EmptyStatePrimary>
           </EmptyState>
@@ -105,6 +105,7 @@ export function ExternalNodesPanel() {
                 <Text component="h3">External nodes</Text>
               </TextContent>
               <Button
+                title={"Close"}
                 variant={ButtonVariant.plain}
                 onClick={() =>
                   dmnEditorStoreApi.setState((state) => {

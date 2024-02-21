@@ -87,6 +87,7 @@ export function DrgNodesPanel() {
             <Text component="h3">DRG Nodes</Text>
           </TextContent>
           <Button
+            title={"Close"}
             variant={ButtonVariant.plain}
             onClick={() =>
               dmnEditorStoreApi.setState((state) => {

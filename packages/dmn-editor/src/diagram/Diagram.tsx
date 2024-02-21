@@ -1190,6 +1190,7 @@ function DmnDiagramEmptyState({
     >
       <div className={"kie-dmn-editor--diagram-empty-state"}>
         <Button
+          title={"Close"}
           style={{
             position: "absolute",
             top: "8px",
@@ -1198,7 +1199,7 @@ function DmnDiagramEmptyState({
           variant={ButtonVariant.plain}
           icon={<TimesIcon />}
           onClick={() => setShowEmptyState(false)}
-        ></Button>
+        />
 
         <EmptyState>
           <EmptyStateIcon icon={MousePointerIcon} />
@@ -1383,14 +1384,22 @@ export function TopRightCornerPanels() {
             isVisible={diagram.overlaysPanel.isOpen}
             bodyContent={<OverlaysPanel />}
           >
-            <button className={"kie-dmn-editor--overlays-panel-toggle-button"} onClick={toggleOverlaysPanel}>
+            <button
+              className={"kie-dmn-editor--overlays-panel-toggle-button"}
+              onClick={toggleOverlaysPanel}
+              title={"Overlays"}
+            >
               <VirtualMachineIcon size={"sm"} />
             </button>
           </Popover>
         </aside>
         {!diagram.propertiesPanel.isOpen && (
           <aside className={"kie-dmn-editor--properties-panel-toggle"}>
-            <button className={"kie-dmn-editor--properties-panel-toggle-button"} onClick={togglePropertiesPanel}>
+            <button
+              className={"kie-dmn-editor--properties-panel-toggle-button"}
+              onClick={togglePropertiesPanel}
+              title={"Properties panel"}
+            >
               <InfoIcon size={"sm"} />
             </button>
           </aside>
