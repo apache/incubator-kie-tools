@@ -16,24 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import ReactDOM from "react-dom";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import ApolloClient from "apollo-client";
 import "@patternfly/patternfly/patternfly.css";
 import { HttpLink } from "apollo-link-http";
 import { setContext } from "apollo-link-context";
 import { onError } from "apollo-link-error";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
-import { UserContext } from "@kogito-apps/consoles-common/dist/environment/auth";
+import { TaskConsole, TaskConsoleRoutes } from "./components/console";
+import { KeycloakUnavailablePage } from "@kie-tools/runtime-tools-components/dist/components/KeycloakUnavailablePage";
+import { ServerUnavailablePage } from "@kie-tools/runtime-tools-shared-webapp-components/dist/ServerUnavailablePage";
+import { UserContext } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import {
-  appRenderWithAxiosInterceptorConfig,
-  getToken,
   isAuthEnabled,
   updateKeycloakToken,
-} from "@kogito-apps/consoles-common/dist/utils/KeycloakClient";
-import { KeycloakUnavailablePage } from "@kogito-apps/consoles-common/dist/components/pages/KeycloakUnavailablePage";
-import { TaskConsole, TaskConsoleRoutes } from "./components/console";
-import { ServerUnavailablePage } from "@kogito-apps/consoles-common/dist/components/pages/ServerUnavailablePage/ServerUnavailablePage";
+  getToken,
+  appRenderWithAxiosInterceptorConfig,
+} from "@kie-tools/runtime-tools-components/dist/utils/KeycloakClient";
 
 const onLoadFailure = () => {
   ReactDOM.render(<KeycloakUnavailablePage />, document.getElementById("root"));

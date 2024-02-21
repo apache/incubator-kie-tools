@@ -16,10 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { QueryFilter, SortBy, TaskInboxState } from "@kogito-apps/task-inbox";
-import { UserTaskInstance } from "@kogito-apps/task-console-shared";
+
+import {
+  QueryFilter,
+  SortBy,
+  TaskInboxState,
+} from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
 import { TaskInboxQueries } from "./TaskInboxQueries";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 
 export interface TaskInboxGatewayApi {
   taskInboxState: TaskInboxState;

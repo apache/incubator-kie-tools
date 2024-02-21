@@ -17,9 +17,9 @@
  * under the License.
  */
 import React from "react";
-import { useKogitoAppContext } from "@kogito-apps/consoles-common/dist/environment/context";
 import { TaskFormGatewayApiImpl } from "./TaskFormGatewayApi";
 import TaskFormContext from "./TaskFormContext";
+import { useKogitoAppContext } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 
 const TaskFormContextProvider: React.FC = ({ children }) => {
   const appContext = useKogitoAppContext();

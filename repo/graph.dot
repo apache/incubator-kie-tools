@@ -128,10 +128,9 @@ digraph G {
   "@kie-tools/runtime-tools-cypress-ouia" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-management-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-process-enveloped-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/runtime-tools-shared-enveloped-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-shared-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-process-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/runtime-tools-process-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/runtime-tools-shared-enveloped-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-swf-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-swf-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -417,15 +416,10 @@ digraph G {
   "@kie-tools/runtime-tools-cypress-ouia" -> "@kie-tools/eslint" [ style = "dashed", color = "black" ];
   "@kie-tools/runtime-tools-cypress-ouia" -> "@kie-tools/tsconfig" [ style = "dashed", color = "black" ];
   "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-process-enveloped-components" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/runtime-tools-process-gateway-api" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-gateway-api" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-process-webapp-components" -> "@kie-tools/runtime-tools-swf-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-shared-enveloped-components" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-shared-enveloped-components" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-shared-enveloped-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
@@ -441,7 +435,6 @@ digraph G {
   "@kie-tools/runtime-tools-swf-gateway-api" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-webapp-components" -> "@kie-tools/runtime-tools-swf-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools/runtime-tools-process-enveloped-components" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-task-console-webapp" -> "@kie-tools/runtime-tools-cypress-ouia" [ style = "dashed", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];

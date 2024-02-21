@@ -17,8 +17,8 @@
  * under the License.
  */
 import React, { useState } from "react";
-import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 export interface Notification {
   type: "success" | "error";

@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import axios from "axios";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
-import { UserTaskInstance } from "@kogito-apps/task-console-shared";
-import { Form } from "@kogito-apps/components-common/dist/types";
+import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface TaskFormGatewayApi {
   getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>>;

@@ -36,21 +36,26 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import {
-  KogitoEmptyState,
-  KogitoEmptyStateType,
-} from "@kogito-apps/components-common/dist/components/KogitoEmptyState";
-import { KogitoSpinner } from "@kogito-apps/components-common/dist/components/KogitoSpinner";
-import { ServerErrors } from "@kogito-apps/components-common/dist/components/ServerErrors";
-import { OUIAProps, componentOuiaProps, ouiaPageTypeAndObjectId } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
-import { UserTaskInstance, TaskState } from "@kogito-apps/task-console-shared";
 import { TaskInboxGatewayApi } from "../../../channel/inbox";
 import { useTaskInboxGatewayApi } from "../../../channel/inbox/TaskInboxContext";
 import TaskFormContainer from "./components/TaskFormContainer/TaskFormContainer";
 import FormNotification, { Notification } from "./components/FormNotification/FormNotification";
 import "../../styles.css";
-import { EmbeddedTaskDetails } from "@kogito-apps/task-details";
+import {
+  OUIAProps,
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
+import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
+import {
+  KogitoEmptyState,
+  KogitoEmptyStateType,
+} from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
+import { EmbeddedTaskDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskDetails";
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { TaskState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskDetails";
 
 interface Props {
   taskId?: string;

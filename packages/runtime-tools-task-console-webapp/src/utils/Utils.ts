@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { GraphQL } from "@kogito-apps/consoles-common/dist/graphql";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 
+import { GraphQL } from "@kie-tools/runtime-tools-process-gateway-api/dist/graphql";
 import UserTaskInstance = GraphQL.UserTaskInstance;
+import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 
 declare global {
   interface Window {

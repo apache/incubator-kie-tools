@@ -18,10 +18,10 @@
  */
 import React from "react";
 import { ApolloClient } from "apollo-client";
-import { useKogitoAppContext } from "@kogito-apps/consoles-common/dist/environment/context";
 import TaskInboxContext from "../../channel/inbox/TaskInboxContext";
 import { TaskInboxGatewayApiImpl } from "../../channel/inbox/TaskInboxGatewayApi";
 import { GraphQLTaskInboxQueries } from "../../channel/inbox/TaskInboxQueries";
+import { useKogitoAppContext } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;

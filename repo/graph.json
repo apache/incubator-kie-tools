@@ -133,10 +133,9 @@
       { "id": "@kie-tools/runtime-tools-cypress-ouia" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
-      { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
-      { "id": "@kie-tools/runtime-tools-process-webapp-components" },
+      { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
@@ -803,27 +802,7 @@
       },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-enveloped-components",
-        "target": "@kie-tools-core/monaco-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-enveloped-components",
-        "target": "@kie-tools/i18n-common-dictionary",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-enveloped-components",
-        "target": "@kie-tools/runtime-tools-components",
         "weight": 1
       },
       {
@@ -833,27 +812,7 @@
       },
       {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "target": "@kie-tools-core/monaco-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "target": "@kie-tools/i18n-common-dictionary",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "target": "@kie-tools/runtime-tools-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "target": "@kie-tools-core/webpack-base",
+        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
         "weight": 1
       },
       {
@@ -867,8 +826,23 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-tools-process-webapp-components",
-        "target": "@kie-tools/runtime-tools-swf-enveloped-components",
+        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "target": "@kie-tools/runtime-tools-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -904,11 +878,6 @@
       {
         "source": "@kie-tools/runtime-tools-task-console-webapp",
         "target": "@kie-tools/runtime-tools-process-enveloped-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
         "weight": 1
       },
       {
@@ -1226,7 +1195,6 @@
     ["@kie-tools/runtime-tools-management-console-webapp", "packages/runtime-tools-management-console-webapp"],
     ["@kie-tools/runtime-tools-process-enveloped-components", "packages/runtime-tools-process-enveloped-components"],
     ["@kie-tools/runtime-tools-process-gateway-api", "packages/runtime-tools-process-gateway-api"],
-    ["@kie-tools/runtime-tools-process-webapp-components", "packages/runtime-tools-process-webapp-components"],
     ["@kie-tools/runtime-tools-shared-enveloped-components", "packages/runtime-tools-shared-enveloped-components"],
     ["@kie-tools/runtime-tools-shared-gateway-api", "packages/runtime-tools-shared-gateway-api"],
     ["@kie-tools/runtime-tools-shared-webapp-components", "packages/runtime-tools-shared-webapp-components"],

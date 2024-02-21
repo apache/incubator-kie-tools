@@ -14,24 +14,13 @@
   },
   "main": "index.js",
   "scripts": {
-    "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
-    "build:prod": "pnpm run lint && webpack --config webpack.prod.js && locktt",
-    "bundle-profile:analyze": "pnpm build:bundle-profile && webpack-bundle-analyzer ./stats.json",
-    "clean": "rimraf dist",
-    "codegen": "graphql-codegen",
-    "precommit": "lint-staged",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "dev": "concurrently 'pnpm run start' 'pnpm run dev:server'",
-    "dev-remote-dataindex": "pnpm start --env KOGITO_DATAINDEX_HTTP_URL='http://localhost:8180/graphql'",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
+    "dev": "concurrently 'pnpm  start' 'pnpm run dev:server'",
     "dev:server": "nodemon ./server/app.js",
-    "format": "prettier --config ../../.prettierrc --check --write './{src,server}/**/*.{tsx,ts,js,html}'",
-    "lint": "eslint './src/**/*.ts{,x}'",
-    "start": "webpack-dev-server --color --config webpack.dev.js",
-    "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
-    "test:coverage": "rimraf coverage && pnpm run test --coverage",
-    "test:report": "pnpm run test --ci --reporters=jest-junit",
-    "update-snapshot": "jest --updateSnapshot"
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "start": "webpack serve --host 0.0.0.0 --env dev",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools-core/envelope": "workspace:*",
@@ -40,9 +29,11 @@
     "@kie-tools/runtime-tools-process-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-process-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
+    "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-shared-webapp-components": "workspace:*",
     "@patternfly/patternfly": "^4.224.2",
     "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-icons": "^4.93.6",
     "apollo-cache-inmemory": "1.6.6",
     "apollo-client": "2.6.10",
     "apollo-link-context": "^1.0.20",
@@ -68,8 +59,9 @@
     "@graphql-codegen/typescript": "^2.8.8",
     "@graphql-codegen/typescript-operations": "^2.5.13",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
+    "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
-    "@kie-tools/runtime-tools-cypress-ouia": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^5.16.1",
     "@types/enzyme": "^3.10.13",
@@ -86,7 +78,6 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^5.0.1",
-    "cypress": "^13.5.1",
     "enzyme": "^3.11.0",
     "enzyme-to-json": "^3.6.2",
     "express": "^4.18.2",
@@ -112,54 +103,5 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
-  },
-  "jest": {
-    "coverageReporters": [
-      [
-        "lcov",
-        {
-          "projectRoot": "../../"
-        }
-      ]
-    ],
-    "globals": {
-      "ts-jest": {
-        "isolatedModules": true
-      }
-    },
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "moduleNameMapper": {
-      "\\.(scss|sass|css)$": "identity-obj-proxy"
-    },
-    "preset": "ts-jest/presets/js-with-ts",
-    "setupFiles": [
-      "./config/Jest-config/test-shim.js",
-      "./config/Jest-config/test-setup.js"
-    ],
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
-    "testMatch": [
-      "**/tests/*.(ts|tsx|js)"
-    ],
-    "testPathIgnorePatterns": [
-      "./src/index.tsx"
-    ],
-    "transform": {
-      "\\.(jpg|jpeg|png|svg)$": "./config/Jest-config/fileMocks.js",
-      "^.+\\.(ts|tsx)$": "ts-jest",
-      "^.+\\.jsx?$": "./config/Jest-config/babel-jest-wrapper.js"
-    },
-    "transformIgnorePatterns": []
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "pnpm run format",
-      "pnpm run lint"
-    ]
   }
 }

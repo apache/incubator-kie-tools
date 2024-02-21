@@ -17,11 +17,17 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { Card, Grid, GridItem, PageSection } from "@patternfly/react-core";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
 import TaskInboxContainer from "./container/TaskInboxContainer/TaskInboxContainer";
 import "../../styles.css";
+import {
+  OUIAProps,
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
+import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
+import { Card } from "@patternfly/react-core/dist/js/components/Card";
 
 const TaskInboxPage: React.FC<OUIAProps> = (ouiaId, ouiaSafe) => {
   useEffect(() => {

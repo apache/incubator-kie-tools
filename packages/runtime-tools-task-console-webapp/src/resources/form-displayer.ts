@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { init } from "@kogito-apps/form-displayer";
+import { init } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDisplayer";
 import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 

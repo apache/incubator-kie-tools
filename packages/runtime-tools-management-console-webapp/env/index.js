@@ -30,7 +30,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Webpack server hostname",
     },
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__port: {
-      default: "9000",
+      default: "9025",
       description: "Webpack server port",
     },
   }),

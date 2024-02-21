@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
+import { QueryFilter, SortBy } from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
 import _ from "lodash";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
-import { SortBy, QueryFilter } from "@kogito-apps/task-inbox";
 
 const createSearchTextArray = (taskNames: string[]) => {
   const formattedTextArray = [];

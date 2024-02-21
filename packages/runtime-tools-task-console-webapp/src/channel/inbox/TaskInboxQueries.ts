@@ -17,11 +17,11 @@
  * under the License.
  */
 import { ApolloClient } from "apollo-client";
-import { SortBy, QueryFilter } from "@kogito-apps/task-inbox";
-import { UserTaskInstance } from "@kogito-apps/task-console-shared";
-import { GraphQL } from "@kogito-apps/consoles-common/dist/graphql";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 import { buildTaskInboxWhereArgument, getOrderByObject } from "../../utils/QueryUtils";
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { GraphQL } from "@kie-tools/runtime-tools-process-gateway-api/dist/graphql";
+import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
+import { QueryFilter, SortBy } from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
 
 export interface TaskInboxQueries {
   getUserTaskById(taskId: string): Promise<UserTaskInstance>;
