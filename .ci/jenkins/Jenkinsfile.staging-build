@@ -374,6 +374,23 @@ pipeline {
             }
         }
 
+        stage('STAGING: Upload VS Code Extension - Extended Services (prod)') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    githubUtils.uploadReleaseAsset(
+                        "${params.UPLOAD_ASSET_URL}",
+                        "kie-tools/packages/extended-services-vscode-extension/dist/extended_services_vscode_extension${params.TAG}.vsix",
+                        "STAGING__extended_services_vscode_extension_${params.TAG}.vsix",
+                        'application/zip',
+                        "${pipelineVars.kieToolsBotGithubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
         stage('STAGING: Upload VS Code Extension - Kogito Bundle (prod)') {
             when {
                 expression { !params.DRY_RUN }
