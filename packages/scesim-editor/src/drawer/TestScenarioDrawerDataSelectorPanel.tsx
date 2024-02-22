@@ -164,6 +164,31 @@ function TestScenarioDataSelectorPanel({
     []
   );
 
+  /** It filters out all the Data Objects and their Children already assigned in the table */
+  const filterOutAlreadyAssignedDataObjectsAndChildren = useCallback(
+    (expressionElement: SceSim__expressionElementsType, isBackground: boolean) => {
+      const testScenarioDescriptor = retrieveModelDescriptor(scesimModel.ScenarioSimulationModel, isBackground);
+
+      const assignedExpressionElements = testScenarioDescriptor.factMappings.FactMapping!.map(
+        (factMapping) => factMapping.expressionElements!
+      );
+
+      const filteredDataObjects: TestScenarioDataObject[] = dataObjects
+        .map((object) => JSON.parse(JSON.stringify(object))) // Deep copy: the Objects may mutate due to children filtering
+        .filter((dataObject) => !filterDataObjectByExpressionElements(dataObject, [expressionElement]));
+      filteredDataObjects.forEach((dataObject) =>
+        filterDataObjectChildrenByExpressionElements(dataObject, assignedExpressionElements)
+      );
+      return filteredDataObjects;
+    },
+    [
+      dataObjects,
+      filterDataObjectByExpressionElements,
+      filterDataObjectChildrenByExpressionElements,
+      scesimModel.ScenarioSimulationModel,
+    ]
+  );
+
   const filterItems = useCallback((item, input) => {
     if (item.name.toLowerCase().includes(input.toLowerCase())) {
       return true;
@@ -208,30 +233,28 @@ function TestScenarioDataSelectorPanel({
       const isFactIdentifierAssigned =
         selectedColumnMetadata.factMapping.factIdentifier.className!.__$$text !== EMPTY_TYPE;
 
-      const testScenarioDescriptor = retrieveModelDescriptor(
-        scesimModel.ScenarioSimulationModel,
-        selectedColumnMetadata.isBackground
-      );
-      const assignedExpressionElements = testScenarioDescriptor.factMappings.FactMapping!.map(
-        (factMapping) => factMapping.expressionElements!
-      );
-
       let filteredDataObjects: TestScenarioDataObject[] = [];
       if (isFactIdentifierAssigned) {
         const expressionElement = selectedColumnMetadata.factMapping.expressionElements!;
-
-        filteredDataObjects = dataObjects
-          .map((object) => JSON.parse(JSON.stringify(object))) // Deep copy: the Objects may mutate due to children filtering
-          .filter((dataObject) => !filterDataObjectByExpressionElements(dataObject, [expressionElement]));
-        filteredDataObjects.forEach((dataObject) =>
-          filterDataObjectChildrenByExpressionElements(dataObject, assignedExpressionElements)
+        filteredDataObjects = filterOutAlreadyAssignedDataObjectsAndChildren(
+          expressionElement,
+          selectedColumnMetadata.isBackground
         );
       } else {
+        const testScenarioDescriptor = retrieveModelDescriptor(
+          scesimModel.ScenarioSimulationModel,
+          selectedColumnMetadata.isBackground
+        );
+        const assignedExpressionElements = testScenarioDescriptor.factMappings.FactMapping!.map(
+          (factMapping) => factMapping.expressionElements!
+        );
+
         filteredDataObjects = dataObjects
           .map((object) => JSON.parse(JSON.stringify(object))) // Deep copy: the Objects may mutate due to children filtering
           .filter((dataObject) => filterDataObjectByExpressionElements(dataObject, assignedExpressionElements));
       }
 
+      /** Applying User search key to the filteredDataObjects, if present */
       const isUserFilterPresent = treeViewStatus.searchKey.trim() !== "";
       if (isUserFilterPresent) {
         filteredDataObjects = filteredDataObjects.filter((item) => filterItems(item, treeViewStatus.searchKey));
@@ -289,6 +312,7 @@ function TestScenarioDataSelectorPanel({
     dataObjects,
     filterDataObjectByExpressionElements,
     filterDataObjectChildrenByExpressionElements,
+    filterOutAlreadyAssignedDataObjectsAndChildren,
     filterItems,
     filterTypesItems,
     scesimModel,
@@ -322,25 +346,37 @@ function TestScenarioDataSelectorPanel({
   }, [assetType, dataObjects.length, filteredItems.length, i18n]);
 
   const insertDataObjectButtonStatus = useMemo(() => {
-    const propertyID = selectedColumnMetadata?.factMapping.expressionElements?.ExpressionElement?.map(
-      (expressionElement) => expressionElement.step.__$$text
-    ).join(".");
-    if (selectedColumnMetadata == null) {
+    if (!selectedColumnMetadata) {
       return {
         message: i18n.drawer.dataSelector.insertDataObjectTooltipColumnSelectionMessage,
         enabled: false,
       };
-    } else if (treeViewStatus.activeItems.length != 1) {
+    }
+
+    const oneActiveTreeViewItem = treeViewStatus.activeItems.length === 1;
+    if (!oneActiveTreeViewItem) {
       return { message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectSelectionMessage, enabled: false };
-    } else if (treeViewStatus.activeItems.length == 1 && treeViewStatus.activeItems[0].id === propertyID) {
+    }
+
+    const expressionElement = selectedColumnMetadata.factMapping.expressionElements!;
+
+    const filteredDataObjects: TestScenarioDataObject[] = filterOutAlreadyAssignedDataObjectsAndChildren(
+      expressionElement,
+      selectedColumnMetadata.isBackground
+    );
+    const isAlreadyAssigined =
+      filteredDataObjects.length === 1 &&
+      !filteredDataObjects[0].children?.find((child) => child.id === treeViewStatus.activeItems[0].id);
+
+    if (oneActiveTreeViewItem && isAlreadyAssigined) {
       return {
         message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectAlreadyAssignedMessage,
         enabled: false,
       };
-    } else {
-      return { message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectAssignMessage, enabled: true };
     }
-  }, [i18n, selectedColumnMetadata, treeViewStatus.activeItems]);
+
+    return { message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectAssignMessage, enabled: true };
+  }, [filterOutAlreadyAssignedDataObjectsAndChildren, i18n, selectedColumnMetadata, treeViewStatus.activeItems]);
 
   const onAllExpandedToggle = useCallback((_event) => {
     setAllExpanded((prev) => !prev);

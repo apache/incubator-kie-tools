@@ -111,7 +111,7 @@ export const en: TestScenarioEditorI18n = {
         "Please select an column's field header to add or change a Type in the table.",
       insertDataObjectTooltipDataObjectSelectionMessage:
         "Please select a single field to assign it in the selected column",
-      insertDataObjectTooltipDataObjectAlreadyAssignedMessage: "The column is already assigned to the selected Field.",
+      insertDataObjectTooltipDataObjectAlreadyAssignedMessage: "The selected Field has been already assigned",
       insertDataObjectTooltipDataObjectAssignMessage: "Click here to assign the selected field to the focused column.",
       titleDMN: "DMN Nodes selector",
       titleRule: "Java Classes selector",
