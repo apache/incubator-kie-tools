@@ -18,9 +18,9 @@
  */
 
 import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
-import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 
@@ -48,6 +48,8 @@ export function activate(context: vscode.ExtensionContext) {
     ]),
     backendProxy: backendProxy,
   });
+
+  KogitoVsCode.VsCodeRecommendation.showExtendedServicesRecommendation(context);
 
   console.info("Extension is successfully setup.");
 }
