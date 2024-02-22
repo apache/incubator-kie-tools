@@ -48,4 +48,5 @@ fi
     -DskipTests \
     -Dquarkus.http.host=0.0.0.0 \
     -Dquarkus.test.continuous-testing=${QUARKUS_CONTINUOUS_TESTING:-disabled} \
+    -Dquarkus.analytics.disabled=${QUARKUS_ANALYTICS_DISABLED:true} \
     clean compile quarkus:dev

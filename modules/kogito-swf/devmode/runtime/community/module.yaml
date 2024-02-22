@@ -34,6 +34,9 @@ envs:
   - name: QUARKUS_CONTINUOUS_TESTING
     description: Whether to enable Quarkus continous testing on DevMode or not. Default to "disabled".
     value: "disabled"
+  - name: QUARKUS_ANALYTICS_DISABLED
+    description: Whether to disable the Quarkus analytics data collecting on DevMode or not. Default to "true".
+    value: "true"
   - name: KOGITO_CODEGEN_PROCESS_FAILONERROR
     description: Boolean flag that will prevent Dev Mode to crash if the provided workflow is wrong.
     value: "false"
