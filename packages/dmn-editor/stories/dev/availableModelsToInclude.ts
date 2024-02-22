@@ -21,7 +21,7 @@ import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import * as DmnEditor from "../../src/DmnEditor";
 import { getPmmlNamespace } from "../../src/pmml/pmml";
-import { sumBkm, sumDiffDs, testTreePmml } from "./ExternalModels";
+import { sumBkm, sumDiffDs, testTreePmml } from "./externalModels";
 
 export const sumBkmModel = getMarshaller(sumBkm, { upgradeTo: "latest" }).parser.parse();
 export const sumDiffDsModel = getMarshaller(sumDiffDs, { upgradeTo: "latest" }).parser.parse();

@@ -3422,6 +3422,12 @@ importers:
       "@storybook/blocks":
         specifier: ^7.3.2
         version: 7.6.13(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2)
+      "@storybook/manager-api":
+        specifier: ^7.3.2
+        version: 7.6.13(react-dom@17.0.2)(react@17.0.2)
+      "@storybook/preview-api":
+        specifier: ^7.3.2
+        version: 7.6.13
       "@storybook/react":
         specifier: ^7.3.2
         version: 7.6.13(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)
@@ -13140,12 +13146,6 @@ packages:
       "@babel/types": 7.23.9
     dev: true
 
-  /@babel/helper-string-parser@7.22.5:
-    resolution:
-      { integrity: sha512-mM4COjgZox8U+JcXQwPijIZLElkgEpO5rsERVDJTc2qfCDfERyob6k5WegS14SX18IIjv+XD+GrqNumY5JRCDw== }
-    engines: { node: ">=6.9.0" }
-    dev: true
-
   /@babel/helper-string-parser@7.23.4:
     resolution:
       { integrity: sha512-803gmbQdqwdf4olxrX4AJyFBV/RTr3rSmOj0rKwesmzlfhYNDEs+/iOcznzpNWlJlIlTJC2QfPFcHB6DlzdVLQ== }
@@ -19225,7 +19225,7 @@ packages:
     engines: { node: ">=6.9.0" }
     dependencies:
       "@babel/code-frame": 7.23.5
-      "@babel/parser": 7.23.0
+      "@babel/parser": 7.23.9
       "@babel/types": 7.23.9
     dev: true
 
@@ -19235,7 +19235,7 @@ packages:
     engines: { node: ">=6.9.0" }
     dependencies:
       "@babel/code-frame": 7.23.5
-      "@babel/parser": 7.23.0
+      "@babel/parser": 7.23.9
       "@babel/types": 7.23.9
     dev: true
 
@@ -19279,7 +19279,7 @@ packages:
       "@babel/helper-function-name": 7.23.0
       "@babel/helper-hoist-variables": 7.22.5
       "@babel/helper-split-export-declaration": 7.22.6
-      "@babel/parser": 7.23.0
+      "@babel/parser": 7.23.9
       "@babel/types": 7.23.9
       debug: 4.3.4(supports-color@8.1.1)
       globals: 11.12.0
@@ -19349,7 +19349,7 @@ packages:
       { integrity: sha512-m4AfNvVF2mVC/F7fDEdH2El3HzUg9It/XsCxZiOTTA3m3qYfcSVSbTfM6Q9xG+hYDniZssYhlXKKUMD5m8tF4Q== }
     engines: { node: ">=6.9.0" }
     dependencies:
-      "@babel/helper-string-parser": 7.22.5
+      "@babel/helper-string-parser": 7.23.4
       "@babel/helper-validator-identifier": 7.22.20
       to-fast-properties: 2.0.0
     dev: true
@@ -19359,7 +19359,7 @@ packages:
       { integrity: sha512-0oIyUfKoI3mSqMvsxBdclDwxXKXAUA8v/apZbc+iSyARYou1o8ZGDxbUYyLFoW2arqS2jDGqJuZvv1d/io1axg== }
     engines: { node: ">=6.9.0" }
     dependencies:
-      "@babel/helper-string-parser": 7.22.5
+      "@babel/helper-string-parser": 7.23.4
       "@babel/helper-validator-identifier": 7.22.20
       to-fast-properties: 2.0.0
     dev: true
@@ -25603,7 +25603,7 @@ packages:
       { integrity: sha512-6QLXtMVsFZFpzPkdGWsu/iuc8na9dnS67AMOBKm5qCLPwtUJOYkwhMdFRSSeJthLRpzV7JLAL8Kwvl7MFP3QSw== }
     dependencies:
       "@storybook/channels": 7.4.6
-      "@types/babel__core": 7.1.14
+      "@types/babel__core": 7.20.5
       "@types/express": 4.17.17
       file-system-cache: 2.3.0
     dev: true

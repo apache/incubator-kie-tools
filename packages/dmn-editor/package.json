@@ -75,6 +75,8 @@
     "@playwright/test": "^1.38.1",
     "@storybook/addon-links": "^7.3.2",
     "@storybook/blocks": "^7.3.2",
+    "@storybook/manager-api": "^7.3.2",
+    "@storybook/preview-api": "^7.3.2",
     "@storybook/react": "^7.3.2",
     "@storybook/react-webpack5": "^7.3.2",
     "@testing-library/jest-dom": "^5.16.1",

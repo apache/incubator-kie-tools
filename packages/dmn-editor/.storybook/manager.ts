@@ -17,23 +17,9 @@
  * under the License.
  */
 
-import * as React from "react";
-import type { Meta, StoryObj } from "@storybook/react";
-import * as DmnEditor from "../../../src/DmnEditor";
+import { addons } from "@storybook/manager-api";
+import { KieToolsTheme } from "@kie-tools/storybook-base/KieToolsTheme";
 
-import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import { EMPTY_DMN_15 } from "../DmnDiagramSources";
-
-const meta: Meta<typeof DmnEditor.DmnEditor> = {
-  title: "Use cases/Empty",
-  component: DmnEditor.DmnEditor,
-};
-
-export default meta;
-type Story = StoryObj<typeof DmnEditor.DmnEditor>;
-
-export const Empty: Story = {
-  args: {
-    model: getMarshaller(EMPTY_DMN_15(), { upgradeTo: "latest" }).parser.parse(),
-  },
-};
+addons.setConfig({
+  theme: KieToolsTheme,
+});
