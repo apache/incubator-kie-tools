@@ -4314,9 +4314,6 @@ importers:
       "@kie-tools-core/vscode-extension":
         specifier: workspace:*
         version: link:../vscode-extension
-      "@kie-tools/extended-services-java":
-        specifier: workspace:*
-        version: link:../extended-services-java
     devDependencies:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
@@ -4324,6 +4321,9 @@ importers:
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
+      "@kie-tools/extended-services-java":
+        specifier: workspace:*
+        version: link:../extended-services-java
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env

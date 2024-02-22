@@ -106,7 +106,7 @@ digraph G {
   "@kie-tools-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/extended-services-java" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/extended-services-java" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "extended-services-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/form" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -334,11 +334,11 @@ digraph G {
   "@kie-tools-core/envelope-bus" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools/extended-services" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/extended-services-api" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];
-  "@kie-tools/extended-services-java" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
-  "@kie-tools/extended-services-java" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/extended-services-java" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
+  "@kie-tools/extended-services-java" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "extended-services-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
-  "extended-services-vscode-extension" -> "@kie-tools/extended-services-java" [ style = "solid", color = "blue" ];
   "extended-services-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "extended-services-vscode-extension" -> "@kie-tools/extended-services-java" [ style = "dashed", color = "blue" ];
   "@kie-tools/feel-input-component" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/feel-input-component" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "blue" ];
   "@kie-tools/feel-input-component" -> "@kie-tools/dmn-language-service" [ style = "solid", color = "blue" ];
