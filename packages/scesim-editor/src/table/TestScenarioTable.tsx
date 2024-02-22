@@ -183,7 +183,7 @@ function TestScenarioTable({
         return model;
       });
     },
-    [isBackground, retrieveModelDescriptor, updateTestScenarioModel]
+    [isBackground, updateTestScenarioModel]
   );
 
   /* It determines the column data based on the given FactMapping (Scesim column representation).
@@ -563,14 +563,7 @@ function TestScenarioTable({
         });
       });
     },
-    [
-      columnIndexStart,
-      isBackground,
-      retrieveFactMappingValueIndexByIdentifiers,
-      retrieveModelDescriptor,
-      retrieveRowsDataFromModel,
-      updateTestScenarioModel,
-    ]
+    [columnIndexStart, isBackground, updateTestScenarioModel]
   );
 
   const getNextAvailablePrefixedName = useCallback(
@@ -829,8 +822,6 @@ function TestScenarioTable({
       determineSelectedColumnIndex,
       getNextAvailablePrefixedName,
       isBackground,
-      retrieveModelDescriptor,
-      retrieveRowsDataFromModel,
       updateTestScenarioModel,
       TestScenarioTableColumnFieldGroup,
       TestScenarioTableColumnInstanceGroup,
@@ -955,14 +946,12 @@ function TestScenarioTable({
       });
     },
     [
-      columnIndexStart,
-      determineSelectedColumnIndex,
-      isBackground,
-      retrieveFactMappingValueIndexByIdentifiers,
-      retrieveModelDescriptor,
-      retrieveRowsDataFromModel,
       updateTestScenarioModel,
       TestScenarioTableColumnInstanceGroup,
+      isBackground,
+      determineSelectedColumnIndex,
+      columnIndexStart,
+      updateSelectedColumnMetaData,
     ]
   );
 
@@ -1170,7 +1159,14 @@ function TestScenarioTable({
 
       updateSelectedColumnMetaData(selectedColumnMetaData ?? null);
     },
-    [tableColumns.instancesGroup, tableData, updateSelectedColumnMetaData]
+    [
+      TestScenarioTableColumnFieldGroup,
+      TestScenarioTableColumnHeaderGroup,
+      isBackground,
+      tableColumns.instancesGroup,
+      tableData,
+      updateSelectedColumnMetaData,
+    ]
   );
 
   return (

@@ -181,7 +181,7 @@ function TestScenarioMainPanel({
        That makes sense for previously created scesim files */
 
     const factsMappings: SceSim__FactMappingType[] =
-      scesimModel!.ScenarioSimulationModel.simulation.scesimModelDescriptor!.factMappings!.FactMapping ?? [];
+      scesimModel.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping ?? [];
 
     const dataObjects: TestScenarioDataObject[] = [];
 
@@ -231,7 +231,7 @@ function TestScenarioMainPanel({
 
   /** It determines the Alert State */
   useEffect(() => {
-    const assetType = scesimModel.ScenarioSimulationModel.settings!.type!.__$$text;
+    const assetType = scesimModel.ScenarioSimulationModel.settings.type!.__$$text;
 
     let alertEnabled = false;
     let alertMessage = "";
