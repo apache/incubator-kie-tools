@@ -19,8 +19,10 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { ProcessListGatewayApi } from "../../../channel/ProcessList";
-import { useProcessListGatewayApi } from "../../../channel/ProcessList/ProcessListContext";
+import {
+  ProcessListGatewayApi,
+  useProcessListGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
 import { ProcessInstance, ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { EmbeddedProcessList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";

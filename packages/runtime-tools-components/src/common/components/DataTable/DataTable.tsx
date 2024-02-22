@@ -28,6 +28,7 @@ import {
   ICell,
   sortable,
   ISortBy,
+  SortByDirection,
 } from "@patternfly/react-table/dist/js/components/Table";
 import isEmpty from "lodash/isEmpty";
 import filter from "lodash/filter";
@@ -56,7 +57,7 @@ interface IOwnProps {
   LoadingComponent?: React.ReactNode;
   ErrorComponent?: React.ReactNode;
   sortBy?: ISortBy;
-  onSorting?: (index: number, direction: string) => void;
+  onSorting?: (index: number, direction: SortByDirection) => void;
 }
 
 const getCellData = (dataObj: Record<string, any>, path: string): string => {
@@ -186,7 +187,7 @@ export const DataTable: React.FC<IOwnProps & OUIAProps> = ({
     }
   }, [data, isLoading]);
 
-  const onSort = (event: any, index: number, direction: any) => {
+  const onSort = (event: any, index: number, direction: SortByDirection) => {
     if (isFunction(onSorting)) {
       onSorting(index, direction);
     }

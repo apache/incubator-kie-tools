@@ -32,8 +32,8 @@ const JobsManagementPage: React.FC<OUIAProps> = () => {
 
   return (
     <React.Fragment>
-      {/* <PageSectionHeader titleText="Jobs Management" breadcrumbText={["Home", "Jobs"]} breadcrumbPath={["/"]} /> */}
-      <PageSectionHeader titleText="Jobs Management" />
+      <PageSectionHeader titleText="Jobs Management" breadcrumbText={["Home", "Jobs"]} breadcrumbPath={["/"]} />
+      {/* <PageSectionHeader titleText="Jobs Management" /> */}
       <PageSection>
         <Card className="kogito-management-console__card-size">
           <JobsManagementContainer />

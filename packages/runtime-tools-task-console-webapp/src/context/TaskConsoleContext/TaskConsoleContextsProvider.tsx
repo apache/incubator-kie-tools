@@ -18,8 +18,8 @@
  */
 import React from "react";
 import { ApolloClient } from "apollo-client";
-import { TaskInboxContextProvider } from "../../channel/inbox";
-import TaskFormContextProvider from "../../channel/forms/TaskFormContextProvider";
+import { TaskInboxContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
+import { TaskFormContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 
 interface IOwnProps {
   client: ApolloClient<any>;

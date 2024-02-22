@@ -55,7 +55,7 @@ export class TaskInboxEnvelopeApiImpl implements TaskInboxEnvelopeApi {
     this.view().initialize(initArgs.initialState, initArgs.allTaskStates, initArgs.activeTaskStates);
   };
 
-  taskInbox__notify = (userName): Promise<void> => {
+  taskInbox__notify = (userName: string): Promise<void> => {
     this.view().notify(userName);
     return Promise.resolve();
   };

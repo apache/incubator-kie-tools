@@ -21,7 +21,10 @@ import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { ProcessDetailsGatewayApi, useProcessDetailsGatewayApi } from "../../../channel/ProcessDetails";
+import {
+  ProcessDetailsGatewayApi,
+  useProcessDetailsGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 
 interface ProcessDetailsContainerProps {

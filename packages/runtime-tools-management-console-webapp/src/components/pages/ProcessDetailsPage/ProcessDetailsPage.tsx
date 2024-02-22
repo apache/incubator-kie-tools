@@ -23,7 +23,6 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { RouteComponentProps } from "react-router-dom";
 import ProcessDetailsContainer from "../../containers/ProcessDetailsContainer/ProcessDetailsContainer";
-import { ProcessDetailsGatewayApi, useProcessDetailsGatewayApi } from "../../../channel/ProcessDetails";
 import { StaticContext, useHistory } from "react-router";
 import * as H from "history";
 import "../../styles.css";
@@ -32,6 +31,10 @@ import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/di
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
+import {
+  useProcessDetailsGatewayApi,
+  ProcessDetailsGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 
 interface MatchProps {
   instanceID: string;
@@ -138,14 +141,14 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
     <React.Fragment>
       <PageSectionHeader
         titleText="Process Details"
-        // breadcrumbText={["Home", "Processes", processName]}
-        // breadcrumbPath={[
-        //   "/",
-        //   {
-        //     pathname: "/ProcessInstances",
-        //     state: Object.assign({}, props.location.state),
-        //   },
-        // ]}
+        breadcrumbText={["Home", "Processes", processName]}
+        breadcrumbPath={[
+          "/",
+          {
+            pathname: "/ProcessInstances",
+            state: Object.assign({}, props.location.state),
+          },
+        ]}
       />
       <PageSection>{renderItems()}</PageSection>
     </React.Fragment>

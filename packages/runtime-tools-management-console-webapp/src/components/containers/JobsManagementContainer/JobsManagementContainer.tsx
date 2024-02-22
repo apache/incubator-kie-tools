@@ -17,10 +17,12 @@
  * under the License.
  */
 import * as React from "react";
-import { JobsManagementGatewayApi } from "../../../channel/JobsManagement";
-import { useJobsManagementGatewayApi } from "../../../channel/JobsManagement/JobsManagementContext";
 import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { EmbeddedJobsManagement } from "@kie-tools/runtime-tools-process-enveloped-components/dist/jobsManagement";
+import {
+  JobsManagementGatewayApi,
+  useJobsManagementGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
 
 const JobsManagementContainer: React.FC<OUIAProps> = () => {
   const gatewayApi: JobsManagementGatewayApi = useJobsManagementGatewayApi();

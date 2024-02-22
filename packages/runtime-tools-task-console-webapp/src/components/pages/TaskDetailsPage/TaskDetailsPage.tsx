@@ -36,10 +36,12 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { TaskInboxGatewayApi } from "../../../channel/inbox";
-import { useTaskInboxGatewayApi } from "../../../channel/inbox/TaskInboxContext";
 import TaskFormContainer from "./components/TaskFormContainer/TaskFormContainer";
 import FormNotification, { Notification } from "./components/FormNotification/FormNotification";
+import {
+  TaskInboxGatewayApi,
+  useTaskInboxGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
 import "../../styles.css";
 import {
   OUIAProps,

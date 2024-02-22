@@ -19,11 +19,13 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { TaskInboxGatewayApi, useTaskInboxGatewayApi } from "../../../../../channel/inbox";
+import {
+  TaskInboxGatewayApi,
+  useTaskInboxGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
 import { EmbeddedTaskInbox } from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
-import { getActiveTaskStates, getAllTaskStates } from "../../../../../utils/Utils";
-import { GraphQL } from "@kie-tools/runtime-tools-process-gateway-api/dist/graphql";
-import UserTaskInstance = GraphQL.UserTaskInstance;
+import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 const TaskInboxContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const history = useHistory();

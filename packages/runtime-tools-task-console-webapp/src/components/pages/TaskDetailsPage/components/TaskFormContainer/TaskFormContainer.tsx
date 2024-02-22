@@ -17,13 +17,12 @@
  * under the License.
  */
 import React from "react";
-import { GraphQL } from "@kie-tools/runtime-tools-process-gateway-api/dist/graphql";
-import UserTaskInstance = GraphQL.UserTaskInstance;
-import { useTaskFormGatewayApi } from "../../../../../channel/forms/TaskFormContext";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useKogitoAppContext } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { EmbeddedTaskForm } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { useTaskFormGatewayApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 
 interface Props {
   userTask: UserTaskInstance;

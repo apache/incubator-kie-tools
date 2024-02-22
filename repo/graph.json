@@ -132,8 +132,10 @@
       { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
       { "id": "@kie-tools/runtime-tools-cypress-ouia" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
-      { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
+      { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
+      { "id": "@kogito-apps/runtime-tools-dev-ui-webapp" },
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
@@ -797,12 +799,22 @@
       { "source": "@kie-tools/runtime-tools-cypress-ouia", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-enveloped-components",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
         "weight": 1
       },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-webapp-components",
+        "target": "@kie-tools/runtime-tools-process-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-webapp-components",
+        "target": "@kie-tools/runtime-tools-components",
         "weight": 1
       },
       {
@@ -816,8 +828,13 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-tools-shared-webapp-components",
-        "target": "@kie-tools/runtime-tools-components",
+        "source": "@kogito-apps/runtime-tools-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kogito-apps/runtime-tools-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
       {
@@ -877,17 +894,12 @@
       },
       {
         "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-enveloped-components",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
         "weight": 1
       },
       {
         "source": "@kie-tools/runtime-tools-task-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools/runtime-tools-cypress-ouia",
         "weight": 1
       },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
@@ -1193,8 +1205,10 @@
     ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
     ["@kie-tools/runtime-tools-cypress-ouia", "packages/runtime-tools-cypress-ouia"],
     ["@kie-tools/runtime-tools-management-console-webapp", "packages/runtime-tools-management-console-webapp"],
+    ["@kogito-apps/runtime-tools-dev-ui-webapp", "packages/runtime-tools-process-dev-ui-webapp"],
     ["@kie-tools/runtime-tools-process-enveloped-components", "packages/runtime-tools-process-enveloped-components"],
     ["@kie-tools/runtime-tools-process-gateway-api", "packages/runtime-tools-process-gateway-api"],
+    ["@kie-tools/runtime-tools-process-webapp-components", "packages/runtime-tools-process-webapp-components"],
     ["@kie-tools/runtime-tools-shared-enveloped-components", "packages/runtime-tools-shared-enveloped-components"],
     ["@kie-tools/runtime-tools-shared-gateway-api", "packages/runtime-tools-shared-gateway-api"],
     ["@kie-tools/runtime-tools-shared-webapp-components", "packages/runtime-tools-shared-webapp-components"],

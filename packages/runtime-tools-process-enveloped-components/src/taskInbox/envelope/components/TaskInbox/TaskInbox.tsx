@@ -32,6 +32,7 @@ import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/d
 import { QueryFilter, SortBy, TaskInboxDriver, TaskInboxState } from "../../../api";
 import TaskInboxToolbar from "../TaskInboxToolbar/TaskInboxToolbar";
 import { getDateColumn, getDefaultColumn, getTaskDescriptionColumn, getTaskStateColumn } from "../utils/TaskInboxUtils";
+import { SortByDirection } from "@patternfly/react-table/dist/js/components";
 
 export interface TaskInboxProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -167,10 +168,10 @@ const TaskInbox: React.FC<TaskInboxProps & OUIAProps> = ({
     doQueryTasks(0, pageSize, true, true);
   };
 
-  const onSort = async (index: number, direction) => {
+  const onSort = async (index: number, direction: SortByDirection) => {
     const sortObj: SortBy = {
       property: columns[index].path,
-      direction: direction.toLowerCase(),
+      direction: direction.toLowerCase() as SortByDirection,
     };
     await driver.applySorting(sortObj);
     setSortBy(sortObj);

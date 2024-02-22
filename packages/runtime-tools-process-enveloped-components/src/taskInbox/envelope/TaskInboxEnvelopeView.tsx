@@ -32,7 +32,7 @@ export interface TaskInboxEnvelopeViewApi {
     activeTaskStates?: string[],
     userName?: string
   ) => void;
-  notify: (userName) => Promise<void>;
+  notify: (userName: string) => Promise<void>;
 }
 
 interface Props {
