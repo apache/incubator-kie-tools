@@ -97,9 +97,10 @@ export type TestScenarioAlert = {
 
 export type TestScenarioDataObject = {
   id: string;
-  name: string;
-  customBadgeContent?: string;
   children?: TestScenarioDataObject[];
+  customBadgeContent?: string;
+  isSimpleTypeFact?: boolean;
+  name: string;
 };
 
 export type TestScenarioEditorRef = {
@@ -194,7 +195,7 @@ function TestScenarioMainPanel({
       const factID = factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text;
       const dataObject = dataObjects.find((value) => value.id === factID);
       const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length == 1;
-      const propertyID = isSimpleTypeFact
+      const propertyID = isSimpleTypeFact //POTENTIAL BUG
         ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
         : factsMappings[i]
             .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
@@ -206,8 +207,9 @@ function TestScenarioMainPanel({
         if (!dataObject.children?.some((value) => value.id === propertyID)) {
           dataObject.children!.push({
             id: propertyID,
-            name: propertyName,
             customBadgeContent: factsMappings[i].className.__$$text,
+            isSimpleTypeFact: isSimpleTypeFact,
+            name: propertyName,
           });
         }
       } else {

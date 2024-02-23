@@ -17,6 +17,9 @@
  * under the License.
  */
 
-import * as React from "react";
-
 export const EMPTY_TYPE = "java.lang.Void";
+
+export enum TEST_SCENARIO_EXPRESSION_TYPE {
+  EXPRESSION,
+  NOT_EXPRESSION,
+}

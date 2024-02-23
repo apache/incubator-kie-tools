@@ -44,7 +44,7 @@ import {
 import { TestScenarioDataObject, TestScenarioSelectedColumnMetaData, TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
-import { EMPTY_TYPE } from "../common/TestScenarioCommonConstants";
+import { EMPTY_TYPE, TEST_SCENARIO_EXPRESSION_TYPE } from "../common/TestScenarioCommonConstants";
 import {
   retrieveFactMappingValueIndexByIdentifiers,
   retrieveModelDescriptor,
@@ -153,9 +153,13 @@ function TestScenarioDataSelectorPanel({
             continue;
           }
           if (expressionElements.ExpressionElement[0].step.__$$text === dataObject.name) {
-            const selected: TestScenarioDataObject[] = dataObject.children.filter(
-              (dataObjectChild) => dataObjectChild.name !== expressionElements.ExpressionElement!.at(-1)!.step.__$$text
-            );
+            const selected: TestScenarioDataObject[] = dataObject.children.filter((dataObjectChild) => {
+              const fieldName = expressionElements.ExpressionElement!.at(-1)!.step.__$$text;
+              if (dataObject.isSimpleTypeFact) {
+                fieldName.concat(".");
+              }
+              dataObjectChild.name !== fieldName;
+            });
             dataObject.children = selected;
           }
         }
@@ -282,8 +286,12 @@ function TestScenarioDataSelectorPanel({
      */
     const factIdentifier = selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement![0].step.__$$text;
     const filteredDataObjects = dataObjects.filter((dataObject) => filterTypesItems(dataObject, factIdentifier));
-    const isExpressionType = selectedColumnMetadata.factMapping.factMappingValueType!.__$$text === "EXPRESSION";
-    const isSimpleTypeFact = selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement!.length == 1;
+    const isExpressionType =
+      selectedColumnMetadata.factMapping.factMappingValueType!.__$$text ===
+      TEST_SCENARIO_EXPRESSION_TYPE[TEST_SCENARIO_EXPRESSION_TYPE.EXPRESSION];
+    const isSimpleTypeFact =
+      selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement!.length === 1 &&
+      selectedColumnMetadata.factMapping.className.__$$text !== EMPTY_TYPE;
     let fieldID: string;
     if (isExpressionType) {
       fieldID = selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement![0].step.__$$text;
@@ -298,7 +306,6 @@ function TestScenarioDataSelectorPanel({
     //TODO 1 This not work with multiple level and expressions fields.
     const treeViewItemToActivate = filteredDataObjects
       .reduce((acc: TestScenarioDataObject[], item) => {
-        //acc.concat(item);
         return item.children ? acc.concat(item.children) : acc;
       }, [])
       .filter((item) => item.id === fieldID);
@@ -402,7 +409,9 @@ function TestScenarioDataSelectorPanel({
         const factClassName = isRootType
           ? treeViewStatus.activeItems[0].customBadgeContent!.toString()
           : rootDataObject.customBadgeContent!.toString();
-        const factMappingValueType = isRootType ? "EXPRESSION" : "NOT_EXPRESSION";
+        const factMappingValueType = isRootType
+          ? TEST_SCENARIO_EXPRESSION_TYPE[TEST_SCENARIO_EXPRESSION_TYPE.EXPRESSION]
+          : TEST_SCENARIO_EXPRESSION_TYPE[TEST_SCENARIO_EXPRESSION_TYPE.NOT_EXPRESSION];
 
         const factMappingToUpdate: SceSim__FactMappingType = deepClonedFactMappings[selectedColumnMetadata!.index];
         factMappingToUpdate.className = { __$$text: className };
