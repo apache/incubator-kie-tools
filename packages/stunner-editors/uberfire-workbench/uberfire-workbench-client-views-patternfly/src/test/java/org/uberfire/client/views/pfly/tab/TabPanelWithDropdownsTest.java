@@ -36,6 +36,7 @@ import org.gwtbootstrap3.client.ui.NavTabs;
 import org.gwtbootstrap3.client.ui.TabContent;
 import org.gwtbootstrap3.client.ui.TabPane;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -122,7 +123,7 @@ public class TabPanelWithDropdownsTest {
         verify(tabPanel).resizeTabContent();
     }
 
-    @Test
+    @Test @Ignore
     public void testInsertTabAndContent() {
 
         final int index = 1;

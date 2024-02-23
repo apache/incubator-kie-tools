@@ -231,8 +231,8 @@
 
     <!-- General -->
     <version.checkstyle>8.29</version.checkstyle>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+    <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.testTarget>${maven.compiler.target}</maven.compiler.testTarget>
     <maven.compiler.testSource>${maven.compiler.source}</maven.compiler.testSource>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -249,7 +249,7 @@
     <version.bundle.plugin>3.3.0</version.bundle.plugin>
     <version.checkstyle.plugin>3.2.0</version.checkstyle.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
-    <version.compiler.plugin>3.10.1</version.compiler.plugin>
+    <version.compiler.plugin>3.12.1</version.compiler.plugin>
     <version.dependency.plugin>3.3.0</version.dependency.plugin>
     <version.deploy.plugin>2.8.2</version.deploy.plugin>
     <version.enforcer.plugin>3.1.0</version.enforcer.plugin>
@@ -267,7 +267,7 @@
     <version.spotbugs-maven-plugin>3.1.8</version.spotbugs-maven-plugin>
     <version.sonar.plugin>3.9.1.2184</version.sonar.plugin>
     <version.source.plugin>3.0.1</version.source.plugin>
-    <version.surefire.plugin>2.22.2</version.surefire.plugin>
+    <version.surefire.plugin>3.2.5</version.surefire.plugin>
     <version.war.plugin>3.2.2</version.war.plugin>
     <version.zanata.plugin>2.3.0</version.zanata.plugin>
 
@@ -1516,7 +1516,13 @@
               <exclude>org/drools/workbench/**/*IntegrationTest.java</exclude>
               <exclude>org/drools/workbench/**/*IT.java</exclude>
             </excludes>
-            <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+            <argLine>
+              -Dfile.encoding=${project.build.sourceEncoding}
+              --add-opens java.base/java.lang=ALL-UNNAMED
+              --add-opens java.base/java.time=ALL-UNNAMED
+              --add-opens java.base/java.time.format=ALL-UNNAMED
+              --add-opens java.base/java.util=ALL-UNNAMED
+            </argLine>
           </configuration>
         </plugin>
 
