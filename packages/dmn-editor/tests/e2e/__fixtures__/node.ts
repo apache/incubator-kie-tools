@@ -39,30 +39,37 @@ export class Node {
     return (await this.page.getByTitle(args.name).getAttribute("data-nodeid")) ?? "";
   }
 
+  public async rename(args: { current: string; new: string }) {
+    await this.page.getByTitle(args.current).click();
+    await this.page.getByTitle(args.current).press("Enter");
+    await this.page.getByTitle(args.current).getByRole("textbox").nth(0).fill(args.new);
+    await this.page.getByTitle(args.current).press("Enter");
+  }
+
   public async dragNewConnectedNode(args: { type: NodeType; from: string; targetPosition: { x: number; y: number } }) {
     await this.diagram.hoverNode({ name: args.from });
-    const nodeId = await this.getId({ name: args.from });
+    const node = this.page.getByTitle(args.from);
 
     switch (args.type) {
       case NodeType.INPUT_DATA:
-        return await this.page
-          .getByTestId(`${nodeId}-add-node_inputData`)
+        return await node
+          .getByTitle("Add Input Data node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
       case NodeType.DECISION:
-        return await this.page
-          .getByTestId(`${nodeId}-add-node_decision`)
+        return await node
+          .getByTitle("Add Decision node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
       case NodeType.KNOWLEDGE_SOURCE:
-        return await this.page
-          .getByTestId(`${nodeId}-add-node_knowledgeSource`)
+        return await node
+          .getByTitle("Add Knowledge Source node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
       case NodeType.BKM:
-        return await this.page
-          .getByTestId(`${nodeId}-add-node_bkm`)
+        return await node
+          .getByTitle("Add BKM node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
       case NodeType.TEXT_ANNOTATION:
-        return await this.page
-          .getByTestId(`${nodeId}-add-node_textAnnotation`)
+        return await node
+          .getByTitle("Add Text Annotation node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
     }
   }

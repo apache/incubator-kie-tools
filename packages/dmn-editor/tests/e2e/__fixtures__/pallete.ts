@@ -29,40 +29,33 @@ export class Pallete {
   public async dragNewNode(args: { type: NodeType; targetPosition: { x: number; y: number } }) {
     switch (args.type) {
       case NodeType.INPUT_DATA:
-        await this.page
+        return await this.page
           .getByTitle("Input Data", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        return this.node.getId({ name: "New Input Data" });
       case NodeType.DECISION:
-        await this.page
+        return await this.page
           .getByTitle("Decision", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        return this.node.getId({ name: "New Decision" });
       case NodeType.KNOWLEDGE_SOURCE:
-        await this.page
+        return await this.page
           .getByTitle("Knowledge Source", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        return this.node.getId({ name: "New Knowledge Source" });
       case NodeType.BKM:
-        await this.page
+        return await this.page
           .getByTitle("Business Knowledge Model", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        return this.node.getId({ name: "New Business Knowledge Model" });
       case NodeType.DECISION_SERVICE:
-        await this.page
+        return await this.page
           .getByTitle("Decision Service", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        return this.node.getId({ name: "New Decision Service" });
       case NodeType.GROUP:
-        await this.page
+        return await this.page
           .getByTitle("Group", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        return this.node.getId({ name: "New Group" });
       case NodeType.TEXT_ANNOTATION:
-        await this.page
+        return await this.page
           .getByTitle("Text Annotation", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        return this.node.getId({ name: "Text Annotation" });
     }
   }
 }

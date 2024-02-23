@@ -30,12 +30,12 @@ test.describe("MUTATION - Add connected node", () => {
     test("Add Decision", async ({ diagram, pallete, node, edge }) => {
       await pallete.dragNewNode({
         type: NodeType.INPUT_DATA,
-        targetPosition: { x: 100, y: 300 },
+        targetPosition: { x: 100, y: 100 },
       });
       await node.dragNewConnectedNode({
         from: "New Input Data",
         type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 100 },
+        targetPosition: { x: 100, y: 300 },
       });
 
       expect(await edge.get({ from: "New Input Data", to: "New Decision" })).toBeAttached();
@@ -46,12 +46,12 @@ test.describe("MUTATION - Add connected node", () => {
     test("Add Knowledge Source", async ({ diagram, pallete, node, edge }) => {
       await pallete.dragNewNode({
         type: NodeType.INPUT_DATA,
-        targetPosition: { x: 100, y: 300 },
+        targetPosition: { x: 100, y: 100 },
       });
       await node.dragNewConnectedNode({
         from: "New Input Data",
         type: NodeType.KNOWLEDGE_SOURCE,
-        targetPosition: { x: 100, y: 100 },
+        targetPosition: { x: 100, y: 300 },
       });
 
       expect(await edge.get({ from: "New Input Data", to: "New Knowledge Source" })).toBeAttached();
@@ -64,12 +64,12 @@ test.describe("MUTATION - Add connected node", () => {
     test("Add Text Annotation", async ({ diagram, pallete, node, edge }) => {
       await pallete.dragNewNode({
         type: NodeType.INPUT_DATA,
-        targetPosition: { x: 100, y: 300 },
+        targetPosition: { x: 100, y: 100 },
       });
       await node.dragNewConnectedNode({
         from: "New Input Data",
         type: NodeType.TEXT_ANNOTATION,
-        targetPosition: { x: 100, y: 100 },
+        targetPosition: { x: 100, y: 300 },
       });
 
       expect(await edge.get({ from: "New Input Data", to: "New Text Annotation" })).toBeAttached();
@@ -82,28 +82,30 @@ test.describe("MUTATION - Add connected node", () => {
     test("Add Decision", async ({ diagram, pallete, node, edge }) => {
       await pallete.dragNewNode({
         type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 300 },
-      });
-      await node.dragNewConnectedNode({
-        from: "New Decision",
-        type: NodeType.DECISION,
         targetPosition: { x: 100, y: 100 },
       });
+      // Renaming to avoid ambiguity
+      await node.rename({ current: "New Decision", new: "My Decision" });
+      await node.dragNewConnectedNode({
+        from: "My Decision",
+        type: NodeType.DECISION,
+        targetPosition: { x: 100, y: 300 },
+      });
 
-      expect(await edge.get({ from: "New Decision", to: "New Decision" })).toBeAttached();
-      expect(await edge.type({ from: "New Decision", to: "New Decision" })).toEqual("edge_informationRequirement");
+      expect(await edge.get({ from: "My Decision", to: "New Decision" })).toBeAttached();
+      expect(await edge.type({ from: "My Decision", to: "New Decision" })).toEqual("edge_informationRequirement");
       await expect(diagram.get()).toHaveScreenshot();
     });
 
     test("Add Knowledge Source", async ({ diagram, pallete, node, edge }) => {
       await pallete.dragNewNode({
         type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 300 },
+        targetPosition: { x: 100, y: 100 },
       });
       await node.dragNewConnectedNode({
         from: "New Decision",
         type: NodeType.KNOWLEDGE_SOURCE,
-        targetPosition: { x: 100, y: 100 },
+        targetPosition: { x: 100, y: 300 },
       });
 
       expect(await edge.get({ from: "New Decision", to: "New Knowledge Source" })).toBeAttached();
@@ -116,12 +118,12 @@ test.describe("MUTATION - Add connected node", () => {
     test("Add Text Annotation", async ({ diagram, pallete, node, edge }) => {
       await pallete.dragNewNode({
         type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 300 },
+        targetPosition: { x: 100, y: 100 },
       });
       await node.dragNewConnectedNode({
         from: "New Decision",
         type: NodeType.TEXT_ANNOTATION,
-        targetPosition: { x: 100, y: 100 },
+        targetPosition: { x: 100, y: 300 },
       });
 
       expect(await edge.get({ from: "New Decision", to: "New Text Annotation" })).toBeAttached();
@@ -134,12 +136,12 @@ test.describe("MUTATION - Add connected node", () => {
     test("Add Decision", async ({ diagram, pallete, node, edge }) => {
       await pallete.dragNewNode({
         type: NodeType.BKM,
-        targetPosition: { x: 100, y: 300 },
+        targetPosition: { x: 100, y: 100 },
       });
       await node.dragNewConnectedNode({
         from: "New BKM",
         type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 100 },
+        targetPosition: { x: 100, y: 300 },
       });
 
       expect(await edge.get({ from: "New BKM", to: "New Decision" })).toBeAttached();
@@ -150,28 +152,30 @@ test.describe("MUTATION - Add connected node", () => {
     test("Add BKM", async ({ diagram, pallete, node, edge }) => {
       await pallete.dragNewNode({
         type: NodeType.BKM,
-        targetPosition: { x: 100, y: 300 },
-      });
-      await node.dragNewConnectedNode({
-        from: "New BKM",
-        type: NodeType.BKM,
         targetPosition: { x: 100, y: 100 },
       });
+      // Renaming to avoid ambiguity
+      await node.rename({ current: "New BKM", new: "My BKM" });
+      await node.dragNewConnectedNode({
+        from: "My BKM",
+        type: NodeType.BKM,
+        targetPosition: { x: 100, y: 300 },
+      });
 
-      expect(await edge.get({ from: "New BKM", to: "New BKM" })).toBeAttached();
-      expect(await edge.type({ from: "New BKM", to: "New BKM" })).toEqual("edge_knowledgeRequirement");
+      expect(await edge.get({ from: "My BKM", to: "New BKM" })).toBeAttached();
+      expect(await edge.type({ from: "My BKM", to: "New BKM" })).toEqual("edge_knowledgeRequirement");
       await expect(diagram.get()).toHaveScreenshot();
     });
 
     test("Add Text Annotation", async ({ diagram, pallete, node, edge }) => {
       await pallete.dragNewNode({
         type: NodeType.BKM,
-        targetPosition: { x: 100, y: 300 },
+        targetPosition: { x: 100, y: 100 },
       });
       await node.dragNewConnectedNode({
         from: "New BKM",
         type: NodeType.TEXT_ANNOTATION,
-        targetPosition: { x: 100, y: 100 },
+        targetPosition: { x: 100, y: 300 },
       });
 
       expect(await edge.get({ from: "New BKM", to: "New Text Annotation" })).toBeAttached();
