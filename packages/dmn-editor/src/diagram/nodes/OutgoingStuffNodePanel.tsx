@@ -128,6 +128,7 @@ export function OutgoingStuffNodePanel(props: {
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
+                title={getEdgeActionTitle(edgeType)}
                 data-testid={`#${props.nodeId}-add-${edgeType}`}
               >
                 <svg
@@ -166,6 +167,7 @@ export function OutgoingStuffNodePanel(props: {
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
+                title={getNodeActionTitle(nodeType)}
                 data-testid={`#${props.nodeId}-add-${nodeType}`}
               >
                 <svg
