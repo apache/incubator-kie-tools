@@ -43,7 +43,7 @@
 
     labels:
       - name: "io.quarkus.platform.version"
-        value: "3.2.9.Final"
+        value: "3.2.10.Final"
       - name: "org.kie.kogito.version"
         value: "999-SNAPSHOT"
       - name: "maintainer"
