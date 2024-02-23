@@ -45,11 +45,7 @@ import static com.google.gwt.i18n.client.HasDirection.Direction.LTR;
 import static com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant.endOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TabPanelWithDropdownsTest {
@@ -123,15 +119,15 @@ public class TabPanelWithDropdownsTest {
         verify(tabPanel).resizeTabContent();
     }
 
-    @Test @Ignore
+    @Test
     public void testInsertTabAndContent() {
 
         final int index = 1;
         final TabPane tabContentPane = mock(TabPane.class);
         final NavTabs tabBar = mock(NavTabs.class);
         final TabContent tabContent = mock(TabContent.class);
-        final Set<TabPanelEntry> allContentTabs = spy(new HashSet<>());
-        final Set<Widget> activatableWidgets = spy(new HashSet<>());
+        final Set<TabPanelEntry> allContentTabs = mock(Set.class);
+        final Set<Widget> activatableWidgets = mock(Set.class);
 
         doReturn(tabWidget).when(tab).getTabWidget();
         doReturn(tabContentPane).when(tab).getContentPane();
