@@ -16,4 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from "./apis";
+
+/**
+ * This is a convenience class that the Envelope view can use.
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ProcessDefinitionListEnvelopeContext {}

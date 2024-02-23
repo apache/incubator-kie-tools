@@ -35,22 +35,28 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { KogitoSpinner } from "@kogito-apps/components-common/dist/components/KogitoSpinner";
-import { FormNotification, Notification } from "@kogito-apps/components-common/dist/components/FormNotification";
+import TaskFormContainer from "../../containers/TaskFormContainer/TaskFormContainer";
+import "../../styles.css";
+import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import {
+  OUIAProps,
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import {
+  TaskInboxGatewayApi,
+  useTaskInboxGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
+import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import {
   KogitoEmptyState,
   KogitoEmptyStateType,
-} from "@kogito-apps/components-common/dist/components/KogitoEmptyState";
-import { ServerErrors } from "@kogito-apps/components-common/dist/components/ServerErrors";
-import { OUIAProps, componentOuiaProps, ouiaPageTypeAndObjectId } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
-import { UserTaskInstance, TaskState } from "@kogito-apps/task-console-shared";
-import { TaskInboxGatewayApi } from "../../../channel/TaskInbox";
-import { useTaskInboxGatewayApi } from "../../../channel/TaskInbox/TaskInboxContext";
-import TaskFormContainer from "../../containers/TaskFormContainer/TaskFormContainer";
-import "../../styles.css";
-import { EmbeddedTaskDetails } from "@kogito-apps/task-details";
-import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+} from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
+import { EmbeddedTaskDetails, TaskState } from "@kie-tools/runtime-tools-process-enveloped-components/src/taskDetails";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 
 interface Props {
   taskId?: string;
@@ -87,7 +93,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
   }, []);
 
   const showNotification = (
-    notificationType: "error" | "success",
+    notificationType: Notification["type"],
     submitMessage: string,
     notificationDetails?: string
   ) => {

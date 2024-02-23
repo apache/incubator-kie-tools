@@ -16,9 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
-import { getProcessSchema, getCustomForm, startProcessInstance } from "../apis";
-import { Form } from "@kogito-apps/components-common/dist/types";
+
+import {
+  getCustomForm,
+  getProcessSchema,
+  startProcessInstance,
+} from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface ProcessFormGatewayApi {
   getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<any>;

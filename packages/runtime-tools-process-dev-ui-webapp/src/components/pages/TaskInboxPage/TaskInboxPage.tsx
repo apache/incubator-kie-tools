@@ -20,12 +20,16 @@ import React, { useEffect } from "react";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
 import TaskInboxContainer from "../../containers/TaskInboxContainer/TaskInboxContainer";
 import TaskInboxSwitchUser from "./components/TaskInboxSwitchUser";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import "../../styles.css";
+import {
+  OUIAProps,
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 
 const TaskInboxPage: React.FC<OUIAProps> = (ouiaId, ouiaSafe) => {
   const appContext = useDevUIAppContext();

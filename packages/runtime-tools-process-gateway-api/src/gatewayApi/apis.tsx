@@ -27,10 +27,20 @@ import {
   ProcessInstance,
   ProcessInstanceFilter,
   ProcessListSortBy,
+  ProcessDefinition,
 } from "../types";
-import { NodeInstance, TriggerableNode, OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import {
+  NodeInstance,
+  TriggerableNode,
+  OperationType,
+  FormInfo,
+  Form,
+  FormContent,
+} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ApolloClient } from "apollo-client";
 import { buildProcessListWhereArgument } from "./QueryUtils";
+import axios from "axios";
+import SwaggerParser from "@apidevtools/swagger-parser";
 
 export const getProcessInstances = async (
   offset: number,
@@ -468,4 +478,133 @@ export const getJobsWithFilters = async (
   } catch (error) {
     return Promise.reject(error);
   }
+};
+
+export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get("/forms/list", {
+        params: {
+          names: formFilter.join(";"),
+        },
+      })
+      .then((result) => {
+        resolve(result.data);
+      })
+      .catch((error) => reject(error));
+  });
+};
+
+export const getFormContent = (formName: string): Promise<Form> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`/forms/${formName}`)
+      .then((result) => {
+        resolve(result.data);
+      })
+      .catch((error) => reject(error));
+  });
+};
+
+export const saveFormContent = (formName: string, content: FormContent): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`/forms/${formName}`, content)
+      .then((result) => {
+        resolve();
+      })
+      .catch((error) => reject(error));
+  });
+};
+
+export const createProcessDefinitionList = (processDefinitionObjs: any, url: string): ProcessDefinition[] => {
+  const processDefinitionList: ProcessDefinition[] = [];
+  processDefinitionObjs.forEach((processDefObj: any) => {
+    const processName = Object.keys(processDefObj)[0].split("/")[1];
+    const endpoint = `${url}/${processName}`;
+    processDefinitionList.push({
+      processName,
+      endpoint,
+    });
+  });
+  return processDefinitionList;
+};
+
+export const getProcessDefinitionList = (devUIUrl: string, openApiPath: string): Promise<ProcessDefinition[]> => {
+  return new Promise((resolve, reject) => {
+    SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
+      .then((response) => {
+        const processDefinitionObjs: any = [];
+        const paths = response.paths;
+        const regexPattern = /^\/[^\n/]+\/schema/;
+        Object.getOwnPropertyNames(paths)
+          .filter((path) => regexPattern.test(path.toString()))
+          .forEach((url) => {
+            let processArray = url.split("/");
+            processArray = processArray.filter((name) => name.length !== 0);
+            /* istanbul ignore else*/
+            if (Object.prototype.hasOwnProperty.call(paths[`/${processArray[0]}`], "post")) {
+              processDefinitionObjs.push({ [url]: paths[url] });
+            }
+          });
+        resolve(createProcessDefinitionList(processDefinitionObjs, devUIUrl));
+      })
+      .catch((err) => reject(err));
+  });
+};
+
+export const getProcessSchema = (processDefinitionData: ProcessDefinition): Promise<Record<string, any>> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`${processDefinitionData.endpoint}/schema`)
+      .then((response) => {
+        /* istanbul ignore else*/
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+export const getCustomForm = (processDefinitionData: ProcessDefinition): Promise<Form> => {
+  return new Promise((resolve, reject) => {
+    const lastIndex = processDefinitionData.endpoint.lastIndexOf(`/${processDefinitionData.processName}`);
+    const baseEndpoint = processDefinitionData.endpoint.slice(0, lastIndex);
+    axios
+      .get(`${baseEndpoint}/forms/${processDefinitionData.processName}`)
+      .then((response) => {
+        /* istanbul ignore else*/
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
+export const startProcessInstance = (
+  formData: any,
+  businessKey: string,
+  processDefinitionData: ProcessDefinition
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const requestURL = `${processDefinitionData.endpoint}${
+      businessKey.length > 0 ? `?businessKey=${businessKey}` : ""
+    }`;
+    axios
+      .post(requestURL, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        resolve(response.data.id);
+      })
+      .catch((error) => reject(error));
+  });
 };

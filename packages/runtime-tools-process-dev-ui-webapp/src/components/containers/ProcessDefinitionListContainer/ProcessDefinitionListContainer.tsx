@@ -17,15 +17,15 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { EmbeddedProcessDefinitionList, ProcessDefinition } from "@kogito-apps/process-definition-list";
 import {
   ProcessDefinitionListGatewayApi,
   useProcessDefinitionListGatewayApi,
 } from "../../../channel/ProcessDefinitionList";
 import { useHistory } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { CloudEventPageSource } from "../../pages/CloudEventFormPage/CloudEventFormPage";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { EmbeddedProcessDefinitionList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionList";
 
 const ProcessDefinitionListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const history = useHistory();
@@ -43,38 +43,11 @@ const ProcessDefinitionListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe 
         });
       },
     };
-    const onOpenWorkflow = {
-      onOpen(processDefinition: ProcessDefinition) {
-        history.push({
-          pathname: `WorkflowDefinition/Form/${processDefinition.processName}`,
-          state: {
-            workflowDefinition: {
-              workflowName: processDefinition.processName,
-              endpoint: processDefinition.endpoint,
-            },
-          },
-        });
-      },
-    };
-    const onOpenInstanceUnsubscriber = gatewayApi.onOpenProcessFormListen(
-      appContext.isWorkflow() ? onOpenWorkflow : onOpenProcess
-    );
 
-    const onTriggerCloudEventUnsubscriber = appContext.isWorkflow()
-      ? gatewayApi.onOpenTriggerCloudEventListen({
-          onOpen: () => {
-            history.push({
-              pathname: `/WorkflowDefinitions/CloudEvent`,
-              state: {
-                source: CloudEventPageSource.DEFINITIONS,
-              },
-            });
-          },
-        })
-      : undefined;
+    const onOpenInstanceUnsubscriber = gatewayApi.onOpenProcessFormListen(onOpenProcess);
+
     return () => {
       onOpenInstanceUnsubscriber.unSubscribe();
-      onTriggerCloudEventUnsubscriber?.unSubscribe();
     };
   }, []);
 
@@ -84,7 +57,6 @@ const ProcessDefinitionListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe 
       driver={gatewayApi}
       targetOrigin={appContext.getDevUIUrl()}
       singularProcessLabel={appContext.customLabels.singularProcessLabel}
-      isTriggerCloudEventEnabled={appContext.isWorkflow()}
     />
   );
 };

@@ -93,8 +93,6 @@ interface ProcessListToolbarProps {
   defaultStatusFilter: ProcessInstanceState[];
   singularProcessLabel: string;
   pluralProcessLabel: string;
-  isWorkflow: boolean;
-  isTriggerCloudEventEnabled?: boolean;
 }
 
 const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
@@ -114,8 +112,6 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   defaultStatusFilter,
   singularProcessLabel,
   pluralProcessLabel,
-  isWorkflow,
-  isTriggerCloudEventEnabled = false,
   ouiaId,
   ouiaSafe,
 }) => {
@@ -151,7 +147,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
 
   const operations: IOperations = {
     ABORT: {
-      type: isWorkflow ? BulkListType.WORKFLOW : BulkListType.PROCESS_INSTANCE,
+      type: BulkListType.PROCESS_INSTANCE,
       results: operationResults[OperationType.ABORT],
       messages: {
         successMessage: `Aborted ${pluralProcessLabel?.toLowerCase()}: `,
@@ -192,7 +188,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       },
     },
     SKIP: {
-      type: isWorkflow ? BulkListType.WORKFLOW : BulkListType.PROCESS_INSTANCE,
+      type: BulkListType.PROCESS_INSTANCE,
       results: operationResults[OperationType.SKIP],
       messages: {
         successMessage: `Skipped ${pluralProcessLabel?.toLowerCase()}: `,
@@ -222,7 +218,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       },
     },
     RETRY: {
-      type: isWorkflow ? BulkListType.WORKFLOW : BulkListType.PROCESS_INSTANCE,
+      type: BulkListType.PROCESS_INSTANCE,
       results: operationResults[OperationType.RETRY],
       messages: {
         successMessage: `Retriggered ${pluralProcessLabel?.toLowerCase()}: `,
@@ -446,12 +442,6 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
     setProcessInstances(clonedProcessInstances);
   };
 
-  const onOpenCloudEventClick = useCallback(() => {
-    if (isTriggerCloudEventEnabled) {
-      driver.openTriggerCloudEvent();
-    }
-  }, [driver]);
-
   const statusMenuItems: JSX.Element[] = [
     <SelectOption key="ACTIVE" value="ACTIVE" />,
     <SelectOption key="COMPLETED" value="COMPLETED" />,
@@ -645,16 +635,6 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
           </Tooltip>
         </ToolbarItem>
       </ToolbarGroup>
-      {isTriggerCloudEventEnabled && (
-        <ToolbarGroup>
-          <ToolbarItem variant="separator" />
-          <ToolbarItem>
-            <Button variant="primary" onClick={() => onOpenCloudEventClick()} data-testid="trigger-cloud-event">
-              Trigger Cloud Event
-            </Button>
-          </ToolbarItem>
-        </ToolbarGroup>
-      )}
     </React.Fragment>
   );
 

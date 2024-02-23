@@ -17,13 +17,13 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { EmbeddedFormsList } from "@kogito-apps/forms-list";
-import { FormInfo } from "@kogito-apps/components-common/dist/types";
 import { FormsListGatewayApi } from "../../../channel/FormsList";
 import { useFormsListGatewayApi } from "../../../channel/FormsList/FormsListContext";
 import { useHistory } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { EmbeddedFormsList } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formsList";
 
 const FormsListContainer: React.FC<OUIAProps> = () => {
   const history = useHistory();

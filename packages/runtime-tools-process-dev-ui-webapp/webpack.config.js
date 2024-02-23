@@ -1,3 +1,180 @@
+// /*
+//  * Licensed to the Apache Software Foundation (ASF) under one
+//  * or more contributor license agreements.  See the NOTICE file
+//  * distributed with this work for additional information
+//  * regarding copyright ownership.  The ASF licenses this file
+//  * to you under the Apache License, Version 2.0 (the
+//  * "License"); you may not use this file except in compliance
+//  * with the License.  You may obtain a copy of the License at
+//  *
+//  *  http://www.apache.org/licenses/LICENSE-2.0
+//  *
+//  * Unless required by applicable law or agreed to in writing,
+//  * software distributed under the License is distributed on an
+//  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+//  * KIND, either express or implied.  See the License for the
+//  * specific language governing permissions and limitations
+//  * under the License.
+//  */
+
+// const path = require("path");
+// const webpack = require("webpack");
+// const { merge } = require("webpack-merge");
+// const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+// const HtmlWebpackPlugin = require("html-webpack-plugin");
+// const CopyPlugin = require("copy-webpack-plugin");
+// const FileManagerPlugin = require("filemanager-webpack-plugin");
+// const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+// const { env: buildEnv } = require("./env");
+
+// const BG_IMAGES_DIRNAME = "bgimages";
+
+// module.exports = async (env) => {
+//   const dataIndexURL = buildEnv.runtimeToolsProcessDevUIWebapp.kogitoDataIndexUrl;
+//   return merge(common(env), {
+//     entry: {
+//       standalone: path.resolve(__dirname, "src", "standalone", "standalone.ts"),
+//       envelope: path.resolve(__dirname, "src", "standalone", "EnvelopeApp.ts"),
+//       "resources/form-displayer": "./src/resources/form-displayer.ts",
+//     },
+//     devServer: {
+//       static: {
+//         directory: "./dist",
+//       },
+//       host: buildEnv.runtimeToolsProcessDevUIWebapp.host,
+//       port: buildEnv.runtimeToolsProcessDevUIWebapp.port,
+//       compress: true,
+//       historyApiFallback: true,
+//       hot: true,
+//       client: {
+//         overlay: {
+//           warnings: false,
+//           errors: true,
+//           runtimeErrors: false,
+//         },
+//         progress: true,
+//       },
+//       proxy: [
+//         {
+//           context: ["/svg", "/forms"],
+//           target: "http://localhost:4000",
+//           secure: false,
+//           changeOrigin: true,
+//         },
+//       ],
+//     },
+//     plugins: [
+//       new webpack.EnvironmentPlugin({
+//         KOGITO_ENV_MODE: env.dev ? "DEV" : "PROD",
+//         KOGITO_APP_VERSION: env.dev ? "DEV" : "PROD",
+//         KOGITO_DATAINDEX_HTTP_URL: dataIndexURL,
+//         KOGITO_APP_NAME: "Runtime tools dev-ui",
+//       }),
+//       new HtmlWebpackPlugin({
+//         template: path.resolve(__dirname, 'resources', 'index.html'),
+//         favicon: 'src/favicon.ico',
+//         chunks: ['app']
+//       }),
+//       new CopyPlugin({
+//         patterns: [
+//           { from: "./resources", to: "./resources" },
+//           { from: "./src/static", to: "./static" },
+//           { from: "./src/components/styles.css", to: "./components/styles.css" },
+//         ],
+//       }),
+//       new FileManagerPlugin({
+//         events: {
+//           onEnd: {
+//             mkdir: ["./dist/resources/webapp", "./dist/webapp/", "./dist/webapp/fonts/"],
+//             copy: [
+//               {
+//                 source: "./dist/envelope.js",
+//                 destination: "./dist/resources/webapp/",
+//               },
+//               {
+//                 source: "./dist/standalone.js",
+//                 destination: "./dist/resources/webapp/",
+//               },
+//               {
+//                 source: "./dist/*.js",
+//                 destination: "./dist/webapp/",
+//                 globOptions: {
+//                   ignore: ["./dist/envelope.js", "./dist/standalone.js"],
+//                 },
+//               },
+//               { source: "./dist/fonts", destination: "./dist/webapp/fonts/" },
+//             ],
+//             delete: ["./dist/*.js*", "./dist/fonts", "./dist/standalone"],
+//           },
+//         },
+//       }),
+//       new NodePolyfillPlugin()
+//     ],
+//     module: {
+//       rules: [
+//         {
+//           test: /\.(css|sass|scss)$/,
+//           use: [require.resolve("style-loader"), require.resolve("css-loader"), require.resolve("sass-loader")],
+//         },
+//         {
+//           test: /\.(svg|ttf|eot|woff|woff2)$/,
+//           use: {
+//             loader: "file-loader",
+//             options: {
+//               // Limit at 50k. larger files emited into separate files
+//               limit: 5000,
+//               outputPath: "fonts",
+//               name: "[path][name].[ext]",
+//             },
+//           },
+//         },
+//         {
+//           test: /\.svg$/,
+//           include: (input) => input.indexOf("background-filter.svg") > 1,
+//           use: [
+//             {
+//               loader: "url-loader",
+//               options: {
+//                 limit: 5000,
+//                 outputPath: "svgs",
+//                 name: "[name].[ext]",
+//               },
+//             },
+//           ],
+//         },
+//         {
+//           test: /\.svg$/,
+//           include: (input) => input.indexOf(BG_IMAGES_DIRNAME) > -1,
+//           use: {
+//             loader: "svg-url-loader",
+//             options: {},
+//           },
+//         },
+//         {
+//           test: /\.(jpg|jpeg|png|gif)$/i,
+//           use: [
+//             {
+//               loader: "url-loader",
+//               options: {
+//                 limit: 5000,
+//                 outputPath: "images",
+//                 name: "[name].[ext]",
+//               },
+//             },
+//           ],
+//         },
+//       ],
+//     },
+//     resolve: {
+//       fallback: {
+//         https: require.resolve("https-browserify"),
+//         http: require.resolve("stream-http"),
+//       },
+//     },
+//     ignoreWarnings: [/Failed to parse source map/],
+//   });
+// };
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,62 +195,82 @@
  */
 
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
+const BG_IMAGES_DIRNAME = "bgimages";
+const CopyPlugin = require("copy-webpack-plugin");
+const FileManagerPlugin = require("filemanager-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { env: buildEnv } = require("./env");
 
-const BG_IMAGES_DIRNAME = "bgimages";
-
-module.exports = async (env) => {
-  const dataIndexURL = buildEnv.runtimeToolsManagementConsoleWebapp.kogitoDataIndexUrl;
-  return merge(common(env), {
+module.exports = async (env) =>
+  merge(common(env), {
     entry: {
-      app: path.resolve(__dirname, "src", "index.tsx"),
+      standalone: path.resolve(__dirname, "src", "standalone", "standalone.ts"),
+      envelope: path.resolve(__dirname, "src", "standalone", "EnvelopeApp.ts"),
+      "resources/form-displayer": "./src/resources/form-displayer.ts",
     },
     devServer: {
       static: {
         directory: "./dist",
       },
-      host: buildEnv.runtimeToolsManagementConsoleWebapp.host,
-      port: buildEnv.runtimeToolsManagementConsoleWebapp.port,
+      port: buildEnv.runtimeToolsProcessDevUIWebapp.port,
       compress: true,
       historyApiFallback: true,
       hot: true,
       client: {
-        overlay: {
-          warnings: false,
-          errors: true,
-          runtimeErrors: false,
-        },
+        overlay: false,
         progress: true,
       },
-      proxy: {
-        "/svg": {
+      proxy: [
+        {
+          context: ["/svg", "/forms"],
           target: "http://localhost:4000",
           secure: false,
           changeOrigin: true,
         },
-      },
+      ],
     },
     plugins: [
-      new webpack.EnvironmentPlugin({
-        KOGITO_ENV_MODE: env.dev ? "DEV" : "PROD",
-        KOGITO_DATAINDEX_HTTP_URL: dataIndexURL,
+      new MonacoWebpackPlugin({
+        languages: ["html", "typescript", "json"],
+        globalAPI: true,
       }),
+      new webpack.EnvironmentPlugin({
+        KOGITO_APP_VERSION: "DEV",
+        KOGITO_APP_NAME: "Runtime tools dev-ui",
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: "./resources", to: "./resources" },
+          { from: "./src/static", to: "./static" },
+          { from: "./src/components/styles.css", to: "./components/styles.css" },
+        ],
+      }),
+      new FileManagerPlugin({
+        events: {
+          onEnd: {
+            mkdir: ["./dist/resources/webapp/"],
+            copy: [
+              { source: "./dist/*.js", destination: "./dist/resources/webapp/" },
+              { source: "./dist/*.map", destination: "./dist/resources/webapp/" },
+              { source: "./dist/fonts", destination: "./dist/resources/webapp/fonts" },
+            ],
+          },
+        },
+      }),
+      new NodePolyfillPlugin(),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, "src", "index.html"),
+        template: path.resolve(__dirname, "resources", "index.html"),
         favicon: "src/favicon.ico",
         chunks: ["app"],
       }),
     ],
     module: {
       rules: [
-        {
-          test: /\.(css|sass|scss)$/,
-          use: [require.resolve("style-loader"), require.resolve("css-loader"), require.resolve("sass-loader")],
-        },
         {
           test: /\.(svg|ttf|eot|woff|woff2)$/,
           use: {
@@ -121,6 +318,15 @@ module.exports = async (env) => {
             },
           ],
         },
+        {
+          test: /\.(css|sass|scss)$/,
+          use: [require.resolve("style-loader"), require.resolve("css-loader"), require.resolve("sass-loader")],
+        },
+        {
+          test: /\.css$/,
+          include: [path.resolve("../../node_modules/monaco-editor")],
+          use: [require.resolve("style-loader"), require.resolve("css-loader")],
+        },
       ],
     },
     resolve: {
@@ -131,4 +337,3 @@ module.exports = async (env) => {
     },
     ignoreWarnings: [/Failed to parse source map/],
   });
-};

@@ -26,7 +26,7 @@ const { ApolloServer, gql } = require("apollo-server-express");
 var bodyParser = require("body-parser");
 // GraphQL - Apollo
 const { GraphQLScalarType } = require("graphql");
-const uuidv1 = require("uuid/v1");
+const { v1: uuidv1 } = require("uuid");
 const _ = require("lodash");
 // Config
 const config = require("./config");
@@ -540,7 +540,9 @@ const server = new ApolloServer({
   playground: true,
 });
 
-server.applyMiddleware({ app });
+server.start().then(() => {
+  server.applyMiddleware({ app });
+});
 
 module.exports = {
   getApp: () => app,

@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Form, FormContent } from "@kogito-apps/components-common/dist/types";
 
-import { getFormContent, saveFormContent } from "../apis";
+import { Form, FormContent } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { getFormContent, saveFormContent } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
 
 export interface FormDetailsGatewayApi {
   getFormContent: (formName: string) => Promise<Form>;

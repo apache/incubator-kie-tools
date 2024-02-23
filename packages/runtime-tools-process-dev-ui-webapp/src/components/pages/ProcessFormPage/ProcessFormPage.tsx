@@ -19,15 +19,19 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
 import ProcessFormContainer from "../../containers/ProcessFormContainer/ProcessFormContainer";
 import "../../styles.css";
 import { useHistory } from "react-router-dom";
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
-import { FormNotification, Notification } from "@kogito-apps/components-common/dist/components/FormNotification";
 import InlineEdit from "./components/InlineEdit/InlineEdit";
 import { useProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormContext";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import {
+  OUIAProps,
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 
 const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [notification, setNotification] = useState<Notification>();
@@ -52,7 +56,7 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   };
 
   const showNotification = (
-    notificationType: "error" | "success",
+    notificationType: Notification["type"],
     submitMessage: string,
     notificationDetails?: string
   ) => {

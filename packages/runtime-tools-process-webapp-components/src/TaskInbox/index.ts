@@ -19,3 +19,4 @@
 export * from "./TaskInboxGatewayApi";
 export * from "./TaskInboxContext";
 export * from "./TaskInboxContextProvider";
+export * from "./TaskInboxQueries";

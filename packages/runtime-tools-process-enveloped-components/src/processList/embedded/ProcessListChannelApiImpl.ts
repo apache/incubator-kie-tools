@@ -66,8 +66,4 @@ export class ProcessListChannelApiImpl implements ProcessListChannelApi {
   processList__getChildProcessesQuery(rootProcessInstanceId: string): Promise<ProcessInstance[]> {
     return this.driver.getChildProcessesQuery(rootProcessInstanceId);
   }
-
-  processList__openTriggerCloudEvent(processInstance?: ProcessInstance): void {
-    this.driver.openTriggerCloudEvent(processInstance);
-  }
 }

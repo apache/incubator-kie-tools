@@ -61,8 +61,4 @@ export default class ProcessListEnvelopeViewDriver implements ProcessListDriver 
   getChildProcessesQuery(rootProcessInstanceId: string): Promise<ProcessInstance[]> {
     return this.channelApi.requests.processList__getChildProcessesQuery(rootProcessInstanceId);
   }
-
-  openTriggerCloudEvent(processInstance?: ProcessInstance): void {
-    this.channelApi.notifications.processList__openTriggerCloudEvent.send(processInstance);
-  }
 }

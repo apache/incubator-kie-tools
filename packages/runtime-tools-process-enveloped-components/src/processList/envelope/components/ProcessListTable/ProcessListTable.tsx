@@ -182,13 +182,6 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
     }
   };
 
-  const onOpenTriggerCloudEvent: (processiInstance: ProcessInstance) => void = useMemo(() => {
-    if (isTriggerCloudEventEnabled) {
-      return (instance) => driver.openTriggerCloudEvent(instance);
-    }
-    return () => {};
-  }, [driver, isTriggerCloudEventEnabled]);
-
   const handleClick = (processInstance: ProcessInstance): void => {
     driver.openProcess(processInstance);
   };
@@ -259,7 +252,6 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
               onSkipClick={onSkipClick}
               onRetryClick={onRetryClick}
               onAbortClick={onAbortClick}
-              onOpenTriggerCloudEvent={onOpenTriggerCloudEvent}
               key={processInstance.id}
             />,
           ],

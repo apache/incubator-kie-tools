@@ -56,7 +56,6 @@ const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
       initialState={initialState}
       singularProcessLabel={"Process"}
       pluralProcessLabel={"Processes"}
-      isWorkflow={false}
     />
   );
 };

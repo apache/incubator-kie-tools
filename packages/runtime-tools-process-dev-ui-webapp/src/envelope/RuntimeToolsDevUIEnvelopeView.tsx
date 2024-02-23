@@ -21,8 +21,8 @@ import "@patternfly/patternfly/patternfly.css";
 import "@patternfly/react-core/dist/styles/base.css";
 import { RuntimeToolsDevUIEnvelopeViewApi } from "./RuntimeToolsDevUIEnvelopeViewApi";
 import RuntimeTools from "../components/DevUI/RuntimeTools/RuntimeTools";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
-import { DiagramPreviewSize } from "@kogito-apps/process-details/dist/api";
+import { User } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 
 export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIEnvelopeViewApi>(
   (props, forwardingRef) => {

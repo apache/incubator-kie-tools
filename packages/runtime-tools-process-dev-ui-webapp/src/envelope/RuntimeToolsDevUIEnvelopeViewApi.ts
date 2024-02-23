@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 import { User } from "../api";
 import { CustomLabels } from "../api/CustomLabels";
-import { DiagramPreviewSize } from "@kogito-apps/process-details/dist/api";
 
 export interface RuntimeToolsDevUIEnvelopeViewApi {
   setDataIndexUrl: (dataIndexUrl: string) => void;

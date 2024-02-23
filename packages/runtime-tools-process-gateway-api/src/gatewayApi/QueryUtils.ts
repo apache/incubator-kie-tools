@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ProcessInstanceFilter } from "../types";
+import { ProcessDefinition, ProcessInstanceFilter } from "../types";
 
 const formatSearchWords = (searchWords: string[]) => {
   const tempSearchWordsArray: any[] = [];

@@ -21,15 +21,17 @@ import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { OUIAProps, ouiaPageTypeAndObjectId } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { OUIAProps, ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import FormDetailsContainer from "../../containers/FormDetailsContainer/FormDetailsContainer";
 import "../../styles.css";
 import { useHistory } from "react-router-dom";
-import { FormInfo } from "@kogito-apps/components-common/dist/types";
-import { PageTitle } from "@kogito-apps/consoles-common/dist/components/layout/PageTitle";
-import { FormNotification, Notification } from "@kogito-apps/components-common/dist/components/FormNotification";
 import Moment from "react-moment";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { Notification } from "./components/FormDetailsNotification/FormDetailsNotification";
+import { FormNotification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
+import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
+
 const FormDetailsPage: React.FC<OUIAProps> = () => {
   const [notification, setNotification] = useState<Notification>();
 
@@ -52,7 +54,7 @@ const FormDetailsPage: React.FC<OUIAProps> = () => {
   };
 
   const showNotification = (
-    notificationType: "error" | "success",
+    notificationType: Notification["type"],
     submitMessage: string,
     notificationDetails?: string
   ) => {

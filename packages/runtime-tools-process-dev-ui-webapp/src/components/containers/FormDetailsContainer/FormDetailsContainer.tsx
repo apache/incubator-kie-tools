@@ -17,11 +17,11 @@
  * under the License.
  */
 import React from "react";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
 import { FormDetailsGatewayApi } from "../../../channel/FormDetails";
 import { useFormDetailsGatewayApi } from "../../../channel/FormDetails/FormDetailsContext";
-import { EmbeddedFormDetails } from "@kogito-apps/form-details";
-import { Form, FormContent, FormInfo } from "@kogito-apps/components-common/dist/types";
+import { Form, FormInfo, FormContent } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { EmbeddedFormDetails } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDetails";
 
 interface FormDetailsContainerProps {
   formData: FormInfo;

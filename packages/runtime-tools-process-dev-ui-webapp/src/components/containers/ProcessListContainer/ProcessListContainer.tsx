@@ -18,12 +18,15 @@
  */
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { EmbeddedProcessList } from "@kogito-apps/process-list";
-import { ProcessListGatewayApi, useProcessListGatewayApi } from "../../../channel/ProcessList";
-import { ProcessInstance, ProcessListState } from "@kogito-apps/management-console-shared/dist/types";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { CloudEventPageSource } from "../../pages/CloudEventFormPage/CloudEventFormPage";
+import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { EmbeddedProcessList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
+import {
+  ProcessListGatewayApi,
+  useProcessListGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
+import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 interface ProcessListContainerProps {
   initialState: ProcessListState;
@@ -43,21 +46,8 @@ const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
         });
       },
     });
-    const onTriggerCloudEventUnsubscriber = appContext.isWorkflow()
-      ? gatewayApi.onOpenTriggerCloudEventListen({
-          onOpen(processInstance?: ProcessInstance) {
-            history.push({
-              pathname: `/Processes/CloudEvent/${processInstance?.id ?? ""}`,
-              state: {
-                source: CloudEventPageSource.INSTANCES,
-              },
-            });
-          },
-        })
-      : undefined;
     return () => {
       onOpenInstanceUnsubscriber.unSubscribe();
-      onTriggerCloudEventUnsubscriber?.unSubscribe();
     };
   }, []);
 
@@ -69,8 +59,6 @@ const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
       initialState={initialState}
       singularProcessLabel={appContext.customLabels.singularProcessLabel}
       pluralProcessLabel={appContext.customLabels.pluralProcessLabel}
-      isTriggerCloudEventEnabled={appContext.isWorkflow()}
-      isWorkflow={appContext.isWorkflow()}
     />
   );
 };

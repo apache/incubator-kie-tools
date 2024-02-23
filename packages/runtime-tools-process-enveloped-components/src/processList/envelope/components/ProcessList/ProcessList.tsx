@@ -22,11 +22,7 @@ import ProcessListTable from "../ProcessListTable/ProcessListTable";
 import ProcessListToolbar from "../ProcessListToolbar/ProcessListToolbar";
 import { ISortBy } from "@patternfly/react-table/dist/js/components/Table";
 import _ from "lodash";
-import {
-  alterOrderByObj,
-  processListDefaultStatusFilter,
-  workflowListDefaultStatusFilter,
-} from "../utils/ProcessListUtils";
+import { alterOrderByObj, processListDefaultStatusFilter } from "../utils/ProcessListUtils";
 
 import "../styles.css";
 import {
@@ -51,8 +47,6 @@ interface ProcessListProps {
   initialState: ProcessListState;
   singularProcessLabel: string;
   pluralProcessLabel: string;
-  isWorkflow: boolean;
-  isTriggerCloudEventEnabled?: boolean;
 }
 const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   driver,
@@ -60,13 +54,10 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   initialState,
   singularProcessLabel,
   pluralProcessLabel,
-  isTriggerCloudEventEnabled = false,
-  isWorkflow,
   ouiaId,
   ouiaSafe,
 }) => {
-  const defaultStatusFilter =
-    singularProcessLabel == "Process" ? processListDefaultStatusFilter : workflowListDefaultStatusFilter;
+  const defaultStatusFilter = processListDefaultStatusFilter;
 
   const defaultFilters: ProcessInstanceFilter =
     initialState && initialState.filters
@@ -233,8 +224,6 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
         defaultStatusFilter={defaultStatusFilter}
         singularProcessLabel={singularProcessLabel}
         pluralProcessLabel={pluralProcessLabel}
-        isWorkflow={isWorkflow}
-        isTriggerCloudEventEnabled={isTriggerCloudEventEnabled}
       />
       {filters.status.length > 0 ? (
         <>
@@ -254,7 +243,6 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
             setIsAllChecked={setIsAllChecked}
             singularProcessLabel={singularProcessLabel}
             pluralProcessLabel={pluralProcessLabel}
-            isTriggerCloudEventEnabled={isTriggerCloudEventEnabled}
           />
           {mustShowLoadMore && (
             <LoadMore

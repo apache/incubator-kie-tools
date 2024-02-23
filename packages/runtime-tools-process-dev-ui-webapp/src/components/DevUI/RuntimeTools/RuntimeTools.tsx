@@ -19,15 +19,15 @@
 import React from "react";
 import { HttpLink } from "apollo-link-http";
 import { onError } from "apollo-link-error";
-import { ServerUnavailablePage } from "@kogito-apps/consoles-common/dist/components/pages/ServerUnavailablePage";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import DevUIRoutes from "../DevUIRoutes/DevUIRoutes";
 import DevUILayout from "../DevUILayout/DevUILayout";
 import ReactDOM from "react-dom";
 import { CustomLabels } from "../../../api/CustomLabels";
-import { DiagramPreviewSize } from "@kogito-apps/process-details/dist/api";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
+import { User } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
+import { ServerUnavailablePage } from "@kie-tools/runtime-tools-shared-webapp-components/dist/ServerUnavailablePage";
 
 interface IOwnProps {
   isProcessEnabled: boolean;

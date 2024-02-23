@@ -17,11 +17,13 @@
  * under the License.
  */
 import React from "react";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { EmbeddedJobsManagement } from "@kogito-apps/jobs-management";
-import { JobsManagementGatewayApi } from "../../../channel/JobsManagement";
-import { useJobsManagementGatewayApi } from "../../../channel/JobsManagement/JobsManagementContext";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import {
+  JobsManagementGatewayApi,
+  useJobsManagementGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
+import { EmbeddedJobsManagement } from "@kie-tools/runtime-tools-process-enveloped-components/dist/jobsManagement";
 
 const JobsManagementContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const gatewayApi: JobsManagementGatewayApi = useJobsManagementGatewayApi();

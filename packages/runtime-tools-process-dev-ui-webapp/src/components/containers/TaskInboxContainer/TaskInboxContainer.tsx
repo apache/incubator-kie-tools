@@ -18,14 +18,15 @@
  */
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { EmbeddedTaskInbox, TaskInboxApi } from "@kogito-apps/task-inbox";
-import { TaskInboxGatewayApi } from "../../../channel/TaskInbox";
-import { useTaskInboxGatewayApi } from "../../../channel/TaskInbox/TaskInboxContext";
-import { getActiveTaskStates, getAllTaskStates } from "../../../utils/Utils";
-import { GraphQL } from "@kogito-apps/consoles-common/dist/graphql";
-import UserTaskInstance = GraphQL.UserTaskInstance;
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import {
+  useTaskInboxGatewayApi,
+  TaskInboxGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
+import { EmbeddedTaskInbox, TaskInboxApi } from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
 
 const TaskInboxContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const history = useHistory();

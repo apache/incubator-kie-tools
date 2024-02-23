@@ -120,7 +120,7 @@ module.exports = async (env) =>
             copy: [
               { source: "./dist/*.js", destination: "./dist/resources/webapp/" },
               { source: "./dist/*.map", destination: "./dist/resources/webapp/" },
-              { source: "./dist/fonts", destination: "./dist/resources/webapp/" },
+              { source: "./dist/fonts", destination: "./dist/resources/webapp/fonts" },
               {
                 source: "./dist/monitoring-webapp",
                 destination: "./dist/resources/webapp/monitoring-webapp",

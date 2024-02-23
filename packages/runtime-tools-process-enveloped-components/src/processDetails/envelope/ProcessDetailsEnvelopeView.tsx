@@ -49,7 +49,6 @@ export const ProcessDetailsEnvelopeView = React.forwardRef<ProcessDetailsEnvelop
           setProcessInstance(initArgs.processInstance);
           setOmittedProcessTimelineEvents(initArgs.omittedProcessTimelineEvents!);
           setDiagramPreviewSize(initArgs.diagramPreviewSize);
-          setShowSwfDiagram(initArgs.showSwfDiagram);
           setSingularProcessLabel(initArgs.singularProcessLabel);
           setPluralProcessLabel(initArgs.pluralProcessLabel);
           setEnvelopeConnectedToChannel(true);

@@ -17,13 +17,13 @@
  * under the License.
  */
 import React from "react";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormGatewayApi";
 import { useProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormContext";
-import { EmbeddedProcessForm } from "@kogito-apps/process-form";
-import { Form } from "@kogito-apps/components-common/dist/types";
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { EmbeddedProcessForm } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processForm";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 interface ProcessFormContainerProps {
   processDefinitionData: ProcessDefinition;

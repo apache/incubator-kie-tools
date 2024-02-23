@@ -19,10 +19,14 @@
 import React, { useEffect } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { PageSectionHeader } from "@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader";
+import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 import JobsManagementContainer from "../../containers/JobsManagementContainer/JobsManagementContainer";
 import "../../styles.css";
+import {
+  OUIAProps,
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 const JobsManagementPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   useEffect(() => {

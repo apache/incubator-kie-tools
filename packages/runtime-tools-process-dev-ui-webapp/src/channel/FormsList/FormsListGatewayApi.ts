@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { FormFilter, FormInfo } from "@kogito-apps/components-common/dist/types";
-import { getForms } from "../apis";
 
-/* eslint-disable @typescript-eslint/no-empty-interface */
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { FormFilter } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formsList";
+import { getForms } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
 export interface FormsListGatewayApi {
   getFormFilter(): Promise<FormFilter>;
   applyFilter(formList: FormFilter): Promise<void>;

@@ -20,18 +20,25 @@ import React, { useState, useEffect } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { ServerErrors } from "@kogito-apps/components-common/dist/components/ServerErrors";
-import { KogitoSpinner } from "@kogito-apps/components-common/dist/components/KogitoSpinner";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
 import { RouteComponentProps } from "react-router-dom";
-import { PageSectionHeader } from "@kogito-apps/consoles-common/dist/components/layout/PageSectionHeader";
+import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
+import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import ProcessDetailsContainer from "../../containers/ProcessDetailsContainer/ProcessDetailsContainer";
-import { ProcessDetailsGatewayApi, useProcessDetailsGatewayApi } from "../../../channel/ProcessDetails";
+import {
+  ProcessDetailsGatewayApi,
+  useProcessDetailsGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { StaticContext, useHistory } from "react-router";
 import * as H from "history";
 import "../../styles.css";
-import { ProcessInstance } from "@kogito-apps/management-console-shared/dist/types";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import {
+  OUIAProps,
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 interface MatchProps {
   instanceID: string;

@@ -19,8 +19,6 @@
 import React, { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { JobsManagementPage, ProcessesPage } from "../../pages";
-import { NoData } from "@kogito-apps/consoles-common/dist/components/pages/NoData";
-import { PageNotFound } from "@kogito-apps/consoles-common/dist/components/pages/PageNotFound";
 import ProcessDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
 import TaskInboxPage from "../../pages/TaskInboxPage/TaskInboxPage";
 import TaskDetailsPage from "../../pages/TaskDetailsPage/TaskDetailsPage";
@@ -28,6 +26,8 @@ import FormsListPage from "../../pages/FormsListPage/FormsListPage";
 import FormDetailPage from "../../pages/FormDetailsPage/FormDetailsPage";
 import ProcessFormPage from "../../pages/ProcessFormPage/ProcessFormPage";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import { PageNotFound } from "@kie-tools/runtime-tools-shared-webapp-components/dist/PageNotFound";
+import { NoData } from "@kie-tools/runtime-tools-shared-webapp-components/dist/NoData";
 
 interface IOwnProps {
   navigate: string;

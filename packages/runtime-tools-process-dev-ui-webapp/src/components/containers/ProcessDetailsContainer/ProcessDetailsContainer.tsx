@@ -17,13 +17,15 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { componentOuiaProps, OUIAProps } from "@kogito-apps/ouia-tools/dist/utils/OuiaUtils";
-import { ProcessInstance } from "@kogito-apps/management-console-shared/dist/types";
-import { EmbeddedProcessDetails } from "@kogito-apps/process-details";
-import { ProcessDetailsGatewayApi } from "../../../channel/ProcessDetails";
-import { useProcessDetailsGatewayApi } from "../../../channel/ProcessDetails/ProcessDetailsContext";
 import { useHistory } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import {
+  useProcessDetailsGatewayApi,
+  ProcessDetailsGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
+import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 
 interface ProcessDetailsContainerProps {
   processInstance: ProcessInstance;
@@ -57,7 +59,6 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps & OUIAProps
       processInstance={processInstance}
       omittedProcessTimelineEvents={appContext.omittedProcessTimelineEvents}
       diagramPreviewSize={appContext.diagramPreviewSize}
-      showSwfDiagram={appContext.isWorkflow()}
       singularProcessLabel={appContext.customLabels.singularProcessLabel}
       pluralProcessLabel={appContext.customLabels.pluralProcessLabel}
     />

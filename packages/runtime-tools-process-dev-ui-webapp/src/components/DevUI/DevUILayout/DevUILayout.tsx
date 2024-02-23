@@ -21,21 +21,21 @@ import { Route, Switch } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import { MemoryRouter } from "react-router";
-import PageLayout from "@kogito-apps/consoles-common/dist/components/layout/PageLayout/PageLayout";
-import { User } from "@kogito-apps/consoles-common/dist/environment/auth";
 import DevUINav from "../DevUINav/DevUINav";
-import JobsManagementContextProvider from "../../../channel/JobsManagement/JobsManagementContextProvider";
-import ProcessDetailsContextProvider from "../../../channel/ProcessDetails/ProcessDetailsContextProvider";
-import ProcessListContextProvider from "../../../channel/ProcessList/ProcessListContextProvider";
-import TaskConsoleContextsProvider from "../../../channel/TaskInbox/TaskInboxContextProvider";
-import TaskFormContextProvider from "../../../channel/TaskForms/TaskFormContextProvider";
 import FormsListContextProvider from "../../../channel/FormsList/FormsListContextProvider";
 import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetailsContextProvider";
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
 import ProcessDefinitionListContextProvider from "../../../channel/ProcessDefinitionList/ProcessDefinitionListContextProvider";
 import ProcessFormContextProvider from "../../../channel/ProcessForm/ProcessFormContextProvider";
 import { CustomLabels } from "../../../api/CustomLabels";
-import { DiagramPreviewSize } from "@kogito-apps/process-details/dist/api";
+import { User } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
+import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
+import { ProcessListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
+import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
+import { JobsManagementContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
+import { TaskFormContextProvider } from "../../contexts/TaskFormContextProvider";
+import { TaskInboxContextProvider } from "../../contexts/TaskInboxContextProvider";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -82,7 +82,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
         omittedProcessTimelineEvents={omittedProcessTimelineEvents}
         diagramPreviewSize={diagramPreviewSize}
       >
-        <TaskConsoleContextsProvider apolloClient={apolloClient}>
+        <TaskInboxContextProvider apolloClient={apolloClient}>
           <TaskFormContextProvider>
             <ProcessListContextProvider apolloClient={apolloClient}>
               <ProcessDetailsContextProvider apolloClient={apolloClient}>
@@ -104,7 +104,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
               </ProcessDetailsContextProvider>
             </ProcessListContextProvider>
           </TaskFormContextProvider>
-        </TaskConsoleContextsProvider>
+        </TaskInboxContextProvider>
       </DevUIAppContextProvider>
     </ApolloProvider>
   );

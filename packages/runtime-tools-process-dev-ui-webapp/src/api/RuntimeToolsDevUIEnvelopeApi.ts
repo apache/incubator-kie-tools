@@ -17,7 +17,7 @@
  * under the License.
  */
 import { CustomLabels } from "./CustomLabels";
-import { DiagramPreviewSize } from "@kogito-apps/process-details/dist/api";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 
 export interface RuntimeToolsDevUIEnvelopeApi {
   runtimeToolsDevUI_initRequest(association: Association, initArgs: RuntimeToolsDevUIInitArgs): Promise<void>;

@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ProcessDefinition } from "@kogito-apps/process-definition-list";
-import { getProcessDefinitionList } from "../apis";
+
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { getProcessDefinitionList } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
 
 export interface ProcessDefinitionListGatewayApi {
   getProcessDefinitionFilter: () => Promise<string[]>;

@@ -39,5 +39,4 @@ export interface ProcessListDriver {
   ): Promise<BulkProcessInstanceActionResponse>;
   query(offset: number, limit: number): Promise<ProcessInstance[]>;
   getChildProcessesQuery(rootProcessInstanceId: string): Promise<ProcessInstance[]>;
-  openTriggerCloudEvent(processInstance?: ProcessInstance): void;
 }
