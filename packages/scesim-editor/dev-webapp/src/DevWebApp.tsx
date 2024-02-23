@@ -89,14 +89,14 @@ export function DevWebApp() {
 
   const dropdownExamplesItems = [
     <DropdownItem
-      key="action"
+      key="TrafficViolationTest.scesim"
       component="button"
       onClick={() => onOpenStaticScesimExample("TrafficViolationTest.scesim", TRAFFIC_VIOLATION_DMN)}
     >
       DMN-Based: TrafficViolationTest
     </DropdownItem>,
     <DropdownItem
-      key="action"
+      key="AreTheyOldEnoughTest.scesim"
       component="button"
       onClick={() => onOpenStaticScesimExample("AreTheyOldEnoughTest.scesim", IS_OLD_ENOUGH_RULE)}
     >
