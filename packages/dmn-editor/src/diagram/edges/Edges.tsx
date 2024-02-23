@@ -159,12 +159,9 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
         strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
+        data-edgetype={EDGE_TYPES.informationRequirement}
       />
-      <InformationRequirementPath
-        d={path}
-        className={`kie-dmn-editor--edge ${className}`}
-        data-testid={EDGE_TYPES.informationRequirement}
-      />
+      <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
 
       {props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
@@ -211,12 +208,9 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
+        data-edgetype={EDGE_TYPES.knowledgeRequirement}
       />
-      <KnowledgeRequirementPath
-        d={path}
-        className={`kie-dmn-editor--edge ${className}`}
-        data-testid={EDGE_TYPES.knowledgeRequirement}
-      />
+      <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
 
       {props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints
@@ -264,12 +258,12 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
+        data-edgetype={EDGE_TYPES.authorityRequirement}
       />
       <AuthorityRequirementPath
         d={path}
         className={`kie-dmn-editor--edge ${className}`}
         centerToConnectionPoint={false}
-        data-testid={EDGE_TYPES.authorityRequirement}
       />
 
       {props.selected && !isConnecting && props.data?.dmnEdge && (
@@ -317,8 +311,9 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
         strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
+        data-edgetype={EDGE_TYPES.association}
       />
-      <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} data-testid={EDGE_TYPES.association} />
+      <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
 
       {props.selected && !isConnecting && props.data?.dmnEdge && (
         <Waypoints

@@ -43,16 +43,9 @@ const preview: Preview = {
   },
 
   decorators: [
-    (Story) => {
-      return (
-        <div
-          id={"decorator"}
-          style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}
-        >
-          {Story()}
-        </div>
-      );
-    },
+    (Story) => (
+      <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>{Story()}</div>
+    ),
   ],
 };
 

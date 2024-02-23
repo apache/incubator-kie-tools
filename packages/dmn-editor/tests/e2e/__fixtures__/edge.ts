@@ -18,21 +18,28 @@
  */
 
 import { Page } from "@playwright/test";
+import { Node } from "./node";
 
-export class Diagram {
-  constructor(public page: Page) {
+export enum EdgeType {
+  ASSOCIATION,
+  AUTHORITY_REQUIREMENT,
+  INFORMATION_REQUIREMENT,
+  KNOWLEDGE_REQUIREMENT,
+}
+
+export class Edge {
+  constructor(public page: Page, public node: Node) {
     this.page = page;
   }
 
-  public get() {
-    return this.page.getByTestId("kie-dmn-editor--diagram-container");
+  public async get(args: { from: string; to: string }) {
+    const from = await this.node.getId({ name: args.from });
+    const to = await this.node.getId({ name: args.to });
+
+    return this.page.getByRole("button", { name: `Edge from ${from} to ${to}` });
   }
 
-  public async hoverNode(args: { name: string }) {
-    await this.page.getByTitle(args.name).hover();
-  }
-
-  public async selectNode(args: { name: string }) {
-    await this.page.getByTitle(args.name).click();
+  public async type(args: { from: string; to: string }) {
+    return (await this.get({ from: args.from, to: args.to })).locator("path").nth(0).getAttribute("data-edgetype");
   }
 }

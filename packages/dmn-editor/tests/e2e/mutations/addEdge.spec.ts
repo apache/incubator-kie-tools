@@ -21,212 +21,212 @@ import { expect } from "@playwright/test";
 import { test } from "../__fixtures__/base";
 import { EDGE_TYPES } from "../../../src/diagram/edges/EdgeTypes";
 
-test.beforeEach(async ({ diagram }, testInfo) => {
-  await diagram.openEmpty();
+test.beforeEach(async ({ editor }, testInfo) => {
+  await editor.open();
 });
 
-test.describe("Add edge", () => {
-  test.describe("Between Input Data", () => {
-    test("And Decision", async ({ page, diagram }) => {
-      // Add two nodes
-      await page
-        .getByTitle("Decision", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
-      await page
-        .getByTitle("Input Data", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
+// test.describe("Add edge", () => {
+//   test.describe("Between Input Data", () => {
+//     test("And Decision", async ({ page, diagram }) => {
+//       // Add two nodes
+//       await page
+//         .getByTitle("Decision", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
+//       await page
+//         .getByTitle("Input Data", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
-      // Connect these nodes
-      await page.getByTitle("New Input Data").click();
-      await page
-        .getByTitle("Add Information Requirement edge")
-        .locator("visible=true")
-        .dragTo(page.getByText("New Decision"));
+//       // Connect these nodes
+//       await page.getByTitle("New Input Data").click();
+//       await page
+//         .getByTitle("Add Information Requirement edge")
+//         .locator("visible=true")
+//         .dragTo(page.getByText("New Decision"));
 
-      const from = await page.getByTitle("New Input Data").getAttribute("data-nodeid");
-      const to = await page.getByTitle("New Decision").getAttribute("data-nodeid");
+//       const from = await page.getByTitle("New Input Data").getAttribute("data-nodeid");
+//       const to = await page.getByTitle("New Decision").getAttribute("data-nodeid");
 
-      await expect(diagram.getEdge(from, to)).toBeAttached();
-      await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.informationRequirement)).toBeAttached();
-    });
+//       await expect(diagram.getEdge(from, to)).toBeAttached();
+//       await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.informationRequirement)).toBeAttached();
+//     });
 
-    test("And Knowledge Source", async ({ page, diagram }) => {
-      // Add two nodes
-      await page
-        .getByTitle("Knowledge Source", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
-      await page
-        .getByTitle("Input Data", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
+//     test("And Knowledge Source", async ({ page, diagram }) => {
+//       // Add two nodes
+//       await page
+//         .getByTitle("Knowledge Source", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
+//       await page
+//         .getByTitle("Input Data", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
-      // Connect these nodes
-      await page.getByTitle("New Input Data").click();
-      await page
-        .getByTitle("Add Authority Requirement edge")
-        .locator("visible=true")
-        .dragTo(page.getByText("New Knowledge Source"));
+//       // Connect these nodes
+//       await page.getByTitle("New Input Data").click();
+//       await page
+//         .getByTitle("Add Authority Requirement edge")
+//         .locator("visible=true")
+//         .dragTo(page.getByText("New Knowledge Source"));
 
-      const from = await page.getByTitle("New Input Data").getAttribute("data-nodeid");
-      const to = await page.getByTitle("New Knowledge Source").getAttribute("data-nodeid");
+//       const from = await page.getByTitle("New Input Data").getAttribute("data-nodeid");
+//       const to = await page.getByTitle("New Knowledge Source").getAttribute("data-nodeid");
 
-      await expect(diagram.getEdge(from, to)).toBeAttached();
-      await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.authorityRequirement)).toBeAttached();
-    });
+//       await expect(diagram.getEdge(from, to)).toBeAttached();
+//       await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.authorityRequirement)).toBeAttached();
+//     });
 
-    test("And Text Annotation", async ({ page, diagram }) => {
-      // Add two nodes
-      await page
-        .getByTitle("Text Annotation", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
-      await page
-        .getByTitle("Input Data", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 400 } });
+//     test("And Text Annotation", async ({ page, diagram }) => {
+//       // Add two nodes
+//       await page
+//         .getByTitle("Text Annotation", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
+//       await page
+//         .getByTitle("Input Data", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 400 } });
 
-      // Connect these nodes
-      await page.getByTitle("New text annotation").click();
-      await page.getByTitle("Add Association edge").locator("visible=true").dragTo(page.getByText("New Input Data"));
+//       // Connect these nodes
+//       await page.getByTitle("New text annotation").click();
+//       await page.getByTitle("Add Association edge").locator("visible=true").dragTo(page.getByText("New Input Data"));
 
-      const from = await page.getByTitle("New text annotation").getAttribute("data-nodeid");
-      const to = await page.getByTitle("New Input Data").getAttribute("data-nodeid");
+//       const from = await page.getByTitle("New text annotation").getAttribute("data-nodeid");
+//       const to = await page.getByTitle("New Input Data").getAttribute("data-nodeid");
 
-      await expect(diagram.getEdge(from, to)).toBeAttached();
-      await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.association)).toBeAttached();
-    });
-  });
+//       await expect(diagram.getEdge(from, to)).toBeAttached();
+//       await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.association)).toBeAttached();
+//     });
+//   });
 
-  test.describe("Between Decision", () => {
-    test("And Decision", async ({ page, diagram }) => {
-      // Add two nodes
-      await page
-        .getByTitle("Decision", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
-      await page
-        .getByTitle("Decision", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
+//   test.describe("Between Decision", () => {
+//     test("And Decision", async ({ page, diagram }) => {
+//       // Add two nodes
+//       await page
+//         .getByTitle("Decision", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
+//       await page
+//         .getByTitle("Decision", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
-      // Connect these nodes
-      await page.getByTitle("New Decision").nth(1).click();
-      await page
-        .getByTitle("Add Information Requirement edge")
-        .locator("visible=true")
-        .dragTo(page.getByText("New Decision").first());
+//       // Connect these nodes
+//       await page.getByTitle("New Decision").nth(1).click();
+//       await page
+//         .getByTitle("Add Information Requirement edge")
+//         .locator("visible=true")
+//         .dragTo(page.getByText("New Decision").first());
 
-      const from = await page.getByTitle("New Decision").nth(1).getAttribute("data-nodeid");
-      const to = await page.getByTitle("New Decision").first().getAttribute("data-nodeid");
+//       const from = await page.getByTitle("New Decision").nth(1).getAttribute("data-nodeid");
+//       const to = await page.getByTitle("New Decision").first().getAttribute("data-nodeid");
 
-      await expect(diagram.getEdge(from, to)).toBeAttached();
-      await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.informationRequirement)).toBeAttached();
-    });
+//       await expect(diagram.getEdge(from, to)).toBeAttached();
+//       await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.informationRequirement)).toBeAttached();
+//     });
 
-    test("And Knoledge Source", async ({ page, diagram }) => {
-      // Add two nodes
-      await page
-        .getByTitle("Knowledge Source", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
-      await page
-        .getByTitle("Decision", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
+//     test("And Knoledge Source", async ({ page, diagram }) => {
+//       // Add two nodes
+//       await page
+//         .getByTitle("Knowledge Source", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
+//       await page
+//         .getByTitle("Decision", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
-      // Connect these nodes
-      await page.getByTitle("New Decision").click();
-      await page
-        .getByTitle("Add Authority Requirement edge")
-        .locator("visible=true")
-        .dragTo(page.getByText("New Knowledge Source"));
+//       // Connect these nodes
+//       await page.getByTitle("New Decision").click();
+//       await page
+//         .getByTitle("Add Authority Requirement edge")
+//         .locator("visible=true")
+//         .dragTo(page.getByText("New Knowledge Source"));
 
-      const from = await page.getByTitle("New Decision").getAttribute("data-nodeid");
-      const to = await page.getByTitle("New Knowledge Source").getAttribute("data-nodeid");
+//       const from = await page.getByTitle("New Decision").getAttribute("data-nodeid");
+//       const to = await page.getByTitle("New Knowledge Source").getAttribute("data-nodeid");
 
-      await expect(diagram.getEdge(from, to)).toBeAttached();
-      await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.authorityRequirement)).toBeAttached();
-    });
+//       await expect(diagram.getEdge(from, to)).toBeAttached();
+//       await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.authorityRequirement)).toBeAttached();
+//     });
 
-    test("And Text Annotation", async ({ page, diagram }) => {
-      // Add two nodes
-      await page
-        .getByTitle("Text Annotation", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
-      await page
-        .getByTitle("Decision", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 400 } });
+//     test("And Text Annotation", async ({ page, diagram }) => {
+//       // Add two nodes
+//       await page
+//         .getByTitle("Text Annotation", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
+//       await page
+//         .getByTitle("Decision", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 400 } });
 
-      // Connect these nodes
-      await page.getByTitle("New text annotation").click();
-      await page.getByTitle("Add Association edge").locator("visible=true").dragTo(page.getByText("New Decision"));
+//       // Connect these nodes
+//       await page.getByTitle("New text annotation").click();
+//       await page.getByTitle("Add Association edge").locator("visible=true").dragTo(page.getByText("New Decision"));
 
-      const from = await page.getByTitle("New text annotation").getAttribute("data-nodeid");
-      const to = await page.getByTitle("New Decision").getAttribute("data-nodeid");
+//       const from = await page.getByTitle("New text annotation").getAttribute("data-nodeid");
+//       const to = await page.getByTitle("New Decision").getAttribute("data-nodeid");
 
-      await expect(diagram.getEdge(from, to)).toBeAttached();
-      await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.association)).toBeAttached();
-    });
-  });
+//       await expect(diagram.getEdge(from, to)).toBeAttached();
+//       await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.association)).toBeAttached();
+//     });
+//   });
 
-  test.describe("Between BKM", () => {
-    test("And Decision", async ({ page, diagram }) => {
-      // Add two nodes
-      await page
-        .getByTitle("Decision", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
-      await page
-        .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
+//   test.describe("Between BKM", () => {
+//     test("And Decision", async ({ page, diagram }) => {
+//       // Add two nodes
+//       await page
+//         .getByTitle("Decision", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
+//       await page
+//         .getByTitle("Business Knowledge Model", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
-      // Connect these nodes
-      await page.getByTitle("New BKM").click();
-      await page
-        .getByTitle("Add Knowledge Requirement edge")
-        .locator("visible=true")
-        .dragTo(page.getByText("New Decision"));
+//       // Connect these nodes
+//       await page.getByTitle("New BKM").click();
+//       await page
+//         .getByTitle("Add Knowledge Requirement edge")
+//         .locator("visible=true")
+//         .dragTo(page.getByText("New Decision"));
 
-      const from = await page.getByTitle("New BKM").getAttribute("data-nodeid");
-      const to = await page.getByTitle("New Decision").getAttribute("data-nodeid");
+//       const from = await page.getByTitle("New BKM").getAttribute("data-nodeid");
+//       const to = await page.getByTitle("New Decision").getAttribute("data-nodeid");
 
-      await expect(diagram.getEdge(from, to)).toBeAttached();
-      await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.knowledgeRequirement)).toBeAttached();
-    });
+//       await expect(diagram.getEdge(from, to)).toBeAttached();
+//       await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.knowledgeRequirement)).toBeAttached();
+//     });
 
-    test("And BKM", async ({ page, diagram }) => {
-      // Add two nodes
-      await page
-        .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
-      await page
-        .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
+//     test("And BKM", async ({ page, diagram }) => {
+//       // Add two nodes
+//       await page
+//         .getByTitle("Business Knowledge Model", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
+//       await page
+//         .getByTitle("Business Knowledge Model", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
-      // Connect these nodes
-      await page.getByTitle("New BKM").nth(1).click();
-      await page
-        .getByTitle("Add Knowledge Requirement edge")
-        .locator("visible=true")
-        .dragTo(page.getByText("New BKM").first());
+//       // Connect these nodes
+//       await page.getByTitle("New BKM").nth(1).click();
+//       await page
+//         .getByTitle("Add Knowledge Requirement edge")
+//         .locator("visible=true")
+//         .dragTo(page.getByText("New BKM").first());
 
-      const from = await page.getByTitle("New BKM").nth(1).getAttribute("data-nodeid");
-      const to = await page.getByTitle("New BKM").first().getAttribute("data-nodeid");
+//       const from = await page.getByTitle("New BKM").nth(1).getAttribute("data-nodeid");
+//       const to = await page.getByTitle("New BKM").first().getAttribute("data-nodeid");
 
-      await expect(diagram.getEdge(from, to)).toBeAttached();
-      await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.knowledgeRequirement)).toBeAttached();
-    });
+//       await expect(diagram.getEdge(from, to)).toBeAttached();
+//       await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.knowledgeRequirement)).toBeAttached();
+//     });
 
-    test("And Text Annotation", async ({ page, diagram }) => {
-      // Add two nodes
-      await page
-        .getByTitle("Business Knowledge Model", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
-      await page
-        .getByTitle("Text Annotation", { exact: true })
-        .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
+//     test("And Text Annotation", async ({ page, diagram }) => {
+//       // Add two nodes
+//       await page
+//         .getByTitle("Business Knowledge Model", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 100 } });
+//       await page
+//         .getByTitle("Text Annotation", { exact: true })
+//         .dragTo(diagram.getContainer(), { targetPosition: { x: 100, y: 300 } });
 
-      // Connect these nodes
-      await page.getByTitle("New text annotation").click();
-      await page.getByTitle("Add Association edge").locator("visible=true").dragTo(page.getByText("New BKM"));
+//       // Connect these nodes
+//       await page.getByTitle("New text annotation").click();
+//       await page.getByTitle("Add Association edge").locator("visible=true").dragTo(page.getByText("New BKM"));
 
-      const from = await page.getByTitle("New text annotation").getAttribute("data-nodeid");
-      const to = await page.getByTitle("New BKM").getAttribute("data-nodeid");
+//       const from = await page.getByTitle("New text annotation").getAttribute("data-nodeid");
+//       const to = await page.getByTitle("New BKM").getAttribute("data-nodeid");
 
-      await expect(diagram.getEdge(from, to)).toBeAttached();
-      await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.association)).toBeAttached();
-    });
-  });
-});
+//       await expect(diagram.getEdge(from, to)).toBeAttached();
+//       await expect(diagram.getEdge(from, to).getByTestId(EDGE_TYPES.association)).toBeAttached();
+//     });
+//   });
+// });

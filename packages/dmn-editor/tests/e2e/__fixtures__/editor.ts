@@ -19,20 +19,12 @@
 
 import { Page } from "@playwright/test";
 
-export class Diagram {
-  constructor(public page: Page) {
+export class Editor {
+  constructor(public page: Page, public baseURL?: string) {
     this.page = page;
   }
 
-  public get() {
-    return this.page.getByTestId("kie-dmn-editor--diagram-container");
-  }
-
-  public async hoverNode(args: { name: string }) {
-    await this.page.getByTitle(args.name).hover();
-  }
-
-  public async selectNode(args: { name: string }) {
-    await this.page.getByTitle(args.name).click();
+  public async open() {
+    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=misc-empty--empty&viewMode=story`);
   }
 }

@@ -53,7 +53,12 @@ export const handleStyle: React.CSSProperties = {
   transform: "unset",
 };
 
-export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: NodeType[]; edgeTypes: EdgeType[] }) {
+export function OutgoingStuffNodePanel(props: {
+  isVisible: boolean;
+  nodeTypes: NodeType[];
+  edgeTypes: EdgeType[];
+  nodeId: string;
+}) {
   const style: React.CSSProperties = React.useMemo(
     () => ({
       visibility: props.isVisible ? undefined : "hidden",
@@ -123,8 +128,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
-                title={getEdgeActionTitle(edgeType)}
-                data-testid={`add_${edgeType}`}
+                data-testid={`#${props.nodeId}-add-${edgeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
@@ -162,8 +166,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
-                title={getNodeActionTitle(nodeType)}
-                data-testid={`add_${nodeType}`}
+                data-testid={`#${props.nodeId}-add-${nodeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
