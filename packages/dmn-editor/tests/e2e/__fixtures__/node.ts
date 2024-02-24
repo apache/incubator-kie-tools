@@ -19,6 +19,7 @@
 
 import { Page } from "@playwright/test";
 import { Diagram } from "./diagram";
+import { EdgeType } from "./edge";
 
 export enum NodeType {
   INPUT_DATA,
@@ -52,25 +53,38 @@ export class Node {
 
     switch (args.type) {
       case NodeType.INPUT_DATA:
-        return await node
+        return node
           .getByTitle("Add Input Data node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
       case NodeType.DECISION:
-        return await node
-          .getByTitle("Add Decision node")
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        return node.getByTitle("Add Decision node").dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
       case NodeType.KNOWLEDGE_SOURCE:
-        return await node
+        return node
           .getByTitle("Add Knowledge Source node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
       case NodeType.BKM:
-        return await node
-          .getByTitle("Add BKM node")
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        return node.getByTitle("Add BKM node").dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
       case NodeType.TEXT_ANNOTATION:
-        return await node
+        return node
           .getByTitle("Add Text Annotation node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+    }
+  }
+
+  public async dragNewConnectedEdge(args: { type: EdgeType; from: string; to: string }) {
+    await this.diagram.hoverNode({ name: args.from });
+    const from = this.page.getByTitle(args.from);
+    const to = this.page.getByTitle(args.to);
+
+    switch (args.type) {
+      case EdgeType.ASSOCIATION:
+        return from.getByTitle("Add Association edge").dragTo(to);
+      case EdgeType.AUTHORITY_REQUIREMENT:
+        return from.getByTitle("Add Authority Requirement edge").dragTo(to);
+      case EdgeType.INFORMATION_REQUIREMENT:
+        return from.getByTitle("Add Information Requirement edge").dragTo(to);
+      case EdgeType.KNOWLEDGE_REQUIREMENT:
+        return from.getByTitle("Add Knowledge Requirement edge").dragTo(to);
     }
   }
 }
