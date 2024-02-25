@@ -20,7 +20,6 @@
 package org.kie.workbench.common.dmn.client.editors.drd;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,6 @@ import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.CSSStyleDeclaration;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLBodyElement;
 import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
@@ -144,14 +142,10 @@ public class DRDContextMenuTest {
         field.setAccessible(true);
         field.set(element, styleDeclaration);
 
-        final Field field2 = DomGlobal.class.getDeclaredField("document");
+        /*final Field field2 = DomGlobal.class.getDeclaredField("document");
         field2.setAccessible(true);
 
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field2, field2.getModifiers() & ~Modifier.FINAL);
-
-        field2.set(DomGlobal.class, htmlDocument);
+        field2.set(DomGlobal.class, htmlDocument);*/
 
         final Field field3 = HTMLDocument.class.getDeclaredField("body");
         field3.setAccessible(true);
