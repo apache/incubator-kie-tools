@@ -19,13 +19,10 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.CSSStyleDeclaration;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLBodyElement;
 import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
@@ -99,15 +96,6 @@ public class DMNEditDRDToolboxActionTest {
         htmlElement.style = new CSSStyleDeclaration();
         final HTMLDocument htmlDocument = new HTMLDocument();
         htmlDocument.body = new HTMLBodyElement();
-
-        final Field field = DomGlobal.class.getDeclaredField("document");
-        field.setAccessible(true);
-
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-        field.set(DomGlobal.class, htmlDocument);
 
         when(drdContextMenu.getElement()).thenReturn(htmlElement);
 
