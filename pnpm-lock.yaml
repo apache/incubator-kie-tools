@@ -3482,6 +3482,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      deep-object-diff:
+        specifier: ^1.1.9
+        version: 1.1.9
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.88.2)
@@ -32541,7 +32544,6 @@ packages:
   /deep-object-diff@1.1.9:
     resolution:
       { integrity: sha512-Rn+RuwkmkDwCi2/oXOFS9Gsr5lJZu/yTGpK7wAaAIE75CC+LCGEZHpY6VQJa/RoJcrmaA/docWJZvYohlNkWPA== }
-    dev: false
 
   /deepmerge@4.2.2:
     resolution:

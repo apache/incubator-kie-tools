@@ -37,24 +37,17 @@ import {
   OnRequestToJumpToPath,
 } from "../../src/DmnEditor";
 
+const initialModel = generateEmptyDmn15();
+
 function DevWebApp(args: DmnEditorProps) {
   const [state, setState] = useState<{ marshaller: DmnMarshaller; stack: DmnLatestModel[]; pointer: number }>(() => {
-    const initialDmnMarshaller = getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" });
+    const initialDmnMarshaller = getMarshaller(initialModel, { upgradeTo: "latest" });
     return {
       marshaller: initialDmnMarshaller,
       stack: [initialDmnMarshaller.parser.parse()],
       pointer: 0,
     };
   });
-
-  const setNewModel = useCallback((newModel) => {
-    const marshaller = getMarshaller(newModel, { upgradeTo: "latest" });
-    setState({
-      marshaller,
-      stack: [marshaller.parser.parse()],
-      pointer: 0,
-    });
-  }, []);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     console.log("DMN Editor :: Dev webapp :: File(s) dropped! Opening it.");
@@ -124,6 +117,13 @@ function DevWebApp(args: DmnEditorProps) {
     });
   }, []);
 
+  const onSelectModel = useCallback(
+    (newModel) => {
+      onModelChange(getMarshaller(newModel, { upgradeTo: "latest" }).parser.parse());
+    },
+    [onModelChange]
+  );
+
   const onRequestToJumpToPath = useCallback<OnRequestToJumpToPath>((path) => {
     alert("Jumping to file " + path);
   }, []);
@@ -160,9 +160,9 @@ function DevWebApp(args: DmnEditorProps) {
                   <h5>(Drag & drop a file anywhere to open it)</h5>
                 </FlexItem>
                 <FlexItem shrink={{ default: "shrink" }}>
-                  <button onClick={() => setNewModel(generateEmptyDmn15())}>Empty</button>
+                  <button onClick={() => onSelectModel(generateEmptyDmn15())}>Empty</button>
                   &nbsp; &nbsp;
-                  <button onClick={() => setNewModel(loanPreQualificationDmn)}>Loan Pre Qualification</button>
+                  <button onClick={() => onSelectModel(loanPreQualificationDmn)}>Loan Pre Qualification</button>
                   &nbsp; &nbsp; | &nbsp; &nbsp;
                   <button disabled={!isUndoEnabled} style={{ opacity: isUndoEnabled ? 1 : 0.5 }} onClick={undo}>
                     {`Undo (${state.pointer})`}
@@ -192,16 +192,16 @@ function DevWebApp(args: DmnEditorProps) {
               {DmnEditorWrapper({
                 model: currentModel,
                 originalVersion: args.originalVersion,
-                onModelChange: onModelChange,
-                onRequestExternalModelByPath: onRequestExternalModelByPath,
-                onRequestExternalModelsAvailableToInclude: onRequestExternalModelsAvailableToInclude,
+                onModelChange,
+                onRequestExternalModelByPath,
+                onRequestExternalModelsAvailableToInclude,
                 externalModelsByNamespace: externalModelsByNamespace,
                 externalContextName: args.externalContextName,
                 externalContextDescription: args.externalContextDescription,
                 validationMessages: args.validationMessages,
                 evaluationResults: args.evaluationResults,
                 issueTrackerHref: args.issueTrackerHref,
-                onRequestToJumpToPath: onRequestToJumpToPath,
+                onRequestToJumpToPath,
               })}
             </PageSection>
           </Page>
@@ -236,7 +236,7 @@ type Story = StoryObj<typeof DevWebApp>;
 export const WebApp: Story = {
   render: (args) => DevWebApp(args),
   args: {
-    model: getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" }).parser.parse(),
+    model: getMarshaller(initialModel, { upgradeTo: "latest" }).parser.parse(),
     originalVersion: "1.5",
     evaluationResults: {},
     externalContextDescription:

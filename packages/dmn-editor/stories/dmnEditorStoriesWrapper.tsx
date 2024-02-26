@@ -22,6 +22,7 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import { useArgs } from "@storybook/preview-api";
 import { DmnEditor, DmnEditorProps, DmnEditorRef, EvaluationResults, ValidationMessages } from "../src/DmnEditor";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { diff } from "deep-object-diff";
 
 export const evaluationResults: EvaluationResults = {};
 export const validationMessages: ValidationMessages = {};
@@ -39,16 +40,21 @@ export function DmnEditorWrapper(props?: Partial<DmnEditorProps>) {
   );
 
   useEffect(() => {
-    updateArgs({ ...argsCopy.current, model: model });
+    if (Object.keys(diff(argsCopy.current.model, model)).length !== 0) {
+      updateArgs({ ...argsCopy.current, model: model });
+    }
   }, [updateArgs, model]);
 
   useEffect(() => {
-    if (args === argsCopy.current) {
+    if (Object.keys(diff(argsCopy.current, args)).length === 0) {
+      return;
+    }
+    argsCopy.current = args;
+    if (Object.keys(diff(args.model, model)).length === 0) {
       return;
     }
     onModelChange(args.model);
-    argsCopy.current = args;
-  }, [args, onModelChange]);
+  }, [args, model, onModelChange]);
 
   return (
     <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>
