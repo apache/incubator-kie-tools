@@ -28,7 +28,7 @@ const customConfig = defineConfig({
   use: {
     baseURL: `http://localhost:${buildEnv.dmnEditor.storybook.port}`,
   },
-  /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
+  /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
     url: `http://localhost:${buildEnv.dmnEditor.storybook.port}/iframe.html?args=&id=use-cases-empty--empty&viewMode=story`,
