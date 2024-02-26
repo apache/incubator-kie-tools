@@ -99,11 +99,17 @@ module.exports = async (env) =>
           { from: "./src/static", to: "./static" },
           { from: "./src/components/styles.css", to: "./components/styles.css" },
           {
-            from: "./node_modules/@kie-tools/serverless-workflow-dev-ui-monitoring-webapp/dist",
+            from: path.join(
+              path.dirname(require.resolve("@kie-tools/serverless-workflow-dev-ui-monitoring-webapp/package.json")),
+              "/dist"
+            ),
             to: "./monitoring-webapp",
           },
           {
-            from: "./node_modules/@kie-tools/runtime-tools-swf-enveloped-components/dist/customDashboardView",
+            from: path.join(
+              path.dirname(require.resolve("@kie-tools/runtime-tools-swf-enveloped-components/package.json")),
+              "/dist/customDashboardView"
+            ),
             to: "./custom-dashboard-view",
           },
           {
