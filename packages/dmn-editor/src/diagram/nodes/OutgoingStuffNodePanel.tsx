@@ -76,7 +76,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
         return "Add Association edge";
       }
       default: {
-        return "Add Unknon edge type";
+        throw new Error("Add Unknown edge type");
       }
     }
   }, []);
@@ -105,7 +105,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
         return "Add Group node";
       }
       default: {
-        return "Add Unkonw node type";
+        throw new Error("Add Unknown node type");
       }
     }
   }, []);
