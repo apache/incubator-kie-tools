@@ -78,13 +78,6 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>io.quarkus.platform</groupId>
-        <artifactId>quarkus-kogito-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-kie-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
@@ -118,16 +111,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-openapi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.kie.kogito</groupId>
-          <artifactId>kogito-ruleunits</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
