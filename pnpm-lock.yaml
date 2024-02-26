@@ -3361,9 +3361,6 @@ importers:
       immer:
         specifier: ^10.0.3
         version: 10.0.3(patch_hash=utu5oov26wz5mjuays57tp3ybu)
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
       moment:
         specifier: ^2.29.4
         version: 2.29.4
@@ -3491,6 +3488,9 @@ importers:
       jest-when:
         specifier: ^3.5.0
         version: 3.5.0(jest@26.6.3)
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
