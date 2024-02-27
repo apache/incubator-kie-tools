@@ -74,7 +74,7 @@ runs:
       env:
         HOMEBREW_NO_INSTALL_FROM_API:
       run: |
-        echo "::group::Installing docker"
+        echo "STEP: Setup docker (macOS only)"
         brew update --preinstall
         LIMA_VERSION=v0.20.1
         curl -fsSL "https://github.com/lima-vm/lima/releases/download/${LIMA_VERSION}/lima-${LIMA_VERSION:1}-$(uname -s)-$(uname -m).tar.gz" | tar Cxzvm /usr/local
@@ -106,32 +106,6 @@ runs:
         echo "version<<$EOF" >> "$GITHUB_OUTPUT"
         colima version >> "$GITHUB_OUTPUT"
         echo "$EOF" >> "$GITHUB_OUTPUT"
-
-        echo "::endgroup::"
-
-    # brew untap homebrew/core homebrew/cask
-    # brew update
-    # brew install docker docker-compose
-    # cat >entitlements.xml <<EOF
-    # <?xml version="1.0" encoding="UTF-8"?>
-    # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    # <plist version="1.0">
-    # <dict>
-    #     <key>com.apple.security.hypervisor</key>
-    #     <true/>
-    # </dict>
-    # </plist>
-    # EOF
-
-    # codesign --sign - --entitlements entitlements.xml --force /usr/local/bin/qemu-system-$(uname -m | sed -e s/arm64/aarch64/)
-    # mkdir -p ~/.docker/cli-plugins
-    # ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
-    # brew install docker-Buildx
-    # ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
-    # colima stop
-    # colima delete
-    # colima start --memory 4 --network-address --verbose
-    # QEMU is reinstalled due to this bug: https://github.com/lima-vm/lima/issues/1742
 
     - name: "Setup Helm (Ubuntu)"
       if: runner.os == 'Linux'
