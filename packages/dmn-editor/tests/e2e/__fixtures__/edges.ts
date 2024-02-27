@@ -18,28 +18,26 @@
  */
 
 import { Page } from "@playwright/test";
-import { Node } from "./node";
+import { Nodes } from "./nodes";
 
 export enum EdgeType {
-  ASSOCIATION,
-  AUTHORITY_REQUIREMENT,
-  INFORMATION_REQUIREMENT,
-  KNOWLEDGE_REQUIREMENT,
+  ASSOCIATION = "association",
+  AUTHORITY_REQUIREMENT = "authority-requirement",
+  INFORMATION_REQUIREMENT = "information-requirement",
+  KNOWLEDGE_REQUIREMENT = "knowledge-requirement",
 }
 
-export class Edge {
-  constructor(public page: Page, public node: Node) {
-    this.page = page;
-  }
+export class Edges {
+  constructor(public page: Page, public nodes: Nodes) {}
 
   public async get(args: { from: string; to: string }) {
-    const from = await this.node.getId({ name: args.from });
-    const to = await this.node.getId({ name: args.to });
+    const from = await this.nodes.getId({ name: args.from });
+    const to = await this.nodes.getId({ name: args.to });
 
     return this.page.getByRole("button", { name: `Edge from ${from} to ${to}` });
   }
 
-  public async type(args: { from: string; to: string }) {
+  public async getType(args: { from: string; to: string }) {
     return (await this.get({ from: args.from, to: args.to })).locator("path").nth(0).getAttribute("data-edgetype");
   }
 }

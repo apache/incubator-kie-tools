@@ -20,19 +20,17 @@
 import { Page } from "@playwright/test";
 
 export class Diagram {
-  constructor(public page: Page) {
-    this.page = page;
-  }
+  constructor(public page: Page) {}
 
   public get() {
     return this.page.getByTestId("kie-dmn-editor--diagram-container");
   }
 
   public async hoverNode(args: { name: string }) {
-    await this.page.getByTitle(args.name).hover();
+    await this.page.getByTitle(args.name, { exact: true }).hover();
   }
 
   public async selectNode(args: { name: string }) {
-    await this.page.getByTitle(args.name).click();
+    await this.page.getByTitle(args.name, { exact: true }).click();
   }
 }

@@ -19,205 +19,185 @@
 
 import { expect } from "@playwright/test";
 import { test } from "../__fixtures__/base";
-import { NodeType } from "../__fixtures__/node";
-import { EdgeType } from "../__fixtures__/edge";
+import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { EdgeType } from "../__fixtures__/edges";
 
-test.beforeEach(async ({ editor }, testInfo) => {
+test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
 test.describe("MUTATIONS - Add edge", () => {
   test.describe("Between Input Data", () => {
-    test("And Decision", async ({ diagram, pallete, node, edge }) => {
-      await pallete.dragNewNode({
+    test("And Decision", async ({ diagram, palette, nodes, edges }) => {
+      // FIXME: Input Data node requires to be renamed.
+      // As they're created the editor selects it causing a bug on the palette.
+      await palette.dragNewNode({
         type: NodeType.INPUT_DATA,
         targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Input",
       });
-      await pallete.dragNewNode({
-        type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 300 },
-      });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 300 } });
 
-      await node.dragNewConnectedEdge({
+      await nodes.dragNewConnectedEdge({
         type: EdgeType.INFORMATION_REQUIREMENT,
-        from: "New Input Data",
-        to: "New Decision",
+        from: "Input",
+        to: DefaultNodeName.DECISION,
       });
 
-      expect(await edge.get({ from: "New Input Data", to: "New Decision" })).toBeAttached();
-      expect(await edge.type({ from: "New Input Data", to: "New Decision" })).toEqual("edge_informationRequirement");
-      await expect(diagram.get()).toHaveScreenshot();
-    });
-
-    test("And Knowledge Source", async ({ diagram, pallete, node, edge }) => {
-      await pallete.dragNewNode({
-        type: NodeType.INPUT_DATA,
-        targetPosition: { x: 200, y: 200 },
-      });
-      await pallete.dragNewNode({
-        type: NodeType.KNOWLEDGE_SOURCE,
-        targetPosition: { x: 200, y: 400 },
-      });
-      await node.dragNewConnectedEdge({
-        type: EdgeType.AUTHORITY_REQUIREMENT,
-        from: "New Input Data",
-        to: "New Knowledge Source",
-      });
-
-      expect(await edge.get({ from: "New Input Data", to: "New Knowledge Source" })).toBeAttached();
-      expect(await edge.type({ from: "New Input Data", to: "New Knowledge Source" })).toEqual(
-        "edge_authorityRequirement"
+      expect(await edges.get({ from: "Input", to: DefaultNodeName.DECISION })).toBeAttached();
+      expect(await edges.getType({ from: "Input", to: DefaultNodeName.DECISION })).toEqual(
+        EdgeType.INFORMATION_REQUIREMENT
       );
       await expect(diagram.get()).toHaveScreenshot();
     });
 
-    test("And Text Annotation", async ({ diagram, pallete, node, edge }) => {
-      await pallete.dragNewNode({
+    test("And Knowledge Source", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({
         type: NodeType.INPUT_DATA,
         targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Input",
       });
-      await pallete.dragNewNode({
-        type: NodeType.TEXT_ANNOTATION,
-        targetPosition: { x: 100, y: 300 },
-      });
-      await node.dragNewConnectedEdge({
-        type: EdgeType.ASSOCIATION,
-        from: "New Input Data",
-        to: "New Text Annotation",
+      await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 300 } });
+      await nodes.dragNewConnectedEdge({
+        type: EdgeType.AUTHORITY_REQUIREMENT,
+        from: "Input",
+        to: DefaultNodeName.KNOWLEDGE_SOURCE,
       });
 
-      expect(await edge.get({ from: "New Input Data", to: "New Text Annotation" })).toBeAttached();
-      expect(await edge.type({ from: "New Input Data", to: "New Text Annotation" })).toEqual("edge_association");
+      expect(await edges.get({ from: "Input", to: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+      expect(await edges.getType({ from: "Input", to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
+        EdgeType.AUTHORITY_REQUIREMENT
+      );
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+
+    test("And Text Annotation", async ({ page, diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({
+        type: NodeType.INPUT_DATA,
+        targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Input",
+      });
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 300 } });
+
+      await nodes.dragNewConnectedEdge({
+        type: EdgeType.ASSOCIATION,
+        from: "Input",
+        to: DefaultNodeName.TEXT_ANNOTATION,
+      });
+
+      expect(await edges.get({ from: "Input", to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      expect(await edges.getType({ from: "Input", to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(EdgeType.ASSOCIATION);
       await expect(diagram.get()).toHaveScreenshot();
     });
   });
 
   test.describe("Between Decision", () => {
-    test("And Decision", async ({ diagram, pallete, node, edge }) => {
-      await pallete.dragNewNode({
+    test("And Decision", async ({ diagram, palette, nodes, edges }) => {
+      // Rename to avoid ambiguity
+      await palette.dragNewNode({
         type: NodeType.DECISION,
         targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Decision - A",
       });
-      await node.rename({ current: "New Decision", new: "My Decision" });
-      await pallete.dragNewNode({
+      await palette.dragNewNode({
         type: NodeType.DECISION,
         targetPosition: { x: 100, y: 300 },
+        thenRenameTo: "Decision - B",
       });
-
-      await node.dragNewConnectedEdge({
+      await nodes.dragNewConnectedEdge({
         type: EdgeType.INFORMATION_REQUIREMENT,
-        from: "My Decision",
-        to: "New Decision",
+        from: "Decision - A",
+        to: "Decision - B",
       });
 
-      expect(await edge.get({ from: "My Decision", to: "New Decision" })).toBeAttached();
-      expect(await edge.type({ from: "My Decision", to: "New Decision" })).toEqual("edge_informationRequirement");
-      await expect(diagram.get()).toHaveScreenshot();
-    });
-
-    test("And Knoledge Source", async ({ diagram, pallete, node, edge }) => {
-      await pallete.dragNewNode({
-        type: NodeType.DECISION,
-        targetPosition: { x: 200, y: 200 },
-      });
-      await pallete.dragNewNode({
-        type: NodeType.KNOWLEDGE_SOURCE,
-        targetPosition: { x: 200, y: 400 },
-      });
-      await node.dragNewConnectedEdge({
-        type: EdgeType.AUTHORITY_REQUIREMENT,
-        from: "New Decision",
-        to: "New Knowledge Source",
-      });
-
-      expect(await edge.get({ from: "New Decision", to: "New Knowledge Source" })).toBeAttached();
-      expect(await edge.type({ from: "New Decision", to: "New Knowledge Source" })).toEqual(
-        "edge_authorityRequirement"
+      expect(await edges.get({ from: "Decision - A", to: "Decision - B" })).toBeAttached();
+      expect(await edges.getType({ from: "Decision - A", to: "Decision - B" })).toEqual(
+        EdgeType.INFORMATION_REQUIREMENT
       );
       await expect(diagram.get()).toHaveScreenshot();
     });
 
-    test("And Text Annotation", async ({ diagram, pallete, node, edge }) => {
-      await pallete.dragNewNode({
-        type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 100 },
-      });
-      await pallete.dragNewNode({
-        type: NodeType.TEXT_ANNOTATION,
+    test("And Knoledge Source", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({
+        type: NodeType.KNOWLEDGE_SOURCE,
         targetPosition: { x: 100, y: 300 },
       });
-      await node.dragNewConnectedEdge({
-        type: EdgeType.ASSOCIATION,
-        from: "New Decision",
-        to: "New Text Annotation",
+
+      await nodes.dragNewConnectedEdge({
+        type: EdgeType.AUTHORITY_REQUIREMENT,
+        from: DefaultNodeName.DECISION,
+        to: DefaultNodeName.KNOWLEDGE_SOURCE,
       });
 
-      expect(await edge.get({ from: "New Decision", to: "New Text Annotation" })).toBeAttached();
-      expect(await edge.type({ from: "New Decision", to: "New Text Annotation" })).toEqual("edge_association");
+      expect(await edges.get({ from: DefaultNodeName.DECISION, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+      expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
+        EdgeType.AUTHORITY_REQUIREMENT
+      );
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+
+    test("And Text Annotation", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 300 } });
+
+      await nodes.dragNewConnectedEdge({
+        type: EdgeType.ASSOCIATION,
+        from: DefaultNodeName.DECISION,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+      });
+
+      expect(await edges.get({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
+        EdgeType.ASSOCIATION
+      );
       await expect(diagram.get()).toHaveScreenshot();
     });
   });
 
   test.describe("Between BKM", () => {
-    test("And Decision", async ({ diagram, pallete, node, edge }) => {
-      await pallete.dragNewNode({
-        type: NodeType.BKM,
-        targetPosition: { x: 100, y: 100 },
-      });
-      await pallete.dragNewNode({
-        type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 300 },
-      });
+    test("And Decision", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 300 } });
 
-      await node.dragNewConnectedEdge({
+      await nodes.dragNewConnectedEdge({
         type: EdgeType.KNOWLEDGE_REQUIREMENT,
-        from: "New BKM",
-        to: "New Decision",
+        from: DefaultNodeName.BKM,
+        to: DefaultNodeName.DECISION,
       });
 
-      expect(await edge.get({ from: "New BKM", to: "New Decision" })).toBeAttached();
-      expect(await edge.type({ from: "New BKM", to: "New Decision" })).toEqual("edge_knowledgeRequirement");
+      expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toBeAttached();
+      expect(await edges.getType({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toEqual(
+        EdgeType.KNOWLEDGE_REQUIREMENT
+      );
       await expect(diagram.get()).toHaveScreenshot();
     });
 
-    test("And BKM", async ({ diagram, pallete, node, edge }) => {
-      await pallete.dragNewNode({
-        type: NodeType.BKM,
-        targetPosition: { x: 200, y: 200 },
-      });
-      await node.rename({ current: "New BKM", new: "My BKM" });
-      await pallete.dragNewNode({
-        type: NodeType.BKM,
-        targetPosition: { x: 200, y: 400 },
-      });
-      await node.dragNewConnectedEdge({
-        type: EdgeType.KNOWLEDGE_REQUIREMENT,
-        from: "My BKM",
-        to: "New BKM",
-      });
+    test("And BKM", async ({ diagram, palette, nodes, edges }) => {
+      // Rename to avoid ambiguity
+      await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 }, thenRenameTo: "BKM - A" });
+      await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 300 }, thenRenameTo: "BKM - B" });
+      await nodes.dragNewConnectedEdge({ type: EdgeType.KNOWLEDGE_REQUIREMENT, from: "BKM - A", to: "BKM - B" });
 
-      expect(await edge.get({ from: "My BKM", to: "New BKM" })).toBeAttached();
-      expect(await edge.type({ from: "My BKM", to: "New BKM" })).toEqual("edge_knowledgeRequirement");
+      expect(await edges.get({ from: "BKM - A", to: "BKM - B" })).toBeAttached();
+      expect(await edges.getType({ from: "BKM - A", to: "BKM - B" })).toEqual(EdgeType.KNOWLEDGE_REQUIREMENT);
       await expect(diagram.get()).toHaveScreenshot();
     });
 
-    test("And Text Annotation", async ({ diagram, pallete, node, edge }) => {
-      await pallete.dragNewNode({
-        type: NodeType.BKM,
-        targetPosition: { x: 100, y: 100 },
-      });
-      await pallete.dragNewNode({
-        type: NodeType.TEXT_ANNOTATION,
-        targetPosition: { x: 100, y: 300 },
-      });
-      await node.dragNewConnectedEdge({
+    test("And Text Annotation", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 300 } });
+
+      await nodes.dragNewConnectedEdge({
         type: EdgeType.ASSOCIATION,
-        from: "New BKM",
-        to: "New Text Annotation",
+        from: DefaultNodeName.BKM,
+        to: DefaultNodeName.TEXT_ANNOTATION,
       });
 
-      expect(await edge.get({ from: "New BKM", to: "New Text Annotation" })).toBeAttached();
-      expect(await edge.type({ from: "New BKM", to: "New Text Annotation" })).toEqual("edge_association");
+      expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      expect(await edges.getType({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
+        EdgeType.ASSOCIATION
+      );
       await expect(diagram.get()).toHaveScreenshot();
     });
   });

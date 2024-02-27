@@ -19,43 +19,70 @@
 
 import { Page } from "@playwright/test";
 import { Diagram } from "./diagram";
-import { Node, NodeType } from "./node";
+import { DefaultNodeName, Nodes, NodeType } from "./nodes";
 
-export class Pallete {
-  constructor(public page: Page, public diagram: Diagram, public node: Node) {
-    this.page = page;
-  }
+export class Palette {
+  constructor(public page: Page, public diagram: Diagram, public nodes: Nodes) {}
 
-  public async dragNewNode(args: { type: NodeType; targetPosition: { x: number; y: number } }) {
+  public async dragNewNode(args: { type: NodeType; targetPosition: { x: number; y: number }; thenRenameTo?: string }) {
     switch (args.type) {
       case NodeType.INPUT_DATA:
-        return await this.page
+        await this.page
           .getByTitle("Input Data", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+
+        if (args.thenRenameTo) {
+          await this.nodes.renameInputNode({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
+        }
+        break;
       case NodeType.DECISION:
-        return await this.page
+        await this.page
           .getByTitle("Decision", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        if (args.thenRenameTo) {
+          await this.nodes.rename({ current: DefaultNodeName.DECISION, new: args.thenRenameTo });
+        }
+        break;
       case NodeType.KNOWLEDGE_SOURCE:
-        return await this.page
+        await this.page
           .getByTitle("Knowledge Source", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        if (args.thenRenameTo) {
+          await this.nodes.rename({ current: DefaultNodeName.KNOWLEDGE_SOURCE, new: args.thenRenameTo });
+        }
+        break;
       case NodeType.BKM:
-        return await this.page
+        await this.page
           .getByTitle("Business Knowledge Model", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        if (args.thenRenameTo) {
+          await this.nodes.rename({ current: DefaultNodeName.BKM, new: args.thenRenameTo });
+        }
+        break;
       case NodeType.DECISION_SERVICE:
-        return await this.page
+        await this.page
           .getByTitle("Decision Service", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        if (args.thenRenameTo) {
+          await this.nodes.rename({ current: DefaultNodeName.DECISION_SERVICE, new: args.thenRenameTo });
+        }
+        break;
       case NodeType.GROUP:
-        return await this.page
+        await this.page
           .getByTitle("Group", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        if (args.thenRenameTo) {
+          await this.nodes.rename({ current: DefaultNodeName.GROUP, new: args.thenRenameTo });
+        }
+        break;
       case NodeType.TEXT_ANNOTATION:
-        return await this.page
+        await this.page
           .getByTitle("Text Annotation", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        if (args.thenRenameTo) {
+          await this.nodes.rename({ current: DefaultNodeName.TEXT_ANNOTATION, new: args.thenRenameTo });
+        }
+        break;
     }
   }
 }

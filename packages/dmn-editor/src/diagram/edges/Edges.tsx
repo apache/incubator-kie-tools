@@ -29,7 +29,6 @@ import { PotentialWaypoint, Waypoints } from "./Waypoints";
 import { useAlwaysVisibleEdgeUpdatersAtNodeBorders } from "./useAlwaysVisibleEdgeUpdatersAtNodeBorders";
 import { useKieEdgePath } from "./useKieEdgePath";
 import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
-import { EDGE_TYPES } from "./EdgeTypes";
 
 export type DmnDiagramEdgeData = {
   dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
@@ -159,7 +158,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
         strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
-        data-edgetype={EDGE_TYPES.informationRequirement}
+        data-edgetype={"information-requirement"}
       />
       <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
 
@@ -208,7 +207,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
-        data-edgetype={EDGE_TYPES.knowledgeRequirement}
+        data-edgetype={"knowledge-requirement"}
       />
       <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
 
@@ -258,7 +257,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
-        data-edgetype={EDGE_TYPES.authorityRequirement}
+        data-edgetype={"authority-requirement"}
       />
       <AuthorityRequirementPath
         d={path}
@@ -311,7 +310,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
         strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
-        data-edgetype={EDGE_TYPES.association}
+        data-edgetype={"association"}
       />
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
 
