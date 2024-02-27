@@ -18,8 +18,8 @@
     "dist"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && pnpm copy:dashbuilder && tsc -p tsconfig.json && pnpm copy:css",
-    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm copy:css && pnpm test",
+    "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm copy:css && pnpm copy:dashbuilder",
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm copy:css && pnpm copy:dashbuilder && pnpm test",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
     "copy:dashbuilder": "copyfiles -u 3 \"../dashbuilder-client/dist/**/*\" ./dist/customDashboardView/dashbuilder && copyfiles -u 1 src/customDashboardView/dashbuilder/setup.js ./dist/customDashboardView/dashbuilder/",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
