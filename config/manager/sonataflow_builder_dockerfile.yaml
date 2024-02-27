@@ -5,6 +5,8 @@ FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder
 ARG QUARKUS_EXTENSIONS
 # Args to pass to the Quarkus CLI add extension command
 ARG QUARKUS_ADD_EXTENSION_ARGS
+# Additional java/mvn arguments to pass to the builder
+ARG MAVEN_ARGS_APPEND
 
 # Copy from build context to skeleton resources project
 COPY --chown=1001 . ./resources

@@ -5,7 +5,8 @@ data:
   Dockerfile: "FROM registry.redhat.io/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8:latest
     AS builder\n\n# variables that can be overridden by the builder\n# To add a Quarkus
     extension to your application\nARG QUARKUS_EXTENSIONS\n# Args to pass to the Quarkus
-    CLI add extension command\nARG QUARKUS_ADD_EXTENSION_ARGS\n  \n# Copy from build
+    CLI add extension command\nARG QUARKUS_ADD_EXTENSION_ARGS\n# Additional java/mvn arguments to pass to the builder\n
+    ARG MAVEN_ARGS_APPEND\n\n# Copy from build
     context to skeleton resources project\nCOPY --chmod=644 * ./resources/\n\nRUN
     /home/kogito/launch/build-app.sh ./resources\n  \n#=============================\n#
     Runtime Run\n#=============================\nFROM registry.access.redhat.com/ubi9/openjdk-17:latest\n\nENV
