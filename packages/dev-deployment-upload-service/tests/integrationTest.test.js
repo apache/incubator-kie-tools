@@ -24,7 +24,7 @@ const filePath = path.join(process.cwd(), "tests/test.zip");
 
 describe("Test built images individually", () => {
   beforeAll(() => {
-    execSync("pnpm start-test-servers && wait-on -t 20m http://localhost:8092/upload-status");
+    execSync("pnpm start-test-servers && wait-on -t 20m http://localhost:8092/upload-status", { stdio: "inherit" });
   });
   it("buildtime install", async () => {
     const response = execFileSync("curl", [
@@ -59,6 +59,6 @@ describe("Test built images individually", () => {
     expect(dockerLogs).toMatchSnapshot();
   });
   afterAll(() => {
-    execSync("pnpm stop-test-servers");
+    execSync("pnpm stop-test-servers", { stdio: "inherit" });
   });
 });
