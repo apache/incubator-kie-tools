@@ -21,10 +21,12 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 
 const buildEnv = require("@kie-tools/root-env/env");
 
+const version = require("../package.json").version;
+
 module.exports = composeEnv([buildEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadPath: {
-      default: `apache/incubator-kie-tools/releases/download/${buildEnv.env.root.version}`,
+      default: `apache/incubator-kie-tools/releases/download/${version}`,
       description: "Download path for the Dev Deployment Upload Service binary package.",
     },
     DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadHost: {

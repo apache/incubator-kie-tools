@@ -19,8 +19,7 @@
 
 const { execSync } = require("child_process");
 const { argv } = require("process");
-const rootEnv = require("@kie-tools/root-env/env");
-const version = rootEnv.env.root.version;
+const version = require("../package.json").version;
 const buildEnv = require("../env");
 
 const network = "ddus-network";
