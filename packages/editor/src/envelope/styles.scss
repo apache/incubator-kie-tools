@@ -75,9 +75,15 @@
 
 /* PF3 -> PF4 overrides */
 
-.kie-tools--keyboard-shortcuts {
-  font-family: var(--pf-global--FontFamily--sans-serif);
-  color: var(--pf-global--Color--dark-100);
+:not(.vscode-dark) {
+  .kie-tools--keyboard-shortcuts {
+    font-family: var(--pf-global--FontFamily--sans-serif);
+    color: var(--pf-global--Color--dark-100);
+  }
+}
+
+.vscode-dark .kie-tools--keyboard-shortcuts {
+  color: #343a40;
 }
 
 body {
