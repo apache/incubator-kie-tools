@@ -31,6 +31,18 @@ module.exports = composeEnv([buildEnv], {
       default: `https://github.com`,
       description: "Download host for the Dev Deployment Upload Service binary package.",
     },
+    DEV_DEPLOYMENT_UPLOAD_SERVICE__devFileServerPort: {
+      default: 2340,
+      description: "",
+    },
+    DEV_DEPLOYMENT_UPLOAD_SERVICE__devBuildTimeInstallPort: {
+      default: 2341,
+      description: "",
+    },
+    DEV_DEPLOYMENT_UPLOAD_SERVICE__devRunTimeInstallPort: {
+      default: 2342,
+      description: "",
+    },
   }),
   get env() {
     return {
@@ -38,6 +50,11 @@ module.exports = composeEnv([buildEnv], {
         url: {
           path: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadPath),
           host: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadHost),
+        },
+        dev: {
+          fileServerPort: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__devFileServerPort),
+          buildTimePort: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__devBuildTimeInstallPort),
+          runtTimePort: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__devRunTimeInstallPort),
         },
       },
     };
