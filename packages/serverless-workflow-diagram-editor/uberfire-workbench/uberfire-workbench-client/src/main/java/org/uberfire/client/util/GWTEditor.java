@@ -40,8 +40,8 @@ public class GWTEditor {
         instance.onOpen();
     }
 
-    public final Promise<Void> setTheme(String theme) {
-        return instance.setTheme(theme);
+    public final Promise<Void> applyTheme(String theme) {
+        return instance.applyTheme(theme);
     }
 
     public final Promise<Void> setContent(String path, String value) {

@@ -56,8 +56,8 @@ public class DiagramEditorActivity extends AbstractActivity implements EditorAct
     }
 
     @Override
-    public final Promise<Void> setTheme(String theme) {
-        return realPresenter.setTheme(theme);
+    public final Promise<Void> applyTheme(String theme) {
+        return realPresenter.applyTheme(theme);
     }
 
     @Override

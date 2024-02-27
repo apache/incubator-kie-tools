@@ -57,7 +57,7 @@ public class DarkMode implements ColorTheme {
     private static final String CORNER_ICON_FILL_COLOR = "#C97330";
     private static final String CORNER_ICON_HOVER_FILL_COLOR = "#909090";
     // Tooltip
-    private static final String TOOLTIP_TEXT_COLOR = "#C4C4C4"; //"#FBAF4F";
+    private static final String TOOLTIP_TEXT_COLOR = "#C4C4C4";
     // Bottom text
     private static final String BOTTOM_TEXT_FILL_COLOR = "#3E86A0";
     // Transitions

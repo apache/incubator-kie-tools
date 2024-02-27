@@ -158,7 +158,7 @@ public class DiagramEditor {
         return diagramService.transform(stunnerEditor.getDiagram(), DocType.JSON);
     }
 
-    public final Promise<Void> setTheme(String theme) {
+    public final Promise<Void> applyTheme(String theme) {
         if (null != theme && !theme.equals(currentTheme)) {
             if (theme.equals(DarkMode.NAME)) {
                 StunnerTheme.setTheme(DarkMode.getInstance());

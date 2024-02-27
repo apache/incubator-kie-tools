@@ -27,7 +27,7 @@ import org.uberfire.workbench.model.bridge.Notification;
 
 public interface EditorActivity extends Activity {
 
-    Promise<Void> setTheme(String theme);
+    Promise<Void> applyTheme(String theme);
 
     Promise<Void> setContent(String path, String value);
 
