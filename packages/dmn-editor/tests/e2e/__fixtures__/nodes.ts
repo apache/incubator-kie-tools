@@ -48,6 +48,10 @@ export class Nodes {
     return (await this.page.getByTitle(args.name, { exact: true }).getAttribute("data-nodeid")) ?? "";
   }
 
+  public get(args: { name: string }) {
+    return this.page.getByTitle(args.name, { exact: true });
+  }
+
   public async rename(args: { current: string; new: string }) {
     await this.diagram.get().press("Escape");
     await this.page.getByTitle(args.current, { exact: true }).click({ position: { x: 0, y: 0 } });
