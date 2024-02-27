@@ -28,7 +28,7 @@ test.beforeEach(async ({ editor }) => {
 test.describe("MUTATION - Rename node", () => {
   test("Input Data", async ({ diagram, palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
-    await nodes.renameInputNode({
+    await nodes.rename({
       current: DefaultNodeName.INPUT_DATA,
       new: "Renamed Input Data",
     });

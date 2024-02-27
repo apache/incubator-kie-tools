@@ -33,13 +33,13 @@ type DmnEditorFixtures = {
 };
 
 export const test = base.extend<DmnEditorFixtures>({
-  diagram: async ({ page }, use) => {
-    await use(new Diagram(page));
-  },
   editor: async ({ page, baseURL }, use) => {
     await use(new Editor(page, baseURL));
   },
-  nodes: async ({ page, diagram, browserName }, use) => {
+  diagram: async ({ page }, use) => {
+    await use(new Diagram(page));
+  },
+  nodes: async ({ page, diagram }, use) => {
     await use(new Nodes(page, diagram));
   },
   edges: async ({ page, nodes }, use) => {

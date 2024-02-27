@@ -32,7 +32,7 @@ export class Palette {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
 
         if (args.thenRenameTo) {
-          await this.nodes.renameInputNode({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
+          await this.nodes.rename({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
         }
         break;
       case NodeType.DECISION:

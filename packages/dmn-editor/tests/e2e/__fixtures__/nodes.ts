@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { Diagram } from "./diagram";
-import { EdgeType } from "./edges";
+import { EdgePosition, EdgeType } from "./edges";
 
 export enum NodeType {
   INPUT_DATA,
@@ -60,18 +60,6 @@ export class Nodes {
     await this.diagram.get().press("Enter");
   }
 
-  // FIXME: Currently it requires multiple "Escapes" to work on Webkit and Chrome.
-  public async renameInputNode(args: { current: string; new: string }) {
-    await this.diagram.get().press("Escape");
-    await this.diagram.get().press("Escape");
-    await this.diagram.get().press("Escape");
-    await this.diagram.get().press("Escape");
-    await this.page.getByTitle(args.current, { exact: true }).click({ position: { x: 0, y: 0 } });
-    await this.page.getByTitle(args.current, { exact: true }).press("Enter");
-    await this.page.getByTitle(args.current, { exact: true }).getByRole("textbox").nth(0).fill(args.new);
-    await this.diagram.get().press("Enter");
-  }
-
   public async dragNewConnectedNode(args: {
     type: NodeType;
     from: string;
@@ -87,7 +75,7 @@ export class Nodes {
           .getByTitle("Add Input Data node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
-          await this.renameInputNode({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
+          await this.rename({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
         }
         break;
       case NodeType.DECISION:
@@ -120,20 +108,46 @@ export class Nodes {
     }
   }
 
-  public async dragNewConnectedEdge(args: { type: EdgeType; from: string; to: string }) {
+  public async dragNewConnectedEdge(args: { type: EdgeType; from: string; to: string; position?: EdgePosition }) {
     await this.diagram.selectNode({ name: args.from });
     const from = this.page.getByTitle(args.from, { exact: true });
     const to = this.page.getByTitle(args.to, { exact: true });
 
+    const targetPosition =
+      args.position !== undefined
+        ? await this.getPositionalNodeHandleCoordinates({ node: to, position: args.position })
+        : undefined;
+
     switch (args.type) {
       case EdgeType.ASSOCIATION:
-        return from.getByTitle("Add Association edge").dragTo(to);
+        return from.getByTitle("Add Association edge").dragTo(to, { targetPosition });
       case EdgeType.AUTHORITY_REQUIREMENT:
-        return from.getByTitle("Add Authority Requirement edge").dragTo(to);
+        return from.getByTitle("Add Authority Requirement edge").dragTo(to, { targetPosition });
       case EdgeType.INFORMATION_REQUIREMENT:
-        return from.getByTitle("Add Information Requirement edge").dragTo(to);
+        return from.getByTitle("Add Information Requirement edge").dragTo(to, { targetPosition });
       case EdgeType.KNOWLEDGE_REQUIREMENT:
-        return from.getByTitle("Add Knowledge Requirement edge").dragTo(to);
+        return from.getByTitle("Add Knowledge Requirement edge").dragTo(to, { targetPosition });
+    }
+  }
+
+  private async getPositionalNodeHandleCoordinates(args: { node: Locator; position: EdgePosition }) {
+    const toBoundingBox = await args.node.boundingBox();
+
+    if (!toBoundingBox) {
+      return undefined;
+    }
+
+    switch (args.position) {
+      case EdgePosition.TOP:
+        return { x: toBoundingBox.width / 2, y: 0 };
+      case EdgePosition.BOTTOM:
+        return { x: toBoundingBox.width / 2, y: toBoundingBox.height };
+      case EdgePosition.LEFT:
+        return { x: 0, y: toBoundingBox.height / 2 };
+      case EdgePosition.RIGHT:
+        return { x: toBoundingBox.width, y: toBoundingBox.height / 2 };
+      case EdgePosition.CENTER:
+        return { x: toBoundingBox.width / 2, y: toBoundingBox.height / 2 };
     }
   }
 }

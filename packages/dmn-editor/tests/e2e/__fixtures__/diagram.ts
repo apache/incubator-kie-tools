@@ -26,11 +26,17 @@ export class Diagram {
     return this.page.getByTestId("kie-dmn-editor--diagram-container");
   }
 
+  // Hover on the top border;
   public async hoverNode(args: { name: string }) {
-    await this.page.getByTitle(args.name, { exact: true }).hover();
+    const node = this.page.getByTitle(args.name, { exact: true });
+    const nodeBoundingBox = await node.boundingBox();
+    await node.hover({ position: { x: (nodeBoundingBox?.width ?? 0) / 2, y: 0 } });
   }
 
+  // Click on the top border;
   public async selectNode(args: { name: string }) {
-    await this.page.getByTitle(args.name, { exact: true }).click();
+    const node = this.page.getByTitle(args.name, { exact: true });
+    const nodeBoundingBox = await node.boundingBox();
+    await node.click({ position: { x: (nodeBoundingBox?.width ?? 0) / 2, y: 0 } });
   }
 }
