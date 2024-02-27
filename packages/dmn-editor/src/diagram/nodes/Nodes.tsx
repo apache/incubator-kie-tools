@@ -351,9 +351,7 @@ export const DecisionNode = React.memo(
     const shouldActLikeHovered = useDmnEditorStore(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      decision["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
     const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
@@ -508,9 +506,7 @@ export const BkmNode = React.memo(
     const shouldActLikeHovered = useDmnEditorStore(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      bkm["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
     const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
@@ -646,9 +642,7 @@ export const KnowledgeSourceNode = React.memo(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
 
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      knowledgeSource["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -765,9 +759,7 @@ export const TextAnnotationNode = React.memo(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
 
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      textAnnotation["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -884,9 +876,7 @@ export const DecisionServiceNode = React.memo(
     );
     const isDropTarget = useDmnEditorStore((s) => s.diagram.dropTargetNode?.id === id);
 
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      decisionService["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
     const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
@@ -1093,9 +1083,7 @@ export const GroupNode = React.memo(
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const reactFlow = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      group["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions({
