@@ -51,7 +51,9 @@ export function ShapeOptions({
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-  const shapes = useDmnEditorStore((s) => nodeIds.map((nodeId) => s.computed(s).indexes().dmnShapesByHref.get(nodeId)));
+  const shapes = useDmnEditorStore((s) =>
+    nodeIds.map((nodeId) => s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId))
+  );
   const shapeStyles = useMemo(() => shapes.map((shape) => shape?.["di:Style"]), [shapes]);
 
   // For when a single node is selected.
@@ -82,7 +84,7 @@ export function ShapeOptions({
       dmnEditorStoreApi.setState((s) => {
         const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
 
-        const index = nodeIds.map((nodeId) => s.computed(s).indexes().dmnShapesByHref.get(nodeId))[0]?.index ?? -1;
+        const index = nodeIds.map((nodeId) => s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId))[0]?.index ?? -1;
         if (index < 0) {
           throw new Error(`DMN Shape for '${nodeIds[0]}' does not exist.`);
         }
@@ -143,7 +145,7 @@ export function ShapeOptions({
         const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
 
         const shapes = nodeIds.map((nodeId) => {
-          const shape = s.computed(s).indexes().dmnShapesByHref.get(nodeId);
+          const shape = s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId);
           if (!shape) {
             throw new Error(`DMN Shape for '${nodeId}' does not exist.`);
           }

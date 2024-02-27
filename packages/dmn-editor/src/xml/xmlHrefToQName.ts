@@ -17,26 +17,25 @@
  * under the License.
  */
 
+import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
+import { parseXmlHref } from "./xmlHrefs";
+import { getXmlNamespaceDeclarationName } from "./xmlNamespaceDeclarations";
 import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
-import { parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 
-export function getXmlNamespaceDeclarationName({
-  rootElement,
-  namespace,
-}: {
-  rootElement: XmlParserTsRootElementBaseType | undefined;
-  namespace: string;
-}) {
-  const xmlnsEntry = Object.entries(rootElement ?? {}).find(
-    ([k, v]) => v === namespace && (k === "@_xmlns" || k.startsWith("@_xmlns:"))
-  );
-  if (!xmlnsEntry) {
-    return undefined;
+export function xmlHrefToQName(hrefString: string, rootElement: XmlParserTsRootElementBaseType | undefined) {
+  const href = parseXmlHref(hrefString);
+
+  const qNamePrefix = href.namespace
+    ? getXmlNamespaceDeclarationName({ rootElement, namespace: href.namespace })
+    : undefined;
+
+  if (href.namespace && !qNamePrefix) {
+    throw new Error(`Can't find namespace declaration for namespace '${href.namespace}'`);
   }
 
-  if (xmlnsEntry[0] === "@_xmlns") {
-    return undefined;
-  }
-
-  return parseXmlQName(xmlnsEntry[0]).localPart;
+  return buildXmlQName({
+    type: "xml-qname",
+    localPart: href.id,
+    prefix: qNamePrefix,
+  });
 }

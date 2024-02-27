@@ -68,7 +68,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const shapeStyles = useDmnEditorStore((s) =>
-    nodeIds.map((nodeId) => s.computed(s).indexes().dmnShapesByHref.get(nodeId)?.["di:Style"])
+    nodeIds.map((nodeId) => s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId)?.["di:Style"])
   );
 
   const fontFamily = useMemo(() => shapeStyles[0]?.["@_fontFamily"], [shapeStyles]);
@@ -92,7 +92,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
 
         const shapes = nodeIds.map((nodeId) => {
-          const shape = s.computed(s).indexes().dmnShapesByHref.get(nodeId);
+          const shape = s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId);
           if (!shape) {
             throw new Error(`DMN Shape for '${nodeId}' does not exist.`);
           }
