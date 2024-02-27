@@ -19,8 +19,8 @@
 
 import { expect } from "@playwright/test";
 import { test } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
-import { EdgePosition, EdgeType } from "../__fixtures__/edges";
+import { DefaultNodeName, NodeType, NodePosition } from "../__fixtures__/nodes";
+import { EdgeType } from "../__fixtures__/edges";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.beforeEach(async ({ editor }) => {
@@ -29,22 +29,16 @@ test.beforeEach(async ({ editor }) => {
 
 test.describe("MUTATIONS - Add edge", () => {
   test.describe("Between Input Data", () => {
-    test.beforeEach(({ page }, testInfo) => {
-      // FIXME: Input Data node requires to be renamed. Add new issue
-      if (testInfo.project.name === "Google Chrome" || testInfo.project.name === "webkit") {
-        test.skip(true, "");
-        test.info().annotations.push({
-          type: TestAnnotations.REGRESSION,
-          description: "",
-        });
-      }
-    });
-
     test("And Decision", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({
         type: NodeType.INPUT_DATA,
         targetPosition: { x: 100, y: 100 },
       });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 300 } });
 
       await nodes.dragNewConnectedEdge({
@@ -65,6 +59,11 @@ test.describe("MUTATIONS - Add edge", () => {
         type: NodeType.INPUT_DATA,
         targetPosition: { x: 100, y: 100 },
       });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 300 } });
       await nodes.dragNewConnectedEdge({
         type: EdgeType.AUTHORITY_REQUIREMENT,
@@ -86,6 +85,11 @@ test.describe("MUTATIONS - Add edge", () => {
         type: NodeType.INPUT_DATA,
         targetPosition: { x: 100, y: 100 },
       });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 300 } });
 
       await nodes.dragNewConnectedEdge({
@@ -110,6 +114,11 @@ test.describe("MUTATIONS - Add edge", () => {
         targetPosition: { x: 100, y: 100 },
         thenRenameTo: "Decision - A",
       });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({
         type: NodeType.DECISION,
         targetPosition: { x: 100, y: 300 },
@@ -130,6 +139,11 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And Knoledge Source", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({
         type: NodeType.KNOWLEDGE_SOURCE,
         targetPosition: { x: 100, y: 300 },
@@ -150,6 +164,11 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And Text Annotation", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 300 } });
 
       await nodes.dragNewConnectedEdge({
@@ -169,6 +188,11 @@ test.describe("MUTATIONS - Add edge", () => {
   test.describe("Between BKM", () => {
     test("And Decision", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 300 } });
 
       await nodes.dragNewConnectedEdge({
@@ -187,6 +211,11 @@ test.describe("MUTATIONS - Add edge", () => {
     test("And BKM", async ({ diagram, palette, nodes, edges }) => {
       // Rename to avoid ambiguity
       await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 }, thenRenameTo: "BKM - A" });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 300 }, thenRenameTo: "BKM - B" });
       await nodes.dragNewConnectedEdge({ type: EdgeType.KNOWLEDGE_REQUIREMENT, from: "BKM - A", to: "BKM - B" });
 
@@ -197,6 +226,11 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And Text Annotation", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 300 } });
 
       await nodes.dragNewConnectedEdge({
@@ -216,6 +250,11 @@ test.describe("MUTATIONS - Add edge", () => {
   test.describe("Between Knowledge Source", () => {
     test("And Decision", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 300 } });
       await nodes.dragNewConnectedEdge({
         type: EdgeType.AUTHORITY_REQUIREMENT,
@@ -232,6 +271,11 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And BKM", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 300 } });
 
       await nodes.dragNewConnectedEdge({
@@ -247,12 +291,17 @@ test.describe("MUTATIONS - Add edge", () => {
       await expect(diagram.get()).toHaveScreenshot();
     });
 
-    test("And Knoledge Source", async ({ diagram, palette, nodes, edges }) => {
+    test("And Knowledge Source", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({
         type: NodeType.KNOWLEDGE_SOURCE,
         targetPosition: { x: 100, y: 100 },
         thenRenameTo: "Knowledge Source - A",
       });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({
         type: NodeType.KNOWLEDGE_SOURCE,
         targetPosition: { x: 100, y: 300 },
@@ -281,6 +330,11 @@ test.describe("MUTATIONS - Add edge", () => {
       });
 
       await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 300 } });
 
       await nodes.dragNewConnectedEdge({
@@ -302,6 +356,11 @@ test.describe("MUTATIONS - Add edge", () => {
   test.describe("Between Decision Service", () => {
     test("And Decision", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 500, y: 500 } });
 
       await nodes.dragNewConnectedEdge({
@@ -319,6 +378,11 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And BKM", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 500, y: 500 } });
       await nodes.dragNewConnectedEdge({
         type: EdgeType.KNOWLEDGE_REQUIREMENT,
@@ -335,6 +399,11 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And Text Annotation", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 500, y: 500 } });
 
       await nodes.dragNewConnectedEdge({
@@ -356,6 +425,11 @@ test.describe("MUTATIONS - Add edge", () => {
   test.describe("Between Group", () => {
     test("And Text Annotation", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 500, y: 500 } });
 
       await nodes.dragNewConnectedEdge({
@@ -374,16 +448,12 @@ test.describe("MUTATIONS - Add edge", () => {
 
   test.describe("Between Text Annotation", () => {
     test("And Input Node", async ({ diagram, palette, nodes, edges }, testInfo) => {
-      // FIXME: Input Data node requires to be renamed. Add new issue
-      if (testInfo.project.name === "webkit") {
-        test.skip(true, "");
-        test.info().annotations.push({
-          type: TestAnnotations.REGRESSION,
-          description: "",
-        });
-      }
-
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({
         type: NodeType.INPUT_DATA,
         targetPosition: { x: 100, y: 400 },
@@ -405,6 +475,11 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And Decision", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 400 } });
 
       await nodes.dragNewConnectedEdge({
@@ -422,6 +497,11 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And BKM", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 400 } });
 
       await nodes.dragNewConnectedEdge({
@@ -439,6 +519,11 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And Knowledge Source", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 400 } });
 
       await nodes.dragNewConnectedEdge({
@@ -458,13 +543,18 @@ test.describe("MUTATIONS - Add edge", () => {
 
     test("And Decision Service", async ({ diagram, palette, nodes, edges }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 300, y: 300 } });
 
       await nodes.dragNewConnectedEdge({
         type: EdgeType.ASSOCIATION,
         from: DefaultNodeName.TEXT_ANNOTATION,
         to: DefaultNodeName.DECISION_SERVICE,
-        position: EdgePosition.TOP,
+        position: NodePosition.TOP,
       });
 
       expect(
@@ -485,13 +575,18 @@ test.describe("MUTATIONS - Add edge", () => {
       });
 
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+      test.info().annotations.push({
+        type: TestAnnotations.WORKAROUND_DUE_TO,
+        description: "",
+      });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
 
       await nodes.dragNewConnectedEdge({
         type: EdgeType.ASSOCIATION,
         from: DefaultNodeName.TEXT_ANNOTATION,
         to: DefaultNodeName.GROUP,
-        position: EdgePosition.TOP,
+        position: NodePosition.TOP,
       });
 
       expect(await edges.get({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.GROUP })).toBeAttached();

@@ -33,6 +33,8 @@ export class Palette {
 
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
+        } else {
+          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
         }
         break;
       case NodeType.DECISION:
@@ -41,6 +43,8 @@ export class Palette {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.DECISION, new: args.thenRenameTo });
+        } else {
+          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION });
         }
         break;
       case NodeType.KNOWLEDGE_SOURCE:
@@ -49,6 +53,8 @@ export class Palette {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.KNOWLEDGE_SOURCE, new: args.thenRenameTo });
+        } else {
+          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
         }
         break;
       case NodeType.BKM:
@@ -57,6 +63,8 @@ export class Palette {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.BKM, new: args.thenRenameTo });
+        } else {
+          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.BKM });
         }
         break;
       case NodeType.DECISION_SERVICE:
@@ -65,6 +73,8 @@ export class Palette {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.DECISION_SERVICE, new: args.thenRenameTo });
+        } else {
+          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION_SERVICE });
         }
         break;
       case NodeType.GROUP:
@@ -73,6 +83,8 @@ export class Palette {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.GROUP, new: args.thenRenameTo });
+        } else {
+          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.GROUP });
         }
         break;
       case NodeType.TEXT_ANNOTATION:
@@ -81,6 +93,8 @@ export class Palette {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.TEXT_ANNOTATION, new: args.thenRenameTo });
+        } else {
+          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.TEXT_ANNOTATION });
         }
         break;
     }

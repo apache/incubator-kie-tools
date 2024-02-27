@@ -27,14 +27,6 @@ export enum EdgeType {
   KNOWLEDGE_REQUIREMENT = "knowledge-requirement",
 }
 
-export enum EdgePosition {
-  TOP,
-  BOTTOM,
-  LEFT,
-  RIGHT,
-  CENTER,
-}
-
 export class Edges {
   constructor(public page: Page, public nodes: Nodes) {}
 

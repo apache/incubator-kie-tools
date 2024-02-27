@@ -28,10 +28,7 @@ test.beforeEach(async ({ editor }) => {
 test.describe("MUTATION - Rename node", () => {
   test("Input Data", async ({ diagram, palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
-    await nodes.rename({
-      current: DefaultNodeName.INPUT_DATA,
-      new: "Renamed Input Data",
-    });
+    await nodes.rename({ current: DefaultNodeName.INPUT_DATA, new: "Renamed Input Data" });
 
     await expect(nodes.get({ name: "Renamed Input Data" })).toBeAttached();
     await expect(diagram.get()).toHaveScreenshot();
@@ -39,10 +36,7 @@ test.describe("MUTATION - Rename node", () => {
 
   test("Decision", async ({ diagram, palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
-    await nodes.rename({
-      current: DefaultNodeName.DECISION,
-      new: "Renamed Decision",
-    });
+    await nodes.rename({ current: DefaultNodeName.DECISION, new: "Renamed Decision" });
 
     await expect(nodes.get({ name: "Renamed Decision" })).toBeAttached();
     await expect(diagram.get()).toHaveScreenshot();
@@ -50,10 +44,7 @@ test.describe("MUTATION - Rename node", () => {
 
   test("Text Annotation", async ({ diagram, palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
-    await nodes.rename({
-      current: DefaultNodeName.TEXT_ANNOTATION,
-      new: "Renamed Text annotation",
-    });
+    await nodes.rename({ current: DefaultNodeName.TEXT_ANNOTATION, new: "Renamed Text annotation" });
 
     await expect(nodes.get({ name: "Renamed Text annotation" })).toBeAttached();
     await expect(diagram.get()).toHaveScreenshot();
@@ -61,10 +52,7 @@ test.describe("MUTATION - Rename node", () => {
 
   test("Decision Service", async ({ diagram, palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
-    await nodes.rename({
-      current: DefaultNodeName.DECISION_SERVICE,
-      new: "Renamed Decision Service",
-    });
+    await nodes.rename({ current: DefaultNodeName.DECISION_SERVICE, new: "Renamed Decision Service" });
 
     await expect(nodes.get({ name: "Renamed Decision Service" })).toBeAttached();
     await expect(diagram.get()).toHaveScreenshot();
@@ -72,10 +60,7 @@ test.describe("MUTATION - Rename node", () => {
 
   test("BKM", async ({ diagram, palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
-    await nodes.rename({
-      current: DefaultNodeName.BKM,
-      new: "Renamed BKM",
-    });
+    await nodes.rename({ current: DefaultNodeName.BKM, new: "Renamed BKM" });
 
     await expect(nodes.get({ name: "Renamed BKM" })).toBeAttached();
     await expect(diagram.get()).toHaveScreenshot();
@@ -83,12 +68,17 @@ test.describe("MUTATION - Rename node", () => {
 
   test("Knowledge Source", async ({ diagram, palette, nodes }) => {
     await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
-    await nodes.rename({
-      current: DefaultNodeName.KNOWLEDGE_SOURCE,
-      new: "Renamed Knowledge Source",
-    });
+    await nodes.rename({ current: DefaultNodeName.KNOWLEDGE_SOURCE, new: "Renamed Knowledge Source" });
 
     await expect(nodes.get({ name: "Renamed Knowledge Source" })).toBeAttached();
+    await expect(diagram.get()).toHaveScreenshot();
+  });
+
+  test("Group", async ({ diagram, palette, nodes }) => {
+    await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
+    await nodes.rename({ current: DefaultNodeName.GROUP, new: "Renamed Group" });
+
+    await expect(nodes.get({ name: "Renamed Group" })).toBeAttached();
     await expect(diagram.get()).toHaveScreenshot();
   });
 });

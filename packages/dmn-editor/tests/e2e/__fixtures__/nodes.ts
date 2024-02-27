@@ -19,7 +19,7 @@
 
 import { Locator, Page } from "@playwright/test";
 import { Diagram } from "./diagram";
-import { EdgePosition, EdgeType } from "./edges";
+import { EdgeType } from "./edges";
 
 export enum NodeType {
   INPUT_DATA,
@@ -41,22 +41,27 @@ export enum DefaultNodeName {
   TEXT_ANNOTATION = "New text annotation",
 }
 
+export enum NodePosition {
+  TOP,
+  BOTTOM,
+  LEFT,
+  RIGHT,
+  CENTER,
+}
+
 export class Nodes {
   constructor(public page: Page, public diagram: Diagram) {}
-
-  public async getId(args: { name: string }): Promise<string> {
-    return (await this.page.getByTitle(args.name, { exact: true }).getAttribute("data-nodeid")) ?? "";
-  }
 
   public get(args: { name: string }) {
     return this.page.getByTitle(args.name, { exact: true });
   }
 
+  public async getId(args: { name: string }): Promise<string> {
+    return (await this.get({ name: args.name }).getAttribute("data-nodeid")) ?? "";
+  }
+
   public async rename(args: { current: string; new: string }) {
-    await this.diagram.get().press("Escape");
-    await this.page.getByTitle(args.current, { exact: true }).click({ position: { x: 0, y: 0 } });
-    await this.page.getByTitle(args.current, { exact: true }).press("Enter");
-    await this.page.getByTitle(args.current, { exact: true }).getByRole("textbox").nth(0).fill(args.new);
+    await this.get({ name: args.current }).getByRole("textbox").nth(0).fill(args.new);
     await this.diagram.get().press("Enter");
   }
 
@@ -66,8 +71,8 @@ export class Nodes {
     targetPosition: { x: number; y: number };
     thenRenameTo?: string;
   }) {
-    await this.diagram.hoverNode({ name: args.from });
-    const node = this.page.getByTitle(args.from, { exact: true });
+    await this.hover({ name: args.from });
+    const node = this.get({ name: args.from });
 
     switch (args.type) {
       case NodeType.INPUT_DATA:
@@ -108,10 +113,11 @@ export class Nodes {
     }
   }
 
-  public async dragNewConnectedEdge(args: { type: EdgeType; from: string; to: string; position?: EdgePosition }) {
-    await this.diagram.selectNode({ name: args.from });
-    const from = this.page.getByTitle(args.from, { exact: true });
-    const to = this.page.getByTitle(args.to, { exact: true });
+  public async dragNewConnectedEdge(args: { type: EdgeType; from: string; to: string; position?: NodePosition }) {
+    await this.select({ name: args.from, position: NodePosition.TOP });
+
+    const from = this.get({ name: args.from });
+    const to = this.get({ name: args.to });
 
     const targetPosition =
       args.position !== undefined
@@ -130,7 +136,42 @@ export class Nodes {
     }
   }
 
-  private async getPositionalNodeHandleCoordinates(args: { node: Locator; position: EdgePosition }) {
+  public async hover(args: { name: string; position?: NodePosition }) {
+    const node = this.get({ name: args.name });
+
+    const position =
+      args.position !== undefined
+        ? await this.getPositionalNodeHandleCoordinates({ node, position: args.position })
+        : undefined;
+
+    await node.hover({ position });
+  }
+
+  public async select(args: { name: string; position?: NodePosition }) {
+    const node = this.get({ name: args.name });
+
+    const position =
+      args.position !== undefined
+        ? await this.getPositionalNodeHandleCoordinates({ node, position: args.position })
+        : undefined;
+
+    await node.click({ position });
+  }
+
+  public async selectLabel(args: { name: string }) {
+    return this.get({ name: args.name }).locator("span", { hasText: args.name }).dblclick();
+  }
+
+  // After creating a node takes a while to get the focus.
+  // This methods waits until it gets the focus.
+  public async waitForNodeToBeFocused(args: { name: string }) {
+    return this.page.waitForFunction(
+      (nodeName) => (document.activeElement as HTMLInputElement)?.value === nodeName,
+      args.name
+    );
+  }
+
+  private async getPositionalNodeHandleCoordinates(args: { node: Locator; position: NodePosition }) {
     const toBoundingBox = await args.node.boundingBox();
 
     if (!toBoundingBox) {
@@ -138,15 +179,15 @@ export class Nodes {
     }
 
     switch (args.position) {
-      case EdgePosition.TOP:
+      case NodePosition.TOP:
         return { x: toBoundingBox.width / 2, y: 0 };
-      case EdgePosition.BOTTOM:
+      case NodePosition.BOTTOM:
         return { x: toBoundingBox.width / 2, y: toBoundingBox.height };
-      case EdgePosition.LEFT:
+      case NodePosition.LEFT:
         return { x: 0, y: toBoundingBox.height / 2 };
-      case EdgePosition.RIGHT:
+      case NodePosition.RIGHT:
         return { x: toBoundingBox.width, y: toBoundingBox.height / 2 };
-      case EdgePosition.CENTER:
+      case NodePosition.CENTER:
         return { x: toBoundingBox.width / 2, y: toBoundingBox.height / 2 };
     }
   }
