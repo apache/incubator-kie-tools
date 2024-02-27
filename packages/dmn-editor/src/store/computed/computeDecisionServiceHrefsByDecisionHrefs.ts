@@ -31,7 +31,7 @@ export function computeDecisionServiceHrefsByDecisionHrefs({
   drgElements: State["dmn"]["model"]["definitions"]["drgElement"];
 }) {
   drgElements ??= [];
-  const ret = new Map<string, string[]>();
+  const decisionServiecHrefsByDecisionHrefs = new Map<string, string[]>();
 
   for (const drgElement of drgElements) {
     const drgElementHref = buildXmlHref({
@@ -41,7 +41,10 @@ export function computeDecisionServiceHrefsByDecisionHrefs({
 
     // Decision
     if (drgElement.__$$element === "decision") {
-      ret.set(drgElementHref, ret.get(drgElementHref) ?? []);
+      decisionServiecHrefsByDecisionHrefs.set(
+        drgElementHref,
+        decisionServiecHrefsByDecisionHrefs.get(drgElementHref) ?? []
+      );
     }
     // DS
     else if (drgElement.__$$element === "decisionService") {
@@ -52,12 +55,15 @@ export function computeDecisionServiceHrefsByDecisionHrefs({
       });
 
       for (const containedDecisionHref of containedDecisionHrefsRelativeToThisDmn) {
-        ret.set(containedDecisionHref, [...(ret.get(containedDecisionHref) ?? []), drgElementHref]);
+        decisionServiecHrefsByDecisionHrefs.set(containedDecisionHref, [
+          ...(decisionServiecHrefsByDecisionHrefs.get(containedDecisionHref) ?? []),
+          drgElementHref,
+        ]);
       }
     } else {
       // Ignore other elements
     }
   }
 
-  return ret;
+  return decisionServiecHrefsByDecisionHrefs;
 }
