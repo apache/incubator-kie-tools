@@ -26,12 +26,12 @@ const buildEnv: any = env;
 
 const customConfig = defineConfig({
   use: {
-    baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
+    baseURL: `http://localhost:${buildEnv.dmnEditor.storybook.port}`,
   },
   /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
-    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=misc-empty-boxed-expression--base`,
+    url: `http://localhost:${buildEnv.dmnEditor.storybook.port}/iframe.html?args=&id=use-cases-empty--empty&viewMode=story`,
     reuseExistingServer: !process.env.CI || true,
     stdout: "pipe",
     timeout: 180000,

@@ -21,6 +21,7 @@ import { config as baseConfig } from "@kie-tools/storybook-base/main";
 
 const config = {
   ...baseConfig,
+  staticDirs: ["../stories/__assets__"],
 };
 
 export default config;

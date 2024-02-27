@@ -17,19 +17,23 @@
  * under the License.
  */
 
-* {
-  box-sizing: border-box;
-}
+import * as React from "react";
+import type { Meta, StoryObj } from "@storybook/react";
+import * as DmnEditor from "../../../src/DmnEditor";
 
-html {
-  height: 100vh;
-  margin: 0;
-}
+import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { LOAN_PRE_QUALIFICATION_DMN } from "../DmnDiagramSources";
 
-body {
-  margin: 0;
-}
+const meta: Meta<typeof DmnEditor.DmnEditor> = {
+  title: "Use cases/Loan Pre Qualification",
+  component: DmnEditor.DmnEditor,
+};
 
-#dev-webapp {
-  height: 100%;
-}
+export default meta;
+type Story = StoryObj<typeof DmnEditor.DmnEditor>;
+
+export const LoanPreQualification: Story = {
+  args: {
+    model: getMarshaller(LOAN_PRE_QUALIFICATION_DMN, { upgradeTo: "latest" }).parser.parse(),
+  },
+};

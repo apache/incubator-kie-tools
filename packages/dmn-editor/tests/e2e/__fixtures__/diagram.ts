@@ -17,25 +17,22 @@
  * under the License.
  */
 
-import { defineConfig } from "@playwright/test";
-import playwirghtBaseConfig from "@kie-tools/playwright-base/playwright.config";
-import merge from "lodash/merge";
-import { env } from "./env";
+import { Page } from "@playwright/test";
 
-const buildEnv: any = env;
+export class Diagram {
+  constructor(public page: Page, public baseURL?: string) {
+    this.page = page;
+  }
 
-const customConfig = defineConfig({
-  use: {
-    baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
-  },
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: "pnpm start",
-    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=misc-empty-boxed-expression--base`,
-    reuseExistingServer: !process.env.CI || true,
-    stdout: "pipe",
-    timeout: 180000,
-  },
-});
+  public async openEmpty() {
+    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=use-cases-empty--empty&viewMode=story`);
+  }
 
-export default defineConfig(merge(playwirghtBaseConfig, customConfig));
+  public getContainer() {
+    return this.page.getByTestId("kie-dmn-editor--diagram-container");
+  }
+
+  public getEdge(fromNodeId: string | null, toNodeId: string | null) {
+    return this.page.getByRole("button", { name: `Edge from ${fromNodeId} to ${toNodeId}` });
+  }
+}
