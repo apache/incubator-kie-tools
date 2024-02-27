@@ -74,28 +74,59 @@ runs:
       env:
         HOMEBREW_NO_INSTALL_FROM_API:
       run: |
-        brew untap homebrew/core homebrew/cask
-        brew update
-        brew install docker docker-compose
-        cat >entitlements.xml <<EOF
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-            <key>com.apple.security.hypervisor</key>
-            <true/>
-        </dict>
-        </plist>
-        EOF
-
-        codesign --sign - --entitlements entitlements.xml --force /usr/local/bin/qemu-system-$(uname -m | sed -e s/arm64/aarch64/)
+        brew update --preinstall
+        LIMA_VERSION=$(gh release -R lima-vm/lima view --json tagName -q ".tagName")
+        curl -fsSL "https://github.com/lima-vm/lima/releases/download/${LIMA_VERSION}/lima-${LIMA_VERSION:1}-$(uname -s)-$(uname -m).tar.gz" | tar Cxzvm /usr/local
+        COLIMA_VERSION=$(gh release -R abiosoft/colima view --json tagName -q ".tagName")
+        curl -LO https://github.com/abiosoft/colima/releases/download/${COLIMA_VERSION}/colima-$(uname)-$(uname -m)
+        install colima-$(uname)-$(uname -m) /usr/local/bin/colima
+        brew install docker docker-compose qemu 2>&1 | tee install.log
         mkdir -p ~/.docker/cli-plugins
-        ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
-        brew install docker-Buildx
-        ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
-        colima stop
-        colima delete
+        ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
+        if grep -q "qemu 8.1.0 is already installed" install.log
+        then
+            echo "Detected broken QEMU bottle installed by brew, removing and reinstalling."
+            brew reinstall qemu
+        fi
         colima start --memory 4 --network-address --verbose
+
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "version<<$EOF" >> "$GITHUB_OUTPUT"
+        docker version >> "$GITHUB_OUTPUT"
+        echo "$EOF" >> "$GITHUB_OUTPUT"
+
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "version<<$EOF" >> "$GITHUB_OUTPUT"
+        docker compose version >> "$GITHUB_OUTPUT"
+        echo "$EOF" >> "$GITHUB_OUTPUT"
+
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "version<<$EOF" >> "$GITHUB_OUTPUT"
+        colima version >> "$GITHUB_OUTPUT"
+        echo "$EOF" >> "$GITHUB_OUTPUT"
+
+      # brew untap homebrew/core homebrew/cask
+      # brew update
+      # brew install docker docker-compose
+      # cat >entitlements.xml <<EOF
+      # <?xml version="1.0" encoding="UTF-8"?>
+      # <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      # <plist version="1.0">
+      # <dict>
+      #     <key>com.apple.security.hypervisor</key>
+      #     <true/>
+      # </dict>
+      # </plist>
+      # EOF
+
+      # codesign --sign - --entitlements entitlements.xml --force /usr/local/bin/qemu-system-$(uname -m | sed -e s/arm64/aarch64/)
+      # mkdir -p ~/.docker/cli-plugins
+      # ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
+      # brew install docker-Buildx
+      # ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
+      # colima stop
+      # colima delete
+      # colima start --memory 4 --network-address --verbose
       # QEMU is reinstalled due to this bug: https://github.com/lima-vm/lima/issues/1742
 
     - name: "Setup Helm (Ubuntu)"

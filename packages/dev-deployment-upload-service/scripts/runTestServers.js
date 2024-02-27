@@ -91,6 +91,7 @@ try {
   execSync(`docker buildx create --name ${builder} --driver docker-container --driver-opt network=${network}`, {
     stdio: "inherit",
   });
+  execSync("docker buildx ls", { stdio: "inherit" });
 } catch (e) {
   cleanup();
   throw new Error(`Failed to create builder ${builder}. Exiting!`);
@@ -117,3 +118,5 @@ try {
   cleanup();
   throw new Error(`Failed to build and start ${containersNames.runTimeInstall}. Exiting!`);
 }
+
+execSync("docker ps -f name=ddus", { stdio: "inherit" });
