@@ -46,6 +46,7 @@ func (d developmentProfile) GetProfile() metadata.ProfileType {
 func NewProfileReconciler(client client.Client, cfg *rest.Config, recorder record.EventRecorder) profiles.ProfileReconciler {
 	support := &common.StateSupport{
 		C:        client,
+		Cfg:      cfg,
 		Catalog:  discovery.NewServiceCatalogForConfig(client, cfg),
 		Recorder: recorder,
 	}

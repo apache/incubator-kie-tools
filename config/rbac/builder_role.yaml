@@ -66,3 +66,33 @@ rules:
     - patch
     - update
     - watch
+- apiGroups:
+    - eventing.knative.dev
+  resources:
+    - triggers
+    - triggers/status
+    - triggers/finalizers
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiGroups:
+    - sources.knative.dev
+  resources:
+    - sinkbindings
+    - sinkbindings/status
+    - sinkbindings/finalizers
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - get
+    - list
+    - patch
+    - update
+    - watch

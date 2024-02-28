@@ -16,4 +16,11 @@ package constants
 
 const (
 	MicroprofileServiceCatalogPropertyPrefix = "org.kie.kogito.addons.discovery."
+	KogitoOutgoingEventsURL                  = "mp.messaging.outgoing.kogito_outgoing_stream.url"
+	KogitoOutgoingEventsConnector            = "mp.messaging.outgoing.kogito_outgoing_stream.connector"
+	KogitoIncomingEventsConnector            = "mp.messaging.incoming.kogito_incoming_stream.connector"
+	KogitoIncomingEventsPath                 = "mp.messaging.incoming.kogito_incoming_stream.path"
+	KnativeHealthEnabled                     = "org.kie.kogito.addons.knative.eventing.health-enabled"
+	KnativeInjectedEnvVar                    = "${K_SINK}"
+	KnativeEventingBrokerDefault             = "default"
 )

@@ -32,6 +32,7 @@ import (
 
 var _ ObjectEnsurer = &defaultObjectEnsurer{}
 var _ ObjectEnsurer = &noopObjectEnsurer{}
+var _ ObjectsEnsurer = &defaultObjectsEnsurer{}
 
 type ObjectEnsurer interface {
 	Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, visitors ...MutateVisitor) (client.Object, controllerutil.OperationResult, error)
@@ -77,22 +78,10 @@ func (d *defaultObjectEnsurer) Ensure(ctx context.Context, workflow *operatorapi
 	result := controllerutil.OperationResultNone
 
 	object, err := d.creator(workflow)
-	if err != nil {
+	if err != nil || object == nil {
 		return nil, result, err
 	}
-	if result, err = controllerutil.CreateOrPatch(ctx, d.c, object,
-		func() error {
-			for _, v := range visitors {
-				if visitorErr := v(object)(); visitorErr != nil {
-					return visitorErr
-				}
-			}
-			return controllerutil.SetControllerReference(workflow, object, d.c.Scheme())
-		}); err != nil {
-		return nil, result, err
-	}
-	klog.V(log.I).InfoS("Object operation finalized", "result", result, "kind", object.GetObjectKind().GroupVersionKind().String(), "name", object.GetName(), "namespace", object.GetNamespace())
-	return object, result, nil
+	return ensureObject(ctx, workflow, visitors, result, d.c, object)
 }
 
 // defaultObjectEnsurerWithPlatform is the equivalent of defaultObjectEnsurer for resources that require a reference to the SonataFlowPlatform
@@ -135,4 +124,62 @@ type noopObjectEnsurer struct {
 func (d *noopObjectEnsurer) Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, visitors ...MutateVisitor) (client.Object, controllerutil.OperationResult, error) {
 	result := controllerutil.OperationResultNone
 	return nil, result, nil
+}
+
+// ObjectsEnsurer is an ensurer to apply multiple objects
+type ObjectsEnsurer interface {
+	Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, visitors ...MutateVisitor) []ObjectEnsurerResult
+}
+
+type ObjectEnsurerResult struct {
+	client.Object
+	Result controllerutil.OperationResult
+	Error  error
+}
+
+func NewObjectsEnsurer(client client.Client, creator ObjectsCreator) ObjectsEnsurer {
+	return &defaultObjectsEnsurer{
+		c:       client,
+		creator: creator,
+	}
+}
+
+type defaultObjectsEnsurer struct {
+	ObjectsEnsurer
+	c       client.Client
+	creator ObjectsCreator
+}
+
+func (d *defaultObjectsEnsurer) Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, visitors ...MutateVisitor) []ObjectEnsurerResult {
+	result := controllerutil.OperationResultNone
+
+	objects, err := d.creator(workflow)
+	if err != nil {
+		return []ObjectEnsurerResult{{nil, result, err}}
+	}
+	var ensureResult []ObjectEnsurerResult
+	for _, object := range objects {
+		ensureObject, c, err := ensureObject(ctx, workflow, visitors, result, d.c, object)
+		ensureResult = append(ensureResult, ObjectEnsurerResult{ensureObject, c, err})
+		if err != nil {
+			return ensureResult
+		}
+	}
+	return ensureResult
+}
+
+func ensureObject(ctx context.Context, workflow *operatorapi.SonataFlow, visitors []MutateVisitor, result controllerutil.OperationResult, c client.Client, object client.Object) (client.Object, controllerutil.OperationResult, error) {
+	if result, err := controllerutil.CreateOrPatch(ctx, c, object,
+		func() error {
+			for _, v := range visitors {
+				if visitorErr := v(object)(); visitorErr != nil {
+					return visitorErr
+				}
+			}
+			return controllerutil.SetControllerReference(workflow, object, c.Scheme())
+		}); err != nil {
+		return nil, result, err
+	}
+	klog.V(log.I).InfoS("Object operation finalized", "result", result, "kind", object.GetObjectKind().GroupVersionKind().String(), "name", object.GetName(), "namespace", object.GetNamespace())
+	return object, result, nil
 }

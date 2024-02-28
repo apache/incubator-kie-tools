@@ -44,6 +44,7 @@ const (
 	SonataFlowGreetingsWithDataInputSchemaCR  = "sonataflow.org_v1alpha08_sonataflow_greetings_datainput.yaml"
 	SonataFlowGreetingsWithStaticResourcesCR  = "sonataflow.org_v1alpha08_sonataflow-metainf.yaml"
 	SonataFlowSimpleOpsYamlCR                 = "sonataflow.org_v1alpha08_sonataflow-simpleops.yaml"
+	SonataFlowVetWithEventCR                  = "sonataflow.org_v1alpha08_sonataflow_vet_event.yaml"
 	SonataFlowGreetingsDataInputSchemaConfig  = "v1_configmap_greetings_datainput.yaml"
 	SonataFlowGreetingsStaticFilesConfig      = "v1_configmap_greetings_staticfiles.yaml"
 	sonataFlowPlatformYamlCR                  = "sonataflow.org_v1alpha08_sonataflowplatform.yaml"
@@ -200,6 +201,10 @@ func SetProdProfile(workflow *operatorapi.SonataFlow) {
 
 func GetBaseSonataFlow(namespace string, options ...*func(*operatorapi.SonataFlow)) *operatorapi.SonataFlow {
 	return NewSonataFlow(sonataFlowSampleYamlCR, namespace)
+}
+
+func GetVetEventSonataFlow(namespace string) *operatorapi.SonataFlow {
+	return GetSonataFlow(SonataFlowVetWithEventCR, namespace)
 }
 
 func GetBaseSonataFlowWithDevProfile(namespace string) *operatorapi.SonataFlow {

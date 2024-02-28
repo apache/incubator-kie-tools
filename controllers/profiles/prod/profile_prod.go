@@ -72,6 +72,7 @@ func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 func NewProfileReconciler(client client.Client, cfg *rest.Config, recorder record.EventRecorder) profiles.ProfileReconciler {
 	support := &common.StateSupport{
 		C:        client,
+		Cfg:      cfg,
 		Catalog:  discovery.NewServiceCatalogForConfig(client, cfg),
 		Recorder: recorder,
 	}
@@ -93,6 +94,7 @@ func NewProfileReconciler(client client.Client, cfg *rest.Config, recorder recor
 func NewProfileForOpsReconciler(client client.Client, cfg *rest.Config, recorder record.EventRecorder) profiles.ProfileReconciler {
 	support := &common.StateSupport{
 		C:        client,
+		Cfg:      cfg,
 		Catalog:  discovery.NewServiceCatalogForConfig(client, cfg),
 		Recorder: recorder,
 	}

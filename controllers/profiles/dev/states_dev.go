@@ -117,6 +117,12 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 	}
 	objs = append(objs, route)
 
+	if knativeObjs, err := common.NewKnativeEventingHandler(e.StateSupport).Ensure(ctx, workflow); err != nil {
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
+	} else {
+		objs = append(objs, knativeObjs...)
+	}
+
 	// First time reconciling this object, mark as wait for deployment
 	if workflow.Status.GetTopLevelCondition().IsUnknown() {
 		klog.V(log.I).InfoS("Workflow is in WaitingForDeployment Condition")

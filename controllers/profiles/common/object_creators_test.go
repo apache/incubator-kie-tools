@@ -23,6 +23,8 @@ import (
 	"context"
 	"testing"
 
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
+
 	"github.com/magiconair/properties"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
@@ -174,6 +176,35 @@ func TestMergePodSpec_OverrideContainers(t *testing.T) {
 	assert.NotEqual(t, "quay.io/example/my-workflow:1.0.0", flowContainer.Image)
 	assert.Equal(t, int32(8080), flowContainer.Ports[0].ContainerPort)
 	assert.Empty(t, flowContainer.Env)
+}
+
+func Test_ensureWorkflowSinkBindingIsCreated(t *testing.T) {
+	workflow := test.GetVetEventSonataFlow(t.Name())
+
+	//On Kubernetes we want the service exposed in Dev with NodePort
+	sinkBinding, _ := SinkBindingCreator(workflow)
+	sinkBinding.SetUID("1")
+	sinkBinding.SetResourceVersion("1")
+
+	reflectSinkBinding := sinkBinding.(*sourcesv1.SinkBinding)
+
+	assert.NotNil(t, reflectSinkBinding)
+	assert.NotNil(t, reflectSinkBinding.Spec)
+	assert.NotEmpty(t, reflectSinkBinding.Spec.Sink)
+	assert.Equal(t, reflectSinkBinding.Spec.Sink.Ref.Kind, "Broker")
+}
+
+func Test_ensureWorkflowTriggersAreCreated(t *testing.T) {
+	workflow := test.GetVetEventSonataFlow(t.Name())
+
+	//On Kubernetes we want the service exposed in Dev with NodePort
+	triggers, _ := TriggersCreator(workflow)
+
+	assert.NotEmpty(t, triggers)
+	assert.Len(t, triggers, 2)
+	for _, trigger := range triggers {
+		assert.Contains(t, []string{"vet-vetappointmentrequestreceived-trigger", "vet-vetappointmentinfo-trigger"}, trigger.GetName())
+	}
 }
 
 func TestMergePodSpec_WithPostgreSQL_and_JDBC_URL_field(t *testing.T) {

@@ -196,6 +196,9 @@ spec:
           definition. For example, a collection of OpenAPI specification files.
         displayName: resources
         path: resources
+      - description: Sink describes the sinkBinding details of this SonataFlow instance.
+        displayName: sink
+        path: sink
       statusDescriptors:
       - description: Address is used as a part of Addressable interface (status.address.url)
           for knative

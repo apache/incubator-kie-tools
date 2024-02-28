@@ -83,7 +83,12 @@ func (d *deploymentReconciler) reconcileWithBuiltImage(ctx context.Context, work
 		return reconcile.Result{}, nil, err
 	}
 
+	knativeObjs, err := common.NewKnativeEventingHandler(d.StateSupport).Ensure(ctx, workflow)
+	if err != nil {
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, nil, err
+	}
 	objs := []client.Object{deployment, service, managedPropsCM}
+	objs = append(objs, knativeObjs...)
 
 	if deploymentOp == controllerutil.OperationResultCreated {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")

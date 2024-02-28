@@ -659,6 +659,9 @@ type SonataFlowSpec struct {
 	PodTemplate PodTemplateSpec `json:"podTemplate,omitempty"`
 	// Persistence defines the database persistence configuration for the workflow
 	Persistence *PersistenceOptionsSpec `json:"persistence,omitempty"`
+	// Sink describes the sinkBinding details of this SonataFlow instance.
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="sink"
+	Sink *duckv1.Destination `json:"sink,omitempty"`
 }
 
 // SonataFlowStatus defines the observed state of SonataFlow

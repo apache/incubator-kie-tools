@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	"k8s.io/client-go/rest"
+
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
 
 	"k8s.io/client-go/tools/record"
@@ -39,12 +41,13 @@ import (
 // StateSupport is the shared structure with common accessors used throughout the whole reconciliation profiles
 type StateSupport struct {
 	C        client.Client
+	Cfg      *rest.Config
 	Catalog  discovery.ServiceCatalog
 	Recorder record.EventRecorder
 }
 
 // PerformStatusUpdate updates the SonataFlow Status conditions
-func (s StateSupport) PerformStatusUpdate(ctx context.Context, workflow *operatorapi.SonataFlow) (bool, error) {
+func (s *StateSupport) PerformStatusUpdate(ctx context.Context, workflow *operatorapi.SonataFlow) (bool, error) {
 	var err error
 	workflow.Status.ObservedGeneration = workflow.Generation
 	if err = s.C.Status().Update(ctx, workflow); err != nil {

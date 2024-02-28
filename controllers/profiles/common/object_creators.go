@@ -20,10 +20,21 @@
 package common
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
+
+	cncfmodel "github.com/serverlessworkflow/sdk-go/v2/model"
+
 	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
+	duckv1 "knative.dev/pkg/apis/duck/v1"
+	"knative.dev/pkg/tracker"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
@@ -44,6 +55,9 @@ type ObjectCreator func(workflow *operatorapi.SonataFlow) (client.Object, error)
 // ObjectCreatorWithPlatform is the func equivalent to ObjectCreator to use when the resource being created needs a reference to the
 // SonataFlowPlatform
 type ObjectCreatorWithPlatform func(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (client.Object, error)
+
+// ObjectsCreator creates multiple resources
+type ObjectsCreator func(workflow *operatorapi.SonataFlow) ([]client.Object, error)
 
 const (
 	defaultHTTPServicePort = 80
@@ -197,6 +211,85 @@ func ServiceCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 	}
 
 	return service, nil
+}
+
+// SinkBindingCreator is an ObjectsCreator for SinkBinding.
+// It will create v1.SinkBinding based on events defined in workflow.
+func SinkBindingCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
+	lbl := workflowproj.GetDefaultLabels(workflow)
+
+	// skip if no produced event is found
+	if workflow.Spec.Sink == nil || !workflowdef.ContainsEventKind(workflow, cncfmodel.EventKindProduced) {
+		return nil, nil
+	}
+
+	sink := workflow.Spec.Sink
+
+	// subject must be deployment to inject K_SINK, service won't work
+	sinkBinding := &sourcesv1.SinkBinding{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      strings.ToLower(fmt.Sprintf("%s-sb", workflow.Name)),
+			Namespace: workflow.Namespace,
+			Labels:    lbl,
+		},
+		Spec: sourcesv1.SinkBindingSpec{
+			SourceSpec: duckv1.SourceSpec{
+				Sink: *sink,
+			},
+			BindingSpec: duckv1.BindingSpec{
+				Subject: tracker.Reference{
+					Name:       workflow.Name,
+					Namespace:  workflow.Namespace,
+					APIVersion: "apps/v1",
+					Kind:       "Deployment",
+				},
+			},
+		},
+	}
+	return sinkBinding, nil
+}
+
+// TriggersCreator is an ObjectsCreator for Triggers.
+// It will create a list of eventingv1.Trigger based on events defined in workflow.
+func TriggersCreator(workflow *operatorapi.SonataFlow) ([]client.Object, error) {
+	var resultObjects []client.Object
+	lbl := workflowproj.GetDefaultLabels(workflow)
+
+	//consumed
+	events := workflow.Spec.Flow.Events
+	for _, event := range events {
+		// filter out produce events
+		if event.Kind == cncfmodel.EventKindProduced {
+			continue
+		}
+
+		// construct eventingv1.Trigger
+		trigger := &eventingv1.Trigger{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      strings.ToLower(fmt.Sprintf("%s-%s-trigger", workflow.Name, event.Name)),
+				Namespace: workflow.Namespace,
+				Labels:    lbl,
+			},
+			Spec: eventingv1.TriggerSpec{
+				Broker: constants.KnativeEventingBrokerDefault,
+				Filter: &eventingv1.TriggerFilter{
+					Attributes: eventingv1.TriggerFilterAttributes{
+						"type": event.Type,
+					},
+				},
+				Subscriber: duckv1.Destination{
+					Ref: &duckv1.KReference{
+						Name:       workflow.Name,
+						Namespace:  workflow.Namespace,
+						APIVersion: "v1",
+						Kind:       "Service",
+					},
+				},
+			},
+		}
+		resultObjects = append(resultObjects, trigger)
+	}
+	return resultObjects, nil
 }
 
 // OpenShiftRouteCreator is an ObjectCreator for a basic Route for a workflow running on OpenShift.

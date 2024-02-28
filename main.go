@@ -23,6 +23,9 @@ import (
 	"flag"
 	"os"
 
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
+
 	"k8s.io/klog/v2/klogr"
 
 	"k8s.io/klog/v2"
@@ -54,6 +57,8 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(operatorapi.AddToScheme(scheme))
+	utilruntime.Must(sourcesv1.AddToScheme(scheme))
+	utilruntime.Must(eventingv1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 

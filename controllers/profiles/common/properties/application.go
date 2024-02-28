@@ -40,9 +40,6 @@ import (
 var (
 	immutableApplicationProperties = fmt.Sprintf("quarkus.http.port=%d\n"+
 		"quarkus.http.host=0.0.0.0\n"+
-		// We disable the Knative health checks to not block the pod to run if Knative objects are not available
-		// See: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/eventing/consume-produce-events-with-knative-eventing.html#ref-knative-eventing-add-on-source-configuration
-		"org.kie.kogito.addons.knative.eventing.health-enabled=false\n"+
 		"quarkus.devservices.enabled=false\n"+
 		"quarkus.kogito.devservices.enabled=false\n", constants.DefaultHTTPWorkflowPortInt)
 	_ AppPropertyHandler = &appPropertyHandler{}
@@ -156,6 +153,11 @@ func NewAppPropertyHandler(workflow *operatorapi.SonataFlow, platform *operatora
 		}
 		props.Merge(p)
 		p, err = services.GenerateJobServiceWorkflowProperties(workflow, platform)
+		if err != nil {
+			return nil, err
+		}
+		props.Merge(p)
+		p, err = generateKnativeEventingWorkflowProperties(workflow)
 		if err != nil {
 			return nil, err
 		}
