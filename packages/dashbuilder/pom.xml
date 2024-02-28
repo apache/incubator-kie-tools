@@ -101,7 +101,7 @@
     <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
     <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
     <version.surefire.plugin>3.2.5</version.surefire.plugin>
-    <version.enforcer.plugin>3.1.0</version.enforcer.plugin>
+    <version.enforcer.plugin>3.0.0-M3</version.enforcer.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
     <version.compiler.plugin>3.12.1</version.compiler.plugin>
     <version.resources.plugin>3.2.0</version.resources.plugin>
