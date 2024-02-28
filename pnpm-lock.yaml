@@ -7313,9 +7313,6 @@ importers:
       "@babel/preset-typescript":
         specifier: ^7.22.5
         version: 7.23.0(@babel/core@7.18.10)
-      "@jest/globals":
-        specifier: ^26.6.2
-        version: 26.6.2
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../webpack-base
@@ -7346,12 +7343,6 @@ importers:
       "@storybook/blocks":
         specifier: ^7.3.2
         version: 7.6.13(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2)
-      "@storybook/manager-api":
-        specifier: ^7.3.2
-        version: 7.6.13(react-dom@17.0.2)(react@17.0.2)
-      "@storybook/preview-api":
-        specifier: ^7.3.2
-        version: 7.6.13
       "@storybook/react":
         specifier: ^7.3.2
         version: 7.6.13(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)
@@ -16556,6 +16547,19 @@ packages:
       "@babel/helper-simple-access": 7.22.5
     dev: true
 
+  /@babel/plugin-transform-modules-commonjs@7.23.0(@babel/core@7.18.10):
+    resolution:
+      { integrity: sha512-32Xzss14/UVc7k9g775yMIvkVK8xwKE0DPdP5JTapr3+Z9w4tzeOuLNY6BXDQR6BdnzIlXnCGAzsk/ICHBLVWQ== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.18.10
+      "@babel/helper-module-transforms": 7.23.3(@babel/core@7.18.10)
+      "@babel/helper-plugin-utils": 7.22.5
+      "@babel/helper-simple-access": 7.22.5
+    dev: true
+
   /@babel/plugin-transform-modules-commonjs@7.23.0(@babel/core@7.23.0):
     resolution:
       { integrity: sha512-32Xzss14/UVc7k9g775yMIvkVK8xwKE0DPdP5JTapr3+Z9w4tzeOuLNY6BXDQR6BdnzIlXnCGAzsk/ICHBLVWQ== }
@@ -16578,19 +16582,6 @@ packages:
     dependencies:
       "@babel/core": 7.23.9
       "@babel/helper-module-transforms": 7.23.3(@babel/core@7.23.9)
-      "@babel/helper-plugin-utils": 7.22.5
-      "@babel/helper-simple-access": 7.22.5
-    dev: true
-
-  /@babel/plugin-transform-modules-commonjs@7.23.3(@babel/core@7.18.10):
-    resolution:
-      { integrity: sha512-aVS0F65LKsdNOtcz6FRCpE4OgsP2OFnW46qNxNIX9h3wuzaNcSQsJysuMwqSibC98HPrf2vCgtxKNwS0DAlgcA== }
-    engines: { node: ">=6.9.0" }
-    peerDependencies:
-      "@babel/core": ^7.0.0-0
-    dependencies:
-      "@babel/core": 7.18.10
-      "@babel/helper-module-transforms": 7.23.3(@babel/core@7.18.10)
       "@babel/helper-plugin-utils": 7.22.5
       "@babel/helper-simple-access": 7.22.5
     dev: true
@@ -19313,9 +19304,9 @@ packages:
     dependencies:
       "@babel/core": 7.18.10
       "@babel/helper-plugin-utils": 7.22.5
-      "@babel/helper-validator-option": 7.23.5
+      "@babel/helper-validator-option": 7.22.15
       "@babel/plugin-syntax-jsx": 7.22.5(@babel/core@7.18.10)
-      "@babel/plugin-transform-modules-commonjs": 7.23.3(@babel/core@7.18.10)
+      "@babel/plugin-transform-modules-commonjs": 7.23.0(@babel/core@7.18.10)
       "@babel/plugin-transform-typescript": 7.22.15(@babel/core@7.18.10)
     dev: true
 
