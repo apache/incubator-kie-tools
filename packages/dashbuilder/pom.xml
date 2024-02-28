@@ -468,6 +468,7 @@
     <module>dashbuilder-bom</module>
     <module>kie-soup-dataset</module>
     <module>appformer</module>
+    <module>errai</module>
     <module>dashbuilder-shared</module>
     <module>dashbuilder-client</module>
     <module>dashbuilder-runtime-parent</module>
@@ -768,7 +769,7 @@
                         + Logback) -->
                       <!-- In case of transitive dependency, exclude it and 
                         use 'org.slf4j:jcl-over-slf4j' instead -->
-                      <exclude>commons-logging:commons-log*</exclude>
+                      <!--<exclude>commons-logging:commons-log*</exclude>-->
 
                       <exclude
                       >log4j:log4j</exclude> <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' 
@@ -799,7 +800,7 @@
                       <exclude>javax.ws.rs:javax.ws.rs-api</exclude>
                       <exclude>javax.mail:mail</exclude>
                       <exclude>javax.xml.stream:stax-api</exclude>
-                      <exclude>org.jboss.spec.javax.*:*</exclude>
+                      <!--<exclude>org.jboss.spec.javax.*:*</exclude>-->
                       <exclude>org.apache.geronimo.specs:geronimo-activation_1.1_spec</exclude>
                       <exclude>org.apache.geronimo.specs:geronimo-annotation_1.0_spec</exclude>
                       <exclude>org.apache.geronimo.specs:geronimo-javamail_1.4_spec</exclude>
