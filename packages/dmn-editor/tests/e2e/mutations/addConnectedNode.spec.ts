@@ -21,6 +21,7 @@ import { expect } from "@playwright/test";
 import { test } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 import { EdgeType } from "../__fixtures__/edges";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -170,6 +171,149 @@ test.describe("MUTATION - Add connected node", () => {
 
       expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
       expect(await edges.getType({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
+        EdgeType.ASSOCIATION
+      );
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+  });
+
+  test.describe("From Knowledge Source", () => {
+    test("Add Decision", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        from: DefaultNodeName.KNOWLEDGE_SOURCE,
+        type: NodeType.DECISION,
+        targetPosition: { x: 100, y: 300 },
+      });
+
+      expect(await edges.get({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.DECISION })).toBeAttached();
+      expect(await edges.getType({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.DECISION })).toEqual(
+        EdgeType.AUTHORITY_REQUIREMENT
+      );
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+
+    test("Add BKM", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        from: DefaultNodeName.KNOWLEDGE_SOURCE,
+        type: NodeType.BKM,
+        targetPosition: { x: 100, y: 300 },
+      });
+
+      expect(await edges.get({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.BKM })).toBeAttached();
+      expect(await edges.getType({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.BKM })).toEqual(
+        EdgeType.AUTHORITY_REQUIREMENT
+      );
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+
+    test("Add Knowledge Source", async ({ diagram, palette, nodes, edges }) => {
+      // Renaming to avoid ambiguity
+      await palette.dragNewNode({
+        type: NodeType.KNOWLEDGE_SOURCE,
+        targetPosition: { x: 100, y: 100 },
+        thenRenameTo: "Knowledge Source - A",
+      });
+      await nodes.dragNewConnectedNode({
+        from: "Knowledge Source - A",
+        type: NodeType.KNOWLEDGE_SOURCE,
+        targetPosition: { x: 100, y: 300 },
+        thenRenameTo: "Knowledge Source - B",
+      });
+
+      expect(await edges.get({ from: "Knowledge Source - A", to: "Knowledge Source - B" })).toBeAttached();
+      expect(await edges.getType({ from: "Knowledge Source - A", to: "Knowledge Source - B" })).toEqual(
+        EdgeType.AUTHORITY_REQUIREMENT
+      );
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+
+    test("Add Text Annotation", async ({ diagram, palette, nodes, edges }) => {
+      test.skip(true, "");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "",
+      });
+
+      await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        from: DefaultNodeName.KNOWLEDGE_SOURCE,
+        type: NodeType.TEXT_ANNOTATION,
+        targetPosition: { x: 100, y: 300 },
+      });
+
+      expect(
+        await edges.get({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toBeAttached();
+      expect(
+        await edges.getType({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toEqual(EdgeType.ASSOCIATION);
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+  });
+
+  test.describe("From Decision Service", () => {
+    test("Add Decision", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        from: DefaultNodeName.DECISION_SERVICE,
+        type: NodeType.DECISION,
+        targetPosition: { x: 500, y: 500 },
+      });
+
+      expect(await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.DECISION })).toBeAttached();
+      expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.DECISION })).toEqual(
+        EdgeType.KNOWLEDGE_REQUIREMENT
+      );
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+
+    test("Add BKM", async ({ diagram, palette, nodes, edges }) => {
+      // Renaming to avoid ambiguity
+      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        from: DefaultNodeName.DECISION_SERVICE,
+        type: NodeType.BKM,
+        targetPosition: { x: 500, y: 500 },
+      });
+
+      expect(await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })).toBeAttached();
+      expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })).toEqual(
+        EdgeType.KNOWLEDGE_REQUIREMENT
+      );
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+
+    test("Add Text Annotation", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        from: DefaultNodeName.DECISION_SERVICE,
+        type: NodeType.TEXT_ANNOTATION,
+        targetPosition: { x: 500, y: 500 },
+      });
+
+      expect(
+        await edges.get({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toBeAttached();
+      expect(
+        await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.TEXT_ANNOTATION })
+      ).toEqual(EdgeType.ASSOCIATION);
+      await expect(diagram.get()).toHaveScreenshot();
+    });
+  });
+
+  test.describe("From Group", () => {
+    test("Add Text Annotation", async ({ diagram, palette, nodes, edges }) => {
+      await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
+      await nodes.dragNewConnectedNode({
+        from: DefaultNodeName.GROUP,
+        type: NodeType.TEXT_ANNOTATION,
+        targetPosition: { x: 500, y: 500 },
+      });
+
+      expect(await edges.get({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+      expect(await edges.getType({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
       await expect(diagram.get()).toHaveScreenshot();

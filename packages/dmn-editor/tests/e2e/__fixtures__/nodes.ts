@@ -76,7 +76,7 @@ export class Nodes {
     targetPosition: { x: number; y: number };
     thenRenameTo?: string;
   }) {
-    await this.hover({ name: args.from });
+    await this.hover({ name: args.from, position: NodePosition.TOP });
     const node = this.get({ name: args.from });
 
     switch (args.type) {
