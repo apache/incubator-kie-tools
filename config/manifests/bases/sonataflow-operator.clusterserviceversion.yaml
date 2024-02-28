@@ -74,6 +74,10 @@ spec:
         name: A SonataFlow Platform
         version: sonataflow.org/v1alpha08
       specDescriptors:
+      - description: Capabilities defines which platform capabilities should be applied
+          cluster-wide. If nil, defaults to `capabilities.workflows["services"]`
+        displayName: Capabilities
+        path: capabilities
       - description: PlatformRef defines which existing SonataFlowPlatform's supporting
           services should be used cluster-wide.
         displayName: PlatformRef

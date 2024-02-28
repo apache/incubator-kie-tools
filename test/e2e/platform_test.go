@@ -36,10 +36,13 @@ import (
 )
 
 const (
-	ephemeral  = "ephemeral"
-	postgreSQL = "postgreSQL"
-	dev        = "dev"
-	production = "prod"
+	ephemeral            = "ephemeral"
+	postgreSQL           = "postgreSQL"
+	dev                  = "dev"
+	production           = "prod"
+	clusterWideEphemeral = "cluster-wide-ephemeral"
+	ephemeralDataIndex   = "ephemeral-data-index"
+	ephemeralJobService  = "ephemeral-job-service"
 )
 
 var _ = Describe("Validate the persistence", Ordered, func() {

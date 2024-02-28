@@ -30,6 +30,10 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
+const (
+	PlatformServices operatorapi.WorkFlowCapability = "services"
+)
+
 // GetActiveClusterPlatform returns the currently installed active cluster platform.
 func GetActiveClusterPlatform(ctx context.Context, c ctrl.Client) (*operatorapi.SonataFlowClusterPlatform, error) {
 	return getClusterPlatform(ctx, c, true)

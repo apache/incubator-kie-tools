@@ -413,6 +413,19 @@ spec:
             description: SonataFlowClusterPlatformSpec defines the desired state of
               SonataFlowClusterPlatform
             properties:
+              capabilities:
+                description: Capabilities defines which platform capabilities should
+                  be applied cluster-wide. If nil, defaults to `capabilities.workflows["services"]`
+                properties:
+                  workflows:
+                    description: Workflows defines which platform capabilities should
+                      be applied to workflows cluster-wide.
+                    items:
+                      enum:
+                      - services
+                      type: string
+                    type: array
+                type: object
               platformRef:
                 description: PlatformRef defines which existing SonataFlowPlatform's
                   supporting services should be used cluster-wide.

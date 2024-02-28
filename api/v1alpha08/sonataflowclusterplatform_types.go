@@ -31,7 +31,19 @@ type SonataFlowClusterPlatformSpec struct {
 	// PlatformRef defines which existing SonataFlowPlatform's supporting services should be used cluster-wide.
 	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="PlatformRef"
 	PlatformRef SonataFlowPlatformRef `json:"platformRef"`
+	// Capabilities defines which platform capabilities should be applied cluster-wide. If nil, defaults to `capabilities.workflows["services"]`
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Capabilities"
+	Capabilities *SonataFlowClusterPlatformCapSpec `json:"capabilities,omitempty"`
 }
+
+// SonataFlowClusterPlatformCapSpec defines which platform capabilities should be applied cluster-wide
+type SonataFlowClusterPlatformCapSpec struct {
+	// Workflows defines which platform capabilities should be applied to workflows cluster-wide.
+	Workflows []WorkFlowCapability `json:"workflows,omitempty"`
+}
+
+// +kubebuilder:validation:Enum=services
+type WorkFlowCapability string
 
 // SonataFlowPlatformRef defines which existing SonataFlowPlatform's supporting services should be used cluster-wide.
 type SonataFlowPlatformRef struct {

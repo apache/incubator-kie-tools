@@ -159,7 +159,7 @@ func (d DataIndexHandler) GetServiceBaseUrl() string {
 }
 
 func (d DataIndexHandler) GetLocalServiceBaseUrl() string {
-	return generateServiceURL(constants.KogitoServiceURLProtocol, d.platform.Namespace, d.GetServiceName())
+	return GenerateServiceURL(constants.KogitoServiceURLProtocol, d.platform.Namespace, d.GetServiceName())
 }
 
 func (d DataIndexHandler) GetEnvironmentVariables() []corev1.EnvVar {
@@ -327,7 +327,7 @@ func (j JobServiceHandler) GetServiceBaseUrl() string {
 }
 
 func (j JobServiceHandler) GetLocalServiceBaseUrl() string {
-	return generateServiceURL(constants.JobServiceURLProtocol, j.platform.Namespace, j.GetServiceName())
+	return GenerateServiceURL(constants.JobServiceURLProtocol, j.platform.Namespace, j.GetServiceName())
 }
 
 func (j JobServiceHandler) GetEnvironmentVariables() []corev1.EnvVar {
@@ -395,7 +395,7 @@ func (j JobServiceHandler) MergePodSpec(podSpec corev1.PodSpec) (corev1.PodSpec,
 
 func (j JobServiceHandler) GenerateServiceProperties() (*properties.Properties, error) {
 	props := properties.NewProperties()
-	props.Set(constants.KogitoServiceURLProperty, generateServiceURL(constants.KogitoServiceURLProtocol, j.platform.Namespace, j.GetServiceName()))
+	props.Set(constants.KogitoServiceURLProperty, GenerateServiceURL(constants.KogitoServiceURLProtocol, j.platform.Namespace, j.GetServiceName()))
 	props.Set(constants.JobServiceKafkaSmallRyeHealthProperty, "false")
 	// add data source reactive URL
 	if j.hasPostgreSQLConfigured() {
@@ -447,7 +447,7 @@ func isServicesSet(platform *operatorapi.SonataFlowPlatform) bool {
 	return platform != nil && platform.Spec.Services != nil
 }
 
-func generateServiceURL(protocol string, namespace string, name string) string {
+func GenerateServiceURL(protocol string, namespace string, name string) string {
 	var serviceUrl string
 	if len(namespace) > 0 {
 		serviceUrl = fmt.Sprintf("%s://%s.%s", protocol, name, namespace)

@@ -203,11 +203,13 @@ func (r *SonataFlowPlatformReconciler) SonataFlowPlatformUpdateStatus(ctx contex
 			},
 		}
 
-		tpsDI := services.NewDataIndexHandler(target)
-		tpsDI.SetServiceUrlInStatus(sfPlatform)
+		if sfcPlatform.Spec.Capabilities != nil && contains(sfcPlatform.Spec.Capabilities.Workflows, clusterplatform.PlatformServices) {
+			tpsDI := services.NewDataIndexHandler(target)
+			tpsDI.SetServiceUrlInStatus(sfPlatform)
 
-		tpsJS := services.NewJobServiceHandler(target)
-		tpsJS.SetServiceUrlInStatus(sfPlatform)
+			tpsJS := services.NewJobServiceHandler(target)
+			tpsJS.SetServiceUrlInStatus(sfPlatform)
+		}
 	} else {
 		target.Status.ClusterPlatformRef = nil
 	}
@@ -272,4 +274,13 @@ func (r *SonataFlowPlatformReconciler) platformRequests(ctx context.Context, sfc
 		}
 	}
 	return requests
+}
+
+func contains(slice []operatorapi.WorkFlowCapability, s operatorapi.WorkFlowCapability) bool {
+	for _, a := range slice {
+		if a == s {
+			return true
+		}
+	}
+	return false
 }

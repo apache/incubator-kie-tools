@@ -24,6 +24,7 @@ import (
 	"testing"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/clusterplatform"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
@@ -753,6 +754,8 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.Equal(t, kscp.Name, ksp.Status.ClusterPlatformRef.Name)
 		assert.Equal(t, kscp.Spec.PlatformRef.Name, ksp.Status.ClusterPlatformRef.PlatformRef.Name)
 		assert.Equal(t, kscp.Spec.PlatformRef.Namespace, ksp.Status.ClusterPlatformRef.PlatformRef.Namespace)
+		assert.NotNil(t, kscp.Spec.Capabilities)
+		assert.Contains(t, kscp.Spec.Capabilities.Workflows, clusterplatform.PlatformServices)
 
 		assert.NotNil(t, ksp.Status.ClusterPlatformRef)
 		assert.Nil(t, ksp.Status.ClusterPlatformRef.Services)
@@ -802,5 +805,26 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NotNil(t, ksp2.Status.ClusterPlatformRef)
 		assert.Equal(t, kscp.Spec.PlatformRef.Name, ksp2.Status.ClusterPlatformRef.PlatformRef.Name)
 		assert.Equal(t, kscp.Spec.PlatformRef.Namespace, ksp2.Status.ClusterPlatformRef.PlatformRef.Namespace)
+		assert.Nil(t, ksp2.Status.ClusterPlatformRef.Services)
+
+		kscp.Spec.Capabilities = &v1alpha08.SonataFlowClusterPlatformCapSpec{}
+		assert.NoError(t, cl.Update(context.TODO(), kscp))
+		_, err = cr.Reconcile(context.TODO(), cReq)
+		if err != nil {
+			t.Fatalf("reconcile: (%v)", err)
+		}
+
+		_, err = r.Reconcile(context.TODO(), req2)
+		if err != nil {
+			t.Fatalf("reconcile: (%v)", err)
+		}
+
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: kscp.Name}, kscp))
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: ksp2.Name, Namespace: ksp2.Namespace}, ksp2))
+
+		assert.NotNil(t, kscp.Spec.Capabilities)
+		assert.Empty(t, kscp.Spec.Capabilities.Workflows)
+		assert.NotNil(t, ksp2.Status.ClusterPlatformRef)
+		assert.Nil(t, ksp2.Status.ClusterPlatformRef.Services)
 	})
 }

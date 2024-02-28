@@ -61,6 +61,10 @@ func (action *initializeAction) Handle(ctx context.Context, cPlatform *operatora
 		}
 		return nil
 	}
+
+	if err = configureDefaults(ctx, action.client, cPlatform, true); err != nil {
+		return err
+	}
 	cPlatform.Status.Version = metadata.SpecVersion
 	platformRef := cPlatform.Spec.PlatformRef
 
