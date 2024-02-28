@@ -239,17 +239,15 @@ export const InputDataNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           style={alternativeSvgStyle}
-          className={selectedAlternativeClass}
+          className={`kie-dmn-editor--node ${selectedAlternativeClass}`}
           ref={ref}
           tabIndex={-1}
+          data-nodeid={id}
+          data-nodelabel={inputData["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
-          <div
-            className={`kie-dmn-editor--node ${additionalClasses}`}
-            title={inputData["@_name"]}
-            data-nodeid={`#${inputData["@_id"]}`}
-          >
+          <div className={`kie-dmn-editor--node ${additionalClasses}`}>
             <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
             <OutgoingStuffNodePanel
@@ -432,8 +430,8 @@ export const DecisionNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={decision["@_name"]}
-          data-nodeid={`#${decision["@_id"]}`}
+          data-nodeid={id}
+          data-nodelabel={decision["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -569,8 +567,8 @@ export const BkmNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={bkm["@_name"]}
-          data-nodeid={`#${bkm["@_id"]}`}
+          data-nodeid={id}
+          data-nodelabel={bkm["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -695,8 +693,8 @@ export const KnowledgeSourceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={knowledgeSource["@_name"]}
-          data-nodeid={`#${knowledgeSource["@_id"]}`}
+          data-nodeid={id}
+          data-nodelabel={knowledgeSource["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -811,8 +809,8 @@ export const TextAnnotationNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
-          data-nodeid={`#${textAnnotation["@_id"]}`}
+          data-nodeid={id}
+          data-nodelabel={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1008,8 +1006,8 @@ export const DecisionServiceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={decisionService["@_name"]}
-          data-nodeid={`#${decisionService["@_id"]}`}
+          data-nodeid={id}
+          data-nodelabel={decisionService["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1153,8 +1151,8 @@ export const GroupNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={group["@_name"]}
-          data-nodeid={`#${group["@_id"]}`}
+          data-nodeid={id}
+          data-nodelabel={group["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1231,7 +1229,12 @@ export const UnknownNode = React.memo(
 
         <RF.Handle key={"unknown"} id={"unknown"} type={"source"} style={{ opacity: 0 }} position={RF.Position.Top} />
 
-        <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--unknown-node ${className}`} tabIndex={-1}>
+        <div
+          ref={ref}
+          className={`kie-dmn-editor--node kie-dmn-editor--unknown-node ${className}`}
+          tabIndex={-1}
+          data-nodeid={id}
+        >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
