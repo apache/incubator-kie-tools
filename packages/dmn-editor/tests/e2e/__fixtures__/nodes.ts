@@ -42,11 +42,12 @@ export enum DefaultNodeName {
 }
 
 export enum NodePosition {
-  TOP,
   BOTTOM,
+  CENTER,
   LEFT,
   RIGHT,
-  CENTER,
+  TOP,
+  TOP_PADDING,
 }
 
 export class Nodes {
@@ -61,8 +62,8 @@ export class Nodes {
   }
 
   public async delete(args: { name: string }) {
-    await this.page.getByTitle(args.name, { exact: true }).click({ position: { x: 20, y: 20 } });
-    await this.get({ name: args.name }).press("Delete");
+    await this.select({ name: args.name, position: NodePosition.TOP_PADDING });
+    await this.diagram.get().press("Delete");
   }
 
   public async rename(args: { current: string; new: string }) {
@@ -84,46 +85,41 @@ export class Nodes {
         await node
           .getByTitle("Add Input Data node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
-        } else {
-          await this.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
         }
         break;
       case NodeType.DECISION:
         await node.getByTitle("Add Decision node").dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.DECISION, new: args.thenRenameTo });
-        } else {
-          await this.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION });
         }
         break;
       case NodeType.KNOWLEDGE_SOURCE:
         await node
           .getByTitle("Add Knowledge Source node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.waitForNodeToBeFocused({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.KNOWLEDGE_SOURCE, new: args.thenRenameTo });
-        } else {
-          await this.waitForNodeToBeFocused({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
         }
         break;
       case NodeType.BKM:
         await node.getByTitle("Add BKM node").dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.waitForNodeToBeFocused({ name: DefaultNodeName.BKM });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.BKM, new: args.thenRenameTo });
-        } else {
-          await this.waitForNodeToBeFocused({ name: DefaultNodeName.BKM });
         }
         break;
       case NodeType.TEXT_ANNOTATION:
         await node
           .getByTitle("Add Text Annotation node")
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.waitForNodeToBeFocused({ name: DefaultNodeName.TEXT_ANNOTATION });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.TEXT_ANNOTATION, new: args.thenRenameTo });
-        } else {
-          await this.waitForNodeToBeFocused({ name: DefaultNodeName.TEXT_ANNOTATION });
         }
     }
   }
@@ -204,6 +200,8 @@ export class Nodes {
         return { x: toBoundingBox.width, y: toBoundingBox.height / 2 };
       case NodePosition.CENTER:
         return { x: toBoundingBox.width / 2, y: toBoundingBox.height / 2 };
+      case NodePosition.TOP_PADDING:
+        return { x: toBoundingBox.width / 2, y: 10 };
     }
   }
 }

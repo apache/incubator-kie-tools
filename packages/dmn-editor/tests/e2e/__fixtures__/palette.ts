@@ -30,72 +30,63 @@ export class Palette {
         await this.page
           .getByTitle("Input Data", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-
+        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
         if (args.thenRenameTo) {
-          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
           await this.nodes.rename({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
-        } else {
-          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
         }
         break;
       case NodeType.DECISION:
         await this.page
           .getByTitle("Decision", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.DECISION, new: args.thenRenameTo });
-        } else {
-          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION });
         }
         break;
       case NodeType.KNOWLEDGE_SOURCE:
         await this.page
           .getByTitle("Knowledge Source", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.KNOWLEDGE_SOURCE, new: args.thenRenameTo });
-        } else {
-          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
         }
         break;
       case NodeType.BKM:
         await this.page
           .getByTitle("Business Knowledge Model", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.BKM });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.BKM, new: args.thenRenameTo });
-        } else {
-          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.BKM });
         }
         break;
       case NodeType.DECISION_SERVICE:
         await this.page
           .getByTitle("Decision Service", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION_SERVICE });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.DECISION_SERVICE, new: args.thenRenameTo });
-        } else {
-          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION_SERVICE });
         }
         break;
       case NodeType.GROUP:
         await this.page
           .getByTitle("Group", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.GROUP });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.GROUP, new: args.thenRenameTo });
-        } else {
-          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.GROUP });
         }
         break;
       case NodeType.TEXT_ANNOTATION:
         await this.page
           .getByTitle("Text Annotation", { exact: true })
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.TEXT_ANNOTATION });
         if (args.thenRenameTo) {
           await this.nodes.rename({ current: DefaultNodeName.TEXT_ANNOTATION, new: args.thenRenameTo });
-        } else {
-          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.TEXT_ANNOTATION });
         }
         break;
     }

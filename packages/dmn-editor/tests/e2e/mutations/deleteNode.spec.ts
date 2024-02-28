@@ -28,87 +28,71 @@ test.beforeEach(async ({ editor }) => {
 
 test.describe("MUTATION - Delete node", () => {
   test.describe("Standalone", () => {
-    test("Input Data", async ({ diagram, palette, nodes }) => {
+    test("Input Data", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
-      await nodes.delete({
-        name: DefaultNodeName.INPUT_DATA,
-      });
+      await nodes.delete({ name: DefaultNodeName.INPUT_DATA });
 
       await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
     });
 
-    test("Decision", async ({ diagram, palette, nodes }) => {
+    test("Decision", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
-      await nodes.delete({
-        name: DefaultNodeName.DECISION,
-      });
+      await nodes.delete({ name: DefaultNodeName.DECISION });
 
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).not.toBeAttached();
     });
 
-    test("Text Annotation", async ({ diagram, palette, nodes }) => {
+    test("Text Annotation", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
-      await nodes.delete({
-        name: DefaultNodeName.TEXT_ANNOTATION,
-      });
+      await nodes.delete({ name: DefaultNodeName.TEXT_ANNOTATION });
 
       await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).not.toBeAttached();
     });
 
-    test("Decision Service", async ({ diagram, palette, nodes }) => {
+    test("Decision Service", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
-      await nodes.delete({
-        name: DefaultNodeName.DECISION_SERVICE,
-      });
+      await nodes.delete({ name: DefaultNodeName.DECISION_SERVICE });
 
       await expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).not.toBeAttached();
     });
 
-    test("BKM", async ({ diagram, palette, nodes }) => {
+    test("BKM", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
-      await nodes.delete({
-        name: DefaultNodeName.BKM,
-      });
+      await nodes.delete({ name: DefaultNodeName.BKM });
 
       await expect(nodes.get({ name: DefaultNodeName.BKM })).not.toBeAttached();
     });
 
-    test("Knowledge Source", async ({ diagram, palette, nodes }) => {
+    test("Knowledge Source", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
-      await nodes.delete({
-        name: DefaultNodeName.KNOWLEDGE_SOURCE,
-      });
+      await nodes.delete({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
 
       await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).not.toBeAttached();
     });
   });
 
   test.describe("Container", () => {
-    test("Group", async ({ diagram, palette, nodes }) => {
+    test("Group", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 130, y: 130 } });
 
       await expect(nodes.get({ name: DefaultNodeName.GROUP })).toBeAttached();
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
 
-      await nodes.delete({
-        name: DefaultNodeName.GROUP,
-      });
+      await nodes.delete({ name: DefaultNodeName.GROUP });
 
       await expect(nodes.get({ name: DefaultNodeName.GROUP })).not.toBeAttached();
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
     });
 
-    test("Decision Service", async ({ diagram, palette, nodes }) => {
+    test("Decision Service", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 130, y: 130 } });
 
       await expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toBeAttached();
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
 
-      await nodes.delete({
-        name: DefaultNodeName.DECISION_SERVICE,
-      });
+      await nodes.delete({ name: DefaultNodeName.DECISION_SERVICE });
 
       await expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).not.toBeAttached();
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
@@ -116,7 +100,7 @@ test.describe("MUTATION - Delete node", () => {
   });
 
   test.describe("With Single Relationship", () => {
-    test("From", async ({ diagram, palette, nodes, edges }) => {
+    test("From", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
       await nodes.dragNewConnectedNode({
         from: DefaultNodeName.INPUT_DATA,
@@ -124,15 +108,13 @@ test.describe("MUTATION - Delete node", () => {
         targetPosition: { x: 100, y: 300 },
       });
 
-      await nodes.delete({
-        name: DefaultNodeName.INPUT_DATA,
-      });
+      await nodes.delete({ name: DefaultNodeName.INPUT_DATA });
 
       await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
     });
 
-    test("To", async ({ diagram, palette, nodes, edges }) => {
+    test("To", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
       await nodes.dragNewConnectedNode({
         from: DefaultNodeName.INPUT_DATA,
@@ -140,15 +122,13 @@ test.describe("MUTATION - Delete node", () => {
         targetPosition: { x: 100, y: 300 },
       });
 
-      await nodes.delete({
-        name: DefaultNodeName.DECISION,
-      });
+      await nodes.delete({ name: DefaultNodeName.DECISION });
 
       await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).not.toBeAttached();
     });
 
-    test("From and To", async ({ diagram, palette, nodes, edges }) => {
+    test("From and To", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
       await nodes.dragNewConnectedNode({
         from: DefaultNodeName.INPUT_DATA,
@@ -156,12 +136,8 @@ test.describe("MUTATION - Delete node", () => {
         targetPosition: { x: 100, y: 300 },
       });
 
-      await nodes.delete({
-        name: DefaultNodeName.INPUT_DATA,
-      });
-      await nodes.delete({
-        name: DefaultNodeName.DECISION,
-      });
+      await nodes.delete({ name: DefaultNodeName.INPUT_DATA });
+      await nodes.delete({ name: DefaultNodeName.DECISION });
 
       await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).not.toBeAttached();
@@ -169,7 +145,7 @@ test.describe("MUTATION - Delete node", () => {
   });
 
   test.describe("With Multiple Relationships", () => {
-    test("Single From", async ({ diagram, palette, nodes, edges }) => {
+    test("Single From", async ({ palette, nodes }) => {
       await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
       await nodes.dragNewConnectedNode({
         from: DefaultNodeName.INPUT_DATA,
@@ -184,16 +160,14 @@ test.describe("MUTATION - Delete node", () => {
         thenRenameTo: "Decision Two",
       });
 
-      await nodes.delete({
-        name: DefaultNodeName.INPUT_DATA,
-      });
+      await nodes.delete({ name: DefaultNodeName.INPUT_DATA });
 
       await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).not.toBeAttached();
       await expect(nodes.get({ name: "Decision One" })).toBeAttached();
       await expect(nodes.get({ name: "Decision Two" })).toBeAttached();
     });
 
-    test("Single To", async ({ diagram, palette, nodes, edges }) => {
+    test("Single To", async ({ palette, nodes }) => {
       await palette.dragNewNode({
         type: NodeType.INPUT_DATA,
         targetPosition: { x: 100, y: 100 },
@@ -216,9 +190,7 @@ test.describe("MUTATION - Delete node", () => {
         to: DefaultNodeName.DECISION,
       });
 
-      await nodes.delete({
-        name: DefaultNodeName.DECISION,
-      });
+      await nodes.delete({ name: DefaultNodeName.DECISION });
 
       await expect(nodes.get({ name: DefaultNodeName.DECISION })).not.toBeAttached();
       await expect(nodes.get({ name: "Input One" })).toBeAttached();
