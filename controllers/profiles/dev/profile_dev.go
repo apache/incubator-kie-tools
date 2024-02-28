@@ -75,7 +75,7 @@ func NewProfileReconciler(client client.Client, cfg *rest.Config, recorder recor
 
 func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 	return &objectEnsurers{
-		deployment:            common.NewObjectEnsurer(support.C, deploymentCreator),
+		deployment:            common.NewObjectEnsurerWithPlatform(support.C, deploymentCreator),
 		service:               common.NewObjectEnsurer(support.C, serviceCreator),
 		network:               common.NewNoopObjectEnsurer(),
 		definitionConfigMap:   common.NewObjectEnsurer(support.C, workflowDefConfigMapCreator),
@@ -86,7 +86,7 @@ func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 
 func newObjectEnsurersOpenShift(support *common.StateSupport) *objectEnsurers {
 	return &objectEnsurers{
-		deployment:            common.NewObjectEnsurer(support.C, deploymentCreator),
+		deployment:            common.NewObjectEnsurerWithPlatform(support.C, deploymentCreator),
 		service:               common.NewObjectEnsurer(support.C, serviceCreator),
 		network:               common.NewObjectEnsurer(support.C, common.OpenShiftRouteCreator),
 		definitionConfigMap:   common.NewObjectEnsurer(support.C, workflowDefConfigMapCreator),
@@ -108,7 +108,7 @@ func newStatusEnrichersOpenShift(support *common.StateSupport) *statusEnrichers 
 }
 
 type objectEnsurers struct {
-	deployment            common.ObjectEnsurer
+	deployment            common.ObjectEnsurerWithPlatform
 	service               common.ObjectEnsurer
 	network               common.ObjectEnsurer
 	definitionConfigMap   common.ObjectEnsurer

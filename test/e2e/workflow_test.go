@@ -144,6 +144,10 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 
 var _ = Describe("Validate the persistence ", Ordered, func() {
 
+	const (
+		dbConnectionName = "Database connections health check"
+		defaultDataCheck = "<default>"
+	)
 	var (
 		ns string
 	)
@@ -164,7 +168,7 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 
 	})
 
-	DescribeTable("when deploying a SonataFlow CR with PostgreSQL persistence", func(testcaseDir string) {
+	DescribeTable("when deploying a SonataFlow CR with PostgreSQL persistence", func(testcaseDir string, withPersistence bool) {
 		By("Deploy the CR")
 		var manifests []byte
 		EventuallyWithOffset(1, func() error {
@@ -180,14 +184,14 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 		By("Wait for SonatatFlow CR to complete deployment")
 		// wait for service deployments to be ready
 		EventuallyWithOffset(1, func() error {
-			cmd = exec.Command("kubectl", "wait", "pod", "-n", ns, "-l", "sonataflow.org/workflow-app=callbackstatetimeouts", "--for", "condition=Ready", "--timeout=5s")
+			cmd = exec.Command("kubectl", "wait", "pod", "-n", ns, "-l", "sonataflow.org/workflow-app", "--for", "condition=Ready", "--timeout=5s")
 			out, err := utils.Run(cmd)
 			GinkgoWriter.Printf("%s\n", string(out))
 			return err
 		}, 12*time.Minute, 5).Should(Succeed())
 
 		By("Evaluate status of the workflow's pod database connection health endpoint")
-		cmd = exec.Command("kubectl", "get", "pod", "-l", "sonataflow.org/workflow-app=callbackstatetimeouts", "-n", ns, "-ojsonpath={.items[*].metadata.name}")
+		cmd = exec.Command("kubectl", "get", "pod", "-l", "sonataflow.org/workflow-app", "-n", ns, "-ojsonpath={.items[*].metadata.name}")
 		output, err := utils.Run(cmd)
 		Expect(err).NotTo(HaveOccurred())
 		EventuallyWithOffset(1, func() bool {
@@ -198,16 +202,26 @@ var _ = Describe("Validate the persistence ", Ordered, func() {
 				}
 				Expect(h.Status).To(Equal(upStatus), "Pod health is not UP")
 				for _, c := range h.Checks {
-					if c.Name == "Database connections health check" {
+					if c.Name == dbConnectionName {
 						Expect(c.Status).To(Equal(upStatus), "Pod's database connection is not UP")
-						return true
+						if withPersistence {
+							Expect(c.Data[defaultDataCheck]).To(Equal(upStatus), "Pod's 'default' database data is not UP")
+							return true
+						} else {
+							Expect(defaultDataCheck).NotTo(BeElementOf(c.Data), "Pod's 'default' database data check exists in health manifest")
+							return true
+						}
 					}
 				}
 			}
 			return false
-		}, 12*time.Minute).Should(BeTrue())
+		}, 1*time.Minute).Should(BeTrue())
 	},
-		Entry("defined in the workflow from an existing kubernetes service as a reference", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("by_service")),
+		Entry("defined in the workflow from an existing kubernetes service as a reference", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("by_service"), true),
+		Entry("defined in the workflow and from the sonataflow platform", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_overwritten_by_service"), true),
+		Entry("defined from the sonataflow platform as reference and with DI and JS", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_with_di_and_js_services"), true),
+		Entry("defined from the sonataflow platform as reference and without DI and JS", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_without_di_and_js_services"), true),
+		Entry("defined from the sonataflow platform as reference but not required by the workflow", test.GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory("from_platform_with_no_persistence_required"), false),
 	)
 
 })

@@ -2103,8 +2103,8 @@ spec:
                 - states
                 type: object
               persistence:
-                description: Persists service to a datasource of choice. Ephemeral
-                  by default.
+                description: Persistence defines the database persistence configuration
+                  for the workflow
                 maxProperties: 1
                 properties:
                   postgresql:

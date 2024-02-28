@@ -96,7 +96,7 @@ func (a *serviceAppPropertyHandler) Build() string {
 	return props.String()
 }
 
-func generateReactiveURL(postgresSpec *operatorapi.PersistencePostgreSql, schema string, namespace string, dbName string, port int) (string, error) {
+func generateReactiveURL(postgresSpec *operatorapi.PersistencePostgreSQL, schema string, namespace string, dbName string, port int) (string, error) {
 	if len(postgresSpec.JdbcUrl) > 0 {
 		s := strings.TrimLeft(postgresSpec.JdbcUrl, "jdbc:")
 		u, err := url.Parse(s)

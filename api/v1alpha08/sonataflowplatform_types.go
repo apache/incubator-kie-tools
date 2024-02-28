@@ -47,6 +47,11 @@ type SonataFlowPlatformSpec struct {
 	// +optional
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Services"
 	Services *ServicesPlatformSpec `json:"services,omitempty"`
+	// Persistence defines the platform persistence configuration. When this field is set,
+	// the configuration is used as the persistence for platform services and sonataflow instances
+	// that don't provide one of their own.
+	// +optional
+	Persistence *PlatformPersistenceOptionsSpec `json:"persistence,omitempty"`
 }
 
 // PlatformCluster is the kind of orchestration cluster the platform is installed into

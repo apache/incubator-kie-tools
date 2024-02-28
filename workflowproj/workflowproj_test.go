@@ -32,6 +32,7 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/stretchr/testify/assert"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes/scheme"
 )
 
@@ -115,10 +116,21 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpecAndGeneric(t *testing.T) {
 	assert.Equal(t, "02-hello-resources", proj.Resources[1].Name)
 	assert.Equal(t, proj.Workflow.Spec.Resources.ConfigMaps[0].ConfigMap.Name, proj.Resources[0].Name)
 	assert.Equal(t, proj.Workflow.Spec.Resources.ConfigMaps[1].ConfigMap.Name, proj.Resources[1].Name)
-	assert.NotEmpty(t, proj.Resources[0].Data, fmt.Sprintf("Data in proj.Resources[0] is empty %+v", proj.Resources[0]))
-	assert.NotEmpty(t, proj.Resources[1].Data, fmt.Sprintf("Data in proj.Resources[1] is empty %+v", proj.Resources[1]))
-	assert.NotEmpty(t, proj.Resources[0].Data["myopenapi.json"])
-	assert.NotEmpty(t, proj.Resources[1].Data["input.json"])
+	data, err := getResourceDataWithFileName(proj.Resources, "myopenapi.json")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, data)
+	data, err = getResourceDataWithFileName(proj.Resources, "input.json")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, data)
+}
+
+func getResourceDataWithFileName(cms []*corev1.ConfigMap, fileName string) (string, error) {
+	for i := range cms {
+		if data, ok := cms[i].Data[fileName]; ok {
+			return data, nil
+		}
+	}
+	return "", fmt.Errorf("No configmap found with data containing filename %s", fileName)
 }
 
 func Test_Handler_WorklflowServiceAndPropsAndSpec_SaveAs(t *testing.T) {

@@ -77,6 +77,12 @@ jobs:
         run: |
           make test-e2e
 
+      - name: Retrieve cluster events and list pods
+        if: failure()
+        run: |
+          kubectl get events
+          kubectl get pod -A
+
       - name: Export kind logs
         if: always()
         run: |

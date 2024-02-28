@@ -668,11 +668,11 @@ func setJobServiceJDBC(jdbc string) plfmOptionFn {
 			p.Spec.Services.JobService = &operatorapi.ServiceSpec{}
 		}
 		if p.Spec.Services.JobService.Persistence == nil {
-			p.Spec.Services.JobService.Persistence = &operatorapi.PersistenceOptions{}
+			p.Spec.Services.JobService.Persistence = &operatorapi.PersistenceOptionsSpec{}
 		}
-		if p.Spec.Services.JobService.Persistence.PostgreSql == nil {
-			p.Spec.Services.JobService.Persistence.PostgreSql = &operatorapi.PersistencePostgreSql{}
+		if p.Spec.Services.JobService.Persistence.PostgreSQL == nil {
+			p.Spec.Services.JobService.Persistence.PostgreSQL = &operatorapi.PersistencePostgreSQL{}
 		}
-		p.Spec.Services.JobService.Persistence.PostgreSql.JdbcUrl = jdbc
+		p.Spec.Services.JobService.Persistence.PostgreSQL.JdbcUrl = jdbc
 	}
 }

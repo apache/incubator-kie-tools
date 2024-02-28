@@ -198,11 +198,19 @@ func (d DataIndexHandler) MergePodSpec(podSpec corev1.PodSpec) (corev1.PodSpec, 
 	return *c, err
 }
 
+// hasPostgreSQLConfigured returns true when either the SonataFlow Platform PostgreSQL CR's structure or the one in the Data Index service specification is not nil
+func (d DataIndexHandler) hasPostgreSQLConfigured() bool {
+	return d.IsServiceSetInSpec() &&
+		((d.platform.Spec.Services.DataIndex.Persistence != nil && d.platform.Spec.Services.DataIndex.Persistence.PostgreSQL != nil) ||
+			(d.platform.Spec.Persistence != nil && d.platform.Spec.Persistence.PostgreSQL != nil))
+}
+
 func (d DataIndexHandler) ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container {
-	if d.platform.Spec.Services.DataIndex.Persistence != nil && d.platform.Spec.Services.DataIndex.Persistence.PostgreSql != nil {
+	if d.hasPostgreSQLConfigured() {
+		p := persistence.RetrieveConfiguration(d.platform.Spec.Services.DataIndex.Persistence, d.platform.Spec.Persistence, d.GetServiceName())
 		c := containerSpec.DeepCopy()
 		c.Image = d.GetServiceImageName(constants.PersistenceTypePostgreSQL)
-		c.Env = append(c.Env, persistence.ConfigurePostgreSqlEnv(d.platform.Spec.Services.DataIndex.Persistence.PostgreSql, d.GetServiceName(), d.platform.Namespace)...)
+		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, d.GetServiceName(), d.platform.Namespace)...)
 		// specific to DataIndex
 		c.Env = append(c.Env, corev1.EnvVar{Name: quarkusHibernateORMDatabaseGeneration, Value: "update"}, corev1.EnvVar{Name: quarkusFlywayMigrateAtStart, Value: "true"})
 		return c
@@ -358,14 +366,22 @@ func (j JobServiceHandler) MergeContainerSpec(containerSpec *corev1.Container) (
 	return c, err
 }
 
+// hasPostgreSQLConfigured returns true when either the SonataFlow Platform PostgreSQL CR's structure or the one in the Job service specification is not nil
+func (j JobServiceHandler) hasPostgreSQLConfigured() bool {
+	return j.IsServiceSetInSpec() &&
+		((j.platform.Spec.Services.JobService.Persistence != nil && j.platform.Spec.Services.JobService.Persistence.PostgreSQL != nil) ||
+			(j.platform.Spec.Persistence != nil && j.platform.Spec.Persistence.PostgreSQL != nil))
+}
+
 func (j JobServiceHandler) ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container {
 
-	if j.platform.Spec.Services.JobService.Persistence != nil && j.platform.Spec.Services.JobService.Persistence.PostgreSql != nil {
+	if j.hasPostgreSQLConfigured() {
 		c := containerSpec.DeepCopy()
 		c.Image = j.GetServiceImageName(constants.PersistenceTypePostgreSQL)
-		c.Env = append(c.Env, persistence.ConfigurePostgreSqlEnv(j.platform.Spec.Services.JobService.Persistence.PostgreSql, j.GetServiceName(), j.platform.Namespace)...)
+		p := persistence.RetrieveConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
+		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, j.GetServiceName(), j.platform.Namespace)...)
 		// Specific to Job Service
-		c.Env = append(c.Env, corev1.EnvVar{Name: quarkusFlywayMigrateAtStart, Value: "true"})
+		c.Env = append(c.Env, corev1.EnvVar{Name: "QUARKUS_FLYWAY_MIGRATE_AT_START", Value: "true"})
 		return c
 	}
 	return containerSpec
@@ -382,14 +398,15 @@ func (j JobServiceHandler) GenerateServiceProperties() (*properties.Properties, 
 	props.Set(constants.KogitoServiceURLProperty, generateServiceURL(constants.KogitoServiceURLProtocol, j.platform.Namespace, j.GetServiceName()))
 	props.Set(constants.JobServiceKafkaSmallRyeHealthProperty, "false")
 	// add data source reactive URL
-	jspec := j.platform.Spec.Services.JobService
-	if j.IsServiceSetInSpec() && jspec.Persistence != nil && jspec.Persistence.PostgreSql != nil {
-		dataSourceReactiveURL, err := generateReactiveURL(jspec.Persistence.PostgreSql, j.GetServiceName(), j.platform.Namespace, constants.DefaultDatabaseName, constants.DefaultPostgreSQLPort)
+	if j.hasPostgreSQLConfigured() {
+		p := persistence.RetrieveConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
+		dataSourceReactiveURL, err := generateReactiveURL(p.PostgreSQL, j.GetServiceName(), j.platform.Namespace, constants.DefaultDatabaseName, constants.DefaultPostgreSQLPort)
 		if err != nil {
 			return nil, err
 		}
 		props.Set(constants.JobServiceDataSourceReactiveURL, dataSourceReactiveURL)
 	}
+
 	if isDataIndexEnabled(j.platform) {
 		di := NewDataIndexHandler(j.platform)
 		props.Set(constants.JobServiceStatusChangeEvents, "true")

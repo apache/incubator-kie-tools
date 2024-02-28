@@ -34,7 +34,7 @@ const (
 var _ = Describe("Platform properties", func() {
 
 	var _ = Context("PostgreSQL properties", func() {
-		var _ = DescribeTable("Generate a reactive URL", func(spec *operatorapi.PersistencePostgreSql, expectedReactiveURL string, expectedError bool) {
+		var _ = DescribeTable("Generate a reactive URL", func(spec *operatorapi.PersistencePostgreSQL, expectedReactiveURL string, expectedError bool) {
 			res, err := generateReactiveURL(spec, defaultSchema, "default", constants.DefaultDatabaseName, constants.DefaultPostgreSQLPort)
 			if expectedError {
 				Expect(err).NotTo(BeNil())
@@ -72,10 +72,10 @@ var _ = Describe("Platform properties", func() {
 	})
 })
 
-type optionFn func(*operatorapi.PersistencePostgreSql)
+type optionFn func(*operatorapi.PersistencePostgreSQL)
 
-func generatePostgreSQLOptions(options ...optionFn) *operatorapi.PersistencePostgreSql {
-	p := &operatorapi.PersistencePostgreSql{}
+func generatePostgreSQLOptions(options ...optionFn) *operatorapi.PersistencePostgreSQL {
+	p := &operatorapi.PersistencePostgreSQL{}
 	for _, f := range options {
 		f(p)
 	}
@@ -83,51 +83,63 @@ func generatePostgreSQLOptions(options ...optionFn) *operatorapi.PersistencePost
 }
 
 func setJDBC(url string) optionFn {
-	return func(o *operatorapi.PersistencePostgreSql) {
+	return func(o *operatorapi.PersistencePostgreSQL) {
 		o.JdbcUrl = url
 	}
 }
 
 func setServiceName(svcName string) optionFn {
-	return func(o *operatorapi.PersistencePostgreSql) {
+	return func(o *operatorapi.PersistencePostgreSQL) {
 		if o.ServiceRef == nil {
-			o.ServiceRef = &operatorapi.PostgreSqlServiceOptions{}
+			o.ServiceRef = &operatorapi.PostgreSQLServiceOptions{}
+		}
+		if o.ServiceRef.SQLServiceOptions == nil {
+			o.ServiceRef.SQLServiceOptions = &operatorapi.SQLServiceOptions{}
 		}
 		o.ServiceRef.Name = svcName
 	}
 }
 
 func setDatabaseSchemaName(dbSchemaName string) optionFn {
-	return func(o *operatorapi.PersistencePostgreSql) {
+	return func(o *operatorapi.PersistencePostgreSQL) {
 		if o.ServiceRef == nil {
-			o.ServiceRef = &operatorapi.PostgreSqlServiceOptions{}
+			o.ServiceRef = &operatorapi.PostgreSQLServiceOptions{}
 		}
 		o.ServiceRef.DatabaseSchema = dbSchemaName
 	}
 }
 
 func setDatabaseName(dbName string) optionFn {
-	return func(o *operatorapi.PersistencePostgreSql) {
+	return func(o *operatorapi.PersistencePostgreSQL) {
 		if o.ServiceRef == nil {
-			o.ServiceRef = &operatorapi.PostgreSqlServiceOptions{}
+			o.ServiceRef = &operatorapi.PostgreSQLServiceOptions{}
+		}
+		if o.ServiceRef.SQLServiceOptions == nil {
+			o.ServiceRef.SQLServiceOptions = &operatorapi.SQLServiceOptions{}
 		}
 		o.ServiceRef.DatabaseName = dbName
 	}
 }
 
 func setServiceNamespace(svcNamespace string) optionFn {
-	return func(o *operatorapi.PersistencePostgreSql) {
+	return func(o *operatorapi.PersistencePostgreSQL) {
 		if o.ServiceRef == nil {
-			o.ServiceRef = &operatorapi.PostgreSqlServiceOptions{}
+			o.ServiceRef = &operatorapi.PostgreSQLServiceOptions{}
+		}
+		if o.ServiceRef.SQLServiceOptions == nil {
+			o.ServiceRef.SQLServiceOptions = &operatorapi.SQLServiceOptions{}
 		}
 		o.ServiceRef.Namespace = svcNamespace
 	}
 }
 
 func setDBPort(portNumber int) optionFn {
-	return func(o *operatorapi.PersistencePostgreSql) {
+	return func(o *operatorapi.PersistencePostgreSQL) {
 		if o.ServiceRef == nil {
-			o.ServiceRef = &operatorapi.PostgreSqlServiceOptions{}
+			o.ServiceRef = &operatorapi.PostgreSQLServiceOptions{}
+		}
+		if o.ServiceRef.SQLServiceOptions == nil {
+			o.ServiceRef.SQLServiceOptions = &operatorapi.SQLServiceOptions{}
 		}
 		o.ServiceRef.Port = &portNumber
 	}

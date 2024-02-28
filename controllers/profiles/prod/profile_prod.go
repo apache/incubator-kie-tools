@@ -52,7 +52,7 @@ const (
 // ReconciliationState that needs access to it must include this struct as an attribute and initialize it in the profile builder.
 // Use newObjectEnsurers to facilitate building this struct
 type objectEnsurers struct {
-	deployment            common.ObjectEnsurer
+	deployment            common.ObjectEnsurerWithPlatform
 	service               common.ObjectEnsurer
 	userPropsConfigMap    common.ObjectEnsurer
 	managedPropsConfigMap common.ObjectEnsurerWithPlatform
@@ -60,7 +60,7 @@ type objectEnsurers struct {
 
 func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 	return &objectEnsurers{
-		deployment:            common.NewObjectEnsurer(support.C, common.DeploymentCreator),
+		deployment:            common.NewObjectEnsurerWithPlatform(support.C, common.DeploymentCreator),
 		service:               common.NewObjectEnsurer(support.C, common.ServiceCreator),
 		userPropsConfigMap:    common.NewObjectEnsurer(support.C, common.UserPropsConfigMapCreator),
 		managedPropsConfigMap: common.NewObjectEnsurerWithPlatform(support.C, common.ManagedPropsConfigMapCreator),

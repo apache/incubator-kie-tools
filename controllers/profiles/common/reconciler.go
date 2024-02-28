@@ -24,6 +24,7 @@ import (
 	"fmt"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
+
 	"k8s.io/client-go/tools/record"
 
 	"k8s.io/klog/v2"

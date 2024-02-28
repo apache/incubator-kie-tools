@@ -12,16 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: sonataflow.org/v1alpha08
-kind: SonataFlowPlatform
-metadata:
-  name: sonataflow-platform
-spec:
-  build:
-    template:
-      buildArgs:
-      - name: QUARKUS_EXTENSIONS
-        value: org.kie.kogito:kogito-addons-quarkus-jobs-knative-eventing:999-SNAPSHOT,org.kie.kogito:kogito-addons-quarkus-persistence-jdbc:999-SNAPSHOT,io.quarkus:quarkus-jdbc-postgresql:3.2.10.Final,io.quarkus:quarkus-agroal:3.2.10.Final
-    config:
-      strategyOptions:
-        KanikoBuildCacheEnabled: "true"
+resources:
+- 01-postgres.yaml
+- 02-sonataflow_platform.yaml
+- 03-sonataflow_callbackstatetimeouts-no-persistence.sw.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+  - name: postgres-secrets
+    literals:
+      - POSTGRES_USER=sonataflow
+      - POSTGRES_PASSWORD=sonataflow
+      - POSTGRES_DATABASE=sonataflow
+      - PGDATA=/var/lib/pgsql/data/userdata
+
+sortOptions:
+  order: fifo
+

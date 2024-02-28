@@ -77,7 +77,6 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.Equal(t, "quay.io/kiegroup", ksp.Spec.Build.Config.Registry.Address)
 		assert.Equal(t, "regcred", ksp.Spec.Build.Config.Registry.Secret)
 		assert.Equal(t, v1alpha08.OperatorBuildStrategy, ksp.Spec.Build.Config.BuildStrategy)
-		assert.Nil(t, ksp.Spec.Services)
 		assert.Equal(t, v1alpha08.PlatformClusterKubernetes, ksp.Status.Cluster)
 
 		assert.Equal(t, v1alpha08.PlatformCreatingReason, ksp.Status.GetTopLevelCondition().Reason)
@@ -137,9 +136,9 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NotContains(t, dep.Spec.Template.Spec.Containers[0].Env, env)
 
 		// Check with persistence set
-		ksp.Spec.Services.DataIndex.Persistence = &v1alpha08.PersistenceOptions{PostgreSql: &v1alpha08.PersistencePostgreSql{
-			SecretRef:  v1alpha08.PostgreSqlSecretOptions{Name: "test"},
-			ServiceRef: &v1alpha08.PostgreSqlServiceOptions{Name: "test"},
+		ksp.Spec.Services.DataIndex.Persistence = &v1alpha08.PersistenceOptionsSpec{PostgreSQL: &v1alpha08.PersistencePostgreSQL{
+			SecretRef:  v1alpha08.PostgreSQLSecretOptions{Name: "test"},
+			ServiceRef: &v1alpha08.PostgreSQLServiceOptions{SQLServiceOptions: &v1alpha08.SQLServiceOptions{Name: "test"}},
 		}}
 		// Ensure correct container overriding anything set in PodSpec
 		ksp.Spec.Services.DataIndex.PodTemplate.Container = v1alpha08.ContainerSpec{TerminationMessagePath: "testing"}
@@ -224,8 +223,8 @@ func TestSonataFlowPlatformController(t *testing.T) {
 
 		// Check with persistence set
 		url := "jdbc:postgresql://host:1234/database?currentSchema=data-index-service"
-		ksp.Spec.Services.DataIndex.Persistence = &v1alpha08.PersistenceOptions{PostgreSql: &v1alpha08.PersistencePostgreSql{
-			SecretRef: v1alpha08.PostgreSqlSecretOptions{Name: "test"},
+		ksp.Spec.Services.DataIndex.Persistence = &v1alpha08.PersistenceOptionsSpec{PostgreSQL: &v1alpha08.PersistencePostgreSQL{
+			SecretRef: v1alpha08.PostgreSQLSecretOptions{Name: "test"},
 			JdbcUrl:   url,
 		}}
 		// Ensure correct container overriding anything set in PodSpec
@@ -248,6 +247,217 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.Equal(t, []string{"test:latest"}, dep.Spec.Template.Spec.Containers[0].Command)
 		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, env)
 		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, env2)
+	})
+
+	var (
+		postgreSQLPort int = 5432
+	)
+	t.Run("verify that persistence options are correctly reconciled when defined in the platform", func(t *testing.T) {
+		namespace := t.Name()
+		// Create a SonataFlowPlatform object with metadata and spec.
+		ksp := test.GetBasePlatformInReadyPhase(namespace)
+		// Check with persistence set
+		ksp.Spec = v1alpha08.SonataFlowPlatformSpec{
+			Services: &v1alpha08.ServicesPlatformSpec{
+				DataIndex:  &v1alpha08.ServiceSpec{},
+				JobService: &v1alpha08.ServiceSpec{},
+			},
+			Persistence: &v1alpha08.PlatformPersistenceOptionsSpec{
+				PostgreSQL: &v1alpha08.PlatformPersistencePostgreSQL{
+					SecretRef: v1alpha08.PostgreSQLSecretOptions{Name: "generic", UserKey: "POSTGRESQL_USER", PasswordKey: "POSTGRESQL_PASSWORD"},
+					ServiceRef: &v1alpha08.SQLServiceOptions{
+						Name:         "postgresql",
+						Namespace:    "default",
+						Port:         &postgreSQLPort,
+						DatabaseName: "sonataflow"},
+				},
+			},
+		}
+
+		// Create a fake client to mock API calls.
+		cl := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(ksp).WithStatusSubresource(ksp).Build()
+		// Create a SonataFlowPlatformReconciler object with the scheme and fake client.
+		r := &SonataFlowPlatformReconciler{cl, cl, cl.Scheme(), &rest.Config{}, &record.FakeRecorder{}}
+
+		// Mock request to simulate Reconcile() being called on an event for a
+		// watched resource .
+		req := reconcile.Request{
+			NamespacedName: types.NamespacedName{
+				Name:      ksp.Name,
+				Namespace: ksp.Namespace,
+			},
+		}
+		_, err := r.Reconcile(context.TODO(), req)
+		if err != nil {
+			t.Fatalf("reconcile: (%v)", err)
+		}
+		dbSourceKind := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_DB_KIND",
+			Value: constants.PersistenceTypePostgreSQL,
+		}
+		dbSourceDIURL := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
+			Value: "jdbc:postgresql://postgresql.default:5432/sonataflow?currentSchema=sonataflow-platform-data-index-service",
+		}
+		dbSourceJSURL := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
+			Value: "jdbc:postgresql://postgresql.default:5432/sonataflow?currentSchema=sonataflow-platform-jobs-service",
+		}
+		dbUsername := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_USERNAME",
+			Value: "",
+			ValueFrom: &corev1.EnvVarSource{
+				SecretKeyRef: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{Name: "generic"},
+					Key:                  "POSTGRESQL_USER",
+				},
+			},
+		}
+		dbPassword := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_PASSWORD",
+			Value: "",
+			ValueFrom: &corev1.EnvVarSource{
+				SecretKeyRef: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{Name: "generic"},
+					Key:                  "POSTGRESQL_PASSWORD",
+				},
+			},
+		}
+		// Check Data Index deployment to ensure it contains references to the persistence values defined in the platform CR
+		dep := &appsv1.Deployment{}
+		di := services.NewDataIndexHandler(ksp)
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: di.GetServiceName(), Namespace: ksp.Namespace}, dep))
+		assert.Len(t, dep.Spec.Template.Spec.Containers, 1)
+		assert.Equal(t, di.GetServiceImageName(constants.PersistenceTypePostgreSQL), dep.Spec.Template.Spec.Containers[0].Image)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceKind)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbUsername)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbPassword)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceDIURL)
+
+		js := services.NewJobServiceHandler(ksp)
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: js.GetServiceName(), Namespace: ksp.Namespace}, dep))
+		assert.Len(t, dep.Spec.Template.Spec.Containers, 1)
+		assert.Equal(t, js.GetServiceImageName(constants.PersistenceTypePostgreSQL), dep.Spec.Template.Spec.Containers[0].Image)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceKind)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbUsername)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbPassword)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceJSURL)
+	})
+
+	t.Run("verify that persistence options are correctly reconciled when defined in the platform and overwriten in the services spec", func(t *testing.T) {
+		namespace := t.Name()
+		// Create a SonataFlowPlatform object with metadata and spec.
+		ksp := test.GetBasePlatformInReadyPhase(namespace)
+		// Check with persistence set
+		urlDI := "jdbc:postgresql://localhost:5432/database?currentSchema=data-index-service"
+		urlJS := "jdbc:postgresql://localhost:5432/database?currentSchema=job-service"
+		ksp.Spec = v1alpha08.SonataFlowPlatformSpec{
+			Services: &v1alpha08.ServicesPlatformSpec{
+				DataIndex: &v1alpha08.ServiceSpec{
+					Persistence: &v1alpha08.PersistenceOptionsSpec{
+						PostgreSQL: &v1alpha08.PersistencePostgreSQL{
+							SecretRef: v1alpha08.PostgreSQLSecretOptions{Name: "dataIndex"},
+							JdbcUrl:   urlDI,
+						},
+					},
+				},
+				JobService: &v1alpha08.ServiceSpec{
+					Persistence: &v1alpha08.PersistenceOptionsSpec{
+						PostgreSQL: &v1alpha08.PersistencePostgreSQL{
+							SecretRef: v1alpha08.PostgreSQLSecretOptions{Name: "job"},
+							JdbcUrl:   urlJS,
+						},
+					},
+				},
+			},
+			Persistence: &v1alpha08.PlatformPersistenceOptionsSpec{
+				PostgreSQL: &v1alpha08.PlatformPersistencePostgreSQL{
+					SecretRef:  v1alpha08.PostgreSQLSecretOptions{Name: "generic", UserKey: "POSTGRESQL_USER", PasswordKey: "POSTGRESQL_PASSWORD"},
+					ServiceRef: &v1alpha08.SQLServiceOptions{Name: "postgresql", Namespace: "default", Port: &postgreSQLPort, DatabaseName: "sonataflow"},
+				},
+			},
+		}
+
+		// Create a fake client to mock API calls.
+		cl := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(ksp).WithStatusSubresource(ksp).Build()
+		// Create a SonataFlowPlatformReconciler object with the scheme and fake client.
+		r := &SonataFlowPlatformReconciler{cl, cl, cl.Scheme(), &rest.Config{}, &record.FakeRecorder{}}
+
+		// Mock request to simulate Reconcile() being called on an event for a
+		// watched resource .
+		req := reconcile.Request{
+			NamespacedName: types.NamespacedName{
+				Name:      ksp.Name,
+				Namespace: ksp.Namespace,
+			},
+		}
+		_, err := r.Reconcile(context.TODO(), req)
+		if err != nil {
+			t.Fatalf("reconcile: (%v)", err)
+		}
+		dbSourceKind := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_DB_KIND",
+			Value: constants.PersistenceTypePostgreSQL,
+		}
+		dbDIUsername := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_USERNAME",
+			Value: "",
+			ValueFrom: &corev1.EnvVarSource{
+				SecretKeyRef: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{Name: "dataIndex"},
+					Key:                  "POSTGRESQL_USER",
+				},
+			},
+		}
+		dbDIPassword := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_PASSWORD",
+			Value: "",
+			ValueFrom: &corev1.EnvVarSource{
+				SecretKeyRef: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{Name: "dataIndex"},
+					Key:                  "POSTGRESQL_PASSWORD",
+				},
+			},
+		}
+		dbJSUsername := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_USERNAME",
+			Value: "",
+			ValueFrom: &corev1.EnvVarSource{
+				SecretKeyRef: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{Name: "job"},
+					Key:                  "POSTGRESQL_USER",
+				},
+			},
+		}
+		dbJSPassword := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_PASSWORD",
+			Value: "",
+			ValueFrom: &corev1.EnvVarSource{
+				SecretKeyRef: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{Name: "job"},
+					Key:                  "POSTGRESQL_PASSWORD",
+				},
+			},
+		}
+		// Check Data Index deployment to ensure it contains references to the persistence values defined in the platform CR
+		dep := &appsv1.Deployment{}
+		di := services.NewDataIndexHandler(ksp)
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: di.GetServiceName(), Namespace: ksp.Namespace}, dep))
+		assert.Len(t, dep.Spec.Template.Spec.Containers, 1)
+		assert.Equal(t, di.GetServiceImageName(constants.PersistenceTypePostgreSQL), dep.Spec.Template.Spec.Containers[0].Image)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceKind)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbDIUsername)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbDIPassword)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, corev1.EnvVar{Name: "QUARKUS_DATASOURCE_JDBC_URL", Value: urlDI})
+
+		js := services.NewJobServiceHandler(ksp)
+		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: js.GetServiceName(), Namespace: ksp.Namespace}, dep))
+		assert.Len(t, dep.Spec.Template.Spec.Containers, 1)
+		assert.Equal(t, js.GetServiceImageName(constants.PersistenceTypePostgreSQL), dep.Spec.Template.Spec.Containers[0].Image)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceKind)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbJSUsername)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbJSPassword)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, corev1.EnvVar{Name: "QUARKUS_DATASOURCE_JDBC_URL", Value: urlJS})
 	})
 
 	// Job Service tests
@@ -302,9 +512,9 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NotContains(t, dep.Spec.Template.Spec.Containers[0].Env, envDataIndex)
 
 		// Check with persistence set
-		ksp.Spec.Services.JobService.Persistence = &v1alpha08.PersistenceOptions{PostgreSql: &v1alpha08.PersistencePostgreSql{
-			SecretRef:  v1alpha08.PostgreSqlSecretOptions{Name: "test"},
-			ServiceRef: &v1alpha08.PostgreSqlServiceOptions{Name: "test"},
+		ksp.Spec.Services.JobService.Persistence = &v1alpha08.PersistenceOptionsSpec{PostgreSQL: &v1alpha08.PersistencePostgreSQL{
+			SecretRef:  v1alpha08.PostgreSQLSecretOptions{Name: "test"},
+			ServiceRef: &v1alpha08.PostgreSQLServiceOptions{SQLServiceOptions: &v1alpha08.SQLServiceOptions{Name: "test"}},
 		}}
 		// Ensure correct container overriding anything set in PodSpec
 		ksp.Spec.Services.JobService.PodTemplate.Container = v1alpha08.ContainerSpec{TerminationMessagePath: "testing"}
@@ -387,8 +597,8 @@ func TestSonataFlowPlatformController(t *testing.T) {
 
 		// Check with persistence set
 		url := "jdbc:postgresql://host:1234/database?currentSchema=data-index-service"
-		ksp.Spec.Services.JobService.Persistence = &v1alpha08.PersistenceOptions{PostgreSql: &v1alpha08.PersistencePostgreSql{
-			SecretRef: v1alpha08.PostgreSqlSecretOptions{Name: "test"},
+		ksp.Spec.Services.JobService.Persistence = &v1alpha08.PersistenceOptionsSpec{PostgreSQL: &v1alpha08.PersistencePostgreSQL{
+			SecretRef: v1alpha08.PostgreSQLSecretOptions{Name: "test"},
 			JdbcUrl:   url,
 		}}
 		// Ensure correct container overriding anything set in PodSpec
@@ -592,6 +802,5 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.NotNil(t, ksp2.Status.ClusterPlatformRef)
 		assert.Equal(t, kscp.Spec.PlatformRef.Name, ksp2.Status.ClusterPlatformRef.PlatformRef.Name)
 		assert.Equal(t, kscp.Spec.PlatformRef.Namespace, ksp2.Status.ClusterPlatformRef.PlatformRef.Namespace)
-		assert.Nil(t, ksp2.Status.ClusterPlatformRef.Services)
 	})
 }

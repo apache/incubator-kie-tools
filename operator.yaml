@@ -899,6 +899,63 @@ spec:
                       of the operator's default.
                     type: string
                 type: object
+              persistence:
+                description: Persistence defines the platform persistence configuration.
+                  When this field is set, the configuration is used as the persistence
+                  for platform services and sonataflow instances that don't provide
+                  one of their own.
+                maxProperties: 1
+                properties:
+                  postgresql:
+                    description: Connect configured services to a postgresql database.
+                    maxProperties: 2
+                    minProperties: 2
+                    properties:
+                      jdbcUrl:
+                        description: PostgreSql JDBC URL. Mutually exclusive to serviceRef.
+                          e.g. "jdbc:postgresql://host:port/database?currentSchema=data-index-service"
+                        type: string
+                      secretRef:
+                        description: Secret reference to the database user credentials
+                        properties:
+                          name:
+                            description: Name of the postgresql credentials secret.
+                            type: string
+                          passwordKey:
+                            description: Defaults to POSTGRESQL_PASSWORD
+                            type: string
+                          userKey:
+                            description: Defaults to POSTGRESQL_USER
+                            type: string
+                        required:
+                        - name
+                        type: object
+                      serviceRef:
+                        description: Service reference to postgresql datasource. Mutually
+                          exclusive to jdbcUrl.
+                        properties:
+                          databaseName:
+                            description: Name of postgresql database to be used. Defaults
+                              to "sonataflow"
+                            type: string
+                          name:
+                            description: Name of the postgresql k8s service.
+                            type: string
+                          namespace:
+                            description: Namespace of the postgresql k8s service.
+                              Defaults to the SonataFlowPlatform's local namespace.
+                            type: string
+                          port:
+                            description: Port to use when connecting to the postgresql
+                              k8s service. Defaults to 5432.
+                            type: integer
+                        required:
+                        - name
+                        type: object
+                    required:
+                    - secretRef
+                    type: object
+                type: object
               services:
                 description: 'Services attributes for deploying supporting applications
                   like Data Index & Job Service. Only workflows without the `sonataflow.org/profile:
@@ -18860,8 +18917,8 @@ spec:
                 - states
                 type: object
               persistence:
-                description: Persists service to a datasource of choice. Ephemeral
-                  by default.
+                description: Persistence defines the database persistence configuration
+                  for the workflow
                 maxProperties: 1
                 properties:
                   postgresql:

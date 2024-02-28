@@ -20,28 +20,11 @@ metadata:
     sonataflow.org/description: Callback State Timeouts Example k8s
     sonataflow.org/version: 0.0.1
 spec:
-  persistence:
-    postgresql:
-      secretRef:
-        name: postgres-secrets
-        userKey: POSTGRES_USER
-        passwordKey: POSTGRES_PASSWORD
-      serviceRef:
-        name: postgres
-        port: 5432
-        databaseName: sonataflow
-        databaseSchema: callbackstatetimeouts
   podTemplate:
     container:
       env:
       - name: QUARKUS_FLYWAY_MIGRATE_AT_START
         value: "true"
-    initContainers:
-      - name: init-postgres
-        image: registry.access.redhat.com/ubi9/ubi-micro:latest
-        imagePullPolicy: IfNotPresent
-        #TODO: https://issues.redhat.com/browse/KOGITO-9840
-        command: [ 'sh', '-c', 'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;' ]
   flow:
     start: PrintStartMessage
     events:

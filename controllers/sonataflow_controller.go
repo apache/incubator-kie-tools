@@ -94,7 +94,6 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		klog.V(log.I).InfoS("Ignoring request because resource is not assigned to current operator")
 		return reconcile.Result{}, nil
 	}
-
 	return profiles.NewReconciler(r.Client, r.Config, r.Recorder, workflow).Reconcile(ctx, workflow)
 }
 

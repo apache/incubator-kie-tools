@@ -37,7 +37,7 @@ type ObjectEnsurer interface {
 	Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, visitors ...MutateVisitor) (client.Object, controllerutil.OperationResult, error)
 }
 type ObjectEnsurerWithPlatform interface {
-	Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform, visitors ...MutateVisitor) (client.Object, controllerutil.OperationResult, error)
+	Ensure(ctx context.Context, workflow *operatorapi.SonataFlow, pl *operatorapi.SonataFlowPlatform, visitors ...MutateVisitor) (client.Object, controllerutil.OperationResult, error)
 }
 
 // MutateVisitor is a visitor function that mutates the given object before performing any updates in the cluster.
