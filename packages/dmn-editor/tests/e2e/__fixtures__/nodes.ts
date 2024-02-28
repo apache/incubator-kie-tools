@@ -60,6 +60,11 @@ export class Nodes {
     return (await this.get({ name: args.name }).getAttribute("data-nodeid")) ?? "";
   }
 
+  public async delete(args: { name: string }) {
+    await this.page.getByTitle(args.name, { exact: true }).click({ position: { x: 20, y: 20 } });
+    await this.get({ name: args.name }).press("Delete");
+  }
+
   public async rename(args: { current: string; new: string }) {
     await this.get({ name: args.current }).getByRole("textbox").nth(0).fill(args.new);
     await this.diagram.get().press("Enter");
@@ -81,12 +86,16 @@ export class Nodes {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
+        } else {
+          await this.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
         }
         break;
       case NodeType.DECISION:
         await node.getByTitle("Add Decision node").dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.DECISION, new: args.thenRenameTo });
+        } else {
+          await this.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION });
         }
         break;
       case NodeType.KNOWLEDGE_SOURCE:
@@ -95,12 +104,16 @@ export class Nodes {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.KNOWLEDGE_SOURCE, new: args.thenRenameTo });
+        } else {
+          await this.waitForNodeToBeFocused({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
         }
         break;
       case NodeType.BKM:
         await node.getByTitle("Add BKM node").dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.BKM, new: args.thenRenameTo });
+        } else {
+          await this.waitForNodeToBeFocused({ name: DefaultNodeName.BKM });
         }
         break;
       case NodeType.TEXT_ANNOTATION:
@@ -109,6 +122,8 @@ export class Nodes {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
         if (args.thenRenameTo) {
           await this.rename({ current: DefaultNodeName.TEXT_ANNOTATION, new: args.thenRenameTo });
+        } else {
+          await this.waitForNodeToBeFocused({ name: DefaultNodeName.TEXT_ANNOTATION });
         }
     }
   }

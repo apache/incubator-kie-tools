@@ -32,6 +32,7 @@ export class Palette {
           .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
 
         if (args.thenRenameTo) {
+          await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
           await this.nodes.rename({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
         } else {
           await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
