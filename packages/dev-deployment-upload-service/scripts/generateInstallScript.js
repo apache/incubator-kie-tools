@@ -18,15 +18,14 @@
  */
 
 const fs = require("fs");
-const buildEnv = require("@kie-tools/root-env/env");
-const devDeploymentUploadServiceEnv = require("../env/index");
+const version = require("../package.json").version;
+const devDeploymentUploadServiceEnv = require("../env");
 const { argv } = require("process");
 
 const baseInstallScriptFile = fs.readFileSync("getDevDeploymentUploadService.sh");
 
 const contents = baseInstallScriptFile.toString();
 
-const version = buildEnv.env.root.version;
 const downloadPath = devDeploymentUploadServiceEnv.env.devDeploymentUploadService.url.path;
 const downloadHost = devDeploymentUploadServiceEnv.env.devDeploymentUploadService.url.host;
 
