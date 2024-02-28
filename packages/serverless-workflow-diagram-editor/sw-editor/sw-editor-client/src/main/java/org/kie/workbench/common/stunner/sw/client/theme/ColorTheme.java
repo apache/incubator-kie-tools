@@ -23,6 +23,8 @@ import org.kie.workbench.common.stunner.core.client.theme.StunnerColorTheme;
 
 public interface ColorTheme extends StunnerColorTheme {
 
+    String getName();
+
     String getCanvasBackgroundColor();
 
     String getShapeStrokeColor();

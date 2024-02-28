@@ -74,6 +74,7 @@ import org.uberfire.promise.SyncPromises;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -230,6 +231,7 @@ public class DiagramEditorTest {
         diagram = spy(d);
         when(session.getCanvasHandler()).thenReturn(canvasHandler2);
         when(canvasHandler2.getDiagram()).thenReturn(diagram);
+        when(canvasHandler2.getCanvas()).thenReturn(canvas);
         doReturn(stunnerEditor2).when(stunnerEditor2).close();
         when(stunnerEditor2.getSession()).thenReturn(viewerSession);
         when(selectionControl.clearSelection()).thenReturn(selectionControl);
@@ -267,7 +269,27 @@ public class DiagramEditorTest {
         tested.applyTheme(DarkMode.NAME);
 
         verify(tested, times(1)).reloadEditorContent();
+        verify(tested, times(1)).setCanvasBackgroundColor();
+        assertNull(tested.themeToBeApplied);
         assertTrue(StunnerTheme.getTheme() instanceof DarkMode);
+    }
+
+    @Test
+    public void testSetThemeBrokenDiagram() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("injectExample");
+        doNothing().when(tested).reloadEditorContent();
+
+        when(stunnerEditor2.hasErrors()).thenReturn(true);
+
+        tested.onStartup(new DefaultPlaceRequest());
+        tested.setContent("", rawJSON);
+        tested.applyTheme(DarkMode.NAME);
+
+        verify(tested, times(0)).reloadEditorContent();
+        verify(tested, times(0)).setCanvasBackgroundColor();
+        assertTrue(tested.themeToBeApplied instanceof DarkMode);
     }
 
     @Test
@@ -282,6 +304,8 @@ public class DiagramEditorTest {
         tested.applyTheme(null);
 
         verify(tested, times(0)).reloadEditorContent();
+        verify(tested, times(0)).setCanvasBackgroundColor();
+        assertNull(tested.themeToBeApplied);
         assertTrue(StunnerTheme.getTheme() instanceof LightMode);
     }
 
@@ -297,6 +321,8 @@ public class DiagramEditorTest {
         tested.applyTheme(LightMode.NAME);
 
         verify(tested, times(0)).reloadEditorContent();
+        verify(tested, times(0)).setCanvasBackgroundColor();
+        assertNull(tested.themeToBeApplied);
         assertTrue(StunnerTheme.getTheme() instanceof LightMode);
     }
 

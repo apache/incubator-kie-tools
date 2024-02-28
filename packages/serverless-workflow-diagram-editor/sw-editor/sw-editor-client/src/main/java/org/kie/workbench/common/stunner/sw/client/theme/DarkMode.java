@@ -86,6 +86,11 @@ public class DarkMode implements ColorTheme {
     }
 
     @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
     public String getCanvasBackgroundColor() {
         return CANVAS_BACKGROUND_COLOR;
     }

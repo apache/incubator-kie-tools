@@ -100,7 +100,7 @@ public class DiagramEditor {
     private DocType currentDocType = DocType.JSON;
     private String currentPath;
     private String currentValue;
-    private String currentTheme = LightMode.NAME;
+    ColorTheme themeToBeApplied = null;
 
     @Inject
     private TranslationService translationService;
@@ -159,29 +159,41 @@ public class DiagramEditor {
     }
 
     public final Promise<Void> applyTheme(String theme) {
-        if (null != theme && !theme.equals(currentTheme)) {
-            if (theme.equals(DarkMode.NAME)) {
-                StunnerTheme.setTheme(DarkMode.getInstance());
-                currentTheme = DarkMode.NAME;
-            } else {
-                StunnerTheme.setTheme(LightMode.getInstance());
-                currentTheme = LightMode.NAME;
+        if (null != theme && !theme.isEmpty() &&
+                !theme.equals(((ColorTheme) StunnerTheme.getTheme()).getName())) {
+
+            themeToBeApplied = getTheme(theme);
+
+            // Do not apply theme if there are errors, keep it to apply when the diagram is valid
+            if (!stunnerEditor.hasErrors()) {
+                setTheme();
+                reloadEditorContent();
             }
-
-            reloadEditorContent();
         }
-
         return null;
+    }
+
+    private ColorTheme getTheme(final String theme) {
+        if (theme.equals(DarkMode.NAME)) {
+            return DarkMode.getInstance();
+        } else {
+            return LightMode.getInstance();
+        }
+    }
+
+    private void setTheme() {
+        StunnerTheme.setTheme(themeToBeApplied);
+        setCanvasBackgroundColor();
+        themeToBeApplied = null;
     }
 
     void reloadEditorContent() {
         if (null != stunnerEditor.getSession()) {
-            setCanvasBackgroundColor();
             Promise.resolve(setContent(currentPath, currentValue));
         }
     }
 
-    private void setCanvasBackgroundColor() {
+    void setCanvasBackgroundColor() {
         ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
                 .setBackgroundColor(((ColorTheme) StunnerTheme.getTheme()).getCanvasBackgroundColor());
     }
@@ -282,6 +294,11 @@ public class DiagramEditor {
 
                                          @Override
                                          public void onSuccess(final ParseResult parseResult) {
+                                             // Apply theme if pending due to errors
+                                             if (null != themeToBeApplied) {
+                                                 setTheme();
+                                             }
+
                                              renderDiagram = parseResult.getDiagram();
                                              updateDiagram(parseResult.getDiagram());
                                              if (parseResult.getMessages().length > 0) {
