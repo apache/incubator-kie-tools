@@ -51,7 +51,7 @@ export enum NodePosition {
 }
 
 export class Nodes {
-  constructor(public page: Page, public diagram: Diagram) {}
+  constructor(public page: Page, public diagram: Diagram, public browserName: string) {}
 
   public get(args: { name: string }) {
     return this.page.locator(`div[data-nodelabel="${args.name}"]`);
@@ -63,6 +63,11 @@ export class Nodes {
 
   public async delete(args: { name: string }) {
     await this.select({ name: args.name, position: NodePosition.TOP_PADDING });
+    await this.diagram.get().press("Delete");
+  }
+
+  public async deleteMultiple(args: { names: string[] }) {
+    await this.selectMultiple({ names: args.names, position: NodePosition.TOP_PADDING });
     await this.diagram.get().press("Delete");
   }
 
@@ -167,6 +172,31 @@ export class Nodes {
         : undefined;
 
     await node.click({ position });
+  }
+
+  public async selectMultiple(args: { names: string[]; position?: NodePosition }) {
+    if (this.browserName === "webkit") {
+      await this.page.keyboard.down("Meta");
+    } else {
+      await this.page.keyboard.down("Control");
+    }
+
+    for (const name of args.names) {
+      const node = this.get({ name });
+
+      const position =
+        args.position !== undefined
+          ? await this.getPositionalNodeHandleCoordinates({ node, position: args.position })
+          : undefined;
+
+      await node.click({ position });
+    }
+
+    if (this.browserName === "webkit") {
+      await this.page.keyboard.up("Meta");
+    } else {
+      await this.page.keyboard.up("Control");
+    }
   }
 
   public async selectLabel(args: { name: string }) {

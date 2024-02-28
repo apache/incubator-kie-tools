@@ -29,4 +29,11 @@ export class Diagram {
   public async resetFocus() {
     return this.get().click({ position: { x: 0, y: 0 } });
   }
+
+  public async select(args: { startPosition: { x: number; y: number }; endPosition: { x: number; y: number } }) {
+    await this.page.mouse.move(args.startPosition.x, args.startPosition.y);
+    await this.page.mouse.down();
+    await this.page.mouse.move(args.endPosition.x, args.endPosition.y);
+    await this.page.mouse.up();
+  }
 }
