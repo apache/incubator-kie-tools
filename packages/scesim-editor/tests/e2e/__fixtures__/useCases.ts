@@ -17,20 +17,23 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { Page } from "@playwright/test";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        dev: {
-          port: 9004,
-        },
-        storybook: {
-          port: 9902,
-        },
-      },
-    };
-  },
-});
+export class UseCases {
+  constructor(public page: Page, public baseURL?: string) {
+    this.page = page;
+    this.baseURL = baseURL;
+  }
+
+  public getIframeURL(iframeId: string) {
+    return `iframe.html?id=${iframeId}&viewMode=story`;
+  }
+
+  public async openTrafficViolationTest() {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`use-cases-traffic-violation-test`)}` ?? "");
+  }
+
+  public async openAreTheyOldEnoughTest() {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`use-cases-are-they-old-enough-test`)}` ?? "");
+  }
+}

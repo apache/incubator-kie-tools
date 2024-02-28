@@ -17,20 +17,19 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import type { Meta, StoryObj } from "@storybook/react";
+import { DevWebApp } from "../../../dev-webapp/src/DevWebApp";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        dev: {
-          port: 9004,
-        },
-        storybook: {
-          port: 9902,
-        },
-      },
-    };
-  },
-});
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<typeof DevWebApp> = {
+  title: "Misc/Empty SceSim Editor",
+  component: DevWebApp,
+  includeStories: /^[A-Z]/,
+};
+export default meta;
+type Story = StoryObj<typeof DevWebApp>;
+
+export const Base: Story = {
+  render: (args) => DevWebApp(),
+  args: {},
+};

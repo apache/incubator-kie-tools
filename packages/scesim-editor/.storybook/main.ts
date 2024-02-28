@@ -17,20 +17,10 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { config as baseConfig } from "@kie-tools/storybook-base/main";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        dev: {
-          port: 9004,
-        },
-        storybook: {
-          port: 9902,
-        },
-      },
-    };
-  },
-});
+const config = {
+  ...baseConfig,
+};
+
+export default config;

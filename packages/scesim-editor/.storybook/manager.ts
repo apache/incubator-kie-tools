@@ -17,20 +17,9 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { addons } from "@storybook/manager-api";
+import { KieToolsTheme } from "@kie-tools/storybook-base/KieToolsTheme";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        dev: {
-          port: 9004,
-        },
-        storybook: {
-          port: 9902,
-        },
-      },
-    };
-  },
+addons.setConfig({
+  theme: KieToolsTheme,
 });

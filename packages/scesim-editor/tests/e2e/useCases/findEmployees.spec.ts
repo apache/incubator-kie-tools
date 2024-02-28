@@ -17,20 +17,11 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { test, expect } from "../__fixtures__/base";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        dev: {
-          port: 9004,
-        },
-        storybook: {
-          port: 9902,
-        },
-      },
-    };
-  },
+test.describe("Check Are They Old Enough test case", () => {
+  test("should render are they old enough test correctly", async ({ useCases, page }) => {
+    await useCases.openTrafficViolationTest();
+    // await expect(page.getByLabel("Test Scenario").getByTestId("standalone-bee-table")).toHaveScreenshot("are-they-old-enough-test.png");
+  });
 });

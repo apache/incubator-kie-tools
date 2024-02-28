@@ -17,20 +17,28 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { Page, Locator } from "@playwright/test";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        dev: {
-          port: 9004,
-        },
-        storybook: {
-          port: 9902,
-        },
-      },
-    };
-  },
-});
+interface Position {
+  x: number;
+  y: number;
+}
+
+export class Resizing {
+  constructor(public page: Page) {}
+
+  public async resizeCell(target: Locator, from: Position = { x: 0, y: 0 }, to: Position = { x: 0, y: 0 }) {
+    await target.hover();
+    const handle = target.getByTestId("resizer-handle");
+    await handle.dragTo(handle, {
+      force: true,
+      sourcePosition: from,
+      targetPosition: to,
+    });
+  }
+
+  public async reset(target: Locator) {
+    await target.hover();
+    await target.getByTestId("resizer-handle").dblclick();
+  }
+}
