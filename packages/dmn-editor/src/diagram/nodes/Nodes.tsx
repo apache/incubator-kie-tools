@@ -134,7 +134,6 @@ export const InputDataNode = React.memo(
       nodeType: type as typeof NODE_TYPES.inputData,
       snapGrid,
       shape,
-      isExternal,
       isAlternativeInputDataShape,
     });
 
@@ -246,7 +245,11 @@ export const InputDataNode = React.memo(
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
-          <div className={`kie-dmn-editor--node ${additionalClasses}`}>
+          <div
+            className={`kie-dmn-editor--node ${additionalClasses}`}
+            title={inputData["@_name"]}
+            data-nodeid={`#${inputData["@_id"]}`}
+          >
             <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
             <OutgoingStuffNodePanel
@@ -361,7 +364,6 @@ export const DecisionNode = React.memo(
       nodeType: type as typeof NODE_TYPES.decision,
       snapGrid,
       shape,
-      isExternal,
     });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
@@ -431,6 +433,8 @@ export const DecisionNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          title={decision["@_name"]}
+          data-nodeid={`#${decision["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -512,7 +516,7 @@ export const BkmNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions({ nodeType: type as typeof NODE_TYPES.bkm, snapGrid, shape, isExternal });
+    const nodeDimensions = useNodeDimensions({ nodeType: type as typeof NODE_TYPES.bkm, snapGrid, shape });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -567,6 +571,8 @@ export const BkmNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          title={bkm["@_name"]}
+          data-nodeid={`#${bkm["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -650,7 +656,6 @@ export const KnowledgeSourceNode = React.memo(
       nodeType: type as typeof NODE_TYPES.knowledgeSource,
       snapGrid,
       shape,
-      isExternal,
     });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
@@ -693,6 +698,8 @@ export const KnowledgeSourceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          title={knowledgeSource["@_name"]}
+          data-nodeid={`#${knowledgeSource["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -767,7 +774,6 @@ export const TextAnnotationNode = React.memo(
       nodeType: type as typeof NODE_TYPES.textAnnotation,
       snapGrid,
       shape,
-      isExternal,
     });
     const setText = useCallback(
       (newText: string) => {
@@ -809,6 +815,8 @@ export const TextAnnotationNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          title={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
+          data-nodeid={`#${textAnnotation["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -886,7 +894,6 @@ export const DecisionServiceNode = React.memo(
       nodeType: type as typeof NODE_TYPES.decisionService,
       snapGrid,
       shape,
-      isExternal,
     });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
@@ -931,8 +938,7 @@ export const DecisionServiceNode = React.memo(
 
     const dividerLineRef = useRef<SVGPathElement>(null);
 
-    // External Decision Service nodes are always collapsed.
-    const isCollapsed = isExternal || shape["@_isCollapsed"];
+    const isCollapsed = shape["@_isCollapsed"] ?? false;
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, decisionService["@_name"]);
 
@@ -953,7 +959,7 @@ export const DecisionServiceNode = React.memo(
             updateDecisionServiceDividerLine({
               definitions: state.dmn.model.definitions,
               drdIndex: state.diagram.drdIndex,
-              dmnShapesByHref: state.computed(state).indexes().dmnShapesByHref,
+              dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
               drgElementIndex: index,
               shapeIndex: shape.index,
               localYPosition: e.y,
@@ -1007,6 +1013,8 @@ export const DecisionServiceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          title={decisionService["@_name"]}
+          data-nodeid={`#${decisionService["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1088,7 +1096,6 @@ export const GroupNode = React.memo(
       nodeType: type as typeof NODE_TYPES.group,
       snapGrid,
       shape,
-      isExternal,
     });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
@@ -1152,6 +1159,8 @@ export const GroupNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          title={group["@_name"]}
+          data-nodeid={`#${group["@_id"]}`}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -1217,7 +1226,6 @@ export const UnknownNode = React.memo(
       nodeType: type as typeof NODE_TYPES.unknown,
       snapGrid,
       shape,
-      isExternal,
     });
 
     return (
@@ -1318,21 +1326,20 @@ function useNodeResizing(id: string): boolean {
   return RF.useStore((s) => s.nodeInternals.get(id)?.resizing ?? false);
 }
 
-type NodeDimensionsProps = {
+type NodeDimensionsArgs = {
   snapGrid: SnapGrid;
   shape: DMNDI15__DMNShape;
-  isExternal: boolean;
 } & (
   | { nodeType: Extract<NodeType, typeof NODE_TYPES.inputData>; isAlternativeInputDataShape: boolean }
   | { nodeType: Exclude<NodeType, typeof NODE_TYPES.inputData> }
 );
 
-function useNodeDimensions(props: NodeDimensionsProps): RF.Dimensions {
-  const { nodeType, snapGrid, shape, isExternal } = props;
-  const isAlternativeInputDataShape = nodeType === NODE_TYPES.inputData ? props.isAlternativeInputDataShape : false;
+function useNodeDimensions(args: NodeDimensionsArgs): RF.Dimensions {
+  const { nodeType, snapGrid, shape } = args;
+  const isAlternativeInputDataShape = nodeType === NODE_TYPES.inputData ? args.isAlternativeInputDataShape : false;
 
   return useMemo(() => {
-    if (nodeType === NODE_TYPES.decisionService && (isExternal || shape["@_isCollapsed"])) {
+    if (nodeType === NODE_TYPES.decisionService && shape["@_isCollapsed"]) {
       return DECISION_SERVICE_COLLAPSED_DIMENSIONS;
     }
 
@@ -1350,7 +1357,7 @@ function useNodeDimensions(props: NodeDimensionsProps): RF.Dimensions {
       width: snapShapeDimensions(snapGrid, shape, minSizes).width,
       height: snapShapeDimensions(snapGrid, shape, minSizes).height,
     };
-  }, [isAlternativeInputDataShape, isExternal, shape, snapGrid, nodeType]);
+  }, [isAlternativeInputDataShape, shape, snapGrid, nodeType]);
 }
 
 function useHoveredNodeAlwaysOnTop(

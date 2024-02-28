@@ -23,7 +23,8 @@ import { KIE_DMN_UNKNOWN_NAMESPACE } from "../../Dmn15Spec";
 import { buildXmlHref } from "../../xml/xmlHrefs";
 import { State } from "../Store";
 
-export function computeIndexes(
+export function computeIndexedDrd(
+  thisDmnsNamespace: string,
   definitions: State["dmn"]["model"]["definitions"],
   drdIndex: State["diagram"]["drdIndex"]
 ) {
@@ -52,7 +53,10 @@ export function computeIndexes(
         href = buildXmlHref({ namespace, id: dmnElementRefQName.localPart });
         hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects.add(href);
       } else {
-        href = buildXmlHref({ id: dmnElementRefQName.localPart });
+        href = buildXmlHref({
+          namespace: definitions["@_namespace"] === thisDmnsNamespace ? "" : definitions["@_namespace"],
+          id: dmnElementRefQName.localPart,
+        });
       }
 
       dmnShapesByHref.set(href, { ...e, index: i, dmnElementRefQName });

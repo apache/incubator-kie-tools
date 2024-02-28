@@ -25,7 +25,7 @@ export function deleteImport({ definitions, index }: { definitions: DMN15__tDefi
   const [deleted] = definitions.import.splice(index, 1);
 
   const namespaceName = getXmlNamespaceDeclarationName({
-    model: definitions,
+    rootElement: definitions,
     namespace: deleted["@_namespace"],
   });
   if (namespaceName) {

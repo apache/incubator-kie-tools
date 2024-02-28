@@ -29,7 +29,7 @@ export const INITIAL_COMPUTED_CACHE: Cache<Computed> = {
     value: undefined,
     dependencies: [],
   },
-  indexes: {
+  indexedDrd: {
     value: undefined,
     dependencies: [],
   },

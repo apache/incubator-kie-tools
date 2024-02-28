@@ -17,10 +17,17 @@
  * under the License.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { test as base } from "@playwright/test";
+import { Diagram } from "./diagram";
 
-import { DevWebApp } from "./DevWebApp";
-import "./index.css";
+type DmnEditorFixtures = {
+  diagram: Diagram;
+};
 
-ReactDOM.render(<DevWebApp />, document.getElementById("dev-webapp"));
+export const test = base.extend<DmnEditorFixtures>({
+  diagram: async ({ page, baseURL }, use) => {
+    await use(new Diagram(page, baseURL));
+  },
+});
+
+export { expect } from "@playwright/test";
