@@ -19,8 +19,8 @@
 
 const { execSync } = require("child_process");
 const { argv } = require("process");
-const buildEnv = require("@kie-tools/root-env/env");
-const version = buildEnv.env.root.version;
+const version = require("../package.json").version;
+const buildEnv = require("../env");
 
 const network = "ddus-network";
 const builder = "ddus-builder";
@@ -29,6 +29,12 @@ const containersNames = {
   fileserver: "ddus-fileserver",
   buildtimeInstall: "ddus-buildtime-install",
   runTimeInstall: "ddus-runtime-install",
+};
+
+const containersPorts = {
+  fileserver: buildEnv.env.devDeploymentUploadService.dev.fileServerPort,
+  buildtimeInstall: buildEnv.env.devDeploymentUploadService.dev.buildTimePort,
+  runTimeInstall: buildEnv.env.devDeploymentUploadService.dev.runtTimePort,
 };
 
 function cleanup() {
@@ -77,7 +83,7 @@ let fileServerIp;
 try {
   console.info(`Starting File Server container: ${containersNames.fileserver}`);
   execSync(
-    `docker run -d --name ${containersNames.fileserver} --network ${network} -p 8090:8090 $(docker buildx build -q --build-arg DDUS_VERSION=${version} . -f ./dev/Containerfile.${containersNames.fileserver} --load)`,
+    `docker run -d --name ${containersNames.fileserver} --network ${network} -p ${containersPorts.fileserver}:8090 $(docker buildx build -q --build-arg DDUS_VERSION=${version} --build-arg DDUS_FILESERVER_PORT=${containersPorts.fileserver} . -f ./dev/Containerfile.${containersNames.fileserver} --load)`,
     { stdio: "inherit" }
   );
   fileServerIp = execSync(`docker exec ${containersNames.fileserver} awk 'END{print $1}' /etc/hosts`).toString().trim();
@@ -91,6 +97,7 @@ try {
   execSync(`docker buildx create --name ${builder} --driver docker-container --driver-opt network=${network}`, {
     stdio: "inherit",
   });
+  execSync("docker buildx ls", { stdio: "inherit" });
 } catch (e) {
   cleanup();
   throw new Error(`Failed to create builder ${builder}. Exiting!`);
@@ -99,7 +106,7 @@ try {
 try {
   console.info(`Starting BuildTime Install container: ${containersNames.buildtimeInstall}`);
   execSync(
-    `docker run -d --name ${containersNames.buildtimeInstall} --network ${network} -p 8091:8091 $(docker buildx --builder ${builder} build -q --build-arg DDUS_VERSION=${version} --build-arg DDUS_FILESERVER_IP=${fileServerIp} . -f ./dev/Containerfile.${containersNames.buildtimeInstall} --load)`,
+    `docker run -d --name ${containersNames.buildtimeInstall} --network ${network} -p ${containersPorts.buildtimeInstall}:8091 $(docker buildx --builder ${builder} build -q --build-arg DDUS_VERSION=${version} --build-arg DDUS_FILESERVER_PORT=8090 --build-arg DDUS_FILESERVER_IP=${fileServerIp} . -f ./dev/Containerfile.${containersNames.buildtimeInstall} --load)`,
     { stdio: "inherit" }
   );
 } catch (e) {
@@ -110,10 +117,22 @@ try {
 try {
   console.info(`Starting RunTime Install container: ${containersNames.runTimeInstall}`);
   execSync(
-    `docker run -d --name ${containersNames.runTimeInstall} --network ${network} -p 8092:8092 -e DDUS_FILESERVER_IP=${fileServerIp} -e DDUS_VERSION=${version} $(docker buildx --builder ${builder} build -q . -f ./dev/Containerfile.${containersNames.runTimeInstall} --load)`,
+    `docker run -d --name ${containersNames.runTimeInstall} --network ${network} -p ${containersPorts.runTimeInstall}:8092 -e DDUS_FILESERVER_IP=${fileServerIp} -e DDUS_VERSION=${version} -e DDUS_FILESERVER_PORT=8090 $(docker buildx --builder ${builder} build -q . -f ./dev/Containerfile.${containersNames.runTimeInstall} --load)`,
     { stdio: "inherit" }
   );
 } catch (e) {
   cleanup();
   throw new Error(`Failed to build and start ${containersNames.runTimeInstall}. Exiting!`);
 }
+
+execSync("docker ps -f name=ddus", { stdio: "inherit" });
+
+execSync("sleep 10");
+
+Object.values(containersNames).forEach((name) => {
+  const logs = execSync(`docker logs ${name}`).toString();
+  console.info(`Checking logs for ${name}:`);
+  console.info("--------------------------");
+  console.info(logs);
+  console.info("--------------------------");
+});
