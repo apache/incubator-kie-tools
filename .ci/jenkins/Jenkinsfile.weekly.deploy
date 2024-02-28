@@ -147,7 +147,7 @@ pipeline {
             }
         }
 
-        stage('Run e2e tests on Minikube') {
+        stage('Run e2e tests on Kind') {
             when {
                 expression {
                     return helper.shouldLaunchTests()
@@ -155,7 +155,7 @@ pipeline {
             }
             steps {
                 script {
-                    launchE2ETestsJob('minikube')
+                    launchE2ETestsJob('kind')
                 }
             }
         }
