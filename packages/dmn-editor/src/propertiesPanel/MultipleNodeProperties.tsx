@@ -57,6 +57,7 @@ export function MultipleNodeProperties({ nodeIds }: { nodeIds: string[] }) {
           }
           action={
             <Button
+              title={"Close"}
               variant={ButtonVariant.plain}
               onClick={() => {
                 dmnEditorStoreApi.setState((state) => {

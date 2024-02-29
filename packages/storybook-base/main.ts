@@ -23,7 +23,6 @@ const buildEnv: any = env;
 
 export const config: StorybookConfig = {
   stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
-  staticDirs: ["../stories/__assets__"],
   framework: {
     name: "@storybook/react-webpack5",
     options: {},

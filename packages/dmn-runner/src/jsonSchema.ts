@@ -18,7 +18,7 @@
  */
 
 import { JSON_SCHEMA_INPUT_SET_PATH, RECURSION_KEYWORD, RECURSION_REF_KEYWORD, X_DMN_TYPE_KEYWORD } from "./constants";
-import { ValidateFunction } from "./ajv";
+import { DmnAjvSchemaFormat, ValidateFunction } from "./ajv";
 import {
   ExtendedServicesDmnJsonSchema,
   DmnInputFieldProperties,
@@ -74,6 +74,17 @@ export function removeChangedPropertiesAndAdditionalProperties<T extends Validat
   if (!validation && validator.errors) {
     validator.errors.forEach((error) => {
       if (error.keyword !== "type" && error.keyword !== "format") {
+        return;
+      }
+
+      // uniforms-patternfly saves the DateTimeField component value as a Date object and
+      // AJV handles data-time as a string, causing an error with keyword type.
+      // Also, the ajv.ErrorObject doesn't correctly type the parentSchema property
+      if (
+        error.keyword === "type" &&
+        (error.parentSchema as any)?.format === DmnAjvSchemaFormat.DATE_TIME &&
+        error.data instanceof Date
+      ) {
         return;
       }
 

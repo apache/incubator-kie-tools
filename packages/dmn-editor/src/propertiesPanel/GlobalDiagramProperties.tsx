@@ -55,6 +55,7 @@ export function GlobalDiagramProperties() {
             title={"Global properties"}
             action={
               <Button
+                title={"Close"}
                 variant={ButtonVariant.plain}
                 onClick={() => {
                   dmnEditorStoreApi.setState((state) => {
@@ -134,6 +135,7 @@ export function GlobalDiagramProperties() {
             title={"ID & Namespace"}
             action={
               <Button
+                title={"Re-generate ID & Namespace"}
                 variant={ButtonVariant.plain}
                 onClick={() => setRegenerateIdConfirmationModal(true)}
                 style={{ paddingBottom: 0, paddingTop: 0 }}

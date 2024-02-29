@@ -21,11 +21,8 @@
 
  import io.quarkus.test.junit.QuarkusTest;
  import io.restassured.http.ContentType;
- import org.eclipse.microprofile.config.inject.ConfigProperty;
  import org.junit.jupiter.api.Test;
- 
- import javax.inject.Inject;
- 
+
  import static io.restassured.RestAssured.given;
  import static org.hamcrest.Matchers.*;
  

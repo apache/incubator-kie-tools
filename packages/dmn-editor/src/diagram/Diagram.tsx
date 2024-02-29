@@ -60,7 +60,7 @@ import {
   MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS,
 } from "../externalNodes/ExternalNodesPanel";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
-import { nodeNatures } from "../mutations/NodeNature";
+import { NodeNature, nodeNatures } from "../mutations/NodeNature";
 import { addConnectedNode } from "../mutations/addConnectedNode";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { addEdge } from "../mutations/addEdge";
@@ -120,6 +120,11 @@ import {
   UnknownNode,
 } from "./nodes/Nodes";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { xmlHrefToQName } from "../xml/xmlHrefToQName";
+import {
+  addExistingDecisionServiceToDrd,
+  getDecisionServicePropertiesRelativeToThisDmn,
+} from "../mutations/addExistingDecisionServiceToDrd";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -338,15 +343,20 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           ) as ExternalNode;
 
           // --------- This is where we draw the line between the diagram and the model.
+
           dmnEditorStoreApi.setState((state) => {
-            const externalDrgElement = (
-              state
-                .computed(state)
-                .getExternalModelTypesByNamespace(externalModelsByNamespace)
-                .dmns.get(externalNode.externalDrgElementNamespace)?.model.definitions.drgElement ?? []
-            ).find((s) => s["@_id"] === externalNode.externalDrgElementId);
-            if (!externalDrgElement) {
-              throw new Error(`Can't find DRG element with id '${externalNode.externalDrgElementId}'.`);
+            const externalDmnsIndex = state
+              .computed(state)
+              .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns;
+
+            const externalNodeDmn = externalDmnsIndex.get(externalNode.externalDrgElementNamespace);
+            const externalDrgElement = (externalNodeDmn?.model.definitions.drgElement ?? []).find(
+              (e) => e["@_id"] === externalNode.externalDrgElementId
+            );
+            if (!externalNodeDmn || !externalDrgElement) {
+              throw new Error(
+                `Can't find DRG element with id '${externalNode.externalDrgElementId}' on/or model with namespace '${externalNode.externalDrgElementNamespace}'.`
+              );
             }
 
             const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
@@ -357,39 +367,61 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             });
 
             const namespaceName = getXmlNamespaceDeclarationName({
-              model: state.dmn.model.definitions,
+              rootElement: state.dmn.model.definitions,
               namespace: externalNode.externalDrgElementNamespace,
             });
 
-            if (!namespaceName) {
-              throw new Error(`Can't find namespace name for '${externalNode.externalDrgElementNamespace}'.`);
-            }
-
-            addShape({
-              definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
-              nodeType: externalNodeType,
-              shape: {
-                "@_dmnElementRef": buildXmlQName({
-                  type: "xml-qname",
-                  prefix: namespaceName,
-                  localPart: externalDrgElement["@_id"]!,
-                }),
-                "@_isCollapsed": true,
-                "dc:Bounds": {
-                  "@_x": dropPoint.x,
-                  "@_y": dropPoint.y,
-                  "@_width": defaultExternalNodeDimensions["@_width"],
-                  "@_height": defaultExternalNodeDimensions["@_height"],
-                },
-              },
+            const externalNodeHref = buildXmlHref({
+              namespace: externalNode.externalDrgElementNamespace,
+              id: externalNode.externalDrgElementId,
             });
-            state.diagram._selectedNodes = [
-              buildXmlHref({
-                namespace: externalNode.externalDrgElementNamespace,
-                id: externalNode.externalDrgElementId,
-              }),
-            ];
+
+            if (externalDrgElement.__$$element === "decisionService") {
+              addExistingDecisionServiceToDrd({
+                decisionService: externalDrgElement,
+                decisionServiceNamespace: externalNodeDmn.model.definitions["@_namespace"],
+                drdIndex: state.diagram.drdIndex,
+                dropPoint,
+                externalDmnsIndex,
+                thisDmnsDefinitions: state.dmn.model.definitions,
+                thisDmnsIndexedDrd: state.computed(state).indexedDrd(),
+                thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
+              });
+            } else if (externalDrgElement.__$$element === "decision") {
+              // TODO: Tiago --> Add logic for Decision contained by DS.
+              const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
+              addShape({
+                definitions: state.dmn.model.definitions,
+                drdIndex: state.diagram.drdIndex,
+                nodeType: externalNodeType,
+                shape: {
+                  "@_dmnElementRef": xmlHrefToQName(externalNodeHref, state.dmn.model.definitions),
+                  "dc:Bounds": {
+                    "@_x": dropPoint.x,
+                    "@_y": dropPoint.y,
+                    "@_width": defaultExternalNodeDimensions["@_width"],
+                    "@_height": defaultExternalNodeDimensions["@_height"],
+                  },
+                },
+              });
+            } else {
+              const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
+              addShape({
+                definitions: state.dmn.model.definitions,
+                drdIndex: state.diagram.drdIndex,
+                nodeType: externalNodeType,
+                shape: {
+                  "@_dmnElementRef": xmlHrefToQName(externalNodeHref, state.dmn.model.definitions),
+                  "dc:Bounds": {
+                    "@_x": dropPoint.x,
+                    "@_y": dropPoint.y,
+                    "@_width": defaultExternalNodeDimensions["@_width"],
+                    "@_height": defaultExternalNodeDimensions["@_height"],
+                  },
+                },
+              });
+            }
+            state.diagram._selectedNodes = [externalNodeHref];
           });
 
           console.debug(`DMN DIAGRAM: Adding external node`, JSON.stringify(externalNode));
@@ -398,31 +430,65 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             DMN15__tDefinitions["drgElement"]
           >;
 
-          const nodeType = getNodeTypeFromDmnObject(drgElement);
-          if (nodeType === undefined) {
-            throw new Error("DMN DIAGRAM: It wasn't possible to determine the node type");
-          }
-
           dmnEditorStoreApi.setState((state) => {
+            const nodeType = getNodeTypeFromDmnObject(drgElement);
+            if (nodeType === undefined) {
+              throw new Error("DMN DIAGRAM: It wasn't possible to determine the node type");
+            }
+
             const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType]({
               snapGrid: state.diagram.snapGrid,
               isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
             });
-            addShape({
-              definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
-              nodeType,
-              shape: {
-                "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
-                "@_isCollapsed": false,
-                "dc:Bounds": {
-                  "@_x": dropPoint.x,
-                  "@_y": dropPoint.y,
-                  "@_width": defaultNodeDimensions["@_width"],
-                  "@_height": defaultNodeDimensions["@_height"],
+
+            if (drgElement.__$$element === "decisionService") {
+              addExistingDecisionServiceToDrd({
+                decisionService: drgElement,
+                decisionServiceNamespace: state.dmn.model.definitions["@_namespace"],
+                drdIndex: state.diagram.drdIndex,
+                dropPoint,
+                externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
+                  .dmns,
+                thisDmnsDefinitions: state.dmn.model.definitions,
+                thisDmnsIndexedDrd: state.computed(state).indexedDrd(),
+                thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
+              });
+            } else if (drgElement.__$$element === "decision") {
+              // TODO: Tiago --> Add logic for Decision contained by DS.
+              const nodeType = getNodeTypeFromDmnObject(drgElement)!;
+              addShape({
+                definitions: state.dmn.model.definitions,
+                drdIndex: state.diagram.drdIndex,
+                nodeType,
+                shape: {
+                  "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
+                  "@_isCollapsed": false,
+                  "dc:Bounds": {
+                    "@_x": dropPoint.x,
+                    "@_y": dropPoint.y,
+                    "@_width": defaultNodeDimensions["@_width"],
+                    "@_height": defaultNodeDimensions["@_height"],
+                  },
                 },
-              },
-            });
+              });
+            } else {
+              const nodeType = getNodeTypeFromDmnObject(drgElement)!;
+              addShape({
+                definitions: state.dmn.model.definitions,
+                drdIndex: state.diagram.drdIndex,
+                nodeType,
+                shape: {
+                  "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
+                  "@_isCollapsed": false,
+                  "dc:Bounds": {
+                    "@_x": dropPoint.x,
+                    "@_y": dropPoint.y,
+                    "@_width": defaultNodeDimensions["@_width"],
+                    "@_height": defaultNodeDimensions["@_height"],
+                  },
+                },
+              });
+            }
           });
 
           console.debug(`DMN DIAGRAM: Adding DRG node`, JSON.stringify(drgElement));
@@ -485,7 +551,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             return;
           }
 
-          const sourceNodeBounds = state.computed(state).indexes().dmnShapesByHref.get(sourceNode.id)?.["dc:Bounds"];
+          const sourceNodeBounds = state.computed(state).indexedDrd().dmnShapesByHref.get(sourceNode.id)?.["dc:Bounds"];
           if (!sourceNodeBounds) {
             return;
           }
@@ -608,7 +674,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     resizeNode({
                       definitions: state.dmn.model.definitions,
                       drdIndex: state.diagram.drdIndex,
-                      dmnShapesByHref: state.computed(state).indexes().dmnShapesByHref,
+                      dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
                       snapGrid: state.diagram.snapGrid,
                       change: {
                         isExternal: !!node.data.dmnObjectQName.prefix,
@@ -671,22 +737,20 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     },
                   });
 
-                  // FIXME: This should be inside `repositionNode` I guess?
-
-                  // Update nested
-                  // External Decision Services will have encapsulated and output decisions, but they aren't depicted in the graph.
-                  if (node.type === NODE_TYPES.decisionService && !node.data.dmnObjectQName.prefix) {
+                  // Update contained Decisions of Decision Service if in expanded form
+                  if (node.type === NODE_TYPES.decisionService && !(node.data.shape["@_isCollapsed"] ?? false)) {
                     const decisionService = node.data.dmnObject as DMN15__tDecisionService;
-                    const nested = [
-                      ...(decisionService.outputDecision ?? []),
-                      ...(decisionService.encapsulatedDecision ?? []),
-                    ];
 
-                    for (let i = 0; i < nested.length; i++) {
-                      const nestedNode = state
-                        .computed(state)
-                        .getDiagramData(externalModelsByNamespace)
-                        .nodesById.get(nested[i]["@_href"])!;
+                    const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
+                      thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
+                      decisionService,
+                      decisionServiceNamespace:
+                        node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
+                    });
+
+                    for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
+                      const diagramData = state.computed(state).getDiagramData(externalModelsByNamespace);
+                      const nestedNode = diagramData.nodesById.get(containedDecisionHrefsRelativeToThisDmn[i])!;
                       const snappedNestedNodeShapeWithAppliedDelta = snapShapePosition(
                         state.diagram.snapGrid,
                         offsetShapePosition(nestedNode.data.shape, delta)
@@ -698,23 +762,14 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                         change: {
                           type: "absolute",
                           nodeType: nestedNode.type as NodeType,
-                          selectedEdges: state
-                            .computed(state)
-                            .getDiagramData(externalModelsByNamespace)
-                            .edges.map((e) => e.id),
+                          selectedEdges: diagramData.edges.map((e) => e.id),
                           shapeIndex: nestedNode.data.shape.index,
-                          sourceEdgeIndexes: state
-                            .computed(state)
-                            .getDiagramData(externalModelsByNamespace)
-                            .edges.flatMap((e) =>
-                              e.source === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                            ),
-                          targetEdgeIndexes: state
-                            .computed(state)
-                            .getDiagramData(externalModelsByNamespace)
-                            .edges.flatMap((e) =>
-                              e.target === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                            ),
+                          sourceEdgeIndexes: diagramData.edges.flatMap((e) =>
+                            e.source === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                          ),
+                          targetEdgeIndexes: diagramData.edges.flatMap((e) =>
+                            e.target === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                          ),
                           position: snappedNestedNodeShapeWithAppliedDelta,
                         },
                       });
@@ -729,11 +784,13 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                   definitions: state.dmn.model.definitions,
                   drdIndex: state.diagram.drdIndex,
-                  dmnObjectNamespace: node.data.dmnObjectNamespace,
+                  dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
                   dmnObjectQName: node.data.dmnObjectQName,
                   dmnObjectId: node.data.dmnObject?.["@_id"],
                   nodeNature: nodeNatures[node.type as NodeType],
                   mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+                  externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
+                    .dmns,
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
@@ -1190,6 +1247,7 @@ function DmnDiagramEmptyState({
     >
       <div className={"kie-dmn-editor--diagram-empty-state"}>
         <Button
+          title={"Close"}
           style={{
             position: "absolute",
             top: "8px",
@@ -1198,7 +1256,7 @@ function DmnDiagramEmptyState({
           variant={ButtonVariant.plain}
           icon={<TimesIcon />}
           onClick={() => setShowEmptyState(false)}
-        ></Button>
+        />
 
         <EmptyState>
           <EmptyStateIcon icon={MousePointerIcon} />
@@ -1383,14 +1441,22 @@ export function TopRightCornerPanels() {
             isVisible={diagram.overlaysPanel.isOpen}
             bodyContent={<OverlaysPanel />}
           >
-            <button className={"kie-dmn-editor--overlays-panel-toggle-button"} onClick={toggleOverlaysPanel}>
+            <button
+              className={"kie-dmn-editor--overlays-panel-toggle-button"}
+              onClick={toggleOverlaysPanel}
+              title={"Overlays"}
+            >
               <VirtualMachineIcon size={"sm"} />
             </button>
           </Popover>
         </aside>
         {!diagram.propertiesPanel.isOpen && (
           <aside className={"kie-dmn-editor--properties-panel-toggle"}>
-            <button className={"kie-dmn-editor--properties-panel-toggle-button"} onClick={togglePropertiesPanel}>
+            <button
+              className={"kie-dmn-editor--properties-panel-toggle-button"}
+              onClick={togglePropertiesPanel}
+              title={"Properties panel"}
+            >
               <InfoIcon size={"sm"} />
             </button>
           </aside>
@@ -1552,11 +1618,13 @@ export function KeyboardShortcuts(props: {}) {
                 drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                 definitions: state.dmn.model.definitions,
                 drdIndex: state.diagram.drdIndex,
-                dmnObjectNamespace: node.data.dmnObjectNamespace,
+                dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
                 dmnObjectQName: node.data.dmnObjectQName,
                 dmnObjectId: node.data.dmnObject?.["@_id"],
                 nodeNature: nodeNatures[node.type as NodeType],
                 mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+                externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
+                  .dmns,
               });
               state.dispatch(state).diagram.setNodeStatus(node.id, {
                 selected: false,
@@ -1761,16 +1829,20 @@ export function KeyboardShortcuts(props: {}) {
         if (
           (selectedNodeIds.has(edge.source) &&
             canRemoveNodeFromDrdOnly({
+              externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
               definitions: state.dmn.model.definitions,
               drdIndex: state.diagram.drdIndex,
-              dmnObjectNamespace: nodesById.get(edge.source)!.data.dmnObjectNamespace,
+              dmnObjectNamespace:
+                nodesById.get(edge.source)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
               dmnObjectId: nodesById.get(edge.source)!.data.dmnObject?.["@_id"],
             })) ||
           (selectedNodeIds.has(edge.target) &&
             canRemoveNodeFromDrdOnly({
+              externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
               definitions: state.dmn.model.definitions,
               drdIndex: state.diagram.drdIndex,
-              dmnObjectNamespace: nodesById.get(edge.target)!.data.dmnObjectNamespace,
+              dmnObjectNamespace:
+                nodesById.get(edge.target)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
               dmnObjectId: nodesById.get(edge.target)!.data.dmnObject?.["@_id"],
             }))
         ) {
@@ -1785,11 +1857,16 @@ export function KeyboardShortcuts(props: {}) {
       }
 
       for (const node of rf.getNodes().filter((s) => s.selected)) {
+        // Prevent hiding artifact nodes from DRD;
+        if (nodeNatures[node.type as NodeType] === NodeNature.ARTIFACT) {
+          continue;
+        }
         const { deletedDmnShapeOnCurrentDrd: deletedShape } = deleteNode({
           drgEdges: [], // Deleting from DRD only.
           definitions: state.dmn.model.definitions,
+          externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
           drdIndex: state.diagram.drdIndex,
-          dmnObjectNamespace: node.data.dmnObjectNamespace,
+          dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
           dmnObjectQName: node.data.dmnObjectQName,
           dmnObjectId: node.data.dmnObject?.["@_id"],
           nodeNature: nodeNatures[node.type as NodeType],
@@ -1805,7 +1882,7 @@ export function KeyboardShortcuts(props: {}) {
         }
       }
     });
-  }, [x, dmnEditorStoreApi, rf]);
+  }, [x, dmnEditorStoreApi, rf, externalModelsByNamespace]);
 
   return <></>;
 }

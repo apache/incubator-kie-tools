@@ -27,6 +27,9 @@ import { buildXmlHref } from "../xml/xmlHrefs";
 import { Unpacked } from "../tsExt/tsExt";
 import { DrgEdge } from "../diagram/graph/graph";
 import { EdgeDeletionMode, deleteEdge } from "./deleteEdge";
+import { Computed } from "../store/Store";
+import { computeDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeDecisionServiceHrefsByDecisionHrefs";
+import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 
 export enum NodeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -41,13 +44,15 @@ export function deleteNode({
   dmnObjectId,
   dmnObjectQName,
   dmnObjectNamespace,
+  externalDmnsIndex,
   mode,
 }: {
   definitions: DMN15__tDefinitions;
   drgEdges: DrgEdge[];
   drdIndex: number;
   nodeNature: NodeNature;
-  dmnObjectNamespace: string | undefined;
+  externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
+  dmnObjectNamespace: string;
   dmnObjectId: string | undefined;
   dmnObjectQName: XmlQName;
   mode: NodeDeletionMode;
@@ -62,6 +67,7 @@ export function deleteNode({
       drdIndex,
       dmnObjectNamespace,
       dmnObjectId,
+      externalDmnsIndex,
     })
   ) {
     console.warn("DMN MUTATION: Cannot hide a Decision that's contained by a Decision Service from a DRD.");
@@ -110,6 +116,8 @@ export function deleteNode({
       if (mode === NodeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
         const nodeIndex = (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId);
         dmnObject = definitions.artifact?.splice(nodeIndex, 1)?.[0];
+      } else {
+        throw new Error(`DMN MUTATION: Can't hide an artifact node.`);
       }
     } else if (nodeNature === NodeNature.DRG_ELEMENT) {
       const nodeIndex = (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId);
@@ -174,31 +182,41 @@ export function canRemoveNodeFromDrdOnly({
   drdIndex,
   dmnObjectNamespace,
   dmnObjectId,
+  externalDmnsIndex,
 }: {
-  dmnObjectNamespace: string | undefined;
+  dmnObjectNamespace: string;
   dmnObjectId: string | undefined;
   definitions: DMN15__tDefinitions;
   drdIndex: number;
+  externalDmnsIndex: ReturnType<Computed["getExternalModelTypesByNamespace"]>["dmns"];
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const dmnObjectHref = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectId! });
+  const dmnObjectHref = buildXmlHref({
+    namespace: dmnObjectNamespace === definitions["@_namespace"] ? "" : dmnObjectNamespace,
+    id: dmnObjectId!,
+  });
 
-  // FIXME: Tiago --> A Decision can be contained by more than one Decision Service.
-  const containingDecisionService = definitions.drgElement?.find(
-    (drgElement) =>
-      drgElement.__$$element === "decisionService" &&
-      [...(drgElement.encapsulatedDecision ?? []), ...(drgElement.outputDecision ?? [])].some(
-        (dd) => dd["@_href"] === dmnObjectHref
-      )
+  const drgElements =
+    definitions["@_namespace"] === dmnObjectNamespace
+      ? definitions.drgElement ?? []
+      : externalDmnsIndex.get(dmnObjectNamespace)?.model.definitions.drgElement ?? [];
+
+  const decisionServiceHrefsByDecisionHrefs = computeDecisionServiceHrefsByDecisionHrefs({
+    thisDmnsNamespace: definitions["@_namespace"],
+    drgElementsNamespace: dmnObjectNamespace,
+    drgElements,
+  });
+
+  const containingDecisionServiceHrefs = decisionServiceHrefsByDecisionHrefs.get(dmnObjectHref) ?? [];
+
+  const isContainedByDecisionService = containingDecisionServiceHrefs.length > 0;
+
+  const isContainingDecisionServicePresentInTheDrd = containingDecisionServiceHrefs.some((dsHref) =>
+    diagramElements.some(
+      (e) => e.__$$element === "dmndi:DMNShape" && e["@_dmnElementRef"] === xmlHrefToQName(dsHref, definitions)
+    )
   );
 
-  const isContainingDecisionServicePresentInTheDrd =
-    containingDecisionService &&
-    diagramElements.some(
-      (s) =>
-        s.__$$element === "dmndi:DMNShape" &&
-        s["@_dmnElementRef"] === buildXmlQName({ type: "xml-qname", localPart: containingDecisionService["@_id"]! })
-    );
-  return !containingDecisionService || !isContainingDecisionServicePresentInTheDrd;
+  return !isContainedByDecisionService || !isContainingDecisionServicePresentInTheDrd;
 }

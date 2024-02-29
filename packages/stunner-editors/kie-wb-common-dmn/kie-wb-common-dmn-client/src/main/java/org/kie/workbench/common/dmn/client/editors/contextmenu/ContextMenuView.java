@@ -31,6 +31,7 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
+import elemental2.dom.HTMLDocument;
 import jsinterop.base.Js;
 import jsinterop.base.JsArrayLike;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -59,10 +60,10 @@ public class ContextMenuView implements ContextMenu.View,
 
     @PreDestroy
     private void removeDOMEventListeners() {
-        DomGlobal.document.removeEventListener(BrowserEvents.MOUSEDOWN,
+        getDocument().removeEventListener(BrowserEvents.MOUSEDOWN,
                                                hideContextMenuHandler,
                                                false);
-        DomGlobal.document.removeEventListener(BrowserEvents.MOUSEWHEEL,
+        getDocument().removeEventListener(BrowserEvents.MOUSEWHEEL,
                                                hideContextMenuHandler,
                                                false);
     }
@@ -72,10 +73,10 @@ public class ContextMenuView implements ContextMenu.View,
         listSelector.bind(this, 0, 0);
         listSelector.show();
 
-        DomGlobal.document.addEventListener(BrowserEvents.MOUSEDOWN,
+        getDocument().addEventListener(BrowserEvents.MOUSEDOWN,
                                             hideContextMenuHandler,
                                             false);
-        DomGlobal.document.addEventListener(BrowserEvents.MOUSEWHEEL,
+        getDocument().addEventListener(BrowserEvents.MOUSEWHEEL,
                                             hideContextMenuHandler,
                                             false);
     }
@@ -124,5 +125,10 @@ public class ContextMenuView implements ContextMenu.View,
     public void onItemSelected(final ListSelectorItem item) {
         ((ListSelectorTextItem) item).getCommand().execute();
         hide();
+    }
+
+    /* Indirection required by unit tests */
+    protected HTMLDocument getDocument() {
+        return DomGlobal.document;
     }
 }

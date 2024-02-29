@@ -30,7 +30,7 @@ export function addOrGetDrd({ definitions, drdIndex }: { definitions: DMN15__tDe
   // diagram
   definitions["dmndi:DMNDI"] ??= {};
   definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][drdIndex] ??= {};
+  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][drdIndex] ??= { "@_id": generateUuid() };
 
   const defaultDiagram = definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][drdIndex];
   defaultDiagram["@_id"] ??= generateUuid();

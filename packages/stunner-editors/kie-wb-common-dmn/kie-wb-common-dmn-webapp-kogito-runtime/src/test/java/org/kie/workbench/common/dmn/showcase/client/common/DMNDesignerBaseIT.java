@@ -87,8 +87,6 @@ public class DMNDesignerBaseIT {
 
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
 
-    private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.dmn.kogito.browser.headless"));
-
     private static final String SCREENSHOTS_DIR = System.getProperty("org.kie.dmn.kogito.screenshots.dir");
 
     private WebDriver driver;
@@ -118,7 +116,7 @@ public class DMNDesignerBaseIT {
 
     private FirefoxOptions getFirefoxOptions() {
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(HEADLESS);
+        firefoxOptions.addArguments("--headless");
         return firefoxOptions;
     }
 

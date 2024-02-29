@@ -56,7 +56,7 @@ export function ExternalNodesPanel() {
   const externalDmnsByNamespace = useDmnEditorStore(
     (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
   );
-  const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexes().dmnShapesByHref);
+  const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexedDrd().dmnShapesByHref);
   const { onRequestToResolvePath } = useDmnEditor();
 
   const onDragStart = useCallback((event: React.DragEvent, externalNode: ExternalNode) => {
@@ -91,7 +91,7 @@ export function ExternalNodesPanel() {
                   })
                 }
               >
-                Included model...
+                Include model...
               </Button>
             </EmptyStatePrimary>
           </EmptyState>
@@ -105,6 +105,7 @@ export function ExternalNodesPanel() {
                 <Text component="h3">External nodes</Text>
               </TextContent>
               <Button
+                title={"Close"}
                 variant={ButtonVariant.plain}
                 onClick={() =>
                   dmnEditorStoreApi.setState((state) => {

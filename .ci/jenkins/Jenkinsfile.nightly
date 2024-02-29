@@ -4,7 +4,7 @@ settingsXMLId = 'kie-tools-prod'
 
 pipeline {
     agent {
-        label 'kie-rhel8 && kie-mem16g && !built-in'
+        label util.avoidFaultyNodes('kie-rhel8 && kie-mem16g && !built-in')
     }
     tools {
         nodejs "nodejs-16.2.0"
