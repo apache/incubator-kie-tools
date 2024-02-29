@@ -100,7 +100,7 @@ jobs:
           pnpm
           -F='!@kie-tools/serverless-logic-web-tools-swf-dev-mode-image'
           -F='!@kie-tools/dev-deployment-base-image'
-          -F='!@kie-tools/dev-deployment-kogito-quarkus-blank-app'
+          -F='!@kie-tools/dev-deployment-kogito-quarkus-blank-app-image'
           -F='!@kie-tools/dev-deployment-dmn-form-webapp-image'
           -F='!@kie-tools/serverless-logic-web-tools-base-builder-image'
           -F='!@kie-tools/dashbuilder-viewer-image'
