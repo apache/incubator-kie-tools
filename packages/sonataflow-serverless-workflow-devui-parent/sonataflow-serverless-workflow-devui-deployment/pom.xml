@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.kie.kogito</groupId>
     <artifactId>sonataflow-serverless-workflow-devui-parent</artifactId>
-    <version>999-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>sonataflow-serverless-workflow-devui-deployment</artifactId>
@@ -69,6 +69,7 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-extension-spi</artifactId>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
 
     <!-- Undertow is needed so that the static resource serving can correctly locate CP resources from `META-INF/resources` of the application, as it would be normally expected.
@@ -102,6 +103,7 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-apps-ui-packages</artifactId>
+      <version>${version.org.kie.kogito}</version>
       <type>pom</type>
     </dependency>
   </dependencies>
@@ -110,18 +112,20 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler-plugin.version}</version>
         <configuration>
           <annotationProcessorPaths>
             <path>
               <groupId>io.quarkus</groupId>
               <artifactId>quarkus-extension-processor</artifactId>
-              <version>${version.io.quarkus}</version>
+              <version>${quarkus.platform.version}</version> 
             </path>
           </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
+        <version>${version.resources.plugin}</version>
         <executions>
           <execution>
             <id>copy-webapp</id>

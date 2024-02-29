@@ -30,6 +30,8 @@
   <packaging>pom</packaging>
 
   <properties>
+    <compiler-plugin.version>3.12.1</compiler-plugin.version>
+    <version.resources.plugin>3.2.0</version.resources.plugin>
     <java.module.name>org.kie.kogito.quarkus.swf.dev.ui</java.module.name>
   </properties>
 
@@ -37,6 +39,18 @@
     <module>sonataflow-serverless-workflow-devui-deployment</module>
     <module>sonataflow-serverless-workflow-devui</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${quarkus.platform.version}</version> 
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <pluginManagement>
