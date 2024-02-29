@@ -21,7 +21,7 @@ import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/a
 import { buildXmlHref } from "../../xml/xmlHrefs";
 import { State } from "../Store";
 
-export function computeDecisionServiceHrefsByDecisionHrefs({
+export function computeContainingDecisionServiceHrefsByDecisionHrefs({
   thisDmnsNamespace,
   drgElementsNamespace,
   drgElements,
