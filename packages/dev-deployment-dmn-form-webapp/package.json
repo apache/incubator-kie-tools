@@ -19,9 +19,7 @@
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "cross-env WEBPACK__sourceMaps=false node ./dev-webapp/start.js",
-    "test": "run-script-os",
-    "test:linux": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\"",
-    "test:win32:darwin": "echo 'Not supported'"
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\""
   },
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
@@ -69,7 +67,6 @@
     "node-polyfill-webpack-plugin": "^2.0.1",
     "process": "^0.11.10",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6",
     "ts-jest": "^26.5.6",
     "typescript": "^4.6.2",
     "webpack": "^5.88.2",
