@@ -138,7 +138,7 @@ jobs:
             podman system prune --all --force
           fi
           echo "Build @kie-tools/dev-deployment-base-image"
-          pnpm -F @kie-tools/dev-deployment-base-image... -F @kie-tools/dev-deployment-kogito-quarkus-blank-app --workspace-concurrency=1 build:prod
+          pnpm -F @kie-tools/dev-deployment-base-image... -F @kie-tools/dev-deployment-kogito-quarkus-blank-app... --workspace-concurrency=1 build:prod
 
       - name: "FULL → Build → dev-deployment-dmn-form-webapp-image"
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
