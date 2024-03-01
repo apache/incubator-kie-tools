@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { test } from "../../__fixtures__/base";
+import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Keyboard", () => {
   test.describe("Navigation", () => {
@@ -31,24 +31,27 @@ test.describe("Keyboard", () => {
     test("should correctly navigate the page using arrow keys", async ({ stories, page }) => {
       await stories.openTestScenarioTableDecision();
       await page.getByRole("cell", { name: "1" }).click();
-      await page.getByLabel("Test Scenario").locator("svg").click();
-      await page.getByLabel("Test Scenario").locator("svg").click();
-      await page.getByLabel("Test Scenario").locator("svg").click();
-      await page.getByRole("row", { name: "1", exact: true }).getByTestId("monaco-container").first().click();
-      await page.locator(".editable-cell").first().press("ArrowRight");
-      await page.locator("td:nth-child(3) > .editable-cell").first().press("ArrowRight");
-      await page.locator("td:nth-child(4) > .editable-cell").first().press("ArrowDown");
-      await page.locator(".\\31  > td:nth-child(4) > .editable-cell").press("ArrowLeft");
-      await page.locator(".\\31  > td:nth-child(3) > .editable-cell").press("ArrowDown");
-      await page.locator(".\\32  > td:nth-child(3) > .editable-cell").press("ArrowLeft");
-      await page.locator(".\\32  > td:nth-child(2) > .editable-cell").press("ArrowUp");
-      await page.locator(".\\31  > td:nth-child(2) > .editable-cell").press("ArrowRight");
-      await page.locator(".\\31  > td:nth-child(3) > .editable-cell").press("ArrowDown");
-      await page.locator(".\\32  > td:nth-child(3) > .editable-cell").press("ArrowDown");
-      await page.locator(".\\33  > td:nth-child(3) > .editable-cell").press("Enter");
+      await page.getByRole("cell", { name: "1" }).locator("div").nth(1).click();
+      await page.getByRole("cell", { name: "1" }).locator("div").nth(1).click();
+      await page.getByRole("cell", { name: "1" }).locator("div").nth(1).click();
+      await page.getByRole("row", { name: "1", exact: true }).click();
+      await page.getByRole("row", { name: "1", exact: true }).press("ArrowRight");
+      await page.getByRole("row", { name: "1", exact: true }).press("ArrowRight");
+      await page.getByRole("row", { name: "1", exact: true }).press("ArrowDown");
+      await page.getByRole("row", { name: "2", exact: true }).press("ArrowLeft");
+      await page.getByRole("row", { name: "1", exact: true }).press("ArrowDown");
+      await page.getByRole("row", { name: "2", exact: true }).press("ArrowLeft");
+      await page.getByRole("row", { name: "3", exact: true }).press("ArrowUp");
+      await page.getByRole("row", { name: "2", exact: true }).press("ArrowRight");
+      await page.getByRole("row", { name: "2", exact: true }).press("ArrowDown");
+      await page.getByRole("row", { name: "3", exact: true }).press("ArrowDown");
+      await page.getByRole("row", { name: "4", exact: true }).press("Enter");
       await page
         .getByLabel("Editor content;Press Alt+F1 for Accessibility Options.")
         .fill("This text should go in the 4th row, 2nd column");
+      await expect(page.getByLabel("Test Scenario").getByTestId("standalone-bee-table")).toHaveScreenshot(
+        "navigation-arrow-screenshot.png"
+      );
     });
   });
 });
