@@ -27,6 +27,7 @@
     <groupId>org.kie.kogito</groupId>
     <artifactId>sonataflow-serverless-workflow-devui-parent</artifactId>
     <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>sonataflow-serverless-workflow-devui-deployment</artifactId>
