@@ -28,12 +28,8 @@ test.describe("Empty Editor", () => {
     await page.locator("#asset-type-select").selectOption("DMN");
     await page.getByRole("button", { name: "Create" }).click();
     await page.getByLabel("Close drawer panel").click();
-    await expect(page.getByLabel("Test Scenario").getByTestId("standalone-bee-table")).toHaveScreenshot(
-      "empty-test-scenario-table.png"
-    );
+    await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("empty-test-scenario-table.png");
     await page.getByRole("tab", { name: "Background" }).click();
-    await expect(page.getByLabel("Background").getByTestId("standalone-bee-table")).toHaveScreenshot(
-      "empty-background-table.png"
-    );
+    await expect(page.getByLabel("Background")).toHaveScreenshot("empty-background-table.png");
   });
 });

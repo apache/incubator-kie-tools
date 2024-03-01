@@ -49,9 +49,7 @@ test.describe("Keyboard", () => {
       await page
         .getByLabel("Editor content;Press Alt+F1 for Accessibility Options.")
         .fill("This text should go in the 4th row, 2nd column");
-      await expect(page.getByLabel("Test Scenario").getByTestId("standalone-bee-table")).toHaveScreenshot(
-        "navigation-arrow-screenshot.png"
-      );
+      await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("navigation-arrow-screenshot.png");
     });
   });
 });
