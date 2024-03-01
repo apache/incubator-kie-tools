@@ -40,7 +40,7 @@ test.describe("Add edge - Information Requirement", () => {
     });
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
-      description: "",
+      description: "https://github.com/apache/incubator-kie-issues/issues/980",
     });
     await diagram.resetFocus();
     await palette.dragNewNode({
@@ -74,7 +74,7 @@ test.describe("Add edge - Information Requirement", () => {
     });
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
-      description: "",
+      description: "https://github.com/apache/incubator-kie-issues/issues/980",
     });
     await diagram.resetFocus();
     await palette.dragNewNode({

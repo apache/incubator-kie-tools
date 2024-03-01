@@ -32,7 +32,7 @@ test.describe("Add edge - Association", () => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
       test.info().annotations.push({
         type: TestAnnotations.WORKAROUND_DUE_TO,
-        description: "",
+        description: "https://github.com/apache/incubator-kie-issues/issues/980",
       });
       await diagram.resetFocus();
     });
@@ -83,11 +83,10 @@ test.describe("Add edge - Association", () => {
       nodes,
       edges,
     }) => {
-      // FIXME: Not implemented yet.
-      test.skip(true, "");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/981");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "",
+        description: "https://github.com/apache/incubator-kie-issues/issues/981",
       });
 
       await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 400 } });
@@ -174,7 +173,7 @@ test.describe("Add edge - Association", () => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
       test.info().annotations.push({
         type: TestAnnotations.WORKAROUND_DUE_TO,
-        description: "",
+        description: "https://github.com/apache/incubator-kie-issues/issues/980",
       });
       await diagram.resetFocus();
     });
@@ -290,11 +289,10 @@ test.describe("Add edge - Association", () => {
       nodes,
       edges,
     }) => {
-      // FIXME: Not implemented yet.
-      test.skip(true, "");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/982");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "",
+        description: "https://github.com/apache/incubator-kie-issues/issues/982",
       });
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
       await nodes.dragNewConnectedEdge({

@@ -33,7 +33,7 @@ test.describe("Add edge - Knowledge Requirement", () => {
       await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 }, thenRenameTo: "BKM - A" });
       test.info().annotations.push({
         type: TestAnnotations.WORKAROUND_DUE_TO,
-        description: "",
+        description: "https://github.com/apache/incubator-kie-issues/issues/980",
       });
       await diagram.resetFocus();
     });
@@ -82,7 +82,7 @@ test.describe("Add edge - Knowledge Requirement", () => {
       await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
       test.info().annotations.push({
         type: TestAnnotations.WORKAROUND_DUE_TO,
-        description: "",
+        description: "https://github.com/apache/incubator-kie-issues/issues/980",
       });
       await diagram.resetFocus();
     });

@@ -37,7 +37,7 @@ test.describe("Add edge - Authority Requirement", () => {
       });
       test.info().annotations.push({
         type: TestAnnotations.WORKAROUND_DUE_TO,
-        description: "",
+        description: "https://github.com/apache/incubator-kie-issues/issues/980",
       });
       await diagram.resetFocus();
     });
@@ -116,7 +116,7 @@ test.describe("Add edge - Authority Requirement", () => {
       });
       test.info().annotations.push({
         type: TestAnnotations.WORKAROUND_DUE_TO,
-        description: "",
+        description: "https://github.com/apache/incubator-kie-issues/issues/980",
       });
       await diagram.resetFocus();
     });
