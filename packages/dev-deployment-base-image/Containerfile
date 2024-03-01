@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Defaults to registry.access.redhat.com/ubi9/openjdk-11 (check env/index.js)
+# Defaults to registry.access.redhat.com/ubi9/openjdk-17 (check env/index.js)
 ARG BUILDER_IMAGE_ARG
 
 FROM --platform=linux/amd64 ${BUILDER_IMAGE_ARG}
