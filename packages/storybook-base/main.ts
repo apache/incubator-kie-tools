@@ -22,6 +22,9 @@ import { env } from "./env";
 const buildEnv: any = env;
 
 export const config: StorybookConfig = {
+  core: {
+    disableTelemetry: true,
+  },
   stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   framework: {
     name: "@storybook/react-webpack5",
