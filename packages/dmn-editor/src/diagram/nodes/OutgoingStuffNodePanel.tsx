@@ -57,7 +57,7 @@ export function OutgoingStuffNodePanel(props: {
   isVisible: boolean;
   nodeTypes: NodeType[];
   edgeTypes: EdgeType[];
-  nodeId: string;
+  nodeHref: string;
 }) {
   const style: React.CSSProperties = React.useMemo(
     () => ({
@@ -120,7 +120,7 @@ export function OutgoingStuffNodePanel(props: {
                 style={handleStyle}
                 position={RF.Position.Top}
                 title={getEdgeActionTitle(edgeType)}
-                data-testid={`#${props.nodeId}-add-${edgeType}`}
+                data-testid={`${props.nodeHref}-add-${edgeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
@@ -159,7 +159,7 @@ export function OutgoingStuffNodePanel(props: {
                 style={handleStyle}
                 position={RF.Position.Top}
                 title={getNodeActionTitle(nodeType)}
-                data-testid={`#${props.nodeId}-add-${nodeType}`}
+                data-testid={`${props.nodeHref}-add-${nodeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
