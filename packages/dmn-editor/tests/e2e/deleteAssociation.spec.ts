@@ -25,41 +25,39 @@ test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Delete edge", () => {
-  test.describe("association", async () => {
-    test.beforeEach(async ({ palette, nodes, edges }) => {
-      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
-      await nodes.dragNewConnectedNode({
-        from: DefaultNodeName.INPUT_DATA,
-        type: NodeType.TEXT_ANNOTATION,
-        targetPosition: { x: 100, y: 300 },
-      });
-
-      expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+test.describe("Delete edge - association", () => {
+  test.beforeEach(async ({ palette, nodes, edges }) => {
+    await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+    await nodes.dragNewConnectedNode({
+      from: DefaultNodeName.INPUT_DATA,
+      type: NodeType.TEXT_ANNOTATION,
+      targetPosition: { x: 100, y: 300 },
     });
 
-    test("should delete an association using the delete key", async ({ diagram, edges, nodes }) => {
-      await diagram.resetFocus();
-      await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
+    expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+  });
 
-      expect(
-        await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })
-      ).not.toBeAttached();
+  test("should delete an association using the delete key", async ({ diagram, edges, nodes }) => {
+    await diagram.resetFocus();
+    await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
 
-      await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
-      await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
-    });
+    expect(
+      await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })
+    ).not.toBeAttached();
 
-    test("should delete an association using the backspace key", async ({ diagram, edges, nodes }) => {
-      await diagram.resetFocus();
-      await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION, isBackspace: true });
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
+  });
 
-      expect(
-        await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })
-      ).not.toBeAttached();
+  test("should delete an association using the backspace key", async ({ diagram, edges, nodes }) => {
+    await diagram.resetFocus();
+    await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION, isBackspace: true });
 
-      await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
-      await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
-    });
+    expect(
+      await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })
+    ).not.toBeAttached();
+
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
   });
 });

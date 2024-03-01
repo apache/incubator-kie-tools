@@ -25,37 +25,35 @@ test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Delete edge", () => {
-  test.describe("information requirement", async () => {
-    test.beforeEach(async ({ palette, nodes, edges }) => {
-      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
-      await nodes.dragNewConnectedNode({
-        from: DefaultNodeName.INPUT_DATA,
-        type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 300 },
-      });
-
-      expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toBeAttached();
+test.describe("Delete edge - information requirement", () => {
+  test.beforeEach(async ({ palette, nodes, edges }) => {
+    await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+    await nodes.dragNewConnectedNode({
+      from: DefaultNodeName.INPUT_DATA,
+      type: NodeType.DECISION,
+      targetPosition: { x: 100, y: 300 },
     });
 
-    test("should delete an information requirement using the delete key", async ({ diagram, edges, nodes }) => {
-      await diagram.resetFocus();
-      await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION });
+    expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toBeAttached();
+  });
 
-      expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).not.toBeAttached();
+  test("should delete an information requirement using the delete key", async ({ diagram, edges, nodes }) => {
+    await diagram.resetFocus();
+    await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION });
 
-      await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
-      await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
-    });
+    expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).not.toBeAttached();
 
-    test("should delete an information requirement using the backspace key", async ({ diagram, edges, nodes }) => {
-      await diagram.resetFocus();
-      await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION, isBackspace: true });
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
+  });
 
-      expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).not.toBeAttached();
+  test("should delete an information requirement using the backspace key", async ({ diagram, edges, nodes }) => {
+    await diagram.resetFocus();
+    await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION, isBackspace: true });
 
-      await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
-      await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
-    });
+    expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).not.toBeAttached();
+
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
   });
 });

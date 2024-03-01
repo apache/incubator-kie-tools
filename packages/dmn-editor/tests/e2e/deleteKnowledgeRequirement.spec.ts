@@ -25,37 +25,35 @@ test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Delete edge", () => {
-  test.describe("knowledge requirement", async () => {
-    test.beforeEach(async ({ palette, nodes, edges }) => {
-      await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
-      await nodes.dragNewConnectedNode({
-        from: DefaultNodeName.BKM,
-        type: NodeType.DECISION,
-        targetPosition: { x: 100, y: 300 },
-      });
-
-      expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toBeAttached();
+test.describe("Delete edge - knowledge requirement", () => {
+  test.beforeEach(async ({ palette, nodes, edges }) => {
+    await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
+    await nodes.dragNewConnectedNode({
+      from: DefaultNodeName.BKM,
+      type: NodeType.DECISION,
+      targetPosition: { x: 100, y: 300 },
     });
 
-    test("should delete a knowledge requirement using the delete key", async ({ diagram, edges, nodes }) => {
-      await diagram.resetFocus();
-      await edges.delete({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
+    expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toBeAttached();
+  });
 
-      expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).not.toBeAttached();
+  test("should delete a knowledge requirement using the delete key", async ({ diagram, edges, nodes }) => {
+    await diagram.resetFocus();
+    await edges.delete({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
 
-      await expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
-      await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
-    });
+    expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).not.toBeAttached();
 
-    test("should delete a knowledge requirement using the backspace key", async ({ diagram, edges, nodes }) => {
-      await diagram.resetFocus();
-      await edges.delete({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, isBackspace: true });
+    await expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
+  });
 
-      expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).not.toBeAttached();
+  test("should delete a knowledge requirement using the backspace key", async ({ diagram, edges, nodes }) => {
+    await diagram.resetFocus();
+    await edges.delete({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, isBackspace: true });
 
-      await expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
-      await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
-    });
+    expect(await edges.get({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).not.toBeAttached();
+
+    await expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
   });
 });

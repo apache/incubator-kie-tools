@@ -25,43 +25,39 @@ test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Delete edge", () => {
-  test.describe("authority requirement", async () => {
-    test.beforeEach(async ({ palette, nodes, edges }) => {
-      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
-      await nodes.dragNewConnectedNode({
-        from: DefaultNodeName.INPUT_DATA,
-        type: NodeType.KNOWLEDGE_SOURCE,
-        targetPosition: { x: 100, y: 300 },
-      });
-
-      expect(
-        await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
-      ).toBeAttached();
+test.describe("Delete edge - authority requirement", () => {
+  test.beforeEach(async ({ palette, nodes, edges }) => {
+    await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+    await nodes.dragNewConnectedNode({
+      from: DefaultNodeName.INPUT_DATA,
+      type: NodeType.KNOWLEDGE_SOURCE,
+      targetPosition: { x: 100, y: 300 },
     });
 
-    test("should delete an authority requirement using the delete key", async ({ diagram, edges, nodes }) => {
-      await diagram.resetFocus();
-      await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
+    expect(await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+  });
 
-      expect(
-        await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
-      ).not.toBeAttached();
+  test("should delete an authority requirement using the delete key", async ({ diagram, edges, nodes }) => {
+    await diagram.resetFocus();
+    await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
 
-      await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
-      await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
-    });
+    expect(
+      await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
+    ).not.toBeAttached();
 
-    test("should delete an authority requirement using the backspace key", async ({ diagram, edges, nodes }) => {
-      await diagram.resetFocus();
-      await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE, isBackspace: true });
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
+  });
 
-      expect(
-        await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
-      ).not.toBeAttached();
+  test("should delete an authority requirement using the backspace key", async ({ diagram, edges, nodes }) => {
+    await diagram.resetFocus();
+    await edges.delete({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE, isBackspace: true });
 
-      await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
-      await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
-    });
+    expect(
+      await edges.get({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })
+    ).not.toBeAttached();
+
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
+    await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
   });
 });
