@@ -58,7 +58,7 @@ export class Nodes {
   }
 
   public async getId(args: { name: string }): Promise<string> {
-    return (await this.get({ name: args.name }).getAttribute("data-nodeid")) ?? "";
+    return (await this.get({ name: args.name }).getAttribute("data-nodehref")) ?? "";
   }
 
   public async delete(args: { name: string }) {

@@ -242,7 +242,7 @@ export const InputDataNode = React.memo(
           className={`kie-dmn-editor--node ${selectedAlternativeClass}`}
           ref={ref}
           tabIndex={-1}
-          data-nodeid={id}
+          data-nodehref={id}
           data-nodelabel={inputData["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
@@ -430,7 +430,7 @@ export const DecisionNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-nodeid={id}
+          data-nodehref={id}
           data-nodelabel={decision["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
@@ -567,7 +567,7 @@ export const BkmNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-nodeid={id}
+          data-nodehref={id}
           data-nodelabel={bkm["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
@@ -693,7 +693,7 @@ export const KnowledgeSourceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-nodeid={id}
+          data-nodehref={id}
           data-nodelabel={knowledgeSource["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
@@ -809,7 +809,7 @@ export const TextAnnotationNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-nodeid={id}
+          data-nodehref={id}
           data-nodelabel={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
         >
           {/* {`render count: ${renderCount.current}`}
@@ -1006,7 +1006,7 @@ export const DecisionServiceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-nodeid={id}
+          data-nodehref={id}
           data-nodelabel={decisionService["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
@@ -1151,7 +1151,7 @@ export const GroupNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          data-nodeid={id}
+          data-nodehref={id}
           data-nodelabel={group["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
@@ -1233,7 +1233,7 @@ export const UnknownNode = React.memo(
           ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--unknown-node ${className}`}
           tabIndex={-1}
-          data-nodeid={id}
+          data-nodehref={id}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
