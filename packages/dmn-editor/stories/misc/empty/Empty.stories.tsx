@@ -23,7 +23,7 @@ import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15_SPEC } from "../../../src/Dmn15Spec";
-import { DmnEditorWrapper } from "../../dmnEditorStoriesWrapper";
+import { DmnEditorWrapper, StorybookDmnEditorProps } from "../../dmnEditorStoriesWrapper";
 import { DmnEditor, DmnEditorProps } from "../../../src/DmnEditor";
 
 export const generateEmptyDmn15 = () => `<?xml version="1.0" encoding="UTF-8"?>
@@ -42,12 +42,15 @@ const meta: Meta<DmnEditorProps> = {
 };
 
 export default meta;
-type Story = StoryObj<DmnEditorProps>;
+type Story = StoryObj<StorybookDmnEditorProps>;
+
+const marshaller = getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" });
+const model = marshaller.parser.parse();
 
 export const Empty: Story = {
   render: (args) => DmnEditorWrapper(),
   args: {
-    model: getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" }).parser.parse(),
+    model: model,
     originalVersion: "1.5",
     evaluationResults: {},
     externalContextDescription: "",
@@ -55,5 +58,6 @@ export const Empty: Story = {
     externalModelsByNamespace: {},
     issueTrackerHref: "",
     validationMessages: {},
+    xml: marshaller.builder.build(model),
   },
 };

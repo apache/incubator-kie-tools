@@ -21,14 +21,17 @@ import * as React from "react";
 import { useState, useRef, useMemo, useEffect } from "react";
 import { useArgs } from "@storybook/preview-api";
 import { DmnEditor, DmnEditorProps, DmnEditorRef, EvaluationResults, ValidationMessages } from "../src/DmnEditor";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { diff } from "deep-object-diff";
+import { generateEmptyDmn15 } from "./misc/empty/Empty.stories";
 
 export const evaluationResults: EvaluationResults = {};
 export const validationMessages: ValidationMessages = {};
 
-export function DmnEditorWrapper(props?: Partial<DmnEditorProps>) {
-  const [args, updateArgs] = useArgs<DmnEditorProps>();
+export type StorybookDmnEditorProps = DmnEditorProps & { xml: string };
+
+export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
+  const [args, updateArgs] = useArgs<StorybookDmnEditorProps>();
   const argsCopy = useRef(args);
   const ref = useRef<DmnEditorRef>(null);
   const [modelArgs, setModelArgs] = useState<DmnLatestModel>(args.model);
@@ -41,7 +44,11 @@ export function DmnEditorWrapper(props?: Partial<DmnEditorProps>) {
 
   useEffect(() => {
     if (Object.keys(diff(argsCopy.current.model, model)).length !== 0) {
-      updateArgs({ ...argsCopy.current, model: model });
+      updateArgs({
+        ...argsCopy.current,
+        model: model,
+        xml: getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" }).builder.build(model),
+      });
     }
   }, [updateArgs, model]);
 
