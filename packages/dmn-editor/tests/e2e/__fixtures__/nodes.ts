@@ -71,43 +71,6 @@ export class Nodes {
     await this.diagram.get().press("Delete");
   }
 
-  public async rename(args: { current: string; new: string }) {
-    await this.get({ name: args.current }).getByRole("textbox").nth(0).fill(args.new);
-    await this.diagram.get().press("Enter");
-  }
-
-  public async dragNewConnectedNode(args: {
-    type: NodeType;
-    from: string;
-    targetPosition: { x: number; y: number };
-    thenRenameTo?: string;
-  }) {
-    await this.hover({ name: args.from, position: NodePosition.TOP });
-    const node = this.get({ name: args.from });
-    const { addNodeTitle, nodeName } = this.getNewConnectedNodeProperties(args.type);
-
-    await node.getByTitle(addNodeTitle).dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-    await this.waitForNodeToBeFocused({ name: nodeName });
-    if (args.thenRenameTo) {
-      await this.rename({ current: nodeName, new: args.thenRenameTo });
-    }
-  }
-
-  private getNewConnectedNodeProperties(type: NodeType) {
-    switch (type) {
-      case NodeType.DECISION:
-        return { addNodeTitle: "Add Decision node", nodeName: DefaultNodeName.DECISION };
-      case NodeType.KNOWLEDGE_SOURCE:
-        return { addNodeTitle: "Add Knowledge Source node", nodeName: DefaultNodeName.KNOWLEDGE_SOURCE };
-      case NodeType.BKM:
-        return { addNodeTitle: "Add BKM node", nodeName: DefaultNodeName.BKM };
-      case NodeType.TEXT_ANNOTATION:
-        return { addNodeTitle: "Add Text Annotation node", nodeName: DefaultNodeName.TEXT_ANNOTATION };
-      default:
-        throw new Error("Invalid type");
-    }
-  }
-
   public async dragNewConnectedEdge(args: { type: EdgeType; from: string; to: string; position?: NodePosition }) {
     await this.select({ name: args.from, position: NodePosition.TOP });
 
@@ -131,6 +94,23 @@ export class Nodes {
     }
   }
 
+  public async dragNewConnectedNode(args: {
+    type: NodeType;
+    from: string;
+    targetPosition: { x: number; y: number };
+    thenRenameTo?: string;
+  }) {
+    await this.hover({ name: args.from, position: NodePosition.TOP });
+    const node = this.get({ name: args.from });
+    const { addNodeTitle, nodeName } = this.getNewConnectedNodeProperties(args.type);
+
+    await node.getByTitle(addNodeTitle).dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+    await this.waitForNodeToBeFocused({ name: nodeName });
+    if (args.thenRenameTo) {
+      await this.rename({ current: nodeName, new: args.thenRenameTo });
+    }
+  }
+
   public async hover(args: { name: string; position?: NodePosition }) {
     const node = this.get({ name: args.name });
 
@@ -140,6 +120,17 @@ export class Nodes {
         : undefined;
 
     await node.hover({ position });
+  }
+
+  public async move(args: { name: string; targetPosition: { x: number; y: number } }) {
+    await this.get({ name: args.name }).dragTo(this.diagram.get(), {
+      targetPosition: args.targetPosition,
+    });
+  }
+
+  public async rename(args: { current: string; new: string }) {
+    await this.get({ name: args.current }).getByRole("textbox").nth(0).fill(args.new);
+    await this.diagram.get().press("Enter");
   }
 
   public async select(args: { name: string; position?: NodePosition }) {
@@ -189,6 +180,21 @@ export class Nodes {
       (nodeName) => (document.activeElement as HTMLInputElement)?.value === nodeName,
       args.name
     );
+  }
+
+  private getNewConnectedNodeProperties(type: NodeType) {
+    switch (type) {
+      case NodeType.DECISION:
+        return { addNodeTitle: "Add Decision node", nodeName: DefaultNodeName.DECISION };
+      case NodeType.KNOWLEDGE_SOURCE:
+        return { addNodeTitle: "Add Knowledge Source node", nodeName: DefaultNodeName.KNOWLEDGE_SOURCE };
+      case NodeType.BKM:
+        return { addNodeTitle: "Add BKM node", nodeName: DefaultNodeName.BKM };
+      case NodeType.TEXT_ANNOTATION:
+        return { addNodeTitle: "Add Text Annotation node", nodeName: DefaultNodeName.TEXT_ANNOTATION };
+      default:
+        throw new Error("Invalid type");
+    }
   }
 
   private async getPositionalNodeHandleCoordinates(args: { node: Locator; position: NodePosition }) {

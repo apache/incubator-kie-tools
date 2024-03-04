@@ -41,8 +41,7 @@ test.describe("Add edge waypoint - Knowledge Requirement", () => {
     edges,
   }) => {
     await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
-
-    await nodes.get({ name: DefaultNodeName.DECISION }).dragTo(diagram.get(), { targetPosition: { x: 300, y: 300 } });
+    await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
     await expect(diagram.get()).toHaveScreenshot("add-knowledge-requirement-waypoint-and-not-move-it.png");
   });
@@ -53,15 +52,12 @@ test.describe("Add edge waypoint - Knowledge Requirement", () => {
     edges,
   }) => {
     await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
-    const boundingBox = await nodes.get({ name: DefaultNodeName.DECISION }).boundingBox();
-    await nodes
-      .get({ name: DefaultNodeName.DECISION })
-      .dragTo(diagram.get(), { targetPosition: { x: 100 + (boundingBox?.width ?? 0) / 2, y: 500 } });
+    await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 200, y: 500 } });
 
     await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
-    await nodes.get({ name: DefaultNodeName.DECISION }).dragTo(diagram.get(), { targetPosition: { x: 500, y: 500 } });
-    await nodes.get({ name: DefaultNodeName.BKM }).dragTo(diagram.get(), { targetPosition: { x: 500, y: 100 } });
+    await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 500, y: 500 } });
+    await nodes.move({ name: DefaultNodeName.BKM, targetPosition: { x: 500, y: 100 } });
 
-    await expect(diagram.get()).toHaveScreenshot("add-knowledge-requirement-waypoint-and-not-move-it.png");
+    await expect(diagram.get()).toHaveScreenshot("add-multiple-knowledge-requirement-waypoints-and-not-move-them.png");
   });
 });

@@ -41,10 +41,7 @@ test.describe("Add edge waypoint - Association", () => {
     edges,
   }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-
-    await nodes
-      .get({ name: DefaultNodeName.TEXT_ANNOTATION })
-      .dragTo(diagram.get(), { targetPosition: { x: 500, y: 300 } });
+    await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 500, y: 300 } });
 
     await expect(diagram.get()).toHaveScreenshot("add-association-waypoint-and-not-move-it.png");
   });
@@ -55,16 +52,11 @@ test.describe("Add edge waypoint - Association", () => {
     edges,
   }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-    const boundingBox = await nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION }).boundingBox();
-    await nodes
-      .get({ name: DefaultNodeName.TEXT_ANNOTATION })
-      .dragTo(diagram.get(), { targetPosition: { x: 100 + (boundingBox?.width ?? 0) / 2, y: 500 } });
+    await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 200, y: 500 } });
 
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-    await nodes
-      .get({ name: DefaultNodeName.TEXT_ANNOTATION })
-      .dragTo(diagram.get(), { targetPosition: { x: 500, y: 500 } });
-    await nodes.get({ name: DefaultNodeName.INPUT_DATA }).dragTo(diagram.get(), { targetPosition: { x: 500, y: 100 } });
+    await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 500, y: 500 } });
+    await nodes.move({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 500, y: 100 } });
 
     await expect(diagram.get()).toHaveScreenshot("add-multiple-association-waypoint-and-not-move-them.png");
   });
