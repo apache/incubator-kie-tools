@@ -32,7 +32,7 @@ test.describe("Add node - BKM", () => {
         await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-bkm-node-from-palette.png");
       });
     });
 
@@ -53,7 +53,7 @@ test.describe("Add node - BKM", () => {
         expect(await edges.getType({ from: "BKM - A", to: DefaultNodeName.BKM })).toEqual(
           EdgeType.KNOWLEDGE_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-bkm-node-from-bkm-node.png");
       });
 
       test("should add connected BKM node from Decision Service node", async ({ diagram, palette, nodes, edges }) => {
@@ -71,7 +71,7 @@ test.describe("Add node - BKM", () => {
         expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })).toEqual(
           EdgeType.KNOWLEDGE_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-bkm-node-from-decision-service-node.png");
       });
 
       test("should add connected BKM node from Knowledge Source node", async ({ diagram, palette, nodes, edges }) => {
@@ -89,7 +89,7 @@ test.describe("Add node - BKM", () => {
         expect(await edges.getType({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.BKM })).toEqual(
           EdgeType.AUTHORITY_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-bkm-node-from-knowledge-source-node.png");
       });
     });
   });

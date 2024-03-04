@@ -46,7 +46,7 @@ test.describe("Add edge waypoint - Association", () => {
       .get({ name: DefaultNodeName.TEXT_ANNOTATION })
       .dragTo(diagram.get(), { targetPosition: { x: 500, y: 300 } });
 
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("add-association-waypoint-and-not-move-it.png");
   });
 
   test("should add multiple waypoints to Association edge and should not move when the ending nodes are moved", async ({
@@ -66,6 +66,6 @@ test.describe("Add edge waypoint - Association", () => {
       .dragTo(diagram.get(), { targetPosition: { x: 500, y: 500 } });
     await nodes.get({ name: DefaultNodeName.INPUT_DATA }).dragTo(diagram.get(), { targetPosition: { x: 500, y: 100 } });
 
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("add-multiple-association-waypoint-and-not-move-them.png");
   });
 });

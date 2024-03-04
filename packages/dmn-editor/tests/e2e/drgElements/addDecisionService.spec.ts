@@ -31,7 +31,7 @@ test.describe("Add node - Decision Service", () => {
         await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toBeAttached();
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-decision-service-node-from-palette.png");
       });
     });
   });

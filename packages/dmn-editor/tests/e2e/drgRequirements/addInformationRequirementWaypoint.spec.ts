@@ -44,7 +44,7 @@ test.describe("Add edge waypoint - Information Requirement", () => {
 
     await nodes.get({ name: DefaultNodeName.DECISION }).dragTo(diagram.get(), { targetPosition: { x: 300, y: 300 } });
 
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("add-information-requirement-waypoint-and-not-move-it.png");
   });
 
   test("should add multiple waypoints to Information Requirement edge and should not move when the ending nodes are moved", async ({
@@ -62,6 +62,6 @@ test.describe("Add edge waypoint - Information Requirement", () => {
     await nodes.get({ name: DefaultNodeName.DECISION }).dragTo(diagram.get(), { targetPosition: { x: 500, y: 500 } });
     await nodes.get({ name: DefaultNodeName.INPUT_DATA }).dragTo(diagram.get(), { targetPosition: { x: 500, y: 100 } });
 
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("add-information-requirement-waypoint-and-not-move-it.png");
   });
 });

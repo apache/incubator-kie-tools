@@ -59,7 +59,9 @@ test.describe("Add edge - Authority Requirement", () => {
       expect(await edges.getType({ from: "Knowledge Source - A", to: DefaultNodeName.DECISION })).toEqual(
         EdgeType.AUTHORITY_REQUIREMENT
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot(
+        "add-authority-requirement-edge-from-knowledge-source-node-to-decision-node.png"
+      );
     });
 
     test("should add an Authority Requirement edge from Knowledge Source node to BKM node", async ({
@@ -80,7 +82,9 @@ test.describe("Add edge - Authority Requirement", () => {
       expect(await edges.getType({ from: "Knowledge Source - A", to: DefaultNodeName.BKM })).toEqual(
         EdgeType.AUTHORITY_REQUIREMENT
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot(
+        "add-authority-requirement-edge-from-knowledge-source-node-to-bkm-node.png"
+      );
     });
 
     test("should add an Authority Requirement edge from Knowledge Source node to Knowledge Source node", async ({
@@ -104,7 +108,9 @@ test.describe("Add edge - Authority Requirement", () => {
       expect(await edges.getType({ from: "Knowledge Source - A", to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
         EdgeType.AUTHORITY_REQUIREMENT
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot(
+        "add-authority-requirement-edge-from-knowledge-source-node-to-knowledge-source-node.png"
+      );
     });
   });
 
@@ -138,7 +144,9 @@ test.describe("Add edge - Authority Requirement", () => {
       expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
         EdgeType.AUTHORITY_REQUIREMENT
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot(
+        "add-authority-requirement-edge-from-decision-node-to-knowledge-source-node.png"
+      );
     });
 
     test("should add an Authority Requirement edge from Input Data node to Knowledge Source node", async ({
@@ -164,7 +172,9 @@ test.describe("Add edge - Authority Requirement", () => {
       expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
         EdgeType.AUTHORITY_REQUIREMENT
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot(
+        "add-authority-requirement-edge-from-input-data-node-to-knowledge-source-node.png"
+      );
     });
   });
 });

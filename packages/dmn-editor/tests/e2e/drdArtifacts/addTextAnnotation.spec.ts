@@ -32,7 +32,7 @@ test.describe("Add node - Text Annotation", () => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
 
       expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-text-annotation-node-from-palette.png");
     });
   });
 
@@ -57,7 +57,7 @@ test.describe("Add node - Text Annotation", () => {
       expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-text-annotation-from-input-data.png");
     });
 
     test("should add connected Text Annotation node from Decision node", async ({ diagram, palette, nodes, edges }) => {
@@ -75,7 +75,7 @@ test.describe("Add node - Text Annotation", () => {
       expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-text-annotation-from-decision.png");
     });
 
     test("should add connected Text Annotation node from BKM node", async ({ diagram, palette, nodes, edges }) => {
@@ -93,7 +93,7 @@ test.describe("Add node - Text Annotation", () => {
       expect(await edges.getType({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-text-annotation-from-bkm.png");
     });
 
     test("should add connected Text Annotation node from Decision Service node", async ({
@@ -118,7 +118,7 @@ test.describe("Add node - Text Annotation", () => {
       expect(
         await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.TEXT_ANNOTATION })
       ).toEqual(EdgeType.ASSOCIATION);
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-text-annotation-from-decision-service.png");
     });
 
     test("should add connected Text Annotation node from Knowledge Source node", async ({
@@ -149,7 +149,7 @@ test.describe("Add node - Text Annotation", () => {
       expect(
         await edges.getType({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.TEXT_ANNOTATION })
       ).toEqual(EdgeType.ASSOCIATION);
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-text-annotation-from-knowledge-source.png");
     });
 
     test("should add connected Text Annotation node from Group node", async ({ diagram, palette, nodes, edges }) => {
@@ -167,7 +167,7 @@ test.describe("Add node - Text Annotation", () => {
       expect(await edges.getType({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-text-annotation-from-group.png");
     });
   });
 });

@@ -45,7 +45,7 @@ export class Palette {
       case NodeType.KNOWLEDGE_SOURCE:
         return { nodeTitle: "Knowledge Source", nodeName: DefaultNodeName.KNOWLEDGE_SOURCE };
       case NodeType.BKM:
-        return { nodeTitle: "BKM", nodeName: DefaultNodeName.BKM };
+        return { nodeTitle: "Business Knowledge Model", nodeName: DefaultNodeName.BKM };
       case NodeType.DECISION_SERVICE:
         return { nodeTitle: "Decision Service", nodeName: DefaultNodeName.DECISION_SERVICE };
       case NodeType.GROUP:

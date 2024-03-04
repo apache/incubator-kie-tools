@@ -55,7 +55,7 @@ test.describe("Add edge - Knowledge Requirement", () => {
       expect(await edges.getType({ from: "BKM - A", to: DefaultNodeName.DECISION })).toEqual(
         EdgeType.KNOWLEDGE_REQUIREMENT
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-knowledge-requirement-edge-from-bkm-node-to-decision-node.png");
     });
 
     test("should add a Knowledge Requirement edge from BKM node to BKM node", async ({
@@ -73,7 +73,7 @@ test.describe("Add edge - Knowledge Requirement", () => {
 
       expect(await edges.get({ from: "BKM - A", to: DefaultNodeName.BKM })).toBeAttached();
       expect(await edges.getType({ from: "BKM - A", to: DefaultNodeName.BKM })).toEqual(EdgeType.KNOWLEDGE_REQUIREMENT);
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-knowledge-requirement-edge-from-bkm-node-to-bkm-node.png");
     });
   });
 
@@ -104,7 +104,9 @@ test.describe("Add edge - Knowledge Requirement", () => {
       expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.DECISION })).toEqual(
         EdgeType.KNOWLEDGE_REQUIREMENT
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot(
+        "add-knowledge-requirement-edge-from-decision-service-node-to-decision-node.png"
+      );
     });
 
     test("should add a Knowledge Requirement edge from Decision Service node to BKM node", async ({
@@ -124,7 +126,9 @@ test.describe("Add edge - Knowledge Requirement", () => {
       expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.BKM })).toEqual(
         EdgeType.KNOWLEDGE_REQUIREMENT
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot(
+        "add-knowledge-requirement-edge-from-decision-service-node-to-bkm-node.png"
+      );
     });
   });
 });

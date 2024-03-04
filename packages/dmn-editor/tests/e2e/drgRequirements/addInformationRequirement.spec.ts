@@ -56,7 +56,9 @@ test.describe("Add edge - Information Requirement", () => {
     expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toEqual(
       EdgeType.INFORMATION_REQUIREMENT
     );
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot(
+      "add-information-requirement-edge-from-input-data-node-to-decision-node.png"
+    );
   });
 
   test("should add an Information Requirement edge from Decision node to Decision node", async ({
@@ -90,6 +92,8 @@ test.describe("Add edge - Information Requirement", () => {
     expect(await edges.getType({ from: "Decision - A", to: DefaultNodeName.DECISION })).toEqual(
       EdgeType.INFORMATION_REQUIREMENT
     );
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot(
+      "add-information-requirement-edge-from-decision-node-to-decision-node.png"
+    );
   });
 });

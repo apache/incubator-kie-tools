@@ -30,7 +30,7 @@ test.describe("Add node - Group", () => {
       await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
 
       expect(nodes.get({ name: DefaultNodeName.GROUP })).toBeAttached();
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-group-node-from-palette.png");
     });
   });
 });

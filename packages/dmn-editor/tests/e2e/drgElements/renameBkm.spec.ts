@@ -30,6 +30,6 @@ test.describe("Rename - BKM", () => {
     await nodes.rename({ current: DefaultNodeName.BKM, new: "Renamed BKM" });
 
     await expect(nodes.get({ name: "Renamed BKM" })).toBeAttached();
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("rename-bkm-node-from-diagram.png");
   });
 });

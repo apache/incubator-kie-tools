@@ -30,6 +30,6 @@ test.describe("Rename - Knowledge Source", () => {
     await nodes.rename({ current: DefaultNodeName.KNOWLEDGE_SOURCE, new: "Renamed Knowledge Source" });
 
     await expect(nodes.get({ name: "Renamed Knowledge Source" })).toBeAttached();
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("rename-knowledge-source-node-from-diagram.png");
   });
 });

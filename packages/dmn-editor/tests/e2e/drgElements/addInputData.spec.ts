@@ -31,7 +31,7 @@ test.describe("Add node - Input Data", () => {
         await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-input-data-node-from-palette.png");
       });
     });
   });

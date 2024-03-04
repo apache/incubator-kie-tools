@@ -35,7 +35,7 @@ test.describe("Add edge waypoint - Authority Requirement", () => {
     });
   });
 
-  test("should add single waypoint to Authoriry Requirement and should not move when the ending node is moved", async ({
+  test("should add single waypoint to Authority Requirement and should not move when the ending node is moved", async ({
     diagram,
     nodes,
     edges,
@@ -46,10 +46,10 @@ test.describe("Add edge waypoint - Authority Requirement", () => {
       .get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })
       .dragTo(diagram.get(), { targetPosition: { x: 300, y: 300 } });
 
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("add-authority-requirement-waypoint-and-not-move-it.png");
   });
 
-  test("should add multiple waypoints to Authoriry Requirement and should not move when the ending nodes are moved", async ({
+  test("should add multiple waypoints to Authority Requirement and should not move when the ending nodes are moved", async ({
     diagram,
     nodes,
     edges,
@@ -66,6 +66,6 @@ test.describe("Add edge waypoint - Authority Requirement", () => {
       .dragTo(diagram.get(), { targetPosition: { x: 500, y: 500 } });
     await nodes.get({ name: DefaultNodeName.INPUT_DATA }).dragTo(diagram.get(), { targetPosition: { x: 500, y: 100 } });
 
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("add-authority-requirement-waypoint-and-not-move-it.png");
   });
 });

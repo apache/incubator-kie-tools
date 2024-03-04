@@ -32,7 +32,7 @@ test.describe("Add node - Knowledge Source", () => {
         await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-knowledge-source-node-from-palette.png");
       });
     });
 
@@ -59,7 +59,7 @@ test.describe("Add node - Knowledge Source", () => {
         expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
           EdgeType.AUTHORITY_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-knowledge-source-node-from-input-data-node.png");
       });
 
       test("should add connected Knowledge Source node from Decision node", async ({
@@ -84,7 +84,7 @@ test.describe("Add node - Knowledge Source", () => {
         expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
           EdgeType.AUTHORITY_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-knowledge-source-node-from-decision-node.png");
       });
 
       test("should add connected Knowledge Source node from Knowledge Source node", async ({
@@ -108,7 +108,7 @@ test.describe("Add node - Knowledge Source", () => {
         expect(await edges.getType({ from: "Knowledge Source - A", to: DefaultNodeName.KNOWLEDGE_SOURCE })).toEqual(
           EdgeType.AUTHORITY_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-knowledge-source-node-from-knowledge-source-node.png");
       });
     });
   });

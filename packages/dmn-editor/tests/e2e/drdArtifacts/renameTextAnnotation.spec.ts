@@ -30,6 +30,6 @@ test.describe("Rename - Text Annotation", () => {
     await nodes.rename({ current: DefaultNodeName.TEXT_ANNOTATION, new: "Renamed Text Annotation" });
 
     await expect(nodes.get({ name: "Renamed Text Annotation" })).toBeAttached();
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("rename-text-annotation-node-from-diagram.png");
   });
 });

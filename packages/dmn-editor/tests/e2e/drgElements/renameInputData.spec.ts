@@ -30,6 +30,6 @@ test.describe("Rename - Input Data", () => {
     await nodes.rename({ current: DefaultNodeName.INPUT_DATA, new: "Renamed Input Data" });
 
     await expect(nodes.get({ name: "Renamed Input Data" })).toBeAttached();
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("rename-input-data-node-from-diagram.png");
   });
 });

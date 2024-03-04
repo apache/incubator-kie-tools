@@ -30,6 +30,6 @@ test.describe("Rename - Group", () => {
     await nodes.rename({ current: DefaultNodeName.GROUP, new: "Renamed Group" });
 
     await expect(nodes.get({ name: "Renamed Group" })).toBeAttached();
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("rename-group-node-from-diagram.png");
   });
 });

@@ -32,7 +32,7 @@ test.describe("Add node - Decision", () => {
         await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-palette.png");
       });
     });
 
@@ -52,7 +52,7 @@ test.describe("Add node - Decision", () => {
         expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION })).toEqual(
           EdgeType.INFORMATION_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-input-data-node.png");
       });
 
       test("should add connected Decision node from Decision node", async ({ diagram, palette, nodes, edges }) => {
@@ -71,7 +71,7 @@ test.describe("Add node - Decision", () => {
         expect(await edges.getType({ from: "Decision - A", to: DefaultNodeName.DECISION })).toEqual(
           EdgeType.INFORMATION_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-decision-node.png");
       });
 
       test("should add connected Decision node from BKM node", async ({ diagram, palette, nodes, edges }) => {
@@ -89,7 +89,7 @@ test.describe("Add node - Decision", () => {
         expect(await edges.getType({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION })).toEqual(
           EdgeType.KNOWLEDGE_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-bkm-node.png");
       });
 
       test("should add connected Decision node from Decision Service node", async ({
@@ -114,7 +114,7 @@ test.describe("Add node - Decision", () => {
         expect(await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.DECISION })).toEqual(
           EdgeType.KNOWLEDGE_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-decision-service-node.png");
       });
 
       test("should add connected Decision node from Knowledge Source node", async ({
@@ -139,7 +139,7 @@ test.describe("Add node - Decision", () => {
         expect(await edges.getType({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.DECISION })).toEqual(
           EdgeType.AUTHORITY_REQUIREMENT
         );
-        await expect(diagram.get()).toHaveScreenshot();
+        await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-knowledge-source-node.png");
       });
     });
   });

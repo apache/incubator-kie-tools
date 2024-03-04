@@ -30,6 +30,6 @@ test.describe("Rename - Decision Service", () => {
     await nodes.rename({ current: DefaultNodeName.DECISION_SERVICE, new: "Renamed Decision Service" });
 
     await expect(nodes.get({ name: "Renamed Decision Service" })).toBeAttached();
-    await expect(diagram.get()).toHaveScreenshot();
+    await expect(diagram.get()).toHaveScreenshot("rename-decision-service-node-from-diagram.png");
   });
 });
