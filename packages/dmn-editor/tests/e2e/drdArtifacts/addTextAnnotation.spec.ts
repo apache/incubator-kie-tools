@@ -29,9 +29,9 @@ test.beforeEach(async ({ editor }) => {
 test.describe("Add node - Text Annotation", () => {
   test.describe("add from the palette", () => {
     test("should add Text Annotation node from palette", async ({ palette, nodes, diagram }) => {
-      await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
 
-      expect(nodes.get({ name: DefaultNodeName.GROUP })).toBeAttached();
+      expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toBeAttached();
       await expect(diagram.get()).toHaveScreenshot();
     });
   });

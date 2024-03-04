@@ -34,9 +34,8 @@ test.describe("Add edge - Information Requirement", () => {
     edges,
   }) => {
     await palette.dragNewNode({
-      type: NodeType.DECISION,
+      type: NodeType.INPUT_DATA,
       targetPosition: { x: 100, y: 100 },
-      thenRenameTo: DefaultNodeName.INPUT_DATA,
     });
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,

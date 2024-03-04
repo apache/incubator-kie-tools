@@ -84,48 +84,27 @@ export class Nodes {
   }) {
     await this.hover({ name: args.from, position: NodePosition.TOP });
     const node = this.get({ name: args.from });
+    const { addNodeTitle, nodeName } = this.getNewConnectedNodeProperties(args.type);
 
-    switch (args.type) {
-      case NodeType.INPUT_DATA:
-        await node
-          .getByTitle("Add Input Data node")
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
-        if (args.thenRenameTo) {
-          await this.rename({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
-        }
-        break;
+    await node.getByTitle(addNodeTitle).dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+    await this.waitForNodeToBeFocused({ name: nodeName });
+    if (args.thenRenameTo) {
+      await this.rename({ current: nodeName, new: args.thenRenameTo });
+    }
+  }
+
+  private getNewConnectedNodeProperties(type: NodeType) {
+    switch (type) {
       case NodeType.DECISION:
-        await node.getByTitle("Add Decision node").dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION });
-        if (args.thenRenameTo) {
-          await this.rename({ current: DefaultNodeName.DECISION, new: args.thenRenameTo });
-        }
-        break;
+        return { addNodeTitle: "Add Decision node", nodeName: DefaultNodeName.DECISION };
       case NodeType.KNOWLEDGE_SOURCE:
-        await node
-          .getByTitle("Add Knowledge Source node")
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.waitForNodeToBeFocused({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
-        if (args.thenRenameTo) {
-          await this.rename({ current: DefaultNodeName.KNOWLEDGE_SOURCE, new: args.thenRenameTo });
-        }
-        break;
+        return { addNodeTitle: "Add Knowledge Source node", nodeName: DefaultNodeName.KNOWLEDGE_SOURCE };
       case NodeType.BKM:
-        await node.getByTitle("Add BKM node").dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.waitForNodeToBeFocused({ name: DefaultNodeName.BKM });
-        if (args.thenRenameTo) {
-          await this.rename({ current: DefaultNodeName.BKM, new: args.thenRenameTo });
-        }
-        break;
+        return { addNodeTitle: "Add BKM node", nodeName: DefaultNodeName.BKM };
       case NodeType.TEXT_ANNOTATION:
-        await node
-          .getByTitle("Add Text Annotation node")
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.waitForNodeToBeFocused({ name: DefaultNodeName.TEXT_ANNOTATION });
-        if (args.thenRenameTo) {
-          await this.rename({ current: DefaultNodeName.TEXT_ANNOTATION, new: args.thenRenameTo });
-        }
+        return { addNodeTitle: "Add Text Annotation node", nodeName: DefaultNodeName.TEXT_ANNOTATION };
+      default:
+        throw new Error("Invalid type");
     }
   }
 

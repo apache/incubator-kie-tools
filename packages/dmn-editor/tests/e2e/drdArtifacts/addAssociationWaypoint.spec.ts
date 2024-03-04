@@ -44,7 +44,7 @@ test.describe("Add edge waypoint - Association", () => {
 
     await nodes
       .get({ name: DefaultNodeName.TEXT_ANNOTATION })
-      .dragTo(diagram.get(), { targetPosition: { x: 300, y: 300 } });
+      .dragTo(diagram.get(), { targetPosition: { x: 500, y: 300 } });
 
     await expect(diagram.get()).toHaveScreenshot();
   });

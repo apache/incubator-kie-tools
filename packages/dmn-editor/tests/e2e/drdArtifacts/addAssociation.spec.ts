@@ -54,7 +54,7 @@ test.describe("Add edge - Association", () => {
       expect(await edges.getType({ from: DefaultNodeName.BKM, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-bkm-to-text-annotation.png");
     });
 
     test("should add an association edge from Decision node to Text Annotation node", async ({
@@ -74,7 +74,7 @@ test.describe("Add edge - Association", () => {
       expect(await edges.getType({ from: DefaultNodeName.DECISION, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-decision-to-text-annotation.png");
     });
 
     test("should add an association edge from Knowledge Source node to Text Annotation node", async ({
@@ -102,7 +102,7 @@ test.describe("Add edge - Association", () => {
       expect(
         await edges.getType({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: DefaultNodeName.TEXT_ANNOTATION })
       ).toEqual(EdgeType.ASSOCIATION);
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-knowledge-source-to-text-annotation.png");
     });
 
     test("should add an association edge from Input Data node to Text Annotation node", async ({
@@ -122,7 +122,7 @@ test.describe("Add edge - Association", () => {
       expect(await edges.getType({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-input-data-to-text-annotation.png");
     });
 
     test("should add an association edge from Decision Service node to Text Annotation node", async ({
@@ -144,7 +144,7 @@ test.describe("Add edge - Association", () => {
       expect(
         await edges.getType({ from: DefaultNodeName.DECISION_SERVICE, to: DefaultNodeName.TEXT_ANNOTATION })
       ).toEqual(EdgeType.ASSOCIATION);
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-decision-service-to-text-annotation.png");
     });
 
     test("should add an association edge from Group node to Text Annotation node", async ({
@@ -164,7 +164,7 @@ test.describe("Add edge - Association", () => {
       expect(await edges.getType({ from: DefaultNodeName.GROUP, to: DefaultNodeName.TEXT_ANNOTATION })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-group-to-text-annotation.png");
     });
   });
 
@@ -195,7 +195,7 @@ test.describe("Add edge - Association", () => {
       expect(await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.BKM })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-text-annotation-to-bkm.png");
     });
 
     test("should add an association edge from Text Annotation node to Decision node", async ({
@@ -215,7 +215,7 @@ test.describe("Add edge - Association", () => {
       expect(await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.DECISION })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-text-annotation-to-decision.png");
     });
 
     test("should add an association edge from Text Annotation node to Knowledge Source node", async ({
@@ -237,7 +237,7 @@ test.describe("Add edge - Association", () => {
       expect(
         await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.KNOWLEDGE_SOURCE })
       ).toEqual(EdgeType.ASSOCIATION);
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-text-annotation-to-knowledge-source.png");
     });
 
     test("should add an association edge from Text Annotation node to Input Data node", async ({
@@ -257,7 +257,7 @@ test.describe("Add edge - Association", () => {
       expect(await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.INPUT_DATA })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-text-annotation-to-input-data.png");
     });
 
     test("should add an association edge from Text Annotation node to Decision Service node", async ({
@@ -266,7 +266,7 @@ test.describe("Add edge - Association", () => {
       nodes,
       edges,
     }) => {
-      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 300, y: 300 } });
+      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 500, y: 300 } });
       await nodes.dragNewConnectedEdge({
         type: EdgeType.ASSOCIATION,
         from: DefaultNodeName.TEXT_ANNOTATION,
@@ -280,7 +280,7 @@ test.describe("Add edge - Association", () => {
       expect(
         await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.DECISION_SERVICE })
       ).toEqual(EdgeType.ASSOCIATION);
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-text-annotation-to-decision-service.png");
     });
 
     test("should add an association edge from Text Annotation node to Group node", async ({
@@ -305,7 +305,7 @@ test.describe("Add edge - Association", () => {
       expect(await edges.getType({ from: DefaultNodeName.TEXT_ANNOTATION, to: DefaultNodeName.GROUP })).toEqual(
         EdgeType.ASSOCIATION
       );
-      await expect(diagram.get()).toHaveScreenshot();
+      await expect(diagram.get()).toHaveScreenshot("add-association-edge-text-annotation-to-group.png");
     });
   });
 });

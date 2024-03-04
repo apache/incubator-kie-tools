@@ -25,70 +25,33 @@ export class Palette {
   constructor(public page: Page, public diagram: Diagram, public nodes: Nodes) {}
 
   public async dragNewNode(args: { type: NodeType; targetPosition: { x: number; y: number }; thenRenameTo?: string }) {
-    switch (args.type) {
+    const { nodeTitle, nodeName } = this.getNewNodeProperties(args.type);
+
+    await this.page
+      .getByTitle(nodeTitle, { exact: true })
+      .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
+    await this.nodes.waitForNodeToBeFocused({ name: nodeName });
+    if (args.thenRenameTo) {
+      await this.nodes.rename({ current: nodeName, new: args.thenRenameTo });
+    }
+  }
+
+  private getNewNodeProperties(type: NodeType) {
+    switch (type) {
       case NodeType.INPUT_DATA:
-        await this.page
-          .getByTitle("Input Data", { exact: true })
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.INPUT_DATA });
-        if (args.thenRenameTo) {
-          await this.nodes.rename({ current: DefaultNodeName.INPUT_DATA, new: args.thenRenameTo });
-        }
-        break;
+        return { nodeTitle: "Input Data", nodeName: DefaultNodeName.INPUT_DATA };
       case NodeType.DECISION:
-        await this.page
-          .getByTitle("Decision", { exact: true })
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION });
-        if (args.thenRenameTo) {
-          await this.nodes.rename({ current: DefaultNodeName.DECISION, new: args.thenRenameTo });
-        }
-        break;
+        return { nodeTitle: "Decision", nodeName: DefaultNodeName.DECISION };
       case NodeType.KNOWLEDGE_SOURCE:
-        await this.page
-          .getByTitle("Knowledge Source", { exact: true })
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
-        if (args.thenRenameTo) {
-          await this.nodes.rename({ current: DefaultNodeName.KNOWLEDGE_SOURCE, new: args.thenRenameTo });
-        }
-        break;
+        return { nodeTitle: "Knowledge Source", nodeName: DefaultNodeName.KNOWLEDGE_SOURCE };
       case NodeType.BKM:
-        await this.page
-          .getByTitle("Business Knowledge Model", { exact: true })
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.BKM });
-        if (args.thenRenameTo) {
-          await this.nodes.rename({ current: DefaultNodeName.BKM, new: args.thenRenameTo });
-        }
-        break;
+        return { nodeTitle: "BKM", nodeName: DefaultNodeName.BKM };
       case NodeType.DECISION_SERVICE:
-        await this.page
-          .getByTitle("Decision Service", { exact: true })
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.DECISION_SERVICE });
-        if (args.thenRenameTo) {
-          await this.nodes.rename({ current: DefaultNodeName.DECISION_SERVICE, new: args.thenRenameTo });
-        }
-        break;
+        return { nodeTitle: "Decision Service", nodeName: DefaultNodeName.DECISION_SERVICE };
       case NodeType.GROUP:
-        await this.page
-          .getByTitle("Group", { exact: true })
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.GROUP });
-        if (args.thenRenameTo) {
-          await this.nodes.rename({ current: DefaultNodeName.GROUP, new: args.thenRenameTo });
-        }
-        break;
+        return { nodeTitle: "Group", nodeName: DefaultNodeName.GROUP };
       case NodeType.TEXT_ANNOTATION:
-        await this.page
-          .getByTitle("Text Annotation", { exact: true })
-          .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-        await this.nodes.waitForNodeToBeFocused({ name: DefaultNodeName.TEXT_ANNOTATION });
-        if (args.thenRenameTo) {
-          await this.nodes.rename({ current: DefaultNodeName.TEXT_ANNOTATION, new: args.thenRenameTo });
-        }
-        break;
+        return { nodeTitle: "Text Annotation", nodeName: DefaultNodeName.TEXT_ANNOTATION };
     }
   }
 }
