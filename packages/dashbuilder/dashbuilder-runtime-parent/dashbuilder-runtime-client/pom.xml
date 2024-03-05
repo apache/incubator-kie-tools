@@ -407,7 +407,14 @@
             -Ddashbuilder.kieserver.serverTemplate.sample-server.password=kieserver1!
             -Ddashbuilder.kieserver.defaultServerTemplate=default
             -Ddashbuilder.kieserver.serverTemplate.sample-server.replace_query=true
-            -Ddashbuilder.dev=true</extraJvmArgs>
+            -Ddashbuilder.dev=true
+            --add-opens java.base/java.lang=ALL-UNNAMED
+            --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+            --add-opens java.base/java.time=ALL-UNNAMED
+            --add-opens java.base/java.time.format=ALL-UNNAMED
+            --add-opens java.base/java.text=ALL-UNNAMED
+            --add-opens java.base/java.util=ALL-UNNAMED
+          </extraJvmArgs>
           <style>OBFUSCATED</style>
           <noServer>false</noServer>
           <!-- <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server> -->

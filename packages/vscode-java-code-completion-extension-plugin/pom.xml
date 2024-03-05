@@ -46,7 +46,7 @@
     <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
 
     <!-- Code coverage -->
-    <jacoco.version>0.8.5</jacoco.version>
+    <jacoco.version>0.8.11</jacoco.version>
     <coverage.filter>org.eclipse.jdt.ls.*</coverage.filter>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     <jacoco.destFile>${project.build.directory}/jacoco.exec</jacoco.destFile>

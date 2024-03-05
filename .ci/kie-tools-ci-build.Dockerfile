@@ -23,7 +23,7 @@ libxi6 \
 libnss3 \
 libgconf-2-4 \
 libpci-dev \
-openjdk-11-jdk \
+openjdk-17-jdk \
 git \
 jq \
 vim \
@@ -44,7 +44,7 @@ RUN wget -O /tmp/firefox-latest.tar.bz2 "https://download.mozilla.org/?product=f
 
 # Install chromedriver
 RUN CHROME_VERSION=$(curl https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json | jq -r .channels.Stable.version) && \
-    wget -O /tmp/chromedriver-linux64.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$CHROME_VERSION/linux64/chromedriver-linux64.zip && \
+    wget -O /tmp/chromedriver-linux64.zip https://storage.googleapis.com/chrome-for-testing-public/$CHROME_VERSION/linux64/chromedriver-linux64.zip && \
     unzip /tmp/chromedriver-linux64.zip -d /tmp && mv /tmp/chromedriver-linux64/chromedriver /usr/bin/ && \
     rm /tmp/chromedriver-linux64.zip
 
@@ -75,9 +75,9 @@ RUN bash -c 'source $HOME/.nvm/nvm.sh && \
              npm install -g pnpm@8.7.0'
 
 # Maven setup
-RUN wget https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz -P /tmp && \
-    sudo tar xzf /tmp/apache-maven-3.8.6-bin.tar.gz -C /opt && rm /tmp/apache-maven-3.8.6-bin.tar.gz && \
-    sudo ln -s /opt/apache-maven-3.8.6 /opt/maven && \
+RUN wget https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz -P /tmp && \
+    sudo tar xzf /tmp/apache-maven-3.9.6-bin.tar.gz -C /opt && rm /tmp/apache-maven-3.9.6-bin.tar.gz && \
+    sudo ln -s /opt/apache-maven-3.9.6 /opt/maven && \
     echo 'export M2_HOME=/opt/maven' | sudo tee -a /etc/profile.d/maven.sh && \
     echo 'export MAVEN_HOME=${M2_HOME}' | sudo tee -a /etc/profile.d/maven.sh && \
     echo 'export PATH=${M2_HOME}/bin:${PATH}' | sudo tee -a /etc/profile.d/maven.sh && \
@@ -106,7 +106,7 @@ RUN wget https://get.helm.sh/helm-v3.13.3-linux-amd64.tar.gz -P /tmp && \
     sudo tar -C /usr/bin/ -zxvf /tmp/helm-v3.13.3-linux-amd64.tar.gz linux-amd64/helm --strip-components 1 && rm /tmp/helm-v3.13.3-linux-amd64.tar.gz
 
 # Env vars
-ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+ENV JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
 ENV DISPLAY=":99"
 ENV NODE_OPTIONS="--max_old_space_size=4096"
 

@@ -20,10 +20,9 @@
  package org.kie.tools;
 
  import io.quarkus.test.junit.QuarkusTest;
- import org.eclipse.microprofile.config.inject.ConfigProperty;
+ import jakarta.inject.Inject;
  import org.junit.jupiter.api.Test;
- import javax.inject.Inject;
- 
+
  import static org.junit.jupiter.api.Assertions.assertEquals;
  
  @QuarkusTest

@@ -4,7 +4,7 @@ Docker image with Java and Maven, as well as the dev-deployment-upload-service b
 
 ## Build arguments
 
-- `BUILDER_IMAGE_ARG`: The base image used for building this image (defaults to `registry.access.redhat.com/ubi9/openjdk-11:1.17`).
+- `BUILDER_IMAGE_ARG`: The base image used for building this image (defaults to `registry.access.redhat.com/ubi9/openjdk-17:1.18`).
 
 ## Environment variables
 

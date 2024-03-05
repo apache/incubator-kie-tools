@@ -17,13 +17,23 @@
  * under the License.
  */
 
+const { execSync } = require("child_process");
 const kieSandboxDistributionEnv = require("../env");
 const env = kieSandboxDistributionEnv.env;
 const kieSandboxUrl = `http://127.0.0.1:${env.kieSandboxDistribution.kieSandbox.exposedPort}`;
 const corsProxyUrl = `http://127.0.0.1:${env.kieSandboxDistribution.corsProxy.exposedPort}`;
 const extendedServicesUrl = `http://127.0.0.1:${env.kieSandboxDistribution.extendedServices.exposedPort}`;
 
-describe("Test built images individually", async () => {
+describe("Test built images individually", () => {
+  beforeAll(() => {
+    execSync(
+      `pnpm docker:start-no-pull && wait-on -t 5m ${extendedServicesUrl}/ping && wait-on -t 5m ${corsProxyUrl}/ping && wait-on -t 5m ${kieSandboxUrl}`,
+      { stdio: "inherit" }
+    );
+  });
+  afterAll(() => {
+    execSync(`pnpm docker:stop`, { stdio: "inherit" });
+  });
   it("cors-proxy homepage", async () => {
     expect(await (await fetch(corsProxyUrl)).text()).toMatchSnapshot();
   });
