@@ -24,13 +24,17 @@ import { Resizing } from "./resizing";
 import { UseCases } from "./useCases";
 import { Monaco } from "./monaco";
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
+import { Cells } from "./cells";
+import { SceSimEditor } from "./scesimEditor";
 
 type SceSimEditorFixtures = {
+  monaco: Monaco;
   stories: Stories;
   clipboard: Clipboard;
   resizing: Resizing;
+  cells: Cells;
+  scesimEditor: SceSimEditor;
   useCases: UseCases;
-  monaco: Monaco;
 };
 
 export const test = base.extend<SceSimEditorFixtures>({
@@ -47,6 +51,12 @@ export const test = base.extend<SceSimEditorFixtures>({
   },
   resizing: async ({ page }, use) => {
     await use(new Resizing(page));
+  },
+  cells: async ({ page }, use) => {
+    await use(new Cells(page));
+  },
+  scesimEditor: async ({ page }, use) => {
+    await use(new SceSimEditor(page));
   },
   useCases: async ({ page, baseURL }, use) => {
     await use(new UseCases(page, baseURL));

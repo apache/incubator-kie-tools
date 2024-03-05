@@ -20,36 +20,72 @@
 import { expect, test } from "../../__fixtures__/base";
 
 test.describe("Keyboard", () => {
-  test.describe("Navigation", () => {
-    test("should correctly navigate", async () => {
-      // enter, shift+enter, tab, shift+tab, escape
-      // currently not working in playwright
+  test.describe("Keyboard-Shortcuts Navigation", () => {
+    test("should correctly navigate the page using enter, shift+enter, tab, shift+tab, escape", async ({
+      stories,
+      page,
+      scesimEditor,
+    }) => {
+      await stories.openTestScenarioTableRule();
+      await page.getByRole("cell", { name: "1" }).click();
+      await scesimEditor.addRows(3);
+      await page.getByRole("row", { name: "1", exact: true }).press("Tab");
+      await page.getByRole("row", { name: "1", exact: true }).press("Tab");
+      await page.getByRole("row", { name: "1", exact: true }).press("Enter");
+      await page.getByRole("row", { name: "1", exact: true }).press("Enter");
+      await page.getByRole("row", { name: "2", exact: true }).press("Shift+Tab");
+      await page.getByRole("row", { name: "1", exact: true }).press("Enter");
+      await page.getByRole("row", { name: "1", exact: true }).press("Enter");
+      await page.getByRole("row", { name: "2", exact: true }).press("Shift+Tab");
+      await page.getByRole("row", { name: "3", exact: true }).press("Shift+Enter");
+      await page.getByRole("row", { name: "2", exact: true }).press("Tab");
+      await page.getByRole("row", { name: "2", exact: true }).press("Enter");
+      await page.getByRole("row", { name: "2", exact: true }).press("Enter");
+      await page.getByRole("row", { name: "3", exact: true }).press("Enter");
+      await page.getByRole("row", { name: "3", exact: true }).press("Enter");
+      await page.getByRole("row", { name: "4", exact: true }).press("Enter");
+      await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("navigation-screenshot.png");
+      await page.getByRole("row", { name: "4", exact: true }).press("Escape");
+      await expect(page.getByLabel("Test Scenario")).toHaveScreenshot(
+        "navigation-keyboard-shortcut-escaped-screenshot.png"
+      );
     });
   });
 
   test.describe("Arrow Key Navigation", () => {
-    test("should correctly navigate the page using arrow keys", async ({ stories, page }) => {
+    test("should correctly navigate the page using arrow keys", async ({ stories, page, cells, scesimEditor }) => {
       await stories.openTestScenarioTableDecision();
       await page.getByRole("cell", { name: "1" }).click();
-      await page.getByRole("cell", { name: "1" }).locator("div").nth(1).click();
-      await page.getByRole("cell", { name: "1" }).locator("div").nth(1).click();
-      await page.getByRole("cell", { name: "1" }).locator("div").nth(1).click();
+      await scesimEditor.addRows(3);
       await page.getByRole("row", { name: "1", exact: true }).click();
-      await page.getByRole("row", { name: "1", exact: true }).press("ArrowRight");
-      await page.getByRole("row", { name: "1", exact: true }).press("ArrowRight");
-      await page.getByRole("row", { name: "1", exact: true }).press("ArrowDown");
-      await page.getByRole("row", { name: "2", exact: true }).press("ArrowLeft");
-      await page.getByRole("row", { name: "1", exact: true }).press("ArrowDown");
-      await page.getByRole("row", { name: "2", exact: true }).press("ArrowLeft");
-      await page.getByRole("row", { name: "3", exact: true }).press("ArrowUp");
-      await page.getByRole("row", { name: "2", exact: true }).press("ArrowRight");
-      await page.getByRole("row", { name: "2", exact: true }).press("ArrowDown");
-      await page.getByRole("row", { name: "3", exact: true }).press("ArrowDown");
-      await page.getByRole("row", { name: "4", exact: true }).press("Enter");
-      await page
-        .getByLabel("Editor content;Press Alt+F1 for Accessibility Options.")
-        .fill("This text should go in the 4th row, 2nd column");
-      await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("navigation-arrow-screenshot.png");
+      await cells.navigateRight(page.getByRole("row", { name: "1", exact: true }));
+      await cells.navigateRight(
+        page.getByRole("row", { name: "1", exact: true }).getByTestId("monaco-container").nth(1)
+      );
+      await cells.navigateDown(
+        page.getByRole("row", { name: "1", exact: true }).getByTestId("monaco-container").nth(2)
+      );
+      await cells.navigateLeft(
+        page.getByRole("row", { name: "2", exact: true }).getByTestId("monaco-container").nth(2)
+      );
+
+      await cells.navigateDown(
+        page.getByRole("row", { name: "2", exact: true }).getByTestId("monaco-container").nth(1)
+      );
+      await cells.navigateLeft(
+        page.getByRole("row", { name: "3", exact: true }).getByTestId("monaco-container").nth(1)
+      );
+      await cells.navigateUp(page.getByRole("row", { name: "3", exact: true }));
+      await cells.navigateRight(
+        page.getByRole("row", { name: "2", exact: true }).getByTestId("monaco-container").nth(1)
+      );
+      await cells.navigateDown(
+        page.getByRole("row", { name: "3", exact: true }).getByTestId("monaco-container").nth(1)
+      );
+      await cells.navigateDown(
+        page.getByRole("row", { name: "4", exact: true }).getByTestId("monaco-container").nth(1)
+      );
+      await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("navigation-screenshot.png");
     });
   });
 });

@@ -27,12 +27,9 @@ const buildEnv: any = env;
 const customConfig = defineConfig({
   use: {
     baseURL: `http://localhost:${buildEnv.scesimEditor.storybook.port}`,
-    launchOptions: {
-      // 1
-      args: ["--start-maximized"],
-    },
   },
-  /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
+
+  /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
     url: `http://localhost:${buildEnv.scesimEditor.storybook.port}/iframe.html?args=&id=misc-empty-scesim-editor--base&viewMode=story`,

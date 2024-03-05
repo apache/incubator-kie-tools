@@ -17,17 +17,27 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { Page, Locator } from "@playwright/test";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
-});
+export class SceSimEditor {
+  constructor(public page: Page) {}
+
+  public async addRows(numberOfRows: number) {
+    while (numberOfRows > 0) {
+      await this.page.getByRole("cell", { name: "1", exact: true }).locator("div").nth(1).click();
+      numberOfRows--;
+    }
+  }
+  public async addTestScenarioColumns(numberOfColumns: number) {
+    while (numberOfColumns > 0) {
+      await this.page.getByLabel("Test Scenario").locator("svg").click();
+      numberOfColumns--;
+    }
+  }
+  public async addBackgroundColumns(numberOfColumns: number) {
+    while (numberOfColumns > 0) {
+      await this.page.getByLabel("Background").locator("svg").click();
+      numberOfColumns--;
+    }
+  }
+}

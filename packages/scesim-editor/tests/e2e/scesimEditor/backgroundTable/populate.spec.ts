@@ -17,36 +17,79 @@
  * under the License.
  */
 
-import { test, expect } from "../../../__fixtures__/base";
+import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Decision Background table", () => {
-  test("should correctly populate a background table", async ({ stories, page, resizing }) => {
+  test("should correctly populate a decision-based background table", async ({
+    stories,
+    page,
+    resizing,
+    scesimEditor,
+  }) => {
     await stories.openBackgroundTableDecision();
     await page.getByLabel("Background").getByTestId("monaco-container").click();
     await page.getByLabel("Background").getByTestId("monaco-container").press("Enter");
     await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("{foo}");
     await page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).click();
-    await page.getByLabel("Background").locator("path").click();
-    await page.getByLabel("Background").locator("path").click();
-    await page.getByLabel("Background").locator("path").click();
-    await page.getByLabel("Background").locator("path").click();
-    await page.getByLabel("Background").locator("path").click();
+
+    await scesimEditor.addBackgroundColumns(5);
+
     await page.getByLabel("Background").getByTestId("monaco-container").nth(1).click();
     await page.getByLabel("Background").getByTestId("monaco-container").nth(1).press("Enter");
     await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("[foo]");
+
     await page.getByLabel("Background").getByTestId("monaco-container").nth(2).click();
     await page.getByLabel("Background").getByTestId("monaco-container").nth(2).press("Enter");
     await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"foo"');
+
     await page.getByLabel("Background").getByTestId("monaco-container").nth(3).click();
     await page.getByLabel("Background").getByTestId("monaco-container").nth(3).press("Enter");
     await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(",./123981275980172957129517");
+
     await page.getByLabel("Background").getByTestId("monaco-container").nth(4).click();
     await page.getByLabel("Background").getByTestId("monaco-container").nth(4).press("Enter");
     await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("{foo}{foo}f");
+
     await page.getByLabel("Background").getByTestId("monaco-container").nth(5).click();
     await page.getByLabel("Background").getByTestId("monaco-container").nth(5).press("Enter");
     await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("=1-205=-1205=-0125-0215215");
+
     await resizing.reset(page.getByRole("columnheader", { name: "INSTANCE-1 (<Undefined>)" }));
     await expect(page.getByLabel("Background")).toHaveScreenshot("background-table-decision.png");
+  });
+});
+
+test.describe("Populate Rule Background table", () => {
+  test("should correctly populate a rule-based background table", async ({ stories, page, resizing, scesimEditor }) => {
+    await stories.openBackgroundTableRule();
+    await page.getByLabel("Background").getByTestId("monaco-container").click();
+    await page.getByLabel("Background").getByTestId("monaco-container").press("Enter");
+    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("{foo}");
+    await page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).click();
+
+    await scesimEditor.addBackgroundColumns(5);
+
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(1).click();
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(1).press("Enter");
+    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("[foo]");
+
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(2).click();
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(2).press("Enter");
+    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"foo"');
+
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(3).click();
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(3).press("Enter");
+    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(",./123981275980172957129517");
+
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(4).click();
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(4).press("Enter");
+    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("{foo}{foo}f");
+
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(5).click();
+    await page.getByLabel("Background").getByTestId("monaco-container").nth(5).press("Enter");
+    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("=1-205=-1205=-0125-0215215");
+
+    await resizing.reset(page.getByRole("columnheader", { name: "INSTANCE-1 (<Undefined>)" }));
+    await expect(page.getByLabel("Background")).toHaveScreenshot("background-table-rule.png");
   });
 });

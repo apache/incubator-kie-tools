@@ -17,17 +17,21 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { Page, Locator } from "@playwright/test";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
-});
+export class Cells {
+  constructor(public page: Page) {}
+
+  public async navigateLeft(target: Locator) {
+    await target.press("ArrowLeft");
+  }
+  public async navigateRight(target: Locator) {
+    await target.press("ArrowRight");
+  }
+  public async navigateUp(target: Locator) {
+    await target.press("ArrowUp");
+  }
+  public async navigateDown(target: Locator) {
+    await target.press("ArrowDown");
+  }
+}
