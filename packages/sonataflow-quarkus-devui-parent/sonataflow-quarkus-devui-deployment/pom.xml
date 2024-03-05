@@ -28,13 +28,13 @@
 
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>sonataflow-serverless-workflow-devui-parent</artifactId>
+    <artifactId>sonataflow-quarkus-devui-parent</artifactId>
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>sonataflow-serverless-workflow-devui-deployment</artifactId>
-  <name>KIE Tools :: SonataFlow Serverless Workflow Quarkus Dev UI Extension :: Deployment</name>
+  <artifactId>sonataflow-quarkus-devui-deployment</artifactId>
+  <name>KIE Tools :: SonataFlow Quarkus Dev UI Extension :: Deployment</name>
 
   <properties>
       <path.to.webapp.app>../../serverless-workflow-dev-ui-webapp</path.to.webapp.app>
@@ -96,7 +96,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>sonataflow-serverless-workflow-devui</artifactId>
+      <artifactId>sonataflow-quarkus-devui</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

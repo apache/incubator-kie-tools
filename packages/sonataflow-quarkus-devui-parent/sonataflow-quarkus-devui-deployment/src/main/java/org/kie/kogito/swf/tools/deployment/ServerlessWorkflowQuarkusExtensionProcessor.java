@@ -23,7 +23,7 @@ import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 class ServerlessWorkflowQuarkusExtensionProcessor {
 
-    private static final String FEATURE = "sonataflow-serverless-workflow-devui";
+    private static final String FEATURE = "sonataflow-quarkus-devui";
 
     @BuildStep
     FeatureBuildItem feature() {

@@ -26,10 +26,10 @@
 >
 
   <modelVersion>4.0.0</modelVersion>
-  <name>KIE Tools :: SonataFlow Serverless Workflow Quarkus Dev UI Extension</name>
+  <name>KIE Tools :: SonataFlow Quarkus Dev UI Extension</name>
   <groupId>org.kie.kogito</groupId>
   <version>${revision}</version>
-  <artifactId>sonataflow-serverless-workflow-devui-parent</artifactId>
+  <artifactId>sonataflow-quarkus-devui-parent</artifactId>
   <packaging>pom</packaging>
 
   <properties>
@@ -45,8 +45,8 @@
   </properties>
 
   <modules>
-    <module>sonataflow-serverless-workflow-devui-deployment</module>
-    <module>sonataflow-serverless-workflow-devui</module>
+    <module>sonataflow-quarkus-devui-deployment</module>
+    <module>sonataflow-quarkus-devui</module>
   </modules>
 
   <dependencyManagement>

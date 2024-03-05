@@ -9212,7 +9212,7 @@ importers:
         specifier: ^5.9.0
         version: 5.9.0
 
-  packages/sonataflow-serverless-workflow-devui-parent:
+  packages/sonataflow-quarkus-devui-parent:
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
