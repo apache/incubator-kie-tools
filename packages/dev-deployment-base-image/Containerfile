@@ -23,15 +23,20 @@ FROM --platform=linux/amd64 ${BUILDER_IMAGE_ARG}
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME/app
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
 
-USER 1000
+RUN mkdir -p -m 777 $HOME/app && mkdir -p -m 777 /tmp/app
 
-RUN mkdir -p -m 777 $HOME/app
+COPY dist-dev/dev-deployment-upload-service /usr/local/bin
 
-COPY --chown=1000:1000 dist-dev/dev-deployment-upload-service /usr/local/bin
+USER root
+
+RUN chgrp -R 0 $HOME/app && \
+    chmod -R 777 $HOME/app
 
 WORKDIR $HOME/app/
 
 EXPOSE 8080
+
+USER 185
 
 ENTRYPOINT ["/bin/bash", "-c"]
 
