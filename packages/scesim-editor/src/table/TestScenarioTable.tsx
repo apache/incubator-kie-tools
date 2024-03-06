@@ -902,10 +902,12 @@ function TestScenarioTable({
         });
 
         /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left */
-        const firstIndexOnTheLeft =
-          Math.min(...allFactMappingWithIndexesToRemove.map((item) => item.factMappingIndex!)) - 1;
+        const firstIndexOnTheLeft = Math.min(
+          ...allFactMappingWithIndexesToRemove.map((item) => item.factMappingIndex!)
+        );
+        const selectedColumnIndex = firstIndexOnTheLeft > 0 ? firstIndexOnTheLeft - 1 : 0;
         updateSelectedColumnMetaData({
-          factMapping: JSON.parse(JSON.stringify(deepClonedFactMappings[firstIndexOnTheLeft])),
+          factMapping: JSON.parse(JSON.stringify(deepClonedFactMappings[selectedColumnIndex])),
           index: firstIndexOnTheLeft,
           isBackground,
         });
