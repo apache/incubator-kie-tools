@@ -21,13 +21,13 @@ import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
 import { parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 
 export function getXmlNamespaceDeclarationName({
-  model,
+  rootElement,
   namespace,
 }: {
-  model: XmlParserTsRootElementBaseType | undefined;
+  rootElement: XmlParserTsRootElementBaseType | undefined;
   namespace: string;
 }) {
-  const xmlnsEntry = Object.entries(model ?? {}).find(
+  const xmlnsEntry = Object.entries(rootElement ?? {}).find(
     ([k, v]) => v === namespace && (k === "@_xmlns" || k.startsWith("@_xmlns:"))
   );
   if (!xmlnsEntry) {

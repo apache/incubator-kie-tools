@@ -31,7 +31,7 @@ import { computeDataTypes } from "./computed/computeDataTypes";
 import { computeDiagramData } from "./computed/computeDiagramData";
 import { computeExternalModelsByType } from "./computed/computeExternalModelsByType";
 import { computeImportsByNamespace } from "./computed/computeImportsByNamespace";
-import { computeIndexes } from "./computed/computeIndexes";
+import { computeIndexedDrd } from "./computed/computeIndexes";
 import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
@@ -123,7 +123,7 @@ export type Computed = {
 
   importsByNamespace(): Map<string, DMN15__tImport>;
 
-  indexes(): ReturnType<typeof computeIndexes>;
+  indexedDrd(): ReturnType<typeof computeIndexedDrd>;
 
   getDiagramData(e: ExternalModelsIndex | undefined): ReturnType<typeof computeDiagramData>;
 
@@ -329,8 +329,12 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
             );
           },
 
-          indexes: () => {
-            return computedCache.cached("indexes", computeIndexes, [s.dmn.model.definitions, s.diagram.drdIndex]);
+          indexedDrd: () => {
+            return computedCache.cached("indexedDrd", computeIndexedDrd, [
+              s.dmn.model.definitions["@_namespace"],
+              s.dmn.model.definitions,
+              s.diagram.drdIndex,
+            ]);
           },
 
           importsByNamespace: () => {
@@ -377,7 +381,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
               s.diagram,
               s.dmn.model.definitions,
               s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace),
-              s.computed(s).indexes(),
+              s.computed(s).indexedDrd(),
               s.computed(s).isAlternativeInputDataShape(),
             ]),
         };

@@ -25,7 +25,7 @@ import { snapShapeDimensions, snapShapePosition } from "../../diagram/SnapGrid";
 import { EdgeType, NodeType } from "../../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../../diagram/edges/EdgeTypes";
 import { DmnDiagramEdgeData } from "../../diagram/edges/Edges";
-import { DrgEdge, EdgeVisitor, NodeVisitor, getAdjMatrix, traverse } from "../../diagram/graph/graph";
+import { DrgEdge, DrgAdjacencyList, EdgeVisitor, NodeVisitor, getAdjMatrix, traverse } from "../../diagram/graph/graph";
 import { getNodeTypeFromDmnObject } from "../../diagram/maths/DmnMaths";
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "../../diagram/nodes/DefaultSizes";
 import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../../diagram/nodes/NodeSvgs";
@@ -35,6 +35,7 @@ import { Unpacked } from "../../tsExt/tsExt";
 import { buildXmlHref, parseXmlHref } from "../../xml/xmlHrefs";
 import { TypeOrReturnType } from "../ComputedStateCache";
 import { Computed, State } from "../Store";
+import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
 
 export const NODE_LAYERS = {
   GROUP_NODE: 0,
@@ -61,7 +62,7 @@ export function computeDiagramData(
   diagram: State["diagram"],
   definitions: State["dmn"]["model"]["definitions"],
   externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>,
-  indexes: TypeOrReturnType<Computed["indexes"]>,
+  indexedDrd: TypeOrReturnType<Computed["indexedDrd"]>,
   isAlternativeInputDataShape: boolean
 ) {
   // console.time("nodes");
@@ -88,13 +89,14 @@ export function computeDiagramData(
   const edges: RF.Edge<DmnDiagramEdgeData>[] = [];
 
   const drgEdges: DrgEdge[] = [];
+  const drgAdjacencyList: DrgAdjacencyList = new Map();
 
   const ackEdge: AckEdge = ({ id, type, dmnObject, source, target }) => {
     const data = {
       dmnObject,
-      dmnEdge: id ? indexes.dmnEdgesByDmnElementRef.get(id) : undefined,
-      dmnShapeSource: indexes.dmnShapesByHref.get(source),
-      dmnShapeTarget: indexes.dmnShapesByHref.get(target),
+      dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(id) : undefined,
+      dmnShapeSource: indexedDrd.dmnShapesByHref.get(source),
+      dmnShapeTarget: indexedDrd.dmnShapesByHref.get(target),
     };
 
     const edge: RF.Edge<DmnDiagramEdgeData> = {
@@ -114,6 +116,13 @@ export function computeDiagramData(
     edges.push(edge);
 
     drgEdges.push({ id, sourceId: source, targetId: target, dmnObject });
+
+    const targetAdjancyList = drgAdjacencyList.get(target);
+    if (!targetAdjancyList) {
+      drgAdjacencyList.set(target, { dependencies: new Set([source]) });
+    } else {
+      targetAdjancyList.dependencies.add(source);
+    }
 
     return edge;
   };
@@ -157,7 +166,7 @@ export function computeDiagramData(
 
     const id = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectQName.localPart });
 
-    const _shape = indexes.dmnShapesByHref.get(id);
+    const _shape = indexedDrd.dmnShapesByHref.get(id);
     if (!_shape) {
       drgElementsWithoutVisualRepresentationOnCurrentDrd.push(id);
       return undefined;
@@ -171,6 +180,9 @@ export function computeDiagramData(
       dmnObject,
       shape,
       index,
+
+      // Properties to be overridden
+      hasHiddenRequirements: false,
       parentRfNode: undefined,
     };
 
@@ -193,11 +205,17 @@ export function computeDiagramData(
     };
 
     if (dmnObject?.__$$element === "decisionService") {
-      const containedDecisions = [...(dmnObject.outputDecision ?? []), ...(dmnObject.encapsulatedDecision ?? [])];
-      for (let i = 0; i < containedDecisions.length; i++) {
-        parentIdsById.set(containedDecisions[i]["@_href"], data);
+      const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
+        thisDmnsNamespace: definitions["@_namespace"],
+        decisionServiceNamespace: dmnObjectNamespace ?? definitions["@_namespace"],
+        decisionService: dmnObject,
+      });
+
+      for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
+        parentIdsById.set(containedDecisionHrefsRelativeToThisDmn[i], data);
       }
-      if (shape["@_isCollapsed"] || !!dmnObjectNamespace) {
+
+      if (shape["@_isCollapsed"]) {
         newNode.style = {
           ...newNode.style,
           ...DECISION_SERVICE_COLLAPSED_DIMENSIONS,
@@ -228,24 +246,6 @@ export function computeDiagramData(
     }),
   ];
 
-  // Assign parents & z-index to NODES
-  for (let i = 0; i < localNodes.length; i++) {
-    const parent = parentIdsById.get(localNodes[i].id);
-    if (parent) {
-      localNodes[i].data.parentRfNode = nodesById.get(
-        buildXmlHref({ namespace: parent.dmnObjectNamespace, id: parent.dmnObjectQName.localPart })
-      );
-      localNodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
-      localNodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
-    }
-
-    if (localNodes[i].type === NODE_TYPES.group) {
-      localNodes[i].zIndex = NODE_LAYERS.GROUP_NODE;
-    } else if (localNodes[i].type === NODE_TYPES.decisionService) {
-      localNodes[i].zIndex = NODE_LAYERS.DECISION_SERVICE_NODE;
-    }
-  }
-
   const externalDrgElementsByIdByNamespace = [...externalModelTypesByNamespace.dmns.entries()].reduce(
     (acc, [namespace, externalDmn]) => {
       // Taking advantage of the loop to add the edges here...
@@ -267,12 +267,12 @@ export function computeDiagramData(
     new Map<string, Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>>()
   );
 
-  const externalNodes = [...indexes.dmnShapesByHref.entries()].flatMap(([href, shape]) => {
+  const externalNodes = [...indexedDrd.dmnShapesByHref.entries()].flatMap(([href, shape]) => {
     if (nodesById.get(href)) {
       return [];
     }
 
-    if (!nodesById.get(href) && !indexes.hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects.has(href)) {
+    if (!nodesById.get(href) && !indexedDrd.hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects.has(href)) {
       // Unknown local node.
       console.warn(`DMN DIAGRAM: Found a shape that references a local DRG element that doesn't exist.`, shape);
       const newNode = ackNode(shape.dmnElementRefQName, null, -1);
@@ -320,13 +320,42 @@ export function computeDiagramData(
     .filter((e) => nodesById.has(e.source) && nodesById.has(e.target))
     .sort((a, b) => Number(selectedEdges.has(a.id)) - Number(selectedEdges.has(b.id)));
 
+  // Search on the node list for the missing dependencies on the DRD.
+  for (const node of sortedNodes) {
+    for (const dependencyNodeId of drgAdjacencyList.get(node.id)?.dependencies ?? new Set()) {
+      if (!nodesById.get(dependencyNodeId)) {
+        node.data.hasHiddenRequirements = true;
+        break;
+      }
+    }
+  }
+
   // console.timeEnd("nodes");
   if (diagram.overlays.enableNodeHierarchyHighlight) {
     assignClassesToHighlightedHierarchyNodes(diagram._selectedNodes, nodesById, edgesById, drgEdges);
   }
 
+  // Assign parents & z-index to NODES
+  for (let i = 0; i < sortedNodes.length; i++) {
+    const parentNodeData = parentIdsById.get(sortedNodes[i].id);
+    if (parentNodeData) {
+      sortedNodes[i].data.parentRfNode = nodesById.get(
+        buildXmlHref({ namespace: parentNodeData.dmnObjectNamespace, id: parentNodeData.dmnObjectQName.localPart })
+      );
+      sortedNodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
+      sortedNodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
+    }
+
+    if (sortedNodes[i].type === NODE_TYPES.group) {
+      sortedNodes[i].zIndex = NODE_LAYERS.GROUP_NODE;
+    } else if (sortedNodes[i].type === NODE_TYPES.decisionService) {
+      sortedNodes[i].zIndex = NODE_LAYERS.DECISION_SERVICE_NODE;
+    }
+  }
+
   return {
     drgEdges,
+    drgAdjacencyList,
     nodes: sortedNodes,
     edges: sortedEdges,
     edgesById,

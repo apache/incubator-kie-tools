@@ -17,7 +17,20 @@
  * under the License.
  */
 
-export const DEFAULT_DEV_WEBAPP_DMN = `<?xml version="1.0" encoding="UTF-8" ?>
+import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { DMN15_SPEC } from "../../src/Dmn15Spec";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+
+export const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="${dmn15ns.get("")}"
+  expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
+  namespace="https://kie.org/dmn/${generateUuid()}"
+  id="${generateUuid()}"
+  name="DMN${generateUuid()}">
+</definitions>`;
+
+export const LOAN_PRE_QUALIFICATION_DMN = `<?xml version="1.0" encoding="UTF-8" ?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" 
     xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
     xmlns:kie="https://kie.org/dmn/extensions/1.0"

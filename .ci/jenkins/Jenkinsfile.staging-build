@@ -14,11 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
 pipeline {
     agent {
         docker {
             image 'quay.io/kie-tools/kie-tools-ci-build:latest'
             args '--shm-size=2g --privileged --group-add docker'
+            label util.avoidFaultyNodes()
         }
     }
 
@@ -622,23 +626,25 @@ pipeline {
             }
         }
 
-        stage('Build (dev-deployment-base-image)') {
+        stage('Build (dev-deployment-base-image and dev-deployment-kogito-quarkus-blank-app-image)') {
             steps {
                 dir('kie-tools') {
                     script {
                         buildDevDeploymentBaseImage()
+                        buildDevDeploymentKogitoQuarkusBlankAppImage()
                     }
                 }
             }
         }
 
-        stage('STAGING: Push dev-deployment-base-image to quay.io') {
+        stage('STAGING: Push dev-deployment-base-image and dev-deployment-kogito-quarkus-blank-app-image to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
             steps {
                 script {
                     pushDevDeploymentBaseImageToQuay()
+                    pushDevDeploymentKogitoQuarkusBlankAppImageToQuay()
                 }
             }
         }
@@ -660,27 +666,6 @@ pipeline {
             steps {
                 script {
                     pushDevDeploymentDmnFormWebappImageToQuay()
-                }
-            }
-        }
-
-        stage('Build (dev-deployment-kogito-quarkus-blank-app-image)') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildDevDeploymentKogitoQuarkusBlankAppImage()
-                    }
-                }
-            }
-        }
-
-        stage('STAGING: Push dev-deployment-kogito-quarkus-blank-app-image to quay.io') {
-            when {
-                expression { !params.DRY_RUN }
-            }
-            steps {
-                script {
-                    pushDevDeploymentKogitoQuarkusBlankAppImageToQuay()
                 }
             }
         }

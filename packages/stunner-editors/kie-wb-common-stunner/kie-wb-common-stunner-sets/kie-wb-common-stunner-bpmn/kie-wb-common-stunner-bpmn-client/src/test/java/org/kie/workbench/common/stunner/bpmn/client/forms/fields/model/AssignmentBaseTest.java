@@ -21,16 +21,12 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import com.google.gwt.junit.GWTMockUtilities;
-import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.URL;
-import org.mockito.stubbing.Answer;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -42,11 +38,6 @@ public class AssignmentBaseTest {
         // Prevent runtime GWT.create() error at DesignerEditorConstants.INSTANCE
         GWTMockUtilities.disarm();
         // MockDesignerEditorConstants replaces DesignerEditorConstants.INSTANCE
-        final Answer answer = invocation -> invocation.getMethod().getName();
-        final StunnerFormsClientFieldsConstants constants = mock(StunnerFormsClientFieldsConstants.class,
-                                                                 answer);
-        setFinalStaticField(StunnerFormsClientFieldsConstants.class.getDeclaredField("CONSTANTS"),
-                            constants);
 
         // Prevent GWT calls in StringUtils
         URL url = mock(URL.class);
@@ -99,14 +90,4 @@ public class AssignmentBaseTest {
         }
     }
 
-    private void setFinalStaticField(Field field,
-                                     Object newValue) throws Exception {
-        field.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field,
-                              field.getModifiers() & ~Modifier.FINAL);
-        field.set(null,
-                  newValue);
-    }
 }

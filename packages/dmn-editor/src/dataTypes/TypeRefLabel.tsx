@@ -52,7 +52,7 @@ export function TypeRefLabel({
     const parsedFeelQName = parseFeelQName(typeRef);
 
     const xmlNamespaceName = getXmlNamespaceDeclarationName({
-      model: thisDmn.model.definitions,
+      rootElement: thisDmn.model.definitions,
       namespace: relativeToNamespace ?? "",
     });
 

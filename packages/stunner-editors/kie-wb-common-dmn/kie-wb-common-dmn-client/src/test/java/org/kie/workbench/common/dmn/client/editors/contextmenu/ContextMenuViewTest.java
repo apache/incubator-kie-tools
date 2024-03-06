@@ -19,14 +19,11 @@
 
 package org.kie.workbench.common.dmn.client.editors.contextmenu;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import elemental2.core.JsArray;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
 import elemental2.dom.EventTarget;
@@ -58,17 +55,11 @@ public class ContextMenuViewTest {
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
         presenter = mock(ContextMenu.class);
         listSelector = mock(ListSelector.class);
-        final Field field = DomGlobal.class.getDeclaredField("document");
-        field.setAccessible(true);
 
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
-        field.set(DomGlobal.class, mock(HTMLDocument.class));
-
-        contextMenuView = new ContextMenuView(listSelector);
+        contextMenuView = spy(new ContextMenuView(listSelector));
         contextMenuView.init(presenter);
+
+        doReturn(mock(HTMLDocument.class)).when(contextMenuView).getDocument();
     }
 
     @Test

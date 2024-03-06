@@ -43,6 +43,9 @@ spec:
         app: \${{ devDeployment.uniqueName }}
         deploymentconfig: \${{ devDeployment.uniqueName }}
     spec:
+      volumes:
+        - name: \${{ devDeployment.uniqueName }}-volume
+          emptyDir: {}
       containers:
         - name: \${{ devDeployment.uniqueName }}
           image: ${args.kogitoQuarkusBlankAppImageUrl}
@@ -53,5 +56,8 @@ spec:
           env:
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
               value: \${{ devDeployment.uploadService.apiKey }}
+          volumeMounts:
+            - mountPath: /tmp/app
+              name: \${{ devDeployment.uniqueName }}-volume
 `;
 }

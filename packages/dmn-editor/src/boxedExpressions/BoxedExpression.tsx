@@ -321,6 +321,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
           >
             <button
               className={"kie-dmn-editor--properties-panel-toggle-button"}
+              title={"Properties panel"}
               onClick={() => {
                 dmnEditorStoreApi.setState((state) => {
                   state.boxedExpressionEditor.propertiesPanel.isOpen =

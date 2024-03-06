@@ -155,6 +155,7 @@ export function DmnDiagramSvg({
               {...style}
               {...shapeStyle}
               isCollection={isCollection}
+              hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
             />
           )}
           {node.type === NODE_TYPES.bkm && (
@@ -165,6 +166,7 @@ export function DmnDiagramSvg({
               y={node.positionAbsolute!.y}
               {...style}
               {...shapeStyle}
+              hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
             />
           )}
           {node.type === NODE_TYPES.knowledgeSource && (
@@ -175,6 +177,7 @@ export function DmnDiagramSvg({
               y={node.positionAbsolute!.y}
               {...style}
               {...shapeStyle}
+              hasHiddenRequirements={node.data.hasHiddenRequirements ?? false}
             />
           )}
           {node.type === NODE_TYPES.decisionService && (

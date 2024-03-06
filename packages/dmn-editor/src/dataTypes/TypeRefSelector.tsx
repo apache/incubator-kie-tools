@@ -115,6 +115,7 @@ export function TypeRefSelector({
       {selectedDataType?.itemDefinition && (
         <Tooltip content="Jump to definition" appendTo={() => document.getElementById(id)!}>
           <Button
+            title={"Jump to definition"}
             className={"kie-dmn-editor--data-type-jump-to-definition"}
             variant={ButtonVariant.control}
             onClick={(e) =>

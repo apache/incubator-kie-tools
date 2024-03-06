@@ -20,7 +20,6 @@
 package org.kie.workbench.common.dmn.client.editors.drd;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,6 @@ import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.CSSStyleDeclaration;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLBodyElement;
 import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
@@ -53,8 +51,10 @@ import static java.util.Arrays.asList;
 import static org.kie.workbench.common.dmn.client.editors.drd.DRDContextMenu.DRDACTIONS_CONTEXT_MENU_TITLE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -93,7 +93,7 @@ public class DRDContextMenuTest {
 
     @Before
     public void setUp() {
-        drdContextMenu = new DRDContextMenu(contextMenu, translationService, drdContextMenuService, dmnDiagramsSession);
+        drdContextMenu = spy(new DRDContextMenu(contextMenu, translationService, drdContextMenuService, dmnDiagramsSession));
     }
 
     @Test
@@ -139,26 +139,14 @@ public class DRDContextMenuTest {
     @Test
     public void testAppendContextMenuToTheDOM() throws NoSuchFieldException, IllegalAccessException {
         when(contextMenu.getElement()).thenReturn(element);
+        doReturn(body).when(drdContextMenu).getDocumentBody();
 
         final Field field = HTMLElement.class.getDeclaredField("style");
         field.setAccessible(true);
         field.set(element, styleDeclaration);
 
-        final Field field2 = DomGlobal.class.getDeclaredField("document");
-        field2.setAccessible(true);
-
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field2, field2.getModifiers() & ~Modifier.FINAL);
-
-        field2.set(DomGlobal.class, htmlDocument);
-
-        final Field field3 = HTMLDocument.class.getDeclaredField("body");
-        field3.setAccessible(true);
-        field3.set(htmlDocument, body);
-
         drdContextMenu.appendContextMenuToTheDOM(10, 10);
 
-        verify(body).appendChild(Mockito.<HTMLElement>any());
+        verify(body).appendChild(Mockito.any());
     }
 }

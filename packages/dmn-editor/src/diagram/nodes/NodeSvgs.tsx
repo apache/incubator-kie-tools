@@ -66,7 +66,7 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
   };
 }
 
-export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
+export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection: boolean }) {
   const {
     strokeWidth,
     x,
@@ -107,13 +107,24 @@ export function InputDataNodeSvg(__props: NodeSvgProps & { isCollection?: boolea
         rx={rx}
         ry={ry}
       />
-      {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
+      {isCollection && (
+        <NodeCollectionMarker
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          fillColor={fillColor}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+          anchor={"bottom"}
+        />
+      )}
     </>
   );
 }
 
 export function AlternativeInputDataNodeSvg(
-  __props: NodeSvgProps & { isCollection?: boolean; isIcon: boolean; transform?: string }
+  __props: NodeSvgProps & { isCollection: boolean; isIcon: boolean; transform?: string }
 ) {
   const {
     strokeWidth,
@@ -163,12 +174,23 @@ export function AlternativeInputDataNodeSvg(
           />
         </>
       )}
-      {isCollection && <NodeCollectionMarker {...__props} anchor={"bottom"} />}
+      {isCollection && (
+        <NodeCollectionMarker
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          fillColor={fillColor}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+          anchor={"bottom"}
+        />
+      )}
     </>
   );
 }
 
-export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean }) {
+export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection: boolean; hasHiddenRequirements: boolean }) {
   const {
     strokeWidth,
     x,
@@ -177,7 +199,7 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
     height,
     fillColor,
     strokeColor,
-    props: { isCollection, ...props },
+    props: { isCollection, hasHiddenRequirements, ...props },
   } = normalize(__props);
 
   return (
@@ -193,13 +215,44 @@ export function DecisionNodeSvg(__props: NodeSvgProps & { isCollection?: boolean
         strokeLinejoin={"round"}
         {...props}
       />
-      {isCollection && <NodeCollectionMarker {...__props} anchor="top" />}
+      {isCollection && (
+        <NodeCollectionMarker
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          fillColor={fillColor}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+          anchor="top"
+        />
+      )}
+      {hasHiddenRequirements && (
+        <NodeHiddenRequirementMarker
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+          anchor={"middle"}
+        />
+      )}
     </>
   );
 }
 
-export function BkmNodeSvg(__props: NodeSvgProps) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
+export function BkmNodeSvg(__props: NodeSvgProps & { hasHiddenRequirements: boolean }) {
+  const {
+    strokeWidth,
+    x,
+    y,
+    width,
+    height,
+    fillColor,
+    strokeColor,
+    props: { hasHiddenRequirements, ...props },
+  } = normalize(__props);
   const bevel = 25;
   return (
     <>
@@ -212,12 +265,32 @@ export function BkmNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
+      {hasHiddenRequirements && (
+        <NodeHiddenRequirementMarker
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+          anchor={"middle"}
+        />
+      )}
     </>
   );
 }
 
-export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
-  const { strokeWidth, x, y, width, height: totalHeight, fillColor, strokeColor, props } = normalize(__props);
+export function KnowledgeSourceNodeSvg(__props: NodeSvgProps & { hasHiddenRequirements: boolean }) {
+  const {
+    strokeWidth,
+    x,
+    y,
+    width,
+    height: totalHeight,
+    fillColor,
+    strokeColor,
+    props: { hasHiddenRequirements, ...props },
+  } = normalize(__props);
   const amplitude = 20;
   const height = totalHeight - amplitude / 2; // Need to leave some space for the wave at the bottom.
 
@@ -234,6 +307,17 @@ export function KnowledgeSourceNodeSvg(__props: NodeSvgProps) {
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
+      {hasHiddenRequirements && (
+        <NodeHiddenRequirementMarker
+          x={x}
+          y={y}
+          width={width}
+          height={totalHeight}
+          strokeColor={strokeColor}
+          strokeWidth={strokeWidth}
+          anchor={"left"}
+        />
+      )}
     </>
   );
 }
@@ -456,18 +540,34 @@ export function UnknownNodeSvg(_props: NodeSvgProps & { strokeDasharray?: string
   );
 }
 
-function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom" }) {
-  const { strokeWidth, x, y, width, height, fillColor, strokeColor, props } = normalize(__props);
-
+function NodeCollectionMarker({
+  strokeWidth,
+  strokeColor,
+  fillColor,
+  x,
+  y,
+  width,
+  height,
+  anchor,
+}: {
+  strokeWidth: number;
+  strokeColor?: string;
+  fillColor?: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  anchor: "top" | "bottom";
+}) {
   const xPosition = x + width / 2;
+  // Arbitrary space between the lines
   const xSpacing = 7;
-  const y1Position = props.anchor === "bottom" ? y + height - 4 : y + 4;
-  const y2Position = props.anchor === "bottom" ? y + height - 18 : y + 18;
+  const y1Position = anchor === "bottom" ? y + height - 4 : y + 4;
+  const y2Position = anchor === "bottom" ? y + height - 18 : y + 18;
 
   return (
     <>
       <line
-        {...props}
         x1={xPosition - xSpacing}
         x2={xPosition - xSpacing}
         y1={y1Position}
@@ -477,7 +577,6 @@ function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom"
         stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
       />
       <line
-        {...props}
         x1={xPosition}
         x2={xPosition}
         y1={y1Position}
@@ -487,13 +586,68 @@ function NodeCollectionMarker(__props: NodeSvgProps & { anchor: "top" | "bottom"
         stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
       />
       <line
-        {...props}
         x1={xPosition + xSpacing}
         x2={xPosition + xSpacing}
         y1={y1Position}
         y2={y2Position}
         strokeWidth={strokeWidth}
         fill={fillColor ?? DEFAULT_NODE_FILL}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+      />
+    </>
+  );
+}
+
+function NodeHiddenRequirementMarker({
+  strokeWidth,
+  strokeColor,
+  x,
+  y,
+  width,
+  height,
+  anchor,
+}: {
+  strokeWidth: number;
+  strokeColor?: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  anchor: "middle" | "left";
+}) {
+  // Set the radius to 1 to create a dot.
+  const dotRadius = 1;
+  const xPosition = anchor === "middle" ? x + width / 2 : x + width / 4;
+  // Arbitrary spacing between the dots;
+  const xSpacing = 7;
+  // For the nodes where we position in the middle we need to take into account the "Edit" button
+  // making it necessary to be into a heigher position.
+  const yPosition = anchor === "middle" ? y + height - 18 : y + height - 11;
+
+  return (
+    <>
+      <circle
+        r={dotRadius}
+        cx={xPosition - xSpacing}
+        cy={yPosition}
+        strokeWidth={strokeWidth}
+        fill={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+      />
+      <circle
+        r={dotRadius}
+        cx={xPosition}
+        cy={yPosition}
+        strokeWidth={strokeWidth}
+        fill={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+        stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
+      />
+      <circle
+        r={dotRadius}
+        cx={xPosition + xSpacing}
+        cy={yPosition}
+        strokeWidth={strokeWidth}
+        fill={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
         stroke={strokeColor ?? DEFAULT_NODE_STROKE_COLOR}
       />
     </>
