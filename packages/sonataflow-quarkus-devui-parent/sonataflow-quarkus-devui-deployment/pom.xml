@@ -27,7 +27,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>org.apache.kie.sonataflow</groupId>
     <artifactId>sonataflow-quarkus-devui-parent</artifactId>
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
@@ -95,7 +95,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.apache.kie.sonataflow</groupId>
       <artifactId>sonataflow-quarkus-devui</artifactId>
       <version>${project.version}</version>
     </dependency>
