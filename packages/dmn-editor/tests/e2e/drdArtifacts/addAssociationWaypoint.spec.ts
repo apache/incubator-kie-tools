@@ -20,6 +20,7 @@
 import { expect } from "@playwright/test";
 import { test } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -35,29 +36,88 @@ test.describe("Add edge waypoint - Association", () => {
     });
   });
 
-  test("should add single waypoint to Association edge and should not move when the ending node is moved", async ({
-    diagram,
-    nodes,
-    edges,
-  }) => {
-    await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-    await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 500, y: 300 } });
+  test.describe("Add Single Waypoint", () => {
+    test("Association edge waypoint should not move when the ending node is moved", async ({
+      diagram,
+      edges,
+      nodes,
+    }) => {
+      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
+      await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 500, y: 300 } });
 
-    await expect(diagram.get()).toHaveScreenshot("add-association-waypoint-and-not-move-it.png");
+      await expect(diagram.get()).toHaveScreenshot("add-association-waypoint-and-not-move-it.png");
+    });
+
+    test("Association edge ending nodes should not move when the waypoint is moved", async ({
+      diagram,
+      edges,
+      browserName,
+    }) => {
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/991");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/991",
+      });
+
+      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
+      await edges.moveNthWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+        nth: 1,
+        targetPosition: { x: 500, y: 300 },
+      });
+
+      await expect(diagram.get()).toHaveScreenshot("add-association-waypoint-and-move-it.png");
+    });
   });
 
-  test("should add multiple waypoints to Association edge and should not move when the ending nodes are moved", async ({
-    diagram,
-    nodes,
-    edges,
-  }) => {
-    await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-    await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 200, y: 500 } });
+  test.describe("Add Multiple Waypoints", () => {
+    test("Association edge waypoints should not move when the ending nodes are moved", async ({
+      diagram,
+      nodes,
+      edges,
+    }) => {
+      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
+      await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 200, y: 500 } });
 
-    await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-    await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 500, y: 500 } });
-    await nodes.move({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 500, y: 100 } });
+      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
+      await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 500, y: 500 } });
+      await nodes.move({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 500, y: 100 } });
 
-    await expect(diagram.get()).toHaveScreenshot("add-multiple-association-waypoint-and-not-move-them.png");
+      await expect(diagram.get()).toHaveScreenshot("add-multiple-association-waypoint-and-not-move-them.png");
+    });
+
+    test("Association edge ending nodes should not move when the waypoints are moved", async ({
+      diagram,
+      nodes,
+      edges,
+      browserName,
+    }) => {
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/991");
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/991",
+      });
+
+      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
+      await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 200, y: 500 } });
+
+      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
+
+      await edges.moveNthWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+        nth: 1,
+        targetPosition: { x: 500, y: 100 },
+      });
+      await edges.moveNthWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+        nth: 2,
+        targetPosition: { x: 500, y: 500 },
+      });
+
+      await expect(diagram.get()).toHaveScreenshot("add-multiple-association-waypoint-and-move-them.png");
+    });
   });
 });

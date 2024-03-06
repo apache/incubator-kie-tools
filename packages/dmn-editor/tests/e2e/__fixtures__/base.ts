@@ -42,8 +42,8 @@ export const test = base.extend<DmnEditorFixtures>({
   nodes: async ({ page, diagram, browserName }, use) => {
     await use(new Nodes(page, diagram, browserName));
   },
-  edges: async ({ page, nodes }, use) => {
-    await use(new Edges(page, nodes));
+  edges: async ({ page, nodes, diagram }, use) => {
+    await use(new Edges(page, nodes, diagram));
   },
   palette: async ({ page, diagram, nodes }, use) => {
     await use(new Palette(page, diagram, nodes));

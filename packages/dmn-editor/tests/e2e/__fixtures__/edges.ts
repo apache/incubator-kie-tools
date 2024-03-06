@@ -19,6 +19,7 @@
 
 import { Page } from "@playwright/test";
 import { Nodes } from "./nodes";
+import { Diagram } from "./diagram";
 
 export enum EdgeType {
   ASSOCIATION = "association",
@@ -28,7 +29,7 @@ export enum EdgeType {
 }
 
 export class Edges {
-  constructor(public page: Page, public nodes: Nodes) {}
+  constructor(public page: Page, public nodes: Nodes, public diagram: Diagram) {}
 
   public async get(args: { from: string; to: string }) {
     const from = await this.nodes.getId({ name: args.from });
@@ -45,6 +46,21 @@ export class Edges {
     await (await this.get({ from: args.from, to: args.to })).dblclick();
   }
 
+  public async moveNthWaypoint(args: {
+    from: string;
+    to: string;
+    nth: number;
+    targetPosition: { x: number; y: number };
+  }) {
+    await this.select({ from: args.from, to: args.to });
+
+    await (await this.get({ from: args.from, to: args.to }))
+      .locator(`[data-waypointindex="${args.nth}"]`)
+      .dragTo(this.diagram.get(), {
+        targetPosition: args.targetPosition,
+      });
+  }
+
   public async delete(args: { from: string; to: string; isBackspace?: boolean }) {
     await this.select({ from: args.from, to: args.to });
     if (args.isBackspace) {
@@ -55,6 +71,7 @@ export class Edges {
   }
 
   public async select(args: { from: string; to: string }) {
-    await (await this.get({ from: args.from, to: args.to })).click();
+    // because of the waypoints on the edge, we can not click into the edge bounding box middle
+    await (await this.get({ from: args.from, to: args.to })).locator("circle").nth(1).click();
   }
 }
