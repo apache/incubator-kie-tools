@@ -53,6 +53,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
@@ -77,6 +78,9 @@ public class StunnerEditor {
     private Consumer<DiagramParsingException> parsingExceptionProcessor;
     private Consumer<Throwable> exceptionProcessor;
     private AlertsControl<AbstractCanvas> alertsControl;
+
+    private static final String ROOT_CONTAINER_LIGHT_CSS = "root-container";
+    private static final String ROOT_CONTAINER_DARK_CSS = "root-container root-container-dark";
 
     // CDI proxy.
     public StunnerEditor() {
@@ -174,7 +178,7 @@ public class StunnerEditor {
 
     private void resize(HTMLDivElement rootContainer) {
         resizeTo(rootContainer, DomGlobal.document.body.clientWidth,
-                DomGlobal.document.body.clientHeight);
+                 DomGlobal.document.body.clientHeight);
     }
 
     private void resizeTo(HTMLDivElement rootContainer, int width,
@@ -254,6 +258,12 @@ public class StunnerEditor {
     protected void clearRootAndDrawError() {
         HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
         removeAllChildren(rootContainer);
+
+        // Error page theme
+        final boolean isDarkTheme = StunnerTheme.getTheme().isDarkTheme();
+        rootContainer.className = isDarkTheme ? ROOT_CONTAINER_DARK_CSS : ROOT_CONTAINER_LIGHT_CSS;
+        errorPage.setDarkTheme(isDarkTheme);
+
         rootContainer.appendChild(errorPage.getElement());
     }
 

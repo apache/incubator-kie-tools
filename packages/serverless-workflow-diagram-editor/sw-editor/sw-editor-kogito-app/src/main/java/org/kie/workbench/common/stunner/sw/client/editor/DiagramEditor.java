@@ -194,8 +194,10 @@ public class DiagramEditor {
     }
 
     void setCanvasBackgroundColor() {
-        ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
-                .setBackgroundColor(((ColorTheme) StunnerTheme.getTheme()).getCanvasBackgroundColor());
+        if (null != stunnerEditor.getSession()) {
+            ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
+                    .setBackgroundColor(((ColorTheme) StunnerTheme.getTheme()).getCanvasBackgroundColor());
+        }
     }
 
     public Promise<Void> setContent(final String path, final String value) {

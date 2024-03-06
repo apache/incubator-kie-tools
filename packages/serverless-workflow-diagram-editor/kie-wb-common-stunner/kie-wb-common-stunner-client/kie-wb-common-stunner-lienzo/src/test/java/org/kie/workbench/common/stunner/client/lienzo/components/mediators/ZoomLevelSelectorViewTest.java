@@ -179,10 +179,14 @@ public class ZoomLevelSelectorViewTest {
         tested.init(presenter);
         tested.applyTheme();
 
-        assertEquals(ZoomLevelSelectorView.LIGHT_STYLE, tested.previewButton.className);
-        assertEquals(ZoomLevelSelectorView.LIGHT_STYLE, tested.resetButton.className);
-        assertEquals(ZoomLevelSelectorView.LIGHT_STYLE, tested.increaseButton.className);
-        assertEquals(ZoomLevelSelectorView.LIGHT_STYLE, tested.decreaseButton.className);
+        assertEquals(ZoomLevelSelectorView.BUTTON_LIGHT_STYLE, tested.previewButton.className);
+        assertEquals(ZoomLevelSelectorView.BUTTON_LIGHT_STYLE, tested.resetButton.className);
+        assertEquals(ZoomLevelSelectorView.BUTTON_LIGHT_STYLE, tested.increaseButton.className);
+        assertEquals(ZoomLevelSelectorView.BUTTON_LIGHT_STYLE, tested.decreaseButton.className);
+        assertEquals(ZoomLevelSelectorView.DROPDOWN_BUTTON_LIGHT_STYLE, tested.dropDownButton.className);
+        assertEquals(ZoomLevelSelectorView.DROPDOWN_TEXT_LIGHT_STYLE, tested.dropDownText.className);
+        assertEquals(ZoomLevelSelectorView.DROPDOWN_PANEL_LIGHT_STYLE, tested.dropDownPanel.className);
+        assertEquals(ZoomLevelSelectorView.DROPDOWN_MENU_LIGHT_STYLE, tested.dropDownMenu.className);
     }
 
     @Test
@@ -194,9 +198,13 @@ public class ZoomLevelSelectorViewTest {
         tested.init(presenter);
         tested.applyTheme();
 
-        assertEquals(ZoomLevelSelectorView.DARK_STYLE, tested.previewButton.className);
-        assertEquals(ZoomLevelSelectorView.DARK_STYLE, tested.resetButton.className);
-        assertEquals(ZoomLevelSelectorView.DARK_STYLE, tested.increaseButton.className);
-        assertEquals(ZoomLevelSelectorView.DARK_STYLE, tested.decreaseButton.className);
+        assertEquals(ZoomLevelSelectorView.BUTTON_DARK_STYLE, tested.previewButton.className);
+        assertEquals(ZoomLevelSelectorView.BUTTON_DARK_STYLE, tested.resetButton.className);
+        assertEquals(ZoomLevelSelectorView.BUTTON_DARK_STYLE, tested.increaseButton.className);
+        assertEquals(ZoomLevelSelectorView.BUTTON_DARK_STYLE, tested.decreaseButton.className);
+        assertEquals(ZoomLevelSelectorView.DROPDOWN_BUTTON_DARK_STYLE, tested.dropDownButton.className);
+        assertEquals(ZoomLevelSelectorView.DROPDOWN_TEXT_DARK_STYLE, tested.dropDownText.className);
+        assertEquals(ZoomLevelSelectorView.DROPDOWN_PANEL_DARK_STYLE, tested.dropDownPanel.className);
+        assertEquals(ZoomLevelSelectorView.DROPDOWN_MENU_DARK_STYLE, tested.dropDownMenu.className);
     }
 }
