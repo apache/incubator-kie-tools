@@ -24,43 +24,62 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
 import { DiagramLhsPanel } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Unpacked } from "../tsExt/tsExt";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE = "kie-dmn-editor--drg-node";
 
 export function DrgNodesPanel() {
-  const thisDmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmnsDrgElements = useDmnEditorStore((s) => s.dmn.model.definitions.drgElement ?? []);
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexedDrd().dmnShapesByHref);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const [filter, setFilter] = useState("");
 
-  const namespace = ""; // That's the default namespace.
+  const namespaceForHref = ""; // That's the default namespace.
 
   const onDragStart = useCallback((event: React.DragEvent, drgElement: Unpacked<DMN15__tDefinitions["drgElement"]>) => {
     event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE, JSON.stringify(drgElement));
     event.dataTransfer.effectAllowed = "move";
   }, []);
 
-  const nodes = thisDmn.model.definitions.drgElement
-    ?.filter((drgElement) => drgElement["@_name"].toLowerCase().includes(filter.toLowerCase()))
+  const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn = useMemo(
+    () =>
+      computeContainingDecisionServiceHrefsByDecisionHrefs({
+        drgElements: thisDmnsDrgElements,
+        drgElementsNamespace: thisDmnsNamespace,
+        thisDmnsNamespace: thisDmnsNamespace,
+      }),
+    [thisDmnsDrgElements, thisDmnsNamespace]
+  );
+
+  const nodes = thisDmnsDrgElements
+    .filter((drgElement) => drgElement["@_name"].toLowerCase().includes(filter.toLowerCase()))
     .map((drgElement) => {
-      const dmnObjectHref = buildXmlHref({ namespace, id: drgElement["@_id"]! });
-      const isAlreadyIncluded = dmnShapesByHref.has(dmnObjectHref);
+      const dmnObjectHref = buildXmlHref({ namespace: namespaceForHref, id: drgElement["@_id"]! });
+      const canBeIncluded =
+        !dmnShapesByHref.has(dmnObjectHref) &&
+        (containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn.get(dmnObjectHref) ?? []).every(
+          (dsHref) => !dmnShapesByHref.has(dsHref)
+        );
 
       return (
         <div
           key={drgElement["@_id"]}
           className={"kie-dmn-editor--external-nodes-list-item"}
-          draggable={!isAlreadyIncluded}
-          style={{ opacity: isAlreadyIncluded ? "0.4" : undefined }}
+          draggable={canBeIncluded}
+          style={{
+            opacity: canBeIncluded ? undefined : 0.4,
+            userSelect: "none",
+          }}
           onDragStart={(event) => onDragStart(event, drgElement)}
         >
           <Flex
@@ -71,8 +90,8 @@ export function DrgNodesPanel() {
             <DmnObjectListItem
               dmnObjectHref={dmnObjectHref}
               dmnObject={drgElement}
-              namespace={namespace}
-              relativeToNamespace={namespace}
+              namespace={namespaceForHref}
+              relativeToNamespace={namespaceForHref}
             />
           </Flex>
         </div>
