@@ -40,13 +40,21 @@
 }
 
 button.btn.dropdown-toggle.btn-default-dark {
+  color: #fff;
   background: black;
   border-color: #343a40;
 }
 
 button.btn.dropdown-toggle.btn-default-dark:focus {
+  color: #fff;
   background: black;
   border-color: #343a40;
+}
+
+button.btn.dropdown-toggle.btn-default-dark:hover {
+  color: #fff;
+  background: black;
+  border-color: #616e78;
 }
 
 .dropdown-menu-dark.open {
