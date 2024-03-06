@@ -158,7 +158,7 @@ function TestScenarioDataSelectorPanel({
               if (dataObject.isSimpleTypeFact) {
                 fieldName.concat(".");
               }
-              dataObjectChild.name !== fieldName;
+              return dataObjectChild.name !== fieldName;
             });
             dataObject.children = selected;
           }
@@ -211,7 +211,7 @@ function TestScenarioDataSelectorPanel({
     console.debug("========SELECTOR PANEL USE EFFECT===========");
     console.debug("Selected Column:");
     console.debug(selectedColumnMetadata);
-    console.debug("Current Data Objects:");
+    console.debug("All Data Objects:");
     console.debug(dataObjects);
 
     /**
@@ -276,7 +276,7 @@ function TestScenarioDataSelectorPanel({
       console.debug("Case 2");
       console.debug("Filtered Data Objects:");
       console.debug(filteredDataObjects);
-      console.debug("=============================================");
+      console.debug("=============USE EFFECT END===============");
       return;
     }
 
@@ -314,7 +314,7 @@ function TestScenarioDataSelectorPanel({
     setFilteredItems(filteredDataObjects);
     setTreeViewStatus({ activeItems: treeViewItemToActivate, searchKey: "", isExpanded: true });
     console.debug("Case 3");
-    console.debug("=============================================");
+    console.debug("=============USE EFFECT END===============");
   }, [
     dataObjects,
     filterDataObjectByExpressionElements,
