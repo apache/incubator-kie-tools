@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useCallback, useState, useRef, useMemo, useEffect } from "react";
 import { useArgs } from "@storybook/preview-api";
 import { DmnEditor, DmnEditorProps, DmnEditorRef, EvaluationResults, ValidationMessages } from "../src/DmnEditor";
 import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
@@ -64,24 +64,29 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
   }, [args, model, onModelChange]);
 
   return (
-    <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>
-      <DmnEditor
-        ref={ref}
-        model={model}
-        originalVersion={props?.originalVersion ?? args.originalVersion}
-        onModelChange={onModelChange}
-        onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
-        onRequestExternalModelsAvailableToInclude={
-          props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
-        }
-        externalModelsByNamespace={props?.externalModelsByNamespace ?? args.externalModelsByNamespace}
-        externalContextName={props?.externalContextName ?? args.externalContextName}
-        externalContextDescription={props?.externalContextDescription ?? args.externalContextDescription}
-        validationMessages={props?.validationMessages ?? args.validationMessages}
-        evaluationResults={props?.evaluationResults ?? args.evaluationResults}
-        issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
-        onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
-      />
-    </div>
+    <>
+      <div data-testid={"storybook-backport--dmn-editor-stringfied-model"} style={{ display: "none" }}>
+        {JSON.stringify(model)}
+      </div>
+      <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>
+        <DmnEditor
+          ref={ref}
+          model={model}
+          originalVersion={props?.originalVersion ?? args.originalVersion}
+          onModelChange={onModelChange}
+          onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
+          onRequestExternalModelsAvailableToInclude={
+            props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
+          }
+          externalModelsByNamespace={props?.externalModelsByNamespace ?? args.externalModelsByNamespace}
+          externalContextName={props?.externalContextName ?? args.externalContextName}
+          externalContextDescription={props?.externalContextDescription ?? args.externalContextDescription}
+          validationMessages={props?.validationMessages ?? args.validationMessages}
+          evaluationResults={props?.evaluationResults ?? args.evaluationResults}
+          issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
+          onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
+        />
+      </div>
+    </>
   );
 }

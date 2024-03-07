@@ -19,6 +19,9 @@
 
 import { Page } from "@playwright/test";
 
+export const DEFAULT_DRD_NAME = "Default DRD";
+export const UNNAMED_DRD_NAME = "Unnamed DRD";
+
 export class Diagram {
   constructor(public page: Page) {}
 

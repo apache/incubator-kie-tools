@@ -18,6 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { DEFAULT_DRD_NAME } from "../__fixtures__/diagram";
 import { EdgeType } from "../__fixtures__/edges";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
@@ -28,11 +29,21 @@ test.beforeEach(async ({ editor }) => {
 test.describe("Add node - BKM", () => {
   test.describe("Add to the DRG", () => {
     test.describe("add from the palette", () => {
-      test("should add new BKM node from palette", async ({ palette, nodes, diagram }) => {
+      test("should add new BKM node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-bkm-node-from-palette.png");
+
+        // Marshaller assertions
+        expect(await jsonModel.getDrgElementName({ name: DefaultNodeName.BKM })).toEqual(DefaultNodeName.BKM);
+        expect(
+          await jsonModel.getDrgElementBoundsOnDrd({
+            drgElementName: DefaultNodeName.BKM,
+            drgNodeType: NodeType.BKM,
+            drdName: DEFAULT_DRD_NAME,
+          })
+        ).toEqual({ x: 100, y: 100, height: 80, width: 160 });
       });
     });
 
