@@ -239,20 +239,19 @@ export const InputDataNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           style={alternativeSvgStyle}
-          className={selectedAlternativeClass}
+          className={`kie-dmn-editor--input-data-node ${selectedAlternativeClass}`}
           ref={ref}
           tabIndex={-1}
+          data-nodehref={id}
+          data-nodelabel={inputData["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
-          <div
-            className={`kie-dmn-editor--node ${additionalClasses}`}
-            title={inputData["@_name"]}
-            data-nodeid={`#${inputData["@_id"]}`}
-          >
+          <div className={`kie-dmn-editor--node ${additionalClasses}`}>
             <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
             <OutgoingStuffNodePanel
+              nodeHref={id}
               isVisible={!isTargeted && shouldActLikeHovered}
               nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
               edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
@@ -350,9 +349,7 @@ export const DecisionNode = React.memo(
     const shouldActLikeHovered = useDmnEditorStore(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      decision["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
     const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
@@ -433,8 +430,8 @@ export const DecisionNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={decision["@_name"]}
-          data-nodeid={`#${decision["@_id"]}`}
+          data-nodehref={id}
+          data-nodelabel={decision["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
@@ -443,6 +440,7 @@ export const DecisionNode = React.memo(
             <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={decision["@_id"]!} />
           )}
           <OutgoingStuffNodePanel
+            nodeHref={id}
             isVisible={!isTargeted && shouldActLikeHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.decision].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.decision].edges}
@@ -506,9 +504,7 @@ export const BkmNode = React.memo(
     const shouldActLikeHovered = useDmnEditorStore(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      bkm["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
     const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
@@ -571,14 +567,15 @@ export const BkmNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={bkm["@_name"]}
-          data-nodeid={`#${bkm["@_id"]}`}
+          data-nodehref={id}
+          data-nodelabel={bkm["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={bkm["@_id"]!} />}
           <OutgoingStuffNodePanel
+            nodeHref={id}
             isVisible={!isTargeted && shouldActLikeHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.bkm].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.bkm].edges}
@@ -643,9 +640,7 @@ export const KnowledgeSourceNode = React.memo(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
 
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      knowledgeSource["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -698,13 +693,14 @@ export const KnowledgeSourceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={knowledgeSource["@_name"]}
-          data-nodeid={`#${knowledgeSource["@_id"]}`}
+          data-nodehref={id}
+          data-nodelabel={knowledgeSource["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           <OutgoingStuffNodePanel
+            nodeHref={id}
             isVisible={!isTargeted && shouldActLikeHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].edges}
@@ -761,9 +757,7 @@ export const TextAnnotationNode = React.memo(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
 
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      textAnnotation["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -815,13 +809,14 @@ export const TextAnnotationNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
-          data-nodeid={`#${textAnnotation["@_id"]}`}
+          data-nodehref={id}
+          data-nodelabel={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           <OutgoingStuffNodePanel
+            nodeHref={id}
             isVisible={!isTargeted && shouldActLikeHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.textAnnotation].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.textAnnotation].edges}
@@ -879,9 +874,7 @@ export const DecisionServiceNode = React.memo(
     );
     const isDropTarget = useDmnEditorStore((s) => s.diagram.dropTargetNode?.id === id);
 
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      decisionService["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
     const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
@@ -1013,13 +1006,14 @@ export const DecisionServiceNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={decisionService["@_name"]}
-          data-nodeid={`#${decisionService["@_id"]}`}
+          data-nodehref={id}
+          data-nodelabel={decisionService["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
           <InfoNodePanel isVisible={!isTargeted && selected && !dragging} />
           <OutgoingStuffNodePanel
+            nodeHref={id}
             isVisible={!isTargeted && selected && !dragging}
             nodeTypes={outgoingStructure[NODE_TYPES.decisionService].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.decisionService].edges}
@@ -1087,9 +1081,7 @@ export const GroupNode = React.memo(
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const reactFlow = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      group["@_id"]
-    );
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions({
@@ -1159,12 +1151,13 @@ export const GroupNode = React.memo(
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
-          title={group["@_name"]}
-          data-nodeid={`#${group["@_id"]}`}
+          data-nodehref={id}
+          data-nodelabel={group["@_name"]}
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
           <OutgoingStuffNodePanel
+            nodeHref={id}
             isVisible={!isTargeted && selected && !dragging}
             nodeTypes={outgoingStructure[NODE_TYPES.group].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.group].edges}
@@ -1236,7 +1229,12 @@ export const UnknownNode = React.memo(
 
         <RF.Handle key={"unknown"} id={"unknown"} type={"source"} style={{ opacity: 0 }} position={RF.Position.Top} />
 
-        <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--unknown-node ${className}`} tabIndex={-1}>
+        <div
+          ref={ref}
+          className={`kie-dmn-editor--node kie-dmn-editor--unknown-node ${className}`}
+          tabIndex={-1}
+          data-nodehref={id}
+        >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
           <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
