@@ -31,13 +31,15 @@ import {
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { KeyboardIcon } from "@patternfly/react-icons/dist/js/icons/keyboard-icon";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
-import { useKogitoEditorEnvelopeContext } from "../../api";
+import { EditorTheme, useKogitoEditorEnvelopeContext } from "../../api";
 import { useEditorEnvelopeI18nContext } from "../i18n";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 export function KeyBindingsHelpOverlay() {
   const [showing, setShowing] = useState(false);
   const envelopeContext = useKogitoEditorEnvelopeContext();
   const { i18n } = useEditorEnvelopeI18nContext();
+  const [theme] = useSharedValue(envelopeContext.channelApi?.shared.kogitoEditor_theme);
 
   const toggle = useCallback(() => {
     setShowing(!showing);
@@ -82,11 +84,13 @@ export function KeyBindingsHelpOverlay() {
     }
   }, [showing]);
 
+  const themeCss = !theme! && theme === EditorTheme.DARK ? " dark" : "";
+
   return (
     <>
       <div
         onClick={() => setShowing(!showing)}
-        className={"kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon"}
+        className={"kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon" + themeCss}
         data-ouia-component-id="keyboard-shortcuts-icon"
         data-testid={"keyboard-shortcuts-help-overlay-icon"}
       >
@@ -100,7 +104,7 @@ export function KeyBindingsHelpOverlay() {
         width={"60%"}
         onClose={toggle}
         data-testid={"keyboard-shortcuts-help-overlay"}
-        className={"kie-tools--keyboard-shortcuts"}
+        className={"kie-tools--keyboard-shortcuts" + themeCss}
       >
         <TextContent>
           <TextList component={TextListVariants.dl}>

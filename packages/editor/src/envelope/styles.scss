@@ -75,15 +75,17 @@
 
 /* PF3 -> PF4 overrides */
 
-:not(.vscode-dark) {
-  .kie-tools--keyboard-shortcuts {
-    font-family: var(--pf-global--FontFamily--sans-serif);
-    color: var(--pf-global--Color--dark-100);
-  }
+.kie-tools--keyboard-shortcuts {
+  font-family: var(--pf-global--FontFamily--sans-serif);
+  color: var(--pf-global--Color--dark-100);
 }
 
-.vscode-dark .kie-tools--keyboard-shortcuts {
-  color: #343a40;
+.kie-tools--keyboard-shortcuts.kie-tools--keyboard-shortcuts-icon.dark {
+  color: #424242;
+}
+
+.pf-c-modal-box.kie-tools--keyboard-shortcuts.dark {
+  background-color: #b3b3b3;
 }
 
 body {
