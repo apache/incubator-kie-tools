@@ -22,8 +22,8 @@ package org.kie.workbench.common.stunner.core.client.api;
 import elemental2.core.Reflect;
 import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
+import org.kie.j2cl.tools.utils.GwtIncompatible;
 import org.kie.workbench.common.stunner.core.api.JsDefinitionManager;
-import org.treblereel.gwt.utils.GwtIncompatible;
 
 public class JsStunnerEditor {
 

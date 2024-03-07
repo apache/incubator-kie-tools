@@ -22,11 +22,11 @@ package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
 import java.util.Collection;
 
-import io.crysknife.client.BeanManager;
-import io.crysknife.client.SyncBeanDef;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.BeanManager;
+import org.kie.j2cl.tools.di.core.SyncBeanDef;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.BindableMorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;

@@ -21,17 +21,17 @@
 package org.kie.workbench.common.stunner.client.widgets.views.session;
 
 import elemental2.dom.HTMLLabelElement;
-import io.crysknife.client.IsElement;
-import io.crysknife.ui.templates.client.annotation.DataField;
-import io.crysknife.ui.templates.client.annotation.Templated;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.DataField;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.Templated;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
 @Dependent
 @Templated
 public class ScreenErrorViewImpl implements ScreenErrorView,
-                                            IsElement {
+        IsElement {
 
     @Inject
     @DataField

@@ -20,11 +20,11 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.views;
 
-import io.crysknife.client.IsElement;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 
 @Dependent

@@ -23,10 +23,10 @@ package org.kie.workbench.common.stunner.client.widgets.views;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import io.crysknife.client.IsElement;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jsinterop.base.Js;
+import org.kie.j2cl.tools.di.core.IsElement;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 

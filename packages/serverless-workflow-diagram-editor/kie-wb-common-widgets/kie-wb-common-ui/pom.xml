@@ -43,8 +43,8 @@
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.crysknife.ui</groupId>
-      <artifactId>crysknife-ui-core</artifactId>
+      <groupId>org.kie.j2cl.tools.di.ui</groupId>
+      <artifactId>core</artifactId>
     </dependency>
 
   </dependencies>
