@@ -24,7 +24,7 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "jsonata": "^1.8.3",
+    "jsonata": "^1.8.7",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {

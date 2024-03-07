@@ -31,7 +31,7 @@
     "@kie-tools/yaml-language-server": "workspace:*",
     "@severlessworkflow/sdk-typescript": "^3.0.3",
     "json-to-ast": "^2.1.0",
-    "jsonata": "^1.8.3",
+    "jsonata": "^1.8.7",
     "jsonc-parser": "^3.0.0",
     "path-browserify": "^1.0.1",
     "vscode-json-languageservice": "^4.2.1",
