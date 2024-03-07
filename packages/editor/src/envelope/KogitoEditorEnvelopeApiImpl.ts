@@ -24,6 +24,7 @@ import {
   EditorContent,
   EditorFactory,
   EditorInitArgs,
+  EditorTheme,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
@@ -93,6 +94,11 @@ export class KogitoEditorEnvelopeApiImpl<
 
     const editorContent = await this.args.envelopeContext.channelApi.requests.kogitoEditor_contentRequest();
     this.normalizedPosixPathRelativeToTheWorkspaceRoot = editorContent.normalizedPosixPathRelativeToTheWorkspaceRoot;
+
+    // "Permanent" theme subscription, destroyed along editor's iFrame
+    this.args.envelopeContext.channelApi.shared.kogitoEditor_theme.subscribe((theme: EditorTheme) => {
+      this.editor.setTheme(theme);
+    });
 
     await this.editor
       .setContent(editorContent.normalizedPosixPathRelativeToTheWorkspaceRoot, editorContent.content)
