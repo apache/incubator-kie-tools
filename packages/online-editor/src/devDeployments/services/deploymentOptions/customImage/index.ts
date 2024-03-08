@@ -84,7 +84,7 @@ ${ServiceYaml()}
         id: "command",
         name: "Command",
         description: "The command to be executed when the container starts (passed as args to the Deployment)",
-        defaultValue: "mvn quarkus:dev",
+        defaultValue: "./mvnw quarkus:dev",
         type: "text",
         resourcePatches: [
           {
