@@ -20,7 +20,7 @@
 name: Serverless Workflow Tools
 metadata:
   keywords:
-    - "kogito"
+    - "sonataflow"
     - "workflows"
   guide: "https://quarkus.io/guides/kogito"
   categories:

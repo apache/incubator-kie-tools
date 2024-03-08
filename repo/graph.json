@@ -155,7 +155,7 @@
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
-      { "id": "@kie-tools/sonataflow-quarkus-devui-parent" },
+      { "id": "@kie-tools/sonataflow-quarkus-devui-extension-parent" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -965,7 +965,7 @@
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
       {
-        "source": "@kie-tools/sonataflow-quarkus-devui-parent",
+        "source": "@kie-tools/sonataflow-quarkus-devui-extension-parent",
         "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
         "weight": 1
       },
@@ -1147,7 +1147,7 @@
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
     ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
     ["sonataflow-deployment-webapp", "packages/sonataflow-deployment-webapp"],
-    ["@kie-tools/sonataflow-quarkus-devui-parent", "packages/sonataflow-quarkus-devui-parent"],
+    ["@kie-tools/sonataflow-quarkus-devui-extension-parent", "packages/sonataflow-quarkus-devui-extension-parent"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],

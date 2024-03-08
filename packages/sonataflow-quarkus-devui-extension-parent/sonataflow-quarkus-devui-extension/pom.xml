@@ -27,11 +27,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.kie.sonataflow</groupId>
-    <artifactId>sonataflow-quarkus-devui-parent</artifactId>
+    <artifactId>sonataflow-quarkus-devui-extension-parent</artifactId>
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>sonataflow-quarkus-devui</artifactId>
+  <artifactId>sonataflow-quarkus-devui-extension</artifactId>
   <name>KIE Tools :: SonataFlow Quarkus Dev UI Extension :: Runtime</name>
   <description>Runtime development tools for Serverless Workflows</description>
   <dependencies>

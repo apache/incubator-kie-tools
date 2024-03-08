@@ -21,5 +21,5 @@ const buildEnv = require("./env");
 const { setup } = require("@kie-tools/maven-config-setup-helper");
 
 setup(`
-    -Drevision=${buildEnv.env.sonataflowServerlessWorkflowDevui.version}
+    -Drevision=${buildEnv.env.sonataflowQuarkusDevuiExtension.version}
 `);
