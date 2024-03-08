@@ -20,23 +20,33 @@ ARG BUILDER_IMAGE_ARG
 
 FROM --platform=linux/amd64 ${BUILDER_IMAGE_ARG}
 
-ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME/app
-ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
+ARG USER_ID_ARG=185
+ARG HOME_PATH_ARG=$HOME
 
-RUN mkdir -p -m 777 $HOME/app && mkdir -p -m 777 /tmp/app
-
-COPY dist-dev/dev-deployment-upload-service /usr/local/bin
+ENV USER_ID=${USER_ID_ARG}
+ENV HOME_PATH=${HOME_PATH_ARG}
 
 USER root
 
-RUN chgrp -R 0 $HOME/app && \
-    chmod -R 777 $HOME/app
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME_PATH/app
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
 
-WORKDIR $HOME/app/
+RUN mkdir -p -m 777 $HOME_PATH/app && mkdir -p -m 777 /tmp/app && mkdir -p -m 777 /.m2
+
+COPY dist-dev/dev-deployment-upload-service /usr/local/bin
+COPY .mvn $HOME_PATH/app/.mvn
+COPY mvnw $HOME_PATH/app
+
+RUN chgrp -R 0 $HOME_PATH/app && \
+    chmod -R 777 $HOME_PATH/app && \
+    chgrp -R 0 /.m2 && \
+    chmod -R 777 /.m2
+
+WORKDIR $HOME_PATH/app/
 
 EXPOSE 8080
 
-USER 185
+USER $USER_ID
 
 ENTRYPOINT ["/bin/bash", "-c"]
 

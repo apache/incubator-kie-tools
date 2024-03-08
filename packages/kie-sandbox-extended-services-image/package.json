@@ -13,15 +13,15 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "pnpm cleanup && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
-    "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
+    "build:dev": "pnpm cleanup && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:extended-services-java",
     "copy:extended-services-java": "run-script-os",
     "copy:extended-services-java:linux:darwin": "cp -R ../extended-services-java/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services",
     "copy:extended-services-java:win32": "pnpm powershell \"Copy-Item ../extended-services-java/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services\"",
-    "docker:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesJava.port)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_HOST=$(build-env extendedServicesJava.host)\"",
-    "podman:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesJava.port)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_HOST=$(build-env extendedServicesJava.host)\" -e podman"
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesJava.port)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_HOST=$(build-env extendedServicesJava.host)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env extendedServicesImage.builderImage)\"",
+    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_PORT=$(build-env extendedServicesJava.port)\" --build-arg \"EXTENDED_SERVICES_DEFAULT_HOST=$(build-env extendedServicesJava.host)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env extendedServicesImage.builderImage)\" -e podman"
   },
   "dependencies": {
     "@kie-tools/extended-services-java": "workspace:*"
