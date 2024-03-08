@@ -18,7 +18,9 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { DEFAULT_DRD_NAME } from "../__fixtures__/diagram";
 import { EdgeType } from "../__fixtures__/edges";
+import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
@@ -28,11 +30,22 @@ test.beforeEach(async ({ editor }) => {
 test.describe("Add node - Knowledge Source", () => {
   test.describe("Add to the DRG", () => {
     test.describe("add from the palette", () => {
-      test("should add Knowledge Source node from palette", async ({ palette, nodes, diagram }) => {
+      test("should add Knowledge Source node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-knowledge-source-node-from-palette.png");
+
+        // JSON model assertions
+        expect(
+          await jsonModel.drgElements.getKnowledgeSource({
+            name: DefaultNodeName.KNOWLEDGE_SOURCE,
+            drdName: DEFAULT_DRD_NAME,
+          })
+        ).toEqual({
+          name: DefaultNodeName.KNOWLEDGE_SOURCE,
+          bounds: { x: 0, y: 0, width: 160, height: 80 },
+        });
       });
     });
 

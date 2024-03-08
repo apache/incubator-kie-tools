@@ -19,6 +19,7 @@
 
 import { test, expect } from "../__fixtures__/base";
 import { DEFAULT_DRD_NAME } from "../__fixtures__/diagram";
+import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
@@ -34,20 +35,17 @@ test.describe("Add node - Input Data", () => {
         expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-input-data-node-from-palette.png");
 
-        // Marshaller assertions
-        expect(await jsonModel.getDrgElementName({ name: DefaultNodeName.INPUT_DATA })).toEqual(
-          DefaultNodeName.INPUT_DATA
-        );
+        // JSON model assertions
         expect(
-          await jsonModel.getDrgElementTypeRef({ name: DefaultNodeName.INPUT_DATA, type: NodeType.INPUT_DATA })
-        ).toEqual("<Undefined>");
-        expect(
-          await jsonModel.getDrgElementPositionOnDrd({
-            drgElementName: DefaultNodeName.INPUT_DATA,
-            drgNodeType: NodeType.INPUT_DATA,
-            drdName: DEFAULT_DRD_NAME,
-          })
-        ).toEqual({ x: 0, y: 0 });
+          await jsonModel.drgElements.getInputData({ name: DefaultNodeName.INPUT_DATA, drdName: DEFAULT_DRD_NAME })
+        ).toEqual({
+          name: DefaultNodeName.INPUT_DATA,
+          variable: {
+            name: DefaultNodeName.INPUT_DATA,
+            typeRef: DataType.Undefined,
+          },
+          bounds: { x: 0, y: 0, width: 160, height: 80 },
+        });
       });
     });
   });
