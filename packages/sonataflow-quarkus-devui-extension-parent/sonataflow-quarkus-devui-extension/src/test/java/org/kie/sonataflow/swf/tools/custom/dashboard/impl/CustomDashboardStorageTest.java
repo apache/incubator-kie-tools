@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.custom.dashboard.impl;
+package org.kie.sonataflow.swf.tools.custom.dashboard.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,9 +30,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.kie.kogito.swf.tools.custom.dashboard.CustomDashboardStorage;
-import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardFilter;
-import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardInfo;
+import org.kie.sonataflow.swf.tools.custom.dashboard.CustomDashboardStorage;
+import org.kie.sonataflow.swf.tools.custom.dashboard.model.CustomDashboardFilter;
+import org.kie.sonataflow.swf.tools.custom.dashboard.model.CustomDashboardInfo;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.custom.dashboard.model;
+package org.kie.sonataflow.swf.tools.custom.dashboard.model;
 
 import java.time.LocalDateTime;
 

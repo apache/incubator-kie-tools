@@ -16,35 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.custom.dashboard.model;
+package org.kie.sonataflow.swf.tools.custom.dashboard.converter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
-public class CustomDashboardFilter {
+import org.kie.sonataflow.swf.tools.custom.dashboard.model.CustomDashboardFilter;
 
-    private final List<String> names;
+import jakarta.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.Provider;
 
-    public CustomDashboardFilter() {
-        this.names = new ArrayList<>();
+@Provider
+public class CustomDashboardFilterParamConverter implements ParamConverter<CustomDashboardFilter> {
+    public CustomDashboardFilter fromString(String names) {
+        StringTokenizer stringTokenizer = new StringTokenizer(names, ";");
+        return new CustomDashboardFilter(Collections.list(stringTokenizer).stream().map(s -> (String) s).collect(Collectors.toList()));
     }
 
-    public CustomDashboardFilter(List<String> names) {
-        this.names = names;
-    }
-
-    public List<String> getNames() {
-        return names;
-    }
-
-    public void setNames(List<String> names) {
-        this.names.addAll(names);
-    }
-
-    @Override
-    public String toString() {
-        return "CustomDashboardFilter{" +
-                "names=" + names +
-                '}';
+    public String toString(CustomDashboardFilter names) {
+        return names.toString();
     }
 }

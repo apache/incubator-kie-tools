@@ -16,26 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.custom.dashboard.converter;
+package org.kie.sonataflow.swf.tools.custom.dashboard.model;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardFilter;
+public class CustomDashboardFilter {
 
-import jakarta.ws.rs.ext.ParamConverter;
-import jakarta.ws.rs.ext.ParamConverterProvider;
-import jakarta.ws.rs.ext.Provider;
+    private final List<String> names;
 
-@Provider
-public class CustomDashboardFilterParamConverterProvider implements ParamConverterProvider {
+    public CustomDashboardFilter() {
+        this.names = new ArrayList<>();
+    }
 
-    @SuppressWarnings("unchecked")
+    public CustomDashboardFilter(List<String> names) {
+        this.names = names;
+    }
+
+    public List<String> getNames() {
+        return names;
+    }
+
+    public void setNames(List<String> names) {
+        this.names.addAll(names);
+    }
+
     @Override
-    public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
-        if (rawType.isAssignableFrom(CustomDashboardFilter.class)) {
-            return (ParamConverter<T>) new CustomDashboardFilterParamConverter();
-        }
-        return null;
+    public String toString() {
+        return "CustomDashboardFilter{" +
+                "names=" + names +
+                '}';
     }
 }

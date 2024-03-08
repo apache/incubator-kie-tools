@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.custom.dashboard;
+package org.kie.sonataflow.swf.tools.custom.dashboard;
 
-import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardFilter;
+import org.kie.sonataflow.swf.tools.custom.dashboard.model.CustomDashboardFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

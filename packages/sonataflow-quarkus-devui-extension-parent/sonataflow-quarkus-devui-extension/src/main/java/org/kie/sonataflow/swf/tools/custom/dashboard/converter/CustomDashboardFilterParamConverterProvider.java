@@ -16,25 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.custom.dashboard.converter;
+package org.kie.sonataflow.swf.tools.custom.dashboard.converter;
 
-import java.util.Collections;
-import java.util.StringTokenizer;
-import java.util.stream.Collectors;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
-import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardFilter;
+import org.kie.sonataflow.swf.tools.custom.dashboard.model.CustomDashboardFilter;
 
 import jakarta.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.ParamConverterProvider;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class CustomDashboardFilterParamConverter implements ParamConverter<CustomDashboardFilter> {
-    public CustomDashboardFilter fromString(String names) {
-        StringTokenizer stringTokenizer = new StringTokenizer(names, ";");
-        return new CustomDashboardFilter(Collections.list(stringTokenizer).stream().map(s -> (String) s).collect(Collectors.toList()));
-    }
+public class CustomDashboardFilterParamConverterProvider implements ParamConverterProvider {
 
-    public String toString(CustomDashboardFilter names) {
-        return names.toString();
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
+        if (rawType.isAssignableFrom(CustomDashboardFilter.class)) {
+            return (ParamConverter<T>) new CustomDashboardFilterParamConverter();
+        }
+        return null;
     }
 }

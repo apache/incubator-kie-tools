@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.custom.dashboard.impl;
+package org.kie.sonataflow.swf.tools.custom.dashboard.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 import io.quarkus.test.junit.QuarkusTestProfile;
 
-import static org.kie.kogito.swf.tools.custom.dashboard.impl.CustomDashboardStorageImpl.PROJECT_CUSTOM_DASHBOARD_STORAGE_PROP;
+import static org.kie.sonataflow.swf.tools.custom.dashboard.impl.CustomDashboardStorageImpl.PROJECT_CUSTOM_DASHBOARD_STORAGE_PROP;
 
 public class CustomDashboardStorageTestProfile implements QuarkusTestProfile {
 

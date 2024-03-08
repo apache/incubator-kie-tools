@@ -16,21 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.custom.dashboard;
+package org.kie.sonataflow.swf.tools.deployment;
 
-import java.io.IOException;
-import java.util.Collection;
+import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.FeatureBuildItem;
 
-import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardFilter;
-import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardInfo;
+class  ServerlessWorkflowQuarkusExtensionProcessor {
 
-public interface CustomDashboardStorage {
+    private static final String FEATURE = "sonataflow-quarkus-devui-extension";
 
-    int getCustomDashboardFilesCount();
-
-    Collection<CustomDashboardInfo> getCustomDashboardFiles(CustomDashboardFilter filter);
-
-    String getCustomDashboardFileContent(String name) throws IOException;
-
-    void updateCustomDashboard(String content);
+    @BuildStep
+    FeatureBuildItem feature() {
+        return new FeatureBuildItem(FEATURE);
+    }
 }

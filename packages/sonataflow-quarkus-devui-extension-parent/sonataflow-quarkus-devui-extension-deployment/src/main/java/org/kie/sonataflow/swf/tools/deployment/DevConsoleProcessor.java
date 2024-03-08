@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.deployment;
+package org.kie.sonataflow.swf.tools.deployment;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

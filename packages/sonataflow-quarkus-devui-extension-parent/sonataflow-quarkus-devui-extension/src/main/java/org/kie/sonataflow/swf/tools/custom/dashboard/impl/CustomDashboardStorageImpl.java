@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.swf.tools.custom.dashboard.impl;
+package org.kie.sonataflow.swf.tools.custom.dashboard.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,9 +47,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.kie.kogito.swf.tools.custom.dashboard.CustomDashboardStorage;
-import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardFilter;
-import org.kie.kogito.swf.tools.custom.dashboard.model.CustomDashboardInfo;
+import org.kie.sonataflow.swf.tools.custom.dashboard.CustomDashboardStorage;
+import org.kie.sonataflow.swf.tools.custom.dashboard.model.CustomDashboardFilter;
+import org.kie.sonataflow.swf.tools.custom.dashboard.model.CustomDashboardInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
