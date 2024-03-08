@@ -21,7 +21,7 @@ package org.kie.sonataflow.swf.tools.deployment;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 
-class  ServerlessWorkflowQuarkusExtensionProcessor {
+class SonataFlowQuarkusExtensionProcessor {
 
     private static final String FEATURE = "sonataflow-quarkus-devui-extension";
 
