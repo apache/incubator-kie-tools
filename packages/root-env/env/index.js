@@ -51,11 +51,11 @@ module.exports = composeEnv([], {
       description: "Enables/disables building example packages during the build.",
     },
     QUARKUS_PLATFORM_version: {
-      default: "3.2.9.Final",
+      default: "3.2.10.Final",
       description: "Quarkus version to be used on dependency declaration.",
     },
     KOGITO_RUNTIME_version: {
-      default: "999-20240218-SNAPSHOT",
+      default: "999-20240310-SNAPSHOT",
       description: "Kogito version to be used on dependency declaration.",
     },
   }),
