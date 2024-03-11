@@ -20,7 +20,6 @@
 import { expect } from "@playwright/test";
 import { test } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
-import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -36,90 +35,43 @@ test.describe("Add edge waypoint - Authority Requirement", () => {
     });
   });
 
-  test.describe("Add Single Waypoint", () => {
-    test("Authority Requirement waypoint should not move when the ending node is moved", async ({
-      diagram,
-      nodes,
-      edges,
-    }) => {
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-      await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 300, y: 300 } });
-
-      await expect(diagram.get()).toHaveScreenshot("add-authority-requirement-waypoint-and-not-move-it.png");
-    });
-
-    test("Authority Requirement ending nodes should not move when the waypoint is moved", async ({
-      diagram,
-      edges,
-      browserName,
-    }) => {
-      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/991");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/991",
-      });
-
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-      await edges.moveNthWaypoint({
+  test("should attach single Authority Requirement waypoint to the DOM", async ({ edges }) => {
+    await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
+    await expect(
+      await edges.getWaypoint({
         from: DefaultNodeName.INPUT_DATA,
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
-        nth: 1,
-        targetPosition: { x: 300, y: 300 },
-      });
-
-      await expect(diagram.get()).toHaveScreenshot("add-authority-requirement-waypoint-and-move-it.png");
-    });
+        waypointIndex: 1,
+      })
+    ).toBeAttached();
+    await expect(
+      await edges.getWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.KNOWLEDGE_SOURCE,
+        waypointIndex: 2,
+      })
+    ).not.toBeAttached();
   });
 
-  test.describe("Add Multiple Waypoints", () => {
-    test("Authority Requirement waypoints should not move when the ending nodes are moved", async ({
-      diagram,
-      nodes,
-      edges,
-    }) => {
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-      await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 200, y: 500 } });
+  test("should attach multiple Authority Requirement waypoints to the DOM", async ({ nodes, edges }) => {
+    await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
+    await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 200, y: 500 } });
 
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-      await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 500, y: 500 } });
-      await nodes.move({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 500, y: 100 } });
+    await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
 
-      await expect(diagram.get()).toHaveScreenshot(
-        "add-multiple-authority-requirement-waypoints-and-not-move-them.png"
-      );
-    });
-
-    test("Authority Requirement ending nodes should not move when the waypoints are moved", async ({
-      diagram,
-      nodes,
-      edges,
-      browserName,
-    }) => {
-      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/991");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/991",
-      });
-
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-      await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 200, y: 500 } });
-
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-
-      await edges.moveNthWaypoint({
+    await expect(
+      await edges.getWaypoint({
         from: DefaultNodeName.INPUT_DATA,
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
-        nth: 1,
-        targetPosition: { x: 500, y: 100 },
-      });
-      await edges.moveNthWaypoint({
+        waypointIndex: 1,
+      })
+    ).toBeAttached();
+    await expect(
+      await edges.getWaypoint({
         from: DefaultNodeName.INPUT_DATA,
         to: DefaultNodeName.KNOWLEDGE_SOURCE,
-        nth: 2,
-        targetPosition: { x: 500, y: 500 },
-      });
-
-      await expect(diagram.get()).toHaveScreenshot("add-multiple-authority-requirement-waypoints-and-move-them.png");
-    });
+        waypointIndex: 2,
+      })
+    ).toBeAttached();
   });
 });

@@ -38,6 +38,10 @@ export class Edges {
     return this.page.getByRole("button", { name: `Edge from ${from} to ${to}` });
   }
 
+  public async getWaypoint(args: { from: string; to: string; waypointIndex: number }) {
+    return (await this.get({ from: args.from, to: args.to })).locator(`[data-waypointindex="${args.waypointIndex}"]`);
+  }
+
   public async getType(args: { from: string; to: string }) {
     return (await this.get({ from: args.from, to: args.to })).locator("path").nth(0).getAttribute("data-edgetype");
   }
@@ -46,19 +50,19 @@ export class Edges {
     await (await this.get({ from: args.from, to: args.to })).dblclick();
   }
 
-  public async moveNthWaypoint(args: {
+  public async moveWaypoint(args: {
     from: string;
     to: string;
-    nth: number;
+    waypointIndex: number;
     targetPosition: { x: number; y: number };
   }) {
     await this.select({ from: args.from, to: args.to });
 
-    await (await this.get({ from: args.from, to: args.to }))
-      .locator(`[data-waypointindex="${args.nth}"]`)
-      .dragTo(this.diagram.get(), {
-        targetPosition: args.targetPosition,
-      });
+    await (
+      await this.getWaypoint({ from: args.from, to: args.to, waypointIndex: args.waypointIndex })
+    ).dragTo(this.diagram.get(), {
+      targetPosition: args.targetPosition,
+    });
   }
 
   public async delete(args: { from: string; to: string; isBackspace?: boolean }) {
