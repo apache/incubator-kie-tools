@@ -85,7 +85,7 @@ test.describe("Test Scenario Table context menu", () => {
       await scesimEditor.addPropertyColumn({
         targetCell: "PROPERTY (<Undefined>)",
         position: AddColumnPosition.LEFT,
-        nth: 1,
+        nth: 0,
       });
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
       await expect(page.getByLabel("Test Scenario")).toHaveScreenshot(
@@ -100,7 +100,7 @@ test.describe("Test Scenario Table context menu", () => {
       await scesimEditor.addPropertyColumn({
         targetCell: "PROPERTY (<Undefined>)",
         position: AddColumnPosition.RIGHT,
-        nth: 1,
+        nth: 0,
       });
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
       await expect(page.getByLabel("Test Scenario")).toHaveScreenshot(
