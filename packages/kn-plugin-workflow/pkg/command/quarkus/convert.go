@@ -21,13 +21,14 @@ package quarkus
 
 import (
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
-	"io"
-	"os"
-	"path/filepath"
 )
 
 func NewConvertCommand() *cobra.Command {
@@ -75,15 +76,10 @@ func loadConvertCmdConfig() (cfg CreateQuarkusProjectConfig, err error) {
 	quarkusVersion := viper.GetString("quarkus-version")
 
 	cfg = CreateQuarkusProjectConfig{
-		Extensions: fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s",
-			metadata.KogitoQuarkusServerlessWorkflowExtension,
-			metadata.KogitoAddonsQuarkusKnativeEventingExtension,
+		Extensions: fmt.Sprintf("%s,%s,%s,%s",
 			metadata.QuarkusKubernetesExtension,
 			metadata.QuarkusResteasyJacksonExtension,
-			metadata.KogitoQuarkusServerlessWorkflowDevUi,
-			metadata.KogitoAddonsQuarkusSourceFiles,
 			metadata.SmallryeHealth,
-			metadata.KogitoDataIndexInMemory,
 			viper.GetString("extension"),
 		),
 		DependenciesVersion: metadata.DependenciesVersion{
