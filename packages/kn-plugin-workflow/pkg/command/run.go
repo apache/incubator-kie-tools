@@ -100,12 +100,12 @@ func runDevCmdConfig() (cfg RunCmdConfig, err error) {
 
 func runSWFProject(cfg RunCmdConfig) error {
 
-	if errDocker := common.CheckDocker(); errDocker == nil {
-		if err := runSWFProjectDevMode(common.Docker, cfg); err != nil {
+	if errPodman := common.CheckPodman(); errPodman == nil {
+		if err := runSWFProjectDevMode(common.Podman, cfg); err != nil {
 			return err
 		}
-	} else if errDocker := common.CheckPodman(); errDocker == nil {
-		if err := runSWFProjectDevMode(common.Podman, cfg); err != nil {
+	} else if errDocker := common.CheckDocker(); errDocker == nil {
+		if err := runSWFProjectDevMode(common.Docker, cfg); err != nil {
 			return err
 		}
 	} else {

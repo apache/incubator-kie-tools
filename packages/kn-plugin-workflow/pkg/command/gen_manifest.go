@@ -21,12 +21,13 @@ package command
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
-	"os"
-	"path/filepath"
 )
 
 func NewGenManifest() *cobra.Command {
@@ -41,6 +42,9 @@ func NewGenManifest() *cobra.Command {
 		Example: `
 	# Persist the generated Operator manifests on a default path (default ./manifests)
 	{{.Name}} gen-manifest
+
+	# Specify a custom target namespace. (default: kubeclt current namespace; --namespace "" to don't set namespace on your manifest)
+	{{.Name}} deploy --namespace <your_namespace>
 
 	# Persist the generated Operator manifests on a specific custom path
 	{{.Name}} gen-manifest --custom-generated-manifest-dir=<full_directory_path>
@@ -63,7 +67,7 @@ func NewGenManifest() *cobra.Command {
 		return generateManifestsCmd(cmd, args)
 	}
 
-	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
+	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment. (default: kubeclt current namespace; \"\" to don't set namespace on your manifest)")
 	cmd.Flags().StringP("custom-generated-manifests-dir", "c", "", "Target directory of your generated Operator manifests.")
 	cmd.Flags().StringP("specs-dir", "p", "", "Specify a custom specs files directory")
 	cmd.Flags().StringP("subflows-dir", "s", "", "Specify a custom subflows files directory")
@@ -105,6 +109,12 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 		SchemasDir:                 viper.GetString("schemas-dir"),
 		SubflowsDir:                viper.GetString("subflows-dir"),
 		CustomGeneratedManifestDir: viper.GetString("custom-generated-manifests-dir"),
+	}
+
+	if cmd.Flags().Changed("namespace") && len(cfg.NameSpace) == 0 {
+		// distinguish between a user intentionally setting an empty value
+		// and not providing the flag at all
+		cfg.EmptyNameSpace = true
 	}
 
 	if len(cfg.SubflowsDir) == 0 {
@@ -151,7 +161,7 @@ func setupEnvironment(cfg *DeployUndeployCmdConfig) error {
 	fmt.Println("\n🔎 Checking your environment...")
 
 	//setup namespace
-	if len(cfg.NameSpace) == 0 {
+	if len(cfg.NameSpace) == 0 && !cfg.EmptyNameSpace {
 		if defaultNamespace, err := common.GetKubectlNamespace(); err == nil {
 			cfg.NameSpace = defaultNamespace
 			fmt.Printf(" - ✅  resolved namespace: %s\n", cfg.NameSpace)
@@ -159,6 +169,8 @@ func setupEnvironment(cfg *DeployUndeployCmdConfig) error {
 			cfg.NameSpace = "default"
 			fmt.Printf(" - ✅  resolved namespace (default): %s\n", cfg.NameSpace)
 		}
+	} else if cfg.EmptyNameSpace {
+		fmt.Printf(" -  ❗ empty namespace manifest (you will have to setup one later) \n")
 	} else {
 		fmt.Printf(" - ✅  resolved namespace: %s\n", cfg.NameSpace)
 	}
