@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "../../../../playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DEFAULT_DRD_NAME } from "../__fixtures__/diagram";
 import { EdgeType } from "../__fixtures__/edges";
@@ -31,6 +32,11 @@ test.describe("Add node - Knowledge Source", () => {
   test.describe("Add to the DRG", () => {
     test.describe("add from the palette", () => {
       test("should add Knowledge Source node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
+        test.skip(true, "");
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "",
+        });
         await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();

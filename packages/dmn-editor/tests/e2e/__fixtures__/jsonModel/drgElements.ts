@@ -77,8 +77,14 @@ export class DrgElements {
     } = drgElement;
 
     return {
-      // authorityRequirement
-      // knowledgeRequirement
+      // authorityRequirement: authorityRequirement?.map((e) => ({
+      //   requiredDecision: e.requiredDecision?.["@_href"],
+      //   requiredInput: e.requiredInput?.["@_href"],
+      //   requiredAuthority: e.requiredAuthority?.["@_href"],
+      // })),
+      // knowledgeRequirement: knowledgeRequirement?.map((e) => ({
+      //   requiredKnowledge: e.requiredKnowledge?.["@_href"],
+      // })),
       // drgElement.encapsulatedLogic
 
       bounds: {
@@ -140,10 +146,19 @@ export class DrgElements {
     } = drgElement;
 
     return {
-      // authorityRequirement
-      // informationRequirement
-      // knowledgeRequirement
       // expression
+      // authorityRequirement: authorityRequirement?.map((e) => ({
+      //   requiredDecision: e.requiredDecision?.["@_href"],
+      //   requiredInput: e.requiredInput?.["@_href"],
+      //   requiredAuthority: e.requiredAuthority?.["@_href"],
+      // })),
+      // informationRequirement: informationRequirement?.map((e) => ({
+      //   requiredDecision: e.requiredDecision?.["@_href"],
+      //   requiredInput: e.requiredInput?.["@_href"],
+      // })),
+      // knowledgeRequirement: knowledgeRequirement?.map((e) => ({
+      //   requiredKnowledge: e.requiredKnowledge?.["@_href"],
+      // })),
 
       allowedAnswers: allowedAnswers?.__$$text,
       bounds: {
@@ -302,7 +317,11 @@ export class DrgElements {
     } = drgElement;
 
     return {
-      // authorityRequirement
+      // authorityRequirement: authorityRequirement?.map((e) => ({
+      //   requiredDecision: e.requiredDecision?.["@_href"],
+      //   requiredInput: e.requiredInput?.["@_href"],
+      //   requiredAuthority: e.requiredAuthority?.["@_href"],
+      // })),
 
       bounds: {
         x: drgElementBounds.x,

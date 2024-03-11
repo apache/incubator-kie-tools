@@ -51,7 +51,13 @@ test.describe("Add node - Decision", () => {
     });
 
     test.describe("add from nodes", () => {
-      test("should add connected Decision node from Input Data node", async ({ diagram, palette, nodes, edges }) => {
+      test("should add connected Decision node from Input Data node", async ({
+        jsonModel,
+        diagram,
+        palette,
+        nodes,
+        edges,
+      }) => {
         await palette.dragNewNode({
           type: NodeType.INPUT_DATA,
           targetPosition: { x: 100, y: 100 },
@@ -67,6 +73,28 @@ test.describe("Add node - Decision", () => {
           EdgeType.INFORMATION_REQUIREMENT
         );
         await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-input-data-node.png");
+
+        // JSON model assertions
+        expect(
+          await jsonModel.drgElements.getInputData({ name: DefaultNodeName.INPUT_DATA, drdName: DEFAULT_DRD_NAME })
+        ).toEqual({
+          name: DefaultNodeName.INPUT_DATA,
+          variable: {
+            name: DefaultNodeName.INPUT_DATA,
+            typeRef: DataType.Undefined,
+          },
+          bounds: { x: 0, y: 0, width: 160, height: 80 },
+        });
+        expect(
+          await jsonModel.drgElements.getDecision({ name: DefaultNodeName.DECISION, drdName: DEFAULT_DRD_NAME })
+        ).toEqual({
+          name: DefaultNodeName.DECISION,
+          variable: {
+            name: DefaultNodeName.DECISION,
+            typeRef: DataType.Undefined,
+          },
+          bounds: { x: 400, y: 400, width: 160, height: 80 },
+        });
       });
 
       test("should add connected Decision node from Decision node", async ({ diagram, palette, nodes, edges }) => {
