@@ -18,9 +18,9 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
+import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 import { Button, Flex, FlexItem, Title, Tooltip } from "@patternfly/react-core/dist/js";
 import React, { useEffect, useState } from "react";
-import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 
 function App() {
   const [version, setVersion] = useState(-1);
