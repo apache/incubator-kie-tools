@@ -17,22 +17,15 @@
  * under the License.
  */
 
-import type { Meta, StoryObj } from "@storybook/react";
-import { DevWebApp } from "../../../dev-webapp/src/DevWebApp";
-import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
-import { SceSimEditorWrapper } from "../../scesimEditorStoriesWrapper";
-import React from "react";
+import * as React from "react";
+import { useRef } from "react";
+import { DevWebApp } from "../dev-webapp/src/DevWebApp";
 
-// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-const meta: Meta<typeof TestScenarioEditor> = {
-  title: "Misc/Empty SceSim Editor",
-  component: TestScenarioEditor,
-  includeStories: /^[A-Z]/,
-};
-export default meta;
-type Story = StoryObj<typeof TestScenarioEditor>;
-
-export const Base: Story = {
-  render: (args) => <DevWebApp />,
-  args: {},
-};
+export function SceSimEditorWrapper() {
+  const emptyRef = useRef<HTMLDivElement>(null);
+  return (
+    <div ref={emptyRef}>
+      <DevWebApp />
+    </div>
+  );
+}

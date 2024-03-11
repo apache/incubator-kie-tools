@@ -18,16 +18,17 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { DevWebApp } from "../../dev-webapp/src/DevWebApp";
-import { Button, Flex, FlexItem, Tooltip } from "@patternfly/react-core/dist/js";
-import { useEffect, useState, useCallback, useRef } from "react";
-import React from "react";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { IS_OLD_ENOUGH_RULE, TRAFFIC_VIOLATION_DMN } from "../../dev-webapp/src/ExternalScesimModels";
-import { TestScenarioEditor, TestScenarioEditorRef } from "../../src/TestScenarioEditor";
-import { Base } from "../misc/Empty/EmptyEditor.stories";
+import { Button, Flex, FlexItem, Title, Tooltip } from "@patternfly/react-core/dist/js";
+import React, { useEffect, useState } from "react";
+import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 
 function App() {
+  const [version, setVersion] = useState(-1);
+
+  useEffect(() => {
+    setVersion((prev) => prev + 1);
+  }, []);
+
   return (
     <div>
       <Flex direction={{ default: "column" }}>
@@ -42,12 +43,15 @@ function App() {
             <FlexItem>
               <Button>Traffic Violation</Button>
             </FlexItem>
+            <FlexItem align={{ default: "alignRight" }}>
+              <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>
+                <Title headingLevel="h2">Updates count: {version}</Title>
+              </Tooltip>
+            </FlexItem>
           </Flex>
         </FlexItem>
         <FlexItem>
-          <div>
-            <DevWebApp />
-          </div>
+          <div>{SceSimEditorWrapper()}</div>
         </FlexItem>
       </Flex>
     </div>

@@ -18,14 +18,18 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { AddColumnPosition } from "../../__fixtures__/scesimEditor";
 
 test.describe("Background Table context menu", () => {
   test.describe("Context menu checks", () => {
     test.beforeEach(async ({ stories, page, monaco, scesimEditor }) => {
       await stories.openBackgroundTableDecision();
-      await page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).click();
-      await scesimEditor.addBackgroundColumns(1);
-      await monaco.fill({ monacoParentLocator: page, content: "test", nth: 4 });
+      await scesimEditor.addPropertyColumn({
+        targetCell: "PROPERTY (<Undefined>)",
+        position: AddColumnPosition.RIGHT,
+        nth: 0,
+      });
+      await monaco.fillBackgroundTableCell({ content: "test", column: 1 });
       await page.keyboard.press("Escape");
     });
 
@@ -51,6 +55,52 @@ test.describe("Background Table context menu", () => {
       await expect(page.getByRole("heading", { name: "SCENARIO", exact: true })).not.toBeAttached();
       await expect(page.getByRole("heading", { name: "FIELD" })).not.toBeAttached();
       await expect(page.getByRole("heading", { name: "INSTANCE" })).toBeAttached();
+    });
+    test("should add and delete instance column left", async ({ page, scesimEditor }) => {
+      await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
+      await scesimEditor.addInstanceColumn({
+        targetCell: "INSTANCE-1 (<Undefined>)",
+        position: AddColumnPosition.LEFT,
+      });
+      await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
+      await page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" }).click({ button: "right" });
+      await page.getByRole("menuitem", { name: "Delete Instance" }).click();
+      await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
+    });
+    test("should add and delete instance column right", async ({ page, scesimEditor }) => {
+      await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
+      await scesimEditor.addInstanceColumn({
+        targetCell: "INSTANCE-1 (<Undefined>)",
+        position: AddColumnPosition.RIGHT,
+      });
+      await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
+      await page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" }).click({ button: "right" });
+      await page.getByRole("menuitem", { name: "Delete Instance" }).click();
+      await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
+    });
+    test("should add and delete property column left", async ({ page, scesimEditor }) => {
+      await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
+      await scesimEditor.addPropertyColumn({
+        targetCell: "PROPERTY (<Undefined>)",
+        position: AddColumnPosition.LEFT,
+        nth: 1,
+      });
+      await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
+      await page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(1).click({ button: "right" });
+      await page.getByRole("menuitem", { name: "Delete Field" }).click();
+      await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
+    });
+    test("should add and delete property column right", async ({ page, scesimEditor }) => {
+      await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
+      await scesimEditor.addPropertyColumn({
+        targetCell: "PROPERTY (<Undefined>)",
+        position: AddColumnPosition.RIGHT,
+        nth: 1,
+      });
+      await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
+      await page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(1).click({ button: "right" });
+      await page.getByRole("menuitem", { name: "Delete Field" }).click();
+      await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
     });
   });
 });

@@ -18,6 +18,7 @@
  */
 
 import { expect, test } from "../../__fixtures__/base";
+import { AddRowPosition } from "../../__fixtures__/scesimEditor";
 
 test.describe("Keyboard", () => {
   test.describe("Keyboard-Shortcuts Navigation", () => {
@@ -27,8 +28,10 @@ test.describe("Keyboard", () => {
       scesimEditor,
     }) => {
       await stories.openTestScenarioTableRule();
-      await page.getByRole("cell", { name: "1" }).click();
-      await scesimEditor.addRows(3);
+      await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+      await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+      await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+      await page.getByRole("row", { name: "1", exact: true }).click();
       await page.getByRole("row", { name: "1", exact: true }).press("Tab");
       await page.getByRole("row", { name: "1", exact: true }).press("Tab");
       await page.getByRole("row", { name: "1", exact: true }).press("Enter");
@@ -37,6 +40,7 @@ test.describe("Keyboard", () => {
       await page.getByRole("row", { name: "1", exact: true }).press("Enter");
       await page.getByRole("row", { name: "1", exact: true }).press("Enter");
       await page.getByRole("row", { name: "2", exact: true }).press("Shift+Tab");
+      await page.getByRole("row", { name: "3", exact: true }).press("Shift+Enter");
       await page.getByRole("row", { name: "3", exact: true }).press("Shift+Enter");
       await page.getByRole("row", { name: "2", exact: true }).press("Tab");
       await page.getByRole("row", { name: "2", exact: true }).press("Enter");
@@ -55,8 +59,9 @@ test.describe("Keyboard", () => {
   test.describe("Arrow Key Navigation", () => {
     test("should correctly navigate the page using arrow keys", async ({ stories, page, cells, scesimEditor }) => {
       await stories.openTestScenarioTableDecision();
-      await page.getByRole("cell", { name: "1" }).click();
-      await scesimEditor.addRows(3);
+      await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+      await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+      await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
       await page.getByRole("row", { name: "1", exact: true }).click();
       await cells.navigateRight(page.getByRole("row", { name: "1", exact: true }));
       await cells.navigateRight(
@@ -68,7 +73,6 @@ test.describe("Keyboard", () => {
       await cells.navigateLeft(
         page.getByRole("row", { name: "2", exact: true }).getByTestId("monaco-container").nth(2)
       );
-
       await cells.navigateDown(
         page.getByRole("row", { name: "2", exact: true }).getByTestId("monaco-container").nth(1)
       );

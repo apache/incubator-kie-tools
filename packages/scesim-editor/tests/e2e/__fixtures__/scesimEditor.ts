@@ -19,25 +19,39 @@
 
 import { Page, Locator } from "@playwright/test";
 
+export enum AddRowPosition {
+  ABOVE,
+  BELOW,
+}
+
+export enum AddColumnPosition {
+  LEFT,
+  RIGHT,
+}
+
 export class SceSimEditor {
   constructor(public page: Page) {}
 
-  public async addRows(numberOfRows: number) {
-    while (numberOfRows > 0) {
-      await this.page.getByRole("cell", { name: "1", exact: true }).locator("div").nth(1).click();
-      numberOfRows--;
-    }
+  public async addRow(args: { targetCell: string; position: AddRowPosition }) {
+    await this.page.getByRole("cell", { name: args.targetCell, exact: true }).click({ button: "right" });
+    args.position === AddRowPosition.BELOW
+      ? await this.page.getByRole("menuitem", { name: "Insert Below" }).click()
+      : await this.page.getByRole("menuitem", { name: "Insert Above" }).click();
   }
-  public async addTestScenarioColumns(numberOfColumns: number) {
-    while (numberOfColumns > 0) {
-      await this.page.getByLabel("Test Scenario").locator("svg").click();
-      numberOfColumns--;
-    }
+
+  public async addPropertyColumn(args: { targetCell: string; position: AddColumnPosition; nth: number }) {
+    args.nth === 0
+      ? await this.page.getByRole("columnheader", { name: args.targetCell }).first().click({ button: "right" })
+      : await this.page.getByRole("columnheader", { name: args.targetCell }).nth(args.nth).click({ button: "right" });
+    args.position === AddColumnPosition.LEFT
+      ? await this.page.getByRole("menuitem", { name: "Insert Field Left" }).click()
+      : await this.page.getByRole("menuitem", { name: "Insert Field Right" }).click();
   }
-  public async addBackgroundColumns(numberOfColumns: number) {
-    while (numberOfColumns > 0) {
-      await this.page.getByLabel("Background").locator("svg").click();
-      numberOfColumns--;
-    }
+
+  public async addInstanceColumn(args: { targetCell: string; position: AddColumnPosition }) {
+    await this.page.getByRole("columnheader", { name: args.targetCell }).click({ button: "right" });
+    args.position === AddColumnPosition.LEFT
+      ? await this.page.getByRole("menuitem", { name: "Insert Instance Left" }).click()
+      : await this.page.getByRole("menuitem", { name: "Insert Instance Right" }).click();
   }
 }

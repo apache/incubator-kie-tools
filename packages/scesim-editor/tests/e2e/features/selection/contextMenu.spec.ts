@@ -23,7 +23,7 @@ test.describe("Selection", () => {
   test.describe("Context menu", () => {
     test.beforeEach(async ({ stories, page, monaco }) => {
       await stories.openTestScenarioTableRule();
-      await monaco.fill({ monacoParentLocator: page, content: '"test"', nth: 1 });
+      await monaco.fillByRowAndColumn({ content: '"test"', rowLocatorInfo: "1", column: 1 });
     });
 
     test.describe(() => {

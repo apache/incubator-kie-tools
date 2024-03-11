@@ -18,6 +18,7 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { AddRowPosition } from "../../__fixtures__/scesimEditor";
 
 test.describe("Populate Decision Test Scenario table", () => {
   test("should correctly populate decision-based a test scenario table", async ({
@@ -25,122 +26,57 @@ test.describe("Populate Decision Test Scenario table", () => {
     page,
     resizing,
     scesimEditor,
-    cells,
+    monaco,
   }) => {
     await stories.openTestScenarioTableDecision();
-    await page.getByTestId("monaco-container").first().click();
-    await page.getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("Scenario one");
-    await page.getByTestId("monaco-container").nth(1).click();
-    await page.getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("date and time(5, 10)");
-    await page.getByText("date and time(5, 10)date and time(5, 10)").press("Tab");
-    await page.getByTestId("monaco-container").nth(2).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("100");
+    await monaco.fillByRowAndColumn({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
+    await monaco.fillByRowAndColumn({
+      content: "date and time(5, 10)",
+      rowLocatorInfo: "1 Scenario one Scenario one",
+      column: 1,
+    });
+    await monaco.fillByRowAndColumn({
+      content: "100",
+      rowLocatorInfo: "1 Scenario one Scenario one date and time(5, 10) date and time(5, 10)",
+      column: 2,
+    });
+
     await resizing.reset(page.getByRole("columnheader", { name: "GIVEN" }));
-    await page.getByRole("columnheader", { name: "GIVEN" }).hover({ position: { x: 0, y: 0 } });
-    await page
-      .getByRole("cell", { name: "date and time(5, 10) date and time(5, 10)" })
-      .getByTestId("monaco-container")
-      .click();
-    await cells.navigateLeft(page.getByText("date and time(5, 10)date and time(5, 10)"));
-    await scesimEditor.addRows(5);
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
 
-    await page.getByRole("cell", { name: "Scenario one Scenario one" }).getByTestId("monaco-container").click();
-    await cells.navigateDown(page.getByText("Scenario oneScenario one"));
-    await page.getByRole("row", { name: "2" }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("{foo}");
+    await monaco.fillByRowAndColumn({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
+    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
+    await monaco.fillByRowAndColumn({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
+    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: "5", column: 0 });
+    await monaco.fillByRowAndColumn({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
 
-    await page.getByRole("row", { name: "3" }).getByTestId("monaco-container").first().click();
-    await page.getByRole("row", { name: "3" }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"foo"');
+    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
+    await monaco.fillByRowAndColumn({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
+    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: "4 [foo] [foo]", column: 1 });
+    await monaco.fillByRowAndColumn({ content: "Scenario two", rowLocatorInfo: "5 ,./123 ,./123", column: 1 });
+    await monaco.fillByRowAndColumn({ content: '"129587289157"', rowLocatorInfo: '6 "6789" "6789"', column: 1 });
 
-    await page.getByRole("row", { name: "4" }).getByTestId("monaco-container").first().click();
-    await page.getByRole("row", { name: "4" }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("[foo]");
-
-    await page.getByRole("row", { name: "5", exact: true }).getByTestId("monaco-container").first().click();
-    await page.getByRole("row", { name: "5", exact: true }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(",./123");
-
-    await page.getByRole("row", { name: "6" }).getByTestId("monaco-container").first().click();
-    await page.getByRole("row", { name: "6" }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"6789"');
-
-    await page.getByRole("row", { name: "2 {foo} {foo}" }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: "2 {foo} {foo}" }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"foo"');
-
-    await page.getByRole("row", { name: '3 "foo" "foo"' }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: '3 "foo" "foo"' }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("[foo]");
-
-    await page.getByRole("row", { name: "4 [foo] [foo]" }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: "4 [foo] [foo]" }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(",./123");
-
-    await page.getByRole("row", { name: "5 ,./123 ,./123" }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: "5 ,./123 ,./123" }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("Scenario two");
-
-    await page.getByRole("row", { name: '6 "6789" "6789"' }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: '6 "6789" "6789"' }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"129587289157"');
-
-    await page.getByRole("row", { name: '2 {foo} {foo} "foo" "foo"' }).getByTestId("monaco-container").nth(2).click();
-    await page
-      .getByRole("row", { name: '2 {foo} {foo} "foo" "foo"' })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("[foo]");
-
-    await page.getByRole("row", { name: '3 "foo" "foo" [foo] [foo]' }).getByTestId("monaco-container").nth(2).click();
-    await page
-      .getByRole("row", { name: '3 "foo" "foo" [foo] [foo]' })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(",./123");
-
-    await page.getByRole("row", { name: "4 [foo] [foo] ,./123 ,./123" }).getByTestId("monaco-container").nth(2).click();
-    await page
-      .getByRole("row", { name: "4 [foo] [foo] ,./123 ,./123" })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"12859728917589"');
-
-    await page
-      .getByRole("row", { name: "5 ,./123 ,./123 Scenario two Scenario two" })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .click();
-    await page
-      .getByRole("row", { name: "5 ,./123 ,./123 Scenario two Scenario two" })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page
-      .getByLabel("Editor content;Press Alt+F1 for Accessibility Options.")
-      .fill("Scenario date and time(213, , )");
-
-    await cells.navigateRight(page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options."));
-    await page
-      .getByLabel("Editor content;Press Alt+F1 for Accessibility Options.")
-      .fill("Scenario date and time(213,456 , )");
-
-    await page
-      .getByRole("row", { name: '6 "6789" "6789" "129587289157" "129587289157"' })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .click();
-    await page
-      .getByRole("row", { name: '6 "6789" "6789" "129587289157" "129587289157"' })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("{foofoo}{foofoo}");
+    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: '2 {foo} {foo} "foo" "foo"', column: 2 });
+    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: '3 "foo" "foo" [foo] [foo]', column: 2 });
+    await monaco.fillByRowAndColumn({
+      content: '"12859728917589"',
+      rowLocatorInfo: "4 [foo] [foo] ,./123 ,./123",
+      column: 2,
+    });
+    await monaco.fillByRowAndColumn({
+      content: "Scenario date and time(213,456 , )",
+      rowLocatorInfo: "5 ,./123 ,./123 Scenario two Scenario two",
+      column: 2,
+    });
+    await monaco.fillByRowAndColumn({
+      content: "{foofoo}{foofoo}",
+      rowLocatorInfo: '6 "6789" "6789" "129587289157" "129587289157"',
+      column: 2,
+    });
 
     await resizing.reset(page.getByRole("columnheader", { name: "EXPECT" }));
     await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("test-scenario-table-decision.png");
@@ -153,122 +89,58 @@ test.describe("Populate Rule Test Scenario table", () => {
     page,
     resizing,
     scesimEditor,
-    cells,
+    monaco,
   }) => {
     await stories.openTestScenarioTableRule();
-    await page.getByTestId("monaco-container").first().click();
-    await page.getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("Scenario one");
-    await page.getByTestId("monaco-container").nth(1).click();
-    await page.getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("date and time(5, 10)");
-    await page.getByText("date and time(5, 10)date and time(5, 10)").press("Tab");
-    await page.getByTestId("monaco-container").nth(2).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("100");
+
+    await monaco.fillByRowAndColumn({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
+    await monaco.fillByRowAndColumn({
+      content: "date and time(5, 10)",
+      rowLocatorInfo: "1 Scenario one Scenario one",
+      column: 1,
+    });
+    await monaco.fillByRowAndColumn({
+      content: "100",
+      rowLocatorInfo: "1 Scenario one Scenario one date and time(5, 10) date and time(5, 10)",
+      column: 2,
+    });
+
     await resizing.reset(page.getByRole("columnheader", { name: "GIVEN" }));
-    await page.getByRole("columnheader", { name: "GIVEN" }).hover({ position: { x: 0, y: 0 } });
-    await page
-      .getByRole("cell", { name: "date and time(5, 10) date and time(5, 10)" })
-      .getByTestId("monaco-container")
-      .click();
-    await cells.navigateLeft(page.getByText("date and time(5, 10)date and time(5, 10)"));
-    await scesimEditor.addRows(5);
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
 
-    await page.getByRole("cell", { name: "Scenario one Scenario one" }).getByTestId("monaco-container").click();
-    await cells.navigateDown(page.getByText("Scenario oneScenario one"));
-    await page.getByRole("row", { name: "2" }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("{foo}");
+    await monaco.fillByRowAndColumn({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
+    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
+    await monaco.fillByRowAndColumn({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
+    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: "5", column: 0 });
+    await monaco.fillByRowAndColumn({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
 
-    await page.getByRole("row", { name: "3" }).getByTestId("monaco-container").first().click();
-    await page.getByRole("row", { name: "3" }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"foo"');
+    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
+    await monaco.fillByRowAndColumn({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
+    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: "4 [foo] [foo]", column: 1 });
+    await monaco.fillByRowAndColumn({ content: "Scenario two", rowLocatorInfo: "5 ,./123 ,./123", column: 1 });
+    await monaco.fillByRowAndColumn({ content: '"129587289157"', rowLocatorInfo: '6 "6789" "6789"', column: 1 });
 
-    await page.getByRole("row", { name: "4" }).getByTestId("monaco-container").first().click();
-    await page.getByRole("row", { name: "4" }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("[foo]");
-
-    await page.getByRole("row", { name: "5", exact: true }).getByTestId("monaco-container").first().click();
-    await page.getByRole("row", { name: "5", exact: true }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(",./123");
-
-    await page.getByRole("row", { name: "6" }).getByTestId("monaco-container").first().click();
-    await page.getByRole("row", { name: "6" }).getByTestId("monaco-container").first().press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"6789"');
-
-    await page.getByRole("row", { name: "2 {foo} {foo}" }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: "2 {foo} {foo}" }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"foo"');
-
-    await page.getByRole("row", { name: '3 "foo" "foo"' }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: '3 "foo" "foo"' }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("[foo]");
-
-    await page.getByRole("row", { name: "4 [foo] [foo]" }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: "4 [foo] [foo]" }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(",./123");
-
-    await page.getByRole("row", { name: "5 ,./123 ,./123" }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: "5 ,./123 ,./123" }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("Scenario two");
-
-    await page.getByRole("row", { name: '6 "6789" "6789"' }).getByTestId("monaco-container").nth(1).click();
-    await page.getByRole("row", { name: '6 "6789" "6789"' }).getByTestId("monaco-container").nth(1).press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"129587289157"');
-
-    await page.getByRole("row", { name: '2 {foo} {foo} "foo" "foo"' }).getByTestId("monaco-container").nth(2).click();
-    await page
-      .getByRole("row", { name: '2 {foo} {foo} "foo" "foo"' })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("[foo]");
-
-    await page.getByRole("row", { name: '3 "foo" "foo" [foo] [foo]' }).getByTestId("monaco-container").nth(2).click();
-    await page
-      .getByRole("row", { name: '3 "foo" "foo" [foo] [foo]' })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(",./123");
-
-    await page.getByRole("row", { name: "4 [foo] [foo] ,./123 ,./123" }).getByTestId("monaco-container").nth(2).click();
-    await page
-      .getByRole("row", { name: "4 [foo] [foo] ,./123 ,./123" })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill('"12859728917589"');
-
-    await page
-      .getByRole("row", { name: "5 ,./123 ,./123 Scenario two Scenario two" })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .click();
-    await page
-      .getByRole("row", { name: "5 ,./123 ,./123 Scenario two Scenario two" })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page
-      .getByLabel("Editor content;Press Alt+F1 for Accessibility Options.")
-      .fill("Scenario date and time(213, , )");
-
-    await cells.navigateRight(page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options."));
-    await page
-      .getByLabel("Editor content;Press Alt+F1 for Accessibility Options.")
-      .fill("Scenario date and time(213,456 , )");
-
-    await page
-      .getByRole("row", { name: '6 "6789" "6789" "129587289157" "129587289157"' })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .click();
-    await page
-      .getByRole("row", { name: '6 "6789" "6789" "129587289157" "129587289157"' })
-      .getByTestId("monaco-container")
-      .nth(2)
-      .press("Enter");
-    await page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill("{foofoo}{foofoo}");
+    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: '2 {foo} {foo} "foo" "foo"', column: 2 });
+    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: '3 "foo" "foo" [foo] [foo]', column: 2 });
+    await monaco.fillByRowAndColumn({
+      content: '"12859728917589"',
+      rowLocatorInfo: "4 [foo] [foo] ,./123 ,./123",
+      column: 2,
+    });
+    await monaco.fillByRowAndColumn({
+      content: "Scenario date and time(213,456 , )",
+      rowLocatorInfo: "5 ,./123 ,./123 Scenario two Scenario two",
+      column: 2,
+    });
+    await monaco.fillByRowAndColumn({
+      content: "{foofoo}{foofoo}",
+      rowLocatorInfo: '6 "6789" "6789" "129587289157" "129587289157"',
+      column: 2,
+    });
 
     await resizing.reset(page.getByRole("columnheader", { name: "EXPECT" }));
     await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("test-scenario-table-rule.png");
