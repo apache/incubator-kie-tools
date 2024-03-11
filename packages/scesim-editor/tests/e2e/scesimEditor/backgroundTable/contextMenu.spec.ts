@@ -63,6 +63,7 @@ test.describe("Background Table context menu", () => {
         position: AddColumnPosition.LEFT,
       });
       await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
+      await expect(page.getByLabel("Background")).toHaveScreenshot("background-table-add-instance-column-left.png");
       await page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete Instance" }).click();
       await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
@@ -74,6 +75,7 @@ test.describe("Background Table context menu", () => {
         position: AddColumnPosition.RIGHT,
       });
       await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
+      await expect(page.getByLabel("Background")).toHaveScreenshot("background-table-add-instance-column-right.png");
       await page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete Instance" }).click();
       await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
@@ -86,6 +88,7 @@ test.describe("Background Table context menu", () => {
         nth: 1,
       });
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
+      await expect(page.getByLabel("Background")).toHaveScreenshot("background-table-add-property-column-left.png");
       await page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(1).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete Field" }).click();
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
@@ -98,6 +101,7 @@ test.describe("Background Table context menu", () => {
         nth: 1,
       });
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
+      await expect(page.getByLabel("Background")).toHaveScreenshot("background-table-add-property-column-right.png");
       await page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(1).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete Field" }).click();
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();

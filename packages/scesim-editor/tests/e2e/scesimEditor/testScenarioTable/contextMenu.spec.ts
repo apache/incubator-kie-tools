@@ -59,6 +59,9 @@ test.describe("Test Scenario Table context menu", () => {
         position: AddColumnPosition.LEFT,
       });
       await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
+      await expect(page.getByLabel("Test Scenario")).toHaveScreenshot(
+        "test-scenario-table-add-instance-column-left.png"
+      );
       await page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete Instance" }).click();
       await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
@@ -70,6 +73,9 @@ test.describe("Test Scenario Table context menu", () => {
         position: AddColumnPosition.RIGHT,
       });
       await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
+      await expect(page.getByLabel("Test Scenario")).toHaveScreenshot(
+        "test-scenario-table-add-instance-column-right.png"
+      );
       await page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete Instance" }).click();
       await expect(page.getByRole("columnheader", { name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
@@ -82,6 +88,9 @@ test.describe("Test Scenario Table context menu", () => {
         nth: 1,
       });
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
+      await expect(page.getByLabel("Test Scenario")).toHaveScreenshot(
+        "test-scenario-table-add-property-column-left.png"
+      );
       await page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(1).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete Field" }).click();
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
@@ -94,13 +103,17 @@ test.describe("Test Scenario Table context menu", () => {
         nth: 1,
       });
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
+      await expect(page.getByLabel("Test Scenario")).toHaveScreenshot(
+        "test-scenario-table-add-property-column-right.png"
+      );
       await page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(1).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete Field" }).click();
       await expect(page.getByRole("columnheader", { name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
     });
     test("should add and delete row below", async ({ page, scesimEditor }) => {
       await expect(page.getByRole("cell", { name: "3", exact: true })).not.toBeAttached();
-      await scesimEditor.addRow({ targetCell: "2", position: AddRowPosition.BELOW });
+      await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+      await expect(page.getByRole("row", { name: "1 test test" })).toContainText("test");
       await expect(page.getByRole("cell", { name: "3", exact: true })).toBeAttached();
       await page.getByRole("cell", { name: "3", exact: true }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete" }).click();
@@ -108,7 +121,8 @@ test.describe("Test Scenario Table context menu", () => {
     });
     test("should add and delete row above", async ({ page, scesimEditor }) => {
       await expect(page.getByRole("cell", { name: "3", exact: true })).not.toBeAttached();
-      await scesimEditor.addRow({ targetCell: "2", position: AddRowPosition.ABOVE });
+      await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.ABOVE });
+      await expect(page.getByRole("row", { name: "2 test test" })).toContainText("test");
       await expect(page.getByRole("cell", { name: "3", exact: true })).toBeAttached();
       await page.getByRole("cell", { name: "3", exact: true }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete" }).click();
