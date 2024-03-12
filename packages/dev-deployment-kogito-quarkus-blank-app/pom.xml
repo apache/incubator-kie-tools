@@ -87,7 +87,7 @@
       </dependency>
       <dependency>
         <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-with-drools-quarkus-extension</artifactId>
+        <artifactId>jbpm-with-drools-quarkus</artifactId>
         <version>${version.org.kie.kogito}</version>
       </dependency>
     </dependencies>
@@ -120,7 +120,7 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-with-drools-quarkus-extension</artifactId>
+      <artifactId>jbpm-with-drools-quarkus</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.kie.kogito</groupId>
