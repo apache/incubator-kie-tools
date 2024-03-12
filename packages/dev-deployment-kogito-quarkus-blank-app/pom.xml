@@ -85,11 +85,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus</artifactId>
-        <version>${version.org.kie.kogito}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -119,8 +114,8 @@
       <artifactId>kie-dmn-openapi</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus-extension</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.kie.kogito</groupId>
