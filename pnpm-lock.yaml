@@ -382,6 +382,21 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
 
+  examples/sonataflow-greeting-quarkus:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      "@kie-tools/serverless-workflow-dev-ui-webapp":
+        specifier: workspace:*
+        version: link:../../packages/serverless-workflow-dev-ui-webapp
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   examples/todo-list-view:
     dependencies:
       "@kie-tools-core/envelope":

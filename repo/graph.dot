@@ -21,6 +21,8 @@ digraph G {
   "@kie-tools-core/envelope" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-examples/ping-pong-view-angular" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/ping-pong-view-react" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools-examples/sonataflow-greeting-quarkus" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools/serverless-workflow-dev-ui-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/todo-list-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "kie-tools-examples-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/uniforms-patternfly" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -143,7 +145,6 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor-assets" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/serverless-workflow-dev-ui-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-jq-expressions" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -179,6 +180,7 @@ digraph G {
   "@kie-tools-examples/ping-pong-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-angular" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-react" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/sonataflow-greeting-quarkus" -> "@kie-tools/serverless-workflow-dev-ui-webapp" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/todo-list-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-examples/todo-list-view" [ style = "solid", color = "orange" ];
