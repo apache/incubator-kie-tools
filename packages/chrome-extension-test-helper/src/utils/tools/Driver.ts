@@ -50,10 +50,13 @@ export default class Driver {
     // init chrome options
     const chromeOptions: Options = new Options();
     chromeOptions.addArguments(
+      "--user-data-dir=" + CHROME_DIR,
       "--load-extension=" + chromeExtensionPath,
       "--enable-features=UnexpireFlagsM118",
       "--allow-insecure-localhost",
-      "--user-data-dir=" + CHROME_DIR
+      "--disable-web-security",
+      "--remote-allow-origins=*",
+      "--disable-gpu"
     );
 
     // init chrome driver log
