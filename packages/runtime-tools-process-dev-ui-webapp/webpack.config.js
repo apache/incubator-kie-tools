@@ -29,10 +29,9 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env: buildEnv } = require("./env");
 
-const dataIndexURL = buildEnv.runtimeToolsProcessDevUIWebapp.kogitoDataIndexUrl;
-
-module.exports = async (env) =>
-  merge(common(env), {
+module.exports = async (env) => {
+  const dataIndexURL = buildEnv.runtimeToolsProcessDevUIWebapp.kogitoDataIndexUrl;
+  return merge(common(env), {
     entry: {
       standalone: path.resolve(__dirname, "src", "standalone", "standalone.ts"),
       envelope: path.resolve(__dirname, "src", "standalone", "EnvelopeApp.ts"),
@@ -163,3 +162,4 @@ module.exports = async (env) =>
     },
     ignoreWarnings: [/Failed to parse source map/],
   });
+};

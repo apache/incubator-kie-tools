@@ -31,7 +31,7 @@ export interface Consoles {
   open: (args: {
     container: Element;
     users: User[];
-    dataIndexUrl: string;
+    dataIndexUrl?: string;
     page: string;
     devUIUrl: string;
     openApiPath: string;
@@ -110,7 +110,7 @@ export function open(args: {
   container: Element;
   isDataIndexAvailable: boolean;
   users: User[];
-  dataIndexUrl: string;
+  dataIndexUrl?: string;
   page: string;
   devUIUrl: string;
   openApiPath: string;
@@ -131,7 +131,7 @@ export function open(args: {
     iframe,
     args.isDataIndexAvailable,
     args.users,
-    args.dataIndexUrl,
+    args.dataIndexUrl ?? process.env.KOGITO_DATAINDEX_HTTP_URL,
     args.page,
     args.devUIUrl,
     args.openApiPath,
