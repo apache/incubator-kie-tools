@@ -21,6 +21,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 import { Button, Flex, FlexItem, Title, Tooltip } from "@patternfly/react-core/dist/js";
 import React, { useEffect, useState } from "react";
+import { linkTo } from "@storybook/addon-links";
 
 function App() {
   const [version, setVersion] = useState(-1);
@@ -35,13 +36,15 @@ function App() {
         <FlexItem>
           <Flex style={{ width: "96vw" }}>
             <FlexItem>
-              <Button>Empty</Button>
+              <Button onClick={linkTo("Misc/Empty SceSim Editor", "Base")}>Empty</Button>
             </FlexItem>
             <FlexItem>
-              <Button>Are They Old Enough?</Button>
+              <Button onClick={linkTo("Use Cases/Is Old Enough Rule", "Is Old Enough")}>Are They Old Enough?</Button>
             </FlexItem>
             <FlexItem>
-              <Button>Traffic Violation</Button>
+              <Button onClick={linkTo("Use Cases/Traffic Violation DMN", "Traffic Violation")}>
+                Traffic Violation
+              </Button>
             </FlexItem>
             <FlexItem align={{ default: "alignRight" }}>
               <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>
