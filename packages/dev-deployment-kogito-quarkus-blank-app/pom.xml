@@ -85,6 +85,11 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-with-drools-quarkus-extension</artifactId>
+        <version>${version.org.kie.kogito}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
