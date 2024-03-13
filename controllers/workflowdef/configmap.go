@@ -23,6 +23,8 @@ import (
 	"context"
 	"path"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
+
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -47,6 +49,7 @@ func CreateNewConfigMap(workflow *operatorapi.SonataFlow) (*corev1.ConfigMap, er
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      workflow.Name,
 			Namespace: workflow.Namespace,
+			Labels:    workflowproj.GetMergedLabels(workflow),
 		},
 		Data: map[string]string{GetWorkflowDefFileName(workflow): string(workflowDef)},
 	}, nil

@@ -234,7 +234,7 @@ func (w *workflowProjectHandler) parseRawWorkflow() error {
 		profile = w.profile
 	}
 	SetWorkflowProfile(w.project.Workflow, profile)
-	SetDefaultLabels(w.project.Workflow, w.project.Workflow)
+	SetMergedLabels(w.project.Workflow, w.project.Workflow)
 	if err = SetTypeToObject(w.project.Workflow, w.scheme); err != nil {
 		return err
 	}

@@ -117,8 +117,8 @@ func (o *openshiftBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 	if err = o.addExternalResources(bc, workflow); err != nil {
 		return err
 	}
-	workflowproj.SetDefaultLabels(workflow, is)
-	workflowproj.SetDefaultLabels(workflow, bc)
+	workflowproj.SetMergedLabels(workflow, is)
+	workflowproj.SetMergedLabels(workflow, bc)
 	if err = controllerutil.SetControllerReference(build, bc, o.buildManagerContext.client.Scheme()); err != nil {
 		return err
 	}

@@ -33,6 +33,7 @@ func RouteForWorkflow(workflow *operatorapi.SonataFlow) (*v1.Route, error) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      workflow.Name,
 			Namespace: workflow.Namespace,
+			Labels:    workflowproj.GetMergedLabels(workflow),
 		},
 		Spec: v1.RouteSpec{
 			To: v1.RouteTargetReference{
@@ -44,6 +45,5 @@ func RouteForWorkflow(workflow *operatorapi.SonataFlow) (*v1.Route, error) {
 			},
 		},
 	}
-	workflowproj.SetDefaultLabels(workflow, route)
 	return route, nil
 }

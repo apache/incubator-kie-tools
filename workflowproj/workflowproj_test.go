@@ -77,6 +77,8 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpec(t *testing.T) {
 		AsObjects()
 	assert.NoError(t, err)
 	assert.NotNil(t, proj.Workflow)
+	assert.NotNil(t, proj.Workflow.ObjectMeta)
+	assert.Equal(t, proj.Workflow.ObjectMeta.Labels, map[string]string{"app": "hello", "sonataflow.org/workflow-app": "hello"})
 	assert.NotNil(t, proj.Properties)
 	assert.NotEmpty(t, proj.Resources)
 	assert.Equal(t, "hello", proj.Workflow.Name)

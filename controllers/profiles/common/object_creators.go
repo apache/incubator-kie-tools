@@ -75,7 +75,7 @@ const (
 // DeploymentCreator is an objectCreator for a base Kubernetes Deployments for profiles that need to deploy the workflow on a vanilla deployment.
 // It serves as a basis for a basic Quarkus Java application, expected to listen on http 8080.
 func DeploymentCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFlowPlatform) (client.Object, error) {
-	lbl := workflowproj.GetDefaultLabels(workflow)
+	lbl := workflowproj.GetMergedLabels(workflow)
 
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -192,7 +192,7 @@ func defaultContainer(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataF
 // ServiceCreator is an objectCreator for a basic Service aiming a vanilla Kubernetes Deployment.
 // It maps the default HTTP port (80) to the target Java application webserver on port 8080.
 func ServiceCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
-	lbl := workflowproj.GetDefaultLabels(workflow)
+	lbl := workflowproj.GetMergedLabels(workflow)
 
 	service := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
@@ -216,7 +216,7 @@ func ServiceCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 // SinkBindingCreator is an ObjectsCreator for SinkBinding.
 // It will create v1.SinkBinding based on events defined in workflow.
 func SinkBindingCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
-	lbl := workflowproj.GetDefaultLabels(workflow)
+	lbl := workflowproj.GetMergedLabels(workflow)
 
 	// skip if no produced event is found
 	if workflow.Spec.Sink == nil || !workflowdef.ContainsEventKind(workflow, cncfmodel.EventKindProduced) {
@@ -253,7 +253,7 @@ func SinkBindingCreator(workflow *operatorapi.SonataFlow) (client.Object, error)
 // It will create a list of eventingv1.Trigger based on events defined in workflow.
 func TriggersCreator(workflow *operatorapi.SonataFlow) ([]client.Object, error) {
 	var resultObjects []client.Object
-	lbl := workflowproj.GetDefaultLabels(workflow)
+	lbl := workflowproj.GetMergedLabels(workflow)
 
 	//consumed
 	events := workflow.Spec.Flow.Events

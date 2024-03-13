@@ -19,6 +19,9 @@ metadata:
   annotations:
     sonataflow.org/description: Simple example on k8s!
     sonataflow.org/version: 0.0.1
+  labels:
+    test: test
+    app: not-simple
 spec:
   podTemplate:
     container:

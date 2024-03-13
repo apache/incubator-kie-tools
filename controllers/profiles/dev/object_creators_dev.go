@@ -80,7 +80,6 @@ func workflowDefConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Objec
 	if err != nil {
 		return nil, err
 	}
-	workflowproj.SetDefaultLabels(workflow, configMap)
 	return configMap, nil
 }
 

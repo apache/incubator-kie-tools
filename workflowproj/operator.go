@@ -82,19 +82,31 @@ func GetManagedPropertiesFileName(workflow *operatorapi.SonataFlow) string {
 	return fmt.Sprintf("application-%s.properties", profile)
 }
 
-// SetDefaultLabels adds the default workflow application labels to the given object.
-// Overrides the defined labels.
-func SetDefaultLabels(workflow *operatorapi.SonataFlow, object metav1.Object) {
-	object.SetLabels(GetDefaultLabels(workflow))
-}
-
 // GetDefaultLabels gets the default labels based on the given workflow.
-// You can use SetDefaultLabels that essentially does the same thing, if you don't need the labels explicitly.
 func GetDefaultLabels(workflow *operatorapi.SonataFlow) map[string]string {
 	return map[string]string{
 		LabelApp:      workflow.Name,
 		LabelWorkflow: workflow.Name,
 	}
+}
+
+// SetMergedLabels adds the merged labels to the given object.
+func SetMergedLabels(workflow *operatorapi.SonataFlow, object metav1.Object) {
+	object.SetLabels(GetMergedLabels(workflow))
+}
+
+// GetMergedLabels gets labels based on the given workflow, includes their own labels, merged with the default ones.
+func GetMergedLabels(workflow *operatorapi.SonataFlow) map[string]string {
+	mergedLabels := make(map[string]string)
+	if labels := workflow.GetLabels(); labels != nil {
+		for k, v := range labels {
+			mergedLabels[k] = v
+		}
+	}
+	for k, v := range GetDefaultLabels(workflow) {
+		mergedLabels[k] = v
+	}
+	return mergedLabels
 }
 
 // CreateNewUserPropsConfigMap creates a new empty ConfigMap object to hold the user application properties of the workflow.
@@ -103,7 +115,7 @@ func CreateNewUserPropsConfigMap(workflow *operatorapi.SonataFlow) *corev1.Confi
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      GetWorkflowUserPropertiesConfigMapName(workflow),
 			Namespace: workflow.Namespace,
-			Labels:    GetDefaultLabels(workflow),
+			Labels:    GetMergedLabels(workflow),
 		},
 		Data: map[string]string{ApplicationPropertiesFileName: ""},
 	}
@@ -115,7 +127,7 @@ func CreateNewManagedPropsConfigMap(workflow *operatorapi.SonataFlow, properties
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      GetWorkflowManagedPropertiesConfigMapName(workflow),
 			Namespace: workflow.Namespace,
-			Labels:    GetDefaultLabels(workflow),
+			Labels:    GetMergedLabels(workflow),
 		},
 		Data: map[string]string{GetManagedPropertiesFileName(workflow): properties},
 	}

@@ -72,6 +72,9 @@ func Test_Reconciler_ProdOps(t *testing.T) {
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
 	assert.Len(t, deployment.Spec.Template.Spec.InitContainers, 1)
 	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 1)
+	assert.NotNil(t, deployment.ObjectMeta)
+	assert.NotNil(t, deployment.ObjectMeta.Labels)
+	assert.Equal(t, deployment.ObjectMeta.Labels, map[string]string{"test": "test", "app": "simple", "sonataflow.org/workflow-app": "simple"})
 }
 
 func Test_Reconciler_ProdCustomPod(t *testing.T) {
@@ -100,6 +103,9 @@ func Test_Reconciler_ProdCustomPod(t *testing.T) {
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
 	assert.Len(t, deployment.Spec.Template.Spec.InitContainers, 1)
 	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 1)
+	assert.NotNil(t, deployment.ObjectMeta)
+	assert.NotNil(t, deployment.ObjectMeta.Labels)
+	assert.Equal(t, deployment.ObjectMeta.Labels, map[string]string{"test": "test", "app": "greeting", "sonataflow.org/workflow-app": "greeting"})
 }
 
 func Test_reconcilerProdBuildConditions(t *testing.T) {

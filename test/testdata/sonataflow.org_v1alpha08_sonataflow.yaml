@@ -22,6 +22,8 @@ metadata:
   annotations:
     sonataflow.org/description: Greeting example on k8s!
     sonataflow.org/version: 0.0.1
+  labels:
+    test: test
 spec:
   flow:
     start: ChooseOnLanguage

@@ -41,4 +41,7 @@ func Test_ensureWorkflowDevServiceIsExposed(t *testing.T) {
 	assert.NotNil(t, reflectService.Spec.Type)
 	assert.NotEmpty(t, reflectService.Spec.Type)
 	assert.Equal(t, reflectService.Spec.Type, v1.ServiceTypeNodePort)
+	assert.NotNil(t, reflectService.ObjectMeta)
+	assert.NotNil(t, reflectService.ObjectMeta.Labels)
+	assert.Equal(t, reflectService.ObjectMeta.Labels, map[string]string{"test": "test", "app": "greeting", "sonataflow.org/workflow-app": "greeting"})
 }

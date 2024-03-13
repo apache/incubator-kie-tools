@@ -192,6 +192,8 @@ func Test_ensureWorkflowSinkBindingIsCreated(t *testing.T) {
 	assert.NotNil(t, reflectSinkBinding.Spec)
 	assert.NotEmpty(t, reflectSinkBinding.Spec.Sink)
 	assert.Equal(t, reflectSinkBinding.Spec.Sink.Ref.Kind, "Broker")
+	assert.NotNil(t, reflectSinkBinding.GetLabels())
+	assert.Equal(t, reflectSinkBinding.ObjectMeta.Labels, map[string]string{"app": "vet", "sonataflow.org/workflow-app": "vet"})
 }
 
 func Test_ensureWorkflowTriggersAreCreated(t *testing.T) {
@@ -204,6 +206,8 @@ func Test_ensureWorkflowTriggersAreCreated(t *testing.T) {
 	assert.Len(t, triggers, 2)
 	for _, trigger := range triggers {
 		assert.Contains(t, []string{"vet-vetappointmentrequestreceived-trigger", "vet-vetappointmentinfo-trigger"}, trigger.GetName())
+		assert.NotNil(t, trigger.GetLabels())
+		assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet", "sonataflow.org/workflow-app": "vet"})
 	}
 }
 
