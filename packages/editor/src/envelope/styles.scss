@@ -85,7 +85,31 @@
 }
 
 .pf-c-modal-box.kie-tools--keyboard-shortcuts.dark {
-  background-color: #b3b3b3;
+  background-color: #313131;
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6,
+  .dt,
+  .dd,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  dt,
+  dd {
+    color: #cccccc;
+  }
+  .pf-c-button.pf-m-plain {
+    color: #cccccc;
+  }
+  .pf-c-button.pf-m-plain:hover {
+    color: #000;
+  }
 }
 
 body {
