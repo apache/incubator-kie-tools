@@ -115,7 +115,7 @@ export class ValidationHelper {
   private async validate(serviceURL: URL): Promise<void> {
     const bpmnFiles: vscode.TextDocument[] = await KIEFileWatcher.findOpenBPMNFiles();
     const dmnFiles: vscode.TextDocument[] = await KIEFileWatcher.findOpenDMNFiles();
-
+    await new Promise((f) => setTimeout(f, 50));
     await this.validateBPMN(serviceURL, bpmnFiles);
     await this.validateDMN(serviceURL, dmnFiles);
   }
