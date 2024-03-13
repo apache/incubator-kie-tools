@@ -31,14 +31,14 @@ export class KIEFile {
     this.fileWatcher.onDidChange(this.fireKIEFileChangedEvent, this);
   }
 
-  public subscribeKIEFileChanged(handler: KIEFileChangedHandler) {
-    this.kieFileChangedEventHandler = handler;
-  }
-
   private fireKIEFileChangedEvent() {
     if (this.kieFileChangedEventHandler) {
       this.kieFileChangedEventHandler();
     }
+  }
+
+  public subscribeKIEFileChanged(handler: KIEFileChangedHandler) {
+    this.kieFileChangedEventHandler = handler;
   }
 
   public unsubscribeKIEFileChanged() {
