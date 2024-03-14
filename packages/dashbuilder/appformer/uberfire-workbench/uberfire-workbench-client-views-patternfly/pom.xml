@@ -70,10 +70,6 @@
       <artifactId>errai-ioc</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.allen-sauer.gwt.dnd</groupId>
       <artifactId>gwt-dnd</artifactId>
     </dependency>
@@ -115,13 +111,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons</artifactId>
-      <classifier>sources</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
       <classifier>sources</classifier>
       <scope>test</scope>
     </dependency>

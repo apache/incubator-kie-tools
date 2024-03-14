@@ -19,13 +19,14 @@
 
 package org.uberfire.workbench.model.impl;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 
 /**
@@ -51,6 +52,10 @@ public class PerspectiveDefinitionImpl
         PanelDefinitionImpl root = new PanelDefinitionImpl(panelType);
         root.setRoot(true);
         this.root = root;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Override

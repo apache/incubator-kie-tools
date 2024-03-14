@@ -20,6 +20,8 @@
 
 package org.uberfire.client.views.pfly.maximize;
 
+import java.util.Objects;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -30,8 +32,6 @@ import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter.View;
 import org.uberfire.mvp.Command;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class MaximizeToggleButton extends Button implements View {
 
@@ -61,6 +61,10 @@ public class MaximizeToggleButton extends Button implements View {
     public void init(MaximizeToggleButtonPresenter presenter) {
         this.presenter = checkNotNull("presenter",
                                       presenter);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     /**

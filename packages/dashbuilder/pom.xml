@@ -151,17 +151,6 @@
         <version>${version.org.javassist}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-commons</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-commons</artifactId>
-        <version>${version.org.kie}</version>
-        <classifier>sources</classifier>
-      </dependency>
       <!-- TESTING -->
       <dependency>
         <groupId>org.assertj</groupId>
