@@ -268,10 +268,11 @@ public class StunnerEditor {
     }
 
     public StunnerEditor close() {
+        hasErrors = false;
         if (!isClosed()) {
+            alertsControl = null;
             diagramPresenter.destroy();
             diagramPresenter = null;
-            alertsControl = null;
             editorSessionPresenterInstances.destroyAll();
             viewerSessionPresenterInstances.destroyAll();
         }
