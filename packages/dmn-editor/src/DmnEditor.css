@@ -69,6 +69,10 @@
   pointer-events: none;
   z-index: 1;
 }
+.kie-dmn-editor--input-data-node {
+  width: 100%;
+  height: 100%;
+}
 .kie-dmn-editor--text-annotation-node {
   text-align: left;
   display: block;

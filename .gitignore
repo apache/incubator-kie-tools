@@ -10,7 +10,6 @@
 **/dist-e2e-tests/
 **/dist-storybook/
 **/e2e-tests-tmp/
-**/playwright-report/
 **/coverage/
 **/target/
 **/.dashbuilder/
