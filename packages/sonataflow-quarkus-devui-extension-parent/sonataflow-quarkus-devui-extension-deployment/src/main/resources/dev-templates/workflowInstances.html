@@ -28,7 +28,7 @@ calc(100vh - 98px); } {/style} {#title}Runtime UI{/title} {#body}
 
   const devUI = RuntimeToolsDevUI.open({
       container: document.getElementById("envelope-app"),
-      isDataIndexAvailable: {info:isDataIndexAvailable},
+      isDataIndexAvailable: true,
       dataIndexUrl: "{config:property('kogito.data-index.url') ?: ''}/graphql",
       devUIUrl,
       page: "Workflows",
