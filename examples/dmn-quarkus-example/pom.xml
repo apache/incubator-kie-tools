@@ -31,8 +31,8 @@
     <version>${revision}</version>
     <relativePath>../kie-tools-quarkus-examples-parent/pom.xml</relativePath>
   </parent>
-  <artifactId>decisiontable-quarkus-example</artifactId>
-  <name>Kie-Tools Example :: Decision Table - Quarkus</name>
+  <artifactId>dmn-quarkus-example</artifactId>
+  <name>Kie-Tools Example :: DMN</name>
   <properties>
     <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
@@ -60,24 +60,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-bom</artifactId>
-        <version>${version.org.drools}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-quarkus-rules</artifactId>
-        <version>${version.org.drools}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jackson</artifactId>
+      <artifactId>drools-quarkus-decisions</artifactId>
+      <version>${version.org.drools}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -89,15 +78,11 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-drools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-decisiontables</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -107,6 +92,11 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-scenario-simulation</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

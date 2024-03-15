@@ -24,6 +24,7 @@
       { "id": "@kie-tools-examples/commit-message-validation-service" },
       { "id": "@kie-tools-examples/decisiontable-quarkus-example" },
       { "id": "@kie-tools/maven-config-setup-helper" },
+      { "id": "@kie-tools-examples/dmn-quarkus-example" },
       { "id": "@kie-tools-examples/ping-pong-view" },
       { "id": "@kie-tools-core/envelope-bus" },
       { "id": "@kie-tools-examples/ping-pong-view-angular" },
@@ -234,6 +235,12 @@
         "weight": 1
       },
       { "source": "@kie-tools-examples/decisiontable-quarkus-example", "target": "@kie-tools/root-env", "weight": 1 },
+      {
+        "source": "@kie-tools-examples/dmn-quarkus-example",
+        "target": "@kie-tools/maven-config-setup-helper",
+        "weight": 1
+      },
+      { "source": "@kie-tools-examples/dmn-quarkus-example", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-examples/ping-pong-view", "target": "@kie-tools-core/envelope", "weight": 1 },
       { "source": "@kie-tools-core/envelope-bus", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/envelope-bus", "target": "@kie-tools/root-env", "weight": 1 },
@@ -1015,6 +1022,7 @@
     ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
     ["@kie-tools-examples/commit-message-validation-service", "examples/commit-message-validation-service"],
     ["@kie-tools-examples/decisiontable-quarkus-example", "examples/decisiontable-quarkus-example"],
+    ["@kie-tools-examples/dmn-quarkus-example", "examples/dmn-quarkus-example"],
     ["@kie-tools-examples/ping-pong-view", "examples/ping-pong-view"],
     ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
     ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],

@@ -253,6 +253,18 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  examples/dmn-quarkus-example:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   examples/ping-pong-view:
     dependencies:
       "@kie-tools-core/envelope":

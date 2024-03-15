@@ -19,6 +19,7 @@ digraph G {
   "@kie-tools/root-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/decisiontable-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-examples/dmn-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/ping-pong-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/envelope" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-examples/ping-pong-view-angular" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -180,6 +181,8 @@ digraph G {
   "@kie-tools-examples/commit-message-validation-service" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/decisiontable-quarkus-example" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/decisiontable-quarkus-example" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/dmn-quarkus-example" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/dmn-quarkus-example" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/ping-pong-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-angular" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-react" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
