@@ -19,6 +19,8 @@
 
 package org.uberfire.ext.widgets.common.client.common.popups.footers;
 
+import java.util.Objects;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -29,8 +31,6 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.uberfire.mvp.Command;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A Modal Footer with OK and Cancel buttons
@@ -59,6 +59,10 @@ public class ModalFooterReOpenIgnoreButtons extends ModalFooter {
                                   panel);
         add(uiBinder.createAndBindUi(this));
         this.actionButton.setText(buttonText);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @UiHandler("actionButton")
