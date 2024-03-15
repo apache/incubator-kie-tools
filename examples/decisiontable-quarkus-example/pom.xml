@@ -25,33 +25,25 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <groupId>org.apache.kie.sonataflow.examples</groupId>
-    <artifactId>sonataflow-examples-parent</artifactId>
+    <groupId>org.apache.kie.examples</groupId>
+    <artifactId>kie-tools-quarkus-examples-parent</artifactId>
     <version>${revision}</version>
-    <relativePath>../sonataflow-examples-parent/pom.xml</relativePath>
+    <relativePath>../kie-tools-quarkus-examples-parent/pom.xml</relativePath>
   </parent>
-
-  <groupId>org.apache.kie.sonataflow.examples</groupId>
-  <artifactId>sonataflow-greeting-quarkus</artifactId>
-  <version>${revision}</version>
-
-  <name>KIE Tools Example :: Serverless Workflow Greeting :: Quarkus</name>
-  <description>Kogito Serverless Workflow Example - Quarkus</description>
+  <artifactId>decisiontable-quarkus-example</artifactId>
+  <name>Kogito Example :: Decision Table - Quarkus</name>
   <properties>
     <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
-    <quarkus.platform.version>${quarkus.platform.version}</quarkus.platform.version>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+    <quarkus.platform.version>${quarkus.platform.version}</quarkus.platform.version>
     <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
     <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
     <kogito.bom.version>${version.org.kie.kogito}</kogito.bom.version>
-    <maven.compiler.release>17</maven.compiler.release>
-    <version.compiler.plugin>3.12.1</version.compiler.plugin>
-    <version.failsafe.plugin>3.0.0-M7</version.failsafe.plugin>
+    <version.org.kie.kogito>${version.org.kie.kogito}</version.org.kie.kogito>
+    <version.org.drools>999-SNAPSHOT</version.org.drools>
   </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -68,16 +60,20 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-bom</artifactId>
+        <version>${version.org.drools}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-serverless-workflow</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-quarkus-rules</artifactId>
+        <version>${version.org.drools}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -85,17 +81,23 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jsonp</artifactId>
+      <artifactId>quarkus-resteasy</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.kie.sonataflow</groupId>
-      <artifactId>sonataflow-quarkus-devui-extension</artifactId>
-      <version>${revision}</version>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-arc</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-addons-quarkus-source-files</artifactId>
-      <version>999-SNAPSHOT</version>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-drools</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -116,13 +118,6 @@
     <finalName>${project.artifactId}</finalName>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${version.compiler.plugin}</version>
-        <configuration>
-          <release>${maven.compiler.release}</release>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
         <version>${quarkus-plugin.version}</version>
@@ -134,54 +129,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${version.failsafe.plugin}</version>
-        <configuration>
-          <systemPropertyVariables>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <maven.home>${maven.home}</maven.home>
-          </systemPropertyVariables>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>container</id>
-      <activation>
-        <property>
-          <name>container</name>
-        </property>
-      </activation>
-      <properties>
-        <quarkus.profile>container</quarkus.profile>
-      </properties>
-      <dependencies>
-        <dependency>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-container-image-jib</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>native</id>
-      <activation>
-        <property>
-          <name>native</name>
-        </property>
-      </activation>
-      <properties>
-        <quarkus.package.type>native</quarkus.package.type>
-      </properties>
-    </profile>
-  </profiles>
 </project>

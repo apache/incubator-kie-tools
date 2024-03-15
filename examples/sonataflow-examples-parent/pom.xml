@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
 
     Licensed to the Apache Software Foundation (ASF) under one
@@ -19,14 +19,16 @@
     under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.apache.kie.sonataflow.examples</groupId>
+  <groupId>org.apache.kie.sonataflow.examples</groupId>
   <artifactId>sonataflow-examples-parent</artifactId>
-    <version>${revision}</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
   <name>KIE-Tools Example :: SonataFlow Examples :: Parent</name>
 

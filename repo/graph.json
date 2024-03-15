@@ -22,14 +22,15 @@
       { "id": "@kie-tools-core/vscode-extension" },
       { "id": "@kie-tools-core/vscode-java-code-completion" },
       { "id": "@kie-tools-examples/commit-message-validation-service" },
+      { "id": "@kie-tools-examples/decisiontable-quarkus-example" },
+      { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools-examples/ping-pong-view" },
       { "id": "@kie-tools-core/envelope-bus" },
       { "id": "@kie-tools-examples/ping-pong-view-angular" },
       { "id": "@kie-tools-examples/ping-pong-view-react" },
       { "id": "@kie-tools-examples/sonataflow-greeting-quarkus" },
+      { "id": "@kie-tools/sonataflow-quarkus-devui-extension-parent" },
       { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
-      { "id": "@kie-tools/runtime-tools-webapp-components" },
-      { "id": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" },
       { "id": "@kie-tools-examples/todo-list-view" },
       { "id": "kie-tools-examples-todo-list-view-vscode-extension" },
       { "id": "@kie-tools-examples/uniforms-patternfly" },
@@ -59,7 +60,6 @@
       { "id": "bpmn-vscode-extension" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
       { "id": "@kie-tools/pmml-editor-marshaller" },
-      { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "chrome-extension-pack-kogito-kie-editors" },
       { "id": "@kie-tools/chrome-extension-test-helper" },
@@ -135,6 +135,7 @@
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-gateway-api" },
       { "id": "@kie-tools/runtime-tools-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-webapp-components" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -153,10 +154,10 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
+      { "id": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
-      { "id": "@kie-tools/sonataflow-quarkus-devui-extension-parent" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -227,6 +228,12 @@
         "target": "@kie-tools/root-env",
         "weight": 1
       },
+      {
+        "source": "@kie-tools-examples/decisiontable-quarkus-example",
+        "target": "@kie-tools/maven-config-setup-helper",
+        "weight": 1
+      },
+      { "source": "@kie-tools-examples/decisiontable-quarkus-example", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-examples/ping-pong-view", "target": "@kie-tools-core/envelope", "weight": 1 },
       { "source": "@kie-tools-core/envelope-bus", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/envelope-bus", "target": "@kie-tools/root-env", "weight": 1 },
@@ -243,6 +250,11 @@
       },
       {
         "source": "@kie-tools-examples/sonataflow-greeting-quarkus",
+        "target": "@kie-tools/sonataflow-quarkus-devui-extension-parent",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-quarkus-devui-extension-parent",
         "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
         "weight": 1
       },
@@ -254,16 +266,6 @@
       {
         "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
         "target": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-webapp-components",
-        "target": "@kie-tools/runtime-tools-enveloped-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
-        "target": "@kie-tools/dashbuilder-client",
         "weight": 1
       },
       { "source": "@kie-tools-examples/todo-list-view", "target": "@kie-tools-core/envelope", "weight": 1 },
@@ -836,6 +838,11 @@
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
+      {
+        "source": "@kie-tools/runtime-tools-webapp-components",
+        "target": "@kie-tools/runtime-tools-enveloped-components",
+        "weight": 1
+      },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/scesim-marshaller", "weight": 1 },
       { "source": "@kie-tools/scesim-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
@@ -952,6 +959,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
+        "target": "@kie-tools/dashbuilder-client",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/serverless-workflow-jq-expressions",
         "target": "@kie-tools/serverless-workflow-service-catalog",
         "weight": 1
@@ -970,11 +982,6 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
-      {
-        "source": "@kie-tools/sonataflow-quarkus-devui-extension-parent",
-        "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
-        "weight": 1
-      },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",
@@ -1007,6 +1014,7 @@
     ["@kie-tools-examples/base64png-editor-chrome-extension", "examples/base64png-editor-chrome-extension"],
     ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
     ["@kie-tools-examples/commit-message-validation-service", "examples/commit-message-validation-service"],
+    ["@kie-tools-examples/decisiontable-quarkus-example", "examples/decisiontable-quarkus-example"],
     ["@kie-tools-examples/ping-pong-view", "examples/ping-pong-view"],
     ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
     ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],

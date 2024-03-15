@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.kie.kogito.decisiontable.quarkus;
 
-const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 
-setup(`
-    -Drevision=${buildEnv.env.sonataflowGreetingQuarkus.version}
-    -Dquarkus.platform.version=${buildEnv.env.quarkusPlatform.version}
-    -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
-`);
+@QuarkusIntegrationTest
+public class NativeRestQueryIT extends RestQueryTest {
+
+    // Execute the same tests but in native mode.
+}
