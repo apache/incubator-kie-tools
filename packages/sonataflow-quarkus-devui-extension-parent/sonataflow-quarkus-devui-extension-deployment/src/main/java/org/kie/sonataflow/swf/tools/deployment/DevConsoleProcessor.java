@@ -22,11 +22,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Path;
-import java.util.Optional;
 
-import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoDataIndexServiceAvailableBuildItem;
-
-import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
@@ -38,7 +34,6 @@ import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.ShutdownContextBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.util.WebJarUtil;
-import io.quarkus.devconsole.spi.DevConsoleTemplateInfoBuildItem;
 import io.quarkus.devui.spi.page.CardPageBuildItem;
 import io.quarkus.devui.spi.page.Page;
 import io.quarkus.maven.dependency.ResolvedDependency;
@@ -51,7 +46,6 @@ public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
     private static final String BASE_RELATIVE_URL = "/q/dev-v1/org.apache.kie.sonataflow.sonataflow-quarkus-devui-extension";
-    private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
 
     @BuildStep(onlyIf = IsDevelopment.class)
     public CardPageBuildItem pages(NonApplicationRootPathBuildItem nonApplicationRootPathBuildItem,
@@ -108,15 +102,6 @@ public class DevConsoleProcessor {
                 .handler(recorder.devConsoleHandler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());
-    }
-
-    @SuppressWarnings("unused")
-    @BuildStep(onlyIf = IsDevelopment.class)
-    public void isDataIndexAvailable(BuildProducer<DevConsoleTemplateInfoBuildItem> devConsoleTemplateInfoBuildItemBuildProducer,
-            Optional<KogitoDataIndexServiceAvailableBuildItem> dataIndexServiceAvailableBuildItem,
-            Capabilities capabilities) {
-        devConsoleTemplateInfoBuildItemBuildProducer.produce(new DevConsoleTemplateInfoBuildItem("isDataIndexAvailable",
-                dataIndexServiceAvailableBuildItem.isPresent() || capabilities.isPresent(DATA_INDEX_CAPABILITY)));
     }
 
     private static String getProperty(ConfigurationBuildItem configurationBuildItem,
