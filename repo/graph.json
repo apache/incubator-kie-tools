@@ -29,6 +29,7 @@
       { "id": "@kie-tools-core/envelope-bus" },
       { "id": "@kie-tools-examples/ping-pong-view-angular" },
       { "id": "@kie-tools-examples/ping-pong-view-react" },
+      { "id": "@kie-tools-examples/pmml-quarkus-example" },
       { "id": "@kie-tools-examples/sonataflow-greeting-quarkus" },
       { "id": "@kie-tools/sonataflow-quarkus-devui-extension-parent" },
       { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
@@ -255,6 +256,12 @@
         "target": "@kie-tools-examples/ping-pong-view",
         "weight": 1
       },
+      {
+        "source": "@kie-tools-examples/pmml-quarkus-example",
+        "target": "@kie-tools/maven-config-setup-helper",
+        "weight": 1
+      },
+      { "source": "@kie-tools-examples/pmml-quarkus-example", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools-examples/sonataflow-greeting-quarkus",
         "target": "@kie-tools/sonataflow-quarkus-devui-extension-parent",
@@ -1026,6 +1033,7 @@
     ["@kie-tools-examples/ping-pong-view", "examples/ping-pong-view"],
     ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
     ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],
+    ["@kie-tools-examples/pmml-quarkus-example", "examples/pmml-quarkus-example"],
     ["@kie-tools-examples/sonataflow-greeting-quarkus", "examples/sonataflow-greeting-quarkus"],
     ["@kie-tools-examples/todo-list-view", "examples/todo-list-view"],
     ["kie-tools-examples-todo-list-view-vscode-extension", "examples/todo-list-view-vscode-extension"],
