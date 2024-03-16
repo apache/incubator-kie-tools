@@ -78,9 +78,11 @@ test.describe("Move edge waypoint - Authority Requirement", () => {
       edges,
     }) => {
       await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-      await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 200, y: 500 } });
-
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
+      await edges.addWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.KNOWLEDGE_SOURCE,
+        afterWaypointIndex: 1,
+      });
       await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 500, y: 500 } });
       await nodes.move({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 500, y: 100 } });
 
@@ -89,7 +91,6 @@ test.describe("Move edge waypoint - Authority Requirement", () => {
 
     test("Authority Requirement ending nodes should not move when the waypoints are moved", async ({
       diagram,
-      nodes,
       edges,
       browserName,
     }) => {
@@ -100,9 +101,11 @@ test.describe("Move edge waypoint - Authority Requirement", () => {
       });
 
       await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-      await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 200, y: 500 } });
-
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
+      await edges.addWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.KNOWLEDGE_SOURCE,
+        afterWaypointIndex: 1,
+      });
 
       await edges.moveWaypoint({
         from: DefaultNodeName.INPUT_DATA,

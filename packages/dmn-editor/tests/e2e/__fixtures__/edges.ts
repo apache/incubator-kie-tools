@@ -46,8 +46,27 @@ export class Edges {
     return (await this.get({ from: args.from, to: args.to })).locator("path").nth(0).getAttribute("data-edgetype");
   }
 
-  public async addWaypoint(args: { from: string; to: string }) {
-    await (await this.get({ from: args.from, to: args.to })).dblclick();
+  public async addWaypoint(args: { from: string; to: string; afterWaypointIndex?: number }) {
+    const dAttribute = await (
+      await (await this.get({ from: args.from, to: args.to })).locator("path").first()
+    ).getAttribute("d");
+
+    const edgeSegments = dAttribute?.match(/M [0-9]*,[0-9]* L [0-9]*,[0-9]*/);
+
+    if (edgeSegments) {
+      const edgeSegment = args.afterWaypointIndex
+        ? edgeSegments[Math.min(edgeSegments.length - 1, args.afterWaypointIndex)]
+        : edgeSegments[0];
+      const from = edgeSegment.split(/ L [0-9]*,[0-9]*/)[0];
+      const to = edgeSegment.split(/M [0-9]*,[0-9]* /)[1];
+
+      const fromPoint = { x: parseInt(from.slice(2).split(",")[0]), y: parseInt(from.slice(2).split(",")[1]) };
+      const toPoint = { x: parseInt(to.slice(2).split(",")[0]), y: parseInt(to.slice(2).split(",")[1]) };
+
+      const targetPoint = { x: (fromPoint.x + toPoint.x) / 2, y: (fromPoint.y + toPoint.y) / 2 };
+
+      await this.diagram.dblclick(targetPoint);
+    }
   }
 
   public async moveWaypoint(args: {
@@ -63,6 +82,17 @@ export class Edges {
     ).dragTo(this.diagram.get(), {
       targetPosition: args.targetPosition,
     });
+  }
+
+  public async deleteWaypoint(args: { from: string; to: string; waypointIndex: number }) {
+    await this.select({ from: args.from, to: args.to });
+    await (await this.getWaypoint({ from: args.from, to: args.to, waypointIndex: args.waypointIndex })).dblclick();
+  }
+
+  public async deleteWaypoints(args: { from: string; to: string; waypointsCount: number }) {
+    for (let i = 0; i < args.waypointsCount; i++) {
+      await this.deleteWaypoint({ from: args.from, to: args.to, waypointIndex: 1 });
+    }
   }
 
   public async delete(args: { from: string; to: string; isBackspace?: boolean }) {

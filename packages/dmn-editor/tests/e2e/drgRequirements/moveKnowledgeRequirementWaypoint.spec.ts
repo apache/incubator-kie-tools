@@ -78,9 +78,7 @@ test.describe("Move edge waypoint - Knowledge Requirement", () => {
       edges,
     }) => {
       await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
-      await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 200, y: 500 } });
-
-      await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
+      await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, afterWaypointIndex: 1 });
       await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 500, y: 500 } });
       await nodes.move({ name: DefaultNodeName.BKM, targetPosition: { x: 500, y: 100 } });
 
@@ -89,7 +87,6 @@ test.describe("Move edge waypoint - Knowledge Requirement", () => {
 
     test("Knowledge Requirement edge ending nodes should not move when the waypoints are moved", async ({
       diagram,
-      nodes,
       edges,
       browserName,
     }) => {
@@ -100,9 +97,7 @@ test.describe("Move edge waypoint - Knowledge Requirement", () => {
       });
 
       await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
-      await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 200, y: 500 } });
-
-      await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
+      await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, afterWaypointIndex: 1 });
 
       await edges.moveWaypoint({
         from: DefaultNodeName.BKM,

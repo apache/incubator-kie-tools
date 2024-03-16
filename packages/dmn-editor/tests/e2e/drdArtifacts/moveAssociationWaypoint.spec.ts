@@ -78,9 +78,11 @@ test.describe("Move edge waypoint - Association", () => {
       edges,
     }) => {
       await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-      await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 200, y: 500 } });
-
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
+      await edges.addWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+        afterWaypointIndex: 1,
+      });
       await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 500, y: 500 } });
       await nodes.move({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 500, y: 100 } });
 
@@ -89,7 +91,6 @@ test.describe("Move edge waypoint - Association", () => {
 
     test("Association edge ending nodes should not move when the waypoints are moved", async ({
       diagram,
-      nodes,
       edges,
       browserName,
     }) => {
@@ -100,9 +101,11 @@ test.describe("Move edge waypoint - Association", () => {
       });
 
       await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-      await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 200, y: 500 } });
-
-      await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
+      await edges.addWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+        afterWaypointIndex: 1,
+      });
 
       await edges.moveWaypoint({
         from: DefaultNodeName.INPUT_DATA,

@@ -29,6 +29,13 @@ export class Diagram {
     return this.page.getByTestId("kie-dmn-editor--diagram-container");
   }
 
+  public async dblclick(position: { x: number; y: number }) {
+    const offsetX = 100;
+    const offsetY = 100;
+
+    return this.get().dblclick({ position: { x: position.x + offsetX, y: position.y + offsetY } });
+  }
+
   public async resetFocus() {
     return this.get().click({ position: { x: 0, y: 0 } });
   }
