@@ -44,7 +44,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     KN_PLUGIN_WORKFLOW__kogitoVersion: {
       name: "KN_PLUGIN_WORKFLOW__kogitoVersion",
-      default: "999-20240310-SNAPSHOT",
+      default: "999-20240317-SNAPSHOT",
       description: "Kogito version to be used when creating and converting to Quarkus Projects",
     },
   }),
