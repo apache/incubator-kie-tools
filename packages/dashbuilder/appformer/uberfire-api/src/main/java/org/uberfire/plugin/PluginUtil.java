@@ -24,12 +24,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Utilities for working with external (GWT-compiled) plugins.
@@ -59,6 +58,10 @@ public class PluginUtil {
         @SuppressWarnings("unchecked")
         final List<T> tmp = (List<T>) Arrays.asList(externalList.toArray());
         return Collections.unmodifiableList(tmp);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     /**

@@ -53,7 +53,12 @@ export const handleStyle: React.CSSProperties = {
   transform: "unset",
 };
 
-export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: NodeType[]; edgeTypes: EdgeType[] }) {
+export function OutgoingStuffNodePanel(props: {
+  isVisible: boolean;
+  nodeTypes: NodeType[];
+  edgeTypes: EdgeType[];
+  nodeHref: string;
+}) {
   const style: React.CSSProperties = React.useMemo(
     () => ({
       visibility: props.isVisible ? undefined : "hidden",
@@ -83,26 +88,17 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
 
   const getNodeActionTitle = React.useCallback((nodeType: string): string => {
     switch (nodeType) {
-      case NODE_TYPES.inputData: {
-        return "Add Input Data node";
-      }
       case NODE_TYPES.decision: {
         return "Add Decision node";
       }
       case NODE_TYPES.bkm: {
-        return "Add Business Knowledge Model node";
-      }
-      case NODE_TYPES.decisionService: {
-        return "Add Decision Service node";
+        return "Add BKM node";
       }
       case NODE_TYPES.knowledgeSource: {
         return "Add Knowledge Source node";
       }
       case NODE_TYPES.textAnnotation: {
         return "Add Text Annotation node";
-      }
-      case NODE_TYPES.group: {
-        return "Add Group node";
       }
       default: {
         throw new Error("Add Unknown node type");
@@ -124,7 +120,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 style={handleStyle}
                 position={RF.Position.Top}
                 title={getEdgeActionTitle(edgeType)}
-                data-testid={`add_${edgeType}`}
+                data-testid={`${props.nodeHref}-add-${edgeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
@@ -163,7 +159,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 style={handleStyle}
                 position={RF.Position.Top}
                 title={getNodeActionTitle(nodeType)}
-                data-testid={`add_${nodeType}`}
+                data-testid={`${props.nodeHref}-add-${nodeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}

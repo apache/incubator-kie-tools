@@ -20,10 +20,11 @@
 
 package org.uberfire.client.workbench.events;
 
+import java.util.Objects;
+
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.UberFireEvent;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Created by Cristiano Nicolai.
@@ -33,9 +34,12 @@ public abstract class AbstractPlaceEvent implements UberFireEvent {
     private final PlaceRequest place;
 
     AbstractPlaceEvent(final PlaceRequest place) {
-        checkNotNull("place",
-                     place);
+        Objects.requireNonNull(place, "Parameter named 'place' should be not null!");
         this.place = place;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public PlaceRequest getPlace() {

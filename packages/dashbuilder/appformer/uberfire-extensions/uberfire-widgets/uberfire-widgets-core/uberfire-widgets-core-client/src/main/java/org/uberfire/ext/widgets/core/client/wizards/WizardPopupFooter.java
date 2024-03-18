@@ -19,6 +19,8 @@
 
 package org.uberfire.ext.widgets.core.client.wizards;
 
+import java.util.Objects;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -29,7 +31,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * A Modal Footer used by the Wizard
@@ -55,15 +56,19 @@ public class WizardPopupFooter extends ModalFooter {
                              final Command cmdNextButton,
                              final Command cmdCancelButton,
                              final Command cmdFinishButton) {
-        this.cmdPreviousButton = PortablePreconditions.checkNotNull("cmdPreviousButton",
+        this.cmdPreviousButton = checkNotNull("cmdPreviousButton",
                                                                     cmdPreviousButton);
-        this.cmdNextButton = PortablePreconditions.checkNotNull("cmdNextButton",
+        this.cmdNextButton = checkNotNull("cmdNextButton",
                                                                 cmdNextButton);
-        this.cmdCancelButton = PortablePreconditions.checkNotNull("cmdCancelButton",
+        this.cmdCancelButton = checkNotNull("cmdCancelButton",
                                                                   cmdCancelButton);
-        this.cmdFinishButton = PortablePreconditions.checkNotNull("cmdFinishButton",
+        this.cmdFinishButton = checkNotNull("cmdFinishButton",
                                                                   cmdFinishButton);
         add(uiBinder.createAndBindUi(this));
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public void enablePreviousButton(final boolean enabled) {

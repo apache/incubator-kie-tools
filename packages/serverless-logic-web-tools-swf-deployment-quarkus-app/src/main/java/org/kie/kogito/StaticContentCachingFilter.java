@@ -22,8 +22,8 @@ package org.kie.kogito;
 
 import java.util.regex.Pattern;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
 
 import io.quarkus.vertx.http.runtime.filters.Filters;
 import io.vertx.core.Handler;

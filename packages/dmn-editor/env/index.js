@@ -24,13 +24,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   get env() {
     return {
       dmnEditor: {
-        dev: {
-          port: 3001,
-        },
-      },
-      dmnEditor: {
         storybook: {
-          port: 9901,
+          port: "9901",
         },
       },
     };

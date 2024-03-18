@@ -15,23 +15,38 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Defaults to registry.access.redhat.com/ubi9/openjdk-11 (check env/index.js)
+# Defaults to registry.access.redhat.com/ubi9/openjdk-17 (check env/index.js)
 ARG BUILDER_IMAGE_ARG
 
 FROM --platform=linux/amd64 ${BUILDER_IMAGE_ARG}
 
-ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME/app
+ARG USER_ID_ARG=185
+ARG HOME_PATH_ARG=$HOME
+
+ENV USER_ID=${USER_ID_ARG}
+ENV HOME_PATH=${HOME_PATH_ARG}
+
+USER root
+
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME_PATH/app
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
 
-USER 1000
+RUN mkdir -p -m 777 $HOME_PATH/app && mkdir -p -m 777 /tmp/app && mkdir -p -m 777 /.m2
 
-RUN mkdir -p -m 777 $HOME/app
+COPY dist-dev/dev-deployment-upload-service /usr/local/bin
+COPY .mvn $HOME_PATH/app/.mvn
+COPY mvnw $HOME_PATH/app
 
-COPY --chown=1000:1000 dist-dev/dev-deployment-upload-service /usr/local/bin
+RUN chgrp -R 0 $HOME_PATH/app && \
+    chmod -R 777 $HOME_PATH/app && \
+    chgrp -R 0 /.m2 && \
+    chmod -R 777 /.m2
 
-WORKDIR $HOME/app/
+WORKDIR $HOME_PATH/app/
 
 EXPOSE 8080
+
+USER $USER_ID
 
 ENTRYPOINT ["/bin/bash", "-c"]
 

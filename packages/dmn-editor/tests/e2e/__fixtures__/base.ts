@@ -19,14 +19,34 @@
 
 import { test as base } from "@playwright/test";
 import { Diagram } from "./diagram";
+import { Palette } from "./palette";
+import { Nodes } from "./nodes";
+import { Editor } from "./editor";
+import { Edges } from "./edges";
 
 type DmnEditorFixtures = {
   diagram: Diagram;
+  edges: Edges;
+  editor: Editor;
+  nodes: Nodes;
+  palette: Palette;
 };
 
 export const test = base.extend<DmnEditorFixtures>({
-  diagram: async ({ page, baseURL }, use) => {
-    await use(new Diagram(page, baseURL));
+  editor: async ({ page, baseURL }, use) => {
+    await use(new Editor(page, baseURL));
+  },
+  diagram: async ({ page }, use) => {
+    await use(new Diagram(page));
+  },
+  nodes: async ({ page, diagram, browserName }, use) => {
+    await use(new Nodes(page, diagram, browserName));
+  },
+  edges: async ({ page, nodes }, use) => {
+    await use(new Edges(page, nodes));
+  },
+  palette: async ({ page, diagram, nodes }, use) => {
+    await use(new Palette(page, diagram, nodes));
   },
 });
 

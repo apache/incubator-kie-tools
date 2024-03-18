@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -49,8 +50,6 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Default implementation
@@ -102,6 +101,10 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
         this.dataSetModifiedEvent = dataSetModifiedEvent;
         this.dataSetLookupServices = dataSetLookupServices;
         this.dataSetDefServices = dataSetDefServices;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public boolean isPushRemoteDataSetEnabled() {

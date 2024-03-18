@@ -21,6 +21,10 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/extended-services-java/env")], {
   vars: varsWithName({
+    KIE_SANDBOX_EXTENDED_SERVICES__builderImage: {
+      default: "registry.access.redhat.com/ubi9/openjdk-17:1.18",
+      description: "The image used in the FROM import.",
+    },
     KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: {
       default: "quay.io",
       description: "",
@@ -41,6 +45,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-t
   get env() {
     return {
       extendedServicesImage: {
+        builderImage: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__builderImage),
         registry: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry),
         account: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount),
         name: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageName),

@@ -129,8 +129,8 @@ public class TabPanelWithDropdownsTest {
         final TabPane tabContentPane = mock(TabPane.class);
         final NavTabs tabBar = mock(NavTabs.class);
         final TabContent tabContent = mock(TabContent.class);
-        final Set<TabPanelEntry> allContentTabs = spy(new HashSet<>());
-        final Set<Widget> activatableWidgets = spy(new HashSet<>());
+        final Set<TabPanelEntry> allContentTabs = mock(Set.class);
+        final Set<Widget> activatableWidgets = mock(Set.class);
 
         doReturn(tabWidget).when(tab).getTabWidget();
         doReturn(tabContentPane).when(tab).getContentPane();

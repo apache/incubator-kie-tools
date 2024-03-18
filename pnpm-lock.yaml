@@ -3425,6 +3425,12 @@ importers:
       "@storybook/blocks":
         specifier: ^7.3.2
         version: 7.6.13(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2)
+      "@storybook/manager-api":
+        specifier: ^7.3.2
+        version: 7.6.13(react-dom@17.0.2)(react@17.0.2)
+      "@storybook/preview-api":
+        specifier: ^7.3.2
+        version: 7.6.13
       "@storybook/react":
         specifier: ^7.3.2
         version: 7.6.13(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)
@@ -3479,6 +3485,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      deep-object-diff:
+        specifier: ^1.1.9
+        version: 1.1.9
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.88.2)
@@ -4200,8 +4209,8 @@ importers:
   packages/extended-services:
     dependencies:
       "@kie-tools/jitexecutor-native":
-        specifier: 1.44.1-Final
-        version: 1.44.1-Final
+        specifier: 999.0.0-20240218-SNAPSHOT
+        version: 999.0.0-20240218-SNAPSHOT
     devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
@@ -5660,6 +5669,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      wait-on:
+        specifier: ^7.2.0
+        version: 7.2.0
 
   packages/kie-sandbox-extended-services-image:
     dependencies:
@@ -6590,8 +6602,8 @@ importers:
   packages/pmml-editor-marshaller:
     dependencies:
       jsonata:
-        specifier: ^1.8.3
-        version: 1.8.3
+        specifier: ^1.8.7
+        version: 1.8.7
       xml-js:
         specifier: ^1.6.11
         version: 1.6.11
@@ -8485,8 +8497,8 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0
       jsonata:
-        specifier: ^1.8.3
-        version: 1.8.3
+        specifier: ^1.8.7
+        version: 1.8.7
       jsonc-parser:
         specifier: ^3.0.0
         version: 3.0.0
@@ -13195,12 +13207,6 @@ packages:
     engines: { node: ">=6.9.0" }
     dependencies:
       "@babel/types": 7.23.9
-    dev: true
-
-  /@babel/helper-string-parser@7.22.5:
-    resolution:
-      { integrity: sha512-mM4COjgZox8U+JcXQwPijIZLElkgEpO5rsERVDJTc2qfCDfERyob6k5WegS14SX18IIjv+XD+GrqNumY5JRCDw== }
-    engines: { node: ">=6.9.0" }
     dev: true
 
   /@babel/helper-string-parser@7.23.4:
@@ -19545,7 +19551,7 @@ packages:
       { integrity: sha512-m4AfNvVF2mVC/F7fDEdH2El3HzUg9It/XsCxZiOTTA3m3qYfcSVSbTfM6Q9xG+hYDniZssYhlXKKUMD5m8tF4Q== }
     engines: { node: ">=6.9.0" }
     dependencies:
-      "@babel/helper-string-parser": 7.22.5
+      "@babel/helper-string-parser": 7.23.4
       "@babel/helper-validator-identifier": 7.22.20
       to-fast-properties: 2.0.0
     dev: true
@@ -20939,21 +20945,9 @@ packages:
       graphql: 14.3.1
     dev: true
 
-  /@hapi/hoek@9.1.0:
-    resolution:
-      { integrity: sha512-i9YbZPN3QgfighY/1X1Pu118VUz2Fmmhd6b2n0/O8YVgGGfw0FbUYoA97k7FkpGJ+pLCFEDLUmAPPV4D1kpeFw== }
-    dev: true
-
   /@hapi/hoek@9.3.0:
     resolution:
       { integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ== }
-    dev: true
-
-  /@hapi/topo@5.0.0:
-    resolution:
-      { integrity: sha512-tFJlT47db0kMqVm3H4nQYgn6Pwg10GTZHb1pwmSiv1K4ks6drQOtfEF5ZnPjkvC+y4/bUPHK+bc87QvLcL+WMw== }
-    dependencies:
-      "@hapi/hoek": 9.1.0
     dev: true
 
   /@hapi/topo@5.1.0:
@@ -21424,9 +21418,9 @@ packages:
       { integrity: sha512-dxmfwq2F+yxawuGrVVRGmTeZHTqRHa79Vp4FX2KEXHAA9AgK1aaVz8mxZxXYFs2ycfp30NjWvhZCOIRbIKTjAQ== }
     dev: false
 
-  /@kie-tools/jitexecutor-native@1.44.1-Final:
+  /@kie-tools/jitexecutor-native@999.0.0-20240218-SNAPSHOT:
     resolution:
-      { integrity: sha512-yf03B3gV7c3VATLKBmcZ2gavc8JyhCEarqsxIy8JhyF8sCTRIPLkFYIbLnW9kosucO36zLrggDZHzY3navC7GA== }
+      { integrity: sha512-sZiFV1tBngSZy6ksD0eue9T3JA4K+lfPNrtiQT9CjumwTlefPlPNNOhKXpsjt/LLyybRfJzFg01R2R3VVCWX2w== }
     dev: false
 
   /@koa/cors@3.4.3:
@@ -24029,23 +24023,11 @@ packages:
       js-yaml: 4.1.0
     dev: false
 
-  /@sideway/address@4.1.0:
-    resolution:
-      { integrity: sha512-wAH/JYRXeIFQRsxerIuLjgUu2Xszam+O5xKeatJ4oudShOOirfmsQ1D6LL54XOU2tizpCYku+s1wmU0SYdpoSA== }
-    dependencies:
-      "@hapi/hoek": 9.1.0
-    dev: true
-
   /@sideway/address@4.1.4:
     resolution:
       { integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw== }
     dependencies:
       "@hapi/hoek": 9.3.0
-    dev: true
-
-  /@sideway/formula@3.0.0:
-    resolution:
-      { integrity: sha512-vHe7wZ4NOXVfkoRb8T5otiENVlT7a3IAiw7H5M2+GO+9CDgcVUUsX1zalAztCmwyOr2RUTGJdgB+ZvSVqmdHmg== }
     dev: true
 
   /@sideway/formula@3.0.1:
@@ -32813,7 +32795,6 @@ packages:
   /deep-object-diff@1.1.9:
     resolution:
       { integrity: sha512-Rn+RuwkmkDwCi2/oXOFS9Gsr5lJZu/yTGpK7wAaAIE75CC+LCGEZHpY6VQJa/RoJcrmaA/docWJZvYohlNkWPA== }
-    dev: false
 
   /deepmerge@4.2.2:
     resolution:
@@ -38525,17 +38506,6 @@ packages:
       "@sideway/pinpoint": 2.0.0
     dev: true
 
-  /joi@17.4.0:
-    resolution:
-      { integrity: sha512-F4WiW2xaV6wc1jxete70Rw4V/VuMd6IN+a5ilZsxG4uYtUXWu2kq9W5P2dz30e7Gmw8RCbY/u/uk+dMPma9tAg== }
-    dependencies:
-      "@hapi/hoek": 9.1.0
-      "@hapi/topo": 5.0.0
-      "@sideway/address": 4.1.0
-      "@sideway/formula": 3.0.0
-      "@sideway/pinpoint": 2.0.0
-    dev: true
-
   /jose@4.14.6:
     resolution:
       { integrity: sha512-EqJPEUlZD0/CSUMubKtMaYUOtWe91tZXTWMJZoKSbLk+KtdhNdcvppH8lA9XwVu2V4Ailvsj0GBZJ2ZwDjfesQ== }
@@ -38840,9 +38810,9 @@ packages:
     hasBin: true
     dev: true
 
-  /jsonata@1.8.3:
+  /jsonata@1.8.7:
     resolution:
-      { integrity: sha512-r6ztI6ohbpRo77AxBm6vMs3aHZi2L2PaakW7TCPwSkeGcuAZ/SxXGLWH2Npwqq5+YBM/fg/g0EXg/pI9HvXQ8Q== }
+      { integrity: sha512-tOW2/hZ+nR2bcQZs+0T62LVe5CHaNa3laFFWb/262r39utN6whJGBF7IR2Wq1QXrDbhftolk5gggW8uUJYlBTQ== }
     engines: { node: ">= 8" }
     dev: false
 
@@ -39455,7 +39425,7 @@ packages:
       log-update: 4.0.0
       p-map: 4.0.0
       rfdc: 1.3.0
-      rxjs: 7.5.6
+      rxjs: 7.8.1
       through: 2.3.8
       wrap-ansi: 7.0.0
     dev: true
@@ -44857,13 +44827,6 @@ packages:
     dependencies:
       tslib: 2.3.1
 
-  /rxjs@7.5.6:
-    resolution:
-      { integrity: sha512-dnyv2/YsXhnm461G+R/Pe5bWP41Nm6LBXEYWI6eiFP4fiwx6WRI/CD0zbdVAudd9xwLEF2IDcKXLHit0FYjUzw== }
-    dependencies:
-      tslib: 2.6.2
-    dev: true
-
   /rxjs@7.8.1:
     resolution:
       { integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg== }
@@ -48426,7 +48389,7 @@ packages:
     hasBin: true
     dependencies:
       axios: 0.21.4(debug@4.3.1)
-      joi: 17.4.0
+      joi: 17.12.0
       lodash: 4.17.21
       minimist: 1.2.8
       rxjs: 6.6.7

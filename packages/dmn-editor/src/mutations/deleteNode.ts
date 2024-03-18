@@ -28,7 +28,7 @@ import { Unpacked } from "../tsExt/tsExt";
 import { DrgEdge } from "../diagram/graph/graph";
 import { EdgeDeletionMode, deleteEdge } from "./deleteEdge";
 import { Computed } from "../store/Store";
-import { computeDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeDecisionServiceHrefsByDecisionHrefs";
+import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 
 export enum NodeDeletionMode {
@@ -202,21 +202,26 @@ export function canRemoveNodeFromDrdOnly({
       ? definitions.drgElement ?? []
       : externalDmnsIndex.get(dmnObjectNamespace)?.model.definitions.drgElement ?? [];
 
-  const decisionServiceHrefsByDecisionHrefs = computeDecisionServiceHrefsByDecisionHrefs({
-    thisDmnsNamespace: definitions["@_namespace"],
-    drgElementsNamespace: dmnObjectNamespace,
-    drgElements,
-  });
+  const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn =
+    computeContainingDecisionServiceHrefsByDecisionHrefs({
+      thisDmnsNamespace: definitions["@_namespace"],
+      drgElementsNamespace: dmnObjectNamespace,
+      drgElements,
+    });
 
-  const containingDecisionServiceHrefs = decisionServiceHrefsByDecisionHrefs.get(dmnObjectHref) ?? [];
+  const containingDecisionServiceHrefs =
+    containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn.get(dmnObjectHref) ?? [];
 
   const isContainedByDecisionService = containingDecisionServiceHrefs.length > 0;
 
-  const isContainingDecisionServicePresentInTheDrd = containingDecisionServiceHrefs.some((dsHref) =>
+  const isContainingDecisionServiceInExpandedFormPresentInTheDrd = containingDecisionServiceHrefs.some((dsHref) =>
     diagramElements.some(
-      (e) => e.__$$element === "dmndi:DMNShape" && e["@_dmnElementRef"] === xmlHrefToQName(dsHref, definitions)
+      (e) =>
+        e.__$$element === "dmndi:DMNShape" &&
+        e["@_dmnElementRef"] === xmlHrefToQName(dsHref, definitions) &&
+        !(e["@_isCollapsed"] ?? false)
     )
   );
 
-  return !isContainedByDecisionService || !isContainingDecisionServicePresentInTheDrd;
+  return !isContainedByDecisionService || !isContainingDecisionServiceInExpandedFormPresentInTheDrd;
 }
