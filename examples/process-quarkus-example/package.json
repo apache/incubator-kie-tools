@@ -14,17 +14,17 @@
   },
   "scripts": {
     "build:dev": "run-script-os",
-    "build:dev:darwin:linux": "mvn clean package -DskipTests",
-    "build:dev:win32": "pnpm powershell \"mvn clean package -DskipTests \"",
+    "build:dev:darwin:linux": "mvn clean compile -DskipTests",
+    "build:dev:win32": "pnpm powershell \"mvn clean compile -DskipTests \"",
     "build:prod": "pnpm lint && run-script-os",
-    "build:prod:darwin:linux": "mvn clean package -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
-    "build:prod:win32": "pnpm powershell \"mvn clean package `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "build:prod:darwin:linux": "mvn clean compile -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
+    "build:prod:win32": "pnpm powershell \"mvn clean compile `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
     "install": "node install.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "quarkus:dev": "run-script-os",
-    "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -DskipTests",
-    "quarkus:dev:win32": "mvn clean package quarkus:dev -DskipTests",
+    "quarkus:dev:darwin:linux": "mvn clean compile quarkus:dev -DskipTests",
+    "quarkus:dev:win32": "mvn clean compile quarkus:dev -DskipTests",
     "start": "pnpm quarkus:dev"
   },
   "devDependencies": {
