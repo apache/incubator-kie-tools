@@ -19,23 +19,22 @@
 
 import * as React from "react";
 import { useEffect, useState, useCallback } from "react";
-import {
-  BeeGwtService,
-  DmnBuiltInDataType,
-  ExpressionDefinitionLogicType,
-  ExpressionDefinition,
-  generateUuid,
-} from "../../src/api";
+import { BeeGwtService, DmnBuiltInDataType, ExpressionDefinition } from "../../src/api";
 import { getDefaultExpressionDefinitionByLogicType } from "./defaultExpression";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorWrapper } from "../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditorProps } from "../../src/expressions";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button, Flex, FlexItem, Tooltip } from "@patternfly/react-core/dist/js";
-import { emptyExpressionDefinition } from "../misc/Empty/EmptyExpression.stories";
-import { canDriveExpressionDefinition } from "../useCases/CanDrive/CanDrive.stories";
-import { findEmployeesByKnowledgeExpression } from "../useCases/FindEmployees/FindEmployees.stories";
-import { postBureauAffordabilityExpression } from "../useCases/LoanOriginations/RoutingDecisionService/PostBureauAffordability/PostBureauAffordability.stories";
+import { canDriveExpressionDefinition, canDriveWidthsById } from "../useCases/CanDrive/CanDrive.stories";
+import {
+  findEmployeesByKnowledgeExpression,
+  findEmployeesByKnowledgeWidthsById,
+} from "../useCases/FindEmployees/FindEmployees.stories";
+import {
+  postBureauAffordabilityExpression,
+  postBureauAffordabilityWidthsById,
+} from "../useCases/LoanOriginations/RoutingDecisionService/PostBureauAffordability/PostBureauAffordability.stories";
 
 /**
  * Constants copied from tests to fix debugger
@@ -55,11 +54,14 @@ const dataTypes = [
   { typeRef: "tPerson", name: "tPerson", isCustom: true },
 ];
 
-const pmmlParams = [
+const pmmlDocuments = [
   {
     document: "document",
     modelsFromDocument: [
-      { model: "model", parametersFromModel: [{ id: "p1", name: "p-1", dataType: DmnBuiltInDataType.Number }] },
+      {
+        model: "model",
+        parametersFromModel: [{ "@_id": "p1", "@_name": "p-1", "@_typeRef": DmnBuiltInDataType.Number }],
+      },
     ],
   },
   {
@@ -68,9 +70,9 @@ const pmmlParams = [
       {
         model: "MiningModelSum",
         parametersFromModel: [
-          { id: "i1", name: "input1", dataType: DmnBuiltInDataType.Any },
-          { id: "i2", name: "input2", dataType: DmnBuiltInDataType.Any },
-          { id: "i3", name: "input3", dataType: DmnBuiltInDataType.Any },
+          { "@_id": "i1", "@_name": "input1", "@_typeRef": DmnBuiltInDataType.Any },
+          { "@_id": "i2", "@_name": "input2", "@_typeRef": DmnBuiltInDataType.Any },
+          { "@_id": "i3", "@_name": "input3", "@_typeRef": DmnBuiltInDataType.Any },
         ],
       },
     ],
@@ -81,29 +83,24 @@ const pmmlParams = [
       {
         model: "RegressionLinear",
         parametersFromModel: [
-          { id: "i1", name: "i1", dataType: DmnBuiltInDataType.Number },
-          { id: "i2", name: "i2", dataType: DmnBuiltInDataType.Number },
+          { "@_id": "i1", "@_name": "i1", "@_typeRef": DmnBuiltInDataType.Number },
+          { "@_id": "i2", "@_name": "i2", "@_typeRef": DmnBuiltInDataType.Number },
         ],
       },
     ],
   },
 ];
 
-const INITIAL_EXPRESSION: ExpressionDefinition = {
-  id: generateUuid(),
-  name: "Expression Name",
-  logicType: ExpressionDefinitionLogicType.Undefined,
-  dataType: DmnBuiltInDataType.Undefined,
-};
+const INITIAL_EXPRESSION: ExpressionDefinition | undefined = undefined;
+const INITIAL_WIDTHS_BY_ID: Map<string, number[]> | undefined = undefined;
 
 //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
 const beeGwtService: BeeGwtService = {
-  getDefaultExpressionDefinition(logicType: string, dataType: string): ExpressionDefinition {
-    return getDefaultExpressionDefinitionByLogicType(
-      logicType as ExpressionDefinitionLogicType,
-      { dataType: dataType } as ExpressionDefinition,
-      0
-    );
+  getDefaultExpressionDefinition(logicType, dataType) {
+    return {
+      expression: getDefaultExpressionDefinitionByLogicType(logicType, dataType, 0),
+      widthsById: new Map(),
+    };
   },
   openDataTypePage(): void {},
   selectObject(): void {},
@@ -111,14 +108,18 @@ const beeGwtService: BeeGwtService = {
 
 function App(args: BoxedExpressionEditorProps) {
   const [version, setVersion] = useState(-1);
-  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition>(INITIAL_EXPRESSION);
+  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition | undefined>(
+    INITIAL_EXPRESSION
+  );
+  const [widthsById, setWidthsById] = useState<Map<string, number[]> | undefined>(INITIAL_WIDTHS_BY_ID);
 
   useEffect(() => {
     setVersion((prev) => prev + 1);
   }, [expressionDefinition]);
 
-  const setSample = useCallback((sample: ExpressionDefinition) => {
+  const setSample = useCallback((sample?: ExpressionDefinition, widthsById?: Map<string, number[]>) => {
     setExpressionDefinition(sample);
+    setWidthsById(widthsById);
   }, []);
 
   return (
@@ -127,16 +128,20 @@ function App(args: BoxedExpressionEditorProps) {
         <FlexItem>
           <Flex style={{ width: "96vw" }}>
             <FlexItem>
-              <Button onClick={() => setSample(emptyExpressionDefinition)}>Empty</Button>
+              <Button onClick={() => setSample(undefined, undefined)}>Empty</Button>
             </FlexItem>
             <FlexItem>
-              <Button onClick={() => setSample(canDriveExpressionDefinition)}>Can Drive?</Button>
+              <Button onClick={() => setSample(canDriveExpressionDefinition, canDriveWidthsById)}>Can Drive?</Button>
             </FlexItem>
             <FlexItem>
-              <Button onClick={() => setSample(findEmployeesByKnowledgeExpression)}>Find Employees by Knowledge</Button>
+              <Button onClick={() => setSample(findEmployeesByKnowledgeExpression, findEmployeesByKnowledgeWidthsById)}>
+                Find Employees by Knowledge
+              </Button>
             </FlexItem>
             <FlexItem>
-              <Button onClick={() => setSample(postBureauAffordabilityExpression)}>Affordability</Button>
+              <Button onClick={() => setSample(postBureauAffordabilityExpression, postBureauAffordabilityWidthsById)}>
+                Affordability
+              </Button>
             </FlexItem>
             <FlexItem align={{ default: "alignRight" }}>
               <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>
@@ -148,12 +153,13 @@ function App(args: BoxedExpressionEditorProps) {
         <FlexItem>
           <div>
             {BoxedExpressionEditorWrapper({
-              decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+              expressionHolderId: "_00000000-0000-0000-0000-000000000000",
               dataTypes: args.dataTypes,
               beeGwtService: args.beeGwtService,
-              pmmlParams: args.pmmlParams,
-              expressionDefinition: expressionDefinition,
-              setExpressionDefinition: setExpressionDefinition,
+              pmmlDocuments: args.pmmlDocuments,
+              expression: expressionDefinition,
+              onExpressionChange: setExpressionDefinition,
+              widthsById: widthsById,
             })}
           </div>
         </FlexItem>
@@ -173,15 +179,11 @@ type Story = StoryObj<typeof App>;
 export const WebApp: Story = {
   render: (args) => App(args),
   args: {
-    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Undefined,
-    },
+    expressionHolderId: "_00000000-0000-0000-0000-000000000000",
+    expression: undefined,
     dataTypes: dataTypes,
     beeGwtService: beeGwtService,
-    pmmlParams: pmmlParams,
+    pmmlDocuments: pmmlDocuments,
+    widthsById: undefined,
   },
 };

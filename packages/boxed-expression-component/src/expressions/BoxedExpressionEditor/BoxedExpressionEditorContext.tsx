@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../../api";
+import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlDocument } from "../../api";
 import { useRef, useState } from "react";
 import "./BoxedExpressionEditorContext.css";
 import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
@@ -34,17 +34,20 @@ export interface BoxedExpressionEditorContextType {
   variables?: FeelVariables;
 
   // Props
-  decisionNodeId: string;
-  pmmlParams?: PmmlParam[];
+  expressionHolderId: string;
+  pmmlDocuments?: PmmlDocument[];
   dataTypes: DmnDataType[];
 
   // State
   currentlyOpenContextMenu: string | undefined;
   setCurrentlyOpenContextMenu: React.Dispatch<React.SetStateAction<string | undefined>>;
+
+  widthsById: Map<string, number[]>;
 }
 
 export interface BoxedExpressionEditorDispatchContextType {
   setExpression: React.Dispatch<React.SetStateAction<ExpressionDefinition>>;
+  setWidth: React.Dispatch<{ id: string; values: number[] }>;
 }
 
 export const BoxedExpressionEditorContext = React.createContext<BoxedExpressionEditorContextType>(
@@ -64,24 +67,32 @@ export function useBoxedExpressionEditorDispatch() {
 }
 
 export function BoxedExpressionEditorContextProvider({
-  setExpressionDefinition,
+  onExpressionChange,
+  onWidthsChange,
   dataTypes,
-  decisionNodeId,
+  expressionHolderId,
   beeGwtService,
   children,
-  pmmlParams,
+  pmmlDocuments,
   scrollableParentRef,
   variables,
+  widthsById,
 }: React.PropsWithChildren<BoxedExpressionEditorProps>) {
   const [currentlyOpenContextMenu, setCurrentlyOpenContextMenu] = useState<string | undefined>(undefined);
 
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const dispatch = useMemo(
+  const dispatch = useMemo<BoxedExpressionEditorDispatchContextType>(
     () => ({
-      setExpression: setExpressionDefinition,
+      setExpression: onExpressionChange,
+      setWidth: ({ id, values }) => {
+        console.log("width" + id);
+        const n = new Map(widthsById);
+        n.set(id, values);
+        onWidthsChange(n);
+      },
     }),
-    [setExpressionDefinition]
+    [onExpressionChange, onWidthsChange, widthsById]
   );
 
   return (
@@ -94,13 +105,14 @@ export function BoxedExpressionEditorContextProvider({
         variables,
 
         // props
-        decisionNodeId,
+        expressionHolderId,
         dataTypes,
-        pmmlParams,
+        pmmlDocuments,
 
         //state // FIXME: Move to a separate context (https://github.com/kiegroup/kie-issues/issues/168)
         currentlyOpenContextMenu,
         setCurrentlyOpenContextMenu,
+        widthsById,
       }}
     >
       <BoxedExpressionEditorDispatchContext.Provider value={dispatch}>
@@ -118,7 +130,8 @@ export function NestedExpressionDispatchContextProvider({
 }: React.PropsWithChildren<{
   onSetExpression: (args: { getNewExpression: (prev: ExpressionDefinition) => ExpressionDefinition }) => void;
 }>) {
-  const nestedExpressionDispatch = useMemo(() => {
+  const { setWidth } = useBoxedExpressionEditorDispatch();
+  const nestedExpressionDispatch = useMemo<BoxedExpressionEditorDispatchContextType>(() => {
     return {
       setExpression: (newExpressionAction: React.SetStateAction<ExpressionDefinition>) => {
         function getNewExpression(prev: ExpressionDefinition) {
@@ -127,8 +140,9 @@ export function NestedExpressionDispatchContextProvider({
 
         onSetExpression({ getNewExpression });
       },
+      setWidth,
     };
-  }, [onSetExpression]);
+  }, [onSetExpression, setWidth]);
 
   return (
     <BoxedExpressionEditorDispatchContext.Provider value={nestedExpressionDispatch}>

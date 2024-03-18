@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
@@ -62,15 +62,6 @@ export function getColumnsAtLastLevel<R extends ReactTable.Column<any> | ReactTa
   });
 }
 
-export function areEqualColumns<R extends object>(
-  column: ReactTable.Column<R> | ReactTable.ColumnInstance<R> | undefined
-): (other: ReactTable.Column<R> | ReactTable.ColumnInstance<R>) => boolean {
-  const columnId = column?.originalId || column?.id || column?.accessor;
-  return (other: ReactTable.Column<R>) => {
-    return other.id === columnId || other.accessor === columnId;
-  };
-}
-
 export function BeeTableInternal<R extends object>({
   tableId,
   additionalRow,
@@ -104,6 +95,7 @@ export function BeeTableInternal<R extends object>({
   lastColumnMinWidth,
   rowWrapper,
   variables,
+  widthsById,
 }: BeeTableProps<R>) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
@@ -236,6 +228,7 @@ export function BeeTableInternal<R extends object>({
               rowIndex={cellProps.row.index}
               columnIndex={columnIndex}
               columnId={cellProps.column.id}
+              widthsById={widthsById}
             />
           );
         } else {
@@ -256,6 +249,7 @@ export function BeeTableInternal<R extends object>({
     }),
     [
       cellComponentByColumnAccessor,
+      widthsById,
       onCellUpdates,
       isReadOnly,
       _setEditing,

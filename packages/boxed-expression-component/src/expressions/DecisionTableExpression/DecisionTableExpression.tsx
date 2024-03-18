@@ -26,9 +26,6 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   DecisionTableExpressionDefinition,
-  DecisionTableExpressionDefinitionBuiltInAggregation,
-  DecisionTableExpressionDefinitionHitPolicy,
-  DecisionTableExpressionDefinitionRule,
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
@@ -60,9 +57,14 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
-import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
+import { HIT_POLICIES_THAT_SUPPORT_AGGREGATION, HitPolicySelector } from "./HitPolicySelector";
 import "./DecisionTableExpression.css";
 import _ from "lodash";
+import {
+  DMN15__tBuiltinAggregator,
+  DMN15__tDecisionRule,
+  DMN15__tHitPolicy,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
@@ -78,25 +80,107 @@ export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
 
 function createInputEntry() {
   return {
-    id: generateUuid(),
-    content: DECISION_TABLE_INPUT_DEFAULT_VALUE,
+    "@_id": generateUuid(),
+    text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE },
   };
 }
 
 function createOutputEntry() {
   return {
-    id: generateUuid(),
-    content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+    "@_id": generateUuid(),
+    text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
   };
 }
 
 export function DecisionTableExpression(
-  decisionTableExpression: DecisionTableExpressionDefinition & { isNested: boolean; parentElementId: string }
+  decisionTableExpression: DecisionTableExpressionDefinition & {
+    isNested: boolean;
+    parentElementId: string;
+  }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { decisionNodeId } = useBoxedExpressionEditor();
-  const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { variables } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, variables } = useBoxedExpressionEditor();
+  const { setExpression, setWidth } = useBoxedExpressionEditorDispatch();
+
+  const widths = useMemo(() => {
+    const expressionWidths = widthsById.get(decisionTableExpression["@_id"]!) ?? [];
+    if (expressionWidths.length === 0) {
+      expressionWidths.push(BEE_TABLE_ROW_INDEX_COLUMN_WIDTH);
+    }
+
+    let currentWidthGroupIndex = 1;
+    if (decisionTableExpression.input) {
+      for (let i = 0; i < decisionTableExpression.input.length; i++) {
+        if (expressionWidths.length <= i + currentWidthGroupIndex) {
+          expressionWidths.push(DECISION_TABLE_INPUT_DEFAULT_WIDTH);
+        }
+      }
+      currentWidthGroupIndex += decisionTableExpression.input.length;
+    }
+
+    if (decisionTableExpression.output) {
+      for (let i = 0; i < decisionTableExpression.output.length; i++) {
+        if (expressionWidths.length <= i + currentWidthGroupIndex) {
+          expressionWidths.push(DECISION_TABLE_OUTPUT_DEFAULT_WIDTH);
+        }
+      }
+      currentWidthGroupIndex += decisionTableExpression.output.length;
+    }
+
+    if (decisionTableExpression.annotation) {
+      for (let i = 0; i < decisionTableExpression.annotation.length; i++) {
+        if (expressionWidths.length <= i + currentWidthGroupIndex) {
+          expressionWidths.push(DECISION_TABLE_ANNOTATION_MIN_WIDTH);
+        }
+      }
+    }
+
+    return expressionWidths;
+  }, [decisionTableExpression, widthsById]);
+
+  const getInputIndexInTable = useCallback((localIndex: number) => {
+    return 1 + localIndex;
+  }, []);
+
+  const getOutputIndexInTable = useCallback(
+    (localIndex: number) => {
+      return 1 + (decisionTableExpression.input?.length ?? 0) + localIndex;
+    },
+    [decisionTableExpression.input?.length]
+  );
+
+  const getAnnotationIndexInTable = useCallback(
+    (localIndex: number) => {
+      return (
+        1 + (decisionTableExpression.input?.length ?? 0) + (decisionTableExpression.output?.length ?? 0) + localIndex
+      );
+    },
+    [decisionTableExpression.input?.length, decisionTableExpression.output?.length]
+  );
+
+  const getInputWidth = useCallback(
+    (inputIndex: number) => {
+      const index = getInputIndexInTable(inputIndex);
+      return { index, width: widths[index] };
+    },
+    [getInputIndexInTable, widths]
+  );
+
+  const getOutputWidth = useCallback(
+    (outputIndex: number) => {
+      const index = getOutputIndexInTable(outputIndex);
+      return { index, width: widths[index] };
+    },
+    [getOutputIndexInTable, widths]
+  );
+
+  const getAnnotationWidth = useCallback(
+    (annotationIndex: number) => {
+      const index = getAnnotationIndexInTable(annotationIndex);
+      return { index, width: widths[index] };
+    },
+    [getAnnotationIndexInTable, widths]
+  );
 
   const generateOperationConfig = useCallback(
     (groupName: string) => [
@@ -148,43 +232,49 @@ export function DecisionTableExpression(
     return editColumnLabel;
   }, [i18n]);
 
+  const id = decisionTableExpression["@_id"]!;
+
   const setInputColumnWidth = useCallback(
     (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
-        const newInputs = [...(prev.input ?? [])];
-        const newWidth =
-          typeof newWidthAction === "function" ? newWidthAction(newInputs[inputIndex].width) : newWidthAction;
-        newInputs[inputIndex].width = newWidth;
-        return { ...prev, input: newInputs };
-      });
+      const inputWidth = getInputWidth(inputIndex);
+      const newWidth = typeof newWidthAction === "function" ? newWidthAction(inputWidth?.width) : newWidthAction;
+
+      if (newWidth && inputWidth) {
+        const values = [...widths];
+
+        values.splice(inputWidth.index, 1, newWidth);
+        setWidth({ id, values });
+      }
     },
-    [setExpression]
+    [getInputWidth, widths, setWidth, id]
   );
 
   const setOutputColumnWidth = useCallback(
     (outputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
-        const newOutputs = [...(prev.output ?? [])];
-        const newWidth =
-          typeof newWidthAction === "function" ? newWidthAction(newOutputs[outputIndex].width) : newWidthAction;
-        newOutputs[outputIndex].width = newWidth;
-        return { ...prev, output: newOutputs };
-      });
+      const outputWidth = getOutputWidth(outputIndex);
+      const newWidth = typeof newWidthAction === "function" ? newWidthAction(outputWidth?.width) : newWidthAction;
+
+      if (newWidth && outputWidth) {
+        const values = [...widths];
+        values.splice(outputWidth.index, 1, newWidth);
+        setWidth({ id, values });
+      }
     },
-    [setExpression]
+    [id, getOutputWidth, setWidth, widths]
   );
 
   const setAnnotationColumnWidth = useCallback(
     (annotationIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
-        const newAnnotations = [...(prev.annotations ?? [])];
-        const newWidth =
-          typeof newWidthAction === "function" ? newWidthAction(newAnnotations[annotationIndex].width) : newWidthAction;
-        newAnnotations[annotationIndex].width = newWidth;
-        return { ...prev, annotations: newAnnotations };
-      });
+      const annotationWidth = getAnnotationWidth(annotationIndex);
+      const newWidth = typeof newWidthAction === "function" ? newWidthAction(annotationWidth?.width) : newWidthAction;
+
+      if (newWidth && annotationWidth) {
+        const values = [...widths];
+        values.splice(annotationWidth.index, 1, newWidth);
+        setWidth({ id, values });
+      }
     },
-    [setExpression]
+    [id, getAnnotationWidth, setWidth, widths]
   );
 
   /// //////////////////////////////////////////////////////
@@ -193,19 +283,38 @@ export function DecisionTableExpression(
 
   const columns = useMemo(
     () => [
-      ...(decisionTableExpression.input ?? []).map((c) => ({ ...c, minWidth: DECISION_TABLE_INPUT_MIN_WIDTH })),
-      ...(decisionTableExpression.output ?? []).map((c) => ({ ...c, minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH })),
-      ...(decisionTableExpression.annotations ?? []).map((c) => ({
-        ...c,
+      ...(decisionTableExpression.input ?? []).map((value, index) => ({
+        ...value,
+        minWidth: DECISION_TABLE_INPUT_MIN_WIDTH,
+        width: getInputWidth(index)?.width,
+        label: value.inputExpression.text?.__$$text,
+      })),
+      ...(decisionTableExpression.output ?? []).map((value, index) => ({
+        ...value,
+        minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
+        width: getOutputWidth(index)?.width,
+        label: value["@_name"],
+      })),
+      ...(decisionTableExpression.annotation ?? []).map((value, index) => ({
+        ...value,
         minWidth: DECISION_TABLE_ANNOTATION_MIN_WIDTH,
+        width: getAnnotationWidth(index)?.width,
+        label: value["@_name"],
       })),
     ],
-    [decisionTableExpression.annotations, decisionTableExpression.input, decisionTableExpression.output]
+    [
+      decisionTableExpression.annotation,
+      decisionTableExpression.input,
+      decisionTableExpression.output,
+      getAnnotationWidth,
+      getInputWidth,
+      getOutputWidth,
+    ]
   );
 
   const beeTableRef = useRef<BeeTableRef>(null);
   const { onColumnResizingWidthChange, columnResizingWidths, isPivoting } = usePublishedBeeTableResizableColumns(
-    decisionTableExpression.id,
+    decisionTableExpression["@_id"]!,
     columns.length,
     true
   );
@@ -219,7 +328,7 @@ export function DecisionTableExpression(
     BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
     columns,
     columnResizingWidths,
-    decisionTableExpression.rules ?? []
+    decisionTableExpression.rule ?? []
   );
 
   /// //////////////////////////////////////////////////////
@@ -227,11 +336,11 @@ export function DecisionTableExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.input ?? []).map(
       (inputClause, inputIndex) => ({
-        accessor: inputClause.id ?? generateUuid(),
-        label: inputClause.name,
-        id: inputClause.id,
-        dataType: inputClause.dataType,
-        width: inputClause.width ?? DECISION_TABLE_INPUT_MIN_WIDTH,
+        accessor: inputClause["@_id"] ?? generateUuid(),
+        label: inputClause.inputExpression.text?.__$$text ?? "",
+        id: inputClause["@_id"]!,
+        dataType: inputClause.inputExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
+        width: getInputWidth(inputIndex)?.width ?? DECISION_TABLE_INPUT_MIN_WIDTH,
         setWidth: setInputColumnWidth(inputIndex),
         minWidth: DECISION_TABLE_INPUT_MIN_WIDTH,
         groupType: DecisionTableColumnType.InputClause,
@@ -242,15 +351,17 @@ export function DecisionTableExpression(
 
     const outputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.output ?? []).map(
       (outputClause, outputIndex) => ({
-        accessor: outputClause.id ?? generateUuid(),
-        id: outputClause.id,
+        accessor: outputClause["@_id"] ?? generateUuid(),
+        id: outputClause["@_id"],
         label:
           decisionTableExpression.output?.length == 1
-            ? decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME
-            : outputClause.name,
+            ? decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME
+            : outputClause["@_name"] ?? outputClause["@_label"] ?? DEFAULT_EXPRESSION_NAME,
         dataType:
-          decisionTableExpression.output?.length == 1 ? decisionTableExpression.dataType : outputClause.dataType,
-        width: outputClause.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
+          decisionTableExpression.output?.length == 1
+            ? decisionTableExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined
+            : outputClause["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
+        width: getOutputWidth(outputIndex)?.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
         setWidth: setOutputColumnWidth(outputIndex),
         minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
         groupType: DecisionTableColumnType.OutputClause,
@@ -261,31 +372,31 @@ export function DecisionTableExpression(
 
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
-      id: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
+      id: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
       accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-      label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
-      dataType: decisionTableExpression.dataType,
+      label: decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
+      dataType: decisionTableExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
       width: undefined,
       columns: outputColumns,
     };
 
-    const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.annotations ?? []).map(
+    const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.annotation ?? []).map(
       (annotation, annotationIndex) => {
         const annotationId = generateUuid();
         return {
           accessor: annotationId,
           id: annotationId,
-          label: annotation.name,
-          width: annotation.width ?? DECISION_TABLE_ANNOTATION_MIN_WIDTH,
+          label: annotation["@_name"] ?? "",
+          width: getAnnotationWidth(annotationIndex)?.width ?? DECISION_TABLE_ANNOTATION_MIN_WIDTH,
           setWidth: setAnnotationColumnWidth(annotationIndex),
           minWidth: DECISION_TABLE_ANNOTATION_MIN_WIDTH,
           isInlineEditable: true,
           groupType: DecisionTableColumnType.Annotation,
           cssClasses: "decision-table--annotation",
           isRowIndexColumn: false,
-          dataType: undefined as any,
+          dataType: undefined!,
         };
       }
     );
@@ -296,12 +407,11 @@ export function DecisionTableExpression(
       return [...inputColumns, outputSection, ...annotationColumns];
     }
   }, [
-    decisionNodeId,
-    decisionTableExpression.annotations,
-    decisionTableExpression.dataType,
-    decisionTableExpression.input,
-    decisionTableExpression.name,
-    decisionTableExpression.output,
+    expressionHolderId,
+    decisionTableExpression,
+    getAnnotationWidth,
+    getInputWidth,
+    getOutputWidth,
     setAnnotationColumnWidth,
     setInputColumnWidth,
     setOutputColumnWidth,
@@ -309,50 +419,80 @@ export function DecisionTableExpression(
 
   const beeTableRows = useMemo(
     () =>
-      (decisionTableExpression.rules ?? []).map((rule) => {
-        const ruleRow = [...rule.inputEntries, ...rule.outputEntries, ...rule.annotationEntries];
-        const tableRow = getColumnsAtLastLevel(beeTableColumns).reduce(
+      (decisionTableExpression.rule ?? []).map((rule) => {
+        const ruleRow = [
+          ...(rule.inputEntry ?? []),
+          ...(rule.outputEntry ?? new Array(decisionTableExpression.output.length)),
+          ...(rule.annotationEntry ?? []),
+        ];
+
+        return getColumnsAtLastLevel(beeTableColumns).reduce(
           (tableRow: ROWTYPE, column, columnIndex) => {
-            tableRow[column.accessor] = ruleRow[columnIndex] ?? "";
+            tableRow[column.accessor] = ruleRow[columnIndex]?.text?.__$$text ?? "";
             return tableRow;
           },
-          { id: rule.id }
+          { id: rule["@_id"] }
         );
-        return tableRow;
       }),
-    [beeTableColumns, decisionTableExpression.rules]
+    [beeTableColumns, decisionTableExpression.output.length, decisionTableExpression.rule]
   );
 
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
-        const n = { ...prev };
+        let n = { ...prev };
 
         cellUpdates.forEach((u) => {
-          const newRules = [...(n.rules ?? [])];
+          const newRules = [...(n.rule ?? [])];
           const groupType = u.column.groupType as DecisionTableColumnType;
           switch (groupType) {
             case DecisionTableColumnType.InputClause:
-              const newInputEntries = [...newRules[u.rowIndex].inputEntries];
-              newInputEntries[u.columnIndex].content = u.value;
-              newRules[u.rowIndex].inputEntries = newInputEntries;
-              n.rules = newRules;
+              const newInputEntries = [...(newRules[u.rowIndex].inputEntry ?? [])];
+              newInputEntries[u.columnIndex] = {
+                ...newInputEntries[u.columnIndex],
+                text: {
+                  __$$text: u.value,
+                },
+              };
+              newRules[u.rowIndex] = {
+                ...newRules[u.rowIndex],
+                inputEntry: newInputEntries,
+              };
               break;
             case DecisionTableColumnType.OutputClause:
-              const newOutputEntries = [...newRules[u.rowIndex].outputEntries];
-              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)].content = u.value;
-              newRules[u.rowIndex].outputEntries = newOutputEntries;
-              n.rules = newRules;
+              const newOutputEntries = [...newRules[u.rowIndex].outputEntry];
+              const entryIndex = u.columnIndex - (prev.input?.length ?? 0);
+              newOutputEntries[entryIndex] = {
+                ...newOutputEntries[entryIndex],
+                text: {
+                  __$$text: u.value,
+                },
+              };
+              newRules[u.rowIndex] = {
+                ...newRules[u.rowIndex],
+                outputEntry: newOutputEntries,
+              };
               break;
             case DecisionTableColumnType.Annotation:
-              const newAnnotationEntries = [...newRules[u.rowIndex].annotationEntries];
-              newAnnotationEntries[u.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0)] = u.value;
-              newRules[u.rowIndex].annotationEntries = newAnnotationEntries;
-              n.rules = newRules;
+              const newAnnotationEntries = [...(newRules[u.rowIndex].annotationEntry ?? [])];
+              const annotationIndex = u.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0);
+              newAnnotationEntries[annotationIndex] = {
+                ...newAnnotationEntries[annotationIndex],
+                text: { __$$text: u.value },
+              };
+              newRules[u.rowIndex] = {
+                ...newRules[u.rowIndex],
+                annotationEntry: newAnnotationEntries,
+              };
               break;
             default:
               assertUnreachable(groupType);
           }
+
+          n = {
+            ...n,
+            rule: newRules,
+          };
         });
 
         return n;
@@ -365,47 +505,59 @@ export function DecisionTableExpression(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
         const n = { ...prev };
-        for (const u of columnUpdates) {
+        for (const columnUpdate of columnUpdates) {
           // This is the Output column aggregator column, which represents the entire expression name and dataType
-          if (u.column.depth === 0 && u.column.groupType === DecisionTableColumnType.OutputClause) {
-            n.name = u.name;
-            n.dataType = u.dataType;
+          if (
+            columnUpdate.column.depth === 0 &&
+            columnUpdate.column.groupType === DecisionTableColumnType.OutputClause
+          ) {
+            n["@_label"] = columnUpdate.name;
+            n["@_typeRef"] = columnUpdate.dataType;
             // Single output column is merged with the aggregator column and should have the same datatype
             if (n.output?.length === 1) {
-              n.output[0].dataType = u.dataType;
+              n.output[0] = {
+                ...n.output[0],
+                "@_typeRef": columnUpdate.dataType,
+              };
             }
             continue;
           }
 
           // These are the other columns.
-          const groupType = u.column.groupType as DecisionTableColumnType;
+          const groupType = columnUpdate.column.groupType as DecisionTableColumnType;
           switch (groupType) {
             case DecisionTableColumnType.InputClause:
               const newInputs = [...(n.input ?? [])];
-              newInputs[u.columnIndex] = {
-                ...newInputs[u.columnIndex],
-                dataType: u.dataType,
-                name: u.name,
+              newInputs[columnUpdate.columnIndex] = {
+                ...newInputs[columnUpdate.columnIndex],
+                "@_label": columnUpdate.name,
+                inputExpression: {
+                  ...newInputs[columnUpdate.columnIndex].inputExpression,
+                  "@_typeRef": columnUpdate.dataType,
+                  text: { __$$text: columnUpdate.name },
+                },
               };
               n.input = newInputs;
               break;
             case DecisionTableColumnType.OutputClause:
               const newOutputs = [...(n.output ?? [])];
-              newOutputs[u.columnIndex - (prev.input?.length ?? 0)] = {
-                ...newOutputs[u.columnIndex - (prev.input?.length ?? 0)],
-                dataType: u.dataType,
-                name: u.name,
+              const outputIndex = columnUpdate.columnIndex - (prev.input?.length ?? 0);
+              newOutputs[outputIndex] = {
+                ...newOutputs[outputIndex],
+                "@_typeRef": columnUpdate.dataType,
+                "@_name": columnUpdate.name,
               };
 
               n.output = newOutputs;
               break;
             case DecisionTableColumnType.Annotation:
-              const newAnnotations = [...(n.annotations ?? [])];
-              newAnnotations[u.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0)] = {
-                ...newAnnotations[u.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0)],
-                name: u.name,
+              const newAnnotations = [...(n.annotation ?? [])];
+              const annotationIndex = columnUpdate.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0);
+              newAnnotations[annotationIndex] = {
+                ...newAnnotations[annotationIndex],
+                "@_name": columnUpdate.name,
               };
-              n.annotations = newAnnotations;
+              n.annotation = newAnnotations;
               break;
             default:
               assertUnreachable(groupType);
@@ -419,67 +571,95 @@ export function DecisionTableExpression(
   );
 
   const onHitPolicySelect = useCallback(
-    (hitPolicy: DecisionTableExpressionDefinitionHitPolicy) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
+    (hitPolicy: string) => {
+      setExpression((prev) => {
         return {
           ...prev,
-          hitPolicy,
-          aggregation: HIT_POLICIES_THAT_SUPPORT_AGGREGATION.includes(hitPolicy)
-            ? prev.aggregation
-            : DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
+          "@_hitPolicy": hitPolicy as DMN15__tHitPolicy,
+          "@_aggregation": HIT_POLICIES_THAT_SUPPORT_AGGREGATION.includes(hitPolicy)
+            ? (prev as DecisionTableExpressionDefinition)["@_aggregation"]
+            : undefined!,
         };
       });
     },
     [setExpression]
   );
 
+  const getAggregation = useCallback((aggKey: string) => {
+    switch (aggKey) {
+      case "<":
+        return "MIN";
+      case ">":
+        return "MAX";
+      case "#":
+        return "COUNT";
+      case "+":
+        return "SUM";
+      case "?":
+        return undefined;
+    }
+  }, []);
+
+  const getAggregationKey = useCallback((aggKey: string | undefined) => {
+    if (!aggKey) {
+      return "?";
+    }
+    switch (aggKey) {
+      case "MIN":
+        return "<";
+      case "MAX":
+        return ">";
+      case "COUNT":
+        return "#";
+      case "SUM":
+        return "+";
+      default:
+        return "?";
+    }
+  }, []);
+
   const onBuiltInAggregatorSelect = useCallback(
-    (aggregation: DecisionTableExpressionDefinitionBuiltInAggregation) => {
+    (aggregation: DMN15__tBuiltinAggregator) => {
       setExpression((prev) => {
         return {
           ...prev,
-          aggregation,
+          "@_aggregation": getAggregation(aggregation),
         };
       });
     },
-    [setExpression]
+    [getAggregation, setExpression]
   );
 
   const controllerCell = useMemo(
     () => (
       <HitPolicySelector
-        selectedHitPolicy={decisionTableExpression.hitPolicy}
-        selectedBuiltInAggregator={decisionTableExpression.aggregation}
+        selectedHitPolicy={decisionTableExpression["@_hitPolicy"] ?? "UNIQUE"}
+        selectedBuiltInAggregator={getAggregationKey(decisionTableExpression["@_aggregation"])}
         onHitPolicySelected={onHitPolicySelect}
         onBuiltInAggregatorSelected={onBuiltInAggregatorSelect}
       />
     ),
-    [
-      decisionTableExpression.aggregation,
-      decisionTableExpression.hitPolicy,
-      onBuiltInAggregatorSelect,
-      onHitPolicySelect,
-    ]
+    [decisionTableExpression, getAggregationKey, onBuiltInAggregatorSelect, onHitPolicySelect]
   );
 
   const addVariables = useCallback(
-    (newRules: DecisionTableExpressionDefinitionRule[]) => {
+    (newRules: DMN15__tDecisionRule[]) => {
       for (const rule of newRules) {
-        if (rule.inputEntries) {
-          for (const inputEntry of rule.inputEntries) {
+        if (rule.inputEntry) {
+          for (const inputEntry of rule.inputEntry) {
             variables?.repository.addVariableToContext(
-              inputEntry.id,
-              inputEntry.id,
+              inputEntry["@_id"]!,
+              inputEntry["@_id"]!,
               decisionTableExpression.parentElementId
             );
           }
         }
 
-        if (rule.outputEntries) {
-          for (const outputEntry of rule.outputEntries) {
+        if (rule.outputEntry) {
+          for (const outputEntry of rule.outputEntry) {
             variables?.repository.addVariableToContext(
-              outputEntry.id,
-              outputEntry.id,
+              outputEntry["@_id"]!,
+              outputEntry["@_id"]!,
               decisionTableExpression.parentElementId
             );
           }
@@ -492,21 +672,21 @@ export function DecisionTableExpression(
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
-        const newRules = [...(prev.rules ?? [])];
+        const newRules = [...(prev.rule ?? [])];
         const newItems = [];
 
         for (let i = 0; i < args.rowsCount; i++) {
           newItems.push({
-            id: generateUuid(),
-            inputEntries: Array.from(new Array(prev.input?.length ?? 0)).map(() => {
+            "@_id": generateUuid(),
+            inputEntry: Array.from(new Array(prev.input?.length ?? 0)).map(() => {
               return createInputEntry();
             }),
-            outputEntries: Array.from(new Array(prev.output?.length ?? 0)).map(() => {
+            outputEntry: Array.from(new Array(prev.output?.length ?? 0)).map(() => {
               return createOutputEntry();
             }),
-            annotationEntries: Array.from(new Array(prev.annotations?.length ?? 0)).map(
-              () => DECISION_TABLE_ANNOTATION_DEFAULT_VALUE
-            ),
+            annotationEntry: Array.from(new Array(prev.annotation?.length ?? 0)).map(() => {
+              return { text: { __$$text: DECISION_TABLE_ANNOTATION_DEFAULT_VALUE } };
+            }),
           });
         }
 
@@ -522,7 +702,7 @@ export function DecisionTableExpression(
 
         return {
           ...prev,
-          rules: newRules,
+          rule: newRules,
         };
       });
     },
@@ -562,24 +742,27 @@ export function DecisionTableExpression(
       const sectionIndex = getSectionIndexForGroupType(args.beforeIndex, groupType);
 
       setExpression((prev: DecisionTableExpressionDefinition) => {
-        const newRules = [...(prev.rules ?? [])];
+        const newRules = [...(prev.rule ?? [])];
 
         switch (groupType) {
           case DecisionTableColumnType.InputClause:
             const newInputClauses = [];
 
-            const currentNames = prev.input?.map((c) => c.name) ?? [];
+            const currentNames = prev.input?.map((c) => c["@_label"] ?? "") ?? [];
 
             for (let i = 0; i < args.columnsCount; i++) {
               const name = getNextAvailablePrefixedName(currentNames, "Input");
               currentNames.push(name);
 
               newInputClauses.push({
-                id: generateUuid(),
-                idLiteralExpression: generateUuid(),
-                name: name,
-                dataType: DmnBuiltInDataType.Undefined,
-                width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+                "@_id": generateUuid(),
+                "@_label": name,
+                inputExpression: {
+                  "@_id": generateUuid(),
+                  "@_typeRef": DmnBuiltInDataType.Undefined,
+                  "@_label": name,
+                  text: { __$$text: name },
+                },
               });
             }
 
@@ -588,42 +771,50 @@ export function DecisionTableExpression(
             for (const newEntry of newInputClauses) {
               let index = args.beforeIndex;
               newInputs.splice(index, 0, newEntry);
+              widths.splice(getInputIndexInTable(index), 0, DECISION_TABLE_INPUT_DEFAULT_WIDTH);
               if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
                 index++;
               }
             }
 
-            newRules.forEach((r) => {
-              for (let i = 0; i < args.columnsCount; i++) {
+            for (let i = 0; i < newRules.length; i++) {
+              const r = newRules[i];
+              const newInputEntries = [...(r.inputEntry ?? [])];
+              for (let j = 0; j < args.columnsCount; j++) {
                 const inputEntry = createInputEntry();
                 variables?.repository.addVariableToContext(
-                  inputEntry.id,
-                  inputEntry.id,
+                  inputEntry["@_id"]!,
+                  inputEntry["@_id"]!,
                   decisionTableExpression.parentElementId
                 );
-                r.inputEntries.splice(sectionIndex, 0, inputEntry);
+
+                newInputEntries.splice(sectionIndex, 0, inputEntry);
               }
-            });
+              newRules[i] = {
+                ...r,
+                inputEntry: newInputEntries,
+              };
+            }
 
             return {
               ...prev,
               input: newInputs,
-              rules: newRules,
+              rule: newRules,
             };
 
           case DecisionTableColumnType.OutputClause:
             const newOutputClauses = [];
-            const currentOutputNames = prev.output?.map((c) => c.name) ?? [];
+            const currentOutputNames = prev.output?.map((c) => c["@_name"] ?? "") ?? [];
 
             for (let i = 0; i < args.columnsCount; i++) {
               const name = getNextAvailablePrefixedName(currentOutputNames, "Output");
               currentOutputNames.push(name);
 
               newOutputClauses.push({
-                id: generateUuid(),
-                name: name,
-                dataType: DmnBuiltInDataType.Undefined,
-                width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+                "@_id": generateUuid(),
+                "@_name": name,
+                "@_label": name,
+                "@_typeRef": DmnBuiltInDataType.Undefined,
               });
             }
 
@@ -632,62 +823,83 @@ export function DecisionTableExpression(
             for (const newEntry of newOutputClauses) {
               let index = args.beforeIndex;
               newOutputs.splice(index, 0, newEntry);
+
+              widths.splice(getOutputIndexInTable(index), 0, DECISION_TABLE_OUTPUT_DEFAULT_WIDTH);
+
               if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
                 index++;
               }
             }
 
-            newRules.forEach((r) => {
-              for (let i = 0; i < args.columnsCount; i++) {
+            for (let i = 0; i < newRules.length; i++) {
+              const r = newRules[i];
+              const newOutputEntries = [...(r.outputEntry ?? [])];
+              for (let j = 0; j < args.columnsCount; j++) {
                 const outputEntry = createOutputEntry();
                 variables?.repository.addVariableToContext(
-                  outputEntry.id,
-                  outputEntry.id,
+                  outputEntry["@_id"],
+                  outputEntry["@_id"],
                   decisionTableExpression.parentElementId
                 );
-                r.outputEntries.splice(sectionIndex, 0, outputEntry);
+
+                newOutputEntries.splice(sectionIndex, 0, outputEntry);
               }
-            });
+
+              newRules[i] = {
+                ...r,
+                outputEntry: newOutputEntries,
+              };
+            }
 
             return {
               ...prev,
               output: newOutputs,
-              rules: newRules,
+              rule: newRules,
             };
 
           case DecisionTableColumnType.Annotation:
-            const newAnnotations = [...(prev.annotations ?? [])];
+            const newAnnotations = [...(prev.annotation ?? [])];
             const newAnnotationsItems = [];
-            const currentAnnotationNames = prev.annotations?.map((c) => c.name) ?? [];
+            const currentAnnotationNames = prev.annotation?.map((c) => c["@_name"] ?? "") ?? [];
 
             for (let i = 0; i < args.columnsCount; i++) {
               const name = getNextAvailablePrefixedName(currentAnnotationNames, DecisionTableColumnType.Annotation);
               currentAnnotationNames.push(name);
 
               newAnnotationsItems.push({
-                name: name,
-                width: DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+                "@_name": name,
               });
             }
 
             for (const newEntry of newAnnotationsItems) {
               let index = args.beforeIndex;
               newAnnotations.splice(index, 0, newEntry);
+              widths.splice(getAnnotationIndexInTable(index), 0, DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH);
               if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
                 index++;
               }
             }
 
-            newRules.forEach((r) => {
-              for (let i = 0; i < args.columnsCount; i++) {
-                r.annotationEntries.splice(sectionIndex, 0, DECISION_TABLE_ANNOTATION_DEFAULT_VALUE);
+            for (let i = 0; i < newRules.length; i++) {
+              const r = newRules[i];
+              const newAnnotationEntries = [...(r.annotationEntry ?? [])];
+              for (let j = 0; j < args.columnsCount; j++) {
+                const newEntry = {
+                  text: { __$$text: DECISION_TABLE_ANNOTATION_DEFAULT_VALUE },
+                };
+
+                newAnnotationEntries.splice(sectionIndex, 0, newEntry);
               }
-            });
+              newRules[i] = {
+                ...r,
+                annotationEntry: newAnnotationEntries,
+              };
+            }
 
             return {
               ...prev,
-              annotations: newAnnotations,
-              rules: newRules,
+              annotation: newAnnotations,
+              rule: newRules,
             };
 
           default:
@@ -695,7 +907,16 @@ export function DecisionTableExpression(
         }
       });
     },
-    [decisionTableExpression.parentElementId, getSectionIndexForGroupType, setExpression, variables?.repository]
+    [
+      decisionTableExpression.parentElementId,
+      getAnnotationIndexInTable,
+      getInputIndexInTable,
+      getOutputIndexInTable,
+      getSectionIndexForGroupType,
+      setExpression,
+      variables?.repository,
+      widths,
+    ]
   );
 
   const onColumnDeleted = useCallback(
@@ -712,45 +933,48 @@ export function DecisionTableExpression(
           case DecisionTableColumnType.InputClause:
             const newInputs = [...(prev.input ?? [])];
             newInputs.splice(sectionIndex, 1);
+            widths.splice(getInputIndexInTable(sectionIndex), 1);
             return {
               ...prev,
               input: newInputs,
-              rules: [...(prev.rules ?? [])].map((rule) => {
-                const newInputEntry = [...rule.inputEntries];
+              rule: [...(prev.rule ?? [])].map((rule) => {
+                const newInputEntry = [...(rule.inputEntry ?? [])];
                 newInputEntry.splice(sectionIndex, 1);
                 return {
                   ...rule,
-                  inputEntries: newInputEntry,
+                  inputEntry: newInputEntry,
                 };
               }),
             };
           case DecisionTableColumnType.OutputClause:
             const newOutputs = [...(prev.output ?? [])];
             newOutputs.splice(sectionIndex, 1);
+            widths.splice(getOutputIndexInTable(sectionIndex), 1);
             return {
               ...prev,
               output: newOutputs,
-              rules: [...(prev.rules ?? [])].map((rule) => {
-                const newOutputEntry = [...rule.outputEntries];
+              rule: [...(prev.rule ?? [])].map((rule) => {
+                const newOutputEntry = [...rule.outputEntry];
                 newOutputEntry.splice(sectionIndex, 1);
                 return {
                   ...rule,
-                  outputEntries: newOutputEntry,
+                  outputEntry: newOutputEntry,
                 };
               }),
             };
           case DecisionTableColumnType.Annotation:
-            const newAnnotations = [...(prev.annotations ?? [])];
+            const newAnnotations = [...(prev.annotation ?? [])];
             newAnnotations.splice(sectionIndex, 1);
+            widths.splice(getAnnotationIndexInTable(sectionIndex), 1);
             return {
               ...prev,
-              annotations: newAnnotations,
-              rules: [...(prev.rules ?? [])].map((rule) => {
-                const newAnnotationEntry = [...rule.annotationEntries];
+              annotation: newAnnotations,
+              rule: [...(prev.rule ?? [])].map((rule) => {
+                const newAnnotationEntry = [...(rule.annotationEntry ?? [])];
                 newAnnotationEntry.splice(sectionIndex, 1);
                 return {
                   ...rule,
-                  annotationEntries: newAnnotationEntry,
+                  annotationEntry: newAnnotationEntry,
                 };
               }),
             };
@@ -759,17 +983,24 @@ export function DecisionTableExpression(
         }
       });
     },
-    [getSectionIndexForGroupType, setExpression]
+    [
+      getAnnotationIndexInTable,
+      getInputIndexInTable,
+      getOutputIndexInTable,
+      getSectionIndexForGroupType,
+      setExpression,
+      widths,
+    ]
   );
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
-        const newRules = [...(prev.rules ?? [])];
+        const newRules = [...(prev.rule ?? [])];
         newRules.splice(args.rowIndex, 1);
         return {
           ...prev,
-          rules: newRules,
+          rule: newRules,
         };
       });
     },
@@ -780,23 +1011,23 @@ export function DecisionTableExpression(
     (args: { rowIndex: number }) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
         const duplicatedRule = {
-          id: generateUuid(),
-          inputEntries: prev.rules![args.rowIndex].inputEntries.map((input) => ({
+          "@_id": generateUuid(),
+          inputEntry: prev.rule![args.rowIndex].inputEntry?.map((input) => ({
             ...input,
-            id: generateUuid(),
+            "@_id": generateUuid(),
           })),
-          outputEntries: prev.rules![args.rowIndex].outputEntries.map((output) => ({
+          outputEntry: prev.rule![args.rowIndex].outputEntry.map((output) => ({
             ...output,
-            id: generateUuid(),
+            "@_id": generateUuid(),
           })),
-          annotationEntries: prev.rules![args.rowIndex].annotationEntries.slice(),
+          annotationEntry: prev.rule![args.rowIndex].annotationEntry?.slice(),
         };
 
-        const newRules = [...(prev.rules ?? [])];
+        const newRules = [...(prev.rule ?? [])];
         newRules.splice(args.rowIndex, 0, duplicatedRule);
         return {
           ...prev,
-          rules: newRules,
+          rule: newRules,
         };
       });
     },
@@ -857,7 +1088,7 @@ export function DecisionTableExpression(
   );
 
   return (
-    <div className={`decision-table-expression ${decisionTableExpression.id}`}>
+    <div className={`decision-table-expression ${decisionTableExpression["@_id"]}`}>
       <BeeTable
         resizerStopBehavior={
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
@@ -883,6 +1114,7 @@ export function DecisionTableExpression(
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
         variables={variables}
+        widthsById={widthsById}
         // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/kiegroup/kie-issues/issues/181
       />
     </div>

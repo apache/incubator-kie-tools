@@ -19,13 +19,13 @@
 
 import * as React from "react";
 import { BoxedExpressionEditor } from "../src/expressions";
-import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../src/api";
-import { beeGwtService, pmmlParams, dataTypes } from "./boxedExpressionStoriesWrapper";
+import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlDocument } from "../src/api";
+import { beeGwtService, pmmlDocuments, dataTypes } from "./boxedExpressionStoriesWrapper";
 
 export function BoxedExpressionComponentWrapper(props: {
-  expressionDefinition: ExpressionDefinition;
+  expression: ExpressionDefinition;
   dataTypes?: DmnDataType[];
-  pmmlParams?: PmmlParam[];
+  pmmlDocuments?: PmmlDocument[];
   beeGwtService?: BeeGwtService;
   isResetSupportedOnRootExpression?: boolean;
 }) {
@@ -34,14 +34,16 @@ export function BoxedExpressionComponentWrapper(props: {
   return (
     <div ref={emptyRef}>
       <BoxedExpressionEditor
-        decisionNodeId={"_00000000-0000-0000-0000-000000000000"}
-        expressionDefinition={props.expressionDefinition}
-        setExpressionDefinition={() => {}}
+        expressionHolderId={"_00000000-0000-0000-0000-000000000000"}
+        expression={props.expression}
+        onExpressionChange={() => {}}
         dataTypes={props.dataTypes ?? dataTypes}
         scrollableParentRef={emptyRef}
         beeGwtService={props.beeGwtService ?? beeGwtService}
-        pmmlParams={props.pmmlParams ?? pmmlParams}
+        pmmlDocuments={props.pmmlDocuments ?? pmmlDocuments}
         isResetSupportedOnRootExpression={props.isResetSupportedOnRootExpression}
+        widthsById={new Map<string, number[]>()}
+        onWidthsChange={() => {}}
       />
     </div>
   );

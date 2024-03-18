@@ -374,7 +374,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                         expression,
                         concat(retrieveDefaultDataTypeProps(), retrieveCustomDataTypeProps()).toArray(DataTypeProps[]::new),
                         hasExpression.isClearSupported(),
-                        buildPmmlParams(),
+                        buildpmmlDocuments(),
                         DMNLoader.getVariables(item));
             }
 
@@ -649,7 +649,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return qName.getLocalPart();
     }
 
-    private PMMLParam[] buildPmmlParams() {
+    private PMMLParam[] buildpmmlDocuments() {
         return pmmlDocumentMetadataProvider.getPMMLDocumentNames()
                 .stream()
                 .map(documentToPMMLParamMapper())

@@ -38,7 +38,7 @@ export const loanOriginationsDataTypes = [
   { typeRef: "t.Strategy", name: "t.Strategy", isCustom: true },
 ];
 
-export function BoxedExpressionEditorBase(props: { expressionDefinition: ExpressionDefinition }) {
+export function BoxedExpressionEditorBase(props: { expression: ExpressionDefinition }) {
   const emptyRef = React.useRef<HTMLDivElement>(null);
 
   return (

@@ -22,5 +22,4 @@ export * from "./BeeGwtService";
 export * from "./DmnBuiltInDataType";
 export * from "./DmnDataType";
 export * from "./ExpressionDefinition";
-export * from "./ExpressionDefinitionLogicType";
 export * from "./BeeTable";

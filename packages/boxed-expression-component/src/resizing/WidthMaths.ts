@@ -17,52 +17,52 @@
  * under the License.
  */
 
-import { ExpressionDefinitionLogicType } from "../api";
 import { ExpressionDefinition, FunctionExpressionDefinitionKind } from "../api/ExpressionDefinition";
 import { ResizingWidth } from "./ResizingWidthsContext";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  CONTEXT_EXPRESSION_EXTRA_WIDTH,
   CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  CONTEXT_EXPRESSION_EXTRA_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
   DECISION_TABLE_INPUT_MIN_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
   DEFAULT_MIN_WIDTH,
-  LIST_EXPRESSION_EXTRA_WIDTH,
-  LITERAL_EXPRESSION_EXTRA_WIDTH,
-  LITERAL_EXPRESSION_MIN_WIDTH,
-  RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-  JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
-  JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
-  PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
-  PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
+  FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH,
   FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
-  LIST_EXPRESSION_ITEM_MIN_WIDTH,
-  JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
-  PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
   INVOCATION_EXTRA_WIDTH,
   INVOCATION_PARAMETER_MIN_WIDTH,
-  INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
-  FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
+  LIST_EXPRESSION_EXTRA_WIDTH,
+  LIST_EXPRESSION_ITEM_MIN_WIDTH,
+  LITERAL_EXPRESSION_EXTRA_WIDTH,
+  LITERAL_EXPRESSION_MIN_WIDTH,
+  PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+  PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
+  RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
 } from "./WidthConstants";
 
 export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
-  if (!expression) {
+  if (!expression || !expression.__$$element) {
     return DEFAULT_MIN_WIDTH;
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Literal) {
+  } else if (expression.__$$element === "literalExpression") {
     return LITERAL_EXPRESSION_MIN_WIDTH + LITERAL_EXPRESSION_EXTRA_WIDTH;
 
     // Context + Invocation
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Context) {
-    const nestedExpressions = [...expression.contextEntries.map((e) => e.entryExpression), expression.result];
+  } else if (expression.__$$element === "context") {
+    const result = expression.contextEntry?.find((e) => !e.variable);
+    const nestedExpressions = [...(expression.contextEntry ?? []).map((e) => e.expression), result?.expression];
     return (
       CONTEXT_ENTRY_INFO_MIN_WIDTH +
       Math.max(CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
       CONTEXT_EXPRESSION_EXTRA_WIDTH
     );
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
-    const nestedExpressions = (expression.bindingEntries ?? []).map((e) => e.entryExpression);
+  } else if (expression.__$$element === "invocation") {
+    const nestedExpressions = (expression.binding ?? []).map((e) => e.expression);
     return (
       INVOCATION_PARAMETER_MIN_WIDTH +
       Math.max(INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
@@ -70,21 +70,21 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     );
 
     // Function
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
-    if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
+  } else if (expression.__$$element === "functionDefinition") {
+    if (expression["@_kind"] === FunctionExpressionDefinitionKind.Feel) {
       return (
         Math.max(
           FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
           ...[expression.expression].map((expression) => getExpressionMinWidth(expression))
         ) + FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
-    } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
+    } else if (expression["@_kind"] === FunctionExpressionDefinitionKind.Java) {
       return (
         JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
         JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
         JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
-    } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
+    } else if (expression["@_kind"] === FunctionExpressionDefinitionKind.Pmml) {
       return (
         PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
         PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
@@ -95,35 +95,42 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     }
 
     // Relation + DecisionTable
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
+  } else if (expression.__$$element === "relation") {
     return (
       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + //
-      (expression.columns?.length ?? 0) * RELATION_EXPRESSION_COLUMN_MIN_WIDTH
+      (expression.column?.length ?? 0) * RELATION_EXPRESSION_COLUMN_MIN_WIDTH
     );
-  } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
+  } else if (expression.__$$element === "decisionTable") {
     return (
       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH +
       (expression.input?.length ?? 0) * DECISION_TABLE_INPUT_MIN_WIDTH +
       (expression.output?.length ?? 0) * DECISION_TABLE_OUTPUT_MIN_WIDTH +
-      (expression.annotations?.length ?? 0) * DECISION_TABLE_ANNOTATION_MIN_WIDTH
+      (expression.annotation?.length ?? 0) * DECISION_TABLE_ANNOTATION_MIN_WIDTH
     );
   }
 
   // List
-  else if (expression.logicType === ExpressionDefinitionLogicType.List) {
+  else if (expression.__$$element === "list") {
     return (
       Math.max(
         LIST_EXPRESSION_ITEM_MIN_WIDTH,
-        ...(expression.items ?? []).map((expression) => getExpressionMinWidth(expression))
+        ...(expression.expression ?? []).map((expression) => getExpressionMinWidth(expression))
       ) + LIST_EXPRESSION_EXTRA_WIDTH
     );
   }
 
   // Others
-  else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
-    return DEFAULT_MIN_WIDTH;
-  } else {
+  else {
     throw new Error("Shouldn't ever reach this point");
+  }
+}
+
+export function getWidth(id: string | undefined, widthsById: Map<string, number[]>) {
+  const widths = widthsById.get(id ?? "");
+  if (widths && widths.length > 0) {
+    return widths[0];
+  } else {
+    return undefined;
   }
 }
 
@@ -132,18 +139,27 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
  *
  * This function returns maximal sum found in all `expression`'s nested expressions.
  */
-export function getExpressionTotalMinWidth(currentWidth: number, expression: ExpressionDefinition): number {
-  if (expression.logicType === ExpressionDefinitionLogicType.Context) {
-    const width = currentWidth + (expression.entryInfoWidth ?? 0);
-    const contextEntriesMaxWidth = expression.contextEntries.reduce((maxWidth, currentExpression) => {
-      return Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.entryExpression));
+export function getExpressionTotalMinWidth(
+  currentWidth: number,
+  expression: ExpressionDefinition | undefined,
+  widthsById: Map<string, number[]>
+): number {
+  if (!expression) {
+    return 0;
+  }
+
+  if (expression.__$$element === "context") {
+    const width = currentWidth + (getWidth(expression["@_id"], widthsById) ?? 0);
+    const contextEntriesMaxWidth = (expression.contextEntry ?? []).reduce((maxWidth, currentExpression) => {
+      return Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.expression, widthsById));
     }, width);
-    const resultWidth = getExpressionTotalMinWidth(width, expression.result);
+    const result = expression.contextEntry?.find((e) => !e.variable);
+    const resultWidth = result ? getExpressionTotalMinWidth(width, result.expression, widthsById) : 0;
     return Math.max(contextEntriesMaxWidth, resultWidth);
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
-    const width = currentWidth + (expression.entryInfoWidth ?? 0);
-    return expression.bindingEntries.reduce((maxWidth, currentExpression) => {
-      return Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.entryExpression));
+  } else if (expression.__$$element === "invocation") {
+    const width = currentWidth + (getWidth(expression["@_id"], widthsById) ?? 0);
+    return (expression.binding ?? []).reduce((maxWidth, currentExpression) => {
+      return Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.expression, widthsById));
     }, width);
   } else {
     // it is an expression without entryInfoWidth
@@ -151,87 +167,103 @@ export function getExpressionTotalMinWidth(currentWidth: number, expression: Exp
   }
 }
 
+function getWidthAt(index: number, widths?: number[]): number | undefined {
+  if (!widths || widths.length <= index) {
+    return undefined;
+  }
+  return widths[index];
+}
+
 export function getExpressionResizingWidth(
   expression: ExpressionDefinition | undefined,
-  resizingWidths: Map<string, ResizingWidth>
+  resizingWidths: Map<string, ResizingWidth>,
+  widthsById: Map<string, number[]>
 ): number {
   if (!expression) {
     return getExpressionMinWidth(expression);
   }
 
-  const resizingWidth = resizingWidths.get(expression.id)?.value;
+  const resizingWidth = resizingWidths.get(expression["@_id"]!)?.value;
 
   // Literal
-  if (expression.logicType === ExpressionDefinitionLogicType.Literal) {
-    return (resizingWidth ?? expression.width ?? LITERAL_EXPRESSION_MIN_WIDTH) + LITERAL_EXPRESSION_EXTRA_WIDTH;
+  if (expression.__$$element === "literalExpression") {
+    return (
+      (resizingWidth ?? getWidth(expression["@_id"], widthsById) ?? LITERAL_EXPRESSION_MIN_WIDTH) +
+      LITERAL_EXPRESSION_EXTRA_WIDTH
+    );
   }
 
   // Relation + DecisionTable
-  else if (expression.logicType === ExpressionDefinitionLogicType.Relation) {
-    const columns = expression.columns ?? [];
+  else if (expression.__$$element === "relation") {
+    const columns = expression.column ?? [];
 
-    const variableWidth =
+    const expressionWidth = widthsById.get(expression["@_id"]!);
+
+    return (
       resizingWidth ??
-      columns.reduce((acc, { width }) => {
-        return acc + (width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
-      }, BEE_TABLE_ROW_INDEX_COLUMN_WIDTH);
-
-    return variableWidth;
-  } else if (expression.logicType === ExpressionDefinitionLogicType.DecisionTable) {
-    const columns = [...(expression.input ?? []), ...(expression.output ?? []), ...(expression.annotations ?? [])];
-
-    const variableWidth =
+      columns.reduce((acc, c, currentIndex) => {
+        return acc + (getWidthAt(currentIndex + 1, expressionWidth) ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
+      }, BEE_TABLE_ROW_INDEX_COLUMN_WIDTH)
+    );
+  } else if (expression.__$$element === "decisionTable") {
+    const columns = [...(expression.input ?? []), ...(expression.output ?? []), ...(expression.annotation ?? [])];
+    const expressionWidth = widthsById.get(expression["@_id"]!);
+    return (
       resizingWidth ??
-      columns.reduce((acc, { width }) => {
-        return acc + (width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
-      }, BEE_TABLE_ROW_INDEX_COLUMN_WIDTH);
-
-    return variableWidth;
+      columns.reduce((acc, c, currentIndex) => {
+        return acc + (getWidthAt(currentIndex + 1, expressionWidth) ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
+      }, BEE_TABLE_ROW_INDEX_COLUMN_WIDTH)
+    );
   }
 
   // Context + Invocation
-  else if (expression.logicType === ExpressionDefinitionLogicType.Context) {
-    const nestedExpressions = [...expression.contextEntries.map((e) => e.entryExpression), expression.result];
+  else if (expression.__$$element === "context") {
+    const result = expression.contextEntry?.find((e) => !e.variable);
+    const nestedExpressions = [...(expression.contextEntry ?? []).map((e) => e.expression), result?.expression];
     return (
       resizingWidth ??
-      (expression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
+      (getWidth(expression["@_id"], widthsById) ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
         Math.max(
           CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-          ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths))
+          ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
         ) +
         CONTEXT_EXPRESSION_EXTRA_WIDTH
     );
-  } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
-    const nestedExpressions = (expression.bindingEntries ?? []).map((e) => e.entryExpression);
+  } else if (expression.__$$element === "invocation") {
+    const nestedExpressions = (expression.binding ?? []).map((e) => e.expression);
     return (
       resizingWidth ??
-      (expression.entryInfoWidth ?? INVOCATION_PARAMETER_MIN_WIDTH) +
+      (getWidth(expression["@_id"], widthsById) ?? INVOCATION_PARAMETER_MIN_WIDTH) +
         Math.max(
           INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
-          ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths))
+          ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
         ) +
         INVOCATION_EXTRA_WIDTH
     );
   }
 
   // Function
-  else if (expression.logicType === ExpressionDefinitionLogicType.Function) {
-    if (expression.functionKind === FunctionExpressionDefinitionKind.Feel) {
+  else if (expression.__$$element === "functionDefinition") {
+    if (expression["@_kind"] === FunctionExpressionDefinitionKind.Feel) {
       return (
         resizingWidth ??
         Math.max(
           FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
-          ...[expression.expression].map((expression) => getExpressionResizingWidth(expression, resizingWidths))
+          ...[expression.expression].map((expression) =>
+            getExpressionResizingWidth(expression, resizingWidths, widthsById)
+          )
         ) + FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
-    } else if (expression.functionKind === FunctionExpressionDefinitionKind.Java) {
+    } else if (expression["@_kind"] === FunctionExpressionDefinitionKind.Java) {
       return (
         resizingWidth ??
         JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
-          (expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
+          (getWidth(expression["@_id"], widthsById) ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
+          (getWidthAt(JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH, widthsById.get(expression["@_id"]!)) ??
+            JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
           JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
-    } else if (expression.functionKind === FunctionExpressionDefinitionKind.Pmml) {
+    } else if (expression["@_kind"] === FunctionExpressionDefinitionKind.Pmml) {
       return (
         resizingWidth ??
         PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
@@ -244,20 +276,20 @@ export function getExpressionResizingWidth(
   }
 
   // List
-  else if (expression.logicType === ExpressionDefinitionLogicType.List) {
+  else if (expression.__$$element === "list") {
     return (
       resizingWidth ??
       Math.max(
         LIST_EXPRESSION_ITEM_MIN_WIDTH,
-        ...(expression.items ?? []).map((expression) => getExpressionResizingWidth(expression, resizingWidths))
+        ...(expression.expression ?? []).map((expression) =>
+          getExpressionResizingWidth(expression, resizingWidths, widthsById)
+        )
       ) + LIST_EXPRESSION_EXTRA_WIDTH
     );
   }
 
   // Others
-  else if (expression.logicType === ExpressionDefinitionLogicType.Undefined) {
+  else {
     return resizingWidth ?? DEFAULT_MIN_WIDTH;
-  } else {
-    throw new Error("Shouldn't ever reach this point");
   }
 }

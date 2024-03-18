@@ -45,7 +45,7 @@ export interface BeeTableThResizableProps<R extends object> {
   isEditableHeader: boolean;
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getColumnLabel: (groupType: string | undefined) => string | undefined;
-  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
+  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "@_label" | "@_typeRef">) => void;
   onHeaderClick?: (columnKey: string) => () => void;
   reactTableInstance: ReactTable.TableInstance<R>;
   headerCellInfo: React.ReactElement;

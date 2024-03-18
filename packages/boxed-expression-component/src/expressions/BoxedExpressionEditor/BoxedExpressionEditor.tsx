@@ -17,50 +17,61 @@
  * under the License.
  */
 
-import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import "@patternfly/react-styles/css/components/Drawer/drawer.css";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
-import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../../api";
+import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlDocument } from "../../api";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
   boxedExpressionEditorI18nDefaults,
 } from "../../i18n";
 import { ExpressionDefinitionRoot } from "../ExpressionDefinitionRoot";
-import "./base-no-reset-wrapped.css";
-import "../../@types/react-table";
 import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import "./base-no-reset-wrapped.css";
+import "../../@types/react-table";
 
 export interface BoxedExpressionEditorProps {
-  /** The API methods which BoxedExpressionEditor component can use to dialog with GWT Layer */
+  /** The API methods which BoxedExpressionEditor component can use to dialog with GWT layer. Although the GWT layer is deprecated, and the new DMN Editor does not have GWT, some methods here are still necessary. */
   beeGwtService?: BeeGwtService;
-  /** Identifier of the decision node, where the expression will be hold */
-  decisionNodeId: string;
-  /** All expression properties used to define it */
-  expressionDefinition: ExpressionDefinition;
-  setExpressionDefinition: React.Dispatch<React.SetStateAction<ExpressionDefinition>>;
-  /** A boolean used for making (or not) the reset button available on the root expression */
+  /** Identifier of the Decision or BKM containing `expression` */
+  expressionHolderId: string;
+  /** The name of the expression */
+  expressionName?: string;
+  /** The boxed expression itself */
+  expression: ExpressionDefinition | undefined;
+  /** Called every time something changes on the expression */
+  onExpressionChange: React.Dispatch<React.SetStateAction<ExpressionDefinition | undefined>>;
+  /** KIE Extension to represent IDs of individual columns or expressions */
+  widthsById: Map<string, number[]>;
+  /** Called every time a width changes on the expression */
+  onWidthsChange: React.Dispatch<React.SetStateAction<Map<string, number[]>>>;
+  /** A boolean used for making (or not) the reset button available on the root expression. BKMs, for example, can't be reset, as they need to be a Boxed Function. */
   isResetSupportedOnRootExpression?: boolean;
-  /** The data type elements that can be used in the editor */
+  /** The Data Types available */
   dataTypes: DmnDataType[];
-  /** PMML parameters */
-  pmmlParams?: PmmlParam[];
-  //
+  /** PMML models available to use on Boxed PMML Function */
+  pmmlDocuments?: PmmlDocument[];
+  /** The containing HTMLElement which is scrollable */
   scrollableParentRef: React.RefObject<HTMLElement>;
+  /** Parsed variables used for syntax coloring and auto-complete */
   variables?: FeelVariables;
 }
 
 export function BoxedExpressionEditor({
   dataTypes,
-  decisionNodeId,
-  expressionDefinition,
-  setExpressionDefinition,
+  expressionHolderId,
+  expression,
+  onExpressionChange,
   beeGwtService,
   isResetSupportedOnRootExpression,
   scrollableParentRef,
-  pmmlParams,
+  pmmlDocuments,
   variables,
+  widthsById,
+  onWidthsChange,
+  expressionName,
 }: BoxedExpressionEditorProps) {
   return (
     <I18nDictionariesProvider
@@ -72,17 +83,22 @@ export function BoxedExpressionEditor({
       <BoxedExpressionEditorContextProvider
         scrollableParentRef={scrollableParentRef}
         beeGwtService={beeGwtService}
-        decisionNodeId={decisionNodeId}
-        expressionDefinition={expressionDefinition}
-        setExpressionDefinition={setExpressionDefinition}
+        expressionHolderId={expressionHolderId}
+        expression={expression}
+        onExpressionChange={onExpressionChange}
+        onWidthsChange={onWidthsChange}
         dataTypes={dataTypes}
-        pmmlParams={pmmlParams}
+        pmmlDocuments={pmmlDocuments}
         variables={variables}
+        widthsById={widthsById}
+        expressionName={expressionName}
       >
         <ExpressionDefinitionRoot
-          decisionNodeId={decisionNodeId}
-          expression={expressionDefinition}
+          expressionHolderId={expressionHolderId}
+          expression={expression}
           isResetSupported={isResetSupportedOnRootExpression}
+          widthsById={widthsById}
+          expressionName={expressionName}
         />
       </BoxedExpressionEditorContextProvider>
     </I18nDictionariesProvider>

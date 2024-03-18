@@ -17,18 +17,12 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
 import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../../src/api";
-import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
-import {
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-} from "../../../src/expressions/InvocationExpression";
+import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
+import { INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME } from "../../../src/expressions/InvocationExpression";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -43,33 +37,25 @@ type Story = StoryObj<BoxedExpressionEditorProps>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Invocation,
-      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      bindingEntries: [
+    expression: {
+      __$$element: "invocation",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      binding: [
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-            dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-          },
-          entryExpression: {
-            id: generateUuid(),
-            name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-            dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-            logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
+          parameter: {
+            "@_id": generateUuid(),
+            "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
           },
         },
       ],
-      invokedFunction: {
-        id: generateUuid(),
-        name: "FUNCTION",
+      expression: {
+        "@_id": generateUuid(),
+        __$$element: "literalExpression",
+        text: { __$$text: "FUNCTION" },
       },
     },
     isResetSupportedOnRootExpression: false,
@@ -78,62 +64,62 @@ export const Base: Story = {
 
 export const MonthlyInstallment: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Monthly Installment",
-      dataType: DmnBuiltInDataType.Number,
-      logicType: ExpressionDefinitionLogicType.Invocation,
-      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      bindingEntries: [
+    expression: {
+      __$$element: "invocation",
+      "@_id": generateUuid(),
+      "@_label": "Monthly Installment",
+      "@_typeRef": DmnBuiltInDataType.Number,
+      binding: [
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "Rate",
-            dataType: DmnBuiltInDataType.Number,
+          parameter: {
+            "@_id": generateUuid(),
+            "@_name": "Rate",
+            "@_typeRef": DmnBuiltInDataType.Number,
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Rate",
-            dataType: DmnBuiltInDataType.Number,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            content: "0.08",
+          expression: {
+            __$$element: "literalExpression",
+            "@_id": generateUuid(),
+            "@_label": "Rate",
+            "@_typeRef": DmnBuiltInDataType.Number,
+            text: { __$$text: "0.08" },
           },
         },
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "Term",
-            dataType: DmnBuiltInDataType.Number,
+          parameter: {
+            "@_id": generateUuid(),
+            "@_name": "Term",
+            "@_typeRef": DmnBuiltInDataType.Number,
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Term",
-            dataType: DmnBuiltInDataType.Number,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            content: "36",
+          expression: {
+            __$$element: "literalExpression",
+            "@_id": generateUuid(),
+            "@_label": "Term",
+            "@_typeRef": DmnBuiltInDataType.Number,
+            text: { __$$text: "36" },
           },
         },
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "Amount",
-            dataType: DmnBuiltInDataType.Number,
+          parameter: {
+            "@_id": generateUuid(),
+            "@_name": "Amount",
+            "@_typeRef": DmnBuiltInDataType.Number,
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Amount",
-            dataType: DmnBuiltInDataType.Number,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            content: "10000",
+          expression: {
+            __$$element: "literalExpression",
+            "@_id": generateUuid(),
+            "@_label": "Amount",
+            "@_typeRef": DmnBuiltInDataType.Number,
+            text: { __$$text: "10000" },
           },
         },
       ],
-      invokedFunction: {
-        id: generateUuid(),
-        name: "Installment Calculation",
+      expression: {
+        "@_id": generateUuid(),
+        __$$element: "literalExpression",
+        text: { __$$text: "Installment Calculation" },
       },
     },
     isResetSupportedOnRootExpression: false,
@@ -143,51 +129,35 @@ export const MonthlyInstallment: Story = {
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Nested: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Context,
-      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      result: {
-        logicType: ExpressionDefinitionLogicType.Undefined,
-        dataType: DmnBuiltInDataType.Undefined,
-        id: generateUuid(),
-      },
-      contextEntries: [
+    expression: {
+      __$$element: "context",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      contextEntry: [
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "ContextEntry-1",
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Expression Name",
-            dataType: DmnBuiltInDataType.Undefined,
-            logicType: ExpressionDefinitionLogicType.Invocation,
-            entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-            bindingEntries: [
+          expression: {
+            __$$element: "invocation",
+            "@_id": generateUuid(),
+            "@_label": "Expression Name",
+            binding: [
               {
-                entryInfo: {
-                  id: generateUuid(),
-                  name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-                  dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-                },
-                entryExpression: {
-                  id: generateUuid(),
-                  name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-                  dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-                  logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
+                parameter: {
+                  "@_id": generateUuid(),
+                  "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
                 },
               },
             ],
-            invokedFunction: {
-              id: generateUuid(),
-              name: "FUNCTION",
+            expression: {
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "FUNCTION" },
             },
           },
         },

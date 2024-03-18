@@ -1,10 +1,23 @@
-import {
-  DecisionTableExpressionDefinitionBuiltInAggregation,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-} from "@kie-tools/boxed-expression-component/dist/api";
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { DMN15_SPEC } from "../Dmn15Spec";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
@@ -12,18 +25,27 @@ import {
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "@kie-tools/boxed-expression-component/dist/resizing/WidthConstants";
+import {
+  DecisionTableExpressionDefinitionBuiltInAggregation,
+  GwtExpressionDefinition,
+  GwtExpressionDefinitionLogicType,
+} from "./types";
+import { DMN15_SPEC } from "./Dmn15Spec";
 
 /** Converts an ExpressionDefinition to a DMN JSON. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was
  *  created prior to the DMN Editor, needing to declare its own model. */
-export function beeToDmn(
-  expression: ExpressionDefinition,
+export function gwtToBee(
+  expression: GwtExpressionDefinition,
   __widths: Map<string, number[]>
 ): DMN15__tDecision["expression"] {
+  if (!expression) {
+    return undefined;
+  }
   switch (expression.logicType) {
-    case ExpressionDefinitionLogicType.Undefined:
+    case GwtExpressionDefinitionLogicType.Undefined:
       return undefined;
-    case ExpressionDefinitionLogicType.Context:
+    case GwtExpressionDefinitionLogicType.Context:
       return {
         __$$element: "context",
         "@_id": expression.id,
@@ -34,24 +56,24 @@ export function beeToDmn(
             __widths.set(expression.id, expression.entryInfoWidth ? [expression.entryInfoWidth] : []);
             return {
               "@_id": e.entryInfo.id,
-              expression: beeToDmn(e.entryExpression, __widths)!,
+              expression: gwtToBee(e.entryExpression, __widths)!,
               variable: {
                 "@_name": e.entryInfo.name,
                 "@_typeRef": e.entryInfo.dataType,
               },
             };
           }),
-          ...(expression.result.logicType !== ExpressionDefinitionLogicType.Undefined
+          ...(expression.result.logicType !== GwtExpressionDefinitionLogicType.Undefined
             ? [
                 {
                   "@_id": expression.result.id,
-                  expression: beeToDmn(expression.result, __widths)!,
+                  expression: gwtToBee(expression.result, __widths)!,
                 },
               ]
             : []),
         ],
       };
-    case ExpressionDefinitionLogicType.DecisionTable:
+    case GwtExpressionDefinitionLogicType.DecisionTable:
       __widths.set(expression.id, [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH]);
       return {
         __$$element: "decisionTable",
@@ -116,7 +138,7 @@ export function beeToDmn(
           };
         }),
       };
-    case ExpressionDefinitionLogicType.Function:
+    case GwtExpressionDefinitionLogicType.Function:
       return {
         __$$element: "functionDefinition",
         "@_id": expression.id,
@@ -130,7 +152,7 @@ export function beeToDmn(
         })),
         expression:
           expression.functionKind === "FEEL"
-            ? beeToDmn(expression.expression, __widths)
+            ? gwtToBee(expression.expression, __widths)
             : expression.functionKind === "Java"
             ? (() => {
                 __widths.set(expression.id, [
@@ -142,12 +164,18 @@ export function beeToDmn(
                   contextEntry: [
                     {
                       "@_id": expression.classFieldId,
-                      expression: { __$$element: "literalExpression", text: { __$$text: expression.className ?? "" } },
+                      expression: {
+                        __$$element: "literalExpression",
+                        text: { __$$text: expression.className ?? "" },
+                      },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName },
                     },
                     {
                       "@_id": expression.methodFieldId,
-                      expression: { __$$element: "literalExpression", text: { __$$text: expression.methodName ?? "" } },
+                      expression: {
+                        __$$element: "literalExpression",
+                        text: { __$$text: expression.methodName ?? "" },
+                      },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName },
                     },
                   ],
@@ -160,12 +188,18 @@ export function beeToDmn(
                   contextEntry: [
                     {
                       "@_id": expression.documentFieldId,
-                      expression: { __$$element: "literalExpression", text: { __$$text: expression.document ?? "" } },
+                      expression: {
+                        __$$element: "literalExpression",
+                        text: { __$$text: expression.document ?? "" },
+                      },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName },
                     },
                     {
                       "@_id": expression.modelFieldId,
-                      expression: { __$$element: "literalExpression", text: { __$$text: expression.model ?? "" } },
+                      expression: {
+                        __$$element: "literalExpression",
+                        text: { __$$text: expression.model ?? "" },
+                      },
                       variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName },
                     },
                   ],
@@ -175,7 +209,7 @@ export function beeToDmn(
                 throw new Error(`Unknown Function kind '${(expression as any).functionKind}'.`);
               })(),
       };
-    case ExpressionDefinitionLogicType.Invocation:
+    case GwtExpressionDefinitionLogicType.Invocation:
       return {
         __$$element: "invocation",
         "@_id": expression.id,
@@ -190,7 +224,7 @@ export function beeToDmn(
           __widths.set(expression.id, expression.entryInfoWidth ? [expression.entryInfoWidth] : []);
           return {
             "@_id": e.entryInfo.id,
-            expression: beeToDmn(e.entryExpression, __widths)!,
+            expression: gwtToBee(e.entryExpression, __widths)!,
             parameter: {
               "@_name": e.entryInfo.name,
               "@_typeRef": e.entryInfo.dataType,
@@ -198,16 +232,16 @@ export function beeToDmn(
           };
         }),
       };
-    case ExpressionDefinitionLogicType.List:
+    case GwtExpressionDefinitionLogicType.List:
       __widths.set(expression.id, [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH]);
       return {
         __$$element: "list",
         "@_id": expression.id,
         "@_label": expression.name,
         "@_typeRef": expression.dataType,
-        expression: expression.items.map((i) => beeToDmn(i, __widths)!),
+        expression: expression.items.map((i) => gwtToBee(i, __widths)!),
       };
-    case ExpressionDefinitionLogicType.Literal:
+    case GwtExpressionDefinitionLogicType.Literal:
       __widths.set(expression.id, expression.width ? [expression.width] : []);
       return {
         __$$element: "literalExpression",
@@ -216,7 +250,7 @@ export function beeToDmn(
         "@_typeRef": expression.dataType,
         text: { __$$text: expression.content ?? "" },
       };
-    case ExpressionDefinitionLogicType.Relation:
+    case GwtExpressionDefinitionLogicType.Relation:
       __widths.set(expression.id, [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH]);
       return {
         __$$element: "relation",

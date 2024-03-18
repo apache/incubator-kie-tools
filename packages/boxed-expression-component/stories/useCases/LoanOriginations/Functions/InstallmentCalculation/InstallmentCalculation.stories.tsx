@@ -17,15 +17,13 @@
  * under the License.
  */
 
-import * as React from "react";
 import {
   DmnBuiltInDataType,
-  ExpressionDefinitionLogicType,
   FunctionExpressionDefinition,
   FunctionExpressionDefinitionKind,
 } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditorWrapper, beeGwtService, pmmlParams } from "../../../../boxedExpressionStoriesWrapper";
+import { beeGwtService, BoxedExpressionEditorWrapper, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
 import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
 
@@ -39,80 +37,87 @@ export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const installmentCalculationExpression: FunctionExpressionDefinition = {
-  id: "_1E31E836-0609-4B4C-8FAF-389F774B1FE3",
-  name: "Installment calculation",
-  dataType: DmnBuiltInDataType.Number,
-  logicType: ExpressionDefinitionLogicType.Function,
-  formalParameters: [
+  __$$element: "functionDefinition",
+  "@_id": "_1E31E836-0609-4B4C-8FAF-389F774B1FE3",
+  "@_label": "Installment calculation",
+  "@_typeRef": DmnBuiltInDataType.Number,
+  formalParameter: [
     {
-      id: "_18DFB02E-9A87-44A2-AE57-997D6FE092B6",
-      name: "Product Type",
-      dataType: "t.ProductType" as DmnBuiltInDataType,
+      "@_id": "_18DFB02E-9A87-44A2-AE57-997D6FE092B6",
+      "@_name": "Product Type",
+      "@_typeRef": "t.ProductType",
     },
-    { id: "_907026CD-42C1-4731-B0B3-CC65A00180B1", name: "Rate", dataType: DmnBuiltInDataType.Number },
-    { id: "_BF350457-ED49-42CD-A087-7E6CBCB0B0E0", name: "Term", dataType: DmnBuiltInDataType.Number },
-    { id: "_F5D2470B-A1F2-4E40-98D7-DBCD286149FB", name: "Amount", dataType: DmnBuiltInDataType.Number },
+    { "@_id": "_907026CD-42C1-4731-B0B3-CC65A00180B1", "@_name": "Rate", "@_typeRef": DmnBuiltInDataType.Number },
+    { "@_id": "_BF350457-ED49-42CD-A087-7E6CBCB0B0E0", "@_name": "Term", "@_typeRef": DmnBuiltInDataType.Number },
+    { "@_id": "_F5D2470B-A1F2-4E40-98D7-DBCD286149FB", "@_name": "Amount", "@_typeRef": DmnBuiltInDataType.Number },
   ],
-  functionKind: FunctionExpressionDefinitionKind.Feel,
+  "@_kind": FunctionExpressionDefinitionKind.Feel,
   expression: {
-    id: "_7A96C527-9D9E-4199-987B-A6A0C8308296",
-    name: "Feel Expression",
-    dataType: DmnBuiltInDataType.Undefined,
-    logicType: ExpressionDefinitionLogicType.Context,
-    contextEntries: [
+    __$$element: "context",
+    "@_id": "_7A96C527-9D9E-4199-987B-A6A0C8308296",
+    "@_label": "Feel Expression",
+    contextEntry: [
       {
-        entryInfo: {
-          id: "_4AAFD507-11D2-4C6A-82E0-CBEEFA26FCE9",
-          name: "Monthly Fee",
-          dataType: DmnBuiltInDataType.Number,
+        variable: {
+          "@_id": "_4AAFD507-11D2-4C6A-82E0-CBEEFA26FCE9",
+          "@_name": "Monthly Fee",
+          "@_typeRef": DmnBuiltInDataType.Number,
         },
-        entryExpression: {
-          id: "_6B635731-73ED-41B8-9D3C-72F174D68036",
-          name: "Monthly Fee",
-          dataType: DmnBuiltInDataType.Number,
-          logicType: ExpressionDefinitionLogicType.Literal,
-          content:
-            'if Product Type = "Standard Loan"\nthen 20.00\nelse if Product Type = "Special Loan"\nthen 25.00\nelse null',
-          width: 320,
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": "_6B635731-73ED-41B8-9D3C-72F174D68036",
+          "@_label": "Monthly Fee",
+          "@_typeRef": DmnBuiltInDataType.Number,
+          text: {
+            __$$text:
+              'if Product Type = "Standard Loan"\nthen 20.00\nelse if Product Type = "Special Loan"\nthen 25.00\nelse null',
+          },
         },
       },
       {
-        entryInfo: {
-          id: "_1852E1E0-A49C-49D8-BB83-18D395672ECB",
-          name: "Monthly Repayments",
-          dataType: DmnBuiltInDataType.Number,
+        variable: {
+          "@_id": "_1852E1E0-A49C-49D8-BB83-18D395672ECB",
+          "@_name": "Monthly Repayments",
+          "@_typeRef": DmnBuiltInDataType.Number,
         },
-        entryExpression: {
-          id: "_68539BE5-8AA0-4C5B-8AE6-D4A8F1118B7B",
-          name: "Monthly Repayments",
-          dataType: DmnBuiltInDataType.Number,
-          logicType: ExpressionDefinitionLogicType.Literal,
-          content: "(Amount*Rate/12)/(1-(1+Rate/12)**-Term)",
-          width: 320,
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": "_68539BE5-8AA0-4C5B-8AE6-D4A8F1118B7B",
+          "@_label": "Monthly Repayments",
+          "@_typeRef": DmnBuiltInDataType.Number,
+          text: { __$$text: "(Amount*Rate/12)/(1-(1+Rate/12)**-Term)" },
+        },
+      },
+      {
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": "_94444797-708D-418A-A22A-5CE6CAB35F6F",
+          "@_label": "Result Expression",
+          text: { __$$text: "Monthly Fee + Monthly Repayments" },
         },
       },
     ],
-    result: {
-      id: "_94444797-708D-418A-A22A-5CE6CAB35F6F",
-      name: "Result Expression",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Literal,
-      content: "Monthly Fee + Monthly Repayments",
-      width: 320,
-    },
-    entryInfoWidth: 120,
   },
 };
+
+export const installmentCalculationWidthsById = new Map<string, number[]>([
+  ["_1E31E836-0609-4B4C-8FAF-389F774B1FE3", []],
+  ["_7A96C527-9D9E-4199-987B-A6A0C8308296", [120, 320]],
+  ["_6B635731-73ED-41B8-9D3C-72F174D68036", [320]],
+  ["_68539BE5-8AA0-4C5B-8AE6-D4A8F1118B7B", [320]],
+  ["_94444797-708D-418A-A22A-5CE6CAB35F6F", [320]],
+]);
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   args: {
-    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
-    expressionDefinition: installmentCalculationExpression,
+    expressionHolderId: "_00000000-0000-0000-0000-000000000000",
+    expression: installmentCalculationExpression,
     dataTypes: loanOriginationsDataTypes,
     beeGwtService,
-    pmmlParams,
+    pmmlDocuments,
     isResetSupportedOnRootExpression: false,
+    widthsById: installmentCalculationWidthsById,
   },
 };

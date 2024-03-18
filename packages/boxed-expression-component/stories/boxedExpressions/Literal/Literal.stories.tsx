@@ -17,13 +17,11 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
 import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../../src/api";
-import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
+import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -37,14 +35,13 @@ type Story = StoryObj<BoxedExpressionEditorProps>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Literal,
+    expression: {
+      __$$element: "literalExpression",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
     },
     isResetSupportedOnRootExpression: false,
   },
@@ -52,16 +49,15 @@ export const Base: Story = {
 
 export const CanDrive: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Can Drive?",
-      dataType: DmnBuiltInDataType.Boolean,
-      logicType: ExpressionDefinitionLogicType.Literal,
-      content: "Age >= 18 then true else false",
-      width: 320,
+    expression: {
+      __$$element: "literalExpression",
+      "@_id": generateUuid(),
+      "@_label": "Can Drive?",
+      "@_typeRef": DmnBuiltInDataType.Boolean,
+      text: { __$$text: "Age >= 18 then true else false" },
     },
     isResetSupportedOnRootExpression: false,
   },
@@ -70,32 +66,23 @@ export const CanDrive: Story = {
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Nested: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Context,
-      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      result: {
-        logicType: ExpressionDefinitionLogicType.Undefined,
-        dataType: DmnBuiltInDataType.Undefined,
-        id: generateUuid(),
-      },
-      contextEntries: [
+    expression: {
+      __$$element: "context",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      contextEntry: [
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "ContextEntry-1",
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Expression Name",
-            dataType: DmnBuiltInDataType.Undefined,
-            logicType: ExpressionDefinitionLogicType.Literal,
+          expression: {
+            __$$element: "literalExpression",
+            "@_id": generateUuid(),
+            "@_label": "Expression Name",
           },
         },
       ],

@@ -28,7 +28,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export interface DataTypeSelectorProps {
   /** The pre-selected data type */
-  value: DmnBuiltInDataType;
+  value: string;
   /** On DataType selection callback */
   onChange: (dataType: DmnBuiltInDataType) => void;
   /** By default the menu will be appended inline, but it is possible to append on the parent or on other elements */

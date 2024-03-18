@@ -121,7 +121,11 @@ export function BeeTableEditableCellContent({
         } else if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing;
         } else {
-          updateValue(newValue);
+          // This line below is commented on because it causes an issue with WebKit (Safari) based browsers,
+          // making the text boxes no longer work. Also, it is not necessary because the newValue is saved
+          // in the onBlur event, called by the BeeTableSelectionContext
+          // updateValue(newValue);
+
           setEditing(false);
           onFeelEnterKeyDown?.({ isShiftPressed: e.shiftKey });
         }

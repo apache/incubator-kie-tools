@@ -44,11 +44,11 @@ export interface ExpressionDefinitionHeaderMenuProps {
   /** The title of the popover menu */
   title?: string;
   /** The pre-selected data type */
-  selectedDataType?: DmnBuiltInDataType;
+  selectedDataType?: string;
   /** The pre-selected expression name */
   selectedExpressionName: string;
   /** Function to be called when the expression gets updated, passing the most updated version of it */
-  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
+  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "@_label" | "@_typeRef">) => void;
   position?: PopoverPosition;
 }
 
@@ -100,7 +100,7 @@ export function ExpressionDefinitionHeaderMenu({
 
   const saveExpression = useCallback(() => {
     if (expressionName !== selectedExpressionName || dataType !== selectedDataType) {
-      onExpressionHeaderUpdated({ name: expressionName, dataType: dataType });
+      onExpressionHeaderUpdated({ "@_label": expressionName, "@_typeRef": dataType });
     }
   }, [expressionName, selectedExpressionName, dataType, selectedDataType, onExpressionHeaderUpdated]);
 

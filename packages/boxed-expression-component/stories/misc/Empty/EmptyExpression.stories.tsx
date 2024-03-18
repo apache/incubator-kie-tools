@@ -17,21 +17,14 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
 import {
-  BoxedExpressionEditorWrapper,
   beeGwtService,
+  BoxedExpressionEditorWrapper,
   dataTypes,
-  pmmlParams,
+  pmmlDocuments,
 } from "../../boxedExpressionStoriesWrapper";
-import {
-  DmnBuiltInDataType,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  generateUuid,
-} from "../../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -42,21 +35,14 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-export const emptyExpressionDefinition: ExpressionDefinition = {
-  id: generateUuid(),
-  name: "Expression Name",
-  dataType: DmnBuiltInDataType.Undefined,
-  logicType: ExpressionDefinitionLogicType.Undefined,
-};
-
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   args: {
-    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
-    expressionDefinition: emptyExpressionDefinition,
+    expressionHolderId: "_00000000-0000-0000-0000-000000000000",
+    expression: undefined!,
     dataTypes,
     beeGwtService,
-    pmmlParams,
+    pmmlDocuments,
   },
 };

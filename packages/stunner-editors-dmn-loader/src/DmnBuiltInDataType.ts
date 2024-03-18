@@ -17,19 +17,16 @@
  * under the License.
  */
 
-import { ExpressionDefinition } from "./ExpressionDefinition";
-
-/**
- * This interface defines all the API methods which BoxedExpressionEditor component can use to dialog with GWT Layer
- */
-export interface BeeGwtService {
-  getDefaultExpressionDefinition(
-    logicType: ExpressionDefinition["__$$element"] | undefined,
-    typeRef: string,
-    isRoot?: boolean
-  ): { expression: ExpressionDefinition; widthsById: Map<string, number[]> };
-
-  openDataTypePage: () => void; // Just open the data types tab
-
-  selectObject: (uuid?: string) => void; // Changes the Properties panel
+export enum DmnBuiltInDataType {
+  Undefined = "<Undefined>",
+  Any = "Any",
+  Boolean = "boolean",
+  Context = "context",
+  Date = "date",
+  DateTime = "date and time",
+  DateTimeDuration = "days and time duration",
+  Number = "number",
+  String = "string",
+  Time = "time",
+  YearsMonthsDuration = "years and months duration",
 }

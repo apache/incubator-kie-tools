@@ -147,7 +147,7 @@ function TestScenarioTable({
     [assetType]
   );
 
-  /* It updates any column width change in the Model */
+  /* It updates any column  change in the Model */
   const setColumnWidth = useCallback(
     (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
       updateTestScenarioModel((prevState) => {
@@ -1121,6 +1121,7 @@ function TestScenarioTable({
         shouldRenderRowIndexColumn={!isBackground}
         shouldShowColumnsInlineControls={true}
         shouldShowRowsInlineControls={!isBackground}
+        widthsById={new Map<string, number[]>()} // The widths in SceSim are handled direct in the columns
       />
     </div>
   );

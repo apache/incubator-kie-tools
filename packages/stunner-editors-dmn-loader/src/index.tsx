@@ -25,21 +25,24 @@ import {
   JavaCodeCompletionService,
 } from "@kie-tools/import-java-classes-component";
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
 import {
   BeeGwtService,
   DmnDataType,
   ExpressionDefinition,
-  PmmlParam,
+  PmmlDocument,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import { GwtExpressionDefinition } from "./types";
+import { dmnExpressionToGwtExpression, gwtLogicType } from "./mapping";
+import { gwtExpressionToDmnExpression } from "./mapping";
 
 export interface BoxedExpressionEditorWrapperProps {
   /** Identifier of the decision node, where the expression will be hold */
-  decisionNodeId: string;
+  expressionHolderId: string;
   /** All expression properties used to define it */
-  expressionDefinition: ExpressionDefinition;
+  gwtExpression: GwtExpressionDefinition;
   /** The data type elements that can be used in the editor */
   dataTypes: DmnDataType[];
   /**
@@ -51,7 +54,7 @@ export interface BoxedExpressionEditorWrapperProps {
    * */
   isResetSupportedOnRootExpression?: boolean;
   /** PMML parameters */
-  pmmlParams?: PmmlParam[];
+  pmmlDocuments?: PmmlDocument[];
   /** BoxedExpressionWrapper root node */
   boxedExpressionEditorRootNode: Element | null;
   /** The variables used in the current Boxed Expression Editor context */
@@ -59,22 +62,23 @@ export interface BoxedExpressionEditorWrapperProps {
 }
 
 const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEditorWrapperProps> = ({
-  decisionNodeId,
-  expressionDefinition,
+  expressionHolderId,
+  gwtExpression,
   dataTypes,
   isResetSupportedOnRootExpression,
-  pmmlParams,
+  pmmlDocuments,
   boxedExpressionEditorRootNode,
   variables,
 }) => {
   const [expressionWrapper, setExpressionWrapper] = useState<{
     source: "gwt" | "react";
-    expression: ExpressionDefinition;
-  }>({ source: "gwt", expression: expressionDefinition });
+    expression?: ExpressionDefinition;
+    widthsById: Map<string, number[]>;
+  }>({ source: "gwt", ...gwtExpressionToDmnExpression(gwtExpression) });
 
   useEffect(() => {
-    setExpressionWrapper({ source: "gwt", expression: expressionDefinition });
-  }, [expressionDefinition]);
+    setExpressionWrapper({ source: "gwt", ...gwtExpressionToDmnExpression(gwtExpression) });
+  }, [gwtExpression]);
 
   useEffect(() => {
     console.log("Expression is changed. Source is: " + expressionWrapper.source);
@@ -82,13 +86,17 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
 
     if (expressionWrapper.source === "react") {
       console.log("Sending expression update to GWT layer.");
-      window.beeApiWrapper?.updateExpression(expressionWrapper.expression);
+      window.beeApiWrapper?.updateExpression(
+        dmnExpressionToGwtExpression(expressionWrapper.widthsById, expressionWrapper.expression)
+      );
     }
   }, [expressionWrapper]);
 
   const beeGwtService: BeeGwtService = {
-    getDefaultExpressionDefinition(logicType: string, dataType: string): ExpressionDefinition {
-      return window.beeApiWrapper?.getDefaultExpressionDefinition(logicType, dataType);
+    getDefaultExpressionDefinition(logicType, dataType) {
+      return gwtExpressionToDmnExpression(
+        window.beeApiWrapper?.getDefaultExpressionDefinition(gwtLogicType(logicType), dataType)
+      ) as any;
     },
     openDataTypePage(): void {
       window.beeApiWrapper?.openDataTypePage();
@@ -104,7 +112,10 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
         return {
           source: "react",
           expression:
-            typeof newExpressionAction === "function" ? newExpressionAction(prevState.expression) : newExpressionAction,
+            typeof newExpressionAction === "function"
+              ? newExpressionAction(prevState.expression as any)
+              : newExpressionAction,
+          widthsById: prevState.widthsById,
         };
       });
     },
@@ -132,38 +143,42 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     };
   }, [boxedExpressionEditorRootNode]);
 
+  const onWidthsChange = useCallback(() => {}, []);
+
   return (
     <BoxedExpressionEditor
       scrollableParentRef={emptyRef}
       beeGwtService={beeGwtService}
-      decisionNodeId={decisionNodeId}
-      expressionDefinition={expressionWrapper.expression}
-      setExpressionDefinition={setExpressionNotifyingUserAction}
+      expressionHolderId={expressionHolderId}
+      expression={expressionWrapper.expression}
+      onExpressionChange={setExpressionNotifyingUserAction}
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
-      pmmlParams={pmmlParams}
+      pmmlDocuments={pmmlDocuments}
       variables={variables}
+      widthsById={expressionWrapper.widthsById}
+      onWidthsChange={onWidthsChange}
     />
   );
 };
 
 const renderBoxedExpressionEditor = (
   selector: string,
-  decisionNodeId: string,
-  expressionDefinition: ExpressionDefinition,
+  expressionHolderId: string,
+  gwtExpression: GwtExpressionDefinition,
   dataTypes: DmnDataType[],
   isResetSupportedOnRootExpression: boolean,
-  pmmlParams: PmmlParam[],
+  pmmlDocuments: PmmlDocument[],
   variables: FeelVariables
 ) => {
   const boxedExpressionEditorRootNode = document.querySelector(selector);
   ReactDOM.render(
     <BoxedExpressionEditorWrapper
-      decisionNodeId={decisionNodeId}
-      expressionDefinition={expressionDefinition}
+      expressionHolderId={expressionHolderId}
+      gwtExpression={gwtExpression}
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
-      pmmlParams={pmmlParams}
+      pmmlDocuments={pmmlDocuments}
       boxedExpressionEditorRootNode={boxedExpressionEditorRootNode}
       variables={variables}
     />,

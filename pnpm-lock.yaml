@@ -761,6 +761,9 @@ importers:
       "@kie-tools/dmn-feel-antlr4-parser":
         specifier: workspace:*
         version: link:../dmn-feel-antlr4-parser
+      "@kie-tools/dmn-marshaller":
+        specifier: workspace:*
+        version: link:../dmn-marshaller
       "@kie-tools/feel-input-component":
         specifier: workspace:*
         version: link:../feel-input-component
@@ -9305,6 +9308,9 @@ importers:
       "@kie-tools/dmn-feel-antlr4-parser":
         specifier: workspace:*
         version: link:../dmn-feel-antlr4-parser
+      "@kie-tools/dmn-marshaller":
+        specifier: workspace:*
+        version: link:../dmn-marshaller
       "@kie-tools/import-java-classes-component":
         specifier: workspace:*
         version: link:../import-java-classes-component

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
 import * as Empty from "../../misc/Empty/EmptyExpression.stories";
@@ -63,32 +62,32 @@ export const Discount: Story = {
   ...DecisionTable.Discount,
   args: {
     ...DecisionTable.Discount.args!,
-    expressionDefinition: {
+    expression: {
       ...(DecisionTable.Discount.args!.expressionDefinition as DecisionTableExpressionDefinition),
-      rules: [
+      rule: [
         {
-          id: generateUuid(),
-          inputEntries: [{ id: generateUuid(), content: "-" }],
-          outputEntries: [{ id: generateUuid(), content: "" }],
-          annotationEntries: [""],
+          "@_id": generateUuid(),
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: "-" } }],
+          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: "" } }],
+          annotationEntry: [{ text: { __$$text: "" } }],
         },
         {
-          id: generateUuid(),
-          inputEntries: [{ id: generateUuid(), content: "-" }],
-          outputEntries: [{ id: generateUuid(), content: "" }],
-          annotationEntries: [""],
+          "@_id": generateUuid(),
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: "-" } }],
+          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: "" } }],
+          annotationEntry: [{ text: { __$$text: "" } }],
         },
         {
-          id: generateUuid(),
-          inputEntries: [{ id: generateUuid(), content: "-" }],
-          outputEntries: [{ id: generateUuid(), content: "" }],
-          annotationEntries: [""],
+          "@_id": generateUuid(),
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: "-" } }],
+          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: "" } }],
+          annotationEntry: [{ text: { __$$text: "" } }],
         },
         {
-          id: generateUuid(),
-          inputEntries: [{ id: generateUuid(), content: "-" }],
-          outputEntries: [{ id: generateUuid(), content: "" }],
-          annotationEntries: [""],
+          "@_id": generateUuid(),
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: "-" } }],
+          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: "" } }],
+          annotationEntry: [{ text: { __$$text: "" } }],
         },
       ],
     },

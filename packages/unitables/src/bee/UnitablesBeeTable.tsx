@@ -303,8 +303,11 @@ export function UnitablesBeeTable({
     return row.original.id;
   }, []);
 
+  const widthsById = useMemo(() => new Map(), []); // FIXME: Tiago
+
   return (
     <StandaloneBeeTable
+      widthsById={widthsById}
       cellComponentByColumnAccessor={cellComponentByColumnAccessor}
       scrollableParentRef={scrollableParentRef}
       getColumnKey={getColumnKey}

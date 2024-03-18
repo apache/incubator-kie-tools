@@ -17,18 +17,12 @@
  * under the License.
  */
 
-import * as React from "react";
-import {
-  DecisionTableExpressionDefinition,
-  DecisionTableExpressionDefinitionBuiltInAggregation,
-  DecisionTableExpressionDefinitionHitPolicy,
-  DmnBuiltInDataType,
-  ExpressionDefinitionLogicType,
-} from "../../../../../src/api";
+import { DecisionTableExpressionDefinition } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditorWrapper, beeGwtService, pmmlParams } from "../../../../boxedExpressionStoriesWrapper";
+import { beeGwtService, BoxedExpressionEditorWrapper, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
 import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
+import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../../../src/resizing/WidthConstants";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -40,83 +34,85 @@ export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const strategyExpression: DecisionTableExpressionDefinition = {
-  id: "_1AAE9CB0-2B4B-4159-A994-A93D5F91EE23",
-  name: "Strategy",
-  dataType: "t.Strategy" as DmnBuiltInDataType,
-  logicType: ExpressionDefinitionLogicType.DecisionTable,
-  hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Unique,
-  aggregation: DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
-  annotations: [{ name: "annotation-1", width: 100 }],
+  __$$element: "decisionTable",
+  "@_id": "_1AAE9CB0-2B4B-4159-A994-A93D5F91EE23",
+  "@_label": "Strategy",
+  "@_typeRef": "t.Strategy",
+  "@_hitPolicy": "UNIQUE",
+  annotation: [{ "@_name": "annotation-1" }],
   input: [
     {
-      id: "_000159BA-3887-4445-8DC7-3A7A82EE3ED9",
-      name: "Bureau call type",
-      dataType: "t.BureauCallType" as DmnBuiltInDataType,
-      width: 138,
-      idLiteralExpression: "_2B5896FA-9555-4CC9-8893-3AE9CB9C0FA9",
+      "@_id": "_000159BA-3887-4445-8DC7-3A7A82EE3ED9",
+      inputExpression: {
+        "@_typeRef": "t.BureauCallType",
+        "@_id": "_2B5896FA-9555-4CC9-8893-3AE9CB9C0FA9",
+        text: { __$$text: "Bureau call type" },
+      },
     },
     {
-      id: "_3D46C973-60DA-433A-B3DE-F2B6DB2B892C",
-      name: "Eligibility",
-      dataType: "t.Eligibility" as DmnBuiltInDataType,
-      width: 129,
-      idLiteralExpression: "_0E4FC630-E178-4DE4-BA63-D8A02E14C8A2",
+      "@_id": "_3D46C973-60DA-433A-B3DE-F2B6DB2B892C",
+      inputExpression: {
+        "@_typeRef": "t.Eligibility",
+        "@_id": "_0E4FC630-E178-4DE4-BA63-D8A02E14C8A2",
+        text: { __$$text: "Eligibility" },
+      },
     },
   ],
   output: [
     {
-      id: "_03C0D3AD-AD53-45A0-BB96-D51579F00EA7",
-      name: "Strategy",
-      dataType: "t.Strategy" as DmnBuiltInDataType,
-      width: 113,
+      "@_id": "_03C0D3AD-AD53-45A0-BB96-D51579F00EA7",
+      "@_name": "Strategy",
+      "@_typeRef": "t.Strategy",
     },
   ],
-  rules: [
+  rule: [
     {
-      id: "_9F3719DD-B70B-4AA9-AF1B-75870F163136",
-      inputEntries: [
-        { id: "_15F77394-36F1-4EEF-BA70-8FB63EA4F33E", content: "-" },
+      "@_id": "_9F3719DD-B70B-4AA9-AF1B-75870F163136",
+      inputEntry: [
+        { "@_id": "_15F77394-36F1-4EEF-BA70-8FB63EA4F33E", text: { __$$text: "-" } },
         {
-          id: "_CD01C61C-0433-4FBB-A250-14B0A3F412E9",
-          content: '"Ineligible"',
+          "@_id": "_CD01C61C-0433-4FBB-A250-14B0A3F412E9",
+          text: { __$$text: '"Ineligible"' },
         },
       ],
-      outputEntries: [{ id: "_AB9B7F72-DF75-41F8-9DE4-344029170BBC", content: '"Decline"' }],
-      annotationEntries: [""],
+      outputEntry: [{ "@_id": "_AB9B7F72-DF75-41F8-9DE4-344029170BBC", text: { __$$text: '"Decline"' } }],
     },
     {
-      id: "_6DEFC188-313E-4A30-A02C-FFC6730A7F63",
-      inputEntries: [
+      "@_id": "_6DEFC188-313E-4A30-A02C-FFC6730A7F63",
+      inputEntry: [
         {
-          id: "_781B33A2-70C5-4A5A-B891-0A06016CFA1D",
-          content: '"Full", "Mini"',
+          "@_id": "_781B33A2-70C5-4A5A-B891-0A06016CFA1D",
+          text: { __$$text: '"Full", "Mini"' },
         },
-        { id: "_29A613E9-3FF8-4CC6-B4B9-CEC2E9CC0F07", content: '"Eligible"' },
+        { "@_id": "_29A613E9-3FF8-4CC6-B4B9-CEC2E9CC0F07", text: { __$$text: '"Eligible"' } },
       ],
-      outputEntries: [{ id: "_8E245858-B826-4818-8AF4-0A7C3C0130E8", content: '"Bureau"' }],
-      annotationEntries: [""],
+      outputEntry: [{ "@_id": "_8E245858-B826-4818-8AF4-0A7C3C0130E8", text: { __$$text: '"Bureau"' } }],
     },
     {
-      id: "_C2A5C598-38B0-4E62-BEF7-AD24D35918D5",
-      inputEntries: [
-        { id: "_8052B519-FE3D-4272-9F4E-DA3761638C8D", content: '"None"' },
-        { id: "_5BE642C3-2FD1-4608-BFCA-35F28A872AE2", content: '"Eligible"' },
+      "@_id": "_C2A5C598-38B0-4E62-BEF7-AD24D35918D5",
+      inputEntry: [
+        { "@_id": "_8052B519-FE3D-4272-9F4E-DA3761638C8D", text: { __$$text: '"None"' } },
+        { "@_id": "_5BE642C3-2FD1-4608-BFCA-35F28A872AE2", text: { __$$text: '"Eligible"' } },
       ],
-      outputEntries: [{ id: "_9C1FC548-5F28-415C-B7C7-6C9BB813134A", content: '"Through"' }],
-      annotationEntries: [""],
+      outputEntry: [{ "@_id": "_9C1FC548-5F28-415C-B7C7-6C9BB813134A", text: { __$$text: '"Through"' } }],
     },
   ],
 };
+
+export const strategyWidthsById = new Map([
+  ["_1AAE9CB0-2B4B-4159-A994-A93D5F91EE23", [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 138, 129, 113, 100]],
+]);
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   args: {
-    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
-    expressionDefinition: strategyExpression,
+    expressionHolderId: "_00000000-0000-0000-0000-000000000000",
+    expression: strategyExpression,
     dataTypes: loanOriginationsDataTypes,
     beeGwtService,
-    pmmlParams,
+    pmmlDocuments,
     isResetSupportedOnRootExpression: false,
+    widthsById: strategyWidthsById,
   },
 };

@@ -20,7 +20,7 @@
 import * as React from "react";
 import * as ReactTable from "react-table";
 import { ResizerStopBehavior } from "../resizing/ResizingWidthsContext";
-import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
+import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable";
 import { BeeTableSelection } from "../selection/BeeTableSelectionContext";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
@@ -29,6 +29,7 @@ export interface BeeTableCellProps<R extends object> {
   rowIndex: number;
   columnIndex: number;
   columnId: string;
+  widthsById: Map<string, number[]>;
 }
 
 export interface BeeTableProps<R extends object> {
@@ -92,6 +93,7 @@ export interface BeeTableProps<R extends object> {
   lastColumnMinWidth?: number;
   /** The variables for the current expression context */
   variables?: FeelVariables;
+  widthsById: Map<string, number[]>;
 }
 
 /** Possible status for the visibility of the Table's Header */
