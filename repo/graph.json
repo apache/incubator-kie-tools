@@ -1033,7 +1033,7 @@
     ["@kie-tools-examples/ping-pong-view", "examples/ping-pong-view"],
     ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
     ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],
-    ["@kie-tools-examples/pmml-quarkus-example", "examples/pmml-quarkus-example"],
+    ["@kie-tools-examples/pmml-quarkus-example", "examples/process-quarkus-example"],
     ["@kie-tools-examples/sonataflow-greeting-quarkus", "examples/sonataflow-greeting-quarkus"],
     ["@kie-tools-examples/todo-list-view", "examples/todo-list-view"],
     ["kie-tools-examples-todo-list-view-vscode-extension", "examples/todo-list-view-vscode-extension"],

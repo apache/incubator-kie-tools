@@ -55,6 +55,7 @@
         <module>decisiontable-quarkus-example</module>
         <module>dmn-quarkus-example</module>
         <module>pmml-quarkus-example</module>
+        <module>process-quarkus-example</module>
       </modules>
     </profile>
 
@@ -77,6 +78,7 @@
         <module>decisiontable-quarkus-example</module>
         <module>dmn-quarkus-example</module>
         <module>pmml-quarkus-example</module>
+        <module>process-quarkus-example</module>
       </modules>
     </profile>
 
