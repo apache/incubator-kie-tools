@@ -205,10 +205,10 @@ func (r *SonataFlowPlatformReconciler) SonataFlowPlatformUpdateStatus(ctx contex
 
 		if sfcPlatform.Spec.Capabilities != nil && contains(sfcPlatform.Spec.Capabilities.Workflows, clusterplatform.PlatformServices) {
 			tpsDI := services.NewDataIndexHandler(target)
-			tpsDI.SetServiceUrlInStatus(sfPlatform)
+			tpsDI.SetServiceUrlInPlatformStatus(sfPlatform)
 
 			tpsJS := services.NewJobServiceHandler(target)
-			tpsJS.SetServiceUrlInStatus(sfPlatform)
+			tpsJS.SetServiceUrlInPlatformStatus(sfPlatform)
 		}
 	} else {
 		target.Status.ClusterPlatformRef = nil

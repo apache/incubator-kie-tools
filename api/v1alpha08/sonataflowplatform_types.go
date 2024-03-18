@@ -113,7 +113,7 @@ type PlatformServicesStatus struct {
 // PlatformServiceRefStatus displays information on a cluster-wide service
 // +k8s:openapi-gen=true
 type PlatformServiceRefStatus struct {
-	// Url displays the base url of a cluster-wide service
+	// Url displays the base url of the service
 	Url string `json:"url,omitempty"`
 }
 

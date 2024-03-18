@@ -26,6 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/persistence"
 	"github.com/magiconair/properties"
@@ -68,8 +69,6 @@ type PlatformServiceHandler interface {
 	// MergePodSpec performs a merge with override between the podSpec argument and the expected values based on the service's pod template specification. The returning
 	// object is the result of the merge
 	MergePodSpec(podSpec corev1.PodSpec) (corev1.PodSpec, error)
-	// GenerateWorkflowProperties returns a property object that contains the service's application properties required by workflows
-	GenerateWorkflowProperties() (*properties.Properties, error)
 	// GenerateServiceProperties returns a property object that contains the application properties required by the service deployment
 	GenerateServiceProperties() (*properties.Properties, error)
 
@@ -83,9 +82,11 @@ type PlatformServiceHandler interface {
 	GetServiceBaseUrl() string
 	// IsServiceEnabled returns true if the service is enabled in either the spec or the status.clusterPlatformRef.
 	IsServiceEnabled() bool
-	// SetServiceUrlInStatus sets the service url in status. if reconciled instance does not have service set in spec AND
+	// SetServiceUrlInPlatformStatus sets the service url in the platform's status. if reconciled instance does not have service set in spec AND
 	// if cluster referenced platform has said service enabled, use the cluster platform's service
-	SetServiceUrlInStatus(clusterRefPlatform *operatorapi.SonataFlowPlatform)
+	SetServiceUrlInPlatformStatus(clusterRefPlatform *operatorapi.SonataFlowPlatform)
+	// SetServiceUrlInWorkflowStatus sets the service url in a workflow's status.
+	SetServiceUrlInWorkflowStatus(workflow *operatorapi.SonataFlow)
 }
 
 type DataIndexHandler struct {
@@ -116,7 +117,7 @@ func (d DataIndexHandler) GetServiceName() string {
 	return fmt.Sprintf("%s-%s", d.platform.Name, constants.DataIndexServiceName)
 }
 
-func (d DataIndexHandler) SetServiceUrlInStatus(clusterRefPlatform *operatorapi.SonataFlowPlatform) {
+func (d DataIndexHandler) SetServiceUrlInPlatformStatus(clusterRefPlatform *operatorapi.SonataFlowPlatform) {
 	psDI := NewDataIndexHandler(clusterRefPlatform)
 	if !isServicesSet(d.platform) && psDI.IsServiceEnabledInSpec() {
 		if d.platform.Status.ClusterPlatformRef != nil {
@@ -126,6 +127,17 @@ func (d DataIndexHandler) SetServiceUrlInStatus(clusterRefPlatform *operatorapi.
 			d.platform.Status.ClusterPlatformRef.Services.DataIndexRef = &operatorapi.PlatformServiceRefStatus{
 				Url: psDI.GetLocalServiceBaseUrl(),
 			}
+		}
+	}
+}
+
+func (d DataIndexHandler) SetServiceUrlInWorkflowStatus(workflow *operatorapi.SonataFlow) {
+	if !profiles.IsDevProfile(workflow) && d.IsServiceEnabled() {
+		if workflow.Status.Services == nil {
+			workflow.Status.Services = &operatorapi.PlatformServicesStatus{}
+		}
+		workflow.Status.Services.DataIndexRef = &operatorapi.PlatformServiceRefStatus{
+			Url: d.GetServiceBaseUrl(),
 		}
 	}
 }
@@ -235,16 +247,6 @@ func (d DataIndexHandler) GetServiceCmName() string {
 	return fmt.Sprintf("%s-props", d.GetServiceName())
 }
 
-func (d DataIndexHandler) GenerateWorkflowProperties() (*properties.Properties, error) {
-	props := properties.NewProperties()
-	if d.IsServiceEnabled() {
-		props.Set(constants.KogitoDataIndexURL, d.GetServiceBaseUrl())
-		props.Set(constants.KogitoProcessDefinitionsEventsURL, d.GetServiceBaseUrl()+constants.KogitoProcessDefinitionsEventsPath)
-		props.Set(constants.KogitoProcessInstancesEventsURL, d.GetServiceBaseUrl()+constants.KogitoProcessInstancesEventsPath)
-	}
-	return props, nil
-}
-
 func (d DataIndexHandler) GenerateServiceProperties() (*properties.Properties, error) {
 	props := properties.NewProperties()
 	props.Set(constants.KogitoServiceURLProperty, d.GetLocalServiceBaseUrl())
@@ -284,7 +286,7 @@ func (j JobServiceHandler) GetServiceCmName() string {
 	return fmt.Sprintf("%s-props", j.GetServiceName())
 }
 
-func (j JobServiceHandler) SetServiceUrlInStatus(clusterRefPlatform *operatorapi.SonataFlowPlatform) {
+func (j JobServiceHandler) SetServiceUrlInPlatformStatus(clusterRefPlatform *operatorapi.SonataFlowPlatform) {
 	psJS := NewJobServiceHandler(clusterRefPlatform)
 	if !isServicesSet(j.platform) && psJS.IsServiceEnabledInSpec() {
 		if j.platform.Status.ClusterPlatformRef != nil {
@@ -294,6 +296,17 @@ func (j JobServiceHandler) SetServiceUrlInStatus(clusterRefPlatform *operatorapi
 			j.platform.Status.ClusterPlatformRef.Services.JobServiceRef = &operatorapi.PlatformServiceRefStatus{
 				Url: psJS.GetLocalServiceBaseUrl(),
 			}
+		}
+	}
+}
+
+func (j JobServiceHandler) SetServiceUrlInWorkflowStatus(workflow *operatorapi.SonataFlow) {
+	if !profiles.IsDevProfile(workflow) && j.IsServiceEnabled() {
+		if workflow.Status.Services == nil {
+			workflow.Status.Services = &operatorapi.PlatformServicesStatus{}
+		}
+		workflow.Status.Services.JobServiceRef = &operatorapi.PlatformServiceRefStatus{
+			Url: j.GetServiceBaseUrl(),
 		}
 	}
 }
@@ -416,13 +429,13 @@ func (j JobServiceHandler) GenerateServiceProperties() (*properties.Properties, 
 	return props, nil
 }
 
-func (j JobServiceHandler) GenerateWorkflowProperties() (*properties.Properties, error) {
-	props := properties.NewProperties()
-	if j.IsServiceEnabled() {
-		props.Set(constants.KogitoJobServiceURL, j.GetServiceBaseUrl())
-		props.Set(constants.JobServiceRequestEventsURL, j.GetServiceBaseUrl()+constants.JobServiceJobEventsPath)
-	}
-	return props, nil
+func SetServiceUrlsInWorkflowStatus(pl *operatorapi.SonataFlowPlatform, workflow *operatorapi.SonataFlow) {
+	tpsDI := NewDataIndexHandler(pl)
+	tpsJS := NewJobServiceHandler(pl)
+
+	workflow.Status.Services = nil
+	tpsDI.SetServiceUrlInWorkflowStatus(workflow)
+	tpsJS.SetServiceUrlInWorkflowStatus(workflow)
 }
 
 func isDataIndexEnabled(platform *operatorapi.SonataFlowPlatform) bool {

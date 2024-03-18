@@ -680,6 +680,9 @@ type SonataFlowStatus struct {
 	// Endpoint is an externally accessible URL of the workflow
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="endpoint"
 	Endpoint *apis.URL `json:"endpoint,omitempty"`
+	// Services displays which platform services are being used by this workflow
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="services"
+	Services *PlatformServicesStatus `json:"services,omitempty"`
 }
 
 func (s *SonataFlowStatus) GetTopLevelConditionType() api.ConditionType {

@@ -16762,8 +16762,7 @@ spec:
                           Data Index service
                         properties:
                           url:
-                            description: Url displays the base url of a cluster-wide
-                              service
+                            description: Url displays the base url of the service
                             type: string
                         type: object
                       jobServiceRef:
@@ -16771,8 +16770,7 @@ spec:
                           Job Service
                         properties:
                           url:
-                            description: Url displays the base url of a cluster-wide
-                              service
+                            description: Url displays the base url of the service
                             type: string
                         type: object
                     type: object
@@ -26283,6 +26281,27 @@ spec:
                 description: keeps track of how many failure recovers a given workflow
                   had so far
                 type: integer
+              services:
+                description: Services displays which platform services are being used
+                  by this workflow
+                properties:
+                  dataIndexRef:
+                    description: DataIndexRef displays information on the cluster-wide
+                      Data Index service
+                    properties:
+                      url:
+                        description: Url displays the base url of the service
+                        type: string
+                    type: object
+                  jobServiceRef:
+                    description: JobServiceRef displays information on the cluster-wide
+                      Job Service
+                    properties:
+                      url:
+                        description: Url displays the base url of the service
+                        type: string
+                    type: object
+                type: object
             type: object
         type: object
     served: true

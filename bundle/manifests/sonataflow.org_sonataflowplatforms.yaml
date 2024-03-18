@@ -16270,8 +16270,7 @@ spec:
                           Data Index service
                         properties:
                           url:
-                            description: Url displays the base url of a cluster-wide
-                              service
+                            description: Url displays the base url of the service
                             type: string
                         type: object
                       jobServiceRef:
@@ -16279,8 +16278,7 @@ spec:
                           Job Service
                         properties:
                           url:
-                            description: Url displays the base url of a cluster-wide
-                              service
+                            description: Url displays the base url of the service
                             type: string
                         type: object
                     type: object

@@ -26,6 +26,8 @@ import (
 	"k8s.io/client-go/rest"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/discovery"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
 
 	"k8s.io/client-go/tools/record"
 
@@ -49,7 +51,12 @@ type StateSupport struct {
 // PerformStatusUpdate updates the SonataFlow Status conditions
 func (s *StateSupport) PerformStatusUpdate(ctx context.Context, workflow *operatorapi.SonataFlow) (bool, error) {
 	var err error
+	pl, err := platform.GetActivePlatform(ctx, s.C, workflow.Namespace)
+	if err != nil {
+		return false, err
+	}
 	workflow.Status.ObservedGeneration = workflow.Generation
+	services.SetServiceUrlsInWorkflowStatus(pl, workflow)
 	if err = s.C.Status().Update(ctx, workflow); err != nil {
 		klog.V(log.E).ErrorS(err, "Failed to update Workflow status")
 		return false, err

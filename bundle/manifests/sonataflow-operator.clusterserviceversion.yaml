@@ -329,6 +329,10 @@ spec:
           so far
         displayName: recoverFailureAttempts
         path: recoverFailureAttempts
+      - description: Services displays which platform services are being used by this
+          workflow
+        displayName: services
+        path: services
       version: v1alpha08
   description: |-
     SonataFlow Kubernetes Operator for deploying workflow applications
