@@ -20,6 +20,11 @@
 import { Page } from "@playwright/test";
 import { SelectorPanel } from "./selectorPanel";
 
+export enum AssetType {
+  DECISION,
+  RULE,
+}
+
 export class Editor {
   constructor(public page: Page, public selectorPanel: SelectorPanel, public baseURL?: string) {
     this.page = page;
@@ -30,37 +35,29 @@ export class Editor {
     return `iframe.html?id=${iframeId}&viewMode=story`;
   }
 
-  public async openSelectionPage() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`misc-empty-scesim-editor--base`)}` ?? "");
+  public async openStartPage() {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`misc-empty--empty`)}` ?? "");
   }
 
-  public async openTestScenarioTableDecision() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`misc-empty-scesim-editor--base`)}` ?? "");
-    await this.page.locator("#asset-type-select").selectOption("DMN");
+  public async createTestScenario(type: AssetType, background?: boolean) {
+    await this.openStartPage();
+    type === AssetType.DECISION
+      ? await this.page.locator("#asset-type-select").selectOption("DMN")
+      : await this.page.locator("#asset-type-select").selectOption("RULE");
     await this.page.getByRole("button", { name: "Create" }).click();
     await this.selectorPanel.close();
+    if (background) {
+      await this.switchToBackgroundTable();
+    }
   }
 
-  public async openTestScenarioTableRule() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`misc-empty-scesim-editor--base`)}` ?? "");
-    await this.page.locator("#asset-type-select").selectOption("RULE");
-    await this.page.getByRole("button", { name: "Create" }).click();
-    await this.selectorPanel.close();
-  }
-
-  public async openBackgroundTableDecision() {
-    this.openTestScenarioTableDecision();
-    await this.page.getByRole("tab", { name: "Background" }).click();
-  }
-
-  public async openBackgroundTableRule() {
-    this.openTestScenarioTableRule();
-    await this.page.getByRole("tab", { name: "Background" }).click();
-  }
   public async switchToTestScenarioTable() {
     await this.page.getByRole("tab", { name: "Test Scenario" }).click();
   }
   public async switchToBackgroundTable() {
     await this.page.getByRole("tab", { name: "Background" }).click();
+  }
+  public getStartPage() {
+    return this.page.getByText("Create a new Test ScenarioAsset type * Select a typeDecision (DMN)Rule (DRL)Skip");
   }
 }

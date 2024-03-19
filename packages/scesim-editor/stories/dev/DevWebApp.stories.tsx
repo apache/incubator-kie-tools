@@ -19,56 +19,156 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
-import { Button, Flex, FlexItem, Title, Tooltip } from "@patternfly/react-core/dist/js";
-import React, { useEffect, useState } from "react";
-import { linkTo } from "@storybook/addon-links";
+import { Button, Flex, FlexItem, Page, PageSection } from "@patternfly/react-core/dist/js";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { OnSceSimModelChange, TestScenarioEditorProps, TestScenarioEditorRef } from "../../src/TestScenarioEditor";
+import { SceSimMarshaller } from "../../../scesim-marshaller/src/index";
+import { SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
+import { generateEmptyOneEight } from "../misc/empty/Empty.stories";
+import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
+import { trafficViolationDmn } from "../useCases/TrafficViolationDmn.stories";
 
-function App() {
-  const [version, setVersion] = useState(-1);
+const initialModel = generateEmptyOneEight();
 
-  useEffect(() => {
-    setVersion((prev) => prev + 1);
+function DevWebApp(args: TestScenarioEditorProps) {
+  const ref = useRef<TestScenarioEditorRef>(null);
+  const [state, setState] = useState<{ marshaller: SceSimMarshaller; stack: SceSimModel[]; pointer: number }>(() => {
+    const initialSceSimMarshaller = getMarshaller(initialModel);
+    return {
+      marshaller: initialSceSimMarshaller,
+      stack: [initialSceSimMarshaller.parser.parse()],
+      pointer: 0,
+    };
+  });
+
+  const onModelChange = useCallback<OnSceSimModelChange>((model) => {
+    setState((prev) => {
+      const newStack = prev.stack.slice(0, prev.pointer + 1);
+      return {
+        ...prev,
+        stack: [...newStack, model],
+        pointer: newStack.length,
+      };
+    });
+  }, []);
+
+  const onSelectModel = useCallback(
+    (newModel) => {
+      onModelChange(getMarshaller(newModel).parser.parse());
+    },
+    [onModelChange]
+  );
+  const onDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
+
+    if (e.dataTransfer.items) {
+      // Use DataTransferItemList interface to access the file(s)
+      [...e.dataTransfer.items].forEach((item, i) => {
+        if (item.kind === "file") {
+          const fileName = item.getAsFile()?.name;
+          const reader = new FileReader();
+          reader.addEventListener("load", ({ target }) =>
+            ref.current?.setContent(fileName ?? "", target?.result as string)
+          );
+          reader.readAsText(item.getAsFile() as any);
+        }
+      });
+    }
+  }, []);
+
+  const onDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
+  }, []);
+
+  const reset = useCallback(() => {
+    ref.current?.setContent("Untitled.scesim", "");
+  }, []);
+
+  const copyAsXml = useCallback(() => {
+    navigator.clipboard.writeText(ref.current?.getContent() || "");
+  }, []);
+  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const downloadAsXml = useCallback(() => {
+    if (downloadRef.current) {
+      const fileBlob = new Blob([ref.current?.getContent() || ""], { type: "text/xml" });
+      downloadRef.current.download = `scesim-${makeid(10)}.scesim`;
+      downloadRef.current.href = URL.createObjectURL(fileBlob);
+      downloadRef.current.click();
+    }
   }, []);
 
   return (
-    <div>
-      <Flex direction={{ default: "column" }}>
-        <FlexItem>
-          <Flex style={{ width: "96vw" }}>
-            <FlexItem>
-              <Button onClick={linkTo("Misc/Empty SceSim Editor", "Base")}>Empty</Button>
-            </FlexItem>
-            <FlexItem>
-              <Button onClick={linkTo("Use Cases/Is Old Enough Rule", "Is Old Enough")}>Are They Old Enough?</Button>
-            </FlexItem>
-            <FlexItem>
-              <Button onClick={linkTo("Use Cases/Traffic Violation DMN", "Traffic Violation")}>
-                Traffic Violation
-              </Button>
-            </FlexItem>
-            <FlexItem align={{ default: "alignRight" }}>
-              <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>
-                <Title headingLevel="h2">Updates count: {version}</Title>
-              </Tooltip>
-            </FlexItem>
-          </Flex>
-        </FlexItem>
-        <FlexItem>
-          <div>{SceSimEditorWrapper()}</div>
-        </FlexItem>
-      </Flex>
-    </div>
+    <>
+      <div style={{ width: "100vw", height: "100vh" }}>
+        <Page onDragOver={onDragOver} onDrop={onDrop}>
+          <PageSection
+            aria-label={"dev-app-header"}
+            variant={"light"}
+            isFilled={false}
+            padding={{ default: "padding" }}
+          >
+            <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+              <FlexItem shrink={{ default: "shrink" }}>
+                <h3>Test Scenario Editor :: Dev WebApp</h3>
+              </FlexItem>
+              <FlexItem>
+                <h5>(Drag & drop a file anywhere to open it)</h5>
+              </FlexItem>
+              <FlexItem shrink={{ default: "shrink" }}>
+                <Button onClick={() => onSelectModel(generateEmptyOneEight())}>Empty</Button>
+                &nbsp; &nbsp;
+                <Button onClick={() => onSelectModel(isOldEnoughDrl)}>Are They Old Enough?</Button>
+                &nbsp; &nbsp;
+                <Button onClick={() => onSelectModel(trafficViolationDmn)}>Traffic Violation</Button>
+                &nbsp; &nbsp; | &nbsp; &nbsp;
+                <button onClick={reset}>Reset</button>
+                &nbsp; &nbsp;
+                <button onClick={copyAsXml}>Copy as XML</button>
+                &nbsp; &nbsp;
+                <button onClick={downloadAsXml}>Download as XML</button>
+              </FlexItem>
+            </Flex>
+            <a ref={downloadRef} />
+          </PageSection>
+          <hr />
+          <PageSection
+            aria-label={"dev-app-body"}
+            className={"section-body"}
+            isFilled={true}
+            hasOverflowScroll={true}
+            variant={"light"}
+          >
+            {SceSimEditorWrapper()}
+          </PageSection>
+        </Page>
+      </div>
+    </>
   );
 }
-const meta: Meta<typeof App> = {
+
+function makeid(length: number) {
+  let result = "";
+  const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
+
+const meta: Meta<typeof DevWebApp> = {
   title: "Dev/Web App",
-  component: App,
+  component: DevWebApp,
 };
 
 export default meta;
-type Story = StoryObj<typeof App>;
+type Story = StoryObj<typeof DevWebApp>;
 
 export const WebApp: Story = {
-  render: (args) => App(),
-  args: {},
+  render: (args) => DevWebApp(args),
+  args: {
+    model: getMarshaller(initialModel).parser.parse(),
+  },
 };

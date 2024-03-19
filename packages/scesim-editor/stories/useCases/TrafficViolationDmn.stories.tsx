@@ -18,31 +18,11 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { TestScenarioEditor, TestScenarioEditorRef } from "../../src/TestScenarioEditor";
-import { useEffect, useRef } from "react";
-import React from "react";
+import { TestScenarioEditor, TestScenarioEditorProps } from "../../src/TestScenarioEditor";
+import { Empty } from "../misc/empty/Empty.stories";
+import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
-function TrafficViolationDmn() {
-  const ref = useRef<TestScenarioEditorRef>(null);
-  useEffect(() => {
-    ref.current?.setContent("TrafficViolationTest.scesim", TRAFFIC_VIOLATION_DMN);
-  }, []);
-  return <TestScenarioEditor ref={ref} />;
-}
-const meta: Meta<typeof TrafficViolationDmn> = {
-  title: "Use Cases/Traffic Violation DMN",
-  component: TrafficViolationDmn,
-};
-
-export default meta;
-type Story = StoryObj<typeof TrafficViolationDmn>;
-
-export const TrafficViolation: Story = {
-  render: (args) => TrafficViolationDmn(),
-  args: {},
-};
-
-const TRAFFIC_VIOLATION_DMN = `<?xml version="1.0" encoding="UTF-8"?>
+export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
 <ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
   <simulation>
     <scesimModelDescriptor>
@@ -808,3 +788,40 @@ const TRAFFIC_VIOLATION_DMN = `<?xml version="1.0" encoding="UTF-8"?>
     <imports/>
   </imports>
 </ScenarioSimulationModel>`;
+
+// function TrafficViolationDmn() {
+//   const ref = useRef<TestScenarioEditorRef>(null);
+//   useEffect(() => {
+//     ref.current?.setContent("TrafficViolationTest.scesim", TRAFFIC_VIOLATION_DMN);
+//   }, []);
+//   return <TestScenarioEditor ref={ref} />;
+// }
+// const meta: Meta<typeof TrafficViolationDmn> = {
+//   title: "Use Cases/Traffic Violation DMN",
+//   component: TrafficViolationDmn,
+// };
+
+// export default meta;
+// type Story = StoryObj<typeof TrafficViolationDmn>;
+
+// export const TrafficViolation: Story = {
+//   render: (args) => TrafficViolationDmn(),
+//   args: {},
+// };
+
+const meta: Meta<TestScenarioEditorProps> = {
+  title: "Use Cases/Traffic Violation",
+  component: TestScenarioEditor,
+  includeStories: /^[A-Z]/,
+};
+
+export default meta;
+type Story = StoryObj<TestScenarioEditorProps>;
+
+export const TrafficViolation: Story = {
+  ...Empty.render,
+  args: {
+    ...Empty.args,
+    model: getMarshaller(trafficViolationDmn).parser.parse(),
+  },
+};

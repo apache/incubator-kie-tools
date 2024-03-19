@@ -16,11 +16,11 @@
 {/* under the License. */}
 
 import { Meta, Story } from "@storybook/blocks";
-import * as EmptyEditor from "./EmptyEditor.stories";
+import * as Empty from "./Empty.stories";
 
-<Meta title="MDX/Empty Editor" of={EmptyEditor} />
+<Meta title="MDX/Empty" of={Empty} />
 
-# Empty Editor
+# Empty
 
 To start off, use contextual menus in the table to insert or edit or delete new columns and rows.
 
@@ -44,7 +44,3 @@ DMN-based scenarios use the FEEL expression language. Supported data types are:
 - ranges and lists, for example [1 .. 10] or [2, 3, 4, 5]
 - In EXPECT section the type could also just a boolean with the result of the assertion and you can use ? identifier to access value to check.
 - An empty cell is skipped from the evaluation.
-
-<div style={{ height: "500px" }}>
-  <Story of={EmptyEditor.Base} />
-</div>

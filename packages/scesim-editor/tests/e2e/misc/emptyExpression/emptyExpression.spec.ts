@@ -18,18 +18,15 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { AssetType } from "../../__fixtures__/editor";
 
 test.describe("Empty Editor", () => {
-  test("should render editor correctly", async ({ editor, page }) => {
-    await editor.openSelectionPage();
-    await expect(
-      page.getByText("Create a new Test ScenarioAsset type * Select a typeDecision (DMN)Rule (DRL)Skip")
-    ).toHaveScreenshot("create-a-new-test-scenario.png");
-    await page.locator("#asset-type-select").selectOption("DMN");
-    await page.getByRole("button", { name: "Create" }).click();
-    await page.getByLabel("Close drawer panel").click();
-    await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("empty-test-scenario-table.png");
-    await page.getByRole("tab", { name: "Background" }).click();
-    await expect(page.getByLabel("Background")).toHaveScreenshot("empty-background-table.png");
+  test("should render editor correctly", async ({ editor, testScenarioTable, backgroundTable }) => {
+    await editor.openStartPage();
+    await expect(editor.getStartPage()).toHaveScreenshot("create-a-new-test-scenario.png");
+    await editor.createTestScenario(AssetType.DECISION);
+    await expect(testScenarioTable.get()).toHaveScreenshot("empty-test-scenario-table.png");
+    await editor.switchToBackgroundTable();
+    await expect(backgroundTable.get()).toHaveScreenshot("empty-background-table.png");
   });
 });

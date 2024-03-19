@@ -18,12 +18,13 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { AssetType } from "../../__fixtures__/editor";
 import { AddColumnPosition } from "../../__fixtures__/table";
 
 test.describe("Background Table context menu", () => {
   test.describe("Context menu checks", () => {
     test.beforeEach(async ({ editor, backgroundTable, table }) => {
-      await editor.openBackgroundTableDecision();
+      await editor.createTestScenario(AssetType.DECISION, true);
       await table.addPropertyColumn({
         targetCell: "PROPERTY (<Undefined>)",
         position: AddColumnPosition.RIGHT,
@@ -40,7 +41,7 @@ test.describe("Background Table context menu", () => {
       await expect(contextMenu.getHeader({ header: "INSTANCE" })).not.toBeAttached();
     });
 
-    test("should render field context menu", async ({ table, contextMenu }) => {
+    test("should render field context menu", async ({ contextMenu }) => {
       await contextMenu.openOnProperty({ name: "PROPERTY (<Undefined>)", columnNumber: 1 });
       await expect(contextMenu.getHeader({ header: "SELECTION" })).not.toBeAttached();
       await expect(contextMenu.getHeader({ header: "SCENARIO" })).not.toBeAttached();
@@ -48,7 +49,7 @@ test.describe("Background Table context menu", () => {
       await expect(contextMenu.getHeader({ header: "INSTANCE" })).not.toBeAttached();
     });
 
-    test("should render instance context menu", async ({ table, contextMenu }) => {
+    test("should render instance context menu", async ({ contextMenu }) => {
       await contextMenu.openOnInstance({ name: "INSTANCE-1 (<Undefined>)" });
       await expect(contextMenu.getHeader({ header: "SELECTION" })).not.toBeAttached();
       await expect(contextMenu.getHeader({ header: "SCENARIO" })).not.toBeAttached();

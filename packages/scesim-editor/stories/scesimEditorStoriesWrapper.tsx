@@ -18,14 +18,50 @@
  */
 
 import * as React from "react";
-import { useRef } from "react";
-import { DevWebApp } from "../dev-webapp/src/DevWebApp";
+import { useArgs } from "@storybook/preview-api";
+import { useRef, useMemo, useEffect } from "react";
+import { SceSimModel } from "@kie-tools/scesim-marshaller";
+import { TestScenarioEditor, TestScenarioEditorProps, TestScenarioEditorRef } from "../src/TestScenarioEditor";
+import { diff } from "deep-object-diff";
 
-export function SceSimEditorWrapper() {
-  const emptyRef = useRef<HTMLDivElement>(null);
+export function SceSimEditorWrapper(props?: Partial<TestScenarioEditorProps>) {
+  const [args, updateArgs] = useArgs<TestScenarioEditorProps>();
+  const argsCopy = useRef(args);
+  const ref = useRef<TestScenarioEditorRef>(null);
+  const [modelArgs, setModelArgs] = React.useState<SceSimModel>(args.model);
+  const model = React.useMemo(() => props?.model ?? modelArgs, [modelArgs, props?.model]);
+
+  const onModelChange = useMemo(
+    () => (props?.onModelChange ? props.onModelChange : setModelArgs),
+    [props?.onModelChange]
+  );
+
+  useEffect(() => {
+    if (Object.keys(diff(argsCopy.current.model, model)).length !== 0) {
+      updateArgs({ ...argsCopy.current, model: model });
+    }
+  }, [updateArgs, model]);
+
+  useEffect(() => {
+    if (Object.keys(diff(argsCopy.current, args)).length === 0) {
+      return;
+    }
+    argsCopy.current = args;
+    if (Object.keys(diff(args.model, model)).length === 0) {
+      return;
+    }
+    onModelChange(args.model);
+  }, [args, model, onModelChange]);
+  useEffect(() => {
+    /* Simulating a call from "Foundation" code */
+    setTimeout(() => {
+      ref.current?.setContent("Untitled.scesim", "");
+    }, 1000);
+  }, [ref]);
+
   return (
-    <div ref={emptyRef}>
-      <DevWebApp />
+    <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>
+      <TestScenarioEditor ref={ref} model={model} onModelChange={onModelChange} />
     </div>
   );
 }

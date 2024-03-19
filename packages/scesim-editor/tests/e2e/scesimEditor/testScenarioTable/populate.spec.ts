@@ -18,6 +18,7 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { AssetType } from "../../__fixtures__/editor";
 import { AddRowPosition } from "../../__fixtures__/table";
 
 test.describe("Populate Decision Test Scenario table", () => {
@@ -27,7 +28,7 @@ test.describe("Populate Decision Test Scenario table", () => {
     table,
     testScenarioTable,
   }) => {
-    await editor.openTestScenarioTableDecision();
+    await editor.createTestScenario(AssetType.DECISION);
     await testScenarioTable.fillTestScenarioTableCell({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
     await testScenarioTable.fillTestScenarioTableCell({
       content: "date and time(5, 10)",
@@ -109,7 +110,7 @@ test.describe("Populate Rule Test Scenario table", () => {
     table,
     testScenarioTable,
   }) => {
-    await editor.openTestScenarioTableRule();
+    await editor.createTestScenario(AssetType.RULE);
 
     await testScenarioTable.fillTestScenarioTableCell({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
     await testScenarioTable.fillTestScenarioTableCell({

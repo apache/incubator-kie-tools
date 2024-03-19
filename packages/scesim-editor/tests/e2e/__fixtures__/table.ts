@@ -99,6 +99,11 @@ export class Table {
           .getByTestId("monaco-container")
           .nth(args.columnNumber)
           .press("Shift+Tab");
+    await this.page
+      .getByRole("row", { name: args.rowNumber, exact: true })
+      .getByTestId("monaco-container")
+      .nth(args.columnNumber)
+      .press("Shift+Tab");
   }
   public async navigateRight(args: { rowNumber: string; columnNumber: number; type: Type }) {
     args.type === Type.ARROW
@@ -120,11 +125,16 @@ export class Table {
           .getByTestId("monaco-container")
           .nth(args.columnNumber)
           .press("ArrowUp")
-      : await this.page
+      : (await this.page
           .getByRole("row", { name: args.rowNumber, exact: true })
           .getByTestId("monaco-container")
           .nth(args.columnNumber)
-          .press("Shift+Enter");
+          .press("Shift+Enter"),
+        await this.page
+          .getByRole("row", { name: args.rowNumber, exact: true })
+          .getByTestId("monaco-container")
+          .nth(args.columnNumber)
+          .press("Shift+Enter"));
   }
   public async navigateDown(args: { rowNumber: string; columnNumber: number; type: Type }) {
     args.type === Type.ARROW
@@ -133,10 +143,15 @@ export class Table {
           .getByTestId("monaco-container")
           .nth(args.columnNumber)
           .press("ArrowDown")
-      : await this.page
+      : (await this.page
           .getByRole("row", { name: args.rowNumber, exact: true })
           .getByTestId("monaco-container")
           .nth(args.columnNumber)
-          .press("Enter");
+          .press("Enter+Enter"),
+        await this.page
+          .getByRole("row", { name: args.rowNumber, exact: true })
+          .getByTestId("monaco-container")
+          .nth(args.columnNumber)
+          .press("Enter+Enter"));
   }
 }

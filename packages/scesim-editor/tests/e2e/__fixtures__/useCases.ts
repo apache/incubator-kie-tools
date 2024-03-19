@@ -32,13 +32,13 @@ export class UseCases {
 
   public async openTrafficViolationTest() {
     await this.page.goto(
-      `${this.baseURL}/${this.getIframeURL(`use-cases-traffic-violation-dmn--traffic-violation`)}` ?? ""
+      `${this.baseURL}/${this.getIframeURL(`use-cases-traffic-violation--traffic-violation`)}` ?? ""
     );
     await this.selectorPanel.close();
   }
 
   public async openAreTheyOldEnoughTest() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`use-cases-is-old-enough-rule--is-old-enough`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`use-cases-is-old-enough--is-old-enough`)}` ?? "");
     await this.selectorPanel.close();
   }
 }

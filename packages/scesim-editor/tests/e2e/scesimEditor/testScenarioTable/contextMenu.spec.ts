@@ -18,13 +18,13 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { AssetType } from "../../__fixtures__/editor";
 import { AddColumnPosition, AddRowPosition } from "../../__fixtures__/table";
-import { TestScenarioTable } from "../../__fixtures__/testScenarioTable";
 
 test.describe("Test Scenario Table context menu", () => {
   test.describe("Context menu checks", () => {
     test.beforeEach(async ({ editor, testScenarioTable, table }) => {
-      await editor.openTestScenarioTableRule();
+      await editor.createTestScenario(AssetType.RULE);
       await table.addRow({ targetCell: "1", position: AddRowPosition.ABOVE });
       await testScenarioTable.fillTestScenarioTableCell({ content: "test", rowLocatorInfo: "1", column: 1 });
     });

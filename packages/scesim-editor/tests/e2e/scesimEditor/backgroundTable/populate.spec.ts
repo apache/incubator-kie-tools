@@ -18,6 +18,7 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { AssetType } from "../../__fixtures__/editor";
 import { AddColumnPosition } from "../../__fixtures__/table";
 
 test.describe("Populate Decision Background table", () => {
@@ -27,7 +28,7 @@ test.describe("Populate Decision Background table", () => {
     table,
     backgroundTable,
   }) => {
-    await editor.openBackgroundTableDecision();
+    await editor.createTestScenario(AssetType.DECISION, true);
     await backgroundTable.fillBackgroundTableCell({ content: "{foo}", column: 0 });
 
     await table.addPropertyColumn({
@@ -74,7 +75,7 @@ test.describe("Populate Rule Background table", () => {
     table,
     backgroundTable,
   }) => {
-    await editor.openBackgroundTableRule();
+    await editor.createTestScenario(AssetType.RULE, true);
     await backgroundTable.fillBackgroundTableCell({ content: "{foo}", column: 0 });
 
     await table.addPropertyColumn({

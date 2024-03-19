@@ -18,31 +18,13 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { TestScenarioEditor, TestScenarioEditorRef } from "../../src/TestScenarioEditor";
+import { TestScenarioEditor, TestScenarioEditorProps, TestScenarioEditorRef } from "../../src/TestScenarioEditor";
 import { useEffect, useRef } from "react";
 import React from "react";
+import { Empty } from "../misc/empty/Empty.stories";
+import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
-function IsOldEnoughRule() {
-  const ref = useRef<TestScenarioEditorRef>(null);
-  useEffect(() => {
-    ref.current?.setContent("AreTheyOldEnoughTest.scesim", IS_OLD_ENOUGH_RULE);
-  }, []);
-  return <TestScenarioEditor ref={ref} />;
-}
-const meta: Meta<typeof IsOldEnoughRule> = {
-  title: "Use Cases/Is Old Enough Rule",
-  component: IsOldEnoughRule,
-};
-
-export default meta;
-type Story = StoryObj<typeof IsOldEnoughRule>;
-
-export const IsOldEnough: Story = {
-  render: (args) => IsOldEnoughRule(),
-  args: {},
-};
-
-const IS_OLD_ENOUGH_RULE = `<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
+export const isOldEnoughDrl = `<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
 <simulation>
   <scesimModelDescriptor>
     <factMappings>
@@ -406,3 +388,20 @@ const IS_OLD_ENOUGH_RULE = `<ScenarioSimulationModel version="1.8" xmlns="https:
 </imports>
 </ScenarioSimulationModel>
 `;
+
+const meta: Meta<TestScenarioEditorProps> = {
+  title: "Use Cases/Is Old Enough",
+  component: TestScenarioEditor,
+  includeStories: /^[A-Z]/,
+};
+
+export default meta;
+type Story = StoryObj<TestScenarioEditorProps>;
+
+export const IsOldEnough: Story = {
+  ...Empty.render,
+  args: {
+    ...Empty.args,
+    model: getMarshaller(isOldEnoughDrl).parser.parse(),
+  },
+};

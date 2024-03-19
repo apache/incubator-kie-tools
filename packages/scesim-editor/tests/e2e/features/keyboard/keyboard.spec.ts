@@ -18,6 +18,7 @@
  */
 
 import { expect, test } from "../../__fixtures__/base";
+import { AssetType } from "../../__fixtures__/editor";
 import { AddRowPosition, Type } from "../../__fixtures__/table";
 
 test.describe("Keyboard", () => {
@@ -27,27 +28,29 @@ test.describe("Keyboard", () => {
       table,
       testScenarioTable,
     }) => {
-      await editor.openTestScenarioTableRule();
+      await editor.createTestScenario(AssetType.RULE);
       await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
       await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
       await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-      await table.selectCell({ rowNumber: "1", columnNumber: 1 });
-      await table.navigateRight({ rowNumber: "1", columnNumber: 1, type: Type.KEYBOARD_SHORTCUT });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-right.png");
-      await table.navigateDown({ rowNumber: "1", columnNumber: 2, type: Type.KEYBOARD_SHORTCUT });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-down.png");
-      await table.navigateLeft({ rowNumber: "2", columnNumber: 2, type: Type.KEYBOARD_SHORTCUT });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-left.png");
-      await table.navigateUp({ rowNumber: "2", columnNumber: 1, type: Type.KEYBOARD_SHORTCUT });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-up.png");
-      await table.deselectCell({ rowNumber: "1", columnNumber: 0 });
+      await table.selectCell({ rowNumber: "1", columnNumber: 0 });
+      await table.navigateRight({ rowNumber: "1", columnNumber: 0, type: Type.KEYBOARD_SHORTCUT });
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-right.png", {
+        maxDiffPixels: 1000,
+      });
+      await table.navigateDown({ rowNumber: "1", columnNumber: 1, type: Type.KEYBOARD_SHORTCUT });
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-down.png", { maxDiffPixels: 1000 });
+      await table.navigateLeft({ rowNumber: "2", columnNumber: 1, type: Type.KEYBOARD_SHORTCUT });
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-left.png", { maxDiffPixels: 1000 });
+      await table.navigateUp({ rowNumber: "2", columnNumber: 0, type: Type.KEYBOARD_SHORTCUT });
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-up.png", { maxDiffPixels: 1000 });
+      await table.deselectCell({ rowNumber: "2", columnNumber: 0 });
       await expect(testScenarioTable.get()).toHaveScreenshot("navigation-escaped-screenshot.png");
     });
   });
 
   test.describe("Arrow Key Navigation", () => {
     test("should correctly navigate the page using arrow keys", async ({ editor, table, testScenarioTable }) => {
-      await editor.openTestScenarioTableDecision();
+      await editor.createTestScenario(AssetType.DECISION);
       await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
       await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
       await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });

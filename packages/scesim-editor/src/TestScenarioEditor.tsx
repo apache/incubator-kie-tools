@@ -108,6 +108,19 @@ export type TestScenarioDataObject = {
   children?: TestScenarioDataObject[];
 };
 
+export type OnSceSimModelChange = (model: SceSimModel) => void;
+
+export type TestScenarioEditorProps = {
+  /**
+   * The SceSim itself.
+   */
+  model?: SceSimModel;
+  /**
+   * Called when a change occurs on `model`, so the controlled flow of the component can be done.
+   */
+  onModelChange?: OnSceSimModelChange;
+};
+
 export type TestScenarioEditorRef = {
   /* TODO Convert these to Promises */
   getContent(): string;
@@ -618,29 +631,31 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
   );
 };
 
-export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<TestScenarioEditorRef>) => {
-  const [scesimFileParsingError, setScesimFileParsingError] = useState<Error | null>(null);
+export const TestScenarioEditor = React.forwardRef(
+  (props: TestScenarioEditorProps, ref: React.Ref<TestScenarioEditorRef>) => {
+    const [scesimFileParsingError, setScesimFileParsingError] = useState<Error | null>(null);
 
-  return (
-    <I18nDictionariesProvider
-      defaults={testScenarioEditorI18nDefaults}
-      dictionaries={testScenarioEditorDictionaries}
-      initialLocale={navigator.language}
-      ctx={TestScenarioEditorI18nContext}
-    >
-      <ErrorBoundary
-        error={
-          <TestScenarioParserErrorPanel
-            parserErrorTitle={"File parsing error"}
-            parserErrorMessage={
-              "Impossibile to correctly parse the provided scesim file. Cause: " + scesimFileParsingError?.message
-            }
-          />
-        }
-        setError={setScesimFileParsingError}
+    return (
+      <I18nDictionariesProvider
+        defaults={testScenarioEditorI18nDefaults}
+        dictionaries={testScenarioEditorDictionaries}
+        initialLocale={navigator.language}
+        ctx={TestScenarioEditorI18nContext}
       >
-        <TestScenarioEditorInternal forwardRef={ref} {...props} />
-      </ErrorBoundary>
-    </I18nDictionariesProvider>
-  );
-});
+        <ErrorBoundary
+          error={
+            <TestScenarioParserErrorPanel
+              parserErrorTitle={"File parsing error"}
+              parserErrorMessage={
+                "Impossibile to correctly parse the provided scesim file. Cause: " + scesimFileParsingError?.message
+              }
+            />
+          }
+          setError={setScesimFileParsingError}
+        >
+          <TestScenarioEditorInternal forwardRef={ref} {...props} />
+        </ErrorBoundary>
+      </I18nDictionariesProvider>
+    );
+  }
+);
