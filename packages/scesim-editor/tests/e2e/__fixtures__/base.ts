@@ -19,30 +19,37 @@
 
 import { test as base } from "@playwright/test";
 import { Clipboard } from "./clipboard";
-import { Stories } from "./stories";
 import { Resizing } from "./resizing";
 import { UseCases } from "./useCases";
-import { Monaco } from "./monaco";
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
-import { Cells } from "./cells";
-import { SceSimEditor } from "./scesimEditor";
+import { Editor } from "./editor";
+import { TestScenarioTable } from "./testScenarioTable";
+import { BackgroundTable } from "./backgroundTable";
+import { Table } from "./table";
+import { ContextMenu } from "./contextMenu";
+import { SelectorPanel } from "./selectorPanel";
 
 type SceSimEditorFixtures = {
-  monaco: Monaco;
-  stories: Stories;
+  testScenarioTable: TestScenarioTable;
+  backgroundTable: BackgroundTable;
+  editor: Editor;
   clipboard: Clipboard;
   resizing: Resizing;
-  cells: Cells;
-  scesimEditor: SceSimEditor;
+  table: Table;
   useCases: UseCases;
+  contextMenu: ContextMenu;
+  selectorPanel: SelectorPanel;
 };
 
 export const test = base.extend<SceSimEditorFixtures>({
-  monaco: async ({ page }, use, testInfo) => {
-    await use(new Monaco(page, testInfo.project.name as ProjectName));
+  testScenarioTable: async ({ page }, use, testInfo) => {
+    await use(new TestScenarioTable(page, testInfo.project.name as ProjectName));
   },
-  stories: async ({ page, baseURL }, use) => {
-    await use(new Stories(page, baseURL));
+  backgroundTable: async ({ page }, use, testInfo) => {
+    await use(new BackgroundTable(page, testInfo.project.name as ProjectName));
+  },
+  editor: async ({ page, selectorPanel, baseURL }, use) => {
+    await use(new Editor(page, selectorPanel, baseURL));
   },
   clipboard: async ({ browserName, context, page }, use) => {
     const clipboard = new Clipboard(page);
@@ -52,14 +59,17 @@ export const test = base.extend<SceSimEditorFixtures>({
   resizing: async ({ page }, use) => {
     await use(new Resizing(page));
   },
-  cells: async ({ page }, use) => {
-    await use(new Cells(page));
+  table: async ({ page }, use) => {
+    await use(new Table(page));
   },
-  scesimEditor: async ({ page }, use) => {
-    await use(new SceSimEditor(page));
+  contextMenu: async ({ page }, use) => {
+    await use(new ContextMenu(page));
   },
-  useCases: async ({ page, baseURL }, use) => {
-    await use(new UseCases(page, baseURL));
+  selectorPanel: async ({ page }, use) => {
+    await use(new SelectorPanel(page));
+  },
+  useCases: async ({ page, selectorPanel, baseURL }, use) => {
+    await use(new UseCases(page, selectorPanel, baseURL));
   },
 });
 

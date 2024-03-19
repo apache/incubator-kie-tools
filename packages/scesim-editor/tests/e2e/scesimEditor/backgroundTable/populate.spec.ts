@@ -18,100 +18,98 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
-import { AddColumnPosition } from "../../__fixtures__/scesimEditor";
+import { AddColumnPosition } from "../../__fixtures__/table";
 
 test.describe("Populate Decision Background table", () => {
   test("should correctly populate a decision-based background table", async ({
-    stories,
-    page,
+    editor,
     resizing,
-    scesimEditor,
-    monaco,
+    table,
+    backgroundTable,
   }) => {
-    await stories.openBackgroundTableDecision();
-    await monaco.fillBackgroundTableCell({ content: "{foo}", column: 0 });
+    await editor.openBackgroundTableDecision();
+    await backgroundTable.fillBackgroundTableCell({ content: "{foo}", column: 0 });
 
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
 
-    await monaco.fillBackgroundTableCell({ content: "[foo]", column: 1 });
-    await monaco.fillBackgroundTableCell({ content: '"foo"', column: 2 });
-    await monaco.fillBackgroundTableCell({ content: ",./123981275980172957129517", column: 3 });
-    await monaco.fillBackgroundTableCell({ content: "{foo}{foo}f", column: 4 });
-    await monaco.fillBackgroundTableCell({ content: "=1-205=-1205=-0125-0215215", column: 5 });
+    await backgroundTable.fillBackgroundTableCell({ content: "[foo]", column: 1 });
+    await backgroundTable.fillBackgroundTableCell({ content: '"foo"', column: 2 });
+    await backgroundTable.fillBackgroundTableCell({ content: ",./123981275980172957129517", column: 3 });
+    await backgroundTable.fillBackgroundTableCell({ content: "{foo}{foo}f", column: 4 });
+    await backgroundTable.fillBackgroundTableCell({ content: "=1-205=-1205=-0125-0215215", column: 5 });
 
-    await resizing.reset(page.getByRole("columnheader", { name: "INSTANCE-1 (<Undefined>)" }));
-    await expect(page.getByLabel("Background")).toHaveScreenshot("background-table-decision.png");
+    await resizing.reset(table.getColumnHeader({ name: "INSTANCE-1 (<Undefined>)" }));
+    await expect(backgroundTable.get()).toHaveScreenshot("background-table-decision.png");
   });
 });
 
 test.describe("Populate Rule Background table", () => {
   test("should correctly populate a rule-based background table", async ({
-    stories,
-    page,
+    editor,
     resizing,
-    scesimEditor,
-    monaco,
+    table,
+    backgroundTable,
   }) => {
-    await stories.openBackgroundTableRule();
-    await monaco.fillBackgroundTableCell({ content: "{foo}", column: 0 });
+    await editor.openBackgroundTableRule();
+    await backgroundTable.fillBackgroundTableCell({ content: "{foo}", column: 0 });
 
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
-    await scesimEditor.addPropertyColumn({
+    await table.addPropertyColumn({
       targetCell: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
 
-    await monaco.fillBackgroundTableCell({ content: "[foo]", column: 1 });
-    await monaco.fillBackgroundTableCell({ content: '"foo"', column: 2 });
-    await monaco.fillBackgroundTableCell({ content: ",./123981275980172957129517", column: 3 });
-    await monaco.fillBackgroundTableCell({ content: "{foo}{foo}f", column: 4 });
-    await monaco.fillBackgroundTableCell({ content: "=1-205=-1205=-0125-0215215", column: 5 });
+    await backgroundTable.fillBackgroundTableCell({ content: "[foo]", column: 1 });
+    await backgroundTable.fillBackgroundTableCell({ content: '"foo"', column: 2 });
+    await backgroundTable.fillBackgroundTableCell({ content: ",./123981275980172957129517", column: 3 });
+    await backgroundTable.fillBackgroundTableCell({ content: "{foo}{foo}f", column: 4 });
+    await backgroundTable.fillBackgroundTableCell({ content: "=1-205=-1205=-0125-0215215", column: 5 });
 
-    await resizing.reset(page.getByRole("columnheader", { name: "INSTANCE-1 (<Undefined>)" }));
-    await expect(page.getByLabel("Background")).toHaveScreenshot("background-table-rule.png");
+    await resizing.reset(table.getColumnHeader({ name: "INSTANCE-1 (<Undefined>)" }));
+    await expect(backgroundTable.get()).toHaveScreenshot("background-table-rule.png");
   });
 });

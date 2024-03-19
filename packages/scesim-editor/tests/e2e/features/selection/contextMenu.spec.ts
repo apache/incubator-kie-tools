@@ -21,9 +21,9 @@ import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Selection", () => {
   test.describe("Context menu", () => {
-    test.beforeEach(async ({ stories, page, monaco }) => {
-      await stories.openTestScenarioTableRule();
-      await monaco.fillByRowAndColumn({ content: '"test"', rowLocatorInfo: "1", column: 1 });
+    test.beforeEach(async ({ editor, table, testScenarioTable }) => {
+      await editor.openTestScenarioTableRule();
+      await testScenarioTable.fillTestScenarioTableCell({ content: '"test"', rowLocatorInfo: "1", column: 1 });
     });
 
     test.describe(() => {
@@ -35,55 +35,45 @@ test.describe("Selection", () => {
         clipboard.setup(context, browserName);
       });
 
-      test("should use copy from selection context menu", async ({ page, clipboard }) => {
-        await page.getByTestId("monaco-container").nth(1).click({ button: "right" });
-        await page.getByRole("menuitem", { name: "Copy" }).click();
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
-        await page.getByTestId("monaco-container").nth(1).click();
-        await page.keyboard.press("Delete");
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).not.toContainText("test");
+      test("should use copy from selection context menu", async ({ clipboard, contextMenu, table }) => {
+        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "copy" });
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+        await table.deleteCellContent({ rowNumber: "1", columnNumber: 1 });
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
         await clipboard.paste();
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       });
 
-      test("should use cut from selection context menu", async ({ page, clipboard }) => {
-        await page.getByTestId("monaco-container").nth(1).click({ button: "right" });
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
-        await page.getByRole("menuitem", { name: "Cut" }).click();
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).not.toContainText("test");
-        await page.getByTestId("monaco-container").nth(1).click();
+      test("should use cut from selection context menu", async ({ clipboard, contextMenu, table }) => {
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "cut" });
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
+        await table.selectCell({ rowNumber: "1", columnNumber: 1 });
         await clipboard.paste();
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       });
 
-      test("should use copy and paste from selection context menu", async ({ page }) => {
-        await page.getByTestId("monaco-container").nth(1).click({ button: "right" });
-        await page.getByRole("menuitem", { name: "Copy" }).click();
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
-        await page.getByTestId("monaco-container").nth(1).click();
-        await page.keyboard.press("Delete");
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).not.toContainText("test");
-        await page.getByTestId("monaco-container").nth(1).click({ button: "right" });
-        await page.getByRole("menuitem", { name: "Paste" }).click();
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
+      test("should use copy and paste from selection context menu", async ({ contextMenu, table }) => {
+        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "copy" });
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+        await table.deleteCellContent({ rowNumber: "1", columnNumber: 1 });
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
+        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "paste" });
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       });
 
-      test("should use cut and paste from selection context menu", async ({ page, context }) => {
-        await page.getByTestId("monaco-container").nth(1).click({ button: "right" });
-        await page.getByRole("menuitem", { name: "Cut" }).click();
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).not.toContainText("test");
-        await page.getByTestId("monaco-container").nth(1).click();
-        await page.getByTestId("monaco-container").nth(1).click({ button: "right" });
-        await page.getByRole("menuitem", { name: "Paste" }).click();
-        await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
+      test("should use cut and paste from selection context menu", async ({ contextMenu, table }) => {
+        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "cut" });
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
+        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "paste" });
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       });
     });
 
-    test("should use reset from selection context menu", async ({ page }) => {
-      await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
-      await page.getByTestId("monaco-container").nth(1).click({ button: "right" });
-      await page.getByRole("menuitem", { name: "Reset" }).click();
-      await expect(page.getByRole("row", { name: "1" }).nth(1)).not.toContainText("test");
+    test("should use reset from selection context menu", async ({ contextMenu, table }) => {
+      await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+      await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "reset" });
+      await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
     });
   });
 });

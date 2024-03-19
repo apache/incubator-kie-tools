@@ -17,21 +17,21 @@
  * under the License.
  */
 
-import { Page, Locator } from "@playwright/test";
+import { Page } from "@playwright/test";
 
-export class Cells {
+export class SelectorPanel {
   constructor(public page: Page) {}
 
-  public async navigateLeft(target: Locator) {
-    await target.press("ArrowLeft");
+  public async openSelectorPanel(args: { rowNumber: string; columnNumber: number; command: string }) {
+    await this.page
+      .getByRole("row", { name: args.rowNumber })
+      .getByTestId("monaco-container")
+      .nth(args.columnNumber)
+      .click({ button: "right" });
+    await this.page.getByRole("menuitem", { name: args.command }).click();
   }
-  public async navigateRight(target: Locator) {
-    await target.press("ArrowRight");
-  }
-  public async navigateUp(target: Locator) {
-    await target.press("ArrowUp");
-  }
-  public async navigateDown(target: Locator) {
-    await target.press("ArrowDown");
+
+  public async close() {
+    await this.page.getByLabel("Close drawer panel").click();
   }
 }

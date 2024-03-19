@@ -20,8 +20,8 @@
 import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Empty Editor", () => {
-  test("should render editor correctly", async ({ stories, page }) => {
-    await stories.openSelectionPage();
+  test("should render editor correctly", async ({ editor, page }) => {
+    await editor.openSelectionPage();
     await expect(
       page.getByText("Create a new Test ScenarioAsset type * Select a typeDecision (DMN)Rule (DRL)Skip")
     ).toHaveScreenshot("create-a-new-test-scenario.png");

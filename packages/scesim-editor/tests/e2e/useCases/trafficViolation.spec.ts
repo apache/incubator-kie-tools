@@ -20,8 +20,8 @@
 import { test, expect } from "../__fixtures__/base";
 
 test.describe("Check Traffic Violation test case", () => {
-  test("should render traffic violation test correctly", async ({ useCases, page }) => {
+  test("should render traffic violation test correctly", async ({ useCases, testScenarioTable }) => {
     await useCases.openTrafficViolationTest();
-    // await expect(page.getByLabel("Test Scenario").getByTestId("standalone-bee-table")).toHaveScreenshot("traffic-violation-test.png");
+    await expect(testScenarioTable.get()).toHaveScreenshot("traffic-violation-test.png");
   });
 });

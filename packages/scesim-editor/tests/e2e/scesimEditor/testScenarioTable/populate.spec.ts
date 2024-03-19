@@ -18,131 +18,169 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
-import { AddRowPosition } from "../../__fixtures__/scesimEditor";
+import { AddRowPosition } from "../../__fixtures__/table";
 
 test.describe("Populate Decision Test Scenario table", () => {
   test("should correctly populate decision-based a test scenario table", async ({
-    stories,
-    page,
+    editor,
     resizing,
-    scesimEditor,
-    monaco,
+    table,
+    testScenarioTable,
   }) => {
-    await stories.openTestScenarioTableDecision();
-    await monaco.fillByRowAndColumn({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
-    await monaco.fillByRowAndColumn({
+    await editor.openTestScenarioTableDecision();
+    await testScenarioTable.fillTestScenarioTableCell({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({
       content: "date and time(5, 10)",
       rowLocatorInfo: "1 Scenario one Scenario one",
       column: 1,
     });
-    await monaco.fillByRowAndColumn({
+    await testScenarioTable.fillTestScenarioTableCell({
       content: "100",
       rowLocatorInfo: "1 Scenario one Scenario one date and time(5, 10) date and time(5, 10)",
       column: 2,
     });
 
-    await resizing.reset(page.getByRole("columnheader", { name: "GIVEN" }));
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
 
-    await monaco.fillByRowAndColumn({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
-    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
-    await monaco.fillByRowAndColumn({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
-    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: "5", column: 0 });
-    await monaco.fillByRowAndColumn({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: ",./123", rowLocatorInfo: "5", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
 
-    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
-    await monaco.fillByRowAndColumn({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
-    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: "4 [foo] [foo]", column: 1 });
-    await monaco.fillByRowAndColumn({ content: "Scenario two", rowLocatorInfo: "5 ,./123 ,./123", column: 1 });
-    await monaco.fillByRowAndColumn({ content: '"129587289157"', rowLocatorInfo: '6 "6789" "6789"', column: 1 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: ",./123",
+      rowLocatorInfo: "4 [foo] [foo]",
+      column: 1,
+    });
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: "Scenario two",
+      rowLocatorInfo: "5 ,./123 ,./123",
+      column: 1,
+    });
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: '"129587289157"',
+      rowLocatorInfo: '6 "6789" "6789"',
+      column: 1,
+    });
 
-    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: '2 {foo} {foo} "foo" "foo"', column: 2 });
-    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: '3 "foo" "foo" [foo] [foo]', column: 2 });
-    await monaco.fillByRowAndColumn({
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: '"foo"',
+      rowLocatorInfo: '2 {foo} {foo} "foo" "foo"',
+      column: 2,
+    });
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: ",./123",
+      rowLocatorInfo: '3 "foo" "foo" [foo] [foo]',
+      column: 2,
+    });
+    await testScenarioTable.fillTestScenarioTableCell({
       content: '"12859728917589"',
       rowLocatorInfo: "4 [foo] [foo] ,./123 ,./123",
       column: 2,
     });
-    await monaco.fillByRowAndColumn({
+    await testScenarioTable.fillTestScenarioTableCell({
       content: "Scenario date and time(213,456 , )",
       rowLocatorInfo: "5 ,./123 ,./123 Scenario two Scenario two",
       column: 2,
     });
-    await monaco.fillByRowAndColumn({
+    await testScenarioTable.fillTestScenarioTableCell({
       content: "{foofoo}{foofoo}",
       rowLocatorInfo: '6 "6789" "6789" "129587289157" "129587289157"',
       column: 2,
     });
 
-    await resizing.reset(page.getByRole("columnheader", { name: "EXPECT" }));
-    await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("test-scenario-table-decision.png");
+    await resizing.reset(table.getColumnHeader({ name: "EXPECT" }));
+    await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-decision.png");
   });
 });
 
 test.describe("Populate Rule Test Scenario table", () => {
   test("should correctly populate a rule-based test scenario table", async ({
-    stories,
-    page,
+    editor,
     resizing,
-    scesimEditor,
-    monaco,
+    table,
+    testScenarioTable,
   }) => {
-    await stories.openTestScenarioTableRule();
+    await editor.openTestScenarioTableRule();
 
-    await monaco.fillByRowAndColumn({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
-    await monaco.fillByRowAndColumn({
+    await testScenarioTable.fillTestScenarioTableCell({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({
       content: "date and time(5, 10)",
       rowLocatorInfo: "1 Scenario one Scenario one",
       column: 1,
     });
-    await monaco.fillByRowAndColumn({
+    await testScenarioTable.fillTestScenarioTableCell({
       content: "100",
       rowLocatorInfo: "1 Scenario one Scenario one date and time(5, 10) date and time(5, 10)",
       column: 2,
     });
 
-    await resizing.reset(page.getByRole("columnheader", { name: "GIVEN" }));
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await scesimEditor.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
 
-    await monaco.fillByRowAndColumn({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
-    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
-    await monaco.fillByRowAndColumn({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
-    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: "5", column: 0 });
-    await monaco.fillByRowAndColumn({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: ",./123", rowLocatorInfo: "5", column: 0 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
 
-    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
-    await monaco.fillByRowAndColumn({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
-    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: "4 [foo] [foo]", column: 1 });
-    await monaco.fillByRowAndColumn({ content: "Scenario two", rowLocatorInfo: "5 ,./123 ,./123", column: 1 });
-    await monaco.fillByRowAndColumn({ content: '"129587289157"', rowLocatorInfo: '6 "6789" "6789"', column: 1 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
+    await testScenarioTable.fillTestScenarioTableCell({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: ",./123",
+      rowLocatorInfo: "4 [foo] [foo]",
+      column: 1,
+    });
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: "Scenario two",
+      rowLocatorInfo: "5 ,./123 ,./123",
+      column: 1,
+    });
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: '"129587289157"',
+      rowLocatorInfo: '6 "6789" "6789"',
+      column: 1,
+    });
 
-    await monaco.fillByRowAndColumn({ content: '"foo"', rowLocatorInfo: '2 {foo} {foo} "foo" "foo"', column: 2 });
-    await monaco.fillByRowAndColumn({ content: ",./123", rowLocatorInfo: '3 "foo" "foo" [foo] [foo]', column: 2 });
-    await monaco.fillByRowAndColumn({
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: '"foo"',
+      rowLocatorInfo: '2 {foo} {foo} "foo" "foo"',
+      column: 2,
+    });
+    await testScenarioTable.fillTestScenarioTableCell({
+      content: ",./123",
+      rowLocatorInfo: '3 "foo" "foo" [foo] [foo]',
+      column: 2,
+    });
+    await testScenarioTable.fillTestScenarioTableCell({
       content: '"12859728917589"',
       rowLocatorInfo: "4 [foo] [foo] ,./123 ,./123",
       column: 2,
     });
-    await monaco.fillByRowAndColumn({
+    await testScenarioTable.fillTestScenarioTableCell({
       content: "Scenario date and time(213,456 , )",
       rowLocatorInfo: "5 ,./123 ,./123 Scenario two Scenario two",
       column: 2,
     });
-    await monaco.fillByRowAndColumn({
+    await testScenarioTable.fillTestScenarioTableCell({
       content: "{foofoo}{foofoo}",
       rowLocatorInfo: '6 "6789" "6789" "129587289157" "129587289157"',
       column: 2,
     });
 
-    await resizing.reset(page.getByRole("columnheader", { name: "EXPECT" }));
-    await expect(page.getByLabel("Test Scenario")).toHaveScreenshot("test-scenario-table-rule.png");
+    await resizing.reset(table.getColumnHeader({ name: "EXPECT" }));
+    await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-rule.png");
   });
 });

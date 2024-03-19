@@ -18,9 +18,10 @@
  */
 
 import { Page } from "@playwright/test";
+import { SelectorPanel } from "./selectorPanel";
 
 export class UseCases {
-  constructor(public page: Page, public baseURL?: string) {
+  constructor(public page: Page, public selectorPanel: SelectorPanel, public baseURL?: string) {
     this.page = page;
     this.baseURL = baseURL;
   }
@@ -30,10 +31,14 @@ export class UseCases {
   }
 
   public async openTrafficViolationTest() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`use-cases-traffic-violation-test`)}` ?? "");
+    await this.page.goto(
+      `${this.baseURL}/${this.getIframeURL(`use-cases-traffic-violation-dmn--traffic-violation`)}` ?? ""
+    );
+    await this.selectorPanel.close();
   }
 
   public async openAreTheyOldEnoughTest() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`use-cases-are-they-old-enough-test`)}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`use-cases-is-old-enough-rule--is-old-enough`)}` ?? "");
+    await this.selectorPanel.close();
   }
 }

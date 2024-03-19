@@ -18,9 +18,10 @@
  */
 
 import { Page } from "@playwright/test";
+import { SelectorPanel } from "./selectorPanel";
 
-export class Stories {
-  constructor(public page: Page, public baseURL?: string) {
+export class Editor {
+  constructor(public page: Page, public selectorPanel: SelectorPanel, public baseURL?: string) {
     this.page = page;
     this.baseURL = baseURL;
   }
@@ -37,14 +38,14 @@ export class Stories {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`misc-empty-scesim-editor--base`)}` ?? "");
     await this.page.locator("#asset-type-select").selectOption("DMN");
     await this.page.getByRole("button", { name: "Create" }).click();
-    await this.page.getByLabel("Close drawer panel").click();
+    await this.selectorPanel.close();
   }
 
   public async openTestScenarioTableRule() {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`misc-empty-scesim-editor--base`)}` ?? "");
     await this.page.locator("#asset-type-select").selectOption("RULE");
     await this.page.getByRole("button", { name: "Create" }).click();
-    await this.page.getByLabel("Close drawer panel").click();
+    await this.selectorPanel.close();
   }
 
   public async openBackgroundTableDecision() {
@@ -54,6 +55,12 @@ export class Stories {
 
   public async openBackgroundTableRule() {
     this.openTestScenarioTableRule();
+    await this.page.getByRole("tab", { name: "Background" }).click();
+  }
+  public async switchToTestScenarioTable() {
+    await this.page.getByRole("tab", { name: "Test Scenario" }).click();
+  }
+  public async switchToBackgroundTable() {
     await this.page.getByRole("tab", { name: "Background" }).click();
   }
 }

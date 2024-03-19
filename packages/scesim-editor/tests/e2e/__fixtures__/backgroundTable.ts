@@ -18,42 +18,21 @@
  */
 
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
-import { Page, Locator } from "@playwright/test";
+import { Page } from "@playwright/test";
 
-export class Monaco {
+export class BackgroundTable {
   constructor(public page: Page, public projectName: ProjectName) {}
 
-  public async fillByRowAndColumn(args: { content: string; rowLocatorInfo: string; column: number }) {
-    if (args.column === 0) {
-      await this.page
-        .getByRole("row", { name: args.rowLocatorInfo, exact: true })
-        .getByTestId("monaco-container")
-        .first()
-        .dblclick();
-    } else {
-      await this.page
-        .getByRole("row", { name: args.rowLocatorInfo, exact: true })
-        .getByTestId("monaco-container")
-        .nth(args.column)
-        .dblclick();
-    }
-
-    if (this.projectName === ProjectName.GOOGLE_CHROME) {
-      // Google chromes fill function is not always erasing the input content
-      await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").press("Control+A");
-    }
-    // FEEL text input selector when the monaco editor is selected.
-    await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(args.content);
-    await this.page.keyboard.press("Home");
-    await this.page.keyboard.press("Enter");
+  public get() {
+    return this.page.getByLabel("Background");
   }
+
   public async fillBackgroundTableCell(args: { content: string; column: number }) {
     if (args.column === 0) {
       await this.page.getByLabel("Background").getByTestId("monaco-container").first().dblclick();
     } else {
       await this.page.getByLabel("Background").getByTestId("monaco-container").nth(args.column).dblclick();
     }
-
     if (this.projectName === ProjectName.GOOGLE_CHROME) {
       // Google chromes fill function is not always erasing the input content
       await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").press("Control+A");
