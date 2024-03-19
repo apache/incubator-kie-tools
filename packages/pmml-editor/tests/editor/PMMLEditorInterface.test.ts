@@ -35,6 +35,7 @@ const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> =
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: OperatingSystem.LINUX }),
     i18n: new I18nService(),
   },
+  supportedThemes: [],
 };
 
 const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(envelopeContext);

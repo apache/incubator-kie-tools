@@ -84,7 +84,7 @@ export function KeyBindingsHelpOverlay() {
     }
   }, [showing]);
 
-  const themeCss = !theme! && theme === EditorTheme.DARK ? " dark" : "";
+  const themeCss = getCssThemeModifier(envelopeContext.supportedThemes, theme!);
 
   return (
     <>
@@ -126,6 +126,21 @@ export function KeyBindingsHelpOverlay() {
       </Modal>
     </>
   );
+}
+
+function getCssThemeModifier(supportedThemes: EditorTheme[], theme: EditorTheme) {
+  if (supportedThemes.includes(theme)) {
+    switch (theme) {
+      case EditorTheme.DARK: {
+        return " dark";
+      }
+      default: {
+        return "";
+      }
+    }
+  }
+
+  return "";
 }
 
 function handleMacOsCombination(combination: string, os?: OperatingSystem) {

@@ -243,6 +243,11 @@ public class DiagramEditor {
                                      new ServiceCallback<ParseResult>() {
                                          @Override
                                          public void onSuccess(final ParseResult parseResult) {
+                                             // Apply theme if pending due to errors
+                                             if (null != themeToBeApplied) {
+                                                 setTheme();
+                                             }
+
                                              stunnerEditor
                                                      .close()
                                                      .open(parseResult.getDiagram(),

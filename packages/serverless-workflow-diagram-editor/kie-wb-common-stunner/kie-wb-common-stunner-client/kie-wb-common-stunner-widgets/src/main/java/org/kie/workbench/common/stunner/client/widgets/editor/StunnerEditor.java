@@ -268,7 +268,8 @@ public class StunnerEditor {
     }
 
     public StunnerEditor close() {
-        hasErrors = false;
+        clearAlerts();
+
         if (!isClosed()) {
             alertsControl = null;
             diagramPresenter.destroy();
@@ -330,10 +331,10 @@ public class StunnerEditor {
     }
 
     public void clearAlerts() {
-        if (!isClosed()) {
             hasErrors = false;
-            alertsControl.clear();
-        }
+            if (null != alertsControl) {
+                alertsControl.clear();
+            }
     }
 
     private String buildErrorMessage(ClientRuntimeError error, Throwable throwable, String errorTitle) {
