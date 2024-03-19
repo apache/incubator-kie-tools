@@ -22,13 +22,8 @@ import { Page } from "@playwright/test";
 export class SelectorPanel {
   constructor(public page: Page) {}
 
-  public async openSelectorPanel(args: { rowNumber: string; columnNumber: number; command: string }) {
-    await this.page
-      .getByRole("row", { name: args.rowNumber })
-      .getByTestId("monaco-container")
-      .nth(args.columnNumber)
-      .click({ button: "right" });
-    await this.page.getByRole("menuitem", { name: args.command }).click();
+  public async open() {
+    await this.page.getByRole("button").first().click();
   }
 
   public async close() {
