@@ -45,8 +45,6 @@ export class Table {
   }
 
   public async addPropertyColumn(args: { targetCell: string; position: AddColumnPosition; nth: number }) {
-    // args.nth === 0
-    // ? await this.page.getByRole("columnheader", { name: args.targetCell }).first().click({ button: "right" })
     await this.page.getByRole("columnheader", { name: args.targetCell }).nth(args.nth).click({ button: "right" });
     args.position === AddColumnPosition.LEFT
       ? await this.page.getByRole("menuitem", { name: "Insert Field Left" }).click()
@@ -99,11 +97,6 @@ export class Table {
           .getByTestId("monaco-container")
           .nth(args.columnNumber)
           .press("Shift+Tab");
-    await this.page
-      .getByRole("row", { name: args.rowNumber, exact: true })
-      .getByTestId("monaco-container")
-      .nth(args.columnNumber)
-      .press("Shift+Tab");
   }
   public async navigateRight(args: { rowNumber: string; columnNumber: number; type: Type }) {
     args.type === Type.ARROW

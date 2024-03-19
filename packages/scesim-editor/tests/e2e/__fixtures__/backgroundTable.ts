@@ -28,11 +28,7 @@ export class BackgroundTable {
   }
 
   public async fill(args: { content: string; column: number }) {
-    if (args.column === 0) {
-      await this.page.getByLabel("Background").getByTestId("monaco-container").first().dblclick();
-    } else {
-      await this.page.getByLabel("Background").getByTestId("monaco-container").nth(args.column).dblclick();
-    }
+    await this.page.getByLabel("Background").getByTestId("monaco-container").nth(args.column).dblclick();
     if (this.projectName === ProjectName.GOOGLE_CHROME) {
       // Google chromes fill function is not always erasing the input content
       await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").press("Control+A");
