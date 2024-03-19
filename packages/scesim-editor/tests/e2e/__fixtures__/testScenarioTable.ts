@@ -27,7 +27,7 @@ export class TestScenarioTable {
     return this.page.getByLabel("Test Scenario");
   }
 
-  public async fillTestScenarioTableCell(args: { content: string; rowLocatorInfo: string; column: number }) {
+  public async fill(args: { content: string; rowLocatorInfo: string; column: number }) {
     if (args.column === 0) {
       await this.page
         .getByRole("row", { name: args.rowLocatorInfo, exact: true })

@@ -29,13 +29,13 @@ test.describe("Populate Decision Test Scenario table", () => {
     testScenarioTable,
   }) => {
     await editor.createTestScenario(AssetType.DECISION);
-    await testScenarioTable.fillTestScenarioTableCell({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
+    await testScenarioTable.fill({
       content: "date and time(5, 10)",
       rowLocatorInfo: "1 Scenario one Scenario one",
       column: 1,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: "100",
       rowLocatorInfo: "1 Scenario one Scenario one date and time(5, 10) date and time(5, 10)",
       column: 2,
@@ -48,51 +48,51 @@ test.describe("Populate Decision Test Scenario table", () => {
     await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
     await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
 
-    await testScenarioTable.fillTestScenarioTableCell({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: ",./123", rowLocatorInfo: "5", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
+    await testScenarioTable.fill({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
+    await testScenarioTable.fill({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
+    await testScenarioTable.fill({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
+    await testScenarioTable.fill({ content: ",./123", rowLocatorInfo: "5", column: 0 });
+    await testScenarioTable.fill({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
 
-    await testScenarioTable.fillTestScenarioTableCell({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
+    await testScenarioTable.fill({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
+    await testScenarioTable.fill({
       content: ",./123",
       rowLocatorInfo: "4 [foo] [foo]",
       column: 1,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: "Scenario two",
       rowLocatorInfo: "5 ,./123 ,./123",
       column: 1,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: '"129587289157"',
       rowLocatorInfo: '6 "6789" "6789"',
       column: 1,
     });
 
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: '"foo"',
       rowLocatorInfo: '2 {foo} {foo} "foo" "foo"',
       column: 2,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: ",./123",
       rowLocatorInfo: '3 "foo" "foo" [foo] [foo]',
       column: 2,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: '"12859728917589"',
       rowLocatorInfo: "4 [foo] [foo] ,./123 ,./123",
       column: 2,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: "Scenario date and time(213,456 , )",
       rowLocatorInfo: "5 ,./123 ,./123 Scenario two Scenario two",
       column: 2,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: "{foofoo}{foofoo}",
       rowLocatorInfo: '6 "6789" "6789" "129587289157" "129587289157"',
       column: 2,
@@ -112,13 +112,13 @@ test.describe("Populate Rule Test Scenario table", () => {
   }) => {
     await editor.createTestScenario(AssetType.RULE);
 
-    await testScenarioTable.fillTestScenarioTableCell({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({ content: "Scenario one", rowLocatorInfo: "1", column: 0 });
+    await testScenarioTable.fill({
       content: "date and time(5, 10)",
       rowLocatorInfo: "1 Scenario one Scenario one",
       column: 1,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: "100",
       rowLocatorInfo: "1 Scenario one Scenario one date and time(5, 10) date and time(5, 10)",
       column: 2,
@@ -131,51 +131,51 @@ test.describe("Populate Rule Test Scenario table", () => {
     await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
     await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
 
-    await testScenarioTable.fillTestScenarioTableCell({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: ",./123", rowLocatorInfo: "5", column: 0 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
+    await testScenarioTable.fill({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
+    await testScenarioTable.fill({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
+    await testScenarioTable.fill({ content: "[foo]", rowLocatorInfo: "4", column: 0 });
+    await testScenarioTable.fill({ content: ",./123", rowLocatorInfo: "5", column: 0 });
+    await testScenarioTable.fill({ content: '"6789"', rowLocatorInfo: "6", column: 0 });
 
-    await testScenarioTable.fillTestScenarioTableCell({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
-    await testScenarioTable.fillTestScenarioTableCell({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({ content: '"foo"', rowLocatorInfo: "2 {foo} {foo}", column: 1 });
+    await testScenarioTable.fill({ content: "[foo]", rowLocatorInfo: '3 "foo" "foo"', column: 1 });
+    await testScenarioTable.fill({
       content: ",./123",
       rowLocatorInfo: "4 [foo] [foo]",
       column: 1,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: "Scenario two",
       rowLocatorInfo: "5 ,./123 ,./123",
       column: 1,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: '"129587289157"',
       rowLocatorInfo: '6 "6789" "6789"',
       column: 1,
     });
 
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: '"foo"',
       rowLocatorInfo: '2 {foo} {foo} "foo" "foo"',
       column: 2,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: ",./123",
       rowLocatorInfo: '3 "foo" "foo" [foo] [foo]',
       column: 2,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: '"12859728917589"',
       rowLocatorInfo: "4 [foo] [foo] ,./123 ,./123",
       column: 2,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: "Scenario date and time(213,456 , )",
       rowLocatorInfo: "5 ,./123 ,./123 Scenario two Scenario two",
       column: 2,
     });
-    await testScenarioTable.fillTestScenarioTableCell({
+    await testScenarioTable.fill({
       content: "{foofoo}{foofoo}",
       rowLocatorInfo: '6 "6789" "6789" "129587289157" "129587289157"',
       column: 2,

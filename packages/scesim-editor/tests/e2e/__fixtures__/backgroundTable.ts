@@ -27,7 +27,7 @@ export class BackgroundTable {
     return this.page.getByLabel("Background");
   }
 
-  public async fillBackgroundTableCell(args: { content: string; column: number }) {
+  public async fill(args: { content: string; column: number }) {
     if (args.column === 0) {
       await this.page.getByLabel("Background").getByTestId("monaco-container").first().dblclick();
     } else {

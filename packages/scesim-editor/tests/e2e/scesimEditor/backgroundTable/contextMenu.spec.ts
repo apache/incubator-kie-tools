@@ -30,7 +30,7 @@ test.describe("Background Table context menu", () => {
         position: AddColumnPosition.RIGHT,
         nth: 0,
       });
-      await backgroundTable.fillBackgroundTableCell({ content: "test", column: 1 });
+      await backgroundTable.fill({ content: "test", column: 1 });
     });
 
     test("should render select context menu", async ({ contextMenu }) => {

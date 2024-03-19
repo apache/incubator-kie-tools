@@ -26,7 +26,7 @@ test.describe("Test Scenario Table context menu", () => {
     test.beforeEach(async ({ editor, testScenarioTable, table }) => {
       await editor.createTestScenario(AssetType.RULE);
       await table.addRow({ targetCell: "1", position: AddRowPosition.ABOVE });
-      await testScenarioTable.fillTestScenarioTableCell({ content: "test", rowLocatorInfo: "1", column: 1 });
+      await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1", column: 1 });
     });
 
     test("should render select context menu", async ({ contextMenu }) => {
