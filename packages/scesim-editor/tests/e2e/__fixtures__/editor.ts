@@ -35,12 +35,12 @@ export class Editor {
     return `iframe.html?id=${iframeId}&viewMode=story`;
   }
 
-  public async openStartPage() {
+  public async openEmpty() {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`misc-empty--empty`)}` ?? "");
   }
 
   public async createTestScenario(type: AssetType, background?: boolean) {
-    await this.openStartPage();
+    await this.openEmpty();
     type === AssetType.DECISION
       ? await this.page.locator("#asset-type-select").selectOption("DMN")
       : await this.page.locator("#asset-type-select").selectOption("RULE");

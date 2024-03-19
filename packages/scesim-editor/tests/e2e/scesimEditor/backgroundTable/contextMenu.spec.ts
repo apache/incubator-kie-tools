@@ -21,7 +21,7 @@ import { test, expect } from "../../__fixtures__/base";
 import { AssetType } from "../../__fixtures__/editor";
 import { AddColumnPosition } from "../../__fixtures__/table";
 
-test.describe("Background Table context menu", () => {
+test.describe("Background table context menu", () => {
   test.describe("Context menu checks", () => {
     test.beforeEach(async ({ editor, backgroundTable, table }) => {
       await editor.createTestScenario(AssetType.DECISION, true);
@@ -56,6 +56,7 @@ test.describe("Background Table context menu", () => {
       await expect(contextMenu.getHeader({ header: "FIELD" })).not.toBeAttached();
       await expect(contextMenu.getHeader({ header: "INSTANCE" })).toBeAttached();
     });
+
     test("should add and delete instance column left", async ({ table, backgroundTable, contextMenu }) => {
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
       await table.addInstanceColumn({
@@ -68,6 +69,7 @@ test.describe("Background Table context menu", () => {
       await contextMenu.command({ command: "Delete Instance" });
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
     });
+
     test("should add and delete instance column right", async ({ table, backgroundTable, contextMenu }) => {
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
       await table.addInstanceColumn({
@@ -80,6 +82,7 @@ test.describe("Background Table context menu", () => {
       await contextMenu.command({ command: "Delete Instance" });
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
     });
+
     test("should add and delete property column left", async ({ table, backgroundTable, contextMenu }) => {
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
       await table.addPropertyColumn({
@@ -93,6 +96,7 @@ test.describe("Background Table context menu", () => {
       await contextMenu.command({ command: "Delete Field" });
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
     });
+
     test("should add and delete property column right", async ({ table, backgroundTable, contextMenu }) => {
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
       await table.addPropertyColumn({

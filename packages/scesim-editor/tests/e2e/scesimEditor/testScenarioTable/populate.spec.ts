@@ -21,7 +21,7 @@ import { test, expect } from "../../__fixtures__/base";
 import { AssetType } from "../../__fixtures__/editor";
 import { AddRowPosition } from "../../__fixtures__/table";
 
-test.describe("Populate Decision Test Scenario table", () => {
+test.describe("Populate decision test scenario table", () => {
   test("should correctly populate decision-based a test scenario table", async ({
     editor,
     resizing,
@@ -103,7 +103,7 @@ test.describe("Populate Decision Test Scenario table", () => {
   });
 });
 
-test.describe("Populate Rule Test Scenario table", () => {
+test.describe("Populate rule test scenario table", () => {
   test("should correctly populate a rule-based test scenario table", async ({
     editor,
     resizing,

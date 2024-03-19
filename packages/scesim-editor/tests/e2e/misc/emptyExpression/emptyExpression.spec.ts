@@ -20,9 +20,9 @@
 import { test, expect } from "../../__fixtures__/base";
 import { AssetType } from "../../__fixtures__/editor";
 
-test.describe("Empty Editor", () => {
+test.describe("Empty editor", () => {
   test("should render editor correctly", async ({ editor, testScenarioTable, backgroundTable }) => {
-    await editor.openStartPage();
+    await editor.openEmpty();
     await expect(editor.getStartPage()).toHaveScreenshot("create-a-new-test-scenario.png");
     await editor.createTestScenario(AssetType.DECISION);
     await expect(testScenarioTable.get()).toHaveScreenshot("empty-test-scenario-table.png");

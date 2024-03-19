@@ -22,8 +22,8 @@ import { AssetType } from "../../__fixtures__/editor";
 import { AddRowPosition, Type } from "../../__fixtures__/table";
 
 test.describe("Keyboard", () => {
-  test.describe("Keyboard-Shortcuts Navigation", () => {
-    test("should correctly navigate the page using keyboard shortcuts", async ({
+  test.describe("Keyboard shortcuts navigation", () => {
+    test("should correctly navigate the table using keyboard shortcuts", async ({
       editor,
       table,
       testScenarioTable,
@@ -39,6 +39,7 @@ test.describe("Keyboard", () => {
       });
       await table.navigateDown({ rowNumber: "1", columnNumber: 1, type: Type.KEYBOARD_SHORTCUT });
       await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-down.png", { maxDiffPixels: 1000 });
+
       await table.navigateLeft({ rowNumber: "2", columnNumber: 1, type: Type.KEYBOARD_SHORTCUT });
       await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-left.png", { maxDiffPixels: 1000 });
       await table.navigateUp({ rowNumber: "2", columnNumber: 0, type: Type.KEYBOARD_SHORTCUT });
@@ -48,8 +49,8 @@ test.describe("Keyboard", () => {
     });
   });
 
-  test.describe("Arrow Key Navigation", () => {
-    test("should correctly navigate the page using arrow keys", async ({ editor, table, testScenarioTable }) => {
+  test.describe("Arrow key navigation", () => {
+    test("should correctly navigate the table using arrow keys", async ({ editor, table, testScenarioTable }) => {
       await editor.createTestScenario(AssetType.DECISION);
       await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
       await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });

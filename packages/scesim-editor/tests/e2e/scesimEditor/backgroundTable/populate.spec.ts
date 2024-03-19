@@ -21,7 +21,7 @@ import { test, expect } from "../../__fixtures__/base";
 import { AssetType } from "../../__fixtures__/editor";
 import { AddColumnPosition } from "../../__fixtures__/table";
 
-test.describe("Populate Decision Background table", () => {
+test.describe("Populate decision background table", () => {
   test("should correctly populate a decision-based background table", async ({
     editor,
     resizing,
@@ -68,7 +68,7 @@ test.describe("Populate Decision Background table", () => {
   });
 });
 
-test.describe("Populate Rule Background table", () => {
+test.describe("Populate rule background table", () => {
   test("should correctly populate a rule-based background table", async ({
     editor,
     resizing,
