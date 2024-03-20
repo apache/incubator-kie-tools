@@ -46,4 +46,10 @@ export class Diagram {
     await this.page.mouse.move(args.endPosition.x, args.endPosition.y);
     await this.page.mouse.up();
   }
+
+  public async selectAlternativeInputDataShape() {
+    await this.get().getByTitle("Select or edit DRD").click();
+    await this.page.getByLabel("Tweak the shape of the input data node").getByText("Alternative").click();
+    await this.get().getByTitle("Select or edit DRD").click();
+  }
 }

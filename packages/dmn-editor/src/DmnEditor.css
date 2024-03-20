@@ -56,7 +56,8 @@
   outline: none;
 }
 .kie-dmn-editor--node.dimmed,
-.kie-dmn-editor--node-shape.dimmed {
+.kie-dmn-editor--node-shape.dimmed,
+.kie-dmn-editor--input-data-node.dimmed {
   opacity: 0.3;
   pointer-events: none;
 }
