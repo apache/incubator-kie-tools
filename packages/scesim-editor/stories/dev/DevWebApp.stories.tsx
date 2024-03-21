@@ -20,28 +20,27 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 import { Button, Flex, FlexItem, Page, PageSection } from "@patternfly/react-core/dist/js";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { OnSceSimModelChange, TestScenarioEditorProps, TestScenarioEditorRef } from "../../src/TestScenarioEditor";
+import React, { useCallback, useRef, useState } from "react";
+import { TestScenarioEditorRef } from "../../src/TestScenarioEditor";
 import { SceSimMarshaller } from "../../../scesim-marshaller/src/index";
 import { SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
-import { generateEmptyOneEight } from "../misc/empty/Empty.stories";
+import { emptySceSim } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn } from "../useCases/TrafficViolationDmn.stories";
 
-const initialModel = generateEmptyOneEight();
-
-function DevWebApp(args: TestScenarioEditorProps) {
+function DevWebApp() {
   const ref = useRef<TestScenarioEditorRef>(null);
   const [state, setState] = useState<{ marshaller: SceSimMarshaller; stack: SceSimModel[]; pointer: number }>(() => {
-    const initialSceSimMarshaller = getMarshaller(initialModel);
+    const emptySceSimMarshaller = getMarshaller(emptySceSim);
     return {
-      marshaller: initialSceSimMarshaller,
-      stack: [initialSceSimMarshaller.parser.parse()],
+      marshaller: emptySceSimMarshaller,
+      stack: [emptySceSimMarshaller.parser.parse()],
       pointer: 0,
     };
   });
 
-  const onModelChange = useCallback<OnSceSimModelChange>((model) => {
+  const onSelectModel = useCallback((newModel) => {
+    const model = getMarshaller(newModel).parser.parse();
     setState((prev) => {
       const newStack = prev.stack.slice(0, prev.pointer + 1);
       return {
@@ -52,12 +51,6 @@ function DevWebApp(args: TestScenarioEditorProps) {
     });
   }, []);
 
-  const onSelectModel = useCallback(
-    (newModel) => {
-      onModelChange(getMarshaller(newModel).parser.parse());
-    },
-    [onModelChange]
-  );
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
 
@@ -87,7 +80,9 @@ function DevWebApp(args: TestScenarioEditorProps) {
   const copyAsXml = useCallback(() => {
     navigator.clipboard.writeText(ref.current?.getContent() || "");
   }, []);
+
   const downloadRef = useRef<HTMLAnchorElement>(null);
+
   const downloadAsXml = useCallback(() => {
     if (downloadRef.current) {
       const fileBlob = new Blob([ref.current?.getContent() || ""], { type: "text/xml" });
@@ -115,7 +110,7 @@ function DevWebApp(args: TestScenarioEditorProps) {
                 <h5>(Drag & drop a file anywhere to open it)</h5>
               </FlexItem>
               <FlexItem shrink={{ default: "shrink" }}>
-                <Button onClick={() => onSelectModel(generateEmptyOneEight())}>Empty</Button>
+                <Button onClick={() => onSelectModel(emptySceSim)}>Empty</Button>
                 &nbsp; &nbsp;
                 <Button onClick={() => onSelectModel(isOldEnoughDrl)}>Are They Old Enough?</Button>
                 &nbsp; &nbsp;
@@ -138,7 +133,10 @@ function DevWebApp(args: TestScenarioEditorProps) {
             hasOverflowScroll={true}
             variant={"light"}
           >
-            {SceSimEditorWrapper()}
+            {SceSimEditorWrapper({
+              pathRelativeToTheWorkspaceRoot: "dev.scesim",
+              content: state.marshaller.builder.build(state.stack[state.stack.length - 1]),
+            })}
           </PageSection>
         </Page>
       </div>
@@ -167,8 +165,5 @@ export default meta;
 type Story = StoryObj<typeof DevWebApp>;
 
 export const WebApp: Story = {
-  render: (args) => DevWebApp(args),
-  args: {
-    model: getMarshaller(initialModel).parser.parse(),
-  },
+  render: (args) => DevWebApp(),
 };
