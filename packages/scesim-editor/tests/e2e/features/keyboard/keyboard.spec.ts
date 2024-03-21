@@ -35,7 +35,7 @@ test.describe("Keyboard", () => {
       await table.selectCell({ rowNumber: "1", columnNumber: 0 });
 
       await table.navigateRight({ rowNumber: "1", columnNumber: 0, type: Type.KEYBOARD_SHORTCUT });
-      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-down.png");
+      await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-right.png");
 
       await table.navigateDown({ rowNumber: "1", columnNumber: 1, type: Type.KEYBOARD_SHORTCUT });
       await expect(testScenarioTable.get()).toHaveScreenshot("navigation-screenshot-down.png");
