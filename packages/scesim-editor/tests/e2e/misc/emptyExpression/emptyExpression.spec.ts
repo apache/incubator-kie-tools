@@ -24,8 +24,10 @@ test.describe("Empty editor", () => {
   test("should render editor correctly", async ({ editor, testScenarioTable, backgroundTable }) => {
     await editor.openEmpty();
     await expect(editor.getStartPage()).toHaveScreenshot("create-a-new-test-scenario.png");
+
     await editor.createTestScenario(AssetType.DECISION);
     await expect(testScenarioTable.get()).toHaveScreenshot("empty-test-scenario-table.png");
+
     await editor.switchToBackgroundTable();
     await expect(backgroundTable.get()).toHaveScreenshot("empty-background-table.png");
   });

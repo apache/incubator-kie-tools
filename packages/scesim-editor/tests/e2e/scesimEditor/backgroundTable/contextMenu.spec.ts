@@ -63,8 +63,10 @@ test.describe("Background table context menu", () => {
         targetCell: "INSTANCE-1 (<Undefined>)",
         position: AddColumnPosition.LEFT,
       });
+
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
       await expect(backgroundTable.get()).toHaveScreenshot("background-table-add-instance-column-left.png");
+
       await contextMenu.openOnInstance({ name: "INSTANCE-3 (<Undefined>)" });
       await contextMenu.command({ command: "Delete Instance" });
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
@@ -76,8 +78,10 @@ test.describe("Background table context menu", () => {
         targetCell: "INSTANCE-1 (<Undefined>)",
         position: AddColumnPosition.RIGHT,
       });
+
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
       await expect(backgroundTable.get()).toHaveScreenshot("background-table-add-instance-column-right.png");
+
       await contextMenu.openOnInstance({ name: "INSTANCE-3 (<Undefined>)" });
       await contextMenu.command({ command: "Delete Instance" });
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
@@ -90,8 +94,10 @@ test.describe("Background table context menu", () => {
         position: AddColumnPosition.LEFT,
         nth: 0,
       });
+
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
       await expect(backgroundTable.get()).toHaveScreenshot("background-table-add-property-column-left.png");
+
       await contextMenu.openOnProperty({ name: "PROPERTY (<Undefined>)", columnNumber: 1 });
       await contextMenu.command({ command: "Delete Field" });
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
@@ -104,8 +110,10 @@ test.describe("Background table context menu", () => {
         position: AddColumnPosition.RIGHT,
         nth: 0,
       });
+
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
       await expect(backgroundTable.get()).toHaveScreenshot("background-table-add-property-column-right.png");
+
       await contextMenu.openOnProperty({ name: "PROPERTY (<Undefined>)", columnNumber: 1 });
       await contextMenu.command({ command: "Delete Field" });
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();

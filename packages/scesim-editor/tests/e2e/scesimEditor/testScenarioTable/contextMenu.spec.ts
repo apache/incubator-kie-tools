@@ -59,8 +59,10 @@ test.describe("Test scenario table context menu", () => {
         targetCell: "INSTANCE-1 (<Undefined>)",
         position: AddColumnPosition.LEFT,
       });
+
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
       await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-add-instance-column-left.png");
+
       await contextMenu.openOnInstance({ name: "INSTANCE-3 (<Undefined>)" });
       await contextMenu.command({ command: "Delete Instance" });
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
@@ -72,8 +74,10 @@ test.describe("Test scenario table context menu", () => {
         targetCell: "INSTANCE-1 (<Undefined>)",
         position: AddColumnPosition.RIGHT,
       });
+
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).toBeAttached();
       await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-add-instance-column-right.png");
+
       await contextMenu.openOnInstance({ name: "INSTANCE-3 (<Undefined>)" });
       await contextMenu.command({ command: "Delete Instance" });
       await expect(table.getColumnHeader({ name: "INSTANCE-3 (<Undefined>)" })).not.toBeAttached();
@@ -86,8 +90,10 @@ test.describe("Test scenario table context menu", () => {
         position: AddColumnPosition.LEFT,
         nth: 0,
       });
+
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
       await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-add-property-column-left.png");
+
       await contextMenu.openOnProperty({ name: "PROPERTY (<Undefined>)", columnNumber: 1 });
       await contextMenu.command({ command: "Delete Field" });
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
@@ -100,8 +106,10 @@ test.describe("Test scenario table context menu", () => {
         position: AddColumnPosition.RIGHT,
         nth: 0,
       });
+
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).toBeAttached();
       await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-add-property-column-right.png");
+
       await contextMenu.openOnProperty({ name: "PROPERTY (<Undefined>)", columnNumber: 1 });
       await contextMenu.command({ command: "Delete Field" });
       await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)" }).nth(2)).not.toBeAttached();
@@ -111,6 +119,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getCell({ rowNumber: "3", columnNumber: 0 })).not.toBeAttached();
       await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+
       await contextMenu.openOnCell({ rowNumber: "3", columnNumber: 0 });
       await contextMenu.command({ command: "Delete" });
       await expect(table.getCell({ rowNumber: "3", columnNumber: 0 })).not.toBeAttached();
@@ -120,6 +129,7 @@ test.describe("Test scenario table context menu", () => {
       await expect(table.getCell({ rowNumber: "3", columnNumber: 0 })).not.toBeAttached();
       await table.addRow({ targetCell: "1", position: AddRowPosition.ABOVE });
       await expect(table.getCell({ rowNumber: "2", columnNumber: 1 })).toContainText("test");
+
       await contextMenu.openOnCell({ rowNumber: "3", columnNumber: 0 });
       await contextMenu.command({ command: "Delete" });
       await expect(table.getCell({ rowNumber: "3", columnNumber: 0 })).not.toBeAttached();
