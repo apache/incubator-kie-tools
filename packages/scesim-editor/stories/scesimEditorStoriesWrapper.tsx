@@ -26,8 +26,8 @@ export function SceSimEditorWrapper(props: { pathRelativeToTheWorkspaceRoot: str
 
   useEffect(() => {
     /* Simulating a call from "Foundation" code */
-    ref.current?.setContent("Untitled.scesim", props.content);
-  }, [ref, props.content]);
+    ref.current?.setContent(props.pathRelativeToTheWorkspaceRoot, props.content);
+  }, [ref, props.content, props.pathRelativeToTheWorkspaceRoot]);
 
   return (
     <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>
