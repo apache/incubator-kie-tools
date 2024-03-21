@@ -17,10 +17,11 @@
  * under the License.
  */
 
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { TestScenarioEditor, TestScenarioEditorProps } from "../../src/TestScenarioEditor";
+import { TestScenarioEditor } from "../../src/TestScenarioEditor";
 import { Empty } from "../misc/empty/Empty.stories";
-import { getMarshaller } from "@kie-tools/scesim-marshaller";
+import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 
 export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
 <ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
@@ -809,19 +810,19 @@ export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
 //   args: {},
 // };
 
-const meta: Meta<TestScenarioEditorProps> = {
+const meta: Meta<{}> = {
   title: "Use Cases/Traffic Violation",
   component: TestScenarioEditor,
   includeStories: /^[A-Z]/,
 };
 
 export default meta;
-type Story = StoryObj<TestScenarioEditorProps>;
+type Story = StoryObj<{}>;
 
 export const TrafficViolation: Story = {
-  ...Empty.render,
+  render: () =>
+    SceSimEditorWrapper({ pathRelativeToTheWorkspaceRoot: "trafficViolation.scesim", content: trafficViolationDmn }),
   args: {
     ...Empty.args,
-    model: getMarshaller(trafficViolationDmn).parser.parse(),
   },
 };

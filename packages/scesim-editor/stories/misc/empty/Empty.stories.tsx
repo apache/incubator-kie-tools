@@ -19,10 +19,9 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { SceSimEditorWrapper } from "../../scesimEditorStoriesWrapper";
-import { TestScenarioEditor, TestScenarioEditorProps } from "../../../src/TestScenarioEditor";
-import { getMarshaller } from "@kie-tools/scesim-marshaller";
+import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
 
-export const generateEmptyOneEight = () => `<?xml version="1.0" encoding="UTF-8"?>
+export const emptySceSim = `<?xml version="1.0" encoding="UTF-8"?>
 <ScenarioSimulationModel version="1.8">
   <simulation>
     <scesimModelDescriptor>
@@ -174,17 +173,14 @@ export const generateEmptyOneEight = () => `<?xml version="1.0" encoding="UTF-8"
   </imports>
 </ScenarioSimulationModel>`;
 
-const meta: Meta<TestScenarioEditorProps> = {
+const meta: Meta<{}> = {
   title: "Misc/Empty",
   component: TestScenarioEditor,
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<TestScenarioEditorProps>;
+type Story = StoryObj<{}>;
 
 export const Empty: Story = {
-  render: (args) => SceSimEditorWrapper(),
-  args: {
-    model: getMarshaller(generateEmptyOneEight()).parser.parse(),
-  },
+  render: () => SceSimEditorWrapper({ pathRelativeToTheWorkspaceRoot: "empty.scesim", content: emptySceSim }),
 };

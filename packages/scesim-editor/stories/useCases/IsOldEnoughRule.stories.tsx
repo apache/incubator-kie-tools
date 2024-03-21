@@ -17,12 +17,11 @@
  * under the License.
  */
 
-import type { Meta, StoryObj } from "@storybook/react";
-import { TestScenarioEditor, TestScenarioEditorProps, TestScenarioEditorRef } from "../../src/TestScenarioEditor";
-import { useEffect, useRef } from "react";
 import React from "react";
+import type { Meta, StoryObj } from "@storybook/react";
+import { TestScenarioEditor } from "../../src/TestScenarioEditor";
 import { Empty } from "../misc/empty/Empty.stories";
-import { getMarshaller } from "@kie-tools/scesim-marshaller";
+import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 
 export const isOldEnoughDrl = `<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
 <simulation>
@@ -389,19 +388,18 @@ export const isOldEnoughDrl = `<ScenarioSimulationModel version="1.8" xmlns="htt
 </ScenarioSimulationModel>
 `;
 
-const meta: Meta<TestScenarioEditorProps> = {
+const meta: Meta<{}> = {
   title: "Use Cases/Is Old Enough",
   component: TestScenarioEditor,
   includeStories: /^[A-Z]/,
 };
 
 export default meta;
-type Story = StoryObj<TestScenarioEditorProps>;
+type Story = StoryObj<{}>;
 
 export const IsOldEnough: Story = {
-  ...Empty.render,
+  render: () => SceSimEditorWrapper({ pathRelativeToTheWorkspaceRoot: "isOldEnough.scesim", content: isOldEnoughDrl }),
   args: {
     ...Empty.args,
-    model: getMarshaller(isOldEnoughDrl).parser.parse(),
   },
 };
