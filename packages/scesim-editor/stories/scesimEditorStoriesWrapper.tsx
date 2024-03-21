@@ -21,7 +21,12 @@ import * as React from "react";
 import { useEffect, useRef } from "react";
 import { TestScenarioEditor, TestScenarioEditorRef } from "../src/TestScenarioEditor";
 
-export function SceSimEditorWrapper(props: { pathRelativeToTheWorkspaceRoot: string; content: string }) {
+export interface SceSimEditorWrapperProps {
+  pathRelativeToTheWorkspaceRoot: string;
+  content: string;
+}
+
+export function SceSimEditorWrapper(props: SceSimEditorWrapperProps) {
   const ref = useRef<TestScenarioEditorRef>(null);
 
   useEffect(() => {
@@ -30,7 +35,7 @@ export function SceSimEditorWrapper(props: { pathRelativeToTheWorkspaceRoot: str
   }, [ref, props.content, props.pathRelativeToTheWorkspaceRoot]);
 
   return (
-    <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>
+    <div>
       <TestScenarioEditor ref={ref} />
     </div>
   );

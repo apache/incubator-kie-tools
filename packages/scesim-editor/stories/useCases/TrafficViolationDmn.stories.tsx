@@ -20,8 +20,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { TestScenarioEditor } from "../../src/TestScenarioEditor";
-import { Empty } from "../misc/empty/Empty.stories";
-import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
+import { SceSimEditorWrapper, SceSimEditorWrapperProps } from "../scesimEditorStoriesWrapper";
 
 export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
 <ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
@@ -797,12 +796,12 @@ const meta: Meta<{}> = {
 };
 
 export default meta;
-type Story = StoryObj<{}>;
+type Story = StoryObj<SceSimEditorWrapperProps>;
 
 export const TrafficViolation: Story = {
-  render: () =>
-    SceSimEditorWrapper({ pathRelativeToTheWorkspaceRoot: "trafficViolation.scesim", content: trafficViolationDmn }),
+  render: (args) => SceSimEditorWrapper(args),
   args: {
-    ...Empty.args,
+    pathRelativeToTheWorkspaceRoot: "trafficViolation.scesim",
+    content: trafficViolationDmn,
   },
 };

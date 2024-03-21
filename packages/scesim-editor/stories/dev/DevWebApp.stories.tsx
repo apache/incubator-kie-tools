@@ -17,19 +17,24 @@
  * under the License.
  */
 
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
+import { SceSimEditorWrapper, SceSimEditorWrapperProps } from "../scesimEditorStoriesWrapper";
 import { Button, Flex, FlexItem, Page, PageSection } from "@patternfly/react-core/dist/js";
-import React, { useCallback, useRef, useState } from "react";
 import { TestScenarioEditorRef } from "../../src/TestScenarioEditor";
 import { SceSimMarshaller } from "../../../scesim-marshaller/src/index";
 import { SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import { emptySceSim } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn } from "../useCases/TrafficViolationDmn.stories";
+import { useArgs } from "@storybook/preview-api";
 
-function DevWebApp() {
+type DevWebAppProps = SceSimEditorWrapperProps;
+
+function DevWebApp(props: DevWebAppProps) {
   const ref = useRef<TestScenarioEditorRef>(null);
+  const [args, updateArgs] = useArgs<DevWebAppProps>();
+
   const [state, setState] = useState<{ marshaller: SceSimMarshaller; stack: SceSimModel[]; pointer: number }>(() => {
     const emptySceSimMarshaller = getMarshaller(emptySceSim);
     return {
@@ -92,9 +97,17 @@ function DevWebApp() {
     }
   }, []);
 
+  useEffect(() => {
+    updateArgs({ content: state.marshaller.builder.build(state.stack[state.stack.length - 1]) });
+  }, [state.marshaller.builder, state.stack, updateArgs]);
+
+  useEffect(() => {
+    onSelectModel(args.content);
+  }, [args.content, onSelectModel]);
+
   return (
     <>
-      <div style={{ width: "100vw", height: "100vh" }}>
+      <div>
         <Page onDragOver={onDragOver} onDrop={onDrop}>
           <PageSection
             aria-label={"dev-app-header"}
@@ -156,14 +169,18 @@ function makeid(length: number) {
   return result;
 }
 
-const meta: Meta<typeof DevWebApp> = {
+const meta: Meta<DevWebAppProps> = {
   title: "Dev/Web App",
   component: DevWebApp,
 };
 
 export default meta;
-type Story = StoryObj<typeof DevWebApp>;
+type Story = StoryObj<DevWebAppProps>;
 
 export const WebApp: Story = {
-  render: (args) => DevWebApp(),
+  render: (args) => DevWebApp(args),
+  args: {
+    pathRelativeToTheWorkspaceRoot: "dev.scesim",
+    content: emptySceSim,
+  },
 };

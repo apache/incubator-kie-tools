@@ -18,7 +18,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { SceSimEditorWrapper } from "../../scesimEditorStoriesWrapper";
+import { SceSimEditorWrapper, SceSimEditorWrapperProps } from "../../scesimEditorStoriesWrapper";
 import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
 
 export const emptySceSim = `<?xml version="1.0" encoding="UTF-8"?>
@@ -178,9 +178,14 @@ const meta: Meta<{}> = {
   component: TestScenarioEditor,
   includeStories: /^[A-Z]/,
 };
+
 export default meta;
-type Story = StoryObj<{}>;
+type Story = StoryObj<SceSimEditorWrapperProps>;
 
 export const Empty: Story = {
-  render: () => SceSimEditorWrapper({ pathRelativeToTheWorkspaceRoot: "empty.scesim", content: emptySceSim }),
+  render: (args) => SceSimEditorWrapper(args),
+  args: {
+    pathRelativeToTheWorkspaceRoot: "empty.scesim",
+    content: emptySceSim,
+  },
 };

@@ -44,7 +44,7 @@ const preview: Preview = {
   },
 
   // It should be Story() to be possible to use "preview-api" inside stories; (https://github.com/storybookjs/storybook/issues/22132)
-  decorators: [(Story) => <div style={{ margin: "1em", width: "fit-content" }}>{Story()}</div>],
+  decorators: [(Story) => <div style={{ margin: "1em" }}>{Story()}</div>],
 };
 
 export default preview;
