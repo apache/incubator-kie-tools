@@ -107,7 +107,7 @@ function DevWebApp(props: DevWebAppProps) {
 
   return (
     <>
-      <div style={{ width: "100vw", height: "100vh" }}>
+      <div>
         <Page onDragOver={onDragOver} onDrop={onDrop}>
           <PageSection
             aria-label={"dev-app-header"}
