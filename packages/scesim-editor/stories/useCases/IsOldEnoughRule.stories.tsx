@@ -20,8 +20,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { TestScenarioEditor } from "../../src/TestScenarioEditor";
-import { Empty } from "../misc/empty/Empty.stories";
-import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
+import { SceSimEditorWrapper, SceSimEditorWrapperProps } from "../scesimEditorStoriesWrapper";
 
 export const isOldEnoughDrl = `<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
 <simulation>
@@ -395,11 +394,12 @@ const meta: Meta<{}> = {
 };
 
 export default meta;
-type Story = StoryObj<{}>;
+type Story = StoryObj<SceSimEditorWrapperProps>;
 
 export const IsOldEnough: Story = {
-  render: () => SceSimEditorWrapper({ pathRelativeToTheWorkspaceRoot: "isOldEnough.scesim", content: isOldEnoughDrl }),
+  render: (args) => SceSimEditorWrapper(args),
   args: {
-    ...Empty.args,
+    pathRelativeToTheWorkspaceRoot: "isOldEnough.scesim",
+    content: isOldEnoughDrl,
   },
 };
