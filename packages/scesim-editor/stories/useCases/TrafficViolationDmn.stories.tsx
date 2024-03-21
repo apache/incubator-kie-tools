@@ -789,26 +789,6 @@ export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
   </imports>
 </ScenarioSimulationModel>`;
 
-// function TrafficViolationDmn() {
-//   const ref = useRef<TestScenarioEditorRef>(null);
-//   useEffect(() => {
-//     ref.current?.setContent("TrafficViolationTest.scesim", TRAFFIC_VIOLATION_DMN);
-//   }, []);
-//   return <TestScenarioEditor ref={ref} />;
-// }
-// const meta: Meta<typeof TrafficViolationDmn> = {
-//   title: "Use Cases/Traffic Violation DMN",
-//   component: TrafficViolationDmn,
-// };
-
-// export default meta;
-// type Story = StoryObj<typeof TrafficViolationDmn>;
-
-// export const TrafficViolation: Story = {
-//   render: (args) => TrafficViolationDmn(),
-//   args: {},
-// };
-
 const meta: Meta<{}> = {
   title: "Use Cases/Traffic Violation",
   component: TestScenarioEditor,
