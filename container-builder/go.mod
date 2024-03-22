@@ -3,7 +3,7 @@ module github.com/apache/incubator-kie-kogito-serverless-operator/container-buil
 go 1.21
 
 require (
-	github.com/docker/docker v24.0.7+incompatible
+	github.com/docker/docker v24.0.9+incompatible
 	github.com/docker/go-connections v0.4.1-0.20210727194412-58542c764a11
 	github.com/google/uuid v1.3.1
 	github.com/hashicorp/go-version v1.6.0
