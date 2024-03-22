@@ -438,9 +438,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
-      "@kie-tools/sonataflow-quarkus-devui-extension-parent":
+      "@kie-tools/sonataflow-quarkus-devui-extension":
         specifier: workspace:*
-        version: link:../../packages/sonataflow-quarkus-devui-extension-parent
+        version: link:../../packages/sonataflow-quarkus-devui-extension
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6

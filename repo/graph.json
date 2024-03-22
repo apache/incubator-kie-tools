@@ -31,6 +31,8 @@
       { "id": "@kie-tools-examples/ping-pong-view-react" },
       { "id": "@kie-tools-examples/pmml-quarkus-example" },
       { "id": "@kie-tools-examples/sonataflow-greeting-quarkus" },
+      { "id": "@kie-tools/sonataflow-quarkus-devui-extension" },
+      { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
       { "id": "@kie-tools-examples/todo-list-view" },
       { "id": "kie-tools-examples-todo-list-view-vscode-extension" },
       { "id": "@kie-tools-examples/uniforms-patternfly" },
@@ -155,11 +157,9 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" },
-      { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
-      { "id": "@kie-tools/sonataflow-quarkus-devui-extension" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -264,10 +264,24 @@
       { "source": "@kie-tools-examples/pmml-quarkus-example", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools-examples/sonataflow-greeting-quarkus",
-        "target": "@kie-tools/maven-config-setup-helper",
+        "target": "@kie-tools/sonataflow-quarkus-devui-extension",
         "weight": 1
       },
-      { "source": "@kie-tools-examples/sonataflow-greeting-quarkus", "target": "@kie-tools/root-env", "weight": 1 },
+      {
+        "source": "@kie-tools/sonataflow-quarkus-devui-extension",
+        "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
+        "weight": 1
+      },
       { "source": "@kie-tools-examples/todo-list-view", "target": "@kie-tools-core/envelope", "weight": 1 },
       {
         "source": "kie-tools-examples-todo-list-view-vscode-extension",
@@ -964,16 +978,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
-        "target": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/serverless-workflow-jq-expressions",
         "target": "@kie-tools/serverless-workflow-service-catalog",
         "weight": 1
@@ -992,11 +996,6 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
-      {
-        "source": "@kie-tools/sonataflow-quarkus-devui-extension",
-        "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
-        "weight": 1
-      },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",
