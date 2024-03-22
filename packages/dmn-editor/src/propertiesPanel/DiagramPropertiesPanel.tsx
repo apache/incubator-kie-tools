@@ -35,6 +35,7 @@ export function DiagramPropertiesPanel() {
 
   return (
     <DrawerPanelContent
+      data-testid="properties-panel-container"
       isResizable={true}
       minSize={"300px"}
       defaultSize={"500px"}

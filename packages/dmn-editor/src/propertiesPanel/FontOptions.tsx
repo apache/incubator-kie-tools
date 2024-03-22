@@ -23,7 +23,6 @@ import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { NumberInput } from "@patternfly/react-core/dist/js/components/NumberInput";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { PencilAltIcon } from "@patternfly/react-icons/dist/js/icons/pencil-alt-icon";
 import { UndoAltIcon } from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 import * as React from "react";
@@ -375,6 +374,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
             </div>
             <br />
             <Select
+              ouiaId="node-font-style-selector"
               toggleRef={toggleRef}
               variant={SelectVariant.single}
               aria-label={"Select font style"}
