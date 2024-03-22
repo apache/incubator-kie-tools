@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/sonataflow-quarkus-devui-extension-parent",
+  "name": "@kie-tools/sonataflow-quarkus-devui-extension",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
