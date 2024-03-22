@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package prod
+package preview
 
 import (
 	"context"
@@ -31,23 +31,23 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 )
 
-type deploymentReconciler struct {
+type DeploymentReconciler struct {
 	*common.StateSupport
-	ensurers *objectEnsurers
+	ensurers *ObjectEnsurers
 }
 
-func newDeploymentReconciler(stateSupport *common.StateSupport, ensurer *objectEnsurers) *deploymentReconciler {
-	return &deploymentReconciler{
+func NewDeploymentReconciler(stateSupport *common.StateSupport, ensurer *ObjectEnsurers) *DeploymentReconciler {
+	return &DeploymentReconciler{
 		StateSupport: stateSupport,
 		ensurers:     ensurer,
 	}
 }
 
-func (d *deploymentReconciler) reconcile(ctx context.Context, workflow *operatorapi.SonataFlow) (reconcile.Result, []client.Object, error) {
+func (d *DeploymentReconciler) Reconcile(ctx context.Context, workflow *operatorapi.SonataFlow) (reconcile.Result, []client.Object, error) {
 	return d.reconcileWithBuiltImage(ctx, workflow, "")
 }
 
-func (d *deploymentReconciler) reconcileWithBuiltImage(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
+func (d *DeploymentReconciler) reconcileWithBuiltImage(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
 	pl, _ := platform.GetActivePlatform(ctx, d.C, workflow.Namespace)
 	userPropsCM, _, err := d.ensurers.userPropsConfigMap.Ensure(ctx, workflow)
 	if err != nil {
@@ -110,7 +110,7 @@ func (d *deploymentReconciler) reconcileWithBuiltImage(ctx context.Context, work
 	return result, objs, nil
 }
 
-func (d *deploymentReconciler) getDeploymentMutateVisitors(
+func (d *DeploymentReconciler) getDeploymentMutateVisitors(
 	workflow *operatorapi.SonataFlow,
 	plf *operatorapi.SonataFlowPlatform,
 	image string,

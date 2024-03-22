@@ -20,11 +20,12 @@
 # You must have minikube installed
 MINIKUBE_PROFILE=${1:-minikube}
 echo "Using minikube profile ${MINIKUBE_PROFILE}"
+export OPERATOR_IMAGE_NAME=localhost/kogito-serverless-operator:0.0.1
 
 # clean up previous runs
 make undeploy ignore-not-found=true
+make deploy IMG="${OPERATOR_IMAGE_NAME}"
 
-export OPERATOR_IMAGE_NAME=localhost/kogito-serverless-operator:0.0.1
 eval "$(minikube -p "${MINIKUBE_PROFILE}" docker-env)"
 if ! make docker-build IMG="${OPERATOR_IMAGE_NAME}"; then
   echo "Failure: Failed to build image, exiting " >&2

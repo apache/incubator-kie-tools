@@ -41,6 +41,19 @@ const (
 	SpecVersion = "0.8"
 )
 
+type QuarkusProfileType string
+
+func (p QuarkusProfileType) String() string {
+	return string(p)
+}
+
+const (
+	// QuarkusDevProfile the profile used by quarkus in devmode
+	QuarkusDevProfile QuarkusProfileType = "dev"
+	// QuarkusProdProfile the profile used by quarkus in an immutable image
+	QuarkusProdProfile QuarkusProfileType = "prod"
+)
+
 type ProfileType string
 
 func (p ProfileType) String() string {
@@ -48,6 +61,15 @@ func (p ProfileType) String() string {
 }
 
 const (
-	DevProfile  ProfileType = "dev"
+	// DevProfile deploys a mutable workflow that can be changed based on .spec.flow definitions CR change.
+	DevProfile ProfileType = "dev"
+	// Deprecated: use PreviewProfile.
 	ProdProfile ProfileType = "prod"
+	// PreviewProfile is the default profile if none is set.
+	// The operator will use the platform to do a minimal image build for users to preview an immutable app deployed in the cluster.
+	// Not suitable for production use cases since the managed build has configuration and resources limitations.
+	PreviewProfile ProfileType = "preview"
+	// GitOpsProfile signs the operator that the application image is built externally, skipping any internal managed build.
+	// Ideally used in production use cases
+	GitOpsProfile ProfileType = "gitops"
 )

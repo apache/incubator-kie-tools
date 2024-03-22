@@ -51,7 +51,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 	})
 	AfterEach(func() {
 		// Remove resources in test namespace
-		if !CurrentGinkgoTestDescription().Failed && len(targetNamespace) > 0 {
+		if !CurrentSpecReport().Failed() && len(targetNamespace) > 0 {
 			cmd := exec.Command("kubectl", "delete", "namespace", targetNamespace, "--wait")
 			_, err := utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
@@ -61,7 +61,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 	Describe("ensure that Operator and Operand(s) can run in restricted namespaces", func() {
 		projectDir, _ := utils.GetProjectDir()
 
-		It("should successfully deploy the Simple Workflow in prod ops mode and verify if it's running", func() {
+		It("should successfully deploy the Simple Workflow in  GitOps mode and verify if it's running", func() {
 			By("creating an instance of the SonataFlow Operand(CR)")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
@@ -81,7 +81,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 			}, 3*time.Minute, time.Second).Should(Succeed())
 		})
 
-		It("should successfully deploy the Greeting Workflow in prod mode and verify if it's running", func() {
+		It("should successfully deploy the Greeting Workflow in preview mode and verify if it's running", func() {
 			By("creating external resources DataInputSchema configMap")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,

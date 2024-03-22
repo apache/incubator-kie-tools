@@ -23,6 +23,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test/utils"
 
@@ -38,8 +39,6 @@ import (
 const (
 	ephemeral            = "ephemeral"
 	postgreSQL           = "postgreSQL"
-	dev                  = "dev"
-	production           = "prod"
 	clusterWideEphemeral = "cluster-wide-ephemeral"
 	ephemeralDataIndex   = "ephemeral-data-index"
 	ephemeralJobService  = "ephemeral-job-service"
@@ -82,7 +81,7 @@ var _ = Describe("Validate the persistence", Ordered, func() {
 			cmd.Stdin = bytes.NewBuffer(manifests)
 			_, err := utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
-			By("Wait for SonatatFlowPlatform CR to complete deployment")
+			By("Wait for SonataFlowPlatform CR to complete deployment")
 			// wait for service deployments to be ready
 			EventuallyWithOffset(1, func() error {
 				cmd = exec.Command("kubectl", "wait", "pod", "-n", targetNamespace, "-l", "app=sonataflow-platform", "--for", "condition=Ready", "--timeout=5s")
@@ -117,10 +116,10 @@ var _ = Describe("Validate the persistence", Ordered, func() {
 				}, 10*time.Minute, 5).Should(BeTrue())
 			}
 		},
-			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), dev, ephemeral),
-			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a production profile", test.GetSonataFlowE2EPlatformServicesDirectory(), production, ephemeral),
-			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), dev, postgreSQL),
-			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a production profile", test.GetSonataFlowE2EPlatformServicesDirectory(), production, postgreSQL),
+			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.DevProfile.String(), ephemeral),
+			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a preview profile", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), ephemeral),
+			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a dev profile", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.DevProfile.String(), postgreSQL),
+			Entry("with both Job Service and Data Index and postgreSQL persistence and the workflow in a preview profile", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), postgreSQL),
 		)
 
 	})

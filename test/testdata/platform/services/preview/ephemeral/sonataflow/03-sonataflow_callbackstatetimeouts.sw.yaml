@@ -19,7 +19,7 @@ metadata:
   annotations:
     sonataflow.org/description: Callback State Timeouts Example k8s
     sonataflow.org/version: 0.0.1
-    sonataflow.org/profile: prod
+    sonataflow.org/profile: preview
 spec:
   flow:
     start: PrintStartMessage

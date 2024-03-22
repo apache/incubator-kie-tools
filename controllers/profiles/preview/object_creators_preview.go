@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package prod
+package preview
 
 import (
 	"fmt"
@@ -85,8 +85,7 @@ func mountProdConfigMapsMutateVisitor(workflow *operatorapi.SonataFlow, userProp
 			kubeutil.AddOrReplaceVolumeMount(idx, &deployment.Spec.Template.Spec,
 				kubeutil.VolumeMount(constants.ConfigMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
 
-			kubeutil.AnnotateDeploymentConfigChecksum(workflow, deployment, userPropsCM, managedPropsCM)
-			return nil
+			return kubeutil.AnnotateDeploymentConfigChecksum(workflow, deployment, userPropsCM, managedPropsCM)
 		}
 	}
 }

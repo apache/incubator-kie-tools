@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package prod
+package preview
 
 import (
 	"time"
@@ -34,9 +34,9 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 )
 
-var _ profiles.ProfileReconciler = &prodProfile{}
+var _ profiles.ProfileReconciler = &previewProfile{}
 
-type prodProfile struct {
+type previewProfile struct {
 	common.Reconciler
 }
 
@@ -48,18 +48,19 @@ const (
 	quarkusProdConfigMountPath = "/deployments/config"
 )
 
-// objectEnsurers is a struct for the objects that ReconciliationState needs to create in the platform for the Production profile.
+// ObjectEnsurers is a struct for the objects that ReconciliationState needs to create in the platform for the Production profile.
 // ReconciliationState that needs access to it must include this struct as an attribute and initialize it in the profile builder.
-// Use newObjectEnsurers to facilitate building this struct
-type objectEnsurers struct {
+// Use NewObjectEnsurers to facilitate building this struct
+type ObjectEnsurers struct {
 	deployment            common.ObjectEnsurerWithPlatform
 	service               common.ObjectEnsurer
 	userPropsConfigMap    common.ObjectEnsurer
 	managedPropsConfigMap common.ObjectEnsurerWithPlatform
 }
 
-func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
-	return &objectEnsurers{
+// NewObjectEnsurers common.ObjectEnsurer(s) for the preview profile.
+func NewObjectEnsurers(support *common.StateSupport) *ObjectEnsurers {
+	return &ObjectEnsurers{
 		deployment:            common.NewObjectEnsurerWithPlatform(support.C, common.DeploymentCreator),
 		service:               common.NewObjectEnsurer(support.C, common.ServiceCreator),
 		userPropsConfigMap:    common.NewObjectEnsurer(support.C, common.UserPropsConfigMapCreator),
@@ -80,36 +81,15 @@ func NewProfileReconciler(client client.Client, cfg *rest.Config, recorder recor
 	stateMachine := common.NewReconciliationStateMachine(
 		&newBuilderState{StateSupport: support},
 		&followBuildStatusState{StateSupport: support},
-		&deployWithBuildWorkflowState{StateSupport: support, ensurers: newObjectEnsurers(support)},
+		&deployWithBuildWorkflowState{StateSupport: support, ensurers: NewObjectEnsurers(support)},
 	)
-	reconciler := &prodProfile{
+	reconciler := &previewProfile{
 		Reconciler: common.NewReconciler(support, stateMachine),
 	}
 
 	return reconciler
 }
 
-// NewProfileForOpsReconciler creates an alternative prod profile that won't require to build the workflow image in order to deploy
-// the workflow application. It assumes that the image has been built somewhere else.
-func NewProfileForOpsReconciler(client client.Client, cfg *rest.Config, recorder record.EventRecorder) profiles.ProfileReconciler {
-	support := &common.StateSupport{
-		C:        client,
-		Cfg:      cfg,
-		Catalog:  discovery.NewServiceCatalogForConfig(client, cfg),
-		Recorder: recorder,
-	}
-	// the reconciliation state machine
-	stateMachine := common.NewReconciliationStateMachine(
-		&ensureBuildSkipped{StateSupport: support},
-		&followDeployWorkflowState{StateSupport: support, ensurers: newObjectEnsurers(support)},
-	)
-	reconciler := &prodProfile{
-		Reconciler: common.NewReconciler(support, stateMachine),
-	}
-
-	return reconciler
-}
-
-func (p prodProfile) GetProfile() metadata.ProfileType {
-	return metadata.ProdProfile
+func (p previewProfile) GetProfile() metadata.ProfileType {
+	return metadata.PreviewProfile
 }

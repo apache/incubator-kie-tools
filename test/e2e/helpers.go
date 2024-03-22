@@ -18,12 +18,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test/utils"
 
 	//nolint:golint
@@ -34,9 +32,6 @@ import (
 	//nolint:revive
 	. "github.com/onsi/gomega"
 )
-
-// sonataflow_operator_namespace store the ns where the Operator and Operand will be executed
-const sonataflow_operator_namespace = "sonataflow-operator-system"
 
 type health struct {
 	Status string  `json:"status"`
@@ -161,23 +156,4 @@ func verifyWorkflowIsAddressable(workflowName string, targetNamespace string) bo
 		}
 		return false
 	}
-}
-
-const (
-	minikubePlatform  = "minikube"
-	openshiftPlatform = "openshift"
-)
-
-func getSonataFlowPlatformFilename() string {
-	if getClusterPlatform() == openshiftPlatform {
-		return test.GetPlatformOpenshiftE2eTest()
-	}
-	return test.GetPlatformMinikubeE2eTest()
-}
-
-func getClusterPlatform() string {
-	if v, ok := os.LookupEnv("CLUSTER_PLATFORM"); ok {
-		return v
-	}
-	return minikubePlatform
 }

@@ -55,7 +55,7 @@ func Test_Handler_WorkflowMinimalInvalid(t *testing.T) {
 func Test_Handler_WorkflowMinimalAndProps(t *testing.T) {
 	proj, err := New("default").
 		Named("minimal").
-		Profile(metadata.ProdProfile).
+		Profile(metadata.PreviewProfile).
 		WithWorkflow(getWorkflowMinimal()).
 		WithAppProperties(getWorkflowProperties()).
 		AsObjects()
@@ -65,7 +65,7 @@ func Test_Handler_WorkflowMinimalAndProps(t *testing.T) {
 	assert.Equal(t, "minimal", proj.Workflow.Name)
 	assert.Equal(t, "minimal-props", proj.Properties.Name)
 	assert.NotEmpty(t, proj.Properties.Data["application.properties"])
-	assert.Equal(t, string(metadata.ProdProfile), proj.Workflow.Annotations[metadata.Profile])
+	assert.Equal(t, string(metadata.PreviewProfile), proj.Workflow.Annotations[metadata.Profile])
 	assert.NotEmpty(t, proj.Properties.Data)
 }
 

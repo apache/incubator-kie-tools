@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package prod
+package preview
 
 import (
 	"context"
@@ -151,7 +151,7 @@ func (h *followBuildStatusState) PostReconcile(ctx context.Context, workflow *op
 
 type deployWithBuildWorkflowState struct {
 	*common.StateSupport
-	ensurers           *objectEnsurers
+	ensurers           *ObjectEnsurers
 	deploymentVisitors []common.MutateVisitor
 }
 
@@ -189,7 +189,7 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 	}
 
 	// didn't change, business as usual
-	return newDeploymentReconciler(h.StateSupport, h.ensurers).reconcileWithBuiltImage(ctx, workflow, build.Status.ImageTag)
+	return NewDeploymentReconciler(h.StateSupport, h.ensurers).reconcileWithBuiltImage(ctx, workflow, build.Status.ImageTag)
 }
 
 func (h *deployWithBuildWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {

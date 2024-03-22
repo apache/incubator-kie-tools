@@ -25,6 +25,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform/services"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common/constants"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
@@ -207,8 +208,8 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 			_, err = utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
 		},
-			Entry("without services configured", test.GetSonataFlowE2EPlatformNoServicesDirectory(), production, ephemeral, false),
-			Entry("with services configured", test.GetSonataFlowE2EPlatformServicesDirectory(), production, "ephemeral-with-workflow", true),
+			Entry("without services configured", test.GetSonataFlowE2EPlatformNoServicesDirectory(), metadata.PreviewProfile.String(), ephemeral, false),
+			Entry("with services configured", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), "ephemeral-with-workflow", true),
 		)
 
 		DescribeTable("against a platform in a separate namespace", func(testcaseDir string, profile string, persistenceType string) {
@@ -286,8 +287,8 @@ var _ = Describe("Validate a clusterplatform", Ordered, func() {
 			_, err = utils.Run(cmd)
 			Expect(err).NotTo(HaveOccurred())
 		},
-			Entry("with only Data Index configured", test.GetSonataFlowE2EPlatformServicesDirectory(), production, ephemeralDataIndex),
-			Entry("with only Job Service configured", test.GetSonataFlowE2EPlatformServicesDirectory(), production, ephemeralJobService),
+			Entry("with only Data Index configured", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), ephemeralDataIndex),
+			Entry("with only Job Service configured", test.GetSonataFlowE2EPlatformServicesDirectory(), metadata.PreviewProfile.String(), ephemeralJobService),
 		)
 	})
 })

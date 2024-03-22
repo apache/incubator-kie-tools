@@ -23,3 +23,5 @@
 /.idea/
 /.vscode/
 /target/
+
+e2e-test-report.xml

@@ -195,11 +195,11 @@ func SetDevProfile(workflow *operatorapi.SonataFlow) {
 	workflow.Annotations["sonataflow.org/profile"] = "dev"
 }
 
-func SetProdProfile(workflow *operatorapi.SonataFlow) {
-	workflow.Annotations["sonataflow.org/profile"] = "prod"
+func SetPreviewProfile(workflow *operatorapi.SonataFlow) {
+	workflow.Annotations["sonataflow.org/profile"] = "preview"
 }
 
-func GetBaseSonataFlow(namespace string, options ...*func(*operatorapi.SonataFlow)) *operatorapi.SonataFlow {
+func GetBaseSonataFlow(namespace string) *operatorapi.SonataFlow {
 	return NewSonataFlow(sonataFlowSampleYamlCR, namespace)
 }
 
@@ -212,7 +212,7 @@ func GetBaseSonataFlowWithDevProfile(namespace string) *operatorapi.SonataFlow {
 }
 
 func GetBaseSonataFlowWithProdProfile(namespace string) *operatorapi.SonataFlow {
-	return NewSonataFlow(sonataFlowSampleYamlCR, namespace, SetProdProfile)
+	return NewSonataFlow(sonataFlowSampleYamlCR, namespace, SetPreviewProfile)
 }
 
 // GetBaseSonataFlowWithProdOpsProfile gets a base workflow that has a pre-built image set in podTemplate.
@@ -242,10 +242,6 @@ func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
 	platform.Spec.DevMode.BaseImage = "quay.io/customgroup/custom-swf-builder-nightly:42.43.7"
 	return platform
-}
-
-func GetBaseClusterPlatform() *operatorapi.SonataFlowClusterPlatform {
-	return getSonataFlowClusterPlatform(sonataFlowClusterPlatformYamlCR)
 }
 
 func GetBasePlatform() *operatorapi.SonataFlowPlatform {
@@ -307,5 +303,9 @@ func getProjectDir() string {
 		wd = filepath.Dir(wd)
 	}
 	projectDir = wd
+	if _, err := os.Lstat(projectDir); err != nil {
+		panic("Failed to read project directory to run tests: " + err.Error())
+	}
+
 	return projectDir
 }

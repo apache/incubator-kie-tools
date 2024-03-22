@@ -75,9 +75,9 @@ func GetWorkflowManagedPropertiesConfigMapName(workflow *operatorapi.SonataFlow)
 
 // GetManagedPropertiesFileName gets the default ConfigMap name that holds the managed application property for the given workflow
 func GetManagedPropertiesFileName(workflow *operatorapi.SonataFlow) string {
-	profile := metadata.ProdProfile
+	profile := metadata.QuarkusProdProfile
 	if IsDevProfile(workflow) {
-		profile = metadata.DevProfile
+		profile = metadata.QuarkusDevProfile
 	}
 	return fmt.Sprintf("application-%s.properties", profile)
 }

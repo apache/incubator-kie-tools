@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package prod
+package gitops
 
 import (
 	"context"
@@ -62,7 +62,7 @@ func (f *followDeployWorkflowState) CanReconcile(workflow *operatorapi.SonataFlo
 }
 
 func (f *followDeployWorkflowState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
-	return newDeploymentReconciler(f.StateSupport, f.ensurers).reconcile(ctx, workflow)
+	return newDeploymentReconciler(f.StateSupport, f.ensurers).Reconcile(ctx, workflow)
 }
 
 func (f *followDeployWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {

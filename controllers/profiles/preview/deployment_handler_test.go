@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package prod
+package preview
 
 import (
 	"context"
@@ -38,9 +38,9 @@ func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
 		WithStatusSubresource(workflow).
 		Build()
 	stateSupport := fakeReconcilerSupport(client)
-	handler := newDeploymentReconciler(stateSupport, newObjectEnsurers(stateSupport))
+	handler := NewDeploymentReconciler(stateSupport, NewObjectEnsurers(stateSupport))
 
-	result, objects, err := handler.reconcile(context.TODO(), workflow)
+	result, objects, err := handler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
@@ -49,7 +49,7 @@ func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
 	expectedImg := "quay.io/apache/my-new-workflow:1.0.0"
 	workflow.Spec.PodTemplate.Container.Image = expectedImg
 	utilruntime.Must(client.Update(context.TODO(), workflow))
-	result, objects, err = handler.reconcile(context.TODO(), workflow)
+	result, objects, err = handler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
@@ -71,9 +71,9 @@ func Test_CheckDeploymentRolloutAfterCMChange(t *testing.T) {
 		WithStatusSubresource(workflow).
 		Build()
 	stateSupport := fakeReconcilerSupport(client)
-	handler := newDeploymentReconciler(stateSupport, newObjectEnsurers(stateSupport))
+	handler := NewDeploymentReconciler(stateSupport, NewObjectEnsurers(stateSupport))
 
-	result, objects, err := handler.reconcile(context.TODO(), workflow)
+	result, objects, err := handler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
@@ -108,7 +108,7 @@ func Test_CheckDeploymentRolloutAfterCMChange(t *testing.T) {
 	props.MustSet("test.property", "test.value")
 	userPropsCM.Data[workflowproj.ApplicationPropertiesFileName] = props.String()
 	utilruntime.Must(client.Update(context.TODO(), userPropsCM))
-	result, objects, err = handler.reconcile(context.TODO(), workflow)
+	result, objects, err = handler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
@@ -133,9 +133,9 @@ func Test_CheckDeploymentUnchangedAfterCMChangeOtherKeys(t *testing.T) {
 		WithStatusSubresource(workflow).
 		Build()
 	stateSupport := fakeReconcilerSupport(client)
-	handler := newDeploymentReconciler(stateSupport, newObjectEnsurers(stateSupport))
+	handler := NewDeploymentReconciler(stateSupport, NewObjectEnsurers(stateSupport))
 
-	result, objects, err := handler.reconcile(context.TODO(), workflow)
+	result, objects, err := handler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
@@ -167,7 +167,7 @@ func Test_CheckDeploymentUnchangedAfterCMChangeOtherKeys(t *testing.T) {
 
 	userPropsCM.Data["other.key"] = "useless.key = value"
 	utilruntime.Must(client.Update(context.TODO(), userPropsCM))
-	result, objects, err = handler.reconcile(context.TODO(), workflow)
+	result, objects, err = handler.Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, objects)
 	assert.True(t, result.Requeue)
