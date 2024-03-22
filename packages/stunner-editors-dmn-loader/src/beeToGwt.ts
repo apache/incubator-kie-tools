@@ -21,7 +21,6 @@ import {
   DMN15__tContext,
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
 import {
   ContextExpressionDefinitionEntry,
   DecisionTableExpressionDefinitionBuiltInAggregation,
@@ -30,8 +29,8 @@ import {
   GwtExpressionDefinition,
   GwtExpressionDefinitionLogicType,
 } from "./types";
-import { DMN15_SPEC } from "./Dmn15Spec";
-import { ExpressionDefinition, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { DMN15_SPEC } from "@kie-tools/dmn-editor/dist/Dmn15Spec";
+import { DmnBuiltInDataType, ExpressionDefinition, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 /** Converts a DMN JSON to an ExpressionDefinition. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was

@@ -212,7 +212,7 @@ export function FeelFunctionImplementationCell({
   parentElementId,
   widthsById,
 }: BeeTableCellProps<FEEL_ROWTYPE> & { parentElementId: string }) {
-  const functionExpression = data[rowIndex].functionExpression; // as FeelFunctionExpressionDefinition;
+  const functionExpression = data[rowIndex].functionExpression;
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 

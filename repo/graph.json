@@ -347,11 +347,7 @@
       { "source": "@kie-tools/pmml-editor-marshaller", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/pmml-editor-marshaller", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/pmml-editor-marshaller", "target": "@kie-tools/tsconfig", "weight": 1 },
-      {
-        "source": "@kie-tools/stunner-editors-dmn-loader",
-        "target": "@kie-tools/boxed-expression-component",
-        "weight": 1
-      },
+      { "source": "@kie-tools/stunner-editors-dmn-loader", "target": "@kie-tools/dmn-editor", "weight": 1 },
       {
         "source": "@kie-tools/stunner-editors-dmn-loader",
         "target": "@kie-tools/import-java-classes-component",

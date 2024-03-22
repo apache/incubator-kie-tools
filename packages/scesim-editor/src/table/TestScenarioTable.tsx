@@ -1121,7 +1121,6 @@ function TestScenarioTable({
         shouldRenderRowIndexColumn={!isBackground}
         shouldShowColumnsInlineControls={true}
         shouldShowRowsInlineControls={!isBackground}
-        widthsById={new Map<string, number[]>()} // The widths in SceSim are handled direct in the columns
       />
     </div>
   );

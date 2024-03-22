@@ -228,7 +228,7 @@ export function BeeTableInternal<R extends object>({
               rowIndex={cellProps.row.index}
               columnIndex={columnIndex}
               columnId={cellProps.column.id}
-              widthsById={widthsById}
+              widthsById={widthsById ?? new Map<string, number[]>()}
             />
           );
         } else {

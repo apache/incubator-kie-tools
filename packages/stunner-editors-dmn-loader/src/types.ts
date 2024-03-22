@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 declare global {
   // Set of Functions used to interact with the GWT Layer. Must be synchronized with ExpressionEditorService.java

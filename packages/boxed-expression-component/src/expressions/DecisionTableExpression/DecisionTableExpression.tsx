@@ -440,48 +440,48 @@ export function DecisionTableExpression(
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
-        let n = { ...prev };
+        let previousExpression = { ...prev };
 
-        cellUpdates.forEach((u) => {
-          const newRules = [...(n.rule ?? [])];
-          const groupType = u.column.groupType as DecisionTableColumnType;
+        cellUpdates.forEach((cellUpdate) => {
+          const newRules = [...(previousExpression.rule ?? [])];
+          const groupType = cellUpdate.column.groupType as DecisionTableColumnType;
           switch (groupType) {
             case DecisionTableColumnType.InputClause:
-              const newInputEntries = [...(newRules[u.rowIndex].inputEntry ?? [])];
-              newInputEntries[u.columnIndex] = {
-                ...newInputEntries[u.columnIndex],
+              const newInputEntries = [...(newRules[cellUpdate.rowIndex].inputEntry ?? [])];
+              newInputEntries[cellUpdate.columnIndex] = {
+                ...newInputEntries[cellUpdate.columnIndex],
                 text: {
-                  __$$text: u.value,
+                  __$$text: cellUpdate.value,
                 },
               };
-              newRules[u.rowIndex] = {
-                ...newRules[u.rowIndex],
+              newRules[cellUpdate.rowIndex] = {
+                ...newRules[cellUpdate.rowIndex],
                 inputEntry: newInputEntries,
               };
               break;
             case DecisionTableColumnType.OutputClause:
-              const newOutputEntries = [...newRules[u.rowIndex].outputEntry];
-              const entryIndex = u.columnIndex - (prev.input?.length ?? 0);
+              const newOutputEntries = [...newRules[cellUpdate.rowIndex].outputEntry];
+              const entryIndex = cellUpdate.columnIndex - (prev.input?.length ?? 0);
               newOutputEntries[entryIndex] = {
                 ...newOutputEntries[entryIndex],
                 text: {
-                  __$$text: u.value,
+                  __$$text: cellUpdate.value,
                 },
               };
-              newRules[u.rowIndex] = {
-                ...newRules[u.rowIndex],
+              newRules[cellUpdate.rowIndex] = {
+                ...newRules[cellUpdate.rowIndex],
                 outputEntry: newOutputEntries,
               };
               break;
             case DecisionTableColumnType.Annotation:
-              const newAnnotationEntries = [...(newRules[u.rowIndex].annotationEntry ?? [])];
-              const annotationIndex = u.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0);
+              const newAnnotationEntries = [...(newRules[cellUpdate.rowIndex].annotationEntry ?? [])];
+              const annotationIndex = cellUpdate.columnIndex - (prev.input?.length ?? 0) - (prev.output?.length ?? 0);
               newAnnotationEntries[annotationIndex] = {
                 ...newAnnotationEntries[annotationIndex],
-                text: { __$$text: u.value },
+                text: { __$$text: cellUpdate.value },
               };
-              newRules[u.rowIndex] = {
-                ...newRules[u.rowIndex],
+              newRules[cellUpdate.rowIndex] = {
+                ...newRules[cellUpdate.rowIndex],
                 annotationEntry: newAnnotationEntries,
               };
               break;
@@ -489,13 +489,13 @@ export function DecisionTableExpression(
               assertUnreachable(groupType);
           }
 
-          n = {
-            ...n,
+          previousExpression = {
+            ...previousExpression,
             rule: newRules,
           };
         });
 
-        return n;
+        return previousExpression;
       });
     },
     [setExpression]

@@ -27,7 +27,7 @@ export interface ExpressionDefinitionRootProps {
   expressionHolderId: string;
   expression?: ExpressionDefinition;
   isResetSupported: boolean | undefined;
-  widthsById: Map<string, number[]>;
+  widthsById?: Map<string, number[]>;
   expressionName?: string;
 }
 

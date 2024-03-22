@@ -46,7 +46,7 @@ export interface ExpressionContainerProps {
   rowIndex: number;
   columnIndex: number;
   parentElementId?: string;
-  widthsById: Map<string, number[]>;
+  widthsById?: Map<string, number[]>;
   expressionName?: string;
 }
 
@@ -78,7 +78,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       for (const contextEntry of contextEntries) {
         variables?.repository.addVariableToContext(
           contextEntry["@_id"]!,
-          contextEntry["@_label"] ?? "<var>",
+          contextEntry["@_label"] ?? "",
           contextExpressionDefinition["@_id"]!
         );
       }
@@ -199,7 +199,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
 
         setWidth({
           id: newExpression["@_id"] ?? "",
-          values: expression.widthsById.get(expression.expression["@_id"] ?? "") ?? [],
+          values: expression.widthsById?.get(expression.expression["@_id"] ?? "") ?? [],
         });
 
         if (parentElementId) {
@@ -253,7 +253,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const onLogicTypeReset = useCallback(() => {
     variables?.repository.removeVariable(expression?.["@_id"] ?? "", true);
     if (expression?.["@_id"]) {
-      widthsById.delete(expression?.["@_id"]);
+      widthsById?.delete(expression?.["@_id"]);
       setWidth({ id: expression?.["@_id"], values: [] });
     }
     setExpression(() => undefined!);

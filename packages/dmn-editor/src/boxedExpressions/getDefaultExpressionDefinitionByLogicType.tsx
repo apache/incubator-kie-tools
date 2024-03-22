@@ -50,7 +50,7 @@ import {
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "@kie-tools/boxed-expression-component/dist/expressions/RelationExpression";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { isStruct } from "../dataTypes/DataTypeSpec";
-import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/src/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function getDefaultExpressionDefinitionByLogicType({
   logicType,

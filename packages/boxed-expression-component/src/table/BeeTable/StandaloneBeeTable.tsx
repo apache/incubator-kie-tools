@@ -67,7 +67,7 @@ export function StandaloneBeeTable<R extends object>(
               expression={expression}
               onExpressionChange={onExpressionChange}
               onWidthsChange={onWidthsChange}
-              widthsById={props.widthsById}
+              widthsById={props.widthsById ?? new Map<string, number[]>()}
             >
               <ResizingWidthsContextProvider>
                 <BeeTable {...props} />

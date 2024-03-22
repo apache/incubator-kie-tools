@@ -399,11 +399,8 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
     return [BeeTableOperation.SelectionCopy];
   }, []);
 
-  const widthsById = useMemo(() => new Map(), []); // FIXME: Tiago
-
   return (
     <StandaloneBeeTable
-      widthsById={widthsById}
       scrollableParentRef={scrollableParentRef}
       allowedOperations={allowedOperations}
       getColumnKey={getColumnKey}

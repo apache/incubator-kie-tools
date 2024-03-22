@@ -31,7 +31,7 @@ import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { DMN15__tHitPolicy } from "@kie-tools/dmn-marshaller/src/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tHitPolicy } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export interface HitPolicySelectorProps {
   /** Pre-selected hit policy */
