@@ -9275,7 +9275,7 @@ importers:
         specifier: ^5.9.0
         version: 5.9.0
 
-  packages/sonataflow-quarkus-devui-extension-parent:
+  packages/sonataflow-quarkus-devui-extension:
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
