@@ -20,30 +20,61 @@
 import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DmnMarshaller, DmnMarshallerOpts, DmnMarshallerVersions } from "../src";
 
 const files = [
-  "../tests-data--manual/other/attachment.dmn",
-  "../tests-data--manual/other/empty13.dmn",
-  "../tests-data--manual/other/sample12.dmn",
-  "../tests-data--manual/other/list.dmn",
-  "../tests-data--manual/other/list2.dmn",
-  "../tests-data--manual/other/external.dmn",
-  "../tests-data--manual/other/weird.dmn",
-  "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/DateToDateTimeFunction.dmn",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/ForLoopDatesEvaluate.dmn",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/ListReplaceEvaluate.dmn",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/TypeConstraintsChecks.dmn",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_x/OneOfEachType.dmn",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_x/allTypes.dmn",
+];
+
+const testing_models_paths = [
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5",
+  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_x",
 ];
 
 describe("idempotency", () => {
   for (const file of files) {
-    test(path.basename(file), () => {
-      const xml_original = fs.readFileSync(path.join(__dirname, file), "utf-8");
-
-      const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
-      const json = parser.parse();
-
-      const xml_firstPass = builder.build(json);
-      const xml_secondPass = builder.build(getMarshaller(xml_firstPass, { upgradeTo: "latest" }).parser.parse());
-
-      expect(xml_firstPass).toStrictEqual(xml_secondPass);
-    });
+    testFile(path.join(__dirname, file));
   }
 });
+
+describe("idempotency_all", () => {
+  for (const models_paths of testing_models_paths) {
+    const parent_path = path.join(__dirname, models_paths);
+    testDirectory(parent_path);
+  }
+});
+
+function testDirectory(fullPathOfModels: string) {
+  fs.readdirSync(fullPathOfModels).forEach((file) => {
+    const child_path = path.join(fullPathOfModels, file);
+    const stats = fs.statSync(child_path);
+    if (stats.isFile()) {
+      testFile(child_path);
+    } else {
+      testDirectory(child_path);
+    }
+  });
+}
+
+function testFile(fullPathOfFile: string) {
+  test(fullPathOfFile.substring(fullPathOfFile.lastIndexOf("/") + 1), () => {
+    console.log("Testing " + fullPathOfFile);
+    const xml_original = fs.readFileSync(fullPathOfFile, "utf-8");
+
+    const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
+    const json = parser.parse();
+
+    const xml_firstPass = builder.build(json);
+    const xml_secondPass = builder.build(getMarshaller(xml_firstPass, { upgradeTo: "latest" }).parser.parse());
+
+    expect(xml_firstPass).toStrictEqual(xml_secondPass);
+  });
+}

@@ -39,6 +39,7 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
+    "@kie-tools/dmn-testing-models": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",

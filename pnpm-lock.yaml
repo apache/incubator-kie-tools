@@ -3744,6 +3744,9 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools/dmn-testing-models":
+        specifier: workspace:*
+        version: link:../dmn-testing-models
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
@@ -3871,6 +3874,24 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+
+  packages/dmn-testing-models:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/dmn-vscode-extension:
     dependencies:

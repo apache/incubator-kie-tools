@@ -1,0 +1,43 @@
+{
+  "private": true,
+  "name": "@kie-tools/dmn-testing-models",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "run-script-os",
+    "build:dev:linux:darwin": "mvn clean generate-resources",
+    "build:dev:win32": "pnpm powershell \"mvn clean generate-resources\"",
+    "build:prod": "pnpm build:dev",
+    "copy:app": "run-script-os",
+    "copy:app:linux:darwin": "copyfiles -u 1 \"target/generated-resources/valid_models/**/*.dmn\" dist/",
+    "copy:app:win32": "copyfiles -u 1 \"target/generated-resources/valid_models/**/*.dmn\" dist/",
+    "dist": "rimraf dist && mkdir dist && pnpm copy:app",
+    "install": "node install.js",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}
