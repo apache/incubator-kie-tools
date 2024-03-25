@@ -18,7 +18,7 @@
  */
 
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
-import { Page, Locator } from "@playwright/test";
+import { Page } from "@playwright/test";
 
 export class TestScenarioTable {
   constructor(public page: Page, public projectName: ProjectName) {}
