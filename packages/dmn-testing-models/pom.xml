@@ -18,9 +18,10 @@
   ~ under the License.      
 -->
 <project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kie.tools</groupId>
@@ -108,12 +109,6 @@
     </dependencies>
 
     <build>
-<!--        <resources>-->
-<!--            &lt;!&ndash; DMN generated resources unpacked from org.kie:kie-dmn-test-resources &ndash;&gt;-->
-<!--            <resource>-->
-<!--                <directory>${project.build.directory}/generated-resources/valid_models</directory>-->
-<!--            </resource>-->
-<!--        </resources>-->
         <plugins>
             <!-- Unpack DMN resources from org.kie:kie-dmn-test-resources -->
             <plugin>
