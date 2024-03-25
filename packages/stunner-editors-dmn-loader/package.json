@@ -15,7 +15,6 @@
   "dependencies": {
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
-    "@kie-tools/dmn-editor": "workspace:*",
     "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
     "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/import-java-classes-component": "workspace:*",

@@ -30,7 +30,7 @@ import {
   GwtExpressionDefinition,
   GwtExpressionDefinitionLogicType,
 } from "./types";
-import { DMN15_SPEC } from "@kie-tools/dmn-editor/dist/Dmn15Spec";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 
 /** Converts an ExpressionDefinition to a DMN JSON. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was

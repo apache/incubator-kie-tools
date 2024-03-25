@@ -466,7 +466,7 @@ digraph G {
   "@kie-tools/storybook-base" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
-  "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/dmn-editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];
   "@kie-tools-core/switch-expression-ts" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/switch-expression-ts" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];

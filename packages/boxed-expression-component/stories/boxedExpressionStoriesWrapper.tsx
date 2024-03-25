@@ -53,6 +53,8 @@ import {
   LITERAL_EXPRESSION_MIN_WIDTH,
 } from "../src/resizing/WidthConstants";
 
+const emptyMap = new Map<string, number[]>();
+
 function getDefaultExpressionDefinitionByLogicType(
   logicType: ExpressionDefinition["__$$element"] | undefined,
   dataType: string,
@@ -312,7 +314,7 @@ export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEdit
         isResetSupportedOnRootExpression={
           props?.isResetSupportedOnRootExpression ?? args.isResetSupportedOnRootExpression
         }
-        widthsById={widthsById ?? new Map<string, number[]>()}
+        widthsById={widthsById ?? emptyMap}
         expressionName={expression?.["@_label"]}
       />
     </div>
