@@ -108,8 +108,6 @@ export type TestScenarioDataObject = {
   children?: TestScenarioDataObject[];
 };
 
-export type OnSceSimModelChange = (model: SceSimModel) => void;
-
 export type TestScenarioEditorRef = {
   /* TODO Convert these to Promises */
   getContent(): string;
