@@ -29,7 +29,6 @@ export interface BeeTableCellProps<R extends object> {
   rowIndex: number;
   columnIndex: number;
   columnId: string;
-  widthsById: Map<string, number[]>;
 }
 
 export interface BeeTableProps<R extends object> {
@@ -93,9 +92,6 @@ export interface BeeTableProps<R extends object> {
   lastColumnMinWidth?: number;
   /** The variables for the current expression context */
   variables?: FeelVariables;
-
-  /** When the table's content does not have width information in columns but in an external Map (example: DMN Editor)*/
-  widthsById?: Map<string, number[]>;
 }
 
 /** Possible status for the visibility of the Table's Header */

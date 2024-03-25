@@ -271,7 +271,6 @@ export function PmmlFunctionExpression({
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={false}
         shouldShowColumnsInlineControls={false}
-        widthsById={widthsById}
       />
     </div>
   );

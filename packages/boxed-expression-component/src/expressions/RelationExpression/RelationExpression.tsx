@@ -509,7 +509,6 @@ export function RelationExpression(
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
         variables={variables}
-        widthsById={widthsById}
         // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/kiegroup/kie-issues/issues/181
       />
     </div>

@@ -248,12 +248,11 @@ export function ContextExpression(
             data={props.data.map((e) => {
               return { variable: e.variable, expression: e.expression };
             })}
-            widthsById={widthsById}
           />
         );
       },
     };
-  }, [widthsById, updateEntry]);
+  }, [updateEntry]);
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     return [
@@ -294,10 +293,9 @@ export function ContextExpression(
         contextExpression={contextExpression}
         rowIndex={resultIndex}
         columnIndex={2}
-        widthsById={widthsById}
       />,
     ];
-  }, [contextExpression, resultIndex, widthsById]);
+  }, [contextExpression, resultIndex]);
 
   const getDefaultContextEntry = useCallback(
     (name?: string): DMN15__tContextEntry => {
@@ -505,7 +503,6 @@ export function ContextExpression(
           shouldShowRowsInlineControls={true}
           shouldShowColumnsInlineControls={false}
           variables={variables}
-          widthsById={widthsById}
         />
       </div>
     </NestedExpressionContainerContext.Provider>

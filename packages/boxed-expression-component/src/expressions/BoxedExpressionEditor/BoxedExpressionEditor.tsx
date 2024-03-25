@@ -97,7 +97,6 @@ export function BoxedExpressionEditor({
           expressionHolderId={expressionHolderId}
           expression={expression}
           isResetSupported={isResetSupportedOnRootExpression}
-          widthsById={widthsById}
           expressionName={expressionName}
         />
       </BoxedExpressionEditorContextProvider>

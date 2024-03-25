@@ -50,6 +50,10 @@ export function StandaloneBeeTable<R extends object>(
     return undefined!;
   }, []);
 
+  const widthsById = useMemo(() => {
+    return new Map<string, number[]>();
+  }, []);
+
   return (
     <div className="expression-container" data-testid="standalone-bee-table">
       <div className="expression-container-box">
@@ -67,7 +71,7 @@ export function StandaloneBeeTable<R extends object>(
               expression={expression}
               onExpressionChange={onExpressionChange}
               onWidthsChange={onWidthsChange}
-              widthsById={props.widthsById ?? new Map<string, number[]>()}
+              widthsById={widthsById}
             >
               <ResizingWidthsContextProvider>
                 <BeeTable {...props} />

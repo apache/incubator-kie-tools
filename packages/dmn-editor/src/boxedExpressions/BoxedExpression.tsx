@@ -223,7 +223,6 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   const dataTypes = useMemo<DmnDataType[]>(() => {
     const customDataTypes = dataTypesTree.map((d) => ({
       isCustom: true,
-      typeRef: d.itemDefinition.typeRef?.__$$text ?? "",
       name: d.feelName,
     }));
 

@@ -46,7 +46,7 @@ import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-s
 
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
-const emptyMap = new Map<string, number[]>();
+
 export function getColumnsAtLastLevel<R extends ReactTable.Column<any> | ReactTable.ColumnInstance<any>>(
   columns: R[],
   depth: number = 0
@@ -95,7 +95,6 @@ export function BeeTableInternal<R extends object>({
   lastColumnMinWidth,
   rowWrapper,
   variables,
-  widthsById,
 }: BeeTableProps<R>) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
@@ -228,7 +227,6 @@ export function BeeTableInternal<R extends object>({
               rowIndex={cellProps.row.index}
               columnIndex={columnIndex}
               columnId={cellProps.column.id}
-              widthsById={widthsById ?? emptyMap}
             />
           );
         } else {
@@ -249,7 +247,6 @@ export function BeeTableInternal<R extends object>({
     }),
     [
       cellComponentByColumnAccessor,
-      widthsById,
       onCellUpdates,
       isReadOnly,
       _setEditing,

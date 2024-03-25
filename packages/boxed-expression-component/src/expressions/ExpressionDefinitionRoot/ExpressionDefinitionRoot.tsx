@@ -27,7 +27,6 @@ export interface ExpressionDefinitionRootProps {
   expressionHolderId: string;
   expression?: ExpressionDefinition;
   isResetSupported: boolean | undefined;
-  widthsById?: Map<string, number[]>;
   expressionName?: string;
 }
 
@@ -35,14 +34,12 @@ export function ExpressionDefinitionRoot({
   expressionHolderId,
   expression,
   isResetSupported = true,
-  widthsById,
   expressionName,
 }: ExpressionDefinitionRootProps) {
   return (
     <ResizingWidthsContextProvider>
       <div className={`expression-container ${expressionHolderId}`}>
         <ExpressionContainer
-          widthsById={widthsById}
           expression={expression}
           isResetSupported={isResetSupported}
           isNested={false}

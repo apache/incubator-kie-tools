@@ -33,14 +33,12 @@ export interface ContextEntryExpressionCellProps {
   data: readonly DMN15__tContextEntry[];
   rowIndex: number;
   columnIndex: number;
-  widthsById: Map<string, number[]>;
 }
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
   data: contextEntry,
   rowIndex,
   columnIndex,
-  widthsById,
 }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -69,7 +67,6 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={contextEntry[rowIndex]["@_id"]}
-        widthsById={widthsById}
       />
     </NestedExpressionDispatchContextProvider>
   );

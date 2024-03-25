@@ -37,7 +37,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-export const findEmployeesDataTypes = [...dataTypes, { typeRef: "tPerson", name: "tPerson", isCustom: true }];
+export const findEmployeesDataTypes = [...dataTypes, { name: "tPerson", isCustom: true }];
 
 export const canDriveExpressionDefinition: DecisionTableExpressionDefinition = {
   __$$element: "decisionTable",

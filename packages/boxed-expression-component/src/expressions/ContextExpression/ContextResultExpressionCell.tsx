@@ -30,7 +30,6 @@ export function ContextResultExpressionCell(props: {
   contextExpression: ContextExpressionDefinition;
   rowIndex: number;
   columnIndex: number;
-  widthsById: Map<string, number[]>;
 }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -73,7 +72,6 @@ export function ContextResultExpressionCell(props: {
         rowIndex={props.rowIndex}
         columnIndex={props.columnIndex}
         parentElementId={lastEntry?.variable?.["@_id"]}
-        widthsById={props.widthsById}
       />
     </NestedExpressionDispatchContextProvider>
   );

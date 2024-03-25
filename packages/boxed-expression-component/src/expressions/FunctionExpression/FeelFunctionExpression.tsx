@@ -198,7 +198,6 @@ export function FeelFunctionExpression({
           shouldRenderRowIndexColumn={true}
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
-          widthsById={widthsById}
         />
       </div>
     </NestedExpressionContainerContext.Provider>
@@ -210,7 +209,6 @@ export function FeelFunctionImplementationCell({
   rowIndex,
   columnIndex,
   parentElementId,
-  widthsById,
 }: BeeTableCellProps<FEEL_ROWTYPE> & { parentElementId: string }) {
   const functionExpression = data[rowIndex].functionExpression;
 
@@ -235,7 +233,6 @@ export function FeelFunctionImplementationCell({
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={parentElementId}
-        widthsById={widthsById}
       />
     </NestedExpressionDispatchContextProvider>
   );

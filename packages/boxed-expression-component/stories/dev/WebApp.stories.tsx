@@ -40,18 +40,18 @@ import {
  * Constants copied from tests to fix debugger
  */
 const dataTypes = [
-  { typeRef: "Undefined", name: "<Undefined>", isCustom: false },
-  { typeRef: "Any", name: "Any", isCustom: false },
-  { typeRef: "Boolean", name: "boolean", isCustom: false },
-  { typeRef: "Context", name: "context", isCustom: false },
-  { typeRef: "Date", name: "date", isCustom: false },
-  { typeRef: "DateTime", name: "date and time", isCustom: false },
-  { typeRef: "DateTimeDuration", name: "days and time duration", isCustom: false },
-  { typeRef: "Number", name: "number", isCustom: false },
-  { typeRef: "String", name: "string", isCustom: false },
-  { typeRef: "Time", name: "time", isCustom: false },
-  { typeRef: "YearsMonthsDuration", name: "years and months duration", isCustom: false },
-  { typeRef: "tPerson", name: "tPerson", isCustom: true },
+  { name: "<Undefined>", isCustom: false },
+  { name: "Any", isCustom: false },
+  { name: "boolean", isCustom: false },
+  { name: "context", isCustom: false },
+  { name: "date", isCustom: false },
+  { name: "date and time", isCustom: false },
+  { name: "days and time duration", isCustom: false },
+  { name: "number", isCustom: false },
+  { name: "string", isCustom: false },
+  { name: "time", isCustom: false },
+  { name: "years and months duration", isCustom: false },
+  { name: "tPerson", isCustom: true },
 ];
 
 const pmmlDocuments = [

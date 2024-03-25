@@ -375,7 +375,6 @@ export function JavaFunctionExpression({
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={false}
         shouldShowColumnsInlineControls={false}
-        widthsById={widthsById}
       />
     </div>
   );

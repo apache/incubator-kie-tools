@@ -53,8 +53,6 @@ import {
   LITERAL_EXPRESSION_MIN_WIDTH,
 } from "../src/resizing/WidthConstants";
 
-const emptyMap = new Map<string, number[]>();
-
 function getDefaultExpressionDefinitionByLogicType(
   logicType: ExpressionDefinition["__$$element"] | undefined,
   dataType: string,
@@ -214,17 +212,17 @@ export const pmmlDocuments = [
 ];
 
 export const dataTypes = [
-  { typeRef: "Undefined", name: "<Undefined>", isCustom: false },
-  { typeRef: "Any", name: "Any", isCustom: false },
-  { typeRef: "Boolean", name: "boolean", isCustom: false },
-  { typeRef: "Context", name: "context", isCustom: false },
-  { typeRef: "Date", name: "date", isCustom: false },
-  { typeRef: "DateTime", name: "date and time", isCustom: false },
-  { typeRef: "DateTimeDuration", name: "days and time duration", isCustom: false },
-  { typeRef: "Number", name: "number", isCustom: false },
-  { typeRef: "String", name: "string", isCustom: false },
-  { typeRef: "Time", name: "time", isCustom: false },
-  { typeRef: "YearsMonthsDuration", name: "years and months duration", isCustom: false },
+  { name: "<Undefined>", isCustom: false },
+  { name: "Any", isCustom: false },
+  { name: "boolean", isCustom: false },
+  { name: "context", isCustom: false },
+  { name: "date", isCustom: false },
+  { name: "date and time", isCustom: false },
+  { name: "days and time duration", isCustom: false },
+  { name: "number", isCustom: false },
+  { name: "string", isCustom: false },
+  { name: "time", isCustom: false },
+  { name: "years and months duration", isCustom: false },
 ];
 
 function getDefaultWidths(logicType: ExpressionDefinition["__$$element"] | undefined, id: string) {
@@ -276,7 +274,10 @@ export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEdit
   const [widthsByIdState, setWidthsByIdState] = useState<Map<string, number[]>>(args.widthsById);
 
   const expression = useMemo(() => props?.expression ?? expressionState, [expressionState, props?.expression]);
-  const widthsById = useMemo(() => props?.widthsById ?? widthsByIdState, [props?.widthsById, widthsByIdState]);
+  const widthsById = useMemo(
+    () => props?.widthsById ?? widthsByIdState ?? new Map<string, number[]>(),
+    [props?.widthsById, widthsByIdState]
+  );
 
   const onExpressionChange = useMemo(
     () => (props?.onExpressionChange ? props.onExpressionChange : setExpressionState),
@@ -314,7 +315,7 @@ export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEdit
         isResetSupportedOnRootExpression={
           props?.isResetSupportedOnRootExpression ?? args.isResetSupportedOnRootExpression
         }
-        widthsById={widthsById ?? emptyMap}
+        widthsById={widthsById}
         expressionName={expression?.["@_label"]}
       />
     </div>

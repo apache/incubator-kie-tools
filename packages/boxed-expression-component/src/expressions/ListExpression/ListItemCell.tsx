@@ -32,7 +32,6 @@ export function ListItemCell({
   data: items,
   columnIndex,
   parentElementId,
-  widthsById,
 }: BeeTableCellProps<ROWTYPE> & { parentElementId: string }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -56,7 +55,6 @@ export function ListItemCell({
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={parentElementId}
-        widthsById={widthsById}
       />
     </NestedExpressionDispatchContextProvider>
   );

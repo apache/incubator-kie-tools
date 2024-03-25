@@ -434,7 +434,6 @@ export function InvocationExpression(
           shouldShowRowsInlineControls={true}
           shouldShowColumnsInlineControls={false}
           variables={variables}
-          widthsById={widthsById}
         />
       </div>
     </NestedExpressionContainerContext.Provider>

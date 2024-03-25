@@ -45,11 +45,11 @@ type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const findEmployeesDataTypes = [
   ...dataTypes,
-  { typeRef: "tEmployee", name: "tEmployee", isCustom: true },
-  { typeRef: "tEmployees", name: "tEmployees", isCustom: true },
-  { typeRef: "tDept", name: "tDept", isCustom: true },
-  { typeRef: "tKnowledge", name: "tKnowledge", isCustom: true },
-  { typeRef: "tKnowledges", name: "tKnowledges", isCustom: true },
+  { name: "tEmployee", isCustom: true },
+  { name: "tEmployees", isCustom: true },
+  { name: "tDept", isCustom: true },
+  { name: "tKnowledge", isCustom: true },
+  { name: "tKnowledges", isCustom: true },
 ];
 
 export const employeesExpression: RelationExpressionDefinition = {

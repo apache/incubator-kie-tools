@@ -257,7 +257,6 @@ export function ListExpression(
           shouldRenderRowIndexColumn={true}
           shouldShowRowsInlineControls={true}
           shouldShowColumnsInlineControls={false}
-          widthsById={widthsById}
         />
       </div>
     </NestedExpressionContainerContext.Provider>

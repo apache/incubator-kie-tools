@@ -210,7 +210,6 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
           variables={variables}
-          widthsById={widthsById}
         ></BeeTable>
       </div>
     </div>

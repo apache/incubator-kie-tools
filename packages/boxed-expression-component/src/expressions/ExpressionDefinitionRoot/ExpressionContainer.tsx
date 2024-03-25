@@ -46,7 +46,6 @@ export interface ExpressionContainerProps {
   rowIndex: number;
   columnIndex: number;
   parentElementId?: string;
-  widthsById?: Map<string, number[]>;
   expressionName?: string;
 }
 
@@ -57,7 +56,6 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   rowIndex,
   columnIndex,
   parentElementId,
-  widthsById,
   expressionName,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -251,13 +249,13 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   );
 
   const onLogicTypeReset = useCallback(() => {
-    variables?.repository.removeVariable(expression?.["@_id"] ?? "", true);
     if (expression?.["@_id"]) {
-      widthsById?.delete(expression?.["@_id"]);
-      setWidth({ id: expression?.["@_id"], values: [] });
+      variables?.repository.removeVariable(expression["@_id"], true);
+      setWidth({ id: expression["@_id"], values: [] });
     }
-    setExpression(() => undefined!);
-  }, [expression, setExpression, setWidth, variables?.repository, widthsById]);
+
+    setExpression(undefined!); // SPEC DISCREPANCY: Undefined expressions gives users the ability to select the expression type.
+  }, [expression, setExpression, setWidth, variables?.repository]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 
