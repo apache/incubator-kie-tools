@@ -20,7 +20,6 @@
 import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import { DmnMarshaller, DmnMarshallerOpts, DmnMarshallerVersions } from "../src";
 
 const files = [
   "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn",
@@ -66,7 +65,6 @@ function testDirectory(fullPathOfModels: string) {
 
 function testFile(fullPathOfFile: string) {
   test(fullPathOfFile.substring(fullPathOfFile.lastIndexOf("/") + 1), () => {
-    console.log("Testing " + fullPathOfFile);
     const xml_original = fs.readFileSync(fullPathOfFile, "utf-8");
 
     const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
