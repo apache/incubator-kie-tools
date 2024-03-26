@@ -65,7 +65,7 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
 
   return (
     <>
-      <div data-testid={"storybook-backport--dmn-editor-stringfied-model"} style={{ display: "none" }}>
+      <div data-testid={"storybook--dmn-editor-model"} style={{ display: "none" }}>
         {JSON.stringify(model)}
       </div>
       <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>

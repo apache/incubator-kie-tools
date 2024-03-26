@@ -29,6 +29,7 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Page } from "@playwright/test";
+import { STORYBOOK__DMN_EDITOR_MODEL } from "../jsonModel";
 
 type AllDrgElements = NonNullable<DMN15__tDefinitions["drgElement"]>[0];
 
@@ -47,10 +48,10 @@ export enum DataType {
 }
 
 export class DrgElements {
-  constructor(public page: Page, public getModelDrds: () => Promise<DMNDI15__DMNDiagram[] | undefined>) {}
+  constructor(public page: Page) {}
 
   public async getBkm(args: { name: string; drdName: string }) {
-    const drgElement = (await this.findDrgElement({ name: args.name })) as DMN15__tBusinessKnowledgeModel & {
+    const drgElement = (await this.getDrgElement({ name: args.name })) as DMN15__tBusinessKnowledgeModel & {
       __$$element: string;
     };
     if (drgElement === undefined) {
@@ -77,6 +78,7 @@ export class DrgElements {
     } = drgElement;
 
     return {
+      // TODO: Check for relationships and encapsulated logic
       // authorityRequirement: authorityRequirement?.map((e) => ({
       //   requiredDecision: e.requiredDecision?.["@_href"],
       //   requiredInput: e.requiredInput?.["@_href"],
@@ -88,10 +90,7 @@ export class DrgElements {
       // drgElement.encapsulatedLogic
 
       bounds: {
-        x: drgElementBounds.x,
-        y: drgElementBounds.y,
-        width: drgElementBounds.width,
-        height: drgElementBounds.height,
+        ...drgElementBounds,
       },
       description: drgElement.description?.__$$text,
       extensionElements: drgElement.extensionElements?.["kie:attachment"]?.map((e) => ({
@@ -110,7 +109,7 @@ export class DrgElements {
   }
 
   public async getDecision(args: { name: string; drdName: string }) {
-    const drgElement = (await this.findDrgElement({ name: args.name })) as DMN15__tDecision & {
+    const drgElement = (await this.getDrgElement({ name: args.name })) as DMN15__tDecision & {
       __$$element: string;
     };
     if (drgElement === undefined) {
@@ -146,6 +145,7 @@ export class DrgElements {
     } = drgElement;
 
     return {
+      // TODO: Check for relationships and expression
       // expression
       // authorityRequirement: authorityRequirement?.map((e) => ({
       //   requiredDecision: e.requiredDecision?.["@_href"],
@@ -162,10 +162,7 @@ export class DrgElements {
 
       allowedAnswers: allowedAnswers?.__$$text,
       bounds: {
-        x: drgElementBounds.x,
-        y: drgElementBounds.y,
-        width: drgElementBounds.width,
-        height: drgElementBounds.height,
+        ...drgElementBounds,
       },
       decisionMaker: decisionMaker?.map((e) => e["@_href"]),
       decisionOwner: decisionOwner?.map((e) => e["@_href"]),
@@ -192,7 +189,7 @@ export class DrgElements {
   }
 
   public async getDecisionService(args: { name: string; drdName: string }) {
-    const drgElement = (await this.findDrgElement({ name: args.name })) as DMN15__tDecisionService & {
+    const drgElement = (await this.getDrgElement({ name: args.name })) as DMN15__tDecisionService & {
       __$$element: string;
     };
     if (drgElement === undefined) {
@@ -221,10 +218,7 @@ export class DrgElements {
 
     return {
       bounds: {
-        x: drgElementBounds.x,
-        y: drgElementBounds.y,
-        width: drgElementBounds.width,
-        height: drgElementBounds.height,
+        ...drgElementBounds,
       },
       description: description?.__$$text,
       encapsulatedDecision: encapsulatedDecision?.map((e) => e["@_href"]),
@@ -244,7 +238,7 @@ export class DrgElements {
   }
 
   public async getInputData(args: { name: string; drdName: string }) {
-    const drgElement = (await this.findDrgElement({ name: args.name })) as DMN15__tInputData & {
+    const drgElement = (await this.getDrgElement({ name: args.name })) as DMN15__tInputData & {
       __$$element: string;
     };
     if (drgElement === undefined) {
@@ -269,10 +263,7 @@ export class DrgElements {
 
     return {
       bounds: {
-        x: drgElementBounds.x,
-        y: drgElementBounds.y,
-        width: drgElementBounds.width,
-        height: drgElementBounds.height,
+        ...drgElementBounds,
       },
       description: description?.__$$text,
       extensionElements: extensionElements?.["kie:attachment"]?.map((e) => ({
@@ -291,7 +282,7 @@ export class DrgElements {
   }
 
   public async getKnowledgeSource(args: { name: string; drdName: string }) {
-    const drgElement = (await this.findDrgElement({ name: args.name })) as DMN15__tKnowledgeSource & {
+    const drgElement = (await this.getDrgElement({ name: args.name })) as DMN15__tKnowledgeSource & {
       __$$element: string;
     };
     if (drgElement === undefined) {
@@ -317,6 +308,7 @@ export class DrgElements {
     } = drgElement;
 
     return {
+      // TODO: Check for relationship
       // authorityRequirement: authorityRequirement?.map((e) => ({
       //   requiredDecision: e.requiredDecision?.["@_href"],
       //   requiredInput: e.requiredInput?.["@_href"],
@@ -324,10 +316,7 @@ export class DrgElements {
       // })),
 
       bounds: {
-        x: drgElementBounds.x,
-        y: drgElementBounds.y,
-        width: drgElementBounds.width,
-        height: drgElementBounds.height,
+        ...drgElementBounds,
       },
       description: description?.__$$text,
       extensionElements: extensionElements?.["kie:attachment"]?.map((e) => ({
@@ -350,12 +339,11 @@ export class DrgElements {
   }
 
   private async getDrgElementBoundsOnDrd(args: { drgElementId: string; drdName: string }) {
+    const drd = await this.getDrd({ name: args.drdName });
     const bounds = (
-      await this.findDrgShapeOnDrd({
-        drgElementId: args.drgElementId,
-        drdName: args.drdName,
-      })
-    )["dc:Bounds"];
+      drd?.["dmndi:DMNDiagramElement"]?.find((e) => e["@_dmnElementRef"] === args.drgElementId) as DMNDI15__DMNShape
+    )?.["dc:Bounds"];
+
     return {
       x: bounds?.["@_x"] ?? 0,
       y: bounds?.["@_y"] ?? 0,
@@ -364,12 +352,11 @@ export class DrgElements {
     };
   }
 
-  private async waitForModelToBeUpdated(args: { name: string }) {
+  // FIXME: Luiz - Two nodes with the same name will not trigger this function!
+  private async waitForModelToHaveDrgElement(args: { name: string }) {
     return this.page.waitForFunction((drgElementName) => {
-      const model = document.querySelector(
-        "div[data-testid='storybook-backport--dmn-editor-stringfied-model']"
-      )?.textContent;
-      if (model) {
+      const model = document.querySelector("div[data-testid='storybook--dmn-editor-model']")?.textContent;
+      if (model !== null && model !== undefined) {
         return (JSON.parse(model) as DmnLatestModel).definitions.drgElement?.find(
           (e) => e["@_name"] === drgElementName
         );
@@ -378,14 +365,23 @@ export class DrgElements {
     }, args.name);
   }
 
-  private async findDrgElement(args: { name: string }): Promise<AllDrgElements | undefined> {
-    return (await this.waitForModelToBeUpdated({ name: args.name })).jsonValue();
+  private async getDrgElement(args: { name: string }): Promise<AllDrgElements | undefined> {
+    return (await this.waitForModelToHaveDrgElement({ name: args.name })).jsonValue();
   }
 
-  private async findDrgShapeOnDrd(args: { drgElementId: string; drdName: string }) {
-    const drd = (await this.getModelDrds())?.find((e) => e["@_name"] === args.drdName);
-    return drd?.["dmndi:DMNDiagramElement"]?.find(
-      (e) => e["@_dmnElementRef"] === args.drgElementId
-    ) as DMNDI15__DMNShape;
+  private async waitForModelToHaveDrd(args: { name: string }) {
+    return this.page.waitForFunction((drgElementName) => {
+      const model = document.querySelector("div[data-testid='storybook--dmn-editor-model']")?.textContent;
+      if (model !== null && model !== undefined) {
+        return (JSON.parse(model) as DmnLatestModel)?.definitions?.["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.find(
+          (e) => e["@_name"] === drgElementName
+        );
+      }
+      return;
+    }, args.name);
+  }
+
+  private async getDrd(args: { name: string }): Promise<DMNDI15__DMNDiagram | undefined> {
+    return (await this.waitForModelToHaveDrd({ name: args.name })).jsonValue();
   }
 }

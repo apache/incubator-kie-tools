@@ -35,22 +35,12 @@ export enum DataType {
   YearsMonthsDuration = "years and months duration",
 }
 
+export const STORYBOOK__DMN_EDITOR_MODEL = "div[data-testid='storybook--dmn-editor-model']";
+
 export class JsonModel {
   public drgElements: DrgElements;
 
   constructor(public page: Page, public baseURL?: string) {
-    this.drgElements = new DrgElements(page, this.getModelDrds);
-  }
-
-  public async getModelDrds() {
-    const modelContent = await this.page.getByTestId("storybook-backport--dmn-editor-stringfied-model").textContent();
-    if (modelContent !== null) {
-      try {
-        return (JSON.parse(modelContent) as DmnLatestModel)?.definitions?.["dmndi:DMNDI"]?.["dmndi:DMNDiagram"];
-      } catch (error) {
-        return;
-      }
-    }
-    return;
+    this.drgElements = new DrgElements(page);
   }
 }
