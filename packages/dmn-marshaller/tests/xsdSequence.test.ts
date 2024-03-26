@@ -20,6 +20,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
+const prettierPlugin = require("@prettier/plugin-xml");
 
 const filesForAddition = [
   { path: "../tests-data--manual/other/decisionAndInput.dmn" },
@@ -31,7 +32,7 @@ const filesForNormalization = [
   { path: "../tests-data--manual/other/decisionAndInput.dmn" },
 ];
 
-describe("build always add elements in the same order", () => {
+describe("build always produces elements in the same order", () => {
   test("Addition", () => {
     const fileSource = filesForAddition[0];
     const fileExpected = filesForAddition[1];
@@ -56,13 +57,10 @@ describe("build always add elements in the same order", () => {
       },
     ];
 
-    const xmlRetrieved = marshaller.builder.build(json).replace(/\s/g, "");
-    const xmlExpected = fs.readFileSync(path.join(__dirname, fileExpected.path), "utf-8").replace(/\s/g, "");
+    const xmlRetrieved = formatXmlForTest(marshaller.builder.build(json));
+    const xmlExpected = formatXmlForTest(fs.readFileSync(path.join(__dirname, fileExpected.path), "utf-8"));
     expect(xmlRetrieved).toEqual(xmlExpected);
   });
-});
-
-describe("build always produces elements in the same order", () => {
   test("Normalization", () => {
     const fileSource = filesForNormalization[0];
     const fileExpected = filesForNormalization[1];
@@ -70,8 +68,18 @@ describe("build always produces elements in the same order", () => {
     const marshaller = getMarshaller(xmlSource, { upgradeTo: "1.5" });
     const json = marshaller.parser.parse();
 
-    const xmlRetrieved = marshaller.builder.build(json).replace(/\s/g, "");
-    const xmlExpected = fs.readFileSync(path.join(__dirname, fileExpected.path), "utf-8").replace(/\s/g, "");
+    const xmlRetrieved = formatXmlForTest(marshaller.builder.build(json));
+    const xmlExpected = formatXmlForTest(fs.readFileSync(path.join(__dirname, fileExpected.path), "utf-8"));
     expect(xmlRetrieved).toStrictEqual(xmlExpected);
   });
 });
+
+function formatXmlForTest(toFormat: string): string {
+  // working, but with unwanted replacement
+  return toFormat.replace(/\s/g, "");
+  // does not work, because it does not remove trailing whitespaces
+  // return prettier.format(toFormat, {
+  //     parser: "xml",
+  //     useTabs: true,
+  //     plugins: [prettierPlugin]});
+}

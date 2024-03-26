@@ -42,9 +42,6 @@ describe("idempotency", () => {
   for (const file of files) {
     testFile(path.join(__dirname, file));
   }
-});
-
-describe("idempotency_all", () => {
   for (const models_paths of testing_models_paths) {
     const parent_path = path.join(__dirname, models_paths);
     testDirectory(parent_path);

@@ -20,10 +20,6 @@
     "build:dev:linux:darwin": "mvn clean generate-resources",
     "build:dev:win32": "pnpm powershell \"mvn clean generate-resources\"",
     "build:prod": "pnpm build:dev",
-    "copy:app": "run-script-os",
-    "copy:app:linux:darwin": "copyfiles -u 1 \"target/generated-resources/valid_models/**/*.dmn\" dist/",
-    "copy:app:win32": "copyfiles -u 1 \"target/generated-resources/valid_models/**/*.dmn\" dist/",
-    "dist": "rimraf dist && mkdir dist && pnpm copy:app",
     "install": "node install.js",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },

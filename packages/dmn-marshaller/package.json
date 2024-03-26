@@ -44,6 +44,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@kie-tools/xml-parser-ts-codegen": "workspace:*",
+    "@prettier/plugin-xml": "^2",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
     "@types/react": "^17.0.6",

@@ -3759,6 +3759,9 @@ importers:
       "@kie-tools/xml-parser-ts-codegen":
         specifier: workspace:*
         version: link:../xml-parser-ts-codegen
+      "@prettier/plugin-xml":
+        specifier: ^2
+        version: 2.2.0
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
