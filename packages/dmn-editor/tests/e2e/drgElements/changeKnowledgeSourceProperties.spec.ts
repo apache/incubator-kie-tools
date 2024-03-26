@@ -31,62 +31,62 @@ test.describe("Change Properties - Knoledge Source", () => {
     await propertiesPanel.open();
   });
 
-  test("should change the Knoledge Source node name", async ({ nodes, propertiesPanel }) => {
-    await propertiesPanel.changeNodeName({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: "Renamed Knoledge Source" });
+  test("should change the Knoledge Source node name", async ({ nodes, generalProperties }) => {
+    await generalProperties.changeNodeName({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: "Renamed Knoledge Source" });
 
     await expect(nodes.get({ name: "Renamed Knoledge Source" })).toBeVisible();
   });
 
-  test("should change the Knoledge Source node description", async ({ propertiesPanel }) => {
-    await propertiesPanel.changeNodeDescription({
+  test("should change the Knoledge Source node description", async ({ generalProperties }) => {
+    await generalProperties.changeNodeDescription({
       nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       newDescription: "New Knoledge Source Description",
     });
 
-    expect(await propertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
+    expect(await generalProperties.getNodeDescription({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
       "New Knoledge Source Description"
     );
   });
 
-  test("should change the Knoledge Source node Source Type", async ({ propertiesPanel }) => {
-    await propertiesPanel.changeNodeSourceType({
+  test("should change the Knoledge Source node Source Type", async ({ knowledgeSourceProperties }) => {
+    await knowledgeSourceProperties.changeNodeSourceType({
       nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       newSourceType: "New Knoledge Source Source Type",
     });
 
-    expect(await propertiesPanel.getNodeSourceType({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
+    expect(await knowledgeSourceProperties.getNodeSourceType({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
       "New Knoledge Source Source Type"
     );
   });
 
-  test("should change the Knoledge Source node Location URI", async ({ propertiesPanel }) => {
-    await propertiesPanel.changeNodeLocationURI({
+  test("should change the Knoledge Source node Location URI", async ({ knowledgeSourceProperties }) => {
+    await knowledgeSourceProperties.changeNodeLocationURI({
       nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       newLocationURI: "New Location URI",
     });
 
-    expect(await propertiesPanel.getNodeLocationURI({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
+    expect(await knowledgeSourceProperties.getNodeLocationURI({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
       "New Location URI"
     );
   });
 
-  test("should change the Knoledge Source node documentation links", async ({ propertiesPanel }) => {
-    await propertiesPanel.addDocumentationLink({
+  test("should change the Knoledge Source node documentation links", async ({ generalProperties }) => {
+    await generalProperties.addDocumentationLink({
       nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await propertiesPanel.getDocumentationLinks({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE });
+    const links = await generalProperties.getDocumentationLinks({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE });
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveText("Link Text");
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Knoledge Source node font - family", async ({ propertiesPanel }) => {
-    await propertiesPanel.changeNodeFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, newFont: "Verdana" });
+  test("should change the Knoledge Source node font - family", async ({ generalProperties }) => {
+    await generalProperties.changeNodeFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, newFont: "Verdana" });
 
-    expect(await propertiesPanel.getNodeFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe("Verdana");
+    expect(await generalProperties.getNodeFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe("Verdana");
   });
 
   test.skip("should change the Knoledge Source node shape - background color", async ({ nodes, propertiesPanel }) => {
