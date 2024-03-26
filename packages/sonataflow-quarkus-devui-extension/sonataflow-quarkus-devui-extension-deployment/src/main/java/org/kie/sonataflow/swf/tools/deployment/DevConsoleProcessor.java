@@ -19,9 +19,15 @@
 package org.kie.sonataflow.swf.tools.deployment;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
+
+import io.quarkus.deployment.Capabilities;
+import io.quarkus.devui.spi.JsonRPCProvidersBuildItem;
+import org.kie.sonataflow.swf.tools.runtime.config.DevUIStaticArtifactsRecorder;
 
 import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -32,6 +38,7 @@ import io.quarkus.deployment.builditem.ConfigurationBuildItem;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
 import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.ShutdownContextBuildItem;
+import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
 import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
 import io.quarkus.deployment.util.WebJarUtil;
 import io.quarkus.devui.spi.page.CardPageBuildItem;
@@ -39,47 +46,17 @@ import io.quarkus.devui.spi.page.Page;
 import io.quarkus.maven.dependency.ResolvedDependency;
 import io.quarkus.vertx.http.deployment.NonApplicationRootPathBuildItem;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
-import io.quarkus.vertx.http.runtime.devmode.DevConsoleRecorder;
 import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConfig;
+import org.kie.sonataflow.swf.tools.runtime.rpc.SonataFlowQuarkusExtensionJsonRPCService;
 
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "/q/dev-v1/org.apache.kie.sonataflow.sonataflow-quarkus-devui-extension";
-
-    @BuildStep(onlyIf = IsDevelopment.class)
-    public CardPageBuildItem pages(NonApplicationRootPathBuildItem nonApplicationRootPathBuildItem,
-            ManagementInterfaceBuildTimeConfig managementInterfaceBuildTimeConfig,
-            LaunchModeBuildItem launchModeBuildItem,
-            ConfigurationBuildItem configurationBuildItem) throws UnsupportedEncodingException {
-
-        String uiPath = nonApplicationRootPathBuildItem.resolveManagementPath(BASE_RELATIVE_URL,
-                managementInterfaceBuildTimeConfig, launchModeBuildItem, true);
-
-        String devUIUrl = getProperty(configurationBuildItem, "kogito.dev-ui.url");
-        String devUIUrlQueryParam = devUIUrl != null ? "&devUIUrl=" + URLEncoder.encode(devUIUrl, "UTF-8") : "";
-
-        String dataIndexUrl = getProperty(configurationBuildItem, "kogito.data-index.url");
-        String dataIndexUrlQueryParam = dataIndexUrl != null ? "&dataIndexUrl=" + URLEncoder.encode(dataIndexUrl, "UTF-8") : "";
-
-        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
-
-        cardPageBuildItem.addPage(Page.externalPageBuilder("Workflows")
-                .url(uiPath + "/index.html?page=Workflows" + devUIUrlQueryParam + dataIndexUrlQueryParam, uiPath)
-                .isHtmlContent()
-                .icon("font-awesome-solid:diagram-project"));
-
-        cardPageBuildItem.addPage(Page.externalPageBuilder("Monitoring")
-                .url(uiPath + "/index.html?page=Monitoring" + devUIUrlQueryParam + dataIndexUrlQueryParam, uiPath)
-                .isHtmlContent()
-                .icon("font-awesome-solid:gauge-high"));
-
-        return cardPageBuildItem;
-    }
+    private static final String BASE_RELATIVE_URL = "/q/dev-ui/org.apache.kie.sonataflow.sonataflow-quarkus-devui-extension";
 
     @BuildStep(onlyIf = IsDevelopment.class)
     @Record(ExecutionTime.RUNTIME_INIT)
-    public void deployStaticResources(final DevConsoleRecorder recorder,
+    public void deployStaticResources(final DevUIStaticArtifactsRecorder devUIStaticArtifactsRecorder,
             final CurateOutcomeBuildItem curateOutcomeBuildItem,
             final LiveReloadBuildItem liveReloadBuildItem,
             final LaunchModeBuildItem launchMode,
@@ -99,12 +76,57 @@ public class DevConsoleProcessor {
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
                 .route(BASE_RELATIVE_URL + "/*")
-                .handler(recorder.devConsoleHandler(devConsoleStaticResourcesDeploymentPath.toString(),
+                .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());
     }
 
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public JsonRPCProvidersBuildItem createJsonRPCServiceForJBPMDevUi() {
+        return new JsonRPCProvidersBuildItem(SonataFlowQuarkusExtensionJsonRPCService.class);
+    }
+
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public CardPageBuildItem pages(
+            final NonApplicationRootPathBuildItem nonApplicationRootPathBuildItem,
+            final ManagementInterfaceBuildTimeConfig managementInterfaceBuildTimeConfig,
+            final LaunchModeBuildItem launchModeBuildItem,
+            final ConfigurationBuildItem configurationBuildItem,
+            final List<SystemPropertyBuildItem> systemPropertyBuildItems,
+            final Capabilities capabilities) {
+
+        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+
+        String uiPath = nonApplicationRootPathBuildItem.resolveManagementPath(BASE_RELATIVE_URL,
+                                                                              managementInterfaceBuildTimeConfig, launchModeBuildItem, true);
+
+        String openapiPath = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.smallrye-openapi.path");
+        String devUIUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dev-ui.url");
+        String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
+
+        cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
+        cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
+        cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);
+        cardPageBuildItem.addBuildTimeData("dataIndexUrl", dataIndexUrl);
+
+        cardPageBuildItem.addPage(Page.webComponentPageBuilder()
+                                          .componentLink("qwc-sonataflow-quarkus-devui.js")
+                                          .metadata("page", "Workflows")
+                                          .title("Workflows")
+                                          .icon("font-awesome-solid:diagram-project")
+                                          .dynamicLabelJsonRPCMethodName("queryWorkflowsCount"));
+
+        cardPageBuildItem.addPage(Page.webComponentPageBuilder()
+                                          .componentLink("qwc-sonataflow-quarkus-devui.js")
+                                          .metadata("page", "Monitoring")
+                                          .title("Monitoring")
+                                          .icon("font-awesome-solid:chart-mixed"));
+
+        return cardPageBuildItem;
+    }
+
     private static String getProperty(ConfigurationBuildItem configurationBuildItem,
+            List<SystemPropertyBuildItem> systemPropertyBuildItems,
             String propertyKey) {
 
         String propertyValue = configurationBuildItem
@@ -128,6 +150,12 @@ public class DevConsoleProcessor {
                     .get(propertyKey);
         }
 
-        return propertyValue;
+        if (propertyValue != null) {
+            return propertyValue;
+        }
+
+        return systemPropertyBuildItems.stream().filter(property -> property.getKey().equals(propertyKey))
+                .findAny()
+                .map(SystemPropertyBuildItem::getValue).orElse(null);
     }
 }
