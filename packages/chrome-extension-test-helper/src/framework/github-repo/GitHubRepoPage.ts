@@ -23,6 +23,7 @@ import Page from "../Page";
 export default class GitHubRepoPage extends Page {
   private static readonly TOKEN_ICON: By = By.className("kogito-menu-icon");
   private static readonly TOKEN_INPUT: By = By.className("kogito-github-token-input");
+  private static readonly RESET_BUTTON: By = By.xpath("//button[text()='Reset']");
 
   public async waitUntilLoaded(): Promise<void> {
     return await this.tools.by(GitHubRepoPage.TOKEN_ICON).wait(1000).untilPresent();
@@ -31,7 +32,10 @@ export default class GitHubRepoPage extends Page {
   public async addToken(token: string): Promise<void> {
     const tokenIcon = await this.tools.by(GitHubRepoPage.TOKEN_ICON).getElement();
     await tokenIcon.click();
+    await this.tools.by(GitHubRepoPage.RESET_BUTTON).wait(1000).untilPresent();
     await this.tools.by(GitHubRepoPage.TOKEN_INPUT).wait(1000).untilPresent();
+    const resetButton = await this.tools.by(GitHubRepoPage.RESET_BUTTON).getElement();
+    await resetButton.click();
     const tokenInput = await this.tools.by(GitHubRepoPage.TOKEN_INPUT).getElement();
     await tokenInput.click();
     await this.tools.clipboard().setContent(token);

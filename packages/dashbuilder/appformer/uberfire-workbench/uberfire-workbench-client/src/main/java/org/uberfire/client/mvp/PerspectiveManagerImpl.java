@@ -22,6 +22,7 @@ package org.uberfire.client.mvp;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -40,7 +41,6 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 @ApplicationScoped
@@ -66,6 +66,10 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     private PerspectiveDefinition livePerspectiveDef;
 
     private PlaceRequest currentPerspectivePlaceRequest;
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
+    }
 
     @Override
     public void switchToPerspective(final PlaceRequest placeRequest,

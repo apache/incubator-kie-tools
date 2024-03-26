@@ -21,6 +21,7 @@ package quarkus
 
 import (
 	"fmt"
+
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/beevik/etree"
@@ -45,7 +46,6 @@ func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 		fmt.Sprintf("%s:%s:%s:create", cfg.DependenciesVersion.QuarkusPlatformGroupId, metadata.QuarkusMavenPlugin, cfg.DependenciesVersion.QuarkusVersion),
 		"-DprojectGroupId=org.acme",
 		"-DnoCode",
-		fmt.Sprintf("-DplatformVersion=%s", cfg.DependenciesVersion.QuarkusVersion),
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extensions))
 
@@ -56,15 +56,19 @@ func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 		return err
 	}
 
-	//Until we are part of Quarkus 3.x bom we need to manipulate the pom.xml to use the right version of kogito-bom
+	//Until we are part of Quarkus 3.x bom we need to manipulate the pom.xml to use the right kogito dependencies
 	pomPath := cfg.ProjectName + "/pom.xml"
-	if err := manipulatePomToKogito(pomPath); err != nil {
+	if err := manipulatePomToKogito(pomPath, cfg); err != nil {
 		return err
 	}
 	return nil
 }
 
-func manipulatePomToKogito(filename string) error {
+func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) error {
+
+	if cfg.DependenciesVersion.QuarkusPlatformGroupId == "" || cfg.DependenciesVersion.QuarkusVersion == "" {
+		return fmt.Errorf("configuration for Quarkus versions is not complete")
+	}
 
 	doc := etree.NewDocument()
 	err := doc.ReadFromFile(filename)
@@ -72,38 +76,57 @@ func manipulatePomToKogito(filename string) error {
 		return fmt.Errorf("error reading %s: %w", filename, err)
 	}
 
-	// Remove the <dependency> block with quarkus-kogito-bom
-	dependencyToReplace := doc.FindElement("//dependency[groupId='${quarkus.platform.group-id}'][artifactId='quarkus-kogito-bom']")
-	if dependencyToReplace == nil {
+	// Update quarkus.platform.group-id
+	properties := doc.FindElement("//properties")
+	if properties == nil {
 		return fmt.Errorf("error parsing %s: %w", filename, err)
 	}
-	dependencyToReplace.Parent().RemoveChild(dependencyToReplace)
+	groupIDElement := properties.FindElement("quarkus.platform.group-id")
+	if groupIDElement == nil {
+		return fmt.Errorf("error parsing %s: %w", filename, err)
+	}
+	groupIDElement.SetText(cfg.DependenciesVersion.QuarkusPlatformGroupId)
 
-	// Create the new <dependency> block with kogito-bom and add it to the <dependencyManagement> block
-	// replacing quarkus-kogito-bom on specific version
-	newDependency := doc.CreateElement("dependency")
-	newDependency.CreateElement("groupId").SetText("org.kie.kogito")
-	newDependency.CreateElement("artifactId").SetText("kogito-bom")
-	newDependency.CreateElement("version").SetText(metadata.KogitoVersion)
-	newDependency.CreateElement("type").SetText("pom")
-	newDependency.CreateElement("scope").SetText("import")
+	// Update quarkus.platform.version
+	versionElement := properties.FindElement("quarkus.platform.version")
+	if versionElement == nil {
+		return fmt.Errorf("error parsing %s: %w", filename, err)
+	}
+	versionElement.SetText(cfg.DependenciesVersion.QuarkusVersion)
 
-	dependencyManagement := doc.FindElement("//dependencyManagement")
-	if dependencyManagement != nil {
-		dependencies := dependencyManagement.FindElement("dependencies")
-		if dependencies != nil {
-			dependencies.AddChild(newDependency)
-		} else {
-			dependencies = dependencyManagement.CreateElement("dependencies")
-			dependencies.AddChild(newDependency)
-		}
+	//Add kogito bom dependency
+	depManagement := doc.FindElement("//dependencyManagement")
+	if depManagement == nil {
+		return fmt.Errorf("error parsing %s: %w", filename, err)
+	}
+
+	dependenciesManagendChild := depManagement.FindElement("dependencies")
+	if dependenciesManagendChild == nil {
+		return fmt.Errorf("error parsing %s: %w", filename, err)
+	}
+
+	dependencyElement := dependenciesManagendChild.CreateElement("dependency")
+	dependencyElement.CreateElement("groupId").SetText(metadata.KogitoBomDependency.GroupId)
+	dependencyElement.CreateElement("artifactId").SetText(metadata.KogitoBomDependency.ArtifactId)
+	dependencyElement.CreateElement("version").SetText(metadata.KogitoBomDependency.Version)
+	dependencyElement.CreateElement("type").SetText(metadata.KogitoBomDependency.Type)
+	dependencyElement.CreateElement("scope").SetText(metadata.KogitoBomDependency.Scope)
+
+	// Update kogito pom dependencies
+	dependencies := doc.FindElement("//dependencies")
+	if dependencies == nil {
+		return fmt.Errorf("error parsing %s: %w", filename, err)
+	}
+
+	for _, dep := range metadata.KogitoDependencies {
+		dependencyElement := dependencies.CreateElement("dependency")
+		dependencyElement.CreateElement("groupId").SetText(dep.GroupId)
+		dependencyElement.CreateElement("artifactId").SetText(dep.ArtifactId)
 	}
 
 	doc.Indent(4)
 
-	err = doc.WriteToFile(filename)
-	if err != nil {
-		fmt.Println("Error writing modified XML:", err)
+	if err := doc.WriteToFile(filename); err != nil {
 		return fmt.Errorf("error writing modified content to %s: %w", filename, err)
 	}
 

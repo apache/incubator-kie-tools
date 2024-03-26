@@ -86,7 +86,7 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
         name: "Command",
         description: "The command to be executed when the container starts",
         defaultValue:
-          "mvn quarkus:dev -Dquarkus.http.non-application-root-path=/${{ devDeployment.uniqueName }}/q -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}",
+          "./mvnw quarkus:dev -Dquarkus.http.non-application-root-path=/${{ devDeployment.uniqueName }}/q -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}",
         type: "text",
         resourcePatches: [
           {

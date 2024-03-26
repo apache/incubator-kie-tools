@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import jsinterop.annotations.JsIgnore;
@@ -37,7 +38,6 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 
 /**
@@ -240,6 +240,10 @@ public class PanelDefinitionImpl implements PanelDefinition {
     public void setPanelType(String fqcn) {
         this.panelType = checkNotNull("fqcn",
                                       fqcn);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Override

@@ -120,14 +120,22 @@ export function useFileValidation(
 
             const decodedFileContent = decoder.decode(fileContent);
             const dmnSpecVersion = dmnLanguageService?.getSpecVersion(decodedFileContent);
-            if (!dmnSpecVersion || (dmnSpecVersion !== "1.0" && dmnSpecVersion !== "1.1" && dmnSpecVersion !== "1.2")) {
+            if (
+              !dmnSpecVersion ||
+              (dmnSpecVersion !== "1.0" &&
+                dmnSpecVersion !== "1.1" &&
+                dmnSpecVersion !== "1.2" &&
+                dmnSpecVersion !== "1.3" &&
+                dmnSpecVersion !== "1.4" &&
+                dmnSpecVersion !== "1.5")
+            ) {
               setNotifications(i18n.terms.validation, "", [
                 {
                   type: "ALERT",
                   normalizedPosixPathRelativeToTheWorkspaceRoot: "",
                   severity: "WARNING",
                   message:
-                    "Validation checks are temporarily supported only on DMN 1.2 or below. For full access to this feature, use the Legacy DMN Editor.",
+                    "Validation doesn't support this DMN version" + dmnSpecVersion ? "(" + dmnSpecVersion + ")" : "",
                 },
               ]);
               return;
