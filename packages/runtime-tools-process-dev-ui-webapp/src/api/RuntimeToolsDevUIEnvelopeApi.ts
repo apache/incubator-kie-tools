@@ -36,6 +36,7 @@ export interface User {
 export interface RuntimeToolsDevUIInitArgs {
   users?: User[];
   dataIndexUrl: string;
+  remoteKogitoAppUrl?: string;
   page: string;
   devUIUrl: string;
   openApiPath: string;

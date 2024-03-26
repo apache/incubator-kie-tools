@@ -530,9 +530,9 @@ export const createProcessDefinitionList = (processDefinitionObjs: any, url: str
   return processDefinitionList;
 };
 
-export const getProcessDefinitionList = (devUIUrl: string, openApiPath: string): Promise<ProcessDefinition[]> => {
+export const getProcessDefinitionList = (kogitoAppUrl: string, openApiPath: string): Promise<ProcessDefinition[]> => {
   return new Promise((resolve, reject) => {
-    SwaggerParser.parse(`${devUIUrl}/${openApiPath}`)
+    SwaggerParser.parse(`${kogitoAppUrl}/${openApiPath.replace(/^\//, "")}`)
       .then((response) => {
         const processDefinitionObjs: any = [];
         const paths = response.paths;
@@ -547,7 +547,7 @@ export const getProcessDefinitionList = (devUIUrl: string, openApiPath: string):
               processDefinitionObjs.push({ [url]: paths[url] });
             }
           });
-        resolve(createProcessDefinitionList(processDefinitionObjs, devUIUrl));
+        resolve(createProcessDefinitionList(processDefinitionObjs, kogitoAppUrl));
       })
       .catch((err) => reject(err));
   });

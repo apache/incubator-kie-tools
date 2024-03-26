@@ -36,6 +36,7 @@ interface IOwnProps {
   navigate: string;
   devUIUrl: string;
   openApiPath: string;
+  remoteKogitoAppUrl: string;
   availablePages: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
@@ -48,6 +49,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   navigate,
   devUIUrl,
   openApiPath,
+  remoteKogitoAppUrl,
   isProcessEnabled,
   availablePages,
   customLabels,
@@ -69,6 +71,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
           users={users}
           devUIUrl={devUIUrl}
           openApiPath={openApiPath}
+          remoteKogitoAppUrl={remoteKogitoAppUrl}
           isProcessEnabled={isProcessEnabled}
           availablePages={availablePages}
           customLabels={customLabels}
@@ -94,6 +97,7 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       users={users}
       devUIUrl={devUIUrl}
       openApiPath={openApiPath}
+      remoteKogitoAppUrl={remoteKogitoAppUrl}
       isProcessEnabled={isProcessEnabled}
       availablePages={availablePages}
       customLabels={customLabels}

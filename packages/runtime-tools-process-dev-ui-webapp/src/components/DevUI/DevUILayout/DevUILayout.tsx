@@ -44,6 +44,7 @@ interface IOwnProps {
   children: React.ReactElement;
   devUIUrl: string;
   openApiPath: string;
+  remoteKogitoAppUrl: string;
   availablePages?: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents?: string[];
@@ -56,6 +57,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
   users,
   devUIUrl,
   openApiPath,
+  remoteKogitoAppUrl,
   availablePages,
   customLabels,
   omittedProcessTimelineEvents,
@@ -76,6 +78,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
         users={users}
         devUIUrl={devUIUrl}
         openApiPath={openApiPath}
+        remoteKogitoAppUrl={remoteKogitoAppUrl}
         isProcessEnabled={isProcessEnabled}
         availablePages={availablePages}
         customLabels={customLabels}

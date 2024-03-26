@@ -25,6 +25,15 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "http://localhost:4000/graphql",
       description: "URL for the Data Index service",
     },
+    RUNTIME_TOOLS_PROCESS_DEV_UI_WEBAPP__kogitoAppUrl: {
+      default: null,
+      description:
+        "URL to a remote Kogito Application. If set, the devUI will use the url to fetch OpenApi doc instead of using the mock value from the server.js.",
+    },
+    RUNTIME_TOOLS_PROCESS_DEV_UI_WEBAPP__openApiDocPath: {
+      default: "/q/openapi.json",
+      description: "Relative path to the OpenApi document to load the Process Definitions.",
+    },
     RUNTIME_TOOLS_PROCESS_DEV_UI_WEBAPP__host: {
       default: "localhost",
       description: "Webpack server hostname",
@@ -38,6 +47,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       runtimeToolsProcessDevUIWebapp: {
         kogitoDataIndexUrl: getOrDefault(this.vars.RUNTIME_TOOLS_PROCESS_DEV_UI_WEBAPP__kogitoDataIndexUrl),
+        kogitoAppUrl: getOrDefault(this.vars.RUNTIME_TOOLS_PROCESS_DEV_UI_WEBAPP__kogitoAppUrl),
+        openApiPath: getOrDefault(this.vars.RUNTIME_TOOLS_PROCESS_DEV_UI_WEBAPP__openApiDocPath),
         host: getOrDefault(this.vars.RUNTIME_TOOLS_PROCESS_DEV_UI_WEBAPP__host),
         port: getOrDefault(this.vars.RUNTIME_TOOLS_PROCESS_DEV_UI_WEBAPP__port),
       },

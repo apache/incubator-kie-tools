@@ -22,6 +22,7 @@ import { CustomLabels } from "../api/CustomLabels";
 
 export interface RuntimeToolsDevUIEnvelopeViewApi {
   setDataIndexUrl: (dataIndexUrl: string) => void;
+  setRemoteKogitoAppUrl: (remoteKogitoAppUrl: string) => void;
   setUsers: (users: User[]) => void;
   navigateTo: (page: string) => void;
   setDevUIUrl: (url: string) => void;

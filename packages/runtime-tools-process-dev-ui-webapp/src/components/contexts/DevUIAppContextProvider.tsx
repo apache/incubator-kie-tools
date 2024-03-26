@@ -26,6 +26,7 @@ interface IOwnProps {
   users: User[];
   devUIUrl: string;
   openApiPath: string;
+  remoteKogitoAppUrl: string;
   isProcessEnabled: boolean;
   availablePages: string[];
   customLabels: CustomLabels;
@@ -37,6 +38,7 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
   users,
   devUIUrl,
   openApiPath,
+  remoteKogitoAppUrl,
   isProcessEnabled,
   availablePages,
   customLabels,
@@ -51,6 +53,7 @@ const DevUIAppContextProvider: React.FC<IOwnProps> = ({
           users,
           devUIUrl,
           openApiPath,
+          remoteKogitoAppUrl,
           isProcessEnabled,
           availablePages,
           customLabels,

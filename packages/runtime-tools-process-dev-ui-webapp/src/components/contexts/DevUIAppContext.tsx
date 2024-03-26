@@ -29,6 +29,7 @@ export interface DevUIAppContext {
   onUserChange(listener: UserChangeListener): UnSubscribeHandler;
   getDevUIUrl(): string;
   getOpenApiPath(): string;
+  getRemoteKogitoAppUrl(): string;
   availablePages?: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
@@ -47,6 +48,7 @@ export type DevUIAppContextArgs = {
   users?: User[];
   devUIUrl: string;
   openApiPath: string;
+  remoteKogitoAppUrl: string;
   isProcessEnabled: boolean;
   availablePages?: string[];
   customLabels?: CustomLabels;
@@ -70,6 +72,10 @@ export class DevUIAppContextImpl implements DevUIAppContext {
 
   getOpenApiPath(): string {
     return this.args.openApiPath;
+  }
+
+  getRemoteKogitoAppUrl(): string {
+    return this.args.remoteKogitoAppUrl;
   }
 
   getCurrentUser(): User {

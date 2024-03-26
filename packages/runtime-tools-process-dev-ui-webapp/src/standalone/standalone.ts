@@ -18,7 +18,7 @@
  */
 import devUIEnvelopeIndex from "!!raw-loader!../../resources/iframe.html";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi, User } from "../api";
+import { RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi, RuntimeToolsDevUIInitArgs, User } from "../api";
 import { RuntimeToolsDevUIChannelApiImpl } from "../standalone/RuntimeToolsDevUIChannelApiImpl";
 import { CustomLabels } from "../api/CustomLabels";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
@@ -34,7 +34,8 @@ export interface Consoles {
     dataIndexUrl?: string;
     page: string;
     devUIUrl: string;
-    openApiPath: string;
+    remoteKogitoAppUrl?: string;
+    openApiPath?: string;
     origin?: string;
     availablePages?: string[];
     customLabels?: CustomLabels;
@@ -51,6 +52,7 @@ const createEnvelopeServer = (
   page: string,
   devUIUrl: string,
   openApiPath: string,
+  remoteKogitoAppUrl: string,
   customLabels: CustomLabels,
   diagramPreviewSize?: DiagramPreviewSize,
   origin?: string,
@@ -58,6 +60,7 @@ const createEnvelopeServer = (
   omittedProcessTimelineEvents?: string[]
 ) => {
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
+
   return new EnvelopeServer<RuntimeToolsDevUIChannelApi, RuntimeToolsDevUIEnvelopeApi>(
     {
       postMessage: (message) => iframe.contentWindow?.postMessage(message, origin ?? defaultOrigin),
@@ -80,6 +83,7 @@ const createEnvelopeServer = (
           availablePages,
           omittedProcessTimelineEvents,
           diagramPreviewSize,
+          remoteKogitoAppUrl,
         }
       );
     }
@@ -111,9 +115,10 @@ export function open(args: {
   isDataIndexAvailable: boolean;
   users: User[];
   dataIndexUrl?: string;
+  remoteKogitoAppUrl?: string;
   page: string;
   devUIUrl: string;
-  openApiPath: string;
+  openApiPath?: string;
   origin?: string;
   availablePages?: string[];
   customLabels?: CustomLabels;
@@ -134,7 +139,8 @@ export function open(args: {
     args.dataIndexUrl ?? process.env.KOGITO_DATAINDEX_HTTP_URL,
     args.page,
     args.devUIUrl,
-    args.openApiPath,
+    args.openApiPath ?? process.env.KOGITO_OPENAPI_PATH,
+    args.remoteKogitoAppUrl ?? process.env.KOGITO_REMOTE_KOGITO_APP_URL,
     args.customLabels ?? {
       singularProcessLabel: "Process",
       pluralProcessLabel: "Processes",

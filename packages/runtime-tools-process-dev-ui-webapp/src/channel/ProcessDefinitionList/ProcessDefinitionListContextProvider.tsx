@@ -29,7 +29,10 @@ const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContex
   const runtimeToolsApi: DevUIAppContext = useDevUIAppContext();
 
   const gatewayApiImpl = useMemo(() => {
-    return new ProcessDefinitionListGatewayApiImpl(runtimeToolsApi.getDevUIUrl(), runtimeToolsApi.getOpenApiPath());
+    return new ProcessDefinitionListGatewayApiImpl(
+      runtimeToolsApi.getRemoteKogitoAppUrl() ?? runtimeToolsApi.getDevUIUrl(),
+      runtimeToolsApi.getOpenApiPath()
+    );
   }, []);
 
   return (

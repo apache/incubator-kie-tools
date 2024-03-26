@@ -27,6 +27,7 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-c
 export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIEnvelopeViewApi>(
   (props, forwardingRef) => {
     const [dataIndexUrl, setDataIndexUrl] = React.useState("");
+    const [remoteKogitoAppUrl, setRemoteKogitoAppUrl] = React.useState("");
     const [DevUiUsers, setDevUiUsers] = React.useState<User[]>([]);
     const [navigate, setNavigate] = React.useState<string>("");
     const [devUIUrl, setDevUIUrl] = React.useState<string>("");
@@ -43,6 +44,9 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
         return {
           setDataIndexUrl: (dataIndexUrl) => {
             setDataIndexUrl(dataIndexUrl);
+          },
+          setRemoteKogitoAppUrl: (remoteKogitoAppUrl) => {
+            setRemoteKogitoAppUrl(remoteKogitoAppUrl);
           },
           setUsers: (users) => {
             setDevUiUsers(users);
@@ -89,6 +93,7 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
             customLabels={customLabels}
             omittedProcessTimelineEvents={omittedProcessTimelineEvents}
             diagramPreviewSize={diagramPreviewSize}
+            remoteKogitoAppUrl={remoteKogitoAppUrl}
           />
         )}
       </>

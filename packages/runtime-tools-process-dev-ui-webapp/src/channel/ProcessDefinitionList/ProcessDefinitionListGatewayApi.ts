@@ -46,21 +46,21 @@ export class ProcessDefinitionListGatewayApiImpl implements ProcessDefinitionLis
   private readonly onOpenProcessListeners: OnOpenProcessFormListener[] = [];
   private readonly onOpenTriggerCloudEventListeners: OnOpenTriggerCloudEventListener[] = [];
 
-  private readonly devUIUrl: string;
+  private readonly kogitoAppUrl: string;
   private readonly openApiPath: string;
-  private processDefinitonFilter: string[] = [];
+  private processDefinitionFilter: string[] = [];
 
   constructor(url: string, path: string) {
-    this.devUIUrl = url;
+    this.kogitoAppUrl = url;
     this.openApiPath = path;
   }
 
   getProcessDefinitionFilter(): Promise<string[]> {
-    return Promise.resolve(this.processDefinitonFilter);
+    return Promise.resolve(this.processDefinitionFilter);
   }
 
   setProcessDefinitionFilter(filter: string[]): Promise<void> {
-    this.processDefinitonFilter = filter;
+    this.processDefinitionFilter = filter;
     return Promise.resolve();
   }
 
@@ -100,7 +100,7 @@ export class ProcessDefinitionListGatewayApiImpl implements ProcessDefinitionLis
   }
 
   getProcessDefinitionsQuery(): Promise<ProcessDefinition[]> {
-    return getProcessDefinitionList(this.devUIUrl, this.openApiPath);
+    return getProcessDefinitionList(this.kogitoAppUrl, this.openApiPath);
   }
 
   openTriggerCloudEvent(): void {

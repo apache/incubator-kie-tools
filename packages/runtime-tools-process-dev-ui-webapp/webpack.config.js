@@ -51,7 +51,7 @@ module.exports = async (env) => {
       },
       proxy: [
         {
-          context: ["/svg", "/forms"],
+          context: ["/svg", "/forms", "/q", "/hiring/schema"],
           target: "http://localhost:4000",
           secure: false,
           changeOrigin: true,
@@ -67,6 +67,8 @@ module.exports = async (env) => {
         KOGITO_APP_VERSION: "DEV",
         KOGITO_APP_NAME: "Runtime tools dev-ui",
         KOGITO_DATAINDEX_HTTP_URL: dataIndexURL,
+        KOGITO_REMOTE_KOGITO_APP_URL: buildEnv.runtimeToolsProcessDevUIWebapp.kogitoAppUrl,
+        KOGITO_OPENAPI_PATH: buildEnv.runtimeToolsProcessDevUIWebapp.openApiPath,
       }),
       new CopyPlugin({
         patterns: [
