@@ -23,7 +23,10 @@ package e2e_tests
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -149,8 +152,41 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 	require.NoErrorf(t, err, "Error reading workflow template: %v", err)
 	expectedFileContent := string(workflowFileData)
 	VerifyFileContent(t, workflowFilePath, expectedFileContent)
-
+	addSnapshotRepositoryDeclarationToPom(t, projectDir)
 	return projectName
+}
+
+func addSnapshotRepositoryDeclarationToPom(t *testing.T, projectDir string) {
+	VerifyFilesExist(t, projectDir, []string{"pom.xml"})
+	pomFilePath := filepath.Join(projectDir, "pom.xml")
+
+	file, err := os.Open(pomFilePath)
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+	defer file.Close()
+
+	content, err := io.ReadAll(file)
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+
+	xml := string(content)
+	insertPosition := strings.Index(xml, "</profiles>") + len("</profiles>")
+
+	const repository = `
+    <repositories>
+        <repository>
+            <id>apache-kie</id>
+            <url>https://repository.apache.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>`
+
+	modifiedXml := xml[:insertPosition] + repository + xml[insertPosition:]
+	err = os.WriteFile(pomFilePath, []byte(modifiedXml), 0644)
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
 }
 
 func TestQuarkusCreateProjectFail(t *testing.T) {
