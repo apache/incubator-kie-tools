@@ -55,7 +55,7 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
-import { EmbeddedTaskDetails, TaskState } from "@kie-tools/runtime-tools-process-enveloped-components/src/taskDetails";
+import { EmbeddedTaskDetails, TaskState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskDetails";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 
 interface Props {

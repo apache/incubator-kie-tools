@@ -35,7 +35,7 @@ export const TaskInboxContextProvider: React.FC<IOwnProps> = ({ apolloClient, ch
 
   return (
     <TaskInboxContext.Provider
-      value={new TaskInboxGatewayApiImpl(appContext.getCurrentUser(), new GraphQLTaskInboxQueries(apolloClient))}
+      value={new TaskInboxGatewayApiImpl(new GraphQLTaskInboxQueries(apolloClient), () => appContext.getCurrentUser())}
     >
       {children}
     </TaskInboxContext.Provider>

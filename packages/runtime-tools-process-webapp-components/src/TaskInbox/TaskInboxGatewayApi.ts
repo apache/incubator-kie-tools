@@ -49,14 +49,14 @@ export interface UnSubscribeHandler {
 
 export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
   private readonly listeners: OnOpenTaskListener[] = [];
-  private readonly user: User;
+  private getCurrentUser: () => User;
   private readonly queries: TaskInboxQueries;
   private _taskInboxState: TaskInboxState;
   private activeTask: UserTaskInstance | null;
 
-  constructor(user: User, queries: TaskInboxQueries) {
-    this.user = user;
+  constructor(queries: TaskInboxQueries, getCurrentUser: () => User) {
     this.queries = queries;
+    this.getCurrentUser = getCurrentUser;
   }
 
   get taskInboxState(): TaskInboxState {
@@ -99,7 +99,7 @@ export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
   query(offset: number, limit: number): Promise<UserTaskInstance[]> {
     return new Promise<UserTaskInstance[]>((resolve, reject) => {
       this.queries
-        .getUserTasks(this.user, offset, limit, this._taskInboxState.filters, this._taskInboxState.sortBy)
+        .getUserTasks(this.getCurrentUser(), offset, limit, this._taskInboxState.filters, this._taskInboxState.sortBy)
         .then((value) => {
           this._taskInboxState.currentPage = { offset, limit };
           resolve(value);

@@ -23,7 +23,7 @@ import {
   TaskInboxGatewayApi,
   useTaskInboxGatewayApi,
 } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
-import { EmbeddedTaskInbox } from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
+import { EmbeddedTaskInbox } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskInbox";
 import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 

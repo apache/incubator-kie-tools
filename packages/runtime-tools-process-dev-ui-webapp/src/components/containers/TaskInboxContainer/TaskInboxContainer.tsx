@@ -24,7 +24,7 @@ import {
   useTaskInboxGatewayApi,
   TaskInboxGatewayApi,
 } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
-import { EmbeddedTaskInbox, TaskInboxApi } from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
+import { EmbeddedTaskInbox, TaskInboxApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskInbox";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
 
@@ -43,6 +43,7 @@ const TaskInboxContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
     const unsubscribeUserChange = appContext.onUserChange({
       onUserChange(user) {
+        alert(`switch user ${user.id}`);
         taskInboxApiRef.current.taskInbox__notify(user.id);
       },
     });
