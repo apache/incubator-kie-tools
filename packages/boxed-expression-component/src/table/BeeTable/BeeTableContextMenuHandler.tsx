@@ -41,7 +41,6 @@ import {
 import { useCustomContextMenuHandler } from "../../contextMenu";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
-import "./BeeTableContextMenuHandler.css";
 import {
   BeeTableSelection,
   useBeeTableSelection,
@@ -56,6 +55,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NumberInput, Radio } from "@patternfly/react-core/dist/js/";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import "./BeeTableContextMenuHandler.css";
 
 export interface BeeTableContextMenuHandlerProps {
   tableRef: React.RefObject<HTMLDivElement | null>;

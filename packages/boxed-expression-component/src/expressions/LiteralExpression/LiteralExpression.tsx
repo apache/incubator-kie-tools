@@ -36,10 +36,10 @@ import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import "./LiteralExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
+import "./LiteralExpression.css";
 
 type ROWTYPE = any;
 

@@ -22,7 +22,6 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { BeeTableProps, BoxedExpression } from "../../api";
 import { BoxedExpressionEditorContextProvider } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionRoot.css";
 import {
   BoxedExpressionEditorI18nContext,
   boxedExpressionEditorDictionaries,
@@ -30,6 +29,7 @@ import {
 } from "../../i18n";
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
 import { BeeTable } from "./BeeTable";
+import "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionRoot.css";
 
 export function StandaloneBeeTable<R extends object>(
   props: BeeTableProps<R> & { scrollableParentRef: React.RefObject<HTMLElement> }

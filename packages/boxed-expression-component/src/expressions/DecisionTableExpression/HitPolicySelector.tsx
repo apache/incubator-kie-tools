@@ -17,8 +17,6 @@
  * under the License.
  */
 
-import "./HitPolicySelector.css";
-
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
@@ -32,6 +30,7 @@ import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGr
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { DMN15__tHitPolicy } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./HitPolicySelector.css";
 
 export interface HitPolicySelectorProps {
   /** Pre-selected hit policy */

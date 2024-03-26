@@ -28,8 +28,8 @@ import { DmnBuiltInDataType, BoxedFunction, generateUuid, getNextAvailablePrefix
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DataTypeSelector } from "../ExpressionDefinitionHeaderMenu";
-import "./ParametersPopover.css";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./ParametersPopover.css";
 
 export interface ParametersPopoverProps {
   parameters: DMN15__tInformationItem[];

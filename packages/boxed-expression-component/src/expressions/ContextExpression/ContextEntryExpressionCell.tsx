@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import "./ContextEntryExpressionCell.css";
 import * as React from "react";
 import { useCallback } from "react";
 import { BoxedContext, DmnBuiltInDataType } from "../../api";
@@ -27,6 +26,7 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./ContextEntryExpressionCell.css";
 
 export interface ContextEntryExpressionCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".

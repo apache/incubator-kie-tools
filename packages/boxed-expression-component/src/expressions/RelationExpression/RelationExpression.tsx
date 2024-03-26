@@ -141,7 +141,8 @@ export function RelationExpression(
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(prevColumnWidth) : newWidthAction;
 
         if (newWidth && prevColumnWidth) {
-          const values = [...prev];
+          const minSize = columnIndex + 1;
+          const values = prev.length < minSize ? Array(minSize) : [...prev];
           values.splice(columnIndex, 1, newWidth);
           return values;
         }

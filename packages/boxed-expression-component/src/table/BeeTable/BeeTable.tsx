@@ -26,7 +26,6 @@ import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEdito
 import { NavigationKeysUtils } from "../../keysUtils";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../resizing/WidthConstants";
-import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
 import {
   BeeTableResizableColumnsContextProvider,
@@ -43,6 +42,7 @@ import {
 } from "../../selection/BeeTableSelectionContext";
 import { BeeTableCellWidthsToFitDataContextProvider } from "../../resizing/BeeTableCellWidthToFitDataContext";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import "./BeeTable.css";
 
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";

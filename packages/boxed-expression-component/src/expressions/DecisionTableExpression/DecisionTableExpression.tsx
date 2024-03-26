@@ -58,13 +58,13 @@ import {
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { HIT_POLICIES_THAT_SUPPORT_AGGREGATION, HitPolicySelector } from "./HitPolicySelector";
-import "./DecisionTableExpression.css";
 import _ from "lodash";
 import {
   DMN15__tBuiltinAggregator,
   DMN15__tDecisionRule,
   DMN15__tHitPolicy,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./DecisionTableExpression.css";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
@@ -241,8 +241,8 @@ export function DecisionTableExpression(
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(inputWidth?.width) : newWidthAction;
 
         if (newWidth && inputWidth) {
-          const values = [...prev];
-
+          const minSize = inputWidth.index + 1;
+          const values = prev.length < minSize ? Array(minSize) : [...prev];
           values.splice(inputWidth.index, 1, newWidth);
           return values;
         }
@@ -259,7 +259,8 @@ export function DecisionTableExpression(
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(outputWidth?.width) : newWidthAction;
 
         if (newWidth && outputWidth) {
-          const values = [...prev];
+          const minSize = outputWidth.index + 1;
+          const values = prev.length < minSize ? Array(minSize) : [...prev];
           values.splice(outputWidth.index, 1, newWidth);
           return values;
         }
@@ -277,7 +278,8 @@ export function DecisionTableExpression(
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(annotationWidth?.width) : newWidthAction;
 
         if (newWidth && annotationWidth) {
-          const values = [...prev];
+          const minSize = annotationWidth.index + 1;
+          const values = prev.length < minSize ? Array(minSize) : [...prev];
           values.splice(annotationWidth.index, 1, newWidth);
           return values;
         }

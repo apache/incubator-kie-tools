@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import "./ExpressionDefinitionHeaderMenu.css";
 import * as React from "react";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { PopoverMenu, PopoverMenuRef } from "../../contextMenu/PopoverMenu";
@@ -29,6 +28,7 @@ import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { NavigationKeysUtils } from "../../keysUtils";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
+import "./ExpressionDefinitionHeaderMenu.css";
 
 export interface ExpressionDefinitionHeaderMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */

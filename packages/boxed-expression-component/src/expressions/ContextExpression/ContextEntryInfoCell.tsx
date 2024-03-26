@@ -22,11 +22,11 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { DEFAULT_EXPRESSION_NAME, ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
-import "./ContextEntryInfoCell.css";
 import { useCellWidthToFitDataRef } from "../../resizing/BeeTableCellWidthToFitDataContext";
 import { getCanvasFont, getTextWidth } from "../../resizing/WidthsToFitData";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./ContextEntryInfoCell.css";
 
 export interface Entry {
   variable: DMN15__tInformationItem;

@@ -28,7 +28,6 @@ import {
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { FeelFunctionExpression, FeelFunctionProps } from "./FeelFunctionExpression";
-import "./FunctionExpression.css";
 import { FunctionKindSelector } from "./FunctionKindSelector";
 import { JavaFunctionExpression, JavaFunctionProps } from "./JavaFunctionExpression";
 import { ParametersPopover } from "./ParametersPopover";
@@ -37,6 +36,8 @@ import {
   DMN15__tFunctionDefinition,
   DMN15__tFunctionKind,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./FunctionExpression.css";
+
 export function FunctionExpression(
   functionExpression: BoxedFunction & {
     isNested: boolean;

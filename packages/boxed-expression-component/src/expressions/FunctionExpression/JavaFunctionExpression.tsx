@@ -50,12 +50,12 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
-import "./JavaFunctionExpression.css";
 import {
   DMN15__tContext,
   DMN15__tFunctionDefinition,
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./JavaFunctionExpression.css";
 
 export type JAVA_ROWTYPE = {
   value: string;

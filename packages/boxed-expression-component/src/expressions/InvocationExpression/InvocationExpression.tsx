@@ -50,10 +50,10 @@ import {
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import { ContextEntryInfoCell, Entry } from "../ContextExpression";
-import "./InvocationExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import { DMN15__tBinding } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./InvocationExpression.css";
 
 type ROWTYPE = DMN15__tBinding;
 

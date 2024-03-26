@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import "../ContextExpression/ContextEntryExpressionCell.css";
 import * as React from "react";
 import { DmnBuiltInDataType, BoxedExpression, BoxedInvocation } from "../../api";
 import {
@@ -27,6 +26,7 @@ import {
 import { useCallback } from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { DMN15__tBinding } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "../ContextExpression/ContextEntryExpressionCell.css";
 
 export type Entry = {
   expression: BoxedExpression | undefined;
