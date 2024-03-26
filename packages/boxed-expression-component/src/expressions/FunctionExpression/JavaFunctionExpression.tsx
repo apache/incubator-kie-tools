@@ -104,7 +104,8 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
           typeof newWidthAction === "function" ? newWidthAction(getClassAndMethodNamesWidth(prev)) : newWidthAction;
 
         if (newWidth) {
-          const values = [...prev];
+          const minSize = JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX + 1;
+          const values = prev.length < minSize ? Array(minSize) : [...prev];
           values.splice(JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX, 1, newWidth);
           return values;
         }

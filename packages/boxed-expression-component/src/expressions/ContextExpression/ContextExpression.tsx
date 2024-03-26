@@ -89,7 +89,8 @@ export function ContextExpression(
           typeof newWidthAction === "function" ? newWidthAction(getEntryInfoWidth(prev)) : newWidthAction;
 
         if (newWidth) {
-          const values = [...prev];
+          const minSize = CONTEXT_ENTRY_INFO_WIDTH_INDEX + 1;
+          const values = prev.length < minSize ? Array(minSize) : [...prev];
           values.splice(CONTEXT_ENTRY_INFO_WIDTH_INDEX, 1, newWidth);
           return values;
         }

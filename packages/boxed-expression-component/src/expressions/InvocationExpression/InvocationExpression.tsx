@@ -95,7 +95,8 @@ export function InvocationExpression(
           typeof newWidthAction === "function" ? newWidthAction(getParametersWidth(prev)) : newWidthAction;
 
         if (newWidth) {
-          const values = [...prev];
+          const minSize = INVOCATION_PARAMETER_INFO_WIDTH_INDEX + 1;
+          const values = prev.length < minSize ? Array(minSize) : [...prev];
           values.splice(INVOCATION_PARAMETER_INFO_WIDTH_INDEX, 1, newWidth);
           return values;
         }
