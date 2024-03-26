@@ -28,9 +28,9 @@ import {
   BeeTableOperationConfig,
   BeeTableProps,
   DmnBuiltInDataType,
-  ExpressionDefinition,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
+  BoxedExpression,
+  BoxedFunction,
+  BoxedFunctionKind,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -51,20 +51,16 @@ import { useFunctionExpressionControllerCell, useFunctionExpressionParametersCol
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-export type FEEL_ROWTYPE = { functionExpression: FunctionExpressionDefinition };
+export type FEEL_ROWTYPE = { functionExpression: BoxedFunction };
 
-export type FeelFunctionExpressionDefinition = DMN15__tFunctionDefinition & {
+export type FeelFunctionProps = DMN15__tFunctionDefinition & {
   "@_kind": "FEEL";
   __$$element: "functionDefinition";
   isNested: boolean;
   parentElementId: string;
 };
 
-export function FeelFunctionExpression({
-  functionExpression,
-}: {
-  functionExpression: FeelFunctionExpressionDefinition;
-}) {
+export function FeelFunctionExpression({ functionExpression }: { functionExpression: FeelFunctionProps }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -125,7 +121,7 @@ export function FeelFunctionExpression({
     return [{ functionExpression }];
   }, [functionExpression]);
 
-  const controllerCell = useFunctionExpressionControllerCell(FunctionExpressionDefinitionKind.Feel);
+  const controllerCell = useFunctionExpressionControllerCell(BoxedFunctionKind.Feel);
 
   const cellComponentByColumnAccessor: BeeTableProps<FEEL_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
     return {
@@ -216,8 +212,8 @@ export function FeelFunctionImplementationCell({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
-    ({ getNewExpression }: { getNewExpression: (prev: ExpressionDefinition) => ExpressionDefinition }) => {
-      setExpression((prev: FeelFunctionExpressionDefinition) => ({
+    ({ getNewExpression }: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => {
+      setExpression((prev: FeelFunctionProps) => ({
         ...prev,
         expression: getNewExpression(prev.expression ?? undefined!),
       }));

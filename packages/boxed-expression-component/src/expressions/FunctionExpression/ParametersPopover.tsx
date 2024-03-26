@@ -24,12 +24,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
-import {
-  DmnBuiltInDataType,
-  FunctionExpressionDefinition,
-  generateUuid,
-  getNextAvailablePrefixedName,
-} from "../../api";
+import { DmnBuiltInDataType, BoxedFunction, generateUuid, getNextAvailablePrefixedName } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DataTypeSelector } from "../ExpressionDefinitionHeaderMenu";
@@ -47,7 +42,7 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
   const addParameter = useCallback(
     (mouseEvent) => {
       mouseEvent.stopPropagation();
-      setExpression((prev: FunctionExpressionDefinition) => {
+      setExpression((prev: BoxedFunction) => {
         const newParameters = [
           ...(prev.formalParameter ?? []),
           {
@@ -103,7 +98,7 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
   const onNameChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
-      setExpression((prev: FunctionExpressionDefinition) => {
+      setExpression((prev: BoxedFunction) => {
         const newParameters = [...(prev.formalParameter ?? [])];
         newParameters[index] = {
           ...newParameters[index],
@@ -120,7 +115,7 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
 
   const onDataTypeChange = useCallback(
     (dataType: DmnBuiltInDataType) => {
-      setExpression((prev: FunctionExpressionDefinition) => {
+      setExpression((prev: BoxedFunction) => {
         const newParameters = [...(prev.formalParameter ?? [])];
         newParameters[index] = {
           ...newParameters[index],
@@ -138,7 +133,7 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
   const onParameterRemove = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      setExpression((prev: FunctionExpressionDefinition) => {
+      setExpression((prev: BoxedFunction) => {
         const newParameters = [...(prev.formalParameter ?? [])];
         newParameters.splice(index, 1);
         return {

@@ -17,13 +17,7 @@
  * under the License.
  */
 
-import {
-  DmnBuiltInDataType,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
-  InvocationExpressionDefinition,
-  RelationExpressionDefinition,
-} from "../../../src/api";
+import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind, BoxedInvocation, BoxedRelation } from "../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -52,7 +46,7 @@ export const findEmployeesDataTypes = [
   { name: "tKnowledges", isCustom: true },
 ];
 
-export const employeesExpression: RelationExpressionDefinition = {
+export const employeesExpression: BoxedRelation = {
   __$$element: "relation",
   "@_id": "_03E4FDF0-AF4A-4C82-A589-2F9BED02921B",
   "@_label": "Employees",
@@ -175,7 +169,7 @@ export const employeesWidthsById = new Map<string, number[]>([
   ["_03E4FDF0-AF4A-4C82-A589-2F9BED02921B", [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 100, 156, 150, 252, 100]],
 ]);
 
-export const findEmployeesByKnowledgeExpression: FunctionExpressionDefinition = {
+export const findEmployeesByKnowledgeExpression: BoxedFunction = {
   __$$element: "functionDefinition",
   "@_id": "_243056C9-28EA-4EF2-8510-6F3BC6A5E5DC",
   "@_label": "Find employee by knowledge",
@@ -185,7 +179,7 @@ export const findEmployeesByKnowledgeExpression: FunctionExpressionDefinition = 
     { "@_id": "_2B8160CE-1F54-42D7-B111-706FE3BF2012", "@_name": "knowledge", "@_typeRef": "tKnowledge" },
     { "@_id": "_810CD0CE-7F46-4827-B19B-BFBD543BB3D9", "@_name": "dept", "@_typeRef": "tDept" },
   ],
-  "@_kind": FunctionExpressionDefinitionKind.Feel,
+  "@_kind": BoxedFunctionKind.Feel,
   expression: {
     __$$element: "context",
     "@_id": "_1B96445B-523F-49B3-99BE-308A2F3CFBA5",
@@ -244,7 +238,7 @@ export const findEmployeesByKnowledgeWidthsById = new Map<string, number[]>([
   ["_049ECA86-1971-48B7-86FF-7E89B399074A", [400]],
 ]);
 
-export const findEmployeesExpression: InvocationExpressionDefinition = {
+export const findEmployeesExpression: BoxedInvocation = {
   __$$element: "invocation",
   "@_id": "_8001CBC8-8DE4-4DBF-8B02-7FBFC582B136",
   "@_label": "Find employees",

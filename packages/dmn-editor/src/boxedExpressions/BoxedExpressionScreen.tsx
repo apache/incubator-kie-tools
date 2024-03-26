@@ -19,9 +19,9 @@
 
 import {
   BeeGwtService,
+  BoxedExpression,
   DmnBuiltInDataType,
   DmnDataType,
-  ExpressionDefinition,
   generateUuid,
   PmmlDocument,
 } from "@kie-tools/boxed-expression-component/dist/api";
@@ -59,39 +59,29 @@ import {
   TimeSeriesModel,
   TreeModel,
 } from "@kie-tools/pmml-editor-marshaller/dist/marshaller/model/pmml4_4";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import {
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  EmptyStatePrimary,
-} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
-import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-circle-o-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as RF from "reactflow";
 import { builtInFeelTypes } from "../dataTypes/BuiltInFeelTypes";
-import { isStruct } from "../dataTypes/DataTypeSpec";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
+import { isStruct } from "../dataTypes/DataTypeSpec";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { NodeIcon } from "../icons/Icons";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { updateExpression } from "../mutations/updateExpression";
+import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
 import { DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
 import { getDefaultExpressionDefinitionByLogicType } from "./getDefaultExpressionDefinitionByLogicType";
-import { addOrGetDrd } from "../mutations/addOrGetDrd";
-import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
 
-export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
+export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
 
   //
@@ -196,7 +186,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
     [dmnEditorStoreApi]
   );
 
-  const onExpressionChange: React.Dispatch<React.SetStateAction<ExpressionDefinition>> = useCallback(
+  const onExpressionChange: React.Dispatch<React.SetStateAction<BoxedExpression>> = useCallback(
     (expressionAction) => {
       dmnEditorStoreApi.setState((state) => {
         const newExpression =
@@ -385,12 +375,21 @@ function drgElementToBoxedExpression(
   expressionHolder:
     | (DMN15__tDecision & { __$$element: "decision" })
     | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" })
-): ExpressionDefinition {
+): BoxedExpression {
   if (expressionHolder.__$$element === "businessKnowledgeModel") {
-    return {
-      __$$element: "functionDefinition",
-      ...expressionHolder.encapsulatedLogic,
-    };
+    return expressionHolder.encapsulatedLogic
+      ? {
+          __$$element: "functionDefinition",
+          ...expressionHolder.encapsulatedLogic,
+        }
+      : {
+          __$$element: "functionDefinition",
+          "@_id": generateUuid(),
+          "@_kind": "FEEL",
+          expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+          formalParameter: [],
+          "@_typeRef": expressionHolder.variable?.["@_typeRef"],
+        };
   } else if (expressionHolder.__$$element === "decision") {
     return expressionHolder.expression!;
   } else {

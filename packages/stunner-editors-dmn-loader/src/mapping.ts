@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import { ExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
 import { GwtExpressionDefinition, GwtExpressionDefinitionLogicType } from "./types";
 import { gwtToBee } from "./gwtToBee";
 import { beeToGwt } from "./beeToGwt";
 
 export function gwtExpressionToDmnExpression(gwtExpression: GwtExpressionDefinition): {
-  expression?: ExpressionDefinition;
+  expression: BoxedExpression;
   widthsById: Map<string, number[]>;
 } {
   const widthsById = new Map<string, number[]>();
@@ -32,17 +32,15 @@ export function gwtExpressionToDmnExpression(gwtExpression: GwtExpressionDefinit
 
 export function dmnExpressionToGwtExpression(
   widthsById: Map<string, number[]>,
-  dmnExpression?: ExpressionDefinition
+  expression: BoxedExpression
 ): GwtExpressionDefinition {
-  return beeToGwt(widthsById, dmnExpression);
+  return beeToGwt(widthsById, expression);
 }
 
-export function gwtLogicType(
-  logicType: ExpressionDefinition["__$$element"] | undefined
-): GwtExpressionDefinitionLogicType {
+export function gwtLogicType(logicType: BoxedExpression["__$$element"] | undefined): GwtExpressionDefinitionLogicType {
   switch (logicType) {
     case undefined:
-      return undefined as any;
+      return GwtExpressionDefinitionLogicType.Undefined;
     case "literalExpression":
       return GwtExpressionDefinitionLogicType.Literal;
     case "context":

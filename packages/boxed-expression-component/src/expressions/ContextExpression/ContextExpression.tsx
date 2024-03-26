@@ -26,9 +26,9 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  ContextExpressionDefinition,
+  BoxedContext,
   DmnBuiltInDataType,
-  ExpressionDefinition,
+  BoxedExpression,
   generateUuid,
   getNextAvailablePrefixedName,
   InsertRowColumnsDirection,
@@ -62,7 +62,7 @@ const CONTEXT_ENTRY_INFO_WIDTH_INDEX = 0;
 type ROWTYPE = DMN15__tContextEntry;
 
 export function ContextExpression(
-  contextExpression: ContextExpressionDefinition & {
+  contextExpression: BoxedContext & {
     isNested: boolean;
     parentElementId: string;
   }
@@ -129,7 +129,7 @@ export function ContextExpression(
 
         const resultWidth = getExpressionTotalMinWidth(0, entryResult, widthsById);
         const maxNestedExpressionMinWidth = Math.max(...entriesWidths, resultWidth, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
-        const nestedExpressions: ExpressionDefinition[] = [];
+        const nestedExpressions: BoxedExpression[] = [];
 
         if (contextExpression.contextEntry) {
           nestedExpressions.push(...contextExpression.contextEntry.map((e) => e.expression));
@@ -208,7 +208,7 @@ export function ContextExpression(
 
   const updateEntry = useCallback(
     (rowIndex: number, newEntry: Entry) => {
-      setExpression((prev: ContextExpressionDefinition) => {
+      setExpression((prev: BoxedContext) => {
         const contextEntries = [...(prev.contextEntry ?? [])];
 
         variables?.repository.updateVariableType(
@@ -332,7 +332,7 @@ export function ContextExpression(
         beforeIndex: number;
       },
       newContextEntries: DMN15__tContextEntry[],
-      prev: ContextExpressionDefinition,
+      prev: BoxedContext,
       newVariable: DMN15__tContextEntry
     ) => {
       const parentIndex = args.beforeIndex - 1;
@@ -360,7 +360,7 @@ export function ContextExpression(
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
+      setExpression((prev: BoxedContext) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const newEntries = [];
@@ -393,7 +393,7 @@ export function ContextExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
+      setExpression((prev: BoxedContext) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         if (prev.contextEntry) {
@@ -412,7 +412,7 @@ export function ContextExpression(
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
+      setExpression((prev: BoxedContext) => {
         // That's the additionalRow, meaning the contextExpression result.
         if (args.rowIndex === prev.contextEntry?.length) {
           return {

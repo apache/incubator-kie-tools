@@ -28,7 +28,7 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  FunctionExpressionDefinitionKind,
+  BoxedFunctionKind,
   generateUuid,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -56,7 +56,7 @@ import {
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-export type PmmlFunctionExpressionDefinition = DMN15__tFunctionDefinition & {
+export type PmmlFunctionProps = DMN15__tFunctionDefinition & {
   "@_kind": "PMML";
   __$$element: "functionDefinition";
   isNested: boolean;
@@ -66,14 +66,10 @@ export type PmmlFunctionExpressionDefinition = DMN15__tFunctionDefinition & {
 type PMML_ROWTYPE = {
   value: string;
   label: string;
-  pmmlFunctionExpression: PmmlFunctionExpressionDefinition;
+  pmmlFunctionExpression: PmmlFunctionProps;
 };
 
-export function PmmlFunctionExpression({
-  functionExpression,
-}: {
-  functionExpression: PmmlFunctionExpressionDefinition & { isNested: boolean };
-}) {
+export function PmmlFunctionExpression({ functionExpression }: { functionExpression: PmmlFunctionProps }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -184,7 +180,7 @@ export function PmmlFunctionExpression({
     ];
   }, [functionExpression, getDocument, getModel]);
 
-  const controllerCell = useFunctionExpressionControllerCell(FunctionExpressionDefinitionKind.Pmml);
+  const controllerCell = useFunctionExpressionControllerCell(BoxedFunctionKind.Pmml);
 
   const getRowKey = useCallback((r: ReactTable.Row<PMML_ROWTYPE>) => {
     return r.id;
@@ -314,7 +310,7 @@ function PmmlFunctionExpressionValueCell(props: React.PropsWithChildren<BeeTable
   );
 }
 
-function getDocumentEntry(pmmlFunction: PmmlFunctionExpressionDefinition): DMN15__tContextEntry {
+function getDocumentEntry(pmmlFunction: PmmlFunctionProps): DMN15__tContextEntry {
   return (
     (pmmlFunction.expression as DMN15__tContext).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "document"
@@ -328,7 +324,7 @@ function getDocumentEntry(pmmlFunction: PmmlFunctionExpressionDefinition): DMN15
   );
 }
 
-function getModelEntry(pmmlFunction: PmmlFunctionExpressionDefinition): DMN15__tContextEntry {
+function getModelEntry(pmmlFunction: PmmlFunctionProps): DMN15__tContextEntry {
   return (
     (pmmlFunction.expression as DMN15__tContext).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "model"
@@ -342,11 +338,7 @@ function getModelEntry(pmmlFunction: PmmlFunctionExpressionDefinition): DMN15__t
   );
 }
 
-function getUpdatedExpression(
-  prev: PmmlFunctionExpressionDefinition,
-  newDocument: string,
-  newModel: string
-): PmmlFunctionExpressionDefinition {
+function getUpdatedExpression(prev: PmmlFunctionProps, newDocument: string, newModel: string): PmmlFunctionProps {
   const document = getDocumentEntry(prev);
   const model = getModelEntry(prev);
 
@@ -408,7 +400,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
   const onSelect = useCallback(
     (event, newDocument) => {
       setSelectOpen(false);
-      setExpression((prev: PmmlFunctionExpressionDefinition) => {
+      setExpression((prev: PmmlFunctionProps) => {
         return getUpdatedExpression(prev, newDocument, "");
       });
     },
@@ -465,7 +457,7 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
     (event, newModel) => {
       setSelectOpen(false);
 
-      setExpression((prev: PmmlFunctionExpressionDefinition) => {
+      setExpression((prev: PmmlFunctionProps) => {
         const document = getDocumentEntry(prev);
         const currentDocument =
           document.expression?.__$$element === "literalExpression" ? document.expression.text?.__$$text ?? "" : "";

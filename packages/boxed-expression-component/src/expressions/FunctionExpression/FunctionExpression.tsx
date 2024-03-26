@@ -20,42 +20,37 @@
 import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import {
-  DmnBuiltInDataType,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
-  generateUuid,
-} from "../../api";
+import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind, generateUuid } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import {
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { FeelFunctionExpression, FeelFunctionExpressionDefinition } from "./FeelFunctionExpression";
+import { FeelFunctionExpression, FeelFunctionProps } from "./FeelFunctionExpression";
 import "./FunctionExpression.css";
 import { FunctionKindSelector } from "./FunctionKindSelector";
-import { JavaFunctionExpression, JavaFunctionExpressionDefinition } from "./JavaFunctionExpression";
+import { JavaFunctionExpression, JavaFunctionProps } from "./JavaFunctionExpression";
 import { ParametersPopover } from "./ParametersPopover";
-import { PmmlFunctionExpression, PmmlFunctionExpressionDefinition } from "./PmmlFunctionExpression";
+import { PmmlFunctionExpression, PmmlFunctionProps } from "./PmmlFunctionExpression";
 import {
   DMN15__tFunctionDefinition,
   DMN15__tFunctionKind,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 export function FunctionExpression(
-  functionExpression: FunctionExpressionDefinition & {
+  functionExpression: BoxedFunction & {
     isNested: boolean;
     parentElementId: string;
   }
 ) {
   const functionKind = functionExpression["@_kind"] ?? "";
   switch (functionKind) {
-    case FunctionExpressionDefinitionKind.Feel:
-      return <FeelFunctionExpression functionExpression={functionExpression as FeelFunctionExpressionDefinition} />;
-    case FunctionExpressionDefinitionKind.Java:
-      return <JavaFunctionExpression functionExpression={functionExpression as JavaFunctionExpressionDefinition} />;
-    case FunctionExpressionDefinitionKind.Pmml:
-      return <PmmlFunctionExpression functionExpression={functionExpression as PmmlFunctionExpressionDefinition} />;
+    case BoxedFunctionKind.Feel:
+      return <FeelFunctionExpression functionExpression={functionExpression as FeelFunctionProps} />;
+    case BoxedFunctionKind.Java:
+      return <JavaFunctionExpression functionExpression={functionExpression as JavaFunctionProps} />;
+    case BoxedFunctionKind.Pmml:
+      return <PmmlFunctionExpression functionExpression={functionExpression as PmmlFunctionProps} />;
     default:
       return <></>;
   }
@@ -67,12 +62,12 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
   const onFunctionKindSelect = useCallback(
     (kind: DMN15__tFunctionKind) => {
       setExpression((prev) => {
-        if (kind === FunctionExpressionDefinitionKind.Feel) {
+        if (kind === BoxedFunctionKind.Feel) {
           return {
             __$$element: "functionDefinition",
             "@_label": prev["@_label"],
             "@_id": generateUuid(),
-            "@_kind": FunctionExpressionDefinitionKind.Feel,
+            "@_kind": BoxedFunctionKind.Feel,
             "@_typeRef": DmnBuiltInDataType.Undefined,
             expression: {
               __$$element: "literalExpression",
@@ -81,7 +76,7 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
             },
             formalParameter: [],
           };
-        } else if (kind === FunctionExpressionDefinitionKind.Java) {
+        } else if (kind === BoxedFunctionKind.Java) {
           const expressionId = generateUuid();
           return {
             __$$element: "functionDefinition",
@@ -91,11 +86,11 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
               __$$element: "context",
               id: generateUuid(),
             },
-            "@_kind": FunctionExpressionDefinitionKind.Java,
+            "@_kind": BoxedFunctionKind.Java,
             "@_typeRef": DmnBuiltInDataType.Undefined,
             formalParameter: [],
           };
-        } else if (kind === FunctionExpressionDefinitionKind.Pmml) {
+        } else if (kind === BoxedFunctionKind.Pmml) {
           return {
             __$$element: "functionDefinition",
             "@_label": prev["@_label"],
@@ -104,7 +99,7 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
               __$$element: "context",
               id: generateUuid(),
             },
-            "@_kind": FunctionExpressionDefinitionKind.Pmml,
+            "@_kind": BoxedFunctionKind.Pmml,
             "@_typeRef": DmnBuiltInDataType.Undefined,
             formalParameter: [],
           };

@@ -25,7 +25,7 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   DmnBuiltInDataType,
-  LiteralExpressionDefinition,
+  BoxedLiteral,
 } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
 import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
@@ -43,7 +43,7 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 
 type ROWTYPE = any;
 
-export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isNested: boolean }) {
+export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: boolean }) {
   const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
   const { expressionHolderId, variables, widthsById } = useBoxedExpressionEditor();
 

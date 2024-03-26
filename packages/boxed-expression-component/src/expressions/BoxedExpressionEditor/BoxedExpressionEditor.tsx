@@ -20,7 +20,7 @@
 import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
-import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlDocument } from "../../api";
+import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "../../api";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
@@ -40,9 +40,9 @@ export interface BoxedExpressionEditorProps {
   /** The name of the expression */
   expressionName?: string;
   /** The boxed expression itself */
-  expression: ExpressionDefinition | undefined;
+  expression: BoxedExpression | undefined;
   /** Called every time something changes on the expression */
-  onExpressionChange: React.Dispatch<React.SetStateAction<ExpressionDefinition | undefined>>;
+  onExpressionChange: React.Dispatch<React.SetStateAction<BoxedExpression | undefined>>;
   /** KIE Extension to represent IDs of individual columns or expressions */
   widthsById: Map<string, number[]>;
   /** Called every time a width changes on the expression */

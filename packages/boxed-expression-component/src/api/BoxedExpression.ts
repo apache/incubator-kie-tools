@@ -32,38 +32,38 @@ import {
   DMN15__tRelation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-export type LiteralExpressionDefinition = { __$$element: "literalExpression" } & DMN15__tLiteralExpression;
-export type RelationExpressionDefinition = { __$$element: "relation" } & DMN15__tRelation;
-export type ContextExpressionDefinition = { __$$element: "context" } & DMN15__tContext;
-export type DecisionTableExpressionDefinition = { __$$element: "decisionTable" } & DMN15__tDecisionTable;
-export type ListExpressionDefinition = { __$$element: "list" } & DMN15__tList;
-export type InvocationExpressionDefinition = { __$$element: "invocation" } & DMN15__tInvocation;
-export type FunctionExpressionDefinition = { __$$element: "functionDefinition" } & DMN15__tFunctionDefinition;
-export type ForExpression = { __$$element: "for" } & DMN15__tFor;
-export type EveryExpression = { __$$element: "every" } & DMN15__tQuantified;
-export type SomeExpression = { __$$element: "some" } & DMN15__tQuantified;
-export type ConditionalExpression = { __$$element: "conditional" } & DMN15__tConditional;
-export type FilterExpression = { __$$element: "filter" } & DMN15__tFilter;
+export type BoxedLiteral = { __$$element: "literalExpression" } & DMN15__tLiteralExpression;
+export type BoxedRelation = { __$$element: "relation" } & DMN15__tRelation;
+export type BoxedContext = { __$$element: "context" } & DMN15__tContext;
+export type BoxedDecisionTable = { __$$element: "decisionTable" } & DMN15__tDecisionTable;
+export type BoxedList = { __$$element: "list" } & DMN15__tList;
+export type BoxedInvocation = { __$$element: "invocation" } & DMN15__tInvocation;
+export type BoxedFunction = { __$$element: "functionDefinition" } & DMN15__tFunctionDefinition;
+export type BoxedFor = { __$$element: "for" } & DMN15__tFor;
+export type BoxedEvery = { __$$element: "every" } & DMN15__tQuantified;
+export type BoxedSome = { __$$element: "some" } & DMN15__tQuantified;
+export type BoxedConditional = { __$$element: "conditional" } & DMN15__tConditional;
+export type BoxedFilter = { __$$element: "filter" } & DMN15__tFilter;
 
-export enum FunctionExpressionDefinitionKind {
+export enum BoxedFunctionKind {
   Feel = "FEEL",
   Java = "Java",
   Pmml = "PMML",
 }
 
-export type ExpressionDefinition =
-  | LiteralExpressionDefinition
-  | RelationExpressionDefinition
-  | ContextExpressionDefinition
-  | DecisionTableExpressionDefinition
-  | ListExpressionDefinition
-  | InvocationExpressionDefinition
-  | FunctionExpressionDefinition
-  | ForExpression
-  | EveryExpression
-  | SomeExpression
-  | ConditionalExpression
-  | FilterExpression;
+export type BoxedExpression =
+  | BoxedLiteral
+  | BoxedRelation
+  | BoxedContext
+  | BoxedDecisionTable
+  | BoxedList
+  | BoxedInvocation
+  | BoxedFunction
+  | BoxedFor
+  | BoxedEvery
+  | BoxedSome
+  | BoxedConditional
+  | BoxedFilter;
 
 export interface PmmlDocument {
   document: string;

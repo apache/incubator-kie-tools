@@ -27,11 +27,11 @@ import {
   BeeTableOperationConfig,
   BeeTableProps,
   DmnBuiltInDataType,
-  ExpressionDefinition,
+  BoxedExpression,
   generateUuid,
   getNextAvailablePrefixedName,
   InsertRowColumnsDirection,
-  InvocationExpressionDefinition,
+  BoxedInvocation,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
@@ -63,7 +63,7 @@ export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataT
 export const INVOCATION_PARAMETER_INFO_WIDTH_INDEX = 0;
 
 export function InvocationExpression(
-  invocationExpression: InvocationExpressionDefinition & {
+  invocationExpression: BoxedInvocation & {
     isNested: boolean;
     parentElementId: string;
   }
@@ -127,12 +127,12 @@ export function InvocationExpression(
       useMemo(() => {
         const entriesWidths =
           invocationExpression.binding?.map((e) =>
-            getExpressionTotalMinWidth(0, e.expression as ExpressionDefinition, widthsById)
+            getExpressionTotalMinWidth(0, e.expression as BoxedExpression, widthsById)
           ) ?? [];
 
         const maxNestedExpressionWidth = Math.max(...entriesWidths, INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH);
 
-        const nestedExpressions = invocationExpression.binding?.map((b) => b.expression as ExpressionDefinition);
+        const nestedExpressions = invocationExpression.binding?.map((b) => b.expression as BoxedExpression);
 
         return {
           nestedExpressions: nestedExpressions ?? [],
@@ -213,7 +213,7 @@ export function InvocationExpression(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
         if (u.column.originalId === "functionName") {
-          setExpression((prev: InvocationExpressionDefinition) => ({
+          setExpression((prev: BoxedInvocation) => ({
             ...prev,
             expression: {
               __$$element: "literalExpression",
@@ -223,7 +223,7 @@ export function InvocationExpression(
             },
           }));
         } else {
-          setExpression((prev: InvocationExpressionDefinition) => ({
+          setExpression((prev: BoxedInvocation) => ({
             ...prev,
             "@_typeRef": u.dataType,
             "@_label": u.name,
@@ -246,7 +246,7 @@ export function InvocationExpression(
 
   const updateEntry = useCallback(
     (rowIndex: number, newArgumentEntry: Entry) => {
-      setExpression((prev: InvocationExpressionDefinition) => {
+      setExpression((prev: BoxedInvocation) => {
         const newArgumentEntries = [...(prev.binding ?? [])];
         newArgumentEntries[rowIndex] = {
           parameter: newArgumentEntry.variable,
@@ -260,7 +260,7 @@ export function InvocationExpression(
 
   const onDataUpdate = useCallback(
     (data: DMN15__tBinding[]) => {
-      setExpression((prev: InvocationExpressionDefinition) => {
+      setExpression((prev: BoxedInvocation) => {
         return { ...prev, binding: data };
       });
     },
@@ -342,7 +342,7 @@ export function InvocationExpression(
         names.push(name);
         newEntries.push(getDefaultArgumentEntry(name));
       }
-      setExpression((prev: InvocationExpressionDefinition) => {
+      setExpression((prev: BoxedInvocation) => {
         const newArgumentEntries = [...(prev.binding ?? [])];
 
         for (const newEntry of newEntries) {
@@ -364,7 +364,7 @@ export function InvocationExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: InvocationExpressionDefinition) => {
+      setExpression((prev: BoxedInvocation) => {
         const newArgumentEntries = [...(prev.binding ?? [])];
         newArgumentEntries.splice(args.rowIndex, 1);
         return {
@@ -378,7 +378,7 @@ export function InvocationExpression(
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: InvocationExpressionDefinition) => {
+      setExpression((prev: BoxedInvocation) => {
         const newArgumentEntries = [...(prev.binding ?? [])];
         newArgumentEntries.splice(
           args.rowIndex,

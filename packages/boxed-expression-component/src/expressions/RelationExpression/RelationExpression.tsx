@@ -30,7 +30,7 @@ import {
   generateUuid,
   getNextAvailablePrefixedName,
   InsertRowColumnsDirection,
-  RelationExpressionDefinition,
+  BoxedRelation,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
@@ -55,7 +55,7 @@ type ROWTYPE = DMN15__tList;
 export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
 export function RelationExpression(
-  relationExpression: RelationExpressionDefinition & {
+  relationExpression: BoxedRelation & {
     isNested: boolean;
     parentElementId: string;
   }
@@ -219,7 +219,7 @@ export function RelationExpression(
 
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
-      setExpression((prev: RelationExpressionDefinition) => {
+      setExpression((prev: BoxedRelation) => {
         const n = { ...prev };
         cellUpdates.forEach((u) => {
           const newRows = [...(n.row ?? [])];
@@ -252,7 +252,7 @@ export function RelationExpression(
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: RelationExpressionDefinition) => {
+      setExpression((prev: BoxedRelation) => {
         const n = {
           ...prev,
         };
@@ -298,7 +298,7 @@ export function RelationExpression(
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
+      setExpression((prev: BoxedRelation) => {
         const newRows = [...(prev.row ?? [])];
         const newItems = [];
 
@@ -330,7 +330,7 @@ export function RelationExpression(
 
   const onColumnAdded = useCallback(
     (args: { beforeIndex: number; columnsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
+      setExpression((prev: BoxedRelation) => {
         const newColumns = [...(prev.column ?? [])];
 
         const newItems = [];
@@ -379,7 +379,7 @@ export function RelationExpression(
 
   const onColumnDeleted = useCallback(
     (args: { columnIndex: number }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
+      setExpression((prev: BoxedRelation) => {
         const newColumns = [...(prev.column ?? [])];
         newColumns.splice(args.columnIndex, 1);
 
@@ -405,7 +405,7 @@ export function RelationExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
+      setExpression((prev: BoxedRelation) => {
         const newRows = [...(prev.row ?? [])];
         newRows.splice(args.rowIndex, 1);
         return {
@@ -419,7 +419,7 @@ export function RelationExpression(
 
   const onRowDuplicated = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
+      setExpression((prev: BoxedRelation) => {
         const duplicatedRow = {
           "@_id": generateUuid(),
           expression: prev.row![args.rowIndex].expression?.map((cell) => ({

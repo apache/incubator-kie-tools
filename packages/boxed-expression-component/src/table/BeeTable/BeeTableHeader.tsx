@@ -21,12 +21,7 @@ import _ from "lodash";
 import * as React from "react";
 import { useCallback } from "react";
 import * as ReactTable from "react-table";
-import {
-  BeeTableHeaderVisibility,
-  DmnBuiltInDataType,
-  ExpressionDefinition,
-  InsertRowColumnsDirection,
-} from "../../api";
+import { BeeTableHeaderVisibility, DmnBuiltInDataType, BoxedExpression, InsertRowColumnsDirection } from "../../api";
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionHeaderMenu";
@@ -115,7 +110,7 @@ export function BeeTableHeader<R extends object>({
     (
       column: ReactTable.ColumnInstance<R>,
       columnIndex: number
-    ) => (args: Pick<ExpressionDefinition, "@_label" | "@_typeRef">) => void
+    ) => (args: Pick<BoxedExpression, "@_label" | "@_typeRef">) => void
   >(
     (column, columnIndex) => {
       return ({ "@_label": name = "", "@_typeRef": dataType = DmnBuiltInDataType.Undefined }) => {

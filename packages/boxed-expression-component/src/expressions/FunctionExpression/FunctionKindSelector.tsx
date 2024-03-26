@@ -28,7 +28,7 @@ import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
 import { DMN15__tFunctionKind } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { FunctionExpressionDefinitionKind } from "../../api";
+import { BoxedFunctionKind } from "../../api";
 
 export interface FunctionKindSelectorProps {
   /** Pre-selected function kind */
@@ -84,7 +84,7 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
         <Menu onSelect={functionKindSelectionCallback(hide)} selected={selectedFunctionKind}>
           <MenuGroup className="menu-with-help">
             <MenuList>
-              {_.map(Object.entries(FunctionExpressionDefinitionKind), ([functionKindKey, functionKind]) => (
+              {_.map(Object.entries(BoxedFunctionKind), ([functionKindKey, functionKind]) => (
                 <MenuItemWithHelp
                   key={functionKindKey}
                   menuItemKey={functionKind}

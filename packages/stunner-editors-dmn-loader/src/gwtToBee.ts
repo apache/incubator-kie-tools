@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
@@ -27,24 +26,23 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/resizing/WidthConstants";
 import {
   DecisionTableExpressionDefinitionBuiltInAggregation,
+  FunctionExpressionDefinitionKind,
   GwtExpressionDefinition,
   GwtExpressionDefinitionLogicType,
 } from "./types";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
 
-/** Converts an ExpressionDefinition to a DMN JSON. This convertion is
+/** Converts a GwtExpressionDefinition to a BoxedExpression. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was
  *  created prior to the DMN Editor, needing to declare its own model. */
-export function gwtToBee(
-  expression: GwtExpressionDefinition,
-  __widths: Map<string, number[]>
-): DMN15__tDecision["expression"] {
+export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<string, number[]>): BoxedExpression {
   if (!expression) {
-    return undefined;
+    return undefined!; // SPEC DISCREPANCY
   }
   switch (expression.logicType) {
     case GwtExpressionDefinitionLogicType.Undefined:
-      return undefined;
+      return undefined!; // SPEC DISCREPANCY
     case GwtExpressionDefinitionLogicType.Context:
       return {
         __$$element: "context",
@@ -151,9 +149,9 @@ export function gwtToBee(
           "@_typeRef": p.dataType,
         })),
         expression:
-          expression.functionKind === "FEEL"
+          expression.functionKind === FunctionExpressionDefinitionKind.Feel
             ? gwtToBee(expression.expression, __widths)
-            : expression.functionKind === "Java"
+            : expression.functionKind === FunctionExpressionDefinitionKind.Java
             ? (() => {
                 __widths.set(expression.id, [
                   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
@@ -181,7 +179,7 @@ export function gwtToBee(
                   ],
                 };
               })()
-            : expression.functionKind === "PMML"
+            : expression.functionKind === FunctionExpressionDefinitionKind.Pmml
             ? (() => {
                 return {
                   __$$element: "context",

@@ -29,7 +29,7 @@ import {
   BeeTableProps,
   DmnBuiltInDataType,
   InsertRowColumnsDirection,
-  ListExpressionDefinition,
+  BoxedList,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -49,7 +49,7 @@ import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn
 export type ROWTYPE = DMN15__tContextEntry;
 
 export function ListExpression(
-  listExpression: ListExpressionDefinition & {
+  listExpression: BoxedList & {
     isNested: boolean;
     parentElementId: string;
   }
@@ -149,7 +149,7 @@ export function ListExpression(
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: ListExpressionDefinition) => {
+      setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
         const newListItems = [];
 
@@ -174,7 +174,7 @@ export function ListExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: ListExpressionDefinition) => {
+      setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
         newItems.splice(args.rowIndex, 1);
         return {
@@ -188,7 +188,7 @@ export function ListExpression(
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: ListExpressionDefinition) => {
+      setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
         newItems.splice(args.rowIndex, 1, undefined as any); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         return {

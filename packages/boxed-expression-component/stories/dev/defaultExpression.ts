@@ -18,16 +18,16 @@
  */
 
 import {
-  ContextExpressionDefinition,
-  DecisionTableExpressionDefinition,
-  ExpressionDefinition,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
+  BoxedContext,
+  BoxedDecisionTable,
+  BoxedExpression,
+  BoxedFunction,
+  BoxedFunctionKind,
   generateUuid,
-  InvocationExpressionDefinition,
-  ListExpressionDefinition,
-  LiteralExpressionDefinition,
-  RelationExpressionDefinition,
+  BoxedInvocation,
+  BoxedList,
+  BoxedLiteral,
+  BoxedRelation,
 } from "../../src/api";
 import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
@@ -39,23 +39,23 @@ import {
 } from "../../src/expressions/DecisionTableExpression";
 
 export function getDefaultExpressionDefinitionByLogicType(
-  logicType: ExpressionDefinition["__$$element"] | undefined,
+  logicType: BoxedExpression["__$$element"] | undefined,
   dataType: string,
   containerWidth: number
-): ExpressionDefinition {
+): BoxedExpression {
   if (logicType === "literalExpression") {
-    const literalExpression: LiteralExpressionDefinition = {
+    const literalExpression: BoxedLiteral = {
       __$$element: "literalExpression",
       "@_typeRef": dataType,
       "@_id": generateUuid(),
     };
     return literalExpression;
   } else if (logicType === "functionDefinition") {
-    const functionExpression: FunctionExpressionDefinition = {
+    const functionExpression: BoxedFunction = {
       __$$element: "functionDefinition",
       "@_typeRef": dataType,
       "@_id": generateUuid(),
-      "@_kind": FunctionExpressionDefinitionKind.Feel,
+      "@_kind": BoxedFunctionKind.Feel,
       expression: {
         __$$element: "literalExpression",
         "@_id": generateUuid(),
@@ -63,7 +63,7 @@ export function getDefaultExpressionDefinitionByLogicType(
     };
     return functionExpression;
   } else if (logicType === "context") {
-    const contextExpression: ContextExpressionDefinition = {
+    const contextExpression: BoxedContext = {
       __$$element: "context",
       "@_typeRef": dataType,
       contextEntry: [
@@ -93,14 +93,14 @@ export function getDefaultExpressionDefinitionByLogicType(
     };
     return contextExpression;
   } else if (logicType === "list") {
-    const listExpression: ListExpressionDefinition = {
+    const listExpression: BoxedList = {
       __$$element: "list",
       "@_typeRef": dataType,
       expression: [undefined!, undefined!, undefined!],
     };
     return listExpression;
   } else if (logicType === "invocation") {
-    const invocationExpression: InvocationExpressionDefinition = {
+    const invocationExpression: BoxedInvocation = {
       __$$element: "invocation",
       "@_typeRef": dataType,
       binding: [
@@ -120,7 +120,7 @@ export function getDefaultExpressionDefinitionByLogicType(
     };
     return invocationExpression;
   } else if (logicType === "relation") {
-    const relationExpression: RelationExpressionDefinition = {
+    const relationExpression: BoxedRelation = {
       __$$element: "relation",
       "@_typeRef": dataType,
       column: [
@@ -162,7 +162,7 @@ export function getDefaultExpressionDefinitionByLogicType(
     };
     return relationExpression;
   } else if (logicType === "decisionTable") {
-    const decisionTableExpression: DecisionTableExpressionDefinition = {
+    const decisionTableExpression: BoxedDecisionTable = {
       __$$element: "decisionTable",
       "@_id": generateUuid(),
       "@_typeRef": dataType,

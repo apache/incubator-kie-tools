@@ -23,17 +23,17 @@ import { useArgs } from "@storybook/preview-api";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../src/expressions";
 import {
   BeeGwtService,
-  ContextExpressionDefinition,
-  DecisionTableExpressionDefinition,
+  BoxedContext,
+  BoxedDecisionTable,
   DmnBuiltInDataType,
-  ExpressionDefinition,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
+  BoxedExpression,
+  BoxedFunction,
+  BoxedFunctionKind,
   generateUuid,
-  InvocationExpressionDefinition,
-  ListExpressionDefinition,
-  LiteralExpressionDefinition,
-  RelationExpressionDefinition,
+  BoxedInvocation,
+  BoxedList,
+  BoxedLiteral,
+  BoxedRelation,
 } from "../src/api";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
@@ -54,30 +54,30 @@ import {
 } from "../src/resizing/WidthConstants";
 
 function getDefaultExpressionDefinitionByLogicType(
-  logicType: ExpressionDefinition["__$$element"] | undefined,
+  logicType: BoxedExpression["__$$element"] | undefined,
   dataType: string,
   containerWidth: number
-): ExpressionDefinition {
+): BoxedExpression {
   if (!logicType) {
     return undefined as any;
   }
   if (logicType === "literalExpression") {
-    const literalExpression: LiteralExpressionDefinition = {
+    const literalExpression: BoxedLiteral = {
       __$$element: "literalExpression",
       "@_typeRef": dataType,
       "@_id": generateUuid(),
     };
     return literalExpression;
   } else if (logicType === "functionDefinition") {
-    const functionExpression: FunctionExpressionDefinition = {
+    const functionExpression: BoxedFunction = {
       __$$element: "functionDefinition",
       "@_typeRef": dataType,
       "@_id": generateUuid(),
-      "@_kind": FunctionExpressionDefinitionKind.Feel,
+      "@_kind": BoxedFunctionKind.Feel,
     };
     return functionExpression;
   } else if (logicType === "context") {
-    const contextExpression: ContextExpressionDefinition = {
+    const contextExpression: BoxedContext = {
       __$$element: "context",
       "@_typeRef": dataType,
       "@_id": generateUuid(),
@@ -93,7 +93,7 @@ function getDefaultExpressionDefinitionByLogicType(
     };
     return contextExpression;
   } else if (logicType === "list") {
-    const listExpression: ListExpressionDefinition = {
+    const listExpression: BoxedList = {
       __$$element: "list",
       "@_typeRef": dataType,
       "@_id": generateUuid(),
@@ -101,7 +101,7 @@ function getDefaultExpressionDefinitionByLogicType(
     };
     return listExpression;
   } else if (logicType === "invocation") {
-    const invocationExpression: InvocationExpressionDefinition = {
+    const invocationExpression: BoxedInvocation = {
       __$$element: "invocation",
       "@_id": generateUuid(),
       "@_typeRef": dataType,
@@ -123,7 +123,7 @@ function getDefaultExpressionDefinitionByLogicType(
     };
     return invocationExpression;
   } else if (logicType === "relation") {
-    const relationExpression: RelationExpressionDefinition = {
+    const relationExpression: BoxedRelation = {
       __$$element: "relation",
       "@_typeRef": dataType,
       "@_id": generateUuid(),
@@ -141,7 +141,7 @@ function getDefaultExpressionDefinitionByLogicType(
     };
     return relationExpression;
   } else if (logicType === "decisionTable") {
-    const decisionTableExpression: DecisionTableExpressionDefinition = {
+    const decisionTableExpression: BoxedDecisionTable = {
       __$$element: "decisionTable",
       "@_id": generateUuid(),
       "@_typeRef": dataType,
@@ -225,7 +225,7 @@ export const dataTypes = [
   { name: "years and months duration", isCustom: false },
 ];
 
-function getDefaultWidths(logicType: ExpressionDefinition["__$$element"] | undefined, id: string) {
+function getDefaultWidths(logicType: BoxedExpression["__$$element"] | undefined, id: string) {
   switch (logicType) {
     case "context":
       return new Map([[id, [CONTEXT_ENTRY_INFO_MIN_WIDTH, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH]]]);
@@ -255,7 +255,7 @@ function getDefaultWidths(logicType: ExpressionDefinition["__$$element"] | undef
 }
 
 export const beeGwtService: BeeGwtService = {
-  getDefaultExpressionDefinition(logicType: ExpressionDefinition["__$$element"] | undefined, dataType: string) {
+  getDefaultExpressionDefinition(logicType: BoxedExpression["__$$element"] | undefined, dataType: string) {
     const expression = getDefaultExpressionDefinitionByLogicType(logicType, dataType, 0);
     return {
       expression: expression,
@@ -270,7 +270,7 @@ export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEdit
   const emptyRef = useRef<HTMLDivElement>(null);
   const [args, updateArgs] = useArgs<BoxedExpressionEditorProps>();
   const argsCopy = useRef(args);
-  const [expressionState, setExpressionState] = useState<ExpressionDefinition | undefined>(args.expression);
+  const [expressionState, setExpressionState] = useState<BoxedExpression | undefined>(args.expression);
   const [widthsByIdState, setWidthsByIdState] = useState<Map<string, number[]>>(args.widthsById);
 
   const expression = useMemo(() => props?.expression ?? expressionState, [expressionState, props?.expression]);

@@ -30,7 +30,7 @@ import {
   BeeTableOperationConfig,
   BeeTableProps,
   DmnBuiltInDataType,
-  FunctionExpressionDefinitionKind,
+  BoxedFunctionKind,
   generateUuid,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -62,7 +62,7 @@ export type JAVA_ROWTYPE = {
   label: string;
 };
 
-export type JavaFunctionExpressionDefinition = DMN15__tFunctionDefinition & {
+export type JavaFunctionProps = DMN15__tFunctionDefinition & {
   "@_kind": "Java";
   __$$element: "functionDefinition";
   isNested: boolean;
@@ -71,11 +71,7 @@ export type JavaFunctionExpressionDefinition = DMN15__tFunctionDefinition & {
 
 const JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX = 2; // 0 is the rowIndex column, 1 is the label column.
 
-export function JavaFunctionExpression({
-  functionExpression,
-}: {
-  functionExpression: JavaFunctionExpressionDefinition & { isNested: boolean };
-}) {
+export function JavaFunctionExpression({ functionExpression }: { functionExpression: JavaFunctionProps }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
@@ -218,7 +214,7 @@ export function JavaFunctionExpression({
     ];
   }, [clazz?.expression, method?.expression]);
 
-  const controllerCell = useFunctionExpressionControllerCell(FunctionExpressionDefinitionKind.Java);
+  const controllerCell = useFunctionExpressionControllerCell(BoxedFunctionKind.Java);
 
   const getRowKey = useCallback((r: ReactTable.Row<JAVA_ROWTYPE>) => {
     return r.id;
@@ -313,7 +309,7 @@ export function JavaFunctionExpression({
 
         // Class
         if (u.rowIndex === 0) {
-          setExpression((prev: JavaFunctionExpressionDefinition) => {
+          setExpression((prev: JavaFunctionProps) => {
             clazz.expression = {
               ...clazz.expression,
               __$$element: "literalExpression",
@@ -334,7 +330,7 @@ export function JavaFunctionExpression({
         }
         // Method
         else if (u.rowIndex === 1) {
-          setExpression((prev: JavaFunctionExpressionDefinition) => {
+          setExpression((prev: JavaFunctionProps) => {
             method.expression = {
               ...method.expression,
               __$$element: "literalExpression",

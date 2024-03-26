@@ -17,11 +17,7 @@
  * under the License.
  */
 
-import {
-  DmnBuiltInDataType,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
-} from "../../../../../src/api";
+import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import { beeGwtService, BoxedExpressionEditorWrapper, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
@@ -36,7 +32,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-export const installmentCalculationExpression: FunctionExpressionDefinition = {
+export const installmentCalculationExpression: BoxedFunction = {
   __$$element: "functionDefinition",
   "@_id": "_1E31E836-0609-4B4C-8FAF-389F774B1FE3",
   "@_label": "Installment calculation",
@@ -51,7 +47,7 @@ export const installmentCalculationExpression: FunctionExpressionDefinition = {
     { "@_id": "_BF350457-ED49-42CD-A087-7E6CBCB0B0E0", "@_name": "Term", "@_typeRef": DmnBuiltInDataType.Number },
     { "@_id": "_F5D2470B-A1F2-4E40-98D7-DBCD286149FB", "@_name": "Amount", "@_typeRef": DmnBuiltInDataType.Number },
   ],
-  "@_kind": FunctionExpressionDefinitionKind.Feel,
+  "@_kind": BoxedFunctionKind.Feel,
   expression: {
     __$$element: "context",
     "@_id": "_7A96C527-9D9E-4199-987B-A6A0C8308296",

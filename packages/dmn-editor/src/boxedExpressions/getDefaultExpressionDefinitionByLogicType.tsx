@@ -18,17 +18,16 @@
  */
 
 import {
-  ContextExpressionDefinition,
-  DecisionTableExpressionDefinition,
   DmnBuiltInDataType,
-  ExpressionDefinition,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
-  InvocationExpressionDefinition,
-  ListExpressionDefinition,
-  LiteralExpressionDefinition,
-  RelationExpressionDefinition,
+  BoxedExpression,
   generateUuid,
+  BoxedLiteral,
+  BoxedFunction,
+  BoxedContext,
+  BoxedList,
+  BoxedInvocation,
+  BoxedRelation,
+  BoxedDecisionTable,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   LITERAL_EXPRESSION_MIN_WIDTH,
@@ -61,18 +60,18 @@ export function getDefaultExpressionDefinitionByLogicType({
   getInputs,
   getDefaultColumnWidth,
 }: {
-  logicType: ExpressionDefinition["__$$element"] | undefined;
+  logicType: BoxedExpression["__$$element"] | undefined;
   typeRef: string;
   expressionHolderName?: string;
   allTopLevelDataTypesByFeelName: DataTypeIndex;
   getInputs?: () => { name: string; typeRef: string | undefined }[] | undefined;
   getDefaultColumnWidth?: (args: { name: string; typeRef: string | undefined }) => number | undefined;
   widthsById: Map<string, number[]>;
-}): ExpressionDefinition {
+}): BoxedExpression {
   const dataType = allTopLevelDataTypesByFeelName.get(typeRef);
 
   if (logicType === "literalExpression") {
-    const literalExpression: LiteralExpressionDefinition = {
+    const literalExpression: BoxedLiteral = {
       __$$element: "literalExpression",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -83,11 +82,11 @@ export function getDefaultExpressionDefinitionByLogicType({
   }
   //
   else if (logicType === "functionDefinition") {
-    const functionExpression: FunctionExpressionDefinition = {
+    const functionExpression: BoxedFunction = {
       __$$element: "functionDefinition",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
-      "@_kind": FunctionExpressionDefinitionKind.Feel,
+      "@_kind": "FEEL",
       expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
     };
     return functionExpression;
@@ -135,7 +134,7 @@ export function getDefaultExpressionDefinitionByLogicType({
       expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
     });
 
-    const contextExpression: ContextExpressionDefinition = {
+    const contextExpression: BoxedContext = {
       __$$element: "context",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -145,7 +144,7 @@ export function getDefaultExpressionDefinitionByLogicType({
     widthsById.set(contextExpression["@_id"]!, [maxWidthBasedOnEntryNames]);
     return contextExpression;
   } else if (logicType === "list") {
-    const listExpression: ListExpressionDefinition = {
+    const listExpression: BoxedList = {
       __$$element: "list",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -155,7 +154,7 @@ export function getDefaultExpressionDefinitionByLogicType({
     };
     return listExpression;
   } else if (logicType === "invocation") {
-    const invocationExpression: InvocationExpressionDefinition = {
+    const invocationExpression: BoxedInvocation = {
       __$$element: "invocation",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -180,7 +179,7 @@ export function getDefaultExpressionDefinitionByLogicType({
   } else if (logicType === "relation") {
     const isSimple = !dataType || !isStruct(dataType.itemDefinition);
 
-    const relationExpression: RelationExpressionDefinition = {
+    const relationExpression: BoxedRelation = {
       __$$element: "relation",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
@@ -279,7 +278,7 @@ export function getDefaultExpressionDefinitionByLogicType({
             };
           });
 
-    const decisionTableExpression: DecisionTableExpressionDefinition = {
+    const decisionTableExpression: BoxedDecisionTable = {
       __$$element: "decisionTable",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,

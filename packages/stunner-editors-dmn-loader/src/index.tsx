@@ -30,7 +30,7 @@ import * as ReactDOM from "react-dom";
 import {
   BeeGwtService,
   DmnDataType,
-  ExpressionDefinition,
+  BoxedExpression,
   PmmlDocument,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
@@ -46,11 +46,8 @@ export interface BoxedExpressionEditorWrapperProps {
   /** The data type elements that can be used in the editor */
   dataTypes: DmnDataType[];
   /**
-   * A boolean used for making (or not) the clear button available on the root expression
+   * A boolean used for making (or not) the "Reset" button available on the root expression
    * Note that this parameter will be used only for the root expression.
-   *
-   * Each expression (internally) has a `noClearAction` property (ExpressionDefinition interface).
-   * You can set directly it for enabling or not the clear button for such expression.
    * */
   isResetSupportedOnRootExpression?: boolean;
   /** PMML parameters */
@@ -72,7 +69,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
 }) => {
   const [expressionWrapper, setExpressionWrapper] = useState<{
     source: "gwt" | "react";
-    expression?: ExpressionDefinition;
+    expression: BoxedExpression;
     widthsById: Map<string, number[]>;
   }>({ source: "gwt", ...gwtExpressionToDmnExpression(gwtExpression) });
 
@@ -96,7 +93,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     getDefaultExpressionDefinition(logicType, dataType) {
       return gwtExpressionToDmnExpression(
         window.beeApiWrapper?.getDefaultExpressionDefinition(gwtLogicType(logicType), dataType)
-      ) as any;
+      );
     },
     openDataTypePage(): void {
       window.beeApiWrapper?.openDataTypePage();
@@ -106,18 +103,29 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     },
   };
 
-  const setExpressionNotifyingUserAction = useCallback(
-    (newExpressionAction: React.SetStateAction<ExpressionDefinition>) => {
-      setExpressionWrapper((prevState) => {
-        return {
-          source: "react",
-          expression:
-            typeof newExpressionAction === "function"
-              ? newExpressionAction(prevState.expression as any)
-              : newExpressionAction,
-          widthsById: prevState.widthsById,
-        };
-      });
+  const setExpressionNotifyingUserAction = useCallback((newExpressionAction: React.SetStateAction<BoxedExpression>) => {
+    setExpressionWrapper((prevState) => {
+      return {
+        source: "react",
+        expression:
+          typeof newExpressionAction === "function"
+            ? newExpressionAction(prevState.expression as any)
+            : newExpressionAction,
+        widthsById: prevState.widthsById,
+      };
+    });
+  }, []);
+
+  const setWidthsByIdNotifyingUserAction = useCallback(
+    (newWidthsByIdAction: React.SetStateAction<Map<string, number[]>>) => {
+      setExpressionWrapper((prevState) => ({
+        source: "react",
+        expression: prevState.expression,
+        widthsById:
+          typeof newWidthsByIdAction === "function"
+            ? newWidthsByIdAction(prevState.widthsById as any)
+            : newWidthsByIdAction,
+      }));
     },
     []
   );
@@ -143,49 +151,19 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     };
   }, [boxedExpressionEditorRootNode]);
 
-  const mapsAreEquals = useCallback((m1: Map<string, number[]>, m2: Map<string, number[]>) => {
-    return (
-      m1.size === m2.size &&
-      Array.from(m1.keys()).every((key) => {
-        const w1 = m1.get(key) ?? [];
-        const w2 = m2.get(key) ?? [];
-        if (w1.length !== w2.length) {
-          return false;
-        } else {
-          for (let i = 0; i < w1.length; i++) {
-            if (w1[i] !== w2[i]) {
-              return false;
-            }
-          }
-          return true;
-        }
-      })
-    );
-  }, []);
-
-  const onWidthsChange = useCallback(
-    (widthsById: Map<string, number[]>) => {
-      if (!mapsAreEquals(expressionWrapper.widthsById, widthsById)) {
-        expressionWrapper.widthsById = widthsById;
-        window.beeApiWrapper?.updateExpression(dmnExpressionToGwtExpression(widthsById, expressionWrapper.expression));
-      }
-    },
-    [expressionWrapper.expression, expressionWrapper.widthsById, mapsAreEquals]
-  );
-
   return (
     <BoxedExpressionEditor
       scrollableParentRef={emptyRef}
       beeGwtService={beeGwtService}
       expressionHolderId={expressionHolderId}
-      expression={expressionWrapper.expression}
-      onExpressionChange={setExpressionNotifyingUserAction}
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlDocuments={pmmlDocuments}
       variables={variables}
+      expression={expressionWrapper.expression}
+      onExpressionChange={setExpressionNotifyingUserAction}
       widthsById={expressionWrapper.widthsById}
-      onWidthsChange={onWidthsChange}
+      onWidthsChange={setWidthsByIdNotifyingUserAction}
     />
   );
 };

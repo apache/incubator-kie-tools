@@ -22,7 +22,7 @@ import * as React from "react";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { PopoverMenu, PopoverMenuRef } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { DmnBuiltInDataType, ExpressionDefinition } from "../../api";
+import { DmnBuiltInDataType, BoxedExpression } from "../../api";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DataTypeSelector } from "./DataTypeSelector";
 import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
@@ -48,7 +48,7 @@ export interface ExpressionDefinitionHeaderMenuProps {
   /** The pre-selected expression name */
   selectedExpressionName: string;
   /** Function to be called when the expression gets updated, passing the most updated version of it */
-  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "@_label" | "@_typeRef">) => void;
+  onExpressionHeaderUpdated: (args: Pick<BoxedExpression, "@_label" | "@_typeRef">) => void;
   position?: PopoverPosition;
 }
 

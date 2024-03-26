@@ -21,7 +21,7 @@ import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popov
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
-import { ExpressionDefinition } from "../../api";
+import { BoxedExpression } from "../../api";
 import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { Resizer } from "../../resizing/Resizer";
 import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContext";
@@ -45,7 +45,7 @@ export interface BeeTableThResizableProps<R extends object> {
   isEditableHeader: boolean;
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getColumnLabel: (groupType: string | undefined) => string | undefined;
-  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "@_label" | "@_typeRef">) => void;
+  onExpressionHeaderUpdated: (args: Pick<BoxedExpression, "@_label" | "@_typeRef">) => void;
   onHeaderClick?: (columnKey: string) => () => void;
   reactTableInstance: ReactTable.TableInstance<R>;
   headerCellInfo: React.ReactElement;

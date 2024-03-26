@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useEffect, useState, useCallback } from "react";
-import { BeeGwtService, DmnBuiltInDataType, ExpressionDefinition } from "../../src/api";
+import { BeeGwtService, DmnBuiltInDataType, BoxedExpression } from "../../src/api";
 import { getDefaultExpressionDefinitionByLogicType } from "./defaultExpression";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorWrapper } from "../boxedExpressionStoriesWrapper";
@@ -91,7 +91,7 @@ const pmmlDocuments = [
   },
 ];
 
-const INITIAL_EXPRESSION: ExpressionDefinition | undefined = undefined;
+const INITIAL_EXPRESSION: BoxedExpression | undefined = undefined;
 const INITIAL_WIDTHS_BY_ID: Map<string, number[]> | undefined = undefined;
 
 //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
@@ -108,16 +108,14 @@ const beeGwtService: BeeGwtService = {
 
 function App(args: BoxedExpressionEditorProps) {
   const [version, setVersion] = useState(-1);
-  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition | undefined>(
-    INITIAL_EXPRESSION
-  );
+  const [expressionDefinition, setExpressionDefinition] = useState<BoxedExpression | undefined>(INITIAL_EXPRESSION);
   const [widthsById, setWidthsById] = useState<Map<string, number[]> | undefined>(INITIAL_WIDTHS_BY_ID);
 
   useEffect(() => {
     setVersion((prev) => prev + 1);
   }, [expressionDefinition]);
 
-  const setSample = useCallback((sample?: ExpressionDefinition, widthsById?: Map<string, number[]>) => {
+  const setSample = useCallback((sample?: BoxedExpression, widthsById?: Map<string, number[]>) => {
     setExpressionDefinition(sample);
     setWidthsById(widthsById);
   }, []);

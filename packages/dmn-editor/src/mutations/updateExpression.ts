@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DMN15__tDefinitions,
   DMN15__tFunctionDefinition,
@@ -30,7 +30,7 @@ export function updateExpression({
   drgElementIndex,
 }: {
   definitions: DMN15__tDefinitions;
-  expression: ExpressionDefinition;
+  expression: BoxedExpression;
   drgElementIndex: number;
 }): void {
   const drgElement = definitions.drgElement?.[drgElementIndex];

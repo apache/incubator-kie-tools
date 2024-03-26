@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ExpressionDefinition, FunctionExpressionDefinitionKind } from "../api/ExpressionDefinition";
+import { BoxedExpression, BoxedFunctionKind } from "../api/BoxedExpression";
 import { ResizingWidth } from "./ResizingWidthsContext";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
@@ -46,7 +46,7 @@ import {
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
 } from "./WidthConstants";
 
-export function getExpressionMinWidth(expression?: ExpressionDefinition): number {
+export function getExpressionMinWidth(expression?: BoxedExpression): number {
   if (!expression || !expression.__$$element) {
     return DEFAULT_MIN_WIDTH;
   } else if (expression.__$$element === "literalExpression") {
@@ -71,20 +71,20 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
 
     // Function
   } else if (expression.__$$element === "functionDefinition") {
-    if (expression["@_kind"] === FunctionExpressionDefinitionKind.Feel) {
+    if (expression["@_kind"] === BoxedFunctionKind.Feel) {
       return (
         Math.max(
           FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
           ...[expression.expression].map((expression) => getExpressionMinWidth(expression))
         ) + FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
-    } else if (expression["@_kind"] === FunctionExpressionDefinitionKind.Java) {
+    } else if (expression["@_kind"] === BoxedFunctionKind.Java) {
       return (
         JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
         JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
         JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
-    } else if (expression["@_kind"] === FunctionExpressionDefinitionKind.Pmml) {
+    } else if (expression["@_kind"] === BoxedFunctionKind.Pmml) {
       return (
         PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
         PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH +
@@ -141,7 +141,7 @@ export function getWidth(id: string | undefined, widthsById: Map<string, number[
  */
 export function getExpressionTotalMinWidth(
   currentWidth: number,
-  expression: ExpressionDefinition | undefined,
+  expression: BoxedExpression | undefined,
   widthsById: Map<string, number[]>
 ): number {
   if (!expression) {
@@ -175,7 +175,7 @@ function getWidthAt(index: number, widths?: number[]): number | undefined {
 }
 
 export function getExpressionResizingWidth(
-  expression: ExpressionDefinition | undefined,
+  expression: BoxedExpression | undefined,
   resizingWidths: Map<string, ResizingWidth>,
   widthsById: Map<string, number[]>
 ): number {
@@ -244,7 +244,7 @@ export function getExpressionResizingWidth(
 
   // Function
   else if (expression.__$$element === "functionDefinition") {
-    if (expression["@_kind"] === FunctionExpressionDefinitionKind.Feel) {
+    if (expression["@_kind"] === BoxedFunctionKind.Feel) {
       return (
         resizingWidth ??
         Math.max(
@@ -254,14 +254,14 @@ export function getExpressionResizingWidth(
           )
         ) + FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
-    } else if (expression["@_kind"] === FunctionExpressionDefinitionKind.Java) {
+    } else if (expression["@_kind"] === BoxedFunctionKind.Java) {
       return (
         resizingWidth ??
         JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
           (getWidthAt(2, widthsById.get(expression["@_id"]!)) ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
           JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
-    } else if (expression["@_kind"] === FunctionExpressionDefinitionKind.Pmml) {
+    } else if (expression["@_kind"] === BoxedFunctionKind.Pmml) {
       return (
         resizingWidth ??
         PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +

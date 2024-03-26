@@ -21,7 +21,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
 import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, FunctionExpressionDefinitionKind, generateUuid } from "../../../src/api";
+import { DmnBuiltInDataType, BoxedFunctionKind, generateUuid } from "../../../src/api";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../src/resizing/WidthConstants";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -46,7 +46,7 @@ export const Base: Story = {
       __$$element: "functionDefinition",
       "@_id": generateUuid(),
       "@_label": "Expression Name",
-      "@_kind": FunctionExpressionDefinitionKind.Feel,
+      "@_kind": BoxedFunctionKind.Feel,
     },
     isResetSupportedOnRootExpression: false,
   },
@@ -62,7 +62,7 @@ export const InstallmentCalculation: Story = {
       "@_id": expressionId,
       "@_label": "Installment calculation",
       "@_typeRef": DmnBuiltInDataType.Number,
-      "@_kind": FunctionExpressionDefinitionKind.Feel,
+      "@_kind": BoxedFunctionKind.Feel,
       formalParameter: [
         {
           "@_id": generateUuid(),
@@ -111,7 +111,7 @@ export const Nested: Story = {
             __$$element: "functionDefinition",
             "@_id": generateUuid(),
             "@_label": "Expression Name",
-            "@_kind": FunctionExpressionDefinitionKind.Feel,
+            "@_kind": BoxedFunctionKind.Feel,
             formalParameter: [],
           },
         },

@@ -29,15 +29,15 @@ import {
   GwtExpressionDefinition,
   GwtExpressionDefinitionLogicType,
 } from "./types";
-import { DmnBuiltInDataType, ExpressionDefinition, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, BoxedExpression, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 
-/** Converts a DMN JSON to an ExpressionDefinition. This convertion is
- *  necessary for historical reasons, as the Boxed Expression Editor was
- *  created prior to the DMN Editor, needing to declare its own model. */
+/** Converts a BoxedExpression to a GwtExpressionDefinition. This convertion is
+ *  necessary for historical reasons, as the GWT-based DMN Editor implements its
+ *  own model for Boxed Expressions. */
 export function beeToGwt(
   widthsById: Map<string, number[]>,
-  expression: ExpressionDefinition | undefined,
+  expression: BoxedExpression | undefined,
   typeRef?: string
 ): GwtExpressionDefinition {
   if (!expression) {

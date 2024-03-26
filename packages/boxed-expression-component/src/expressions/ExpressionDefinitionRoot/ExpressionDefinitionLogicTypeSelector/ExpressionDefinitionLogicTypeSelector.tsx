@@ -31,7 +31,7 @@ import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ExpressionDefinition, generateUuid } from "../../../api";
+import { BoxedExpression, generateUuid } from "../../../api";
 import { useCustomContextMenuHandler } from "../../../contextMenu";
 import { MenuItemWithHelp } from "../../../contextMenu/MenuWithHelp";
 import { PopoverMenu } from "../../../contextMenu/PopoverMenu";
@@ -52,9 +52,9 @@ import "./ExpressionDefinitionLogicTypeSelector.css";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
-  expression?: ExpressionDefinition;
+  expression?: BoxedExpression;
   /** Function to be invoked when logic type changes */
-  onLogicTypeSelected: (logicType: ExpressionDefinition["__$$element"] | undefined) => void;
+  onLogicTypeSelected: (logicType: BoxedExpression["__$$element"] | undefined) => void;
   /** Function to be invoked when logic type is reset */
   onLogicTypeReset: () => void;
   /** Function to be invoked to retrieve the DOM reference to be used for selector placement */
@@ -73,12 +73,12 @@ export function ExpressionDefinitionLogicTypeSelector({
   isNested,
   parentElementId,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
-  const nonSelectableLogicTypes = useMemo<Set<ExpressionDefinition["__$$element"] | undefined>>(
+  const nonSelectableLogicTypes = useMemo<Set<BoxedExpression["__$$element"] | undefined>>(
     () => (isNested ? new Set([undefined]) : new Set([undefined, "functionDefinition"])),
     [isNested]
   );
 
-  const selectableLogicTypes = useMemo<Array<ExpressionDefinition["__$$element"]>>(
+  const selectableLogicTypes = useMemo<Array<BoxedExpression["__$$element"]>>(
     () => [
       "literalExpression",
       "relation",
@@ -141,7 +141,7 @@ export function ExpressionDefinitionLogicTypeSelector({
 
   const selectLogicType = useCallback(
     (_: React.MouseEvent, itemId?: string | number) => {
-      onLogicTypeSelected(itemId as ExpressionDefinition["__$$element"] | undefined);
+      onLogicTypeSelected(itemId as BoxedExpression["__$$element"] | undefined);
       setCurrentlyOpenContextMenu(undefined);
       setPasteExpressionError("");
       setVisibleHelp("");
@@ -174,7 +174,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     return isResetContextMenuOpen && expression && isResetSupported;
   }, [isResetContextMenuOpen, isResetSupported, expression]);
 
-  const logicTypeIcon = useCallback((logicType: ExpressionDefinition["__$$element"] | undefined) => {
+  const logicTypeIcon = useCallback((logicType: BoxedExpression["__$$element"] | undefined) => {
     switch (logicType) {
       case undefined:
         return ``;
@@ -286,7 +286,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     return expression.__$$element !== "literalExpression" && !nonSelectableLogicTypes.has(expression.__$$element);
   }, [expression, isNested, nonSelectableLogicTypes]);
 
-  const logicTypeHelp = useCallback((logicType: ExpressionDefinition["__$$element"] | undefined) => {
+  const logicTypeHelp = useCallback((logicType: BoxedExpression["__$$element"] | undefined) => {
     switch (logicType) {
       case "literalExpression":
         return "A boxed literal expression in DMN is a literal FEEL expression as text in a table cell, typically with a labeled column and an assigned data type.";
@@ -514,7 +514,7 @@ export function assertUnreachable(_x: never): never {
   throw new Error("Didn't expect to get here: " + _x);
 }
 
-function getLogicTypeLabel(logicType: ExpressionDefinition["__$$element"] | undefined) {
+function getLogicTypeLabel(logicType: BoxedExpression["__$$element"] | undefined) {
   switch (logicType) {
     case undefined:
       return "Undefined";

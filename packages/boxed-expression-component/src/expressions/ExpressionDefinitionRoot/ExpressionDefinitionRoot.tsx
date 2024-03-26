@@ -18,14 +18,14 @@
  */
 
 import * as React from "react";
-import { ExpressionDefinition } from "../../api";
+import { BoxedExpression } from "../../api";
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
 import { ExpressionContainer } from "./ExpressionContainer";
 import "./ExpressionDefinitionRoot.css";
 
 export interface ExpressionDefinitionRootProps {
   expressionHolderId: string;
-  expression?: ExpressionDefinition;
+  expression?: BoxedExpression;
   isResetSupported: boolean | undefined;
   expressionName?: string;
 }

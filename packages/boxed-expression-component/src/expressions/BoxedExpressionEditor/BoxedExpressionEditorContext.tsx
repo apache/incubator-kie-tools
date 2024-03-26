@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlDocument } from "../../api";
+import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "../../api";
 import { useRef, useState } from "react";
 import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
@@ -46,7 +46,7 @@ export interface BoxedExpressionEditorContextType {
 }
 
 export interface BoxedExpressionEditorDispatchContextType {
-  setExpression: React.Dispatch<React.SetStateAction<ExpressionDefinition>>;
+  setExpression: React.Dispatch<React.SetStateAction<BoxedExpression>>;
   setWidthById: (id: string, values: (prev: number[]) => number[]) => void;
 }
 
@@ -138,13 +138,13 @@ export function NestedExpressionDispatchContextProvider({
   onSetExpression,
   children,
 }: React.PropsWithChildren<{
-  onSetExpression: (args: { getNewExpression: (prev: ExpressionDefinition) => ExpressionDefinition }) => void;
+  onSetExpression: (args: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => void;
 }>) {
   const { setWidthById } = useBoxedExpressionEditorDispatch();
   const nestedExpressionDispatch = useMemo<BoxedExpressionEditorDispatchContextType>(() => {
     return {
-      setExpression: (newExpressionAction: React.SetStateAction<ExpressionDefinition>) => {
-        function getNewExpression(prev: ExpressionDefinition) {
+      setExpression: (newExpressionAction: React.SetStateAction<BoxedExpression>) => {
+        function getNewExpression(prev: BoxedExpression) {
           return typeof newExpressionAction === "function" ? newExpressionAction(prev) : newExpressionAction;
         }
 

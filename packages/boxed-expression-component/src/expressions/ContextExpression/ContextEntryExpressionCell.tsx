@@ -20,7 +20,7 @@
 import "./ContextEntryExpressionCell.css";
 import * as React from "react";
 import { useCallback } from "react";
-import { ContextExpressionDefinition, DmnBuiltInDataType } from "../../api";
+import { BoxedContext, DmnBuiltInDataType } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
@@ -44,7 +44,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
 
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
+      setExpression((prev: BoxedContext) => {
         const contextEntry = [...(prev.contextEntry ?? [])];
         contextEntry[rowIndex] = {
           ...contextEntry[rowIndex],

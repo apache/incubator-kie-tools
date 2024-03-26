@@ -22,12 +22,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
 import * as Literal from "../../boxedExpressions/Literal/Literal.stories";
 import * as Context from "../../boxedExpressions/Context/Context.stories";
-import {
-  DmnBuiltInDataType,
-  ExpressionDefinition,
-  FunctionExpressionDefinitionKind,
-  LiteralExpressionDefinition,
-} from "../../../src/api";
+import { DmnBuiltInDataType, BoxedExpression, BoxedFunctionKind, BoxedLiteral } from "../../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -43,12 +38,12 @@ export const CanDrive: Story = {
   args: {
     ...Literal.CanDrive.args,
     expression: {
-      ...(Literal.CanDrive.args!.expression! as LiteralExpressionDefinition),
+      ...(Literal.CanDrive.args!.expression! as BoxedLiteral),
     },
   },
 };
 
-const expression: ExpressionDefinition = {
+const expression: BoxedExpression = {
   "@_id": "_577B0672-0DCE-48E2-A387-A06D89770346",
   "@_typeRef": DmnBuiltInDataType.Boolean,
   __$$element: "context",
@@ -90,7 +85,7 @@ const expression: ExpressionDefinition = {
             "@_typeRef": DmnBuiltInDataType.Number,
           },
         ],
-        "@_kind": FunctionExpressionDefinitionKind.Feel,
+        "@_kind": BoxedFunctionKind.Feel,
         expression: {
           "@_id": "_C1F325BF-D812-4192-AA90-B820C892EA9A",
           "@_typeRef": DmnBuiltInDataType.Undefined,

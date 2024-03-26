@@ -25,7 +25,7 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
-  DecisionTableExpressionDefinition,
+  BoxedDecisionTable,
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
@@ -93,7 +93,7 @@ function createOutputEntry() {
 }
 
 export function DecisionTableExpression(
-  decisionTableExpression: DecisionTableExpressionDefinition & {
+  decisionTableExpression: BoxedDecisionTable & {
     isNested: boolean;
     parentElementId: string;
   }
@@ -452,7 +452,7 @@ export function DecisionTableExpression(
 
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
+      setExpression((prev: BoxedDecisionTable) => {
         let previousExpression = { ...prev };
 
         cellUpdates.forEach((cellUpdate) => {
@@ -516,7 +516,7 @@ export function DecisionTableExpression(
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
+      setExpression((prev: BoxedDecisionTable) => {
         const n = { ...prev };
         for (const columnUpdate of columnUpdates) {
           // This is the Output column aggregator column, which represents the entire expression name and dataType
@@ -590,7 +590,7 @@ export function DecisionTableExpression(
           ...prev,
           "@_hitPolicy": hitPolicy as DMN15__tHitPolicy,
           "@_aggregation": HIT_POLICIES_THAT_SUPPORT_AGGREGATION.includes(hitPolicy)
-            ? (prev as DecisionTableExpressionDefinition)["@_aggregation"]
+            ? (prev as BoxedDecisionTable)["@_aggregation"]
             : undefined!,
         };
       });
@@ -684,7 +684,7 @@ export function DecisionTableExpression(
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
+      setExpression((prev: BoxedDecisionTable) => {
         const newRules = [...(prev.rule ?? [])];
         const newItems = [];
 
@@ -754,7 +754,7 @@ export function DecisionTableExpression(
 
       const sectionIndex = getSectionIndexForGroupType(args.beforeIndex, groupType);
 
-      setExpression((prev: DecisionTableExpressionDefinition) => {
+      setExpression((prev: BoxedDecisionTable) => {
         const newRules = [...(prev.rule ?? [])];
 
         switch (groupType) {
@@ -934,7 +934,7 @@ export function DecisionTableExpression(
 
   const onColumnDeleted = useCallback(
     (args: { columnIndex: number; groupType: DecisionTableColumnType }) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
+      setExpression((prev: BoxedDecisionTable) => {
         const groupType = args.groupType;
         if (!groupType) {
           throw new Error("Column without groupType for Decision table.");
@@ -1008,7 +1008,7 @@ export function DecisionTableExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
+      setExpression((prev: BoxedDecisionTable) => {
         const newRules = [...(prev.rule ?? [])];
         newRules.splice(args.rowIndex, 1);
         return {
@@ -1022,7 +1022,7 @@ export function DecisionTableExpression(
 
   const onRowDuplicated = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: DecisionTableExpressionDefinition) => {
+      setExpression((prev: BoxedDecisionTable) => {
         const duplicatedRule = {
           "@_id": generateUuid(),
           inputEntry: prev.rule![args.rowIndex].inputEntry?.map((input) => ({

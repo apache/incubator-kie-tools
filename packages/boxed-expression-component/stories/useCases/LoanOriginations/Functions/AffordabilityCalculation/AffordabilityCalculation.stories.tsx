@@ -17,11 +17,7 @@
  * under the License.
  */
 
-import {
-  DmnBuiltInDataType,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
-} from "../../../../../src/api";
+import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import { beeGwtService, BoxedExpressionEditorWrapper, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
@@ -37,7 +33,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-export const affordabilityCalculationExpression: FunctionExpressionDefinition = {
+export const affordabilityCalculationExpression: BoxedFunction = {
   __$$element: "functionDefinition",
   "@_id": "_72FC1D95-7AB8-4459-9815-D2EC186DD40A",
   "@_label": "Affordability calculation",
@@ -69,7 +65,7 @@ export const affordabilityCalculationExpression: FunctionExpressionDefinition = 
       "@_typeRef": DmnBuiltInDataType.Number,
     },
   ],
-  "@_kind": FunctionExpressionDefinitionKind.Feel,
+  "@_kind": BoxedFunctionKind.Feel,
   expression: {
     __$$element: "context",
     "@_id": "_C46876F8-8596-4064-9291-AE059DE73F84",

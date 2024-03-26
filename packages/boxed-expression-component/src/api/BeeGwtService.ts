@@ -17,17 +17,17 @@
  * under the License.
  */
 
-import { ExpressionDefinition } from "./ExpressionDefinition";
+import { BoxedExpression } from "./BoxedExpression";
 
 /**
  * This interface defines all the API methods which BoxedExpressionEditor component can use to dialog with GWT Layer
  */
 export interface BeeGwtService {
   getDefaultExpressionDefinition(
-    logicType: ExpressionDefinition["__$$element"] | undefined,
+    logicType: BoxedExpression["__$$element"] | undefined,
     typeRef: string,
     isRoot?: boolean
-  ): { expression: ExpressionDefinition; widthsById: Map<string, number[]> };
+  ): { expression: BoxedExpression; widthsById: Map<string, number[]> };
 
   openDataTypePage: () => void; // Just open the data types tab
 

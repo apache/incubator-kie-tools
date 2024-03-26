@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { ContextExpressionDefinition } from "../../api";
+import { BoxedContext } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
@@ -27,7 +27,7 @@ import {
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 
 export function ContextResultExpressionCell(props: {
-  contextExpression: ContextExpressionDefinition;
+  contextExpression: BoxedContext;
   rowIndex: number;
   columnIndex: number;
 }) {
@@ -35,7 +35,7 @@ export function ContextResultExpressionCell(props: {
 
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
+      setExpression((prev: BoxedContext) => {
         const entries = [...(prev.contextEntry ?? [])];
 
         const index = props.rowIndex < 0 ? entries.length : props.rowIndex;

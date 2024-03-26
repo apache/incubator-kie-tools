@@ -18,7 +18,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { ExpressionDefinition } from "../api";
+import { BoxedExpression } from "../api";
 import { BeeTableRef } from "../expressions";
 import {
   NestedExpressionContainerContextType,
@@ -31,7 +31,7 @@ import { getExpressionMinWidth, getExpressionResizingWidth } from "./WidthMaths"
 
 export function useNestedExpressionResizingWidthValue(
   isPivoting: boolean,
-  nestedExpressions: ExpressionDefinition[],
+  nestedExpressions: BoxedExpression[],
   fixedColumnActualWidth: number,
   fixedColumnResizingWidth: ResizingWidth,
   fixedColumnMinWidth: number,
@@ -48,7 +48,7 @@ export function useNestedExpressionResizingWidthValue(
       return nestedExpressionContainer.resizingWidth.value - fixedColumnResizingWidth.value - extraWidth;
     }
 
-    const nestedPivotingExpression: ExpressionDefinition | undefined = nestedExpressions.filter(
+    const nestedPivotingExpression: BoxedExpression | undefined = nestedExpressions.filter(
       (e) => resizingWidths.get(e?.["@_id"] ?? "")?.isPivoting ?? false
     )[0];
 
@@ -87,7 +87,7 @@ export function useNestedExpressionResizingWidthValue(
 }
 
 export function useNestedExpressionMinWidth(
-  nestedExpressions: ExpressionDefinition[],
+  nestedExpressions: BoxedExpression[],
   fixedColumnResizingWidth: ResizingWidth,
   nestedExpressionMinWidth: number,
   extraWidth: number
@@ -109,7 +109,7 @@ export function useNestedExpressionMinWidth(
 }
 
 export function useNestedExpressionActualWidth(
-  nestedExpressions: ExpressionDefinition[],
+  nestedExpressions: BoxedExpression[],
   fixedColumnActualWidth: number,
   extraWidth: number,
   widthsById: Map<string, number[]>
@@ -145,13 +145,13 @@ export function useNestedExpressionContainerWithNestedExpressions({
   flexibleColumnIndex,
   widthsById,
 }: {
-  nestedExpressions: ExpressionDefinition[];
+  nestedExpressions: BoxedExpression[];
   fixedColumnActualWidth: number;
   fixedColumnResizingWidth: ResizingWidth;
   fixedColumnMinWidth: number;
   nestedExpressionMinWidth: number;
   extraWidth: number;
-  expression: ExpressionDefinition;
+  expression: BoxedExpression;
   flexibleColumnIndex: number;
   widthsById: Map<string, number[]>;
 }) {

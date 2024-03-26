@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DmnBuiltInDataType, ExpressionDefinition } from "../../api";
+import { DmnBuiltInDataType, BoxedExpression } from "../../api";
 import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
@@ -30,7 +30,7 @@ import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/
 
 export interface Entry {
   variable: DMN15__tInformationItem;
-  expression: ExpressionDefinition | undefined;
+  expression: BoxedExpression | undefined;
 }
 
 export interface ContextEntryInfoCellProps {
@@ -58,7 +58,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     ({
       "@_label": name = DEFAULT_EXPRESSION_NAME,
       "@_typeRef": dataType = DmnBuiltInDataType.Undefined,
-    }: Pick<ExpressionDefinition, "@_label" | "@_typeRef">) => {
+    }: Pick<BoxedExpression, "@_label" | "@_typeRef">) => {
       onEntryUpdate(rowIndex, {
         ...entry,
         // entryExpression and entryInfo must always have the same `dataType` and `name`, as those are dictated by the entryInfo.
@@ -67,7 +67,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
               ...entryExpression,
               "@_label": name,
               "@_typeRef": dataType,
-            } as ExpressionDefinition)
+            } as BoxedExpression)
           : entryExpression,
         variable: { ...entryInfo, "@_name": name, "@_typeRef": dataType },
       });

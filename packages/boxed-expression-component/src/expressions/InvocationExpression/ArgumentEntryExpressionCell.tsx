@@ -19,7 +19,7 @@
 
 import "../ContextExpression/ContextEntryExpressionCell.css";
 import * as React from "react";
-import { DmnBuiltInDataType, ExpressionDefinition, InvocationExpressionDefinition } from "../../api";
+import { DmnBuiltInDataType, BoxedExpression, BoxedInvocation } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
@@ -29,7 +29,7 @@ import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionConta
 import { DMN15__tBinding } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export type Entry = {
-  expression: ExpressionDefinition | undefined;
+  expression: BoxedExpression | undefined;
 };
 
 export interface ArgumentEntryExpressionCellProps {
@@ -52,7 +52,7 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<ArgumentEntryE
 
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {
-      setExpression((prev: InvocationExpressionDefinition) => {
+      setExpression((prev: BoxedInvocation) => {
         const argumentEntries = [...(prev.binding ?? [])];
         argumentEntries[rowIndex] = {
           ...argumentEntries[rowIndex],
