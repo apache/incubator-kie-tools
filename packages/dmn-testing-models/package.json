@@ -12,11 +12,13 @@
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
+  "main": "dist/index.js",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
-    "build:dev": "run-script-os",
+    "build:dev": "tsc -p tsconfig.json && run-script-os",
     "build:dev:linux:darwin": "mvn clean generate-resources",
     "build:dev:win32": "pnpm powershell \"mvn clean generate-resources\"",
     "build:prod": "pnpm build:dev",
@@ -26,9 +28,11 @@
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6"
+    "run-script-os": "^1.1.6",
+    "typescript": "^4.6.2"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

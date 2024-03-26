@@ -21,36 +21,49 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 
+const VALID_MODELS_DIRECTORY = "valid_models";
+
+const DMN_1_5_DIRECTORY = "DMNv1_5";
+const DMN_1_x_DIRECTORY = "DMNv1_X";
+
+const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
+path.sep;
 const files = [
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn",
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/DateToDateTimeFunction.dmn",
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/ForLoopDatesEvaluate.dmn",
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn",
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/ListReplaceEvaluate.dmn",
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5/TypeConstraintsChecks.dmn",
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_x/OneOfEachType.dmn",
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_x/allTypes.dmn",
+  ".." +
+    path.sep +
+    VALID_MODELS_DIRECTORY +
+    path.sep +
+    DMN_1_5_DIRECTORY +
+    path.sep +
+    "AllowedValuesChecksInsideCollection.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "DateToDateTimeFunction.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "ForLoopDatesEvaluate.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "Imported_Model_Unamed.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "Importing_EmptyNamed_Model.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "ListReplaceEvaluate.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "TypeConstraintsChecks.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY + path.sep + "OneOfEachType.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY + path.sep + "allTypes.dmn",
 ];
 
 const testing_models_paths = [
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_5",
-  "../node_modules/@kie-tools/dmn-testing-models/dist/valid_models/DMNv1_x",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY,
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY,
 ];
 
 describe("idempotency", () => {
   for (const file of files) {
-    testFile(path.join(__dirname, file));
+    testFile(path.join(dmnTestingModels, file));
   }
   for (const models_paths of testing_models_paths) {
-    const parent_path = path.join(__dirname, models_paths);
+    const parent_path = path.join(dmnTestingModels, models_paths);
     testDirectory(parent_path);
   }
 });
 
-function testDirectory(fullPathOfModels: string) {
-  fs.readdirSync(fullPathOfModels).forEach((file) => {
-    const child_path = path.join(fullPathOfModels, file);
+function testDirectory(normalizedFsPathRelativeToTheDirectory: string) {
+  fs.readdirSync(normalizedFsPathRelativeToTheDirectory).forEach((file) => {
+    const child_path = path.join(normalizedFsPathRelativeToTheDirectory, file);
     const stats = fs.statSync(child_path);
     if (stats.isFile()) {
       testFile(child_path);
@@ -60,9 +73,9 @@ function testDirectory(fullPathOfModels: string) {
   });
 }
 
-function testFile(posixPathRelativeToTheFile: string) {
-  test(posixPathRelativeToTheFile.substring(posixPathRelativeToTheFile.lastIndexOf("/") + 1), () => {
-    const xml_original = fs.readFileSync(posixPathRelativeToTheFile, "utf-8");
+function testFile(normalizedFsPathRelativeToTheFile: string) {
+  test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf("/") + 1), () => {
+    const xml_original = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
 
     const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
     const json = parser.parse();
