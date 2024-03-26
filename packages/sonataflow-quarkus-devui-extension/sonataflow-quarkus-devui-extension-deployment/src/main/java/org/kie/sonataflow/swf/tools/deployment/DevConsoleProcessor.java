@@ -120,7 +120,7 @@ public class DevConsoleProcessor {
                                           .componentLink("qwc-sonataflow-quarkus-devui.js")
                                           .metadata("page", "Monitoring")
                                           .title("Monitoring")
-                                          .icon("font-awesome-solid:chart-mixed"));
+                                          .icon("font-awesome-solid:chart-simple"));
 
         return cardPageBuildItem;
     }
