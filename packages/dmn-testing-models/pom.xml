@@ -46,24 +46,13 @@
         <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
     </scm>
 
-    <developers>
-        <developer>
-            <name>All developers are listed in the KIE GitHub organization</name>
-            <url>https://github.com/orgs/kiegroup/people</url>
-        </developer>
-    </developers>
-
     <repositories>
         <repository>
-            <!-- Duplicating the Maven Central repository here (as it is already coming from Super
-            POM) makes the build much faster,
-                 as the Maven Central is now treated as the first (default) repository (because it is before the
-            Apache Nexus one).
-                 Artifacts with release (fixed) versions are being downloaded primarily from there. Without the
-            central being the
-                 first repository the Apache Nexus would be contacted first and since it is quite slow it slows down
-            the build.
-                 We use Apache repo only to download our SNAPSHOTs. -->
+      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
+           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
+           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
+           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
+           We use Apache repo only to download our SNAPSHOTs. -->
             <id>central</id>
             <name>Central Repository</name>
             <url>https://repo.maven.apache.org/maven2</url>
