@@ -30,7 +30,7 @@
     <packaging>jar</packaging>
 
     <name>DMN Testing Models</name>
-    <description>Testing models for DMN editor</description>
+    <description>Testing models for DMN marshaller</description>
 
     <licenses>
         <license>

@@ -4,5 +4,6 @@
   },
   "files.associations": {
     "*.yaml.helm": "helm"
-  }
+  },
+  "wcaForGP.enable": true
 }
