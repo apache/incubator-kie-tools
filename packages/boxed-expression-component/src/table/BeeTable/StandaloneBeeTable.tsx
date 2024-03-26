@@ -68,6 +68,7 @@ export function StandaloneBeeTable<R extends object>(
               scrollableParentRef={props.scrollableParentRef}
               dataTypes={dataTypes}
               expressionHolderId={""}
+              expressionHolderTypeRef={""}
               expression={expression}
               onExpressionChange={onExpressionChange}
               onWidthsChange={onWidthsChange}

@@ -45,7 +45,8 @@ export interface ExpressionContainerProps {
   isResetSupported: boolean;
   rowIndex: number;
   columnIndex: number;
-  parentElementId?: string;
+  parentElementId: string | undefined;
+  parentTypeRef: string | undefined;
   expressionName?: string;
 }
 
@@ -56,6 +57,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   rowIndex,
   columnIndex,
   parentElementId,
+  parentTypeRef,
   expressionName,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -184,7 +186,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       const { expression: defaultExpression, widthsById: defaultWidthsById } =
         beeGwtService!.getDefaultExpressionDefinition(
           logicType,
-          expressionTypeRef ?? DmnBuiltInDataType.Undefined,
+          parentTypeRef ?? expressionTypeRef ?? DmnBuiltInDataType.Undefined,
           !isNested
         );
 
@@ -244,6 +246,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       expressionName,
       isNested,
       parentElementId,
+      parentTypeRef,
       setExpression,
       setWidthById,
     ]

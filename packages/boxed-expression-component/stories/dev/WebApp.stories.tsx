@@ -96,9 +96,9 @@ const INITIAL_WIDTHS_BY_ID: Map<string, number[]> | undefined = undefined;
 
 //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
 const beeGwtService: BeeGwtService = {
-  getDefaultExpressionDefinition(logicType, dataType) {
+  getDefaultExpressionDefinition(logicType, typeRef) {
     return {
-      expression: getDefaultExpressionDefinitionByLogicType(logicType, dataType, 0),
+      expression: getDefaultExpressionDefinitionByLogicType(logicType, typeRef, 0),
       widthsById: new Map(),
     };
   },

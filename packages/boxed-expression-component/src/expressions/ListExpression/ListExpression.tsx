@@ -142,9 +142,11 @@ export function ListExpression(
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     (): { [p: string]: ({ rowIndex, data, columnIndex }: BeeTableCellProps<ROWTYPE>) => JSX.Element } => ({
-      [expressionHolderId]: (props) => <ListItemCell parentElementId={listExpression.parentElementId} {...props} />,
+      [expressionHolderId]: (props) => (
+        <ListItemCell parentElementId={listExpression.parentElementId} listExpression={listExpression} {...props} />
+      ),
     }),
-    [expressionHolderId, listExpression.parentElementId]
+    [expressionHolderId, listExpression]
   );
 
   const onRowAdded = useCallback(
@@ -205,11 +207,11 @@ export function ListExpression(
   }, [listExpression.isNested]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
+    ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
         "@_label": name,
-        "@_typeRef": dataType,
+        "@_typeRef": typeRef,
       }));
     },
     [setExpression]

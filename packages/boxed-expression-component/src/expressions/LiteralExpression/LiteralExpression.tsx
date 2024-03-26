@@ -73,11 +73,11 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
   );
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
+    ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression(() => ({
         ...literalExpression,
         "@_label": name,
-        "@_typeRef": dataType,
+        "@_typeRef": typeRef,
       }));
     },
     [literalExpression, setExpression]

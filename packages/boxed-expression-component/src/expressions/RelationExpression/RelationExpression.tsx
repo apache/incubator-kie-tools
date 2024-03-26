@@ -50,7 +50,7 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { DMN15__tList, DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./RelationExpression.css";
 
-type ROWTYPE = DMN15__tList;
+type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
 export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
@@ -126,7 +126,7 @@ export function RelationExpression(
     return (relationExpression.column ?? []).map((c, index) => ({
       ...c,
       minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-      width: getColumnWidth(index, widths),
+      width: getColumnWidth(index + 1, widths),
     }));
   }, [getColumnWidth, relationExpression.column, widths]);
 
@@ -202,17 +202,14 @@ export function RelationExpression(
     () =>
       rows.map((row) => {
         return columns.reduce(
-          (tableRow, column, columnIndex) => {
-            if (row.expression?.[columnIndex].__$$element === "literalExpression") {
-              const value = (row.expression?.[columnIndex] as DMN15__tLiteralExpression).text?.__$$text ?? "";
-              (tableRow as any)[column["@_id"]!] = {
-                ...(tableRow as any)[column["@_id"]!],
-                content: value,
-              };
+          (tableRow: ROWTYPE, column, columnIndex) => {
+            const cellExpression = row.expression?.[columnIndex];
+            if (cellExpression?.__$$element === "literalExpression") {
+              tableRow[column["@_id"]!] = cellExpression.text?.__$$text ?? "";
             }
             return tableRow;
           },
-          { id: row["@_id"] } as ROWTYPE
+          { id: row["@_id"] }
         );
       }),
     [rows, columns]
@@ -221,31 +218,30 @@ export function RelationExpression(
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       setExpression((prev: BoxedRelation) => {
-        const n = { ...prev };
-        cellUpdates.forEach((u) => {
-          const newRows = [...(n.row ?? [])];
+        let previousExpression = { ...prev };
 
-          // The expressions are always literal
-          const newCells = [...(newRows[u.rowIndex].expression ?? [])];
-          if (newCells[u.columnIndex].__$$element == "literalExpression") {
-            newCells[u.columnIndex] = {
-              __$$element: "literalExpression",
-              ...(newCells[u.columnIndex] as DMN15__tLiteralExpression),
-              text: {
-                __$$text: u.value,
-              },
-            };
-          }
-
-          newRows[u.rowIndex] = {
-            ...newRows[u.rowIndex],
-            expression: newCells,
+        cellUpdates.forEach((cellUpdate) => {
+          const newRows = [...(previousExpression.row ?? [])];
+          const newExpressions = [...(newRows[cellUpdate.rowIndex].expression ?? [])];
+          newExpressions[cellUpdate.columnIndex] = {
+            ...newExpressions[cellUpdate.columnIndex],
+            __$$element: "literalExpression",
+            text: {
+              __$$text: cellUpdate.value,
+            },
+          };
+          newRows[cellUpdate.rowIndex] = {
+            ...newRows[cellUpdate.rowIndex],
+            expression: newExpressions,
           };
 
-          n.row = newRows;
+          previousExpression = {
+            ...previousExpression,
+            row: newRows,
+          };
         });
 
-        return n;
+        return previousExpression;
       });
     },
     [setExpression]
@@ -254,20 +250,18 @@ export function RelationExpression(
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev: BoxedRelation) => {
-        const n = {
-          ...prev,
-        };
+        const n = { ...prev };
         const newColumns = [...(prev.column ?? [])];
 
         for (const u of columnUpdates) {
           if (u.column.depth === 0) {
-            n["@_typeRef"] = u.dataType;
+            n["@_typeRef"] = u.typeRef;
             n["@_label"] = u.name;
           } else {
             newColumns[u.columnIndex] = {
               ...newColumns[u.columnIndex],
               "@_name": u.name,
-              "@_typeRef": u.dataType,
+              "@_typeRef": u.typeRef,
             };
           }
         }

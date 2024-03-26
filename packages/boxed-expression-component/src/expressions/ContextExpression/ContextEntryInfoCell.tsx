@@ -57,19 +57,19 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   const onContextEntryInfoUpdated = useCallback(
     ({
       "@_label": name = DEFAULT_EXPRESSION_NAME,
-      "@_typeRef": dataType = DmnBuiltInDataType.Undefined,
+      "@_typeRef": typeRef = DmnBuiltInDataType.Undefined,
     }: Pick<BoxedExpression, "@_label" | "@_typeRef">) => {
       onEntryUpdate(rowIndex, {
         ...entry,
-        // entryExpression and entryInfo must always have the same `dataType` and `name`, as those are dictated by the entryInfo.
+        // entryExpression and entryInfo must always have the same `typeRef` and `name`, as those are dictated by the entryInfo.
         expression: entryExpression
           ? ({
               ...entryExpression,
               "@_label": name,
-              "@_typeRef": dataType,
+              "@_typeRef": typeRef,
             } as BoxedExpression)
           : entryExpression,
-        variable: { ...entryInfo, "@_name": name, "@_typeRef": dataType },
+        variable: { ...entryInfo, "@_name": name, "@_typeRef": typeRef },
       });
     },
     [onEntryUpdate, rowIndex, entry, entryExpression, entryInfo]
@@ -82,7 +82,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
       () => ({
         getWidthToFitData: () => {
           const name = ref.current!.querySelector(".expression-info-name")!;
-          const dataType = ref.current!.querySelector(".expression-info-data-type")!;
+          const typeRef = ref.current!.querySelector(".expression-info-data-type")!;
 
           const padding = 8 * 2; // 8px for each side, comes from .entry-info div
           const border = 2; // that's the td border.
@@ -92,7 +92,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
             border +
             Math.max(
               getTextWidth(name.textContent ?? "", getCanvasFont(name)),
-              getTextWidth(dataType.textContent ?? "", getCanvasFont(dataType))
+              getTextWidth(typeRef.textContent ?? "", getCanvasFont(typeRef))
             )
           );
         },

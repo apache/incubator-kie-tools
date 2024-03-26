@@ -226,7 +226,7 @@ export function InvocationExpression(
         } else {
           setExpression((prev: BoxedInvocation) => ({
             ...prev,
-            "@_typeRef": u.dataType,
+            "@_typeRef": u.typeRef,
             "@_label": u.name,
           }));
         }

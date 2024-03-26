@@ -114,12 +114,12 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
   );
 
   const onDataTypeChange = useCallback(
-    (dataType: DmnBuiltInDataType) => {
+    (typeRef: string) => {
       setExpression((prev: BoxedFunction) => {
         const newParameters = [...(prev.formalParameter ?? [])];
         newParameters[index] = {
           ...newParameters[index],
-          "@_typeRef": dataType,
+          "@_typeRef": typeRef,
         };
         return {
           ...prev,

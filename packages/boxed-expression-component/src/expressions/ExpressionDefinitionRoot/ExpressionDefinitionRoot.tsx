@@ -25,6 +25,7 @@ import "./ExpressionDefinitionRoot.css";
 
 export interface ExpressionDefinitionRootProps {
   expressionHolderId: string;
+  expressionHolderTypeRef: string;
   expression?: BoxedExpression;
   isResetSupported: boolean | undefined;
   expressionName?: string;
@@ -34,6 +35,7 @@ export function ExpressionDefinitionRoot({
   expressionHolderId,
   expression,
   isResetSupported = true,
+  expressionHolderTypeRef,
   expressionName,
 }: ExpressionDefinitionRootProps) {
   return (
@@ -47,6 +49,7 @@ export function ExpressionDefinitionRoot({
           columnIndex={0}
           parentElementId={expressionHolderId}
           expressionName={expressionName}
+          parentTypeRef={expressionHolderTypeRef}
         />
       </div>
     </ResizingWidthsContextProvider>

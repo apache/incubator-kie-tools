@@ -67,6 +67,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={contextEntry[rowIndex]["@_id"]}
+        parentTypeRef={contextEntry[rowIndex].variable?.["@_typeRef"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

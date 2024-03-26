@@ -32,6 +32,7 @@ import {
   DmnDataType,
   BoxedExpression,
   PmmlDocument,
+  DmnBuiltInDataType,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 import { GwtExpressionDefinition } from "./types";
@@ -156,6 +157,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
       scrollableParentRef={emptyRef}
       beeGwtService={beeGwtService}
       expressionHolderId={expressionHolderId}
+      expressionHolderTypeRef={expressionWrapper.expression?.["@_typeRef"] || DmnBuiltInDataType.Undefined}
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlDocuments={pmmlDocuments}

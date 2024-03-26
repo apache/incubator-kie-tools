@@ -37,6 +37,8 @@ export interface BoxedExpressionEditorProps {
   beeGwtService?: BeeGwtService;
   /** Identifier of the Decision or BKM containing `expression` */
   expressionHolderId: string;
+  /** TypeRef of the Decision or BKM containing `expression` */
+  expressionHolderTypeRef: string;
   /** The name of the expression */
   expressionName?: string;
   /** The boxed expression itself */
@@ -62,6 +64,7 @@ export interface BoxedExpressionEditorProps {
 export function BoxedExpressionEditor({
   dataTypes,
   expressionHolderId,
+  expressionHolderTypeRef,
   expression,
   onExpressionChange,
   beeGwtService,
@@ -84,6 +87,7 @@ export function BoxedExpressionEditor({
         scrollableParentRef={scrollableParentRef}
         beeGwtService={beeGwtService}
         expressionHolderId={expressionHolderId}
+        expressionHolderTypeRef={expressionHolderTypeRef}
         expression={expression}
         onExpressionChange={onExpressionChange}
         onWidthsChange={onWidthsChange}
@@ -95,6 +99,7 @@ export function BoxedExpressionEditor({
       >
         <ExpressionDefinitionRoot
           expressionHolderId={expressionHolderId}
+          expressionHolderTypeRef={expressionHolderTypeRef}
           expression={expression}
           isResetSupported={isResetSupportedOnRootExpression}
           expressionName={expressionName}

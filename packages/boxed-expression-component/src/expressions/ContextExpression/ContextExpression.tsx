@@ -193,11 +193,11 @@ export function ContextExpression(
   }, [contextExpression, entryInfoWidth, id, setEntryInfoWidth]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
+    ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
         "@_label": name,
-        "@_typeRef": dataType,
+        "@_typeRef": typeRef,
       }));
     },
     [setExpression]

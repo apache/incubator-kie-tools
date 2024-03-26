@@ -31,7 +31,7 @@ import { BeeTableThController } from "./BeeTableThController";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 
 export interface BeeTableColumnUpdate<R extends object> {
-  dataType: string;
+  typeRef: string;
   name: string;
   column: ReactTable.ColumnInstance<R>;
   columnIndex: number;
@@ -113,12 +113,12 @@ export function BeeTableHeader<R extends object>({
     ) => (args: Pick<BoxedExpression, "@_label" | "@_typeRef">) => void
   >(
     (column, columnIndex) => {
-      return ({ "@_label": name = "", "@_typeRef": dataType = DmnBuiltInDataType.Undefined }) => {
+      return ({ "@_label": name = "", "@_typeRef": typeRef = DmnBuiltInDataType.Undefined }) => {
         onColumnUpdates?.([
           {
             // Subtract one because of the rowIndex column.
             columnIndex: columnIndex - 1,
-            dataType,
+            typeRef,
             name,
             column,
           },
@@ -191,8 +191,8 @@ export function BeeTableHeader<R extends object>({
               columnIndex={columnIndex}
               rowIndex={rowIndex}
               onColumnAdded={onColumnAdded}
-              onExpressionHeaderUpdated={({ "@_label": name, "@_typeRef": dataType }) =>
-                onExpressionHeaderUpdated(column, columnIndex)({ "@_label": name, "@_typeRef": dataType })
+              onExpressionHeaderUpdated={({ "@_label": name, "@_typeRef": typeRef }) =>
+                onExpressionHeaderUpdated(column, columnIndex)({ "@_label": name, "@_typeRef": typeRef })
               }
               lastColumnMinWidth={
                 columnIndex === reactTableInstance.allColumns.length - 1 ? lastColumnMinWidth : undefined
@@ -205,11 +205,11 @@ export function BeeTableHeader<R extends object>({
                   );
                 } else {
                   const name = thRef.current!.querySelector(".expression-info-name")!;
-                  const dataType = thRef.current!.querySelector(".expression-info-data-type")!;
+                  const typeRef = thRef.current!.querySelector(".expression-info-data-type")!;
                   return Math.ceil(
                     Math.max(
                       getTextWidth(name.textContent ?? "", getCanvasFont(name)),
-                      getTextWidth(dataType.textContent ?? "", getCanvasFont(dataType))
+                      getTextWidth(typeRef.textContent ?? "", getCanvasFont(typeRef))
                     )
                   );
                 }

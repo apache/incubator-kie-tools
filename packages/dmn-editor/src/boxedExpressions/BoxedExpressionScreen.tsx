@@ -148,8 +148,8 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
       return undefined;
     }
 
-    const drgElement = thisDmn.model.definitions.drgElement![drgElementIndex];
-    if (!(drgElement.__$$element === "decision" || drgElement.__$$element === "businessKnowledgeModel")) {
+    const drgElement = thisDmn.model.definitions.drgElement?.[drgElementIndex];
+    if (!(drgElement?.__$$element === "decision" || drgElement?.__$$element === "businessKnowledgeModel")) {
       return undefined;
     }
 
@@ -356,6 +356,11 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             pmmlDocuments={pmmlDocuments}
             isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
             expressionHolderId={boxedExpressionEditor.activeDrgElementId!}
+            expressionHolderTypeRef={
+              drgElement?.variable?.["@_typeRef"] ||
+              expression?.beeExpression["@_typeRef"] ||
+              DmnBuiltInDataType.Undefined
+            }
             expression={expression?.beeExpression}
             onExpressionChange={onExpressionChange}
             dataTypes={dataTypes}

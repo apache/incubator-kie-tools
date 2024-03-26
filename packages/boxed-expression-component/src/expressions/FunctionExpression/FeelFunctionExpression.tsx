@@ -94,11 +94,11 @@ export function FeelFunctionExpression({ functionExpression }: { functionExpress
   }, [functionExpression.isNested]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<FEEL_ROWTYPE>[]) => {
+    ([{ name, typeRef }]: BeeTableColumnUpdate<FEEL_ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
         "@_label": name,
-        "@_typeRef": dataType,
+        "@_typeRef": typeRef,
       }));
     },
     [setExpression]
@@ -230,6 +230,7 @@ export function FeelFunctionImplementationCell({
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={parentElementId}
+        parentTypeRef={functionExpression["@_typeRef"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

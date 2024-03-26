@@ -174,11 +174,11 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
   }, [functionExpression.isNested]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<JAVA_ROWTYPE>[]) => {
+    ([{ name, typeRef }]: BeeTableColumnUpdate<JAVA_ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
         "@_label": name,
-        "@_typeRef": dataType,
+        "@_typeRef": typeRef,
       }));
     },
     [setExpression]

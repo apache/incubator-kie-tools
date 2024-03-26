@@ -126,7 +126,7 @@ export function PmmlFunctionExpression({ functionExpression }: { functionExpress
   }, [functionExpression.isNested]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<PMML_ROWTYPE>[]) => {
+    ([{ name, typeRef: dataType }]: BeeTableColumnUpdate<PMML_ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
         "@_label": name,

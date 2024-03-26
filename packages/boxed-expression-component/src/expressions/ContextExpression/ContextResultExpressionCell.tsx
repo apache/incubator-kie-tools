@@ -72,6 +72,7 @@ export function ContextResultExpressionCell(props: {
         rowIndex={props.rowIndex}
         columnIndex={props.columnIndex}
         parentElementId={lastEntry?.variable?.["@_id"]}
+        parentTypeRef={props.contextExpression["@_typeRef"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

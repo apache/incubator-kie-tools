@@ -200,7 +200,7 @@ export function beeToGwt(
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Feel,
-          expression: beeToGwt(widthsById, expression),
+          expression: beeToGwt(widthsById, expression.expression),
         };
       }
       case "Java": {

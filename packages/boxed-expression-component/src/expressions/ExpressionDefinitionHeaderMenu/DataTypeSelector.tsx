@@ -22,7 +22,7 @@ import * as React from "react";
 import { useCallback, useState, useRef, useMemo } from "react";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as _ from "lodash";
-import { DmnBuiltInDataType, DmnDataType } from "../../api";
+import { DmnDataType } from "../../api";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
@@ -30,7 +30,7 @@ export interface DataTypeSelectorProps {
   /** The pre-selected data type */
   value: string;
   /** On DataType selection callback */
-  onChange: (dataType: DmnBuiltInDataType) => void;
+  onChange: (dataType: string) => void;
   /** By default the menu will be appended inline, but it is possible to append on the parent or on other elements */
   /** Callback for toggle select behavior */
   onToggle?: (isOpen: boolean) => void;

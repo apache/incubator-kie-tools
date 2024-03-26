@@ -521,18 +521,18 @@ export function DecisionTableExpression(
       setExpression((prev: BoxedDecisionTable) => {
         const n = { ...prev };
         for (const columnUpdate of columnUpdates) {
-          // This is the Output column aggregator column, which represents the entire expression name and dataType
+          // This is the Output column aggregator column, which represents the entire expression name and typeRef
           if (
             columnUpdate.column.depth === 0 &&
             columnUpdate.column.groupType === DecisionTableColumnType.OutputClause
           ) {
             n["@_label"] = columnUpdate.name;
-            n["@_typeRef"] = columnUpdate.dataType;
-            // Single output column is merged with the aggregator column and should have the same datatype
+            n["@_typeRef"] = columnUpdate.typeRef;
+            // Single output column is merged with the aggregator column and should have the same typeRef
             if (n.output?.length === 1) {
               n.output[0] = {
                 ...n.output[0],
-                "@_typeRef": columnUpdate.dataType,
+                "@_typeRef": columnUpdate.typeRef,
               };
             }
             continue;
@@ -548,7 +548,7 @@ export function DecisionTableExpression(
                 "@_label": columnUpdate.name,
                 inputExpression: {
                   ...newInputs[columnUpdate.columnIndex].inputExpression,
-                  "@_typeRef": columnUpdate.dataType,
+                  "@_typeRef": columnUpdate.typeRef,
                   text: { __$$text: columnUpdate.name },
                 },
               };
@@ -559,7 +559,7 @@ export function DecisionTableExpression(
               const outputIndex = columnUpdate.columnIndex - (prev.input?.length ?? 0);
               newOutputs[outputIndex] = {
                 ...newOutputs[outputIndex],
-                "@_typeRef": columnUpdate.dataType,
+                "@_typeRef": columnUpdate.typeRef,
                 "@_name": columnUpdate.name,
               };
 

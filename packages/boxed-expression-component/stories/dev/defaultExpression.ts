@@ -40,20 +40,20 @@ import {
 
 export function getDefaultExpressionDefinitionByLogicType(
   logicType: BoxedExpression["__$$element"] | undefined,
-  dataType: string,
+  typeRef: string,
   containerWidth: number
 ): BoxedExpression {
   if (logicType === "literalExpression") {
     const literalExpression: BoxedLiteral = {
       __$$element: "literalExpression",
-      "@_typeRef": dataType,
+      "@_typeRef": typeRef,
       "@_id": generateUuid(),
     };
     return literalExpression;
   } else if (logicType === "functionDefinition") {
     const functionExpression: BoxedFunction = {
       __$$element: "functionDefinition",
-      "@_typeRef": dataType,
+      "@_typeRef": typeRef,
       "@_id": generateUuid(),
       "@_kind": BoxedFunctionKind.Feel,
       expression: {
@@ -65,7 +65,7 @@ export function getDefaultExpressionDefinitionByLogicType(
   } else if (logicType === "context") {
     const contextExpression: BoxedContext = {
       __$$element: "context",
-      "@_typeRef": dataType,
+      "@_typeRef": typeRef,
       contextEntry: [
         {
           variable: {
@@ -95,14 +95,14 @@ export function getDefaultExpressionDefinitionByLogicType(
   } else if (logicType === "list") {
     const listExpression: BoxedList = {
       __$$element: "list",
-      "@_typeRef": dataType,
+      "@_typeRef": typeRef,
       expression: [undefined!, undefined!, undefined!],
     };
     return listExpression;
   } else if (logicType === "invocation") {
     const invocationExpression: BoxedInvocation = {
       __$$element: "invocation",
-      "@_typeRef": dataType,
+      "@_typeRef": typeRef,
       binding: [
         {
           parameter: {
@@ -122,7 +122,7 @@ export function getDefaultExpressionDefinitionByLogicType(
   } else if (logicType === "relation") {
     const relationExpression: BoxedRelation = {
       __$$element: "relation",
-      "@_typeRef": dataType,
+      "@_typeRef": typeRef,
       column: [
         {
           "@_id": generateUuid(),
@@ -165,7 +165,7 @@ export function getDefaultExpressionDefinitionByLogicType(
     const decisionTableExpression: BoxedDecisionTable = {
       __$$element: "decisionTable",
       "@_id": generateUuid(),
-      "@_typeRef": dataType,
+      "@_typeRef": typeRef,
       "@_hitPolicy": "UNIQUE",
       input: [
         {
