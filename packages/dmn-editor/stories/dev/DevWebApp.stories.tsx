@@ -20,33 +20,34 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useCallback, useMemo, useRef, useState } from "react";
-
 import "@patternfly/react-core/dist/styles/base.css";
-
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-
-import { LOAN_PRE_QUALIFICATION_DMN, EMPTY_DMN_15 } from "../useCases/DmnDiagramSources";
-import * as DmnEditor from "../../src/DmnEditor";
 import { DmnLatestModel, getMarshaller, DmnMarshaller } from "@kie-tools/dmn-marshaller";
+import { availableModelsByPath, modelsByNamespace } from "./availableModelsToInclude";
+import { generateEmptyDmn15 } from "../misc/empty/Empty.stories";
+import { loanPreQualificationDmn } from "../useCases/loanPreQualification/LoanPreQualification.stories";
+import { DmnEditorWrapper } from "../dmnEditorStoriesWrapper";
+import {
+  DmnEditorProps,
+  ExternalModelsIndex,
+  OnDmnModelChange,
+  OnRequestExternalModelByPath,
+  OnRequestExternalModelsAvailableToInclude,
+  OnRequestToJumpToPath,
+} from "../../src/DmnEditor";
 
-import { availableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
-import { Button } from "@patternfly/react-core";
+const initialModel = generateEmptyDmn15();
 
-function DevWebApp() {
-  const [model, setModel] = useState<string>(EMPTY_DMN_15());
-
-  const setNewModel = useCallback((newModel) => {
-    setModel(newModel);
-    const marshaller = getMarshaller(newModel, { upgradeTo: "latest" });
-    setState({
-      marshaller,
-      stack: [marshaller.parser.parse()],
+function DevWebApp(args: DmnEditorProps) {
+  const [state, setState] = useState<{ marshaller: DmnMarshaller; stack: DmnLatestModel[]; pointer: number }>(() => {
+    const initialDmnMarshaller = getMarshaller(initialModel, { upgradeTo: "latest" });
+    return {
+      marshaller: initialDmnMarshaller,
+      stack: [initialDmnMarshaller.parser.parse()],
       pointer: 0,
-    });
-  }, []);
-
-  const initialDmnMarshaller = useMemo(() => getMarshaller(model, { upgradeTo: "latest" }), [model]);
+    };
+  });
 
   const onDrop = useCallback((e: React.DragEvent) => {
     console.log("DMN Editor :: Dev webapp :: File(s) dropped! Opening it.");
@@ -72,10 +73,8 @@ function DevWebApp() {
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
   }, []);
 
-  const ref = useRef<DmnEditor.DmnEditorRef>(null);
-
   const reset = useCallback(() => {
-    const marshaller = getMarshaller(EMPTY_DMN_15(), { upgradeTo: "latest" });
+    const marshaller = getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" });
     setState({
       marshaller,
       stack: [marshaller.parser.parse()],
@@ -83,19 +82,13 @@ function DevWebApp() {
     });
   }, []);
 
-  const [state, setState] = useState<{ marshaller: DmnMarshaller; stack: DmnLatestModel[]; pointer: number }>({
-    marshaller: initialDmnMarshaller,
-    stack: [initialDmnMarshaller.parser.parse()],
-    pointer: 0,
-  });
-
   const currentModel = state.stack[state.pointer];
 
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadAsXml = useCallback(() => {
     if (downloadRef.current) {
       const fileBlob = new Blob([state.marshaller.builder.build(currentModel)], { type: "text/xml" });
-      downloadRef.current.download = `dmn-${makeid(10)}.dmn`;
+      downloadRef.current.download = `dmn-${createId(10)}.dmn`;
       downloadRef.current.href = URL.createObjectURL(fileBlob);
       downloadRef.current.click();
     }
@@ -113,7 +106,7 @@ function DevWebApp() {
     setState((prev) => ({ ...prev, pointer: Math.min(prev.stack.length - 1, prev.pointer + 1) }));
   }, []);
 
-  const onModelChange = useCallback<DmnEditor.OnDmnModelChange>((model) => {
+  const onModelChange = useCallback<OnDmnModelChange>((model) => {
     setState((prev) => {
       const newStack = prev.stack.slice(0, prev.pointer + 1);
       return {
@@ -124,32 +117,30 @@ function DevWebApp() {
     });
   }, []);
 
-  const onRequestToJumpToPath = useCallback<DmnEditor.OnRequestToJumpToPath>((path) => {
+  const onSelectModel = useCallback(
+    (newModel) => {
+      onModelChange(getMarshaller(newModel, { upgradeTo: "latest" }).parser.parse());
+    },
+    [onModelChange]
+  );
+
+  const onRequestToJumpToPath = useCallback<OnRequestToJumpToPath>((path) => {
     alert("Jumping to file " + path);
   }, []);
 
-  const externalModelsByNamespace = useMemo<DmnEditor.ExternalModelsIndex>(() => {
+  const externalModelsByNamespace = useMemo<ExternalModelsIndex>(() => {
     return (currentModel.definitions.import ?? []).reduce((acc, i) => {
       acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
       return acc;
-    }, {} as DmnEditor.ExternalModelsIndex);
+    }, {} as ExternalModelsIndex);
   }, [currentModel.definitions.import]);
 
-  const onRequestExternalModelByPath = useCallback<DmnEditor.OnRequestExternalModelByPath>(async (path) => {
+  const onRequestExternalModelByPath = useCallback<OnRequestExternalModelByPath>(async (path) => {
     return availableModelsByPath[path] ?? null;
   }, []);
 
-  const onRequestExternalModelsAvailableToInclude =
-    useCallback<DmnEditor.OnRequestExternalModelsAvailableToInclude>(async () => {
-      return Object.keys(availableModelsByPath);
-    }, []);
-
-  const evaluationResults = useMemo<DmnEditor.EvaluationResults>(() => {
-    return {};
-  }, []);
-
-  const validationMessages = useMemo<DmnEditor.ValidationMessages>(() => {
-    return {};
+  const onRequestExternalModelsAvailableToInclude = useCallback<OnRequestExternalModelsAvailableToInclude>(async () => {
+    return Object.keys(availableModelsByPath);
   }, []);
 
   const isUndoEnabled = state.pointer > 0;
@@ -157,15 +148,7 @@ function DevWebApp() {
 
   return (
     <>
-      <Flex>
-        <FlexItem>
-          <Button onClick={() => setNewModel(EMPTY_DMN_15())}>Empty</Button>
-        </FlexItem>
-        <FlexItem>
-          <Button onClick={() => setNewModel(LOAN_PRE_QUALIFICATION_DMN)}>Loan Pre Qualification</Button>
-        </FlexItem>
-      </Flex>
-      {model && (
+      {currentModel && (
         <div style={{ width: "100vw", height: "100vh" }}>
           <Page onDragOver={onDragOver} onDrop={onDrop}>
             <PageSection variant={"light"} isFilled={false} padding={{ default: "padding" }}>
@@ -177,6 +160,10 @@ function DevWebApp() {
                   <h5>(Drag & drop a file anywhere to open it)</h5>
                 </FlexItem>
                 <FlexItem shrink={{ default: "shrink" }}>
+                  <button onClick={() => onSelectModel(generateEmptyDmn15())}>Empty</button>
+                  &nbsp; &nbsp;
+                  <button onClick={() => onSelectModel(loanPreQualificationDmn)}>Loan Pre Qualification</button>
+                  &nbsp; &nbsp; | &nbsp; &nbsp;
                   <button disabled={!isUndoEnabled} style={{ opacity: isUndoEnabled ? 1 : 0.5 }} onClick={undo}>
                     {`Undo (${state.pointer})`}
                   </button>
@@ -202,21 +189,20 @@ function DevWebApp() {
               aria-label={"editor"}
               padding={{ default: "noPadding" }}
             >
-              <DmnEditor.DmnEditor
-                ref={ref}
-                model={currentModel}
-                originalVersion={state.marshaller.originalVersion}
-                onModelChange={onModelChange}
-                onRequestExternalModelByPath={onRequestExternalModelByPath}
-                onRequestExternalModelsAvailableToInclude={onRequestExternalModelsAvailableToInclude}
-                externalModelsByNamespace={externalModelsByNamespace}
-                externalContextName={`Dev webapp`}
-                externalContextDescription={`You're using the DMN Dev webapp, so there's only two simple external models that can be included.`}
-                validationMessages={validationMessages}
-                evaluationResults={evaluationResults}
-                issueTrackerHref={`https://github.com/kiegroup/kie-issues/issues/new`}
-                onRequestToJumpToPath={onRequestToJumpToPath}
-              />
+              {DmnEditorWrapper({
+                model: currentModel,
+                originalVersion: args.originalVersion,
+                onModelChange,
+                onRequestExternalModelByPath,
+                onRequestExternalModelsAvailableToInclude,
+                externalModelsByNamespace: externalModelsByNamespace,
+                externalContextName: args.externalContextName,
+                externalContextDescription: args.externalContextDescription,
+                validationMessages: args.validationMessages,
+                evaluationResults: args.evaluationResults,
+                issueTrackerHref: args.issueTrackerHref,
+                onRequestToJumpToPath,
+              })}
             </PageSection>
           </Page>
         </div>
@@ -225,7 +211,7 @@ function DevWebApp() {
   );
 }
 
-function makeid(length: number) {
+function createId(length: number) {
   let result = "";
   const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
@@ -241,14 +227,23 @@ function makeid(length: number) {
 const meta: Meta<typeof DevWebApp> = {
   title: "Dev/Web App",
   component: DevWebApp,
-  parameters: {},
 };
 
 export default meta;
-
 type Story = StoryObj<typeof DevWebApp>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const WebApp: Story = {
-  args: {},
+  render: (args) => DevWebApp(args),
+  args: {
+    model: getMarshaller(initialModel, { upgradeTo: "latest" }).parser.parse(),
+    originalVersion: "1.5",
+    evaluationResults: {},
+    externalContextDescription:
+      "You're using the DMN Dev webapp, so there's only two simple external models that can be included.",
+    externalContextName: "Dev webapp",
+    externalModelsByNamespace: {},
+    issueTrackerHref: "https://github.com/kiegroup/kie-issues/issues/new",
+    validationMessages: {},
+  },
 };

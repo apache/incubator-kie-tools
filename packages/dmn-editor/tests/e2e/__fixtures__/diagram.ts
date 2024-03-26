@@ -20,19 +20,20 @@
 import { Page } from "@playwright/test";
 
 export class Diagram {
-  constructor(public page: Page, public baseURL?: string) {
-    this.page = page;
-  }
+  constructor(public page: Page) {}
 
-  public async openEmpty() {
-    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=use-cases-empty--empty&viewMode=story`);
-  }
-
-  public getContainer() {
+  public get() {
     return this.page.getByTestId("kie-dmn-editor--diagram-container");
   }
 
-  public getEdge(fromNodeId: string | null, toNodeId: string | null) {
-    return this.page.getByRole("button", { name: `Edge from ${fromNodeId} to ${toNodeId}` });
+  public async resetFocus() {
+    return this.get().click({ position: { x: 0, y: 0 } });
+  }
+
+  public async select(args: { startPosition: { x: number; y: number }; endPosition: { x: number; y: number } }) {
+    await this.page.mouse.move(args.startPosition.x, args.startPosition.y);
+    await this.page.mouse.down();
+    await this.page.mouse.move(args.endPosition.x, args.endPosition.y);
+    await this.page.mouse.up();
   }
 }

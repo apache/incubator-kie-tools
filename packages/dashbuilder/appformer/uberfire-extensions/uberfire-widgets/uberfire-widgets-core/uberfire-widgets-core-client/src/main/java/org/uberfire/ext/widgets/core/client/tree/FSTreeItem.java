@@ -20,13 +20,12 @@
 
 package org.uberfire.ext.widgets.core.client.tree;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class FSTreeItem extends TreeItem<FSTreeItem> {
 
@@ -52,6 +51,10 @@ public class FSTreeItem extends TreeItem<FSTreeItem> {
               createIcon(type));
         this.fstype = checkNotNull("type",
                                    type);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private static final Type createType(final FSType type) {

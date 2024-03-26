@@ -160,6 +160,7 @@
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
+      { "id": "@kie-tools/sonataflow-quarkus-devui-extension" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -996,6 +997,11 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
+      {
+        "source": "@kie-tools/sonataflow-quarkus-devui-extension",
+        "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "weight": 1
+      },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",

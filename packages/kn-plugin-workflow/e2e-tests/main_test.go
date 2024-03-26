@@ -36,7 +36,7 @@ var parentPath string
 var TempTestsPath string
 var KnExecutable string
 
-var TestPrintCmdOutput = flag.Bool("logs", false, "Print command output during tests")
+var TestPrintCmdOutput = flag.Bool("logs", true, "Print command output during tests")
 
 func TestMain(m *testing.M) {
 
