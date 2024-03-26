@@ -27,6 +27,7 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
+  DmnBuiltInDataType,
   InsertRowColumnsDirection,
   ListExpressionDefinition,
 } from "../../api";
@@ -124,9 +125,9 @@ export function ListExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: expressionHolderId as any,
+        accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: listExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
-        dataType: listExpression["@_typeRef"] ?? "<Undefined>",
+        dataType: listExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         minWidth: LIST_EXPRESSION_ITEM_MIN_WIDTH,
         width: undefined,

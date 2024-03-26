@@ -213,10 +213,9 @@ export function BeeTableThResizable<R extends object>({
         )}
       </div>
       {/* resizingWidth. I.e., Exact-sized columns. */}
-      {!column.isWidthConstant &&
-        column.width &&
-        resizingWidth &&
-        (hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
+      {
+        !column.isWidthConstant && column.width && resizingWidth && (
+          // (hoverInfo.isHovered || (resizingWidth?.isPivoting && isResizing)) && (
           <Resizer
             minWidth={lastColumnMinWidth ?? column.minWidth}
             width={column.width}
@@ -226,21 +225,26 @@ export function BeeTableThResizable<R extends object>({
             getWidthToFitData={getWidthToFitData}
             setResizing={setResizing}
           />
-        )}
+        )
+        // )
+      }
       {/* fillingResizingWidth. I.e., Flexible or parent columns. */}
-      {getFlatListOfSubColumns(column).some((c) => !(c.isWidthConstant ?? false)) &&
-        (isFlexbileColumn(column) || isParentColumn(column)) &&
-        (hoverInfo.isHovered || (fillingResizingWidth?.isPivoting && isResizing)) && (
-          <Resizer
-            minWidth={minFillingWidth}
-            width={fillingWidth}
-            setWidth={setFillingWidth}
-            resizingWidth={fillingResizingWidth}
-            setResizingWidth={setFillingResizingWidth}
-            getWidthToFitData={getWidthToFitData}
-            setResizing={setResizing}
-          />
-        )}
+      {
+        getFlatListOfSubColumns(column).some((c) => !(c.isWidthConstant ?? false)) &&
+          (isFlexbileColumn(column) || isParentColumn(column)) && (
+            // (hoverInfo.isHovered || (fillingResizingWidth?.isPivoting && isResizing)) && (
+            <Resizer
+              minWidth={minFillingWidth}
+              width={fillingWidth}
+              setWidth={setFillingWidth}
+              resizingWidth={fillingResizingWidth}
+              setResizingWidth={setFillingResizingWidth}
+              getWidthToFitData={getWidthToFitData}
+              setResizing={setResizing}
+            />
+          )
+        // )
+      }
       {/* //FIXME: Don't know if that's a good idea yet. Please address it as part of https://github.com/kiegroup/kie-issues/issues/181 */}
       {/* {calcWidth && (hoverInfo.isHovered || (calcResizingWidth?.isPivoting && isCalcWidthResizing)) && (
         <Resizer

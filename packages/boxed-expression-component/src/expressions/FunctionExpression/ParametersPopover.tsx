@@ -160,7 +160,7 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
         defaultValue={parameter["@_name"]}
       />
       <DataTypeSelector
-        value={parameter["@_typeRef"] ?? "<Undefined>"}
+        value={parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
         onChange={onDataTypeChange}
         menuAppendTo="parent"
       />

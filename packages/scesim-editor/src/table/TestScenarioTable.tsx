@@ -147,7 +147,7 @@ function TestScenarioTable({
     [assetType]
   );
 
-  /* It updates any column  change in the Model */
+  /* It updates any column width change in the Model */
   const setColumnWidth = useCallback(
     (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
       updateTestScenarioModel((prevState) => {

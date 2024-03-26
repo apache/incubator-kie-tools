@@ -61,7 +61,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { beeGwtService, variables, expressionHolderId } = useBoxedExpressionEditor();
-  const { setExpression, setWidth } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
   useEffect(() => {
@@ -177,32 +177,29 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
     [variables?.repository]
   );
 
+  const expressionTypeRef = expression?.["@_typeRef"];
+
   const onLogicTypeSelected = useCallback(
     (logicType: ExpressionDefinition["__$$element"] | undefined) => {
-      setExpression((prev) => {
-        const expression = beeGwtService!.getDefaultExpressionDefinition(
+      const { expression: defaultExpression, widthsById: defaultWidthsById } =
+        beeGwtService!.getDefaultExpressionDefinition(
           logicType,
-          prev?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
+          expressionTypeRef ?? DmnBuiltInDataType.Undefined,
           !isNested
         );
 
-        const defaultExpression = expression.expression;
+      let id: string;
 
-        const newExpression = {
+      setExpression((prev) => {
+        const newExpression: ExpressionDefinition = {
           ...defaultExpression,
-          isNested,
           "@_id": prev?.["@_id"] ?? generateUuid(),
           "@_label": prev?.["@_label"] ?? expressionName ?? DEFAULT_EXPRESSION_NAME,
         };
 
-        setWidth({
-          id: newExpression["@_id"] ?? "",
-          values: expression.widthsById?.get(expression.expression["@_id"] ?? "") ?? [],
-        });
+        id = newExpression["@_id"]!;
 
         if (parentElementId) {
-          variables?.repository.addVariableToContext(newExpression["@_id"], newExpression["@_label"], parentElementId);
-
           switch (newExpression.__$$element) {
             case "context":
               addContextExpressionToVariables(newExpression);
@@ -230,6 +227,10 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
 
         return newExpression;
       });
+
+      defaultWidthsById.forEach((value, key) => {
+        setWidthById(id, (prev) => value);
+      });
     },
     [
       addContextExpressionToVariables,
@@ -239,23 +240,23 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       addListExpressionToVariables,
       addRelationExpressionToVariables,
       beeGwtService,
+      expressionTypeRef,
       expressionName,
       isNested,
       parentElementId,
       setExpression,
-      setWidth,
-      variables?.repository,
+      setWidthById,
     ]
   );
 
   const onLogicTypeReset = useCallback(() => {
     if (expression?.["@_id"]) {
       variables?.repository.removeVariable(expression["@_id"], true);
-      setWidth({ id: expression["@_id"], values: [] });
+      setWidthById(expression["@_id"], (prev) => []);
     }
 
     setExpression(undefined!); // SPEC DISCREPANCY: Undefined expressions gives users the ability to select the expression type.
-  }, [expression, setExpression, setWidth, variables?.repository]);
+  }, [expression, setExpression, setWidthById, variables?.repository]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 

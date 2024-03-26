@@ -27,6 +27,7 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
+  DmnBuiltInDataType,
   ExpressionDefinition,
   FunctionExpressionDefinition,
   FunctionExpressionDefinitionKind,
@@ -75,7 +76,7 @@ export function FeelFunctionExpression({
       {
         label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        dataType: functionExpression["@_typeRef"] ?? "<Undefined>",
+        dataType: functionExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
         columns: [

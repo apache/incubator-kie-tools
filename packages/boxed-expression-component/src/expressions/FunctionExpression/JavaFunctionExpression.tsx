@@ -29,6 +29,7 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
+  DmnBuiltInDataType,
   FunctionExpressionDefinitionKind,
   generateUuid,
 } from "../../api";
@@ -77,7 +78,7 @@ export function JavaFunctionExpression({
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
-  const { setExpression, setWidth } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
 
   const getClassContextEntry = useCallback((c: DMN15__tContext) => {
     return c.contextEntry?.find(({ variable }) => variable?.["@_name"] === "class");
@@ -91,22 +92,31 @@ export function JavaFunctionExpression({
 
   const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
+  const getClassAndMethodNamesWidth = useCallback((widths: number[]) => {
+    return widths[JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX] ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH;
+  }, []);
+
   const classAndMethodNamesWidth = useMemo(
-    () => widths[JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX] ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
-    [widths]
+    () => getClassAndMethodNamesWidth(widths),
+    [getClassAndMethodNamesWidth, widths]
   );
 
   const setClassAndMethodNamesWidth = useCallback(
     (newWidthAction: React.SetStateAction<number | undefined>) => {
-      const newWidth = typeof newWidthAction === "function" ? newWidthAction(classAndMethodNamesWidth) : newWidthAction;
+      setWidthById(id, (prev) => {
+        const newWidth =
+          typeof newWidthAction === "function" ? newWidthAction(getClassAndMethodNamesWidth(prev)) : newWidthAction;
 
-      if (newWidth) {
-        const values = [...widths];
-        values.splice(JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX, 1, newWidth);
-        setWidth({ id, values });
-      }
+        if (newWidth) {
+          const values = [...prev];
+          values.splice(JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX, 1, newWidth);
+          return values;
+        }
+
+        return prev;
+      });
     },
-    [classAndMethodNamesWidth, id, setWidth, widths]
+    [getClassAndMethodNamesWidth, id, setWidthById]
   );
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
@@ -116,7 +126,7 @@ export function JavaFunctionExpression({
       {
         label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        dataType: functionExpression["@_typeRef"] ?? "<Undefined>",
+        dataType: functionExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
         columns: [

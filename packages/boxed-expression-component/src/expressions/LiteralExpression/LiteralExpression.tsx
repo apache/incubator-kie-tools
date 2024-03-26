@@ -24,6 +24,7 @@ import {
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
+  DmnBuiltInDataType,
   LiteralExpressionDefinition,
 } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
@@ -43,7 +44,7 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 type ROWTYPE = any;
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isNested: boolean }) {
-  const { setExpression, setWidth } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
   const { expressionHolderId, variables, widthsById } = useBoxedExpressionEditor();
 
   const id = literalExpression["@_id"]!;
@@ -84,10 +85,13 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
 
   const setLiteralExpressionWidth = useCallback(
     (newWidthAction: React.SetStateAction<number | undefined>) => {
-      const newWidth = typeof newWidthAction === "function" ? newWidthAction(width) : newWidthAction;
-      setWidth({ id, values: [newWidth ?? LITERAL_EXPRESSION_MIN_WIDTH] });
+      setWidthById(id, (prev) => {
+        const prevWidth = prev[0];
+        const newWidth = typeof newWidthAction === "function" ? newWidthAction(prevWidth) : newWidthAction;
+        return [newWidth ?? LITERAL_EXPRESSION_MIN_WIDTH];
+      });
     },
-    [id, setWidth, width]
+    [id, setWidthById]
   );
 
   const onCellUpdates = useCallback(
@@ -141,7 +145,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: literalExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
-        dataType: literalExpression["@_typeRef"] ?? "<Undefined>",
+        dataType: literalExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         minWidth,
         width,
         setWidth: setLiteralExpressionWidth,

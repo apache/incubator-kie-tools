@@ -51,10 +51,10 @@ import {
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell, Entry } from "./ContextEntryInfoCell";
-import "./ContextExpression.css";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./ContextExpression.css";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 const CONTEXT_ENTRY_INFO_WIDTH_INDEX = 0;
@@ -68,29 +68,36 @@ export function ContextExpression(
   }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { setExpression, setWidth } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
   const { variables, widthsById } = useBoxedExpressionEditor();
 
   const id = contextExpression["@_id"]!;
 
   const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
-  const entryInfoWidth = useMemo(
-    () => widths?.[CONTEXT_ENTRY_INFO_WIDTH_INDEX] ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
-    [widths]
+  const getEntryInfoWidth = useCallback(
+    (widths: number[]) => widths?.[CONTEXT_ENTRY_INFO_WIDTH_INDEX] ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
+    []
   );
+
+  const entryInfoWidth = useMemo(() => getEntryInfoWidth(widths), [getEntryInfoWidth, widths]);
 
   const setEntryInfoWidth = useCallback(
     (newWidthAction: React.SetStateAction<number | undefined>) => {
-      const newWidth = typeof newWidthAction === "function" ? newWidthAction(entryInfoWidth) : newWidthAction;
+      setWidthById(id, (prev) => {
+        const newWidth =
+          typeof newWidthAction === "function" ? newWidthAction(getEntryInfoWidth(prev)) : newWidthAction;
 
-      if (newWidth) {
-        const values = [...widths];
-        values.splice(CONTEXT_ENTRY_INFO_WIDTH_INDEX, 1, newWidth);
-        setWidth({ id, values });
-      }
+        if (newWidth) {
+          const values = [...prev];
+          values.splice(CONTEXT_ENTRY_INFO_WIDTH_INDEX, 1, newWidth);
+          return values;
+        }
+
+        return prev;
+      });
     },
-    [entryInfoWidth, id, setWidth, widths]
+    [getEntryInfoWidth, id, setWidthById]
   );
 
   const [entryInfoResizingWidth, setEntryInfoResizingWidth] = useState<ResizingWidth>({
@@ -206,11 +213,11 @@ export function ContextExpression(
 
         variables?.repository.updateVariableType(
           newEntry.variable?.["@_id"] ?? "",
-          newEntry.variable?.["@_typeRef"] ?? "<Undefined>"
+          newEntry.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined
         );
         variables?.repository.renameVariable(
           newEntry.variable?.["@_id"] ?? "",
-          newEntry.variable?.["@_name"] ?? "<Undefined>"
+          newEntry.variable?.["@_name"] ?? DmnBuiltInDataType.Undefined
         );
 
         contextEntries[rowIndex] = {

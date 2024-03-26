@@ -70,7 +70,7 @@ export function InvocationExpression(
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, variables, widthsById } = useBoxedExpressionEditor();
-  const { setExpression, setWidth } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
 
   const id = invocationExpression["@_id"]!;
 
@@ -82,22 +82,28 @@ export function InvocationExpression(
     return expressionWidths;
   }, [id, widthsById]);
 
-  const parametersWidth = useMemo(
-    () => widths?.[INVOCATION_PARAMETER_INFO_WIDTH_INDEX] ?? INVOCATION_PARAMETER_MIN_WIDTH,
-    [widths]
-  );
+  const getParametersWidth = useCallback((widths: number[]) => {
+    return widths?.[INVOCATION_PARAMETER_INFO_WIDTH_INDEX] ?? INVOCATION_PARAMETER_MIN_WIDTH;
+  }, []);
+
+  const parametersWidth = useMemo(() => getParametersWidth(widths), [getParametersWidth, widths]);
 
   const setParametersWidth = useCallback(
     (newWidthAction: React.SetStateAction<number | undefined>) => {
-      const newWidth = typeof newWidthAction === "function" ? newWidthAction(parametersWidth) : newWidthAction;
+      setWidthById(id, (prev) => {
+        const newWidth =
+          typeof newWidthAction === "function" ? newWidthAction(getParametersWidth(prev)) : newWidthAction;
 
-      if (newWidth) {
-        const values = [...widths];
-        values.splice(INVOCATION_PARAMETER_INFO_WIDTH_INDEX, 1, newWidth);
-        setWidth({ id, values });
-      }
+        if (newWidth) {
+          const values = [...prev];
+          values.splice(INVOCATION_PARAMETER_INFO_WIDTH_INDEX, 1, newWidth);
+          return values;
+        }
+
+        return prev;
+      });
     },
-    [id, parametersWidth, setWidth, widths]
+    [getParametersWidth, id, setWidthById]
   );
 
   const [parametersResizingWidth, setParametersResizingWidth] = React.useState<ResizingWidth>({
@@ -161,7 +167,7 @@ export function InvocationExpression(
       {
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
         label: invocationExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
-        dataType: invocationExpression["@_typeRef"] ?? "<Undefined>",
+        dataType: invocationExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
         columns: [

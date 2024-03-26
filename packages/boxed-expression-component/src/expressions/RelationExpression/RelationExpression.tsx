@@ -62,7 +62,7 @@ export function RelationExpression(
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { widthsById, variables, expressionHolderId } = useBoxedExpressionEditor();
-  const { setExpression, setWidth } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
 
   const id = relationExpression["@_id"]!;
 
@@ -118,20 +118,17 @@ export function RelationExpression(
     return expressionWidths;
   }, [id, relationExpression.column, widthsById]);
 
-  const getColumnWidth = useCallback(
-    (column: number) => {
-      return widths[column] ?? RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH;
-    },
-    [widths]
-  );
+  const getColumnWidth = useCallback((columnIndex: number, widths: number[]) => {
+    return widths[columnIndex] ?? RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH;
+  }, []);
 
   const columns = useMemo(() => {
     return (relationExpression.column ?? []).map((c, index) => ({
       ...c,
       minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-      width: getColumnWidth(index),
+      width: getColumnWidth(index, widths),
     }));
-  }, [getColumnWidth, relationExpression.column]);
+  }, [getColumnWidth, relationExpression.column, widths]);
 
   const rows = useMemo<DMN15__tList[]>(() => {
     return relationExpression.row ?? [];
@@ -139,16 +136,20 @@ export function RelationExpression(
 
   const setColumnWidth = useCallback(
     (columnIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      const columnWidth = getColumnWidth(columnIndex);
-      const newWidth = typeof newWidthAction === "function" ? newWidthAction(columnWidth) : newWidthAction;
+      setWidthById(id, (prev) => {
+        const prevColumnWidth = getColumnWidth(columnIndex, prev);
+        const newWidth = typeof newWidthAction === "function" ? newWidthAction(prevColumnWidth) : newWidthAction;
 
-      if (newWidth && columnWidth) {
-        const values = [...widths];
-        values.splice(columnIndex, 1, newWidth);
-        setWidth({ id, values });
-      }
+        if (newWidth && prevColumnWidth) {
+          const values = [...prev];
+          values.splice(columnIndex, 1, newWidth);
+          return values;
+        }
+
+        return prev;
+      });
     },
-    [getColumnWidth, widths, setWidth, id]
+    [getColumnWidth, setWidthById, id]
   );
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -180,21 +181,21 @@ export function RelationExpression(
       {
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: relationExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
-        dataType: relationExpression["@_typeRef"] ?? "<Undefined>",
+        dataType: relationExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
         columns: columns.map((column, columnIndex) => ({
           accessor: column["@_id"] as any,
           label: column["@_name"],
-          dataType: column["@_typeRef"] ?? "<Undefined>",
+          dataType: column["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
           isRowIndexColumn: false,
           minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
           setWidth: setColumnWidth(columnIndex + 1),
-          width: widths[columnIndex + 1] ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          width: getColumnWidth(columnIndex + 1, widths),
         })),
       },
     ];
-  }, [columns, expressionHolderId, relationExpression, setColumnWidth, widths]);
+  }, [columns, expressionHolderId, getColumnWidth, relationExpression, setColumnWidth, widths]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(
     () =>

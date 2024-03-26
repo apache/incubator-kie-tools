@@ -258,9 +258,7 @@ export function getExpressionResizingWidth(
       return (
         resizingWidth ??
         JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
-          (getWidth(expression["@_id"], widthsById) ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
-          (getWidthAt(JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH, widthsById.get(expression["@_id"]!)) ??
-            JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
+          (getWidthAt(2, widthsById.get(expression["@_id"]!)) ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
           JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
     } else if (expression["@_kind"] === FunctionExpressionDefinitionKind.Pmml) {
