@@ -60,9 +60,9 @@ function testDirectory(fullPathOfModels: string) {
   });
 }
 
-function testFile(fullPathOfFile: string) {
-  test(fullPathOfFile.substring(fullPathOfFile.lastIndexOf("/") + 1), () => {
-    const xml_original = fs.readFileSync(fullPathOfFile, "utf-8");
+function testFile(posixPathRelativeToTheFile: string) {
+  test(posixPathRelativeToTheFile.substring(posixPathRelativeToTheFile.lastIndexOf("/") + 1), () => {
+    const xml_original = fs.readFileSync(posixPathRelativeToTheFile, "utf-8");
 
     const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
     const json = parser.parse();
