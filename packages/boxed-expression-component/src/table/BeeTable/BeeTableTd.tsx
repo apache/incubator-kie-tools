@@ -235,17 +235,17 @@ export function BeeTableTd<R extends object>({
           <>
             {tdContent}
 
-            {/* {shouldRenderResizer && ( */}
-            <Resizer
-              getWidthToFitData={cellWidthToFitDataRef?.getWidthToFitData}
-              minWidth={lastColumnMinWidth ?? cell.column.minWidth}
-              width={cell.column.width}
-              setWidth={cell.column.setWidth}
-              resizingWidth={resizingWidth}
-              setResizingWidth={setResizingWidth}
-              setResizing={setResizing}
-            />
-            {/* )} */}
+            {shouldRenderResizer && (
+              <Resizer
+                getWidthToFitData={cellWidthToFitDataRef?.getWidthToFitData}
+                minWidth={lastColumnMinWidth ?? cell.column.minWidth}
+                width={cell.column.width}
+                setWidth={cell.column.setWidth}
+                resizingWidth={resizingWidth}
+                setResizingWidth={setResizingWidth}
+                setResizing={setResizing}
+              />
+            )}
           </>
         )}
 
