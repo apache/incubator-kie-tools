@@ -29,7 +29,7 @@ import {
   WorkspaceChannelApi,
   WorkspaceEdit,
 } from "@kie-tools-core/workspace/dist/api";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas";
 import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller } from "@kie-tools/dmn-marshaller";
 import { domParser } from "@kie-tools/xml-parser-ts";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";

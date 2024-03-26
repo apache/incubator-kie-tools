@@ -143,7 +143,35 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     };
   }, [boxedExpressionEditorRootNode]);
 
-  const onWidthsChange = useCallback(() => {}, []);
+  const mapsAreEquals = useCallback((m1: Map<string, number[]>, m2: Map<string, number[]>) => {
+    return (
+      m1.size === m2.size &&
+      Array.from(m1.keys()).every((key) => {
+        const w1 = m1.get(key) ?? [];
+        const w2 = m2.get(key) ?? [];
+        if (w1.length !== w2.length) {
+          return false;
+        } else {
+          for (let i = 0; i < w1.length; i++) {
+            if (w1[i] !== w2[i]) {
+              return false;
+            }
+          }
+          return true;
+        }
+      })
+    );
+  }, []);
+
+  const onWidthsChange = useCallback(
+    (widthsById: Map<string, number[]>) => {
+      if (!mapsAreEquals(expressionWrapper.widthsById, widthsById)) {
+        expressionWrapper.widthsById = widthsById;
+        window.beeApiWrapper?.updateExpression(dmnExpressionToGwtExpression(widthsById, expressionWrapper.expression));
+      }
+    },
+    [expressionWrapper.expression, expressionWrapper.widthsById, mapsAreEquals]
+  );
 
   return (
     <BoxedExpressionEditor
