@@ -35,7 +35,7 @@ test.describe("Add edge waypoint - Association", () => {
     });
   });
 
-  test("should attach single Association waypoint to the DOM", async ({ edges }) => {
+  test("should attach single Association waypoint to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
 
     await expect(
@@ -54,7 +54,7 @@ test.describe("Add edge waypoint - Association", () => {
     ).not.toBeAttached();
   });
 
-  test("should attach multiple Association waypoints to the DOM", async ({ edges }) => {
+  test("should attach multiple Association waypoints to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
     await edges.addWaypoint({
       from: DefaultNodeName.INPUT_DATA,

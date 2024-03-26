@@ -35,7 +35,7 @@ test.describe("Add edge waypoint - Knowledge Requirement", () => {
     });
   });
 
-  test("should attach single Knowledge Requirement edge waypoint to the DOM", async ({ edges }) => {
+  test("should attach single Knowledge Requirement edge waypoint to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
 
     await expect(
@@ -46,7 +46,7 @@ test.describe("Add edge waypoint - Knowledge Requirement", () => {
     ).not.toBeAttached();
   });
 
-  test("should attach multiple Knowledge Requirement edge waypoints to the DOM", async ({ edges }) => {
+  test("should attach multiple Knowledge Requirement edge waypoints to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
     await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, afterWaypointIndex: 1 });
 

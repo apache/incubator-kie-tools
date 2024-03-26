@@ -47,9 +47,10 @@ export class Edges {
   }
 
   public async addWaypoint(args: { from: string; to: string; afterWaypointIndex?: number }) {
-    const dAttribute = await (
-      await (await this.get({ from: args.from, to: args.to })).locator("path").first()
-    ).getAttribute("d");
+    const dAttribute = await (await this.get({ from: args.from, to: args.to }))
+      .locator("path")
+      .first()
+      .getAttribute("d");
 
     const edgeSegments = dAttribute?.match(/M [0-9]*,[0-9]* L [0-9]*,[0-9]*/);
 
@@ -57,15 +58,20 @@ export class Edges {
       const edgeSegment = args.afterWaypointIndex
         ? edgeSegments[Math.min(edgeSegments.length - 1, args.afterWaypointIndex)]
         : edgeSegments[0];
-      const from = edgeSegment.split(/ L [0-9]*,[0-9]*/)[0];
-      const to = edgeSegment.split(/M [0-9]*,[0-9]* /)[1];
 
-      const fromPoint = { x: parseInt(from.slice(2).split(",")[0]), y: parseInt(from.slice(2).split(",")[1]) };
-      const toPoint = { x: parseInt(to.slice(2).split(",")[0]), y: parseInt(to.slice(2).split(",")[1]) };
+      const [fromX, fromY] = edgeSegment
+        .split(/ L [0-9]*,[0-9]*/)[0]
+        .slice(2)
+        .split(",");
+      const [toX, toY] = edgeSegment
+        .split(/M [0-9]*,[0-9]* /)[1]
+        .slice(2)
+        .split(",");
 
-      const targetPoint = { x: (fromPoint.x + toPoint.x) / 2, y: (fromPoint.y + toPoint.y) / 2 };
-
-      await this.diagram.dblclick(targetPoint);
+      await this.diagram.dblclick({
+        x: (parseInt(fromX) + parseInt(toX)) / 2,
+        y: (parseInt(fromY) + parseInt(toY)) / 2,
+      });
     }
   }
 

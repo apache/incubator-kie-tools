@@ -35,7 +35,7 @@ test.describe("Add edge waypoint - Authority Requirement", () => {
     });
   });
 
-  test("should attach single Authority Requirement waypoint to the DOM", async ({ edges }) => {
+  test("should attach single Authority Requirement waypoint to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
     await expect(
       await edges.getWaypoint({
@@ -53,7 +53,7 @@ test.describe("Add edge waypoint - Authority Requirement", () => {
     ).not.toBeAttached();
   });
 
-  test("should attach multiple Authority Requirement waypoints to the DOM", async ({ edges }) => {
+  test("should attach multiple Authority Requirement waypoints to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
     await edges.addWaypoint({
       from: DefaultNodeName.INPUT_DATA,

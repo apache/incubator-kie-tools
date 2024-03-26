@@ -21,6 +21,8 @@ import { Page } from "@playwright/test";
 
 export const DEFAULT_DRD_NAME = "Default DRD";
 export const UNNAMED_DRD_NAME = "Unnamed DRD";
+const VIEWPORT_OFFSET_X = 100;
+const VIEWPORT_OFFSET_Y = 100;
 
 export class Diagram {
   constructor(public page: Page) {}
@@ -30,10 +32,7 @@ export class Diagram {
   }
 
   public async dblclick(position: { x: number; y: number }) {
-    const offsetX = 100;
-    const offsetY = 100;
-
-    return this.get().dblclick({ position: { x: position.x + offsetX, y: position.y + offsetY } });
+    return this.get().dblclick({ position: { x: position.x + VIEWPORT_OFFSET_X, y: position.y + VIEWPORT_OFFSET_Y } });
   }
 
   public async resetFocus() {

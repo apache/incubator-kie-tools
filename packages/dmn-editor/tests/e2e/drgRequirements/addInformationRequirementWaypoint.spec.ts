@@ -35,7 +35,7 @@ test.describe("Add edge waypoint - Information Requirement", () => {
     });
   });
 
-  test("should attach single Information Requirement edge waypoint to the DOM", async ({ edges }) => {
+  test("should attach single Information Requirement edge waypoint to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION });
 
     await expect(
@@ -46,7 +46,7 @@ test.describe("Add edge waypoint - Information Requirement", () => {
     ).not.toBeAttached();
   });
 
-  test("should attach multiple Information Requirement edge waypoints to the DOM", async ({ edges }) => {
+  test("should attach multiple Information Requirement edge waypoints to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION });
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.DECISION, afterWaypointIndex: 1 });
 
