@@ -786,7 +786,7 @@ export function DecisionTableExpression(
             for (const newEntry of newInputClauses) {
               let index = args.beforeIndex;
               newInputs.splice(index, 0, newEntry);
-              widths.splice(getInputIndexInTable(index), 0, DECISION_TABLE_INPUT_DEFAULT_WIDTH);
+
               if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
                 index++;
               }
@@ -839,8 +839,6 @@ export function DecisionTableExpression(
               let index = args.beforeIndex;
               newOutputs.splice(index, 0, newEntry);
 
-              widths.splice(getOutputIndexInTable(index), 0, DECISION_TABLE_OUTPUT_DEFAULT_WIDTH);
-
               if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
                 index++;
               }
@@ -889,7 +887,7 @@ export function DecisionTableExpression(
             for (const newEntry of newAnnotationsItems) {
               let index = args.beforeIndex;
               newAnnotations.splice(index, 0, newEntry);
-              widths.splice(getAnnotationIndexInTable(index), 0, DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH);
+
               if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
                 index++;
               }
@@ -921,16 +919,20 @@ export function DecisionTableExpression(
             assertUnreachable(groupType);
         }
       });
+
+      setWidthById(id, (prev) => {
+        const n = [...prev];
+        // FIXME: Tiago
+        return n;
+      });
     },
     [
       decisionTableExpression.parentElementId,
-      getAnnotationIndexInTable,
-      getInputIndexInTable,
-      getOutputIndexInTable,
       getSectionIndexForGroupType,
       setExpression,
+      setWidthById,
       variables?.repository,
-      widths,
+      id,
     ]
   );
 
@@ -948,7 +950,6 @@ export function DecisionTableExpression(
           case DecisionTableColumnType.InputClause:
             const newInputs = [...(prev.input ?? [])];
             newInputs.splice(sectionIndex, 1);
-            widths.splice(getInputIndexInTable(sectionIndex), 1);
             return {
               ...prev,
               input: newInputs,
@@ -964,7 +965,6 @@ export function DecisionTableExpression(
           case DecisionTableColumnType.OutputClause:
             const newOutputs = [...(prev.output ?? [])];
             newOutputs.splice(sectionIndex, 1);
-            widths.splice(getOutputIndexInTable(sectionIndex), 1);
             return {
               ...prev,
               output: newOutputs,
@@ -980,7 +980,6 @@ export function DecisionTableExpression(
           case DecisionTableColumnType.Annotation:
             const newAnnotations = [...(prev.annotation ?? [])];
             newAnnotations.splice(sectionIndex, 1);
-            widths.splice(getAnnotationIndexInTable(sectionIndex), 1);
             return {
               ...prev,
               annotation: newAnnotations,
@@ -997,15 +996,14 @@ export function DecisionTableExpression(
             assertUnreachable(groupType);
         }
       });
+
+      setWidthById(id, (prev) => {
+        const n = [...prev];
+        // FIXME: Tiago
+        return n;
+      });
     },
-    [
-      getAnnotationIndexInTable,
-      getInputIndexInTable,
-      getOutputIndexInTable,
-      getSectionIndexForGroupType,
-      setExpression,
-      widths,
-    ]
+    [getSectionIndexForGroupType, setExpression, setWidthById, id]
   );
 
   const onRowDeleted = useCallback(

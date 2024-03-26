@@ -346,8 +346,6 @@ export function RelationExpression(
           let index = args.beforeIndex;
           newColumns.splice(index, 0, newEntry);
 
-          widths.splice(index + 1, 0, RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH);
-
           if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
             index++;
           }
@@ -368,8 +366,14 @@ export function RelationExpression(
           row: newRows,
         };
       });
+
+      setWidthById(id, (prev) => {
+        const n = [...prev];
+        // FIXME: Tiago
+        return n;
+      });
     },
-    [createCell, setExpression, widths]
+    [createCell, id, setExpression, setWidthById]
   );
 
   const onColumnDeleted = useCallback(
@@ -381,7 +385,6 @@ export function RelationExpression(
         const newRows = [...(prev.row ?? [])].map((row) => {
           const newCells = [...(row.expression ?? [])];
           newCells.splice(args.columnIndex, 1);
-          widths.splice(args.columnIndex + 1, 1);
           return {
             ...row,
             expression: newCells,
@@ -394,8 +397,14 @@ export function RelationExpression(
           row: newRows,
         };
       });
+
+      setWidthById(id, (prev) => {
+        const n = [...prev];
+        // FIXME: Tiago
+        return n;
+      });
     },
-    [setExpression, widths]
+    [setExpression, setWidthById, id]
   );
 
   const onRowDeleted = useCallback(
