@@ -17,6 +17,5 @@
 # under the License.
 set -e
 
-cd $REMOTE_SOURCE_DIR/app
-source $CACHITO_ENV_FILE && go build -trimpath -ldflags=-buildid= -a -o manager main.go
-mkdir /workspace && cp $REMOTE_SOURCE_DIR/app/manager /workspace
+cd /workspace
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags=-buildid= -a -o manager main.go;

@@ -1,4 +1,4 @@
-name: org.kie.kogito.app.builder
+name: org.apache.kie.sonataflow.operatorBuilder
 version: "1.0"
 description: Builds the operator binary
 

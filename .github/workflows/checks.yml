@@ -1,4 +1,5 @@
 name: PR checks
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -23,27 +24,25 @@ jobs:
     name: Unit tests And Coverage
     runs-on: ubuntu-latest
     steps:
-      # Packages for testing with Podman
-      - name: Install package
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Go and Install Packages
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Install Additional Packages
         run: |
-          sudo apt-get update &&\
+          sudo apt-get update && \
           sudo apt-get -y install --no-install-recommends \
           btrfs-progs \
           libgpgme-dev \
           libbtrfs-dev \
           libdevmapper-dev
-
-      - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Install Go
-        id: go
-        uses: actions/setup-go@v3
-        with:
-          go-version: ${{ env.GO_VERSION }}
-          cache: true
 
       - name: Run tests
         run: make test test-workflowproj
@@ -57,11 +56,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install Go
-        id: go
-        uses: actions/setup-go@v3
+      - name: Setup Go and Install Packages
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: true
@@ -81,24 +79,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # since we now have to download container-builder deps, we need these packages installed before generating our types.
-      - name: Install packages
+      - name: Setup Go and Install Packages
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Install Additional Packages
         run: |
-          sudo apt-get update &&\
+          sudo apt-get update && \
           sudo apt-get -y install --no-install-recommends \
           btrfs-progs \
           libgpgme-dev \
           libbtrfs-dev \
           libdevmapper-dev
-
-      - name: Install Go
-        id: go
-        uses: actions/setup-go@v3
-        with:
-          go-version: ${{ env.GO_VERSION }}
-          cache: true
 
       - name: Check generations
         run: |

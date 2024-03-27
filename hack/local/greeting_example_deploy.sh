@@ -19,7 +19,7 @@
 
 registry=$1
 
-if [ -z ${registry} ]; then
+if [ -z "${registry}" ]; then
     registry="quay.io/${USERNAME}"
     echo "No registry given. Setting up default."
 fi
@@ -32,9 +32,11 @@ echo "Using image '${img}'"
 kubectl create namespace sonataflow
 kubectl create secret generic regcred --from-file=.dockerconfigjson=${HOME}/.docker/config.json --type=kubernetes.io/dockerconfigjson -n sonataflow
 
-make docker-build docker-push IMG=${img}
-make deploy IMG=${img}
+# make sure cekit is installed: https://docs.cekit.io/en/latest/handbook/installation/instructions.html
+make container-build BUILDER=docker IMG="${img}"
+make deploy IMG="${img}"
 
+# shellcheck disable=SC2002
 cat config/samples/sonataflow.org_v1alpha08_sonataflowplatform.yaml | sed "s|address: .*|address: ${registry}|g" | kubectl apply -n sonataflow -f -
 
 sleep 10

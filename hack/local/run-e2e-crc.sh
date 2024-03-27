@@ -23,9 +23,9 @@ docker login -u $(oc whoami) -p $(oc whoami -t) default-route-openshift-image-re
 oc new-project "${NAMESPACE}"
 
 export OPERATOR_IMAGE_NAME=default-route-openshift-image-registry.apps-crc.testing/"${NAMESPACE}"/kogito-serverless-operator:latest
-if ! make docker-build IMG="${OPERATOR_IMAGE_NAME}"; then
+if ! make container-build BUILDER=docker IMG="${OPERATOR_IMAGE_NAME}"; then
   echo "Failure: Failed to build image, exiting " >&2
   exit 1
 fi
-make docker-push IMG="${OPERATOR_IMAGE_NAME}"
+make container-push BUILDER=docker IMG="${OPERATOR_IMAGE_NAME}"
 make test-e2e

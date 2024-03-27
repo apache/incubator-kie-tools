@@ -1,4 +1,5 @@
 name: E2E checks
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -13,7 +14,9 @@ on:
 
 env:
   GO_VERSION: 1.21
+  PYTHON_VERSION: "3.10"
   KIND_VERSION: v0.20.0
+  OPERATOR_IMAGE_NAME: "127.0.0.1:5001/kogito-serverless-operator:0.0.1"
 
 jobs:
   e2e:
@@ -24,49 +27,53 @@ jobs:
     runs-on: ubuntu-latest
     name: End-to-end tests (Kind)
     steps:
-      - name: Install package
+      - name: Install dependencies
         run: |
-            sudo apt-get update &&\
-            sudo apt-get -y install --no-install-recommends \
-            btrfs-progs \
-            libgpgme-dev \
-            libbtrfs-dev \
-            libdevmapper-dev \
-            libkrb5-dev
-
+          sudo apt-get update && \
+          sudo apt-get -y install --no-install-recommends \
+          btrfs-progs \
+          libgpgme-dev \
+          libbtrfs-dev \
+          libdevmapper-dev \
+          libkrb5-dev
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Setup Kind cluster
+      - name: Setup Python for cekit
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache-dependency-path: images/requirements.txt
+          cache: 'pip'
+
+      - name: Install Cekit
         run: |
-          make KIND_VERSION=${{ env.KIND_VERSION }} create-cluster
+          pip install -r images/requirements.txt
+          cekit --version
+
+      - name: Setup Kind cluster
+        run: make KIND_VERSION=${{ env.KIND_VERSION }} create-cluster
 
       - name: Set OPERATOR_IMAGE_NAME to point to Kind's local registry
-        run: |
-          echo "OPERATOR_IMAGE_NAME=127.0.0.1:5001/kogito-serverless-operator:0.0.1" >> $GITHUB_ENV
+        run: echo "OPERATOR_IMAGE_NAME=${{ env.OPERATOR_IMAGE_NAME }}" >> $GITHUB_ENV
 
-      - name: Build operator image
+      - name: Build and load operator image
         run: |
-          make docker-build IMG=${{ env.OPERATOR_IMAGE_NAME }}
-
-      - name: Load image in Kind
-        run: |
-          kind load docker-image 127.0.0.1:5001/kogito-serverless-operator:0.0.1
+          make container-build BUILDER=docker IMG=${{ env.OPERATOR_IMAGE_NAME }}
+          kind load docker-image ${{ env.OPERATOR_IMAGE_NAME }}
 
       - name: Check pods
         run: |
           kubectl version
           kubectl get pods -A
-
-      # TODO: install the operator-sdk first, then cache the installation
 
       - name: Deploy operator
         run: |
@@ -74,8 +81,7 @@ jobs:
           kubectl wait pod -A -l control-plane=sonataflow-operator --for condition=Ready
 
       - name: Run tests
-        run: |
-          make test-e2e
+        run: make test-e2e
 
       - name: Retrieve cluster events and list pods
         if: failure()

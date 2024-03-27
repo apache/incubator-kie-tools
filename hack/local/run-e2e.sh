@@ -28,7 +28,7 @@ make undeploy ignore-not-found=true
 make deploy IMG="${OPERATOR_IMAGE_NAME}"
 
 eval "$(minikube -p "${MINIKUBE_PROFILE}" docker-env)"
-if ! make docker-build IMG="${OPERATOR_IMAGE_NAME}"; then
+if ! make container-build BUILDER=docker IMG="${OPERATOR_IMAGE_NAME}"; then
   echo "Failure: Failed to build image, exiting " >&2
   exit 1
 fi

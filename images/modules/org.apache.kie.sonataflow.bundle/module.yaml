@@ -1,0 +1,14 @@
+name: org.apache.kie.sonataflow.bundle
+version: "1.0"
+description: Copy the bundle files to the target image
+
+artifacts:
+  - name: manifests
+    path: "../../../../bundle/manifests"
+    dest: /manifests/
+  - name: metadata
+    path: "../../../../bundle/metadata"
+    dest: /metadata/
+  - name: tests-scorecard
+    path: "../../../../bundle/tests/scorecard/"
+    dest: /tests/scorecard/

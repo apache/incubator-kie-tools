@@ -1,7 +1,0 @@
---- !Policy
-id: "cvp-logic-operator-rhel8"
-product_versions:
-  - cvp
-decision_context: cvp_default
-rules:
-  - !PassingTestCaseRule {test_case_name: logic-operator-rhel8.openshift.external}

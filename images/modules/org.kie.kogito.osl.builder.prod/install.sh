@@ -17,5 +17,6 @@
 # under the License.
 set -e
 
-cd /workspace
-CGO_ENABLED=0 GO111MODULE=on go build -trimpath -ldflags=-buildid= -a -o manager main.go;
+cd "$REMOTE_SOURCE_DIR"/app
+go build CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags=-buildid= -a -o manager main.go
+mkdir /workspace && cp "$REMOTE_SOURCE_DIR"/app/manager /workspace

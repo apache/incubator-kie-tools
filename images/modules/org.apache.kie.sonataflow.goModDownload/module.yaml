@@ -1,4 +1,4 @@
-name: org.kie.kogito.goModDownload
+name: org.apache.kie.sonataflow.goModDownload
 version: "1.0"
 description: Download and cache the modules
 artifacts:
