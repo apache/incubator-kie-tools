@@ -19,7 +19,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditorStory } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, BoxedFunctionKind, generateUuid } from "../../../src/api";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../src/resizing/WidthConstants";
@@ -33,12 +33,9 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-const expressionId = generateUuid();
-const nestedExpressionId = generateUuid();
-
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
@@ -53,13 +50,13 @@ export const Base: Story = {
 };
 
 export const InstallmentCalculation: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
     expression: {
       __$$element: "functionDefinition",
-      "@_id": expressionId,
+      "@_id": generateUuid(),
       "@_label": "Installment calculation",
       "@_typeRef": DmnBuiltInDataType.Number,
       "@_kind": BoxedFunctionKind.Feel,
@@ -82,18 +79,18 @@ export const InstallmentCalculation: Story = {
       ],
       expression: {
         __$$element: "literalExpression",
-        "@_id": generateUuid(),
-        text: { __$$text: `(Amount*Rate/12) /\n(1-(1+Rate/12)**-Term)` },
+        "@_id": "_ACDB9FB9-E16C-42CA-BBCC-DA1DADCFD7E2",
+        text: { __$$text: `(Amount*Rate/12) / (1-(1+Rate/12)**-Term)` },
       },
     },
     isResetSupportedOnRootExpression: false,
-    widthsById: new Map([[expressionId, [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 700]]]),
+    widthsById: new Map([["_ACDB9FB9-E16C-42CA-BBCC-DA1DADCFD7E2", [347]]]),
   },
 };
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Nested: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,

@@ -18,11 +18,11 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { DecisionTableExpressionDefinition, DmnBuiltInDataType } from "../../../src/api";
+import { BoxedDecisionTable, DmnBuiltInDataType } from "../../../src/api";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
 import {
   beeGwtService,
-  BoxedExpressionEditorWrapper,
+  BoxedExpressionEditorStory,
   dataTypes,
   pmmlDocuments,
 } from "../../boxedExpressionStoriesWrapper";
@@ -39,7 +39,7 @@ type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const findEmployeesDataTypes = [...dataTypes, { name: "tPerson", isCustom: true }];
 
-export const canDriveExpressionDefinition: DecisionTableExpressionDefinition = {
+export const canDriveExpressionDefinition: BoxedDecisionTable = {
   __$$element: "decisionTable",
   "@_id": "_21608B6A-1D9E-426D-86CF-B0CA7AB20D31",
   "@_label": "Can drive?",
@@ -129,7 +129,7 @@ export const canDriveWidthsById = new Map<string, number[]>([
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: canDriveExpressionDefinition,

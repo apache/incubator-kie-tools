@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { ContextExpressionDefinition, DmnBuiltInDataType } from "../../../../../src/api";
+import { BoxedContext, DmnBuiltInDataType } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { beeGwtService, BoxedExpressionEditorWrapper, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
+import { beeGwtService, BoxedExpressionEditorStory, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
 import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../../../src/resizing/WidthConstants";
@@ -33,7 +33,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-export const preBureauRiskCategoryExpression: ContextExpressionDefinition = {
+export const preBureauRiskCategoryExpression: BoxedContext = {
   __$$element: "context",
   "@_id": "_21BA0CB9-F15E-482F-BCBB-F6694EF9B1FC",
   "@_label": "Pre-bureau risk category",
@@ -200,7 +200,7 @@ export const preBureauRiskCategoryWidthsById = new Map<string, number[]>([
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: preBureauRiskCategoryExpression,

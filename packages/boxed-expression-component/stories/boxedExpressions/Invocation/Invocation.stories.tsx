@@ -19,7 +19,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditorStory } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
 import { INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME } from "../../../src/expressions/InvocationExpression";
@@ -29,14 +29,14 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   title: "Boxed Expressions/Invocation",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
-  excludeStories: ["BoxedExpressionEditorWrapper"],
+  excludeStories: ["BoxedExpressionEditorStory"],
 };
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
@@ -63,7 +63,7 @@ export const Base: Story = {
 };
 
 export const MonthlyInstallment: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
@@ -128,7 +128,7 @@ export const MonthlyInstallment: Story = {
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Nested: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,

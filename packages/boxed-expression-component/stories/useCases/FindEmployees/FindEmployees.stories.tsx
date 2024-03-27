@@ -21,7 +21,7 @@ import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind, BoxedInvocation, 
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
-  BoxedExpressionEditorWrapper,
+  BoxedExpressionEditorStory,
   dataTypes,
   pmmlDocuments,
 } from "../../boxedExpressionStoriesWrapper";
@@ -308,7 +308,7 @@ export const findEmployeesWidthsById = new Map<string, number[]>([
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Employees: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: employeesExpression,
@@ -321,7 +321,7 @@ export const Employees: Story = {
 };
 
 export const FindEmployeesByKnowledge: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: findEmployeesByKnowledgeExpression,
@@ -334,7 +334,7 @@ export const FindEmployeesByKnowledge: Story = {
 };
 
 export const FindByEmployees: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: findEmployeesExpression,

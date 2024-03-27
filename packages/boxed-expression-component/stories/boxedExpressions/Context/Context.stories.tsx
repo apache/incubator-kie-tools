@@ -19,7 +19,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditorStory } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
 import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
@@ -33,21 +33,19 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-const expressionId = generateUuid();
-const nestedExpressionId = generateUuid();
 const widthsById = new Map<string, number[]>();
-widthsById.set(expressionId, [CONTEXT_ENTRY_INFO_MIN_WIDTH]);
-widthsById.set(nestedExpressionId, [CONTEXT_ENTRY_INFO_MIN_WIDTH]);
+widthsById.set("_35255561-88FA-4A78-9C3F-61855213EE0F", [CONTEXT_ENTRY_INFO_MIN_WIDTH]);
+widthsById.set("_5D97B484-8003-4323-AADB-AA4C6F3ECA73", [CONTEXT_ENTRY_INFO_MIN_WIDTH]);
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
     expression: {
       __$$element: "context",
-      "@_id": expressionId,
+      "@_id": "_35255561-88FA-4A78-9C3F-61855213EE0F",
       "@_label": "Expression Name",
       "@_typeRef": DmnBuiltInDataType.Undefined,
       contextEntry: [
@@ -67,7 +65,7 @@ export const Base: Story = {
 };
 
 export const InstallmentCalculation: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
@@ -122,7 +120,7 @@ export const InstallmentCalculation: Story = {
 };
 
 export const Customer: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: BoxedExpressionEditorStory,
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
@@ -167,13 +165,13 @@ export const Customer: Story = {
 };
 
 export const Nested: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
     expression: {
       __$$element: "context",
-      "@_id": expressionId,
+      "@_id": "_35255561-88FA-4A78-9C3F-61855213EE0F",
       "@_label": "Expression Name",
       contextEntry: [
         {
@@ -183,7 +181,7 @@ export const Nested: Story = {
           },
           expression: {
             __$$element: "context",
-            "@_id": nestedExpressionId,
+            "@_id": "_5D97B484-8003-4323-AADB-AA4C6F3ECA73",
             "@_label": "Expression Name",
             contextEntry: [
               {

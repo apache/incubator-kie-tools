@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { DmnBuiltInDataType, InvocationExpressionDefinition } from "../../../../../src/api";
+import { DmnBuiltInDataType, BoxedInvocation } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { beeGwtService, BoxedExpressionEditorWrapper, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
+import { beeGwtService, BoxedExpressionEditorStory, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
 import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
 
@@ -32,7 +32,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-export const postBureauAffordabilityExpression: InvocationExpressionDefinition = {
+export const postBureauAffordabilityExpression: BoxedInvocation = {
   __$$element: "invocation",
   "@_id": "_1E880009-77B2-4309-AE2A-8964E05636B1",
   "@_label": "Post-bureau affordability",
@@ -130,7 +130,7 @@ export const postBureauAffordabilityWidthsById = new Map<string, number[]>([
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: postBureauAffordabilityExpression,

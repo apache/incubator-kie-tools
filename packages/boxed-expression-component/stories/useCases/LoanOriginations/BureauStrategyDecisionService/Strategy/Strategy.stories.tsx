@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { DecisionTableExpressionDefinition } from "../../../../../src/api";
+import { BoxedDecisionTable } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { beeGwtService, BoxedExpressionEditorWrapper, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
+import { beeGwtService, BoxedExpressionEditorStory, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
 import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../../../src/resizing/WidthConstants";
@@ -33,7 +33,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-export const strategyExpression: DecisionTableExpressionDefinition = {
+export const strategyExpression: BoxedDecisionTable = {
   __$$element: "decisionTable",
   "@_id": "_1AAE9CB0-2B4B-4159-A994-A93D5F91EE23",
   "@_label": "Strategy",
@@ -105,7 +105,7 @@ export const strategyWidthsById = new Map([
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: strategyExpression,

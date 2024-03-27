@@ -22,7 +22,7 @@ import { useEffect, useState, useCallback } from "react";
 import { BeeGwtService, DmnBuiltInDataType, BoxedExpression } from "../../src/api";
 import { getDefaultExpressionDefinitionByLogicType } from "./defaultExpression";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditorWrapper } from "../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditorStory } from "../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditorProps } from "../../src/expressions";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button, Flex, FlexItem, Tooltip } from "@patternfly/react-core/dist/js";
@@ -92,7 +92,7 @@ const pmmlDocuments = [
 ];
 
 const INITIAL_EXPRESSION: BoxedExpression | undefined = undefined;
-const INITIAL_WIDTHS_BY_ID: Map<string, number[]> | undefined = undefined;
+const INITIAL_WIDTHS_BY_ID: Map<string, number[]> = new Map();
 
 //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
 const beeGwtService: BeeGwtService = {
@@ -106,17 +106,17 @@ const beeGwtService: BeeGwtService = {
   selectObject(): void {},
 };
 
-function App(args: BoxedExpressionEditorProps) {
+function App() {
   const [version, setVersion] = useState(-1);
-  const [expressionDefinition, setExpressionDefinition] = useState<BoxedExpression | undefined>(INITIAL_EXPRESSION);
-  const [widthsById, setWidthsById] = useState<Map<string, number[]> | undefined>(INITIAL_WIDTHS_BY_ID);
+  const [boxedExpression, setBoxedExpression] = useState<BoxedExpression | undefined>(INITIAL_EXPRESSION);
+  const [widthsById, setWidthsById] = useState<Map<string, number[]>>(INITIAL_WIDTHS_BY_ID);
 
   useEffect(() => {
     setVersion((prev) => prev + 1);
-  }, [expressionDefinition]);
+  }, [boxedExpression]);
 
-  const setSample = useCallback((sample?: BoxedExpression, widthsById?: Map<string, number[]>) => {
-    setExpressionDefinition(sample);
+  const setSample = useCallback((sample: BoxedExpression | undefined, widthsById: Map<string, number[]>) => {
+    setBoxedExpression(sample);
     setWidthsById(widthsById);
   }, []);
 
@@ -126,7 +126,7 @@ function App(args: BoxedExpressionEditorProps) {
         <FlexItem>
           <Flex style={{ width: "96vw" }}>
             <FlexItem>
-              <Button onClick={() => setSample(undefined, undefined)}>Empty</Button>
+              <Button onClick={() => setSample(INITIAL_EXPRESSION, INITIAL_WIDTHS_BY_ID)}>Empty</Button>
             </FlexItem>
             <FlexItem>
               <Button onClick={() => setSample(canDriveExpressionDefinition, canDriveWidthsById)}>Can Drive?</Button>
@@ -150,14 +150,12 @@ function App(args: BoxedExpressionEditorProps) {
         </FlexItem>
         <FlexItem>
           <div>
-            {BoxedExpressionEditorWrapper({
+            {BoxedExpressionEditorStory({
               expressionHolderId: "_00000000-0000-0000-0000-000000000000",
-              dataTypes: args.dataTypes,
-              beeGwtService: args.beeGwtService,
-              pmmlDocuments: args.pmmlDocuments,
-              expression: expressionDefinition,
-              onExpressionChange: setExpressionDefinition,
+              expression: boxedExpression,
+              onExpressionChange: setBoxedExpression,
               widthsById: widthsById,
+              onWidthsChange: setWidthsById,
             })}
           </div>
         </FlexItem>
@@ -175,13 +173,13 @@ export default meta;
 type Story = StoryObj<typeof App>;
 
 export const WebApp: Story = {
-  render: (args) => App(args),
+  render: (args) => App(),
   args: {
-    expressionHolderId: "_00000000-0000-0000-0000-000000000000",
-    expression: undefined,
+    expressionHolderId: undefined, // Needs to be here to be displayed.
+    expression: undefined, // Needs to be here to be displayed.
     dataTypes: dataTypes,
     beeGwtService: beeGwtService,
     pmmlDocuments: pmmlDocuments,
-    widthsById: undefined,
+    widthsById: new Map(), // Needs to be here to be displayed.
   },
 };

@@ -155,6 +155,11 @@ const expression: BoxedExpression = {
                           "@_typeRef": DmnBuiltInDataType.Undefined,
                         },
                       ],
+                      annotation: [
+                        {
+                          "@_name": "Annotations",
+                        },
+                      ],
                       rule: [
                         {
                           "@_id": "_7FA41F37-BC03-49C7-AD96-8C03B84FE5D7",
@@ -331,5 +336,8 @@ export const Nested: Story = {
   args: {
     ...Context.Nested.args,
     expression,
+    widthsById: new Map<string, number[]>([
+      //FIXME: Tiago
+    ]),
   },
 };

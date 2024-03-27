@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useArgs } from "@storybook/preview-api";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../src/expressions";
 import {
@@ -43,20 +43,10 @@ import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
 } from "../src/expressions/InvocationExpression";
-import {
-  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
-  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
-  DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-  DECISION_TABLE_INPUT_DEFAULT_WIDTH,
-  DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-  LITERAL_EXPRESSION_MIN_WIDTH,
-} from "../src/resizing/WidthConstants";
 
 function getDefaultExpressionDefinitionByLogicType(
   logicType: BoxedExpression["__$$element"] | undefined,
-  typeRef: string,
-  containerWidth: number
+  typeRef: string
 ): BoxedExpression {
   if (!logicType) {
     return undefined as any;
@@ -225,99 +215,72 @@ export const dataTypes = [
   { name: "years and months duration", isCustom: false },
 ];
 
-function getDefaultWidths(logicType: BoxedExpression["__$$element"] | undefined, id: string) {
-  switch (logicType) {
-    case "context":
-      return new Map([[id, [CONTEXT_ENTRY_INFO_MIN_WIDTH, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH]]]);
-
-    case "literalExpression":
-      return new Map([[id, [LITERAL_EXPRESSION_MIN_WIDTH]]]);
-
-    case "relation":
-      return new Map([[id, [100]]]);
-
-    case "decisionTable":
-      return new Map([
-        [
-          id,
-          [
-            BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
-            DECISION_TABLE_INPUT_DEFAULT_WIDTH,
-            DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-            DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-          ],
-        ],
-      ]);
-
-    default:
-      return new Map<string, number[]>();
-  }
-}
-
 export const beeGwtService: BeeGwtService = {
   getDefaultExpressionDefinition(logicType: BoxedExpression["__$$element"] | undefined, dataType: string) {
-    const expression = getDefaultExpressionDefinitionByLogicType(logicType, dataType, 0);
+    const expression = getDefaultExpressionDefinitionByLogicType(logicType, dataType);
     return {
       expression: expression,
-      widthsById: getDefaultWidths(logicType, expression["@_id"] ?? ""),
+      widthsById: new Map(),
     };
   },
   openDataTypePage(): void {},
   selectObject(): void {},
 };
 
-export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEditorProps>) {
+export type BoxedExpressionEditorStoryArgs = Omit<BoxedExpressionEditorProps, "widthsById"> & {
+  widthsById: Record<string, number[]>;
+};
+
+export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditorProps>) {
   const emptyRef = useRef<HTMLDivElement>(null);
   const [args, updateArgs] = useArgs<BoxedExpressionEditorProps>();
-  const argsCopy = useRef(args);
-  const [expressionState, setExpressionState] = useState<BoxedExpression | undefined>(args.expression);
-  const [widthsByIdState, setWidthsByIdState] = useState<Map<string, number[]>>(args.widthsById);
-
-  const expression = useMemo(() => props?.expression ?? expressionState, [expressionState, props?.expression]);
-  const widthsById = useMemo(
-    () => props?.widthsById ?? widthsByIdState ?? new Map<string, number[]>(),
-    [props?.widthsById, widthsByIdState]
+  const [expressionState, setExpressionState] = useState<BoxedExpression | undefined>(
+    args?.expression ?? props?.expression
   );
 
-  const onExpressionChange = useMemo(
-    () => (props?.onExpressionChange ? props.onExpressionChange : setExpressionState),
-    [props?.onExpressionChange]
-  );
-
-  const onWidthsChange = useMemo(
-    () => (props?.onWidthsChange ? props.onWidthsChange : setWidthsByIdState),
-    [props?.onWidthsChange]
+  const [widthsByIdState, setWidthsByIdState] = useState<Map<string, number[]>>(
+    args.widthsById ?? props?.widthsById ?? new Map()
   );
 
   useEffect(() => {
-    updateArgs({ ...argsCopy.current, expression, widthsById });
-  }, [updateArgs, expression, widthsById]);
+    setExpressionState(args.expression ?? props?.expression);
+  }, [args.expression, props?.expression]);
 
   useEffect(() => {
-    if (args === argsCopy.current) {
-      return;
-    }
-    onExpressionChange(args.expression);
-    argsCopy.current = args;
-  }, [args, onExpressionChange]);
+    setWidthsByIdState(args.widthsById ?? props?.widthsById ?? new Map());
+  }, [args.widthsById, props?.widthsById]);
+
+  useEffect(() => {
+    updateArgs({ expression: expressionState });
+  }, [updateArgs, expressionState]);
+
+  useEffect(() => {
+    updateArgs({ widthsById: widthsByIdState });
+  }, [updateArgs, widthsByIdState]);
 
   return (
-    <div ref={emptyRef}>
+    <div
+      ref={emptyRef}
+      onKeyDown={(e) => {
+        // Prevent keys from propagating to Storybook
+        return e.stopPropagation();
+      }}
+    >
       <BoxedExpressionEditor
-        expressionHolderId={props?.expressionHolderId ?? args.expressionHolderId}
+        expressionHolderId={args?.expressionHolderId ?? props?.expressionHolderId ?? ""}
         expressionHolderTypeRef={DmnBuiltInDataType.Undefined}
-        expression={expression}
-        onExpressionChange={onExpressionChange}
-        onWidthsChange={onWidthsChange}
-        dataTypes={props?.dataTypes ?? args.dataTypes}
-        scrollableParentRef={props?.scrollableParentRef ?? emptyRef}
-        beeGwtService={props?.beeGwtService ?? args.beeGwtService}
-        pmmlDocuments={props?.pmmlDocuments ?? args.pmmlDocuments}
+        expression={expressionState}
+        onExpressionChange={setExpressionState}
+        onWidthsChange={setWidthsByIdState}
+        dataTypes={args?.dataTypes ?? props?.dataTypes ?? dataTypes}
+        scrollableParentRef={args?.scrollableParentRef ?? props?.scrollableParentRef ?? emptyRef}
+        beeGwtService={args?.beeGwtService ?? props?.beeGwtService ?? beeGwtService}
+        pmmlDocuments={args?.pmmlDocuments ?? props?.pmmlDocuments ?? pmmlDocuments}
         isResetSupportedOnRootExpression={
-          props?.isResetSupportedOnRootExpression ?? args.isResetSupportedOnRootExpression
+          args?.isResetSupportedOnRootExpression ?? props?.isResetSupportedOnRootExpression ?? false
         }
-        widthsById={widthsById}
-        expressionName={expression?.["@_label"]}
+        widthsById={widthsByIdState}
+        expressionName={expressionState?.["@_label"]}
       />
     </div>
   );

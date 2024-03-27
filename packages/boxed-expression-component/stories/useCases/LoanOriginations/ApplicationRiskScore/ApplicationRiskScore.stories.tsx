@@ -18,9 +18,9 @@
  */
 
 import { loanOriginationsDataTypes } from "../boxedExpressionEditorBase";
-import { ContextExpressionDefinition, DmnBuiltInDataType } from "../../../../src/api";
+import { BoxedContext, DmnBuiltInDataType } from "../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { beeGwtService, BoxedExpressionEditorWrapper, pmmlDocuments } from "../../../boxedExpressionStoriesWrapper";
+import { beeGwtService, BoxedExpressionEditorStory, pmmlDocuments } from "../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../src/expressions";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../../src/resizing/WidthConstants";
 
@@ -33,7 +33,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-export const applicationRiskScoreExpression: ContextExpressionDefinition = {
+export const applicationRiskScoreExpression: BoxedContext = {
   __$$element: "context",
   "@_id": "_36398C55-5ED1-41C6-B643-98DBDD52D143",
   "@_label": "Application risk score",
@@ -266,7 +266,7 @@ export const applicationRiskScoreWidthsById = new Map([
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: applicationRiskScoreExpression,

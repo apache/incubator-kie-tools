@@ -19,7 +19,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditorStory } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
 import {
@@ -43,18 +43,15 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-const expressionId = generateUuid();
-const nestedExpressionId = generateUuid();
-
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
     expression: {
       __$$element: "decisionTable",
-      "@_id": expressionId,
+      "@_id": "_92929AE6-3BB5-4217-B66E-07614680971D",
       "@_label": "Expression Name",
       "@_hitPolicy": "UNIQUE",
       input: [
@@ -95,7 +92,7 @@ export const Base: Story = {
     },
     widthsById: new Map([
       [
-        expressionId,
+        "_92929AE6-3BB5-4217-B66E-07614680971D",
         [
           BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
           DECISION_TABLE_INPUT_DEFAULT_WIDTH,
@@ -110,13 +107,13 @@ export const Base: Story = {
 };
 
 export const Discount: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
     expression: {
       __$$element: "decisionTable",
-      "@_id": expressionId,
+      "@_id": "_92929AE6-3BB5-4217-B66E-07614680971D",
       "@_label": "Discount",
       "@_typeRef": DmnBuiltInDataType.Number,
       "@_hitPolicy": "PRIORITY",
@@ -172,7 +169,7 @@ export const Discount: Story = {
     isResetSupportedOnRootExpression: false,
     widthsById: new Map([
       [
-        expressionId,
+        "_92929AE6-3BB5-4217-B66E-07614680971D",
         [
           BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
           120,
@@ -185,13 +182,13 @@ export const Discount: Story = {
 };
 
 export const Nested: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
+  render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
     expression: {
       __$$element: "context",
-      "@_id": expressionId,
+      "@_id": "_92929AE6-3BB5-4217-B66E-07614680971D",
       "@_label": "Expression Name",
       contextEntry: [
         {
@@ -202,7 +199,7 @@ export const Nested: Story = {
           },
           expression: {
             __$$element: "decisionTable",
-            "@_id": nestedExpressionId,
+            "@_id": "_5B31AAB6-BD52-4654-88C2-541F687FE5B4",
             "@_label": "Expression Name",
             "@_hitPolicy": "UNIQUE",
             input: [
@@ -248,9 +245,9 @@ export const Nested: Story = {
       ],
     },
     widthsById: new Map([
-      [expressionId, [CONTEXT_ENTRY_INFO_MIN_WIDTH]],
+      ["_92929AE6-3BB5-4217-B66E-07614680971D", [CONTEXT_ENTRY_INFO_MIN_WIDTH]],
       [
-        nestedExpressionId,
+        "_5B31AAB6-BD52-4654-88C2-541F687FE5B4",
         [
           BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
           DECISION_TABLE_INPUT_DEFAULT_WIDTH,
