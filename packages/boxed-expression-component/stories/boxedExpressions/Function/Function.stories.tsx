@@ -19,7 +19,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorStory } from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, BoxedFunctionKind, generateUuid } from "../../../src/api";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../src/resizing/WidthConstants";
@@ -31,7 +31,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
@@ -84,7 +84,7 @@ export const InstallmentCalculation: Story = {
       },
     },
     isResetSupportedOnRootExpression: false,
-    widthsById: new Map([["_ACDB9FB9-E16C-42CA-BBCC-DA1DADCFD7E2", [347]]]),
+    widthsById: { "_ACDB9FB9-E16C-42CA-BBCC-DA1DADCFD7E2": [347] },
   },
 };
 
