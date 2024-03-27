@@ -38,6 +38,7 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
+import { getNewBeeIdRandomizer } from "../../clipboard/clipboard";
 
 export interface ExpressionContainerProps {
   expression?: BoxedExpression;
@@ -253,9 +254,17 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   );
 
   const onLogicTypeReset = useCallback(() => {
-    if (expression?.["@_id"]) {
-      variables?.repository.removeVariable(expression["@_id"], true);
-      setWidthById(expression["@_id"], (prev) => []);
+    const originalIds = getNewBeeIdRandomizer()
+      .ack({
+        json: { __$$element: "decision", expression },
+        type: "DMN15__tDecision",
+        attr: "expression",
+      })
+      .getOriginalIds();
+
+    for (const id of originalIds) {
+      variables?.repository.removeVariable(id, true);
+      setWidthById(id, () => []);
     }
 
     setExpression(undefined!); // SPEC DISCREPANCY: Undefined expressions gives users the ability to select the expression type.

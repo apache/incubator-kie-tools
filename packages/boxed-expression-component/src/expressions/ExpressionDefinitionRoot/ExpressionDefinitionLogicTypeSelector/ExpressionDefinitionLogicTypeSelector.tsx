@@ -49,6 +49,12 @@ import { ListExpression } from "../../ListExpression";
 import { LiteralExpression } from "../../LiteralExpression";
 import { RelationExpression } from "../../RelationExpression";
 import "./ExpressionDefinitionLogicTypeSelector.css";
+import {
+  BoxedExpressionClipboard,
+  DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE,
+  buildClipboardFromExpression,
+  getNewBeeIdRandomizer,
+} from "../../../clipboard/clipboard";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -98,7 +104,7 @@ export function ExpressionDefinitionLogicTypeSelector({
 
   const { i18n } = useBoxedExpressionEditorI18n();
 
-  const { setCurrentlyOpenContextMenu, editorRef } = useBoxedExpressionEditor();
+  const { setCurrentlyOpenContextMenu, editorRef, widthsById } = useBoxedExpressionEditor();
 
   const renderExpression = useMemo(() => {
     const logicType = expression?.__$$element;
@@ -228,44 +234,52 @@ export function ExpressionDefinitionLogicTypeSelector({
   }, []);
 
   const copyExpression = useCallback(() => {
-    navigator.clipboard.writeText(JSON.stringify(expression));
+    navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
     setDropdownOpen(false);
-  }, [expression]);
+  }, [expression, widthsById]);
 
   const cutExpression = useCallback(() => {
-    navigator.clipboard.writeText(JSON.stringify(expression));
+    navigator.clipboard.writeText(JSON.stringify(buildClipboardFromExpression(expression!, widthsById)));
     onLogicTypeReset();
     setDropdownOpen(false);
-  }, [expression, onLogicTypeReset]);
+  }, [expression, onLogicTypeReset, widthsById]);
 
-  const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
 
   const [pasteExpressionError, setPasteExpressionError] = React.useState<string>("");
 
   const pasteExpression = useCallback(async () => {
     try {
-      const expression = JSON.parse(await navigator.clipboard.readText(), (key: string, value: string) => {
-        // We can't allow ids to be repeated, so we generate new ids for every expression that is part of the pasted expression.
-        if (key === "id") {
-          return generateUuid();
-        } else {
-          return value;
-        }
-      });
-
-      if (!expression?.id) {
-        // FIXME: The ideal here would be validating the expression as a whole, but just looking at the ID already prevents errors when pasting plain strings and numbers.
-        throw new Error("Pasted expression doesn't have an ID. This means that it's not a valid JSON.");
+      const clipboard: BoxedExpressionClipboard = JSON.parse(await navigator.clipboard.readText());
+      if (clipboard.mimeType !== DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE) {
+        throw new Error(
+          "Pasted expression doesn't have the correct mime-type. Likely not copied from the Boxed Expression Editor."
+        );
       }
 
-      setExpression(expression);
+      resetLogicType();
+
+      const newIdsByOriginalId = getNewBeeIdRandomizer()
+        .ack({
+          json: { __$$element: "decision", expression: clipboard.expression },
+          type: "DMN15__tDecision",
+          attr: "expression",
+        })
+        .randomize();
+
+      setExpression(clipboard.expression); // This is mutated to have new IDs by the ID randomizer above.
+
+      for (const originalId in clipboard.widthsById) {
+        setWidthById(newIdsByOriginalId.get(originalId)!, (prev) => clipboard.widthsById[originalId]);
+      }
+
       setDropdownOpen(false);
       setCurrentlyOpenContextMenu(undefined);
       setPasteExpressionError("");
     } catch (err) {
       setPasteExpressionError(err);
     }
-  }, [setCurrentlyOpenContextMenu, setExpression]);
+  }, [resetLogicType, setCurrentlyOpenContextMenu, setExpression, setWidthById]);
 
   const menuIconContainerStyle = useMemo(() => {
     return {
