@@ -65,7 +65,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
 import { builtInFeelTypes } from "../dataTypes/BuiltInFeelTypes";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
@@ -116,23 +116,6 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     return new FeelVariables(thisDmn.model.definitions, externalModels);
   }, [externalDmnsByNamespace, thisDmn.model.definitions]);
 
-  const widthsById = useMemo(() => {
-    return (
-      thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["di:extension"]?.[
-        "kie:ComponentsWidthsExtension"
-      ]?.["kie:ComponentWidths"] ?? []
-    ).reduce((acc, c) => {
-      if (c["@_dmnElementRef"] === undefined) {
-        return acc;
-      } else {
-        return acc.set(
-          c["@_dmnElementRef"],
-          (c["kie:width"] ?? []).map((vv) => vv.__$$text)
-        );
-      }
-    }, new Map<string, number[]>());
-  }, [diagram.drdIndex, thisDmn.model.definitions]);
-
   const drgElementIndex = useMemo(() => {
     if (!boxedExpressionEditor.activeDrgElementId) {
       return undefined;
@@ -156,26 +139,60 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     return drgElement;
   }, [drgElementIndex, thisDmn.model.definitions.drgElement]);
 
+  const expressionName = useMemo(() => {
+    return drgElement?.["@_name"];
+  }, [drgElement]);
+
+  // ---
+  const widthsById = useMemo(() => {
+    return (
+      thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["di:extension"]?.[
+        "kie:ComponentsWidthsExtension"
+      ]?.["kie:ComponentWidths"] ?? []
+    ).reduce((acc, c) => {
+      if (c["@_dmnElementRef"] === undefined) {
+        return acc;
+      } else {
+        return acc.set(
+          c["@_dmnElementRef"],
+          (c["kie:width"] ?? []).map((vv) => vv.__$$text)
+        );
+      }
+    }, new Map<string, number[]>());
+  }, [diagram.drdIndex, thisDmn.model.definitions]);
+
   const expression = useMemo(() => {
     if (!drgElement) {
       return undefined;
     }
 
     return {
-      beeExpression: drgElementToBoxedExpression(drgElement),
+      boxedExpression: drgElementToBoxedExpression(drgElement),
       drgElementIndex,
       drgElement,
       drgElementType: drgElement.__$$element,
     };
   }, [drgElement, drgElementIndex]);
 
-  const expressionName = useMemo(() => {
-    return drgElement?.["@_name"];
-  }, [drgElement]);
+  const widthsByIdRef = useRef<Map<string, number[]>>(widthsById);
+  const boxedExpressionRef = useRef<BoxedExpression | undefined>(expression?.boxedExpression);
+  useEffect(() => {
+    widthsByIdRef.current = widthsById;
+  }, [widthsById]);
+  useEffect(() => {
+    boxedExpressionRef.current = expression?.boxedExpression;
+  }, [expression?.boxedExpression]);
 
-  const onWidthsChange: React.Dispatch<Map<string, number[]>> = useCallback(
-    (newWidthsById) => {
+  const onWidthsChange: React.Dispatch<React.SetStateAction<Map<string, number[]>>> = useCallback(
+    (newWidthsByIdAction) => {
       dmnEditorStoreApi.setState((state) => {
+        const newWidthsById =
+          typeof newWidthsByIdAction === "function"
+            ? newWidthsByIdAction(widthsByIdRef.current ?? new Map())
+            : newWidthsByIdAction;
+
+        widthsByIdRef.current = newWidthsById;
+
         updateExpressionWidths({
           definitions: state.dmn.model.definitions,
           drdIndex: state.diagram.drdIndex,
@@ -191,8 +208,10 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
       dmnEditorStoreApi.setState((state) => {
         const newExpression =
           typeof expressionAction === "function"
-            ? expressionAction(expression?.beeExpression ?? { __$$element: "literalExpression" })
+            ? expressionAction(boxedExpressionRef.current ?? undefined!)
             : expressionAction;
+
+        boxedExpressionRef.current = newExpression;
 
         updateExpression({
           definitions: state.dmn.model.definitions,
@@ -201,8 +220,10 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
         });
       });
     },
-    [dmnEditorStoreApi, expression?.beeExpression, expression?.drgElementIndex]
+    [dmnEditorStoreApi, expression?.drgElementIndex]
   );
+
+  // ---
 
   const isResetSupportedOnRootExpression = useMemo(() => {
     return expression?.drgElementType === "decision"; // BKMs are ALWAYS functions, and can't be reset.
@@ -358,10 +379,10 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             expressionHolderId={boxedExpressionEditor.activeDrgElementId!}
             expressionHolderTypeRef={
               drgElement?.variable?.["@_typeRef"] ||
-              expression?.beeExpression["@_typeRef"] ||
+              expression?.boxedExpression["@_typeRef"] ||
               DmnBuiltInDataType.Undefined
             }
-            expression={expression?.beeExpression}
+            expression={expression?.boxedExpression}
             onExpressionChange={onExpressionChange}
             dataTypes={dataTypes}
             scrollableParentRef={container}
