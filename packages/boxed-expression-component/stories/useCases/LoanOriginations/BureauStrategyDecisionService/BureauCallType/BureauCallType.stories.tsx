@@ -39,7 +39,7 @@ export const bureauCallTypeExpression: BoxedDecisionTable = {
   "@_label": "Bureau call type",
   "@_typeRef": "t.BureauCallType",
   "@_hitPolicy": "UNIQUE",
-  annotation: [{ "@_name": "annotation-1" }],
+  annotation: [{ "@_name": "Annotations" }],
   input: [
     {
       "@_id": "_EDEB6C03-3FD1-4845-A18F-1463314BB5FB",

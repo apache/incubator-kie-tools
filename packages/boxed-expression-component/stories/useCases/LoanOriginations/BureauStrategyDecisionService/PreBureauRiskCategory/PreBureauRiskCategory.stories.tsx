@@ -59,7 +59,7 @@ export const preBureauRiskCategoryExpression: BoxedContext = {
         "@_id": "_DD3AABF1-9E83-4F71-A769-D9CC01231580",
         "@_label": "Result Expression",
         "@_hitPolicy": "UNIQUE",
-        annotation: [{ "@_name": "annotation-1" }],
+        annotation: [{ "@_name": "Annotations" }],
         input: [
           {
             "@_id": "_6887F8AD-5387-4D00-8CED-5234EB2C4EEB",

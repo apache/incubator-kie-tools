@@ -39,7 +39,7 @@ export const strategyExpression: BoxedDecisionTable = {
   "@_label": "Strategy",
   "@_typeRef": "t.Strategy",
   "@_hitPolicy": "UNIQUE",
-  annotation: [{ "@_name": "annotation-1" }],
+  annotation: [{ "@_name": "Annotations" }],
   input: [
     {
       "@_id": "_000159BA-3887-4445-8DC7-3A7A82EE3ED9",

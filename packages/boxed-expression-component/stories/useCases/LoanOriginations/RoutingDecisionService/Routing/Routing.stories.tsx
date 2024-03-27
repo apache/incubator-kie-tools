@@ -73,7 +73,7 @@ const routingExpression: BoxedContext = {
         "@_id": "_1FB1191F-F05C-4609-8BA4-77BE0D25570D",
         "@_label": "Result Expression",
         "@_hitPolicy": "PRIORITY",
-        annotation: [{ "@_name": "annotation-1" }],
+        annotation: [{ "@_name": "Annotations" }],
         input: [
           {
             "@_id": "_DAD2F39A-E70B-4AE5-8AFF-89461DC1246E",

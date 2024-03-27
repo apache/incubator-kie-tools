@@ -41,7 +41,7 @@ export const eligibilityExpression: BoxedDecisionTable = {
 
   "@_hitPolicy": "FIRST",
 
-  annotation: [{ "@_name": "annotation-1" }],
+  annotation: [{ "@_name": "Annotations" }],
   input: [
     {
       "@_id": "_60976225-DA1D-4C7E-A910-E341D763C218",

@@ -126,7 +126,7 @@ export const applicationRiskScoreExpression: BoxedContext = {
             "@_name": "Result Expression",
           },
         ],
-        annotation: [{ "@_name": "annotation-1" }],
+        annotation: [{ "@_name": "Annotations" }],
         rule: [
           {
             "@_id": "_EB2B5C94-DCAB-4020-A78E-BCB9E6B6494D",

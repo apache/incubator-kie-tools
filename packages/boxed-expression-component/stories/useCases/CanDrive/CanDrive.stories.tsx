@@ -46,7 +46,7 @@ export const canDriveExpressionDefinition: BoxedDecisionTable = {
   "@_label": "Can drive?",
   "@_typeRef": DmnBuiltInDataType.Boolean,
   "@_hitPolicy": "UNIQUE",
-  annotation: [{ "@_name": "annotation-1" }],
+  annotation: [{ "@_name": "Annotations" }],
   input: [
     {
       "@_id": "_E2F88F75-7FD2-4CED-A7AC-015619176072",

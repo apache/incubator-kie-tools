@@ -188,7 +188,7 @@ export function getDefaultExpressionDefinitionByLogicType(
       ],
       annotation: [
         {
-          "@_name": "annotation-1",
+          "@_name": "Annotations",
         },
       ],
       rule: [

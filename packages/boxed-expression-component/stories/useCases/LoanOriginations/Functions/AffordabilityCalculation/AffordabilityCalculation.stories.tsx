@@ -113,7 +113,7 @@ export const affordabilityCalculationExpression: BoxedFunction = {
               "@_label": "Result Expression",
             },
           ],
-          annotation: [{ "@_name": "annotation-1" }],
+          annotation: [{ "@_name": "Annotations" }],
           rule: [
             {
               "@_id": "_52890D5C-85F5-422B-B771-54CD0FAD4A40",

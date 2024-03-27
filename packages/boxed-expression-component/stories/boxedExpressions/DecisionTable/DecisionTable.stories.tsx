@@ -73,7 +73,7 @@ export const Base: Story = {
       ],
       annotation: [
         {
-          "@_name": "annotation-1",
+          "@_name": "Annotations",
         },
       ],
       rule: [
@@ -133,7 +133,7 @@ export const Discount: Story = {
       ],
       annotation: [
         {
-          "@_name": "annotation-1",
+          "@_name": "Annotations",
         },
       ],
       rule: [
@@ -213,7 +213,7 @@ export const Nested: Story = {
             ],
             annotation: [
               {
-                "@_name": "annotation-1",
+                "@_name": "Annotations",
               },
             ],
             rule: [
