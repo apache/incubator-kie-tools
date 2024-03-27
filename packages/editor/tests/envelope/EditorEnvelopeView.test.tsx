@@ -21,16 +21,33 @@ import * as React from "react";
 import { cleanup, fireEvent, getByTestId, render, act } from "@testing-library/react";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "@kie-tools-core/editor/dist/envelope/EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
-import { usingEditorEnvelopeI18nContext, usingEnvelopeContext } from "./utils";
+import { DEFAULT_TESTING_ENVELOPE_CONTEXT, usingEditorEnvelopeI18nContext, usingEnvelopeContext } from "./utils";
 import { Editor } from "@kie-tools-core/editor/dist/api";
 
 function renderEditorEnvelopeView(): EditorEnvelopeViewApi<Editor> {
   const editorEnvelopeRef = React.createRef<EditorEnvelopeViewApi<Editor>>();
   const setLocale = jest.fn();
+  const kogitoEditor_theme = jest.fn() as any;
+  const subscribe = jest.fn() as any;
+  const unsubscribe = jest.fn() as any;
+
   render(
     usingEditorEnvelopeI18nContext(
       usingEnvelopeContext(
-        <EditorEnvelopeView ref={editorEnvelopeRef} setLocale={setLocale} showKeyBindingsOverlay={true} />
+        <EditorEnvelopeView ref={editorEnvelopeRef} setLocale={setLocale} showKeyBindingsOverlay={true} />,
+        {
+          channelApi: {
+            ...DEFAULT_TESTING_ENVELOPE_CONTEXT.channelApi,
+            shared: {
+              ...DEFAULT_TESTING_ENVELOPE_CONTEXT.channelApi.shared,
+              kogitoEditor_theme: {
+                ...kogitoEditor_theme,
+                subscribe: subscribe,
+                unsubscribe: unsubscribe,
+              },
+            },
+          },
+        }
       ).wrapper
     ).wrapper
   );

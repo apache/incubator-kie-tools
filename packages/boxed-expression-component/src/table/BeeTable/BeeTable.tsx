@@ -75,6 +75,10 @@ export function BeeTableInternal<R extends object>({
   onRowDeleted,
   onColumnAdded,
   onColumnDeleted,
+  onHeaderClick,
+  onHeaderKeyUp,
+  onDataCellClick,
+  onDataCellKeyUp,
   controllerCell = ROW_INDEX_COLUMN_ACCESOR,
   cellComponentByColumnAccessor,
   rows,
@@ -618,6 +622,8 @@ export function BeeTableInternal<R extends object>({
           tableColumns={columnsWithAddedIndexColumns}
           reactTableInstance={reactTableInstance}
           onColumnAdded={onColumnAdded2}
+          onHeaderClick={onHeaderClick}
+          onHeaderKeyUp={onHeaderKeyUp}
           lastColumnMinWidth={lastColumnMinWidth}
           setEditing={setEditing}
         />
@@ -632,6 +638,8 @@ export function BeeTableInternal<R extends object>({
           reactTableInstance={reactTableInstance}
           additionalRow={additionalRow}
           onRowAdded={onRowAdded2}
+          onDataCellClick={onDataCellClick}
+          onDataCellKeyUp={onDataCellKeyUp}
           lastColumnMinWidth={lastColumnMinWidth}
         />
       </table>

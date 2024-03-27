@@ -28,8 +28,8 @@ These files can decisions or processes, all of them will be used as resources fo
 
 Run the image with:
 
-- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=123 quay.io/kie-tools/dev-deployment-kogito-quarkus-blank-app-image:latest`
+- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=123 quay.io/kie-tools/dev-deployment-kogito-quarkus-blank-app-image:daily-dev`
 
 Then upload a zip file containing the resources (DMN, BPMN, etc)
 
-- `curl -X POST -H "Content-Type: multipart/form-data" -F "myFile=@<ABSOLUTE_PATH_TO_YOUR_FILE>" http://localhost:8080/upload?apiKey=123`
+- `curl -X POST -H "Content-Type: multipart/form-data" -F "myFile=@<ABSOLUTE_PATH_TO_YOUR_FILE>" 'http://localhost:8080/upload?apiKey=123'`

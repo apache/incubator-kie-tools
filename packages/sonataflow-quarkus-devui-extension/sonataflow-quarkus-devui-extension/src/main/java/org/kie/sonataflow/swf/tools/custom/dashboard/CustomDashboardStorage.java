@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,29 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.kie.sonataflow.swf.tools.custom.dashboard;
 
-.kie-scesim-editor-drawer-data-objects--button-container {
-  margin-top: 10px;
-}
+import java.io.IOException;
+import java.util.Collection;
 
-.kie-scesim-editor-drawer-data-objects--button-container button + button {
-  margin-left: 10px;
-}
+import org.kie.sonataflow.swf.tools.custom.dashboard.model.CustomDashboardFilter;
+import org.kie.sonataflow.swf.tools.custom.dashboard.model.CustomDashboardInfo;
 
-.kie-scesim-editor-drawer-data-objects--info-icon {
-  margin-left: 5px;
-  vertical-align: top;
-}
+public interface CustomDashboardStorage {
 
-.kie-scesim-editor-drawer-data-objects--selector {
-  height: 500px;
-  overflow: scroll;
-}
+    int getCustomDashboardFilesCount();
 
-.kie-scesim-editor-drawer-data-objects--selector-title {
-  margin-top: 10px;
-}
+    Collection<CustomDashboardInfo> getCustomDashboardFiles(CustomDashboardFilter filter);
 
-.kie-scesim-editor-drawer-data-objects--text {
-  margin-bottom: 10px;
+    String getCustomDashboardFileContent(String name) throws IOException;
+
+    void updateCustomDashboard(String content);
 }

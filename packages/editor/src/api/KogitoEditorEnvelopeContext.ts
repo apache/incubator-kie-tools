@@ -24,6 +24,7 @@ import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
+import { EditorTheme } from "./EditorTheme";
 
 export interface KogitoEditorEnvelopeContextType<
   ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
@@ -34,6 +35,7 @@ export interface KogitoEditorEnvelopeContextType<
     keyboardShortcuts: KeyboardShortcutsService;
     i18n: I18nService;
   };
+  supportedThemes: EditorTheme[];
 }
 
 export const KogitoEditorEnvelopeContext = React.createContext<KogitoEditorEnvelopeContextType<any>>({} as any);

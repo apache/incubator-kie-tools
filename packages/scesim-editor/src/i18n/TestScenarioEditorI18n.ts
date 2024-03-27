@@ -27,6 +27,25 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     dmnDataRetrievedFromScesim: string;
     ruleDataRetrievedFromScesim: string;
   };
+  creationPanel: {
+    assetsGroup: string;
+    assetsOption: {
+      dmn: string;
+      noChoice: string;
+      rule: string;
+    };
+    autoFillTable: string;
+    autoFillTableTooltip: string;
+    createButton: string;
+    dmnGroup: string;
+    dmnNoChoice: string;
+    kieSessionGroup: string;
+    kieAgendaGroup: string;
+    optional: string;
+    statelessSession: string;
+    testSkip: string;
+    title: string;
+  };
   drawer: {
     cheatSheet: {
       expression1DMN: string;
@@ -57,7 +76,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       paragraph6Rule: string;
       title: string;
     };
-    dataObjects: {
+    dataSelector: {
       clearSelection: string;
       collapseAll: string;
       dataObjectsDescriptionDMN: string;
@@ -70,6 +89,10 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       emptyDataObjectsDescriptionRule: string;
       expandAll: string;
       insertDataObject: string;
+      insertDataObjectTooltipColumnSelectionMessage: string;
+      insertDataObjectTooltipDataObjectSelectionMessage: string;
+      insertDataObjectTooltipDataObjectAlreadyAssignedMessage: string;
+      insertDataObjectTooltipDataObjectAssignMessage: string;
       titleDMN: string;
       titleRule: string;
     };
@@ -94,7 +117,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
   };
   sidebar: {
     cheatSheetTooltip: string;
-    dataObjectsTooltip: string;
+    dataSelectorTooltip: string;
     settingsTooltip: string;
   };
   tab: {

@@ -23,7 +23,7 @@
   style="display: inline-flex"
   data-ouia-component-id="zoom-controls-panel"
 >
-  <button type="button" data-field="previewButton" class="btn btn-secondary">
+  <button type="button" data-field="previewButton">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="16"
@@ -38,15 +38,10 @@
       <path d="M8 8.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1-.5-.5v-3z"></path>
     </svg>
   </button>
-  <button type="button" data-field="resetButton" class="btn btn-secondary" data-ouia-component-id="reset-zoom-button">
+  <button type="button" data-field="resetButton" data-ouia-component-id="reset-zoom-button">
     <span class="glyphicon glyphicon-fullscreen"></span>
   </button>
-  <button
-    type="button"
-    data-field="decreaseButton"
-    class="btn btn-secondary"
-    data-ouia-component-id="minus-zoom-button"
-  >
+  <button type="button" data-field="decreaseButton" data-ouia-component-id="minus-zoom-button">
     <span class="glyphicon glyphicon-minus"></span>
   </button>
   <div
@@ -55,19 +50,19 @@
     style="width: auto"
     data-ouia-component-id="select-zoom-button"
   >
-    <button type="button" data-field="dropDownButton" class="btn dropdown-toggle btn-default" data-toggle="dropdown">
-      <span id="dropDownText" class="filter-option pull-left zoom-selector-button-text"></span>&nbsp;
+    <button type="button" data-field="dropDownButton" data-toggle="dropdown">
+      <span id="dropDownText"></span>&nbsp;
       <span class="bs-caret">
         <span class="caret"></span>
       </span>
     </button>
-    <div data-field="dropDownPanel" class="dropdown-menu open">
-      <ul data-field="dropDownMenu" class="dropdown-menu inner zoom-selector-menu" role="menu">
+    <div data-field="dropDownPanel">
+      <ul data-field="dropDownMenu" role="menu">
         <!-- Here go the different levels (see ZoomLevelSelectorItem) -->
       </ul>
     </div>
   </div>
-  <button type="button" data-field="increaseButton" class="btn btn-secondary" data-ouia-component-id="plus-zoom-button">
+  <button type="button" data-field="increaseButton" data-ouia-component-id="plus-zoom-button">
     <span class="glyphicon glyphicon-plus"></span>
   </button>
 </div>

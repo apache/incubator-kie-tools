@@ -19,6 +19,7 @@
 
 import { GwtEditorWrapper } from "../../common";
 import { CanvasConsumedInteropApi } from "../../canvas/CanvasConsumedInteropApi";
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
 interface CustomWindow extends Window {
   canvas: CanvasConsumedInteropApi;
@@ -73,5 +74,10 @@ export class DmnEditorImpl extends GwtEditorWrapper implements DmnEditor {
 
   public centerNode(uuid: string) {
     window.canvas.centerNode(uuid);
+  }
+
+  public setTheme(theme: EditorTheme) {
+    // Themes are not supported by DMN Editor
+    return Promise.resolve();
   }
 }
