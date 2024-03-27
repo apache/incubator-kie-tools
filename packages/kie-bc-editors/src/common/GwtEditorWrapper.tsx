@@ -106,8 +106,18 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public setTheme(theme: EditorTheme): Promise<void> {
-    // Only default theme is supported
-    return Promise.resolve();
+    if (!theme) {
+      Promise.resolve();
+    }
+
+    switch (theme) {
+      case EditorTheme.DARK: {
+        return Promise.resolve(this.gwtEditor.applyTheme("dark"));
+      }
+      default: {
+        return Promise.resolve(this.gwtEditor.applyTheme("light"));
+      }
+    }
   }
 
   private removeBusinessCentralHeaderPanel() {

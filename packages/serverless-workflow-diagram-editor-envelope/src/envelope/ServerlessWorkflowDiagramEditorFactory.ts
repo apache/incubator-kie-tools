@@ -17,7 +17,12 @@
  * under the License.
  */
 
-import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import {
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeContextType,
+  EditorTheme,
+} from "@kie-tools-core/editor/dist/api";
 import { GwtEditorWrapperFactory } from "@kie-tools/kie-bc-editors/dist/common";
 import { getServerlessWorkflowLanguageData, ServerlessWorkflowDiagramEditorChannelApi } from "../api";
 import { DiagramExposedInteropApi } from "../api/DiagramExposedInteropApi";
@@ -62,6 +67,9 @@ export class ServerlessWorkflowDiagramEditorFactory
         ),
       this.gwtEditorEnvelopeConfig
     );
+
+    // Initialize swf supported themes
+    ctx.supportedThemes = [EditorTheme.LIGHT, EditorTheme.DARK];
 
     return factory.createEditor(ctx, initArgs);
   }

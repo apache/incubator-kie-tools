@@ -190,6 +190,7 @@ public class ZoomLevelSelectorPresenterTest {
     public void testShow() {
         tested.show();
         verify(floatingView, times(1)).show();
+        verify(selector, times(1)).applyTheme();
     }
 
     @Test

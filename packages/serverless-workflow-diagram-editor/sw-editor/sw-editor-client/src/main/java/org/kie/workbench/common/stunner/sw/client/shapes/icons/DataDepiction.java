@@ -23,6 +23,8 @@ package org.kie.workbench.common.stunner.sw.client.shapes.icons;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.types.Point2D;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
+import org.kie.workbench.common.stunner.sw.client.theme.ColorTheme;
 
 public class DataDepiction extends Group {
 
@@ -32,7 +34,7 @@ public class DataDepiction extends Group {
 
         MultiPath multiPath = new MultiPath(icon)
                 .setStrokeWidth(0)
-                .setFillColor("#4F5255")
+                .setFillColor(((ColorTheme) StunnerTheme.getTheme()).getStaticIconFillColor())
                 .setListening(false);
         add(multiPath);
     }

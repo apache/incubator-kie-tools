@@ -62,6 +62,7 @@ export class KogitoEditorEnvelope<
         keyboardShortcuts: keyboardShortcutsService,
         i18n: i18nService,
       },
+      supportedThemes: [],
     }
   ) {}
 

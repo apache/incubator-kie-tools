@@ -6,33 +6,29 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
-.root-container-dark {
-  background-color: black;
-  height: 100%;
-}
+package org.kie.workbench.common.stunner.core.client.theme;
 
-.blank-slate-pf {
-  background-color: transparent !important;
-  border: none !important;
-}
+public class StunnerTheme {
 
-.blank-slate-pf-dark {
-  color: #b9b9b9;
-  background-color: black !important;
-}
+    // Initialize stunner default theme
+    private static StunnerColorTheme theme = DefaultTheme.getInstance();
 
-.pficon-warning-triangle-o,
-.pficon-warning-triangle-o:before {
-  color: gray !important;
+    public static void setTheme(StunnerColorTheme colorTheme) {
+        theme = colorTheme;
+    }
+
+    public static StunnerColorTheme getTheme() {
+        return theme;
+    }
 }

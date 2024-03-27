@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
@@ -34,12 +34,12 @@ import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
+import org.kie.workbench.common.stunner.sw.client.theme.ColorTheme;
 
 public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflowShapeView<VIEW>>
         extends StunnerWiresShapeView<VIEW> {
 
-    protected final static String SHAPE_STROKE_COLOR = "#ccc";
-    protected final static String SHAPE_FILL_COLOR = "#fff";
     protected final static double SHAPE_STROKE_WIDTH = 2.00;
 
     private ServerlessWorkflowShape<VIEW> controller;
@@ -56,8 +56,8 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
                       .setAlpha(1.00)
                       .setDraggable(false)
                       .setListening(true)
-                      .setFillColor(SHAPE_FILL_COLOR)
-                      .setStrokeColor(SHAPE_STROKE_COLOR)
+                      .setFillColor(((ColorTheme)StunnerTheme.getTheme()).getShapeFillColor())
+                      .setStrokeColor(((ColorTheme)StunnerTheme.getTheme()).getShapeStrokeColor())
                       .setStrokeWidth(SHAPE_STROKE_WIDTH), new WiresLayoutContainer());
 
         setEventHandlerManager(new ViewEventHandlerManager(getShape(), getShape(), ShapeViewSupportedEvents.ALL_DESKTOP_EVENT_TYPES));

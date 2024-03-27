@@ -39,6 +39,7 @@ const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> =
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: OperatingSystem.LINUX }),
     i18n: new I18nService(),
   },
+  supportedThemes: [],
 };
 
 describe("PMMLEditorFactory", () => {
