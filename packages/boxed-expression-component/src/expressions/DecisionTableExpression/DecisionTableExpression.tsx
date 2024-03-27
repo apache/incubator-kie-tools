@@ -102,41 +102,9 @@ export function DecisionTableExpression(
   const { expressionHolderId, widthsById, variables } = useBoxedExpressionEditor();
   const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
 
-  const widths = useMemo(() => {
-    const expressionWidths = widthsById.get(decisionTableExpression["@_id"]!) ?? [];
-    if (expressionWidths.length === 0) {
-      expressionWidths.push(BEE_TABLE_ROW_INDEX_COLUMN_WIDTH);
-    }
+  const id = decisionTableExpression["@_id"]!;
 
-    let currentWidthGroupIndex = 1;
-    if (decisionTableExpression.input) {
-      for (let i = 0; i < decisionTableExpression.input.length; i++) {
-        if (expressionWidths.length <= i + currentWidthGroupIndex) {
-          expressionWidths.push(DECISION_TABLE_INPUT_DEFAULT_WIDTH);
-        }
-      }
-      currentWidthGroupIndex += decisionTableExpression.input.length;
-    }
-
-    if (decisionTableExpression.output) {
-      for (let i = 0; i < decisionTableExpression.output.length; i++) {
-        if (expressionWidths.length <= i + currentWidthGroupIndex) {
-          expressionWidths.push(DECISION_TABLE_OUTPUT_DEFAULT_WIDTH);
-        }
-      }
-      currentWidthGroupIndex += decisionTableExpression.output.length;
-    }
-
-    if (decisionTableExpression.annotation) {
-      for (let i = 0; i < decisionTableExpression.annotation.length; i++) {
-        if (expressionWidths.length <= i + currentWidthGroupIndex) {
-          expressionWidths.push(DECISION_TABLE_ANNOTATION_MIN_WIDTH);
-        }
-      }
-    }
-
-    return expressionWidths;
-  }, [decisionTableExpression, widthsById]);
+  const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
   const getInputIndexInTable = useCallback((localIndex: number) => {
     return 1 + localIndex;
@@ -231,8 +199,6 @@ export function DecisionTableExpression(
     editColumnLabel[DecisionTableColumnType.OutputClause] = i18n.editClause.output;
     return editColumnLabel;
   }, [i18n]);
-
-  const id = decisionTableExpression["@_id"]!;
 
   const setInputColumnWidth = useCallback(
     (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {

@@ -130,14 +130,9 @@ export function ContextExpression(
 
         const resultWidth = getExpressionTotalMinWidth(0, entryResult, widthsById);
         const maxNestedExpressionMinWidth = Math.max(...entriesWidths, resultWidth, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
-        const nestedExpressions: BoxedExpression[] = [];
-
-        if (contextExpression.contextEntry) {
-          nestedExpressions.push(...contextExpression.contextEntry.map((e) => e.expression));
-        }
 
         return {
-          nestedExpressions: nestedExpressions,
+          nestedExpressions: (contextExpression.contextEntry ?? []).map((e) => e.expression),
           fixedColumnActualWidth: entryInfoWidth,
           fixedColumnResizingWidth: entryInfoResizingWidth,
           fixedColumnMinWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,

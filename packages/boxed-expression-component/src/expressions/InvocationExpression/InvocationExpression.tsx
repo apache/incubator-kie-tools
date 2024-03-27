@@ -74,13 +74,7 @@ export function InvocationExpression(
 
   const id = invocationExpression["@_id"]!;
 
-  const widths = useMemo(() => {
-    const expressionWidths = widthsById.get(id) ?? [];
-    if (expressionWidths.length === 0) {
-      expressionWidths.push(INVOCATION_PARAMETER_MIN_WIDTH, INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH);
-    }
-    return expressionWidths;
-  }, [id, widthsById]);
+  const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
   const getParametersWidth = useCallback((widths: number[]) => {
     return widths?.[INVOCATION_PARAMETER_INFO_WIDTH_INDEX] ?? INVOCATION_PARAMETER_MIN_WIDTH;
@@ -126,14 +120,12 @@ export function InvocationExpression(
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
-        const entriesWidths =
-          invocationExpression.binding?.map((e) =>
-            getExpressionTotalMinWidth(0, e.expression as BoxedExpression, widthsById)
-          ) ?? [];
+        const bindingWidths =
+          invocationExpression.binding?.map((e) => getExpressionTotalMinWidth(0, e.expression!, widthsById)) ?? [];
 
-        const maxNestedExpressionWidth = Math.max(...entriesWidths, INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH);
+        const maxNestedExpressionWidth = Math.max(...bindingWidths, INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH);
 
-        const nestedExpressions = invocationExpression.binding?.map((b) => b.expression as BoxedExpression);
+        const nestedExpressions = (invocationExpression.binding ?? []).map((b) => b.expression!);
 
         return {
           nestedExpressions: nestedExpressions ?? [],

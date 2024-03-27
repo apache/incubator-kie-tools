@@ -100,23 +100,7 @@ export function RelationExpression(
     [i18n]
   );
 
-  const widths = useMemo(() => {
-    const expressionWidths = widthsById.get(id) ?? [];
-
-    if (expressionWidths.length === 0) {
-      expressionWidths.push(BEE_TABLE_ROW_INDEX_COLUMN_WIDTH);
-    }
-
-    if (relationExpression.column) {
-      for (let i = 0; i < relationExpression.column?.length; i++) {
-        if (expressionWidths.length <= i + 1) {
-          expressionWidths.push(RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH);
-        }
-      }
-    }
-
-    return expressionWidths;
-  }, [id, relationExpression.column, widthsById]);
+  const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
   const getColumnWidth = useCallback((columnIndex: number, widths: number[]) => {
     return widths[columnIndex] ?? RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH;

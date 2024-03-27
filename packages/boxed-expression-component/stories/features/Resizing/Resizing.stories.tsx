@@ -130,12 +130,8 @@ const expression: BoxedExpression = {
                     },
                   },
                   {
-                    variable: {
-                      "@_id": "_650908EF-5842-4098-9CB0-E6BD69EFDE52",
-                      "@_name": "Result Expression",
-                      "@_typeRef": DmnBuiltInDataType.Undefined,
-                    },
                     expression: {
+                      "@_id": "_B7FA5008-05B1-4A5D-AAF5-EA3447C6307B",
                       __$$element: "decisionTable",
                       "@_hitPolicy": "UNIQUE",
                       "@_aggregation": undefined,
@@ -233,12 +229,8 @@ const expression: BoxedExpression = {
               },
             },
             {
-              variable: {
-                "@_id": "_A83FF43F-CB4E-4C7F-A121-D7067A3D490A",
-                "@_name": "Result Expression",
-                "@_typeRef": DmnBuiltInDataType.Undefined,
-              },
               expression: {
+                "@_id": "_002EF0D0-D8AE-4086-82FC-526E9B5028CA",
                 __$$element: "literalExpression",
                 text: { __$$text: "Affordability" },
               },
@@ -248,13 +240,9 @@ const expression: BoxedExpression = {
       },
     },
     {
-      variable: {
-        "@_id": "_591A3EA4-C90E-4B58-9E66-039817DA39CA",
-        "@_name": "Result Expression",
-        "@_typeRef": DmnBuiltInDataType.Undefined,
-      },
       expression: {
         __$$element: "invocation",
+        "@_id": "_DC4F55F0-5650-427A-B0F6-6ED93E73E66F",
         expression: {
           __$$element: "literalExpression",
           "@_id": "_9EADCC8B-C721-42AF-8784-71BF2C5B689E",

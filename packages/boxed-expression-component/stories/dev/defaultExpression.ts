@@ -56,10 +56,7 @@ export function getDefaultExpressionDefinitionByLogicType(
       "@_typeRef": typeRef,
       "@_id": generateUuid(),
       "@_kind": BoxedFunctionKind.Feel,
-      expression: {
-        __$$element: "literalExpression",
-        "@_id": generateUuid(),
-      },
+      expression: undefined!,
     };
     return functionExpression;
   } else if (logicType === "context") {
@@ -72,22 +69,14 @@ export function getDefaultExpressionDefinitionByLogicType(
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
           },
-          expression: {
-            "@_id": generateUuid(),
-            __$$element: "literalExpression",
-            "@_label": "ContextEntry-1",
-          },
+          expression: undefined!,
         },
         {
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-2",
           },
-          expression: {
-            "@_id": generateUuid(),
-            __$$element: "literalExpression",
-            "@_label": "ContextEntry-2",
-          },
+          expression: undefined!,
         },
       ],
     };
