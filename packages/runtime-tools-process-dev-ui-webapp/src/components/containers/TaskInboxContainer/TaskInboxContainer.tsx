@@ -43,7 +43,6 @@ const TaskInboxContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
     const unsubscribeUserChange = appContext.onUserChange({
       onUserChange(user) {
-        alert(`switch user ${user.id}`);
         taskInboxApiRef.current.taskInbox__notify(user.id);
       },
     });

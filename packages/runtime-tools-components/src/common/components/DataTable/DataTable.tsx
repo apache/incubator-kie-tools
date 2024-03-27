@@ -68,7 +68,7 @@ const getCellData = (dataObj: Record<string, any>, path: string): string => {
   }
 };
 
-const getColumns = (data: any[], columns: DataTableColumn[]) => {
+const getColumns = (data: any[] | undefined, columns: DataTableColumn[]) => {
   if (data) {
     return columns
       ? filter(columns, (column) => !isEmpty(column.path)).map((column) => {
@@ -139,7 +139,7 @@ export const DataTable: React.FC<IOwnProps & OUIAProps> = ({
 
   useEffect(() => {
     if (isLoading) {
-      const cols = getColumns([], columns);
+      const cols = getColumns(undefined, columns);
       const row = [
         {
           cells: [
@@ -160,7 +160,7 @@ export const DataTable: React.FC<IOwnProps & OUIAProps> = ({
       setColumnList(cols);
       setRows(row);
     } else if (isEmpty(data)) {
-      const cols = getColumns([], columns);
+      const cols = getColumns(undefined, columns);
       const row = [
         {
           cells: [
