@@ -21,25 +21,24 @@ package platform
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/defaults"
-
 	v08 "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
 )
 
 // kanikoCacheDir is the cache directory for Kaniko builds (mounted into the Kaniko pod).
-const kanikoCacheDir = "/kaniko/cache"
-const kanikoPVCName = "KanikoPersistentVolumeClaim"
-const kanikoWarmerImage = "KanikoWarmerImage"
-const kanikoBuildCacheEnabled = "KanikoBuildCacheEnabled"
-const kanikoDefaultWarmerImageName = "gcr.io/kaniko-project/warmer"
+const (
+	kanikoCacheDir          = "/kaniko/cache"
+	kanikoPVCName           = "KanikoPersistentVolumeClaim"
+	kanikoWarmerImage       = "KanikoWarmerImage"
+	kanikoBuildCacheEnabled = "KanikoBuildCacheEnabled"
+)
 
 func IsKanikoCacheEnabled(platform *v08.SonataFlowPlatform) bool {
 	return platform.Spec.Build.Config.IsStrategyOptionEnabled(kanikoBuildCacheEnabled)
@@ -62,7 +61,7 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 	if image, found := platform.Spec.Build.Config.BuildStrategyOptions[kanikoWarmerImage]; found {
 		warmerImage = image
 	} else {
-		warmerImage = fmt.Sprintf("%s:v%s", kanikoDefaultWarmerImageName, defaults.KanikoVersion)
+		warmerImage = cfg.GetCfg().KanikoDefaultWarmerImageTag
 	}
 
 	pod := corev1.Pod{

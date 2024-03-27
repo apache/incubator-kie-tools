@@ -35,10 +35,10 @@ import (
 )
 
 type buildManagerContext struct {
-	ctx          context.Context
-	client       client.Client
-	platform     *operatorapi.SonataFlowPlatform
-	commonConfig *v1.ConfigMap
+	ctx              context.Context
+	client           client.Client
+	platform         *operatorapi.SonataFlowPlatform
+	builderConfigMap *v1.ConfigMap
 }
 
 type BuildManager interface {
@@ -55,16 +55,16 @@ func NewBuildManager(ctx context.Context, client client.Client, cliConfig *rest.
 		klog.V(log.E).ErrorS(err, "Error retrieving the active platform. Workflow build cannot be performed!", "workflow", targetName)
 		return nil, err
 	}
-	commonConfig, err := GetCommonConfigMap(client, targetNamespace)
+	builderConfig, err := GetBuilderConfigMap(client, targetNamespace)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "Failed to get common configMap for Workflow Builder. Make sure that sonataflow-operator-builder-config is present in the operator namespace.")
 		return nil, err
 	}
 	managerContext := buildManagerContext{
-		ctx:          ctx,
-		client:       client,
-		platform:     p,
-		commonConfig: commonConfig,
+		ctx:              ctx,
+		client:           client,
+		platform:         p,
+		builderConfigMap: builderConfig,
 	}
 	switch p.Status.Cluster {
 	case operatorapi.PlatformClusterOpenShift:

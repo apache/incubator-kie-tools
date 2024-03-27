@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -35,15 +36,13 @@ import (
 )
 
 const (
-	envVarPodNamespaceName = "POD_NAMESPACE"
-	// ConfigMapName is the default name for the Builder ConfigMap name
-	ConfigMapName                       = "sonataflow-operator-builder-config"
-	configKeyDefaultExtension           = "DEFAULT_WORKFLOW_EXTENSION"
-	configKeyDefaultBuilderResourceName = "DEFAULT_BUILDER_RESOURCE_NAME"
+	envVarPodNamespaceName     = "POD_NAMESPACE"
+	configKeyDefaultExtension  = "DEFAULT_WORKFLOW_EXTENSION"
+	defaultBuilderResourceName = "Dockerfile"
 )
 
-// GetCommonConfigMap retrieves the config map with the builder common configuration information
-func GetCommonConfigMap(client client.Client, fallbackNS string) (*corev1.ConfigMap, error) {
+// GetBuilderConfigMap retrieves the config map with the builder common configuration information
+func GetBuilderConfigMap(client client.Client, fallbackNS string) (*corev1.ConfigMap, error) {
 	namespace, found := os.LookupEnv(envVarPodNamespaceName)
 	if !found {
 		namespace = fallbackNS
@@ -59,43 +58,38 @@ func GetCommonConfigMap(client client.Client, fallbackNS string) (*corev1.Config
 			APIVersion: "v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      ConfigMapName,
+			Name:      cfg.GetCfg().BuilderConfigMapName,
 			Namespace: namespace,
 		},
 		Data: map[string]string{},
 	}
 
-	err := client.Get(context.TODO(), types.NamespacedName{Name: ConfigMapName, Namespace: namespace}, existingConfigMap)
+	builderConfigMapName := cfg.GetCfg().BuilderConfigMapName
+	err := client.Get(context.TODO(), types.NamespacedName{Name: builderConfigMapName, Namespace: namespace}, existingConfigMap)
 	if err != nil {
-		klog.V(log.E).ErrorS(err, "fetching configmap", "name", ConfigMapName)
+		klog.V(log.E).ErrorS(err, "fetching configmap", "name", builderConfigMapName)
 		return nil, err
 	}
 
-	err = isValidBuilderCommonConfigMap(existingConfigMap)
+	err = isValidBuilderConfigMap(existingConfigMap)
 	if err != nil {
-		klog.V(log.E).ErrorS(err, "configmap is not valid", "name", ConfigMapName)
+		klog.V(log.E).ErrorS(err, "configmap is not valid", "name", builderConfigMapName)
 		return existingConfigMap, err
 	}
 
 	return existingConfigMap, nil
 }
 
-// isValidBuilderCommonConfigMap  function that will verify that in the builder config maps there are the required keys, and they aren't empty
-func isValidBuilderCommonConfigMap(configMap *corev1.ConfigMap) error {
-
+// isValidBuilderConfigMap  function that will verify that in the builder config maps there are the required keys, and they aren't empty
+func isValidBuilderConfigMap(configMap *corev1.ConfigMap) error {
 	// Verifying that the key to hold the extension for the workflow is there and not empty
 	if len(configMap.Data[configKeyDefaultExtension]) == 0 {
 		return fmt.Errorf("unable to find %s key into builder config map", configMap.Data[configKeyDefaultExtension])
 	}
 
-	// Verifying that the key to hold the name of the Dockerfile for building the workflow is there and not empty
-	if len(configMap.Data[configKeyDefaultBuilderResourceName]) == 0 {
-		return fmt.Errorf("unable to find %s key into builder config map", configMap.Data[configKeyDefaultBuilderResourceName])
-	}
-
 	// Verifying that the key to hold the content of the Dockerfile for building the workflow is there and not empty
-	if len(configMap.Data[configMap.Data[configKeyDefaultBuilderResourceName]]) == 0 {
-		return fmt.Errorf("unable to find %s key into builder config map", configMap.Data[configKeyDefaultBuilderResourceName])
+	if len(configMap.Data[defaultBuilderResourceName]) == 0 {
+		return fmt.Errorf("unable to find %s key into builder config map", configMap.Data[defaultBuilderResourceName])
 	}
 	return nil
 }

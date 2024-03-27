@@ -22,6 +22,7 @@ package platform
 import (
 	"context"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"k8s.io/klog/v2"
 
 	corev1 "k8s.io/api/core/v1"
@@ -40,7 +41,6 @@ import (
 )
 
 const (
-	defaultKanikoPVCSize      = "1Gi"
 	defaultKanikoCachePVCName = "kogito-kaniko-cache-pv"
 )
 
@@ -112,7 +112,7 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 // TODO: move this to Kaniko packages based on the platform context
 
 func createPersistentVolumeClaim(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform) error {
-	volumeSize, err := resource.ParseQuantity(defaultKanikoPVCSize)
+	volumeSize, err := resource.ParseQuantity(cfg.GetCfg().DefaultPvcKanikoSize)
 	if err != nil {
 		return err
 	}

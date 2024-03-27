@@ -45,7 +45,6 @@ const (
 
 	OperatorWatchNamespaceEnvVariable = "WATCH_NAMESPACE"
 	operatorNamespaceEnvVariable      = "NAMESPACE"
-	operatorPodNameEnvVariable        = "POD_NAME"
 )
 
 // Copied from https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry

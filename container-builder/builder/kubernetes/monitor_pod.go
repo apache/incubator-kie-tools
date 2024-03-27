@@ -25,10 +25,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/hashicorp/go-version"
-
-	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/defaults"
-
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -98,16 +94,6 @@ func (action *monitorPodAction) Handle(ctx context.Context, build *api.Container
 			// has been sent because the ContainerBuild has timed out
 			if err = action.addTimeoutAnnotation(ctx, pod, metav1.Now()); err != nil {
 				return nil, err
-			}
-			// In latest Kaniko versions kill is no more available in image's $PATH, do we still need it?
-			// Send SIGTERM signal to running containers
-			current, err := version.NewVersion(defaults.KanikoVersion)
-			maxVersionSupportingKill, err := version.NewVersion(defaults.KanikoVersionSupportingKill)
-			if current.LessThanOrEqual(maxVersionSupportingKill) {
-				if err = action.sigterm(pod); err != nil {
-					// Requeue
-					return nil, err
-				}
 			}
 		}
 

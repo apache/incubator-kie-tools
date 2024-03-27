@@ -168,13 +168,12 @@ See the section on [README](../README.md#getting-started)
 A configmap called `sonataflow-operator-builder-config` will be created under the `sonataflow-operator-system` namespace
 when the Operator will be installed, and it contains:
 
-- DEFAULT_BUILDER_RESOURCE = Dockerfile
 - DEFAULT_WORKFLOW_EXTENSION = .sw.json
 - Dockerfile = `<dockerfile content>`
 
 ## Customize Builder Image
 
-At the startup a [Dockerfile](../config/manager/sonataflow_builder_dockerfile.yaml) is placed in a configmap. This
+At the startup a [Dockerfile](../config/manager/SonataFlow-Builder.containerfile) is placed in a configmap. This
 Dockerfile uses a base image
 called [kogito-swf-builder](https://github.com/kiegroup/kogito-images/tree/master/modules/kogito-swf-builder) with:
 

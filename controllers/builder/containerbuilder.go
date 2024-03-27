@@ -22,6 +22,7 @@ package builder
 import (
 	"time"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"k8s.io/klog/v2"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
@@ -73,9 +74,10 @@ func (c *containerBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 			Envs:      build.Spec.Envs,
 			Resources: build.Spec.Resources,
 		},
-		PublishTask:     api.PublishTask{},
-		Cache:           kanikoTaskCache,
-		AdditionalFlags: build.Spec.Arguments,
+		PublishTask:         api.PublishTask{},
+		Cache:               kanikoTaskCache,
+		AdditionalFlags:     build.Spec.Arguments,
+		KanikoExecutorImage: cfg.GetCfg().KanikoExecutorImageTag,
 	}
 	var containerBuilder *api.ContainerBuild
 	var err error
@@ -137,7 +139,7 @@ func (c *containerBuilderManager) scheduleNewKanikoBuildWithContainerFile(build 
 		task:               task,
 		workflowDefinition: workflowDef,
 		workflow:           workflow,
-		dockerfile:         platform.GetCustomizedDockerfile(c.commonConfig.Data[c.commonConfig.Data[configKeyDefaultBuilderResourceName]], *c.platform),
+		dockerfile:         platform.GetCustomizedBuilderDockerfile(c.builderConfigMap.Data[defaultBuilderResourceName], *c.platform),
 		imageTag:           buildNamespacedImageTag(workflow),
 	}
 
@@ -173,7 +175,7 @@ func (c *containerBuilderManager) buildImage(buildInput kanikoBuildInput) (*api.
 		},
 	}
 
-	build, err := newBuild(buildInput, plat, c.commonConfig.Data[configKeyDefaultExtension], cli)
+	build, err := newBuild(buildInput, plat, c.builderConfigMap.Data[configKeyDefaultExtension], cli)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during build Image")
 		return nil, err
@@ -183,7 +185,12 @@ func (c *containerBuilderManager) buildImage(buildInput kanikoBuildInput) (*api.
 
 // Helper function to create a new container-builder build and schedule it
 func newBuild(buildInput kanikoBuildInput, platform api.PlatformContainerBuild, defaultExtension string, cli client.Client) (*api.ContainerBuild, error) {
-	buildInfo := builder.ContainerBuilderInfo{FinalImageName: buildInput.imageTag, BuildUniqueName: buildInput.name, Platform: platform}
+	buildInfo := builder.ContainerBuilderInfo{
+		FinalImageName:           buildInput.imageTag,
+		BuildUniqueName:          buildInput.name,
+		Platform:                 platform,
+		ContainerBuilderImageTag: buildInput.task.KanikoExecutorImage,
+	}
 
 	newBuilder := builder.NewBuild(buildInfo).
 		WithClient(cli).

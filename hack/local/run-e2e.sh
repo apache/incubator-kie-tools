@@ -23,6 +23,7 @@ echo "Using minikube profile ${MINIKUBE_PROFILE}"
 export OPERATOR_IMAGE_NAME=localhost/kogito-serverless-operator:0.0.1
 
 # clean up previous runs
+kubectl get namespaces -o name | awk -F/ '/^namespace\/test/ {print $2}' | xargs kubectl delete namespace
 make undeploy ignore-not-found=true
 make deploy IMG="${OPERATOR_IMAGE_NAME}"
 
@@ -31,4 +32,6 @@ if ! make docker-build IMG="${OPERATOR_IMAGE_NAME}"; then
   echo "Failure: Failed to build image, exiting " >&2
   exit 1
 fi
+
+make deploy IMG="${OPERATOR_IMAGE_NAME}"
 make test-e2e

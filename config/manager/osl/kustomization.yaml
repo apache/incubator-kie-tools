@@ -9,9 +9,8 @@ configMapGenerator:
   - controller_manager_config.yaml
   name: manager-config
 - files:
-  - Dockerfile=sonataflow_builder_dockerfile.yaml
+  - Dockerfile=SonataFlow-Builder.containerfile
   literals:
-  - DEFAULT_BUILDER_RESOURCE_NAME=Dockerfile
   - DEFAULT_WORKFLOW_EXTENSION=.sw.json
   name: builder-config
 

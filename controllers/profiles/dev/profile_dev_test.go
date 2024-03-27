@@ -24,6 +24,7 @@ import (
 	"sort"
 	"testing"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"k8s.io/client-go/rest"
 
 	corev1 "k8s.io/api/core/v1"
@@ -67,7 +68,7 @@ func Test_OverrideStartupProbe(t *testing.T) {
 	// get the deployment, change the probe and reconcile it again
 	newThreshold := int32(5) //yes we have to force the type for the assertion below
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, int32(healthFailureThresholdDevMode), deployment.Spec.Template.Spec.Containers[0].StartupProbe.FailureThreshold)
+	assert.Equal(t, cfg.GetCfg().HealthFailureThresholdDevMode, deployment.Spec.Template.Spec.Containers[0].StartupProbe.FailureThreshold)
 	deployment.Spec.Template.Spec.Containers[0].StartupProbe.FailureThreshold = newThreshold
 	assert.NoError(t, client.Update(context.TODO(), deployment))
 	// reconcile and fetch from the cluster

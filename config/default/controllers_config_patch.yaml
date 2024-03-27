@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-manager
+  namespace: system
+spec:
+  template:
+    spec:
+      containers:
+      - name: manager
+        volumeMounts:
+        - name: controllers-config
+          mountPath: /config/controllers_cfg.yaml
+          subPath: controllers_cfg.yaml
+      volumes:
+      - name: controllers-config
+        configMap:
+          name: controllers-config

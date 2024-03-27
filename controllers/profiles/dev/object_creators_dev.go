@@ -22,6 +22,7 @@ package dev
 import (
 	"path"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -33,11 +34,6 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
 	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
-)
-
-const (
-	// healthFailureThresholdDevMode exclusive threshold for devmode given that it might take longer than the immutable image to start/live/respond.
-	healthFailureThresholdDevMode = 50
 )
 
 // serviceCreator is an objectCreator for a basic Service for a workflow using dev profile
@@ -55,21 +51,21 @@ func serviceCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 }
 
 func deploymentCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFlowPlatform) (client.Object, error) {
-
 	obj, err := common.DeploymentCreator(workflow, plf)
 	if err != nil {
 		return nil, err
 	}
 	deployment := obj.(*appsv1.Deployment)
 	_, idx := kubeutil.GetContainerByName(operatorapi.DefaultContainerName, &deployment.Spec.Template.Spec)
+	healthThreshold := cfg.GetCfg().HealthFailureThresholdDevMode
 	if workflow.Spec.PodTemplate.Container.StartupProbe == nil {
-		deployment.Spec.Template.Spec.Containers[idx].StartupProbe.FailureThreshold = healthFailureThresholdDevMode
+		deployment.Spec.Template.Spec.Containers[idx].StartupProbe.FailureThreshold = healthThreshold
 	}
 	if workflow.Spec.PodTemplate.Container.LivenessProbe == nil {
-		deployment.Spec.Template.Spec.Containers[idx].LivenessProbe.FailureThreshold = healthFailureThresholdDevMode
+		deployment.Spec.Template.Spec.Containers[idx].LivenessProbe.FailureThreshold = healthThreshold
 	}
 	if workflow.Spec.PodTemplate.Container.ReadinessProbe == nil {
-		deployment.Spec.Template.Spec.Containers[idx].ReadinessProbe.FailureThreshold = healthFailureThresholdDevMode
+		deployment.Spec.Template.Spec.Containers[idx].ReadinessProbe.FailureThreshold = healthThreshold
 	}
 	return deployment, nil
 }

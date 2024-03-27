@@ -50,7 +50,8 @@ func (k kanikoSchedulerManager) CreateScheduler(info ContainerBuilderInfo, ctx *
 			Image:      info.FinalImageName,
 			Registry:   info.Platform.Spec.Registry,
 		},
-		Cache: api.KanikoTaskCache{},
+		Cache:               api.KanikoTaskCache{},
+		KanikoExecutorImage: info.ContainerBuilderImageTag,
 	}
 
 	ctx.containerBuild = &api.ContainerBuild{

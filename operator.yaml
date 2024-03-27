@@ -26857,7 +26857,6 @@ subjects:
 ---
 apiVersion: v1
 data:
-  DEFAULT_BUILDER_RESOURCE_NAME: Dockerfile
   DEFAULT_WORKFLOW_EXTENSION: .sw.json
   Dockerfile: "FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder\n\n#
     variables that can be overridden by the builder\n# To add a Quarkus extension
@@ -26881,21 +26880,38 @@ metadata:
 ---
 apiVersion: v1
 data:
-  controller_manager_config.yaml: |
-    apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
-    kind: ControllerManagerConfig
-    health:
-      healthProbeBindAddress: :8081
-    metrics:
-      bindAddress: 127.0.0.1:8080
-    webhook:
-      port: 9443
-    leaderElection:
-      leaderElect: true
-      resourceName: 1be5e57d.kiegroup.org
+  controllers_cfg.yaml: |
+    # The default size of Kaniko PVC when using the internal operator builder manager
+    defaultPvcKanikoSize: 1Gi
+    # How much time (in seconds) to wait for a devmode workflow to start.
+    # This information is used for the controller manager to create new devmode containers and setup the healthcheck probes.
+    healthFailureThresholdDevMode: 50
+    # Default image used internally by the Operator Managed Kaniko builder to create the warmup pods
+    kanikoDefaultWarmerImageTag: gcr.io/kaniko-project/warmer:v1.9.0
+    # Default image used internally by the Operator Managed Kaniko builder to create the executor pods
+    kanikoExecutorImageTag: gcr.io/kaniko-project/executor:v1.9.0
+    # The Jobs Service image to use, if empty the operator will use the default Apache Community one based on the current operator's version
+    jobsServicePostgreSQLImageTag: ""
+    jobsServiceEphemeralImageTag: ""
+    # The Data Index image to use, if empty the operator will use the default Apache Community one based on the current operator's version
+    dataIndexPostgreSQLImageTag: ""
+    dataIndexEphemeralTag: ""
+    # SonataFlow base builder image used in the internal Dockerfile to build workflow applications in preview profile
+    # Order of precedence is:
+    # 1. SonataFlowPlatform in the given namespace
+    # 2. This configuration
+    # 3. The FROM in the Dockerfile in the operator's namespace "sonataflow-operator-builder-config" configMap.
+    # If 1 or 2, the FROM tag will be replaced by the tag se there.
+    # If empty the operator will use the default Apache Community one based on the current operator's version.
+    sonataFlowBaseBuilderImageTag: ""
+    # The image to use to deploy SonataFlow workflow images in devmode profile.
+    # If empty the operator will use the default Apache Community one based on the current operator's version.
+    sonataFlowDevModeImageTag: ""
+    # The default name of the builder configMap in the operator's namespace
+    builderConfigMapName: "sonataflow-operator-builder-config"
 kind: ConfigMap
 metadata:
-  name: sonataflow-operator-manager-config
+  name: sonataflow-operator-controllers-config
   namespace: sonataflow-operator-system
 ---
 apiVersion: v1
@@ -26935,31 +26951,6 @@ spec:
     spec:
       containers:
       - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=0
-        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 500m
-            memory: 128Mi
-          requests:
-            cpu: 5m
-            memory: 64Mi
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          seccompProfile:
-            type: RuntimeDefault
-      - args:
         - --health-probe-bind-address=:8081
         - --metrics-bind-address=127.0.0.1:8080
         - --leader-elect
@@ -26997,7 +26988,40 @@ spec:
           capabilities:
             drop:
             - ALL
+        volumeMounts:
+        - mountPath: /config/controllers_cfg.yaml
+          name: controllers-config
+          subPath: controllers_cfg.yaml
+      - args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=0
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+          requests:
+            cpu: 5m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
       securityContext:
         runAsNonRoot: true
       serviceAccountName: sonataflow-operator-controller-manager
       terminationGracePeriodSeconds: 10
+      volumes:
+      - configMap:
+          name: sonataflow-operator-controllers-config
+        name: controllers-config

@@ -37,14 +37,14 @@ func TestSonataFlowBuildController(t *testing.T) {
 	}
 	dockerfile := string(dockerfileBytes)
 	// 1 - Let's verify that the default image is used (for this unit test is quay.io/kiegroup/kogito-swf-builder-nightly:latest)
-	resDefault := GetCustomizedDockerfile(dockerfile, *platform)
+	resDefault := GetCustomizedBuilderDockerfile(dockerfile, *platform)
 	foundDefault, err := regexp.MatchString("FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder", resDefault)
 	assert.NoError(t, err)
 	assert.True(t, foundDefault)
 
 	// 2 - Let's try to override using the productized image
 	platform.Spec.Build.Config.BaseImage = "registry.access.redhat.com/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8"
-	resProductized := GetCustomizedDockerfile(dockerfile, *platform)
+	resProductized := GetCustomizedBuilderDockerfile(dockerfile, *platform)
 	foundProductized, err := regexp.MatchString("FROM registry.access.redhat.com/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8 AS builder", resProductized)
 	assert.NoError(t, err)
 	assert.True(t, foundProductized)

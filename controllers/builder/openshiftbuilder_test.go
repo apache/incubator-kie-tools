@@ -47,10 +47,10 @@ func Test_openshiftBuilderManager_Reconcile(t *testing.T) {
 	buildClient := buildfake.NewSimpleClientset().BuildV1()
 
 	managerContext := buildManagerContext{
-		ctx:          context.TODO(),
-		client:       client,
-		platform:     platform,
-		commonConfig: config,
+		ctx:              context.TODO(),
+		client:           client,
+		platform:         platform,
+		builderConfigMap: config,
 	}
 
 	buildManager := newOpenShiftBuilderManagerWithClient(managerContext, buildClient)
@@ -110,10 +110,10 @@ func Test_openshiftbuilder_externalCMs(t *testing.T) {
 	buildClient := buildfake.NewSimpleClientset().BuildV1()
 
 	managerContext := buildManagerContext{
-		ctx:          context.TODO(),
-		client:       client,
-		platform:     platform,
-		commonConfig: config,
+		ctx:              context.TODO(),
+		client:           client,
+		platform:         platform,
+		builderConfigMap: config,
 	}
 
 	buildManager := newOpenShiftBuilderManagerWithClient(managerContext, buildClient)

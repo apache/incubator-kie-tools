@@ -36,7 +36,6 @@ import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/defaults"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
@@ -133,10 +132,6 @@ func setPlatformDefaults(p *operatorapi.SonataFlowPlatform, verbose bool) error 
 func setStatusAdditionalInfo(platform *operatorapi.SonataFlowPlatform) {
 	platform.Status.Info = make(map[string]string)
 
-	klog.V(log.D).InfoS("SonataFlow Platform setting build publish strategy", "namespace", platform.Namespace)
-	if platform.Spec.Build.Config.BuildStrategy == operatorapi.OperatorBuildStrategy {
-		platform.Status.Info["kanikoVersion"] = defaults.KanikoVersion
-	}
 	klog.V(log.D).InfoS("SonataFlow setting status info", "namespace", platform.Namespace)
 	platform.Status.Info["goVersion"] = runtime.Version()
 	platform.Status.Info["goOS"] = runtime.GOOS
@@ -163,9 +158,9 @@ func GetRegistryAddress(ctx context.Context, c client.Client) (*string, error) {
 	return nil, nil
 }
 
-// GetCustomizedDockerfile gets the Dockerfile as defined in the default platform ConfigMap, apply any custom requirements and return.
-func GetCustomizedDockerfile(dockerfile string, platform operatorapi.SonataFlowPlatform) string {
-	if platform.Spec.Build.Config.BaseImage != "" {
+// GetCustomizedBuilderDockerfile gets the Dockerfile as defined in the default platform ConfigMap, apply any custom requirements and return.
+func GetCustomizedBuilderDockerfile(dockerfile string, platform operatorapi.SonataFlowPlatform) string {
+	if len(platform.Spec.Build.Config.BaseImage) > 0 {
 		res := builderDockerfileFromRE.FindAllStringSubmatch(dockerfile, 1)
 		dockerfile = strings.Replace(dockerfile, strings.Trim(res[0][1], " "), platform.Spec.Build.Config.BaseImage, 1)
 	}

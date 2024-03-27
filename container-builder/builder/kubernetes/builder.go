@@ -40,6 +40,8 @@ type ContainerBuilderInfo struct {
 	FinalImageName  string
 	BuildUniqueName string
 	Platform        api.PlatformContainerBuild
+	// ContainerBuilderImageTag the image tag used internally to create the pod builder (e.g. Kaniko Executor Builder image)
+	ContainerBuilderImageTag string
 }
 
 type resource struct {

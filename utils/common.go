@@ -28,8 +28,6 @@ import (
 )
 
 const (
-	// DebugV is the default verbosity for the debugger logger
-	DebugV     = 2
 	HttpScheme = "http"
 )
 

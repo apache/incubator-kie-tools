@@ -33,6 +33,8 @@ import (
 	srvframework "github.com/apache/incubator-kie-kogito-serverless-operator/testbdd/framework"
 )
 
+const defaultOperatorImage = "quay.io/kiegroup/kogito-serverless-operator"
+
 var (
 	// sonataFlowYamlClusterInstaller installs SonataFlow operator cluster wide using YAMLs
 	sonataFlowYamlClusterInstaller = installers.YamlClusterWideServiceInstaller{
@@ -101,7 +103,7 @@ func installSonataFlowUsingYaml() error {
 		return err
 	}
 
-	regexp, err := regexp.Compile(workflowdef.GetDefaultOperatorImageTag())
+	regexp, err := regexp.Compile(getDefaultOperatorImageTag())
 	if err != nil {
 		return err
 	}
@@ -190,4 +192,8 @@ func cleanupSonataFlowCrsInNamespace(namespace string) bool {
 		}
 	}
 	return true
+}
+
+func getDefaultOperatorImageTag() string {
+	return workflowdef.GetDefaultImageTag(defaultOperatorImage)
 }

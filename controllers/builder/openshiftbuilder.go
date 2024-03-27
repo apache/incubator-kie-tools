@@ -150,7 +150,7 @@ func (o *openshiftBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 
 func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.SonataFlowBuild, workflow *operatorapi.SonataFlow) *buildv1.BuildConfig {
 	optimizationPol := buildv1.ImageOptimizationSkipLayers
-	dockerFile := platform.GetCustomizedDockerfile(o.commonConfig.Data[o.commonConfig.Data[configKeyDefaultBuilderResourceName]], *o.platform)
+	dockerFile := platform.GetCustomizedBuilderDockerfile(o.builderConfigMap.Data[defaultBuilderResourceName], *o.platform)
 	return &buildv1.BuildConfig{
 		ObjectMeta: metav1.ObjectMeta{Namespace: build.Namespace, Name: build.Name},
 		Spec: buildv1.BuildConfigSpec{

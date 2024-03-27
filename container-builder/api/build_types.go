@@ -125,6 +125,8 @@ type KanikoTask struct {
 	Cache KanikoTaskCache `json:"cache,omitempty"`
 	// AdditionalFlags -- List of additional flags for  the Kaniko process (see https://github.com/GoogleContainerTools/kaniko/blob/main/README.md#additional-flags)
 	AdditionalFlags []string `json:"additionalFlags,omitempty"`
+	// Image used by the created Kaniko pod executor
+	KanikoExecutorImage string `json:"kanikoExecutorImage,omitempty"`
 }
 
 // KanikoTaskCache is used to configure Kaniko cache

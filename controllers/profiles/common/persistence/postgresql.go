@@ -92,7 +92,7 @@ func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, datab
 		},
 		{
 			Name:  "QUARKUS_DATASOURCE_DB_KIND",
-			Value: constants.PersistenceTypePostgreSQL,
+			Value: constants.PersistenceTypePostgreSQL.String(),
 		},
 		{
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",

@@ -23,8 +23,6 @@ const (
 	QuarkusHTTP = "quarkus-http"
 
 	ConfigMapWorkflowPropsVolumeName = "workflow-properties"
-	PersistenceTypePostgreSQL        = "postgresql"
-	PersistenceTypeEphemeral         = "ephemeral"
 
 	JobServiceRequestEventsURL       = "mp.messaging.outgoing.kogito-job-service-job-request-events.url"
 	JobServiceRequestEventsConnector = "mp.messaging.outgoing.kogito-job-service-job-request-events.connector"
@@ -34,7 +32,6 @@ const (
 	JobServiceDataSourceReactiveURL  = "quarkus.datasource.reactive.url"
 	JobServiceJobEventsPath          = "/v2/jobs/events"
 
-	KogitoProcessEventsProtocol                 = "http"
 	KogitoProcessInstancesEventsURL             = "mp.messaging.outgoing.kogito-processinstances-events.url"
 	KogitoProcessInstancesEventsEnabled         = "kogito.events.processinstances.enabled"
 	KogitoProcessInstancesEventsPath            = "/processes"
@@ -70,3 +67,14 @@ const (
 	DefaultDatabaseName   string = "sonataflow"
 	DefaultPostgreSQLPort int    = 5432
 )
+
+type PersistenceType string
+
+const (
+	PersistenceTypePostgreSQL PersistenceType = "postgresql"
+	PersistenceTypeEphemeral  PersistenceType = "ephemeral"
+)
+
+func (p PersistenceType) String() string {
+	return string(p)
+}

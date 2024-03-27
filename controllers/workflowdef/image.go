@@ -21,6 +21,7 @@ package workflowdef
 
 import (
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/version"
 )
 
@@ -29,7 +30,6 @@ const (
 	nightlySuffix               = "nightly"
 	defaultWorkflowDevModeImage = "quay.io/kiegroup/kogito-swf-devmode"
 	defaultWorkflowBuilderImage = "quay.io/kiegroup/kogito-swf-builder"
-	defaultOperatorImage        = "quay.io/kiegroup/kogito-serverless-operator"
 )
 
 // GetWorkflowAppImageNameTag returns the image name with tag to use for the image to be produced for a given workflow.
@@ -49,15 +49,17 @@ func GetWorkflowAppImageNameTag(w *v1alpha08.SonataFlow) string {
 }
 
 func GetDefaultWorkflowDevModeImageTag() string {
+	if len(cfg.GetCfg().SonataFlowDevModeImageTag) > 0 {
+		return cfg.GetCfg().SonataFlowDevModeImageTag
+	}
 	return GetDefaultImageTag(defaultWorkflowDevModeImage)
 }
 
 func GetDefaultWorkflowBuilderImageTag() string {
+	if len(cfg.GetCfg().SonataFlowBaseBuilderImageTag) > 0 {
+		return cfg.GetCfg().SonataFlowBaseBuilderImageTag
+	}
 	return GetDefaultImageTag(defaultWorkflowBuilderImage)
-}
-
-func GetDefaultOperatorImageTag() string {
-	return GetDefaultImageTag(defaultOperatorImage)
 }
 
 func GetDefaultImageTag(imgTag string) string {

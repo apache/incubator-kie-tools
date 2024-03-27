@@ -40,7 +40,7 @@ import (
 var (
 	envDBKind = corev1.EnvVar{
 		Name:  "QUARKUS_DATASOURCE_DB_KIND",
-		Value: constants.PersistenceTypePostgreSQL,
+		Value: constants.PersistenceTypePostgreSQL.String(),
 	}
 
 	envDataIndex = corev1.EnvVar{
@@ -130,7 +130,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 
 		env := corev1.EnvVar{
 			Name:  "QUARKUS_DATASOURCE_DB_KIND",
-			Value: constants.PersistenceTypePostgreSQL,
+			Value: constants.PersistenceTypePostgreSQL.String(),
 		}
 		assert.Len(t, dep.Spec.Template.Spec.Containers, 1)
 		assert.Equal(t, di.GetServiceImageName(constants.PersistenceTypeEphemeral), dep.Spec.Template.Spec.Containers[0].Image)
@@ -216,7 +216,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 
 		env := corev1.EnvVar{
 			Name:  "QUARKUS_DATASOURCE_DB_KIND",
-			Value: constants.PersistenceTypePostgreSQL,
+			Value: constants.PersistenceTypePostgreSQL.String(),
 		}
 		assert.Len(t, dep.Spec.Template.Spec.Containers, 1)
 		assert.Equal(t, di.GetServiceImageName(constants.PersistenceTypeEphemeral), dep.Spec.Template.Spec.Containers[0].Image)
@@ -294,7 +294,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		}
 		dbSourceKind := corev1.EnvVar{
 			Name:  "QUARKUS_DATASOURCE_DB_KIND",
-			Value: constants.PersistenceTypePostgreSQL,
+			Value: constants.PersistenceTypePostgreSQL.String(),
 		}
 		dbSourceDIURL := corev1.EnvVar{
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
@@ -398,7 +398,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		}
 		dbSourceKind := corev1.EnvVar{
 			Name:  "QUARKUS_DATASOURCE_DB_KIND",
-			Value: constants.PersistenceTypePostgreSQL,
+			Value: constants.PersistenceTypePostgreSQL.String(),
 		}
 		dbDIUsername := corev1.EnvVar{
 			Name:  "QUARKUS_DATASOURCE_USERNAME",

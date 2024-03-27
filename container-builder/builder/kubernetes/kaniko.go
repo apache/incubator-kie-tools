@@ -28,7 +28,6 @@ import (
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/api"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/defaults"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/minikube"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/registry"
 )
@@ -136,7 +135,7 @@ func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.Contain
 
 	container := corev1.Container{
 		Name:            strings.ToLower(task.Name),
-		Image:           defaults.KanikoExecutorImage,
+		Image:           task.KanikoExecutorImage,
 		ImagePullPolicy: corev1.PullIfNotPresent,
 		Args:            args,
 		Env:             env,

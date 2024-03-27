@@ -23,6 +23,7 @@ import (
 	"flag"
 	"os"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 
@@ -90,6 +91,12 @@ func main() {
 	}
 
 	utils.SetIsOpenShift(mgr.GetConfig())
+
+	// Fail fast, we can change this behavior in the future to read from defaults instead.
+	if _, err = cfg.InitializeControllersCfg(); err != nil {
+		klog.V(log.E).ErrorS(err, "unable to read controllers configuration file")
+		os.Exit(1)
+	}
 
 	if err = (&controllers.SonataFlowReconciler{
 		Client:   mgr.GetClient(),

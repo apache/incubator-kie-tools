@@ -22,6 +22,7 @@ package services
 import (
 	"fmt"
 
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/cfg"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 
@@ -45,7 +46,7 @@ type PlatformServiceHandler interface {
 	GetContainerName() string
 	// GetServiceImageName returns the image name of the service's container. It takes in the service and persistence types and returns a string
 	// that contains the FQDN of the image, including the tag.
-	GetServiceImageName(persistenceName string) string
+	GetServiceImageName(persistenceName constants.PersistenceType) string
 	// GetServiceName returns the name of the kubernetes service prefixed with the platform name
 	GetServiceName() string
 	// GetServiceCmName returns the name of the configmap associated to the service
@@ -101,7 +102,13 @@ func (d DataIndexHandler) GetContainerName() string {
 	return constants.DataIndexServiceName
 }
 
-func (d DataIndexHandler) GetServiceImageName(persistenceName string) string {
+func (d DataIndexHandler) GetServiceImageName(persistenceType constants.PersistenceType) string {
+	if persistenceType == constants.PersistenceTypePostgreSQL && len(cfg.GetCfg().DataIndexPostgreSQLImageTag) > 0 {
+		return cfg.GetCfg().DataIndexPostgreSQLImageTag
+	}
+	if persistenceType == constants.PersistenceTypeEphemeral && len(cfg.GetCfg().DataIndexEphemeralImageTag) > 0 {
+		return cfg.GetCfg().DataIndexEphemeralImageTag
+	}
 	var tag = version.GetMajorMinor()
 	var suffix = ""
 	if version.IsSnapshot() {
@@ -110,7 +117,7 @@ func (d DataIndexHandler) GetServiceImageName(persistenceName string) string {
 		suffix = constants.ImageNameNightlySuffix
 	}
 	// returns "quay.io/kiegroup/kogito-data-index-<persistence_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.DataIndexName, persistenceName+suffix, tag)
+	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.DataIndexName, persistenceType.String()+suffix, tag)
 }
 
 func (d DataIndexHandler) GetServiceName() string {
@@ -266,7 +273,13 @@ func (j JobServiceHandler) GetContainerName() string {
 	return constants.JobServiceName
 }
 
-func (j JobServiceHandler) GetServiceImageName(persistenceName string) string {
+func (j JobServiceHandler) GetServiceImageName(persistenceType constants.PersistenceType) string {
+	if persistenceType == constants.PersistenceTypePostgreSQL && len(cfg.GetCfg().JobsServicePostgreSQLImageTag) > 0 {
+		return cfg.GetCfg().JobsServicePostgreSQLImageTag
+	}
+	if persistenceType == constants.PersistenceTypeEphemeral && len(cfg.GetCfg().JobsServiceEphemeralImageTag) > 0 {
+		return cfg.GetCfg().JobsServiceEphemeralImageTag
+	}
 	var tag = version.GetMajorMinor()
 	var suffix = ""
 	if version.IsSnapshot() {
@@ -275,7 +288,7 @@ func (j JobServiceHandler) GetServiceImageName(persistenceName string) string {
 		suffix = constants.ImageNameNightlySuffix
 	}
 	// returns "quay.io/kiegroup/kogito-jobs-service-<persistece_layer>:<tag>"
-	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.JobServiceName, persistenceName+suffix, tag)
+	return fmt.Sprintf("%s-%s-%s:%s", constants.ImageNamePrefix, constants.JobServiceName, persistenceType.String()+suffix, tag)
 }
 
 func (j JobServiceHandler) GetServiceName() string {
