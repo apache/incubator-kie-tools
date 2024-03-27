@@ -95,6 +95,13 @@ export function BoxedExpressionEditorContextProvider({
         const prevValues = newWidthsById.get(id) ?? [];
         const newValues = values(prevValues);
 
+        if (newValues.length === 0) {
+          newWidthsById.delete(id);
+          widthsByIdRef.current = newWidthsById;
+          onWidthsChange(newWidthsById);
+          return;
+        }
+
         if (newValues !== prevValues) {
           newWidthsById.set(id, newValues);
           widthsByIdRef.current = newWidthsById;

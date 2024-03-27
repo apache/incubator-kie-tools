@@ -22,8 +22,7 @@ import { useEffect, useState, useCallback } from "react";
 import { BeeGwtService, DmnBuiltInDataType, BoxedExpression } from "../../src/api";
 import { getDefaultExpressionDefinitionByLogicType } from "./defaultExpression";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditorStory } from "../boxedExpressionStoriesWrapper";
-import { BoxedExpressionEditorProps } from "../../src/expressions";
+import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../boxedExpressionStoriesWrapper";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button, Flex, FlexItem, Tooltip } from "@patternfly/react-core/dist/js";
 import { canDriveExpressionDefinition, canDriveWidthsById } from "../useCases/CanDrive/CanDrive.stories";
@@ -156,6 +155,7 @@ function App() {
               onExpressionChange: setBoxedExpression,
               widthsById: widthsById,
               onWidthsChange: setWidthsById,
+              isResetSupportedOnRootExpression: true,
             })}
           </div>
         </FlexItem>
@@ -164,22 +164,26 @@ function App() {
   );
 }
 
-const meta: Meta<typeof App> = {
+const meta: Meta<BoxedExpressionEditorStoryArgs> = {
   title: "Dev/Web App",
   component: App,
 };
 
 export default meta;
-type Story = StoryObj<typeof App>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const WebApp: Story = {
   render: (args) => App(),
+  argTypes: {
+    expression: { control: "object" },
+    widthsById: { control: "object" },
+  },
   args: {
     expressionHolderId: undefined, // Needs to be here to be displayed.
     expression: undefined, // Needs to be here to be displayed.
+    widthsById: {}, // Needs to be here to be displayed.
     dataTypes: dataTypes,
     beeGwtService: beeGwtService,
     pmmlDocuments: pmmlDocuments,
-    widthsById: new Map(), // Needs to be here to be displayed.
   },
 };

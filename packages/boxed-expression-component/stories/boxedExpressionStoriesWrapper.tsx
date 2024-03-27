@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useArgs } from "@storybook/preview-api";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../src/expressions";
 import {
@@ -227,19 +227,21 @@ export const beeGwtService: BeeGwtService = {
   selectObject(): void {},
 };
 
+type StorybookArgWidhtsById = Record<string, number[]>;
+
 export type BoxedExpressionEditorStoryArgs = Omit<BoxedExpressionEditorProps, "widthsById"> & {
   widthsById: Record<string, number[]>;
 };
 
 export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditorProps>) {
   const emptyRef = useRef<HTMLDivElement>(null);
-  const [args, updateArgs] = useArgs<BoxedExpressionEditorProps>();
+  const [args, updateArgs] = useArgs<BoxedExpressionEditorStoryArgs>();
   const [expressionState, setExpressionState] = useState<BoxedExpression | undefined>(
     args?.expression ?? props?.expression
   );
 
-  const [widthsByIdState, setWidthsByIdState] = useState<Map<string, number[]>>(
-    args.widthsById ?? props?.widthsById ?? new Map()
+  const [widthsByIdState, setWidthsByIdState] = useState<StorybookArgWidhtsById>(
+    args.widthsById ?? toObject(props?.widthsById) ?? {}
   );
 
   useEffect(() => {
@@ -258,6 +260,16 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
     updateArgs({ widthsById: widthsByIdState });
   }, [updateArgs, widthsByIdState]);
 
+  const onWidthsChange = useCallback((newWidthsById) => {
+    if (typeof newWidthsById === "function") {
+      setWidthsByIdState((prev) => toObject(newWidthsById(toMap(prev))));
+    } else {
+      setWidthsByIdState(toObject(newWidthsById));
+    }
+  }, []);
+
+  const widthsById = useMemo(() => toMap(widthsByIdState), [widthsByIdState]);
+
   return (
     <div
       ref={emptyRef}
@@ -271,7 +283,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
         expressionHolderTypeRef={DmnBuiltInDataType.Undefined}
         expression={expressionState}
         onExpressionChange={setExpressionState}
-        onWidthsChange={setWidthsByIdState}
+        onWidthsChange={onWidthsChange}
         dataTypes={args?.dataTypes ?? props?.dataTypes ?? dataTypes}
         scrollableParentRef={args?.scrollableParentRef ?? props?.scrollableParentRef ?? emptyRef}
         beeGwtService={args?.beeGwtService ?? props?.beeGwtService ?? beeGwtService}
@@ -279,9 +291,23 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
         isResetSupportedOnRootExpression={
           args?.isResetSupportedOnRootExpression ?? props?.isResetSupportedOnRootExpression ?? false
         }
-        widthsById={widthsByIdState}
+        widthsById={widthsById}
         expressionName={expressionState?.["@_label"]}
       />
     </div>
   );
+}
+
+function toObject(map?: Map<string, number[]>): StorybookArgWidhtsById {
+  return Array.from(map?.entries() ?? []).reduce((acc, [key, value]) => {
+    acc[`${key}`] = value;
+    return acc;
+  }, {});
+}
+
+function toMap(object?: Record<string, number[]>) {
+  return Array.from(Object.entries(object ?? {}) ?? []).reduce((acc, [key, value]) => {
+    acc.set(key, value);
+    return acc;
+  }, new Map<string, number[]>());
 }
