@@ -229,11 +229,12 @@ export const beeGwtService: BeeGwtService = {
 
 type StorybookArgWidhtsById = Record<string, number[]>;
 
-export type BoxedExpressionEditorStoryArgs = Omit<BoxedExpressionEditorProps, "widthsById"> & {
+export type BoxedExpressionEditorStoryArgs = Omit<BoxedExpressionEditorProps, "widthsById" | "onWidthsChange"> & {
   widthsById?: Record<string, number[]>;
+  onWidthsChange?: React.Dispatch<React.SetStateAction<Record<string, number[]>>>;
 };
 
-export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditorProps>) {
+export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditorStoryArgs>) {
   const emptyRef = useRef<HTMLDivElement>(null);
   const [args, updateArgs] = useArgs<BoxedExpressionEditorStoryArgs>();
   const [expressionState, setExpressionState] = useState<BoxedExpression | undefined>(
@@ -241,12 +242,12 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
   );
 
   const [widthsByIdState, setWidthsByIdState] = useState<StorybookArgWidhtsById>(
-    args.widthsById ?? toObject(props?.widthsById) ?? {}
+    args.widthsById ?? props?.widthsById ?? {}
   );
 
   const onWidthsChange = useCallback((newWidthsById) => {
     if (typeof newWidthsById === "function") {
-      setWidthsByIdState((prev) => toObject(newWidthsById(toMap(prev))));
+      setWidthsByIdState((prev: Record<string, number[]>) => toObject(newWidthsById(toMap(prev))));
     } else {
       setWidthsByIdState(toObject(newWidthsById));
     }
@@ -266,10 +267,10 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
     setWidthsByIdState((prev) => {
       if (props?.widthsById === undefined && JSON.stringify(prev) === JSON.stringify(args.widthsById)) {
         return prev;
-      } else if (JSON.stringify(prev) === JSON.stringify(toObject(props?.widthsById))) {
+      } else if (JSON.stringify(prev) === JSON.stringify(props?.widthsById)) {
         return prev;
       }
-      return toObject(props?.widthsById) ?? args.widthsById ?? new Map();
+      return props?.widthsById ?? args.widthsById ?? {};
     });
   }, [args.widthsById, props?.widthsById]);
 

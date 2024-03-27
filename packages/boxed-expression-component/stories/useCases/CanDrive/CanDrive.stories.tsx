@@ -124,9 +124,9 @@ export const canDriveExpressionDefinition: BoxedDecisionTable = {
   ],
 };
 
-export const canDriveWidthsById = new Map<string, number[]>([
-  ["_21608B6A-1D9E-426D-86CF-B0CA7AB20D31", [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 100, 100, 100]],
-]);
+export const canDriveWidthsById = {
+  "_21608B6A-1D9E-426D-86CF-B0CA7AB20D31": [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 100, 100, 100],
+};
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {
@@ -134,6 +134,7 @@ export const Expression: Story = {
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: canDriveExpressionDefinition,
+    widthsById: canDriveWidthsById,
     dataTypes: findEmployeesDataTypes,
     beeGwtService,
     pmmlDocuments,

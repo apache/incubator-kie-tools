@@ -22,6 +22,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
   BoxedExpressionEditorStory,
+  BoxedExpressionEditorStoryArgs,
   dataTypes,
   pmmlDocuments,
 } from "../../boxedExpressionStoriesWrapper";
@@ -35,7 +36,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const findEmployeesDataTypes = [
   ...dataTypes,
@@ -165,9 +166,9 @@ export const employeesExpression: BoxedRelation = {
   ],
 };
 
-export const employeesWidthsById = new Map<string, number[]>([
-  ["_03E4FDF0-AF4A-4C82-A589-2F9BED02921B", [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 100, 156, 150, 252, 100]],
-]);
+export const employeesWidthsById = {
+  "_03E4FDF0-AF4A-4C82-A589-2F9BED02921B": [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 100, 156, 150, 252, 100],
+};
 
 export const findEmployeesByKnowledgeExpression: BoxedFunction = {
   __$$element: "functionDefinition",
@@ -230,13 +231,13 @@ export const findEmployeesByKnowledgeExpression: BoxedFunction = {
   },
 };
 
-export const findEmployeesByKnowledgeWidthsById = new Map<string, number[]>([
-  ["_243056C9-28EA-4EF2-8510-6F3BC6A5E5DC", [604]],
-  ["_1B96445B-523F-49B3-99BE-308A2F3CFBA5", [204, 400]],
-  ["_BC626016-B599-47A1-ABD6-67A2C7F761CE", [400]],
-  ["_3543AF00-0F90-47C4-BCBF-6E3B28A08BD7", [400]],
-  ["_049ECA86-1971-48B7-86FF-7E89B399074A", [400]],
-]);
+export const findEmployeesByKnowledgeWidthsById = {
+  "_243056C9-28EA-4EF2-8510-6F3BC6A5E5DC": [604],
+  "_1B96445B-523F-49B3-99BE-308A2F3CFBA5": [204, 400],
+  "_BC626016-B599-47A1-ABD6-67A2C7F761CE": [400],
+  "_3543AF00-0F90-47C4-BCBF-6E3B28A08BD7": [400],
+  "_049ECA86-1971-48B7-86FF-7E89B399074A": [400],
+};
 
 export const findEmployeesExpression: BoxedInvocation = {
   __$$element: "invocation",
@@ -302,9 +303,7 @@ export const findEmployeesExpression: BoxedInvocation = {
   ],
 };
 
-export const findEmployeesWidthsById = new Map<string, number[]>([
-  ["_8001CBC8-8DE4-4DBF-8B02-7FBFC582B136", [120, 100]],
-]);
+export const findEmployeesWidthsById = { "_8001CBC8-8DE4-4DBF-8B02-7FBFC582B136": [120, 100] };
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Employees: Story = {

@@ -91,7 +91,7 @@ const pmmlDocuments = [
 ];
 
 const INITIAL_EXPRESSION: BoxedExpression | undefined = undefined;
-const INITIAL_WIDTHS_BY_ID: Map<string, number[]> = new Map();
+const INITIAL_WIDTHS_BY_ID: Record<string, number[]> = {};
 
 //Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
 const beeGwtService: BeeGwtService = {
@@ -108,13 +108,13 @@ const beeGwtService: BeeGwtService = {
 function App() {
   const [version, setVersion] = useState(-1);
   const [boxedExpression, setBoxedExpression] = useState<BoxedExpression | undefined>(INITIAL_EXPRESSION);
-  const [widthsById, setWidthsById] = useState<Map<string, number[]>>(INITIAL_WIDTHS_BY_ID);
+  const [widthsById, setWidthsById] = useState<Record<string, number[]>>(INITIAL_WIDTHS_BY_ID);
 
   useEffect(() => {
     setVersion((prev) => prev + 1);
   }, [boxedExpression]);
 
-  const setSample = useCallback((sample: BoxedExpression | undefined, widthsById: Map<string, number[]>) => {
+  const setSample = useCallback((sample: BoxedExpression | undefined, widthsById: Record<string, number[]>) => {
     setBoxedExpression(sample);
     setWidthsById(widthsById);
   }, []);
@@ -131,14 +131,12 @@ function App() {
               <Button onClick={() => setSample(canDriveExpressionDefinition, canDriveWidthsById)}>Can Drive?</Button>
             </FlexItem>
             <FlexItem>
-              <Button onClick={() => setSample(findEmployeesByKnowledgeExpression, findEmployeesByKnowledgeWidthsById)}>
+              <Button onClick={() => setSample(findEmployeesByKnowledgeExpression, {})}>
                 Find Employees by Knowledge
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button onClick={() => setSample(postBureauAffordabilityExpression, postBureauAffordabilityWidthsById)}>
-                Affordability
-              </Button>
+              <Button onClick={() => setSample(postBureauAffordabilityExpression, {})}>Affordability</Button>
             </FlexItem>
             <FlexItem align={{ default: "alignRight" }}>
               <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>
