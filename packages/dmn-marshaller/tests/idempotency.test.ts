@@ -19,31 +19,35 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import * as validator from "xsd-schema-validator";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 
-const VALID_MODELS_DIRECTORY = "valid_models";
+/* Local Directories */
+const LOCAL_MODELS_DIRECTORY = "tests-data--manual";
+const LOCAL_MODELS_1_4_DIRECTORY = "dmn-1_4--examples";
+const LOCAL_MODELS_OTHER_DIRECTORY = "other";
 
+/* dmn-testing-models module Directories */
+const VALID_MODELS_DIRECTORY = "valid_models";
 const DMN_1_5_DIRECTORY = "DMNv1_5";
 const DMN_1_x_DIRECTORY = "DMNv1_X";
-
 const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
-path.sep;
+
 const files = [
+  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "attachment.dmn",
+  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "empty13.dmn",
+  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "sample12.dmn",
+  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "list.dmn",
+  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "list2.dmn",
+  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "external.dmn",
+  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "weird.dmn",
   ".." +
     path.sep +
-    VALID_MODELS_DIRECTORY +
+    LOCAL_MODELS_DIRECTORY +
     path.sep +
-    DMN_1_5_DIRECTORY +
+    LOCAL_MODELS_1_4_DIRECTORY +
     path.sep +
-    "AllowedValuesChecksInsideCollection.dmn",
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "DateToDateTimeFunction.dmn",
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "ForLoopDatesEvaluate.dmn",
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "Imported_Model_Unamed.dmn",
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "Importing_EmptyNamed_Model.dmn",
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "ListReplaceEvaluate.dmn",
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "TypeConstraintsChecks.dmn",
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY + path.sep + "OneOfEachType.dmn",
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY + path.sep + "allTypes.dmn",
+    "Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];
 
 const testing_models_paths = [
@@ -53,7 +57,7 @@ const testing_models_paths = [
 
 describe("idempotency", () => {
   for (const file of files) {
-    testFile(path.join(dmnTestingModels, file));
+    testFile(path.join(__dirname, file));
   }
   for (const models_paths of testing_models_paths) {
     const parent_path = path.join(dmnTestingModels, models_paths);
@@ -74,15 +78,21 @@ function testDirectory(normalizedFsPathRelativeToTheDirectory: string) {
 }
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
-  test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf("/") + 1), () => {
-    const xml_original = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
+  test(
+    normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf("/") + 1),
+    async () => {
+      const xml_original = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
 
-    const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
-    const json = parser.parse();
+      const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
+      const json = parser.parse();
 
-    const xml_firstPass = builder.build(json);
-    const xml_secondPass = builder.build(getMarshaller(xml_firstPass, { upgradeTo: "latest" }).parser.parse());
+      const xml_firstPass = builder.build(json);
+      const xml_secondPass = builder.build(getMarshaller(xml_firstPass, { upgradeTo: "latest" }).parser.parse());
 
-    expect(xml_firstPass).toStrictEqual(xml_secondPass);
-  });
+      expect(xml_firstPass).toStrictEqual(xml_secondPass);
+      //expect(xml_secondPass).toStrictEqual(xml_original);
+
+      //await expect((await validator.validateXML(xml_original, path.join(__dirname, "../src/schemas/dmn-1_5/DMN15.xsd"))).valid).toBe(true);
+    }
+  );
 }
