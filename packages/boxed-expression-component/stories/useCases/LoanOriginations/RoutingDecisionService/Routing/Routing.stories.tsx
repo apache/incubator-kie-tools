@@ -19,7 +19,12 @@
 
 import { BoxedContext, DmnBuiltInDataType } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { beeGwtService, BoxedExpressionEditorStory, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
+import {
+  beeGwtService,
+  BoxedExpressionEditorStory,
+  BoxedExpressionEditorStoryArgs,
+  pmmlDocuments,
+} from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
 import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../../../src/resizing/WidthConstants";
@@ -31,7 +36,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 const routingExpression: BoxedContext = {
   __$$element: "context",
@@ -181,12 +186,12 @@ const routingExpression: BoxedContext = {
   ],
 };
 
-export const routingWidthsById = new Map<string, number[]>([
-  ["_336E0FC5-5548-4720-A6B2-A8FA4834DB7B", [172, 811]],
-  ["_DC0A178E-45E0-4E9C-9C77-87E9DB05B196", [811]],
-  ["_0763ECC7-68A4-4150-A958-A84C3B70EE56", [811]],
-  ["_1FB1191F-F05C-4609-8BA4-77BE0D25570D", [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 100, 100, 172, 172, 123, 104]],
-]);
+export const routingWidthsById = {
+  "_336E0FC5-5548-4720-A6B2-A8FA4834DB7B": [172, 811],
+  "_DC0A178E-45E0-4E9C-9C77-87E9DB05B196": [811],
+  "_0763ECC7-68A4-4150-A958-A84C3B70EE56": [811],
+  "_1FB1191F-F05C-4609-8BA4-77BE0D25570D": [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 100, 100, 172, 172, 123, 104],
+};
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {

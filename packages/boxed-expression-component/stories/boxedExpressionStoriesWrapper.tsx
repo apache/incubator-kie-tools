@@ -245,15 +245,23 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
     args.widthsById ?? props?.widthsById ?? {}
   );
 
-  const onWidthsChange = useCallback((newWidthsById) => {
-    if (typeof newWidthsById === "function") {
-      setWidthsByIdState((prev: Record<string, number[]>) => toObject(newWidthsById(toMap(prev))));
-    } else {
-      setWidthsByIdState(toObject(newWidthsById));
-    }
-  }, []);
+  const onWidthsChange = useCallback(
+    (newWidthsById) => {
+      if (typeof newWidthsById === "function") {
+        setWidthsByIdState((prev: Record<string, number[]>) => {
+          const newWidhtsByIdState = toObject(newWidthsById(toMap(prev)));
+          updateArgs({ widthsById: newWidhtsByIdState });
+          return newWidhtsByIdState;
+        });
+      } else {
+        setWidthsByIdState(toObject(newWidthsById));
+        updateArgs({ widthsById: toObject(newWidthsById) });
+      }
+    },
+    [updateArgs]
+  );
 
-  const widthsById = useMemo(() => toMap(widthsByIdState), [widthsByIdState]);
+  const widthsByIdMap = useMemo(() => toMap(widthsByIdState), [widthsByIdState]);
 
   useEffect(() => {
     setExpressionState(props?.expression);
@@ -263,24 +271,31 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
     setExpressionState(args?.expression);
   }, [args?.expression]);
 
+  // Args were updated, should update the state!
   useEffect(() => {
     setWidthsByIdState((prev) => {
-      if (props?.widthsById === undefined && JSON.stringify(prev) === JSON.stringify(args.widthsById)) {
-        return prev;
-      } else if (JSON.stringify(prev) === JSON.stringify(props?.widthsById)) {
+      if (JSON.stringify(prev) === JSON.stringify(args.widthsById)) {
         return prev;
       }
-      return props?.widthsById ?? args.widthsById ?? {};
+      return args.widthsById ?? {};
     });
-  }, [args.widthsById, props?.widthsById]);
+  }, [args.widthsById]);
 
+  // Props were updated, should update the state and the args!
+  useEffect(() => {
+    setWidthsByIdState((prev) => {
+      if (JSON.stringify(prev) === JSON.stringify(props?.widthsById)) {
+        return prev;
+      }
+      updateArgs({ widthsById: props?.widthsById });
+      return props?.widthsById ?? {};
+    });
+  }, [props?.widthsById, updateArgs]);
+
+  // Keep expression args in sync with state
   useEffect(() => {
     updateArgs({ expression: expressionState });
   }, [updateArgs, expressionState]);
-
-  useEffect(() => {
-    updateArgs({ widthsById: widthsByIdState });
-  }, [updateArgs, widthsByIdState]);
 
   return (
     <div
@@ -303,7 +318,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
         isResetSupportedOnRootExpression={
           props?.isResetSupportedOnRootExpression ?? args?.isResetSupportedOnRootExpression ?? false
         }
-        widthsById={widthsById}
+        widthsById={widthsByIdMap}
         expressionName={expressionState?.["@_label"]}
       />
     </div>

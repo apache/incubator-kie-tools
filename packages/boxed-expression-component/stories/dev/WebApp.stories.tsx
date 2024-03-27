@@ -131,12 +131,14 @@ function App() {
               <Button onClick={() => setSample(canDriveExpressionDefinition, canDriveWidthsById)}>Can Drive?</Button>
             </FlexItem>
             <FlexItem>
-              <Button onClick={() => setSample(findEmployeesByKnowledgeExpression, {})}>
+              <Button onClick={() => setSample(findEmployeesByKnowledgeExpression, findEmployeesByKnowledgeWidthsById)}>
                 Find Employees by Knowledge
               </Button>
             </FlexItem>
             <FlexItem>
-              <Button onClick={() => setSample(postBureauAffordabilityExpression, {})}>Affordability</Button>
+              <Button onClick={() => setSample(postBureauAffordabilityExpression, postBureauAffordabilityWidthsById)}>
+                Affordability
+              </Button>
             </FlexItem>
             <FlexItem align={{ default: "alignRight" }}>
               <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>

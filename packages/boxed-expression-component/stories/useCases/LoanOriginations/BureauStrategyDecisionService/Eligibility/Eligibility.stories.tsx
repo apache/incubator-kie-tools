@@ -19,7 +19,12 @@
 
 import { BoxedDecisionTable, DmnBuiltInDataType } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { beeGwtService, BoxedExpressionEditorStory, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
+import {
+  beeGwtService,
+  BoxedExpressionEditorStory,
+  BoxedExpressionEditorStoryArgs,
+  pmmlDocuments,
+} from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
 import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../../../src/resizing/WidthConstants";
@@ -31,7 +36,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const eligibilityExpression: BoxedDecisionTable = {
   __$$element: "decisionTable",
@@ -133,9 +138,9 @@ export const eligibilityExpression: BoxedDecisionTable = {
   ],
 };
 
-export const eligibilityWidthsById = new Map([
-  ["_830C9FEF-FA57-4245-8FFF-1E7F305F4536", [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 150, 180, 180, 150, 100]],
-]);
+export const eligibilityWidthsById = {
+  "_830C9FEF-FA57-4245-8FFF-1E7F305F4536": [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 150, 180, 180, 150, 100],
+};
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {

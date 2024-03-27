@@ -19,7 +19,12 @@
 
 import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { beeGwtService, BoxedExpressionEditorStory, pmmlDocuments } from "../../../../boxedExpressionStoriesWrapper";
+import {
+  beeGwtService,
+  BoxedExpressionEditorStory,
+  BoxedExpressionEditorStoryArgs,
+  pmmlDocuments,
+} from "../../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
 import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
 
@@ -30,7 +35,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const installmentCalculationExpression: BoxedFunction = {
   __$$element: "functionDefinition",
@@ -96,13 +101,13 @@ export const installmentCalculationExpression: BoxedFunction = {
   },
 };
 
-export const installmentCalculationWidthsById = new Map<string, number[]>([
-  ["_1E31E836-0609-4B4C-8FAF-389F774B1FE3", []],
-  ["_7A96C527-9D9E-4199-987B-A6A0C8308296", [120, 320]],
-  ["_6B635731-73ED-41B8-9D3C-72F174D68036", [320]],
-  ["_68539BE5-8AA0-4C5B-8AE6-D4A8F1118B7B", [320]],
-  ["_94444797-708D-418A-A22A-5CE6CAB35F6F", [320]],
-]);
+export const installmentCalculationWidthsById = {
+  "_1E31E836-0609-4B4C-8FAF-389F774B1FE3": [],
+  "_7A96C527-9D9E-4199-987B-A6A0C8308296": [120, 320],
+  "_6B635731-73ED-41B8-9D3C-72F174D68036": [320],
+  "_68539BE5-8AA0-4C5B-8AE6-D4A8F1118B7B": [320],
+  "_94444797-708D-418A-A22A-5CE6CAB35F6F": [320],
+};
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {

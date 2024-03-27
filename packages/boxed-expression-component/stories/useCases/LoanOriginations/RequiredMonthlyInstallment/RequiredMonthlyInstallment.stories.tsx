@@ -19,7 +19,12 @@
 
 import { DmnBuiltInDataType, BoxedInvocation } from "../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { beeGwtService, BoxedExpressionEditorStory, pmmlDocuments } from "../../../boxedExpressionStoriesWrapper";
+import {
+  beeGwtService,
+  BoxedExpressionEditorStory,
+  BoxedExpressionEditorStoryArgs,
+  pmmlDocuments,
+} from "../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../src/expressions";
 import { loanOriginationsDataTypes } from "../boxedExpressionEditorBase";
 
@@ -30,7 +35,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const requiredMonthlyInstallmentExpression: BoxedInvocation = {
   __$$element: "invocation",
@@ -103,10 +108,10 @@ export const requiredMonthlyInstallmentExpression: BoxedInvocation = {
   ],
 };
 
-export const requiredMonthlyInstallmentWidthsById = new Map<string, number[]>([
-  ["_EF51A747-D5E1-414E-9DD5-964362FB2AEC", [120]],
-  ["_EE98C97E-4CFE-463D-A500-B8D6D7FC69BD", [250]],
-]);
+export const requiredMonthlyInstallmentWidthsById = {
+  "_EF51A747-D5E1-414E-9DD5-964362FB2AEC": [120],
+  "_EE98C97E-4CFE-463D-A500-B8D6D7FC69BD": [250],
+};
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {

@@ -20,7 +20,12 @@
 import { loanOriginationsDataTypes } from "../boxedExpressionEditorBase";
 import { BoxedContext, DmnBuiltInDataType } from "../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
-import { beeGwtService, BoxedExpressionEditorStory, pmmlDocuments } from "../../../boxedExpressionStoriesWrapper";
+import {
+  beeGwtService,
+  BoxedExpressionEditorStory,
+  BoxedExpressionEditorStoryArgs,
+  pmmlDocuments,
+} from "../../../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../src/expressions";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../../src/resizing/WidthConstants";
 
@@ -31,7 +36,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const applicationRiskScoreExpression: BoxedContext = {
   __$$element: "context",
@@ -256,13 +261,13 @@ export const applicationRiskScoreExpression: BoxedContext = {
   ],
 };
 
-export const applicationRiskScoreWidthsById = new Map([
-  ["_36398C55-5ED1-41C6-B643-98DBDD52D143", [176, 739]],
-  ["_45DE91F3-7731-4A5C-AC8B-0C6AD17508DF", [739]],
-  ["_F3354465-FA19-4664-A0A1-355511122FBE", [739]],
-  ["_8BDD13D2-4F23-4A76-9A5F-DD9164B1B21A", [739]],
-  ["_40CCF542-F80F-4C14-AAE5-AAAFA3304648", [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 132, 132, 144, 161, 100]],
-]);
+export const applicationRiskScoreWidthsById = {
+  "_36398C55-5ED1-41C6-B643-98DBDD52D143": [176, 739],
+  "_45DE91F3-7731-4A5C-AC8B-0C6AD17508DF": [739],
+  "_F3354465-FA19-4664-A0A1-355511122FBE": [739],
+  "_8BDD13D2-4F23-4A76-9A5F-DD9164B1B21A": [739],
+  "_40CCF542-F80F-4C14-AAE5-AAAFA3304648": [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 132, 132, 144, 161, 100],
+};
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Expression: Story = {
