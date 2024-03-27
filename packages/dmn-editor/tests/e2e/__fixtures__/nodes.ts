@@ -124,6 +124,17 @@ export class Nodes {
     await this.diagram.get().press("Enter");
   }
 
+  public async resize(args: { nodeName: string; position?: NodePosition; xOffset: number; yOffset: number }) {
+    await this.select({ name: args.nodeName, position: NodePosition.TOP_PADDING });
+
+    const resizeHandle = this.get({ name: args.nodeName }).getByTestId(`${args.nodeName}-resize-handle`);
+    const { x, y, width, height } = (await resizeHandle.boundingBox()) ?? { x: 0, y: 0, width: 0, height: 0 };
+    await this.page.mouse.move(x + width / 2, y + height / 2);
+    await this.page.mouse.down();
+    await this.page.mouse.move(x + args.xOffset, y + args.yOffset);
+    await this.page.mouse.up();
+  }
+
   public async select(args: { name: string; position?: NodePosition }) {
     const node = this.get({ name: args.name });
 
