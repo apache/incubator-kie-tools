@@ -115,10 +115,10 @@ export const Expression: Story = {
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: installmentCalculationExpression,
+    widthsById: installmentCalculationWidthsById,
     dataTypes: loanOriginationsDataTypes,
     beeGwtService,
     pmmlDocuments,
     isResetSupportedOnRootExpression: false,
-    widthsById: installmentCalculationWidthsById,
   },
 };

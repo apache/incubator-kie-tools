@@ -114,10 +114,10 @@ export const Expression: Story = {
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: strategyExpression,
+    widthsById: strategyWidthsById,
     dataTypes: loanOriginationsDataTypes,
     beeGwtService,
     pmmlDocuments,
     isResetSupportedOnRootExpression: false,
-    widthsById: strategyWidthsById,
   },
 };

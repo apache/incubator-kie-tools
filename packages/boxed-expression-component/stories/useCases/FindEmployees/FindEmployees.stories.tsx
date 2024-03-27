@@ -311,11 +311,11 @@ export const Employees: Story = {
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: employeesExpression,
+    widthsById: employeesWidthsById,
     dataTypes: findEmployeesDataTypes,
     beeGwtService,
     pmmlDocuments,
     isResetSupportedOnRootExpression: false,
-    widthsById: employeesWidthsById,
   },
 };
 
@@ -324,11 +324,11 @@ export const FindEmployeesByKnowledge: Story = {
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: findEmployeesByKnowledgeExpression,
+    widthsById: findEmployeesByKnowledgeWidthsById,
     dataTypes: findEmployeesDataTypes,
     beeGwtService,
     pmmlDocuments,
     isResetSupportedOnRootExpression: false,
-    widthsById: findEmployeesByKnowledgeWidthsById,
   },
 };
 
@@ -337,10 +337,10 @@ export const FindByEmployees: Story = {
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
     expression: findEmployeesExpression,
+    widthsById: findEmployeesWidthsById,
     dataTypes: findEmployeesDataTypes,
     beeGwtService,
     pmmlDocuments,
     isResetSupportedOnRootExpression: false,
-    widthsById: findEmployeesWidthsById,
   },
 };

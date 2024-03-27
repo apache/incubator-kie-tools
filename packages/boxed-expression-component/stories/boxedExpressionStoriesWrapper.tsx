@@ -274,21 +274,21 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
   // Args were updated, should update the state!
   useEffect(() => {
     setWidthsByIdState((prev) => {
-      if (JSON.stringify(prev) === JSON.stringify(args.widthsById)) {
+      if (args.widthsById === undefined || JSON.stringify(prev) === JSON.stringify(args.widthsById)) {
         return prev;
       }
-      return args.widthsById ?? {};
+      return args.widthsById;
     });
   }, [args.widthsById]);
 
   // Props were updated, should update the state and the args!
   useEffect(() => {
     setWidthsByIdState((prev) => {
-      if (JSON.stringify(prev) === JSON.stringify(props?.widthsById)) {
+      if (props?.widthsById === undefined || JSON.stringify(prev) === JSON.stringify(props?.widthsById)) {
         return prev;
       }
       updateArgs({ widthsById: props?.widthsById });
-      return props?.widthsById ?? {};
+      return props?.widthsById;
     });
   }, [props?.widthsById, updateArgs]);
 
