@@ -52,7 +52,7 @@ import org.kie.sonataflow.swf.tools.runtime.rpc.SonataFlowQuarkusExtensionJsonRP
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "/q/dev-ui/org.apache.kie.sonataflow.sonataflow-quarkus-devui-extension";
+    private static final String BASE_RELATIVE_URL = "/q/dev-ui/org.apache.kie.sonataflow.sonataflow-quarkus-devui";
 
     @BuildStep(onlyIf = IsDevelopment.class)
     @Record(ExecutionTime.RUNTIME_INIT)
@@ -64,7 +64,7 @@ public class DevConsoleProcessor {
             final BuildProducer<RouteBuildItem> routeBuildItemBuildProducer) throws IOException {
         ResolvedDependency devConsoleResourcesArtifact = WebJarUtil.getAppArtifact(curateOutcomeBuildItem,
                 "org.apache.kie.sonataflow",
-                "sonataflow-quarkus-devui-extension-deployment");
+                "sonataflow-quarkus-devui-deployment");
 
         Path devConsoleStaticResourcesDeploymentPath = WebJarUtil.copyResourcesForDevOrTest(
                 liveReloadBuildItem,
