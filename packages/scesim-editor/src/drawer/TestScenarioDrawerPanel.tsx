@@ -29,12 +29,15 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
-import TestScenarioDrawerDataObjectsPanel from "./TestScenarioDrawerDataObjectsPanel";
+import { SceSimModel } from "@kie-tools/scesim-marshaller";
+
+import TestScenarioDrawerDataSelectorPanel from "./TestScenarioDrawerDataSelectorPanel";
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
 import {
   TestScenarioDataObject,
   TestScenarioEditorDock,
+  TestScenarioSelectedColumnMetaData,
   TestScenarioSettings,
   TestScenarioType,
 } from "../TestScenarioEditor";
@@ -45,15 +48,23 @@ function TestScenarioDrawerPanel({
   fileName,
   onDrawerClose,
   onUpdateSettingField,
+  scesimModel,
+  selectedColumnMetaData,
   selectedDock,
   testScenarioSettings,
+  updateSelectedColumnMetaData,
+  updateTestScenarioModel,
 }: {
   dataObjects: TestScenarioDataObject[];
   fileName: string;
   onDrawerClose: () => void;
   onUpdateSettingField: (field: string, value: boolean | string) => void;
+  scesimModel: SceSimModel;
+  selectedColumnMetaData: TestScenarioSelectedColumnMetaData | null;
   selectedDock: TestScenarioEditorDock;
   testScenarioSettings: TestScenarioSettings;
+  updateSelectedColumnMetaData: React.Dispatch<React.SetStateAction<TestScenarioSelectedColumnMetaData | null>>;
+  updateTestScenarioModel: React.Dispatch<React.SetStateAction<SceSimModel>>;
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
@@ -71,8 +82,8 @@ function TestScenarioDrawerPanel({
                   return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
                   return testScenarioSettings.assetType === TestScenarioType[TestScenarioType.DMN]
-                    ? i18n.drawer.dataObjects.titleDMN
-                    : i18n.drawer.dataObjects.titleRule;
+                    ? i18n.drawer.dataSelector.titleDMN
+                    : i18n.drawer.dataSelector.titleRule;
                 case TestScenarioEditorDock.SETTINGS:
                   return i18n.drawer.settings.title;
                 default:
@@ -90,9 +101,13 @@ function TestScenarioDrawerPanel({
               return <TestScenarioDrawerCheatSheetPanel assetType={testScenarioSettings.assetType} />;
             case TestScenarioEditorDock.DATA_OBJECT:
               return (
-                <TestScenarioDrawerDataObjectsPanel
+                <TestScenarioDrawerDataSelectorPanel
                   assetType={testScenarioSettings.assetType}
                   dataObjects={dataObjects}
+                  scesimModel={scesimModel}
+                  selectedColumnMetadata={selectedColumnMetaData}
+                  updateSelectedColumnMetaData={updateSelectedColumnMetaData}
+                  updateTestScenarioModel={updateTestScenarioModel}
                 />
               );
             case TestScenarioEditorDock.SETTINGS:

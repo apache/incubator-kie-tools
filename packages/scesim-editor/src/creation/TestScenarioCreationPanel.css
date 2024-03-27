@@ -17,13 +17,7 @@
  * under the License.
  */
 
-.section-body {
-  --pf-c-page__main-section--PaddingTop: 0px;
-  --pf-c-page__main-section--PaddingRight: 0px;
-  --pf-c-page__main-section--PaddingBottom: 0px;
-  --pf-c-page__main-section--PaddingLeft: 0px;
-}
-
-.dev-webapp--example-dropdown {
-  z-index: 99999;
+.kie-scesim-editor-creation-panel--info-icon {
+  margin-left: 5px;
+  vertical-align: top;
 }

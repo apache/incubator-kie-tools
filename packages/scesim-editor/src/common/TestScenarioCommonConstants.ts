@@ -17,28 +17,9 @@
  * under the License.
  */
 
-.kie-scesim-editor-drawer-data-objects--button-container {
-  margin-top: 10px;
-}
+export const EMPTY_TYPE = "java.lang.Void";
 
-.kie-scesim-editor-drawer-data-objects--button-container button + button {
-  margin-left: 10px;
-}
-
-.kie-scesim-editor-drawer-data-objects--info-icon {
-  margin-left: 5px;
-  vertical-align: top;
-}
-
-.kie-scesim-editor-drawer-data-objects--selector {
-  height: 500px;
-  overflow: scroll;
-}
-
-.kie-scesim-editor-drawer-data-objects--selector-title {
-  margin-top: 10px;
-}
-
-.kie-scesim-editor-drawer-data-objects--text {
-  margin-bottom: 10px;
+export enum TEST_SCENARIO_EXPRESSION_TYPE {
+  EXPRESSION,
+  NOT_EXPRESSION,
 }

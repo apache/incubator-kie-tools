@@ -415,7 +415,7 @@ digraph G {
   "@kie-tools/runtime-tools-gateway-api" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-webapp-components" -> "@kie-tools/runtime-tools-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
-  "@kie-tools/scesim-editor" -> "@kie-tools/scesim-marshaller" [ style = "dashed", color = "blue" ];
+  "@kie-tools/scesim-editor" -> "@kie-tools/scesim-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];

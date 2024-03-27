@@ -65,9 +65,6 @@
       <xsd:element type="xsd:string" name="dmoSession" minOccurs="0" />
       <xsd:element type="xsd:string" name="dmnFilePath" minOccurs="0" />
       <xsd:element type="xsd:string" name="type" minOccurs="0" />
-      <xsd:element type="xsd:string" name="fileName" minOccurs="0" />
-      <xsd:element type="xsd:string" name="kieSession" minOccurs="0" />
-      <xsd:element type="xsd:string" name="kieBase" minOccurs="0" />
       <xsd:element type="xsd:string" name="ruleFlowGroup" minOccurs="0" />
       <xsd:element type="xsd:string" name="dmnNamespace" minOccurs="0" />
       <xsd:element type="xsd:string" name="dmnName" minOccurs="0" />
@@ -95,24 +92,19 @@
         minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
-  <xsd:complexType name="ScenarioType">
-    <xsd:sequence>
-      <xsd:element type="factMappingValuesType" name="factMappingValues" />
-    </xsd:sequence>
-  </xsd:complexType>
-  <xsd:complexType name="BackgroundDataType">
+  <xsd:complexType name="FactMappingValuesTypes">
     <xsd:sequence>
       <xsd:element type="factMappingValuesType" name="factMappingValues" />
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="scenariosType">
     <xsd:sequence>
-      <xsd:element type="ScenarioType" name="Scenario" maxOccurs="unbounded" minOccurs="0" />
+      <xsd:element type="FactMappingValuesTypes" name="Scenario" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="backgroundDatasType">
     <xsd:sequence>
-      <xsd:element type="BackgroundDataType" name="BackgroundData" maxOccurs="unbounded"
+      <xsd:element type="FactMappingValuesTypes" name="BackgroundData" maxOccurs="unbounded"
         minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>

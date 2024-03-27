@@ -17,13 +17,35 @@
  * under the License.
  */
 
-.section-body {
-  --pf-c-page__main-section--PaddingTop: 0px;
-  --pf-c-page__main-section--PaddingRight: 0px;
-  --pf-c-page__main-section--PaddingBottom: 0px;
-  --pf-c-page__main-section--PaddingLeft: 0px;
+.kie-scesim-editor-drawer-data-objects--button-container {
+  margin-top: 10px;
 }
 
-.dev-webapp--example-dropdown {
-  z-index: 99999;
+.kie-scesim-editor-drawer-data-objects--button-container button + button {
+  margin-left: 10px;
+}
+
+.kie-scesim-editor-drawer-data-objects--info-icon {
+  margin-left: 5px;
+  vertical-align: top;
+}
+
+.kie-scesim-editor-drawer-data-objects--selector {
+  height: 500px;
+  overflow: scroll;
+}
+
+.kie-scesim-editor-drawer-data-objects--selector-disabled {
+  height: 500px;
+  overflow: scroll;
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.kie-scesim-editor-drawer-data-objects--selector-title {
+  margin-top: 10px;
+}
+
+.kie-scesim-editor-drawer-data-objects--text {
+  margin-bottom: 10px;
 }
