@@ -23,6 +23,7 @@ import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/
 import {
   beeGwtService,
   BoxedExpressionEditorStory,
+  BoxedExpressionEditorStoryArgs,
   dataTypes,
   pmmlDocuments,
 } from "../../boxedExpressionStoriesWrapper";
@@ -35,7 +36,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const findEmployeesDataTypes = [...dataTypes, { name: "tPerson", isCustom: true }];
 

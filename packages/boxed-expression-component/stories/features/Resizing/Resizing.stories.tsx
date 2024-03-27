@@ -23,6 +23,7 @@ import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/
 import * as Literal from "../../boxedExpressions/Literal/Literal.stories";
 import * as Context from "../../boxedExpressions/Context/Context.stories";
 import { DmnBuiltInDataType, BoxedExpression, BoxedFunctionKind, BoxedLiteral } from "../../../src/api";
+import { BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -31,7 +32,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const CanDrive: Story = {
   ...Literal.CanDrive,
@@ -336,8 +337,6 @@ export const Nested: Story = {
   args: {
     ...Context.Nested.args,
     expression,
-    widthsById: new Map<string, number[]>([
-      //FIXME: Tiago
-    ]),
+    widthsById: {}, //FIXME: Tiago
   },
 };

@@ -61,7 +61,6 @@ const baseTableProps: BeeTableProps<object> = {
   shouldRenderRowIndexColumn: true,
   headerVisibility: BeeTableHeaderVisibility.AllLevels,
   operationConfig: [],
-  widthsById: new Map<string, number[]>(),
 };
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
@@ -127,7 +126,6 @@ const peopleTableProps: BeeTableProps<object> = {
   shouldRenderRowIndexColumn: true,
   headerVisibility: BeeTableHeaderVisibility.AllLevels,
   operationConfig: [],
-  widthsById: new Map<string, number[]>(),
 };
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
