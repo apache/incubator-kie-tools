@@ -19,7 +19,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorStory } from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
 import {
@@ -41,7 +41,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
@@ -90,17 +90,14 @@ export const Base: Story = {
         },
       ],
     },
-    widthsById: new Map([
-      [
-        "_92929AE6-3BB5-4217-B66E-07614680971D",
-        [
-          BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
-          DECISION_TABLE_INPUT_DEFAULT_WIDTH,
-          DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-          DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-        ],
+    widthsById: {
+      "_92929AE6-3BB5-4217-B66E-07614680971D": [
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+        DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+        DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+        DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
       ],
-    ]),
+    },
 
     isResetSupportedOnRootExpression: false,
   },
@@ -167,17 +164,14 @@ export const Discount: Story = {
       ],
     },
     isResetSupportedOnRootExpression: false,
-    widthsById: new Map([
-      [
-        "_92929AE6-3BB5-4217-B66E-07614680971D",
-        [
-          BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
-          120,
-          DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-          DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-        ],
+    widthsById: {
+      "_92929AE6-3BB5-4217-B66E-07614680971D": [
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+        120,
+        DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+        DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
       ],
-    ]),
+    },
   },
 };
 
@@ -244,18 +238,16 @@ export const Nested: Story = {
         },
       ],
     },
-    widthsById: new Map([
-      ["_92929AE6-3BB5-4217-B66E-07614680971D", [CONTEXT_ENTRY_INFO_MIN_WIDTH]],
-      [
-        "_5B31AAB6-BD52-4654-88C2-541F687FE5B4",
-        [
-          BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
-          DECISION_TABLE_INPUT_DEFAULT_WIDTH,
-          DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-          DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-        ],
+    widthsById: {
+      "_92929AE6-3BB5-4217-B66E-07614680971D": [CONTEXT_ENTRY_INFO_MIN_WIDTH],
+
+      "_5B31AAB6-BD52-4654-88C2-541F687FE5B4": [
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+        DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+        DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+        DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
       ],
-    ]),
+    },
     isResetSupportedOnRootExpression: false,
   },
 };

@@ -230,7 +230,7 @@ export const beeGwtService: BeeGwtService = {
 type StorybookArgWidhtsById = Record<string, number[]>;
 
 export type BoxedExpressionEditorStoryArgs = Omit<BoxedExpressionEditorProps, "widthsById"> & {
-  widthsById: Record<string, number[]>;
+  widthsById?: Record<string, number[]>;
 };
 
 export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditorProps>) {
@@ -244,22 +244,6 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
     args.widthsById ?? toObject(props?.widthsById) ?? {}
   );
 
-  useEffect(() => {
-    setExpressionState(args.expression ?? props?.expression);
-  }, [args.expression, props?.expression]);
-
-  useEffect(() => {
-    setWidthsByIdState(args.widthsById ?? props?.widthsById ?? new Map());
-  }, [args.widthsById, props?.widthsById]);
-
-  useEffect(() => {
-    updateArgs({ expression: expressionState });
-  }, [updateArgs, expressionState]);
-
-  useEffect(() => {
-    updateArgs({ widthsById: widthsByIdState });
-  }, [updateArgs, widthsByIdState]);
-
   const onWidthsChange = useCallback((newWidthsById) => {
     if (typeof newWidthsById === "function") {
       setWidthsByIdState((prev) => toObject(newWidthsById(toMap(prev))));
@@ -270,6 +254,33 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
 
   const widthsById = useMemo(() => toMap(widthsByIdState), [widthsByIdState]);
 
+  useEffect(() => {
+    setExpressionState(props?.expression);
+  }, [props?.expression]);
+
+  useEffect(() => {
+    setExpressionState(args?.expression);
+  }, [args?.expression]);
+
+  useEffect(() => {
+    setWidthsByIdState((prev) => {
+      if (props?.widthsById === undefined && JSON.stringify(prev) === JSON.stringify(args.widthsById)) {
+        return prev;
+      } else if (JSON.stringify(prev) === JSON.stringify(toObject(props?.widthsById))) {
+        return prev;
+      }
+      return toObject(props?.widthsById) ?? args.widthsById ?? new Map();
+    });
+  }, [args.widthsById, props?.widthsById]);
+
+  useEffect(() => {
+    updateArgs({ expression: expressionState });
+  }, [updateArgs, expressionState]);
+
+  useEffect(() => {
+    updateArgs({ widthsById: widthsByIdState });
+  }, [updateArgs, widthsByIdState]);
+
   return (
     <div
       ref={emptyRef}
@@ -279,17 +290,17 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
       }}
     >
       <BoxedExpressionEditor
-        expressionHolderId={args?.expressionHolderId ?? props?.expressionHolderId ?? ""}
+        expressionHolderId={props?.expressionHolderId ?? args?.expressionHolderId ?? ""}
         expressionHolderTypeRef={DmnBuiltInDataType.Undefined}
         expression={expressionState}
         onExpressionChange={setExpressionState}
         onWidthsChange={onWidthsChange}
-        dataTypes={args?.dataTypes ?? props?.dataTypes ?? dataTypes}
-        scrollableParentRef={args?.scrollableParentRef ?? props?.scrollableParentRef ?? emptyRef}
-        beeGwtService={args?.beeGwtService ?? props?.beeGwtService ?? beeGwtService}
-        pmmlDocuments={args?.pmmlDocuments ?? props?.pmmlDocuments ?? pmmlDocuments}
+        dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}
+        scrollableParentRef={props?.scrollableParentRef ?? args?.scrollableParentRef ?? emptyRef}
+        beeGwtService={props?.beeGwtService ?? args?.beeGwtService ?? beeGwtService}
+        pmmlDocuments={props?.pmmlDocuments ?? args?.pmmlDocuments ?? pmmlDocuments}
         isResetSupportedOnRootExpression={
-          args?.isResetSupportedOnRootExpression ?? props?.isResetSupportedOnRootExpression ?? false
+          props?.isResetSupportedOnRootExpression ?? args?.isResetSupportedOnRootExpression ?? false
         }
         widthsById={widthsById}
         expressionName={expressionState?.["@_label"]}
@@ -299,14 +310,14 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
 }
 
 function toObject(map?: Map<string, number[]>): StorybookArgWidhtsById {
-  return Array.from(map?.entries() ?? []).reduce((acc, [key, value]) => {
+  return Array.from((map ?? new Map()).entries()).reduce((acc, [key, value]) => {
     acc[`${key}`] = value;
     return acc;
   }, {});
 }
 
-function toMap(object?: Record<string, number[]>) {
-  return Array.from(Object.entries(object ?? {}) ?? []).reduce((acc, [key, value]) => {
+function toMap(object?: StorybookArgWidhtsById): Map<string, number[]> {
+  return Array.from(Object.entries(object ?? {})).reduce((acc, [key, value]) => {
     acc.set(key, value);
     return acc;
   }, new Map<string, number[]>());

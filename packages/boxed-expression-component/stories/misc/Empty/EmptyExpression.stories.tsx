@@ -22,6 +22,7 @@ import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/
 import {
   beeGwtService,
   BoxedExpressionEditorStory,
+  BoxedExpressionEditorStoryArgs,
   dataTypes,
   pmmlDocuments,
 } from "../../boxedExpressionStoriesWrapper";
@@ -33,14 +34,15 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   args: {
     expressionHolderId: "_00000000-0000-0000-0000-000000000000",
-    expression: undefined!,
+    expression: undefined,
+    widthsById: {},
     dataTypes,
     beeGwtService,
     pmmlDocuments,
