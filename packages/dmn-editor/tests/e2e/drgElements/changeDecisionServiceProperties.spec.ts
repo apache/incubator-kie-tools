@@ -19,21 +19,21 @@
 
 import { test, expect } from "../__fixtures__/base";
 import { DataType } from "../__fixtures__/jsonModel";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
 test.describe("Change Properties - Decision Service", () => {
-  test.beforeEach(async ({ palette, nodes, generalDecisionServiceProperties }) => {
+  test.beforeEach(async ({ palette, nodes, containerNodeGeneralProperties }) => {
     await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
-    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE });
-    await generalDecisionServiceProperties.open();
+    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+    await containerNodeGeneralProperties.open();
   });
 
-  test("should change the Decision Service node name", async ({ nodes, generalDecisionServiceProperties }) => {
-    await generalDecisionServiceProperties.changeNodeName({
+  test("should change the Decision Service node name", async ({ nodes, containerNodeGeneralProperties }) => {
+    await containerNodeGeneralProperties.changeNodeName({
       from: DefaultNodeName.DECISION_SERVICE,
       to: "Renamed Decision Service",
     });
@@ -41,8 +41,8 @@ test.describe("Change Properties - Decision Service", () => {
     await expect(nodes.get({ name: "Renamed Decision Service" })).toBeVisible();
   });
 
-  test("should change the Decision Service node data type", async ({ nodes, generalDecisionServiceProperties }) => {
-    await generalDecisionServiceProperties.changeNodeDataType({
+  test("should change the Decision Service node data type", async ({ nodes, containerNodeGeneralProperties }) => {
+    await containerNodeGeneralProperties.changeNodeDataType({
       nodeName: DefaultNodeName.DECISION_SERVICE,
       newDataType: DataType.Number,
     });
@@ -53,25 +53,25 @@ test.describe("Change Properties - Decision Service", () => {
     ).toHaveValue(DataType.Number);
   });
 
-  test("should change the Decision Service node description", async ({ generalDecisionServiceProperties }) => {
-    await generalDecisionServiceProperties.changeNodeDescription({
+  test("should change the Decision Service node description", async ({ containerNodeGeneralProperties }) => {
+    await containerNodeGeneralProperties.changeNodeDescription({
       nodeName: DefaultNodeName.DECISION_SERVICE,
       newDescription: "New Decision Service Description",
     });
 
     expect(
-      await generalDecisionServiceProperties.getNodeDescription({ nodeName: DefaultNodeName.DECISION_SERVICE })
+      await containerNodeGeneralProperties.getNodeDescription({ nodeName: DefaultNodeName.DECISION_SERVICE })
     ).toBe("New Decision Service Description");
   });
 
-  test("should change the Decision Service node documentation links", async ({ generalDecisionServiceProperties }) => {
-    await generalDecisionServiceProperties.addDocumentationLink({
+  test("should change the Decision Service node documentation links", async ({ containerNodeGeneralProperties }) => {
+    await containerNodeGeneralProperties.addDocumentationLink({
       nodeName: DefaultNodeName.DECISION_SERVICE,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await generalDecisionServiceProperties.getDocumentationLinks({
+    const links = await containerNodeGeneralProperties.getDocumentationLinks({
       nodeName: DefaultNodeName.DECISION_SERVICE,
     });
     expect(links).toHaveLength(1);
@@ -79,20 +79,20 @@ test.describe("Change Properties - Decision Service", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Decision Service node font - family", async ({ generalDecisionServiceProperties }) => {
-    await generalDecisionServiceProperties.changeNodeFont({
+  test("should change the Decision Service node font - family", async ({ containerNodeGeneralProperties }) => {
+    await containerNodeGeneralProperties.changeNodeFont({
       nodeName: DefaultNodeName.DECISION_SERVICE,
       newFont: "Verdana",
     });
 
-    expect(await generalDecisionServiceProperties.getNodeFont({ nodeName: DefaultNodeName.DECISION_SERVICE })).toBe(
+    expect(await containerNodeGeneralProperties.getNodeFont({ nodeName: DefaultNodeName.DECISION_SERVICE })).toBe(
       "Verdana"
     );
   });
 
   test.skip("should change the Decision Service node shape - background color", async ({
     nodes,
-    generalDecisionServiceProperties,
+    containerNodeGeneralProperties,
   }) => {
     // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
   });

@@ -25,20 +25,26 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Group", () => {
-  test("should resize Group node", async ({ palette, nodes, generalProperties }) => {
+  test("should resize Group node", async ({ palette, nodes, containerNodeGeneralProperties }) => {
     await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
 
     await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: 50, yOffset: 50 });
 
-    await generalProperties.open();
+    await containerNodeGeneralProperties.open();
     await expect(
       (
-        await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
+        await containerNodeGeneralProperties.getNodeShape({
+          nodeName: DefaultNodeName.GROUP,
+          position: NodePosition.TOP,
+        })
       ).width
     ).toEqual("360");
     await expect(
       (
-        await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
+        await containerNodeGeneralProperties.getNodeShape({
+          nodeName: DefaultNodeName.GROUP,
+          position: NodePosition.TOP,
+        })
       ).height
     ).toEqual("360");
   });

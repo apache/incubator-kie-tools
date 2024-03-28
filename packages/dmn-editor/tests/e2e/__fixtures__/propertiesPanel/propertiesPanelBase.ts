@@ -28,7 +28,7 @@ export class PropertiesPanelBase {
     return this.page.getByTestId("properties-panel-container");
   }
 
-  public async selectNodeToLoadPropertiesPanel(args: { nodeName: string; position?: NodePosition }) {
+  public async selectNodeByClickToAppropriatePosition(args: { nodeName: string; position?: NodePosition }) {
     await this.nodes.select({ name: args.nodeName, position: args.position ?? NodePosition.CENTER });
   }
 

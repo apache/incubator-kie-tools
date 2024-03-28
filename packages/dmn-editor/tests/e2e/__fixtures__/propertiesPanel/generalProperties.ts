@@ -18,24 +18,23 @@
  */
 
 import { DataType } from "../jsonModel";
-import { NodePosition } from "../nodes";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
 export class GeneralProperties extends PropertiesPanelBase {
   public async changeNodeName(args: { from: string; to: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.from });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.from });
     await this.panel().getByPlaceholder("Enter a name...").fill(args.to);
     await this.page.keyboard.press("Enter");
   }
 
   public async changeNodeDataType(args: { nodeName: string; newDataType: DataType }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByPlaceholder("Select a data type...").click();
     await this.page.getByRole("option").getByText(args.newDataType, { exact: true }).click();
   }
 
   public async changeNodeDescription(args: { nodeName: string; newDescription: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByPlaceholder("Enter a description...").fill(args.newDescription);
 
     // commit changes by click to the diagram
@@ -43,12 +42,12 @@ export class GeneralProperties extends PropertiesPanelBase {
   }
 
   public async getNodeDescription(args: { nodeName: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter a description...").inputValue();
   }
 
   public async addDocumentationLink(args: { nodeName: string; linkText: string; linkHref: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByTitle("Add documentation link").click();
     await this.panel()
       .locator(".kie-dmn-editor--documentation-link--row")
@@ -62,12 +61,12 @@ export class GeneralProperties extends PropertiesPanelBase {
   }
 
   public async getDocumentationLinks(args: { nodeName: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().locator(".kie-dmn-editor--documentation-link--row-title").locator("a").all();
   }
 
   public async changeNodeFont(args: { nodeName: string; newFont: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByTitle("Expand / collapse Font").click();
 
     await this.panel().locator("[data-ouia-component-id='node-font-style-selector']").click();
@@ -77,17 +76,14 @@ export class GeneralProperties extends PropertiesPanelBase {
   }
 
   public async getNodeFont(args: { nodeName: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByTitle("Expand / collapse Font").click();
 
     return await this.panel().locator("[data-ouia-component-id='node-font-style-selector']").textContent();
   }
 
-  public async getNodeShape(args: { nodeName: string; position?: NodePosition }) {
-    await this.selectNodeToLoadPropertiesPanel({
-      nodeName: args.nodeName,
-      position: args.position ?? NodePosition.CENTER,
-    });
+  public async getNodeShape(args: { nodeName: string }) {
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByTitle("Expand / collapse Shape").click();
 
     const width = await this.panel().getByTestId("node-shape-width-input-box").inputValue();

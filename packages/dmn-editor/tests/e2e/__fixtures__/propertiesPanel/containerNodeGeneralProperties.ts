@@ -20,8 +20,11 @@
 import { NodePosition } from "../nodes";
 import { GeneralProperties } from "./generalProperties";
 
-export class GeneralDecisionServiceProperties extends GeneralProperties {
-  public async selectNodeToLoadPropertiesPanel(args: { nodeName: string }) {
+/**
+ * Please use this fixture for manipulation with 'Decision Service' and 'Group' nodes
+ */
+export class ContainerNodeGeneralProperties extends GeneralProperties {
+  public async selectNodeByClickToAppropriatePosition(args: { nodeName: string }) {
     await this.nodes.select({ name: args.nodeName, position: NodePosition.TOP });
   }
 }

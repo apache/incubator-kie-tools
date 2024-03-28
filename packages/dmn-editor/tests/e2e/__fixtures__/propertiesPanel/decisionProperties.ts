@@ -21,26 +21,26 @@ import { PropertiesPanelBase } from "./propertiesPanelBase";
 
 export class DecisionProperties extends PropertiesPanelBase {
   public async changeNodeQuestion(args: { nodeName: string; newQuestion: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByPlaceholder("Enter a question...").fill(args.newQuestion);
     // commit changes by click to the diagram
     await this.diagram.resetFocus();
   }
 
   public async getNodeQuestion(args: { nodeName: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter a question...").inputValue();
   }
 
   public async changeNodeAllowedAnswers(args: { nodeName: string; newAllowedAnswers: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByPlaceholder("Enter allowed answers...").fill(args.newAllowedAnswers);
     // commit changes by click to the diagram
     await this.diagram.resetFocus();
   }
 
   public async getNodeAllowedAnswers(args: { nodeName: string }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter allowed answers...").inputValue();
   }
 }
