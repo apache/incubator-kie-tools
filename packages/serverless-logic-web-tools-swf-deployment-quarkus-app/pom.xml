@@ -96,7 +96,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <dependency>
         <groupId>${kogito.bom.group-id}</groupId>
         <artifactId>${kogito.bom.artifact-id}</artifactId>
@@ -129,35 +128,35 @@
       <artifactId>quarkus-kubernetes</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-serverless-workflow</artifactId>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-serverless-workflow-builder</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-messaging</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-messaging</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-knative-eventing</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-knative-eventing</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-serverless-workflow-devui</artifactId>
+      <groupId>org.apache.kie.sonataflow</groupId>
+      <artifactId>sonataflow-quarkus-devui</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-index-inmemory</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-source-files</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-source-files</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
+      <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-jobs-service-embedded</artifactId>
     </dependency>
     <dependency>

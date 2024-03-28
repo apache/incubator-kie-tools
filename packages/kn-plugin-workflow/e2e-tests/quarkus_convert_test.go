@@ -56,7 +56,7 @@ var cfgTestInputQuarkusConvert_Success = []CfgTestInputQuarkusConvert{
 		Extensions: "quarkus-jsonp,quarkus-smallrye-openapi",
 		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: "io.quarkus.platform",
-			QuarkusVersion:         "3.2.9.Final",
+			QuarkusVersion:         "3.2.10.Final",
 		},
 	}},
 }
