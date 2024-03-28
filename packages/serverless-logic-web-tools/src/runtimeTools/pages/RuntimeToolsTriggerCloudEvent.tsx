@@ -20,7 +20,7 @@
 import React, { useCallback } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { CloudEventFormContainer } from "@kie-tools/runtime-tools-webapp-components/dist/CloudEventFormContainer";
+import { CloudEventFormContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventFormContainer";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 

@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { Dashboard, MonitoringView } from "@kie-tools/runtime-tools-enveloped-components/dist/monitoring";
+import { Dashboard, MonitoringView } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/monitoring";
 
 interface Props {
   dataIndexUrl?: string;

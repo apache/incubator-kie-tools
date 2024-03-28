@@ -35,12 +35,13 @@ import {
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import "../../styles.css";
-import { WorkflowInstance, WorkflowInstanceState, OrderBy } from "@kie-tools/runtime-tools-gateway-api/dist/types";
-import { Dashboard } from "@kie-tools/runtime-tools-enveloped-components/dist/monitoring";
+import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
+import { Dashboard } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/monitoring";
 import {
   WorkflowListGatewayApi,
   useWorkflowListGatewayApi,
-} from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowList";
+} from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
+import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 interface Props {
   dataIndexUrl?: string;

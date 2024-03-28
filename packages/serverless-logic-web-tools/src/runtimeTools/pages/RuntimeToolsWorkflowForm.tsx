@@ -20,12 +20,12 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { InlineEdit, InlineEditApi } from "@kie-tools/runtime-tools-components/dist/components/InlineEdit";
 import { ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import {
   WorkflowFormGatewayApi,
   useWorkflowFormGatewayApi,
-} from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowForm";
-import { WorkflowFormContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowFormContainer";
+} from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
+import { WorkflowFormContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowFormContainer";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
