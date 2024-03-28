@@ -3744,6 +3744,9 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools/dmn-testing-models":
+        specifier: workspace:*
+        version: link:../dmn-testing-models
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
@@ -3756,6 +3759,9 @@ importers:
       "@kie-tools/xml-parser-ts-codegen":
         specifier: workspace:*
         version: link:../xml-parser-ts-codegen
+      "@prettier/plugin-xml":
+        specifier: ^2
+        version: 2.2.0
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
@@ -3783,6 +3789,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      xsd-schema-validator:
+        specifier: ^0.9.0
+        version: 0.9.0
 
   packages/dmn-runner:
     dependencies:
@@ -3868,6 +3877,30 @@ importers:
       ts-jest:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
+  packages/dmn-testing-models:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
@@ -37325,6 +37358,12 @@ packages:
       { integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw== }
     dev: true
 
+  /isexe@3.1.1:
+    resolution:
+      { integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ== }
+    engines: { node: ">=16" }
+    dev: true
+
   /isobject@2.1.0:
     resolution:
       { integrity: sha512-+OUdGJlgjOBZDfxnDjYYG6zp487z0JGNQq3cYQYg5f5hKR+syHMsaztzGeml/4kGG55CSpKSpWTY+jYGgsHLgA== }
@@ -48794,6 +48833,15 @@ packages:
       isexe: 2.0.0
     dev: true
 
+  /which@4.0.0:
+    resolution:
+      { integrity: sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg== }
+    engines: { node: ^16.13.0 || >=18.0.0 }
+    hasBin: true
+    dependencies:
+      isexe: 3.1.1
+    dev: true
+
   /wide-align@1.1.5:
     resolution:
       { integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg== }
@@ -49024,6 +49072,15 @@ packages:
   /xmlchars@2.2.0:
     resolution:
       { integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw== }
+    dev: true
+
+  /xsd-schema-validator@0.9.0:
+    resolution:
+      { integrity: sha512-Hmz9i6C+RRVStQsQueKWsTC7yRNbNJ8qQ7mbghbkOrNkmrxcJJFqbOAofAznCA5x5vjJJUdCP/CI1G+RYRFePA== }
+    engines: { node: ">= 16" }
+    requiresBuild: true
+    dependencies:
+      which: 4.0.0
     dev: true
 
   /xss@1.0.14:

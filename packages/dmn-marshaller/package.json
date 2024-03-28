@@ -39,10 +39,12 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
+    "@kie-tools/dmn-testing-models": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@kie-tools/xml-parser-ts-codegen": "workspace:*",
+    "@prettier/plugin-xml": "^2",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
     "@types/react": "^17.0.6",
@@ -51,6 +53,7 @@
     "jest-when": "^3.5.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.6",
-    "typescript": "^4.6.2"
+    "typescript": "^4.6.2",
+    "xsd-schema-validator": "^0.9.0"
   }
 }

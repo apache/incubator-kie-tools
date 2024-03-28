@@ -20,6 +20,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import * as validator from "xsd-schema-validator";
 
 /* Local Directories */
 const LOCAL_MODELS_DIRECTORY = "tests-data--manual";
@@ -32,32 +33,15 @@ const DMN_1_5_DIRECTORY = "DMNv1_5";
 const DMN_1_x_DIRECTORY = "DMNv1_X";
 const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
 
-const files = [
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "attachment.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "empty13.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "sample12.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "list.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "list2.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "external.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "weird.dmn",
-  ".." +
-    path.sep +
-    LOCAL_MODELS_DIRECTORY +
-    path.sep +
-    LOCAL_MODELS_1_4_DIRECTORY +
-    path.sep +
-    "Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
-];
+/* XSD DMN Schema */
+const DMN_1_5_XSD = "../src/schemas/dmn-1_5/DMN15.xsd";
 
 const testing_models_paths = [
   ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY,
   ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY,
 ];
 
-describe("idempotency", () => {
-  for (const file of files) {
-    testFile(path.join(__dirname, file));
-  }
+describe("validation", () => {
   for (const models_paths of testing_models_paths) {
     const parent_path = path.join(dmnTestingModels, models_paths);
     testDirectory(parent_path);
@@ -77,15 +61,16 @@ function testDirectory(normalizedFsPathRelativeToTheDirectory: string) {
 }
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
-  test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf("/") + 1), () => {
-    const xml_original = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
+  test(
+    normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf("/") + 1),
+    async () => {
+      const xml_original = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
+      const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
+      const xml_marshalled = builder.build(parser.parse());
 
-    const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
-    const json = parser.parse();
+      //expect(xml_marshalled).toStrictEqual(xml_original);
 
-    const xml_firstPass = builder.build(json);
-    const xml_secondPass = builder.build(getMarshaller(xml_firstPass, { upgradeTo: "latest" }).parser.parse());
-
-    expect(xml_firstPass).toStrictEqual(xml_secondPass);
-  });
+      await expect((await validator.validateXML(xml_marshalled, path.join(__dirname, DMN_1_5_XSD))).valid).toBe(true);
+    }
+  );
 }
