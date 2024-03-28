@@ -17,13 +17,10 @@
  * under the License.
  */
 
-.section-body {
-  --pf-c-page__main-section--PaddingTop: 0px;
-  --pf-c-page__main-section--PaddingRight: 0px;
-  --pf-c-page__main-section--PaddingBottom: 0px;
-  --pf-c-page__main-section--PaddingLeft: 0px;
-}
+import { config as baseConfig } from "@kie-tools/storybook-base/main";
 
-.dev-webapp--example-dropdown {
-  z-index: 99999;
-}
+const config = {
+  ...baseConfig,
+};
+
+export default config;

@@ -17,11 +17,13 @@
  * under the License.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { Page, Locator } from "@playwright/test";
 
-import { DevWebApp } from "./DevWebApp";
+export class Resizing {
+  constructor(public page: Page) {}
 
-import "./index.css";
-
-ReactDOM.render(<DevWebApp />, document.getElementById("dev-webapp"));
+  public async reset(target: Locator) {
+    await target.hover();
+    await target.getByTestId("resizer-handle").dblclick();
+  }
+}

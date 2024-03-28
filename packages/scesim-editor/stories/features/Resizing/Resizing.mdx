@@ -1,0 +1,37 @@
+{/* Licensed to the Apache Software Foundation (ASF) under one */}
+{/* or more contributor license agreements. See the NOTICE file */}
+{/* distributed with this work for additional information */}
+{/* regarding copyright ownership. The ASF licenses this file */}
+{/* to you under the Apache License, Version 2.0 (the */}
+{/* "License"); you may not use this file except in compliance */}
+{/* with the License. You may obtain a copy of the License at */}
+{/*  */}
+{/* http://www.apache.org/licenses/LICENSE-2.0 */}
+{/*  */}
+{/* Unless required by applicable law or agreed to in writing, */}
+{/* software distributed under the License is distributed on an */}
+{/* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY */}
+{/* KIND, either express or implied. See the License for the */}
+{/* specific language governing permissions and limitations */}
+{/* under the License. */}
+
+import { Meta } from "@storybook/blocks";
+
+<Meta title="Features/Resizing/Overview" />
+
+# Resizing
+
+The SceSim Editor gives the possibility to resize every cell in a column.
+The resize operation recursively affects all sub columns that are part of the same column
+keeping the resize operation consistent.
+
+To perform the resize operation hover the mouse on a cell of the desired column.
+A resize handle on the right side of the cell will appear. Left-clicking on it and dragging
+will resize the cell. The minimum depends on the expression or column. It does not have a maximum width.
+
+# Reset
+
+To reset the size of a column hover the mouse on a cell of the column.
+The resize handle on the right side of the cell will appear. Double left-clicking on it will
+reset the column size to the default value. It's important to notice that the default size
+can vary depending on sub columns.
