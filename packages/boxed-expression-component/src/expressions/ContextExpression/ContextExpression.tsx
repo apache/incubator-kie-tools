@@ -285,8 +285,8 @@ export function ContextExpression(
     return row.id;
   }, []);
 
-  const resultIndex =
-    contextExpression.contextEntry?.findIndex((e) => !e.variable) ?? contextExpression.contextEntry?.length ?? 1;
+  // -1 means the context expression doens't have a result
+  const resultIndex = contextExpression.contextEntry?.findIndex((e) => !e.variable) ?? -1;
 
   const beeTableAdditionalRow = useMemo(() => {
     return [
@@ -294,7 +294,7 @@ export function ContextExpression(
       <ContextResultExpressionCell
         key={"context-result-expression"}
         contextExpression={contextExpression}
-        rowIndex={resultIndex}
+        resultIndex={resultIndex}
         columnIndex={2}
       />,
     ];

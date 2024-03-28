@@ -28,7 +28,7 @@ import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionConta
 
 export function ContextResultExpressionCell(props: {
   contextExpression: BoxedContext;
-  rowIndex: number;
+  resultIndex: number;
   columnIndex: number;
 }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -38,12 +38,12 @@ export function ContextResultExpressionCell(props: {
       setExpression((prev: BoxedContext) => {
         const entries = [...(prev.contextEntry ?? [])];
 
-        const index = props.rowIndex < 0 ? entries.length : props.rowIndex;
+        const resultIndex = props.resultIndex < 0 ? entries.length : props.resultIndex;
 
-        if (index < entries.length) {
-          entries.splice(index, 1, {
-            ...entries[index],
-            expression: getNewExpression(entries[index]?.expression),
+        if (resultIndex < entries.length) {
+          entries.splice(resultIndex, 1, {
+            ...entries[resultIndex],
+            expression: getNewExpression(entries[resultIndex]?.expression),
           });
         } else {
           entries.push({ expression: getNewExpression() });
@@ -55,13 +55,10 @@ export function ContextResultExpressionCell(props: {
         };
       });
     },
-    [props.rowIndex, setExpression]
+    [props.resultIndex, setExpression]
   );
 
-  // It is not possible to have a ContextExpression without any entry (props.contextExpression.contextEntries.length === 0)
-  const lastEntry = props.contextExpression.contextEntry?.[props.contextExpression.contextEntry.length - 1];
-
-  const resultEntry = props.rowIndex < 0 ? undefined : props.contextExpression.contextEntry?.[props.rowIndex];
+  const resultEntry = props.resultIndex < 0 ? undefined : props.contextExpression.contextEntry?.[props.resultIndex];
 
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
@@ -69,9 +66,9 @@ export function ContextResultExpressionCell(props: {
         expression={resultEntry?.expression}
         isResetSupported={true}
         isNested={true}
-        rowIndex={props.rowIndex}
+        rowIndex={props.resultIndex}
         columnIndex={props.columnIndex}
-        parentElementId={lastEntry?.variable?.["@_id"]}
+        parentElementId={props.contextExpression["@_id"]}
         parentTypeRef={props.contextExpression["@_typeRef"]}
       />
     </NestedExpressionDispatchContextProvider>
