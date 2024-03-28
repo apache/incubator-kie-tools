@@ -173,6 +173,16 @@ func addSnapshotRepositoryDeclarationToPom(t *testing.T, projectDir string) {
 	const repository = `
     <repositories>
         <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>apache-kie</id>
             <url>https://repository.apache.org/content/repositories/snapshots</url>
             <releases>
