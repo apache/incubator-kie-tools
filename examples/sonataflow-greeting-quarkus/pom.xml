@@ -89,7 +89,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.kie.sonataflow</groupId>
-      <artifactId>sonataflow-quarkus-devui-extension</artifactId>
+      <artifactId>sonataflow-quarkus-devui</artifactId>
       <version>${revision}</version>
     </dependency>
     <dependency>
