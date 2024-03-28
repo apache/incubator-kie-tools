@@ -35,11 +35,11 @@ test.describe("Resize node - Group", () => {
       (
         await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
       ).width
-    ).toEqual("100");
+    ).toEqual("360");
     await expect(
       (
         await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
       ).height
-    ).toEqual("100");
+    ).toEqual("360");
   });
 });

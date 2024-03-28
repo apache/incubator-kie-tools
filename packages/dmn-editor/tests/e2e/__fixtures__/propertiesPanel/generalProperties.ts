@@ -84,7 +84,10 @@ export class GeneralProperties extends PropertiesPanelBase {
   }
 
   public async getNodeShape(args: { nodeName: string; position?: NodePosition }) {
-    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.selectNodeToLoadPropertiesPanel({
+      nodeName: args.nodeName,
+      position: args.position ?? NodePosition.CENTER,
+    });
     await this.panel().getByTitle("Expand / collapse Shape").click();
 
     const width = await this.panel().getByTestId("node-shape-width-input-box").inputValue();
