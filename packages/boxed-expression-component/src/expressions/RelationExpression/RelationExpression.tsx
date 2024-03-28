@@ -125,10 +125,11 @@ export function RelationExpression(
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(prevColumnWidth) : newWidthAction;
 
         if (newWidth && prevColumnWidth) {
-          const minSize = columnIndex + 1;
-          const values = prev.length < minSize ? Array(minSize) : [...prev];
-          values.splice(columnIndex, 1, newWidth);
-          return values;
+          const minSize = columnIndex + 1 + 1; // + 1 to account for rowIndex column
+          const newValues = [...prev];
+          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.splice(columnIndex, 1, newWidth);
+          return newValues;
         }
 
         return prev;
@@ -276,7 +277,7 @@ export function RelationExpression(
   }, [relationExpression.parentElementId, variables?.repository]);
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
+    (args: { beforeIndex: number; rowsCount: number }) => {
       setExpression((prev: BoxedRelation) => {
         const newRows = [...(prev.row ?? [])];
         const newItems = [];
@@ -291,11 +292,7 @@ export function RelationExpression(
         }
 
         for (const newEntry of newItems) {
-          let index = args.beforeIndex;
-          newRows.splice(index, 0, newEntry);
-          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
-            index++;
-          }
+          newRows.splice(args.beforeIndex, 0, newEntry);
         }
 
         return {
@@ -308,7 +305,7 @@ export function RelationExpression(
   );
 
   const onColumnAdded = useCallback(
-    (args: { beforeIndex: number; columnsCount: number; insertDirection: InsertRowColumnsDirection }) => {
+    (args: { beforeIndex: number; columnsCount: number }) => {
       setExpression((prev: BoxedRelation) => {
         const newColumns = [...(prev.column ?? [])];
 
@@ -327,12 +324,7 @@ export function RelationExpression(
         }
 
         for (const newEntry of newItems) {
-          let index = args.beforeIndex;
-          newColumns.splice(index, 0, newEntry);
-
-          if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
-            index++;
-          }
+          newColumns.splice(args.beforeIndex, 0, newEntry);
         }
 
         const newRows = [...(prev.row ?? [])].map((row) => {

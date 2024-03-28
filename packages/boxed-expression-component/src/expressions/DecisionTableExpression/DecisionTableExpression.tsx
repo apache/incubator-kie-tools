@@ -208,9 +208,10 @@ export function DecisionTableExpression(
 
         if (newWidth && inputWidth) {
           const minSize = inputWidth.index + 1;
-          const values = prev.length < minSize ? Array(minSize) : [...prev];
-          values.splice(inputWidth.index, 1, newWidth);
-          return values;
+          const newValues = [...prev];
+          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.splice(inputWidth.index, 1, newWidth);
+          return newValues;
         }
         return prev;
       });
@@ -226,9 +227,10 @@ export function DecisionTableExpression(
 
         if (newWidth && outputWidth) {
           const minSize = outputWidth.index + 1;
-          const values = prev.length < minSize ? Array(minSize) : [...prev];
-          values.splice(outputWidth.index, 1, newWidth);
-          return values;
+          const newValues = [...prev];
+          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.splice(outputWidth.index, 1, newWidth);
+          return newValues;
         }
 
         return prev;
@@ -245,9 +247,10 @@ export function DecisionTableExpression(
 
         if (newWidth && annotationWidth) {
           const minSize = annotationWidth.index + 1;
-          const values = prev.length < minSize ? Array(minSize) : [...prev];
-          values.splice(annotationWidth.index, 1, newWidth);
-          return values;
+          const newValues = [...prev];
+          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.splice(annotationWidth.index, 1, newWidth);
+          return newValues;
         }
 
         return prev;
@@ -651,7 +654,7 @@ export function DecisionTableExpression(
   );
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
+    (args: { beforeIndex: number; rowsCount: number }) => {
       setExpression((prev: BoxedDecisionTable) => {
         const newRules = [...(prev.rule ?? [])];
         const newItems = [];
@@ -672,11 +675,7 @@ export function DecisionTableExpression(
         }
 
         for (const newEntry of newItems) {
-          let index = args.beforeIndex;
-          newRules.splice(index, 0, newEntry);
-          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
-            index++;
-          }
+          newRules.splice(args.beforeIndex, 0, newEntry);
         }
 
         addVariables(newRules);
@@ -709,13 +708,8 @@ export function DecisionTableExpression(
   );
 
   const onColumnAdded = useCallback(
-    (args: {
-      beforeIndex: number;
-      groupType: DecisionTableColumnType | undefined;
-      columnsCount: number;
-      insertDirection: InsertRowColumnsDirection;
-    }) => {
-      const groupType = args.groupType;
+    (args: { beforeIndex: number; groupType: string | undefined; columnsCount: number }) => {
+      const groupType = args.groupType as DecisionTableColumnType;
       if (!groupType) {
         throw new Error("Column without groupType for Decision table.");
       }
@@ -750,12 +744,7 @@ export function DecisionTableExpression(
             const newInputs = [...(prev.input ?? [])];
 
             for (const newEntry of newInputClauses) {
-              let index = args.beforeIndex;
-              newInputs.splice(index, 0, newEntry);
-
-              if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
-                index++;
-              }
+              newInputs.splice(args.beforeIndex, 0, newEntry);
             }
 
             for (let i = 0; i < newRules.length; i++) {
@@ -802,12 +791,7 @@ export function DecisionTableExpression(
             const newOutputs = [...(prev.output ?? [])];
 
             for (const newEntry of newOutputClauses) {
-              let index = args.beforeIndex;
-              newOutputs.splice(index, 0, newEntry);
-
-              if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
-                index++;
-              }
+              newOutputs.splice(args.beforeIndex, 0, newEntry);
             }
 
             for (let i = 0; i < newRules.length; i++) {
@@ -851,12 +835,7 @@ export function DecisionTableExpression(
             }
 
             for (const newEntry of newAnnotationsItems) {
-              let index = args.beforeIndex;
-              newAnnotations.splice(index, 0, newEntry);
-
-              if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
-                index++;
-              }
+              newAnnotations.splice(args.beforeIndex, 0, newEntry);
             }
 
             for (let i = 0; i < newRules.length; i++) {
@@ -887,9 +866,18 @@ export function DecisionTableExpression(
       });
 
       setWidthById(id, (prev) => {
-        const n = [...prev];
-        // FIXME: Tiago
-        return n;
+        const defaultWidth =
+          args.groupType === DecisionTableColumnType.InputClause
+            ? DECISION_TABLE_INPUT_DEFAULT_WIDTH
+            : args.groupType === DecisionTableColumnType.OutputClause
+            ? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH
+            : DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH;
+
+        const newWidthsById = [...prev];
+        for (let i = 0; i < args.columnsCount; i++) {
+          newWidthsById.splice(args.beforeIndex + 1, 0, defaultWidth); // + 1 to account for rowIndex column
+        }
+        return newWidthsById;
       });
     },
     [

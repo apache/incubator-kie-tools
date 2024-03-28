@@ -90,9 +90,10 @@ export function InvocationExpression(
 
         if (newWidth) {
           const minSize = INVOCATION_PARAMETER_INFO_WIDTH_INDEX + 1;
-          const values = prev.length < minSize ? Array(minSize) : [...prev];
-          values.splice(INVOCATION_PARAMETER_INFO_WIDTH_INDEX, 1, newWidth);
-          return values;
+          const newValues = [...prev];
+          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.splice(INVOCATION_PARAMETER_INFO_WIDTH_INDEX, 1, newWidth);
+          return newValues;
         }
 
         return prev;
@@ -327,7 +328,7 @@ export function InvocationExpression(
   );
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
+    (args: { beforeIndex: number; rowsCount: number }) => {
       const newEntries: DMN15__tBinding[] = [];
       const names = (invocationExpression.binding ?? []).map((e) => e.parameter["@_name"]);
       for (let i = 0; i < args.rowsCount; i++) {
@@ -339,11 +340,7 @@ export function InvocationExpression(
         const newArgumentEntries = [...(prev.binding ?? [])];
 
         for (const newEntry of newEntries) {
-          let index = args.beforeIndex;
-          newArgumentEntries.splice(index, 0, newEntry);
-          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
-            index++;
-          }
+          newArgumentEntries.splice(args.beforeIndex, 0, newEntry);
         }
 
         return {

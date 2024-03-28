@@ -105,9 +105,10 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
 
         if (newWidth) {
           const minSize = JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX + 1;
-          const values = prev.length < minSize ? Array(minSize) : [...prev];
-          values.splice(JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX, 1, newWidth);
-          return values;
+          const newValues = [...prev];
+          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.splice(JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX, 1, newWidth);
+          return newValues;
         }
 
         return prev;

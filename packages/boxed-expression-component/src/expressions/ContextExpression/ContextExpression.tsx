@@ -90,9 +90,10 @@ export function ContextExpression(
 
         if (newWidth) {
           const minSize = CONTEXT_ENTRY_INFO_WIDTH_INDEX + 1;
-          const values = prev.length < minSize ? Array(minSize) : [...prev];
-          values.splice(CONTEXT_ENTRY_INFO_WIDTH_INDEX, 1, newWidth);
-          return values;
+          const newValues = [...prev];
+          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.splice(CONTEXT_ENTRY_INFO_WIDTH_INDEX, 1, newWidth);
+          return newValues;
         }
 
         return prev;
@@ -355,7 +356,7 @@ export function ContextExpression(
   );
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
+    (args: { beforeIndex: number; rowsCount: number }) => {
       setExpression((prev: BoxedContext) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
@@ -371,11 +372,7 @@ export function ContextExpression(
         }
 
         for (const newEntry of newEntries) {
-          let index = args.beforeIndex;
-          newContextEntries.splice(index, 0, newEntry);
-          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
-            index++;
-          }
+          newContextEntries.splice(args.beforeIndex, 0, newEntry);
         }
 
         return {
@@ -423,7 +420,7 @@ export function ContextExpression(
         else {
           const newContextEntries = [...(prev.contextEntry ?? [])];
           newContextEntries.splice(args.rowIndex, 1, {
-            ...getDefaultContextEntry(newContextEntries[args.rowIndex]["@_label"] ?? ""),
+            ...getDefaultContextEntry(newContextEntries[args.rowIndex].variable?.["@_name"]),
           });
           return {
             ...prev,

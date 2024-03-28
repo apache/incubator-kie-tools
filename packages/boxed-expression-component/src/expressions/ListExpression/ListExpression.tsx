@@ -150,7 +150,7 @@ export function ListExpression(
   );
 
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
+    (args: { beforeIndex: number; rowsCount: number }) => {
       setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
         const newListItems = [];
@@ -161,11 +161,7 @@ export function ListExpression(
         }
 
         for (const newEntry of newListItems) {
-          let index = args.beforeIndex;
-          newItems.splice(index, 0, newEntry);
-          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
-            index++;
-          }
+          newItems.splice(args.beforeIndex, 0, newEntry);
         }
 
         return { ...prev, expression: newItems };
