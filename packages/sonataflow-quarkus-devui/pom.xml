@@ -29,7 +29,7 @@
   <name>KIE Tools :: SonataFlow Quarkus Dev UI Extension</name>
   <groupId>org.apache.kie.sonataflow</groupId>
   <version>${revision}</version>
-  <artifactId>sonataflow-quarkus-devui-extension-parent</artifactId>
+  <artifactId>sonataflow-quarkus-devui-parent</artifactId>
   <packaging>pom</packaging>
 
   <repositories>
@@ -75,8 +75,8 @@
   </properties>
 
   <modules>
-    <module>sonataflow-quarkus-devui-extension-deployment</module>
-    <module>sonataflow-quarkus-devui-extension</module>
+    <module>sonataflow-quarkus-devui-deployment</module>
+    <module>sonataflow-quarkus-devui</module>
   </modules>
 
   <dependencyManagement>
