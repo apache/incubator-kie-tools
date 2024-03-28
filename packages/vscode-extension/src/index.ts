@@ -33,6 +33,7 @@ import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
 import { VsCodeNotificationsChannelApiImpl } from "./notifications/VsCodeNotificationsChannelApiImpl";
 import { executeOnSaveHook } from "./onSaveHook";
 import { VsCodeWorkspaceChannelApiImpl } from "./workspace/VsCodeWorkspaceChannelApiImpl";
+import { VsCodeRecommendation } from "./VsCodeRecommendation";
 
 /**
  * Starts a Kogito extension.
@@ -151,3 +152,4 @@ export async function startExtension(args: {
 }
 
 export * from "./VsCodeKieEditorStore";
+export * from "./VsCodeRecommendation";
