@@ -79,101 +79,8 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       for (const contextEntry of contextEntries) {
         variables?.repository.addVariableToContext(
           contextEntry["@_id"]!,
-          contextEntry["@_label"] ?? "",
+          contextEntry.variable?.["@_name"] ?? "",
           contextExpressionDefinition["@_id"]!
-        );
-      }
-    },
-    [variables?.repository]
-  );
-
-  const addRelationExpressionToVariables = useCallback(
-    (relationExpressionDefinition: BoxedRelation) => {
-      const rowEntries = relationExpressionDefinition.row ?? [];
-      if (rowEntries) {
-        for (const rowEntry of rowEntries) {
-          for (const cell of rowEntry.expression ?? []) {
-            // The name is not relevant here because Relation does not declare variables, so we're reusing ID.
-            variables?.repository.addVariableToContext(
-              cell["@_id"]!,
-              cell["@_id"]!,
-              relationExpressionDefinition["@_id"]!
-            );
-          }
-        }
-      }
-    },
-    [variables?.repository]
-  );
-
-  const addInvocationExpressionToVariables = useCallback(
-    (newExpression: BoxedInvocation) => {
-      const bindingEntries = newExpression.binding ?? [];
-      for (const bindingEntry of bindingEntries) {
-        variables?.repository.addVariableToContext(
-          bindingEntry.expression?.["@_id"] ?? "",
-          bindingEntry.expression?.["@_label"] ?? "",
-          newExpression["@_id"]!
-        );
-      }
-    },
-    [variables?.repository]
-  );
-
-  const addListExpressionToVariables = useCallback(
-    (newExpression: BoxedList) => {
-      const items = newExpression.expression ?? [];
-      for (const item of items) {
-        if (item) {
-          // The name is not relevant here because ListExpression does not declare variables, so we're reusing ID.
-          variables?.repository.addVariableToContext(
-            item["@_id"] ?? "",
-            item["@_id"] ?? "",
-            newExpression["@_id"] ?? ""
-          );
-        }
-      }
-    },
-    [variables?.repository]
-  );
-
-  const addDecisionTableExpressionToVariables = useCallback(
-    (decisionTable: BoxedDecisionTable) => {
-      if (decisionTable.rule) {
-        for (const rule of decisionTable.rule) {
-          if (rule.inputEntry) {
-            for (const inputEntry of rule.inputEntry) {
-              variables?.repository.addVariableToContext(
-                inputEntry["@_id"]!,
-                inputEntry["@_id"]!,
-                decisionTable["@_id"]!
-              );
-            }
-          }
-
-          if (rule.outputEntry) {
-            for (const outputEntry of rule.outputEntry) {
-              variables?.repository.addVariableToContext(
-                outputEntry["@_id"]!,
-                outputEntry["@_id"]!,
-                decisionTable["@_id"]!
-              );
-            }
-          }
-        }
-      }
-    },
-    [variables?.repository]
-  );
-
-  const addFunctionExpressionToVariables = useCallback(
-    (functionExpression: BoxedFunction) => {
-      if (functionExpression["@_kind"] === BoxedFunctionKind.Feel && functionExpression.expression) {
-        const expression = functionExpression.expression;
-        variables?.repository.addVariableToContext(
-          expression["@_id"]!,
-          expression["@_label"] ?? expression["@_id"]!,
-          functionExpression["@_id"]!
         );
       }
     },
@@ -207,21 +114,6 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
             case "context":
               addContextExpressionToVariables(newExpression);
               break;
-            case "relation":
-              addRelationExpressionToVariables(newExpression);
-              break;
-            case "invocation":
-              addInvocationExpressionToVariables(newExpression);
-              break;
-            case "list":
-              addListExpressionToVariables(newExpression);
-              break;
-            case "decisionTable":
-              addDecisionTableExpressionToVariables(newExpression);
-              break;
-            case "functionDefinition":
-              addFunctionExpressionToVariables(newExpression);
-              break;
             default:
               // Expression without variables
               break;
@@ -237,11 +129,6 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
     },
     [
       addContextExpressionToVariables,
-      addDecisionTableExpressionToVariables,
-      addFunctionExpressionToVariables,
-      addInvocationExpressionToVariables,
-      addListExpressionToVariables,
-      addRelationExpressionToVariables,
       beeGwtService,
       expressionTypeRef,
       expressionName,

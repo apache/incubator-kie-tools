@@ -189,10 +189,9 @@ export function ContextExpression(
   }, [contextExpression, entryInfoWidth, id, setEntryInfoWidth]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
+    ([{ typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
-        "@_label": name,
         "@_typeRef": typeRef,
       }));
     },
@@ -302,22 +301,25 @@ export function ContextExpression(
   }, [contextExpression, resultIndex]);
 
   const getDefaultContextEntry = useCallback(
-    (name?: string): DMN15__tContextEntry => {
+    ({ name, isResult }: { name?: string; isResult: boolean }): DMN15__tContextEntry => {
       const variableName =
         name ||
         getNextAvailablePrefixedName(
-          (contextExpression.contextEntry ?? []).map((e) => e["@_label"] ?? ""),
+          (contextExpression.contextEntry ?? []).map((e) => e.variable?.["@_name"] ?? ""),
           "ContextEntry"
         );
       return {
         expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         "@_id": generateUuid(),
-        variable: {
-          "@_name": variableName,
-          "@_typeRef": DmnBuiltInDataType.Undefined,
-          description: { __$$text: "" },
-        },
-        "@_label": variableName,
+        ...(isResult
+          ? {}
+          : {
+              variable: {
+                "@_name": variableName,
+                "@_typeRef": DmnBuiltInDataType.Undefined,
+                description: { __$$text: "" },
+              },
+            }),
       };
     },
     [contextExpression]
@@ -366,7 +368,7 @@ export function ContextExpression(
           const name = getNextAvailablePrefixedName(names, "ContextEntry");
           names.push(name);
 
-          const defaultContextEntry = getDefaultContextEntry(name);
+          const defaultContextEntry = getDefaultContextEntry({ name, isResult: false });
           addVariable(args, newContextEntries, prev, defaultContextEntry);
           newEntries.push(defaultContextEntry);
         }
@@ -406,27 +408,25 @@ export function ContextExpression(
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
       setExpression((prev: BoxedContext) => {
-        // That's the additionalRow, meaning the contextExpression result.
-        if (args.rowIndex === prev.contextEntry?.length) {
-          return {
-            ...prev,
-            result: {
-              ...getDefaultContextEntry().expression,
-            },
-          };
-        }
+        const resultIndex = prev.contextEntry?.findIndex((e) => !e.variable) ?? -1;
+        const entryIndex =
+          resultIndex === -1
+            ? args.rowIndex //
+            : resultIndex < args.rowIndex
+            ? args.rowIndex + 1
+            : args.rowIndex;
 
-        // That's a normal context entry
-        else {
-          const newContextEntries = [...(prev.contextEntry ?? [])];
-          newContextEntries.splice(args.rowIndex, 1, {
-            ...getDefaultContextEntry(newContextEntries[args.rowIndex].variable?.["@_name"]),
-          });
-          return {
-            ...prev,
-            contextEntry: newContextEntries,
-          };
-        }
+        const newContextEntries = [...(prev.contextEntry ?? [])];
+        newContextEntries.splice(entryIndex, 1, {
+          ...getDefaultContextEntry({
+            name: newContextEntries[entryIndex].variable?.["@_name"],
+            isResult: args.rowIndex === newContextEntries.length - 1,
+          }),
+        });
+        return {
+          ...prev,
+          contextEntry: newContextEntries,
+        };
       });
     },
     [getDefaultContextEntry, setExpression]

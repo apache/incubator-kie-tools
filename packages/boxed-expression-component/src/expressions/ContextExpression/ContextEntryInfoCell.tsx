@@ -49,7 +49,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   onEntryUpdate,
 }) => {
   const entry = useMemo(() => contextEntries[rowIndex], [contextEntries, rowIndex]);
-  const entryInfo = useMemo(() => entry.variable, [entry.variable]);
+  const entryVariable = useMemo(() => entry.variable, [entry.variable]);
   const entryExpression = useMemo(() => entry.expression, [entry.expression]);
 
   const ref = React.useRef<HTMLDivElement>(null);
@@ -61,18 +61,22 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     }: Pick<BoxedExpression, "@_label" | "@_typeRef">) => {
       onEntryUpdate(rowIndex, {
         ...entry,
-        // entryExpression and entryInfo must always have the same `typeRef` and `name`, as those are dictated by the entryInfo.
+        // entryExpression and entryVariable must always have the same `typeRef` and `name`, as those are dictated by the entryVariable.
         expression: entryExpression
-          ? ({
+          ? {
               ...entryExpression,
               "@_label": name,
               "@_typeRef": typeRef,
-            } as BoxedExpression)
-          : entryExpression,
-        variable: { ...entryInfo, "@_name": name, "@_typeRef": typeRef },
+            }
+          : undefined,
+        variable: {
+          ...entryVariable,
+          "@_name": name,
+          "@_typeRef": typeRef,
+        },
       });
     },
-    [onEntryUpdate, rowIndex, entry, entryExpression, entryInfo]
+    [onEntryUpdate, rowIndex, entry, entryExpression, entryVariable]
   );
 
   useCellWidthToFitDataRef(
@@ -106,8 +110,8 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     columnIndex,
     undefined,
     useCallback(
-      () => `${entryInfo?.["@_name"]} (${entryInfo?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}})`,
-      [entryInfo]
+      () => `${entryVariable?.["@_name"]} (${entryVariable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}})`,
+      [entryVariable]
     )
   );
 
@@ -115,38 +119,38 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
 
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject(entryInfo?.["@_id"]);
+      beeGwtService?.selectObject(entryVariable?.["@_id"]);
     }
-  }, [beeGwtService, entryInfo, isActive]);
+  }, [beeGwtService, entryVariable, isActive]);
 
   const renderEntryDefinition = useCallback(
     (args: { additionalCssClass?: string }) => (
       <div className={`expression-info ${args.additionalCssClass}`} ref={ref}>
         <p
           className="expression-info-name pf-u-text-truncate"
-          title={entryInfo?.["@_name"]}
+          title={entryVariable?.["@_name"]}
           data-ouia-component-id={"expression-info-name"}
         >
-          {entryInfo?.["@_name"]}
+          {entryVariable?.["@_name"]}
         </p>
         <p
           className="expression-info-data-type pf-u-text-truncate"
-          title={entryInfo?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+          title={entryVariable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
           data-ouia-component-id={"expression-info-data-type"}
         >
-          ({entryInfo?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
+          ({entryVariable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
         </p>
       </div>
     ),
-    [entryInfo]
+    [entryVariable]
   );
 
   return (
     <div className="context-entry-info-cell">
-      <div className={`${entryInfo?.["@_id"]} entry-info`}>
+      <div className={`${entryVariable?.["@_id"]} entry-info`}>
         <ExpressionDefinitionHeaderMenu
-          selectedExpressionName={entryInfo?.["@_name"] ?? ""}
-          selectedDataType={entryInfo?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+          selectedExpressionName={entryVariable?.["@_name"] ?? ""}
+          selectedDataType={entryVariable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
           onExpressionHeaderUpdated={onContextEntryInfoUpdated}
         >
           {renderEntryDefinition({ additionalCssClass: "with-popover-menu" })}

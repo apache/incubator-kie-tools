@@ -514,7 +514,6 @@ export function DecisionTableExpression(
               const newInputs = [...(n.input ?? [])];
               newInputs[columnUpdate.columnIndex] = {
                 ...newInputs[columnUpdate.columnIndex],
-                "@_label": columnUpdate.name,
                 inputExpression: {
                   ...newInputs[columnUpdate.columnIndex].inputExpression,
                   "@_typeRef": columnUpdate.typeRef,
@@ -723,7 +722,7 @@ export function DecisionTableExpression(
           case DecisionTableColumnType.InputClause:
             const newInputClauses = [];
 
-            const currentNames = prev.input?.map((c) => c["@_label"] ?? "") ?? [];
+            const currentNames = prev.input?.map((c) => c.inputExpression.text?.__$$text ?? "") ?? [];
 
             for (let i = 0; i < args.columnsCount; i++) {
               const name = getNextAvailablePrefixedName(currentNames, "Input");
@@ -731,11 +730,9 @@ export function DecisionTableExpression(
 
               newInputClauses.push({
                 "@_id": generateUuid(),
-                "@_label": name,
                 inputExpression: {
                   "@_id": generateUuid(),
                   "@_typeRef": DmnBuiltInDataType.Undefined,
-                  "@_label": name,
                   text: { __$$text: name },
                 },
               });
@@ -783,7 +780,6 @@ export function DecisionTableExpression(
               newOutputClauses.push({
                 "@_id": generateUuid(),
                 "@_name": name,
-                "@_label": name,
                 "@_typeRef": DmnBuiltInDataType.Undefined,
               });
             }
