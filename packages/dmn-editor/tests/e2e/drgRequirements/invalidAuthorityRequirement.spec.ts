@@ -35,7 +35,7 @@ test.describe("Invalid edge - Authority Requirement", () => {
       });
     });
 
-    test("shouldn't add an Authority Requirement edge from Input Data node to Input Data node", async ({
+    test("shouldn't add an Authority Requirement edge from Knowledge Source node to Input Data node", async ({
       palette,
       nodes,
       edges,
@@ -77,7 +77,7 @@ test.describe("Invalid edge - Authority Requirement", () => {
       await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toHaveClass(/.*dimmed/);
     });
 
-    test("shouldn't add an Authority Requirement edge from Input Data node to Decision Service node", async ({
+    test("shouldn't add an Authority Requirement edge from Knowledge Source node to Decision Service node", async ({
       palette,
       nodes,
       edges,
@@ -108,7 +108,7 @@ test.describe("Invalid edge - Authority Requirement", () => {
       await expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toHaveClass(/.*dimmed/);
     });
 
-    test("shouldn't add an Authority Requirement edge from Input Data node to Group node", async ({
+    test("shouldn't add an Authority Requirement edge from Knowledge Source node to Group node", async ({
       palette,
       nodes,
       edges,
@@ -139,7 +139,7 @@ test.describe("Invalid edge - Authority Requirement", () => {
       await expect(nodes.get({ name: DefaultNodeName.GROUP })).toHaveClass(/.*dimmed/);
     });
 
-    test("shouldn't add an Authority Requirement edge from Input Data node to Text Annotation node", async ({
+    test("shouldn't add an Authority Requirement edge from Knowledge Source node to Text Annotation node", async ({
       palette,
       nodes,
       edges,

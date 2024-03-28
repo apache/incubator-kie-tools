@@ -35,7 +35,7 @@ test.describe("Invalid edge - Knowledge Requirement", () => {
       });
     });
 
-    test("shouldn't add an Knowledge Requirement edge from Input Data node to Input Data node", async ({
+    test("shouldn't add an Knowledge Requirement edge from BKM node to Input Data node", async ({
       palette,
       nodes,
       edges,
@@ -77,7 +77,7 @@ test.describe("Invalid edge - Knowledge Requirement", () => {
       await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toHaveClass(/.*dimmed/);
     });
 
-    test("shouldn't add an Knowledge Requirement edge from Input Data node to Knowledge Source node", async ({
+    test("shouldn't add an Knowledge Requirement edge from BKM node to Knowledge Source node", async ({
       palette,
       nodes,
       edges,
@@ -107,7 +107,7 @@ test.describe("Invalid edge - Knowledge Requirement", () => {
       await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toHaveClass(/.*dimmed/);
     });
 
-    test("shouldn't add an Knowledge Requirement edge from Input Data node to Group node", async ({
+    test("shouldn't add an Knowledge Requirement edge from BKM node to Group node", async ({
       palette,
       nodes,
       edges,
@@ -138,7 +138,7 @@ test.describe("Invalid edge - Knowledge Requirement", () => {
       await expect(nodes.get({ name: DefaultNodeName.GROUP })).toHaveClass(/.*dimmed/);
     });
 
-    test("shouldn't add an Knowledge Requirement edge from Input Data node to Text Annotation node", async ({
+    test("shouldn't add an Knowledge Requirement edge from BKM node to Text Annotation node", async ({
       palette,
       nodes,
       edges,

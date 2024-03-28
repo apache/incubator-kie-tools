@@ -164,6 +164,7 @@ export class Nodes {
     return this.get({ name: args.name }).locator("span", { hasText: args.name }).dblclick();
   }
 
+  // Used for testing invalid edges. No edge is created using this method.
   public async startDraggingEdge(args: { from: string; edgeType: EdgeType }) {
     await this.select({ name: args.from, position: NodePosition.TOP });
     await this.get({ name: args.from }).getByTitle(this.getAddEdgeTitle(args.edgeType)).hover();

@@ -29,23 +29,8 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Page } from "@playwright/test";
-import { STORYBOOK__DMN_EDITOR_MODEL } from "../jsonModel";
 
 type AllDrgElements = NonNullable<DMN15__tDefinitions["drgElement"]>[0];
-
-export enum DataType {
-  Undefined = "<Undefined>",
-  Any = "Any",
-  Boolean = "boolean",
-  Context = "context",
-  Date = "date",
-  DateTime = "date and time",
-  DateTimeDuration = "days and time duration",
-  Number = "number",
-  String = "string",
-  Time = "time",
-  YearsMonthsDuration = "years and months duration",
-}
 
 export class DrgElements {
   constructor(public page: Page) {}
