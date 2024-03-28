@@ -9,7 +9,7 @@ replace github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0 =>
 require (
 	github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0-20240122.0.20240219180504-5ebaf85efc66
 	github.com/beevik/etree v1.2.0
-	github.com/docker/docker v24.0.7+incompatible
+	github.com/docker/docker v24.0.9+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/jstemmer/go-junit-report/v2 v2.0.0
 	github.com/ory/viper v1.7.5
