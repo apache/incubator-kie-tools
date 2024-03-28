@@ -39,7 +39,7 @@ import (
 
 // ExecuteCommand executes a command with the given arguments and returns an error if the command fails.
 func ExecuteCommand(command string, args ...string) error {
-	cmd := exec.Command(command, args...)
+	cmd := exec.Command("MAVEN_ARGS=\"-B\""+command, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
