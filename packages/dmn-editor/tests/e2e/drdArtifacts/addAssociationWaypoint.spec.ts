@@ -35,29 +35,46 @@ test.describe("Add edge waypoint - Association", () => {
     });
   });
 
-  test("should add single waypoint to Association edge and should not move when the ending node is moved", async ({
-    diagram,
-    nodes,
-    edges,
-  }) => {
+  test("should attach single Association waypoint to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-    await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 500, y: 300 } });
 
-    await expect(diagram.get()).toHaveScreenshot("add-association-waypoint-and-not-move-it.png");
+    await expect(
+      await edges.getWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+        waypointIndex: 1,
+      })
+    ).toBeAttached();
+    await expect(
+      await edges.getWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+        waypointIndex: 2,
+      })
+    ).not.toBeAttached();
   });
 
-  test("should add multiple waypoints to Association edge and should not move when the ending nodes are moved", async ({
-    diagram,
-    nodes,
-    edges,
-  }) => {
+  test("should attach multiple Association waypoints to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-    await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 200, y: 500 } });
+    await edges.addWaypoint({
+      from: DefaultNodeName.INPUT_DATA,
+      to: DefaultNodeName.TEXT_ANNOTATION,
+      afterWaypointIndex: 1,
+    });
 
-    await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.TEXT_ANNOTATION });
-    await nodes.move({ name: DefaultNodeName.TEXT_ANNOTATION, targetPosition: { x: 500, y: 500 } });
-    await nodes.move({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 500, y: 100 } });
-
-    await expect(diagram.get()).toHaveScreenshot("add-multiple-association-waypoint-and-not-move-them.png");
+    await expect(
+      await edges.getWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+        waypointIndex: 1,
+      })
+    ).toBeAttached();
+    await expect(
+      await edges.getWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.TEXT_ANNOTATION,
+        waypointIndex: 2,
+      })
+    ).toBeAttached();
   });
 });

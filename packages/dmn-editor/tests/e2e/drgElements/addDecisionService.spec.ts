@@ -18,6 +18,8 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { DEFAULT_DRD_NAME } from "../__fixtures__/diagram";
+import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
@@ -27,11 +29,28 @@ test.beforeEach(async ({ editor }) => {
 test.describe("Add node - Decision Service", () => {
   test.describe("Add to the DRG", () => {
     test.describe("add from the palette", () => {
-      test("should add Decision Service node from palette", async ({ palette, nodes, diagram }) => {
+      test("should add Decision Service node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-decision-service-node-from-palette.png");
+
+        // JSON model assertions
+        expect(
+          await jsonModel.drgElements.getDecisionService({
+            name: DefaultNodeName.DECISION_SERVICE,
+            drdName: DEFAULT_DRD_NAME,
+          })
+        ).toEqual({
+          inputData: [],
+          inputDecision: [],
+          name: DefaultNodeName.DECISION_SERVICE,
+          variable: {
+            name: DefaultNodeName.DECISION_SERVICE,
+            typeRef: DataType.Undefined,
+          },
+          bounds: { x: 0, y: 0, width: 320, height: 320 },
+        });
       });
     });
   });

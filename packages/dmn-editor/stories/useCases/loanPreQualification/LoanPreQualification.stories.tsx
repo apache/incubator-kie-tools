@@ -22,6 +22,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { Empty } from "../../misc/empty/Empty.stories";
 import { DmnEditor, DmnEditorProps } from "../../../src/DmnEditor";
+import { StorybookDmnEditorProps } from "../../dmnEditorStoriesWrapper";
 
 export const loanPreQualificationDmn = `<?xml version="1.0" encoding="UTF-8" ?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" 
@@ -783,12 +784,16 @@ const meta: Meta<DmnEditorProps> = {
 };
 
 export default meta;
-type Story = StoryObj<DmnEditorProps>;
+type Story = StoryObj<StorybookDmnEditorProps>;
+
+const marshaller = getMarshaller(loanPreQualificationDmn, { upgradeTo: "latest" });
+const model = marshaller.parser.parse();
 
 export const LoanPreQualification: Story = {
   ...Empty.render,
   args: {
     ...Empty.args,
-    model: getMarshaller(loanPreQualificationDmn, { upgradeTo: "latest" }).parser.parse(),
+    model: model,
+    xml: marshaller.builder.build(model),
   },
 };

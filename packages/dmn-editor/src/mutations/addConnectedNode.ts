@@ -111,10 +111,6 @@ export function addConnectedNode({
           "@_name": "New Knowledge Source",
           "@_id": newDmnObjectId,
           ...requirements,
-          variable: {
-            ...variableBase,
-            "@_name": "New Knowledge Source",
-          },
         },
       })
     );

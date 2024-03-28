@@ -56,7 +56,8 @@
   outline: none;
 }
 .kie-dmn-editor--node.dimmed,
-.kie-dmn-editor--node-shape.dimmed {
+.kie-dmn-editor--node-shape.dimmed,
+.kie-dmn-editor--input-data-node.dimmed {
   opacity: 0.3;
   pointer-events: none;
 }
@@ -577,10 +578,12 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--data-type-node-panel {
   position: absolute;
   top: -46px;
-  padding-bottom: 10px;
+  padding-bottom: 14px;
   display: flex;
   align-items: end;
-  zoom: 0.8;
+
+  /* zoom is not supported by Playwright library */
+  transform: scale(0.8);
 }
 .kie-dmn-editor--data-type-node-panel .kie-dmn-editor--data-type-jump-to-definition {
   padding-left: 4px;
