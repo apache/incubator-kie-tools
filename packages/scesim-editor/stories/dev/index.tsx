@@ -20,7 +20,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { DevWebApp } from "./DevWebApp";
+import { DevWebApp } from "../../dev-webapp/src/DevWebApp";
 
 import "./index.css";
 

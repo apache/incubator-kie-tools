@@ -39,25 +39,24 @@ export class Editor {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL(`misc-empty--empty`)}` ?? "");
   }
 
-  public async createTestScenario(type: AssetType, background?: boolean) {
+  public async createTestScenario(type: AssetType) {
     await this.openEmpty();
     type === AssetType.DECISION
       ? await this.page.locator("#asset-type-select").selectOption("DMN")
       : await this.page.locator("#asset-type-select").selectOption("RULE");
     await this.page.getByRole("button", { name: "Create" }).click();
     await this.selectorPanel.close();
-    if (background) {
-      await this.switchToBackgroundTable();
-    }
   }
 
   public async switchToTestScenarioTable() {
     await this.page.getByRole("tab", { name: "Test Scenario" }).click();
   }
+
   public async switchToBackgroundTable() {
     await this.page.getByRole("tab", { name: "Background" }).click();
   }
-  public getStartPage() {
-    return this.page.getByText("Create a new Test ScenarioAsset type * Select a typeDecision (DMN)Rule (DRL)Skip");
+
+  public get() {
+    return this.page.getByTestId("test-scenario-editor");
   }
 }

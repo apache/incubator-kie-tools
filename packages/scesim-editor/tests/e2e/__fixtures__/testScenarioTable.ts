@@ -34,7 +34,7 @@ export class TestScenarioTable {
       .nth(args.column)
       .dblclick();
     if (this.projectName === ProjectName.GOOGLE_CHROME) {
-      // Google chromes fill function is not always erasing the input content
+      // Google Chrome's fill function is not always erasing the input content
       await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").press("Control+A");
     }
     // FEEL text input selector when the monaco editor is selected.

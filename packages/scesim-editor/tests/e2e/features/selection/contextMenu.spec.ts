@@ -18,6 +18,7 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { MenuItem } from "../../__fixtures__/contextMenu";
 import { AssetType } from "../../__fixtures__/editor";
 
 test.describe("Selection", () => {
@@ -37,43 +38,61 @@ test.describe("Selection", () => {
       });
 
       test("should use copy from selection context menu", async ({ clipboard, contextMenu, table }) => {
-        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "copy" });
+        await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
+        await contextMenu.clickMenuItem({ menuItem: MenuItem.COPY });
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+
         await table.deleteCellContent({ rowNumber: "1", columnNumber: 1 });
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
+
         await clipboard.paste();
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       });
 
       test("should use cut from selection context menu", async ({ clipboard, contextMenu, table }) => {
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
-        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "cut" });
+        await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
+        await contextMenu.clickMenuItem({ menuItem: MenuItem.CUT });
+
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
         await table.selectCell({ rowNumber: "1", columnNumber: 1 });
+
         await clipboard.paste();
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       });
 
       test("should use copy and paste from selection context menu", async ({ contextMenu, table }) => {
-        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "copy" });
+        await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
+        await contextMenu.clickMenuItem({ menuItem: MenuItem.COPY });
+
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+
         await table.deleteCellContent({ rowNumber: "1", columnNumber: 1 });
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
-        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "paste" });
+
+        await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
+        await contextMenu.clickMenuItem({ menuItem: MenuItem.PASTE });
+
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       });
 
       test("should use cut and paste from selection context menu", async ({ contextMenu, table }) => {
-        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "cut" });
+        await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
+        await contextMenu.clickMenuItem({ menuItem: MenuItem.CUT });
+
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
-        await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "paste" });
+
+        await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
+        await contextMenu.clickMenuItem({ menuItem: MenuItem.PASTE });
+
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
       });
     });
 
     test("should use reset from selection context menu", async ({ contextMenu, table }) => {
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
-      await contextMenu.select({ rowNumber: "1", columnNumber: 1, command: "reset" });
+      await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
+      await contextMenu.clickMenuItem({ menuItem: MenuItem.RESET });
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
     });
   });

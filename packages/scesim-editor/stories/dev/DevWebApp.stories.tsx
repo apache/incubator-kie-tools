@@ -29,6 +29,8 @@ import { isOldEnoughDrl } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn } from "../useCases/TrafficViolationDmn.stories";
 import { useArgs } from "@storybook/preview-api";
 
+import "./DevWebApp.css";
+
 type DevWebAppProps = SceSimEditorWrapperProps;
 
 function DevWebApp(props: DevWebAppProps) {

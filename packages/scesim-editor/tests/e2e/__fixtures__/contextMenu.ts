@@ -19,6 +19,23 @@
 
 import { Page } from "@playwright/test";
 
+export enum HeadingType {
+  SELECTION = "SELECTION",
+  SCENARIO = "SCENARIO",
+  FIELD = "FIELD",
+  INSTANCE = "INSTANCE",
+}
+
+export enum MenuItem {
+  DELETE_SCENARIO = "Delete",
+  DELETE_INSTANCE = "Delete Instance",
+  DELETE_FIELD = "Delete Field",
+  COPY = "copy",
+  CUT = "cut",
+  PASTE = "paste",
+  RESET = "reset",
+}
+
 export class ContextMenu {
   constructor(public page: Page) {}
 
@@ -33,23 +50,16 @@ export class ContextMenu {
   public async openOnInstance(args: { name: string }) {
     await this.page.getByRole("columnheader", { name: args.name }).click({ button: "right" });
   }
+
   public async openOnProperty(args: { name: string; columnNumber: number }) {
     await this.page.getByRole("columnheader", { name: args.name }).nth(args.columnNumber).click({ button: "right" });
   }
-  public async command(args: { command: string }) {
-    await this.page.getByRole("menuitem", { name: args.command }).click();
+
+  public async clickMenuItem(args: { menuItem: MenuItem }) {
+    await this.page.getByRole("menuitem", { name: `${args.menuItem}` }).click();
   }
 
-  public async select(args: { rowNumber: string; columnNumber: number; command: string }) {
-    await this.page
-      .getByRole("row", { name: args.rowNumber })
-      .getByTestId("monaco-container")
-      .nth(args.columnNumber)
-      .click({ button: "right" });
-    await this.page.getByRole("menuitem", { name: args.command }).click();
-  }
-
-  public getHeader(args: { header: string }) {
-    return this.page.getByRole("heading", { name: args.header, exact: true });
+  public getHeading(args: { heading: HeadingType }) {
+    return this.page.getByRole("heading", { name: `${args.heading}`, exact: true });
   }
 }

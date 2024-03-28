@@ -28,31 +28,32 @@ test.describe("Populate decision background table", () => {
     table,
     backgroundTable,
   }) => {
-    await editor.createTestScenario(AssetType.DECISION, true);
+    await editor.createTestScenario(AssetType.DECISION);
+    await editor.switchToBackgroundTable();
     await backgroundTable.fill({ content: "{foo}", column: 0 });
 
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
@@ -75,31 +76,32 @@ test.describe("Populate rule background table", () => {
     table,
     backgroundTable,
   }) => {
-    await editor.createTestScenario(AssetType.RULE, true);
+    await editor.createTestScenario(AssetType.RULE);
+    await editor.switchToBackgroundTable();
     await backgroundTable.fill({ content: "{foo}", column: 0 });
 
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });
     await table.addPropertyColumn({
-      targetCell: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       nth: 0,
     });

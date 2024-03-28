@@ -42,11 +42,11 @@ test.describe("Populate decision test scenario table", () => {
     });
 
     await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
 
     await testScenarioTable.fill({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
     await testScenarioTable.fill({ content: '"foo"', rowLocatorInfo: "3", column: 0 });
@@ -125,11 +125,11 @@ test.describe("Populate rule test scenario table", () => {
     });
 
     await resizing.reset(table.getColumnHeader({ name: "GIVEN" }));
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-    await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+    await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
 
     await testScenarioTable.fill({ content: "{foo}", rowLocatorInfo: "2", column: 0 });
     await testScenarioTable.fill({ content: '"foo"', rowLocatorInfo: "3", column: 0 });

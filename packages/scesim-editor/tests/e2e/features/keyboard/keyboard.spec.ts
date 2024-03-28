@@ -29,9 +29,9 @@ test.describe("Keyboard", () => {
       testScenarioTable,
     }) => {
       await editor.createTestScenario(AssetType.RULE);
-      await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-      await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-      await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+      await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+      await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+      await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
       await table.selectCell({ rowNumber: "1", columnNumber: 0 });
 
       await table.navigateRight({ rowNumber: "1", columnNumber: 0, type: Type.KEYBOARD_SHORTCUT });
@@ -54,9 +54,9 @@ test.describe("Keyboard", () => {
   test.describe("Arrow key navigation", () => {
     test("should correctly navigate the table using arrow keys", async ({ editor, table, testScenarioTable }) => {
       await editor.createTestScenario(AssetType.DECISION);
-      await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-      await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
-      await table.addRow({ targetCell: "1", position: AddRowPosition.BELOW });
+      await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+      await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
+      await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
       await table.selectCell({ rowNumber: "1", columnNumber: 0 });
 
       await table.navigateRight({ rowNumber: "1", columnNumber: 0, type: Type.ARROW });

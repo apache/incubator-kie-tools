@@ -37,22 +37,22 @@ export enum Type {
 export class Table {
   constructor(public page: Page) {}
 
-  public async addRow(args: { targetCell: string; position: AddRowPosition }) {
-    await this.page.getByRole("cell", { name: args.targetCell, exact: true }).click({ button: "right" });
+  public async addRow(args: { targetCellName: string; position: AddRowPosition }) {
+    await this.page.getByRole("cell", { name: args.targetCellName, exact: true }).click({ button: "right" });
     args.position === AddRowPosition.BELOW
       ? await this.page.getByRole("menuitem", { name: "Insert Below" }).click()
       : await this.page.getByRole("menuitem", { name: "Insert Above" }).click();
   }
 
-  public async addPropertyColumn(args: { targetCell: string; position: AddColumnPosition; nth: number }) {
-    await this.page.getByRole("columnheader", { name: args.targetCell }).nth(args.nth).click({ button: "right" });
+  public async addPropertyColumn(args: { targetCellName: string; position: AddColumnPosition; nth: number }) {
+    await this.page.getByRole("columnheader", { name: args.targetCellName }).nth(args.nth).click({ button: "right" });
     args.position === AddColumnPosition.LEFT
       ? await this.page.getByRole("menuitem", { name: "Insert Field Left" }).click()
       : await this.page.getByRole("menuitem", { name: "Insert Field Right" }).click();
   }
 
-  public async addInstanceColumn(args: { targetCell: string; position: AddColumnPosition }) {
-    await this.page.getByRole("columnheader", { name: args.targetCell }).click({ button: "right" });
+  public async addInstanceColumn(args: { targetCellName: string; position: AddColumnPosition }) {
+    await this.page.getByRole("columnheader", { name: args.targetCellName }).click({ button: "right" });
     args.position === AddColumnPosition.LEFT
       ? await this.page.getByRole("menuitem", { name: "Insert Instance Left" }).click()
       : await this.page.getByRole("menuitem", { name: "Insert Instance Right" }).click();
@@ -67,6 +67,7 @@ export class Table {
   public getColumnHeader(args: { name: string }) {
     return this.page.getByRole("columnheader", { name: args.name });
   }
+
   public getCell(args: { rowNumber: string; columnNumber: number }) {
     return this.page.getByRole("row", { name: args.rowNumber }).nth(args.columnNumber);
   }
