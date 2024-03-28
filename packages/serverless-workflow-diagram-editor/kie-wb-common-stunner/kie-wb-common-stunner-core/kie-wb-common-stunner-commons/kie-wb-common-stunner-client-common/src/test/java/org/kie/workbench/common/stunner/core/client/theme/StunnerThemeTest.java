@@ -17,28 +17,29 @@
  * under the License.
  */
 
-.kie-scesim-editor-drawer-data-objects--button-container {
-  margin-top: 10px;
-}
+package org.kie.workbench.common.stunner.core.client.theme;
 
-.kie-scesim-editor-drawer-data-objects--button-container button + button {
-  margin-left: 10px;
-}
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
-.kie-scesim-editor-drawer-data-objects--info-icon {
-  margin-left: 5px;
-  vertical-align: top;
-}
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-.kie-scesim-editor-drawer-data-objects--selector {
-  height: 500px;
-  overflow: scroll;
-}
+@RunWith(MockitoJUnitRunner.class)
+public class StunnerThemeTest {
 
-.kie-scesim-editor-drawer-data-objects--selector-title {
-  margin-top: 10px;
-}
+    private StunnerColorTheme theme = StunnerTheme.getTheme();
 
-.kie-scesim-editor-drawer-data-objects--text {
-  margin-bottom: 10px;
+    @Test
+    public void testDefaultTheme() {
+        assertTrue(theme instanceof DefaultTheme);
+    }
+
+    @Test
+    public void testSetTheme() {
+        final StunnerColorTheme someTheme = DefaultTheme.getInstance();
+        StunnerTheme.setTheme(someTheme);
+        assertEquals(someTheme, StunnerTheme.getTheme());
+    }
 }

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,12 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.kie.sonataflow.swf.tools.deployment;
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import io.quarkus.deployment.annotations.BuildStep;
+import io.quarkus.deployment.builditem.FeatureBuildItem;
 
-import { DevWebApp } from "../../dev-webapp/src/DevWebApp";
+class SonataFlowQuarkusExtensionProcessor {
 
-import "./index.css";
+    private static final String FEATURE = "sonataflow-quarkus-devui";
 
-ReactDOM.render(<DevWebApp />, document.getElementById("dev-webapp"));
+    @BuildStep
+    FeatureBuildItem feature() {
+        return new FeatureBuildItem(FEATURE);
+    }
+}

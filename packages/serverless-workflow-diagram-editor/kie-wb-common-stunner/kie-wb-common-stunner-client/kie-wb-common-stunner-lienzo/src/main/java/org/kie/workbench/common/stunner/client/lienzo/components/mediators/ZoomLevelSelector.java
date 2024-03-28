@@ -48,6 +48,8 @@ public class ZoomLevelSelector implements IsElement {
         void updatePreviewButton(boolean enabled);
 
         void dropUp();
+
+        void applyTheme();
     }
 
     private final View view;
@@ -153,6 +155,10 @@ public class ZoomLevelSelector implements IsElement {
 
     void onDecreaseLevel() {
         onDecreaseLevel.execute();
+    }
+
+    void applyTheme() {
+        view.applyTheme();
     }
 
     @PreDestroy
