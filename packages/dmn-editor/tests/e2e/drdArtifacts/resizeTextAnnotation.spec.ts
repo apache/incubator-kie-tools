@@ -24,22 +24,23 @@ test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Resize node - Group", () => {
-  test("should resize Group node", async ({ palette, nodes, generalProperties }) => {
-    await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
+test.describe("Resize node - Text Annotation", () => {
+  test("should resize Text Annotation node", async ({ palette, nodes, generalProperties }) => {
+    await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
 
-    await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: 50, yOffset: 50 });
+    await nodes.resize({
+      nodeName: DefaultNodeName.TEXT_ANNOTATION,
+      position: NodePosition.TOP,
+      xOffset: 50,
+      yOffset: 50,
+    });
 
     await generalProperties.open();
-    await expect(
-      (
-        await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
-      ).width
-    ).toEqual("100");
-    await expect(
-      (
-        await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
-      ).height
-    ).toEqual("100");
+    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).width).toEqual(
+      "240"
+    );
+    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).height).toEqual(
+      "240"
+    );
   });
 });

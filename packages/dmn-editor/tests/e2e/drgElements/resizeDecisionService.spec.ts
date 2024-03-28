@@ -24,22 +24,27 @@ test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Resize node - Group", () => {
-  test("should resize Group node", async ({ palette, nodes, generalProperties }) => {
-    await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
+test.describe("Resize node - Decision Service", () => {
+  test("should resize Decision Service node", async ({ palette, nodes, generalDecisionServiceProperties }) => {
+    await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
 
-    await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: 50, yOffset: 50 });
+    await nodes.resize({
+      nodeName: DefaultNodeName.DECISION_SERVICE,
+      position: NodePosition.TOP,
+      xOffset: 50,
+      yOffset: 50,
+    });
 
-    await generalProperties.open();
+    await generalDecisionServiceProperties.open();
     await expect(
       (
-        await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
+        await generalDecisionServiceProperties.getNodeShape({ nodeName: DefaultNodeName.DECISION_SERVICE })
       ).width
-    ).toEqual("100");
+    ).toEqual("360");
     await expect(
       (
-        await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
+        await generalDecisionServiceProperties.getNodeShape({ nodeName: DefaultNodeName.DECISION_SERVICE })
       ).height
-    ).toEqual("100");
+    ).toEqual("360");
   });
 });

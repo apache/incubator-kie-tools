@@ -125,13 +125,13 @@ export class Nodes {
   }
 
   public async resize(args: { nodeName: string; position?: NodePosition; xOffset: number; yOffset: number }) {
-    await this.select({ name: args.nodeName, position: NodePosition.TOP_PADDING });
+    await this.select({ name: args.nodeName, position: args.position ?? NodePosition.CENTER });
 
     const resizeHandle = this.get({ name: args.nodeName }).getByTestId(`${args.nodeName}-resize-handle`);
     const { x, y, width, height } = (await resizeHandle.boundingBox()) ?? { x: 0, y: 0, width: 0, height: 0 };
     await this.page.mouse.move(x + width / 2, y + height / 2);
     await this.page.mouse.down();
-    await this.page.mouse.move(x + args.xOffset, y + args.yOffset);
+    await this.page.mouse.move(x + args.xOffset + width / 2, y + args.yOffset + height / 2);
     await this.page.mouse.up();
   }
 

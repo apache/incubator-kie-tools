@@ -344,6 +344,7 @@ export function ShapeOptions({
                     >
                       <TextInput
                         aria-label={"Width"}
+                        data-testid={"node-shape-width-input-box"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? boundWidth : undefined}
@@ -369,6 +370,7 @@ export function ShapeOptions({
                     >
                       <TextInput
                         aria-label={"Height"}
+                        data-testid={"node-shape-height-input-box"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? boundHeight : undefined}

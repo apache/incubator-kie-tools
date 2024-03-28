@@ -18,28 +18,24 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
+import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Resize node - Group", () => {
-  test("should resize Group node", async ({ palette, nodes, generalProperties }) => {
-    await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
+test.describe("Resize node - Knowledge Source", () => {
+  test("should resize Knowledge Source node", async ({ palette, nodes, generalProperties }) => {
+    await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
 
-    await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: 50, yOffset: 50 });
+    await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 50, yOffset: 50 });
 
     await generalProperties.open();
-    await expect(
-      (
-        await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
-      ).width
-    ).toEqual("100");
-    await expect(
-      (
-        await generalProperties.getNodeShape({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP })
-      ).height
-    ).toEqual("100");
+    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).width).toEqual(
+      "200"
+    );
+    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).height).toEqual(
+      "120"
+    );
   });
 });

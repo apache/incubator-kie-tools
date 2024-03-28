@@ -18,6 +18,7 @@
  */
 
 import { DataType } from "../jsonModel";
+import { NodePosition } from "../nodes";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
 export class GeneralProperties extends PropertiesPanelBase {
@@ -80,5 +81,17 @@ export class GeneralProperties extends PropertiesPanelBase {
     await this.panel().getByTitle("Expand / collapse Font").click();
 
     return await this.panel().locator("[data-ouia-component-id='node-font-style-selector']").textContent();
+  }
+
+  public async getNodeShape(args: { nodeName: string; position?: NodePosition }) {
+    await this.selectNodeToLoadPropertiesPanel({ nodeName: args.nodeName });
+    await this.panel().getByTitle("Expand / collapse Shape").click();
+
+    const width = await this.panel().getByTestId("node-shape-width-input-box").inputValue();
+    const height = await this.panel().getByTestId("node-shape-height-input-box").inputValue();
+
+    await this.panel().getByTitle("Expand / collapse Shape").click();
+
+    return { width: width, height: height };
   }
 }

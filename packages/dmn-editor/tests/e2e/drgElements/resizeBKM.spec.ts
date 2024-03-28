@@ -17,22 +17,21 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
-import { Diagram } from "../diagram";
-import { NodePosition, Nodes } from "../nodes";
+import { test, expect } from "../__fixtures__/base";
+import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
-export class PropertiesPanelBase {
-  constructor(public diagram: Diagram, public nodes: Nodes, public page: Page) {}
+test.beforeEach(async ({ editor }) => {
+  await editor.open();
+});
 
-  public panel() {
-    return this.page.getByTestId("properties-panel-container");
-  }
+test.describe("Resize node - BKM", () => {
+  test("should resize BKM node", async ({ palette, nodes, generalProperties }) => {
+    await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
 
-  public async selectNodeToLoadPropertiesPanel(args: { nodeName: string; position?: NodePosition }) {
-    await this.nodes.select({ name: args.nodeName, position: args.position ?? NodePosition.CENTER });
-  }
+    await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: 50, yOffset: 50 });
 
-  public async open() {
-    await this.page.getByTitle("Properties panel").click();
-  }
-}
+    await generalProperties.open();
+    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.BKM })).width).toEqual("200");
+    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.BKM })).height).toEqual("120");
+  });
+});
