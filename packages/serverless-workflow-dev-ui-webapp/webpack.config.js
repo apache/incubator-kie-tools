@@ -99,11 +99,17 @@ module.exports = async (env) =>
           { from: "./src/static", to: "./static" },
           { from: "./src/components/styles.css", to: "./components/styles.css" },
           {
-            from: "./node_modules/@kie-tools/serverless-workflow-dev-ui-monitoring-webapp/dist",
+            from: path.join(
+              path.dirname(require.resolve("@kie-tools/serverless-workflow-dev-ui-monitoring-webapp/package.json")),
+              "/dist"
+            ),
             to: "./monitoring-webapp",
           },
           {
-            from: "./node_modules/@kie-tools/runtime-tools-enveloped-components/dist/customDashboardView",
+            from: path.join(
+              path.dirname(require.resolve("@kie-tools/runtime-tools-swf-enveloped-components/package.json")),
+              "/dist/customDashboardView"
+            ),
             to: "./custom-dashboard-view",
           },
           {
@@ -120,7 +126,7 @@ module.exports = async (env) =>
             copy: [
               { source: "./dist/*.js", destination: "./dist/resources/webapp/" },
               { source: "./dist/*.map", destination: "./dist/resources/webapp/" },
-              { source: "./dist/fonts", destination: "./dist/resources/webapp/" },
+              { source: "./dist/fonts", destination: "./dist/resources/webapp/fonts" },
               {
                 source: "./dist/monitoring-webapp",
                 destination: "./dist/resources/webapp/monitoring-webapp",

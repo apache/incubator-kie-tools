@@ -6,7 +6,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "target": "es6",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "noImplicitAny": false
   },
   "include": ["src", "./config/declare.d.ts"]
 }

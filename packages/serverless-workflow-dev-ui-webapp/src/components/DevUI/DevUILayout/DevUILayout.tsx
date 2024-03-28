@@ -22,20 +22,19 @@ import { Route, Switch } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import { MemoryRouter } from "react-router";
-import PageLayout from "@kie-tools/runtime-tools-components/dist/components/PageLayout/PageLayout";
+import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
 import DevUINav from "../DevUINav/DevUINav";
-import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetails";
-import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowList";
+import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails";
+import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
 import FormsListContextProvider from "../../../channel/FormsList/FormsListContextProvider";
 import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetailsContextProvider";
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
-import { CustomLabels } from "../../../api/CustomLabels";
-import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
-import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowForm";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
+import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
 import CustomDashboardListContextProvider from "../../../channel/CustomDashboardList/CustomDashboardListContextProvider";
 import { CustomDashboardViewContextProvider } from "../../../channel/CustomDashboardView";
-import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/CloudEventForm";
-import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDefinitionList";
+import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
+import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;

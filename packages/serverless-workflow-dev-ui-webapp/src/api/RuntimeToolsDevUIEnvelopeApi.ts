@@ -18,7 +18,7 @@
  */
 
 import { CustomLabels } from "./CustomLabels";
-import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
 
 export interface RuntimeToolsDevUIEnvelopeApi {
   runtimeToolsDevUI_initRequest(association: Association, initArgs: RuntimeToolsDevUIInitArgs): Promise<void>;
