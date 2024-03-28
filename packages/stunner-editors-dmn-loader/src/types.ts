@@ -17,8 +17,43 @@
  * under the License.
  */
 
-import { ExpressionDefinitionLogicType } from "./ExpressionDefinitionLogicType";
-import { DmnBuiltInDataType } from "./DmnBuiltInDataType";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+
+declare global {
+  // Set of Functions used to interact with the GWT Layer. Must be synchronized with ExpressionEditorService.java
+  interface BeeApi {
+    // It requests to the GWT layer the default GwtExpressionDefinition given a selected logic type and a data type.
+    getDefaultExpressionDefinition: (
+      logicType: GwtExpressionDefinitionLogicType,
+      dataType: string
+    ) => GwtExpressionDefinition;
+
+    // It Navigates to "Data Type" tab page
+    openDataTypePage: () => void;
+
+    // Notifies that an object was selected.
+    selectObject: (uuid?: string) => void;
+
+    // It propagates to the GWT layer the modified expression. It MUTATES the GWT layer status.
+    updateExpression: (expression: GwtExpressionDefinition) => void;
+  }
+
+  // API that the containing component of BoxedExpressionEditor (BEE) expects to be defined in the Window namespace
+  interface Window {
+    beeApiWrapper: BeeApi;
+  }
+}
+
+export enum GwtExpressionDefinitionLogicType {
+  Undefined = "<Undefined>",
+  Literal = "Literal",
+  Context = "Context",
+  DecisionTable = "Decision table",
+  Relation = "Relation",
+  Function = "Function",
+  Invocation = "Invocation",
+  List = "List",
+}
 
 export interface ExpressionDefinitionBase {
   /** Unique identifier used to identify the expression */
@@ -33,7 +68,7 @@ export interface ExpressionDefinitionBase {
 
 export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be LiteralExpression */
-  logicType: ExpressionDefinitionLogicType.Literal;
+  logicType: GwtExpressionDefinitionLogicType.Literal;
   /** Optional content to display for this literal expression */
   content?: string;
   /** Optional width for this literal expression */
@@ -44,7 +79,7 @@ export interface LiteralExpressionDefinition extends ExpressionDefinitionBase {
 
 export interface RelationExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Relation */
-  logicType: ExpressionDefinitionLogicType.Relation;
+  logicType: GwtExpressionDefinitionLogicType.Relation;
   /** Each column has a name and a data type. Their order is from left to right */
   columns?: RelationExpressionDefinitionColumn[];
   /** Rows order is from top to bottom. Each row has a collection of cells, one for each column */
@@ -80,11 +115,11 @@ export interface RelationExpressionDefinitionColumn {
 
 export interface ContextExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Context */
-  logicType: ExpressionDefinitionLogicType.Context;
+  logicType: GwtExpressionDefinitionLogicType.Context;
   /** Collection of context entries */
   contextEntries: ContextExpressionDefinitionEntry[];
   /** Context result */
-  result: ExpressionDefinition;
+  result: GwtExpressionDefinition;
   /** Entry info width */
   entryInfoWidth?: number;
 }
@@ -98,7 +133,7 @@ export interface ContextExpressionDefinitionEntryInfo {
   dataType: DmnBuiltInDataType;
 }
 
-export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition = ExpressionDefinition> {
+export interface ContextExpressionDefinitionEntry<T extends GwtExpressionDefinition = GwtExpressionDefinition> {
   entryInfo: ContextExpressionDefinitionEntryInfo;
   /** Entry expression */
   entryExpression: T;
@@ -108,7 +143,7 @@ export interface ContextExpressionDefinitionEntry<T extends ExpressionDefinition
 
 export interface DecisionTableExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be Decision table */
-  logicType: ExpressionDefinitionLogicType.DecisionTable;
+  logicType: GwtExpressionDefinitionLogicType.DecisionTable;
   /** Hit policy for this particular Decision table */
   hitPolicy: DecisionTableExpressionDefinitionHitPolicy;
   /** Aggregation policy, when the hit policy supports it */
@@ -165,7 +200,7 @@ export interface DecisionTableExpressionDefinitionOutputClause extends DecisionT
    * In an Incomplete table, this attribute lists an instance of Expression that is selected when no rules match
    * for the decision table, which is also an instance of LiteralExpression
    */
-  defaultOutputEntry?: ExpressionDefinition;
+  defaultOutputEntry?: GwtExpressionDefinition;
 }
 
 export interface DecisionTableExpressionDefinitionClauseUnaryTests {
@@ -204,15 +239,15 @@ export interface DecisionTableExpressionDefinitionRule {
 
 export interface ListExpressionDefinition extends ExpressionDefinitionBase {
   /** Logic type must be List */
-  logicType: ExpressionDefinitionLogicType.List;
+  logicType: GwtExpressionDefinitionLogicType.List;
   /** List items */
-  items: ExpressionDefinition[];
+  items: GwtExpressionDefinition[];
 }
 
-export interface InvocationExpressionDefinition<T extends ExpressionDefinition = ExpressionDefinition>
+export interface InvocationExpressionDefinition<T extends GwtExpressionDefinition = GwtExpressionDefinition>
   extends ExpressionDefinitionBase {
   /** Logic type must be Invocation */
-  logicType: ExpressionDefinitionLogicType.Invocation;
+  logicType: GwtExpressionDefinitionLogicType.Invocation;
   /** Function to be invoked */
   invokedFunction: InvocationFunction;
   /** Collection of arguments used to invoke the function */
@@ -229,7 +264,7 @@ export interface InvocationFunction {
 // UNDEFINED EXPRESSION
 
 export interface UndefinedExpressionDefinition extends ExpressionDefinitionBase {
-  logicType: ExpressionDefinitionLogicType.Undefined;
+  logicType: GwtExpressionDefinitionLogicType.Undefined;
 }
 
 // FUNCTION EXPRESSION
@@ -242,7 +277,7 @@ export enum FunctionExpressionDefinitionKind {
 
 export interface FunctionExpressionDefinitionBase extends ExpressionDefinitionBase {
   /** Logic type must be Function */
-  logicType: ExpressionDefinitionLogicType.Function;
+  logicType: GwtExpressionDefinitionLogicType.Function;
   /** List of parameters passed to the function */
   formalParameters: ContextExpressionDefinitionEntryInfo[];
 }
@@ -251,7 +286,7 @@ export type FeelFunctionExpressionDefinition = FunctionExpressionDefinitionBase 
   /** Feel Function */
   functionKind: FunctionExpressionDefinitionKind.Feel;
   /** The Expression related to the function */
-  expression: ExpressionDefinition;
+  expression: GwtExpressionDefinition;
 };
 
 export type PmmlFunctionExpressionDefinition = FunctionExpressionDefinitionBase & {
@@ -289,7 +324,7 @@ export type FunctionExpressionDefinition =
 
 // ALL
 
-export type ExpressionDefinition =
+export type GwtExpressionDefinition =
   | LiteralExpressionDefinition
   | RelationExpressionDefinition
   | ContextExpressionDefinition
@@ -298,24 +333,3 @@ export type ExpressionDefinition =
   | InvocationExpressionDefinition
   | UndefinedExpressionDefinition
   | FunctionExpressionDefinition;
-
-// OTHER
-
-export interface PmmlParam {
-  document: string;
-  modelsFromDocument?: {
-    model: string;
-    parametersFromModel?: ContextExpressionDefinitionEntryInfo[];
-  }[];
-}
-
-// Please find a better place for this function as part of https://github.com/kiegroup/kie-issues/issues/34
-export const getNextAvailablePrefixedName = (
-  names: string[],
-  namePrefix: string,
-  lastIndex: number = names.length
-): string => {
-  const candidate = `${namePrefix}-${lastIndex + 1}`;
-  const elemWithCandidateName = names.indexOf(candidate);
-  return elemWithCandidateName >= 0 ? getNextAvailablePrefixedName(names, namePrefix, lastIndex + 1) : candidate;
-};

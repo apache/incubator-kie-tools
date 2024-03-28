@@ -18,8 +18,8 @@
  */
 
 import * as React from "react";
-import * as ReactTable from "react-table";
 import { useCallback, useMemo } from "react";
+import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
   BeeTableContextMenuAllowedOperationsConditions,
@@ -27,13 +27,9 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  generateUuid,
   InsertRowColumnsDirection,
-  ListExpressionDefinition,
+  BoxedList,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -45,21 +41,22 @@ import {
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
-import "./ListExpression.css";
 import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./ListExpression.css";
 
-export type ROWTYPE = ContextExpressionDefinitionEntry;
+export type ROWTYPE = DMN15__tContextEntry;
 
 export function ListExpression(
-  listExpression: ListExpressionDefinition & {
+  listExpression: BoxedList & {
     isNested: boolean;
     parentElementId: string;
   }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { decisionNodeId, variables } = useBoxedExpressionEditor();
+  const { expressionHolderId, variables, widthsById } = useBoxedExpressionEditor();
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -69,7 +66,7 @@ export function ListExpression(
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
         return {
-          nestedExpressions: listExpression.items,
+          nestedExpressions: listExpression.expression ?? [],
           fixedColumnActualWidth: 0,
           fixedColumnResizingWidth: { value: 0, isPivoting: false },
           fixedColumnMinWidth: 0,
@@ -77,8 +74,9 @@ export function ListExpression(
           extraWidth: LIST_EXPRESSION_EXTRA_WIDTH,
           expression: listExpression,
           flexibleColumnIndex: 1,
+          widthsById: widthsById,
         };
-      }, [listExpression])
+      }, [listExpression, widthsById])
     );
 
   /// //////////////////////////////////////////////////////
@@ -109,55 +107,57 @@ export function ListExpression(
   );
 
   const beeTableRows = useMemo(() => {
-    return listExpression.items.map((item) => ({
-      entryInfo: undefined as any,
-      entryExpression: item,
+    const rows = (listExpression.expression ?? []).map((item) => ({
+      variable: undefined as any,
+      expression: item,
     }));
-  }, [listExpression.items]);
+
+    if (rows.length === 0) {
+      rows.push({
+        variable: undefined as any,
+        expression: undefined as any,
+      });
+    }
+
+    return rows;
+  }, [listExpression.expression]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        label: listExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        dataType: listExpression.dataType,
+        accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        label: listExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
+        dataType: listExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         minWidth: LIST_EXPRESSION_ITEM_MIN_WIDTH,
         width: undefined,
       },
     ],
-    [decisionNodeId, listExpression.dataType, listExpression.name]
+    [expressionHolderId, listExpression]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
-    return row.original.entryExpression.id;
+    return row.id;
   }, []);
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     (): { [p: string]: ({ rowIndex, data, columnIndex }: BeeTableCellProps<ROWTYPE>) => JSX.Element } => ({
-      [decisionNodeId]: (props) => <ListItemCell parentElementId={listExpression.parentElementId} {...props} />,
+      [expressionHolderId]: (props) => (
+        <ListItemCell parentElementId={listExpression.parentElementId} listExpression={listExpression} {...props} />
+      ),
     }),
-    [decisionNodeId, listExpression.parentElementId]
+    [expressionHolderId, listExpression]
   );
-
-  const getDefaultListItem = useCallback((dataType: DmnBuiltInDataType): ExpressionDefinition => {
-    return {
-      id: generateUuid(),
-      logicType: ExpressionDefinitionLogicType.Undefined,
-      dataType: dataType,
-    };
-  }, []);
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: ListExpressionDefinition) => {
-        const newItems = [...prev.items];
+      setExpression((prev: BoxedList) => {
+        const newItems = [...(prev.expression ?? [])];
         const newListItems = [];
 
         for (let i = 0; i < args.rowsCount; i++) {
-          const newItem = getDefaultListItem(prev.dataType);
+          const newItem = undefined as any; // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
           newListItems.push(newItem);
-          variables?.repository.addVariableToContext(newItem.id, newItem.id, listExpression.parentElementId);
         }
 
         for (const newEntry of newListItems) {
@@ -168,20 +168,20 @@ export function ListExpression(
           }
         }
 
-        return { ...prev, items: newItems };
+        return { ...prev, expression: newItems };
       });
     },
-    [getDefaultListItem, listExpression.parentElementId, setExpression, variables?.repository]
+    [setExpression]
   );
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: ListExpressionDefinition) => {
-        const newItems = [...(prev.items ?? [])];
+      setExpression((prev: BoxedList) => {
+        const newItems = [...(prev.expression ?? [])];
         newItems.splice(args.rowIndex, 1);
         return {
           ...prev,
-          items: newItems,
+          expression: newItems,
         };
       });
     },
@@ -190,16 +190,16 @@ export function ListExpression(
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: ListExpressionDefinition) => {
-        const newItems = [...(prev.items ?? [])];
-        newItems.splice(args.rowIndex, 1, getDefaultListItem(prev.dataType));
+      setExpression((prev: BoxedList) => {
+        const newItems = [...(prev.expression ?? [])];
+        newItems.splice(args.rowIndex, 1, undefined as any); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         return {
           ...prev,
-          items: newItems,
+          expression: newItems,
         };
       });
     },
-    [getDefaultListItem, setExpression]
+    [setExpression]
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
@@ -207,11 +207,11 @@ export function ListExpression(
   }, [listExpression.isNested]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
+    ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev) => ({
         ...prev,
-        name,
-        dataType,
+        "@_label": name,
+        "@_typeRef": typeRef,
       }));
     },
     [setExpression]
@@ -241,11 +241,11 @@ export function ListExpression(
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
-      <div className={`${listExpression.id} list-expression`}>
+      <div className={`${listExpression["@_id"]} list-expression`}>
         <BeeTable<ROWTYPE>
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
-          tableId={listExpression.id}
+          tableId={listExpression["@_id"]}
           headerVisibility={beeTableHeaderVisibility}
           cellComponentByColumnAccessor={cellComponentByColumnAccessor}
           columns={beeTableColumns}

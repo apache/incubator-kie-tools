@@ -17,18 +17,18 @@
  * under the License.
  */
 
-import "./ExpressionDefinitionHeaderMenu.css";
 import * as React from "react";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { PopoverMenu, PopoverMenuRef } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { DmnBuiltInDataType, ExpressionDefinition } from "../../api";
+import { DmnBuiltInDataType, BoxedExpression } from "../../api";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DataTypeSelector } from "./DataTypeSelector";
 import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { NavigationKeysUtils } from "../../keysUtils";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
+import "./ExpressionDefinitionHeaderMenu.css";
 
 export interface ExpressionDefinitionHeaderMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
@@ -44,11 +44,11 @@ export interface ExpressionDefinitionHeaderMenuProps {
   /** The title of the popover menu */
   title?: string;
   /** The pre-selected data type */
-  selectedDataType?: DmnBuiltInDataType;
+  selectedDataType?: string;
   /** The pre-selected expression name */
   selectedExpressionName: string;
   /** Function to be called when the expression gets updated, passing the most updated version of it */
-  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
+  onExpressionHeaderUpdated: (args: Pick<BoxedExpression, "@_label" | "@_typeRef">) => void;
   position?: PopoverPosition;
 }
 
@@ -100,7 +100,7 @@ export function ExpressionDefinitionHeaderMenu({
 
   const saveExpression = useCallback(() => {
     if (expressionName !== selectedExpressionName || dataType !== selectedDataType) {
-      onExpressionHeaderUpdated({ name: expressionName, dataType: dataType });
+      onExpressionHeaderUpdated({ "@_label": expressionName, "@_typeRef": dataType });
     }
   }, [expressionName, selectedExpressionName, dataType, selectedDataType, onExpressionHeaderUpdated]);
 

@@ -17,29 +17,26 @@
  * under the License.
  */
 
-import "./ContextEntryExpressionCell.css";
 import * as React from "react";
-import {
-  ContextExpressionDefinition,
-  ContextExpressionDefinitionEntry,
-  ExpressionDefinitionLogicType,
-} from "../../api";
+import { useCallback } from "react";
+import { BoxedContext, DmnBuiltInDataType } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useCallback } from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
+import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./ContextEntryExpressionCell.css";
 
 export interface ContextEntryExpressionCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
-  data: readonly ContextExpressionDefinitionEntry[];
+  data: readonly DMN15__tContextEntry[];
   rowIndex: number;
   columnIndex: number;
 }
 
 export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
-  data: contextEntries,
+  data: contextEntry,
   rowIndex,
   columnIndex,
 }) => {
@@ -47,12 +44,15 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
 
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
-        const contextEntries = [...(prev.contextEntries ?? [])];
-        contextEntries[rowIndex].entryExpression = getNewExpression(
-          contextEntries[rowIndex]?.entryExpression ?? { logicType: ExpressionDefinitionLogicType.Undefined }
-        );
-        return { ...prev, contextEntries };
+      setExpression((prev: BoxedContext) => {
+        const contextEntry = [...(prev.contextEntry ?? [])];
+        contextEntry[rowIndex] = {
+          ...contextEntry[rowIndex],
+          expression: getNewExpression(
+            contextEntry[rowIndex]?.expression ?? { "@_typeRef": DmnBuiltInDataType.Undefined }
+          ),
+        };
+        return { ...prev, contextEntry };
       });
     },
     [rowIndex, setExpression]
@@ -61,12 +61,13 @@ export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExp
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
       <ExpressionContainer
-        expression={contextEntries[rowIndex]?.entryExpression}
+        expression={contextEntry[rowIndex]?.expression}
         isResetSupported={true}
         isNested={true}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
-        parentElementId={contextEntries[rowIndex].entryInfo.id}
+        parentElementId={contextEntry[rowIndex]["@_id"]}
+        parentTypeRef={contextEntry[rowIndex].variable?.["@_typeRef"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

@@ -36,7 +36,7 @@ import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-bound
 import * as RF from "reactflow";
 import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
 import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
-import { BoxedExpression } from "./boxedExpressions/BoxedExpression";
+import { BoxedExpressionScreen } from "./boxedExpressions/BoxedExpressionScreen";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram, DiagramRef } from "./diagram/Diagram";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
@@ -356,7 +356,7 @@ export const DmnEditorInternal = ({
                   <DrawerContent panelContent={beePropertiesPanel}>
                     <DrawerContentBody>
                       <div className={"kie-dmn-editor--bee-container"} ref={beeContainerRef}>
-                        <BoxedExpression container={beeContainerRef} />
+                        <BoxedExpressionScreen container={beeContainerRef} />
                       </div>
                     </DrawerContentBody>
                   </DrawerContent>

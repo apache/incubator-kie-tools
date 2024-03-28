@@ -148,12 +148,16 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     return this;
   }
 
-  public randomize(): void {
+  public randomize(): Map<string, string> {
+    const newIdsByOriginalId = new Map<string, string>();
+
     for (const [id, us] of this.updaters) {
       const newId = this.args.newIdGenerator();
+      newIdsByOriginalId.set(id, newId);
       for (const u of us) {
         u({ newId });
       }
     }
+    return newIdsByOriginalId;
   }
 }

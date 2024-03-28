@@ -22,8 +22,8 @@ import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationKeysUtils } from "../../keysUtils";
-import "./BeeTableEditableCellContent.css";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import "./BeeTableEditableCellContent.css";
 
 const CELL_LINE_HEIGHT = 20;
 
@@ -121,7 +121,11 @@ export function BeeTableEditableCellContent({
         } else if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing;
         } else {
-          updateValue(newValue);
+          // This line below is commented on because it causes an issue with WebKit (Safari) based browsers,
+          // making the text boxes no longer work. Also, it is not necessary because the newValue is saved
+          // in the onBlur event, called by the BeeTableSelectionContext
+          // updateValue(newValue);
+
           setEditing(false);
           onFeelEnterKeyDown?.({ isShiftPressed: e.shiftKey });
         }

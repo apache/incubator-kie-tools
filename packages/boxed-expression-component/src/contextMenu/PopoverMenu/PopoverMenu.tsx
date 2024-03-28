@@ -20,10 +20,10 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Popover, PopoverPosition, PopoverProps } from "@patternfly/react-core/dist/js/components/Popover";
-import "./PopoverMenu.css";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { NavigationKeysUtils } from "../../keysUtils";
 import { generateUuid } from "../../api";
+import "./PopoverMenu.css";
 
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */

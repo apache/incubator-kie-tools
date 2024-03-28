@@ -34,7 +34,7 @@ import {
   DMN15__tQuantified,
   DMN15__tRelation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { DMN15_SPEC } from "../Dmn15Spec";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { DataTypeIndex } from "./DataTypes";
 import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 

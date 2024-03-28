@@ -116,7 +116,7 @@ public class DMNDesignerBaseIT {
 
     private FirefoxOptions getFirefoxOptions() {
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.addArguments("--headless");
+       // firefoxOptions.addArguments("--headless");
         return firefoxOptions;
     }
 

@@ -24,20 +24,15 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
-import {
-  ContextExpressionDefinitionEntryInfo,
-  DmnBuiltInDataType,
-  FunctionExpressionDefinition,
-  generateUuid,
-  getNextAvailablePrefixedName,
-} from "../../api";
+import { DmnBuiltInDataType, BoxedFunction, generateUuid, getNextAvailablePrefixedName } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DataTypeSelector } from "../ExpressionDefinitionHeaderMenu";
+import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./ParametersPopover.css";
 
 export interface ParametersPopoverProps {
-  parameters: ContextExpressionDefinitionEntryInfo[];
+  parameters: DMN15__tInformationItem[];
 }
 
 export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> = ({ parameters }) => {
@@ -47,22 +42,22 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
   const addParameter = useCallback(
     (mouseEvent) => {
       mouseEvent.stopPropagation();
-      setExpression((prev: FunctionExpressionDefinition) => {
+      setExpression((prev: BoxedFunction) => {
         const newParameters = [
-          ...prev.formalParameters,
+          ...(prev.formalParameter ?? []),
           {
-            id: generateUuid(),
-            name: getNextAvailablePrefixedName(
-              prev.formalParameters.map((p) => p.name),
+            "@_id": generateUuid(),
+            "@_name": getNextAvailablePrefixedName(
+              (prev.formalParameter ?? []).map((p) => p["@_name"]),
               "p"
             ),
-            dataType: DmnBuiltInDataType.Undefined,
+            "@_typeRef": DmnBuiltInDataType.Undefined,
           },
         ];
 
         return {
           ...prev,
-          formalParameters: newParameters,
+          formalParameter: newParameters,
         };
       });
     },
@@ -97,18 +92,21 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
   );
 };
 
-function ParameterEntry({ parameter, index }: { parameter: ContextExpressionDefinitionEntryInfo; index: number }) {
+function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationItem; index: number }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onNameChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
-      setExpression((prev: FunctionExpressionDefinition) => {
-        const newParameters = [...prev.formalParameters];
-        newParameters[index].name = e.target.value;
+      setExpression((prev: BoxedFunction) => {
+        const newParameters = [...(prev.formalParameter ?? [])];
+        newParameters[index] = {
+          ...newParameters[index],
+          "@_name": e.target.value,
+        };
         return {
           ...prev,
-          formalParameters: newParameters,
+          formalParameter: newParameters,
         };
       });
     },
@@ -116,13 +114,16 @@ function ParameterEntry({ parameter, index }: { parameter: ContextExpressionDefi
   );
 
   const onDataTypeChange = useCallback(
-    (dataType: DmnBuiltInDataType) => {
-      setExpression((prev: FunctionExpressionDefinition) => {
-        const newParameters = [...prev.formalParameters];
-        newParameters[index].dataType = dataType;
+    (typeRef: string) => {
+      setExpression((prev: BoxedFunction) => {
+        const newParameters = [...(prev.formalParameter ?? [])];
+        newParameters[index] = {
+          ...newParameters[index],
+          "@_typeRef": typeRef,
+        };
         return {
           ...prev,
-          formalParameters: newParameters,
+          formalParameter: newParameters,
         };
       });
     },
@@ -132,12 +133,12 @@ function ParameterEntry({ parameter, index }: { parameter: ContextExpressionDefi
   const onParameterRemove = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      setExpression((prev: FunctionExpressionDefinition) => {
-        const newParameters = [...prev.formalParameters];
+      setExpression((prev: BoxedFunction) => {
+        const newParameters = [...(prev.formalParameter ?? [])];
         newParameters.splice(index, 1);
         return {
           ...prev,
-          formalParameters: newParameters,
+          formalParameter: newParameters,
         };
       });
     },
@@ -145,15 +146,19 @@ function ParameterEntry({ parameter, index }: { parameter: ContextExpressionDefi
   );
 
   return (
-    <div key={`${parameter.name}_${index}`} className="parameter-entry">
+    <div key={`${parameter["@_name"]}_${index}`} className="parameter-entry">
       <input
         className="parameter-name"
         type="text"
         onBlur={onNameChange}
         placeholder={"Parameter Name"}
-        defaultValue={parameter.name}
+        defaultValue={parameter["@_name"]}
       />
-      <DataTypeSelector value={parameter.dataType} onChange={onDataTypeChange} menuAppendTo="parent" />
+      <DataTypeSelector
+        value={parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        onChange={onDataTypeChange}
+        menuAppendTo="parent"
+      />
       <Button
         variant="danger"
         className="delete-parameter"

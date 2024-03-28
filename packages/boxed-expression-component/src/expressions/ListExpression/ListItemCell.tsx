@@ -19,30 +19,30 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { BeeTableCellProps, ListExpressionDefinition, ExpressionDefinitionLogicType } from "../../api";
+import { BeeTableCellProps, DmnBuiltInDataType, BoxedList } from "../../api";
 import {
   useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { ROWTYPE } from "./ListExpression";
+import { DMN15__tList } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function ListItemCell({
   rowIndex,
   data: items,
   columnIndex,
   parentElementId,
-}: BeeTableCellProps<ROWTYPE> & { parentElementId: string }) {
+  listExpression,
+}: BeeTableCellProps<ROWTYPE> & { parentElementId: string; listExpression: DMN15__tList }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {
-      setExpression((prev: ListExpressionDefinition) => {
-        const newItems = [...(prev.items ?? [])];
-        newItems[rowIndex] = getNewExpression(
-          newItems[rowIndex] ?? { logicType: ExpressionDefinitionLogicType.Undefined }
-        );
-        return { ...prev, items: newItems };
+      setExpression((prev: BoxedList) => {
+        const newItems = [...(prev.expression ?? [])];
+        newItems[rowIndex] = getNewExpression(newItems[rowIndex] ?? { "@_typeRef": DmnBuiltInDataType.Undefined });
+        return { ...prev, expression: newItems };
       });
     },
     [rowIndex, setExpression]
@@ -51,12 +51,13 @@ export function ListItemCell({
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
       <ExpressionContainer
-        expression={items[rowIndex]?.entryExpression}
+        expression={items[rowIndex]?.expression}
         isResetSupported={true}
         isNested={true}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={parentElementId}
+        parentTypeRef={listExpression["@_typeRef"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

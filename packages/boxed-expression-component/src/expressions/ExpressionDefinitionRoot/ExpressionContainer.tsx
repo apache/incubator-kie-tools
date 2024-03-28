@@ -18,17 +18,16 @@
  */
 
 import {
-  ContextExpressionDefinition,
-  DecisionTableExpressionDefinition,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  FeelFunctionExpressionDefinition,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
+  BoxedContext,
+  BoxedDecisionTable,
+  DmnBuiltInDataType,
+  BoxedExpression,
+  BoxedFunction,
+  BoxedFunctionKind,
   generateUuid,
-  InvocationExpressionDefinition,
-  ListExpressionDefinition,
-  RelationExpressionDefinition,
+  BoxedInvocation,
+  BoxedList,
+  BoxedRelation,
 } from "../../api";
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
@@ -39,14 +38,17 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
+import { getNewBeeIdRandomizer } from "../../clipboard/clipboard";
 
 export interface ExpressionContainerProps {
-  expression: ExpressionDefinition;
+  expression?: BoxedExpression;
   isNested: boolean;
   isResetSupported: boolean;
   rowIndex: number;
   columnIndex: number;
-  parentElementId?: string;
+  parentElementId: string | undefined;
+  parentTypeRef: string | undefined;
+  expressionName?: string;
 }
 
 export const ExpressionContainer: React.FunctionComponent<ExpressionContainerProps> = ({
@@ -56,11 +58,13 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   rowIndex,
   columnIndex,
   parentElementId,
+  parentTypeRef,
+  expressionName,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { beeGwtService, variables, decisionNodeId } = useBoxedExpressionEditor();
-  const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { beeGwtService, variables, expressionHolderId } = useBoxedExpressionEditor();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
   useEffect(() => {
@@ -70,13 +74,13 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   }, [beeGwtService, isActive]);
 
   const addContextExpressionToVariables = useCallback(
-    (contextExpressionDefinition: ContextExpressionDefinition) => {
-      const contextEntries = contextExpressionDefinition.contextEntries;
+    (contextExpressionDefinition: BoxedContext) => {
+      const contextEntries = contextExpressionDefinition.contextEntry ?? [];
       for (const contextEntry of contextEntries) {
         variables?.repository.addVariableToContext(
-          contextEntry.entryInfo.id,
-          contextEntry.entryInfo.name,
-          contextExpressionDefinition.id
+          contextEntry["@_id"]!,
+          contextEntry["@_label"] ?? "",
+          contextExpressionDefinition["@_id"]!
         );
       }
     },
@@ -84,13 +88,17 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   );
 
   const addRelationExpressionToVariables = useCallback(
-    (relationExpressionDefinition: RelationExpressionDefinition) => {
-      const rowEntries = relationExpressionDefinition.rows;
+    (relationExpressionDefinition: BoxedRelation) => {
+      const rowEntries = relationExpressionDefinition.row ?? [];
       if (rowEntries) {
         for (const rowEntry of rowEntries) {
-          for (const cell of rowEntry.cells) {
+          for (const cell of rowEntry.expression ?? []) {
             // The name is not relevant here because Relation does not declare variables, so we're reusing ID.
-            variables?.repository.addVariableToContext(cell.id, cell.id, relationExpressionDefinition.id);
+            variables?.repository.addVariableToContext(
+              cell["@_id"]!,
+              cell["@_id"]!,
+              relationExpressionDefinition["@_id"]!
+            );
           }
         }
       }
@@ -99,13 +107,13 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   );
 
   const addInvocationExpressionToVariables = useCallback(
-    (newExpression: InvocationExpressionDefinition) => {
-      const bindingEntries = newExpression.bindingEntries;
+    (newExpression: BoxedInvocation) => {
+      const bindingEntries = newExpression.binding ?? [];
       for (const bindingEntry of bindingEntries) {
         variables?.repository.addVariableToContext(
-          bindingEntry.entryInfo.id,
-          bindingEntry.entryInfo.name,
-          newExpression.id
+          bindingEntry.expression?.["@_id"] ?? "",
+          bindingEntry.expression?.["@_label"] ?? "",
+          newExpression["@_id"]!
         );
       }
     },
@@ -113,29 +121,43 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   );
 
   const addListExpressionToVariables = useCallback(
-    (newExpression: ListExpressionDefinition) => {
-      const items = newExpression.items;
+    (newExpression: BoxedList) => {
+      const items = newExpression.expression ?? [];
       for (const item of items) {
-        // The name is not relevant here because ListExpression does not declare variables, so we're reusing ID.
-        variables?.repository.addVariableToContext(item.id, item.id, newExpression.id);
+        if (item) {
+          // The name is not relevant here because ListExpression does not declare variables, so we're reusing ID.
+          variables?.repository.addVariableToContext(
+            item["@_id"] ?? "",
+            item["@_id"] ?? "",
+            newExpression["@_id"] ?? ""
+          );
+        }
       }
     },
     [variables?.repository]
   );
 
   const addDecisionTableExpressionToVariables = useCallback(
-    (decisionTable: DecisionTableExpressionDefinition) => {
-      if (decisionTable.rules) {
-        for (const rule of decisionTable.rules) {
-          if (rule.inputEntries) {
-            for (const inputEntry of rule.inputEntries) {
-              variables?.repository.addVariableToContext(inputEntry.id, inputEntry.id, decisionTable.id);
+    (decisionTable: BoxedDecisionTable) => {
+      if (decisionTable.rule) {
+        for (const rule of decisionTable.rule) {
+          if (rule.inputEntry) {
+            for (const inputEntry of rule.inputEntry) {
+              variables?.repository.addVariableToContext(
+                inputEntry["@_id"]!,
+                inputEntry["@_id"]!,
+                decisionTable["@_id"]!
+              );
             }
           }
 
-          if (rule.outputEntries) {
-            for (const outputEntry of rule.outputEntries) {
-              variables?.repository.addVariableToContext(outputEntry.id, outputEntry.id, decisionTable.id);
+          if (rule.outputEntry) {
+            for (const outputEntry of rule.outputEntry) {
+              variables?.repository.addVariableToContext(
+                outputEntry["@_id"]!,
+                outputEntry["@_id"]!,
+                decisionTable["@_id"]!
+              );
             }
           }
         }
@@ -145,50 +167,59 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   );
 
   const addFunctionExpressionToVariables = useCallback(
-    (functionExpression: FunctionExpressionDefinition) => {
-      if (functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel) {
-        const expression = (functionExpression as FeelFunctionExpressionDefinition).expression;
+    (functionExpression: BoxedFunction) => {
+      if (functionExpression["@_kind"] === BoxedFunctionKind.Feel && functionExpression.expression) {
+        const expression = functionExpression.expression;
         variables?.repository.addVariableToContext(
-          expression.id,
-          expression.name ?? expression.id,
-          functionExpression.id
+          expression["@_id"]!,
+          expression["@_label"] ?? expression["@_id"]!,
+          functionExpression["@_id"]!
         );
       }
     },
     [variables?.repository]
   );
 
+  const expressionTypeRef = expression?.["@_typeRef"];
+
   const onLogicTypeSelected = useCallback(
-    (logicType: ExpressionDefinitionLogicType) => {
+    (logicType: BoxedExpression["__$$element"] | undefined) => {
+      const { expression: defaultExpression, widthsById: defaultWidthsById } =
+        beeGwtService!.getDefaultExpressionDefinition(
+          logicType,
+          parentTypeRef ?? expressionTypeRef ?? DmnBuiltInDataType.Undefined,
+          !isNested
+        );
+
+      let id: string;
+
       setExpression((prev) => {
-        const defaultExpression = beeGwtService!.getDefaultExpressionDefinition(logicType, prev.dataType, !isNested);
-        const newExpression = {
+        const newExpression: BoxedExpression = {
           ...defaultExpression,
-          isNested,
-          id: prev.id ?? generateUuid(),
-          name: prev.name ?? DEFAULT_EXPRESSION_NAME,
+          "@_id": prev?.["@_id"] ?? generateUuid(),
+          "@_label": prev?.["@_label"] ?? expressionName ?? DEFAULT_EXPRESSION_NAME,
         };
 
-        if (parentElementId) {
-          variables?.repository.addVariableToContext(newExpression.id, newExpression.name, parentElementId);
+        id = newExpression["@_id"]!;
 
-          switch (newExpression.logicType) {
-            case ExpressionDefinitionLogicType.Context:
+        if (parentElementId) {
+          switch (newExpression.__$$element) {
+            case "context":
               addContextExpressionToVariables(newExpression);
               break;
-            case ExpressionDefinitionLogicType.Relation:
+            case "relation":
               addRelationExpressionToVariables(newExpression);
               break;
-            case ExpressionDefinitionLogicType.Invocation:
+            case "invocation":
               addInvocationExpressionToVariables(newExpression);
               break;
-            case ExpressionDefinitionLogicType.List:
+            case "list":
               addListExpressionToVariables(newExpression);
               break;
-            case ExpressionDefinitionLogicType.DecisionTable:
+            case "decisionTable":
               addDecisionTableExpressionToVariables(newExpression);
               break;
-            case ExpressionDefinitionLogicType.Function:
+            case "functionDefinition":
               addFunctionExpressionToVariables(newExpression);
               break;
             default:
@@ -199,6 +230,10 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
 
         return newExpression;
       });
+
+      defaultWidthsById.forEach((value, key) => {
+        setWidthById(id, (prev) => value);
+      });
     },
     [
       addContextExpressionToVariables,
@@ -208,23 +243,32 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       addListExpressionToVariables,
       addRelationExpressionToVariables,
       beeGwtService,
+      expressionTypeRef,
+      expressionName,
       isNested,
       parentElementId,
+      parentTypeRef,
       setExpression,
-      variables?.repository,
+      setWidthById,
     ]
   );
 
   const onLogicTypeReset = useCallback(() => {
-    variables?.repository.removeVariable(expression.id, true);
+    const originalIds = getNewBeeIdRandomizer()
+      .ack({
+        json: { __$$element: "decision", expression },
+        type: "DMN15__tDecision",
+        attr: "expression",
+      })
+      .getOriginalIds();
 
-    setExpression((prev) => ({
-      id: prev.id,
-      name: prev.name,
-      dataType: prev.dataType,
-      logicType: ExpressionDefinitionLogicType.Undefined,
-    }));
-  }, [expression.id, setExpression, variables?.repository]);
+    for (const id of originalIds) {
+      variables?.repository.removeVariable(id, true);
+      setWidthById(id, () => []);
+    }
+
+    setExpression(undefined!); // SPEC DISCREPANCY: Undefined expressions gives users the ability to select the expression type.
+  }, [expression, setExpression, setWidthById, variables?.repository]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 
@@ -237,7 +281,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         getPlacementRef={getPlacementRef}
         isResetSupported={isResetSupported}
         isNested={isNested}
-        parentElementId={parentElementId ?? decisionNodeId}
+        parentElementId={parentElementId ?? expressionHolderId}
       />
     </div>
   );

@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { ns as dmn10ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_0/ts-gen/meta";
-import { ns as dmn11ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_1/ts-gen/meta";
-import { ns as dmn12ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/meta";
-import { ns as dmn13ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_3/ts-gen/meta";
-import { ns as dmn14ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/meta";
-import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { ns as dmn10ns } from "../dmn-1_0/ts-gen/meta";
+import { ns as dmn11ns } from "../dmn-1_1/ts-gen/meta";
+import { ns as dmn12ns } from "../dmn-1_2/ts-gen/meta";
+import { ns as dmn13ns } from "../dmn-1_3/ts-gen/meta";
+import { ns as dmn14ns } from "../dmn-1_4/ts-gen/meta";
+import { ns as dmn15ns } from "./ts-gen/meta";
 
 // Those two below are defined by the spec. See S-FEEL grammar. Rule 22: "name".
 const feelNameStart =

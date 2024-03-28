@@ -18,7 +18,7 @@
  */
 
 import { DMN15__tImport, DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { UniqueNameIndex } from "../../Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { builtInFeelTypeNames } from "../../dataTypes/BuiltInFeelTypes";
 import { DataType, DataTypeIndex } from "../../dataTypes/DataTypes";
 import { buildFeelQNameFromNamespace } from "../../feel/buildFeelQName";

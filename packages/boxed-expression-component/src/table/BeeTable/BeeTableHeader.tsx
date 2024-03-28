@@ -17,17 +17,11 @@
  * under the License.
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
 import * as React from "react";
 import { useCallback } from "react";
 import * as ReactTable from "react-table";
-import {
-  DmnBuiltInDataType,
-  BeeTableHeaderVisibility,
-  ExpressionDefinition,
-  InsertRowColumnsDirection,
-} from "../../api";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { BeeTableHeaderVisibility, DmnBuiltInDataType, BoxedExpression, InsertRowColumnsDirection } from "../../api";
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
 import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionHeaderMenu";
@@ -37,7 +31,7 @@ import { BeeTableThController } from "./BeeTableThController";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 
 export interface BeeTableColumnUpdate<R extends object> {
-  dataType: DmnBuiltInDataType;
+  typeRef: string;
   name: string;
   column: ReactTable.ColumnInstance<R>;
   columnIndex: number;
@@ -106,8 +100,6 @@ export function BeeTableHeader<R extends object>({
   lastColumnMinWidth,
   setEditing,
 }: BeeTableHeaderProps<R>) {
-  const { beeGwtService } = useBoxedExpressionEditor();
-
   const getColumnLabel: (groupType: string) => string | undefined = useCallback(
     (groupType) => {
       if (_.isObject(editColumnLabel) && _.has(editColumnLabel, groupType)) {
@@ -124,15 +116,15 @@ export function BeeTableHeader<R extends object>({
     (
       column: ReactTable.ColumnInstance<R>,
       columnIndex: number
-    ) => (args: Pick<ExpressionDefinition, "name" | "dataType">) => void
+    ) => (args: Pick<BoxedExpression, "@_label" | "@_typeRef">) => void
   >(
     (column, columnIndex) => {
-      return ({ name = "", dataType = DmnBuiltInDataType.Undefined }) => {
+      return ({ "@_label": name = "", "@_typeRef": typeRef = DmnBuiltInDataType.Undefined }) => {
         onColumnUpdates?.([
           {
             // Subtract one because of the rowIndex column.
             columnIndex: columnIndex - 1,
-            dataType,
+            typeRef,
             name,
             column,
           },
@@ -207,8 +199,8 @@ export function BeeTableHeader<R extends object>({
               columnIndex={columnIndex}
               rowIndex={rowIndex}
               onColumnAdded={onColumnAdded}
-              onExpressionHeaderUpdated={({ name, dataType }) =>
-                onExpressionHeaderUpdated(column, columnIndex)({ name, dataType })
+              onExpressionHeaderUpdated={({ "@_label": name, "@_typeRef": typeRef }) =>
+                onExpressionHeaderUpdated(column, columnIndex)({ "@_label": name, "@_typeRef": typeRef })
               }
               lastColumnMinWidth={
                 columnIndex === reactTableInstance.allColumns.length - 1 ? lastColumnMinWidth : undefined
@@ -221,11 +213,11 @@ export function BeeTableHeader<R extends object>({
                   );
                 } else {
                   const name = thRef.current!.querySelector(".expression-info-name")!;
-                  const dataType = thRef.current!.querySelector(".expression-info-data-type")!;
+                  const typeRef = thRef.current!.querySelector(".expression-info-data-type")!;
                   return Math.ceil(
                     Math.max(
                       getTextWidth(name.textContent ?? "", getCanvasFont(name)),
-                      getTextWidth(dataType.textContent ?? "", getCanvasFont(dataType))
+                      getTextWidth(typeRef.textContent ?? "", getCanvasFont(typeRef))
                     )
                   );
                 }
@@ -244,7 +236,10 @@ export function BeeTableHeader<R extends object>({
                       rowIndex={rowIndex}
                       value={column.label}
                       onChange={(value) => {
-                        onExpressionHeaderUpdated(column, columnIndex)({ name: value, dataType: column.dataType });
+                        onExpressionHeaderUpdated(
+                          column,
+                          columnIndex
+                        )({ "@_label": value, "@_typeRef": column.dataType });
                       }}
                     />
                   ) : (

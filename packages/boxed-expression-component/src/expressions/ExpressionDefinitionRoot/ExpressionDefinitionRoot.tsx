@@ -18,32 +18,38 @@
  */
 
 import * as React from "react";
-import { ExpressionDefinition } from "../../api";
+import { BoxedExpression } from "../../api";
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
 import { ExpressionContainer } from "./ExpressionContainer";
 import "./ExpressionDefinitionRoot.css";
 
 export interface ExpressionDefinitionRootProps {
-  decisionNodeId: string;
-  expression: ExpressionDefinition;
+  expressionHolderId: string;
+  expressionHolderTypeRef: string;
+  expression?: BoxedExpression;
   isResetSupported: boolean | undefined;
+  expressionName?: string;
 }
 
 export function ExpressionDefinitionRoot({
-  decisionNodeId,
+  expressionHolderId,
   expression,
   isResetSupported = true,
+  expressionHolderTypeRef,
+  expressionName,
 }: ExpressionDefinitionRootProps) {
   return (
     <ResizingWidthsContextProvider>
-      <div className={`expression-container ${decisionNodeId}`}>
+      <div className={`expression-container ${expressionHolderId}`}>
         <ExpressionContainer
           expression={expression}
           isResetSupported={isResetSupported}
           isNested={false}
           rowIndex={0}
           columnIndex={0}
-          parentElementId={decisionNodeId}
+          parentElementId={expressionHolderId}
+          expressionName={expressionName}
+          parentTypeRef={expressionHolderTypeRef}
         />
       </div>
     </ResizingWidthsContextProvider>

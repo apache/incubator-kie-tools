@@ -18,10 +18,10 @@
  */
 
 import * as React from "react";
-import "./MenuWithHelp.css";
 import { MenuItem } from "@patternfly/react-core/dist/js/components/Menu/MenuItem";
 import { MenuItemAction } from "@patternfly/react-core/dist/js/components/Menu/MenuItemAction";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
+import "./MenuWithHelp.css";
 
 export interface MenuItemWithHelpProps {
   menuItemKey: string;

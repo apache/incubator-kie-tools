@@ -21,6 +21,5 @@ export * from "./Bee";
 export * from "./BeeGwtService";
 export * from "./DmnBuiltInDataType";
 export * from "./DmnDataType";
-export * from "./ExpressionDefinition";
-export * from "./ExpressionDefinitionLogicType";
+export * from "./BoxedExpression";
 export * from "./BeeTable";

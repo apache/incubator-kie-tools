@@ -17,20 +17,26 @@
  * under the License.
  */
 
-import { ContextExpressionDefinitionEntry, DmnBuiltInDataType, ExpressionDefinition } from "../../api";
+import { DmnBuiltInDataType, BoxedExpression } from "../../api";
 import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { DEFAULT_EXPRESSION_NAME, ExpressionDefinitionHeaderMenu } from "../ExpressionDefinitionHeaderMenu";
-import "./ContextEntryInfoCell.css";
 import { useCellWidthToFitDataRef } from "../../resizing/BeeTableCellWidthToFitDataContext";
 import { getCanvasFont, getTextWidth } from "../../resizing/WidthsToFitData";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./ContextEntryInfoCell.css";
+
+export interface Entry {
+  variable: DMN15__tInformationItem;
+  expression: BoxedExpression | undefined;
+}
 
 export interface ContextEntryInfoCellProps {
   // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
-  data: readonly ContextExpressionDefinitionEntry[];
-  onEntryUpdate: (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => void;
+  data: readonly Entry[];
+  onEntryUpdate: (rowIndex: number, newEntry: Entry) => void;
   rowIndex: number;
   columnIndex: number;
   columnId: string;
@@ -43,21 +49,27 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
   onEntryUpdate,
 }) => {
   const entry = useMemo(() => contextEntries[rowIndex], [contextEntries, rowIndex]);
-  const entryInfo = useMemo(() => entry.entryInfo, [entry.entryInfo]);
-  const entryExpression = useMemo(() => entry.entryExpression, [entry.entryExpression]);
+  const entryInfo = useMemo(() => entry.variable, [entry.variable]);
+  const entryExpression = useMemo(() => entry.expression, [entry.expression]);
 
   const ref = React.useRef<HTMLDivElement>(null);
 
   const onContextEntryInfoUpdated = useCallback(
     ({
-      name = DEFAULT_EXPRESSION_NAME,
-      dataType = DmnBuiltInDataType.Undefined,
-    }: Pick<ExpressionDefinition, "name" | "dataType">) => {
+      "@_label": name = DEFAULT_EXPRESSION_NAME,
+      "@_typeRef": typeRef = DmnBuiltInDataType.Undefined,
+    }: Pick<BoxedExpression, "@_label" | "@_typeRef">) => {
       onEntryUpdate(rowIndex, {
         ...entry,
-        // entryExpression and entryInfo must always have the same `dataType` and `name`, as those are dictated by the entryInfo.
-        entryExpression: { ...entryExpression, name, dataType },
-        entryInfo: { ...entryInfo, name, dataType },
+        // entryExpression and entryInfo must always have the same `typeRef` and `name`, as those are dictated by the entryInfo.
+        expression: entryExpression
+          ? ({
+              ...entryExpression,
+              "@_label": name,
+              "@_typeRef": typeRef,
+            } as BoxedExpression)
+          : entryExpression,
+        variable: { ...entryInfo, "@_name": name, "@_typeRef": typeRef },
       });
     },
     [onEntryUpdate, rowIndex, entry, entryExpression, entryInfo]
@@ -70,7 +82,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
       () => ({
         getWidthToFitData: () => {
           const name = ref.current!.querySelector(".expression-info-name")!;
-          const dataType = ref.current!.querySelector(".expression-info-data-type")!;
+          const typeRef = ref.current!.querySelector(".expression-info-data-type")!;
 
           const padding = 8 * 2; // 8px for each side, comes from .entry-info div
           const border = 2; // that's the td border.
@@ -80,7 +92,7 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
             border +
             Math.max(
               getTextWidth(name.textContent ?? "", getCanvasFont(name)),
-              getTextWidth(dataType.textContent ?? "", getCanvasFont(dataType))
+              getTextWidth(typeRef.textContent ?? "", getCanvasFont(typeRef))
             )
           );
         },
@@ -93,14 +105,17 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
     rowIndex,
     columnIndex,
     undefined,
-    useCallback(() => `${entryInfo.name} (${entryInfo.dataType})`, [entryInfo.dataType, entryInfo.name])
+    useCallback(
+      () => `${entryInfo?.["@_name"]} (${entryInfo?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}})`,
+      [entryInfo]
+    )
   );
 
   const { beeGwtService } = useBoxedExpressionEditor();
 
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject(entryInfo.id);
+      beeGwtService?.selectObject(entryInfo?.["@_id"]);
     }
   }, [beeGwtService, entryInfo, isActive]);
 
@@ -109,17 +124,17 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
       <div className={`expression-info ${args.additionalCssClass}`} ref={ref}>
         <p
           className="expression-info-name pf-u-text-truncate"
-          title={entryInfo.name}
+          title={entryInfo?.["@_name"]}
           data-ouia-component-id={"expression-info-name"}
         >
-          {entryInfo.name}
+          {entryInfo?.["@_name"]}
         </p>
         <p
           className="expression-info-data-type pf-u-text-truncate"
-          title={entryInfo.dataType}
+          title={entryInfo?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
           data-ouia-component-id={"expression-info-data-type"}
         >
-          ({entryInfo.dataType})
+          ({entryInfo?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined})
         </p>
       </div>
     ),
@@ -128,10 +143,10 @@ export const ContextEntryInfoCell: React.FunctionComponent<ContextEntryInfoCellP
 
   return (
     <div className="context-entry-info-cell">
-      <div className={`${entryInfo.id} entry-info`}>
+      <div className={`${entryInfo?.["@_id"]} entry-info`}>
         <ExpressionDefinitionHeaderMenu
-          selectedExpressionName={entryInfo.name}
-          selectedDataType={entryInfo.dataType}
+          selectedExpressionName={entryInfo?.["@_name"] ?? ""}
+          selectedDataType={entryInfo?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
           onExpressionHeaderUpdated={onContextEntryInfoUpdated}
         >
           {renderEntryDefinition({ additionalCssClass: "with-popover-menu" })}

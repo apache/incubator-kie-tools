@@ -20,7 +20,7 @@
 import * as React from "react";
 import * as ReactTable from "react-table";
 import { ResizerStopBehavior } from "../resizing/ResizingWidthsContext";
-import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
+import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable";
 import { BeeTableSelection } from "../selection/BeeTableSelectionContext";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 

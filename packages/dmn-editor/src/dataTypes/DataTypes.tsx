@@ -36,7 +36,7 @@ import { DataTypePanel } from "./DataTypePanel";
 import { findDataTypeById, isStruct } from "./DataTypeSpec";
 import { DataTypeName } from "./DataTypeName";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { DMN15_SPEC } from "../Dmn15Spec";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import {
   Dropdown,

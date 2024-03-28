@@ -26,13 +26,12 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  ExpressionDefinitionLogicType,
+  BoxedExpression,
   generateUuid,
   getNextAvailablePrefixedName,
   InsertRowColumnsDirection,
-  InvocationExpressionDefinition,
+  BoxedInvocation,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
@@ -50,27 +49,57 @@ import {
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
-import { ContextEntryInfoCell } from "../ContextExpression";
-import "./InvocationExpression.css";
+import { ContextEntryInfoCell, Entry } from "../ContextExpression";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
+import { DMN15__tBinding } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./InvocationExpression.css";
 
-type ROWTYPE = ContextExpressionDefinitionEntry;
+type ROWTYPE = DMN15__tBinding;
 
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME = "p-1";
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataType.Undefined;
-export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE = ExpressionDefinitionLogicType.Undefined;
+
+export const INVOCATION_PARAMETER_INFO_WIDTH_INDEX = 0;
 
 export function InvocationExpression(
-  invocationExpression: InvocationExpressionDefinition & { isNested: boolean; parentElementId: string }
+  invocationExpression: BoxedInvocation & {
+    isNested: boolean;
+    parentElementId: string;
+  }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { decisionNodeId, variables } = useBoxedExpressionEditor();
-  const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { expressionHolderId, variables, widthsById } = useBoxedExpressionEditor();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
 
-  const parametersWidth = useMemo(() => {
-    return invocationExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH;
-  }, [invocationExpression.entryInfoWidth]);
+  const id = invocationExpression["@_id"]!;
+
+  const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
+
+  const getParametersWidth = useCallback((widths: number[]) => {
+    return widths?.[INVOCATION_PARAMETER_INFO_WIDTH_INDEX] ?? INVOCATION_PARAMETER_MIN_WIDTH;
+  }, []);
+
+  const parametersWidth = useMemo(() => getParametersWidth(widths), [getParametersWidth, widths]);
+
+  const setParametersWidth = useCallback(
+    (newWidthAction: React.SetStateAction<number | undefined>) => {
+      setWidthById(id, (prev) => {
+        const newWidth =
+          typeof newWidthAction === "function" ? newWidthAction(getParametersWidth(prev)) : newWidthAction;
+
+        if (newWidth) {
+          const minSize = INVOCATION_PARAMETER_INFO_WIDTH_INDEX + 1;
+          const values = prev.length < minSize ? Array(minSize) : [...prev];
+          values.splice(INVOCATION_PARAMETER_INFO_WIDTH_INDEX, 1, newWidth);
+          return values;
+        }
+
+        return prev;
+      });
+    },
+    [getParametersWidth, id, setWidthById]
+  );
 
   const [parametersResizingWidth, setParametersResizingWidth] = React.useState<ResizingWidth>({
     value: parametersWidth,
@@ -91,14 +120,15 @@ export function InvocationExpression(
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
-        const entriesWidths = invocationExpression.bindingEntries.map((e) =>
-          getExpressionTotalMinWidth(0, e.entryExpression)
-        );
+        const bindingWidths =
+          invocationExpression.binding?.map((e) => getExpressionTotalMinWidth(0, e.expression!, widthsById)) ?? [];
 
-        const maxNestedExpressionWidth = Math.max(...entriesWidths, INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH);
+        const maxNestedExpressionWidth = Math.max(...bindingWidths, INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH);
+
+        const nestedExpressions = (invocationExpression.binding ?? []).map((b) => b.expression!);
 
         return {
-          nestedExpressions: invocationExpression.bindingEntries?.map((e) => e.entryExpression) ?? [],
+          nestedExpressions: nestedExpressions ?? [],
           fixedColumnActualWidth: parametersWidth,
           fixedColumnResizingWidth: parametersResizingWidth,
           fixedColumnMinWidth: INVOCATION_PARAMETER_MIN_WIDTH,
@@ -106,8 +136,9 @@ export function InvocationExpression(
           extraWidth: INVOCATION_EXTRA_WIDTH,
           expression: invocationExpression,
           flexibleColumnIndex: 2,
+          widthsById: widthsById,
         };
-      }, [parametersWidth, parametersResizingWidth, invocationExpression])
+      }, [invocationExpression, parametersWidth, parametersResizingWidth, widthsById])
     );
 
   /// //////////////////////////////////////////////////////
@@ -121,34 +152,24 @@ export function InvocationExpression(
   );
 
   const beeTableRows: ROWTYPE[] = useMemo(() => {
-    return invocationExpression.bindingEntries ?? [];
-  }, [invocationExpression.bindingEntries]);
-
-  const setParametersWidth = useCallback(
-    (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setExpression((prev: InvocationExpressionDefinition) => {
-        const newWidth = typeof newWidthAction === "function" ? newWidthAction(prev.entryInfoWidth) : newWidthAction;
-        return {
-          ...prev,
-          entryInfoWidth: newWidth,
-        };
-      });
-    },
-    [setExpression]
-  );
+    return invocationExpression.binding ?? [];
+  }, [invocationExpression.binding]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
-        label: invocationExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        dataType: invocationExpression.dataType,
+        accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
+        label: invocationExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
+        dataType: invocationExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
           {
             accessor: "functionName" as keyof ROWTYPE,
-            label: invocationExpression.invokedFunction.name ?? "Function name",
+            label:
+              invocationExpression.expression?.__$$element === "literalExpression"
+                ? invocationExpression.expression.text?.__$$text ?? "Function name"
+                : "Function name",
             isRowIndexColumn: false,
             isInlineEditable: true,
             dataType: undefined as any,
@@ -156,8 +177,8 @@ export function InvocationExpression(
             groupType: "invokedFunctionName",
             columns: [
               {
-                accessor: "parametersInfo" as any,
-                label: "parametersInfo",
+                accessor: "parameter" as any,
+                label: "parameter",
                 isRowIndexColumn: false,
                 dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
                 isWidthPinned: true,
@@ -166,8 +187,8 @@ export function InvocationExpression(
                 setWidth: setParametersWidth,
               },
               {
-                accessor: "argumentExpression" as any,
-                label: "argumentExpression",
+                accessor: "expression" as any,
+                label: "expression",
                 isRowIndexColumn: false,
                 dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
                 minWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
@@ -178,32 +199,27 @@ export function InvocationExpression(
         ],
       },
     ],
-    [
-      decisionNodeId,
-      invocationExpression.name,
-      invocationExpression.dataType,
-      invocationExpression.invokedFunction.name,
-      parametersWidth,
-      setParametersWidth,
-    ]
+    [expressionHolderId, invocationExpression, parametersWidth, setParametersWidth]
   );
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
         if (u.column.originalId === "functionName") {
-          setExpression((prev: InvocationExpressionDefinition) => ({
+          setExpression((prev: BoxedInvocation) => ({
             ...prev,
-            invokedFunction: {
-              id: prev.invokedFunction.id,
-              name: u.name,
+            expression: {
+              __$$element: "literalExpression",
+              text: {
+                __$$text: u.name,
+              },
             },
           }));
         } else {
-          setExpression((prev: InvocationExpressionDefinition) => ({
+          setExpression((prev: BoxedInvocation) => ({
             ...prev,
-            dataType: u.dataType,
-            name: u.name,
+            "@_typeRef": u.typeRef,
+            "@_label": u.name,
           }));
         }
       }
@@ -218,15 +234,27 @@ export function InvocationExpression(
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
-    return row.original.entryInfo.id;
+    return row.id;
   }, []);
 
   const updateEntry = useCallback(
-    (rowIndex: number, newArgumentEntry: ContextExpressionDefinitionEntry) => {
-      setExpression((prev: InvocationExpressionDefinition) => {
-        const newArgumentEntries = [...(prev.bindingEntries ?? [])];
-        newArgumentEntries[rowIndex] = newArgumentEntry;
-        return { ...prev, bindingEntries: newArgumentEntries };
+    (rowIndex: number, newArgumentEntry: Entry) => {
+      setExpression((prev: BoxedInvocation) => {
+        const newArgumentEntries = [...(prev.binding ?? [])];
+        newArgumentEntries[rowIndex] = {
+          parameter: newArgumentEntry.variable,
+          expression: newArgumentEntry.expression,
+        };
+        return { ...prev, binding: newArgumentEntries };
+      });
+    },
+    [setExpression]
+  );
+
+  const onDataUpdate = useCallback(
+    (data: DMN15__tBinding[]) => {
+      setExpression((prev: BoxedInvocation) => {
+        return { ...prev, binding: data };
       });
     },
     [setExpression]
@@ -234,12 +262,25 @@ export function InvocationExpression(
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
-      parametersInfo: (props) => <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />,
-      argumentExpression: (props) => (
-        <ArgumentEntryExpressionCell {...props} parentElementId={invocationExpression.parentElementId} />
+      parameter: (props) => (
+        <ContextEntryInfoCell
+          {...props}
+          data={props.data.map((e) => {
+            return { variable: e.parameter, expression: e.expression };
+          })}
+          onEntryUpdate={updateEntry}
+        />
+      ),
+      expression: (props) => (
+        <ArgumentEntryExpressionCell
+          {...props}
+          data={props.data}
+          parentElementId={invocationExpression.parentElementId}
+          onDataUpdate={onDataUpdate}
+        />
       ),
     }),
-    [invocationExpression.parentElementId, updateEntry]
+    [invocationExpression.parentElementId, onDataUpdate, updateEntry]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
@@ -267,39 +308,35 @@ export function InvocationExpression(
   }, [i18n]);
 
   const getDefaultArgumentEntry = useCallback(
-    (name?: string): ContextExpressionDefinitionEntry => {
+    (name?: string): DMN15__tBinding => {
       return {
-        entryInfo: {
-          id: generateUuid(),
-          dataType: DmnBuiltInDataType.Undefined,
-          name:
+        parameter: {
+          "@_id": generateUuid(),
+          "@_typeRef": DmnBuiltInDataType.Undefined,
+          "@_name":
             name ||
             getNextAvailablePrefixedName(
-              (invocationExpression.bindingEntries ?? []).map((e) => e.entryInfo.name),
+              (invocationExpression.binding ?? []).map((e) => e.parameter["@_name"]),
               "p"
             ),
         },
-        entryExpression: {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Undefined,
-          dataType: DmnBuiltInDataType.Undefined,
-        },
+        expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.,
       };
     },
-    [invocationExpression.bindingEntries]
+    [invocationExpression.binding]
   );
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      const newEntries: ContextExpressionDefinitionEntry[] = [];
-      const names = (invocationExpression.bindingEntries ?? []).map((e) => e.entryInfo.name);
+      const newEntries: DMN15__tBinding[] = [];
+      const names = (invocationExpression.binding ?? []).map((e) => e.parameter["@_name"]);
       for (let i = 0; i < args.rowsCount; i++) {
         const name = getNextAvailablePrefixedName(names, "p");
         names.push(name);
         newEntries.push(getDefaultArgumentEntry(name));
       }
-      setExpression((prev: InvocationExpressionDefinition) => {
-        const newArgumentEntries = [...(prev.bindingEntries ?? [])];
+      setExpression((prev: BoxedInvocation) => {
+        const newArgumentEntries = [...(prev.binding ?? [])];
 
         for (const newEntry of newEntries) {
           let index = args.beforeIndex;
@@ -311,21 +348,21 @@ export function InvocationExpression(
 
         return {
           ...prev,
-          bindingEntries: newArgumentEntries,
+          binding: newArgumentEntries,
         };
       });
     },
-    [getDefaultArgumentEntry, setExpression]
+    [getDefaultArgumentEntry, invocationExpression.binding, setExpression]
   );
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: InvocationExpressionDefinition) => {
-        const newArgumentEntries = [...(prev.bindingEntries ?? [])];
+      setExpression((prev: BoxedInvocation) => {
+        const newArgumentEntries = [...(prev.binding ?? [])];
         newArgumentEntries.splice(args.rowIndex, 1);
         return {
           ...prev,
-          bindingEntries: newArgumentEntries,
+          binding: newArgumentEntries,
         };
       });
     },
@@ -334,16 +371,16 @@ export function InvocationExpression(
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: InvocationExpressionDefinition) => {
-        const newArgumentEntries = [...(prev.bindingEntries ?? [])];
+      setExpression((prev: BoxedInvocation) => {
+        const newArgumentEntries = [...(prev.binding ?? [])];
         newArgumentEntries.splice(
           args.rowIndex,
           1,
-          getDefaultArgumentEntry(newArgumentEntries[args.rowIndex].entryInfo.name)
+          getDefaultArgumentEntry(newArgumentEntries[args.rowIndex].parameter["@_name"])
         );
         return {
           ...prev,
-          bindingEntries: newArgumentEntries,
+          binding: newArgumentEntries,
         };
       });
     },
@@ -374,10 +411,10 @@ export function InvocationExpression(
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
-      <div className={`invocation-expression ${invocationExpression.id}`}>
-        <BeeTable
+      <div className={`invocation-expression ${id}`}>
+        <BeeTable<ROWTYPE>
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
-          tableId={invocationExpression.id}
+          tableId={id}
           headerLevelCountForAppendingRowIndexColumn={2}
           headerVisibility={headerVisibility}
           skipLastHeaderGroup={true}

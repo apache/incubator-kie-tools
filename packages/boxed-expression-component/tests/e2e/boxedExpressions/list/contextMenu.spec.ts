@@ -20,7 +20,7 @@
 import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
-test.describe("Bixed List context menu", () => {
+test.describe("Boxed List context menu", () => {
   test.describe("Rows control", () => {
     test.beforeEach(async ({ stories, page, monaco, boxedExpressionEditor }) => {
       await stories.openBoxedList();

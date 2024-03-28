@@ -30,8 +30,7 @@ import {
   generateUuid,
   getNextAvailablePrefixedName,
   InsertRowColumnsDirection,
-  RelationExpressionDefinition,
-  RelationExpressionDefinitionRow,
+  BoxedRelation,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
@@ -48,19 +47,24 @@ import {
   useBoxedExpressionEditorDispatch,
 } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { DMN15__tList, DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./RelationExpression.css";
 
-type ROWTYPE = RelationExpressionDefinitionRow;
+type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
 export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
 export function RelationExpression(
-  relationExpression: RelationExpressionDefinition & { isNested: boolean; parentElementId: string }
+  relationExpression: BoxedRelation & {
+    isNested: boolean;
+    parentElementId: string;
+  }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { decisionNodeId } = useBoxedExpressionEditor();
-  const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { variables } = useBoxedExpressionEditor();
+  const { widthsById, variables, expressionHolderId } = useBoxedExpressionEditor();
+  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
+
+  const id = relationExpression["@_id"]!;
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
@@ -95,39 +99,55 @@ export function RelationExpression(
     ],
     [i18n]
   );
-  const columns = useMemo(() => {
-    return (relationExpression.columns ?? []).map((c) => ({ ...c, minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH }));
-  }, [relationExpression.columns]);
 
-  const rows = useMemo<RelationExpressionDefinitionRow[]>(() => {
-    return relationExpression.rows ?? [];
+  const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
+
+  const getColumnWidth = useCallback((columnIndex: number, widths: number[]) => {
+    return widths[columnIndex] ?? RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH;
+  }, []);
+
+  const columns = useMemo(() => {
+    return (relationExpression.column ?? []).map((c, index) => ({
+      ...c,
+      minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+      width: getColumnWidth(index + 1, widths),
+    }));
+  }, [getColumnWidth, relationExpression.column, widths]);
+
+  const rows = useMemo<DMN15__tList[]>(() => {
+    return relationExpression.row ?? [];
   }, [relationExpression]);
 
   const setColumnWidth = useCallback(
     (columnIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setExpression((prev: RelationExpressionDefinition) => {
-        const newColumns = [...(prev.columns ?? [])];
-        const newWidth =
-          typeof newWidthAction === "function" ? newWidthAction(newColumns[columnIndex].width) : newWidthAction;
-        newColumns[columnIndex].width = newWidth;
-        return { ...prev, columns: newColumns };
+      setWidthById(id, (prev) => {
+        const prevColumnWidth = getColumnWidth(columnIndex, prev);
+        const newWidth = typeof newWidthAction === "function" ? newWidthAction(prevColumnWidth) : newWidthAction;
+
+        if (newWidth && prevColumnWidth) {
+          const minSize = columnIndex + 1;
+          const values = prev.length < minSize ? Array(minSize) : [...prev];
+          values.splice(columnIndex, 1, newWidth);
+          return values;
+        }
+
+        return prev;
       });
     },
-    [setExpression]
+    [getColumnWidth, setWidthById, id]
   );
-
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
   const beeTableRef = useRef<BeeTableRef>(null);
   const { onColumnResizingWidthChange, columnResizingWidths, isPivoting } = usePublishedBeeTableResizableColumns(
-    relationExpression.id,
+    relationExpression["@_id"]!,
     columns.length,
     true
   );
 
-  const lastColumnMinWidth = useNestedTableLastColumnMinWidth(columnResizingWidths);
+  useNestedTableLastColumnMinWidth(columnResizingWidths);
 
   useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
@@ -144,58 +164,68 @@ export function RelationExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        label: relationExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        dataType: relationExpression.dataType,
+        accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        label: relationExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
+        dataType: relationExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
         columns: columns.map((column, columnIndex) => ({
-          accessor: column.id as any,
-          label: column.name,
-          dataType: column.dataType,
+          accessor: column["@_id"] as any,
+          label: column["@_name"],
+          dataType: column["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
           isRowIndexColumn: false,
           minWidth: RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
-          setWidth: setColumnWidth(columnIndex),
-          width: column.width ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+          setWidth: setColumnWidth(columnIndex + 1),
+          width: getColumnWidth(columnIndex + 1, widths),
         })),
       },
     ];
-  }, [columns, decisionNodeId, relationExpression.dataType, relationExpression.name, setColumnWidth]);
+  }, [columns, expressionHolderId, getColumnWidth, relationExpression, setColumnWidth, widths]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(
     () =>
       rows.map((row) => {
-        const beeTableRow = columns.reduce(
-          (tableRow, column, columnIndex) => {
-            (tableRow as any)[column.id] = row.cells[columnIndex] || { id: generateUuid(), content: "" };
+        return columns.reduce(
+          (tableRow: ROWTYPE, column, columnIndex) => {
+            const cellExpression = row.expression?.[columnIndex];
+            if (cellExpression?.__$$element === "literalExpression") {
+              tableRow[column["@_id"]!] = cellExpression.text?.__$$text ?? "";
+            }
             return tableRow;
           },
-          { id: row.id } as ROWTYPE
+          { id: row["@_id"] }
         );
-        return beeTableRow;
       }),
     [rows, columns]
   );
 
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
-      setExpression((prev: RelationExpressionDefinition) => {
-        const n = { ...prev };
-        cellUpdates.forEach((u) => {
-          const newRows = [...(n.rows ?? [])];
+      setExpression((prev: BoxedRelation) => {
+        let previousExpression = { ...prev };
 
-          const newCells = [...newRows[u.rowIndex].cells];
-          newCells[u.columnIndex].content = u.value;
-
-          newRows[u.rowIndex] = {
-            ...newRows[u.rowIndex],
-            cells: newCells,
+        cellUpdates.forEach((cellUpdate) => {
+          const newRows = [...(previousExpression.row ?? [])];
+          const newExpressions = [...(newRows[cellUpdate.rowIndex].expression ?? [])];
+          newExpressions[cellUpdate.columnIndex] = {
+            ...newExpressions[cellUpdate.columnIndex],
+            __$$element: "literalExpression",
+            text: {
+              __$$text: cellUpdate.value,
+            },
+          };
+          newRows[cellUpdate.rowIndex] = {
+            ...newRows[cellUpdate.rowIndex],
+            expression: newExpressions,
           };
 
-          n.rows = newRows;
+          previousExpression = {
+            ...previousExpression,
+            row: newRows,
+          };
         });
 
-        return n;
+        return previousExpression;
       });
     },
     [setExpression]
@@ -203,28 +233,26 @@ export function RelationExpression(
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: RelationExpressionDefinition) => {
-        const n = {
-          ...prev,
-        };
-        const newColumns = [...(prev.columns ?? [])];
+      setExpression((prev: BoxedRelation) => {
+        const n = { ...prev };
+        const newColumns = [...(prev.column ?? [])];
 
         for (const u of columnUpdates) {
           if (u.column.depth === 0) {
-            n.dataType = u.dataType;
-            n.name = u.name;
+            n["@_typeRef"] = u.typeRef;
+            n["@_label"] = u.name;
           } else {
             newColumns[u.columnIndex] = {
               ...newColumns[u.columnIndex],
-              name: u.name,
-              dataType: u.dataType,
+              "@_name": u.name,
+              "@_typeRef": u.typeRef,
             };
           }
         }
 
         return {
           ...n,
-          columns: newColumns,
+          column: newColumns,
         };
       });
     },
@@ -232,21 +260,31 @@ export function RelationExpression(
   );
 
   const createCell = useCallback(() => {
-    const cell = { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE };
-    variables?.repository.addVariableToContext(cell.id, cell.id, relationExpression.parentElementId);
+    const cell: {
+      __$$element: "literalExpression";
+      "@_id": string;
+      text: { __$$text: string };
+    } = {
+      __$$element: "literalExpression",
+      "@_id": generateUuid(),
+      text: {
+        __$$text: RELATION_EXPRESSION_DEFAULT_VALUE,
+      },
+    };
+    variables?.repository.addVariableToContext(cell["@_id"]!, cell["@_id"]!, relationExpression.parentElementId);
     return cell;
   }, [relationExpression.parentElementId, variables?.repository]);
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
-        const newRows = [...(prev.rows ?? [])];
+      setExpression((prev: BoxedRelation) => {
+        const newRows = [...(prev.row ?? [])];
         const newItems = [];
 
         for (let i = 0; i < args.rowsCount; i++) {
           newItems.push({
-            id: generateUuid(),
-            cells: Array.from(new Array(prev.columns?.length ?? 0)).map(() => {
+            "@_id": generateUuid(),
+            expression: Array.from(new Array(prev.column?.length ?? 0)).map(() => {
               return createCell();
             }),
           });
@@ -262,7 +300,7 @@ export function RelationExpression(
 
         return {
           ...prev,
-          rows: newRows,
+          row: newRows,
         };
       });
     },
@@ -271,84 +309,96 @@ export function RelationExpression(
 
   const onColumnAdded = useCallback(
     (args: { beforeIndex: number; columnsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
-        const newColumns = [...(prev.columns ?? [])];
+      setExpression((prev: BoxedRelation) => {
+        const newColumns = [...(prev.column ?? [])];
 
         const newItems = [];
-        const availableNames = prev.columns?.map((c) => c.name) ?? [];
+        const availableNames = prev.column?.map((c) => c["@_name"]) ?? [];
 
         for (let i = 0; i < args.columnsCount; i++) {
           const name = getNextAvailablePrefixedName(availableNames, "column");
           availableNames.push(name);
 
           newItems.push({
-            id: generateUuid(),
-            name: name,
-            dataType: DmnBuiltInDataType.Undefined,
-            width: RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+            "@_id": generateUuid(),
+            "@_name": name,
+            "@_typeRef": DmnBuiltInDataType.Undefined,
           });
         }
 
         for (const newEntry of newItems) {
           let index = args.beforeIndex;
           newColumns.splice(index, 0, newEntry);
+
           if (args.insertDirection === InsertRowColumnsDirection.BelowOrLeft) {
             index++;
           }
         }
 
-        const newRows = [...(prev.rows ?? [])].map((row) => {
-          const newCells = [...row.cells];
+        const newRows = [...(prev.row ?? [])].map((row) => {
+          const newCells = [...(row.expression ?? [])];
           newCells.splice(args.beforeIndex, 0, createCell());
           return {
             ...row,
-            cells: newCells,
+            expression: newCells,
           };
         });
 
         return {
           ...prev,
-          columns: newColumns,
-          rows: newRows,
+          column: newColumns,
+          row: newRows,
         };
       });
+
+      setWidthById(id, (prev) => {
+        const n = [...prev];
+        // FIXME: Tiago
+        return n;
+      });
     },
-    [createCell, setExpression]
+    [createCell, id, setExpression, setWidthById]
   );
 
   const onColumnDeleted = useCallback(
     (args: { columnIndex: number }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
-        const newColumns = [...(prev.columns ?? [])];
+      setExpression((prev: BoxedRelation) => {
+        const newColumns = [...(prev.column ?? [])];
         newColumns.splice(args.columnIndex, 1);
 
-        const newRows = [...(prev.rows ?? [])].map((row) => {
-          const newCells = [...row.cells];
+        const newRows = [...(prev.row ?? [])].map((row) => {
+          const newCells = [...(row.expression ?? [])];
           newCells.splice(args.columnIndex, 1);
           return {
             ...row,
-            cells: newCells,
+            expression: newCells,
           };
         });
 
         return {
           ...prev,
-          columns: newColumns,
-          rows: newRows,
+          column: newColumns,
+          row: newRows,
         };
       });
+
+      setWidthById(id, (prev) => {
+        const n = [...prev];
+        // FIXME: Tiago
+        return n;
+      });
     },
-    [setExpression]
+    [setExpression, setWidthById, id]
   );
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
-        const newRows = [...(prev.rows ?? [])];
+      setExpression((prev: BoxedRelation) => {
+        const newRows = [...(prev.row ?? [])];
         newRows.splice(args.rowIndex, 1);
         return {
           ...prev,
-          rows: newRows,
+          row: newRows,
         };
       });
     },
@@ -357,20 +407,20 @@ export function RelationExpression(
 
   const onRowDuplicated = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: RelationExpressionDefinition) => {
+      setExpression((prev: BoxedRelation) => {
         const duplicatedRow = {
-          id: generateUuid(),
-          cells: prev.rows![args.rowIndex].cells.map((cell) => ({
+          "@_id": generateUuid(),
+          expression: prev.row![args.rowIndex].expression?.map((cell) => ({
             ...cell,
-            id: generateUuid(),
+            "@_id": generateUuid(),
           })),
         };
 
-        const newRows = [...(prev.rows ?? [])];
+        const newRows = [...(prev.row ?? [])];
         newRows.splice(args.rowIndex, 0, duplicatedRow);
         return {
           ...prev,
-          rows: newRows,
+          row: newRows,
         };
       });
     },

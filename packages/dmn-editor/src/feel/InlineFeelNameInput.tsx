@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DMN15_SPEC, UniqueNameIndex } from "../Dmn15Spec";
+import { DMN15_SPEC, UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { useFocusableElement } from "../focus/useFocusableElement";
 import { State } from "../store/Store";
 import { useDmnEditorStoreApi } from "../store/StoreContext";

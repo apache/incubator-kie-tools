@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import "./index.css";
 export * from "./BoxedExpressionEditor";
 export * from "./ExpressionDefinitionRoot";
 export * from "../table/BeeTable";
+import "./index.css";

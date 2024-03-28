@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
@@ -26,7 +26,6 @@ import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEdito
 import { NavigationKeysUtils } from "../../keysUtils";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../resizing/WidthConstants";
-import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
 import {
   BeeTableResizableColumnsContextProvider,
@@ -43,6 +42,7 @@ import {
 } from "../../selection/BeeTableSelectionContext";
 import { BeeTableCellWidthsToFitDataContextProvider } from "../../resizing/BeeTableCellWidthToFitDataContext";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import "./BeeTable.css";
 
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
@@ -60,15 +60,6 @@ export function getColumnsAtLastLevel<R extends ReactTable.Column<any> | ReactTa
       ? getColumnsAtLastLevel(column.columns as R[], depth - 1) // recurse
       : (column.columns as R[]);
   });
-}
-
-export function areEqualColumns<R extends object>(
-  column: ReactTable.Column<R> | ReactTable.ColumnInstance<R> | undefined
-): (other: ReactTable.Column<R> | ReactTable.ColumnInstance<R>) => boolean {
-  const columnId = column?.originalId || column?.id || column?.accessor;
-  return (other: ReactTable.Column<R>) => {
-    return other.id === columnId || other.accessor === columnId;
-  };
 }
 
 export function BeeTableInternal<R extends object>({

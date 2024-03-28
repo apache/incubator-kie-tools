@@ -18,7 +18,7 @@
  */
 
 import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { allDmnImportNamespaces } from "../Dmn15Spec";
+import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { allPmmlImportNamespaces, getPmmlNamespaceFromDmnImport } from "../pmml/pmml";
 
 export function getNamespaceOfDmnImport({ dmnImport }: { dmnImport: DMN15__tImport }) {
