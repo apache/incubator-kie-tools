@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
-import io.crysknife.ui.translation.client.TranslationService;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 
 import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.SHAPE_START;
 

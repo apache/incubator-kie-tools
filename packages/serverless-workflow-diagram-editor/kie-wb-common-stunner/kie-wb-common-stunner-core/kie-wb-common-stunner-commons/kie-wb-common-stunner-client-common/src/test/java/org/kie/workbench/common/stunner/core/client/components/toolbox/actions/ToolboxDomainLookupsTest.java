@@ -20,10 +20,10 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
-import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;

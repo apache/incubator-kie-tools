@@ -23,11 +23,11 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 import java.util.Iterator;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import io.crysknife.client.IsElement;
-import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;

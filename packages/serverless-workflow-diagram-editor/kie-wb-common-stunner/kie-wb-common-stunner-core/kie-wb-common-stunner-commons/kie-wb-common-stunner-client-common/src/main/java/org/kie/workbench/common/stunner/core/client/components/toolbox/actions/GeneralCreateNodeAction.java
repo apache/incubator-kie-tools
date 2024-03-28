@@ -23,13 +23,13 @@ package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 import java.lang.annotation.Annotation;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.api.JsWindow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;

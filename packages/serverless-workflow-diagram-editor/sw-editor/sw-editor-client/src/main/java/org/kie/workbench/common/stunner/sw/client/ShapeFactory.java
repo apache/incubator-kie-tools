@@ -20,10 +20,10 @@
 
 package org.kie.workbench.common.stunner.sw.client;
 
-import io.crysknife.ui.translation.client.TranslationService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.sw.client.resources.GlyphFactory;

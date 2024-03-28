@@ -22,13 +22,13 @@ package org.kie.workbench.common.stunner.core.client.shape;
 
 import java.lang.annotation.Annotation;
 
-import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
 import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;

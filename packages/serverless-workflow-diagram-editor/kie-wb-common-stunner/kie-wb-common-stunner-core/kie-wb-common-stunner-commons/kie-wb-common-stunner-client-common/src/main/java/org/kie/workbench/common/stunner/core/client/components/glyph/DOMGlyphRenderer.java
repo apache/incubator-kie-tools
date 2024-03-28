@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.core.client.components.glyph;
 
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 /**

@@ -79,6 +79,7 @@
 
   <properties>
     <sonar.skip>true</sonar.skip>
+    <j2cl.tools.version>0.1</j2cl.tools.version>
   </properties>
 
   <dependencyManagement>
@@ -223,6 +224,14 @@
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>kie-wb-common-ui</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.j2cl.tools</groupId>
+        <artifactId>bom</artifactId>
+        <version>${j2cl.tools.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
     </dependencies>

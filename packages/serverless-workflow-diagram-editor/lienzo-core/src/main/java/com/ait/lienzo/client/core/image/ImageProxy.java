@@ -30,7 +30,7 @@ import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import elemental2.dom.ImageData;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 
 /**
  * ImageProxy is used by {@link AbstractImageShape} to load and draw the image.

@@ -22,9 +22,9 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.util.HashMap;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Singleton;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DeleteNodeConfirmation;

@@ -21,7 +21,7 @@
 package org.kie.workbench.common.stunner.core.client.components.views;
 
 import elemental2.dom.HTMLElement;
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 
 public interface WidgetElementRendererView extends IsElement {
 

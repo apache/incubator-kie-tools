@@ -26,7 +26,7 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import elemental2.dom.ImageData;
 import jsinterop.annotations.JsProperty;
 import org.gwtproject.safehtml.shared.UriUtils;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 
 public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extends Shape<T> {
 

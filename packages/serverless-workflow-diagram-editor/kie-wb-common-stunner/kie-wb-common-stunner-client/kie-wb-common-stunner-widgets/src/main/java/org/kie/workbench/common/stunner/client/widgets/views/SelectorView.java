@@ -24,14 +24,14 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
-import io.crysknife.client.IsElement;
-import io.crysknife.ui.templates.client.annotation.DataField;
-import io.crysknife.ui.templates.client.annotation.EventHandler;
-import io.crysknife.ui.templates.client.annotation.ForEvent;
-import io.crysknife.ui.templates.client.annotation.Templated;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.DataField;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.EventHandler;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.ForEvent;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.Templated;
 
 @Dependent
 @Templated

@@ -1,5 +1,13 @@
 package org.kie.workbench.common.stunner.sw.marshall.yaml;
 
+import org.kie.j2cl.tools.yaml.mapper.api.YAMLDeserializer;
+import org.kie.j2cl.tools.yaml.mapper.api.YAMLSerializer;
+import org.kie.j2cl.tools.yaml.mapper.api.exception.YAMLDeserializationException;
+import org.kie.j2cl.tools.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
+import org.kie.j2cl.tools.yaml.mapper.api.internal.ser.YAMLSerializationContext;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlMapping;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlNode;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlSequence;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState_YamlMapperImpl;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
@@ -18,15 +26,6 @@ import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.State_YamlMapperImpl;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState_YamlMapperImpl;
-import org.treblereel.gwt.yaml.api.YAMLDeserializer;
-import org.treblereel.gwt.yaml.api.YAMLSerializer;
-import org.treblereel.gwt.yaml.api.exception.YAMLDeserializationException;
-import org.treblereel.gwt.yaml.api.internal.deser.YAMLDeserializationContext;
-import org.treblereel.gwt.yaml.api.internal.ser.YAMLSerializationContext;
-import org.treblereel.gwt.yaml.api.node.YamlMapping;
-import org.treblereel.gwt.yaml.api.node.YamlNode;
-import org.treblereel.gwt.yaml.api.node.YamlSequence;
-
 
 public class StateYamlSerializer implements YAMLDeserializer<State>, YAMLSerializer<State> {
 

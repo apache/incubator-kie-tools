@@ -20,7 +20,7 @@
 
 package org.uberfire.ext.editor.commons.client.resources.i18n;
 
-import io.crysknife.ui.translation.client.annotation.TranslationKey;
+import org.kie.j2cl.tools.di.ui.translation.client.annotation.TranslationKey;
 
 public class Constants {
 

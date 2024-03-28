@@ -22,7 +22,7 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session;
 
 import java.util.function.Predicate;
 
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;

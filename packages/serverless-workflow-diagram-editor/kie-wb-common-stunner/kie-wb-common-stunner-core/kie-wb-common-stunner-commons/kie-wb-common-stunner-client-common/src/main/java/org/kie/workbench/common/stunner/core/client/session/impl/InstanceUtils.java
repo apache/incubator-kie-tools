@@ -24,7 +24,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.function.Consumer;
 
-import io.crysknife.client.ManagedInstance;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
 public class InstanceUtils {

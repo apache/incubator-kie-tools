@@ -20,11 +20,11 @@
 
 package org.kie.workbench.common.stunner.core.client.rule;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 import org.kie.workbench.common.stunner.core.rule.CachedRuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;

@@ -1,6 +1,6 @@
 package com.ait.lienzo.client.core.image;
 
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 
 public class ImageStrip {
 

@@ -23,10 +23,10 @@ import elemental2.core.Function;
 import elemental2.core.JsMap;
 import elemental2.core.Reflect;
 import elemental2.dom.DomGlobal;
-import io.crysknife.client.SyncBeanDef;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import org.kie.j2cl.tools.di.core.SyncBeanDef;
 import org.uberfire.client.mvp.EditorActivity;
 
 public class JSFunctions {

@@ -22,17 +22,17 @@ package org.kie.workbench.common.stunner.client.widgets.views;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import io.crysknife.client.IsElement;
-import io.crysknife.ui.templates.client.annotation.DataField;
-import io.crysknife.ui.templates.client.annotation.Templated;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.DataField;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.Templated;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 
 @Templated
 @Dependent
 public class WidgetElementRendererViewImpl implements WidgetElementRendererView,
-                                                      IsElement {
+                                                    IsElement {
 
     @Inject
     @DataField

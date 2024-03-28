@@ -23,10 +23,10 @@ package org.kie.workbench.common.stunner.core.graph.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.j2cl.tools.processors.annotations.GWT3Export;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
-import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @GWT3Export
 public class NodeImpl<C> extends AbstractElement<C> implements Node<C, Edge> {

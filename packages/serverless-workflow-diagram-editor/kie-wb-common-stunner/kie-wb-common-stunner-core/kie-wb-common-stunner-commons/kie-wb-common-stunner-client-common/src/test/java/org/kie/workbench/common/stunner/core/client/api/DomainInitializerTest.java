@@ -29,14 +29,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 
-import io.crysknife.client.BeanManager;
-import io.crysknife.client.ManagedInstance;
-import io.crysknife.ui.translation.client.TranslationService;
 import jakarta.inject.Qualifier;
 import jsinterop.base.JsPropertyMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.BeanManager;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.kie.workbench.common.stunner.core.api.JsDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.registry.impl.ClientRegistryFactoryImpl;

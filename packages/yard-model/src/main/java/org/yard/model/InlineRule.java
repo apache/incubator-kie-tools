@@ -22,17 +22,10 @@ import java.util.List;
 
 public class InlineRule implements Rule {
 
-    private final int rowNumber;
     public List def;
 
-    public InlineRule(int rowNumber, List data) {
-        this.rowNumber = rowNumber;
+    public InlineRule(List data) {
         this.def = data;
-    }
-
-    @Override
-    public int getRowNumber() {
-        return rowNumber;
     }
 
     public List getDef() {

@@ -25,11 +25,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.ShapeSetThumbProvider;
 

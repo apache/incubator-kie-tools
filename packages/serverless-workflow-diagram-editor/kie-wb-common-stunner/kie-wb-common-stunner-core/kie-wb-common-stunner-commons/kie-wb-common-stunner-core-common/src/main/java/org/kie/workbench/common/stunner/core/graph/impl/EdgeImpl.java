@@ -21,9 +21,9 @@
 package org.kie.workbench.common.stunner.core.graph.impl;
 
 import jsinterop.annotations.JsType;
+import org.kie.j2cl.tools.processors.annotations.GWT3Export;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JsType
 @GWT3Export

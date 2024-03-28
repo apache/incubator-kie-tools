@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.resources.i18n;
 
-import io.crysknife.ui.translation.client.annotation.TranslationKey;
+import org.kie.j2cl.tools.di.ui.translation.client.annotation.TranslationKey;
 
 public interface StunnerWidgetsConstants {
 

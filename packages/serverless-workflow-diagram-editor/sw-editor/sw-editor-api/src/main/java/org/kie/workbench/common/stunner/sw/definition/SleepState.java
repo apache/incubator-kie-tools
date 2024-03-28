@@ -23,15 +23,15 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
+import org.kie.j2cl.tools.json.mapper.annotation.JSONMapper;
+import org.kie.j2cl.tools.processors.annotations.GWT3Export;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.json.StateEndDefinitionJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.json.StateTransitionDefinitionJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.yaml.StateEndDefinitionYamlTypeSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.yaml.StateTransitionDefinitionYamlTypeSerializer;
-import org.treblereel.gwt.json.mapper.annotation.JSONMapper;
-import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
-import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
-import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
-import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JSONMapper
 @YAMLMapper

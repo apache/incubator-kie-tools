@@ -23,11 +23,12 @@ package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 import java.util.function.BiFunction;
 
 import elemental2.dom.HTMLDivElement;
-import io.crysknife.client.IsElement;
-import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStripGlyph;
@@ -35,7 +36,6 @@ import org.kie.workbench.common.stunner.core.client.shape.ImageStripRegistry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
 import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;

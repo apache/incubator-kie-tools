@@ -22,9 +22,9 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 

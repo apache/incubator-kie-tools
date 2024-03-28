@@ -20,10 +20,10 @@
 
 package org.kie.workbench.common.stunner.core.client.rule;
 
-import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 import org.kie.workbench.common.stunner.core.rule.CachedRuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;

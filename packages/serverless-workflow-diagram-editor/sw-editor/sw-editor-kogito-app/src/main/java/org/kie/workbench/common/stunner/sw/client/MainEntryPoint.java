@@ -19,12 +19,12 @@
 
 package org.kie.workbench.common.stunner.sw.client;
 
-import io.crysknife.annotation.Application;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.annotation.Application;
+import org.kie.j2cl.tools.processors.annotations.GWT3EntryPoint;
 import org.kie.workbench.common.stunner.client.lienzo.StunnerLienzoCore;
 import org.kie.workbench.common.stunner.sw.client.editor.DiagramEditorActivity;
-import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 import org.uberfire.client.workbench.WorkbenchEntryPoint;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 

@@ -22,8 +22,8 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import java.util.List;
 
-import io.crysknife.ui.translation.client.TranslationService;
 import org.junit.Before;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.mockito.ArgumentCaptor;
 
 import static org.junit.Assert.assertEquals;

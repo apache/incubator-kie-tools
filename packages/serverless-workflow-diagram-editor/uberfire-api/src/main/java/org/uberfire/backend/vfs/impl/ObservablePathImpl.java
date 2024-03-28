@@ -20,9 +20,9 @@
 
 package org.uberfire.backend.vfs.impl;
 
-import io.crysknife.client.BeanManager;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.BeanManager;
 import org.uberfire.backend.vfs.IsVersioned;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;

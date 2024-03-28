@@ -25,9 +25,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import jsinterop.annotations.JsType;
+import org.kie.j2cl.tools.processors.annotations.GWT3Export;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
-import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JsType
 @GWT3Export

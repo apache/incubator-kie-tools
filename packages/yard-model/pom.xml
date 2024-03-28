@@ -47,13 +47,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.treblereel.gwt.yaml.mapper</groupId>
+            <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
             <artifactId>common</artifactId>
             <version>${yaml.mapper}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.treblereel.gwt.yaml.mapper</groupId>
+            <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
             <artifactId>processor</artifactId>
             <version>${yaml.mapper}</version>
             <scope>provided</scope>

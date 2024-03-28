@@ -19,9 +19,9 @@
 
 package org.uberfire.client.resources;
 
-import org.treblereel.j2cl.processors.annotations.GWT3Resource;
-import org.treblereel.j2cl.processors.common.resources.ClientBundle;
-import org.treblereel.j2cl.processors.common.resources.TextResource;
+import org.kie.j2cl.tools.processors.annotations.GWT3Resource;
+import org.kie.j2cl.tools.processors.common.resources.ClientBundle;
+import org.kie.j2cl.tools.processors.common.resources.TextResource;
 
 /**
  * All GWT managed resources for Workbench

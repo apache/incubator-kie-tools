@@ -25,12 +25,12 @@ import java.util.Queue;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
-import io.crysknife.ui.translation.client.annotation.Bundle;
 import org.gwtbootstrap3.extras.notify.client.NotifyClientBundle;
+import org.kie.j2cl.tools.di.ui.translation.client.annotation.Bundle;
+import org.kie.j2cl.tools.processors.common.injectors.ScriptInjector;
+import org.kie.j2cl.tools.processors.common.injectors.StyleInjector;
+import org.kie.j2cl.tools.processors.common.resources.TextResource;
 import org.kie.workbench.common.stunner.client.lienzo.resources.StunnerLienzoCoreResources;
-import org.treblereel.j2cl.processors.common.injectors.ScriptInjector;
-import org.treblereel.j2cl.processors.common.injectors.StyleInjector;
-import org.treblereel.j2cl.processors.common.resources.TextResource;
 
 @Bundle("resources/i18n/StunnerLienzoConstants.properties")
 public class StunnerLienzoCore {

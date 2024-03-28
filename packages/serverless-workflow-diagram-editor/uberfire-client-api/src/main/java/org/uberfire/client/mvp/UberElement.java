@@ -20,7 +20,7 @@
 
 package org.uberfire.client.mvp;
 
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 
 /**
  * Interface to inject a Presenter into a View for MVP-based Element

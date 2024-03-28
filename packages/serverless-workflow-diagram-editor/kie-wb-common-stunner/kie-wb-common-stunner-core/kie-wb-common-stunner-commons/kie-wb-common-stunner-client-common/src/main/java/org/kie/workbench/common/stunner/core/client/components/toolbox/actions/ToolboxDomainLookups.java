@@ -23,10 +23,10 @@ package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 
 @ApplicationScoped

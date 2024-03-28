@@ -20,10 +20,10 @@
 
 package org.kie.workbench.common.stunner.core.client.resources;
 
-import org.treblereel.j2cl.processors.annotations.GWT3Resource;
-import org.treblereel.j2cl.processors.common.resources.ClientBundle;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
-import org.treblereel.j2cl.processors.common.resources.TextResource;
+import org.kie.j2cl.tools.processors.annotations.GWT3Resource;
+import org.kie.j2cl.tools.processors.common.resources.ClientBundle;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
+import org.kie.j2cl.tools.processors.common.resources.TextResource;
 
 @GWT3Resource
 public interface StunnerCommonImageResources extends ClientBundle {

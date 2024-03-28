@@ -112,7 +112,7 @@
             <artifactId>lienzo-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.j2cl.processors</groupId>
+            <groupId>org.kie.j2cl.tools.processors</groupId>
             <artifactId>processors</artifactId>
             <scope>provided</scope>
         </dependency>
@@ -148,21 +148,4 @@
             </exclusions>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

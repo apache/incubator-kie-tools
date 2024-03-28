@@ -19,7 +19,7 @@
 
 package org.uberfire.client.resources;
 
-import org.treblereel.j2cl.processors.common.resources.TextResource;
+import org.kie.j2cl.tools.processors.common.resources.TextResource;
 
 /**
  * GWT managed CSS for Workbench

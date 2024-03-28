@@ -49,19 +49,19 @@
             <artifactId>gwtproject</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.crysknife.ui</groupId>
-            <artifactId>crysknife-ui-core</artifactId>
+            <groupId>org.kie.j2cl.tools.di.ui</groupId>
+            <artifactId>core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.j2cl.processors</groupId>
+            <groupId>org.kie.j2cl.tools.processors</groupId>
             <artifactId>common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.j2cl.processors</groupId>
+            <groupId>org.kie.j2cl.tools.processors</groupId>
             <artifactId>annotations</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.treblereel.j2cl.processors</groupId>
+            <groupId>org.kie.j2cl.tools.processors</groupId>
             <artifactId>processors</artifactId>
             <scope>provided</scope>
         </dependency>

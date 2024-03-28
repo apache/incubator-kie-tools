@@ -21,11 +21,11 @@
 package org.kie.workbench.common.widgets.client.errorpage;
 
 import elemental2.dom.HTMLDivElement;
-import io.crysknife.client.IsElement;
-import io.crysknife.ui.templates.client.annotation.DataField;
-import io.crysknife.ui.templates.client.annotation.Templated;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.DataField;
+import org.kie.j2cl.tools.di.ui.templates.client.annotation.Templated;
 
 @Dependent
 @Templated

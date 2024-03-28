@@ -24,7 +24,7 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import io.crysknife.client.ManagedInstance;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 
 public class ManagedInstanceStub<T> implements ManagedInstance<T> {
 

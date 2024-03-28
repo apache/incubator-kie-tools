@@ -24,11 +24,11 @@ import jakarta.json.bind.serializer.DeserializationContext;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
-import org.treblereel.gwt.json.mapper.internal.deserializer.BaseNumberJsonDeserializer;
-import org.treblereel.gwt.json.mapper.internal.deserializer.JsonbDeserializer;
-import org.treblereel.gwt.json.mapper.internal.deserializer.StringJsonDeserializer;
-import org.treblereel.gwt.json.mapper.internal.serializer.BaseNumberJsonSerializer;
-import org.treblereel.gwt.json.mapper.internal.serializer.StringJsonSerializer;
+import org.kie.j2cl.tools.json.mapper.internal.deserializer.BaseNumberJsonDeserializer;
+import org.kie.j2cl.tools.json.mapper.internal.deserializer.JsonbDeserializer;
+import org.kie.j2cl.tools.json.mapper.internal.deserializer.StringJsonDeserializer;
+import org.kie.j2cl.tools.json.mapper.internal.serializer.BaseNumberJsonSerializer;
+import org.kie.j2cl.tools.json.mapper.internal.serializer.StringJsonSerializer;
 
 public class NumCompletedJsonTypeSerializer extends JsonbDeserializer<Object> implements JsonbSerializer<Object> {
 

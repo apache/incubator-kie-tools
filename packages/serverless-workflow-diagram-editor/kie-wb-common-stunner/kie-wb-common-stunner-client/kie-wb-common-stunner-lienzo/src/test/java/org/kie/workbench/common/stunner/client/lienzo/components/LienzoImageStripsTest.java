@@ -27,6 +27,7 @@ import com.google.gwt.safehtml.shared.SafeUri;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -50,7 +51,7 @@ public class LienzoImageStripsTest {
     private static final String STRIP_NAME = Object.class.getName();
 
     @Mock
-    private org.treblereel.j2cl.processors.common.resources.ImageResource imageResource;
+    private ImageResource imageResource;
 
     @Mock
     private SafeUri safeUri;
@@ -186,7 +187,7 @@ public class LienzoImageStripsTest {
 
 
         @Override
-        public org.treblereel.j2cl.processors.common.resources.ImageResource getImage() {
+        public ImageResource getImage() {
             return imageResource;
         }
 

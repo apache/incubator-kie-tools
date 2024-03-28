@@ -28,13 +28,13 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.kie.j2cl.tools.yaml.mapper.api.internal.utils.Pair;
+import org.kie.j2cl.tools.yaml.mapper.api.node.NodeType;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlMapping;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlNode;
+import org.kie.j2cl.tools.yaml.mapper.api.node.impl.Yaml;
 import org.kie.workbench.common.stunner.sw.client.selenium.SWEditorSeleniumBase;
 import org.openqa.selenium.JavascriptExecutor;
-import org.treblereel.gwt.yaml.api.internal.utils.Pair;
-import org.treblereel.gwt.yaml.api.node.NodeType;
-import org.treblereel.gwt.yaml.api.node.YamlMapping;
-import org.treblereel.gwt.yaml.api.node.YamlNode;
-import org.treblereel.gwt.yaml.api.node.impl.Yaml;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

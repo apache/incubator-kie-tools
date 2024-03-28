@@ -24,10 +24,10 @@ import java.util.Objects;
 
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
-import io.crysknife.client.IsElement;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Typed;
 import org.gwtproject.timer.client.Timer;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.uberfire.mvp.Command;
 

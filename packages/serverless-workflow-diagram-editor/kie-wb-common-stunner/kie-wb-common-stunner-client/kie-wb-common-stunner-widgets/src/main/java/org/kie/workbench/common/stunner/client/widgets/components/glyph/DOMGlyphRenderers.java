@@ -23,13 +23,13 @@ package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.crysknife.client.IsElement;
-import io.crysknife.client.ManagedInstance;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.IsElement;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphRenderer;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;

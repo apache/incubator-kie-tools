@@ -20,10 +20,10 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
-import io.crysknife.annotation.CircularDependency;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.annotation.CircularDependency;
 import org.kie.workbench.common.stunner.core.definition.adapter.bootstrap.BootstrapAdapterFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.AdapterRegistryImpl;

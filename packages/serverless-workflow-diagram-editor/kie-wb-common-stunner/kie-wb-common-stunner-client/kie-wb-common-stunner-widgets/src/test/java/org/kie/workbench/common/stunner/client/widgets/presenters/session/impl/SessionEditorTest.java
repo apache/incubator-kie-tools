@@ -22,10 +22,10 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import io.crysknife.client.IsElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;

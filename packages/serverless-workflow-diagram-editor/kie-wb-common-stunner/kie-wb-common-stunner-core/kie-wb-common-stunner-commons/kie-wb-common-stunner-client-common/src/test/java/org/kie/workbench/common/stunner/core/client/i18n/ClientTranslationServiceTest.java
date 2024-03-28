@@ -22,11 +22,11 @@ package org.kie.workbench.common.stunner.core.client.i18n;
 
 import java.util.Optional;
 
-import io.crysknife.client.ManagedInstance;
-import io.crysknife.ui.translation.client.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;

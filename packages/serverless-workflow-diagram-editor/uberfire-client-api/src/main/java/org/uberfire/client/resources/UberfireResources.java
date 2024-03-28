@@ -19,7 +19,7 @@
 
 package org.uberfire.client.resources;
 
-import org.treblereel.j2cl.processors.common.resources.ClientBundle;
+import org.kie.j2cl.tools.processors.common.resources.ClientBundle;
 import org.uberfire.client.resources.images.UberfireImageResources;
 import org.uberfire.client.resources.images.UberfireImageResourcesImpl;
 
