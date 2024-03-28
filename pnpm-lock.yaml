@@ -7351,6 +7351,9 @@ importers:
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      "@kie-tools/scesim-marshaller":
+        specifier: workspace:*
+        version: link:../scesim-marshaller
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
@@ -7394,9 +7397,6 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
-      "@kie-tools/scesim-marshaller":
-        specifier: workspace:*
-        version: link:../scesim-marshaller
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -9283,6 +9283,21 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
+
+  packages/sonataflow-quarkus-devui:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/serverless-workflow-dev-ui-webapp":
+        specifier: workspace:*
+        version: link:../serverless-workflow-dev-ui-webapp
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/sonataflow-quarkus-devui-extension:
     devDependencies:

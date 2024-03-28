@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -23,7 +23,9 @@ package org.kie.workbench.common.stunner.sw.client.shapes;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.core.client.shape.common.DashArray;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
+import org.kie.workbench.common.stunner.sw.client.theme.ColorTheme;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
@@ -50,13 +52,13 @@ public class TransitionShape<W>
             getShapeView().setDashArray(DASH_ARRAY);
             final ErrorTransition definition = (ErrorTransition) transitionType;
             getShapeView().setTitle(definition.getErrorRef());
-            getShapeView().setTitleBackgroundColor("red");
+            getShapeView().setTitleBackgroundColor(((ColorTheme) StunnerTheme.getTheme()).getErrorTransitionBoxColor());
         } else if (transitionType instanceof CompensationTransition) {
             getShapeView().setDashArray(DOT_ARRAY);
         } else if (transitionType instanceof EventConditionTransition) {
             final EventConditionTransition definition = (EventConditionTransition) transitionType;
             getShapeView().setTitle(definition.getEventRef());
-            getShapeView().setTitleBackgroundColor("orange");
+            getShapeView().setTitleBackgroundColor(((ColorTheme) StunnerTheme.getTheme()).getEventConditionTransitionBoxColor());
         } else if (transitionType instanceof DataConditionTransition) {
             final DataConditionTransition definition = (DataConditionTransition) transitionType;
             if (StringUtils.nonEmpty(definition.getName())) {
@@ -64,7 +66,7 @@ public class TransitionShape<W>
             } else {
                 getShapeView().setTitle(definition.getCondition());
             }
-            getShapeView().setTitleBackgroundColor("gray");
+            getShapeView().setTitleBackgroundColor(((ColorTheme) StunnerTheme.getTheme()).getTransitionBoxColor());
         }
 
         return this;
@@ -78,19 +80,19 @@ public class TransitionShape<W>
         Class<?> clazz = transition.getClass();
 
         if (clazz.equals(StartTransition.class)) {
-            return "#757575";
+            return ((ColorTheme) StunnerTheme.getTheme()).getStartTransitionColor();
         } else if (clazz.equals(ErrorTransition.class)) {
-            return "#c9190b";
+            return ((ColorTheme) StunnerTheme.getTheme()).getErrorTransitionColor();
         } else if (clazz.equals(EventConditionTransition.class)) {
-            return "#828282";
+            return ((ColorTheme) StunnerTheme.getTheme()).getEventConditionTransitionColor();
         } else if (clazz.equals(DataConditionTransition.class)) {
-            return "#757575";
+            return ((ColorTheme) StunnerTheme.getTheme()).getDataConditionTransitionColor();
         } else if (clazz.equals(DefaultConditionTransition.class)) {
-            return "#12DE70";
+            return ((ColorTheme) StunnerTheme.getTheme()).getDefaultConditionTransitionColor();
         } else if (clazz.equals(CompensationTransition.class)) {
-            return "#f0ab00";
+            return ((ColorTheme) StunnerTheme.getTheme()).getCompensationTransitionColor();
         }
-        return "#757575";
+        return ((ColorTheme) StunnerTheme.getTheme()).getStartTransitionColor();
     }
 
     public static boolean isTransition(Object object) {

@@ -112,6 +112,7 @@ describe("GwtEditorWrapperFactory", () => {
           keyboardShortcuts: {} as any,
           i18n: new I18nService(),
         },
+        supportedThemes: [],
       },
       {
         resourcesPathPrefix: "",

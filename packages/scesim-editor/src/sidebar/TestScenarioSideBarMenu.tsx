@@ -50,7 +50,7 @@ function TestScenarioSideBarMenu({
 
   return (
     <div className="kie-scesim-editor--side-bar">
-      <Tooltip content={i18n.sidebar.dataObjectsTooltip}>
+      <Tooltip content={i18n.sidebar.dataSelectorTooltip}>
         <Button
           className={
             isSelectedMenuItem(TestScenarioEditorDock.DATA_OBJECT)

@@ -28,6 +28,9 @@ describe("KeyBindingsHelpOverlay", () => {
   test("minimal setup", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ os: OperatingSystem.WINDOWS });
     keyboardShortcutsService.registerKeyPress("ctrl+c", "Copy", () => Promise.resolve(), {});
+    const kogitoEditor_theme = jest.fn() as any;
+    const subscribe = jest.fn() as any;
+    const unsubscribe = jest.fn() as any;
 
     const component = render(
       usingEditorEnvelopeI18nContext(
@@ -36,6 +39,17 @@ describe("KeyBindingsHelpOverlay", () => {
           services: {
             ...DEFAULT_TESTING_ENVELOPE_CONTEXT.services,
             keyboardShortcuts: keyboardShortcutsService,
+          },
+          channelApi: {
+            ...DEFAULT_TESTING_ENVELOPE_CONTEXT.channelApi,
+            shared: {
+              ...DEFAULT_TESTING_ENVELOPE_CONTEXT.channelApi.shared,
+              kogitoEditor_theme: {
+                ...kogitoEditor_theme,
+                subscribe: subscribe,
+                unsubscribe: unsubscribe,
+              },
+            },
           },
         }).wrapper
       ).wrapper
