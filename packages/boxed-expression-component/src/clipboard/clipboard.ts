@@ -17,8 +17,7 @@
  * under the License.
  */
 
-import { BoxedExpression } from "../api";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedExpression, generateUuid } from "../api";
 import {
   elements as dmn15elements,
   meta as dmn15meta,
@@ -46,21 +45,23 @@ export function buildClipboardFromExpression(
     })
     .getOriginalIds();
 
+  const widthsByIdObj = [...widthsById.entries()].reduce<Record<string, number[]>>((acc, [k, v]) => {
+    if (originalIds.has(k)) {
+      acc[k] = v;
+    }
+    return acc;
+  }, {});
+
   return {
     mimeType: DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE,
     expression,
-    widthsById: [...widthsById.entries()].reduce<Record<string, number[]>>((acc, [k, v]) => {
-      if (originalIds.has(k)) {
-        acc[k] = v;
-      }
-      return acc;
-    }, {}),
+    widthsById: widthsByIdObj,
   };
 }
 
 export function getNewBeeIdRandomizer() {
   return new XmlParserTsIdRandomizer({
-    meta: { ...dmn15meta },
+    meta: dmn15meta,
     elements: dmn15elements,
     newIdGenerator: generateUuid,
     matchers: [],
