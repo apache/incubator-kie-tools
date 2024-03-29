@@ -60,10 +60,14 @@ export function ContextResultExpressionCell(props: {
           newContextEntries.splice(resultIndex, 1);
         }
 
-        return {
+        const ret: BoxedContext = {
           ...prev,
           contextEntry: newContextEntries,
+          "@_label": newExpression?.["@_label"] ?? prev["@_label"],
+          "@_typeRef": newExpression?.["@_typeRef"] ?? prev["@_typeRef"],
         };
+
+        return ret;
       });
     },
     [resultIndex, setExpression]

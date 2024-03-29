@@ -222,10 +222,14 @@ export function FeelFunctionImplementationCell({
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => {
-      setExpression((prev: FeelFunctionProps) => ({
-        ...prev,
-        expression: getNewExpression(prev.expression ?? undefined!),
-      }));
+      setExpression((prev: FeelFunctionProps) => {
+        const ret: FeelFunctionProps = {
+          ...prev,
+          expression: getNewExpression(prev.expression ?? undefined!),
+        };
+
+        return ret;
+      });
     },
     [setExpression]
   );

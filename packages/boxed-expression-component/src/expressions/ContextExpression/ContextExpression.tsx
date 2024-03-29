@@ -191,6 +191,7 @@ export function ContextExpression(
         ...prev,
         "@_label": name,
         "@_typeRef": typeRef,
+        // FIXME: Tiago --> Update <result> expression @_label and @_typeRef here too.
       }));
     },
     [setExpression]

@@ -45,7 +45,12 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
           expression: getNewExpression(newBindings[index]?.expression ?? undefined!),
         };
 
-        return { ...prev, binding: newBindings };
+        const ret: BoxedInvocation = {
+          ...prev,
+          binding: newBindings,
+        };
+
+        return ret;
       });
     },
     [index, setExpression]

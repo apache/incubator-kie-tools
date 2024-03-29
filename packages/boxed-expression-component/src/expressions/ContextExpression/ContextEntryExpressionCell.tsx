@@ -52,7 +52,12 @@ export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellPro
           },
         };
 
-        return { ...prev, contextEntry: newContextEntries };
+        const ret: BoxedContext = {
+          ...prev,
+          contextEntry: newContextEntries,
+        };
+
+        return ret;
       });
     },
     [index, setExpression]

@@ -43,7 +43,13 @@ export function ListItemCell({
       setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
         newItems[rowIndex] = getNewExpression(newItems[rowIndex])!; // SPEC DISCREPANCY: Allowing undefined expression
-        return { ...prev, expression: newItems };
+
+        const ret: BoxedList = {
+          ...prev,
+          expression: newItems,
+        };
+
+        return ret;
       });
     },
     [rowIndex, setExpression]
