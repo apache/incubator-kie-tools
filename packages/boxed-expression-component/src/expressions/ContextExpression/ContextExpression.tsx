@@ -188,30 +188,11 @@ export function ContextExpression(
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
       setExpression((prev: BoxedContext) => {
-        const newContextEntries = [...(prev.contextEntry ?? [])];
-
-        // Need to keep the <result> expression, if any, in sync with the parent variable
-        const { resultIndex, hasResultEntry } = solveResultAndEntriesIndex({
-          contextEntries: newContextEntries,
-          rowIndex: -1,
-        });
-        if (hasResultEntry && newContextEntries[resultIndex].expression) {
-          newContextEntries.splice(resultIndex, 1, {
-            ...newContextEntries[resultIndex],
-            expression: {
-              ...newContextEntries[resultIndex].expression,
-              "@_label": name,
-              "@_typeRef": typeRef,
-            },
-          });
-        }
-
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
         const ret: BoxedContext = {
           ...prev,
           "@_label": name,
           "@_typeRef": typeRef,
-          contextEntry: newContextEntries,
         };
 
         return ret;
@@ -466,7 +447,12 @@ export function ContextExpression(
       const columnIndex = conditions.selection.selectionStart.columnIndex;
       const rowIndex = conditions.selection.selectionStart.rowIndex;
 
-      const isResultEntry = rowIndex === contextExpression.contextEntry?.length;
+      const contextEntries = contextExpression.contextEntry ?? [];
+
+      const { isResultOperation, hasResultEntry } = solveResultAndEntriesIndex({ contextEntries, rowIndex });
+
+      const canDeleteEntry =
+        !isResultOperation && (hasResultEntry ? contextEntries.length > 2 : contextEntries.length > 1);
 
       return [
         BeeTableOperation.SelectionCopy,
@@ -476,17 +462,15 @@ export function ContextExpression(
         ...(conditions.selection.selectionStart.rowIndex >= 0
           ? [
               BeeTableOperation.RowInsertAbove,
-              ...(!isResultEntry ? [BeeTableOperation.RowInsertBelow] : []), // do not insert below <result>
-              ...(!isResultEntry ? [BeeTableOperation.RowInsertN] : []), // Because we can't insert multiple lines below <result>
-              ...((contextExpression.contextEntry?.length ?? 0) > 1 && !isResultEntry
-                ? [BeeTableOperation.RowDelete]
-                : []), // do not delete <result>
+              ...(!isResultOperation ? [BeeTableOperation.RowInsertBelow] : []),
+              ...(!isResultOperation ? [BeeTableOperation.RowInsertN] : []),
+              ...(canDeleteEntry ? [BeeTableOperation.RowDelete] : []),
               BeeTableOperation.RowReset,
             ]
           : []),
       ];
     },
-    [contextExpression.contextEntry?.length]
+    [contextExpression.contextEntry]
   );
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {

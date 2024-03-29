@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useEffect, useState, useCallback } from "react";
 import { BeeGwtService, DmnBuiltInDataType, BoxedExpression } from "../../src/api";
-import { getDefaultExpressionDefinitionByLogicType } from "./defaultExpression";
+import { getDefaultBoxedExpressionForStorybook } from "./defaultExpression";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../boxedExpressionStoriesWrapper";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -97,7 +97,7 @@ const INITIAL_WIDTHS_BY_ID: Record<string, number[]> = {};
 const beeGwtService: BeeGwtService = {
   getDefaultExpressionDefinition(logicType, typeRef) {
     return {
-      expression: getDefaultExpressionDefinitionByLogicType(logicType, typeRef),
+      expression: getDefaultBoxedExpressionForStorybook(logicType, typeRef),
       widthsById: new Map(),
     };
   },

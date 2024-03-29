@@ -21,8 +21,9 @@ import { useArgs } from "@storybook/preview-api";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../src/BoxedExpressionEditor";
-import { BeeGwtService, BoxedExpression, DmnBuiltInDataType } from "../src/api";
-import { getDefaultExpressionDefinitionByLogicType } from "./dev/defaultExpression";
+import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, generateUuid } from "../src/api";
+import { getDefaultBoxedExpressionForStorybook } from "./dev/defaultExpression";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../src/expressionVariable/ExpressionVariableMenu";
 
 export const pmmlDocuments = [
   {
@@ -70,7 +71,7 @@ export const dataTypes = [
 
 export const beeGwtService: BeeGwtService = {
   getDefaultExpressionDefinition(logicType: BoxedExpression["__$$element"] | undefined, dataType: string) {
-    const expression = getDefaultExpressionDefinitionByLogicType(logicType, dataType);
+    const expression = getDefaultBoxedExpressionForStorybook(logicType, dataType);
     return {
       expression: expression,
       widthsById: new Map(),
@@ -159,9 +160,13 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
       }}
     >
       <BoxedExpressionEditor
-        expressionHolderId={props?.expressionHolderId ?? args?.expressionHolderId ?? ""}
-        expressionHolderName={props?.expressionHolderName ?? args?.expressionHolderName ?? ""}
-        expressionHolderTypeRef={props?.expressionHolderId ?? args?.expressionHolderId ?? DmnBuiltInDataType.Undefined}
+        expressionHolderId={props?.expressionHolderId ?? args?.expressionHolderId ?? generateUuid()}
+        expressionHolderName={
+          props?.expressionHolderName ?? args?.expressionHolderName ?? DEFAULT_EXPRESSION_VARIABLE_NAME
+        }
+        expressionHolderTypeRef={
+          props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef ?? DmnBuiltInDataType.Undefined
+        }
         expression={expressionState}
         onExpressionChange={setExpressionState}
         onWidthsChange={onWidthsChange}

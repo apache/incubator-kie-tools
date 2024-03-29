@@ -38,22 +38,22 @@ import {
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
 } from "../../src/expressions/DecisionTableExpression/DecisionTableExpression";
 
-export function getDefaultExpressionDefinitionByLogicType(
+export function getDefaultBoxedExpressionForStorybook(
   logicType: BoxedExpression["__$$element"] | undefined,
   typeRef: string
 ): BoxedExpression {
   if (logicType === "literalExpression") {
     const literalExpression: BoxedLiteral = {
       __$$element: "literalExpression",
-      "@_typeRef": typeRef,
       "@_id": generateUuid(),
+      "@_typeRef": typeRef,
     };
     return literalExpression;
   } else if (logicType === "functionDefinition") {
     const functionExpression: BoxedFunction = {
       __$$element: "functionDefinition",
-      "@_typeRef": typeRef,
       "@_id": generateUuid(),
+      "@_typeRef": typeRef,
       "@_kind": BoxedFunctionKind.Feel,
       expression: undefined!,
     };
@@ -61,6 +61,7 @@ export function getDefaultExpressionDefinitionByLogicType(
   } else if (logicType === "context") {
     const contextExpression: BoxedContext = {
       __$$element: "context",
+      "@_id": generateUuid(),
       "@_typeRef": typeRef,
       contextEntry: [
         {
@@ -79,12 +80,17 @@ export function getDefaultExpressionDefinitionByLogicType(
           },
           expression: undefined!,
         },
+        {
+          "@_id": generateUuid(),
+          expression: undefined!,
+        },
       ],
     };
     return contextExpression;
   } else if (logicType === "list") {
     const listExpression: BoxedList = {
       __$$element: "list",
+      "@_id": generateUuid(),
       "@_typeRef": typeRef,
       expression: [undefined!, undefined!, undefined!],
     };
@@ -92,6 +98,7 @@ export function getDefaultExpressionDefinitionByLogicType(
   } else if (logicType === "invocation") {
     const invocationExpression: BoxedInvocation = {
       __$$element: "invocation",
+      "@_id": generateUuid(),
       "@_typeRef": typeRef,
       binding: [
         {
@@ -103,8 +110,8 @@ export function getDefaultExpressionDefinitionByLogicType(
         },
       ],
       expression: {
-        "@_id": generateUuid(),
         __$$element: "literalExpression",
+        "@_id": generateUuid(),
         text: { __$$text: "FUNCTION" },
       },
     };
@@ -112,6 +119,7 @@ export function getDefaultExpressionDefinitionByLogicType(
   } else if (logicType === "relation") {
     const relationExpression: BoxedRelation = {
       __$$element: "relation",
+      "@_id": generateUuid(),
       "@_typeRef": typeRef,
       column: [
         {
