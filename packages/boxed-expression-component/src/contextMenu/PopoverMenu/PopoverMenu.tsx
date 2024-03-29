@@ -164,6 +164,7 @@ export const PopoverMenu = React.forwardRef(
         bodyContent={body}
         isVisible={isPopoverVisible}
         onShown={onPopoverShown}
+        onHide={shouldClose}
         shouldClose={shouldClose}
         shouldOpen={shouldOpen}
         flipBehavior={["bottom-start", "bottom", "bottom-end", "right-start", "left-start", "right-end", "left-end"]}

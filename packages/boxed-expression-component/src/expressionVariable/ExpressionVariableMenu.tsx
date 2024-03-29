@@ -64,7 +64,7 @@ export function ExpressionVariableMenu({
   dataTypeField,
   selectedDataType = DmnBuiltInDataType.Undefined,
   selectedExpressionName,
-  onVariableUpdated: onExpressionHeaderUpdated,
+  onVariableUpdated,
   position,
 }: ExpressionVariableMenuProps) {
   const { editorRef, beeGwtService } = useBoxedExpressionEditor();
@@ -102,9 +102,9 @@ export function ExpressionVariableMenu({
 
   const saveExpression = useCallback(() => {
     if (expressionName !== selectedExpressionName || dataType !== selectedDataType) {
-      onExpressionHeaderUpdated({ name: expressionName, typeRef: dataType });
+      onVariableUpdated({ name: expressionName, typeRef: dataType });
     }
-  }, [expressionName, selectedExpressionName, dataType, selectedDataType, onExpressionHeaderUpdated]);
+  }, [expressionName, selectedExpressionName, dataType, selectedDataType, onVariableUpdated]);
 
   const resetFormData = useCallback(() => {
     setExpressionName(selectedExpressionName);
