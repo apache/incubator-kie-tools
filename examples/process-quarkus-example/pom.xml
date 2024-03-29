@@ -27,9 +27,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.kie.examples</groupId>
-    <artifactId>kie-tools-quarkus-examples-parent</artifactId>
+    <artifactId>kie-tools-examples-parent</artifactId>
     <version>${revision}</version>
-    <relativePath>../kie-tools-quarkus-examples-parent/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>process-quarkus-example</artifactId>
   <name>Kie-Tools Example :: Process and Quarkus</name>
@@ -109,6 +109,10 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-processes</artifactId>
     </dependency>
   </dependencies>
   <build>

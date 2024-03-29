@@ -27,18 +27,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.kie.sonataflow.examples</groupId>
-    <artifactId>sonataflow-examples-parent</artifactId>
+    <groupId>org.apache.kie.examples</groupId>
+    <artifactId>kie-tools-examples-parent</artifactId>
     <version>${revision}</version>
-    <relativePath>../sonataflow-examples-parent/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.kie.sonataflow.examples</groupId>
   <artifactId>sonataflow-greeting-quarkus</artifactId>
   <version>${revision}</version>
 
-  <name>KIE Tools Example :: Serverless Workflow Greeting :: Quarkus</name>
-  <description>Kogito Serverless Workflow Example - Quarkus</description>
+  <name>KIE Tools Example :: SonataFlow Greeting :: Quarkus</name>
+  <description>SonataFlow Example - Quarkus</description>
   <properties>
     <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
     <quarkus.platform.version>${quarkus.platform.version}</quarkus.platform.version>
