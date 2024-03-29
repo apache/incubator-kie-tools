@@ -35,8 +35,6 @@
   <name>KIE-Tools Example</name>
   <description>KIE-Tools Example</description>
 
-  <url>http://kogito.kie.org</url>
-  <inceptionYear>2019</inceptionYear>
   <organization>
     <name>JBoss by Red Hat</name>
     <url>http://www.jboss.org/</url>
@@ -54,44 +52,16 @@
 
     <version.org.kie.kogito>${version.org.kie.kogito}</version.org.kie.kogito>
 
-    <surefire.forkCount>1</surefire.forkCount>
-    <failsafe.include>**/*IT.java</failsafe.include>
-    <failsafe.exclude>**/Native*IT.java</failsafe.exclude>
-    <alphanetworkCompilerEnabled>false</alphanetworkCompilerEnabled>
-    <tests.category />
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <!-- dependencies version -->
-    <version.org.skyscreamer>1.5.0</version.org.skyscreamer>
-    <!-- JKube -->
-    <version.org.eclipse.jkube>1.4.0</version.org.eclipse.jkube>
-    <!-- WebJars -->
-    <version.org.webjars>4.5.3</version.org.webjars>
-
-    <version.jib.plugin>3.3.1</version.jib.plugin>
-    <!-- Reproducible builds -->
-    <project.build.outputTimestamp>2024-01-16T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
 
-    <!-- properties from kogito-build-no-bom-parent -->
     <maven.compiler.release>17</maven.compiler.release>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <version.maven>3.9.6</version.maven>
     <version.jdk>17</version.jdk>
     <version.enforcer.plugin>3.0.0-M2</version.enforcer.plugin>
-    <version.jar.plugin>3.1.0</version.jar.plugin>
-    <version.source.plugin>3.0.1</version.source.plugin>
-    <version.surefire.plugin>3.0.0-M5</version.surefire.plugin> <!-- minimum required by JUnit 5 -->
     <version.compiler.plugin>3.12.1</version.compiler.plugin>
-    <version.deploy.plugin>2.8.2</version.deploy.plugin>
 
-    <!-- Port 0 means dynamic port -->
-    <tests.quarkus.http.port>0</tests.quarkus.http.port>
-    <!-- override default to fast-jar packaging for forward-compatibility -->
-    <quarkus.package.type>fast-jar</quarkus.package.type>
-
-    <!-- Reproducible builds -->
     <project.build.outputTimestamp>2024-01-16T00:00:00Z</project.build.outputTimestamp>
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
   </properties>
@@ -164,16 +134,6 @@
     </profile>
 
   </profiles>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-test-utils</artifactId>
-      <version>${version.org.kie.kogito}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <build>
     <pluginManagement>
