@@ -129,7 +129,9 @@ export function BoxedExpressionEditorContextProvider({
   );
 }
 
-export type OnSetExpression = (args: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => void;
+export type OnSetExpression = (args: {
+  getNewExpression: (prev: BoxedExpression | undefined) => BoxedExpression | undefined;
+}) => void;
 
 export function NestedExpressionDispatchContextProvider({
   onSetExpression,

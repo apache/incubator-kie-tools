@@ -240,6 +240,7 @@ export function FeelFunctionImplementationCell({
         columnIndex={columnIndex}
         parentElementId={parentElementId}
         parentTypeRef={functionExpression["@_typeRef"]}
+        expressionName={"Return"}
       />
     </NestedExpressionDispatchContextProvider>
   );

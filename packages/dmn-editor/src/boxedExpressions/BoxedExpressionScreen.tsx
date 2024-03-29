@@ -93,10 +93,6 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
   );
   const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
-  const allTopLevelDataTypesByFeelName = useDmnEditorStore(
-    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
-  );
-  const nodesById = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodesById);
   const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
   const externalPmmlsByNamespace = useDmnEditorStore(
     (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).pmmls
@@ -114,7 +110,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     }
 
     return new FeelVariables(thisDmn.model.definitions, externalModels);
-  }, [externalDmnsByNamespace, thisDmn.model.definitions]);
+  }, []);
 
   const drgElementIndex = useMemo(() => {
     if (!boxedExpressionEditor.activeDrgElementId) {
@@ -266,6 +262,12 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     return {
       getDefaultExpressionDefinition(logicType, typeRef, isRoot) {
         const widthsById = new Map<string, number[]>();
+        const s = dmnEditorStoreApi.getState();
+
+        const allTopLevelDataTypesByFeelName = s
+          .computed(s)
+          .getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName;
+        const nodesById = s.computed(s).getDiagramData(externalModelsByNamespace).nodesById;
         return {
           expression: getDefaultExpressionDefinitionByLogicType({
             logicType,
@@ -296,7 +298,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
         });
       },
     };
-  }, [allTopLevelDataTypesByFeelName, dmnEditorStoreApi, expression?.drgElement, nodesById]);
+  }, [dmnEditorStoreApi, expression?.drgElement, externalModelsByNamespace]);
 
   ////
 

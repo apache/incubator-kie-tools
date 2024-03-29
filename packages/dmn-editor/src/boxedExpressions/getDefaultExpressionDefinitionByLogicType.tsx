@@ -49,7 +49,10 @@ import {
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "@kie-tools/boxed-expression-component/dist/expressions/RelationExpression/RelationExpression";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { isStruct } from "../dataTypes/DataTypeSpec";
-import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DMN15__tContextEntry,
+  DMN15__tOutputClause,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function getDefaultExpressionDefinitionByLogicType({
   logicType,
@@ -239,16 +242,14 @@ export function getDefaultExpressionDefinitionByLogicType({
       typeRef: DmnBuiltInDataType.Undefined,
     };
 
-    const input = getInputs?.()?.map((input) => {
-      return {
+    const input = getInputs?.()?.map((input) => ({
+      "@_id": generateUuid(),
+      inputExpression: {
         "@_id": generateUuid(),
-        inputExpression: {
-          "@_id": generateUuid(),
-          text: { __$$text: input.name },
-          "@_typeRef": input.typeRef ?? DmnBuiltInDataType.Undefined,
-        },
-      };
-    }) ?? [
+        text: { __$$text: input.name },
+        "@_typeRef": input.typeRef ?? DmnBuiltInDataType.Undefined,
+      },
+    })) ?? [
       {
         "@_id": generateUuid(),
         inputExpression: {
@@ -259,26 +260,20 @@ export function getDefaultExpressionDefinitionByLogicType({
       },
     ];
 
-    const output =
+    const output: DMN15__tOutputClause[] =
       !dataType || !isStruct(dataType.itemDefinition)
         ? [
             {
               "@_id": generateUuid(),
-              "@_label": singleOutputColumn.name,
+              "@_name": singleOutputColumn.name,
               "@_typeRef": singleOutputColumn.typeRef,
             },
           ]
-        : (dataType.itemDefinition.itemComponent ?? []).map((ic) => {
-            const name = ic["@_name"];
-            const typeRef = isStruct(ic)
-              ? DmnBuiltInDataType.Any
-              : (ic.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
-            return {
-              "@_id": generateUuid(),
-              "@_label": name,
-              "@_typeRef": typeRef,
-            };
-          });
+        : (dataType.itemDefinition.itemComponent ?? []).map((ic) => ({
+            "@_id": generateUuid(),
+            "@_name": ic["@_name"],
+            "@_typeRef": isStruct(ic) ? DmnBuiltInDataType.Any : ic.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined,
+          }));
 
     const decisionTableExpression: BoxedDecisionTable = {
       __$$element: "decisionTable",

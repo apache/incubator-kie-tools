@@ -61,6 +61,7 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
         columnIndex={columnIndex}
         parentElementId={parentElementId}
         parentTypeRef={variable["@_typeRef"]}
+        expressionName={variable["@_name"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

@@ -42,7 +42,7 @@ export function ListItemCell({
     ({ getNewExpression }) => {
       setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
-        newItems[rowIndex] = getNewExpression(newItems[rowIndex] ?? undefined!);
+        newItems[rowIndex] = getNewExpression(newItems[rowIndex])!; // SPEC DISCREPANCY: Allowing undefined expression
         return { ...prev, expression: newItems };
       });
     },

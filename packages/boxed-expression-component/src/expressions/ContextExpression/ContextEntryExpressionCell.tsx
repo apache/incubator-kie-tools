@@ -42,9 +42,14 @@ export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellPro
     ({ getNewExpression }) => {
       setExpression((prev: BoxedContext) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
+        const newExpression = getNewExpression(newContextEntries[index]?.expression ?? undefined);
         newContextEntries[index] = {
           ...newContextEntries[index],
-          expression: getNewExpression(newContextEntries[index]?.expression ?? undefined!),
+          expression: newExpression!, // SPEC DISCREPANCY: Accepting undefined expression
+          variable: {
+            "@_name": newExpression?.["@_label"] ?? newContextEntries[index].variable!["@_name"],
+            "@_typeRef": newExpression?.["@_typeRef"] ?? newContextEntries[index].variable!["@_typeRef"],
+          },
         };
 
         return { ...prev, contextEntry: newContextEntries };
@@ -63,6 +68,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellPro
         columnIndex={columnIndex}
         parentElementId={variable["@_id"]}
         parentTypeRef={variable["@_typeRef"]}
+        expressionName={variable["@_name"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

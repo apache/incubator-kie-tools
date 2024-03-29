@@ -48,7 +48,9 @@ export function ContextResultExpressionCell(props: {
         const newExpression = getNewExpression(newContextEntries[resultIndex]?.expression);
 
         if (resultIndex <= -1) {
-          newContextEntries.push({ expression: newExpression });
+          newContextEntries.push({
+            expression: newExpression!, // SPEC DISCREPANCY:
+          });
         } else if (newExpression) {
           newContextEntries.splice(resultIndex, 1, {
             ...newContextEntries[resultIndex],
@@ -79,6 +81,7 @@ export function ContextResultExpressionCell(props: {
         columnIndex={props.columnIndex}
         parentElementId={props.contextExpression["@_id"]}
         parentTypeRef={props.contextExpression["@_typeRef"]}
+        expressionName={props.contextExpression["@_label"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

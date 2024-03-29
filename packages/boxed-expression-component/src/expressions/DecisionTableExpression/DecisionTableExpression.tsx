@@ -492,11 +492,14 @@ export function DecisionTableExpression(
           ) {
             n["@_label"] = columnUpdate.name;
             n["@_typeRef"] = columnUpdate.typeRef;
+
             // Single output column is merged with the aggregator column and should have the same typeRef
             if (n.output?.length === 1) {
-              n.output[0] = {
-                ...n.output[0],
+              const newOutputs = [...(n.output ?? [])];
+              newOutputs[0] = {
+                ...newOutputs[0],
                 "@_typeRef": columnUpdate.typeRef,
+                "@_name": columnUpdate.name,
               };
             }
             continue;
