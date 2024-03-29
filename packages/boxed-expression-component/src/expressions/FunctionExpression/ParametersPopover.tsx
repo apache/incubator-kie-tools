@@ -28,8 +28,8 @@ import { DmnBuiltInDataType, BoxedFunction, generateUuid, getNextAvailablePrefix
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import "./ParametersPopover.css";
 import { DataTypeSelector } from "../../expressionVariable/DataTypeSelector";
+import "./ParametersPopover.css";
 
 export interface ParametersPopoverProps {
   parameters: DMN15__tInformationItem[];
@@ -40,8 +40,8 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const addParameter = useCallback(
-    (mouseEvent) => {
-      mouseEvent.stopPropagation();
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
       setExpression((prev: BoxedFunction) => {
         const newParameters = [
           ...(prev.formalParameter ?? []),
@@ -68,7 +68,7 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
     <div className="parameters-editor" onMouseDown={(e) => e.stopPropagation()}>
       {parameters.length ? (
         <>
-          <Button variant="tertiary" onClick={addParameter} className="add-parameter">
+          <Button variant="tertiary" onClickCapture={addParameter} className="add-parameter">
             {i18n.addParameter}
           </Button>
           <div className="parameters-container">
@@ -82,7 +82,7 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
           <EmptyState>
             <EmptyStateIcon icon={CubesIcon} />
             <Title headingLevel="h4">{i18n.noParametersDefined}</Title>
-            <Button variant="primary" onClick={addParameter}>
+            <Button variant="primary" onClickCapture={addParameter}>
               {i18n.addParameter}
             </Button>
           </EmptyState>
@@ -164,7 +164,7 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
         className="delete-parameter"
         icon={<OutlinedTrashAltIcon />}
         iconPosition="left"
-        onClick={onParameterRemove}
+        onClickCapture={onParameterRemove}
       />
     </div>
   );
