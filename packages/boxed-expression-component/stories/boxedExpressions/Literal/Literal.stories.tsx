@@ -18,7 +18,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
@@ -54,10 +54,13 @@ export const CanDrive: Story = {
     ...EmptyExpression.args,
     expression: {
       __$$element: "literalExpression",
-      "@_id": generateUuid(),
+      "@_id": "_D98FB35A-C6A5-4BA7-AD38-176D56A31872",
       "@_label": "Can Drive?",
       "@_typeRef": DmnBuiltInDataType.Boolean,
       text: { __$$text: "Age >= 18 then true else false" },
+    },
+    widthsById: {
+      "_D98FB35A-C6A5-4BA7-AD38-176D56A31872": [500],
     },
     isResetSupportedOnRootExpression: false,
   },

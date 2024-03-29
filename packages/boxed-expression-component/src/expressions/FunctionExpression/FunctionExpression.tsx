@@ -23,10 +23,7 @@ import { useCallback, useMemo } from "react";
 import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind, generateUuid } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { FeelFunctionExpression, FeelFunctionProps } from "./FeelFunctionExpression";
 import { FunctionKindSelector } from "./FunctionKindSelector";
 import { JavaFunctionExpression, JavaFunctionProps } from "./JavaFunctionExpression";

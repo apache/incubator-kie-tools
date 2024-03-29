@@ -18,17 +18,17 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-} from "../../../src/expressions/DecisionTableExpression";
+} from "../../../src/expressions/DecisionTableExpression/DecisionTableExpression";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
@@ -239,7 +239,7 @@ export const Nested: Story = {
       ],
     },
     widthsById: {
-      "_92929AE6-3BB5-4217-B66E-07614680971D": [CONTEXT_ENTRY_INFO_MIN_WIDTH],
+      "_92929AE6-3BB5-4217-B66E-07614680971D": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH],
 
       "_5B31AAB6-BD52-4654-88C2-541F687FE5B4": [
         BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,

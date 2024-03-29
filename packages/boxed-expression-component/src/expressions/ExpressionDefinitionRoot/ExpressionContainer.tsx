@@ -17,28 +17,14 @@
  * under the License.
  */
 
-import {
-  BoxedContext,
-  BoxedDecisionTable,
-  DmnBuiltInDataType,
-  BoxedExpression,
-  BoxedFunction,
-  BoxedFunctionKind,
-  generateUuid,
-  BoxedInvocation,
-  BoxedList,
-  BoxedRelation,
-} from "../../api";
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
-import { ExpressionDefinitionLogicTypeSelector } from "./ExpressionDefinitionLogicTypeSelector";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { BoxedContext, BoxedExpression, DmnBuiltInDataType, generateUuid } from "../../api";
+import { findAllIdsDeep } from "../../ids/ids";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
-import { getNewBeeIdRandomizer } from "../../clipboard/clipboard";
+import { ExpressionDefinitionLogicTypeSelector } from "./ExpressionDefinitionLogicTypeSelector";
 
 export interface ExpressionContainerProps {
   expression?: BoxedExpression;
@@ -64,7 +50,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { beeGwtService, variables, expressionHolderId } = useBoxedExpressionEditor();
-  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
   useEffect(() => {
@@ -98,16 +84,12 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
           !isNested
         );
 
-      let id: string;
-
       setExpression((prev) => {
         const newExpression: BoxedExpression = {
           ...defaultExpression,
           "@_id": prev?.["@_id"] ?? generateUuid(),
-          "@_label": prev?.["@_label"] ?? expressionName ?? DEFAULT_EXPRESSION_NAME,
+          "@_label": prev?.["@_label"] ?? expressionName ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         };
-
-        id = newExpression["@_id"]!;
 
         if (parentElementId) {
           switch (newExpression.__$$element) {
@@ -123,8 +105,10 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         return newExpression;
       });
 
-      defaultWidthsById.forEach((value, key) => {
-        setWidthById(id, (prev) => value);
+      setWidthsById(({ newMap }) => {
+        defaultWidthsById.forEach((value, id) => {
+          newMap.set(id, value);
+        });
       });
     },
     [
@@ -136,26 +120,21 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       parentElementId,
       parentTypeRef,
       setExpression,
-      setWidthById,
+      setWidthsById,
     ]
   );
 
   const onLogicTypeReset = useCallback(() => {
-    const originalIds = getNewBeeIdRandomizer()
-      .ack({
-        json: { __$$element: "decision", expression },
-        type: "DMN15__tDecision",
-        attr: "expression",
-      })
-      .getOriginalIds();
+    variables?.repository.removeVariable(expression?.["@_id"] ?? "", true);
 
-    for (const id of originalIds) {
-      variables?.repository.removeVariable(id, true);
-      setWidthById(id, () => []);
-    }
+    setWidthsById(({ newMap }) => {
+      for (const id of findAllIdsDeep(expression)) {
+        newMap.delete(id);
+      }
+    });
 
     setExpression(undefined!); // SPEC DISCREPANCY: Undefined expressions gives users the ability to select the expression type.
-  }, [expression, setExpression, setWidthById, variables?.repository]);
+  }, [expression, setExpression, setWidthsById, variables?.repository]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 

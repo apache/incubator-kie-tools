@@ -19,55 +19,50 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { BoxedContext, DmnBuiltInDataType } from "../../api";
+import { BeeTableCellProps, BoxedContext } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
+  OnSetExpression,
   useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+} from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
-import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { ROWTYPE } from "./ContextExpression";
 import "./ContextEntryExpressionCell.css";
 
-export interface ContextEntryExpressionCellProps {
-  // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
-  data: readonly DMN15__tContextEntry[];
-  rowIndex: number;
-  columnIndex: number;
-}
-
-export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
-  data: contextEntry,
+export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellProps<ROWTYPE>> = ({
+  data,
   rowIndex,
   columnIndex,
 }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const { variable, expression, index } = data[rowIndex];
+
+  const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
       setExpression((prev: BoxedContext) => {
-        const contextEntry = [...(prev.contextEntry ?? [])];
-        contextEntry[rowIndex] = {
-          ...contextEntry[rowIndex],
-          expression: getNewExpression(
-            contextEntry[rowIndex]?.expression ?? { "@_typeRef": DmnBuiltInDataType.Undefined }
-          ),
+        const newContextEntries = [...(prev.contextEntry ?? [])];
+        newContextEntries[index] = {
+          ...newContextEntries[index],
+          expression: getNewExpression(newContextEntries[index]?.expression ?? undefined!),
         };
-        return { ...prev, contextEntry };
+
+        return { ...prev, contextEntry: newContextEntries };
       });
     },
-    [rowIndex, setExpression]
+    [index, setExpression]
   );
 
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
       <ExpressionContainer
-        expression={contextEntry[rowIndex]?.expression}
+        expression={expression}
         isResetSupported={true}
         isNested={true}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
-        parentElementId={contextEntry[rowIndex]["@_id"]}
-        parentTypeRef={contextEntry[rowIndex].variable?.["@_typeRef"]}
+        parentElementId={variable["@_id"]}
+        parentTypeRef={variable["@_typeRef"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

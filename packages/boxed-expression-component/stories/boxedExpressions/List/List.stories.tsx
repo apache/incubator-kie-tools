@@ -18,7 +18,7 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
@@ -42,7 +42,7 @@ export const Base: Story = {
       __$$element: "list",
       "@_id": generateUuid(),
       "@_label": "Expression Name",
-      expression: [undefined as any],
+      expression: [undefined!],
     },
     isResetSupportedOnRootExpression: false,
   },

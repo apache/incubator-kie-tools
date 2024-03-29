@@ -30,20 +30,19 @@ import {
   DmnBuiltInDataType,
   InsertRowColumnsDirection,
   BoxedList,
+  BoxedExpression,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
 import { LIST_EXPRESSION_EXTRA_WIDTH, LIST_EXPRESSION_ITEM_MIN_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { findAllIdsDeep } from "../../ids/ids";
 import "./ListExpression.css";
 
 export type ROWTYPE = DMN15__tContextEntry;
@@ -55,8 +54,8 @@ export function ListExpression(
   }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { expressionHolderId, variables, widthsById } = useBoxedExpressionEditor();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
+  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -108,14 +107,12 @@ export function ListExpression(
 
   const beeTableRows = useMemo(() => {
     const rows = (listExpression.expression ?? []).map((item) => ({
-      variable: undefined as any,
       expression: item,
     }));
 
     if (rows.length === 0) {
       rows.push({
-        variable: undefined as any,
-        expression: undefined as any,
+        expression: undefined!,
       });
     }
 
@@ -126,7 +123,7 @@ export function ListExpression(
     () => [
       {
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        label: listExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
+        label: listExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         dataType: listExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         minWidth: LIST_EXPRESSION_ITEM_MIN_WIDTH,
@@ -153,11 +150,10 @@ export function ListExpression(
     (args: { beforeIndex: number; rowsCount: number }) => {
       setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
-        const newListItems = [];
+        const newListItems: BoxedExpression[] = [];
 
         for (let i = 0; i < args.rowsCount; i++) {
-          const newItem = undefined as any; // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
-          newListItems.push(newItem);
+          newListItems.push(undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         }
 
         for (const newEntry of newListItems) {
@@ -172,30 +168,43 @@ export function ListExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
+      let oldExpression: BoxedExpression | undefined;
       setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
+        oldExpression = newItems[args.rowIndex];
         newItems.splice(args.rowIndex, 1);
         return {
           ...prev,
           expression: newItems,
         };
       });
+
+      setWidthsById(({ newMap }) => {
+        for (const id of findAllIdsDeep(oldExpression)) {
+          newMap.delete(id);
+        }
+      });
     },
-    [setExpression]
+    [setExpression, setWidthsById]
   );
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
+      let oldExpression: BoxedExpression | undefined;
       setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
-        newItems.splice(args.rowIndex, 1, undefined as any); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
-        return {
-          ...prev,
-          expression: newItems,
-        };
+        oldExpression = newItems[args.rowIndex];
+        newItems.splice(args.rowIndex, 1, undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        return { ...prev, expression: newItems };
+      });
+
+      setWidthsById(({ newMap }) => {
+        for (const id of findAllIdsDeep(oldExpression)) {
+          newMap.delete(id);
+        }
       });
     },
-    [setExpression]
+    [setExpression, setWidthsById]
   );
 
   const beeTableHeaderVisibility = useMemo(() => {

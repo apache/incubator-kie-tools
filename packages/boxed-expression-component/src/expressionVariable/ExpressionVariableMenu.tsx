@@ -19,18 +19,20 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useState, useRef } from "react";
-import { PopoverMenu, PopoverMenuRef } from "../../contextMenu/PopoverMenu";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { DmnBuiltInDataType, BoxedExpression } from "../../api";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { PopoverMenu, PopoverMenuRef } from "../contextMenu/PopoverMenu";
+import { useBoxedExpressionEditorI18n } from "../i18n";
+import { DmnBuiltInDataType, BoxedExpression } from "../api";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
 import { DataTypeSelector } from "./DataTypeSelector";
 import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { NavigationKeysUtils } from "../../keysUtils";
+import { NavigationKeysUtils } from "../keysUtils/keyUtils";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
-import "./ExpressionDefinitionHeaderMenu.css";
+import "./ExpressionVariableMenu.css";
 
-export interface ExpressionDefinitionHeaderMenuProps {
+export type OnExpressionVariableUpdated = (args: { name: string; typeRef: string }) => void;
+
+export interface ExpressionVariableMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
   children?: React.ReactElement;
   /** The node where to append the popover content */
@@ -48,13 +50,13 @@ export interface ExpressionDefinitionHeaderMenuProps {
   /** The pre-selected expression name */
   selectedExpressionName: string;
   /** Function to be called when the expression gets updated, passing the most updated version of it */
-  onExpressionHeaderUpdated: (args: Pick<BoxedExpression, "@_label" | "@_typeRef">) => void;
+  onVariableUpdated: OnExpressionVariableUpdated;
   position?: PopoverPosition;
 }
 
-export const DEFAULT_EXPRESSION_NAME = "Expression Name";
+export const DEFAULT_EXPRESSION_VARIABLE_NAME = "Expression Name";
 
-export function ExpressionDefinitionHeaderMenu({
+export function ExpressionVariableMenu({
   children,
   appendTo,
   arrowPlacement,
@@ -62,9 +64,9 @@ export function ExpressionDefinitionHeaderMenu({
   dataTypeField,
   selectedDataType = DmnBuiltInDataType.Undefined,
   selectedExpressionName,
-  onExpressionHeaderUpdated,
+  onVariableUpdated: onExpressionHeaderUpdated,
   position,
-}: ExpressionDefinitionHeaderMenuProps) {
+}: ExpressionVariableMenuProps) {
   const { editorRef, beeGwtService } = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
 
@@ -100,7 +102,7 @@ export function ExpressionDefinitionHeaderMenu({
 
   const saveExpression = useCallback(() => {
     if (expressionName !== selectedExpressionName || dataType !== selectedDataType) {
-      onExpressionHeaderUpdated({ "@_label": expressionName, "@_typeRef": dataType });
+      onExpressionHeaderUpdated({ name: expressionName, typeRef: dataType });
     }
   }, [expressionName, selectedExpressionName, dataType, selectedDataType, onExpressionHeaderUpdated]);
 
@@ -161,7 +163,7 @@ export function ExpressionDefinitionHeaderMenu({
               onChange={onExpressionNameChange}
               onBlur={onExpressionNameChange}
               className="form-control pf-c-form-control"
-              placeholder={DEFAULT_EXPRESSION_NAME}
+              placeholder={DEFAULT_EXPRESSION_VARIABLE_NAME}
               onKeyDown={onKeyDown}
             />
           </div>

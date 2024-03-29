@@ -23,7 +23,7 @@ import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";

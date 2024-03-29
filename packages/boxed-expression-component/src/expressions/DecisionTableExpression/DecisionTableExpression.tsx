@@ -51,11 +51,8 @@ import {
   BeeTableRef,
   getColumnsAtLastLevel,
 } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { HIT_POLICIES_THAT_SUPPORT_AGGREGATION, HitPolicySelector } from "./HitPolicySelector";
 import _ from "lodash";
@@ -100,7 +97,7 @@ export function DecisionTableExpression(
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById, variables } = useBoxedExpressionEditor();
-  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = decisionTableExpression["@_id"]!;
 
@@ -202,7 +199,8 @@ export function DecisionTableExpression(
 
   const setInputColumnWidth = useCallback(
     (inputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setWidthById(id, (prev) => {
+      setWidthsById(({ newMap }) => {
+        const prev = newMap.get(id) ?? [];
         const inputWidth = getInputWidth(inputIndex, prev);
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(inputWidth?.width) : newWidthAction;
 
@@ -211,17 +209,17 @@ export function DecisionTableExpression(
           const newValues = [...prev];
           newValues.push(...Array(Math.max(0, minSize - newValues.length)));
           newValues.splice(inputWidth.index, 1, newWidth);
-          return newValues;
+          newMap.set(id, newValues);
         }
-        return prev;
       });
     },
-    [id, getInputWidth, setWidthById]
+    [id, getInputWidth, setWidthsById]
   );
 
   const setOutputColumnWidth = useCallback(
     (outputIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setWidthById(id, (prev) => {
+      setWidthsById(({ newMap }) => {
+        const prev = newMap.get(id) ?? [];
         const outputWidth = getOutputWidth(outputIndex, prev);
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(outputWidth?.width) : newWidthAction;
 
@@ -230,18 +228,17 @@ export function DecisionTableExpression(
           const newValues = [...prev];
           newValues.push(...Array(Math.max(0, minSize - newValues.length)));
           newValues.splice(outputWidth.index, 1, newWidth);
-          return newValues;
+          newMap.set(id, newValues);
         }
-
-        return prev;
       });
     },
-    [id, getOutputWidth, setWidthById]
+    [id, getOutputWidth, setWidthsById]
   );
 
   const setAnnotationColumnWidth = useCallback(
     (annotationIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setWidthById(id, (prev) => {
+      setWidthsById(({ newMap }) => {
+        const prev = newMap.get(id) ?? [];
         const annotationWidth = getAnnotationWidth(annotationIndex, prev);
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(annotationWidth?.width) : newWidthAction;
 
@@ -250,13 +247,11 @@ export function DecisionTableExpression(
           const newValues = [...prev];
           newValues.push(...Array(Math.max(0, minSize - newValues.length)));
           newValues.splice(annotationWidth.index, 1, newWidth);
-          return newValues;
+          newMap.set(id, newValues);
         }
-
-        return prev;
       });
     },
-    [id, getAnnotationWidth, setWidthById]
+    [id, getAnnotationWidth, setWidthsById]
   );
 
   /// //////////////////////////////////////////////////////
@@ -338,8 +333,8 @@ export function DecisionTableExpression(
         id: outputClause["@_id"],
         label:
           decisionTableExpression.output?.length == 1
-            ? decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME
-            : outputClause["@_name"] ?? outputClause["@_label"] ?? DEFAULT_EXPRESSION_NAME,
+            ? decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME
+            : outputClause["@_name"] ?? outputClause["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         dataType:
           decisionTableExpression.output?.length == 1
             ? decisionTableExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined
@@ -357,7 +352,7 @@ export function DecisionTableExpression(
       groupType: DecisionTableColumnType.OutputClause,
       id: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
       accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-      label: decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
+      label: decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
       dataType: decisionTableExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
@@ -861,7 +856,8 @@ export function DecisionTableExpression(
         }
       });
 
-      setWidthById(id, (prev) => {
+      setWidthsById(({ newMap }) => {
+        const prev = newMap.get(id) ?? [];
         const defaultWidth =
           args.groupType === DecisionTableColumnType.InputClause
             ? DECISION_TABLE_INPUT_DEFAULT_WIDTH
@@ -880,7 +876,7 @@ export function DecisionTableExpression(
       decisionTableExpression.parentElementId,
       getSectionIndexForGroupType,
       setExpression,
-      setWidthById,
+      setWidthsById,
       variables?.repository,
       id,
     ]
@@ -947,13 +943,11 @@ export function DecisionTableExpression(
         }
       });
 
-      setWidthById(id, (prev) => {
-        const n = [...prev];
+      setWidthsById(({ newMap }) => {
         // FIXME: Tiago
-        return n;
       });
     },
-    [getSectionIndexForGroupType, setExpression, setWidthById, id]
+    [getSectionIndexForGroupType, setExpression, setWidthsById]
   );
 
   const onRowDeleted = useCallback(

@@ -21,7 +21,7 @@ import * as React from "react";
 import { useCallback, useMemo, useEffect, useRef } from "react";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { NavigationKeysUtils } from "../../keysUtils";
+import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export interface InlineEditableTextInputProps {

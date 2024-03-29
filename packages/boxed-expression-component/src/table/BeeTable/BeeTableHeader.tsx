@@ -24,11 +24,12 @@ import * as ReactTable from "react-table";
 import { BeeTableHeaderVisibility, DmnBuiltInDataType, BoxedExpression, InsertRowColumnsDirection } from "../../api";
 import { BeeTableTh } from "./BeeTableTh";
 import { BeeTableThResizable } from "./BeeTableThResizable";
-import { InlineEditableTextInput } from "../../expressions/ExpressionDefinitionHeaderMenu";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { getCanvasFont, getTextWidth } from "../../resizing/WidthsToFitData";
 import { BeeTableThController } from "./BeeTableThController";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
+import { InlineEditableTextInput } from "./InlineEditableTextInput";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 
 export interface BeeTableColumnUpdate<R extends object> {
   typeRef: string;
@@ -119,7 +120,10 @@ export function BeeTableHeader<R extends object>({
     ) => (args: Pick<BoxedExpression, "@_label" | "@_typeRef">) => void
   >(
     (column, columnIndex) => {
-      return ({ "@_label": name = "", "@_typeRef": typeRef = DmnBuiltInDataType.Undefined }) => {
+      return ({
+        "@_label": name = DEFAULT_EXPRESSION_VARIABLE_NAME,
+        "@_typeRef": typeRef = DmnBuiltInDataType.Undefined,
+      }) => {
         onColumnUpdates?.([
           {
             // Subtract one because of the rowIndex column.
@@ -199,7 +203,7 @@ export function BeeTableHeader<R extends object>({
               columnIndex={columnIndex}
               rowIndex={rowIndex}
               onColumnAdded={onColumnAdded}
-              onExpressionHeaderUpdated={({ "@_label": name, "@_typeRef": typeRef }) =>
+              onExpressionHeaderUpdated={({ name, typeRef }) =>
                 onExpressionHeaderUpdated(column, columnIndex)({ "@_label": name, "@_typeRef": typeRef })
               }
               lastColumnMinWidth={
@@ -263,6 +267,8 @@ export function BeeTableHeader<R extends object>({
       renderRowIndexColumn,
       getColumnKey,
       reactTableInstance,
+      onHeaderClick,
+      onHeaderKeyUp,
       resizerStopBehavior,
       isEditableHeader,
       shouldShowRowsInlineControls,

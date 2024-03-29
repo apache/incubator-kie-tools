@@ -25,7 +25,7 @@ import {
   BoxedExpressionEditorStoryArgs,
   pmmlDocuments,
 } from "../../../../boxedExpressionStoriesWrapper";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/BoxedExpressionEditor";
 import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../../../src/resizing/WidthConstants";
 

@@ -18,11 +18,11 @@
  */
 
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
-import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
+import { CONTEXT_ENTRY_VARIABLE_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -56,7 +56,7 @@ export const Base: Story = {
       ],
     },
     isResetSupportedOnRootExpression: false,
-    widthsById: { "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_INFO_MIN_WIDTH] },
+    widthsById: { "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH] },
   },
 };
 
@@ -199,8 +199,8 @@ export const Nested: Story = {
     },
     isResetSupportedOnRootExpression: false,
     widthsById: {
-      "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_INFO_MIN_WIDTH],
-      "_5D97B484-8003-4323-AADB-AA4C6F3ECA73": [CONTEXT_ENTRY_INFO_MIN_WIDTH],
+      "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH],
+      "_5D97B484-8003-4323-AADB-AA4C6F3ECA73": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH],
     },
   },
 };

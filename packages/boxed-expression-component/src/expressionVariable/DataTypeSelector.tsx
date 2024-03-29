@@ -20,10 +20,10 @@
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
 import { useCallback, useState, useRef, useMemo } from "react";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { useBoxedExpressionEditorI18n } from "../i18n";
 import * as _ from "lodash";
-import { DmnDataType } from "../../api";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { DmnDataType } from "../api";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export interface DataTypeSelectorProps {

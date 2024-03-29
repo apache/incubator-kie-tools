@@ -18,7 +18,7 @@
  */
 
 import { describe, test, expect } from "@jest/globals";
-import { NavigationKeysUtils } from "@kie-tools/boxed-expression-component/dist/keysUtils";
+import { NavigationKeysUtils } from "@kie-tools/boxed-expression-component/dist/keysUtils/keyUtils";
 
 const notAKey = "NotAKey";
 const testDescription = "With input key: '%s', should return '%s'";

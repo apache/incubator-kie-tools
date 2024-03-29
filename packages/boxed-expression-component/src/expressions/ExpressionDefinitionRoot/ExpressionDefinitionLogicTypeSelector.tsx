@@ -31,30 +31,27 @@ import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { BoxedExpression, generateUuid } from "../../../api";
-import { useCustomContextMenuHandler } from "../../../contextMenu";
-import { MenuItemWithHelp } from "../../../contextMenu/MenuWithHelp";
-import { PopoverMenu } from "../../../contextMenu/PopoverMenu";
-import { useBoxedExpressionEditorI18n } from "../../../i18n";
-import { useNestedExpressionContainer } from "../../../resizing/NestedExpressionContainerContext";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { ContextExpression } from "../../ContextExpression";
-import { DecisionTableExpression } from "../../DecisionTableExpression";
-import { FunctionExpression } from "../../FunctionExpression";
-import { InvocationExpression } from "../../InvocationExpression";
-import { ListExpression } from "../../ListExpression";
-import { LiteralExpression } from "../../LiteralExpression";
-import { RelationExpression } from "../../RelationExpression";
-import "./ExpressionDefinitionLogicTypeSelector.css";
+import { BoxedExpression } from "../../api";
+import { useCustomContextMenuHandler } from "../../contextMenu";
+import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
+import { PopoverMenu } from "../../contextMenu/PopoverMenu";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { ContextExpression } from "../ContextExpression/ContextExpression";
+import { DecisionTableExpression } from "../DecisionTableExpression/DecisionTableExpression";
+import { FunctionExpression } from "../FunctionExpression/FunctionExpression";
+import { InvocationExpression } from "../InvocationExpression/InvocationExpression";
+import { ListExpression } from "../ListExpression/ListExpression";
+import { LiteralExpression } from "../LiteralExpression/LiteralExpression";
+import { RelationExpression } from "../RelationExpression/RelationExpression";
 import {
   BoxedExpressionClipboard,
   DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE,
   buildClipboardFromExpression,
-  getNewBeeIdRandomizer,
-} from "../../../clipboard/clipboard";
+} from "../../clipboard/clipboard";
+import { findAllIdsDeep, mutateExpressionRandomizingIds } from "../../ids/ids";
+import "./ExpressionDefinitionLogicTypeSelector.css";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -244,7 +241,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     setDropdownOpen(false);
   }, [expression, onLogicTypeReset, widthsById]);
 
-  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const [pasteExpressionError, setPasteExpressionError] = React.useState<string>("");
 
@@ -257,21 +254,22 @@ export function ExpressionDefinitionLogicTypeSelector({
         );
       }
 
-      resetLogicType();
+      const newIdsByOriginalId = mutateExpressionRandomizingIds(clipboard.expression);
 
-      const newIdsByOriginalId = getNewBeeIdRandomizer()
-        .ack({
-          json: { __$$element: "decision", expression: clipboard.expression },
-          type: "DMN15__tDecision",
-          attr: "expression",
-        })
-        .randomize();
+      let oldExpression: BoxedExpression | undefined;
+      setExpression((prev) => {
+        oldExpression = prev;
+        return clipboard.expression;
+      }); // This is mutated to have new IDs by the ID randomizer above.
 
-      setExpression(clipboard.expression); // This is mutated to have new IDs by the ID randomizer above.
-
-      for (const originalId in clipboard.widthsById) {
-        setWidthById(newIdsByOriginalId.get(originalId)!, (prev) => clipboard.widthsById[originalId]);
-      }
+      setWidthsById(({ newMap }) => {
+        for (const id of findAllIdsDeep(oldExpression)) {
+          newMap.delete(id);
+        }
+        for (const originalId in clipboard.widthsById) {
+          newMap.set(newIdsByOriginalId.get(originalId)!, clipboard.widthsById[originalId]);
+        }
+      });
 
       setDropdownOpen(false);
       setCurrentlyOpenContextMenu(undefined);
@@ -279,7 +277,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     } catch (err) {
       setPasteExpressionError(err);
     }
-  }, [resetLogicType, setCurrentlyOpenContextMenu, setExpression, setWidthById]);
+  }, [setCurrentlyOpenContextMenu, setExpression, setWidthsById]);
 
   const menuIconContainerStyle = useMemo(() => {
     return {

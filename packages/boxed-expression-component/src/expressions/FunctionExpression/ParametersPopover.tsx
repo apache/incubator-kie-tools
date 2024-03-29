@@ -26,10 +26,10 @@ import * as React from "react";
 import { ChangeEvent, useCallback } from "react";
 import { DmnBuiltInDataType, BoxedFunction, generateUuid, getNextAvailablePrefixedName } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DataTypeSelector } from "../ExpressionDefinitionHeaderMenu";
+import { useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./ParametersPopover.css";
+import { DataTypeSelector } from "../../expressionVariable/DataTypeSelector";
 
 export interface ParametersPopoverProps {
   parameters: DMN15__tInformationItem[];

@@ -19,11 +19,12 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { BeeTableCellProps, DmnBuiltInDataType, BoxedList } from "../../api";
+import { BeeTableCellProps, BoxedList } from "../../api";
 import {
   useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+  OnSetExpression,
+} from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { ROWTYPE } from "./ListExpression";
 import { DMN15__tList } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -37,11 +38,11 @@ export function ListItemCell({
 }: BeeTableCellProps<ROWTYPE> & { parentElementId: string; listExpression: DMN15__tList }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
       setExpression((prev: BoxedList) => {
         const newItems = [...(prev.expression ?? [])];
-        newItems[rowIndex] = getNewExpression(newItems[rowIndex] ?? { "@_typeRef": DmnBuiltInDataType.Undefined });
+        newItems[rowIndex] = getNewExpression(newItems[rowIndex] ?? undefined!);
         return { ...prev, expression: newItems };
       });
     },

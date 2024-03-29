@@ -32,11 +32,8 @@ import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "..
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import "./LiteralExpression.css";
@@ -44,7 +41,7 @@ import "./LiteralExpression.css";
 type ROWTYPE = any;
 
 export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: boolean }) {
-  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { expressionHolderId, variables, widthsById } = useBoxedExpressionEditor();
 
   const id = literalExpression["@_id"]!;
@@ -85,13 +82,14 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
 
   const setLiteralExpressionWidth = useCallback(
     (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setWidthById(id, (prev) => {
+      setWidthsById(({ newMap }) => {
+        const prev = newMap.get(id) ?? [];
         const prevWidth = prev[0];
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(prevWidth) : newWidthAction;
-        return [newWidth ?? LITERAL_EXPRESSION_MIN_WIDTH];
+        newMap.set(id, [newWidth ?? LITERAL_EXPRESSION_MIN_WIDTH]);
       });
     },
-    [id, setWidthById]
+    [id, setWidthsById]
   );
 
   const onCellUpdates = useCallback(
@@ -143,7 +141,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
     return [
       {
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        label: literalExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
+        label: literalExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         isRowIndexColumn: false,
         dataType: literalExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         minWidth,

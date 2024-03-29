@@ -43,13 +43,15 @@ import {
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   NestedExpressionDispatchContextProvider,
+  OnSetExpression,
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+} from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { findAllIdsDeep } from "../../ids/ids";
 
 export type FEEL_ROWTYPE = { functionExpression: BoxedFunction };
 
@@ -63,15 +65,15 @@ export type FeelFunctionProps = DMN15__tFunctionDefinition & {
 export function FeelFunctionExpression({ functionExpression }: { functionExpression: FeelFunctionProps }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
-  const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
 
   const beeTableColumns = useMemo<ReactTable.Column<FEEL_ROWTYPE>[]>(() => {
     return [
       {
-        label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         dataType: functionExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
@@ -136,10 +138,17 @@ export function FeelFunctionExpression({ functionExpression }: { functionExpress
   }, []);
 
   const onRowReset = useCallback(() => {
-    setExpression(() => {
-      return undefined as any;
+    let oldExpression: BoxedExpression | undefined;
+    setExpression((prev: BoxedFunction) => {
+      oldExpression = prev.expression;
+      return undefined!; // SPEC DISCREPANCY
     });
-  }, [setExpression]);
+    setWidthsById(({ newMap }) => {
+      for (const id of findAllIdsDeep(oldExpression)) {
+        newMap.delete(id);
+      }
+    });
+  }, [setExpression, setWidthsById]);
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -211,7 +220,7 @@ export function FeelFunctionImplementationCell({
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => {
       setExpression((prev: FeelFunctionProps) => ({
         ...prev,

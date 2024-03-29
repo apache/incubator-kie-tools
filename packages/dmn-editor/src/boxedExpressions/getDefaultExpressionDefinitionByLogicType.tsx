@@ -31,7 +31,7 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   LITERAL_EXPRESSION_MIN_WIDTH,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
@@ -41,12 +41,12 @@ import {
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-} from "@kie-tools/boxed-expression-component/dist/expressions/DecisionTableExpression";
+} from "@kie-tools/boxed-expression-component/dist/expressions/DecisionTableExpression/DecisionTableExpression";
 import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-} from "@kie-tools/boxed-expression-component/dist/expressions/InvocationExpression";
-import { RELATION_EXPRESSION_DEFAULT_VALUE } from "@kie-tools/boxed-expression-component/dist/expressions/RelationExpression";
+} from "@kie-tools/boxed-expression-component/dist/expressions/InvocationExpression/InvocationExpression";
+import { RELATION_EXPRESSION_DEFAULT_VALUE } from "@kie-tools/boxed-expression-component/dist/expressions/RelationExpression/RelationExpression";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { isStruct } from "../dataTypes/DataTypeSpec";
 import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -87,24 +87,25 @@ export function getDefaultExpressionDefinitionByLogicType({
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
       "@_kind": "FEEL",
-      expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
     };
     return functionExpression;
   }
   //
   else if (logicType === "context") {
-    let maxWidthBasedOnEntryNames = CONTEXT_ENTRY_INFO_MIN_WIDTH;
+    let maxWidthBasedOnEntryNames = CONTEXT_ENTRY_VARIABLE_MIN_WIDTH;
 
     let contextEntries: DMN15__tContextEntry[];
     if (!dataType || !isStruct(dataType.itemDefinition)) {
       contextEntries = [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
             "@_typeRef": DmnBuiltInDataType.Undefined,
           },
-          expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+          expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         },
       ];
     } else {
@@ -115,15 +116,16 @@ export function getDefaultExpressionDefinitionByLogicType({
           : (ic.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
         maxWidthBasedOnEntryNames = Math.max(
           maxWidthBasedOnEntryNames,
-          getDefaultColumnWidth?.({ name, typeRef }) ?? CONTEXT_ENTRY_INFO_MIN_WIDTH
+          getDefaultColumnWidth?.({ name, typeRef }) ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH
         );
         return {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": name,
             "@_typeRef": typeRef as string,
           },
-          expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+          expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         };
       });
     }
@@ -131,7 +133,7 @@ export function getDefaultExpressionDefinitionByLogicType({
     // context <result> cell
     contextEntries.push({
       "@_id": generateUuid(),
-      expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
     });
 
     const contextExpression: BoxedContext = {
@@ -149,7 +151,7 @@ export function getDefaultExpressionDefinitionByLogicType({
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
       expression: [
-        undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
       ],
     };
     return listExpression;
@@ -165,7 +167,7 @@ export function getDefaultExpressionDefinitionByLogicType({
             "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
             "@_typeRef": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
           },
-          expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+          expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         },
       ],
       expression: {
@@ -174,7 +176,7 @@ export function getDefaultExpressionDefinitionByLogicType({
         text: { __$$text: "FUNCTION NAME" },
       },
     };
-    widthsById.set(invocationExpression["@_id"]!, [CONTEXT_ENTRY_INFO_MIN_WIDTH]);
+    widthsById.set(invocationExpression["@_id"]!, [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH]);
     return invocationExpression;
   } else if (logicType === "relation") {
     const isSimple = !dataType || !isStruct(dataType.itemDefinition);

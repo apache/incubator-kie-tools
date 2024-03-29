@@ -22,43 +22,52 @@ import { useCallback } from "react";
 import { BoxedContext } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
+  OnSetExpression,
   useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+} from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
+import { solveResultAndEntriesIndex } from "./ContextExpression";
 
 export function ContextResultExpressionCell(props: {
   contextExpression: BoxedContext;
-  resultIndex: number;
+  rowIndex: number;
   columnIndex: number;
 }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const { resultIndex } = solveResultAndEntriesIndex({
+    contextEntries: props.contextExpression.contextEntry ?? [],
+    rowIndex: props.rowIndex,
+  });
+
+  const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
       setExpression((prev: BoxedContext) => {
-        const entries = [...(prev.contextEntry ?? [])];
+        const newContextEntries = [...(prev.contextEntry ?? [])];
 
-        const resultIndex = props.resultIndex < 0 ? entries.length : props.resultIndex;
+        const newExpression = getNewExpression(newContextEntries[resultIndex]?.expression);
 
-        if (resultIndex < entries.length) {
-          entries.splice(resultIndex, 1, {
-            ...entries[resultIndex],
-            expression: getNewExpression(entries[resultIndex]?.expression),
+        if (resultIndex <= -1) {
+          newContextEntries.push({ expression: newExpression });
+        } else if (newExpression) {
+          newContextEntries.splice(resultIndex, 1, {
+            ...newContextEntries[resultIndex],
+            expression: newExpression,
           });
         } else {
-          entries.push({ expression: getNewExpression() });
+          newContextEntries.splice(resultIndex, 1);
         }
 
         return {
           ...prev,
-          contextEntry: entries,
+          contextEntry: newContextEntries,
         };
       });
     },
-    [props.resultIndex, setExpression]
+    [resultIndex, setExpression]
   );
 
-  const resultEntry = props.resultIndex < 0 ? undefined : props.contextExpression.contextEntry?.[props.resultIndex];
+  const resultEntry = resultIndex <= -1 ? undefined : props.contextExpression.contextEntry?.[resultIndex];
 
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
@@ -66,7 +75,7 @@ export function ContextResultExpressionCell(props: {
         expression={resultEntry?.expression}
         isResetSupported={true}
         isNested={true}
-        rowIndex={props.resultIndex}
+        rowIndex={resultIndex}
         columnIndex={props.columnIndex}
         parentElementId={props.contextExpression["@_id"]}
         parentTypeRef={props.contextExpression["@_typeRef"]}

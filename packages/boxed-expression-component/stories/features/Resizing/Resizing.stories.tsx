@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import * as Literal from "../../boxedExpressions/Literal/Literal.stories";
 import * as Context from "../../boxedExpressions/Context/Context.stories";
 import { DmnBuiltInDataType, BoxedExpression, BoxedFunctionKind, BoxedLiteral } from "../../../src/api";

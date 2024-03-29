@@ -19,8 +19,8 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { generateUuid } from "../api";
-import { useBoxedExpressionEditor } from "../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { NavigationKeysUtils } from "../keysUtils";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
+import { NavigationKeysUtils } from "../keysUtils/keyUtils";
 
 export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<HTMLDivElement | null>): {
   xPos: number;

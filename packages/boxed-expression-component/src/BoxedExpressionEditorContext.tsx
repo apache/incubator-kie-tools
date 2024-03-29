@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "../../api";
+import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "./api";
 import { useRef, useState } from "react";
 import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
@@ -47,7 +47,7 @@ export interface BoxedExpressionEditorContextType {
 
 export interface BoxedExpressionEditorDispatchContextType {
   setExpression: React.Dispatch<React.SetStateAction<BoxedExpression>>;
-  setWidthById: (id: string, values: (prev: number[]) => number[]) => void;
+  setWidthsById: (mutation: ({ newMap }: { newMap: Map<string, number[]> }) => void) => void;
 }
 
 export const BoxedExpressionEditorContext = React.createContext<BoxedExpressionEditorContextType>(
@@ -90,23 +90,11 @@ export function BoxedExpressionEditorContextProvider({
   const dispatch = useMemo<BoxedExpressionEditorDispatchContextType>(
     () => ({
       setExpression: onExpressionChange,
-      setWidthById: (id, values) => {
+      setWidthsById: (mutation) => {
         const newWidthsById = new Map(widthsByIdRef.current);
-        const prevValues = newWidthsById.get(id) ?? [];
-        const newValues = values(prevValues);
-
-        if (newValues.length === 0) {
-          newWidthsById.delete(id);
-          widthsByIdRef.current = newWidthsById;
-          onWidthsChange(newWidthsById);
-          return;
-        }
-
-        if (newValues !== prevValues) {
-          newWidthsById.set(id, newValues);
-          widthsByIdRef.current = newWidthsById;
-          onWidthsChange(newWidthsById);
-        }
+        widthsByIdRef.current = newWidthsById;
+        mutation({ newMap: newWidthsById });
+        onWidthsChange(newWidthsById);
       },
     }),
     [onExpressionChange, onWidthsChange]
@@ -141,13 +129,15 @@ export function BoxedExpressionEditorContextProvider({
   );
 }
 
+export type OnSetExpression = (args: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => void;
+
 export function NestedExpressionDispatchContextProvider({
   onSetExpression,
   children,
 }: React.PropsWithChildren<{
-  onSetExpression: (args: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => void;
+  onSetExpression: OnSetExpression;
 }>) {
-  const { setWidthById } = useBoxedExpressionEditorDispatch();
+  const { setWidthsById } = useBoxedExpressionEditorDispatch();
   const nestedExpressionDispatch = useMemo<BoxedExpressionEditorDispatchContextType>(() => {
     return {
       setExpression: (newExpressionAction: React.SetStateAction<BoxedExpression>) => {
@@ -157,9 +147,9 @@ export function NestedExpressionDispatchContextProvider({
 
         onSetExpression({ getNewExpression });
       },
-      setWidthById,
+      setWidthsById,
     };
-  }, [onSetExpression, setWidthById]);
+  }, [onSetExpression, setWidthsById]);
 
   return (
     <BoxedExpressionEditorDispatchContext.Provider value={nestedExpressionDispatch}>

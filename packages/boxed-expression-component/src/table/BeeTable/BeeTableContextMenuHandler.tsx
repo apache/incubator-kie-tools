@@ -39,7 +39,7 @@ import {
   InsertRowColumnsDirection,
 } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import {
   BeeTableSelection,

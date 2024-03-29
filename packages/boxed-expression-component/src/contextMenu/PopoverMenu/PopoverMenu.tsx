@@ -20,8 +20,8 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Popover, PopoverPosition, PopoverProps } from "@patternfly/react-core/dist/js/components/Popover";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { NavigationKeysUtils } from "../../keysUtils";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
+import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { generateUuid } from "../../api";
 import "./PopoverMenu.css";
 

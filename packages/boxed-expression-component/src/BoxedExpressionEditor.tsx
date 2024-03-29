@@ -20,17 +20,17 @@
 import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
-import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "../../api";
+import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "./api";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
   boxedExpressionEditorI18nDefaults,
-} from "../../i18n";
-import { ExpressionDefinitionRoot } from "../ExpressionDefinitionRoot";
+} from "./i18n";
+import { ExpressionDefinitionRoot } from "./expressions/ExpressionDefinitionRoot/ExpressionDefinitionRoot";
 import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 import "./base-no-reset-wrapped.css";
-import "../../@types/react-table";
+import "./@types/react-table";
 
 export interface BoxedExpressionEditorProps {
   /** The API methods which BoxedExpressionEditor component can use to dialog with GWT layer. Although the GWT layer is deprecated, and the new DMN Editor does not have GWT, some methods here are still necessary. */

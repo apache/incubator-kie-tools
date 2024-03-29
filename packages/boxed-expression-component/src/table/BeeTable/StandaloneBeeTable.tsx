@@ -21,7 +21,7 @@ import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-compon
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { BeeTableProps, BoxedExpression } from "../../api";
-import { BoxedExpressionEditorContextProvider } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { BoxedExpressionEditorContextProvider } from "../../BoxedExpressionEditorContext";
 import {
   BoxedExpressionEditorI18nContext,
   boxedExpressionEditorDictionaries,

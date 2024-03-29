@@ -42,11 +42,8 @@ import {
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { DMN15__tList, DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./RelationExpression.css";
 
@@ -62,7 +59,7 @@ export function RelationExpression(
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { widthsById, variables, expressionHolderId } = useBoxedExpressionEditor();
-  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = relationExpression["@_id"]!;
 
@@ -120,22 +117,21 @@ export function RelationExpression(
 
   const setColumnWidth = useCallback(
     (columnIndex: number) => (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setWidthById(id, (prev) => {
+      setWidthsById(({ newMap }) => {
+        const prev = newMap.get(id) ?? [];
         const prevColumnWidth = getColumnWidth(columnIndex, prev);
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(prevColumnWidth) : newWidthAction;
 
         if (newWidth && prevColumnWidth) {
-          const minSize = columnIndex + 1 + 1; // + 1 to account for rowIndex column
+          const minSize = columnIndex + 1;
           const newValues = [...prev];
           newValues.push(...Array(Math.max(0, minSize - newValues.length)));
           newValues.splice(columnIndex, 1, newWidth);
-          return newValues;
+          newMap.set(id, newValues);
         }
-
-        return prev;
       });
     },
-    [getColumnWidth, setWidthById, id]
+    [getColumnWidth, setWidthsById, id]
   );
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -166,7 +162,7 @@ export function RelationExpression(
     return [
       {
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        label: relationExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
+        label: relationExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         dataType: relationExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
@@ -343,13 +339,11 @@ export function RelationExpression(
         };
       });
 
-      setWidthById(id, (prev) => {
-        const n = [...prev];
+      setWidthsById(({ newMap }) => {
         // FIXME: Tiago
-        return n;
       });
     },
-    [createCell, id, setExpression, setWidthById]
+    [createCell, setExpression, setWidthsById]
   );
 
   const onColumnDeleted = useCallback(
@@ -374,13 +368,11 @@ export function RelationExpression(
         };
       });
 
-      setWidthById(id, (prev) => {
-        const n = [...prev];
+      setWidthsById(({ newMap }) => {
         // FIXME: Tiago
-        return n;
       });
     },
-    [setExpression, setWidthById, id]
+    [setExpression, setWidthsById]
   );
 
   const onRowDeleted = useCallback(

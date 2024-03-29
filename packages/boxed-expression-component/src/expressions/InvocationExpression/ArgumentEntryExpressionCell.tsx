@@ -18,66 +18,49 @@
  */
 
 import * as React from "react";
-import { DmnBuiltInDataType, BoxedExpression, BoxedInvocation } from "../../api";
+import { BoxedInvocation, BeeTableCellProps } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
+  OnSetExpression,
   useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+} from "../../BoxedExpressionEditorContext";
 import { useCallback } from "react";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
-import { DMN15__tBinding } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { ROWTYPE } from "./InvocationExpression";
 import "../ContextExpression/ContextEntryExpressionCell.css";
 
-export type Entry = {
-  expression: BoxedExpression | undefined;
-};
-
-export interface ArgumentEntryExpressionCellProps {
-  // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
-  data?: readonly DMN15__tBinding[];
-  rowIndex: number;
-  columnIndex: number;
-  parentElementId: string;
-  onDataUpdate: (data: readonly DMN15__tBinding[]) => void;
-}
-
-export const ArgumentEntryExpressionCell: React.FunctionComponent<ArgumentEntryExpressionCellProps> = ({
-  data,
-  rowIndex,
-  columnIndex,
-  parentElementId,
-  onDataUpdate,
-}) => {
+export const ArgumentEntryExpressionCell: React.FunctionComponent<
+  BeeTableCellProps<ROWTYPE> & { parentElementId: string }
+> = ({ data, rowIndex, columnIndex, parentElementId }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const { expression, variable, index } = data[rowIndex];
+
+  const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
       setExpression((prev: BoxedInvocation) => {
-        const argumentEntries = [...(prev.binding ?? [])];
-        argumentEntries[rowIndex] = {
-          ...argumentEntries[rowIndex],
-          expression: getNewExpression(
-            argumentEntries[rowIndex]?.expression ?? { "@_typeRef": DmnBuiltInDataType.Undefined }
-          ),
+        const newBindings = [...(prev.binding ?? [])];
+        newBindings[index] = {
+          ...newBindings[index],
+          expression: getNewExpression(newBindings[index]?.expression ?? undefined!),
         };
 
-        onDataUpdate(argumentEntries);
-        return { ...prev, binding: argumentEntries };
+        return { ...prev, binding: newBindings };
       });
     },
-    [onDataUpdate, rowIndex, setExpression]
+    [index, setExpression]
   );
 
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
       <ExpressionContainer
-        expression={data?.[rowIndex]?.expression ?? undefined!}
+        expression={expression}
         isResetSupported={true}
         isNested={true}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={parentElementId}
-        parentTypeRef={data?.[rowIndex].parameter["@_typeRef"]}
+        parentTypeRef={variable["@_typeRef"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

@@ -25,7 +25,7 @@ import {
   generateUuid,
   PmmlDocument,
 } from "@kie-tools/boxed-expression-component/dist/api";
-import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
+import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/BoxedExpressionEditor";
 import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import {
@@ -204,12 +204,12 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   );
 
   const onExpressionChange: React.Dispatch<React.SetStateAction<BoxedExpression>> = useCallback(
-    (expressionAction) => {
+    (newExpressionAction) => {
       dmnEditorStoreApi.setState((state) => {
         const newExpression =
-          typeof expressionAction === "function"
-            ? expressionAction(boxedExpressionRef.current ?? undefined!)
-            : expressionAction;
+          typeof newExpressionAction === "function"
+            ? newExpressionAction(boxedExpressionRef.current ?? undefined!)
+            : newExpressionAction;
 
         boxedExpressionRef.current = newExpression;
 
@@ -412,7 +412,7 @@ function drgElementToBoxedExpression(
           __$$element: "functionDefinition",
           "@_id": generateUuid(),
           "@_kind": "FEEL",
-          expression: undefined as any, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+          expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
           formalParameter: [],
           "@_typeRef": expressionHolder.variable?.["@_typeRef"],
         };

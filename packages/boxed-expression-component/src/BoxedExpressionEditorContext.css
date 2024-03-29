@@ -16,6 +16,10 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
+:root {
+  --small-font-size: 13px;
+  --selected-cell: rgba(190, 200, 205, 0.3);
+}
 
 .boxed-expression-provider {
   background-color: var(--pf-global--BackgroundColor--100);

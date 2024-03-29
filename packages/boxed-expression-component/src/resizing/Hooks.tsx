@@ -19,7 +19,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { BoxedExpression } from "../api";
-import { BeeTableRef } from "../expressions";
+import { BeeTableRef } from "../table/BeeTable";
 import {
   NestedExpressionContainerContextType,
   useNestedExpressionContainer,

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
+import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/BoxedExpressionEditor";
 import {
   ImportJavaClasses,
   GWTLayerService,

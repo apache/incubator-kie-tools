@@ -97,7 +97,7 @@ const INITIAL_WIDTHS_BY_ID: Record<string, number[]> = {};
 const beeGwtService: BeeGwtService = {
   getDefaultExpressionDefinition(logicType, typeRef) {
     return {
-      expression: getDefaultExpressionDefinitionByLogicType(logicType, typeRef, 0),
+      expression: getDefaultExpressionDefinitionByLogicType(logicType, typeRef),
       widthsById: new Map(),
     };
   },

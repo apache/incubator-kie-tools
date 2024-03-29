@@ -32,16 +32,15 @@ import {
 import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-} from "../../src/expressions/InvocationExpression";
+} from "../../src/expressions/InvocationExpression/InvocationExpression";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-} from "../../src/expressions/DecisionTableExpression";
+} from "../../src/expressions/DecisionTableExpression/DecisionTableExpression";
 
 export function getDefaultExpressionDefinitionByLogicType(
   logicType: BoxedExpression["__$$element"] | undefined,
-  typeRef: string,
-  containerWidth: number
+  typeRef: string
 ): BoxedExpression {
   if (logicType === "literalExpression") {
     const literalExpression: BoxedLiteral = {
@@ -65,6 +64,7 @@ export function getDefaultExpressionDefinitionByLogicType(
       "@_typeRef": typeRef,
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
@@ -72,6 +72,7 @@ export function getDefaultExpressionDefinitionByLogicType(
           expression: undefined!,
         },
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-2",

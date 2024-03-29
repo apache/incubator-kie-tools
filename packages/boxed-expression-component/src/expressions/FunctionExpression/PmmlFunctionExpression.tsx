@@ -42,11 +42,8 @@ import {
 } from "../../resizing/WidthConstants";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
 import {
   DMN15__tContext,
@@ -79,8 +76,8 @@ export function PmmlFunctionExpression({ functionExpression }: { functionExpress
   const beeTableColumns = useMemo<ReactTable.Column<PMML_ROWTYPE>[]>(() => {
     return [
       {
-        label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         dataType: functionExpression["@_typeRef"] ?? "",
         isRowIndexColumn: false,
         width: undefined,
@@ -190,7 +187,7 @@ export function PmmlFunctionExpression({ functionExpression }: { functionExpress
     setExpression((prev) => {
       return {
         ...prev,
-        expression: undefined!,
+        expression: undefined!, // SPEC DISCREPANCY
       };
     });
   }, [setExpression]);

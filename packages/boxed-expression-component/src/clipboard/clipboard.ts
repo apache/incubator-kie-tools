@@ -17,12 +17,8 @@
  * under the License.
  */
 
-import { BoxedExpression, generateUuid } from "../api";
-import {
-  elements as dmn15elements,
-  meta as dmn15meta,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
-import { XmlParserTsIdRandomizer } from "@kie-tools/xml-parser-ts/dist/idRandomizer";
+import { BoxedExpression } from "../api";
+import { findAllIdsDeep } from "../ids/ids";
 
 export const DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE =
   "application/json+kie-dmn-boxed-expression-editor--expression" as const;
@@ -37,13 +33,7 @@ export function buildClipboardFromExpression(
   expression: BoxedExpression,
   widthsById: Map<string, number[]>
 ): BoxedExpressionClipboard {
-  const originalIds = getNewBeeIdRandomizer()
-    .ack({
-      json: { __$$element: "decision", expression },
-      type: "DMN15__tDecision",
-      attr: "expression",
-    })
-    .getOriginalIds();
+  const originalIds = findAllIdsDeep(expression);
 
   const widthsByIdObj = [...widthsById.entries()].reduce<Record<string, number[]>>((acc, [k, v]) => {
     if (originalIds.has(k)) {
@@ -57,13 +47,4 @@ export function buildClipboardFromExpression(
     expression,
     widthsById: widthsByIdObj,
   };
-}
-
-export function getNewBeeIdRandomizer() {
-  return new XmlParserTsIdRandomizer({
-    meta: dmn15meta,
-    elements: dmn15elements,
-    newIdGenerator: generateUuid,
-    matchers: [],
-  });
 }

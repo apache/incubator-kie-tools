@@ -44,11 +44,8 @@ import {
 } from "../../resizing/WidthConstants";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
 import {
   DMN15__tContext,
@@ -74,7 +71,7 @@ const JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX = 2; // 0 is the rowIndex
 export function JavaFunctionExpression({ functionExpression }: { functionExpression: JavaFunctionProps }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
-  const { setExpression, setWidthById } = useBoxedExpressionEditorDispatch();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const getClassContextEntry = useCallback((c: DMN15__tContext) => {
     return c.contextEntry?.find(({ variable }) => variable?.["@_name"] === "class");
@@ -99,7 +96,8 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
 
   const setClassAndMethodNamesWidth = useCallback(
     (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setWidthById(id, (prev) => {
+      setWidthsById(({ newMap }) => {
+        const prev = newMap.get(id) ?? [];
         const newWidth =
           typeof newWidthAction === "function" ? newWidthAction(getClassAndMethodNamesWidth(prev)) : newWidthAction;
 
@@ -108,13 +106,11 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
           const newValues = [...prev];
           newValues.push(...Array(Math.max(0, minSize - newValues.length)));
           newValues.splice(JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX, 1, newWidth);
-          return newValues;
+          newMap.set(id, newValues);
         }
-
-        return prev;
       });
     },
-    [getClassAndMethodNamesWidth, id, setWidthById]
+    [getClassAndMethodNamesWidth, id, setWidthsById]
   );
 
   const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
@@ -122,8 +118,8 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
   const beeTableColumns = useMemo<ReactTable.Column<JAVA_ROWTYPE>[]>(() => {
     return [
       {
-        label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_NAME,
         accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         dataType: functionExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
@@ -226,7 +222,7 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
     setExpression((prev) => {
       return {
         ...prev,
-        expression: undefined!,
+        expression: undefined!, // SPEC DISCREPANCY
       };
     });
   }, [setExpression]);

@@ -22,7 +22,7 @@ import { ResizingWidth } from "./ResizingWidthsContext";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
   DECISION_TABLE_INPUT_MIN_WIDTH,
@@ -57,7 +57,7 @@ export function getExpressionMinWidth(expression?: BoxedExpression): number {
     const result = expression.contextEntry?.find((e) => !e.variable);
     const nestedExpressions = [...(expression.contextEntry ?? []).map((e) => e.expression), result?.expression];
     return (
-      CONTEXT_ENTRY_INFO_MIN_WIDTH +
+      CONTEXT_ENTRY_VARIABLE_MIN_WIDTH +
       Math.max(CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
       CONTEXT_EXPRESSION_EXTRA_WIDTH
     );
@@ -222,7 +222,7 @@ export function getExpressionResizingWidth(
     const nestedExpressions = [...(expression.contextEntry ?? []).map((e) => e.expression), result?.expression];
     return (
       resizingWidth ??
-      (getWidth(expression["@_id"], widthsById) ?? CONTEXT_ENTRY_INFO_MIN_WIDTH) +
+      (getWidth(expression["@_id"], widthsById) ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH) +
         Math.max(
           CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
           ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
