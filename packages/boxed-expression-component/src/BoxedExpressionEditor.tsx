@@ -32,15 +32,17 @@ import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 import "./base-no-reset-wrapped.css";
 import "./@types/react-table";
 
+export type OnRequestFeelVariables = () => FeelVariables;
+
 export interface BoxedExpressionEditorProps {
   /** The API methods which BoxedExpressionEditor component can use to dialog with GWT layer. Although the GWT layer is deprecated, and the new DMN Editor does not have GWT, some methods here are still necessary. */
   beeGwtService?: BeeGwtService;
-  /** Identifier of the Decision or BKM containing `expression` */
+  /** Id of the Decision or BKM containing `expression` */
   expressionHolderId: string;
+  /** Name of the Decision or BKM containing `expression` */
+  expressionHolderName: string;
   /** TypeRef of the Decision or BKM containing `expression` */
   expressionHolderTypeRef: string;
-  /** The name of the expression */
-  expressionName?: string;
   /** The boxed expression itself */
   expression: BoxedExpression | undefined;
   /** Called every time something changes on the expression */
@@ -58,12 +60,13 @@ export interface BoxedExpressionEditorProps {
   /** The containing HTMLElement which is scrollable */
   scrollableParentRef: React.RefObject<HTMLElement>;
   /** Parsed variables used for syntax coloring and auto-complete */
-  variables?: FeelVariables;
+  onRequestFeelVariables?: OnRequestFeelVariables;
 }
 
 export function BoxedExpressionEditor({
   dataTypes,
   expressionHolderId,
+  expressionHolderName,
   expressionHolderTypeRef,
   expression,
   onExpressionChange,
@@ -71,10 +74,9 @@ export function BoxedExpressionEditor({
   isResetSupportedOnRootExpression,
   scrollableParentRef,
   pmmlDocuments,
-  variables,
+  onRequestFeelVariables,
   widthsById,
   onWidthsChange,
-  expressionName,
 }: BoxedExpressionEditorProps) {
   return (
     <I18nDictionariesProvider
@@ -87,22 +89,22 @@ export function BoxedExpressionEditor({
         scrollableParentRef={scrollableParentRef}
         beeGwtService={beeGwtService}
         expressionHolderId={expressionHolderId}
+        expressionHolderName={expressionHolderName}
         expressionHolderTypeRef={expressionHolderTypeRef}
         expression={expression}
         onExpressionChange={onExpressionChange}
         onWidthsChange={onWidthsChange}
         dataTypes={dataTypes}
         pmmlDocuments={pmmlDocuments}
-        variables={variables}
+        onRequestFeelVariables={onRequestFeelVariables}
         widthsById={widthsById}
-        expressionName={expressionName}
       >
         <ExpressionDefinitionRoot
           expressionHolderId={expressionHolderId}
+          expressionHolderName={expressionHolderName}
           expressionHolderTypeRef={expressionHolderTypeRef}
           expression={expression}
           isResetSupported={isResetSupportedOnRootExpression}
-          expressionName={expressionName}
         />
       </BoxedExpressionEditorContextProvider>
     </I18nDictionariesProvider>

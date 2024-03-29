@@ -28,15 +28,15 @@ export interface ExpressionDefinitionRootProps {
   expressionHolderTypeRef: string;
   expression?: BoxedExpression;
   isResetSupported: boolean | undefined;
-  expressionName?: string;
+  expressionHolderName?: string;
 }
 
 export function ExpressionDefinitionRoot({
-  expressionHolderId,
   expression,
   isResetSupported = true,
+  expressionHolderId,
   expressionHolderTypeRef,
-  expressionName,
+  expressionHolderName,
 }: ExpressionDefinitionRootProps) {
   return (
     <ResizingWidthsContextProvider>
@@ -48,8 +48,8 @@ export function ExpressionDefinitionRoot({
           rowIndex={0}
           columnIndex={0}
           parentElementId={expressionHolderId}
-          expressionName={expressionName}
-          parentTypeRef={expressionHolderTypeRef}
+          parentElementName={expressionHolderName}
+          parentElementTypeRef={expressionHolderTypeRef}
         />
       </div>
     </ResizingWidthsContextProvider>

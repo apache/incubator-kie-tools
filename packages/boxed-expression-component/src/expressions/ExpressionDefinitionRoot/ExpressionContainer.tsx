@@ -33,8 +33,8 @@ export interface ExpressionContainerProps {
   rowIndex: number;
   columnIndex: number;
   parentElementId: string | undefined;
-  parentTypeRef: string | undefined;
-  expressionName?: string;
+  parentElementTypeRef: string | undefined;
+  parentElementName?: string;
 }
 
 export const ExpressionContainer: React.FunctionComponent<ExpressionContainerProps> = ({
@@ -44,12 +44,12 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   rowIndex,
   columnIndex,
   parentElementId,
-  parentTypeRef,
-  expressionName,
+  parentElementTypeRef,
+  parentElementName,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { beeGwtService, variables, expressionHolderId } = useBoxedExpressionEditor();
+  const { beeGwtService, expressionHolderId } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
@@ -59,20 +59,6 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
     }
   }, [beeGwtService, isActive]);
 
-  const addContextExpressionToVariables = useCallback(
-    (contextExpressionDefinition: BoxedContext) => {
-      const contextEntries = contextExpressionDefinition.contextEntry ?? [];
-      for (const contextEntry of contextEntries) {
-        variables?.repository.addVariableToContext(
-          contextEntry["@_id"]!,
-          contextEntry.variable?.["@_name"] ?? "",
-          contextExpressionDefinition["@_id"]!
-        );
-      }
-    },
-    [variables?.repository]
-  );
-
   const expressionTypeRef = expression?.["@_typeRef"];
 
   const onLogicTypeSelected = useCallback(
@@ -80,29 +66,19 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       const { expression: defaultExpression, widthsById: defaultWidthsById } =
         beeGwtService!.getDefaultExpressionDefinition(
           logicType,
-          parentTypeRef ?? expressionTypeRef ?? DmnBuiltInDataType.Undefined,
+          parentElementTypeRef ?? expressionTypeRef ?? DmnBuiltInDataType.Undefined,
           !isNested
         );
 
-      setExpression((prev) => {
-        const newExpression: BoxedExpression = {
+      setExpression((prev: BoxedExpression) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedExpression = {
           ...defaultExpression,
-          "@_id": prev?.["@_id"] ?? generateUuid(),
-          "@_label": prev?.["@_label"] ?? expressionName ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
+          "@_id": defaultExpression["@_id"] ?? generateUuid(),
+          "@_label": defaultExpression["@_label"] ?? parentElementName ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         };
 
-        if (parentElementId) {
-          switch (newExpression.__$$element) {
-            case "context":
-              addContextExpressionToVariables(newExpression);
-              break;
-            default:
-              // Expression without variables
-              break;
-          }
-        }
-
-        return newExpression;
+        return ret;
       });
 
       setWidthsById(({ newMap }) => {
@@ -111,22 +87,10 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         });
       });
     },
-    [
-      addContextExpressionToVariables,
-      beeGwtService,
-      expressionTypeRef,
-      expressionName,
-      isNested,
-      parentElementId,
-      parentTypeRef,
-      setExpression,
-      setWidthsById,
-    ]
+    [beeGwtService, expressionTypeRef, parentElementName, isNested, parentElementTypeRef, setExpression, setWidthsById]
   );
 
   const onLogicTypeReset = useCallback(() => {
-    variables?.repository.removeVariable(expression?.["@_id"] ?? "", true);
-
     setWidthsById(({ newMap }) => {
       for (const id of findAllIdsDeep(expression)) {
         newMap.delete(id);
@@ -134,7 +98,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
     });
 
     setExpression(undefined!); // SPEC DISCREPANCY: Undefined expressions gives users the ability to select the expression type.
-  }, [expression, setExpression, setWidthsById, variables?.repository]);
+  }, [expression, setExpression, setWidthsById]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 

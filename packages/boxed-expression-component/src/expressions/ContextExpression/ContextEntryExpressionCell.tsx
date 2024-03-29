@@ -52,6 +52,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellPro
           },
         };
 
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
         const ret: BoxedContext = {
           ...prev,
           contextEntry: newContextEntries,
@@ -72,8 +73,8 @@ export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellPro
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={variable["@_id"]}
-        parentTypeRef={variable["@_typeRef"]}
-        expressionName={variable["@_name"]}
+        parentElementTypeRef={variable["@_typeRef"]}
+        parentElementName={variable["@_name"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

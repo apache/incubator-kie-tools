@@ -60,6 +60,7 @@ export function ContextResultExpressionCell(props: {
           newContextEntries.splice(resultIndex, 1);
         }
 
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
         const ret: BoxedContext = {
           ...prev,
           contextEntry: newContextEntries,
@@ -84,8 +85,8 @@ export function ContextResultExpressionCell(props: {
         rowIndex={resultIndex}
         columnIndex={props.columnIndex}
         parentElementId={props.contextExpression["@_id"]}
-        parentTypeRef={props.contextExpression["@_typeRef"]}
-        expressionName={props.contextExpression["@_label"]}
+        parentElementTypeRef={props.contextExpression["@_typeRef"]}
+        parentElementName={props.contextExpression["@_label"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

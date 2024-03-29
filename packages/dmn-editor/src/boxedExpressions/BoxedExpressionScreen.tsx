@@ -79,16 +79,19 @@ import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
 import { DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
-import { getDefaultExpressionDefinitionByLogicType } from "./getDefaultExpressionDefinitionByLogicType";
+import { getDefaultBoxedExpression } from "./getDefaultBoxedExpression";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
 
-  //
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
-  const boxedExpressionEditor = useDmnEditorStore((s) => s.boxedExpressionEditor);
+
+  const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
+  const isPropertiesPanelOpen = useDmnEditorStore((s) => s.boxedExpressionEditor.propertiesPanel.isOpen);
+
   const externalDmnsByNamespace = useDmnEditorStore(
     (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
   );
@@ -99,28 +102,23 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   );
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
-  //
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
-
-  const feelVariables = useMemo(() => {
+  const onRequestFeelVariables = useCallback(() => {
     const externalModels = new Map<string, DmnLatestModel>();
 
     for (const [key, externalDmn] of externalDmnsByNamespace) {
       externalModels.set(key, externalDmn.model);
     }
 
-    return new FeelVariables(thisDmn.model.definitions, externalModels);
-  }, []);
+    return new FeelVariables(dmnEditorStoreApi.getState().dmn.model.definitions, externalModels);
+  }, [dmnEditorStoreApi, externalDmnsByNamespace]);
 
   const drgElementIndex = useMemo(() => {
-    if (!boxedExpressionEditor.activeDrgElementId) {
+    if (!activeDrgElementId) {
       return undefined;
     }
 
-    return (thisDmn.model.definitions.drgElement ?? []).findIndex(
-      (e) => e["@_id"] === boxedExpressionEditor.activeDrgElementId
-    );
-  }, [boxedExpressionEditor.activeDrgElementId, thisDmn.model.definitions.drgElement]);
+    return (thisDmn.model.definitions.drgElement ?? []).findIndex((e) => e["@_id"] === activeDrgElementId);
+  }, [activeDrgElementId, thisDmn.model.definitions.drgElement]);
 
   const drgElement = useMemo(() => {
     if (drgElementIndex === undefined) {
@@ -135,11 +133,13 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     return drgElement;
   }, [drgElementIndex, thisDmn.model.definitions.drgElement]);
 
-  const expressionName = useMemo(() => {
-    return drgElement?.["@_name"];
-  }, [drgElement]);
-
-  // ---
+  // BEGIN (setState batching for `expression` and `widthsById`)
+  //
+  // These hooks are responsible for building the `expression` and `widthsById` values, passed
+  // to the BoxedExpressionEditor component.
+  // More than that, they are responsible for maintaining an up-to-date ref for each one of
+  // those values, so that batching works normally without having the `onChange` handlers be
+  // recalculated, breaking batching.
   const widthsById = useMemo(() => {
     return (
       thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["di:extension"]?.[
@@ -172,9 +172,11 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
 
   const widthsByIdRef = useRef<Map<string, number[]>>(widthsById);
   const boxedExpressionRef = useRef<BoxedExpression | undefined>(expression?.boxedExpression);
+
   useEffect(() => {
     widthsByIdRef.current = widthsById;
   }, [widthsById]);
+
   useEffect(() => {
     boxedExpressionRef.current = expression?.boxedExpression;
   }, [expression?.boxedExpression]);
@@ -219,7 +221,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     [dmnEditorStoreApi, expression?.drgElementIndex]
   );
 
-  // ---
+  // END (setState batching for `expression` and `widthsById`)
 
   const isResetSupportedOnRootExpression = useMemo(() => {
     return expression?.drgElementType === "decision"; // BKMs are ALWAYS functions, and can't be reset.
@@ -261,30 +263,34 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   const beeGwtService = useMemo<BeeGwtService>(() => {
     return {
       getDefaultExpressionDefinition(logicType, typeRef, isRoot) {
-        const widthsById = new Map<string, number[]>();
         const s = dmnEditorStoreApi.getState();
+        const c = s.computed(s);
 
-        const allTopLevelDataTypesByFeelName = s
-          .computed(s)
-          .getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName;
-        const nodesById = s.computed(s).getDiagramData(externalModelsByNamespace).nodesById;
+        const allTopLevelDataTypesByFeelName = c.getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName;
+        const nodesById = c.getDiagramData(externalModelsByNamespace).nodesById;
+
+        const defaultWidthsById = new Map<string, number[]>();
+        const defaultExpression = getDefaultBoxedExpression({
+          logicType,
+          typeRef,
+          allTopLevelDataTypesByFeelName,
+          widthsById: defaultWidthsById,
+          getDefaultColumnWidth,
+          getInputs: () => {
+            const drgElement = s.dmn.model.definitions.drgElement?.[drgElementIndex ?? 0];
+            if (!isRoot || drgElement?.__$$element !== "decision") {
+              return undefined;
+            } else {
+              return determineInputsForDecision(drgElement, allTopLevelDataTypesByFeelName, nodesById);
+            }
+          },
+        });
+
+        console.log(defaultWidthsById);
+
         return {
-          expression: getDefaultExpressionDefinitionByLogicType({
-            logicType,
-            typeRef: typeRef ?? DmnBuiltInDataType.Undefined,
-            expressionHolderName: expression?.drgElement?.["@_name"],
-            allTopLevelDataTypesByFeelName,
-            widthsById,
-            getDefaultColumnWidth,
-            getInputs: () => {
-              if (!isRoot || expression?.drgElement.__$$element !== "decision") {
-                return undefined;
-              } else {
-                return determineInputsForDecision(expression?.drgElement, allTopLevelDataTypesByFeelName, nodesById);
-              }
-            },
-          }),
-          widthsById,
+          expression: defaultExpression,
+          widthsById: defaultWidthsById,
         };
       },
       selectObject(uuid) {
@@ -298,7 +304,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
         });
       },
     };
-  }, [dmnEditorStoreApi, expression?.drgElement, externalModelsByNamespace]);
+  }, [dmnEditorStoreApi, drgElementIndex, externalModelsByNamespace]);
 
   ////
 
@@ -357,7 +363,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
 
           <aside
             className={"kie-dmn-editor--properties-panel-toggle"}
-            style={{ visibility: boxedExpressionEditor.propertiesPanel.isOpen ? "hidden" : undefined }}
+            style={{ visibility: isPropertiesPanelOpen ? "hidden" : undefined }}
           >
             <button
               className={"kie-dmn-editor--properties-panel-toggle-button"}
@@ -378,7 +384,8 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             beeGwtService={beeGwtService}
             pmmlDocuments={pmmlDocuments}
             isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
-            expressionHolderId={boxedExpressionEditor.activeDrgElementId!}
+            expressionHolderId={activeDrgElementId!}
+            expressionHolderName={drgElement?.variable?.["@_name"] || drgElement?.["@_name"] || ""}
             expressionHolderTypeRef={
               drgElement?.variable?.["@_typeRef"] ||
               expression?.boxedExpression["@_typeRef"] ||
@@ -388,10 +395,9 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             onExpressionChange={onExpressionChange}
             dataTypes={dataTypes}
             scrollableParentRef={container}
-            variables={feelVariables}
+            onRequestFeelVariables={onRequestFeelVariables}
             widthsById={widthsById}
             onWidthsChange={onWidthsChange}
-            expressionName={expressionName}
           />
         </div>
       </>
@@ -444,7 +450,10 @@ function determineInputsForDecision(
       const dataType = allTopLevelDataTypesByFeelName.get(dmnObject.variable!["@_typeRef"]!);
       return dataType && isStruct(dataType.itemDefinition)
         ? (dataType.itemDefinition.itemComponent ?? []).flatMap((ic) =>
-            flattenComponents(ic, dmnObject.variable!["@_name"])
+            flattenItemComponents({
+              itemDefinition: ic,
+              acc: dmnObject.variable!["@_name"],
+            })
           )
         : [
             {
@@ -465,10 +474,13 @@ function determineInputsForDecision(
   }
 }
 
-function flattenComponents(
-  itemDefinition: DMN15__tItemDefinition,
-  acc: string
-): { name: string; typeRef: string | undefined }[] {
+function flattenItemComponents({
+  itemDefinition,
+  acc,
+}: {
+  itemDefinition: DMN15__tItemDefinition;
+  acc: string;
+}): { name: string; typeRef: string | undefined }[] {
   if (!isStruct(itemDefinition)) {
     return [
       {
@@ -479,7 +491,7 @@ function flattenComponents(
   }
 
   return (itemDefinition.itemComponent ?? []).flatMap((ic) => {
-    return flattenComponents(ic, `${acc}.${itemDefinition["@_name"]!}`);
+    return flattenItemComponents({ itemDefinition: ic, acc: `${acc}.${itemDefinition["@_name"]!}` });
   });
 }
 

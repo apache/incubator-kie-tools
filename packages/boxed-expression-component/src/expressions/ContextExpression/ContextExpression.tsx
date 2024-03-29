@@ -66,7 +66,7 @@ export function ContextExpression(
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
-  const { variables, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
 
   const id = contextExpression["@_id"]!;
 
@@ -156,7 +156,7 @@ export function ContextExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: id as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
         label: contextExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         isRowIndexColumn: false,
         dataType: contextExpression["@_typeRef"] ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
@@ -183,16 +183,39 @@ export function ContextExpression(
         ],
       },
     ];
-  }, [contextExpression, entryVariableWidth, id, setEntryVariableWidth]);
+  }, [contextExpression, entryVariableWidth, expressionHolderId, setEntryVariableWidth]);
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev) => ({
-        ...prev,
-        "@_label": name,
-        "@_typeRef": typeRef,
-        // FIXME: Tiago --> Update <result> expression @_label and @_typeRef here too.
-      }));
+      setExpression((prev: BoxedContext) => {
+        const newContextEntries = [...(prev.contextEntry ?? [])];
+
+        // Need to keep the <result> expression, if any, in sync with the parent variable
+        const { resultIndex, hasResultEntry } = solveResultAndEntriesIndex({
+          contextEntries: newContextEntries,
+          rowIndex: -1,
+        });
+        if (hasResultEntry && newContextEntries[resultIndex].expression) {
+          newContextEntries.splice(resultIndex, 1, {
+            ...newContextEntries[resultIndex],
+            expression: {
+              ...newContextEntries[resultIndex].expression,
+              "@_label": name,
+              "@_typeRef": typeRef,
+            },
+          });
+        }
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
+          ...prev,
+          "@_label": name,
+          "@_typeRef": typeRef,
+          contextEntry: newContextEntries,
+        };
+
+        return ret;
+      });
     },
     [setExpression]
   );
@@ -206,28 +229,22 @@ export function ContextExpression(
       setExpression((prev: BoxedContext) => {
         const contextEntries = [...(prev.contextEntry ?? [])];
 
-        variables?.repository.updateVariableType(
-          variable?.["@_id"] ?? "",
-          variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined
-        );
-        variables?.repository.renameVariable(
-          variable?.["@_id"] ?? "",
-          variable?.["@_name"] ?? DmnBuiltInDataType.Undefined
-        );
-
         contextEntries[index] = {
           ...contextEntries[index],
           expression: expression ?? undefined!, // SPEC DISCREPANCY
           variable: variable,
         };
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
           ...prev,
           contextEntry: contextEntries,
         };
+
+        return ret;
       });
     },
-    [setExpression, variables?.repository]
+    [setExpression]
   );
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
@@ -319,15 +336,8 @@ export function ContextExpression(
       } else {
         childId = prev.contextEntry?.find((e) => !e.variable)?.["@_id"] ?? "";
       }
-
-      variables?.repository.addVariableToContext(
-        newVariable.variable?.["@_id"] ?? "",
-        newVariable.variable?.["@_name"] ?? "",
-        parentId,
-        childId
-      );
     },
-    [contextExpression.parentElementId, variables?.repository]
+    [contextExpression.parentElementId]
   );
 
   const onRowAdded = useCallback(
@@ -350,10 +360,13 @@ export function ContextExpression(
           newContextEntries.splice(args.beforeIndex, 0, newEntry);
         }
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
           ...prev,
           contextEntry: newContextEntries,
         };
+
+        return ret;
       });
     },
     [addVariable, getDefaultContextEntry, setExpression]
@@ -374,18 +387,17 @@ export function ContextExpression(
         if (isDeletingResult) {
           throw new Error("It's not possible to delete the <result> row");
         } else {
-          if (prev.contextEntry) {
-            variables?.repository.removeVariable(prev.contextEntry[entryIndex]["@_id"]!);
-          }
-
           oldExpression = newContextEntries[entryIndex]?.expression;
           newContextEntries.splice(entryIndex, 1);
         }
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
           ...prev,
           contextEntry: newContextEntries,
         };
+
+        return ret;
       });
 
       setWidthsById(({ newMap }) => {
@@ -394,7 +406,7 @@ export function ContextExpression(
         }
       });
     },
-    [setExpression, setWidthsById, variables?.repository]
+    [setExpression, setWidthsById]
   );
 
   const onRowReset = useCallback(
@@ -427,10 +439,13 @@ export function ContextExpression(
           newContextEntries.splice(entryIndex, 1, defaultContextEntry);
         }
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
           ...prev,
           contextEntry: newContextEntries,
         };
+
+        return ret;
       });
 
       setWidthsById(({ newMap }) => {
@@ -509,7 +524,6 @@ export function ContextExpression(
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={true}
           shouldShowColumnsInlineControls={false}
-          variables={variables}
         />
       </div>
     </NestedExpressionContainerContext.Provider>

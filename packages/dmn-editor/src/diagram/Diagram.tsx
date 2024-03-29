@@ -48,7 +48,7 @@ import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtua
 import { useDmnEditor } from "../DmnEditorContext";
 import { AutolayoutButton } from "../autolayout/AutolayoutButton";
 import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
-import { getDefaultExpressionDefinitionByLogicType } from "../boxedExpressions/getDefaultExpressionDefinitionByLogicType";
+import { getDefaultBoxedExpression } from "../boxedExpressions/getDefaultBoxedExpression";
 import {
   DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
   DmnEditorDiagramClipboard,
@@ -1257,29 +1257,26 @@ function DmnDiagramEmptyState({
                   });
 
                   const drgElementIndex = (state.dmn.model.definitions.drgElement ?? []).length - 1;
-                  const drgElement = state.dmn.model.definitions.drgElement?.[drgElementIndex];
 
-                  const widthsById = new Map<string, number[]>();
-
-                  const expression = getDefaultExpressionDefinitionByLogicType({
-                    expressionHolderName: drgElement?.["@_name"],
+                  const defaultWidthsById = new Map<string, number[]>();
+                  const defaultExpression = getDefaultBoxedExpression({
                     logicType: "decisionTable",
                     allTopLevelDataTypesByFeelName: new Map(),
                     typeRef: DmnBuiltInDataType.Undefined,
                     getDefaultColumnWidth,
-                    widthsById,
+                    widthsById: defaultWidthsById,
                   });
 
                   updateExpression({
                     definitions: state.dmn.model.definitions,
                     drgElementIndex,
-                    expression,
+                    expression: defaultExpression,
                   });
 
                   updateExpressionWidths({
                     definitions: state.dmn.model.definitions,
                     drdIndex: state.diagram.drdIndex,
-                    widthsById,
+                    widthsById: defaultWidthsById,
                   });
 
                   state.dispatch(state).boxedExpressionEditor.open(parseXmlHref(decisionNodeHref).id);

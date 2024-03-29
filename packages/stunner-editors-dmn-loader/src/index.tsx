@@ -25,7 +25,7 @@ import {
   JavaCodeCompletionService,
 } from "@kie-tools/import-java-classes-component";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactDOM from "react-dom";
 import {
   BeeGwtService,
@@ -38,6 +38,8 @@ import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 import { GwtExpressionDefinition } from "./types";
 import { dmnExpressionToGwtExpression, gwtLogicType } from "./mapping";
 import { gwtExpressionToDmnExpression } from "./mapping";
+import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
+import { updateExpression } from "./tmpDuplicateCode__updateExpression";
 
 export interface BoxedExpressionEditorWrapperProps {
   /** Identifier of the decision node, where the expression will be hold */
@@ -55,8 +57,8 @@ export interface BoxedExpressionEditorWrapperProps {
   pmmlDocuments?: PmmlDocument[];
   /** BoxedExpressionWrapper root node */
   boxedExpressionEditorRootNode: Element | null;
-  /** The variables used in the current Boxed Expression Editor context */
-  variables?: FeelVariables;
+  /** The DMN XML */
+  dmnXml: string;
 }
 
 const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEditorWrapperProps> = ({
@@ -66,7 +68,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   isResetSupportedOnRootExpression,
   pmmlDocuments,
   boxedExpressionEditorRootNode,
-  variables,
+  dmnXml,
 }) => {
   const [expressionWrapper, setExpressionWrapper] = useState<{
     source: "gwt" | "react";
@@ -152,16 +154,51 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
     };
   }, [boxedExpressionEditorRootNode]);
 
+  // BEGIN (feelVariables)
+  //
+  // These Hooks maintain an up-to-date copy of the DMN JSON to be used for a new instance of
+  // FeelVariables when the FeelInput component requests for an updated version of it.
+  // This happens when a user enters a FEEL cell on the Boxed Expression Editor.
+
+  const modelWhenRendered = useRef<DmnLatestModel | null>(null);
+
+  useEffect(() => {
+    modelWhenRendered.current = getMarshaller(dmnXml, { upgradeTo: "latest" }).parser.parse();
+  }, [dmnXml]);
+
+  useEffect(() => {
+    const drgElementIndex = (modelWhenRendered.current!.definitions.drgElement ?? []).findIndex((d) => {
+      return d["@_id"] === expressionHolderId;
+    });
+
+    updateExpression({
+      drgElementIndex,
+      expression: expressionWrapper.expression,
+      definitions: modelWhenRendered.current!.definitions,
+    });
+  }, [expressionHolderId, expressionWrapper.expression]);
+
+  const onRequestFeelVariables = useMemo(() => {
+    if (!modelWhenRendered) {
+      return undefined;
+    }
+
+    return () => new FeelVariables(modelWhenRendered.current!.definitions, new Map());
+  }, []);
+
+  // END (feelVariables)
+
   return (
     <BoxedExpressionEditor
       scrollableParentRef={emptyRef}
       beeGwtService={beeGwtService}
       expressionHolderId={expressionHolderId}
+      expressionHolderName={expressionWrapper.expression["@_label"] || ""}
       expressionHolderTypeRef={expressionWrapper.expression?.["@_typeRef"] || DmnBuiltInDataType.Undefined}
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlDocuments={pmmlDocuments}
-      variables={variables}
+      onRequestFeelVariables={onRequestFeelVariables}
       expression={expressionWrapper.expression}
       onExpressionChange={setExpressionNotifyingUserAction}
       widthsById={expressionWrapper.widthsById}
@@ -177,7 +214,7 @@ const renderBoxedExpressionEditor = (
   dataTypes: DmnDataType[],
   isResetSupportedOnRootExpression: boolean,
   pmmlDocuments: PmmlDocument[],
-  variables: FeelVariables
+  dmnXml: string
 ) => {
   const boxedExpressionEditorRootNode = document.querySelector(selector);
   ReactDOM.render(
@@ -188,7 +225,7 @@ const renderBoxedExpressionEditor = (
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlDocuments={pmmlDocuments}
       boxedExpressionEditorRootNode={boxedExpressionEditorRootNode}
-      variables={variables}
+      dmnXml={dmnXml}
     />,
     boxedExpressionEditorRootNode
   );
@@ -223,8 +260,4 @@ const renderImportJavaClasses = (selector: string) => {
   ReactDOM.render(<ImportJavaClassesWrapper />, document.querySelector(selector));
 };
 
-const getVariables = (xml: string): FeelVariables => {
-  return FeelVariables.fromModelXml(xml);
-};
-
-export { renderBoxedExpressionEditor, renderImportJavaClasses, unmountBoxedExpressionEditor, getVariables };
+export { renderBoxedExpressionEditor, renderImportJavaClasses, unmountBoxedExpressionEditor };

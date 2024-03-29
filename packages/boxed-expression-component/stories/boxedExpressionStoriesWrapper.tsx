@@ -160,7 +160,8 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
     >
       <BoxedExpressionEditor
         expressionHolderId={props?.expressionHolderId ?? args?.expressionHolderId ?? ""}
-        expressionHolderTypeRef={DmnBuiltInDataType.Undefined}
+        expressionHolderName={props?.expressionHolderName ?? args?.expressionHolderName ?? ""}
+        expressionHolderTypeRef={props?.expressionHolderId ?? args?.expressionHolderId ?? DmnBuiltInDataType.Undefined}
         expression={expressionState}
         onExpressionChange={setExpressionState}
         onWidthsChange={onWidthsChange}
@@ -172,7 +173,6 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
           props?.isResetSupportedOnRootExpression ?? args?.isResetSupportedOnRootExpression ?? false
         }
         widthsById={widthsByIdMap}
-        expressionName={expressionState?.["@_label"]}
       />
     </div>
   );

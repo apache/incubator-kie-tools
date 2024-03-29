@@ -54,18 +54,16 @@ import {
   DMN15__tOutputClause,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-export function getDefaultExpressionDefinitionByLogicType({
+export function getDefaultBoxedExpression({
   logicType,
   typeRef,
   allTopLevelDataTypesByFeelName,
-  expressionHolderName,
   widthsById,
   getInputs,
   getDefaultColumnWidth,
 }: {
   logicType: BoxedExpression["__$$element"] | undefined;
   typeRef: string;
-  expressionHolderName?: string;
   allTopLevelDataTypesByFeelName: DataTypeIndex;
   getInputs?: () => { name: string; typeRef: string | undefined }[] | undefined;
   getDefaultColumnWidth?: (args: { name: string; typeRef: string | undefined }) => number | undefined;
@@ -114,9 +112,7 @@ export function getDefaultExpressionDefinitionByLogicType({
     } else {
       contextEntries = (dataType.itemDefinition.itemComponent ?? []).map((ic) => {
         const name = ic["@_name"];
-        const typeRef = isStruct(ic)
-          ? DmnBuiltInDataType.Any
-          : (ic.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+        const typeRef = isStruct(ic) ? DmnBuiltInDataType.Any : ic.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined;
         maxWidthBasedOnEntryNames = Math.max(
           maxWidthBasedOnEntryNames,
           getDefaultColumnWidth?.({ name, typeRef }) ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH
@@ -126,7 +122,7 @@ export function getDefaultExpressionDefinitionByLogicType({
           variable: {
             "@_id": generateUuid(),
             "@_name": name,
-            "@_typeRef": typeRef as string,
+            "@_typeRef": typeRef,
           },
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         };
@@ -205,14 +201,14 @@ export function getDefaultExpressionDefinitionByLogicType({
             {
               "@_id": generateUuid(),
               "@_name": dataType?.itemDefinition["@_name"] ?? "column-1",
-              "@_typeRef": (dataType?.feelName as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
+              "@_typeRef": dataType?.feelName ?? DmnBuiltInDataType.Undefined,
             },
           ]
         : (dataType.itemDefinition.itemComponent ?? []).map((ic) => {
             const name = ic["@_name"];
             const typeRef = isStruct(ic)
               ? DmnBuiltInDataType.Any
-              : (ic.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+              : ic.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined;
             return {
               "@_id": generateUuid(),
               "@_name": name,
@@ -234,8 +230,8 @@ export function getDefaultExpressionDefinitionByLogicType({
     return relationExpression;
   } else if (logicType === "decisionTable") {
     const singleOutputColumn = {
-      name: expressionHolderName || "Output 1",
-      typeRef: (dataType?.feelName as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
+      name: "Output 1",
+      typeRef: dataType?.feelName ?? DmnBuiltInDataType.Undefined,
     };
     const singleInputColumn = {
       name: "Input 1",

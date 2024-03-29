@@ -24,33 +24,51 @@ import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind, generateUuid } fr
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
-import { FeelFunctionExpression, FeelFunctionProps } from "./FeelFunctionExpression";
+import { FeelFunctionExpression, BoxedFunctionFeel } from "./FeelFunctionExpression";
 import { FunctionKindSelector } from "./FunctionKindSelector";
-import { JavaFunctionExpression, JavaFunctionProps } from "./JavaFunctionExpression";
+import { JavaFunctionExpression, BoxedFunctionJava } from "./JavaFunctionExpression";
 import { ParametersPopover } from "./ParametersPopover";
-import { PmmlFunctionExpression, PmmlFunctionProps } from "./PmmlFunctionExpression";
+import { PmmlFunctionExpression, BoxedFunctionPmml } from "./PmmlFunctionExpression";
 import {
   DMN15__tFunctionDefinition,
   DMN15__tFunctionKind,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./FunctionExpression.css";
 
-export function FunctionExpression(
-  functionExpression: BoxedFunction & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
-  const functionKind = functionExpression["@_kind"] ?? "";
-  switch (functionKind) {
-    case BoxedFunctionKind.Feel:
-      return <FeelFunctionExpression functionExpression={functionExpression as FeelFunctionProps} />;
-    case BoxedFunctionKind.Java:
-      return <JavaFunctionExpression functionExpression={functionExpression as JavaFunctionProps} />;
-    case BoxedFunctionKind.Pmml:
-      return <PmmlFunctionExpression functionExpression={functionExpression as PmmlFunctionProps} />;
+export function FunctionExpression({
+  isNested,
+  parentElementId,
+  ...boxedFunction
+}: {
+  isNested: boolean;
+  parentElementId: string;
+} & BoxedFunction) {
+  switch (boxedFunction["@_kind"]) {
+    case "Java":
+      return (
+        <JavaFunctionExpression
+          functionExpression={boxedFunction as BoxedFunctionJava}
+          isNested={isNested}
+          parentElementId={parentElementId}
+        />
+      );
+    case "PMML":
+      return (
+        <PmmlFunctionExpression
+          functionExpression={boxedFunction as BoxedFunctionPmml}
+          isNested={isNested}
+          parentElementId={parentElementId}
+        />
+      );
+    case "FEEL":
     default:
-      return <></>;
+      return (
+        <FeelFunctionExpression
+          functionExpression={boxedFunction as BoxedFunctionFeel}
+          isNested={isNested}
+          parentElementId={parentElementId}
+        />
+      );
   }
 }
 
@@ -59,9 +77,10 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
 
   const onFunctionKindSelect = useCallback(
     (kind: DMN15__tFunctionKind) => {
-      setExpression((prev) => {
+      setExpression((prev: BoxedFunction) => {
         if (kind === BoxedFunctionKind.Feel) {
-          return {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const retFeel: BoxedFunction = {
             __$$element: "functionDefinition",
             "@_label": prev["@_label"],
             "@_id": generateUuid(),
@@ -69,38 +88,44 @@ export function useFunctionExpressionControllerCell(functionKind: DMN15__tFuncti
             "@_typeRef": DmnBuiltInDataType.Undefined,
             expression: {
               __$$element: "literalExpression",
-              id: generateUuid(),
+              "@_id": generateUuid(),
               "@_typeRef": DmnBuiltInDataType.Undefined,
             },
             formalParameter: [],
           };
+          return retFeel;
         } else if (kind === BoxedFunctionKind.Java) {
           const expressionId = generateUuid();
-          return {
+
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const retJava: BoxedFunction = {
             __$$element: "functionDefinition",
             "@_label": prev["@_label"],
             "@_id": expressionId,
             expression: {
               __$$element: "context",
-              id: generateUuid(),
+              "@_id": generateUuid(),
             },
             "@_kind": BoxedFunctionKind.Java,
             "@_typeRef": DmnBuiltInDataType.Undefined,
             formalParameter: [],
           };
+          return retJava;
         } else if (kind === BoxedFunctionKind.Pmml) {
-          return {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const retPmml: BoxedFunction = {
             __$$element: "functionDefinition",
             "@_label": prev["@_label"],
             "@_id": generateUuid(),
             expression: {
               __$$element: "context",
-              id: generateUuid(),
+              "@_id": generateUuid(),
             },
             "@_kind": BoxedFunctionKind.Pmml,
             "@_typeRef": DmnBuiltInDataType.Undefined,
             formalParameter: [],
           };
+          return retPmml;
         } else {
           throw new Error("Shouldn't ever reach this point.");
         }

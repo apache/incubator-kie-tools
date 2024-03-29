@@ -257,7 +257,7 @@ export function ExpressionDefinitionLogicTypeSelector({
       const newIdsByOriginalId = mutateExpressionRandomizingIds(clipboard.expression);
 
       let oldExpression: BoxedExpression | undefined;
-      setExpression((prev) => {
+      setExpression((prev: BoxedExpression) => {
         oldExpression = prev;
         return clipboard.expression;
       }); // This is mutated to have new IDs by the ID randomizer above.

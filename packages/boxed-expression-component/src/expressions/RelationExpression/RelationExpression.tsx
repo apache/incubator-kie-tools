@@ -58,7 +58,7 @@ export function RelationExpression(
   }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { widthsById, variables, expressionHolderId } = useBoxedExpressionEditor();
+  const { widthsById, expressionHolderId } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = relationExpression["@_id"]!;
@@ -199,7 +199,7 @@ export function RelationExpression(
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       setExpression((prev: BoxedRelation) => {
-        let previousExpression = { ...prev };
+        let previousExpression: BoxedRelation = { ...prev };
 
         cellUpdates.forEach((cellUpdate) => {
           const newRows = [...(previousExpression.row ?? [])];
@@ -247,10 +247,13 @@ export function RelationExpression(
           }
         }
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedRelation = {
           ...n,
           column: newColumns,
         };
+
+        return ret;
       });
     },
     [setExpression]
@@ -268,9 +271,8 @@ export function RelationExpression(
         __$$text: RELATION_EXPRESSION_DEFAULT_VALUE,
       },
     };
-    variables?.repository.addVariableToContext(cell["@_id"]!, cell["@_id"]!, relationExpression.parentElementId);
     return cell;
-  }, [relationExpression.parentElementId, variables?.repository]);
+  }, []);
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
@@ -291,10 +293,13 @@ export function RelationExpression(
           newRows.splice(args.beforeIndex, 0, newEntry);
         }
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedRelation = {
           ...prev,
           row: newRows,
         };
+
+        return ret;
       });
     },
     [createCell, setExpression]
@@ -332,11 +337,14 @@ export function RelationExpression(
           };
         });
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedRelation = {
           ...prev,
           column: newColumns,
           row: newRows,
         };
+
+        return ret;
       });
 
       setWidthsById(({ newMap }) => {
@@ -368,11 +376,14 @@ export function RelationExpression(
           };
         });
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedRelation = {
           ...prev,
           column: newColumns,
           row: newRows,
         };
+
+        return ret;
       });
 
       setWidthsById(({ newMap }) => {
@@ -390,10 +401,14 @@ export function RelationExpression(
       setExpression((prev: BoxedRelation) => {
         const newRows = [...(prev.row ?? [])];
         newRows.splice(args.rowIndex, 1);
-        return {
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedRelation = {
           ...prev,
           row: newRows,
         };
+
+        return ret;
       });
     },
     [setExpression]
@@ -412,10 +427,14 @@ export function RelationExpression(
 
         const newRows = [...(prev.row ?? [])];
         newRows.splice(args.rowIndex, 0, duplicatedRow);
-        return {
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedRelation = {
           ...prev,
           row: newRows,
         };
+
+        return ret;
       });
     },
     [setExpression]
@@ -468,7 +487,7 @@ export function RelationExpression(
 
   return (
     <div className={`relation-expression`}>
-      <BeeTable
+      <BeeTable<ROWTYPE>
         resizerStopBehavior={
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
         }
@@ -491,7 +510,6 @@ export function RelationExpression(
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
-        variables={variables}
         // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/kiegroup/kie-issues/issues/181
       />
     </div>

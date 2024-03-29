@@ -55,14 +55,20 @@ import { findAllIdsDeep } from "../../ids/ids";
 
 export type FEEL_ROWTYPE = { functionExpression: BoxedFunction };
 
-export type FeelFunctionProps = DMN15__tFunctionDefinition & {
+export type BoxedFunctionFeel = DMN15__tFunctionDefinition & {
   "@_kind": "FEEL";
   __$$element: "functionDefinition";
-  isNested: boolean;
-  parentElementId: string;
 };
 
-export function FeelFunctionExpression({ functionExpression }: { functionExpression: FeelFunctionProps }) {
+export function FeelFunctionExpression({
+  isNested,
+  parentElementId,
+  functionExpression,
+}: {
+  functionExpression: BoxedFunctionFeel;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
@@ -92,16 +98,21 @@ export function FeelFunctionExpression({ functionExpression }: { functionExpress
   }, [expressionHolderId, functionExpression, parametersColumnHeader]);
 
   const headerVisibility = useMemo(() => {
-    return functionExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
-  }, [functionExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<FEEL_ROWTYPE>[]) => {
-      setExpression((prev) => ({
-        ...prev,
-        "@_label": name,
-        "@_typeRef": typeRef,
-      }));
+      setExpression((prev: BoxedFunctionFeel) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunctionFeel = {
+          ...prev,
+          "@_label": name,
+          "@_typeRef": typeRef,
+        };
+
+        return ret;
+      });
     },
     [setExpression]
   );
@@ -127,11 +138,9 @@ export function FeelFunctionExpression({ functionExpression }: { functionExpress
 
   const cellComponentByColumnAccessor: BeeTableProps<FEEL_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
     return {
-      parameters: (props) => (
-        <FeelFunctionImplementationCell {...props} parentElementId={functionExpression.parentElementId} />
-      ),
+      parameters: (props) => <FeelFunctionImplementationCell {...props} parentElementId={parentElementId} />,
     };
-  }, [functionExpression.parentElementId]);
+  }, [parentElementId]);
 
   const getRowKey = useCallback((r: ReactTable.Row<FEEL_ROWTYPE>) => {
     return r.id;
@@ -139,7 +148,7 @@ export function FeelFunctionExpression({ functionExpression }: { functionExpress
 
   const onRowReset = useCallback(() => {
     let oldExpression: BoxedExpression | undefined;
-    setExpression((prev: BoxedFunction) => {
+    setExpression((prev: BoxedFunctionFeel) => {
       oldExpression = prev.expression;
       return undefined!; // SPEC DISCREPANCY
     });
@@ -222,8 +231,9 @@ export function FeelFunctionImplementationCell({
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => {
-      setExpression((prev: FeelFunctionProps) => {
-        const ret: FeelFunctionProps = {
+      setExpression((prev: BoxedFunctionFeel) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunctionFeel = {
           ...prev,
           expression: getNewExpression(prev.expression ?? undefined!),
         };
@@ -243,8 +253,8 @@ export function FeelFunctionImplementationCell({
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={parentElementId}
-        parentTypeRef={functionExpression["@_typeRef"]}
-        expressionName={"Return"}
+        parentElementTypeRef={functionExpression["@_typeRef"]}
+        parentElementName={"Return"}
       />
     </NestedExpressionDispatchContextProvider>
   );

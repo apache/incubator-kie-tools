@@ -45,6 +45,7 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
           expression: getNewExpression(newBindings[index]?.expression ?? undefined!),
         };
 
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
         const ret: BoxedInvocation = {
           ...prev,
           binding: newBindings,
@@ -65,8 +66,8 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={parentElementId}
-        parentTypeRef={variable["@_typeRef"]}
-        expressionName={variable["@_name"]}
+        parentElementTypeRef={variable["@_typeRef"]}
+        parentElementName={variable["@_name"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

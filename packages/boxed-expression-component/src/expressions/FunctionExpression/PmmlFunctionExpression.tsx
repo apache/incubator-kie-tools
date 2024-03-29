@@ -28,6 +28,7 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
+  BoxedFunction,
   BoxedFunctionKind,
   generateUuid,
 } from "../../api";
@@ -53,20 +54,26 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./PmmlFunctionExpression.css";
 
-export type PmmlFunctionProps = DMN15__tFunctionDefinition & {
+export type BoxedFunctionPmml = DMN15__tFunctionDefinition & {
   "@_kind": "PMML";
   __$$element: "functionDefinition";
-  isNested: boolean;
-  parentElementId: string;
 };
 
 type PMML_ROWTYPE = {
   value: string;
   label: string;
-  pmmlFunctionExpression: PmmlFunctionProps;
+  pmmlFunctionExpression: BoxedFunctionPmml;
 };
 
-export function PmmlFunctionExpression({ functionExpression }: { functionExpression: PmmlFunctionProps }) {
+export function PmmlFunctionExpression({
+  functionExpression,
+  isNested,
+  parentElementId,
+}: {
+  functionExpression: BoxedFunctionPmml;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -117,18 +124,21 @@ export function PmmlFunctionExpression({ functionExpression }: { functionExpress
   }, [expressionHolderId, functionExpression, parametersColumnHeader]);
 
   const headerVisibility = useMemo(() => {
-    return functionExpression.isNested
-      ? BeeTableHeaderVisibility.SecondToLastLevel
-      : BeeTableHeaderVisibility.AllLevels;
-  }, [functionExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef: dataType }]: BeeTableColumnUpdate<PMML_ROWTYPE>[]) => {
-      setExpression((prev) => ({
-        ...prev,
-        "@_label": name,
-        "@_typeRef": dataType,
-      }));
+      setExpression((prev: BoxedFunctionPmml) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunctionPmml = {
+          ...prev,
+          "@_label": name,
+          "@_typeRef": dataType,
+        };
+
+        return ret;
+      });
     },
     [setExpression]
   );
@@ -184,11 +194,14 @@ export function PmmlFunctionExpression({ functionExpression }: { functionExpress
   }, []);
 
   const onRowReset = useCallback(() => {
-    setExpression((prev) => {
-      return {
+    setExpression((prev: BoxedFunctionPmml) => {
+      // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+      const ret: BoxedFunctionPmml = {
         ...prev,
-        expression: undefined!, // SPEC DISCREPANCY
+        expression: undefined!,
       };
+
+      return ret;
     });
   }, [setExpression]);
 
@@ -230,7 +243,7 @@ export function PmmlFunctionExpression({ functionExpression }: { functionExpress
   useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
     isPivoting,
-    functionExpression.isNested,
+    isNested,
     PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH,
     columns,
     columnResizingWidths,
@@ -307,7 +320,7 @@ function PmmlFunctionExpressionValueCell(props: React.PropsWithChildren<BeeTable
   );
 }
 
-function getDocumentEntry(pmmlFunction: PmmlFunctionProps): DMN15__tContextEntry {
+function getDocumentEntry(pmmlFunction: BoxedFunctionPmml): DMN15__tContextEntry {
   return (
     (pmmlFunction.expression as DMN15__tContext).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "document"
@@ -321,7 +334,7 @@ function getDocumentEntry(pmmlFunction: PmmlFunctionProps): DMN15__tContextEntry
   );
 }
 
-function getModelEntry(pmmlFunction: PmmlFunctionProps): DMN15__tContextEntry {
+function getModelEntry(pmmlFunction: BoxedFunctionPmml): DMN15__tContextEntry {
   return (
     (pmmlFunction.expression as DMN15__tContext).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "model"
@@ -335,11 +348,12 @@ function getModelEntry(pmmlFunction: PmmlFunctionProps): DMN15__tContextEntry {
   );
 }
 
-function getUpdatedExpression(prev: PmmlFunctionProps, newDocument: string, newModel: string): PmmlFunctionProps {
+function getUpdatedExpression(prev: BoxedFunctionPmml, newDocument: string, newModel: string): BoxedFunction {
   const document = getDocumentEntry(prev);
   const model = getModelEntry(prev);
 
-  return {
+  // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+  const ret: BoxedFunction = {
     ...prev,
     expression: {
       __$$element: "context",
@@ -368,6 +382,8 @@ function getUpdatedExpression(prev: PmmlFunctionProps, newDocument: string, newM
       ],
     },
   };
+
+  return ret;
 }
 
 function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTableCellProps<PMML_ROWTYPE>>) {
@@ -397,7 +413,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
   const onSelect = useCallback(
     (event, newDocument) => {
       setSelectOpen(false);
-      setExpression((prev: PmmlFunctionProps) => {
+      setExpression((prev: BoxedFunctionPmml) => {
         return getUpdatedExpression(prev, newDocument, "");
       });
     },
@@ -454,7 +470,7 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
     (event, newModel) => {
       setSelectOpen(false);
 
-      setExpression((prev: PmmlFunctionProps) => {
+      setExpression((prev: BoxedFunctionPmml) => {
         const document = getDocumentEntry(prev);
         const currentDocument =
           document.expression?.__$$element === "literalExpression" ? document.expression.text?.__$$text ?? "" : "";

@@ -32,6 +32,7 @@ import {
   DmnBuiltInDataType,
   BoxedFunctionKind,
   generateUuid,
+  BoxedFunction,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
@@ -59,16 +60,22 @@ export type JAVA_ROWTYPE = {
   label: string;
 };
 
-export type JavaFunctionProps = DMN15__tFunctionDefinition & {
-  "@_kind": "Java";
+export type BoxedFunctionJava = DMN15__tFunctionDefinition & {
+  "@_kind"?: "Java";
   __$$element: "functionDefinition";
-  isNested: boolean;
-  parentElementId: string;
 };
 
 const JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX = 2; // 0 is the rowIndex column, 1 is the label column.
 
-export function JavaFunctionExpression({ functionExpression }: { functionExpression: JavaFunctionProps }) {
+export function JavaFunctionExpression({
+  functionExpression,
+  isNested,
+  parentElementId,
+}: {
+  functionExpression: BoxedFunctionJava;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
@@ -165,18 +172,20 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
   ]);
 
   const headerVisibility = useMemo(() => {
-    return functionExpression.isNested
-      ? BeeTableHeaderVisibility.SecondToLastLevel
-      : BeeTableHeaderVisibility.AllLevels;
-  }, [functionExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<JAVA_ROWTYPE>[]) => {
-      setExpression((prev) => ({
-        ...prev,
-        "@_label": name,
-        "@_typeRef": typeRef,
-      }));
+      setExpression((prev: BoxedFunctionJava) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunctionJava = {
+          ...prev,
+          "@_label": name,
+          "@_typeRef": typeRef,
+        };
+        return ret;
+      });
     },
     [setExpression]
   );
@@ -219,11 +228,14 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
   }, []);
 
   const onRowReset = useCallback(() => {
-    setExpression((prev) => {
-      return {
+    setExpression((prev: BoxedFunctionJava) => {
+      // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+      const ret: BoxedFunctionJava = {
         ...prev,
-        expression: undefined!, // SPEC DISCREPANCY
+        expression: undefined!,
       };
+
+      return ret;
     });
   }, [setExpression]);
 
@@ -257,7 +269,7 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
   useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
     isPivoting,
-    functionExpression.isNested,
+    isNested,
     JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
     columns,
     columnResizingWidths,
@@ -307,7 +319,7 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
 
         // Class
         if (u.rowIndex === 0) {
-          setExpression((prev: JavaFunctionProps) => {
+          setExpression((prev: BoxedFunctionJava) => {
             clazz.expression = {
               ...clazz.expression,
               __$$element: "literalExpression",
@@ -316,7 +328,8 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
               },
             };
 
-            return {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: BoxedFunction = {
               ...prev,
               expression: {
                 __$$element: "context",
@@ -324,11 +337,13 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
                 contextEntry: [clazz, method],
               },
             };
+
+            return ret;
           });
         }
         // Method
         else if (u.rowIndex === 1) {
-          setExpression((prev: JavaFunctionProps) => {
+          setExpression((prev: BoxedFunctionJava) => {
             method.expression = {
               ...method.expression,
               __$$element: "literalExpression",
@@ -338,7 +353,8 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
               },
             };
 
-            return {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: BoxedFunction = {
               ...prev,
               expression: {
                 __$$element: "context",
@@ -346,6 +362,7 @@ export function JavaFunctionExpression({ functionExpression }: { functionExpress
                 contextEntry: [clazz, method],
               },
             };
+            return ret;
           });
         }
       }

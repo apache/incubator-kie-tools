@@ -218,11 +218,11 @@ export function BeeTableTd<R extends object>({
 
   const onClick = useCallback(() => {
     return onDataCellClick?.(column.id);
-  }, [column, onDataCellClick]);
+  }, [column.id, onDataCellClick]);
 
   const onKeyUp = useCallback(() => {
     return onDataCellKeyUp?.(column.id);
-  }, [column, onDataCellClick]);
+  }, [column.id, onDataCellKeyUp]);
 
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>

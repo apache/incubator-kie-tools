@@ -160,7 +160,13 @@ export function ListExpression(
           newItems.splice(args.beforeIndex, 0, newEntry);
         }
 
-        return { ...prev, expression: newItems };
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedList = {
+          ...prev,
+          expression: newItems,
+        };
+
+        return ret;
       });
     },
     [setExpression]
@@ -173,10 +179,14 @@ export function ListExpression(
         const newItems = [...(prev.expression ?? [])];
         oldExpression = newItems[args.rowIndex];
         newItems.splice(args.rowIndex, 1);
-        return {
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedList = {
           ...prev,
           expression: newItems,
         };
+
+        return ret;
       });
 
       setWidthsById(({ newMap }) => {
@@ -195,7 +205,14 @@ export function ListExpression(
         const newItems = [...(prev.expression ?? [])];
         oldExpression = newItems[args.rowIndex];
         newItems.splice(args.rowIndex, 1, undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
-        return { ...prev, expression: newItems };
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedList = {
+          ...prev,
+          expression: newItems,
+        };
+
+        return ret;
       });
 
       setWidthsById(({ newMap }) => {
@@ -213,11 +230,16 @@ export function ListExpression(
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev) => ({
-        ...prev,
-        "@_label": name,
-        "@_typeRef": typeRef,
-      }));
+      setExpression((prev: BoxedList) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedList = {
+          ...prev,
+          "@_label": name,
+          "@_typeRef": typeRef,
+        };
+
+        return ret;
+      });
     },
     [setExpression]
   );

@@ -66,7 +66,7 @@ export function InvocationExpression(
   }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, variables, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = invocationExpression["@_id"]!;
@@ -207,21 +207,31 @@ export function InvocationExpression(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
         if (u.column.originalId === "functionName") {
-          setExpression((prev: BoxedInvocation) => ({
-            ...prev,
-            expression: {
-              __$$element: "literalExpression",
-              text: {
-                __$$text: u.name,
+          setExpression((prev: BoxedInvocation) => {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: BoxedInvocation = {
+              ...prev,
+              expression: {
+                __$$element: "literalExpression",
+                text: {
+                  __$$text: u.name,
+                },
               },
-            },
-          }));
+            };
+
+            return ret;
+          });
         } else {
-          setExpression((prev: BoxedInvocation) => ({
-            ...prev,
-            "@_typeRef": u.typeRef,
-            "@_label": u.name,
-          }));
+          setExpression((prev: BoxedInvocation) => {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: BoxedInvocation = {
+              ...prev,
+              "@_typeRef": u.typeRef,
+              "@_label": u.name,
+            };
+
+            return ret;
+          });
         }
       }
     },
@@ -246,7 +256,13 @@ export function InvocationExpression(
           parameter: variable,
           expression: expression,
         };
-        return { ...prev, binding: newArgumentEntries };
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedInvocation = {
+          ...prev,
+          binding: newArgumentEntries,
+        };
+
+        return ret;
       });
     },
     [setExpression]
@@ -321,10 +337,13 @@ export function InvocationExpression(
           newArgumentEntries.splice(args.beforeIndex, 0, newEntry);
         }
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedInvocation = {
           ...prev,
           binding: newArgumentEntries,
         };
+
+        return ret;
       });
     },
     [getDefaultArgumentEntry, invocationExpression.binding, setExpression]
@@ -337,10 +356,13 @@ export function InvocationExpression(
         const newArgumentEntries = [...(prev.binding ?? [])];
         oldExpression = newArgumentEntries[args.rowIndex].expression;
         newArgumentEntries.splice(args.rowIndex, 1);
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedInvocation = {
           ...prev,
           binding: newArgumentEntries,
         };
+
+        return ret;
       });
 
       setWidthsById(({ newMap }) => {
@@ -360,10 +382,13 @@ export function InvocationExpression(
         oldExpression = newArgumentEntries[args.rowIndex].expression;
         const defaultArgumentEntry = getDefaultArgumentEntry(newArgumentEntries[args.rowIndex].parameter["@_name"]);
         newArgumentEntries.splice(args.rowIndex, 1, defaultArgumentEntry);
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedInvocation = {
           ...prev,
           binding: newArgumentEntries,
         };
+
+        return ret;
       });
 
       setWidthsById(({ newMap }) => {
@@ -420,7 +445,6 @@ export function InvocationExpression(
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={true}
           shouldShowColumnsInlineControls={false}
-          variables={variables}
         />
       </div>
     </NestedExpressionContainerContext.Provider>

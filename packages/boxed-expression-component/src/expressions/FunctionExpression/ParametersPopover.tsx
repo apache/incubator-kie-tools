@@ -55,10 +55,13 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
           },
         ];
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunction = {
           ...prev,
           formalParameter: newParameters,
         };
+
+        return ret;
       });
     },
     [setExpression]
@@ -104,10 +107,13 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
           ...newParameters[index],
           "@_name": e.target.value,
         };
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunction = {
           ...prev,
           formalParameter: newParameters,
         };
+
+        return ret;
       });
     },
     [index, setExpression]
@@ -121,10 +127,13 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
           ...newParameters[index],
           "@_typeRef": typeRef,
         };
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunction = {
           ...prev,
           formalParameter: newParameters,
         };
+
+        return ret;
       });
     },
     [index, setExpression]
@@ -136,10 +145,13 @@ function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationIt
       setExpression((prev: BoxedFunction) => {
         const newParameters = [...(prev.formalParameter ?? [])];
         newParameters.splice(index, 1);
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunction = {
           ...prev,
           formalParameter: newParameters,
         };
+
+        return ret;
       });
     },
     [index, setExpression]

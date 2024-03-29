@@ -27,7 +27,7 @@ test.describe("Create Decision table", () => {
   test("should render expression correctly", async ({ boxedExpressionEditor, page }) => {
     await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
+    await expect(page.getByRole("columnheader", { name: "Annotations" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "U", exact: true })).toBeAttached();
     await expect(page.getByRole("columnheader")).toHaveCount(4);
     await expect(page.getByRole("cell")).toHaveCount(4);

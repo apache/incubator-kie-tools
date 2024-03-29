@@ -38,11 +38,11 @@ import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import "./LiteralExpression.css";
 
-type ROWTYPE = any;
+type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
 export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: boolean }) {
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
-  const { expressionHolderId, variables, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
 
   const id = literalExpression["@_id"]!;
 
@@ -196,7 +196,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
     <div className={`literal-expression`}>
       <div className={"literal-expression-body-container"}>
         <div className={"equals-sign"}>{`=`}</div>
-        <BeeTable
+        <BeeTable<ROWTYPE>
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           forwardRef={beeTableRef}
           getRowKey={getRowKey}
@@ -211,8 +211,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
-          variables={variables}
-        ></BeeTable>
+        />
       </div>
     </div>
   );

@@ -21,8 +21,7 @@ import * as React from "react";
 import { useContext, useMemo } from "react";
 import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "./api";
 import { useRef, useState } from "react";
-import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
-import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import { BoxedExpressionEditorProps, OnRequestFeelVariables } from "./BoxedExpressionEditor";
 import "./BoxedExpressionEditorContext.css";
 
 export interface BoxedExpressionEditorContextType {
@@ -30,8 +29,6 @@ export interface BoxedExpressionEditorContextType {
   beeGwtService?: BeeGwtService;
   editorRef: React.RefObject<HTMLDivElement>;
   scrollableParentRef: React.RefObject<HTMLElement>;
-
-  variables?: FeelVariables;
 
   // Props
   expressionHolderId: string;
@@ -42,6 +39,7 @@ export interface BoxedExpressionEditorContextType {
   currentlyOpenContextMenu: string | undefined;
   setCurrentlyOpenContextMenu: React.Dispatch<React.SetStateAction<string | undefined>>;
 
+  onRequestFeelVariables?: OnRequestFeelVariables;
   widthsById: Map<string, number[]>;
 }
 
@@ -75,7 +73,7 @@ export function BoxedExpressionEditorContextProvider({
   children,
   pmmlDocuments,
   scrollableParentRef,
-  variables,
+  onRequestFeelVariables,
   widthsById,
 }: React.PropsWithChildren<BoxedExpressionEditorProps>) {
   const [currentlyOpenContextMenu, setCurrentlyOpenContextMenu] = useState<string | undefined>(undefined);
@@ -107,7 +105,6 @@ export function BoxedExpressionEditorContextProvider({
         beeGwtService, // Move to a separate context?
         editorRef,
         scrollableParentRef,
-        variables,
 
         // props
         expressionHolderId,
@@ -117,6 +114,7 @@ export function BoxedExpressionEditorContextProvider({
         //state // FIXME: Move to a separate context (https://github.com/kiegroup/kie-issues/issues/168)
         currentlyOpenContextMenu,
         setCurrentlyOpenContextMenu,
+        onRequestFeelVariables,
         widthsById,
       }}
     >
