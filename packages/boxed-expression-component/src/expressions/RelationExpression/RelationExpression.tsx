@@ -340,10 +340,17 @@ export function RelationExpression(
       });
 
       setWidthsById(({ newMap }) => {
-        // FIXME: Tiago
+        const prev = newMap.get(id) ?? [];
+        const defaultWidth = RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH;
+
+        const newValues = [...prev];
+        for (let i = 0; i < args.columnsCount; i++) {
+          newValues.splice(args.beforeIndex + 1, 0, defaultWidth); // + 1 to account for rowIndex column
+        }
+        newMap.set(id, newValues);
       });
     },
-    [createCell, setExpression, setWidthsById]
+    [createCell, id, setExpression, setWidthsById]
   );
 
   const onColumnDeleted = useCallback(
@@ -369,10 +376,13 @@ export function RelationExpression(
       });
 
       setWidthsById(({ newMap }) => {
-        // FIXME: Tiago
+        const prev = newMap.get(id) ?? [];
+        const newValues = [...prev];
+        newValues.splice(args.columnIndex + 1, 1); // + 1 to account for the rowIndex column
+        newMap.set(id, newValues);
       });
     },
-    [setExpression, setWidthsById]
+    [id, setExpression, setWidthsById]
   );
 
   const onRowDeleted = useCallback(

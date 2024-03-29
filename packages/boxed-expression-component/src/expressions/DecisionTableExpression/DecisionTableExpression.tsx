@@ -865,11 +865,12 @@ export function DecisionTableExpression(
             ? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH
             : DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH;
 
-        const newWidthsById = [...prev];
+        const newValues = [...prev];
         for (let i = 0; i < args.columnsCount; i++) {
-          newWidthsById.splice(args.beforeIndex + 1, 0, defaultWidth); // + 1 to account for rowIndex column
+          newValues.splice(args.beforeIndex + 1, 0, defaultWidth); // + 1 to account for rowIndex column
         }
-        return newWidthsById;
+
+        newMap.set(id, newValues);
       });
     },
     [
@@ -944,10 +945,13 @@ export function DecisionTableExpression(
       });
 
       setWidthsById(({ newMap }) => {
-        // FIXME: Tiago
+        const prev = newMap.get(id) ?? [];
+        const newValues = [...prev];
+        newValues.splice(args.columnIndex + 1, 1); // + 1 to account for the rowIndex column
+        newMap.set(id, newValues);
       });
     },
-    [getSectionIndexForGroupType, setExpression, setWidthsById]
+    [getSectionIndexForGroupType, id, setExpression, setWidthsById]
   );
 
   const onRowDeleted = useCallback(
