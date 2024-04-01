@@ -22,8 +22,9 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../src/BoxedExpressionEditor";
 import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, generateUuid } from "../src/api";
-import { getDefaultBoxedExpressionForStorybook } from "./dev/defaultExpression";
+import { getDefaultBoxedExpressionForDevWebapp } from "./dev/getDefaultBoxedExpressionForDevWebapp";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../src/expressionVariable/ExpressionVariableMenu";
+import { getDefaultBoxedExpressionForStories } from "./getDefaultBoxedExpressionForStories";
 
 export const pmmlDocuments = [
   {
@@ -71,7 +72,7 @@ export const dataTypes = [
 
 export const beeGwtService: BeeGwtService = {
   getDefaultExpressionDefinition(logicType: BoxedExpression["__$$element"] | undefined, dataType: string) {
-    const expression = getDefaultBoxedExpressionForStorybook(logicType, dataType);
+    const expression = getDefaultBoxedExpressionForStories(logicType, dataType);
     return {
       expression: expression,
       widthsById: new Map(),

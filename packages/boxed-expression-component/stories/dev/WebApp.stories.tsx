@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useEffect, useState, useCallback } from "react";
 import { BeeGwtService, DmnBuiltInDataType, BoxedExpression } from "../../src/api";
-import { getDefaultBoxedExpressionForStorybook } from "./defaultExpression";
+import { getDefaultBoxedExpressionForDevWebapp } from "./getDefaultBoxedExpressionForDevWebapp";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../boxedExpressionStoriesWrapper";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -93,11 +93,10 @@ const pmmlDocuments = [
 const INITIAL_EXPRESSION: BoxedExpression | undefined = undefined;
 const INITIAL_WIDTHS_BY_ID: Record<string, number[]> = {};
 
-//Defining global function that will be available in the Window namespace and used by the BoxedExpressionEditor component
 const beeGwtService: BeeGwtService = {
   getDefaultExpressionDefinition(logicType, typeRef) {
     return {
-      expression: getDefaultBoxedExpressionForStorybook(logicType, typeRef),
+      expression: getDefaultBoxedExpressionForDevWebapp(logicType, typeRef),
       widthsById: new Map(),
     };
   },

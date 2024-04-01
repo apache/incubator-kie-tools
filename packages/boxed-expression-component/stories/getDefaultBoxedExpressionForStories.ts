@@ -23,66 +23,55 @@ import {
   BoxedExpression,
   BoxedFunction,
   BoxedFunctionKind,
-  generateUuid,
   BoxedInvocation,
   BoxedList,
   BoxedLiteral,
   BoxedRelation,
-} from "../../src/api";
-import {
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-} from "../../src/expressions/InvocationExpression/InvocationExpression";
+  generateUuid,
+} from "../src/api";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-} from "../../src/expressions/DecisionTableExpression/DecisionTableExpression";
+} from "../src/expressions/DecisionTableExpression/DecisionTableExpression";
+import {
+  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+} from "../src/expressions/InvocationExpression/InvocationExpression";
 
-export function getDefaultBoxedExpressionForStorybook(
+export function getDefaultBoxedExpressionForStories(
   logicType: BoxedExpression["__$$element"] | undefined,
   typeRef: string
 ): BoxedExpression {
+  if (!logicType) {
+    return undefined!;
+  }
   if (logicType === "literalExpression") {
     const literalExpression: BoxedLiteral = {
       __$$element: "literalExpression",
-      "@_id": generateUuid(),
       "@_typeRef": typeRef,
+      "@_id": generateUuid(),
     };
     return literalExpression;
   } else if (logicType === "functionDefinition") {
     const functionExpression: BoxedFunction = {
       __$$element: "functionDefinition",
-      "@_id": generateUuid(),
       "@_typeRef": typeRef,
+      "@_id": generateUuid(),
       "@_kind": BoxedFunctionKind.Feel,
-      expression: undefined!,
     };
     return functionExpression;
   } else if (logicType === "context") {
     const contextExpression: BoxedContext = {
       __$$element: "context",
-      "@_id": generateUuid(),
       "@_typeRef": typeRef,
+      "@_id": generateUuid(),
       contextEntry: [
         {
-          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
           },
-          expression: undefined!,
-        },
-        {
-          "@_id": generateUuid(),
-          variable: {
-            "@_id": generateUuid(),
-            "@_name": "ContextEntry-2",
-          },
-          expression: undefined!,
-        },
-        {
-          "@_id": generateUuid(),
-          expression: undefined!,
+          expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         },
       ],
     };
@@ -90,9 +79,9 @@ export function getDefaultBoxedExpressionForStorybook(
   } else if (logicType === "list") {
     const listExpression: BoxedList = {
       __$$element: "list",
-      "@_id": generateUuid(),
       "@_typeRef": typeRef,
-      expression: [undefined!, undefined!, undefined!],
+      "@_id": generateUuid(),
+      expression: [undefined!], // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
     };
     return listExpression;
   } else if (logicType === "invocation") {
@@ -107,11 +96,12 @@ export function getDefaultBoxedExpressionForStorybook(
             "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
             "@_typeRef": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
           },
+          expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         },
       ],
       expression: {
-        __$$element: "literalExpression",
         "@_id": generateUuid(),
+        __$$element: "literalExpression",
         text: { __$$text: "FUNCTION" },
       },
     };
@@ -119,42 +109,17 @@ export function getDefaultBoxedExpressionForStorybook(
   } else if (logicType === "relation") {
     const relationExpression: BoxedRelation = {
       __$$element: "relation",
-      "@_id": generateUuid(),
       "@_typeRef": typeRef,
+      "@_id": generateUuid(),
       column: [
         {
           "@_id": generateUuid(),
           "@_name": "column-1",
         },
-        {
-          "@_id": generateUuid(),
-          "@_name": "column-2",
-        },
-        {
-          "@_id": generateUuid(),
-          "@_name": "column-3",
-        },
       ],
       row: [
         {
           "@_id": generateUuid(),
-          expression: [
-            {
-              __$$element: "literalExpression",
-              "@_id": generateUuid(),
-              text: { __$$text: "" },
-            },
-            {
-              __$$element: "literalExpression",
-              "@_id": generateUuid(),
-              text: { __$$text: "" },
-            },
-            {
-              __$$element: "literalExpression",
-              "@_id": generateUuid(),
-              text: { __$$text: "" },
-            },
-          ],
         },
       ],
     };
@@ -173,26 +138,11 @@ export function getDefaultBoxedExpressionForStorybook(
             text: { __$$text: "input-1" },
           },
         },
-        {
-          "@_id": generateUuid(),
-          inputExpression: {
-            "@_id": generateUuid(),
-            text: { __$$text: "input-2" },
-          },
-        },
       ],
       output: [
         {
           "@_id": generateUuid(),
-          "@_label": "output-1",
-        },
-        {
-          "@_id": generateUuid(),
-          "@_label": "output-2",
-        },
-        {
-          "@_id": generateUuid(),
-          "@_label": "output-3",
+          "@_name": "output-1",
         },
       ],
       annotation: [
@@ -203,15 +153,8 @@ export function getDefaultBoxedExpressionForStorybook(
       rule: [
         {
           "@_id": generateUuid(),
-          inputEntry: [
-            { "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE } },
-            { "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE } },
-          ],
-          outputEntry: [
-            { "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE } },
-            { "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE } },
-            { "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE } },
-          ],
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE } }],
+          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE } }],
           annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
         },
       ],
