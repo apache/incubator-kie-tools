@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
 @Dependent
@@ -287,6 +288,7 @@ public class AlertsPresenter {
     }
 
     private static String kieNotificationCssClass(final NotifyType notifyType) {
-        return notifyType.getCssName() + " kie-alert-notification";
+        final String cssName = StunnerTheme.getTheme().isDarkTheme() ? notifyType.getCssName() + "-dark" : notifyType.getCssName();
+        return cssName + " kie-alert-notification";
     }
 }

@@ -20,3 +20,4 @@
 export * from "./FormActionsUtils";
 export * from "./FormValidator";
 export * from "./ModelConversionTool";
+export * from "./KeycloakClient";

@@ -56,7 +56,11 @@ export class DummyEditor implements Editor, GwtEditor {
     return Promise.resolve([]);
   }
 
-  public setTheme(theme: EditorTheme): Promise<void> {
+  public setTheme(_theme: EditorTheme): Promise<void> {
+    return Promise.resolve();
+  }
+
+  public applyTheme(_name: string | null): Promise<void> {
     return Promise.resolve();
   }
 

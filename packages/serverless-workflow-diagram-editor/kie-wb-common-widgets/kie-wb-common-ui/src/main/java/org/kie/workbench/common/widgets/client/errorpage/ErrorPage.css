@@ -17,9 +17,19 @@
  * under the License. 
  */
 
+.root-container-dark {
+  background-color: black;
+  height: 100%;
+}
+
 .blank-slate-pf {
   background-color: transparent !important;
   border: none !important;
+}
+
+.blank-slate-pf-dark {
+  color: #b9b9b9;
+  background-color: black !important;
 }
 
 .pficon-warning-triangle-o,

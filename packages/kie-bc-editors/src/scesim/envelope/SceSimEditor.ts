@@ -18,6 +18,7 @@
  */
 
 import { GwtEditorWrapper } from "../../common";
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
 export interface SceSimEditor extends GwtEditorWrapper {
   mySceSimMethod(): string;
@@ -26,5 +27,10 @@ export interface SceSimEditor extends GwtEditorWrapper {
 export class SceSimEditorImpl extends GwtEditorWrapper implements SceSimEditor {
   public mySceSimMethod() {
     return "scesim-specific--configured";
+  }
+
+  public setTheme(theme: EditorTheme) {
+    // Themes are not supported by SceSim Editor
+    return Promise.resolve();
   }
 }

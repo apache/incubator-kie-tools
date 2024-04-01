@@ -37,6 +37,10 @@ export interface BeeTableBodyProps<R extends object> {
   getRowKey: (row: ReactTable.Row<R>) => string;
   /** Custom function for getting column key prop, and avoid using the column index */
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
+  /** Function to be executed when a column's data cell is clicked */
+  onDataCellClick?: (columnID: string) => void;
+  /** Function to be executed when a key up event occurs in a column's data cell */
+  onDataCellKeyUp?: (columnID: string) => void;
   /** */
   onRowAdded?: (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => void;
 
@@ -58,6 +62,8 @@ export function BeeTableBody<R extends object>({
   getRowKey,
   getColumnKey,
   onRowAdded,
+  onDataCellClick,
+  onDataCellKeyUp,
   shouldRenderRowIndexColumn,
   shouldShowRowsInlineControls,
   resizerStopBehavior,
@@ -82,6 +88,8 @@ export function BeeTableBody<R extends object>({
                     row={row}
                     rowIndex={rowIndex}
                     column={reactTableInstance.allColumns[cellIndex]}
+                    onDataCellClick={onDataCellClick}
+                    onDataCellKeyUp={onDataCellKeyUp}
                     onRowAdded={onRowAdded}
                     isActive={false}
                     shouldRenderInlineButtons={

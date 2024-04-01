@@ -167,7 +167,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>tests-data--manual/simple.dmn</dmnFilePath>
+    <dmnFilePath>simple.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://github.com/kiegroup/kie-dmn/itemdef</dmnNamespace>
     <dmnName>simple-item-def</dmnName>
