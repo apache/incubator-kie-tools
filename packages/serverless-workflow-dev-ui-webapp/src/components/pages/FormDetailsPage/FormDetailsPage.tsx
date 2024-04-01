@@ -26,7 +26,7 @@ import { OUIAProps, ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-com
 import FormDetailsContainer from "../../containers/FormDetailsContainer/FormDetailsContainer";
 import "../../styles.css";
 import { useHistory } from "react-router-dom";
-import { FormInfo } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import Moment from "react-moment";

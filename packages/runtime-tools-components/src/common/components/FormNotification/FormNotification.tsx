@@ -54,7 +54,7 @@ export const FormNotification: React.FC<IOwnProps & OUIAProps> = ({ notification
           )}
           {notification.customActions &&
             notification.customActions.length > 0 &&
-            notification.customActions.map((customAction: Action, index: number) => {
+            notification.customActions.map((customAction, index) => {
               return (
                 <AlertActionLink onClick={customAction.onClick} key={index}>
                   {customAction.label}

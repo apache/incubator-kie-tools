@@ -20,9 +20,9 @@
 
 package org.uberfire.client.mvp;
 
-import org.uberfire.workbench.events.UberFireEvent;
+import java.util.Objects;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * CDI event fired by the framework each time an Activity lifecycle method throws an exception. Observers of the event
@@ -44,6 +44,10 @@ public class ActivityLifecycleError implements UberFireEvent {
         this.failedCall = checkNotNull("failedCall",
                                        failedCall);
         this.exception = exception;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     /**

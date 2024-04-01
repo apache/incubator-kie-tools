@@ -19,6 +19,8 @@
 
 package org.dashbuilder.displayer.client.widgets;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -36,8 +38,6 @@ import org.dashbuilder.displayer.client.DisplayerLocator;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 @Dependent
 public class DisplayerViewer extends Composite {
 
@@ -53,6 +53,10 @@ public class DisplayerViewer extends Composite {
     protected RendererSelector rendererSelector;
     ClientRuntimeError displayerInitializationError;
     CommonConstants i18n = CommonConstants.INSTANCE;
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
+    }
 
     DisplayerListener displayerListener = new AbstractDisplayerListener() {
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Elements, Meta, MetaTypeDef } from ".";
+import { Elements, Meta, MetaType } from ".";
 import { buildXmlQName, parseXmlQName } from "./qNames";
 
 export type XmlParserTsIdRandomizerUpdater = (args: { newId: string }) => void;
@@ -26,7 +26,7 @@ export type XmlParserTsIdRandomizerMatcher<M extends Meta> = (args: {
   parentJson: any;
   attr: string;
   metaTypeName: keyof M;
-  metaType: Record<string, MetaTypeDef>;
+  metaType: MetaType;
 }) => [string, XmlParserTsIdRandomizerUpdater] | undefined;
 
 export class XmlParserTsIdRandomizer<M extends Meta> {

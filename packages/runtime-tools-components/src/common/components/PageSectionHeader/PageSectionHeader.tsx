@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
+import * as React from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";
@@ -37,8 +38,11 @@ export const PageSectionHeader: React.FC<PageSectionHeaderProps & OUIAProps> = (
   ouiaId,
   ouiaSafe,
 }) => {
-  const renderBreadcrumb = (): JSX.Element[] => {
+  const breadcrumbContent = useMemo(() => {
     const items: JSX.Element[] = [];
+    if (!breadcrumbPath || !breadcrumbText) {
+      return;
+    }
     breadcrumbText?.forEach((text, index) => {
       if (index === breadcrumbText.length - 1) {
         items.push(
@@ -49,16 +53,17 @@ export const PageSectionHeader: React.FC<PageSectionHeaderProps & OUIAProps> = (
       } else {
         items.push(
           <BreadcrumbItem key={index}>
-            <Link to={breadcrumbPath![index]}>{text}</Link>
+            <Link to={breadcrumbPath[index]}>{text}</Link>
           </BreadcrumbItem>
         );
       }
     });
     return items;
-  };
+  }, [breadcrumbPath, breadcrumbText]);
+
   return (
     <PageSection variant="light" {...componentOuiaProps(ouiaId, "page-section-header", ouiaSafe)}>
-      {breadcrumbText && breadcrumbPath && <Breadcrumb>{renderBreadcrumb()}</Breadcrumb>}
+      {breadcrumbContent && <Breadcrumb>{breadcrumbContent}</Breadcrumb>}
       <PageTitle title={titleText} />
     </PageSection>
   );

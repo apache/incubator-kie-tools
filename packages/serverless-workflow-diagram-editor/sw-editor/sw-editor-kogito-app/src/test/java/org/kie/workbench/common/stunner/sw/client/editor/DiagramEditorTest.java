@@ -53,6 +53,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.ClearAllCommand;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
@@ -60,6 +61,8 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.sw.SWDomainInitializer;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
+import org.kie.workbench.common.stunner.sw.client.theme.DarkMode;
+import org.kie.workbench.common.stunner.sw.client.theme.LightMode;
 import org.kie.workbench.common.stunner.sw.marshall.Context;
 import org.kie.workbench.common.stunner.sw.marshall.DocType;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
@@ -71,10 +74,13 @@ import org.uberfire.promise.SyncPromises;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -225,6 +231,7 @@ public class DiagramEditorTest {
         diagram = spy(d);
         when(session.getCanvasHandler()).thenReturn(canvasHandler2);
         when(canvasHandler2.getDiagram()).thenReturn(diagram);
+        when(canvasHandler2.getCanvas()).thenReturn(canvas);
         doReturn(stunnerEditor2).when(stunnerEditor2).close();
         when(stunnerEditor2.getSession()).thenReturn(viewerSession);
         when(selectionControl.clearSelection()).thenReturn(selectionControl);
@@ -242,6 +249,81 @@ public class DiagramEditorTest {
         tested.jsRegExpJson = jsRegExp;
         tested.domainInitializer = domainInitializer;
         doReturn(jsCanvas).when(tested).getJsCanvas();
+    }
+
+    @Test
+    public void testSetDefaultTheme() {
+        tested.onStartup(new DefaultPlaceRequest());
+        assertTrue(StunnerTheme.getTheme() instanceof LightMode);
+    }
+
+    @Test
+    public void testSetTheme() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("injectExample");
+        doNothing().when(tested).reloadEditorContent();
+
+        tested.onStartup(new DefaultPlaceRequest());
+        tested.setContent("", rawJSON);
+        tested.applyTheme(DarkMode.NAME);
+
+        verify(tested, times(1)).reloadEditorContent();
+        verify(tested, times(1)).setCanvasBackgroundColor();
+        assertNull(tested.themeToBeApplied);
+        assertTrue(StunnerTheme.getTheme() instanceof DarkMode);
+    }
+
+    @Test
+    public void testSetThemeBrokenDiagram() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("injectExample");
+        doNothing().when(tested).reloadEditorContent();
+
+        when(stunnerEditor2.hasErrors()).thenReturn(true);
+
+        tested.onStartup(new DefaultPlaceRequest());
+        tested.setContent("", rawJSON);
+        tested.applyTheme(DarkMode.NAME);
+
+        verify(tested, times(0)).reloadEditorContent();
+        verify(tested, times(0)).setCanvasBackgroundColor();
+        assertTrue(tested.themeToBeApplied instanceof DarkMode);
+    }
+
+    @Test
+    public void testSetThemeNull() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("injectExample");
+        doNothing().when(tested).reloadEditorContent();
+
+        tested.onStartup(new DefaultPlaceRequest());
+        tested.setContent("", rawJSON);
+        tested.applyTheme(null);
+
+        verify(tested, times(0)).reloadEditorContent();
+        verify(tested, times(0)).setCanvasBackgroundColor();
+        assertNull(tested.themeToBeApplied);
+        assertTrue(StunnerTheme.getTheme() instanceof LightMode);
+    }
+
+    @Test
+    public void testSetThemeSame() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("injectExample");
+        doNothing().when(tested).reloadEditorContent();
+
+        tested.onStartup(new DefaultPlaceRequest());
+        tested.setContent("", rawJSON);
+        tested.applyTheme(LightMode.NAME);
+
+        verify(tested, times(0)).reloadEditorContent();
+        verify(tested, times(0)).setCanvasBackgroundColor();
+        assertNull(tested.themeToBeApplied);
+        assertTrue(StunnerTheme.getTheme() instanceof LightMode);
     }
 
     @Test

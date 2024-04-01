@@ -17,10 +17,13 @@
  * under the License.
  */
 
-import { Page, PageSidebar } from "@patternfly/react-core/dist/js/components/Page";
-import React, { useEffect, useState } from "react";
+import { Page, PageHeader, PageHeaderTools, PageSidebar } from "@patternfly/react-core/dist/js/components/Page";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { componentOuiaProps, ouiaAttribute, OUIAProps } from "../../ouiaTools";
 import "../styles.css";
+import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { BrandContext } from "../../contexts/BrandContext/BrandContext";
+import PageToolbar from "../PageToolbar/PageToolbar";
 
 interface IOwnProps {
   children: React.ReactNode;
@@ -29,6 +32,7 @@ interface IOwnProps {
   pageNavOpen?: boolean;
   BrandAltText?: string;
   BrandClick?: () => void;
+  withHeader?: boolean;
 }
 
 const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
@@ -40,19 +44,49 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
   BrandClick,
   ouiaId,
   ouiaSafe,
+  withHeader,
 }) => {
   const pageId = "main-content-page-layout-default-nav";
 
   const [isNavOpen, setIsNavOpen] = useState(pageNavOpen != undefined ? pageNavOpen : true);
-  const onNavToggle = () => {
-    setIsNavOpen(!isNavOpen);
-  };
+
+  const onNavToggle = useCallback(() => {
+    setIsNavOpen((currentValue) => !currentValue);
+  }, []);
 
   useEffect(() => {
     if (document.getElementById(pageId)) {
       document.getElementById(pageId)?.setAttribute("data-ouia-main", "true");
     }
   });
+
+  const Header = useMemo(() => {
+    if (!withHeader || !BrandSrc) {
+      return;
+    }
+
+    return (
+      <PageHeader
+        logo={<Brand src={BrandSrc} alt={BrandAltText ?? ""} onClick={BrandClick} />}
+        headerTools={
+          <PageHeaderTools>
+            <BrandContext.Provider
+              value={{
+                imageSrc: BrandSrc,
+                altText: BrandAltText ?? "",
+              }}
+            >
+              <PageToolbar />
+            </BrandContext.Provider>
+          </PageHeaderTools>
+        }
+        showNavToggle
+        isNavOpen={isNavOpen}
+        onNavToggle={onNavToggle}
+        {...ouiaAttribute("data-ouia-header", "true")}
+      />
+    );
+  }, [BrandAltText, BrandClick, BrandSrc, isNavOpen, onNavToggle, withHeader]);
 
   const Sidebar = (
     <PageSidebar
@@ -67,6 +101,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
   return (
     <React.Fragment>
       <Page
+        header={Header}
         mainContainerId={pageId}
         sidebar={Sidebar}
         className="kogito-consoles-common--PageLayout"

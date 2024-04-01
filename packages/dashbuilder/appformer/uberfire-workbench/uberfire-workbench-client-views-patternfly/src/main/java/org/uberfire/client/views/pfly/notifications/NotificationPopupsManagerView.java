@@ -22,6 +22,7 @@ package org.uberfire.client.views.pfly.notifications;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -30,7 +31,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
@@ -56,8 +56,12 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
 
     @Override
     public void setContainer(final IsWidget container) {
-        this.container = PortablePreconditions.checkNotNull("container",
+        this.container = checkNotNull("container",
                 container);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Override
@@ -204,10 +208,8 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
 
         PopupHandle(NotificationPopupView view,
                     NotificationEvent event) {
-            this.view = PortablePreconditions.checkNotNull("view",
-                    view);
-            this.event = PortablePreconditions.checkNotNull("event",
-                    event);
+            this.view = checkNotNull("view", view);
+            this.event = checkNotNull("event", event);
         }
     }
 }

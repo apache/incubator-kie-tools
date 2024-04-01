@@ -38,6 +38,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.uberfire.mvp.Command;
 
@@ -47,6 +48,16 @@ public class ZoomLevelSelectorView
         implements ZoomLevelSelector.View {
 
     static final String CSS_DROP_UP = "dropup";
+    static final String BUTTON_LIGHT_STYLE = "zoom-button";
+    static final String BUTTON_DARK_STYLE = "zoom-button-dark";
+    static final String DROPDOWN_BUTTON_LIGHT_STYLE = "btn dropdown-toggle btn-default";
+    static final String DROPDOWN_BUTTON_DARK_STYLE = "btn dropdown-toggle btn-default-dark";
+    static final String DROPDOWN_TEXT_LIGHT_STYLE = "filter-option pull-left zoom-selector-button-text";
+    static final String DROPDOWN_TEXT_DARK_STYLE = "filter-option pull-left zoom-selector-button-text-dark";
+    static final String DROPDOWN_PANEL_LIGHT_STYLE = "dropdown-menu open";
+    static final String DROPDOWN_PANEL_DARK_STYLE = "dropdown-menu dropdown-menu-dark open";
+    static final String DROPDOWN_MENU_LIGHT_STYLE = "dropdown-menu inner zoom-selector-menu";
+    static final String DROPDOWN_MENU_DARK_STYLE = "dropdown-menu dropdown-menu-dark inner zoom-selector-menu zoom-selector-menu-dark";
 
     @Inject
     @DataField
@@ -142,6 +153,39 @@ public class ZoomLevelSelectorView
     @Override
     public void updatePreviewButton(boolean enabled) {
         previewButton.disabled = (!enabled);
+    }
+
+    @Override
+    public void applyTheme() {
+        final boolean isDarkTheme = StunnerTheme.getTheme().isDarkTheme();
+        final String buttonCss = isDarkTheme ? BUTTON_DARK_STYLE : BUTTON_LIGHT_STYLE;
+        final String dropDownButtonCss = isDarkTheme ? DROPDOWN_BUTTON_DARK_STYLE : DROPDOWN_BUTTON_LIGHT_STYLE;
+        final String dropDownPanelCss = isDarkTheme ? DROPDOWN_PANEL_DARK_STYLE : DROPDOWN_PANEL_LIGHT_STYLE;
+        final String dropDownTextCss = isDarkTheme ? DROPDOWN_TEXT_DARK_STYLE : DROPDOWN_TEXT_LIGHT_STYLE;
+        final String dropDownMenuCss = isDarkTheme ? DROPDOWN_MENU_DARK_STYLE : DROPDOWN_MENU_LIGHT_STYLE;
+
+        if (null == previewButton.className || !previewButton.className.equals(buttonCss)) {
+            previewButton.className =
+                    resetButton.className =
+                            increaseButton.className =
+                                    decreaseButton.className = buttonCss;
+        }
+
+        if (null == dropDownButton.className || !dropDownButton.className.equals(dropDownButtonCss)) {
+            dropDownButton.className = dropDownButtonCss;
+        }
+
+        if (null == dropDownText.className || !dropDownText.className.equals(dropDownTextCss)) {
+            dropDownText.className = dropDownTextCss;
+        }
+
+        if (null == dropDownPanel.className || !dropDownPanel.className.equals(dropDownPanelCss)) {
+            dropDownPanel.className = dropDownPanelCss;
+        }
+
+        if (null == dropDownMenu.className || !dropDownMenu.className.equals(dropDownMenuCss)) {
+            dropDownMenu.className = dropDownMenuCss;
+        }
     }
 
     @EventHandler("previewButton")

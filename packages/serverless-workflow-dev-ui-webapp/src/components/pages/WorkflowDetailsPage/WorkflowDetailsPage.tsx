@@ -30,15 +30,15 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { RouteComponentProps } from "react-router-dom";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
-import { WorkflowDetailsContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetailsContainer";
+import { WorkflowDetailsContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetailsContainer";
 import {
   WorkflowDetailsGatewayApi,
   useWorkflowDetailsGatewayApi,
-} from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetails/";
+} from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails/";
 import { StaticContext, useHistory } from "react-router";
 import * as H from "history";
 import "../../styles.css";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 
 interface MatchProps {

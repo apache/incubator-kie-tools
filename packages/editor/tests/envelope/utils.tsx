@@ -40,6 +40,7 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<K
     keyboardShortcuts: new DefaultKeyboardShortcutsService({} as any),
     i18n: new I18nService(),
   },
+  supportedThemes: [],
 };
 
 export function usingEnvelopeContext(
