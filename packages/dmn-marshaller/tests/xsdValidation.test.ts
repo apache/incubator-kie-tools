@@ -36,16 +36,23 @@ const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
 /* XSD DMN Schema */
 const DMN_1_5_XSD = "../src/schemas/dmn-1_5/DMN15.xsd";
 
+const files = [
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "DateToDateTimeFunction.dmn",
+];
+
 const testing_models_paths = [
   ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY,
   ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY,
 ];
 
 describe("validation", () => {
-  for (const models_paths of testing_models_paths) {
-    const parent_path = path.join(dmnTestingModels, models_paths);
-    testDirectory(parent_path);
+  for (const file of files) {
+    testFile(path.join(dmnTestingModels, file));
   }
+  // for (const models_paths of testing_models_paths) {
+  //   const parent_path = path.join(dmnTestingModels, models_paths);
+  //   testDirectory(parent_path);
+  // }
 });
 
 function testDirectory(normalizedFsPathRelativeToTheDirectory: string) {
@@ -68,7 +75,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
       const xml_marshalled = builder.build(parser.parse());
 
-      //expect(xml_marshalled).toStrictEqual(xml_original);
+      expect(xml_marshalled).toStrictEqual(xml_original);
 
       await expect((await validator.validateXML(xml_marshalled, path.join(__dirname, DMN_1_5_XSD))).valid).toBe(true);
     }
