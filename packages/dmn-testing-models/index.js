@@ -16,3 +16,5 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+/** Empty Entrypoint of this module - No TS/JS code here, it just holds DMN files for testing purposes */

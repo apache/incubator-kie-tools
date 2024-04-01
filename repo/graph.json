@@ -678,7 +678,6 @@
       { "source": "@kie-tools/dmn-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
       { "source": "@kie-tools/dmn-testing-models", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
       { "source": "@kie-tools/dmn-testing-models", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/dmn-testing-models", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools-core/switch-expression-ts", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/switch-expression-ts", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/switch-expression-ts", "target": "@kie-tools/tsconfig", "weight": 1 },

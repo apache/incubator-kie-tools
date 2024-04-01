@@ -3886,9 +3886,6 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
-      "@kie-tools/tsconfig":
-        specifier: workspace:*
-        version: link:../tsconfig
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
@@ -3898,9 +3895,6 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
-      typescript:
-        specifier: ^4.6.2
-        version: 4.8.4
 
   packages/dmn-vscode-extension:
     dependencies:
