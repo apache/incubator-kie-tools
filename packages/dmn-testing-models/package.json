@@ -18,7 +18,7 @@
     "src"
   ],
   "scripts": {
-    "build:dev": "tsc -p tsconfig.json && run-script-os",
+    "build:dev": "rimraf dist && tsc -p tsconfig.json && run-script-os",
     "build:dev:linux:darwin": "mvn clean generate-resources",
     "build:dev:win32": "pnpm powershell \"mvn clean generate-resources\"",
     "build:prod": "pnpm build:dev",
