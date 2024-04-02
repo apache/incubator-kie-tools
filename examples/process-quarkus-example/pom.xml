@@ -161,6 +161,7 @@
         <plugins>
           <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
+            <version>${version.surefire.plugin}</version>
             <configuration>
               <systemPropertyVariables>
                 <enable.resource.kafka>true</enable.resource.kafka>
