@@ -58,7 +58,7 @@ export const Base: Story = {
         text: { __$$text: "FUNCTION" },
       },
     },
-    isResetSupportedOnRootExpression: false,
+    isResetSupportedOnRootExpression: true,
   },
 };
 

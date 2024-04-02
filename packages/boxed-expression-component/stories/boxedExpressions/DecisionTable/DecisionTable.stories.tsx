@@ -99,7 +99,7 @@ export const Base: Story = {
       ],
     },
 
-    isResetSupportedOnRootExpression: false,
+    isResetSupportedOnRootExpression: true,
   },
 };
 

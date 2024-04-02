@@ -46,5 +46,6 @@ export const Base: Story = {
     dataTypes,
     beeGwtService,
     pmmlDocuments,
+    isResetSupportedOnRootExpression: true,
   },
 };

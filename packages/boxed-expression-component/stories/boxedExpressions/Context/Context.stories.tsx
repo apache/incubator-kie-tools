@@ -55,7 +55,7 @@ export const Base: Story = {
         },
       ],
     },
-    isResetSupportedOnRootExpression: false,
+    isResetSupportedOnRootExpression: true,
     widthsById: { "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH] },
   },
 };

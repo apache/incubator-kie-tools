@@ -44,7 +44,7 @@ export const Base: Story = {
       "@_label": "Expression Name",
       expression: [undefined!],
     },
-    isResetSupportedOnRootExpression: false,
+    isResetSupportedOnRootExpression: true,
   },
 };
 

@@ -43,7 +43,7 @@ export const Base: Story = {
       "@_id": generateUuid(),
       "@_label": "Expression Name",
     },
-    isResetSupportedOnRootExpression: false,
+    isResetSupportedOnRootExpression: true,
   },
 };
 

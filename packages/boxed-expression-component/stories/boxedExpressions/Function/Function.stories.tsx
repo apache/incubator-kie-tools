@@ -45,7 +45,7 @@ export const Base: Story = {
       "@_label": "Expression Name",
       "@_kind": BoxedFunctionKind.Feel,
     },
-    isResetSupportedOnRootExpression: false,
+    isResetSupportedOnRootExpression: true,
   },
 };
 
