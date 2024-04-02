@@ -111,12 +111,21 @@ export function ExpressionVariableMenu({
     setDataType(selectedDataType);
   }, [selectedExpressionName, selectedDataType]);
 
+  // onCancel doens't prevent the onHide call
+  // With this ref we ensure the "saveExpression" inside onHide will not be called
+  const cancelEdit = useRef<boolean>(false);
+
   const onHide = useCallback(() => {
+    if (cancelEdit.current) {
+      cancelEdit.current = false;
+      return;
+    }
     saveExpression();
     popoverMenuRef?.current?.setIsVisible(false);
   }, [saveExpression]);
 
   const onCancel = useCallback(() => {
+    cancelEdit.current = true;
     resetFormData();
     popoverMenuRef?.current?.setIsVisible(false);
   }, [resetFormData]);
