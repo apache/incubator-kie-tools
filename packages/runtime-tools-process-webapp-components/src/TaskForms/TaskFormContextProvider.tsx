@@ -25,7 +25,7 @@ export const TaskFormContextProvider: React.FC = ({ children }) => {
   const appContext = useKogitoAppContext();
 
   return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(appContext.getCurrentUser())}>
+    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
       {children}
     </TaskFormContext.Provider>
   );

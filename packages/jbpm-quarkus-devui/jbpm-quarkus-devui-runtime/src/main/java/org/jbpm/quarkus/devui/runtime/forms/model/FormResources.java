@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
-import {
-  TaskFormContext,
-  TaskFormGatewayApi,
-  TaskFormGatewayApiImpl,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
+package org.jbpm.quarkus.devui.runtime.forms.model;
 
-export const TaskFormContextProvider: React.FC = ({ children }) => {
-  const appContext = useDevUIAppContext();
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-  return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
-      {children}
-    </TaskFormContext.Provider>
-  );
-};
+public class FormResources {
 
-export default TaskFormContextProvider;
+    private Map<String, String> scripts = new LinkedHashMap<>();
+
+    private Map<String, String> styles = new LinkedHashMap<>();
+
+    public FormResources() {
+    }
+
+    public Map<String, String> getScripts() {
+        return scripts;
+    }
+
+    public void setScripts(Map<String, String> scripts) {
+        this.scripts = scripts;
+    }
+
+    public Map<String, String> getStyles() {
+        return styles;
+    }
+
+    public void setStyles(Map<String, String> styles) {
+        this.styles = styles;
+    }
+}

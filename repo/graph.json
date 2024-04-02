@@ -114,6 +114,10 @@
       { "id": "@kie-tools/uniforms-patternfly-codegen" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
+      { "id": "@kie-tools/jbpm-quarkus-devui" },
+      { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
+      { "id": "@kie-tools/runtime-tools-process-webapp-components" },
+      { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools-core/k8s-yaml-to-apiserver-requests" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
@@ -131,10 +135,7 @@
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
-      { "id": "@kie-tools/runtime-tools-process-webapp-components" },
-      { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
-      { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
@@ -716,6 +717,32 @@
         "weight": 1
       },
       { "source": "@kie-tools/import-java-classes-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      {
+        "source": "@kie-tools/jbpm-quarkus-devui",
+        "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-webapp-components",
+        "target": "@kie-tools/runtime-tools-process-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-webapp-components",
+        "target": "@kie-tools/runtime-tools-components",
+        "weight": 1
+      },
       { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/tsconfig", "weight": 1 },
@@ -805,16 +832,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-tools-process-webapp-components",
-        "target": "@kie-tools/runtime-tools-process-enveloped-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-shared-webapp-components",
-        "target": "@kie-tools/runtime-tools-components",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
         "target": "@kie-tools/runtime-tools-process-gateway-api",
         "weight": 1
@@ -822,16 +839,6 @@
       {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
         "target": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
       {
@@ -1174,6 +1181,7 @@
     ["@kie-tools/image-builder", "packages/image-builder"],
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
+    ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],
     ["@kie-tools/json-yaml-language-service", "packages/json-yaml-language-service"],
     ["@kie-tools-core/k8s-yaml-to-apiserver-requests", "packages/k8s-yaml-to-apiserver-requests"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],

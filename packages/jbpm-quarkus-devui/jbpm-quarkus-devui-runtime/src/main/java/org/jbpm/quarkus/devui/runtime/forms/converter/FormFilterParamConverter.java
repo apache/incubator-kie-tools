@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
-import {
-  TaskFormContext,
-  TaskFormGatewayApi,
-  TaskFormGatewayApiImpl,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
+package org.jbpm.quarkus.devui.runtime.forms.converter;
 
-export const TaskFormContextProvider: React.FC = ({ children }) => {
-  const appContext = useDevUIAppContext();
+import java.util.Collections;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
-  return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
-      {children}
-    </TaskFormContext.Provider>
-  );
-};
+import org.jbpm.quarkus.devui.runtime.forms.model.FormFilter;
 
-export default TaskFormContextProvider;
+import jakarta.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.ext.Provider;
+
+@Provider
+public class FormFilterParamConverter implements ParamConverter<FormFilter> {
+    public FormFilter fromString(String names) {
+        StringTokenizer stringTokenizer = new StringTokenizer(names, ";");
+        return new FormFilter(Collections.list(stringTokenizer).stream().map(s -> (String) s).collect(Collectors.toList()));
+    }
+
+    public String toString(FormFilter names) {
+        return names.toString();
+    }
+}

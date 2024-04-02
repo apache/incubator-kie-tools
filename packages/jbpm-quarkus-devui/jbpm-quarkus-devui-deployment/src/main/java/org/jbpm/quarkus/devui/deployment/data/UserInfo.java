@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
-import {
-  TaskFormContext,
-  TaskFormGatewayApi,
-  TaskFormGatewayApiImpl,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
+package org.jbpm.quarkus.devui.deployment.data;
 
-export const TaskFormContextProvider: React.FC = ({ children }) => {
-  const appContext = useDevUIAppContext();
+import java.util.List;
 
-  return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
-      {children}
-    </TaskFormContext.Provider>
-  );
-};
+public class UserInfo {
 
-export default TaskFormContextProvider;
+    private String id;
+
+    private List<String> groups;
+
+    public UserInfo(final String id,
+            final List<String> groups) {
+        this.id = id;
+        this.groups = groups;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+}

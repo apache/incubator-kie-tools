@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
-import {
-  TaskFormContext,
-  TaskFormGatewayApi,
-  TaskFormGatewayApiImpl,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
+package org.jbpm.quarkus.devui.runtime.config;
 
-export const TaskFormContextProvider: React.FC = ({ children }) => {
-  const appContext = useDevUIAppContext();
+import java.util.Map;
 
-  return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
-      {children}
-    </TaskFormContext.Provider>
-  );
-};
+import io.quarkus.runtime.annotations.ConfigItem;
+import io.quarkus.runtime.annotations.ConfigPhase;
+import io.quarkus.runtime.annotations.ConfigRoot;
 
-export default TaskFormContextProvider;
+@ConfigRoot(name = "", prefix = "kogito", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+public class DevConsoleRuntimeConfig {
+
+    /**
+     * Mocked users data for the task inbox screen.
+     */
+    @ConfigItem(name = "users")
+    public Map<String, UserConfig> userConfigByUser;
+}

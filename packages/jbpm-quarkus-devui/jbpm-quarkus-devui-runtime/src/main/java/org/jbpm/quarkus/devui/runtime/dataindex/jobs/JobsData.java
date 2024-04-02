@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
-import {
-  TaskFormContext,
-  TaskFormGatewayApi,
-  TaskFormGatewayApiImpl,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 
-export const TaskFormContextProvider: React.FC = ({ children }) => {
-  const appContext = useDevUIAppContext();
+package org.jbpm.quarkus.devui.runtime.dataindex.jobs;
 
-  return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
-      {children}
-    </TaskFormContext.Provider>
-  );
-};
+import java.util.List;
 
-export default TaskFormContextProvider;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class JobsData {
+
+    @JsonProperty("Jobs")
+    private List<Job> jobsList;
+
+    public JobsData() {
+    }
+
+    public JobsData(final List<Job> jobsList) {
+        this.jobsList = jobsList;
+    }
+
+    public List<Job> getJobs() {
+        return jobsList;
+    }
+
+    public void setJobs(final List<Job> jobsList) {
+        this.jobsList = jobsList;
+    }
+}
