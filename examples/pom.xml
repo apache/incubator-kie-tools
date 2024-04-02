@@ -66,33 +66,35 @@
     <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
   </properties>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
-           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
-           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
-           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
-           We use Apache Nexus repo only to download our SNAPSHOTs. -->
-      <id>central</id>
-      <name>Central Repository</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-      <layout>default</layout>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>apache-public-repository-group</id>
-      <name>Apache Public Repository Group</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+  <repositories>
+    <repository>
+        <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
+             as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
+             Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
+             first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
+             We use Apache repo only to download our SNAPSHOTs. -->
+        <id>central</id>
+        <name>Central Repository</name>
+        <url>https://repo.maven.apache.org/maven2</url>
+        <layout>default</layout>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>apache-public-repository-group</id>
+        <name>Apache Public Repository Group</name>
+        <url>https://repository.apache.org/content/groups/public/</url>
+        <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>daily</updatePolicy>
+        </snapshots>
+    </repository>
+  </repositories>
 
   <profiles>
     <profile>
