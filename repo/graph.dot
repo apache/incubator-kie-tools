@@ -108,6 +108,7 @@ digraph G {
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/maven-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -345,7 +346,7 @@ digraph G {
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
-  "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
+  "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
   "@kie-tools/jbpm-quarkus-devui" -> "@kie-tools/runtime-tools-process-dev-ui-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/json-yaml-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
@@ -380,6 +381,8 @@ digraph G {
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kn-plugin-workflow" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools-core/kubernetes-bridge" -> "@kie-tools/cors-proxy-api" [ style = "solid", color = "purple" ];
+  "@kie-tools/maven-base" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
+  "@kie-tools/maven-base" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
@@ -493,6 +496,7 @@ digraph G {
   "sonataflow-deployment-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "sonataflow-deployment-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "sonataflow-deployment-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/sonataflow-quarkus-devui" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-quarkus-devui" -> "@kie-tools/serverless-workflow-dev-ui-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/storybook-base" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/storybook-base" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
