@@ -15,7 +15,7 @@ Feature: Serverless Workflow builder images
     And container log should contain --no-transfer-progress
     And container log should contain -Duser.home=/home/kogito
     And container log should match regex Installed features:.*kogito-serverless-workflow
-    And container log should match regex Installed features:.*kogito-addon-knative-eventing-extension
+    And container log should match regex Installed features:.*kie-addon-knative-eventing-extension
     And container log should match regex Installed features:.*smallrye-health
 
   Scenario: Verify that the application is built and started correctly when QUARKUS_EXTENSIONS env is used
@@ -33,6 +33,6 @@ Feature: Serverless Workflow builder images
     And container log should contain -Duser.home=/home/kogito
     And container log should contain Extension io.quarkus:quarkus-elytron-security-jdbc has been installed
     And container log should match regex Installed features:.*kogito-serverless-workflow
-    And container log should match regex Installed features:.*kogito-addon-knative-eventing-extension
+    And container log should match regex Installed features:.*kie-addon-knative-eventing-extension
     And container log should match regex Installed features:.*smallrye-health
     And container log should match regex Installed features:.*security-jdbc

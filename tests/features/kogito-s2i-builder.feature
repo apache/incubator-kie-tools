@@ -104,7 +104,7 @@ Feature: kogito-s2i-builder image tests
       | PROJECT_ARTIFACT_ID      | myproject                                             |
       | PROJECT_VERSION          | 2.0-SNAPSHOT                                          |
       | K_SINK                   | http://localhost:8181                                 |
-      | QUARKUS_EXTRA_EXTENSIONS | org.kie.kogito:kogito-addons-quarkus-knative-eventing |
+      | QUARKUS_EXTRA_EXTENSIONS | org.kie:kie-addons-quarkus-knative-eventing |
     Then file /home/kogito/bin/quarkus-run.jar should exist
     And s2i build log should contain Generating quarkus project structure for myproject...
     And s2i build log should contain Adding Kogito Quarkus Workflows extension to the generated project.

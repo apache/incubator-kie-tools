@@ -70,7 +70,7 @@ envs:
 
   - name: QUARKUS_EXTRA_EXTENSIONS
     description: ^ Defines the Quarkus' extra extensions (as comma-separated list) to be added when performing build from assets.
-    example: "org.kie.kogito:kogito-addons-quarkus-knative-eventing,quarkus-kubernetes"
+    example: "org.kie:kie-addons-quarkus-knative-eventing,quarkus-kubernetes"
 
 modules:
   install:

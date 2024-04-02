@@ -16,10 +16,10 @@ Feature: Serverless Workflow devmode images
     And container log should contain -Duser.home=/home/kogito -o
     And container log should contain -Dquarkus.test.continuous-testing=disabled
     And container log should match regex Installed features:.*kogito-serverless-workflow
-    And container log should match regex Installed features:.*kogito-addon-knative-eventing-extension
+    And container log should match regex Installed features:.*kie-addon-knative-eventing-extension
     And container log should match regex Installed features:.*smallrye-health
-    And container log should match regex Installed features:.*kogito-serverless-workflow-devui
-    And container log should match regex Installed features:.*kogito-addon-source-files-extension
+    And container log should match regex Installed features:.*sonataflow-quarkus-devui
+    And container log should match regex Installed features:.*kie-addon-source-files-extension
     And container log should match regex Installed features:.*kogito-addons-quarkus-jobs-service-embedded
     And container log should match regex Installed features:.*kogito-addons-quarkus-data-index-inmemory
 
@@ -55,10 +55,10 @@ Feature: Serverless Workflow devmode images
     And container log should not contain /bin/mvn -B -X --batch-mode -o
     And container log should contain Extension io.quarkus:quarkus-elytron-security-jdbc has been installed
     And container log should match regex Installed features:.*kogito-serverless-workflow
-    And container log should match regex Installed features:.*kogito-addon-knative-eventing-extension
+    And container log should match regex Installed features:.*kie-addon-knative-eventing-extension
     And container log should match regex Installed features:.*smallrye-health
-    And container log should match regex Installed features:.*kogito-serverless-workflow-devui
-    And container log should match regex Installed features:.*kogito-addon-source-files-extension
+    And container log should match regex Installed features:.*sonataflow-quarkus-devui
+    And container log should match regex Installed features:.*kie-addon-source-files-extension
     And container log should match regex Installed features:.*kogito-addons-quarkus-jobs-service-embedded
     And container log should match regex Installed features:.*kogito-addons-quarkus-data-index-inmemory
     And container log should match regex Installed features:.*security-jdbc
@@ -114,14 +114,14 @@ Feature: Serverless Workflow devmode images
     Then check that page is served
       | property             | value                                                              |
       | port                 | 8080                                                               |
-      | path                 | /q/dev-v1/org.kie.kogito.kogito-quarkus-serverless-workflow/dataindex |
+      | path                 | /q/dev-v1/org.kie.kogito-addons-quarkus-data-index-inmemory/dataindex |
       | request_method       | GET                                                                |
       | wait                 | 480                                                                |
       | expected_status_code | 200                                                                |
     And check that page is served
       | property             | value                                                                            |
       | port                 | 8080                                                                             |
-      | path                 | /q/dev-v1/org.kie.kogito.kogito-quarkus-serverless-workflow-devui/workflowInstances |
+      | path                 | /q/dev-ui/org.apache.kie.sonataflow.sonataflow-quarkus-devui/workflows |
       | request_method       | GET                                                                              |
       | wait                 | 480                                                                              |
       | expected_status_code | 200                                                                              |
