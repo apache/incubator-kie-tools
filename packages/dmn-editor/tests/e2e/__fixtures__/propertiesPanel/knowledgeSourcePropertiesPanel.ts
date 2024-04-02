@@ -19,8 +19,8 @@
 
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
-export class KnowledgeSourceProperties extends PropertiesPanelBase {
-  public async changeNodeSourceType(args: { nodeName: string; newSourceType: string }) {
+export class KnowledgeSourcePropertiesPanel extends PropertiesPanelBase {
+  public async setSourceType(args: { nodeName: string; newSourceType: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByPlaceholder("Enter source type...").fill(args.newSourceType);
     // commit changes by click to the diagram
@@ -32,7 +32,7 @@ export class KnowledgeSourceProperties extends PropertiesPanelBase {
     return await this.panel().getByPlaceholder("Enter source type...").inputValue();
   }
 
-  public async changeNodeLocationURI(args: { nodeName: string; newLocationURI: string }) {
+  public async setLocationURI(args: { nodeName: string; newLocationURI: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByPlaceholder("Enter location URI...").fill(args.newLocationURI);
     // commit changes by click to the diagram

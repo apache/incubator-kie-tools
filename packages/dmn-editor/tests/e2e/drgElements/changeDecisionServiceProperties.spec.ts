@@ -26,23 +26,26 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Change Properties - Decision Service", () => {
-  test.beforeEach(async ({ palette, nodes, containerNodeGeneralProperties }) => {
+  test.beforeEach(async ({ palette, nodes, decisionServicePropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
     await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
-    await containerNodeGeneralProperties.open();
+    await decisionServicePropertiesPanel.open();
   });
 
-  test("should change the Decision Service node name", async ({ nodes, containerNodeGeneralProperties }) => {
-    await containerNodeGeneralProperties.changeNodeName({
+  test("should change the Decision Service node name", async ({ nodes, decisionServicePropertiesPanel }) => {
+    await decisionServicePropertiesPanel.setName({
       from: DefaultNodeName.DECISION_SERVICE,
       to: "Renamed Decision Service",
     });
 
     await expect(nodes.get({ name: "Renamed Decision Service" })).toBeVisible();
+    expect(await decisionServicePropertiesPanel.getName({ nodeName: "Renamed Decision Service" })).toBe(
+      "Renamed Decision Service"
+    );
   });
 
-  test("should change the Decision Service node data type", async ({ nodes, containerNodeGeneralProperties }) => {
-    await containerNodeGeneralProperties.changeNodeDataType({
+  test("should change the Decision Service node data type", async ({ nodes, decisionServicePropertiesPanel }) => {
+    await decisionServicePropertiesPanel.setDataType({
       nodeName: DefaultNodeName.DECISION_SERVICE,
       newDataType: DataType.Number,
     });
@@ -53,25 +56,25 @@ test.describe("Change Properties - Decision Service", () => {
     ).toHaveValue(DataType.Number);
   });
 
-  test("should change the Decision Service node description", async ({ containerNodeGeneralProperties }) => {
-    await containerNodeGeneralProperties.changeNodeDescription({
+  test("should change the Decision Service node description", async ({ decisionServicePropertiesPanel }) => {
+    await decisionServicePropertiesPanel.setDescription({
       nodeName: DefaultNodeName.DECISION_SERVICE,
       newDescription: "New Decision Service Description",
     });
 
     expect(
-      await containerNodeGeneralProperties.getNodeDescription({ nodeName: DefaultNodeName.DECISION_SERVICE })
+      await decisionServicePropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.DECISION_SERVICE })
     ).toBe("New Decision Service Description");
   });
 
-  test("should change the Decision Service node documentation links", async ({ containerNodeGeneralProperties }) => {
-    await containerNodeGeneralProperties.addDocumentationLink({
+  test("should change the Decision Service node documentation links", async ({ decisionServicePropertiesPanel }) => {
+    await decisionServicePropertiesPanel.addDocumentationLink({
       nodeName: DefaultNodeName.DECISION_SERVICE,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await containerNodeGeneralProperties.getDocumentationLinks({
+    const links = await decisionServicePropertiesPanel.getDocumentationLinks({
       nodeName: DefaultNodeName.DECISION_SERVICE,
     });
     expect(links).toHaveLength(1);
@@ -79,20 +82,20 @@ test.describe("Change Properties - Decision Service", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Decision Service node font - family", async ({ containerNodeGeneralProperties }) => {
-    await containerNodeGeneralProperties.changeNodeFont({
+  test("should change the Decision Service node font - family", async ({ decisionServicePropertiesPanel }) => {
+    await decisionServicePropertiesPanel.setFont({
       nodeName: DefaultNodeName.DECISION_SERVICE,
       newFont: "Verdana",
     });
 
-    expect(await containerNodeGeneralProperties.getNodeFont({ nodeName: DefaultNodeName.DECISION_SERVICE })).toBe(
+    expect(await decisionServicePropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.DECISION_SERVICE })).toBe(
       "Verdana"
     );
   });
 
   test.skip("should change the Decision Service node shape - background color", async ({
     nodes,
-    containerNodeGeneralProperties,
+    decisionServicePropertiesPanel,
   }) => {
     // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
   });

@@ -25,15 +25,19 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Input Data", () => {
-  test("should resize Input Data node", async ({ palette, nodes, generalProperties }) => {
+  test("should resize Input Data node", async ({ palette, nodes, inputDataPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
 
     await nodes.resize({ nodeName: DefaultNodeName.INPUT_DATA, xOffset: 50, yOffset: 50 });
 
-    await generalProperties.open();
-    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.INPUT_DATA })).width).toEqual("200");
-    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.INPUT_DATA })).height).toEqual(
-      "120"
+    await inputDataPropertiesPanel.open();
+    await expect((await inputDataPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.INPUT_DATA })).width).toEqual(
+      "200"
     );
+    await expect(
+      (
+        await inputDataPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.INPUT_DATA })
+      ).height
+    ).toEqual("120");
   });
 });

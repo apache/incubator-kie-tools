@@ -24,18 +24,14 @@ test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Resize node - Decision", () => {
-  test("should resize Decision node", async ({ palette, nodes, decisionPropertiesPanel }) => {
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+test.describe("Resize node - BKM", () => {
+  test("should resize BKM node", async ({ palette, nodes, bkmPropertiesPanel }) => {
+    await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
 
-    await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 50, yOffset: 50 });
+    await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: 50, yOffset: 50 });
 
-    await decisionPropertiesPanel.open();
-    await expect((await decisionPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.DECISION })).width).toEqual(
-      "200"
-    );
-    await expect((await decisionPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.DECISION })).height).toEqual(
-      "120"
-    );
+    await bkmPropertiesPanel.open();
+    await expect((await bkmPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.BKM })).width).toEqual("200");
+    await expect((await bkmPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.BKM })).height).toEqual("120");
   });
 });

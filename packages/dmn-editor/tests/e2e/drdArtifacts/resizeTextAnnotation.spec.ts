@@ -25,7 +25,7 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Text Annotation", () => {
-  test("should resize Text Annotation node", async ({ palette, nodes, generalProperties }) => {
+  test("should resize Text Annotation node", async ({ palette, nodes, textAnnotationPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
 
     await nodes.resize({
@@ -35,12 +35,16 @@ test.describe("Resize node - Text Annotation", () => {
       yOffset: 50,
     });
 
-    await generalProperties.open();
-    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).width).toEqual(
-      "240"
-    );
-    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).height).toEqual(
-      "240"
-    );
+    await textAnnotationPropertiesPanel.open();
+    await expect(
+      (
+        await textAnnotationPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.TEXT_ANNOTATION })
+      ).width
+    ).toEqual("240");
+    await expect(
+      (
+        await textAnnotationPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.TEXT_ANNOTATION })
+      ).height
+    ).toEqual("240");
   });
 });

@@ -25,36 +25,37 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Change Properties - Group", () => {
-  test.beforeEach(async ({ palette, nodes, containerNodeGeneralProperties }) => {
+  test.beforeEach(async ({ palette, nodes, groupPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
-    await containerNodeGeneralProperties.open();
+    await groupPropertiesPanel.open();
   });
 
-  test("should change the Group node name", async ({ nodes, containerNodeGeneralProperties }) => {
-    await containerNodeGeneralProperties.changeNodeName({ from: DefaultNodeName.GROUP, to: "Renamed Group" });
+  test("should change the Group node name", async ({ nodes, groupPropertiesPanel }) => {
+    await groupPropertiesPanel.setName({ from: DefaultNodeName.GROUP, to: "Renamed Group" });
 
     await expect(nodes.get({ name: "Renamed Group" })).toBeVisible();
+    expect(await groupPropertiesPanel.getName({ nodeName: "Renamed Group" })).toBe("Renamed Group");
   });
 
-  test("should change the Group node description", async ({ containerNodeGeneralProperties }) => {
-    await containerNodeGeneralProperties.changeNodeDescription({
+  test("should change the Group node description", async ({ groupPropertiesPanel }) => {
+    await groupPropertiesPanel.setDescription({
       nodeName: DefaultNodeName.GROUP,
       newDescription: "New Group Description",
     });
 
-    expect(await containerNodeGeneralProperties.getNodeDescription({ nodeName: DefaultNodeName.GROUP })).toBe(
+    expect(await groupPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.GROUP })).toBe(
       "New Group Description"
     );
   });
 
-  test("should change the Group node font - family", async ({ containerNodeGeneralProperties }) => {
-    await containerNodeGeneralProperties.changeNodeFont({ nodeName: DefaultNodeName.GROUP, newFont: "Verdana" });
+  test("should change the Group node font - family", async ({ groupPropertiesPanel }) => {
+    await groupPropertiesPanel.setFont({ nodeName: DefaultNodeName.GROUP, newFont: "Verdana" });
 
-    expect(await containerNodeGeneralProperties.getNodeFont({ nodeName: DefaultNodeName.GROUP })).toBe("Verdana");
+    expect(await groupPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.GROUP })).toBe("Verdana");
   });
 
-  test.skip("should change the Group node shape - background color", async ({ nodes, propertiesPanel }) => {
+  test.skip("should change the Group node shape - background color", async ({ nodes, groupPropertiesPanel }) => {
     // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
   });
 });

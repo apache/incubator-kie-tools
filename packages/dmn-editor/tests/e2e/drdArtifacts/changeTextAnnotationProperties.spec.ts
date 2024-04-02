@@ -25,50 +25,55 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Change Properties - Text Annotation", () => {
-  test.beforeEach(async ({ palette, nodes, propertiesPanel }) => {
+  test.beforeEach(async ({ palette, nodes, textAnnotationPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
-    await propertiesPanel.open();
+    await textAnnotationPropertiesPanel.open();
   });
 
-  test("should change the Text Annotation node Format", async ({ textAnnotationProperties }) => {
-    await textAnnotationProperties.changeNodeFormat({
+  test("should change the Text Annotation node Format", async ({ textAnnotationPropertiesPanel }) => {
+    await textAnnotationPropertiesPanel.setFormat({
       nodeName: DefaultNodeName.TEXT_ANNOTATION,
       newFormat: "plaintext",
     });
 
-    expect(await textAnnotationProperties.getNodeFormat({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
+    expect(await textAnnotationPropertiesPanel.getNodeFormat({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
       "plaintext"
     );
   });
 
-  test("should change the Text Annotation node Text", async ({ textAnnotationProperties }) => {
-    await textAnnotationProperties.changeNodeText({
+  test("should change the Text Annotation node Text", async ({ textAnnotationPropertiesPanel }) => {
+    await textAnnotationPropertiesPanel.setText({
       nodeName: DefaultNodeName.TEXT_ANNOTATION,
       newText: "new text content",
     });
 
-    expect(await textAnnotationProperties.getNodeText({ nodeName: "new text content" })).toBe("new text content");
+    expect(await textAnnotationPropertiesPanel.getNodeText({ nodeName: "new text content" })).toBe("new text content");
   });
 
-  test("should change the Text Annotation node description", async ({ generalProperties }) => {
-    await generalProperties.changeNodeDescription({
+  test("should change the Text Annotation node description", async ({ textAnnotationPropertiesPanel }) => {
+    await textAnnotationPropertiesPanel.setDescription({
       nodeName: DefaultNodeName.TEXT_ANNOTATION,
       newDescription: "New Text Annotation Description",
     });
 
-    expect(await generalProperties.getNodeDescription({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
+    expect(await textAnnotationPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
       "New Text Annotation Description"
     );
   });
 
-  test("should change the Text Annotation node font - family", async ({ generalProperties }) => {
-    await generalProperties.changeNodeFont({ nodeName: DefaultNodeName.TEXT_ANNOTATION, newFont: "Verdana" });
+  test("should change the Text Annotation node font - family", async ({ textAnnotationPropertiesPanel }) => {
+    await textAnnotationPropertiesPanel.setFont({ nodeName: DefaultNodeName.TEXT_ANNOTATION, newFont: "Verdana" });
 
-    expect(await generalProperties.getNodeFont({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe("Verdana");
+    expect(await textAnnotationPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
+      "Verdana"
+    );
   });
 
-  test.skip("should change the Text Annotation node shape - background color", async ({ nodes, propertiesPanel }) => {
+  test.skip("should change the Text Annotation node shape - background color", async ({
+    nodes,
+    textAnnotationPropertiesPanel,
+  }) => {
     // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
   });
 });

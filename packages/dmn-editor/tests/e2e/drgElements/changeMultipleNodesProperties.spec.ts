@@ -18,24 +18,13 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Resize node - Decision", () => {
-  test("should resize Decision node", async ({ palette, nodes, decisionPropertiesPanel }) => {
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
-
-    await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 50, yOffset: 50 });
-
-    await decisionPropertiesPanel.open();
-    await expect((await decisionPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.DECISION })).width).toEqual(
-      "200"
-    );
-    await expect((await decisionPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.DECISION })).height).toEqual(
-      "120"
-    );
-  });
+test.describe("Change Properties - Multiple Nodes", () => {
+  test("should change multiple nodes font", async ({ nodes, multipleNodesPropertiesPanel }) => {});
 });

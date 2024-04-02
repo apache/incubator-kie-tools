@@ -373,23 +373,24 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
               </ToggleGroup>
             </div>
             <br />
-            <Select
-              ouiaId="node-font-style-selector"
-              toggleRef={toggleRef}
-              variant={SelectVariant.single}
-              aria-label={"Select font style"}
-              isOpen={isFontFamilySelectOpen}
-              onSelect={onSelectFont}
-              onToggle={() => setFontFamilySelectOpen((prev) => !prev)}
-              selections={fontFamily ?? ""}
-              isDisabled={false}
-              maxHeight={inViewTimezoneSelect.maxHeight}
-              direction={inViewTimezoneSelect.direction}
-            >
-              {WEBSAFE_FONTS_LIST.map((fontName, index) => (
-                <SelectOption key={index} value={fontName} style={{ fontFamily: fontName }} />
-              ))}
-            </Select>
+            <div data-testid="node-font-style-selector">
+              <Select
+                toggleRef={toggleRef}
+                variant={SelectVariant.single}
+                aria-label={"Select font style"}
+                isOpen={isFontFamilySelectOpen}
+                onSelect={onSelectFont}
+                onToggle={() => setFontFamilySelectOpen((prev) => !prev)}
+                selections={fontFamily ?? ""}
+                isDisabled={false}
+                maxHeight={inViewTimezoneSelect.maxHeight}
+                direction={inViewTimezoneSelect.direction}
+              >
+                {WEBSAFE_FONTS_LIST.map((fontName, index) => (
+                  <SelectOption key={index} value={fontName} style={{ fontFamily: fontName }} />
+                ))}
+              </Select>
+            </div>
           </div>
         </FormSection>
       )}

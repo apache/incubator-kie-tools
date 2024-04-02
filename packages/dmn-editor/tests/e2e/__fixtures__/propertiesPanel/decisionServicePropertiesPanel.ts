@@ -17,21 +17,11 @@
  * under the License.
  */
 
-import { test, expect } from "../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
+import { NodePosition } from "../nodes";
+import { PropertiesPanelBase } from "./propertiesPanelBase";
 
-test.beforeEach(async ({ editor }) => {
-  await editor.open();
-});
-
-test.describe("Resize node - BKM", () => {
-  test("should resize BKM node", async ({ palette, nodes, generalProperties }) => {
-    await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
-
-    await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: 50, yOffset: 50 });
-
-    await generalProperties.open();
-    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.BKM })).width).toEqual("200");
-    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.BKM })).height).toEqual("120");
-  });
-});
+export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
+  public async selectNodeByClickToAppropriatePosition(args: { nodeName: string }) {
+    await this.nodes.select({ name: args.nodeName, position: NodePosition.TOP });
+  }
+}

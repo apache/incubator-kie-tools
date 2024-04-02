@@ -18,24 +18,21 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Resize node - Decision", () => {
-  test("should resize Decision node", async ({ palette, nodes, decisionPropertiesPanel }) => {
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+test.describe("Change Properties - Diagram", () => {
+  test("should change the Diagram name", async ({ diagramPropertiesPanel }) => {});
 
-    await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 50, yOffset: 50 });
+  test("should change the Diagram description", async ({ diagramPropertiesPanel }) => {});
 
-    await decisionPropertiesPanel.open();
-    await expect((await decisionPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.DECISION })).width).toEqual(
-      "200"
-    );
-    await expect((await decisionPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.DECISION })).height).toEqual(
-      "120"
-    );
-  });
+  test("should change the Diagram expression language", async ({ diagramPropertiesPanel }) => {});
+
+  test("should change the Diagram ID", async ({ diagramPropertiesPanel }) => {});
+
+  test("should change the Diagram namespace", async ({ diagramPropertiesPanel }) => {});
 });

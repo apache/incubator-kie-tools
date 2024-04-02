@@ -26,20 +26,21 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Change Properties - Input Data", () => {
-  test.beforeEach(async ({ palette, nodes, propertiesPanel }) => {
+  test.beforeEach(async ({ palette, nodes, inputDataPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
     await nodes.select({ name: DefaultNodeName.INPUT_DATA });
-    await propertiesPanel.open();
+    await inputDataPropertiesPanel.open();
   });
 
-  test("should change the Input Data node name", async ({ nodes, generalProperties }) => {
-    await generalProperties.changeNodeName({ from: DefaultNodeName.INPUT_DATA, to: "Renamed Input Data" });
+  test("should change the Input Data node name", async ({ nodes, inputDataPropertiesPanel }) => {
+    await inputDataPropertiesPanel.setName({ from: DefaultNodeName.INPUT_DATA, to: "Renamed Input Data" });
 
     await expect(nodes.get({ name: "Renamed Input Data" })).toBeVisible();
+    expect(await inputDataPropertiesPanel.getName({ nodeName: "Renamed Input Data" })).toBe("Renamed Input Data");
   });
 
-  test("should change the Input Data node data type", async ({ nodes, generalProperties }) => {
-    await generalProperties.changeNodeDataType({ nodeName: DefaultNodeName.INPUT_DATA, newDataType: DataType.Number });
+  test("should change the Input Data node data type", async ({ nodes, inputDataPropertiesPanel }) => {
+    await inputDataPropertiesPanel.setDataType({ nodeName: DefaultNodeName.INPUT_DATA, newDataType: DataType.Number });
 
     await nodes.hover({ name: DefaultNodeName.INPUT_DATA });
     await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA }).getByPlaceholder("Select a data type...")).toHaveValue(
@@ -47,37 +48,40 @@ test.describe("Change Properties - Input Data", () => {
     );
   });
 
-  test("should change the Input Data node description", async ({ generalProperties }) => {
-    await generalProperties.changeNodeDescription({
+  test("should change the Input Data node description", async ({ inputDataPropertiesPanel }) => {
+    await inputDataPropertiesPanel.setDescription({
       nodeName: DefaultNodeName.INPUT_DATA,
       newDescription: "New Input Data Description",
     });
 
-    expect(await generalProperties.getNodeDescription({ nodeName: DefaultNodeName.INPUT_DATA })).toBe(
+    expect(await inputDataPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.INPUT_DATA })).toBe(
       "New Input Data Description"
     );
   });
 
-  test("should change the Input Data node documentation links", async ({ generalProperties }) => {
-    await generalProperties.addDocumentationLink({
+  test("should change the Input Data node documentation links", async ({ inputDataPropertiesPanel }) => {
+    await inputDataPropertiesPanel.addDocumentationLink({
       nodeName: DefaultNodeName.INPUT_DATA,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await generalProperties.getDocumentationLinks({ nodeName: DefaultNodeName.INPUT_DATA });
+    const links = await inputDataPropertiesPanel.getDocumentationLinks({ nodeName: DefaultNodeName.INPUT_DATA });
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveText("Link Text");
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Input Data node font - family", async ({ generalProperties }) => {
-    await generalProperties.changeNodeFont({ nodeName: DefaultNodeName.INPUT_DATA, newFont: "Verdana" });
+  test("should change the Input Data node font - family", async ({ inputDataPropertiesPanel }) => {
+    await inputDataPropertiesPanel.setFont({ nodeName: DefaultNodeName.INPUT_DATA, newFont: "Verdana" });
 
-    expect(await generalProperties.getNodeFont({ nodeName: DefaultNodeName.INPUT_DATA })).toBe("Verdana");
+    expect(await inputDataPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.INPUT_DATA })).toBe("Verdana");
   });
 
-  test.skip("should change the Input Data node shape - background color", async ({ nodes, propertiesPanel }) => {
+  test.skip("should change the Input Data node shape - background color", async ({
+    nodes,
+    inputDataPropertiesPanel,
+  }) => {
     // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
   });
 });

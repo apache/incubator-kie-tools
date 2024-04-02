@@ -24,72 +24,85 @@ test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Change Properties - Knoledge Source", () => {
-  test.beforeEach(async ({ palette, nodes, propertiesPanel }) => {
+test.describe("Change Properties - Knowledge Source", () => {
+  test.beforeEach(async ({ palette, nodes, knowledgeSourcePropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
     await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
-    await propertiesPanel.open();
+    await knowledgeSourcePropertiesPanel.open();
   });
 
-  test("should change the Knoledge Source node name", async ({ nodes, generalProperties }) => {
-    await generalProperties.changeNodeName({ from: DefaultNodeName.KNOWLEDGE_SOURCE, to: "Renamed Knoledge Source" });
-
-    await expect(nodes.get({ name: "Renamed Knoledge Source" })).toBeVisible();
-  });
-
-  test("should change the Knoledge Source node description", async ({ generalProperties }) => {
-    await generalProperties.changeNodeDescription({
-      nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
-      newDescription: "New Knoledge Source Description",
+  test("should change the Knowledge Source node name", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+    await knowledgeSourcePropertiesPanel.setName({
+      from: DefaultNodeName.KNOWLEDGE_SOURCE,
+      to: "Renamed Knowledge Source",
     });
 
-    expect(await generalProperties.getNodeDescription({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
-      "New Knoledge Source Description"
+    await expect(nodes.get({ name: "Renamed Knowledge Source" })).toBeVisible();
+    expect(await knowledgeSourcePropertiesPanel.getName({ nodeName: "Renamed Knowledge Source" })).toBe(
+      "Renamed Knowledge Source"
     );
   });
 
-  test("should change the Knoledge Source node Source Type", async ({ knowledgeSourceProperties }) => {
-    await knowledgeSourceProperties.changeNodeSourceType({
+  test("should change the Knowledge Source node description", async ({ knowledgeSourcePropertiesPanel }) => {
+    await knowledgeSourcePropertiesPanel.setDescription({
       nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
-      newSourceType: "New Knoledge Source Source Type",
+      newDescription: "New Knowledge Source Description",
     });
 
-    expect(await knowledgeSourceProperties.getNodeSourceType({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
-      "New Knoledge Source Source Type"
+    expect(
+      await knowledgeSourcePropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })
+    ).toBe("New Knowledge Source Description");
+  });
+
+  test("should change the Knowledge Source node Source Type", async ({ knowledgeSourcePropertiesPanel }) => {
+    await knowledgeSourcePropertiesPanel.setSourceType({
+      nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
+      newSourceType: "New Knowledge Source Source Type",
+    });
+
+    expect(await knowledgeSourcePropertiesPanel.getNodeSourceType({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
+      "New Knowledge Source Source Type"
     );
   });
 
-  test("should change the Knoledge Source node Location URI", async ({ knowledgeSourceProperties }) => {
-    await knowledgeSourceProperties.changeNodeLocationURI({
+  test("should change the Knowledge Source node Location URI", async ({ knowledgeSourcePropertiesPanel }) => {
+    await knowledgeSourcePropertiesPanel.setLocationURI({
       nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       newLocationURI: "New Location URI",
     });
 
-    expect(await knowledgeSourceProperties.getNodeLocationURI({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
-      "New Location URI"
-    );
+    expect(
+      await knowledgeSourcePropertiesPanel.getNodeLocationURI({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })
+    ).toBe("New Location URI");
   });
 
-  test("should change the Knoledge Source node documentation links", async ({ generalProperties }) => {
-    await generalProperties.addDocumentationLink({
+  test("should change the Knowledge Source node documentation links", async ({ knowledgeSourcePropertiesPanel }) => {
+    await knowledgeSourcePropertiesPanel.addDocumentationLink({
       nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await generalProperties.getDocumentationLinks({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE });
+    const links = await knowledgeSourcePropertiesPanel.getDocumentationLinks({
+      nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
+    });
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveText("Link Text");
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Knoledge Source node font - family", async ({ generalProperties }) => {
-    await generalProperties.changeNodeFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, newFont: "Verdana" });
+  test("should change the Knowledge Source node font - family", async ({ knowledgeSourcePropertiesPanel }) => {
+    await knowledgeSourcePropertiesPanel.setFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, newFont: "Verdana" });
 
-    expect(await generalProperties.getNodeFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe("Verdana");
+    expect(await knowledgeSourcePropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
+      "Verdana"
+    );
   });
 
-  test.skip("should change the Knoledge Source node shape - background color", async ({ nodes, propertiesPanel }) => {
+  test.skip("should change the Knowledge Source node shape - background color", async ({
+    nodes,
+    knowledgeSourcePropertiesPanel,
+  }) => {
     // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
   });
 });

@@ -24,6 +24,15 @@ import { Nodes } from "./nodes";
 import { Editor } from "./editor";
 import { Edges } from "./edges";
 import { JsonModel } from "./jsonModel";
+import { DecisionServicePropertiesPanel } from "./propertiesPanel/decisionServicePropertiesPanel";
+import { DecisionPropertiesPanel } from "./propertiesPanel/decisionPropertiesPanel";
+import { KnowledgeSourcePropertiesPanel } from "./propertiesPanel/knowledgeSourcePropertiesPanel";
+import { TextAnnotationProperties as TextAnnotationPropertiesPanel } from "./propertiesPanel/textAnnotationPropertiesPanel";
+import { BkmPropertiesPanel } from "./propertiesPanel/bkmPropertiesPanel";
+import { InputDataPropertiesPanel } from "./propertiesPanel/inputDataPropertiesPanel";
+import { GroupPropertiesPanel } from "./propertiesPanel/groupPropertiesPanel";
+import { DiagramPropertiesPanel } from "./propertiesPanel/diagramPropertiesPanel";
+import { MultipleNodesPropertiesPanel } from "./propertiesPanel/multipleNodesPropertiesPanel";
 
 type DmnEditorFixtures = {
   diagram: Diagram;
@@ -32,6 +41,15 @@ type DmnEditorFixtures = {
   jsonModel: JsonModel;
   nodes: Nodes;
   palette: Palette;
+  bkmPropertiesPanel: BkmPropertiesPanel;
+  decisionPropertiesPanel: DecisionPropertiesPanel;
+  decisionServicePropertiesPanel: DecisionServicePropertiesPanel;
+  diagramPropertiesPanel: DiagramPropertiesPanel;
+  groupPropertiesPanel: GroupPropertiesPanel;
+  inputDataPropertiesPanel: InputDataPropertiesPanel;
+  knowledgeSourcePropertiesPanel: KnowledgeSourcePropertiesPanel;
+  multipleNodesPropertiesPanel: MultipleNodesPropertiesPanel;
+  textAnnotationPropertiesPanel: TextAnnotationPropertiesPanel;
 };
 
 export const test = base.extend<DmnEditorFixtures>({
@@ -52,6 +70,33 @@ export const test = base.extend<DmnEditorFixtures>({
   },
   palette: async ({ page, diagram, nodes }, use) => {
     await use(new Palette(page, diagram, nodes));
+  },
+  bkmPropertiesPanel: async ({ diagram, nodes, page }, use) => {
+    await use(new BkmPropertiesPanel(diagram, nodes, page));
+  },
+  decisionPropertiesPanel: async ({ diagram, nodes, page }, use) => {
+    await use(new DecisionPropertiesPanel(diagram, nodes, page));
+  },
+  decisionServicePropertiesPanel: async ({ diagram, nodes, page }, use) => {
+    await use(new DecisionServicePropertiesPanel(diagram, nodes, page));
+  },
+  diagramPropertiesPanel: async ({ diagram, nodes, page }, use) => {
+    await use(new DiagramPropertiesPanel(diagram, nodes, page));
+  },
+  groupPropertiesPanel: async ({ diagram, nodes, page }, use) => {
+    await use(new GroupPropertiesPanel(diagram, nodes, page));
+  },
+  knowledgeSourcePropertiesPanel: async ({ diagram, nodes, page }, use) => {
+    await use(new KnowledgeSourcePropertiesPanel(diagram, nodes, page));
+  },
+  inputDataPropertiesPanel: async ({ diagram, nodes, page }, use) => {
+    await use(new InputDataPropertiesPanel(diagram, nodes, page));
+  },
+  multipleNodesPropertiesPanel: async ({ diagram, nodes, page }, use) => {
+    await use(new MultipleNodesPropertiesPanel(diagram, nodes, page));
+  },
+  textAnnotationPropertiesPanel: async ({ diagram, nodes, page }, use) => {
+    await use(new TextAnnotationPropertiesPanel(diagram, nodes, page));
   },
 });
 

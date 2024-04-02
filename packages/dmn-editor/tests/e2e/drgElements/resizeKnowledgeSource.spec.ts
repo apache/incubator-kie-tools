@@ -25,17 +25,21 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Knowledge Source", () => {
-  test("should resize Knowledge Source node", async ({ palette, nodes, generalProperties }) => {
+  test("should resize Knowledge Source node", async ({ palette, nodes, knowledgeSourcePropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
 
     await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 50, yOffset: 50 });
 
-    await generalProperties.open();
-    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).width).toEqual(
-      "200"
-    );
-    await expect((await generalProperties.getNodeShape({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).height).toEqual(
-      "120"
-    );
+    await knowledgeSourcePropertiesPanel.open();
+    await expect(
+      (
+        await knowledgeSourcePropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })
+      ).width
+    ).toEqual("200");
+    await expect(
+      (
+        await knowledgeSourcePropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })
+      ).height
+    ).toEqual("120");
   });
 });

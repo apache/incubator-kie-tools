@@ -19,28 +19,28 @@
 
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
-export class DecisionProperties extends PropertiesPanelBase {
-  public async changeNodeQuestion(args: { nodeName: string; newQuestion: string }) {
+export class TextAnnotationProperties extends PropertiesPanelBase {
+  public async setFormat(args: { nodeName: string; newFormat: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
-    await this.panel().getByPlaceholder("Enter a question...").fill(args.newQuestion);
+    await this.panel().getByPlaceholder("Enter a text format...").fill(args.newFormat);
     // commit changes by click to the diagram
     await this.diagram.resetFocus();
   }
 
-  public async getNodeQuestion(args: { nodeName: string }) {
+  public async getNodeFormat(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
-    return await this.panel().getByPlaceholder("Enter a question...").inputValue();
+    return await this.panel().getByPlaceholder("Enter a text format...").inputValue();
   }
 
-  public async changeNodeAllowedAnswers(args: { nodeName: string; newAllowedAnswers: string }) {
+  public async setText(args: { nodeName: string; newText: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
-    await this.panel().getByPlaceholder("Enter allowed answers...").fill(args.newAllowedAnswers);
+    await this.panel().getByPlaceholder("Enter text...").fill(args.newText);
     // commit changes by click to the diagram
     await this.diagram.resetFocus();
   }
 
-  public async getNodeAllowedAnswers(args: { nodeName: string }) {
+  public async getNodeText(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
-    return await this.panel().getByPlaceholder("Enter allowed answers...").inputValue();
+    return await this.panel().getByPlaceholder("Enter text...").inputValue();
   }
 }

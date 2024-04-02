@@ -26,20 +26,21 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Change Properties - Decision", () => {
-  test.beforeEach(async ({ palette, nodes, propertiesPanel }) => {
+  test.beforeEach(async ({ palette, nodes, decisionPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
     await nodes.select({ name: DefaultNodeName.DECISION });
-    await propertiesPanel.open();
+    await decisionPropertiesPanel.open();
   });
 
-  test("should change the Decision node name", async ({ nodes, generalProperties }) => {
-    await generalProperties.changeNodeName({ from: DefaultNodeName.DECISION, to: "Renamed Decision" });
+  test("should change the Decision node name", async ({ nodes, decisionPropertiesPanel }) => {
+    await decisionPropertiesPanel.setName({ from: DefaultNodeName.DECISION, to: "Renamed Decision" });
 
     await expect(nodes.get({ name: "Renamed Decision" })).toBeVisible();
+    expect(await decisionPropertiesPanel.getName({ nodeName: "Renamed Decision" })).toBe("Renamed Decision");
   });
 
-  test("should change the Decision node data type", async ({ nodes, generalProperties }) => {
-    await generalProperties.changeNodeDataType({ nodeName: DefaultNodeName.DECISION, newDataType: DataType.Number });
+  test("should change the Decision node data type", async ({ nodes, decisionPropertiesPanel }) => {
+    await decisionPropertiesPanel.setDataType({ nodeName: DefaultNodeName.DECISION, newDataType: DataType.Number });
 
     await nodes.hover({ name: DefaultNodeName.DECISION });
     await expect(nodes.get({ name: DefaultNodeName.DECISION }).getByPlaceholder("Select a data type...")).toHaveValue(
@@ -47,59 +48,59 @@ test.describe("Change Properties - Decision", () => {
     );
   });
 
-  test("should change the Decision node description", async ({ generalProperties }) => {
-    await generalProperties.changeNodeDescription({
+  test("should change the Decision node description", async ({ decisionPropertiesPanel }) => {
+    await decisionPropertiesPanel.setDescription({
       nodeName: DefaultNodeName.DECISION,
       newDescription: "New Decision Description",
     });
 
-    expect(await generalProperties.getNodeDescription({ nodeName: DefaultNodeName.DECISION })).toBe(
+    expect(await decisionPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.DECISION })).toBe(
       "New Decision Description"
     );
   });
 
-  test("should change the Decision node question", async ({ decisionProperties }) => {
-    await decisionProperties.changeNodeQuestion({
+  test("should change the Decision node question", async ({ decisionPropertiesPanel }) => {
+    await decisionPropertiesPanel.setQuestion({
       nodeName: DefaultNodeName.DECISION,
       newQuestion: "New Decision Question",
     });
 
-    expect(await decisionProperties.getNodeQuestion({ nodeName: DefaultNodeName.DECISION })).toBe(
+    expect(await decisionPropertiesPanel.getNodeQuestion({ nodeName: DefaultNodeName.DECISION })).toBe(
       "New Decision Question"
     );
   });
 
-  test("should change the Decision node answers", async ({ decisionProperties }) => {
-    await decisionProperties.changeNodeAllowedAnswers({
+  test("should change the Decision node answers", async ({ decisionPropertiesPanel }) => {
+    await decisionPropertiesPanel.setAllowedAnswers({
       nodeName: DefaultNodeName.DECISION,
       newAllowedAnswers: "New Allowed Answers",
     });
 
-    expect(await decisionProperties.getNodeAllowedAnswers({ nodeName: DefaultNodeName.DECISION })).toBe(
+    expect(await decisionPropertiesPanel.getNodeAllowedAnswers({ nodeName: DefaultNodeName.DECISION })).toBe(
       "New Allowed Answers"
     );
   });
 
-  test("should change the Decision node documentation links", async ({ generalProperties }) => {
-    await generalProperties.addDocumentationLink({
+  test("should change the Decision node documentation links", async ({ decisionPropertiesPanel }) => {
+    await decisionPropertiesPanel.addDocumentationLink({
       nodeName: DefaultNodeName.DECISION,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await generalProperties.getDocumentationLinks({ nodeName: DefaultNodeName.DECISION });
+    const links = await decisionPropertiesPanel.getDocumentationLinks({ nodeName: DefaultNodeName.DECISION });
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveText("Link Text");
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Decision node font - family", async ({ generalProperties }) => {
-    await generalProperties.changeNodeFont({ nodeName: DefaultNodeName.DECISION, newFont: "Verdana" });
+  test("should change the Decision node font - family", async ({ decisionPropertiesPanel }) => {
+    await decisionPropertiesPanel.setFont({ nodeName: DefaultNodeName.DECISION, newFont: "Verdana" });
 
-    expect(await generalProperties.getNodeFont({ nodeName: DefaultNodeName.DECISION })).toBe("Verdana");
+    expect(await decisionPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.DECISION })).toBe("Verdana");
   });
 
-  test.skip("should change the Decision node shape - background color", async ({ nodes, propertiesPanel }) => {
+  test.skip("should change the Decision node shape - background color", async ({ nodes, decisionPropertiesPanel }) => {
     // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
   });
 });

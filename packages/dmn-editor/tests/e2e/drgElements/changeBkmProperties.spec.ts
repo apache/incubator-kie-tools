@@ -26,20 +26,21 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Change Properties - BKM", () => {
-  test.beforeEach(async ({ palette, nodes, propertiesPanel }) => {
+  test.beforeEach(async ({ palette, nodes, bkmPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
     await nodes.select({ name: DefaultNodeName.BKM });
-    await propertiesPanel.open();
+    await bkmPropertiesPanel.open();
   });
 
-  test("should change the BKM node name", async ({ nodes, generalProperties }) => {
-    await generalProperties.changeNodeName({ from: DefaultNodeName.BKM, to: "Renamed BKM" });
+  test("should change the BKM node name", async ({ nodes, bkmPropertiesPanel }) => {
+    await bkmPropertiesPanel.setName({ from: DefaultNodeName.BKM, to: "Renamed BKM" });
 
     await expect(nodes.get({ name: "Renamed BKM" })).toBeVisible();
+    expect(await bkmPropertiesPanel.getName({ nodeName: "Renamed BKM" })).toBe("Renamed BKM");
   });
 
-  test("should change the BKM node data type", async ({ nodes, generalProperties }) => {
-    await generalProperties.changeNodeDataType({ nodeName: DefaultNodeName.BKM, newDataType: DataType.Number });
+  test("should change the BKM node data type", async ({ nodes, bkmPropertiesPanel }) => {
+    await bkmPropertiesPanel.setDataType({ nodeName: DefaultNodeName.BKM, newDataType: DataType.Number });
 
     await nodes.hover({ name: DefaultNodeName.BKM });
     await expect(nodes.get({ name: DefaultNodeName.BKM }).getByPlaceholder("Select a data type...")).toHaveValue(
@@ -47,35 +48,35 @@ test.describe("Change Properties - BKM", () => {
     );
   });
 
-  test("should change the BKM node description", async ({ generalProperties }) => {
-    await generalProperties.changeNodeDescription({
+  test("should change the BKM node description", async ({ bkmPropertiesPanel }) => {
+    await bkmPropertiesPanel.setDescription({
       nodeName: DefaultNodeName.BKM,
       newDescription: "New BKM Description",
     });
 
-    expect(await generalProperties.getNodeDescription({ nodeName: DefaultNodeName.BKM })).toBe("New BKM Description");
+    expect(await bkmPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.BKM })).toBe("New BKM Description");
   });
 
-  test("should change the BKM node documentation links", async ({ generalProperties }) => {
-    await generalProperties.addDocumentationLink({
+  test("should change the BKM node documentation links", async ({ bkmPropertiesPanel }) => {
+    await bkmPropertiesPanel.addDocumentationLink({
       nodeName: DefaultNodeName.BKM,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await generalProperties.getDocumentationLinks({ nodeName: DefaultNodeName.BKM });
+    const links = await bkmPropertiesPanel.getDocumentationLinks({ nodeName: DefaultNodeName.BKM });
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveText("Link Text");
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the BKM node font - family", async ({ generalProperties }) => {
-    await generalProperties.changeNodeFont({ nodeName: DefaultNodeName.BKM, newFont: "Verdana" });
+  test("should change the BKM node font - family", async ({ bkmPropertiesPanel }) => {
+    await bkmPropertiesPanel.setFont({ nodeName: DefaultNodeName.BKM, newFont: "Verdana" });
 
-    expect(await generalProperties.getNodeFont({ nodeName: DefaultNodeName.BKM })).toBe("Verdana");
+    expect(await bkmPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.BKM })).toBe("Verdana");
   });
 
-  test.skip("should change the BKM node shape - background color", async ({ nodes, propertiesPanel }) => {
+  test.skip("should change the BKM node shape - background color", async ({ nodes, bkmPropertiesPanel }) => {
     // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
   });
 });
