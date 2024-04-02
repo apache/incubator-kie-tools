@@ -22,12 +22,13 @@ const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const { env: buildEnv } = require("./env");
+const { defaultEnvJson } = require("./build/defaultEnvJson");
 
 const BG_IMAGES_DIRNAME = "bgimages";
 
 module.exports = async (env) => {
-  const dataIndexURL = buildEnv.runtimeToolsTaskConsoleWebapp.kogitoDataIndexUrl;
   return merge(common(env), {
     entry: {
       app: path.resolve(__dirname, "src", "index.tsx"),
@@ -64,12 +65,20 @@ module.exports = async (env) => {
         KOGITO_APP_NAME: "Task Console",
         KOGITO_TASK_STATES_LIST: "Ready,Reserved,Completed,Aborted,Skipped",
         KOGITO_TASK_ACTIVE_STATES_LIST: "Ready,Reserved",
-        KOGITO_DATAINDEX_HTTP_URL: dataIndexURL,
       }),
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, "src", "index.html"),
         favicon: "src/favicon.ico",
         chunks: ["app"],
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: "./src/static/env.json",
+            to: "./env.json",
+            transform: () => JSON.stringify(defaultEnvJson, null, 2),
+          },
+        ],
       }),
     ],
     module: {

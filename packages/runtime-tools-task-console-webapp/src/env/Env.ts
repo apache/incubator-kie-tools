@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,23 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-// ***********************************************************
-// This example support/index.js is processed and
-// loaded automatically before your test files.
-//
-// This is a great place to put global configuration and
-// behavior that modifies Cypress.
-//
-// You can change the location of this file or turn off
-// automatically serving support files with the
-// 'supportFile' configuration option.
-//
-// You can read more here:
-// https://on.cypress.io/configuration
-// ***********************************************************
 
-// Import commands.js using ES2015 syntax:
-import "./commands";
+import { ENV_FILE_PATH } from "./EnvConstants";
+import { EnvJson } from "./EnvJson";
 
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
+export async function initEnv() {
+  return fetch(ENV_FILE_PATH)
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${ENV_FILE_PATH}: ${response.statusText}`);
+      }
+
+      const envJson = await response.json();
+      return (key: keyof EnvJson) => envJson[key];
+    })
+    .catch((e) => {
+      console.error(e);
+    });
+}

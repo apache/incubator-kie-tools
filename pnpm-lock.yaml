@@ -8731,6 +8731,9 @@ importers:
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
       "@kie-tools/runtime-tools-components":
         specifier: workspace:*
         version: link:../runtime-tools-components
@@ -8963,6 +8966,31 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
+
+  packages/runtime-tools-task-console-webapp-image:
+    dependencies:
+      "@kie-tools/image-env-to-json":
+        specifier: workspace:*
+        version: link:../image-env-to-json
+      "@kie-tools/runtime-tools-task-console-webapp":
+        specifier: workspace:*
+        version: link:../runtime-tools-task-console-webapp
+    devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      ts-json-schema-generator:
+        specifier: ^1.1.2
+        version: 1.1.2
 
   packages/runtime-tools-webapp-components:
     dependencies:
