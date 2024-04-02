@@ -19,9 +19,7 @@
 
 import { NodePosition } from "../nodes";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
-/**
- * Please use this fixture for manipulation with 'Decision Service' and 'Group' nodes
- */
+
 export class GroupPropertiesPanel extends PropertiesPanelBase {
   public async selectNodeByClickToAppropriatePosition(args: { nodeName: string }) {
     await this.nodes.select({ name: args.nodeName, position: NodePosition.TOP });
