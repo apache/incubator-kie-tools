@@ -40,8 +40,8 @@
     <quarkus.platform.version>${quarkus.platform.version}</quarkus.platform.version>
     <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
     <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
-    <kogito.bom.version>${version.org.kie.kogito}</kogito.bom.version>
-    <version.org.kie.kogito>999-SNAPSHOT</version.org.kie.kogito>
+    <kogito.bom.version>999-SNAPSHOT</kogito.bom.version>
+    <version.org.kie.kogito>${version.org.kie.kogito}</version.org.kie.kogito>
   </properties>
   <dependencyManagement>
     <dependencies>
