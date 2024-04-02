@@ -282,7 +282,7 @@ test.describe("Decision table context menu", () => {
       test("should open annotation column context menu and insert column right", async ({ page }) => {
         await page.getByRole("menuitem", { name: "Insert right" }).click();
         await expect(page.getByRole("columnheader", { name: "Annotations" })).toBeAttached();
-        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "Annotations-2" })).toBeAttached();
         await expect(page.getByRole("cell").nth(3)).toContainText("test");
         await expect(page.getByRole("cell")).toHaveCount(5);
       });
@@ -290,7 +290,7 @@ test.describe("Decision table context menu", () => {
       test("should open annotation column context menu and insert column left", async ({ page }) => {
         await page.getByRole("menuitem", { name: "Insert left" }).click();
         await expect(page.getByRole("columnheader", { name: "Annotations" })).toBeAttached();
-        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "Annotations-2" })).toBeAttached();
         await expect(page.getByRole("cell").nth(4)).toContainText("test");
         await expect(page.getByRole("cell")).toHaveCount(5);
       });
@@ -302,9 +302,9 @@ test.describe("Decision table context menu", () => {
         await page.getByRole("button", { name: "plus" }).click();
         await page.getByRole("button", { name: "Insert" }).click();
         await expect(page.getByRole("columnheader", { name: "Annotations" })).toBeAttached();
-        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
-        await expect(page.getByRole("columnheader", { name: "annotation-3" })).toBeAttached();
-        await expect(page.getByRole("columnheader", { name: "annotation-4" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "Annotations-2" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "Annotations-3" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "Annotations-4" })).toBeAttached();
         await expect(page.getByRole("cell")).toHaveCount(7);
       });
 
@@ -316,7 +316,7 @@ test.describe("Decision table context menu", () => {
         await page.getByLabel("Left").click();
         await page.getByRole("button", { name: "Insert" }).click();
         await expect(page.getByRole("columnheader", { name: "Annotations" })).toBeAttached();
-        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "Annotations-2" })).toBeAttached();
         await expect(page.getByRole("cell")).toHaveCount(5);
       });
 
@@ -325,14 +325,14 @@ test.describe("Decision table context menu", () => {
 
         await page.getByRole("menuitem", { name: "Insert left" }).click();
         await expect(page.getByRole("columnheader", { name: "Annotations" })).toBeAttached();
-        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "Annotations-2" })).toBeAttached();
         await expect(page.getByRole("cell").nth(4)).toContainText("test");
         await page.getByTestId("expression-container").getByText("Annotations").click({
           button: "right",
         });
         await page.getByRole("menuitem", { name: "Delete" }).click();
         await expect(page.getByRole("columnheader", { name: "Annotations" })).not.toBeAttached();
-        await expect(page.getByRole("columnheader", { name: "annotation-2" })).not.toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "Annotations-2" })).not.toBeAttached();
         await expect(page.getByRole("cell")).toHaveCount(5);
       });
     });
@@ -444,7 +444,7 @@ test.describe("Decision table context menu", () => {
           await page.getByRole("columnheader", { name: "Annotations" }).hover({ position: { x: 0, y: 0 } });
           await page.getByRole("row", { name: "Annotations" }).locator("svg").click();
           await expect(page.getByRole("columnheader", { name: "Annotations" })).toBeAttached();
-          await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "Annotations-2" })).toBeAttached();
           await expect(page.getByRole("cell").nth(4)).toContainText("test");
           await expect(page.getByRole("cell")).toHaveCount(5);
         });
@@ -453,7 +453,7 @@ test.describe("Decision table context menu", () => {
           await page.getByRole("columnheader", { name: "Annotations" }).hover();
           await page.getByRole("row", { name: "Annotations" }).locator("svg").click();
           await expect(page.getByRole("columnheader", { name: "Annotations" })).toBeAttached();
-          await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "Annotations-2" })).toBeAttached();
           await expect(page.getByRole("cell").nth(3)).toContainText("test");
           await expect(page.getByRole("cell")).toHaveCount(5);
         });

@@ -57,9 +57,15 @@ import { HIT_POLICIES_THAT_SUPPORT_AGGREGATION, HitPolicySelector } from "./HitP
 import _ from "lodash";
 import {
   DMN15__tBuiltinAggregator,
+  DMN15__tDecisionRule,
   DMN15__tHitPolicy,
+  DMN15__tInputClause,
+  DMN15__tOutputClause,
+  DMN15__tRuleAnnotation,
+  DMN15__tRuleAnnotationClause,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./DecisionTableExpression.css";
+import { Unpacked } from "../../tsExt/tsExt";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
@@ -73,25 +79,28 @@ export const DECISION_TABLE_INPUT_DEFAULT_VALUE = "-";
 export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
 export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
 
-function createInputEntry() {
+function createInputEntry(): Unpacked<DMN15__tDecisionRule["inputEntry"]> {
   return {
     "@_id": generateUuid(),
     text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE },
   };
 }
 
-function createOutputEntry() {
+function createOutputEntry(): Unpacked<DMN15__tDecisionRule["outputEntry"]> {
   return {
     "@_id": generateUuid(),
     text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
   };
 }
 
+function createAnnotationEntry(): Unpacked<DMN15__tDecisionRule["annotationEntry"]> {
+  return {
+    text: { __$$text: DECISION_TABLE_ANNOTATION_DEFAULT_VALUE },
+  };
+}
+
 export function DecisionTableExpression(
-  decisionTableExpression: BoxedDecisionTable & {
-    isNested: boolean;
-    parentElementId: string;
-  }
+  decisionTableExpression: BoxedDecisionTable & { isNested: boolean; parentElementId: string }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
@@ -346,7 +355,7 @@ export function DecisionTableExpression(
       })
     );
 
-    const outputSection = {
+    const outputGroup = {
       groupType: DecisionTableColumnType.OutputClause,
       id: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
       accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
@@ -380,7 +389,7 @@ export function DecisionTableExpression(
     if (outputColumns.length == 1) {
       return [...inputColumns, ...outputColumns, ...annotationColumns];
     } else {
-      return [...inputColumns, outputSection, ...annotationColumns];
+      return [...inputColumns, outputGroup, ...annotationColumns];
     }
   }, [
     expressionHolderId,
@@ -665,7 +674,7 @@ export function DecisionTableExpression(
     [setExpression]
   );
 
-  const getSectionIndexForGroupType = useCallback(
+  const getLocalIndexInsideGroupType = useCallback(
     (columnIndex: number, groupType: DecisionTableColumnType) => {
       switch (groupType) {
         case DecisionTableColumnType.InputClause:
@@ -690,143 +699,123 @@ export function DecisionTableExpression(
         throw new Error("Column without groupType for Decision table.");
       }
 
-      const sectionIndex = getSectionIndexForGroupType(args.beforeIndex, groupType);
+      const localIndexInsideGroup = getLocalIndexInsideGroupType(args.beforeIndex, groupType);
 
       setExpression((prev: BoxedDecisionTable) => {
-        const newRules = [...(prev.rule ?? [])];
+        const nextRows = [...(prev.rule ?? [])];
 
         switch (groupType) {
           case DecisionTableColumnType.InputClause:
-            const newInputClauses = [];
+            const inputColumnsToAdd: DMN15__tInputClause[] = [];
 
-            const currentNames = prev.input?.map((c) => c.inputExpression.text?.__$$text ?? "") ?? [];
-
+            const currentInputNames = prev.input?.map((c) => c.inputExpression.text?.__$$text ?? "") ?? [];
             for (let i = 0; i < args.columnsCount; i++) {
-              const name = getNextAvailablePrefixedName(currentNames, "Input");
-              currentNames.push(name);
+              const newName = getNextAvailablePrefixedName(currentInputNames, "Input");
+              currentInputNames.push(newName);
 
-              newInputClauses.push({
+              inputColumnsToAdd.push({
                 "@_id": generateUuid(),
                 inputExpression: {
                   "@_id": generateUuid(),
                   "@_typeRef": DmnBuiltInDataType.Undefined,
-                  text: { __$$text: name },
+                  text: { __$$text: newName },
                 },
               });
             }
 
-            const newInputs = [...(prev.input ?? [])];
-
-            for (const newEntry of newInputClauses) {
-              newInputs.splice(args.beforeIndex, 0, newEntry);
+            const nextInputColumns = [...(prev.input ?? [])];
+            for (/* Add new columns */ let i = 0; i < inputColumnsToAdd.length; i++) {
+              nextInputColumns.splice(localIndexInsideGroup + i, 0, inputColumnsToAdd[i]);
             }
 
-            for (let i = 0; i < newRules.length; i++) {
-              const r = newRules[i];
-              const newInputEntries = [...(r.inputEntry ?? [])];
-              for (let j = 0; j < args.columnsCount; j++) {
-                const inputEntry = createInputEntry();
-                newInputEntries.splice(sectionIndex, 0, inputEntry);
+            for (/* Add new cells to each row */ let i = 0; i < nextRows.length; i++) {
+              const row = nextRows[i];
+              const nextInputEntries = [...(row.inputEntry ?? [])];
+
+              for (/* Add new cells to row */ let j = 0; j < args.columnsCount; j++) {
+                nextInputEntries.splice(localIndexInsideGroup + j, 0, createInputEntry());
               }
-              newRules[i] = {
-                ...r,
-                inputEntry: newInputEntries,
-              };
+              nextRows[i] = { ...row, inputEntry: nextInputEntries };
             }
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const retInput: BoxedDecisionTable = {
               ...prev,
-              input: newInputs,
-              rule: newRules,
+              input: nextInputColumns,
+              rule: nextRows,
             };
 
             return retInput;
 
           case DecisionTableColumnType.OutputClause:
-            const newOutputClauses = [];
-            const currentOutputNames = prev.output?.map((c) => c["@_name"] ?? "") ?? [];
+            const outputColumnsToAdd: DMN15__tOutputClause[] = [];
 
+            const currentOutputColumnNames = prev.output?.map((c) => c["@_name"] ?? "") ?? [];
             for (let i = 0; i < args.columnsCount; i++) {
-              const name = getNextAvailablePrefixedName(currentOutputNames, "Output");
-              currentOutputNames.push(name);
-
-              newOutputClauses.push({
+              const name = getNextAvailablePrefixedName(currentOutputColumnNames, "Output");
+              currentOutputColumnNames.push(name);
+              outputColumnsToAdd.push({
                 "@_id": generateUuid(),
                 "@_name": name,
                 "@_typeRef": DmnBuiltInDataType.Undefined,
               });
             }
 
-            const newOutputs = [...(prev.output ?? [])];
-
-            for (const newEntry of newOutputClauses) {
-              newOutputs.splice(args.beforeIndex, 0, newEntry);
+            const nextOutputColumns = [...(prev.output ?? [])];
+            for (/* Add new columns */ let i = 0; i < outputColumnsToAdd.length; i++) {
+              nextOutputColumns.splice(localIndexInsideGroup + i, 0, outputColumnsToAdd[i]);
             }
 
-            for (let i = 0; i < newRules.length; i++) {
-              const r = newRules[i];
-              const newOutputEntries = [...(r.outputEntry ?? [])];
-              for (let j = 0; j < args.columnsCount; j++) {
-                const outputEntry = createOutputEntry();
+            for (/* Add new cells to each row */ let i = 0; i < nextRows.length; i++) {
+              const row = nextRows[i];
+              const nextOutputEntries = [...(row.outputEntry ?? [])];
 
-                newOutputEntries.splice(sectionIndex, 0, outputEntry);
+              for (/* Add new cells to row */ let j = 0; j < args.columnsCount; j++) {
+                nextOutputEntries.splice(localIndexInsideGroup + j, 0, createOutputEntry());
               }
 
-              newRules[i] = {
-                ...r,
-                outputEntry: newOutputEntries,
-              };
+              nextRows[i] = { ...row, outputEntry: nextOutputEntries };
             }
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const retOutput: BoxedDecisionTable = {
               ...prev,
-              output: newOutputs,
-              rule: newRules,
+              output: nextOutputColumns,
+              rule: nextRows,
             };
 
             return retOutput;
 
           case DecisionTableColumnType.Annotation:
-            const newAnnotations = [...(prev.annotation ?? [])];
-            const newAnnotationsItems = [];
-            const currentAnnotationNames = prev.annotation?.map((c) => c["@_name"] ?? "") ?? [];
+            const annotationColumsnToAdd: DMN15__tRuleAnnotationClause[] = [];
 
+            const currentAnnotationColumnNames = prev.annotation?.map((c) => c["@_name"] ?? "") ?? [];
             for (let i = 0; i < args.columnsCount; i++) {
-              const name = getNextAvailablePrefixedName(currentAnnotationNames, DecisionTableColumnType.Annotation);
-              currentAnnotationNames.push(name);
-
-              newAnnotationsItems.push({
-                "@_name": name,
-              });
+              const newName = getNextAvailablePrefixedName(currentAnnotationColumnNames, "Annotations");
+              currentAnnotationColumnNames.push(newName);
+              annotationColumsnToAdd.push({ "@_name": newName });
             }
 
-            for (const newEntry of newAnnotationsItems) {
-              newAnnotations.splice(args.beforeIndex, 0, newEntry);
+            const nextAnnotationColumns = [...(prev.annotation ?? [])];
+            for (/* Add new columns */ let i = 0; i < annotationColumsnToAdd.length; i++) {
+              nextAnnotationColumns.splice(localIndexInsideGroup + i, 0, annotationColumsnToAdd[i]);
             }
 
-            for (let i = 0; i < newRules.length; i++) {
-              const r = newRules[i];
-              const newAnnotationEntries = [...(r.annotationEntry ?? [])];
-              for (let j = 0; j < args.columnsCount; j++) {
-                const newEntry = {
-                  text: { __$$text: DECISION_TABLE_ANNOTATION_DEFAULT_VALUE },
-                };
+            for (/* Add new cells to each row */ let i = 0; i < nextRows.length; i++) {
+              const row = nextRows[i];
+              const nextAnnotationEntries = [...(row.annotationEntry ?? [])];
 
-                newAnnotationEntries.splice(sectionIndex, 0, newEntry);
+              for (/* Add new cells to row */ let j = 0; j < args.columnsCount; j++) {
+                nextAnnotationEntries.splice(localIndexInsideGroup + j, 0, createAnnotationEntry());
               }
-              newRules[i] = {
-                ...r,
-                annotationEntry: newAnnotationEntries,
-              };
+              nextRows[i] = { ...row, annotationEntry: nextAnnotationEntries };
             }
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const retAnnotation: BoxedDecisionTable = {
               ...prev,
-              annotation: newAnnotations,
-              rule: newRules,
+              annotation: nextAnnotationColumns,
+              rule: nextRows,
             };
 
             return retAnnotation;
@@ -845,15 +834,17 @@ export function DecisionTableExpression(
             ? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH
             : DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH;
 
-        const newValues = [...prev];
+        const nextValues = [...prev];
+        const minValuesLength = args.beforeIndex + 1 + args.columnsCount;
+        nextValues.push(...Array(Math.max(0, minValuesLength - nextValues.length)));
         for (let i = 0; i < args.columnsCount; i++) {
-          newValues.splice(args.beforeIndex + 1, 0, defaultWidth); // + 1 to account for rowIndex column
+          const widthIndex = args.beforeIndex + i + 1; // + 1 to account for the rowIndex column.
+          nextValues.splice(widthIndex, 0, defaultWidth);
         }
-
-        newMap.set(id, newValues);
+        newMap.set(id, nextValues);
       });
     },
-    [getSectionIndexForGroupType, setExpression, setWidthsById, id]
+    [getLocalIndexInsideGroupType, setExpression, setWidthsById, id]
   );
 
   const onColumnDeleted = useCallback(
@@ -864,12 +855,12 @@ export function DecisionTableExpression(
           throw new Error("Column without groupType for Decision table.");
         }
 
-        const sectionIndex = getSectionIndexForGroupType(args.columnIndex, groupType);
+        const localIndexInsideGroup = getLocalIndexInsideGroupType(args.columnIndex, groupType);
 
         switch (groupType) {
           case DecisionTableColumnType.InputClause:
             const newInputs = [...(prev.input ?? [])];
-            newInputs.splice(sectionIndex, 1);
+            newInputs.splice(localIndexInsideGroup, 1);
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const retInput: BoxedDecisionTable = {
@@ -877,7 +868,7 @@ export function DecisionTableExpression(
               input: newInputs,
               rule: [...(prev.rule ?? [])].map((rule) => {
                 const newInputEntry = [...(rule.inputEntry ?? [])];
-                newInputEntry.splice(sectionIndex, 1);
+                newInputEntry.splice(localIndexInsideGroup, 1);
                 return {
                   ...rule,
                   inputEntry: newInputEntry,
@@ -887,7 +878,7 @@ export function DecisionTableExpression(
             return retInput;
           case DecisionTableColumnType.OutputClause:
             const newOutputs = [...(prev.output ?? [])];
-            newOutputs.splice(sectionIndex, 1);
+            newOutputs.splice(localIndexInsideGroup, 1);
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const retOutput: BoxedDecisionTable = {
@@ -895,7 +886,7 @@ export function DecisionTableExpression(
               output: newOutputs,
               rule: [...(prev.rule ?? [])].map((rule) => {
                 const newOutputEntry = [...rule.outputEntry];
-                newOutputEntry.splice(sectionIndex, 1);
+                newOutputEntry.splice(localIndexInsideGroup, 1);
                 return {
                   ...rule,
                   outputEntry: newOutputEntry,
@@ -906,7 +897,7 @@ export function DecisionTableExpression(
             return retOutput;
           case DecisionTableColumnType.Annotation:
             const newAnnotations = [...(prev.annotation ?? [])];
-            newAnnotations.splice(sectionIndex, 1);
+            newAnnotations.splice(localIndexInsideGroup, 1);
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const retAnnotation: BoxedDecisionTable = {
@@ -914,7 +905,7 @@ export function DecisionTableExpression(
               annotation: newAnnotations,
               rule: [...(prev.rule ?? [])].map((rule) => {
                 const newAnnotationEntry = [...(rule.annotationEntry ?? [])];
-                newAnnotationEntry.splice(sectionIndex, 1);
+                newAnnotationEntry.splice(localIndexInsideGroup, 1);
                 return {
                   ...rule,
                   annotationEntry: newAnnotationEntry,
@@ -934,7 +925,7 @@ export function DecisionTableExpression(
         newMap.set(id, newValues);
       });
     },
-    [getSectionIndexForGroupType, id, setExpression, setWidthsById]
+    [getLocalIndexInsideGroupType, id, setExpression, setWidthsById]
   );
 
   const onRowDeleted = useCallback(
