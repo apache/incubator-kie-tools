@@ -65,7 +65,7 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-predictions</artifactId>
-      <version>999-20240225-SNAPSHOT</version>
+      <version>${version.org.kie.kogito}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
