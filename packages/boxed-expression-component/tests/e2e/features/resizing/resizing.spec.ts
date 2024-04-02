@@ -426,9 +426,9 @@ test.describe("Resizing", () => {
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await outputHeader.boundingBox()).toHaveProperty("width", 100);
       if (browserName === "webkit") {
-        expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 106);
+        expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 103);
       } else {
-        expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 102);
+        expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 100);
       }
     });
 

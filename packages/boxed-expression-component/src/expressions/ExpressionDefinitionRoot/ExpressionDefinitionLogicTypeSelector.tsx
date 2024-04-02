@@ -52,6 +52,7 @@ import {
 } from "../../clipboard/clipboard";
 import { findAllIdsDeep, mutateExpressionRandomizingIds } from "../../ids/ids";
 import "./ExpressionDefinitionLogicTypeSelector.css";
+import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -418,6 +419,11 @@ export function ExpressionDefinitionLogicTypeSelector({
                   data-testid={"logic-type-selected-header"}
                   isPlain={true}
                   isOpen={isDropdownOpen}
+                  onKeyDown={(e) => {
+                    if (NavigationKeysUtils.isEsc(e.key)) {
+                      setDropdownOpen(false);
+                    }
+                  }}
                   toggle={
                     <DropdownToggle
                       data-testid={"logic-type-button-test-id"}
@@ -508,6 +514,11 @@ export function ExpressionDefinitionLogicTypeSelector({
             left: resetContextMenuXPos,
             opacity: 1,
             minWidth: "150px",
+          }}
+          onKeyDown={(e) => {
+            if (NavigationKeysUtils.isEsc(e.key)) {
+              setDropdownOpen(false);
+            }
           }}
         >
           <Menu className="table-context-menu">
