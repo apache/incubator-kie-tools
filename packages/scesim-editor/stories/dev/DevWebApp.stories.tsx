@@ -81,23 +81,29 @@ function DevWebApp(props: DevWebAppProps) {
   }, []);
 
   const reset = useCallback(() => {
-    ref.current?.setContent("Untitled.scesim", "");
+    const marshaller = getMarshaller(emptySceSim);
+    setState({
+      marshaller,
+      stack: [marshaller.parser.parse()],
+      pointer: 0,
+    });
   }, []);
 
-  const copyAsXml = useCallback(() => {
-    navigator.clipboard.writeText(ref.current?.getContent() || "");
-  }, []);
+  const currentModel = state.stack[state.pointer];
 
   const downloadRef = useRef<HTMLAnchorElement>(null);
-
   const downloadAsXml = useCallback(() => {
     if (downloadRef.current) {
-      const fileBlob = new Blob([ref.current?.getContent() || ""], { type: "text/xml" });
+      const fileBlob = new Blob([state.marshaller.builder.build(currentModel)], { type: "text/xml" });
       downloadRef.current.download = `scesim-${makeid(10)}.scesim`;
       downloadRef.current.href = URL.createObjectURL(fileBlob);
       downloadRef.current.click();
     }
-  }, []);
+  }, [currentModel, state.marshaller.builder]);
+
+  const copyAsXml = useCallback(() => {
+    navigator.clipboard.writeText(state.marshaller.builder.build(currentModel));
+  }, [currentModel, state.marshaller.builder]);
 
   useEffect(() => {
     updateArgs({ content: state.marshaller.builder.build(state.stack[state.stack.length - 1]) });
