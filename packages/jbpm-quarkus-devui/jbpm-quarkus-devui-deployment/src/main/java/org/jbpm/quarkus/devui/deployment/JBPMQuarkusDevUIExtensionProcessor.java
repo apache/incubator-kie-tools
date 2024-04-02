@@ -21,7 +21,7 @@ package org.jbpm.quarkus.devui.deployment;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 
-class RuntimeToolsQuarkusExtensionProcessor {
+class JBPMQuarkusDevUIExtensionProcessor {
 
     private static final String FEATURE = "jbpm-quarkus-devui";
 

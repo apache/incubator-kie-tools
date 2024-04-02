@@ -37,4 +37,5 @@ metadata:
     - "business-automation"
   status: "preview"
   config:
+    - "jbpm.devui."
     - "kogito."
