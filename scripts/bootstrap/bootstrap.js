@@ -54,6 +54,6 @@ console.info("\n\n[bootstrap] Checking packages dependencies...");
 execSync(`node ${require.resolve("./check_packages_dependencies.js")}`, execOpts);
 
 console.info("\n\n[bootstrap] Formatting pnpm-lock.yaml...");
-execSync(`pnpm pretty-quick`, execOpts);
+execSync(`pnpm pretty-quick --pattern pnpm-lock.yaml`, execOpts);
 
 console.info("\n\n[bootstrap] Done.");
