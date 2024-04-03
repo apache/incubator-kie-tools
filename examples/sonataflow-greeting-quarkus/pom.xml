@@ -28,9 +28,9 @@
 
   <parent>
     <groupId>org.apache.kie.examples</groupId>
-    <artifactId>kie-tools-examples-parent</artifactId>
+    <artifactId>quarkus-examples-maven-parent</artifactId>
     <version>${revision}</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>../quarkus-examples-maven-parent/pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.kie.sonataflow.examples</groupId>
@@ -39,37 +39,7 @@
 
   <name>KIE Tools Example :: SonataFlow Greeting :: Quarkus</name>
   <description>SonataFlow Example - Quarkus</description>
-  <properties>
-    <quarkus-plugin.version>${quarkus.platform.version}</quarkus-plugin.version>
-    <quarkus.platform.version>${quarkus.platform.version}</quarkus.platform.version>
-    <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-    <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
-    <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
-    <kogito.bom.version>999-SNAPSHOT</kogito.bom.version>
-    <maven.compiler.release>17</maven.compiler.release>
-    <version.compiler.plugin>3.12.1</version.compiler.plugin>
-    <version.failsafe.plugin>3.0.0-M7</version.failsafe.plugin>
-  </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>${quarkus.platform.group-id}</groupId>
-        <artifactId>${quarkus.platform.artifact-id}</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>${kogito.bom.group-id}</groupId>
-        <artifactId>${kogito.bom.artifact-id}</artifactId>
-        <version>${kogito.bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
