@@ -444,7 +444,7 @@ test.describe("Decision table context menu", () => {
           await page
             .getByRole("columnheader", { name: "Annotations", exact: true })
             .hover({ position: { x: 0, y: 0 } });
-          await page.getByRole("row", { name: "Annotations", exact: true }).locator("svg").click();
+          await page.getByRole("columnheader", { name: "Annotations", exact: true }).locator("svg").click();
           await expect(page.getByRole("columnheader", { name: "Annotations", exact: true })).toBeAttached();
           await expect(page.getByRole("columnheader", { name: "Annotations-2", exact: true })).toBeAttached();
           await expect(page.getByRole("cell").nth(4)).toContainText("test");
@@ -453,7 +453,7 @@ test.describe("Decision table context menu", () => {
 
         test("should add column right by positioning mouse on the header cell right section", async ({ page }) => {
           await page.getByRole("columnheader", { name: "Annotations", exact: true }).hover();
-          await page.getByRole("row", { name: "Annotations", exact: true }).locator("svg").click();
+          await page.getByRole("columnheader", { name: "Annotations", exact: true }).locator("svg").click();
           await expect(page.getByRole("columnheader", { name: "Annotations", exact: true })).toBeAttached();
           await expect(page.getByRole("columnheader", { name: "Annotations-2", exact: true })).toBeAttached();
           await expect(page.getByRole("cell").nth(3)).toContainText("test");

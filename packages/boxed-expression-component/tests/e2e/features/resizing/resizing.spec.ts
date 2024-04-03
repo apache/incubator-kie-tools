@@ -374,8 +374,8 @@ test.describe("Resizing", () => {
         expect(await output2.boundingBox()).toHaveProperty("width", 163);
       } else {
         expect(await header.boundingBox()).toHaveProperty("width", 315);
-        expect(await output1.boundingBox()).toHaveProperty("width", 158);
-        expect(await output2.boundingBox()).toHaveProperty("width", 157);
+        expect(await output1.boundingBox()).toHaveProperty("width", 157);
+        expect(await output2.boundingBox()).toHaveProperty("width", 158);
       }
       expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 240);
     });
