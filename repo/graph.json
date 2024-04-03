@@ -324,6 +324,7 @@
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/playwright-base", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/storybook-base", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/storybook-base", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/storybook-base", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools-core/monaco-editor", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/monaco-editor", "target": "@kie-tools/root-env", "weight": 1 },

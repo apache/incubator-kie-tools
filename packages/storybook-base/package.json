@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@storybook/addon-controls": "^7.3.2",
