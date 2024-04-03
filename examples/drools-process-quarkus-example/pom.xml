@@ -31,7 +31,7 @@
     <version>${revision}</version>
     <relativePath>../quarkus-examples-maven-parent/pom.xml</relativePath>
   </parent>
-  <artifactId>process-quarkus-example</artifactId>
+  <artifactId>drools-process-quarkus-example</artifactId>
   <name>Kie-Tools Example :: Process and Quarkus</name>
   <description>Order management service</description>
   <dependencies>
