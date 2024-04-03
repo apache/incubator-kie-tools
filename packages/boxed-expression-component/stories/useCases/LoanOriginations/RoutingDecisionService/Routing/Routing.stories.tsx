@@ -82,34 +82,34 @@ const routingExpression: BoxedContext = {
         input: [
           {
             "@_id": "_DAD2F39A-E70B-4AE5-8AFF-89461DC1246E",
-            "@_label": "Bankrupt",
             inputExpression: {
               "@_id": "_7B05037C-CEE6-4251-966F-A12400E33A2D",
               "@_typeRef": DmnBuiltInDataType.Boolean,
+              text: { __$$text: "Bankrupt" },
             },
           },
           {
             "@_id": "_11B12DF2-1166-4F75-8E74-7A5EC2DCB24F",
-            "@_label": "Credit Score",
             inputExpression: {
               "@_id": "_0CD5692B-310A-49B5-AD80-53FF445DCBD8",
               "@_typeRef": DmnBuiltInDataType.Number,
+              text: { __$$text: "Credit Score" },
             },
           },
           {
             "@_id": "_4FBA1BD8-2EB8-4C93-A5C0-5063D7FE1C6D",
-            "@_label": "Post-bureau affordability",
             inputExpression: {
               "@_id": "_FC11FEC8-9198-4A4D-8652-33DB6B60E56D",
               "@_typeRef": DmnBuiltInDataType.Boolean,
+              text: { __$$text: "Post-bureau affordability" },
             },
           },
           {
             "@_id": "_1143D53B-53A1-47FE-8E2F-5E8CBFABEF9E",
-            "@_label": "Post-bureau risk category",
             inputExpression: {
               "@_id": "_0359F8EA-EB69-4F48-96D6-8448D9A928C2",
               "@_typeRef": "t.BureauRiskCategory",
+              text: { __$$text: "Post-bureau risk category" },
             },
           },
         ],

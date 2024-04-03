@@ -104,11 +104,10 @@ export const affordabilityCalculationExpression: BoxedFunction = {
           input: [
             {
               "@_id": "_7283628F-FDB6-4DEC-95D4-B7678B86DCAA",
-              "@_label": "Risk Category",
-
               inputExpression: {
                 "@_typeRef": "t.BureauRiskCategory",
                 "@_id": "_0BDDD624-2B0C-4E90-8B90-5C43DA87E5F8",
+                text: { __$$text: "Risk Category" },
               },
             },
           ],

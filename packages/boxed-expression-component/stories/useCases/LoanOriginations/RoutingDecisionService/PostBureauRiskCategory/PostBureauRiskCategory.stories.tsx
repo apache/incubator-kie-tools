@@ -77,30 +77,30 @@ export const postBureauRiskCategoryExpression: BoxedContext = {
         __$$element: "decisionTable",
         "@_id": "_E26346D5-7A7C-44A2-8EF2-D79CECB257FF",
         "@_label": "Result Expression",
-        "@_typeRef": "UNIQUE",
+        "@_typeRef": "t.BureauRiskCategory",
         input: [
           {
             "@_id": "_1906CFD2-703A-4E1E-A352-51F2445FD057",
-            "@_label": "Existing Customer",
             inputExpression: {
               "@_typeRef": DmnBuiltInDataType.Boolean,
               "@_id": "_19E2A18A-57C5-473F-BCA9-79D1D4E4D9CE",
+              text: { __$$text: "Existing Customer" },
             },
           },
           {
             "@_id": "_EDC6FAAA-A509-41CF-9CE6-9B263C9297A9",
-            "@_label": "Application risk score",
             inputExpression: {
               "@_typeRef": DmnBuiltInDataType.Number,
               "@_id": "_9A98108B-7397-446B-AD37-CB00C2914548",
+              text: { __$$text: "Application risk score" },
             },
           },
           {
             "@_id": "_F2749D32-7BCD-4AC1-89CF-3FBF63BB3542",
-            "@_label": "Credit Score",
             inputExpression: {
               "@_typeRef": DmnBuiltInDataType.Number,
               "@_id": "_CF09CF88-A176-471F-ACD8-346E8444B836",
+              text: { __$$text: "Credit Score" },
             },
           },
         ],
@@ -110,6 +110,7 @@ export const postBureauRiskCategoryExpression: BoxedContext = {
             "@_name": "Result Expression",
           },
         ],
+        annotation: [{ "@_name": "Annotations" }],
         rule: [
           {
             "@_id": "_B3B7B02B-AFDC-4B5E-882C-1126140F6261",

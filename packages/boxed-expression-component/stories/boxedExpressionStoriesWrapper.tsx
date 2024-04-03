@@ -72,10 +72,11 @@ export const dataTypes = [
 
 export const beeGwtService: BeeGwtService = {
   getDefaultExpressionDefinition(logicType: BoxedExpression["__$$element"] | undefined, dataType: string) {
-    const expression = getDefaultBoxedExpressionForStories(logicType, dataType);
+    const widthsById = new Map();
+    const expression = getDefaultBoxedExpressionForStories({ logicType, typeRef: dataType, widthsById });
     return {
-      expression: expression,
-      widthsById: new Map(),
+      expression,
+      widthsById,
     };
   },
   openDataTypePage(): void {},
@@ -157,7 +158,8 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
       ref={emptyRef}
       onKeyDown={(e) => {
         // Prevent keys from propagating to Storybook
-        return e.stopPropagation();
+        console.log("wrapper stopped");
+        // return e.stopPropagation();
       }}
     >
       <BoxedExpressionEditor

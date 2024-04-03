@@ -43,36 +43,31 @@ export const eligibilityExpression: BoxedDecisionTable = {
   "@_id": "_830C9FEF-FA57-4245-8FFF-1E7F305F4536",
   "@_label": "Eligibility",
   "@_typeRef": "t.Eligibility",
-
   "@_hitPolicy": "FIRST",
-
   annotation: [{ "@_name": "Annotations" }],
   input: [
     {
       "@_id": "_60976225-DA1D-4C7E-A910-E341D763C218",
-      "@_label": "Applicant data.Age",
-
       inputExpression: {
         "@_typeRef": DmnBuiltInDataType.Number,
         "@_id": "_7F37D542-44A4-41CF-8FB1-A28846FB9733",
+        text: { __$$text: "Applicant data.Age" },
       },
     },
     {
       "@_id": "_82E34039-BBE7-46C8-91BF-B2BB0E8EE905",
-      "@_label": "Pre-bureau affordabillity",
-
       inputExpression: {
         "@_typeRef": DmnBuiltInDataType.Boolean,
         "@_id": "_8037BDB5-E08B-4E4B-8BFB-86ECBB0C8E19",
+        text: { __$$text: "Pre-bureau affordabillity" },
       },
     },
     {
       "@_id": "_1D329E96-6CF6-46DD-A9EA-3478C5F39704",
-      "@_label": "Pre-bureau risk category",
-
       inputExpression: {
         "@_typeRef": "t.BureauRiskCategory",
         "@_id": "_335DFCA2-2C76-4D72-9534-DF3F1453F405",
+        text: { __$$text: "Pre-bureau risk category" },
       },
     },
   ],

@@ -18,6 +18,11 @@
  */
 
 import {
+  DMN15__tContextEntry,
+  DMN15__tItemDefinition,
+  DMN15__tOutputClause,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
   BoxedContext,
   BoxedDecisionTable,
   BoxedExpression,
@@ -27,6 +32,7 @@ import {
   BoxedList,
   BoxedLiteral,
   BoxedRelation,
+  DmnBuiltInDataType,
   generateUuid,
 } from "../src/api";
 import {
@@ -37,30 +43,53 @@ import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
 } from "../src/expressions/InvocationExpression/InvocationExpression";
+import {
+  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+  DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+  DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+  DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+  LITERAL_EXPRESSION_MIN_WIDTH,
+  RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+} from "../src/resizing/WidthConstants";
+import { RELATION_EXPRESSION_DEFAULT_VALUE } from "../src/expressions/RelationExpression/RelationExpression";
 
-export function getDefaultBoxedExpressionForStories(
-  logicType: BoxedExpression["__$$element"] | undefined,
-  typeRef: string
-): BoxedExpression {
-  if (!logicType) {
-    return undefined!;
-  }
+export function isStruct(itemDefinition: DMN15__tItemDefinition) {
+  return !itemDefinition.typeRef && !!itemDefinition.itemComponent;
+}
+
+export function getDefaultBoxedExpressionForStories({
+  logicType,
+  typeRef,
+  widthsById,
+}: {
+  logicType: BoxedExpression["__$$element"] | undefined;
+  typeRef: string;
+  widthsById: Map<string, number[]>;
+}): BoxedExpression {
   if (logicType === "literalExpression") {
     const literalExpression: BoxedLiteral = {
       __$$element: "literalExpression",
-      "@_typeRef": typeRef,
       "@_id": generateUuid(),
+      "@_typeRef": typeRef,
     };
+
+    widthsById.set(literalExpression["@_id"]!, [LITERAL_EXPRESSION_MIN_WIDTH]);
     return literalExpression;
-  } else if (logicType === "functionDefinition") {
+  }
+  //
+  else if (logicType === "functionDefinition") {
     const functionExpression: BoxedFunction = {
       __$$element: "functionDefinition",
-      "@_typeRef": typeRef,
       "@_id": generateUuid(),
-      "@_kind": BoxedFunctionKind.Feel,
+      "@_typeRef": typeRef,
+      "@_kind": "FEEL",
+      expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
     };
     return functionExpression;
-  } else if (logicType === "context") {
+  }
+  //
+  else if (logicType === "context") {
     const contextExpression: BoxedContext = {
       __$$element: "context",
       "@_typeRef": typeRef,
@@ -75,13 +104,17 @@ export function getDefaultBoxedExpressionForStories(
         },
       ],
     };
+
+    widthsById.set(contextExpression["@_id"]!, [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH]);
     return contextExpression;
   } else if (logicType === "list") {
     const listExpression: BoxedList = {
       __$$element: "list",
-      "@_typeRef": typeRef,
       "@_id": generateUuid(),
-      expression: [undefined!], // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      "@_typeRef": typeRef,
+      expression: [
+        undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      ],
     };
     return listExpression;
   } else if (logicType === "invocation") {
@@ -100,51 +133,80 @@ export function getDefaultBoxedExpressionForStories(
         },
       ],
       expression: {
-        "@_id": generateUuid(),
         __$$element: "literalExpression",
-        text: { __$$text: "FUNCTION" },
+        "@_id": generateUuid(),
+        text: { __$$text: "FUNCTION NAME" },
       },
     };
+    widthsById.set(invocationExpression["@_id"]!, [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH]);
     return invocationExpression;
   } else if (logicType === "relation") {
     const relationExpression: BoxedRelation = {
       __$$element: "relation",
-      "@_typeRef": typeRef,
       "@_id": generateUuid(),
+      "@_typeRef": typeRef,
+      row: [
+        {
+          "@_id": generateUuid(),
+          expression: [
+            {
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: RELATION_EXPRESSION_DEFAULT_VALUE },
+            },
+          ],
+        },
+      ],
       column: [
         {
           "@_id": generateUuid(),
           "@_name": "column-1",
-        },
-      ],
-      row: [
-        {
-          "@_id": generateUuid(),
+          "@_typeRef": DmnBuiltInDataType.Undefined,
         },
       ],
     };
+
+    widthsById.set(relationExpression["@_id"]!, [
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+      RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
+    ]);
     return relationExpression;
   } else if (logicType === "decisionTable") {
+    const singleOutputColumn = {
+      name: "output-1",
+      typeRef: DmnBuiltInDataType.Undefined,
+    };
+    const singleInputColumn = {
+      name: "input-1",
+      typeRef: DmnBuiltInDataType.Undefined,
+    };
+
+    const input = [
+      {
+        "@_id": generateUuid(),
+        inputExpression: {
+          "@_id": generateUuid(),
+          text: { __$$text: singleInputColumn.name },
+          "@_typeRef": singleInputColumn.typeRef ?? DmnBuiltInDataType.Undefined,
+        },
+      },
+    ];
+
+    const output: DMN15__tOutputClause[] = [
+      {
+        "@_id": generateUuid(),
+        "@_name": singleOutputColumn.name,
+        "@_typeRef": singleOutputColumn.typeRef,
+      },
+    ];
+
     const decisionTableExpression: BoxedDecisionTable = {
       __$$element: "decisionTable",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
       "@_hitPolicy": "UNIQUE",
-      input: [
-        {
-          "@_id": generateUuid(),
-          inputExpression: {
-            "@_id": generateUuid(),
-            text: { __$$text: "input-1" },
-          },
-        },
-      ],
-      output: [
-        {
-          "@_id": generateUuid(),
-          "@_name": "output-1",
-        },
-      ],
+      input,
+      output,
       annotation: [
         {
           "@_name": "Annotations",
@@ -153,14 +215,28 @@ export function getDefaultBoxedExpressionForStories(
       rule: [
         {
           "@_id": generateUuid(),
-          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE } }],
-          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE } }],
+          inputEntry: input.map(() => ({
+            "@_id": generateUuid(),
+            text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE },
+          })),
+          outputEntry: output.map(() => ({
+            "@_id": generateUuid(),
+            text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
+          })),
           annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
         },
       ],
     };
+
+    widthsById.set(decisionTableExpression["@_id"]!, [
+      BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+      DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+      DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+      DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+    ]);
+
     return decisionTableExpression;
   } else {
-    throw new Error(`No default expression available for ${logicType}`);
+    throw new Error(`No default expression available for ${logicType}.`);
   }
 }

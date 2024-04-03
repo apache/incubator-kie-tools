@@ -36,6 +36,13 @@ const customConfig = defineConfig({
     stdout: "pipe",
     timeout: 180000,
   },
+  expect: {
+    toHaveScreenshot: {
+      // An acceptable ratio of pixels that are different to the
+      // total amount of pixels, between 0 and 1.
+      maxDiffPixelRatio: 0.001,
+    },
+  },
 });
 
 export default defineConfig(merge(playwirghtBaseConfig, customConfig));

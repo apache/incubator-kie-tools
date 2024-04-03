@@ -48,10 +48,10 @@ export const bureauCallTypeExpression: BoxedDecisionTable = {
   input: [
     {
       "@_id": "_EDEB6C03-3FD1-4845-A18F-1463314BB5FB",
-      "@_label": "Pre-bureau risk category",
       inputExpression: {
         "@_typeRef": "t.BureauRiskCategory",
         "@_id": "_72DD65BD-56CA-4429-B5FD-2EBDEEE01B9B",
+        text: { __$$text: "Pre-bureau risk category" },
       },
     },
   ],
