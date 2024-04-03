@@ -20,21 +20,16 @@
 import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import * as validator from "xsd-schema-validator";
+import * as prettier from "prettier";
+
+const xmlPrettierPlugin = require("@prettier/plugin-xml");
 
 /* dmn-testing-models module Directories */
 const VALID_MODELS_DIRECTORY = "valid_models";
 const DMN_1_5_DIRECTORY = "DMNv1_5";
-const DMN_1_x_DIRECTORY = "DMNv1_X";
 const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
 
-/* XSD DMN Schema */
-const DMN_1_5_XSD = "../src/schemas/dmn-1_5/DMN15.xsd";
-
-const testing_models_paths = [
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY,
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY,
-];
+const testing_models_paths = [".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY];
 
 describe("validation", () => {
   for (const models_paths of testing_models_paths) {
@@ -63,7 +58,16 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
       const xml_marshalled = builder.build(parser.parse());
 
-      await expect((await validator.validateXML(xml_marshalled, path.join(__dirname, DMN_1_5_XSD))).valid).toBe(true);
+      expect(formatXmlForTest(xml_marshalled)).toStrictEqual(formatXmlForTest(xml_original));
     }
   );
+}
+
+function formatXmlForTest(toFormat: string): string {
+  return prettier.format(toFormat, {
+    parser: "xml",
+    plugins: [xmlPrettierPlugin],
+    // @ts-expect-error option from / for "@prettier/plugin-xml" which does not have types
+    xmlWhitespaceSensitivity: "ignore",
+  });
 }
