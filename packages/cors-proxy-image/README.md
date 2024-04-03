@@ -63,12 +63,14 @@ The service will be up at http://localhost:8080
 
 It's possible to configure certain parameters of the container using the following env variables:
 
+- _CORS_PROXY_HTTP_PORT_: Sets the HTTP Port the proxy should listen to
 - _CORS_PROXY_ORIGIN_: Sets the value of the 'Access-Control-Allow-Origin' header, defaults to `*`
 - _CORS_PROXY_VERBOSE_: Allows the proxy to run in verbose mode... useful to trace requests on development environments. Defaults to `false`
 
 For example setting an `.env` file like:
 
 ```bash
+CORS_PROXY_HTTP_PORT=8080
 CORS_PROXY_ORIGIN=*
 CORS_PROXY_VERBOSE=false
 ```
@@ -76,5 +78,5 @@ CORS_PROXY_VERBOSE=false
 or by passing the variables as arguments like
 
 ```bash
-$ docker run -p 8080:8080 -e CORS_PROXY_ORIGIN=* -e CORS_PROXY_VERBOSE=false -i --rm quay.io/kie-tools/cors-proxy-image:latest
+$ docker run -p 8080:8080 -e CORS_PROXY_HTTP_PORT=8080 -e CORS_PROXY_ORIGIN=* -e CORS_PROXY_VERBOSE=false -i --rm quay.io/kie-tools/cors-proxy-image:latest
 ```

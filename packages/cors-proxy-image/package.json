@@ -19,8 +19,8 @@
     "copy:cors-proxy-package": "run-script-os",
     "copy:cors-proxy-package:linux:darwin": "cp -R ./node_modules/@kie-tools/cors-proxy/dist/ dist-dev/cors-proxy/",
     "copy:cors-proxy-package:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@kie-tools/cors-proxy/dist/ dist-dev/cors-proxy/\"",
-    "docker:build": "kie-tools--image-builder build -r \"$(build-env corsProxyImage.image.registry)\" -a \"$(build-env corsProxyImage.image.account)\" -n \"$(build-env corsProxyImage.image.name)\" -t \"$(build-env corsProxyImage.image.buildTags)\"",
-    "podman:build": "kie-tools--image-builder build -r \"$(build-env corsProxyImage.image.registry)\" -a \"$(build-env corsProxyImage.image.account)\" -n \"$(build-env corsProxyImage.image.name)\" -t \"$(build-env corsProxyImage.image.buildTags)\" -e podman"
+    "docker:build": "kie-tools--image-builder build -r \"$(build-env corsProxyImage.image.registry)\" -a \"$(build-env corsProxyImage.image.account)\" -n \"$(build-env corsProxyImage.image.name)\" -t \"$(build-env corsProxyImage.image.buildTags)\" --build-arg \"CORS_PROXY_DEFAULT_HTTP_PORT=$(build-env corsProxy.dev.port)\" --build-arg \"CORS_PROXY_DEFAULT_ORIGIN=$(build-env corsProxy.dev.origin)\" --build-arg \"CORS_PROXY_DEFAULT_VERBOSE=$(build-env corsProxy.dev.verbose)\"",
+    "podman:build": "kie-tools--image-builder build -r \"$(build-env corsProxyImage.image.registry)\" -a \"$(build-env corsProxyImage.image.account)\" -n \"$(build-env corsProxyImage.image.name)\" -t \"$(build-env corsProxyImage.image.buildTags)\" --build-arg \"CORS_PROXY_DEFAULT_HTTP_PORT=$(build-env corsProxy.dev.port)\" --build-arg \"CORS_PROXY_DEFAULT_ORIGIN=$(build-env corsProxy.dev.origin)\" --build-arg \"CORS_PROXY_DEFAULT_VERBOSE=$(build-env corsProxy.dev.verbose)\" -e podman"
   },
   "devDependencies": {
     "@kie-tools/cors-proxy": "workspace:*",
