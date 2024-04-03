@@ -21,6 +21,17 @@ const { env: buildEnv } = require("../env");
 
 module.exports = {
   defaultEnvJson: {
-    RUNTIME_TOOLS_TASK_CONSOLE_DATAINDEX_HTTP_URL: buildEnv.runtimeToolsTaskConsoleWebapp.kogitoDataIndexUrl,
+    RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE: buildEnv.runtimeToolsTaskConsoleWebapp.kogitoEnvMode,
+    RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_NAME: "Task Console",
+    RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_STATES_LIST: "Ready,Reserved,Completed,Aborted,Skipped",
+    RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_ACTIVE_STATES_LIST: "Ready,Reserved",
+    RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT: buildEnv.runtimeToolsTaskConsoleWebapp.kogitoDataIndexUrl,
+    KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK: false,
+    KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY: 30,
+    KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL:
+      "http://localhost:8280/auth/realms/kogito/.well-known/openid-configuration",
+    KOGITO_CONSOLES_KEYCLOAK_REALM: "kogito",
+    KOGITO_CONSOLES_KEYCLOAK_URL: "http://localhost:8280/auth",
+    KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: "kogito-console-react",
   },
 };

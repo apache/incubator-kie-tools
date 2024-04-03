@@ -35,12 +35,7 @@ import {
   appRenderWithAxiosInterceptorConfig,
 } from "@kie-tools/runtime-tools-components/dist/utils/KeycloakClient";
 import { initEnv } from "./env/Env";
-
-declare global {
-  interface Window {
-    DATA_INDEX_ENDPOINT: string;
-  }
-}
+import { ENV_PREFIX } from "./env/EnvConstants";
 
 const onLoadFailure = () => {
   ReactDOM.render(<KeycloakUnavailablePage />, document.getElementById("root"));
@@ -48,9 +43,7 @@ const onLoadFailure = () => {
 
 const appRender = (ctx: UserContext) => {
   const httpLink = new HttpLink({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    uri: window.DATA_INDEX_ENDPOINT,
+    uri: window["DATA_INDEX_ENDPOINT"],
   });
 
   const fallbackUI = onError(({ networkError }: any) => {
@@ -102,9 +95,11 @@ const appRender = (ctx: UserContext) => {
   );
 };
 
-initEnv().then((getEnv) => {
-  const RUNTIME_TOOLS_TASK_CONSOLE_DATAINDEX_HTTP_URL =
-    getEnv && getEnv("RUNTIME_TOOLS_TASK_CONSOLE_DATAINDEX_HTTP_URL");
-  window.DATA_INDEX_ENDPOINT = RUNTIME_TOOLS_TASK_CONSOLE_DATAINDEX_HTTP_URL;
+initEnv().then((env) => {
+  if (env) {
+    Object.keys(env).forEach((key) => {
+      window[key.replace(`${ENV_PREFIX}_`, "")] = env[key];
+    });
+  }
   appRenderWithAxiosInterceptorConfig((ctx: UserContext) => appRender(ctx), onLoadFailure);
 });

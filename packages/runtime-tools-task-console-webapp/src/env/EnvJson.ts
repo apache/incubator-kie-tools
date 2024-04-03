@@ -17,6 +17,12 @@
  * under the License.
  */
 
-export interface EnvJson {
-  RUNTIME_TOOLS_TASK_CONSOLE_DATAINDEX_HTTP_URL: string;
+import { KogitoConsolesKeycloakEnv } from "@kie-tools/runtime-tools-components/dist/utils/KeycloakClient";
+
+export interface EnvJson extends KogitoConsolesKeycloakEnv {
+  RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE: "DEV" | "PROD";
+  RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_NAME: "Task Console";
+  RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_STATES_LIST: "Ready,Reserved,Completed,Aborted,Skipped";
+  RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_ACTIVE_STATES_LIST: "Ready,Reserved";
+  RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT: string;
 }

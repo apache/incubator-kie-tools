@@ -28,7 +28,7 @@ export async function initEnv() {
       }
 
       const envJson = await response.json();
-      return (key: keyof EnvJson) => envJson[key];
+      return envJson as EnvJson;
     })
     .catch((e) => {
       console.error(e);

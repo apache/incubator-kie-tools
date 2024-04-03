@@ -17,4 +17,6 @@
  * under the License.
  */
 
-export const ENV_FILE_PATH = "env.json";
+export const ENV_FILE_PATH = "/env.json";
+
+export const ENV_PREFIX = "RUNTIME_TOOLS_TASK_CONSOLE" as const;

@@ -31,7 +31,7 @@ const BG_IMAGES_DIRNAME = "bgimages";
 module.exports = async (env) => {
   return merge(common(env), {
     entry: {
-      app: path.resolve(__dirname, "src", "index.tsx"),
+      index: path.resolve(__dirname, "src", "index.tsx"),
       "resources/form-displayer": "./src/resources/form-displayer.ts",
     },
     devServer: {
@@ -60,16 +60,10 @@ module.exports = async (env) => {
       },
     },
     plugins: [
-      new webpack.EnvironmentPlugin({
-        KOGITO_ENV_MODE: env.dev ? "DEV" : "PROD",
-        KOGITO_APP_NAME: "Task Console",
-        KOGITO_TASK_STATES_LIST: "Ready,Reserved,Completed,Aborted,Skipped",
-        KOGITO_TASK_ACTIVE_STATES_LIST: "Ready,Reserved",
-      }),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, "src", "index.html"),
-        favicon: "src/favicon.ico",
-        chunks: ["app"],
+        template: "./src/index.html",
+        inject: false,
+        minify: false,
       }),
       new CopyPlugin({
         patterns: [
