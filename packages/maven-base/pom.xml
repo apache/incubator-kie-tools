@@ -23,8 +23,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
 
-  <groupId>org.kie.tools</groupId>
-  <artifactId>maven-base</artifactId>
+  <groupId>org.kie</groupId>
+  <artifactId>kie-tools-maven-base</artifactId>
   <version>${revision}</version>
 
   <modelVersion>4.0.0</modelVersion>
@@ -83,6 +83,13 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-bom</artifactId>
+        <version>${version.org.kie.kogito}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-kie-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>

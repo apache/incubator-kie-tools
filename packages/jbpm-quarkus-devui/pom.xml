@@ -26,8 +26,8 @@
 >
 
   <parent>
-    <groupId>org.kie.tools</groupId>
-    <artifactId>maven-base</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
     <version>${revision}</version>
     <relativePath>../maven-base/pom.xml</relativePath>
   </parent>
