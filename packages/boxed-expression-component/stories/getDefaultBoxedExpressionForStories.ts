@@ -102,6 +102,11 @@ export function getDefaultBoxedExpressionForStories({
           },
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         },
+        // <result>
+        {
+          "@_id": generateUuid(),
+          expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        },
       ],
     };
 

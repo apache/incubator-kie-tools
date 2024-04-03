@@ -55,7 +55,7 @@ export const Base: Story = {
       expression: {
         "@_id": generateUuid(),
         __$$element: "literalExpression",
-        text: { __$$text: "FUNCTION" },
+        text: { __$$text: "FUNCTION NAME" },
       },
     },
     isResetSupportedOnRootExpression: true,

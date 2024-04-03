@@ -327,7 +327,7 @@ export function ContextExpression(
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const newEntries = [];
-        const names = newContextEntries.map((e) => e.variable?.["@_name"] ?? "");
+        const names = newContextEntries.map((e) => e.variable?.["@_name"] ?? "").filter((e) => e !== "");
         for (let i = 0; i < args.rowsCount; i++) {
           const name = getNextAvailablePrefixedName(names, "ContextEntry");
           names.push(name);
