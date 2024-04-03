@@ -31,7 +31,7 @@
     <version>${revision}</version>
     <relativePath>../quarkus-examples-maven-parent/pom.xml</relativePath>
   </parent>
-  <artifactId>dmn-quarkus-example</artifactId>
+  <artifactId>drools-dmn-quarkus-example</artifactId>
   <name>Kie-Tools Example :: DMN</name>
   <dependencies>
     <dependency>
