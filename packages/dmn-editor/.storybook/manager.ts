@@ -22,4 +22,6 @@ import { KieToolsTheme } from "@kie-tools/storybook-base/KieToolsTheme";
 
 addons.setConfig({
   theme: KieToolsTheme,
+  // RF adds listeners to the document level
+  enableShortcuts: false,
 });

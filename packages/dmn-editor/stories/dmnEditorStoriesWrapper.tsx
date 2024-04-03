@@ -57,13 +57,7 @@ export function DmnEditorWrapper(props?: Partial<DmnEditorProps>) {
   }, [args, model, onModelChange]);
 
   return (
-    <div
-      style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}
-      onKeyDown={(e) => {
-        // Prevent keys from propagating to Storybook
-        return e.stopPropagation();
-      }}
-    >
+    <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
       <DmnEditor
         ref={ref}
         model={model}

@@ -230,11 +230,11 @@ export function getDefaultBoxedExpression({
     return relationExpression;
   } else if (logicType === "decisionTable") {
     const singleOutputColumn = {
-      name: "Output 1",
+      name: "Output-1",
       typeRef: dataType?.feelName ?? DmnBuiltInDataType.Undefined,
     };
     const singleInputColumn = {
-      name: "Input 1",
+      name: "Input-1",
       typeRef: DmnBuiltInDataType.Undefined,
     };
 
