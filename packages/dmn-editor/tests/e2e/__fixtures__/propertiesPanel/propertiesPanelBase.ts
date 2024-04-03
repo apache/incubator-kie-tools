@@ -100,7 +100,11 @@ export abstract class PropertiesPanelBase {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByTitle("Expand / collapse Font").click();
 
-    return await this.panel().getByTestId("node-font-style-selector").textContent();
+    const font = await this.panel().getByTestId("node-font-style-selector").textContent();
+
+    await this.panel().getByTitle("Expand / collapse Font").click();
+
+    return font;
   }
 
   public async getShape(args: { nodeName: string }) {

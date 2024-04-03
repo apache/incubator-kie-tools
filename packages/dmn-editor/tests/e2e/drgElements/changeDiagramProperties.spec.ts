@@ -23,7 +23,7 @@ test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe.only("Change Properties - Diagram", () => {
+test.describe("Change Properties - Diagram", () => {
   test.beforeEach(async ({ diagramPropertiesPanel }) => {
     await diagramPropertiesPanel.open();
   });

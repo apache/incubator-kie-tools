@@ -19,4 +19,13 @@
 
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
-export class MultipleNodesPropertiesPanel extends PropertiesPanelBase {}
+export class MultipleNodesPropertiesPanel extends PropertiesPanelBase {
+  public async setMultipleNodesFont(args: { nodeNames: string[]; newFont: string }) {
+    await this.nodes.selectMultiple({ names: args.nodeNames });
+
+    await this.panel().getByTestId("node-font-style-selector").click();
+    await this.panel().getByText(args.newFont).click();
+
+    await this.diagram.resetFocus();
+  }
+}

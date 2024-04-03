@@ -18,7 +18,6 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
@@ -26,5 +25,19 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Change Properties - Multiple Nodes", () => {
-  test("should change multiple nodes font", async ({ nodes, multipleNodesPropertiesPanel }) => {});
+  test("should change multiple nodes font", async ({ palette, diagram, multipleNodesPropertiesPanel }) => {
+    await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+    await diagram.resetFocus();
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 100 } });
+    await diagram.resetFocus();
+
+    await multipleNodesPropertiesPanel.open();
+    await multipleNodesPropertiesPanel.setMultipleNodesFont({
+      nodeNames: [DefaultNodeName.INPUT_DATA, DefaultNodeName.DECISION],
+      newFont: "Verdana",
+    });
+
+    expect(await multipleNodesPropertiesPanel.getFont({ nodeName: DefaultNodeName.INPUT_DATA })).toBe("Verdana");
+    expect(await multipleNodesPropertiesPanel.getFont({ nodeName: DefaultNodeName.DECISION })).toBe("Verdana");
+  });
 });
