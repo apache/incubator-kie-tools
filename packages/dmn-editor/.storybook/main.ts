@@ -26,7 +26,6 @@ const buildEnv: any = env; // build-env is not typed
 
 const config = {
   ...baseConfig(buildEnv.webpack.dev),
-  staticDirs: ["../stories/__assets__"],
 };
 
 export default config;
