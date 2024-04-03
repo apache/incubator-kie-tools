@@ -18,7 +18,7 @@
  */
 
 import { create } from "@storybook/theming/create";
-import brandImage from "./static/logo.svg";
+import brandImage from "../../static/logo.svg";
 
 export const KieToolsTheme = create({
   base: "light",
