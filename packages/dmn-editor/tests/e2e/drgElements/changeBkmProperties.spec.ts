@@ -54,7 +54,7 @@ test.describe("Change Properties - BKM", () => {
       newDescription: "New BKM Description",
     });
 
-    expect(await bkmPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.BKM })).toBe("New BKM Description");
+    expect(await bkmPropertiesPanel.getDescription({ nodeName: DefaultNodeName.BKM })).toBe("New BKM Description");
   });
 
   test("should change the BKM node documentation links", async ({ bkmPropertiesPanel }) => {
@@ -73,7 +73,7 @@ test.describe("Change Properties - BKM", () => {
   test("should change the BKM node font - family", async ({ bkmPropertiesPanel }) => {
     await bkmPropertiesPanel.setFont({ nodeName: DefaultNodeName.BKM, newFont: "Verdana" });
 
-    expect(await bkmPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.BKM })).toBe("Verdana");
+    expect(await bkmPropertiesPanel.getFont({ nodeName: DefaultNodeName.BKM })).toBe("Verdana");
   });
 
   test.skip("should change the BKM node shape - background color", async ({ nodes, bkmPropertiesPanel }) => {

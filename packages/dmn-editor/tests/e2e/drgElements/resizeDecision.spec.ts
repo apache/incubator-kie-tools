@@ -31,10 +31,8 @@ test.describe("Resize node - Decision", () => {
     await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 50, yOffset: 50 });
 
     await decisionPropertiesPanel.open();
-    await expect((await decisionPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.DECISION })).width).toEqual(
-      "200"
-    );
-    await expect((await decisionPropertiesPanel.getNodeShape({ nodeName: DefaultNodeName.DECISION })).height).toEqual(
+    await expect((await decisionPropertiesPanel.getShape({ nodeName: DefaultNodeName.DECISION })).width).toEqual("200");
+    await expect((await decisionPropertiesPanel.getShape({ nodeName: DefaultNodeName.DECISION })).height).toEqual(
       "120"
     );
   });

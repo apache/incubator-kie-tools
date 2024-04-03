@@ -27,7 +27,7 @@ export class KnowledgeSourcePropertiesPanel extends PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async getNodeSourceType(args: { nodeName: string }) {
+  public async getSourceType(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter source type...").inputValue();
   }
@@ -39,7 +39,7 @@ export class KnowledgeSourcePropertiesPanel extends PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async getNodeLocationURI(args: { nodeName: string }) {
+  public async getLocationURI(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter location URI...").inputValue();
   }

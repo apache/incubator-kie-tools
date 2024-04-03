@@ -33,14 +33,14 @@ test.describe("Resize node - Group", () => {
     await groupPropertiesPanel.open();
     await expect(
       (
-        await groupPropertiesPanel.getNodeShape({
+        await groupPropertiesPanel.getShape({
           nodeName: DefaultNodeName.GROUP,
         })
       ).width
     ).toEqual("360");
     await expect(
       (
-        await groupPropertiesPanel.getNodeShape({
+        await groupPropertiesPanel.getShape({
           nodeName: DefaultNodeName.GROUP,
         })
       ).height

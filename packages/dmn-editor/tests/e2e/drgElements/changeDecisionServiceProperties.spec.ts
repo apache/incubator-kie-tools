@@ -62,9 +62,9 @@ test.describe("Change Properties - Decision Service", () => {
       newDescription: "New Decision Service Description",
     });
 
-    expect(
-      await decisionServicePropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.DECISION_SERVICE })
-    ).toBe("New Decision Service Description");
+    expect(await decisionServicePropertiesPanel.getDescription({ nodeName: DefaultNodeName.DECISION_SERVICE })).toBe(
+      "New Decision Service Description"
+    );
   });
 
   test("should change the Decision Service node documentation links", async ({ decisionServicePropertiesPanel }) => {
@@ -88,7 +88,7 @@ test.describe("Change Properties - Decision Service", () => {
       newFont: "Verdana",
     });
 
-    expect(await decisionServicePropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.DECISION_SERVICE })).toBe(
+    expect(await decisionServicePropertiesPanel.getFont({ nodeName: DefaultNodeName.DECISION_SERVICE })).toBe(
       "Verdana"
     );
   });

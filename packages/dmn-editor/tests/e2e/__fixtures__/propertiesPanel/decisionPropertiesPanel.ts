@@ -27,7 +27,7 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async getNodeQuestion(args: { nodeName: string }) {
+  public async getQuestion(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter a question...").inputValue();
   }
@@ -39,7 +39,7 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async getNodeAllowedAnswers(args: { nodeName: string }) {
+  public async getAllowedAnswers(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter allowed answers...").inputValue();
   }

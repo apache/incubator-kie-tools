@@ -37,7 +37,7 @@ test.describe("Change Properties - Text Annotation", () => {
       newFormat: "plaintext",
     });
 
-    expect(await textAnnotationPropertiesPanel.getNodeFormat({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
+    expect(await textAnnotationPropertiesPanel.getFormat({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
       "plaintext"
     );
   });
@@ -48,7 +48,7 @@ test.describe("Change Properties - Text Annotation", () => {
       newText: "new text content",
     });
 
-    expect(await textAnnotationPropertiesPanel.getNodeText({ nodeName: "new text content" })).toBe("new text content");
+    expect(await textAnnotationPropertiesPanel.getText({ nodeName: "new text content" })).toBe("new text content");
   });
 
   test("should change the Text Annotation node description", async ({ textAnnotationPropertiesPanel }) => {
@@ -57,7 +57,7 @@ test.describe("Change Properties - Text Annotation", () => {
       newDescription: "New Text Annotation Description",
     });
 
-    expect(await textAnnotationPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
+    expect(await textAnnotationPropertiesPanel.getDescription({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
       "New Text Annotation Description"
     );
   });
@@ -65,9 +65,7 @@ test.describe("Change Properties - Text Annotation", () => {
   test("should change the Text Annotation node font - family", async ({ textAnnotationPropertiesPanel }) => {
     await textAnnotationPropertiesPanel.setFont({ nodeName: DefaultNodeName.TEXT_ANNOTATION, newFont: "Verdana" });
 
-    expect(await textAnnotationPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
-      "Verdana"
-    );
+    expect(await textAnnotationPropertiesPanel.getFont({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe("Verdana");
   });
 
   test.skip("should change the Text Annotation node shape - background color", async ({

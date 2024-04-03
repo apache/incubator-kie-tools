@@ -62,7 +62,7 @@ export abstract class PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async getNodeDescription(args: { nodeName: string }) {
+  public async getDescription(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter a description...").inputValue();
   }
@@ -96,14 +96,14 @@ export abstract class PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async getNodeFont(args: { nodeName: string }) {
+  public async getFont(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByTitle("Expand / collapse Font").click();
 
     return await this.panel().getByTestId("node-font-style-selector").textContent();
   }
 
-  public async getNodeShape(args: { nodeName: string }) {
+  public async getShape(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     await this.panel().getByTitle("Expand / collapse Shape").click();
 

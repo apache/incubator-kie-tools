@@ -27,7 +27,7 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async getNodeFormat(args: { nodeName: string }) {
+  public async getFormat(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter a text format...").inputValue();
   }
@@ -39,7 +39,7 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async getNodeText(args: { nodeName: string }) {
+  public async getText(args: { nodeName: string }) {
     await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
     return await this.panel().getByPlaceholder("Enter text...").inputValue();
   }

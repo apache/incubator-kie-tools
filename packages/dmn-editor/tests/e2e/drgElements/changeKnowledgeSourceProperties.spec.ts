@@ -49,9 +49,9 @@ test.describe("Change Properties - Knowledge Source", () => {
       newDescription: "New Knowledge Source Description",
     });
 
-    expect(
-      await knowledgeSourcePropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })
-    ).toBe("New Knowledge Source Description");
+    expect(await knowledgeSourcePropertiesPanel.getDescription({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
+      "New Knowledge Source Description"
+    );
   });
 
   test("should change the Knowledge Source node Source Type", async ({ knowledgeSourcePropertiesPanel }) => {
@@ -60,7 +60,7 @@ test.describe("Change Properties - Knowledge Source", () => {
       newSourceType: "New Knowledge Source Source Type",
     });
 
-    expect(await knowledgeSourcePropertiesPanel.getNodeSourceType({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
+    expect(await knowledgeSourcePropertiesPanel.getSourceType({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
       "New Knowledge Source Source Type"
     );
   });
@@ -71,9 +71,9 @@ test.describe("Change Properties - Knowledge Source", () => {
       newLocationURI: "New Location URI",
     });
 
-    expect(
-      await knowledgeSourcePropertiesPanel.getNodeLocationURI({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })
-    ).toBe("New Location URI");
+    expect(await knowledgeSourcePropertiesPanel.getLocationURI({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
+      "New Location URI"
+    );
   });
 
   test("should change the Knowledge Source node documentation links", async ({ knowledgeSourcePropertiesPanel }) => {
@@ -94,7 +94,7 @@ test.describe("Change Properties - Knowledge Source", () => {
   test("should change the Knowledge Source node font - family", async ({ knowledgeSourcePropertiesPanel }) => {
     await knowledgeSourcePropertiesPanel.setFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, newFont: "Verdana" });
 
-    expect(await knowledgeSourcePropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
+    expect(await knowledgeSourcePropertiesPanel.getFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
       "Verdana"
     );
   });

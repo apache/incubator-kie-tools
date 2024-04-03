@@ -54,7 +54,7 @@ test.describe("Change Properties - Decision", () => {
       newDescription: "New Decision Description",
     });
 
-    expect(await decisionPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.DECISION })).toBe(
+    expect(await decisionPropertiesPanel.getDescription({ nodeName: DefaultNodeName.DECISION })).toBe(
       "New Decision Description"
     );
   });
@@ -65,7 +65,7 @@ test.describe("Change Properties - Decision", () => {
       newQuestion: "New Decision Question",
     });
 
-    expect(await decisionPropertiesPanel.getNodeQuestion({ nodeName: DefaultNodeName.DECISION })).toBe(
+    expect(await decisionPropertiesPanel.getQuestion({ nodeName: DefaultNodeName.DECISION })).toBe(
       "New Decision Question"
     );
   });
@@ -76,7 +76,7 @@ test.describe("Change Properties - Decision", () => {
       newAllowedAnswers: "New Allowed Answers",
     });
 
-    expect(await decisionPropertiesPanel.getNodeAllowedAnswers({ nodeName: DefaultNodeName.DECISION })).toBe(
+    expect(await decisionPropertiesPanel.getAllowedAnswers({ nodeName: DefaultNodeName.DECISION })).toBe(
       "New Allowed Answers"
     );
   });
@@ -97,7 +97,7 @@ test.describe("Change Properties - Decision", () => {
   test("should change the Decision node font - family", async ({ decisionPropertiesPanel }) => {
     await decisionPropertiesPanel.setFont({ nodeName: DefaultNodeName.DECISION, newFont: "Verdana" });
 
-    expect(await decisionPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.DECISION })).toBe("Verdana");
+    expect(await decisionPropertiesPanel.getFont({ nodeName: DefaultNodeName.DECISION })).toBe("Verdana");
   });
 
   test.skip("should change the Decision node shape - background color", async ({ nodes, decisionPropertiesPanel }) => {

@@ -18,21 +18,43 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DataType } from "../__fixtures__/jsonModel";
-import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
 
-test.describe("Change Properties - Diagram", () => {
-  test("should change the Diagram name", async ({ diagramPropertiesPanel }) => {});
+test.describe.only("Change Properties - Diagram", () => {
+  test.beforeEach(async ({ diagramPropertiesPanel }) => {
+    await diagramPropertiesPanel.open();
+  });
 
-  test("should change the Diagram description", async ({ diagramPropertiesPanel }) => {});
+  test("should change the Diagram name", async ({ diagramPropertiesPanel }) => {
+    await diagramPropertiesPanel.setDiagramName({ newName: "New Diagram Name" });
 
-  test("should change the Diagram expression language", async ({ diagramPropertiesPanel }) => {});
+    expect(await diagramPropertiesPanel.getDiagramName()).toBe("New Diagram Name");
+  });
 
-  test("should change the Diagram ID", async ({ diagramPropertiesPanel }) => {});
+  test("should change the Diagram description", async ({ diagramPropertiesPanel }) => {
+    await diagramPropertiesPanel.setDiagramDescription({ newDescription: "New Diagram Description" });
 
-  test("should change the Diagram namespace", async ({ diagramPropertiesPanel }) => {});
+    expect(await diagramPropertiesPanel.getDiagramDescription()).toBe("New Diagram Description");
+  });
+
+  test("should change the Diagram expression language", async ({ diagramPropertiesPanel }) => {
+    await diagramPropertiesPanel.setExpressionLanguage({ expressionlangugae: "FEEL" });
+
+    expect(await diagramPropertiesPanel.getExpressionLanguage()).toBe("FEEL");
+  });
+
+  test("should change the Diagram ID", async ({ diagramPropertiesPanel }) => {
+    await diagramPropertiesPanel.setId({ id: "_ABCD" });
+
+    expect(await diagramPropertiesPanel.getId()).toBe("_ABCD");
+  });
+
+  test("should change the Diagram namespace", async ({ diagramPropertiesPanel }) => {
+    await diagramPropertiesPanel.setNamespace({ namespace: "NAMESPACE" });
+
+    expect(await diagramPropertiesPanel.getNamespace()).toBe("NAMESPACE");
+  });
 });

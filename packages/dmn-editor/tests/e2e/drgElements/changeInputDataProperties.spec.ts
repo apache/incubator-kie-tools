@@ -54,7 +54,7 @@ test.describe("Change Properties - Input Data", () => {
       newDescription: "New Input Data Description",
     });
 
-    expect(await inputDataPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.INPUT_DATA })).toBe(
+    expect(await inputDataPropertiesPanel.getDescription({ nodeName: DefaultNodeName.INPUT_DATA })).toBe(
       "New Input Data Description"
     );
   });
@@ -75,7 +75,7 @@ test.describe("Change Properties - Input Data", () => {
   test("should change the Input Data node font - family", async ({ inputDataPropertiesPanel }) => {
     await inputDataPropertiesPanel.setFont({ nodeName: DefaultNodeName.INPUT_DATA, newFont: "Verdana" });
 
-    expect(await inputDataPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.INPUT_DATA })).toBe("Verdana");
+    expect(await inputDataPropertiesPanel.getFont({ nodeName: DefaultNodeName.INPUT_DATA })).toBe("Verdana");
   });
 
   test.skip("should change the Input Data node shape - background color", async ({

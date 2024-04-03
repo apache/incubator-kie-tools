@@ -44,7 +44,7 @@ test.describe("Change Properties - Group", () => {
       newDescription: "New Group Description",
     });
 
-    expect(await groupPropertiesPanel.getNodeDescription({ nodeName: DefaultNodeName.GROUP })).toBe(
+    expect(await groupPropertiesPanel.getDescription({ nodeName: DefaultNodeName.GROUP })).toBe(
       "New Group Description"
     );
   });
@@ -52,7 +52,7 @@ test.describe("Change Properties - Group", () => {
   test("should change the Group node font - family", async ({ groupPropertiesPanel }) => {
     await groupPropertiesPanel.setFont({ nodeName: DefaultNodeName.GROUP, newFont: "Verdana" });
 
-    expect(await groupPropertiesPanel.getNodeFont({ nodeName: DefaultNodeName.GROUP })).toBe("Verdana");
+    expect(await groupPropertiesPanel.getFont({ nodeName: DefaultNodeName.GROUP })).toBe("Verdana");
   });
 
   test.skip("should change the Group node shape - background color", async ({ nodes, groupPropertiesPanel }) => {
