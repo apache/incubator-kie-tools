@@ -19,56 +19,45 @@
 
 import { Page } from "@playwright/test";
 import { Diagram } from "../diagram";
-import { NodePosition, Nodes } from "../nodes";
 import { DataType } from "../jsonModel";
 
 export abstract class PropertiesPanelBase {
-  constructor(public diagram: Diagram, public nodes: Nodes, public page: Page) {}
+  constructor(public diagram: Diagram, public page: Page) {}
 
   public panel() {
     return this.page.getByTestId("properties-panel-container");
-  }
-
-  public async selectNodeByClickToAppropriatePosition(args: { nodeName: string; position?: NodePosition }) {
-    await this.nodes.select({ name: args.nodeName, position: args.position ?? NodePosition.CENTER });
   }
 
   public async open() {
     await this.page.getByTitle("Properties panel").click();
   }
 
-  public async setName(args: { from: string; to: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.from });
-    await this.panel().getByPlaceholder("Enter a name...").fill(args.to);
+  public async setName(args: { newName: string }) {
+    await this.panel().getByPlaceholder("Enter a name...").fill(args.newName);
     await this.page.keyboard.press("Enter");
   }
 
-  public async getName(args: { nodeName: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async getName() {
     return await this.panel().getByPlaceholder("Enter a name...").inputValue();
   }
 
-  public async setDataType(args: { nodeName: string; newDataType: DataType }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async setDataType(args: { newDataType: DataType }) {
     await this.panel().getByPlaceholder("Select a data type...").click();
     await this.page.getByRole("option").getByText(args.newDataType, { exact: true }).click();
   }
 
-  public async setDescription(args: { nodeName: string; newDescription: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async setDescription(args: { newDescription: string }) {
     await this.panel().getByPlaceholder("Enter a description...").fill(args.newDescription);
 
     // commit changes by click to the diagram
     await this.diagram.resetFocus();
   }
 
-  public async getDescription(args: { nodeName: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async getDescription() {
     return await this.panel().getByPlaceholder("Enter a description...").inputValue();
   }
 
-  public async addDocumentationLink(args: { nodeName: string; linkText: string; linkHref: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
     await this.panel().getByTitle("Add documentation link").click();
     await this.panel()
       .locator(".kie-dmn-editor--documentation-link--row")
@@ -81,13 +70,11 @@ export abstract class PropertiesPanelBase {
     await this.page.keyboard.press("Enter");
   }
 
-  public async getDocumentationLinks(args: { nodeName: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async getDocumentationLinks() {
     return await this.panel().locator(".kie-dmn-editor--documentation-link--row-title").locator("a").all();
   }
 
-  public async setFont(args: { nodeName: string; newFont: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async setFont(args: { newFont: string }) {
     await this.panel().getByTitle("Expand / collapse Font").click();
 
     await this.panel().getByTestId("node-font-style-selector").click();
@@ -96,8 +83,7 @@ export abstract class PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async getFont(args: { nodeName: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async getFont() {
     await this.panel().getByTitle("Expand / collapse Font").click();
 
     const font = await this.panel().getByTestId("node-font-style-selector").textContent();
@@ -107,8 +93,7 @@ export abstract class PropertiesPanelBase {
     return font;
   }
 
-  public async getShape(args: { nodeName: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async getShape() {
     await this.panel().getByTitle("Expand / collapse Shape").click();
 
     const width = await this.panel().getByTestId("node-shape-width-input-box").inputValue();

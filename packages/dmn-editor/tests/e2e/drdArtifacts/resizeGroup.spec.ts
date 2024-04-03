@@ -31,19 +31,9 @@ test.describe("Resize node - Group", () => {
     await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: 50, yOffset: 50 });
 
     await groupPropertiesPanel.open();
-    await expect(
-      (
-        await groupPropertiesPanel.getShape({
-          nodeName: DefaultNodeName.GROUP,
-        })
-      ).width
-    ).toEqual("360");
-    await expect(
-      (
-        await groupPropertiesPanel.getShape({
-          nodeName: DefaultNodeName.GROUP,
-        })
-      ).height
-    ).toEqual("360");
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    const { width, height } = await groupPropertiesPanel.getShape();
+    expect(height).toEqual("360");
+    expect(width).toEqual("360");
   });
 });

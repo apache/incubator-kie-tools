@@ -31,15 +31,9 @@ test.describe("Resize node - Knowledge Source", () => {
     await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 50, yOffset: 50 });
 
     await knowledgeSourcePropertiesPanel.open();
-    await expect(
-      (
-        await knowledgeSourcePropertiesPanel.getShape({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })
-      ).width
-    ).toEqual("200");
-    await expect(
-      (
-        await knowledgeSourcePropertiesPanel.getShape({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })
-      ).height
-    ).toEqual("120");
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+    expect(width).toEqual("200");
+    expect(height).toEqual("120");
   });
 });

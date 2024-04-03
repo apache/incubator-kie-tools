@@ -32,71 +32,69 @@ test.describe("Change Properties - Knowledge Source", () => {
   });
 
   test("should change the Knowledge Source node name", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.setName({
-      from: DefaultNodeName.KNOWLEDGE_SOURCE,
-      to: "Renamed Knowledge Source",
+      newName: "Renamed Knowledge Source",
     });
 
+    await nodes.select({ name: "Renamed Knowledge Source" });
     await expect(nodes.get({ name: "Renamed Knowledge Source" })).toBeVisible();
-    expect(await knowledgeSourcePropertiesPanel.getName({ nodeName: "Renamed Knowledge Source" })).toBe(
-      "Renamed Knowledge Source"
-    );
+    expect(await knowledgeSourcePropertiesPanel.getName()).toBe("Renamed Knowledge Source");
   });
 
-  test("should change the Knowledge Source node description", async ({ knowledgeSourcePropertiesPanel }) => {
+  test("should change the Knowledge Source node description", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.setDescription({
-      nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       newDescription: "New Knowledge Source Description",
     });
 
-    expect(await knowledgeSourcePropertiesPanel.getDescription({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
-      "New Knowledge Source Description"
-    );
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    expect(await knowledgeSourcePropertiesPanel.getDescription()).toBe("New Knowledge Source Description");
   });
 
-  test("should change the Knowledge Source node Source Type", async ({ knowledgeSourcePropertiesPanel }) => {
+  test("should change the Knowledge Source node Source Type", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.setSourceType({
-      nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       newSourceType: "New Knowledge Source Source Type",
     });
 
-    expect(await knowledgeSourcePropertiesPanel.getSourceType({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
-      "New Knowledge Source Source Type"
-    );
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    expect(await knowledgeSourcePropertiesPanel.getSourceType()).toBe("New Knowledge Source Source Type");
   });
 
-  test("should change the Knowledge Source node Location URI", async ({ knowledgeSourcePropertiesPanel }) => {
+  test("should change the Knowledge Source node Location URI", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.setLocationURI({
-      nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       newLocationURI: "New Location URI",
     });
 
-    expect(await knowledgeSourcePropertiesPanel.getLocationURI({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
-      "New Location URI"
-    );
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    expect(await knowledgeSourcePropertiesPanel.getLocationURI()).toBe("New Location URI");
   });
 
-  test("should change the Knowledge Source node documentation links", async ({ knowledgeSourcePropertiesPanel }) => {
+  test("should change the Knowledge Source node documentation links", async ({
+    nodes,
+    knowledgeSourcePropertiesPanel,
+  }) => {
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.addDocumentationLink({
-      nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await knowledgeSourcePropertiesPanel.getDocumentationLinks({
-      nodeName: DefaultNodeName.KNOWLEDGE_SOURCE,
-    });
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    const links = await knowledgeSourcePropertiesPanel.getDocumentationLinks();
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveText("Link Text");
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Knowledge Source node font - family", async ({ knowledgeSourcePropertiesPanel }) => {
-    await knowledgeSourcePropertiesPanel.setFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, newFont: "Verdana" });
+  test("should change the Knowledge Source node font - family", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    await knowledgeSourcePropertiesPanel.setFont({ newFont: "Verdana" });
 
-    expect(await knowledgeSourcePropertiesPanel.getFont({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE })).toBe(
-      "Verdana"
-    );
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    expect(await knowledgeSourcePropertiesPanel.getFont()).toBe("Verdana");
   });
 
   test.skip("should change the Knowledge Source node shape - background color", async ({

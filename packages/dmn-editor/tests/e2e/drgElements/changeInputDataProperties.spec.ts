@@ -33,49 +33,55 @@ test.describe("Change Properties - Input Data", () => {
   });
 
   test("should change the Input Data node name", async ({ nodes, inputDataPropertiesPanel }) => {
-    await inputDataPropertiesPanel.setName({ from: DefaultNodeName.INPUT_DATA, to: "Renamed Input Data" });
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    await inputDataPropertiesPanel.setName({ newName: "Renamed Input Data" });
 
+    await nodes.select({ name: "Renamed Input Data" });
     await expect(nodes.get({ name: "Renamed Input Data" })).toBeVisible();
-    expect(await inputDataPropertiesPanel.getName({ nodeName: "Renamed Input Data" })).toBe("Renamed Input Data");
+    expect(await inputDataPropertiesPanel.getName()).toBe("Renamed Input Data");
   });
 
   test("should change the Input Data node data type", async ({ nodes, inputDataPropertiesPanel }) => {
-    await inputDataPropertiesPanel.setDataType({ nodeName: DefaultNodeName.INPUT_DATA, newDataType: DataType.Number });
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    await inputDataPropertiesPanel.setDataType({ newDataType: DataType.Number });
 
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
     await nodes.hover({ name: DefaultNodeName.INPUT_DATA });
     await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA }).getByPlaceholder("Select a data type...")).toHaveValue(
       DataType.Number
     );
   });
 
-  test("should change the Input Data node description", async ({ inputDataPropertiesPanel }) => {
+  test("should change the Input Data node description", async ({ nodes, inputDataPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
     await inputDataPropertiesPanel.setDescription({
-      nodeName: DefaultNodeName.INPUT_DATA,
       newDescription: "New Input Data Description",
     });
 
-    expect(await inputDataPropertiesPanel.getDescription({ nodeName: DefaultNodeName.INPUT_DATA })).toBe(
-      "New Input Data Description"
-    );
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    expect(await inputDataPropertiesPanel.getDescription()).toBe("New Input Data Description");
   });
 
-  test("should change the Input Data node documentation links", async ({ inputDataPropertiesPanel }) => {
+  test("should change the Input Data node documentation links", async ({ nodes, inputDataPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
     await inputDataPropertiesPanel.addDocumentationLink({
-      nodeName: DefaultNodeName.INPUT_DATA,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await inputDataPropertiesPanel.getDocumentationLinks({ nodeName: DefaultNodeName.INPUT_DATA });
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    const links = await inputDataPropertiesPanel.getDocumentationLinks();
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveText("Link Text");
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Input Data node font - family", async ({ inputDataPropertiesPanel }) => {
-    await inputDataPropertiesPanel.setFont({ nodeName: DefaultNodeName.INPUT_DATA, newFont: "Verdana" });
+  test("should change the Input Data node font - family", async ({ nodes, inputDataPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    await inputDataPropertiesPanel.setFont({ newFont: "Verdana" });
 
-    expect(await inputDataPropertiesPanel.getFont({ nodeName: DefaultNodeName.INPUT_DATA })).toBe("Verdana");
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    expect(await inputDataPropertiesPanel.getFont()).toBe("Verdana");
   });
 
   test.skip("should change the Input Data node shape - background color", async ({

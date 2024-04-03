@@ -17,11 +17,6 @@
  * under the License.
  */
 
-import { NodePosition } from "../nodes";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
-export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
-  public async selectNodeByClickToAppropriatePosition(args: { nodeName: string }) {
-    await this.nodes.select({ name: args.nodeName, position: NodePosition.TOP });
-  }
-}
+export class DecisionServicePropertiesPanel extends PropertiesPanelBase {}

@@ -32,27 +32,30 @@ test.describe("Change Properties - Group", () => {
   });
 
   test("should change the Group node name", async ({ nodes, groupPropertiesPanel }) => {
-    await groupPropertiesPanel.setName({ from: DefaultNodeName.GROUP, to: "Renamed Group" });
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    await groupPropertiesPanel.setName({ newName: "Renamed Group" });
 
+    await nodes.select({ name: "Renamed Group", position: NodePosition.TOP });
     await expect(nodes.get({ name: "Renamed Group" })).toBeVisible();
-    expect(await groupPropertiesPanel.getName({ nodeName: "Renamed Group" })).toBe("Renamed Group");
+    expect(await groupPropertiesPanel.getName()).toBe("Renamed Group");
   });
 
-  test("should change the Group node description", async ({ groupPropertiesPanel }) => {
+  test("should change the Group node description", async ({ nodes, groupPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
     await groupPropertiesPanel.setDescription({
-      nodeName: DefaultNodeName.GROUP,
       newDescription: "New Group Description",
     });
 
-    expect(await groupPropertiesPanel.getDescription({ nodeName: DefaultNodeName.GROUP })).toBe(
-      "New Group Description"
-    );
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    expect(await groupPropertiesPanel.getDescription()).toBe("New Group Description");
   });
 
-  test("should change the Group node font - family", async ({ groupPropertiesPanel }) => {
-    await groupPropertiesPanel.setFont({ nodeName: DefaultNodeName.GROUP, newFont: "Verdana" });
+  test("should change the Group node font - family", async ({ nodes, groupPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    await groupPropertiesPanel.setFont({ newFont: "Verdana" });
 
-    expect(await groupPropertiesPanel.getFont({ nodeName: DefaultNodeName.GROUP })).toBe("Verdana");
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    expect(await groupPropertiesPanel.getFont()).toBe("Verdana");
   });
 
   test.skip("should change the Group node shape - background color", async ({ nodes, groupPropertiesPanel }) => {

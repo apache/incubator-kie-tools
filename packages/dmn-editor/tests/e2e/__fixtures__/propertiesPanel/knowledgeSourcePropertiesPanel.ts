@@ -20,27 +20,23 @@
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
 export class KnowledgeSourcePropertiesPanel extends PropertiesPanelBase {
-  public async setSourceType(args: { nodeName: string; newSourceType: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async setSourceType(args: { newSourceType: string }) {
     await this.panel().getByPlaceholder("Enter source type...").fill(args.newSourceType);
     // commit changes by click to the diagram
     await this.diagram.resetFocus();
   }
 
-  public async getSourceType(args: { nodeName: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async getSourceType() {
     return await this.panel().getByPlaceholder("Enter source type...").inputValue();
   }
 
-  public async setLocationURI(args: { nodeName: string; newLocationURI: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async setLocationURI(args: { newLocationURI: string }) {
     await this.panel().getByPlaceholder("Enter location URI...").fill(args.newLocationURI);
     // commit changes by click to the diagram
     await this.diagram.resetFocus();
   }
 
-  public async getLocationURI(args: { nodeName: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async getLocationURI() {
     return await this.panel().getByPlaceholder("Enter location URI...").inputValue();
   }
 }

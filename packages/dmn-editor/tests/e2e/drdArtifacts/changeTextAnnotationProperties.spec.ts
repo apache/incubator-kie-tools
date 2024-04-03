@@ -31,41 +31,42 @@ test.describe("Change Properties - Text Annotation", () => {
     await textAnnotationPropertiesPanel.open();
   });
 
-  test("should change the Text Annotation node Format", async ({ textAnnotationPropertiesPanel }) => {
+  test("should change the Text Annotation node Format", async ({ nodes, textAnnotationPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.setFormat({
-      nodeName: DefaultNodeName.TEXT_ANNOTATION,
       newFormat: "plaintext",
     });
 
-    expect(await textAnnotationPropertiesPanel.getFormat({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
-      "plaintext"
-    );
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+    expect(await textAnnotationPropertiesPanel.getFormat()).toBe("plaintext");
   });
 
-  test("should change the Text Annotation node Text", async ({ textAnnotationPropertiesPanel }) => {
+  test("should change the Text Annotation node Text", async ({ nodes, textAnnotationPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.setText({
-      nodeName: DefaultNodeName.TEXT_ANNOTATION,
       newText: "new text content",
     });
 
-    expect(await textAnnotationPropertiesPanel.getText({ nodeName: "new text content" })).toBe("new text content");
+    await nodes.select({ name: "new text content" });
+    expect(await textAnnotationPropertiesPanel.getText()).toBe("new text content");
   });
 
-  test("should change the Text Annotation node description", async ({ textAnnotationPropertiesPanel }) => {
+  test("should change the Text Annotation node description", async ({ nodes, textAnnotationPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.setDescription({
-      nodeName: DefaultNodeName.TEXT_ANNOTATION,
       newDescription: "New Text Annotation Description",
     });
 
-    expect(await textAnnotationPropertiesPanel.getDescription({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe(
-      "New Text Annotation Description"
-    );
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+    expect(await textAnnotationPropertiesPanel.getDescription()).toBe("New Text Annotation Description");
   });
 
-  test("should change the Text Annotation node font - family", async ({ textAnnotationPropertiesPanel }) => {
-    await textAnnotationPropertiesPanel.setFont({ nodeName: DefaultNodeName.TEXT_ANNOTATION, newFont: "Verdana" });
+  test("should change the Text Annotation node font - family", async ({ nodes, textAnnotationPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+    await textAnnotationPropertiesPanel.setFont({ newFont: "Verdana" });
 
-    expect(await textAnnotationPropertiesPanel.getFont({ nodeName: DefaultNodeName.TEXT_ANNOTATION })).toBe("Verdana");
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+    expect(await textAnnotationPropertiesPanel.getFont()).toBe("Verdana");
   });
 
   test.skip("should change the Text Annotation node shape - background color", async ({

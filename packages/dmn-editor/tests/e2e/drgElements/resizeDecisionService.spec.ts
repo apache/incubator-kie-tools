@@ -36,15 +36,9 @@ test.describe("Resize node - Decision Service", () => {
     });
 
     await decisionServicePropertiesPanel.open();
-    await expect(
-      (
-        await decisionServicePropertiesPanel.getShape({ nodeName: DefaultNodeName.DECISION_SERVICE })
-      ).width
-    ).toEqual("360");
-    await expect(
-      (
-        await decisionServicePropertiesPanel.getShape({ nodeName: DefaultNodeName.DECISION_SERVICE })
-      ).height
-    ).toEqual("360");
+    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+    const { width, height } = await decisionServicePropertiesPanel.getShape();
+    expect(width).toEqual("360");
+    expect(height).toEqual("360");
   });
 });

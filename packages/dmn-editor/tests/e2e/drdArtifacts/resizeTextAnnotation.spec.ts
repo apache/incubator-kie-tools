@@ -36,15 +36,9 @@ test.describe("Resize node - Text Annotation", () => {
     });
 
     await textAnnotationPropertiesPanel.open();
-    await expect(
-      (
-        await textAnnotationPropertiesPanel.getShape({ nodeName: DefaultNodeName.TEXT_ANNOTATION })
-      ).width
-    ).toEqual("240");
-    await expect(
-      (
-        await textAnnotationPropertiesPanel.getShape({ nodeName: DefaultNodeName.TEXT_ANNOTATION })
-      ).height
-    ).toEqual("240");
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+    const { width, height } = await textAnnotationPropertiesPanel.getShape();
+    expect(height).toEqual("240");
+    expect(width).toEqual("240");
   });
 });

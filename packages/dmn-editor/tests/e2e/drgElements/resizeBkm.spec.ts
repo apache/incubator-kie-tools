@@ -31,7 +31,9 @@ test.describe("Resize node - BKM", () => {
     await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: 50, yOffset: 50 });
 
     await bkmPropertiesPanel.open();
-    await expect((await bkmPropertiesPanel.getShape({ nodeName: DefaultNodeName.BKM })).width).toEqual("200");
-    await expect((await bkmPropertiesPanel.getShape({ nodeName: DefaultNodeName.BKM })).height).toEqual("120");
+    await nodes.select({ name: DefaultNodeName.BKM });
+    const { width, height } = await bkmPropertiesPanel.getShape();
+    expect(width).toEqual("200");
+    expect(height).toEqual("120");
   });
 });

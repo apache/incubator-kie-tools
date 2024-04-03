@@ -33,71 +33,75 @@ test.describe("Change Properties - Decision", () => {
   });
 
   test("should change the Decision node name", async ({ nodes, decisionPropertiesPanel }) => {
-    await decisionPropertiesPanel.setName({ from: DefaultNodeName.DECISION, to: "Renamed Decision" });
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    await decisionPropertiesPanel.setName({ newName: "Renamed Decision" });
 
+    await nodes.select({ name: "Renamed Decision" });
     await expect(nodes.get({ name: "Renamed Decision" })).toBeVisible();
-    expect(await decisionPropertiesPanel.getName({ nodeName: "Renamed Decision" })).toBe("Renamed Decision");
+    expect(await decisionPropertiesPanel.getName()).toBe("Renamed Decision");
   });
 
   test("should change the Decision node data type", async ({ nodes, decisionPropertiesPanel }) => {
-    await decisionPropertiesPanel.setDataType({ nodeName: DefaultNodeName.DECISION, newDataType: DataType.Number });
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    await decisionPropertiesPanel.setDataType({ newDataType: DataType.Number });
 
+    await nodes.select({ name: DefaultNodeName.DECISION });
     await nodes.hover({ name: DefaultNodeName.DECISION });
     await expect(nodes.get({ name: DefaultNodeName.DECISION }).getByPlaceholder("Select a data type...")).toHaveValue(
       DataType.Number
     );
   });
 
-  test("should change the Decision node description", async ({ decisionPropertiesPanel }) => {
+  test("should change the Decision node description", async ({ nodes, decisionPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.setDescription({
-      nodeName: DefaultNodeName.DECISION,
       newDescription: "New Decision Description",
     });
 
-    expect(await decisionPropertiesPanel.getDescription({ nodeName: DefaultNodeName.DECISION })).toBe(
-      "New Decision Description"
-    );
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    expect(await decisionPropertiesPanel.getDescription()).toBe("New Decision Description");
   });
 
-  test("should change the Decision node question", async ({ decisionPropertiesPanel }) => {
+  test("should change the Decision node question", async ({ nodes, decisionPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.setQuestion({
-      nodeName: DefaultNodeName.DECISION,
       newQuestion: "New Decision Question",
     });
 
-    expect(await decisionPropertiesPanel.getQuestion({ nodeName: DefaultNodeName.DECISION })).toBe(
-      "New Decision Question"
-    );
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    expect(await decisionPropertiesPanel.getQuestion()).toBe("New Decision Question");
   });
 
-  test("should change the Decision node answers", async ({ decisionPropertiesPanel }) => {
+  test("should change the Decision node answers", async ({ nodes, decisionPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.setAllowedAnswers({
-      nodeName: DefaultNodeName.DECISION,
       newAllowedAnswers: "New Allowed Answers",
     });
 
-    expect(await decisionPropertiesPanel.getAllowedAnswers({ nodeName: DefaultNodeName.DECISION })).toBe(
-      "New Allowed Answers"
-    );
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    expect(await decisionPropertiesPanel.getAllowedAnswers()).toBe("New Allowed Answers");
   });
 
-  test("should change the Decision node documentation links", async ({ decisionPropertiesPanel }) => {
+  test("should change the Decision node documentation links", async ({ nodes, decisionPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.addDocumentationLink({
-      nodeName: DefaultNodeName.DECISION,
       linkText: "Link Text",
       linkHref: "http://link.test.com",
     });
 
-    const links = await decisionPropertiesPanel.getDocumentationLinks({ nodeName: DefaultNodeName.DECISION });
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    const links = await decisionPropertiesPanel.getDocumentationLinks();
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveText("Link Text");
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Decision node font - family", async ({ decisionPropertiesPanel }) => {
-    await decisionPropertiesPanel.setFont({ nodeName: DefaultNodeName.DECISION, newFont: "Verdana" });
+  test("should change the Decision node font - family", async ({ nodes, decisionPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    await decisionPropertiesPanel.setFont({ newFont: "Verdana" });
 
-    expect(await decisionPropertiesPanel.getFont({ nodeName: DefaultNodeName.DECISION })).toBe("Verdana");
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    expect(await decisionPropertiesPanel.getFont()).toBe("Verdana");
   });
 
   test.skip("should change the Decision node shape - background color", async ({ nodes, decisionPropertiesPanel }) => {

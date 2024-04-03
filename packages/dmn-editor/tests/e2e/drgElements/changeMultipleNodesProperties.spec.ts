@@ -25,19 +25,21 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Change Properties - Multiple Nodes", () => {
-  test("should change multiple nodes font", async ({ palette, diagram, multipleNodesPropertiesPanel }) => {
+  test("should change multiple nodes font", async ({ nodes, palette, diagram, multipleNodesPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
     await diagram.resetFocus();
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 100 } });
     await diagram.resetFocus();
 
     await multipleNodesPropertiesPanel.open();
+    await nodes.selectMultiple({ names: [DefaultNodeName.INPUT_DATA, DefaultNodeName.DECISION] });
     await multipleNodesPropertiesPanel.setMultipleNodesFont({
-      nodeNames: [DefaultNodeName.INPUT_DATA, DefaultNodeName.DECISION],
       newFont: "Verdana",
     });
 
-    expect(await multipleNodesPropertiesPanel.getFont({ nodeName: DefaultNodeName.INPUT_DATA })).toBe("Verdana");
-    expect(await multipleNodesPropertiesPanel.getFont({ nodeName: DefaultNodeName.DECISION })).toBe("Verdana");
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    expect(await multipleNodesPropertiesPanel.getFont()).toBe("Verdana");
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    expect(await multipleNodesPropertiesPanel.getFont()).toBe("Verdana");
   });
 });

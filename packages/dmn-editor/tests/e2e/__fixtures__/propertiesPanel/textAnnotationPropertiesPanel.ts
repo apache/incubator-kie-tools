@@ -20,27 +20,23 @@
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
 export class TextAnnotationProperties extends PropertiesPanelBase {
-  public async setFormat(args: { nodeName: string; newFormat: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async setFormat(args: { newFormat: string }) {
     await this.panel().getByPlaceholder("Enter a text format...").fill(args.newFormat);
     // commit changes by click to the diagram
     await this.diagram.resetFocus();
   }
 
-  public async getFormat(args: { nodeName: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async getFormat() {
     return await this.panel().getByPlaceholder("Enter a text format...").inputValue();
   }
 
-  public async setText(args: { nodeName: string; newText: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async setText(args: { newText: string }) {
     await this.panel().getByPlaceholder("Enter text...").fill(args.newText);
     // commit changes by click to the diagram
     await this.diagram.resetFocus();
   }
 
-  public async getText(args: { nodeName: string }) {
-    await this.selectNodeByClickToAppropriatePosition({ nodeName: args.nodeName });
+  public async getText() {
     return await this.panel().getByPlaceholder("Enter text...").inputValue();
   }
 }

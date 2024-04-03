@@ -71,32 +71,32 @@ export const test = base.extend<DmnEditorFixtures>({
   palette: async ({ page, diagram, nodes }, use) => {
     await use(new Palette(page, diagram, nodes));
   },
-  bkmPropertiesPanel: async ({ diagram, nodes, page }, use) => {
-    await use(new BkmPropertiesPanel(diagram, nodes, page));
+  bkmPropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new BkmPropertiesPanel(diagram, page));
   },
-  decisionPropertiesPanel: async ({ diagram, nodes, page }, use) => {
-    await use(new DecisionPropertiesPanel(diagram, nodes, page));
+  decisionPropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new DecisionPropertiesPanel(diagram, page));
   },
-  decisionServicePropertiesPanel: async ({ diagram, nodes, page }, use) => {
-    await use(new DecisionServicePropertiesPanel(diagram, nodes, page));
+  decisionServicePropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new DecisionServicePropertiesPanel(diagram, page));
   },
-  diagramPropertiesPanel: async ({ diagram, nodes, page }, use) => {
-    await use(new DiagramPropertiesPanel(diagram, nodes, page));
+  diagramPropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new DiagramPropertiesPanel(diagram, page));
   },
-  groupPropertiesPanel: async ({ diagram, nodes, page }, use) => {
-    await use(new GroupPropertiesPanel(diagram, nodes, page));
+  groupPropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new GroupPropertiesPanel(diagram, page));
   },
-  knowledgeSourcePropertiesPanel: async ({ diagram, nodes, page }, use) => {
-    await use(new KnowledgeSourcePropertiesPanel(diagram, nodes, page));
+  knowledgeSourcePropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new KnowledgeSourcePropertiesPanel(diagram, page));
   },
-  inputDataPropertiesPanel: async ({ diagram, nodes, page }, use) => {
-    await use(new InputDataPropertiesPanel(diagram, nodes, page));
+  inputDataPropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new InputDataPropertiesPanel(diagram, page));
   },
-  multipleNodesPropertiesPanel: async ({ diagram, nodes, page }, use) => {
-    await use(new MultipleNodesPropertiesPanel(diagram, nodes, page));
+  multipleNodesPropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new MultipleNodesPropertiesPanel(diagram, page));
   },
-  textAnnotationPropertiesPanel: async ({ diagram, nodes, page }, use) => {
-    await use(new TextAnnotationPropertiesPanel(diagram, nodes, page));
+  textAnnotationPropertiesPanel: async ({ diagram, page }, use) => {
+    await use(new TextAnnotationPropertiesPanel(diagram, page));
   },
 });
 

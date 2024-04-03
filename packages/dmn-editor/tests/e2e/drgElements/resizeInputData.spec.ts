@@ -31,11 +31,9 @@ test.describe("Resize node - Input Data", () => {
     await nodes.resize({ nodeName: DefaultNodeName.INPUT_DATA, xOffset: 50, yOffset: 50 });
 
     await inputDataPropertiesPanel.open();
-    await expect((await inputDataPropertiesPanel.getShape({ nodeName: DefaultNodeName.INPUT_DATA })).width).toEqual(
-      "200"
-    );
-    await expect((await inputDataPropertiesPanel.getShape({ nodeName: DefaultNodeName.INPUT_DATA })).height).toEqual(
-      "120"
-    );
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    const { width, height } = await inputDataPropertiesPanel.getShape();
+    expect(width).toEqual("200");
+    expect(height).toEqual("120");
   });
 });
