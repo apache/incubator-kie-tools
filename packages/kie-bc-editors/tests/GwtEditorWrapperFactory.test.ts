@@ -20,7 +20,7 @@
 import { GwtEditorWrapperFactory } from "@kie-tools/kie-bc-editors/dist/common/GwtEditorWrapperFactory";
 import { GwtLanguageData, Resource } from "@kie-tools/kie-bc-editors/dist/common/GwtLanguageData";
 import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
-import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/common";
+import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/messageBusClientApiMock";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 import {
   ChannelType,

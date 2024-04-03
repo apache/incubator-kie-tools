@@ -16,8 +16,8 @@
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf dist && tsc",
-    "prepare": "pnpm run build"
+    "build:dev": "rimraf dist && tsc",
+    "build:prod": "rimraf dist && tsc"
   },
   "dependencies": {
     "chai": "^4.3.10",
