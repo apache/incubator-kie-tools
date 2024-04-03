@@ -31,7 +31,7 @@
     <version>${revision}</version>
     <relativePath>../quarkus-examples-maven-parent/pom.xml</relativePath>
   </parent>
-  <artifactId>decisiontable-quarkus-example</artifactId>
+  <artifactId>drools-xls-decision-table-quarkus-example</artifactId>
   <name>Kie-Tools Example :: Decision Table - Quarkus</name>
   <dependencies>
     <dependency>

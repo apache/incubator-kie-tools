@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools-examples/decisiontable-quarkus-example",
+  "name": "@kie-tools-examples/drools-xls-decision-table-quarkus-example",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",

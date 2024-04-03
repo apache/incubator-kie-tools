@@ -34,7 +34,7 @@
   </parent>
 
   <groupId>org.apache.kie.sonataflow.examples</groupId>
-  <artifactId>sonataflow-greeting-quarkus</artifactId>
+  <artifactId>sonataflow-greeting-quarkus-example</artifactId>
   <version>${revision}</version>
 
   <name>KIE Tools Example :: SonataFlow Greeting :: Quarkus</name>
