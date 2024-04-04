@@ -17,17 +17,4 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
-
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnEditor: {
-        storybook: {
-          port: "9901",
-        },
-      },
-    };
-  },
-});
+declare module "*.svg";

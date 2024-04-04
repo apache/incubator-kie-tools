@@ -28,14 +28,11 @@
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
-  "dependencies": {
-    "@kie-tools-core/notifications": "workspace:*",
-    "@kie-tools/yard-model": "workspace:*"
-  },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@kie-tools/yard-model": "workspace:*",
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
