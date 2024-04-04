@@ -1504,11 +1504,10 @@ importers:
         version: 1.1.6
 
   packages/dashbuilder:
-    dependencies:
+    devDependencies:
       "@kie-tools/dashbuilder-component-assembler":
         specifier: workspace:*
         version: link:../dashbuilder-component-assembler
-    devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -3038,11 +3037,10 @@ importers:
         version: link:../root-env
 
   packages/dev-deployment-base-image:
-    dependencies:
+    devDependencies:
       "@kie-tools/dev-deployment-upload-service":
         specifier: workspace:*
         version: link:../dev-deployment-upload-service
-    devDependencies:
       "@kie-tools/image-builder":
         specifier: workspace:*
         version: link:../image-builder
@@ -10776,10 +10774,6 @@ importers:
         version: 4.8.4
 
   packages/stunner-editors:
-    dependencies:
-      "@kie-tools/stunner-editors-dmn-loader":
-        specifier: workspace:*
-        version: link:../stunner-editors-dmn-loader
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -10787,6 +10781,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/stunner-editors-dmn-loader":
+        specifier: workspace:*
+        version: link:../stunner-editors-dmn-loader
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -12571,10 +12568,6 @@ importers:
         version: 4.8.4
 
   packages/yard-model:
-    dependencies:
-      "@kie-tools-core/notifications":
-        specifier: workspace:*
-        version: link:../notifications
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -12630,13 +12623,6 @@ importers:
         version: 4.8.4
 
   packages/yard-validator-worker:
-    dependencies:
-      "@kie-tools-core/notifications":
-        specifier: workspace:*
-        version: link:../notifications
-      "@kie-tools/yard-model":
-        specifier: workspace:*
-        version: link:../yard-model
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -12647,6 +12633,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@kie-tools/yard-model":
+        specifier: workspace:*
+        version: link:../yard-model
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
