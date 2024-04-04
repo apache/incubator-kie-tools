@@ -85,7 +85,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    1. Using a different Data Index Service.
 
       ```bash
-      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_TASK_CONSOLE_DATAINDEX_HTTP_URL=<my_value> -i --rm quay.io/kie-tools/runtime-tools-task-console-webapp-image:daily-dev
+      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm quay.io/kie-tools/runtime-tools-task-console-webapp-image:daily-dev
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -95,7 +95,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    ```docker
    FROM quay.io/kie-tools/runtime-tools-task-console-webapp-image:daily-dev
 
-   ENV RUNTIME_TOOLS_TASK_CONSOLE_DATAINDEX_HTTP_URL=<my_value>
+   ENV RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT=<my_value>
    ```
 
 3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.
