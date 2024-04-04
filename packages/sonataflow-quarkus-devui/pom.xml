@@ -51,33 +51,6 @@
   </modules>
 
   <build>
-      <plugins>
-          <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>flatten-maven-plugin</artifactId>
-              <version>${version.flatten.plugin}</version>
-              <configuration>
-                  <updatePomFile>true</updatePomFile>
-                  <flattenMode>resolveCiFriendliesOnly</flattenMode>
-              </configuration>
-              <executions>
-                  <execution>
-                      <id>flatten-revision</id>
-                      <phase>process-resources</phase>
-                      <goals>
-                          <goal>flatten</goal>
-                      </goals>
-                  </execution>
-                  <execution>
-                      <id>flatten-revision-clean</id>
-                      <phase>clean</phase>
-                      <goals>
-                          <goal>clean</goal>
-                      </goals>
-                  </execution>
-              </executions>
-          </plugin>
-      </plugins>
     <pluginManagement>
       <plugins>
         <plugin>
