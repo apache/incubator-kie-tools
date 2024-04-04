@@ -96,42 +96,42 @@
 
 # 0.28.0 (alpha)
 
-- [KOGITO-8543](https://issues.redhat.com/browse/KOGITO-8543) - Support Samples Dashboard Repository by @jesuino in https://github.com/kiegroup/kie-tools/pull/1445
-- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/kiegroup/kie-tools/pull/1485
-- [KOGITO-8721](https://issues.redhat.com/browse/KOGITO-8721) - Improve Dashbuilder Fetch response error message by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1487
-- [KOGITO-8731](https://issues.redhat.com/browse/KOGITO-8731) - Make filter enabled by default when a \"filter\" is added to the YAML by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1496
-- [KOGITO-8765](https://issues.redhat.com/browse/KOGITO-8765) - Include index.css in the final bundle by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1503
-- [KOGITO-8810](https://issues.redhat.com/browse/KOGITO-8810) - Improve Dashbuilder Error Message by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1519
-- [KOGITO-8824](https://issues.redhat.com/browse/KOGITO-8824) - [Dashbuilder] Support \"accumulate\" flag in data sets by @jesuino in https://github.com/kiegroup/kie-tools/pull/1517
-- [KOGITO-9016](https://issues.redhat.com/browse/KOGITO-9016) - Fix Dashbuilder CSV Parser for empty fields by @jesuino in https://github.com/kiegroup/kie-tools/pull/1566
-- [KOGITO-9076](https://issues.redhat.com/browse/KOGITO-9076) - Retrieve Dashbuilder DataSet Columns information for CSV and Metrics by @jesuino in https://github.com/kiegroup/kie-tools/pull/1592
-- [KOGITO-8888](https://issues.redhat.com/browse/KOGITO-8888) - Show a message in dashbuilder page when displayer configuration is invalid by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1569
-- [kie-issues#102](https://github.com/kiegroup/kie-issues/issues/102) - BPMN Editor: Zooming in/out does not update the toolbox for correct size by @inodeman in https://github.com/kiegroup/kie-tools/pull/1470
-- [kie-issues#139](https://github.com/kiegroup/kie-issues/issues/139) - BPMN Editor breaking if `bpmn2` file lacks `id` by @pefernan in https://github.com/kiegroup/kie-tools/pull/1523
-- [kie-issues#117](https://github.com/kiegroup/kie-issues/issues/117) - BPMN Editor: Enable auto population of DMN fields in Business Rule Task by @inodeman in https://github.com/kiegroup/kie-tools/pull/1524
-- [KOGITO-8946](https://issues.redhat.com/browse/KOGITO-8946) - Missing structureref type for service task in VSCode BPMN editor by @hasys in https://github.com/kiegroup/kie-tools/pull/1542
-- [kie-issues#42](https://github.com/kiegroup/kie-issues/issues/42) - DMN Editor: Repetitive opening of properties panel for List expression by @danielzhe in https://github.com/kiegroup/kie-tools/pull/1502
-- [kie-issues#44](https://github.com/kiegroup/kie-issues/issues/44) - DMN Editor: Autolayout is broken for decision services by @danielzhe in https://github.com/kiegroup/kie-tools/pull/1495
-- [kie-issues#110](https://github.com/kiegroup/kie-issues/issues/110) - Removing \"Supported by Red Hat\" logo in DMN Editor Documentation Tab by @yesamer in https://github.com/kiegroup/kie-tools/pull/1561
-- [kie-issues#87](https://github.com/kiegroup/kie-issues/issues/87) - Refactor the React-based Boxed Expression Component to be able to delete the GWT-based one by @tiagobento in https://github.com/kiegroup/kie-tools/pull/1562
-- [kie-issues#112](https://github.com/kiegroup/kie-issues/issues/112) - DMN Editor - JavaAutocompletion module is not compatible with Java Languages Extension >= `1.17.0` by @yesamer in https://github.com/kiegroup/kie-tools/pull/1591
-- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/kiegroup/kie-tools/pull/1485
-- [KOGITO-8716](https://issues.redhat.com/browse/KOGITO-8716) - [SWF Viewer] Backward orthogonal Lines should not overlap states by @handreyrc in https://github.com/kiegroup/kie-tools/pull/1476
-- [KOGITO-8714](https://issues.redhat.com/browse/KOGITO-8714) - SWF Viewer - display stateDataFilter parameter with icon by @hasys in https://github.com/kiegroup/kie-tools/pull/1474
-- [KOGITO-8677](https://issues.redhat.com/browse/KOGITO-8677) - SWF Diagram Editor - i18n by @hasys in https://github.com/kiegroup/kie-tools/pull/1501
-- [KOGITO-8802](https://issues.redhat.com/browse/KOGITO-8802) - SWF Diagram Editor - depiction of actionMode parameter by @hasys in https://github.com/kiegroup/kie-tools/pull/1511
-- [KOGITO-8783](https://issues.redhat.com/browse/KOGITO-8783) - [SWF Editor] Create empty workflow on code lens by @Sara4994 in https://github.com/kiegroup/kie-tools/pull/1513
-- [KOGITO-8335](https://issues.redhat.com/browse/KOGITO-8335) - [SWF Editor] Provide feedback when operationId is missing from Open API spec by @bxf12315 in https://github.com/kiegroup/kie-tools/pull/1458
-- [KOGITO-8624](https://issues.redhat.com/browse/KOGITO-8624) - Provide autocomplete support for JQ expressions by @AjayJagan in https://github.com/kiegroup/kie-tools/pull/1472
-- [KOGITO-8793](https://issues.redhat.com/browse/KOGITO-8793) - BoudingBox values of states with tooltip boxes are wrong by @hasys in https://github.com/kiegroup/kie-tools/pull/1515
-- [KOGITO-8696](https://issues.redhat.com/browse/KOGITO-8696) - [SWF Editor] Add support to Camel routes in Service Catalog by @Sara4994 in https://github.com/kiegroup/kie-tools/pull/1467
-- [KOGITO-8844](https://issues.redhat.com/browse/KOGITO-8844) - SWF Viewer - Preserve background color of a node in stunner diagram by @hasys in https://github.com/kiegroup/kie-tools/pull/1532
-- [KOGITO-8197](https://issues.redhat.com/browse/KOGITO-8197) - SWF Editor - States example export is broken by @hasys in https://github.com/kiegroup/kie-tools/pull/1537
-- [KOGITO-8907](https://issues.redhat.com/browse/KOGITO-8907) - [SWF Editor] Highlight selected node after setContent in VS Code extension by @paulovmr in https://github.com/kiegroup/kie-tools/pull/1536
-- [KOGITO-8316](https://issues.redhat.com/browse/KOGITO-8316) - SWF Viewer - Parallel state requires more details by @hasys in https://github.com/kiegroup/kie-tools/pull/1541
-- [KOGITO-7999](https://issues.redhat.com/browse/KOGITO-7999) - Stunner - Editor API Canvas/Session/Domain Definitions exposed in JS by @handreyrc in https://github.com/kiegroup/kie-tools/pull/1366
-- [KOGITO-6864](https://issues.redhat.com/browse/KOGITO-6864) - [SWF Diagram Editor] Support for YAML workflow declaration by @treblereel in https://github.com/kiegroup/kie-tools/pull/1444
-- [KOGITO-8938](https://issues.redhat.com/browse/KOGITO-8938) - SWF Viewer - show missing parameters info in Callback State icons by @hasys in https://github.com/kiegroup/kie-tools/pull/1560
+- [KOGITO-8543](https://issues.redhat.com/browse/KOGITO-8543) - Support Samples Dashboard Repository by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1445
+- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/apache/incubator-kie-tools/pull/1485
+- [KOGITO-8721](https://issues.redhat.com/browse/KOGITO-8721) - Improve Dashbuilder Fetch response error message by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1487
+- [KOGITO-8731](https://issues.redhat.com/browse/KOGITO-8731) - Make filter enabled by default when a \"filter\" is added to the YAML by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1496
+- [KOGITO-8765](https://issues.redhat.com/browse/KOGITO-8765) - Include index.css in the final bundle by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1503
+- [KOGITO-8810](https://issues.redhat.com/browse/KOGITO-8810) - Improve Dashbuilder Error Message by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1519
+- [KOGITO-8824](https://issues.redhat.com/browse/KOGITO-8824) - [Dashbuilder] Support \"accumulate\" flag in data sets by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1517
+- [KOGITO-9016](https://issues.redhat.com/browse/KOGITO-9016) - Fix Dashbuilder CSV Parser for empty fields by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1566
+- [KOGITO-9076](https://issues.redhat.com/browse/KOGITO-9076) - Retrieve Dashbuilder DataSet Columns information for CSV and Metrics by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1592
+- [KOGITO-8888](https://issues.redhat.com/browse/KOGITO-8888) - Show a message in dashbuilder page when displayer configuration is invalid by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1569
+- [kie-issues#102](https://github.com/kiegroup/kie-issues/issues/102) - BPMN Editor: Zooming in/out does not update the toolbox for correct size by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1470
+- [kie-issues#139](https://github.com/kiegroup/kie-issues/issues/139) - BPMN Editor breaking if `bpmn2` file lacks `id` by @pefernan in https://github.com/apache/incubator-kie-tools/pull/1523
+- [kie-issues#117](https://github.com/kiegroup/kie-issues/issues/117) - BPMN Editor: Enable auto population of DMN fields in Business Rule Task by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1524
+- [KOGITO-8946](https://issues.redhat.com/browse/KOGITO-8946) - Missing structureref type for service task in VSCode BPMN editor by @hasys in https://github.com/apache/incubator-kie-tools/pull/1542
+- [kie-issues#42](https://github.com/kiegroup/kie-issues/issues/42) - DMN Editor: Repetitive opening of properties panel for List expression by @danielzhe in https://github.com/apache/incubator-kie-tools/pull/1502
+- [kie-issues#44](https://github.com/kiegroup/kie-issues/issues/44) - DMN Editor: Autolayout is broken for decision services by @danielzhe in https://github.com/apache/incubator-kie-tools/pull/1495
+- [kie-issues#110](https://github.com/kiegroup/kie-issues/issues/110) - Removing \"Supported by Red Hat\" logo in DMN Editor Documentation Tab by @yesamer in https://github.com/apache/incubator-kie-tools/pull/1561
+- [kie-issues#87](https://github.com/kiegroup/kie-issues/issues/87) - Refactor the React-based Boxed Expression Component to be able to delete the GWT-based one by @tiagobento in https://github.com/apache/incubator-kie-tools/pull/1562
+- [kie-issues#112](https://github.com/kiegroup/kie-issues/issues/112) - DMN Editor - JavaAutocompletion module is not compatible with Java Languages Extension >= `1.17.0` by @yesamer in https://github.com/apache/incubator-kie-tools/pull/1591
+- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/apache/incubator-kie-tools/pull/1485
+- [KOGITO-8716](https://issues.redhat.com/browse/KOGITO-8716) - [SWF Viewer] Backward orthogonal Lines should not overlap states by @handreyrc in https://github.com/apache/incubator-kie-tools/pull/1476
+- [KOGITO-8714](https://issues.redhat.com/browse/KOGITO-8714) - SWF Viewer - display stateDataFilter parameter with icon by @hasys in https://github.com/apache/incubator-kie-tools/pull/1474
+- [KOGITO-8677](https://issues.redhat.com/browse/KOGITO-8677) - SWF Diagram Editor - i18n by @hasys in https://github.com/apache/incubator-kie-tools/pull/1501
+- [KOGITO-8802](https://issues.redhat.com/browse/KOGITO-8802) - SWF Diagram Editor - depiction of actionMode parameter by @hasys in https://github.com/apache/incubator-kie-tools/pull/1511
+- [KOGITO-8783](https://issues.redhat.com/browse/KOGITO-8783) - [SWF Editor] Create empty workflow on code lens by @Sara4994 in https://github.com/apache/incubator-kie-tools/pull/1513
+- [KOGITO-8335](https://issues.redhat.com/browse/KOGITO-8335) - [SWF Editor] Provide feedback when operationId is missing from Open API spec by @bxf12315 in https://github.com/apache/incubator-kie-tools/pull/1458
+- [KOGITO-8624](https://issues.redhat.com/browse/KOGITO-8624) - Provide autocomplete support for JQ expressions by @AjayJagan in https://github.com/apache/incubator-kie-tools/pull/1472
+- [KOGITO-8793](https://issues.redhat.com/browse/KOGITO-8793) - BoudingBox values of states with tooltip boxes are wrong by @hasys in https://github.com/apache/incubator-kie-tools/pull/1515
+- [KOGITO-8696](https://issues.redhat.com/browse/KOGITO-8696) - [SWF Editor] Add support to Camel routes in Service Catalog by @Sara4994 in https://github.com/apache/incubator-kie-tools/pull/1467
+- [KOGITO-8844](https://issues.redhat.com/browse/KOGITO-8844) - SWF Viewer - Preserve background color of a node in stunner diagram by @hasys in https://github.com/apache/incubator-kie-tools/pull/1532
+- [KOGITO-8197](https://issues.redhat.com/browse/KOGITO-8197) - SWF Editor - States example export is broken by @hasys in https://github.com/apache/incubator-kie-tools/pull/1537
+- [KOGITO-8907](https://issues.redhat.com/browse/KOGITO-8907) - [SWF Editor] Highlight selected node after setContent in VS Code extension by @paulovmr in https://github.com/apache/incubator-kie-tools/pull/1536
+- [KOGITO-8316](https://issues.redhat.com/browse/KOGITO-8316) - SWF Viewer - Parallel state requires more details by @hasys in https://github.com/apache/incubator-kie-tools/pull/1541
+- [KOGITO-7999](https://issues.redhat.com/browse/KOGITO-7999) - Stunner - Editor API Canvas/Session/Domain Definitions exposed in JS by @handreyrc in https://github.com/apache/incubator-kie-tools/pull/1366
+- [KOGITO-6864](https://issues.redhat.com/browse/KOGITO-6864) - [SWF Diagram Editor] Support for YAML workflow declaration by @treblereel in https://github.com/apache/incubator-kie-tools/pull/1444
+- [KOGITO-8938](https://issues.redhat.com/browse/KOGITO-8938) - SWF Viewer - show missing parameters info in Callback State icons by @hasys in https://github.com/apache/incubator-kie-tools/pull/1560
 
 # 0.26.0 (alpha)
 

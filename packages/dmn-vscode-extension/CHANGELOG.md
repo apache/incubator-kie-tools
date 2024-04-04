@@ -62,11 +62,11 @@
 
 # 0.28.0 (alpha)
 
-- [kie-issues#42](https://github.com/kiegroup/kie-issues/issues/42) - DMN Editor: Repetitive opening of properties panel for List expression by @danielzhe in https://github.com/kiegroup/kie-tools/pull/1502
-- [kie-issues#44](https://github.com/kiegroup/kie-issues/issues/44) - DMN Editor: Autolayout is broken for decision services by @danielzhe in https://github.com/kiegroup/kie-tools/pull/1495
-- [kie-issues#110](https://github.com/kiegroup/kie-issues/issues/110) - Removing \"Supported by Red Hat\" logo in DMN Editor Documentation Tab by @yesamer in https://github.com/kiegroup/kie-tools/pull/1561
-- [kie-issues#87](https://github.com/kiegroup/kie-issues/issues/87) - Refactor the React-based Boxed Expression Component to be able to delete the GWT-based one by @tiagobento in https://github.com/kiegroup/kie-tools/pull/1562
-- [kie-issues#112](https://github.com/kiegroup/kie-issues/issues/112) - DMN Editor - JavaAutocompletion module is not compatible with Java Languages Extension >= `1.17.0` by @yesamer in https://github.com/kiegroup/kie-tools/pull/1591
+- [kie-issues#42](https://github.com/kiegroup/kie-issues/issues/42) - DMN Editor: Repetitive opening of properties panel for List expression by @danielzhe in https://github.com/apache/incubator-kie-tools/pull/1502
+- [kie-issues#44](https://github.com/kiegroup/kie-issues/issues/44) - DMN Editor: Autolayout is broken for decision services by @danielzhe in https://github.com/apache/incubator-kie-tools/pull/1495
+- [kie-issues#110](https://github.com/kiegroup/kie-issues/issues/110) - Removing \"Supported by Red Hat\" logo in DMN Editor Documentation Tab by @yesamer in https://github.com/apache/incubator-kie-tools/pull/1561
+- [kie-issues#87](https://github.com/kiegroup/kie-issues/issues/87) - Refactor the React-based Boxed Expression Component to be able to delete the GWT-based one by @tiagobento in https://github.com/apache/incubator-kie-tools/pull/1562
+- [kie-issues#112](https://github.com/kiegroup/kie-issues/issues/112) - DMN Editor - JavaAutocompletion module is not compatible with Java Languages Extension >= `1.17.0` by @yesamer in https://github.com/apache/incubator-kie-tools/pull/1591
 
 # 0.26.0 (alpha)
 
