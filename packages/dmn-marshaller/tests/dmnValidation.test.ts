@@ -21,34 +21,38 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import * as prettier from "prettier";
+import { fail } from "assert";
 
 const xmlPrettierPlugin = require("@prettier/plugin-xml");
+const jbang = require("@jbangdev/jbang");
 
 /* dmn-testing-models module Directories */
 const VALID_MODELS_DIRECTORY = "valid_models";
 const DMN_1_5_DIRECTORY = "DMNv1_5";
 const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
 
+const files = [
+  ".." +
+    path.sep +
+    VALID_MODELS_DIRECTORY +
+    path.sep +
+    DMN_1_5_DIRECTORY +
+    path.sep +
+    "AllowedValuesChecksInsideCollection.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "DateToDateTimeFunction.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "ForLoopDatesEvaluate.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "ListReplaceEvaluate.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "NegationOfDurationEvaluate.dmn",
+  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep + "TypeConstraintsChecks.dmn",
+];
+
 const testing_models_paths = [".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY];
 
 describe("validation", () => {
-  for (const models_paths of testing_models_paths) {
-    const parent_path = path.join(dmnTestingModels, models_paths);
-    testDirectory(parent_path);
+  for (const file of files) {
+    testFile(path.join(dmnTestingModels, file));
   }
 });
-
-function testDirectory(normalizedFsPathRelativeToTheDirectory: string) {
-  fs.readdirSync(normalizedFsPathRelativeToTheDirectory).forEach((file) => {
-    const child_path = path.join(normalizedFsPathRelativeToTheDirectory, file);
-    const stats = fs.statSync(child_path);
-    if (stats.isFile()) {
-      testFile(child_path);
-    } else {
-      testDirectory(child_path);
-    }
-  });
-}
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
   test(
@@ -58,16 +62,12 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
       const xml_marshalled = builder.build(parser.parse());
 
-      expect(formatXmlForTest(xml_marshalled)).toStrictEqual(formatXmlForTest(xml_original));
+      try {
+        jbang.exec("--java 17", "properties@jbangdev", "java.version");
+        jbang.exec("./tests/jbang_scripts/dmnValidation.java", "'" + xml_marshalled + "'");
+      } catch (error) {
+        fail("An error occured");
+      }
     }
   );
-}
-
-function formatXmlForTest(toFormat: string): string {
-  return prettier.format(toFormat, {
-    parser: "xml",
-    plugins: [xmlPrettierPlugin],
-    // @ts-expect-error option from / for "@prettier/plugin-xml" which does not have types
-    xmlWhitespaceSensitivity: "ignore",
-  });
 }

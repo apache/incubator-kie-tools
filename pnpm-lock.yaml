@@ -3741,6 +3741,9 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0(@babel/core@7.18.10)
+      "@jbangdev/jbang":
+        specifier: 0.2.0
+        version: 0.2.0
       "@kie-tools/dmn-testing-models":
         specifier: workspace:*
         version: link:../dmn-testing-models
@@ -22826,6 +22829,14 @@ packages:
     engines: { node: ">=8" }
     dev: true
 
+  /@jbangdev/jbang@0.2.0:
+    resolution:
+      { integrity: sha512-Ixo6/Y5sXKmNjYlf03xws79siAGEvrZPgNAlSCXK9DZ8xH7hkzdZ0AwE5QDSaMmOwy/yUrLhPhjojwg+WhyBMg== }
+    requiresBuild: true
+    dependencies:
+      shelljs: 0.8.5
+    dev: true
+
   /@jest/console@26.6.2:
     resolution:
       { integrity: sha512-IY1R2i2aLsLr7Id3S6p2BA82GNWryt4oSvEXLAKc+L2zdi89dSkE8xC1C+0kpATG4JhBJREnQOH7/zmccM2B0g== }
@@ -35871,7 +35882,7 @@ packages:
     resolution:
       { integrity: sha512-/um0GFqUXnpM9SvKtje+9Tjoz3f1fpBC3eXRFrNs8kpYn69JljciYP7KZTqM/YQbUY9KUjvKB4jo/q+L6WGGvg== }
     dependencies:
-      hasown: 2.0.0
+      hasown: 2.0.2
       object-is: 1.1.5
     dev: true
 
@@ -36003,7 +36014,7 @@ packages:
       has-property-descriptors: 1.0.0
       has-proto: 1.0.1
       has-symbols: 1.0.3
-      hasown: 2.0.0
+      hasown: 2.0.2
       internal-slot: 1.0.5
       is-array-buffer: 3.0.2
       is-callable: 1.2.7
@@ -38150,7 +38161,7 @@ packages:
       function-bind: 1.1.2
       has-proto: 1.0.1
       has-symbols: 1.0.3
-      hasown: 2.0.0
+      hasown: 2.0.2
 
   /get-intrinsic@1.2.4:
     resolution:
@@ -38161,7 +38172,7 @@ packages:
       function-bind: 1.1.2
       has-proto: 1.0.1
       has-symbols: 1.0.3
-      hasown: 2.0.0
+      hasown: 2.0.2
     dev: true
 
   /get-nonce@1.0.1:
@@ -38810,6 +38821,7 @@ packages:
     engines: { node: ">= 0.4" }
     dependencies:
       function-bind: 1.1.2
+    dev: true
 
   /hasown@2.0.2:
     resolution:
@@ -38817,7 +38829,6 @@ packages:
     engines: { node: ">= 0.4" }
     dependencies:
       function-bind: 1.1.2
-    dev: true
 
   /hdr-histogram-js@2.0.3:
     resolution:
@@ -39561,6 +39572,12 @@ packages:
     engines: { node: ">=12" }
     dev: false
 
+  /interpret@1.4.0:
+    resolution:
+      { integrity: sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA== }
+    engines: { node: ">= 0.10" }
+    dev: true
+
   /interpret@2.2.0:
     resolution:
       { integrity: sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw== }
@@ -39724,18 +39741,11 @@ packages:
       ci-info: 3.3.2
     dev: true
 
-  /is-core-module@2.12.0:
-    resolution:
-      { integrity: sha512-RECHCBCd/viahWmwj6enj19sKbHfJrddi/6cBDsNTKbNq0f7VeaUkBo60BqzvPqo/W54ChS62Z5qyun7cfOMqQ== }
-    dependencies:
-      has: 1.0.3
-    dev: true
-
   /is-core-module@2.13.1:
     resolution:
       { integrity: sha512-hHrIjvZsftOsvKSn2TRYl63zvxsgE0K+0mYMoH6gD4omR5IWB2KynivBQczo3+wF1cCkjzvptnI9Q0sPU66ilw== }
     dependencies:
-      hasown: 2.0.0
+      hasown: 2.0.2
 
   /is-core-module@2.9.0:
     resolution:
@@ -47591,12 +47601,20 @@ packages:
       tslib: 2.6.2
     dev: true
 
+  /rechoir@0.6.2:
+    resolution:
+      { integrity: sha512-HFM8rkZ+i3zrV+4LQjwQ0W+ez98pApMGM3HUrN04j3CqzPOzl9nmP15Y8YXNm8QHGv/eacOVEjqhmWpkRV0NAw== }
+    engines: { node: ">= 0.10" }
+    dependencies:
+      resolve: 1.22.8
+    dev: true
+
   /rechoir@0.7.0:
     resolution:
       { integrity: sha512-ADsDEH2bvbjltXEP+hTIAmeFekTFK0V2BTxMkok6qILyAJEXV0AFfoWcAq4yfll5VdIMd/RVXq0lR+wQi5ZU3Q== }
     engines: { node: ">= 0.10" }
     dependencies:
-      resolve: 1.22.1
+      resolve: 1.22.8
     dev: true
 
   /redent@3.0.0:
@@ -48018,7 +48036,7 @@ packages:
       { integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw== }
     hasBin: true
     dependencies:
-      is-core-module: 2.12.0
+      is-core-module: 2.13.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
@@ -48037,7 +48055,7 @@ packages:
       { integrity: sha512-iMDbmAWtfU+MHpxt/I5iWI7cY6YVEZUQ3MBgPQ++XD1PELuJHIl82xBmObyP2KyQmkNB2dsqF7seoQQiAn5yDQ== }
     hasBin: true
     dependencies:
-      is-core-module: 2.12.0
+      is-core-module: 2.13.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
@@ -48817,6 +48835,17 @@ packages:
   /shell-quote@1.8.1:
     resolution:
       { integrity: sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA== }
+    dev: true
+
+  /shelljs@0.8.5:
+    resolution:
+      { integrity: sha512-TiwcRcrkhHvbrZbnRcFYMLl30Dfov3HKqzp5tO5b4pt6G/SezKcYhmDg15zXVBswHmctSAQKznqNW2LO5tTDow== }
+    engines: { node: ">=4" }
+    hasBin: true
+    dependencies:
+      glob: 7.2.3
+      interpret: 1.4.0
+      rechoir: 0.6.2
     dev: true
 
   /shellwords@0.1.1:
