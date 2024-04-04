@@ -17,9 +17,41 @@
  * under the License.
  */
 
+import { DataType } from "../jsonModel";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
 export class MultipleNodesPropertiesPanel extends PropertiesPanelBase {
+  public async setName(args: { newName: string }) {
+    throw new Error("Not supported operation for multiple selected nodes");
+  }
+
+  public async getName() {
+    throw new Error("Not supported operation for multiple selected nodes");
+    return "";
+  }
+
+  public async setDataType(args: { newDataType: DataType }) {
+    throw new Error("Not supported operation for multiple selected nodes");
+  }
+
+  public async setDescription(args: { newDescription: string }) {
+    throw new Error("Not supported operation for multiple selected nodes");
+  }
+
+  public async getDescription() {
+    throw new Error("Not supported operation for multiple selected nodes");
+    return "";
+  }
+
+  public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
+    throw new Error("Not supported operation for multiple selected nodes");
+  }
+
+  public async getDocumentationLinks() {
+    throw new Error("Not supported operation for multiple selected nodes");
+    return [];
+  }
+
   public async setMultipleNodesFont(args: { newFont: string }) {
     await this.panel().getByTestId("node-font-style-selector").click();
     await this.panel().getByText(args.newFont).click();

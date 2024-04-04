@@ -17,9 +17,32 @@
  * under the License.
  */
 
+import { DataType } from "../jsonModel";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
 export class TextAnnotationProperties extends PropertiesPanelBase {
+  public async setName(args: { newName: string }) {
+    throw new Error("Not supported operation for Text Annotation");
+  }
+
+  public async getName() {
+    throw new Error("Not supported operation for Text Annotation");
+    return "";
+  }
+
+  public async setDataType(args: { newDataType: DataType }) {
+    throw new Error("Not supported operation for Text Annotation");
+  }
+
+  public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
+    throw new Error("Not supported operation for Text Annotation");
+  }
+
+  public async getDocumentationLinks() {
+    throw new Error("Not supported operation for Text Annotation");
+    return [];
+  }
+
   public async setFormat(args: { newFormat: string }) {
     await this.panel().getByPlaceholder("Enter a text format...").fill(args.newFormat);
     // commit changes by click to the diagram

@@ -17,9 +17,14 @@
  * under the License.
  */
 
+import { DataType } from "../jsonModel";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
 export class KnowledgeSourcePropertiesPanel extends PropertiesPanelBase {
+  public async setDataType(args: { newDataType: DataType }) {
+    throw new Error("Not supported operation for Knowledge Source");
+  }
+
   public async setSourceType(args: { newSourceType: string }) {
     await this.panel().getByPlaceholder("Enter source type...").fill(args.newSourceType);
     // commit changes by click to the diagram

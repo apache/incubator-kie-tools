@@ -19,4 +19,13 @@
 
 import { PropertiesPanelBase } from "./propertiesPanelBase";
 
-export class GroupPropertiesPanel extends PropertiesPanelBase {}
+export class GroupPropertiesPanel extends PropertiesPanelBase {
+  public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
+    throw new Error("Not supported operation for Group");
+  }
+
+  public async getDocumentationLinks() {
+    throw new Error("Not supported operation for Group");
+    return [];
+  }
+}
