@@ -9407,6 +9407,9 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
       jest:
         specifier: ^26.6.3
         version: 26.6.3
