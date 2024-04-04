@@ -18,7 +18,6 @@
  */
 
 const path = require("path");
-const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");

@@ -28,6 +28,8 @@ import { useBrandContext } from "../../contexts/BrandContext/BrandContext";
 declare global {
   interface Window {
     DATA_INDEX_ENDPOINT: string;
+    KOGITO_APP_NAME: string;
+    KOGITO_APP_VERSION: string;
   }
 }
 
@@ -37,12 +39,14 @@ export interface IOwnProps {
 }
 const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({ isOpenProp, handleModalToggleProp, ouiaId, ouiaSafe }) => {
   const dataIndexURL = window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL;
+  const appName = window.KOGITO_APP_NAME || process.env.KOGITO_APP_NAME;
+  const appVersion = window.KOGITO_APP_VERSION || process.env.KOGITO_APP_VERSION;
   const brandContext = useBrandContext();
   return (
     <AboutModal
       isOpen={isOpenProp}
       onClose={handleModalToggleProp}
-      trademark={`${process.env.KOGITO_APP_NAME} is part of Kogito, an open source software released under the Apache Software License 2.0`}
+      trademark={`${appName} is part of Kogito, an open source software released under the Apache Software License 2.0`}
       brandImageSrc={brandContext.imageSrc}
       brandImageAlt={brandContext.altText}
       className="kogito-consoles-common--aboutModalBox"
@@ -53,7 +57,7 @@ const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({ isOpenProp, handleModa
         <Text component="h5" />
         <TextList component="dl">
           <TextListItem component="dt">Version: </TextListItem>
-          <TextListItem component="dd">{process.env.KOGITO_APP_VERSION}</TextListItem>
+          <TextListItem component="dd">{appVersion}</TextListItem>
           <TextListItem component="dt">License information: </TextListItem>
           <TextListItem component="dd">
             <a href="https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE" target="_blank" rel="noreferrer">

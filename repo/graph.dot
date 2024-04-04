@@ -128,6 +128,7 @@ digraph G {
   "@kie-tools/runtime-tools-management-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-process-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-shared-webapp-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/runtime-tools-management-console-webapp-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-process-enveloped-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-process-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -417,6 +418,9 @@ digraph G {
   "@kie-tools/runtime-tools-components" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-management-console-webapp-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
+  "@kie-tools/runtime-tools-management-console-webapp-image" -> "@kie-tools/runtime-tools-management-console-webapp" [ style = "solid", color = "black" ];
+  "@kie-tools/runtime-tools-management-console-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/runtime-tools-process-gateway-api" [ style = "solid", color = "blue" ];

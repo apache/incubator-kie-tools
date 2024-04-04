@@ -36,6 +36,8 @@ import {
   getToken,
   appRenderWithAxiosInterceptorConfig,
 } from "@kie-tools/runtime-tools-components/dist/utils/KeycloakClient";
+import { initEnv } from "./env/Env";
+import { ENV_PREFIX } from "./env/EnvConstants";
 
 const onLoadFailure = (): void => {
   ReactDOM.render(<KeycloakUnavailablePage />, document.getElementById("root"));
@@ -43,7 +45,7 @@ const onLoadFailure = (): void => {
 
 const appRender = async (ctx: UserContext) => {
   const httpLink = new HttpLink({
-    uri: window["DATA_INDEX_ENDPOINT"] || process.env["KOGITO_DATAINDEX_HTTP_URL"],
+    uri: window["DATA_INDEX_ENDPOINT"],
   });
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
@@ -93,4 +95,11 @@ const appRender = async (ctx: UserContext) => {
   );
 };
 
-appRenderWithAxiosInterceptorConfig((ctx: UserContext) => appRender(ctx), onLoadFailure);
+initEnv().then((env) => {
+  if (env) {
+    Object.keys(env).forEach((key) => {
+      window[key.replace(`${ENV_PREFIX}_`, "")] = env[key];
+    });
+  }
+  appRenderWithAxiosInterceptorConfig((ctx: UserContext) => appRender(ctx), onLoadFailure);
+});

@@ -17,13 +17,20 @@
  * under the License.
  */
 
-import { KogitoConsolesKeycloakEnv } from "@kie-tools/runtime-tools-components/dist/utils/KeycloakClient";
+import { ENV_FILE_PATH } from "./EnvConstants";
+import { EnvJson } from "./EnvJson";
 
-export interface EnvJson extends KogitoConsolesKeycloakEnv {
-  RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_ENV_MODE: "DEV" | "PROD";
-  RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_NAME: string;
-  RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_APP_VERSION: string;
-  RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_STATES_LIST: string;
-  RUNTIME_TOOLS_TASK_CONSOLE_KOGITO_TASK_ACTIVE_STATES_LIST: string;
-  RUNTIME_TOOLS_TASK_CONSOLE_DATA_INDEX_ENDPOINT: string;
+export async function initEnv() {
+  return fetch(ENV_FILE_PATH)
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${ENV_FILE_PATH}: ${response.statusText}`);
+      }
+
+      const envJson = await response.json();
+      return envJson as EnvJson;
+    })
+    .catch((e) => {
+      console.error(e);
+    });
 }
