@@ -17,12 +17,29 @@
  * under the License.
  */
 
-import { create } from "@storybook/theming/create";
-import brandImage from "./static/logo.svg";
+import { ApiDefinition, MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
-export const KieToolsTheme = create({
-  base: "light",
-  brandTitle: "Apache KIE Tools",
-  brandImage,
-  brandTarget: "_self",
-});
+export function messageBusClientApiMock<T extends ApiDefinition<T>>(): MessageBusClientApi<T> {
+  const mocks = new Map<any, any>();
+
+  const proxyMock = (value: any) =>
+    new Proxy({} as any, {
+      get: (target, name) => {
+        return mocks.get(name) ?? mocks.set(name, value).get(name);
+      },
+    });
+
+  return {
+    notifications: proxyMock({
+      send: jest.fn(),
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+    }),
+    requests: proxyMock(jest.fn()),
+    shared: proxyMock({
+      set: jest.fn(),
+      subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
+    }),
+  };
+}

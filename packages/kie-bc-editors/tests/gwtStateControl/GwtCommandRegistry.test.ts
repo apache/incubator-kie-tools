@@ -20,7 +20,7 @@
 import { DefaultStateControlCommandRegistry } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/common";
+import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/messageBusClientApiMock";
 
 class Command {
   private id: string;

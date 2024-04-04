@@ -17,8 +17,12 @@
  * under the License.
  */
 
-import { EnvelopeClient } from "../../dist/envelope";
-import { EnvelopeBusMessage, EnvelopeBusMessageDirectSender, EnvelopeBusMessagePurpose } from "../../dist/api";
+import { EnvelopeClient } from "@kie-tools-core/envelope-bus/dist/envelope";
+import {
+  EnvelopeBusMessage,
+  EnvelopeBusMessageDirectSender,
+  EnvelopeBusMessagePurpose,
+} from "@kie-tools-core/envelope-bus/dist/api";
 
 interface ApiToConsume {
   setText(text: string): void;

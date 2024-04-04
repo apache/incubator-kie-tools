@@ -17,4 +17,4 @@
  * under the License.
  */
 
-require("./dist/bin");
+require("./dist/cli/bin");

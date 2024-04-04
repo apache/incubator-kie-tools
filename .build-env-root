@@ -1,0 +1,1 @@
+This file is a marker file. Its content doesn't mean anything. It's purpose is to prevent `build-env` from recursing out of `kie-tools` onto people's machines.
