@@ -1,8 +1,6 @@
 //REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
-//DEPS com.github.lalyos:jfiglet:0.0.8
 //DEPS org.kie:kie-dmn-validation:999-20240331-SNAPSHOT
 
-import com.github.lalyos.jfiglet.FigletFont;
 import java.io.StringReader;
 import java.util.List;
 import org.kie.dmn.api.core.DMNMessage;
@@ -13,8 +11,6 @@ import org.kie.dmn.validation.DMNValidatorFactory;
 class dmnValidation {
 
     public static void main(String... args) throws Exception {
-        // System.out.println(FigletFont.convertOneLine(
-        //        "Happy Birthday " + ((args.length>0)?args[0]:"jbang")));
         int exitCode = validate(args[0]);
         System.exit(exitCode);
     }
