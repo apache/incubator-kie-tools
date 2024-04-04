@@ -97,3 +97,9 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    ```
 
 3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.
+
+## Custom Port
+
+The port used internally on the container can be changed:
+
+When building, set the `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__port` environment variable to any port you want, and the Containerfile will be built using that port.

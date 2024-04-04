@@ -24,16 +24,14 @@
     "copy:webapp-assets:linux:darwin": "cp -R ../runtime-tools-task-console-webapp/dist ./dist-dev/runtime-tools-task-console-webapp",
     "copy:webapp-assets:win32": "pnpm powershell \"Copy-Item -R ../runtime-tools-task-console-webapp/dist ./dist-dev/runtime-tools-task-console-webapp\"",
     "env-json:schema:generate": "ts-json-schema-generator --tsconfig ./node_modules/@kie-tools/runtime-tools-task-console-webapp/tsconfig.json --path ./node_modules/@kie-tools/runtime-tools-task-console-webapp/src/env/EnvJson.ts --type EnvJson --id EnvJson --out ./dist-dev/EnvJson.schema.json",
-    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env runtimeToolsTaskConsoleWebappImage.registry)\" -a \"$(build-env runtimeToolsTaskConsoleWebappImage.account)\" -n \"$(build-env runtimeToolsTaskConsoleWebappImage.name)\" -t \"$(build-env runtimeToolsTaskConsoleWebappImage.tags)\"",
-    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env runtimeToolsTaskConsoleWebappImage.registry)\" -a \"$(build-env runtimeToolsTaskConsoleWebappImage.account)\" -n \"$(build-env runtimeToolsTaskConsoleWebappImage.name)\" -t \"$(build-env runtimeToolsTaskConsoleWebappImage.tags)\" -e podman"
-  },
-  "dependencies": {
-    "@kie-tools/image-env-to-json": "workspace:*",
-    "@kie-tools/runtime-tools-task-console-webapp": "workspace:*"
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env runtimeToolsTaskConsoleWebappImage.registry)\" -a \"$(build-env runtimeToolsTaskConsoleWebappImage.account)\" -n \"$(build-env runtimeToolsTaskConsoleWebappImage.name)\" -t \"$(build-env runtimeToolsTaskConsoleWebappImage.tags)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env runtimeToolsTaskConsoleWebappImage.port)\"",
+    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env runtimeToolsTaskConsoleWebappImage.registry)\" -a \"$(build-env runtimeToolsTaskConsoleWebappImage.account)\" -n \"$(build-env runtimeToolsTaskConsoleWebappImage.name)\" -t \"$(build-env runtimeToolsTaskConsoleWebappImage.tags)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env runtimeToolsTaskConsoleWebappImage.port)\" -e podman"
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",
+    "@kie-tools/image-env-to-json": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/runtime-tools-task-console-webapp": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "ts-json-schema-generator": "^1.1.2"

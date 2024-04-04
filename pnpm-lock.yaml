@@ -7160,20 +7160,19 @@ importers:
         version: 5.9.0
 
   packages/runtime-tools-management-console-webapp-image:
-    dependencies:
-      "@kie-tools/image-env-to-json":
-        specifier: workspace:*
-        version: link:../image-env-to-json
-      "@kie-tools/runtime-tools-management-console-webapp":
-        specifier: workspace:*
-        version: link:../runtime-tools-management-console-webapp
     devDependencies:
       "@kie-tools/image-builder":
         specifier: workspace:*
         version: link:../image-builder
+      "@kie-tools/image-env-to-json":
+        specifier: workspace:*
+        version: link:../image-env-to-json
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/runtime-tools-management-console-webapp":
+        specifier: workspace:*
+        version: link:../runtime-tools-management-console-webapp
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -8728,20 +8727,19 @@ importers:
         version: 5.9.0
 
   packages/runtime-tools-task-console-webapp-image:
-    dependencies:
-      "@kie-tools/image-env-to-json":
-        specifier: workspace:*
-        version: link:../image-env-to-json
-      "@kie-tools/runtime-tools-task-console-webapp":
-        specifier: workspace:*
-        version: link:../runtime-tools-task-console-webapp
     devDependencies:
       "@kie-tools/image-builder":
         specifier: workspace:*
         version: link:../image-builder
+      "@kie-tools/image-env-to-json":
+        specifier: workspace:*
+        version: link:../image-env-to-json
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/runtime-tools-task-console-webapp":
+        specifier: workspace:*
+        version: link:../runtime-tools-task-console-webapp
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2

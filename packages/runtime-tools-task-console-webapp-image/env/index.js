@@ -37,6 +37,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "daily-dev",
       description: "The image tag.",
     },
+    RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__port: {
+      default: 8080,
+      description: "The default container port.",
+    },
   }),
   get env() {
     return {
@@ -45,6 +49,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         account: getOrDefault(this.vars.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__account),
         name: getOrDefault(this.vars.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__name),
         tags: getOrDefault(this.vars.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__buildTags),
+        port: getOrDefault(this.vars.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__port),
         version: require("../package.json").version,
       },
     };

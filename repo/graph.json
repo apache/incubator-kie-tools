@@ -829,17 +829,17 @@
       },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp-image",
+        "target": "@kie-tools/image-builder",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp-image",
         "target": "@kie-tools/image-env-to-json",
         "weight": 1
       },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp-image",
         "target": "@kie-tools/runtime-tools-management-console-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp-image",
-        "target": "@kie-tools/image-builder",
         "weight": 1
       },
       {
@@ -924,17 +924,17 @@
       },
       {
         "source": "@kie-tools/runtime-tools-task-console-webapp-image",
+        "target": "@kie-tools/image-builder",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp-image",
         "target": "@kie-tools/image-env-to-json",
         "weight": 1
       },
       {
         "source": "@kie-tools/runtime-tools-task-console-webapp-image",
         "target": "@kie-tools/runtime-tools-task-console-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp-image",
-        "target": "@kie-tools/image-builder",
         "weight": 1
       },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
