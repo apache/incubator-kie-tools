@@ -22,8 +22,8 @@ import {
   EnvelopeBusMessageDirectSender,
   EnvelopeBusMessagePurpose,
   FunctionPropertyNames,
-} from "@kie-tools-core/envelope-bus//dist/api";
-import { EnvelopeServer } from "@kie-tools-core/envelope-bus//dist/channel";
+} from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 
 interface ApiToProvide {
   setText(text: string): void;
