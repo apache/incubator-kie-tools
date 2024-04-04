@@ -59,6 +59,20 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
   KIE Sandbox will be up at http://localhost:8080
 
+- In case you need to run it using a different port, start the container with:
+
+  ```bash
+  docker run -t -p 2512:2512 -i -e KIE_SANDBOX_PORT=2512 --rm quay.io/kie-tools/kie-sandbox-image:latest
+  ```
+
+  or
+
+  ```bash
+  podman run -t -p 2512:2512 -i -e KIE_SANDBOX_PORT=2512 --rm quay.io/kie-tools/kie-sandbox-image:latest
+  ```
+
+  KIE Sandbox will be up at http://localhost:2512
+
 ## Customization
 
 1. Run a container with custom environment variables:

@@ -24,8 +24,8 @@
     "copy:online-editor:linux:darwin": "cp -R ../online-editor/dist ./dist-dev/online-editor",
     "copy:online-editor:win32": "pnpm powershell \"Copy-Item -R ../online-editor/dist ./dist-dev/online-editor\"",
     "env-json:schema:generate": "ts-json-schema-generator --path ./node_modules/@kie-tools/online-editor/src/env/EnvJson.ts --type EnvJson --id EnvJson --out ./dist-dev/EnvJson.schema.json",
-    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env kieSandbox.image.registry)\" -a \"$(build-env kieSandbox.image.account)\" -n \"$(build-env kieSandbox.image.name)\" -t \"$(build-env kieSandbox.image.buildTags)\"",
-    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env kieSandbox.image.registry)\" -a \"$(build-env kieSandbox.image.account)\" -n \"$(build-env kieSandbox.image.name)\" -t \"$(build-env kieSandbox.image.buildTags)\" -e podman"
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env kieSandbox.image.registry)\" -a \"$(build-env kieSandbox.image.account)\" -n \"$(build-env kieSandbox.image.name)\" -t \"$(build-env kieSandbox.image.buildTags)\" --build-arg \"KIE_SANDBOX_DEFAULT_PORT=$(build-env onlineEditor.dev.port)\"",
+    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env kieSandbox.image.registry)\" -a \"$(build-env kieSandbox.image.account)\" -n \"$(build-env kieSandbox.image.name)\" -t \"$(build-env kieSandbox.image.buildTags)\" --build-arg \"KIE_SANDBOX_DEFAULT_PORT=$(build-env onlineEditor.dev.port)\" -e podman"
   },
   "dependencies": {
     "@kie-tools/image-env-to-json": "workspace:*",

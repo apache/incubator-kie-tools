@@ -19,7 +19,7 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/online-editor/env")], {
   vars: varsWithName({
     KIE_SANDBOX__imageRegistry: {
       default: "quay.io",
