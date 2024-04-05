@@ -149,7 +149,9 @@ export function getDefaultBoxedExpression({
       __$$element: "list",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
-      expression: [],
+      expression: [
+        undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      ],
     };
     return listExpression;
   } else if (logicType === "invocation") {

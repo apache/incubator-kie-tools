@@ -10741,6 +10741,9 @@ importers:
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
+      "@types/uuid":
+        specifier: ^8.3.0
+        version: 8.3.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -10762,6 +10765,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
 
   packages/xml-parser-ts-codegen:
     dependencies:

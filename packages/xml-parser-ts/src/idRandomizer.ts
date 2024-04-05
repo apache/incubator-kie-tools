@@ -51,10 +51,12 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     type,
     attr,
     __$$element,
+    arrayIndex,
   }: {
     json: any;
     type: X;
     attr: keyof M[X];
+    arrayIndex?: number;
     __$$element?: string;
     parentJson?: any;
   }): XmlParserTsIdRandomizer<M> {
@@ -67,19 +69,16 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     const resolvedRootMetaPropTypeName = this.args.elements[__$$element ?? json.__$$element] ?? rootMetaProp.type;
 
     // Array
-    if (rootMetaProp.isArray) {
-      for (const j of json as any[]) {
-        const resolvedMetaTypeName = this.args.elements[__$$element ?? j.__$$element] ?? resolvedRootMetaPropTypeName;
-        const resolvedMetaType = this.args.meta[resolvedMetaTypeName];
-
-        for (const metaPropName in resolvedMetaType) {
-          this.ack({
-            json: j[metaPropName],
-            parentJson: j,
-            attr: metaPropName,
-            type: resolvedMetaTypeName,
-          });
-        }
+    // Arrays and arrays element will have the same `rootMetaProp`, but array elements will have an array index associated with it
+    if (rootMetaProp.isArray && arrayIndex === undefined) {
+      for (let index = 0; index < json.length; index++) {
+        this.ack({
+          json: json[index],
+          parentJson: json,
+          attr: attr,
+          type: type,
+          arrayIndex: index,
+        });
       }
     }
 
@@ -96,19 +95,23 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
       }
     }
 
-    // Leaf
+    // Primitive
     else {
       console.debug(`ID RANDOMIZER: ack: ${String(type)}.${String(attr)}: ${json} --> ${rootMetaProp.xsdType}`);
+
+      // When dealing with primitive array elements, `arrayIndex` will not be undefined
+      // the `parentJson` will be the array itself. So we use it to access the correct position.
+      const accessor = arrayIndex ?? attr;
 
       // ID, IDREF
       if (rootMetaProp.xsdType === "xsd:ID" || rootMetaProp.xsdType === "xsd:IDREF") {
         const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
           console.debug(
-            `ID RANDOMIZER: [ID,IDREF] Updating id from ${parentJson[attr]} to ${newId} @ (${String(type)}.${String(
+            `ID RANDOMIZER: [ID,IDREF] Updating id from ${parentJson[accessor]} to ${newId} @ (${String(type)}.${String(
               attr
             )}: ${json})`
           );
-          return (parentJson[attr] = newId);
+          return (parentJson[accessor] = newId);
         };
         this.updaters.set(json, [...(this.updaters.get(json) ?? []), u]);
       }
@@ -122,7 +125,7 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
               attr
             )}: ${json})`
           );
-          return (parentJson[attr] = buildXmlQName({ ...qname, localPart: newId }));
+          return (parentJson[accessor] = buildXmlQName({ ...qname, localPart: newId }));
         };
         this.updaters.set(qname.localPart, [...(this.updaters.get(qname.localPart) ?? []), u]);
       }
