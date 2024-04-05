@@ -80,11 +80,11 @@ describe("validation", () => {
 });
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
-  test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf("/") + 1), () => {
+  test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1), () => {
     const processedDMN = parseXML(normalizedFsPathRelativeToTheFile);
 
     try {
-      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, processedDMN.marshalledXML);
+      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH);
     } catch (error) {
       fail("An error occured");
     }
@@ -94,14 +94,14 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
 function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string; importer: string }) {
   test(
     normalizedFsPathRelativeToTheFiles.importer.substring(
-      normalizedFsPathRelativeToTheFiles.importer.lastIndexOf("/") + 1
+      normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
     ),
     () => {
       const imported = parseXML(normalizedFsPathRelativeToTheFiles.imported);
       const importer = parseXML(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, importer.marshalledXML, imported.marshalledXML);
+        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH);
       } catch (error) {
         fail("An error occured");
       }
