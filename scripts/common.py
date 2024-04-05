@@ -53,7 +53,7 @@ SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral",
                               "kogito-management-console", "kogito-task-console"
                               }
 
-SWF_BUILDER_IMAGES = {"kogito-swf-builder", "kogito-base-builder", "kogito-swf-devmode"}
+SWF_BUILDER_IMAGES = {"kogito-swf-builder", "kogito-swf-devmode"}
 
 
 def yaml_loader():
@@ -310,24 +310,6 @@ def update_artifacts_version_in_behave_tests(artifacts_version):
         '\|[\s]*KOGITO_VERSION[\s]*\|[\s]*(([\d.]+.x)|([\d.]+)[\s]*|([\d.]+-SNAPSHOT)|([\d.]+.Final)|([\d.]+\.redhat-[\d]+))[\s]*\|')
     replacement = '| KOGITO_VERSION | {} | '.format(artifacts_version)
     update_in_behave_tests(pattern, replacement)
-
-
-def update_runtime_image_in_behave_tests(runtime_image_name, image_suffix):
-    """
-    Update a runtime image into behave tests
-    :param runtime_image_name: new full tag name of the runtime image
-    :param image_suffix: suffix of the runtime image to update
-    """
-    print("Set {0} runtime image to {1} in behave tests".format(image_suffix, runtime_image_name))
-    # pattern to change the KOGITO_VERSION
-    pattern = re.compile(r'(runtime-image quay.io/kiegroup/kogito-runtime-{}:latest)'.format(image_suffix))
-    replacement = 'runtime-image {}'.format(runtime_image_name)
-    update_in_behave_tests(pattern, replacement)
-
-    pattern = re.compile(r'(runtime-image rhpam-7/rhpam-kogito-runtime-{}-rhel8:latest)'.format(image_suffix))
-    replacement = 'runtime-image {}'.format(runtime_image_name)
-    update_in_behave_tests(pattern, replacement)
-
 
 def update_maven_repo_in_behave_tests(repo_url, replace_default_repository):
     """

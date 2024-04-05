@@ -1,6 +1,3 @@
-@quay.io/kiegroup/kogito-s2i-builder
-@quay.io/kiegroup/kogito-runtime-jvm
-@quay.io/kiegroup/kogito-runtime-native
 @quay.io/kiegroup/kogito-data-index-ephemeral
 @quay.io/kiegroup/kogito-data-index-postgresql
 @quay.io/kiegroup/kogito-jit-runner
@@ -9,7 +6,6 @@
 @quay.io/kiegroup/kogito-management-console
 @quay.io/kiegroup/kogito-task-console
 @quay.io/kiegroup/kogito-swf-builder
-@quay.io/kiegroup/kogito-base-builder
 Feature: Common tests for Kogito images
 
   Scenario: Verify if Kogito user is correctly configured

@@ -50,11 +50,6 @@ if __name__ == "__main__":
                         help='To update the artifacts version for testing')
     parser.add_argument('--quarkus-platform-version', dest='quarkus_platform_version', help='Update Quarkus version for the tests')
 
-    parser.add_argument('--runtime-image-jvm', dest='runtime_image_jvm',
-                        help='To update the runtime jvm image name in behave tests\'s steps')
-    parser.add_argument('--runtime-image-native', dest='runtime_image_native',
-                        help='To update the runtime native image name in behave tests\'s steps')
-
     parser.add_argument('--tests-only', dest='tests_only', default=False, action='store_true', help='Update product modules/images')
     args = parser.parse_args()
 
@@ -93,9 +88,3 @@ if __name__ == "__main__":
             common.update_quarkus_platform_version_in_build(args.quarkus_platform_version)
         
         common.update_quarkus_platform_version_in_behave_tests_repository_paths(args.quarkus_platform_version)
-    
-    if args.runtime_image_jvm:
-        common.update_runtime_image_in_behave_tests(args.runtime_image_jvm, 'jvm')
-    
-    if args.runtime_image_native:
-        common.update_runtime_image_in_behave_tests(args.runtime_image_native, 'native')

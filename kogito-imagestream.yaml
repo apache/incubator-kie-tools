@@ -27,69 +27,6 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-runtime-native
-      annotations:
-        openshift.io/display-name: Runtime image for Kogito based on Quarkus native image
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for Kogito based on Quarkus native image
-            iconClass: icon-jbpm
-            tags: runtime,kogito,quarkus
-            supports: quarkus
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-runtime-native:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-runtime-jvm
-      annotations:
-        openshift.io/display-name: Runtime image for Kogito based on Quarkus or Springboot JVM image
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Runtime image for Kogito based on Quarkus or Springboot JVM image
-            iconClass: icon-jbpm
-            tags: runtime,kogito,quarkus,springboot,jvm
-            supports: quarkus
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-runtime-jvm:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-s2i-builder
-      annotations:
-        openshift.io/display-name: Platform for building Kogito based on Quarkus or Springboot
-        openshift.io/provider-display-name: Kie Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Platform for building Kogito based on Quarkus or Springboot
-            iconClass: icon-jbpm
-            tags: s2i-builder,kogito,quarkus,springboot
-            supports: quarkus
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-s2i-builder:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
       name: kogito-swf-builder
       annotations:
         openshift.io/display-name: Kogito Serverless Workflow builder with basic Quarkus SWF extensions preinstalled
@@ -108,27 +45,6 @@ items:
           from:
             kind: DockerImage
             name: quay.io/kiegroup/kogito-swf-builder:999-SNAPSHOT
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      name: kogito-base-builder
-      annotations:
-        openshift.io/display-name: Kogito base builder
-        openshift.io/provider-display-name: KIE Group.
-    spec:
-      tags:
-        - name: '999-SNAPSHOT'
-          annotations:
-            description: Kogito base builder
-            iconClass: icon-jbpm
-            tags: kogito,jdk,maven
-            supports: quarkus
-            version: '999-SNAPSHOT'
-          referencePolicy:
-            type: Local
-          from:
-            kind: DockerImage
-            name: quay.io/kiegroup/kogito-base-builder:999-SNAPSHOT
   - kind: ImageStream
     apiVersion: v1
     metadata:

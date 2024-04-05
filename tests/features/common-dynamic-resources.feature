@@ -1,7 +1,5 @@
 # Run only on images that won't die instantly
 # See https://github.com/apache/incubator-kie-kogito-images/issues/1722
-#@quay.io/kiegroup/kogito-s2i-builder
-#@quay.io/kiegroup/kogito-runtime-jvm
 @quay.io/kiegroup/kogito-data-index-ephemeral
 #@quay.io/kiegroup/kogito-data-index-postgresql
 #@quay.io/kiegroup/kogito-jit-runner
