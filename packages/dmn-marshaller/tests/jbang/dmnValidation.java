@@ -25,9 +25,9 @@ class dmnValidation {
     }
 
     public static int validate(String... args) throws Exception {
-        // if (args.length > 2 || args.length <= 0) {
-        //     throw new IllegalArgumentException("Validation requires 1 or 2 xmls");
-        // }
+        if (args.length > 2 || args.length <= 0) {
+            throw new IllegalArgumentException("Validation requires 1 or 2 xmls");
+        }
         StringReader[] models = Stream.of(args).map(StringReader::new).toArray(StringReader[]::new);
 
         DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));

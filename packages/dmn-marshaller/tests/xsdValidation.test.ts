@@ -48,7 +48,7 @@ function testDirectory(normalizedFsPathRelativeToTheDirectory: string) {
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
   test(
-    normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf("/") + 1),
+    normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1),
     async () => {
       const xml_original = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
       const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });

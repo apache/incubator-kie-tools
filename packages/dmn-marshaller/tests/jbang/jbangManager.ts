@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+import * as path from "path";
 const jbang = require("@jbangdev/jbang");
 
 export function executeJbangScript(scriptPath: string, ...args: string[]) {
+  const quoteChar = path.sep === "/" ? "'" : '"';
   jbang.exec("--java 17", "properties@jbangdev", "java.version");
-  jbang.exec(scriptPath, args.map((arg) => "'" + arg + "'").join(" "));
+  jbang.exec(scriptPath, args.map((arg) => quoteChar + arg + quoteChar).join(" "));
 }
