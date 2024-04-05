@@ -89,7 +89,7 @@ export function BeeTableThResizable<R extends object>({
     }
 
     cssClasses.push(column.groupType ?? "");
-    // cssClasses.push(column.cssClasses ?? ""); // FIXME: Breaking Decision tables because of positioning of rowSpan=2 column headers (See ahttps://github.com/apache/incubator-kie-issues/issues/162)
+    // cssClasses.push(column.cssClasses ?? ""); // FIXME: Breaking Decision tables because of positioning of rowSpan=2 column headers (See https://github.com/apache/incubator-kie-issues/issues/162)
     return cssClasses.join(" ");
   }, [columnKey, column.dataType, column.groupType]);
 
@@ -248,7 +248,7 @@ export function BeeTableThResizable<R extends object>({
             setResizing={setResizing}
           />
         )}
-      {/* //FIXME: Don't know if that's a good idea yet. Please address it as part of ahttps://github.com/apache/incubator-kie-issues/issues/181 */}
+      {/* //FIXME: Don't know if that's a good idea yet. Please address it as part of https://github.com/apache/incubator-kie-issues/issues/181 */}
       {/* {calcWidth && (hoverInfo.isHovered || (calcResizingWidth?.isPivoting && isCalcWidthResizing)) && (
         <Resizer
           minWidth={(column.columns ?? []).reduce((acc, { minWidth }) => acc + (minWidth ?? 0), 0)}

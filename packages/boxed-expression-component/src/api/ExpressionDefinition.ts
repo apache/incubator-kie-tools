@@ -216,9 +216,9 @@ export interface InvocationExpressionDefinition<T extends ExpressionDefinition =
   /** Function to be invoked */
   invokedFunction: InvocationFunction;
   /** Collection of arguments used to invoke the function */
-  bindingEntries: ContextExpressionDefinitionEntry<T>[]; // Please rename to `argumentEntries` as part of ahttps://github.com/apache/incubator-kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
+  bindingEntries: ContextExpressionDefinitionEntry<T>[]; // Please rename to `argumentEntries` as part of https://github.com/apache/incubator-kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
   /** Entry info width */
-  entryInfoWidth?: number; // Please rename to `parametersInfoColumnWidth` as part of ahttps://github.com/apache/incubator-kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
+  entryInfoWidth?: number; // Please rename to `parametersInfoColumnWidth` as part of https://github.com/apache/incubator-kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
 }
 
 export interface InvocationFunction {
@@ -309,7 +309,7 @@ export interface PmmlParam {
   }[];
 }
 
-// Please find a better place for this function as part of ahttps://github.com/apache/incubator-kie-issues/issues/34
+// Please find a better place for this function as part of https://github.com/apache/incubator-kie-issues/issues/34
 export const getNextAvailablePrefixedName = (
   names: string[],
   namePrefix: string,

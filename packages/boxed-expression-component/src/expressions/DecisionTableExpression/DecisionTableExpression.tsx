@@ -64,7 +64,7 @@ import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitP
 import "./DecisionTableExpression.css";
 import _ from "lodash";
 
-type ROWTYPE = any; // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169
+type ROWTYPE = any; // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
 
 enum DecisionTableColumnType {
   InputClause = "input",
@@ -261,8 +261,8 @@ export function DecisionTableExpression(
 
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
-      id: decisionNodeId as any, // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169,
-      accessor: "decision-table-expression" as any, // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169
+      id: decisionNodeId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169,
+      accessor: "decision-table-expression" as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
       label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
       dataType: decisionTableExpression.dataType,
       cssClasses: "decision-table--output",
@@ -883,7 +883,7 @@ export function DecisionTableExpression(
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
         variables={variables}
-        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing ahttps://github.com/apache/incubator-kie-issues/issues/181
+        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/apache/incubator-kie-issues/issues/181
       />
     </div>
   );

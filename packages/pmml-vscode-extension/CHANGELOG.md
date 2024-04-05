@@ -20,7 +20,7 @@
 
 # 0.28.0 (alpha)
 
-- [kie-issues#125](ahttps://github.com/apache/incubator-kie-issues/issues/125) - Remove unnecessary FieldName type from PMML Marshaller by @pefernan in https://github.com/apache/incubator-kie-tools/pull/1482
+- [kie-issues#125](https://github.com/apache/incubator-kie-issues/issues/125) - Remove unnecessary FieldName type from PMML Marshaller by @pefernan in https://github.com/apache/incubator-kie-tools/pull/1482
 
 # 0.26.0 (alpha)
 

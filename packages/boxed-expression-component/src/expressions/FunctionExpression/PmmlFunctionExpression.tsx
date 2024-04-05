@@ -74,7 +74,7 @@ export function PmmlFunctionExpression({
     return [
       {
         label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: decisionNodeId as any, // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169
+        accessor: decisionNodeId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
         dataType: functionExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,

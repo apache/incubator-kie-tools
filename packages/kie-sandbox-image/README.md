@@ -63,7 +63,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
 1. Run a container with custom environment variables:
 
-   [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See ahttps://github.com/apache/incubator-kie-issues/issues/16)
+   [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/apache/incubator-kie-issues/issues/16)
 
    |                              Name                               |                                                         Description                                                         |                               Default                               |
    | :-------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |

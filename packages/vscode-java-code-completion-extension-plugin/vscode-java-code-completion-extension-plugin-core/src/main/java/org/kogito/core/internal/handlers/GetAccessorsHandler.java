@@ -87,7 +87,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
         /* The API we used to retrieve the FQNC are no more available. To enable the Project
          * compilation, the following block is a temporary commented. The impact on the feature, is
          * that the Fecthing feature will no work properly, until we found an alternative solution
-         * ahttps://github.com/apache/incubator-kie-issues/issues/114
+         * https://github.com/apache/incubator-kie-issues/issues/114
          */
         /*
         Map<String,String> data = (Map<String, String>) item.getData();

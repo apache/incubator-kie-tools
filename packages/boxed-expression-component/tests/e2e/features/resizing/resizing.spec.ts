@@ -64,10 +64,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column", async ({ page, resizing }) => {
-      test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/179");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/179");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/179",
+        description: "https://github.com/apache/incubator-kie-issues/issues/179",
       });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
@@ -84,10 +84,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column and reset", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       // Requires a nested expression to save the header width
@@ -109,10 +109,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change decision name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
@@ -176,10 +176,10 @@ test.describe("Resizing", () => {
       resizing,
       browserName,
     }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).click();
@@ -212,10 +212,10 @@ test.describe("Resizing", () => {
     });
 
     test("check resize on nested stories", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/180",
+        description: "https://github.com/apache/incubator-kie-issues/issues/180",
       });
 
       await page.getByText("Select expression").first().click();
@@ -543,10 +543,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column", async ({ page, resizing }) => {
-      test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/179");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/179");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/179",
+        description: "https://github.com/apache/incubator-kie-issues/issues/179",
       });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
@@ -560,10 +560,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize the header column and reset", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       // Requires a nested expression to save the header width
@@ -585,10 +585,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change the decision name column and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
@@ -613,10 +613,10 @@ test.describe("Resizing", () => {
     });
 
     test("should create function parameters and resize to fit", async ({ page, resizing }) => {
-      test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/535");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/535");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/535",
+        description: "https://github.com/apache/incubator-kie-issues/issues/535",
       });
 
       await page.getByText("Edit parameters").click();
@@ -649,10 +649,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column", async ({ page, resizing }) => {
-      test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/179");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/179");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/179",
+        description: "https://github.com/apache/incubator-kie-issues/issues/179",
       });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
@@ -669,10 +669,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column and reset", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       // Requires a nested expression to save the header width
@@ -712,10 +712,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change decision name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "Expression Name" }).click();
@@ -745,10 +745,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change function name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "FUNCTION" }).click();
@@ -776,10 +776,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change parameter name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).click();
@@ -813,10 +813,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column", async ({ page, resizing }) => {
-      test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/179");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/179");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/179",
+        description: "https://github.com/apache/incubator-kie-issues/issues/179",
       });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
@@ -826,10 +826,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column and reset", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       // Requires a nested expression to save the header width
@@ -847,10 +847,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change list decision name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "ahttps://github.com/apache/incubator-kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "ahttps://github.com/apache/incubator-kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();

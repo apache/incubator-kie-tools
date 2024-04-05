@@ -138,7 +138,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: decisionNodeId as any, // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169
+        accessor: decisionNodeId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
         label: literalExpression.name ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
         dataType: literalExpression.dataType,

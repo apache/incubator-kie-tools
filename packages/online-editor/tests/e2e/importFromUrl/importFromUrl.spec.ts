@@ -20,7 +20,7 @@
 import { test, expect } from "../__fixtures__/base";
 
 test.describe("Import from URL", () => {
-  test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/548");
+  test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/548");
   test.describe("Home", () => {
     test.describe("GitHub", () => {
       test.describe("Unauthenticated", () => {

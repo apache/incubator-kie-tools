@@ -30,7 +30,7 @@ test.describe("Boxed Function parameters", () => {
 
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
-      description: "ahttps://github.com/apache/incubator-kie-issues/issues/540",
+      description: "https://github.com/apache/incubator-kie-issues/issues/540",
     });
     await page.keyboard.press("Tab");
     await page.getByLabel("<Undefined>").click();
@@ -49,7 +49,7 @@ test.describe("Boxed Function parameters", () => {
     await page.getByRole("button", { name: "Add parameter" }).click();
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
-      description: "ahttps://github.com/apache/incubator-kie-issues/issues/540",
+      description: "https://github.com/apache/incubator-kie-issues/issues/540",
     });
     // WORKAROUD: TAB EVENT
     await page.getByPlaceholder("Parameter Name").nth(0).fill("name");
@@ -82,7 +82,7 @@ test.describe("Boxed Function parameters", () => {
     await page.getByPlaceholder("Parameter Name").nth(0).fill("name");
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
-      description: "ahttps://github.com/apache/incubator-kie-issues/issues/540",
+      description: "https://github.com/apache/incubator-kie-issues/issues/540",
     });
     // WORKAROUD: TAB EVENT
     await page.keyboard.press("Tab");

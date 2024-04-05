@@ -98,10 +98,10 @@ test.describe("Boxed Context context menu", () => {
     page,
     monaco,
   }) => {
-    test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/421");
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/421");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
-      description: "ahttps://github.com/apache/incubator-kie-issues/issues/421",
+      description: "https://github.com/apache/incubator-kie-issues/issues/421",
     });
 
     await stories.openRelation();
