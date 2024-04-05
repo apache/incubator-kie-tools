@@ -2,12 +2,12 @@
 
 - NO-ISSUE - Improved localization for Stunner BPMN Editor
 - NO-ISSUE - Add DMN 1.5 specification files to `packages/dmn-marshaller`
-- [kie-issues#180](https://github.com/kiegroup/kie-issues/issues/180) - On DMN Editor's Boxed Expression Editor, when resizing Context/Invocation entry info cells, minWidths are getting messy
-- [kie-issues#510](https://github.com/kiegroup/kie-issues/issues/510) - Content assist in DMN Editor doesn't allow true/false without major changes
-- [kie-issues#420](https://github.com/kiegroup/kie-issues/issues/420) - Boxed expression component context menu renders both selected and the chosen cell menu
-- [kie-issues#159](https://github.com/kiegroup/kie-issues/issues/159) - Colorize variable names in FEEL inputs on DMN Editor's Boxed Expression Editor
-- [kie-issues#589](https://github.com/kiegroup/kie-issues/issues/589) - Monaco-editor doesn't apply colorisation in DMN Editor
-- [kie-issues#590](https://github.com/kiegroup/kie-issues/issues/590) - In Boxed Expression Editor, Insert N columns/rows does nothing
+- [kie-issues#180](ahttps://github.com/apache/incubator-kie-issues/issues/180) - On DMN Editor's Boxed Expression Editor, when resizing Context/Invocation entry info cells, minWidths are getting messy
+- [kie-issues#510](ahttps://github.com/apache/incubator-kie-issues/issues/510) - Content assist in DMN Editor doesn't allow true/false without major changes
+- [kie-issues#420](ahttps://github.com/apache/incubator-kie-issues/issues/420) - Boxed expression component context menu renders both selected and the chosen cell menu
+- [kie-issues#159](ahttps://github.com/apache/incubator-kie-issues/issues/159) - Colorize variable names in FEEL inputs on DMN Editor's Boxed Expression Editor
+- [kie-issues#589](ahttps://github.com/apache/incubator-kie-issues/issues/589) - Monaco-editor doesn't apply colorisation in DMN Editor
+- [kie-issues#590](ahttps://github.com/apache/incubator-kie-issues/issues/590) - In Boxed Expression Editor, Insert N columns/rows does nothing
 - [KOGITO-9668](https://issues.redhat.com/browse/KOGITO-9668) - SWF Editor - In VSCode the diagram reloads if a user clicks on any area of the canvas
 - [KOGITO-8289](https://issues.redhat.com/browse/KOGITO-8289) - SWF Editor - Marshalling codebase clean-up
 - [KOGITO-9597](https://issues.redhat.com/browse/KOGITO-9597) - Broken error page layout
@@ -25,18 +25,18 @@
 - [KOGITO-9062](https://issues.redhat.com/browse/KOGITO-9062) - Update Dashbuilder Editor Schema with latest fields
 - NO-ISSUE - Dashbuilder Editor Schema Fix
 - [KOGITO-9499](https://issues.redhat.com/browse/KOGITO-9499) - Support POST for Dashbuilder external DataSets
-- [kie-issues#183](https://github.com/kiegroup/kie-issues/issues/183) - Dead keys (E.g., ˜ˆ´¨) are not triggering edit mode correctly on BeeTable cells
-- [kie-issues#184](https://github.com/kiegroup/kie-issues/issues/184) - It shouldn't be possible to mutate the selection when selecting text inside a BeeTable cell
-- [kie-issues#216](https://github.com/kiegroup/kie-issues/issues/216) - DMN's Editor Boxed Expression Editor: It's not possible to delete a table row in Safari
-- [kie-issues#48](https://github.com/kiegroup/kie-issues/issues/48) - Implement DMN 1.3 new keywords support
-- [kie-issues#168](https://github.com/kiegroup/kie-issues/issues/168) - In DMN Editor's Boxed Expression Editor Context Menu, make possible to add N rows/columns with a single click
-- [kie-issues#365](https://github.com/kiegroup/kie-issues/issues/365) - Top-left cell data is getting lost after Cutting and Pasting to the DMN Editor's Boxed Expression Editor
-- [kie-issues#372](https://github.com/kiegroup/kie-issues/issues/372) - DMN Editor: Removing GWT-based autocompletion feature
-- [kie-issues#353](https://github.com/kiegroup/kie-issues/issues/353) - DMN Editor Add documentation to every FEEL function proposed by code completion
-- [kie-issues#373](https://github.com/kiegroup/kie-issues/issues/373) - DMN's Decision Table: Changing the column data type doens't work after changing Decision node type
-- [kie-issues#375](https://github.com/kiegroup/kie-issues/issues/375) - DMN Editor: Context Menu is empty in List expression header
-- [kie-issues#376](https://github.com/kiegroup/kie-issues/issues/376) - DMN Runner context menu options are not appropriate regarding the selected cell
-- [kie-issues#382](https://github.com/kiegroup/kie-issues/issues/382) - [DMN Editor] Superfluous newline in multi-cell copy/paste
+- [kie-issues#183](ahttps://github.com/apache/incubator-kie-issues/issues/183) - Dead keys (E.g., ˜ˆ´¨) are not triggering edit mode correctly on BeeTable cells
+- [kie-issues#184](ahttps://github.com/apache/incubator-kie-issues/issues/184) - It shouldn't be possible to mutate the selection when selecting text inside a BeeTable cell
+- [kie-issues#216](ahttps://github.com/apache/incubator-kie-issues/issues/216) - DMN's Editor Boxed Expression Editor: It's not possible to delete a table row in Safari
+- [kie-issues#48](ahttps://github.com/apache/incubator-kie-issues/issues/48) - Implement DMN 1.3 new keywords support
+- [kie-issues#168](ahttps://github.com/apache/incubator-kie-issues/issues/168) - In DMN Editor's Boxed Expression Editor Context Menu, make possible to add N rows/columns with a single click
+- [kie-issues#365](ahttps://github.com/apache/incubator-kie-issues/issues/365) - Top-left cell data is getting lost after Cutting and Pasting to the DMN Editor's Boxed Expression Editor
+- [kie-issues#372](ahttps://github.com/apache/incubator-kie-issues/issues/372) - DMN Editor: Removing GWT-based autocompletion feature
+- [kie-issues#353](ahttps://github.com/apache/incubator-kie-issues/issues/353) - DMN Editor Add documentation to every FEEL function proposed by code completion
+- [kie-issues#373](ahttps://github.com/apache/incubator-kie-issues/issues/373) - DMN's Decision Table: Changing the column data type doens't work after changing Decision node type
+- [kie-issues#375](ahttps://github.com/apache/incubator-kie-issues/issues/375) - DMN Editor: Context Menu is empty in List expression header
+- [kie-issues#376](ahttps://github.com/apache/incubator-kie-issues/issues/376) - DMN Runner context menu options are not appropriate regarding the selected cell
+- [kie-issues#382](ahttps://github.com/apache/incubator-kie-issues/issues/382) - [DMN Editor] Superfluous newline in multi-cell copy/paste
 - [KOGITO-7733](https://issues.redhat.com/browse/KOGITO-7733) - SWF Editor - Enable & customize toolbox
 - [KOGITO-9397](https://issues.redhat.com/browse/KOGITO-9397) - Remove mermaid viewer for serverless workflow
 - [KOGITO-9583](https://issues.redhat.com/browse/KOGITO-9583) - SWF diagram editor is not opened when opening workflow while another is open
@@ -49,23 +49,23 @@
 - [KOGITO-9384](https://issues.redhat.com/browse/KOGITO-9384) - [Dashbuilder] Keep order and ignore empty in Join datasets
 - [KOGITO-9389](https://issues.redhat.com/browse/KOGITO-9389) - Support query params in dashbuilder datasets
 - [KOGITO-9390](https://issues.redhat.com/browse/KOGITO-9390) - Support for Global Datasets declarations in Dashbuilder YAML
-- [kie-issues#252](https://github.com/kiegroup/kie-issues/issues/252) - A Decision Table's single output column header should be merged
-- [kie-issues#288](https://github.com/kiegroup/kie-issues/issues/288) - [DMN Editor] the dmn:literalExpression id must not be modified on editing some text
-- [kie-issues#282](https://github.com/kiegroup/kie-issues/issues/282) - [DMN Editor] Default output value disappears
-- [kie-issues#287](https://github.com/kiegroup/kie-issues/issues/287) - After deleting a Decision Table row, cells are wrongly selected
-- [kie-issues#114](https://github.com/kiegroup/kie-issues/issues/114) - Temporarily disable `fetch classes` functionality of Import Java Classes
-- [kie-issues#289](https://github.com/kiegroup/kie-issues/issues/289) - Remove @KieActivator annotation used in Import Java Classes
-- [kie-issues#272](https://github.com/kiegroup/kie-issues/issues/272) - Context Menu should always choose the best strategy to render, based on the available space of its container element
-- [kie-issues#312](https://github.com/kiegroup/kie-issues/issues/312) - kie-tools#1666 breaks the DMN Editor for all DMNs that relies on JSON schema draft 4 to generate the DMN Runner table and form
-- [kie-issues#309](https://github.com/kiegroup/kie-issues/issues/309) - User is not able to specify DMN Range constraint for `date and time` and `years and months duration` custom type
-- [kie-issues#318](https://github.com/kiegroup/kie-issues/issues/318) - Data Type for Invocation and Decision Table merged output columns is not updated
-- [kie-issues#319](https://github.com/kiegroup/kie-issues/issues/319) - On the DMN Editor, Expression properties are not correctly persisted
-- [kie-issues#326](https://github.com/kiegroup/kie-issues/issues/326) - DMN Editor's Properties Panel changing element selection when blurring out of changed inputs
-- [kie-issues#259](https://github.com/kiegroup/kie-issues/issues/259) - Make DMN Editor's Boxed Expression Editor Context Menu show only relevant operations for specific cells.
-- [kie-issues#344](https://github.com/kiegroup/kie-issues/issues/344) - DMN Editor: Name and Data type popover menu visual misalignments in form labels
-- [kie-issues#347](https://github.com/kiegroup/kie-issues/issues/347) - DMN Editor: Duplicate is not working for a relation
-- [kie-issues#345](https://github.com/kiegroup/kie-issues/issues/345) - DMN Editor: Sort function is missing in autocompletions
-- [kie-issues#348](https://github.com/kiegroup/kie-issues/issues/348) - DMN Editor: Function header context menus are empty
+- [kie-issues#252](ahttps://github.com/apache/incubator-kie-issues/issues/252) - A Decision Table's single output column header should be merged
+- [kie-issues#288](ahttps://github.com/apache/incubator-kie-issues/issues/288) - [DMN Editor] the dmn:literalExpression id must not be modified on editing some text
+- [kie-issues#282](ahttps://github.com/apache/incubator-kie-issues/issues/282) - [DMN Editor] Default output value disappears
+- [kie-issues#287](ahttps://github.com/apache/incubator-kie-issues/issues/287) - After deleting a Decision Table row, cells are wrongly selected
+- [kie-issues#114](ahttps://github.com/apache/incubator-kie-issues/issues/114) - Temporarily disable `fetch classes` functionality of Import Java Classes
+- [kie-issues#289](ahttps://github.com/apache/incubator-kie-issues/issues/289) - Remove @KieActivator annotation used in Import Java Classes
+- [kie-issues#272](ahttps://github.com/apache/incubator-kie-issues/issues/272) - Context Menu should always choose the best strategy to render, based on the available space of its container element
+- [kie-issues#312](ahttps://github.com/apache/incubator-kie-issues/issues/312) - kie-tools#1666 breaks the DMN Editor for all DMNs that relies on JSON schema draft 4 to generate the DMN Runner table and form
+- [kie-issues#309](ahttps://github.com/apache/incubator-kie-issues/issues/309) - User is not able to specify DMN Range constraint for `date and time` and `years and months duration` custom type
+- [kie-issues#318](ahttps://github.com/apache/incubator-kie-issues/issues/318) - Data Type for Invocation and Decision Table merged output columns is not updated
+- [kie-issues#319](ahttps://github.com/apache/incubator-kie-issues/issues/319) - On the DMN Editor, Expression properties are not correctly persisted
+- [kie-issues#326](ahttps://github.com/apache/incubator-kie-issues/issues/326) - DMN Editor's Properties Panel changing element selection when blurring out of changed inputs
+- [kie-issues#259](ahttps://github.com/apache/incubator-kie-issues/issues/259) - Make DMN Editor's Boxed Expression Editor Context Menu show only relevant operations for specific cells.
+- [kie-issues#344](ahttps://github.com/apache/incubator-kie-issues/issues/344) - DMN Editor: Name and Data type popover menu visual misalignments in form labels
+- [kie-issues#347](ahttps://github.com/apache/incubator-kie-issues/issues/347) - DMN Editor: Duplicate is not working for a relation
+- [kie-issues#345](ahttps://github.com/apache/incubator-kie-issues/issues/345) - DMN Editor: Sort function is missing in autocompletions
+- [kie-issues#348](ahttps://github.com/apache/incubator-kie-issues/issues/348) - DMN Editor: Function header context menus are empty
 - [KOGITO-9100](https://issues.redhat.com/browse/KOGITO-9100) - [SWF Editor] Add AsyncAPI autocomplete support for events array
 - [KOGITO-9222](https://issues.redhat.com/browse/KOGITO-9222) - Workflow yaml file takes too much time to load
 
@@ -73,15 +73,15 @@
 
 - [KOGITO-9175](https://issues.redhat.com/browse/KOGITO-9175) - Support types for Dashbuilder external datasets
 - [KOGITO-9186](https://issues.redhat.com/browse/KOGITO-9186) - Handle NaN values in Dashbuilder metrics dataset
-- [kie-issues#113](https://github.com/kiegroup/kie-issues/issues/113) - Remove unnecessary rendering calls to DMN Editor's Boxed Expression Editor
-- [kie-issues#163](https://github.com/kiegroup/kie-issues/issues/163) - In DMN Editor's Boxed Expression Editor, long names are not being truncated in DecisionTable sub-headers and in the name of root expressions
-- [kie-issues#255](https://github.com/kiegroup/kie-issues/issues/255) - A Not-collect Hit Policy should clear aggregation type
-- [kie-issues#250](https://github.com/kiegroup/kie-issues/issues/250) - Width changes are not correctly persisted
-- [kie-issues#258](https://github.com/kiegroup/kie-issues/issues/258) - Use data type current value when opening DMN constraint modal
-- [kie-issues#222](https://github.com/kiegroup/kie-issues/issues/222) - When editing a BeeTable cell with selected text, the selection is lost when mouse hovers in or out of it
-- [kie-issues#210](https://github.com/kiegroup/kie-issues/issues/210) - Keyboard shortcuts stop working after blurring out of some components on the BeeTable
-- [kie-issues#114](https://github.com/kiegroup/kie-issues/issues/114) - Part 2: Temporary comment code no more supported by API
-- [kie-issues#278](https://github.com/kiegroup/kie-issues/issues/278) - Duplicate row should not copy the inputEntry id of that row
+- [kie-issues#113](ahttps://github.com/apache/incubator-kie-issues/issues/113) - Remove unnecessary rendering calls to DMN Editor's Boxed Expression Editor
+- [kie-issues#163](ahttps://github.com/apache/incubator-kie-issues/issues/163) - In DMN Editor's Boxed Expression Editor, long names are not being truncated in DecisionTable sub-headers and in the name of root expressions
+- [kie-issues#255](ahttps://github.com/apache/incubator-kie-issues/issues/255) - A Not-collect Hit Policy should clear aggregation type
+- [kie-issues#250](ahttps://github.com/apache/incubator-kie-issues/issues/250) - Width changes are not correctly persisted
+- [kie-issues#258](ahttps://github.com/apache/incubator-kie-issues/issues/258) - Use data type current value when opening DMN constraint modal
+- [kie-issues#222](ahttps://github.com/apache/incubator-kie-issues/issues/222) - When editing a BeeTable cell with selected text, the selection is lost when mouse hovers in or out of it
+- [kie-issues#210](ahttps://github.com/apache/incubator-kie-issues/issues/210) - Keyboard shortcuts stop working after blurring out of some components on the BeeTable
+- [kie-issues#114](ahttps://github.com/apache/incubator-kie-issues/issues/114) - Part 2: Temporary comment code no more supported by API
+- [kie-issues#278](ahttps://github.com/apache/incubator-kie-issues/issues/278) - Duplicate row should not copy the inputEntry id of that row
 - [KOGITO-8986](https://issues.redhat.com/browse/KOGITO-8986) - SWF Viewer - missing icon for parameters for Switch state
 - [KOGITO-8288](https://issues.redhat.com/browse/KOGITO-8288) - SWF Editor - Issues on state selection & tooltip overlapping toolbox
 - [KOGITO-8988](https://issues.redhat.com/browse/KOGITO-8988) - SWF Viewer - add icons for ForEch state
@@ -106,15 +106,15 @@
 - [KOGITO-9016](https://issues.redhat.com/browse/KOGITO-9016) - Fix Dashbuilder CSV Parser for empty fields by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1566
 - [KOGITO-9076](https://issues.redhat.com/browse/KOGITO-9076) - Retrieve Dashbuilder DataSet Columns information for CSV and Metrics by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1592
 - [KOGITO-8888](https://issues.redhat.com/browse/KOGITO-8888) - Show a message in dashbuilder page when displayer configuration is invalid by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1569
-- [kie-issues#102](https://github.com/kiegroup/kie-issues/issues/102) - BPMN Editor: Zooming in/out does not update the toolbox for correct size by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1470
-- [kie-issues#139](https://github.com/kiegroup/kie-issues/issues/139) - BPMN Editor breaking if `bpmn2` file lacks `id` by @pefernan in https://github.com/apache/incubator-kie-tools/pull/1523
-- [kie-issues#117](https://github.com/kiegroup/kie-issues/issues/117) - BPMN Editor: Enable auto population of DMN fields in Business Rule Task by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1524
+- [kie-issues#102](ahttps://github.com/apache/incubator-kie-issues/issues/102) - BPMN Editor: Zooming in/out does not update the toolbox for correct size by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1470
+- [kie-issues#139](ahttps://github.com/apache/incubator-kie-issues/issues/139) - BPMN Editor breaking if `bpmn2` file lacks `id` by @pefernan in https://github.com/apache/incubator-kie-tools/pull/1523
+- [kie-issues#117](ahttps://github.com/apache/incubator-kie-issues/issues/117) - BPMN Editor: Enable auto population of DMN fields in Business Rule Task by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1524
 - [KOGITO-8946](https://issues.redhat.com/browse/KOGITO-8946) - Missing structureref type for service task in VSCode BPMN editor by @hasys in https://github.com/apache/incubator-kie-tools/pull/1542
-- [kie-issues#42](https://github.com/kiegroup/kie-issues/issues/42) - DMN Editor: Repetitive opening of properties panel for List expression by @danielzhe in https://github.com/apache/incubator-kie-tools/pull/1502
-- [kie-issues#44](https://github.com/kiegroup/kie-issues/issues/44) - DMN Editor: Autolayout is broken for decision services by @danielzhe in https://github.com/apache/incubator-kie-tools/pull/1495
-- [kie-issues#110](https://github.com/kiegroup/kie-issues/issues/110) - Removing \"Supported by Red Hat\" logo in DMN Editor Documentation Tab by @yesamer in https://github.com/apache/incubator-kie-tools/pull/1561
-- [kie-issues#87](https://github.com/kiegroup/kie-issues/issues/87) - Refactor the React-based Boxed Expression Component to be able to delete the GWT-based one by @tiagobento in https://github.com/apache/incubator-kie-tools/pull/1562
-- [kie-issues#112](https://github.com/kiegroup/kie-issues/issues/112) - DMN Editor - JavaAutocompletion module is not compatible with Java Languages Extension >= `1.17.0` by @yesamer in https://github.com/apache/incubator-kie-tools/pull/1591
+- [kie-issues#42](ahttps://github.com/apache/incubator-kie-issues/issues/42) - DMN Editor: Repetitive opening of properties panel for List expression by @danielzhe in https://github.com/apache/incubator-kie-tools/pull/1502
+- [kie-issues#44](ahttps://github.com/apache/incubator-kie-issues/issues/44) - DMN Editor: Autolayout is broken for decision services by @danielzhe in https://github.com/apache/incubator-kie-tools/pull/1495
+- [kie-issues#110](ahttps://github.com/apache/incubator-kie-issues/issues/110) - Removing \"Supported by Red Hat\" logo in DMN Editor Documentation Tab by @yesamer in https://github.com/apache/incubator-kie-tools/pull/1561
+- [kie-issues#87](ahttps://github.com/apache/incubator-kie-issues/issues/87) - Refactor the React-based Boxed Expression Component to be able to delete the GWT-based one by @tiagobento in https://github.com/apache/incubator-kie-tools/pull/1562
+- [kie-issues#112](ahttps://github.com/apache/incubator-kie-issues/issues/112) - DMN Editor - JavaAutocompletion module is not compatible with Java Languages Extension >= `1.17.0` by @yesamer in https://github.com/apache/incubator-kie-tools/pull/1591
 - [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/apache/incubator-kie-tools/pull/1485
 - [KOGITO-8716](https://issues.redhat.com/browse/KOGITO-8716) - [SWF Viewer] Backward orthogonal Lines should not overlap states by @handreyrc in https://github.com/apache/incubator-kie-tools/pull/1476
 - [KOGITO-8714](https://issues.redhat.com/browse/KOGITO-8714) - SWF Viewer - display stateDataFilter parameter with icon by @hasys in https://github.com/apache/incubator-kie-tools/pull/1474
@@ -155,12 +155,12 @@
 - [KOGITO-8317](https://issues.redhat.com/browse/KOGITO-8317) - Show condition names, instead of expressions, when possible
 - [KOGITO-8307](https://issues.redhat.com/browse/KOGITO-8307) - SWF Editor - States without incoming transition are shown in top left corner
 - [KOGITO-8277](https://issues.redhat.com/browse/KOGITO-8277) - FunctionRef.arguments could be String or JsObject
-- [kie-issues#6](https://github.com/kiegroup/kie-issues/issues/6) - Bump `gwt` version to `2.10.0` version in `stunner-editors` module
+- [kie-issues#6](ahttps://github.com/apache/incubator-kie-issues/issues/6) - Bump `gwt` version to `2.10.0` version in `stunner-editors` module
 - [KOGITO-6974](https://issues.redhat.com/browse/KOGITO-6974) - Stunner Editors - Line control points are enabled in view only mode, but they should not
 - [KOGITO-8119](https://issues.redhat.com/browse/KOGITO-8119) - [DMN Editor] Import Java classes thrown an exception in Windows
 - [DROOLS-3703](https://issues.redhat.com/browse/DROOLS-3703) - Disable Enumeration and Range constraint for Any DataType
-- [kie-issues#28](https://github.com/kiegroup/kie-issues/issues/28) - DMN Editor - Three undos are required to remove a newly added node
-- [kie-issues#46](https://github.com/kiegroup/kie-issues/issues/46) - Disable OK button properly in DMN Data Type Constraint modal
+- [kie-issues#28](ahttps://github.com/apache/incubator-kie-issues/issues/28) - DMN Editor - Three undos are required to remove a newly added node
+- [kie-issues#46](ahttps://github.com/apache/incubator-kie-issues/issues/46) - Disable OK button properly in DMN Data Type Constraint modal
 - [KOGITO-8120](https://issues.redhat.com/browse/KOGITO-8120) - Dashbuilder: New Map Component
 - [KOGITO-8229](https://issues.redhat.com/browse/KOGITO-8229) - Dashbuilder ECharts Native
 - [KOGITO-8355](https://issues.redhat.com/browse/KOGITO-8355) - Fix Dark Mode in VSCode Extension

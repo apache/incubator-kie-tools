@@ -21,14 +21,14 @@ import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Selection", () => {
   test.describe("Cell navigation", () => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/543");
+    test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/543");
     test("should correctly navigate", async () => {
       // enter, shift+enter, tab, shift+tab, escape
     });
   });
 
   test.describe("Expression navigation", () => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/543");
+    test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/543");
     test("should correctly navigatee", async () => {
       // enter, shift+enter, tab, shift+tab, escape
     });

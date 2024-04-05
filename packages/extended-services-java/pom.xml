@@ -46,13 +46,6 @@
     <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
   </scm>
 
-  <developers>
-    <developer>
-      <name>All developers are listed in the KIE GitHub organization</name>
-      <url>https://github.com/orgs/kiegroup/people</url>
-    </developer>
-  </developers>
-
   <repositories>
     <repository>
       <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,

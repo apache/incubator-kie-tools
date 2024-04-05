@@ -144,7 +144,7 @@ export function RelationExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        accessor: decisionNodeId as any, // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169
         label: relationExpression.name ?? DEFAULT_EXPRESSION_NAME,
         dataType: relationExpression.dataType,
         isRowIndexColumn: false,
@@ -448,7 +448,7 @@ export function RelationExpression(
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
         variables={variables}
-        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/kiegroup/kie-issues/issues/181
+        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing ahttps://github.com/apache/incubator-kie-issues/issues/181
       />
     </div>
   );

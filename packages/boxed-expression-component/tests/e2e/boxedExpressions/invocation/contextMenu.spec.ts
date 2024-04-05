@@ -29,10 +29,10 @@ test.describe("Boxed Invocation context menu", () => {
     });
 
     test("should't render selection context menu", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/420",
+        description: "ahttps://github.com/apache/incubator-kie-issues/issues/420",
       });
       await page.getByRole("cell", { name: "p-1" }).click({ button: "right" });
       await expect(page.getByRole("heading", { name: "PARAMETERS" })).toBeAttached();
@@ -103,10 +103,10 @@ test.describe("Boxed Invocation context menu", () => {
     page,
     monaco,
   }) => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/421");
+    test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/421");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
-      description: "https://github.com/kiegroup/kie-issues/issues/421",
+      description: "ahttps://github.com/apache/incubator-kie-issues/issues/421",
     });
 
     await stories.openRelation();

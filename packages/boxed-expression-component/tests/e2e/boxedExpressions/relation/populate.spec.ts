@@ -61,7 +61,7 @@ test.describe("Populate Relation", () => {
 
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
-      description: "https://github.com/kiegroup/kie-issues/issues/541",
+      description: "ahttps://github.com/apache/incubator-kie-issues/issues/541",
     });
     // Plus sign triggers flaky tests.
     await page.getByRole("columnheader", { name: "Name (string)" }).hover();

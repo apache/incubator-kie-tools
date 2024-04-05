@@ -140,7 +140,7 @@ export function InvocationExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
+        accessor: decisionNodeId as any, // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169,
         label: invocationExpression.name ?? DEFAULT_EXPRESSION_NAME,
         dataType: invocationExpression.dataType,
         isRowIndexColumn: false,

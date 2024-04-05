@@ -20,7 +20,7 @@
 import { test } from "../../__fixtures__/base";
 
 test.describe("Keyboard", () => {
-  test.skip(true, "https://github.com/kiegroup/kie-issues/issues/542");
+  test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/542");
   test.describe("Navigation", () => {
     test("should correctly navigate", async () => {
       // enter, shift+enter, tab, shift+tab, escape

@@ -63,7 +63,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
 1. Run a container with custom environment variables:
 
-   [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/kiegroup/kie-issues/issues/16)
+   [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See ahttps://github.com/apache/incubator-kie-issues/issues/16)
 
    |                              Name                               |                                                         Description                                                         |                               Default                               |
    | :-------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
@@ -127,8 +127,8 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
       ```bash
       docker run -t -p 8080:8080 -e KIE_SANDBOX_ACCELERATORS='[{ \
         name: "Quarkus", \
-        iconUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator/raw/0.0.0/quarkus-logo.png", \
-        gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator", \
+        iconUrl: "https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator/raw/0.0.0/quarkus-logo.png", \
+        gitRepositoryUrl: "https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator", \
         gitRepositoryGitRef: "0.0.0", \
         dmnDestinationFolder: "src/main/resources/dmn", \
         bpmnDestinationFolder: "src/main/resources/bpmn", \
@@ -262,8 +262,8 @@ Here's an example of what it should look like:
 ```js
 {
     name: "Quarkus",
-    iconUrl: `https://github.com/kiegroup/kie-sandbox-quarkus-accelerator/raw/0.0.0/quarkus-logo.png`,
-    gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator",
+    iconUrl: `https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator/raw/0.0.0/quarkus-logo.png`,
+    gitRepositoryUrl: "https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator",
     gitRepositoryGitRef: "main,
     dmnDestinationFolder: "src/main/resources/dmn",
     bpmnDestinationFolder: "src/main/resources/bpmn",

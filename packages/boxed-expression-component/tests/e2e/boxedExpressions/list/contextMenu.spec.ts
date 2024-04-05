@@ -95,10 +95,10 @@ test.describe("Bixed List context menu", () => {
     page,
     monaco,
   }) => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/421");
+    test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/421");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
-      description: "https://github.com/kiegroup/kie-issues/issues/421",
+      description: "ahttps://github.com/apache/incubator-kie-issues/issues/421",
     });
 
     await stories.openRelation();

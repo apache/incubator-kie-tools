@@ -20,7 +20,7 @@
 import { test } from "../__fixtures__/base";
 
 test.describe("DMN runner", () => {
-  test.skip(true, "https://github.com/kiegroup/kie-issues/issues/545");
+  test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/545");
   test.describe("Form", () => {
     test("", async () => {});
   });

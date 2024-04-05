@@ -27,7 +27,7 @@ import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/Exte
 
 export type SupportedFileExtensions = "bpmn" | "bpmn2" | "BPMN" | "BPMN2" | "dmn" | "DMN" | "pmml" | "PMML";
 
-// FIXME: Chaging `any` to `EditorEnvelopeLocator` breaks --env live. Please adress this as part of https://github.com/kiegroup/kie-issues/issues/109
+// FIXME: Chaging `any` to `EditorEnvelopeLocator` breaks --env live. Please adress this as part of ahttps://github.com/apache/incubator-kie-issues/issues/109
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
 export const LEGACY_DMN_EDITOR_EDITOR_CONFIG: EditorConfig = {

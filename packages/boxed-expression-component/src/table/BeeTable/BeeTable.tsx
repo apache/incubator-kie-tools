@@ -132,7 +132,7 @@ export function BeeTableInternal<R extends object>({
               label:
                 headerVisibility === BeeTableHeaderVisibility.AllLevels
                   ? ROW_INDEX_SUB_COLUMN_ACCESSOR
-                  : (controllerCell as any), // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+                  : (controllerCell as any), // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169
               accessor: ROW_INDEX_SUB_COLUMN_ACCESSOR as any,
               minWidth: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
               width: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
@@ -155,12 +155,12 @@ export function BeeTableInternal<R extends object>({
   >(
     (currentControllerCell, columns) => {
       const rowIndexColumn: ReactTable.Column<R> = {
-        label: currentControllerCell as any, //FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        label: currentControllerCell as any, //FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169
         accessor: ROW_INDEX_COLUMN_ACCESOR as any,
         width: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
         minWidth: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
         isRowIndexColumn: true,
-        dataType: undefined as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        dataType: undefined as any, // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169
       };
 
       addRowIndexColumnsRecursively(rowIndexColumn, headerLevelCountForAppendingRowIndexColumn);
@@ -291,7 +291,7 @@ export function BeeTableInternal<R extends object>({
         return getRowKey(row);
       } else {
         if (row.original) {
-          // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+          // FIXME: ahttps://github.com/apache/incubator-kie-issues/issues/169
           return (row.original as any).id;
         }
         return row.id;

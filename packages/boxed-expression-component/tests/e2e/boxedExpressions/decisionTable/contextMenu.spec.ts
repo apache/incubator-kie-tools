@@ -29,10 +29,10 @@ test.describe("Decision table context menu", () => {
     });
 
     test("shouldn't render columns context menu", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/420",
+        description: "ahttps://github.com/apache/incubator-kie-issues/issues/420",
       });
 
       await expect(page.getByRole("heading", { name: "DECISION RULES" })).toBeAttached();
@@ -54,7 +54,7 @@ test.describe("Decision table context menu", () => {
     });
 
     test("should open decision rules context menu and insert multiples rows above", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
       await page.getByRole("button", { name: "plus" }).click();
@@ -63,7 +63,7 @@ test.describe("Decision table context menu", () => {
     });
 
     test("should open decision rules context menu and insert multiples rows below", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
       await page.getByRole("button", { name: "minus" }).click();
@@ -98,10 +98,10 @@ test.describe("Decision table context menu", () => {
       });
 
       test("shouldn't render decision rules context menu", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
         test.info().annotations.push({
           type: TestAnnotations.REGRESSION,
-          description: "https://github.com/kiegroup/kie-issues/issues/420",
+          description: "ahttps://github.com/apache/incubator-kie-issues/issues/420",
         });
 
         await expect(page.getByRole("heading", { name: "DECISION RULES" })).not.toBeAttached();
@@ -128,7 +128,7 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open input column context menu and insert multiples columns on right", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
         await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
         await page.getByRole("button", { name: "plus" }).click();
@@ -141,7 +141,7 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open input column context menu and insert multiples columns on left", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
         await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
         await page.getByRole("button", { name: "minus" }).click();
@@ -153,7 +153,7 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open input column context menu and delete column", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
         await page.getByRole("menuitem", { name: "Insert left" }).click();
         await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
@@ -179,10 +179,10 @@ test.describe("Decision table context menu", () => {
       });
 
       test("shouldn't render decision rules context menu", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
         test.info().annotations.push({
           type: TestAnnotations.REGRESSION,
-          description: "https://github.com/kiegroup/kie-issues/issues/420",
+          description: "ahttps://github.com/apache/incubator-kie-issues/issues/420",
         });
 
         await expect(page.getByRole("heading", { name: "DECISION RULES" })).not.toBeAttached();
@@ -211,7 +211,7 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open output column context menu and insert multiples columns on right", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
         await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
         await page.getByRole("button", { name: "plus" }).click();
@@ -225,7 +225,7 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open output column context menu and insert multiples columns on left", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
         await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
         await page.getByRole("button", { name: "minus" }).click();
@@ -238,7 +238,7 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open output column context menu and delete column", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
         await page.getByRole("menuitem", { name: "Insert left" }).click();
         await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
@@ -266,10 +266,10 @@ test.describe("Decision table context menu", () => {
       });
 
       test("shouldn't render decision rules context menu", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
         test.info().annotations.push({
           type: TestAnnotations.REGRESSION,
-          description: "https://github.com/kiegroup/kie-issues/issues/420",
+          description: "ahttps://github.com/apache/incubator-kie-issues/issues/420",
         });
 
         await expect(page.getByRole("heading", { name: "DECISION RULES" })).not.toBeAttached();
@@ -296,7 +296,7 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open annotation column context menu and insert multiples columns on right", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
         await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
         await page.getByRole("button", { name: "plus" }).click();
@@ -309,7 +309,7 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open annotation column context menu and insert multiples columns on left", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
         await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
         await page.getByRole("button", { name: "minus" }).click();
@@ -321,7 +321,7 @@ test.describe("Decision table context menu", () => {
       });
 
       test("should open annotation column context menu and delete column", async ({ page }) => {
-        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/420");
 
         await page.getByRole("menuitem", { name: "Insert left" }).click();
         await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
@@ -343,10 +343,10 @@ test.describe("Decision table context menu", () => {
     page,
     monaco,
   }) => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/421");
+    test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/421");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
-      description: "https://github.com/kiegroup/kie-issues/issues/421",
+      description: "ahttps://github.com/apache/incubator-kie-issues/issues/421",
     });
 
     await stories.openDecisionTable();

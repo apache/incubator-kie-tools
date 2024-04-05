@@ -23,7 +23,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 export interface UnitablesColumnType {
   name: string;
   joinedName: string;
-  dataType: DmnBuiltInDataType; // FIXME: Decouple from DMN --> https://github.com/kiegroup/kie-issues/issues/166
+  dataType: DmnBuiltInDataType; // FIXME: Decouple from DMN --> ahttps://github.com/apache/incubator-kie-issues/issues/166
   width?: number;
   type: string;
 

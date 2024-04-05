@@ -155,7 +155,7 @@
     <url>https://github.com/uberfire/uberfire</url>
   </scm>
   <issueManagement>
-    <system>jira</system>
+    <system>github-issues</system>
     <url>https://issues.jboss.org/browse/UF</url>
   </issueManagement>
 

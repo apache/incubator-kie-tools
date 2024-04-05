@@ -20,7 +20,7 @@
 import { test } from "../__fixtures__/base";
 
 test.describe("Recent models", () => {
-  test.skip(true, "https://github.com/kiegroup/kie-issues/issues/544");
+  test.skip(true, "ahttps://github.com/apache/incubator-kie-issues/issues/544");
 
   test("should open single file workspace", async () => {});
 

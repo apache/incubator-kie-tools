@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:include1="http://www.trisotech.com/definitions/_5e8e877a-af87-434b-9c36-ed51c8d6b514" xmlns:drools="http://www.drools.org/kie/dmn/1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" id="_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" name="Chapter 11 Example" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4">
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:include1="http://www.trisotech.com/definitions/_5e8e877a-af87-434b-9c36-ed51c8d6b514" xmlns:drools="https://kie.apache.org/dmn/extensions/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rss="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" id="_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4" name="Chapter 11 Example" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_9d01a0c4-f529-4ad8-ad8e-ec5fb5d96ad4">
   <dmn:extensionElements/>
   <dmn:import id="_1FD4112F-642D-422A-9076-CFB7375E01CD" name="Financial" namespace="http://www.trisotech.com/definitions/_5e8e877a-af87-434b-9c36-ed51c8d6b514" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
   <dmn:itemDefinition id="_4C0FBA64-E560-4BA5-9FFB-F6F83757EA7F" name="tStrategy" isCollection="false">
@@ -1752,7 +1752,7 @@ else null</dmn:text>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_ce4a4c00-c3a3-46a6-8938-055239f6b326" name="DRD of all automated decision-making">
       <di:extension>
-        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+        <kie:ComponentsWidthsExtension xmlns:kie="https://kie.apache.org/dmn/extensions/1.0">
           <kie:ComponentWidths dmnElementRef="_af620f30-1376-4a5d-b6b8-42ec7ebc48bd"/>
           <kie:ComponentWidths dmnElementRef="literal__af620f30-1376-4a5d-b6b8-42ec7ebc48bd"/>
           <kie:ComponentWidths dmnElementRef="_40020f96-0afd-405c-828a-0aa6684d150d"/>
@@ -2300,7 +2300,7 @@ else null</dmn:text>
     </dmndi:DMNDiagram>
     <dmndi:DMNDiagram id="_0e22b6cf-0a6e-40e1-a81e-44b31ad86262" name="DRD for Decide bureau strategy decision point">
       <di:extension>
-        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+        <kie:ComponentsWidthsExtension xmlns:kie="https://kie.apache.org/dmn/extensions/1.0">
           <kie:ComponentWidths dmnElementRef="_2cc659df-0249-417c-8074-d3a375c6b5f5"/>
           <kie:ComponentWidths dmnElementRef="literal__2cc659df-0249-417c-8074-d3a375c6b5f5"/>
           <kie:ComponentWidths dmnElementRef="_87dccb4c-d416-42ca-9c72-a0b591b4ba88"/>
@@ -2657,7 +2657,7 @@ else null</dmn:text>
     </dmndi:DMNDiagram>
     <dmndi:DMNDiagram id="_3275163a-921d-48f8-967a-21c4373b1197" name="DRD for Decide routing decision point">
       <di:extension>
-        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+        <kie:ComponentsWidthsExtension xmlns:kie="https://kie.apache.org/dmn/extensions/1.0">
           <kie:ComponentWidths dmnElementRef="_2661f418-77f3-4bab-824a-a4968b8a96d4"/>
           <kie:ComponentWidths dmnElementRef="_ad1e4499-e806-42f1-8069-254e98f5d498"/>
           <kie:ComponentWidths dmnElementRef="_27a56668-bc99-4a6a-8f4f-5b67ab4e3df3"/>
@@ -2975,7 +2975,7 @@ else null</dmn:text>
     </dmndi:DMNDiagram>
     <dmndi:DMNDiagram id="_a35ef6e9-0408-4288-b8f2-d28ac4baca3b" name="DRD for Review application decision point">
       <di:extension>
-        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+        <kie:ComponentsWidthsExtension xmlns:kie="https://kie.apache.org/dmn/extensions/1.0">
           <kie:ComponentWidths dmnElementRef="_78ce14d2-2c68-454a-b772-075b3f1395c3">
             <kie:width>50</kie:width>
             <kie:width>120</kie:width>
@@ -3073,7 +3073,7 @@ else null</dmn:text>
     </dmndi:DMNDiagram>
     <dmndi:DMNDiagram id="_5c111794-4c6b-4747-8dfc-99d2ad0b6313" name="Bureau Strategy Decision Service">
       <di:extension>
-        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+        <kie:ComponentsWidthsExtension xmlns:kie="https://kie.apache.org/dmn/extensions/1.0">
           <kie:ComponentWidths dmnElementRef="_0991d970-7c58-4669-89ec-a5e3e9d264df"/>
           <kie:ComponentWidths dmnElementRef="_af620f30-1376-4a5d-b6b8-42ec7ebc48bd"/>
           <kie:ComponentWidths dmnElementRef="literal__af620f30-1376-4a5d-b6b8-42ec7ebc48bd"/>
@@ -3256,7 +3256,7 @@ else null</dmn:text>
     </dmndi:DMNDiagram>
     <dmndi:DMNDiagram id="_69750f88-f46f-4b47-bb3c-fb77f574f2b3" name="Routing Decision Service">
       <di:extension>
-        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+        <kie:ComponentsWidthsExtension xmlns:kie="https://kie.apache.org/dmn/extensions/1.0">
           <kie:ComponentWidths dmnElementRef="_78ce14d2-2c68-454a-b772-075b3f1395c3">
             <kie:width>50</kie:width>
             <kie:width>120</kie:width>
@@ -3432,7 +3432,7 @@ else null</dmn:text>
     </dmndi:DMNDiagram>
     <dmndi:DMNDiagram id="_95e871bf-e58f-4976-b1bf-d9b220fdb2cb" name="DRD for Credit Risk Analytics">
       <di:extension>
-        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+        <kie:ComponentsWidthsExtension xmlns:kie="https://kie.apache.org/dmn/extensions/1.0">
           <kie:ComponentWidths dmnElementRef="_26378922-484b-42f3-a609-5aecb81afbd2"/>
           <kie:ComponentWidths dmnElementRef="_ECFC6F2B-544E-4A43-BBDF-8F3447B63BE5"/>
         </kie:ComponentsWidthsExtension>
@@ -3510,7 +3510,7 @@ else null</dmn:text>
     </dmndi:DMNDiagram>
     <dmndi:DMNDiagram id="_C6119774-6A92-4897-826A-D765495904DB" name="DRG">
       <di:extension>
-        <kie:ComponentsWidthsExtension xmlns:kie="http://www.drools.org/kie/dmn/1.2">
+        <kie:ComponentsWidthsExtension xmlns:kie="https://kie.apache.org/dmn/extensions/1.0">
           <kie:ComponentWidths dmnElementRef="_af620f30-1376-4a5d-b6b8-42ec7ebc48bd"/>
           <kie:ComponentWidths dmnElementRef="literal__af620f30-1376-4a5d-b6b8-42ec7ebc48bd"/>
           <kie:ComponentWidths dmnElementRef="_40020f96-0afd-405c-828a-0aa6684d150d"/>

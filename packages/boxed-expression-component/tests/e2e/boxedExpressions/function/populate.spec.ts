@@ -138,7 +138,7 @@ else false`,
 
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
-      description: "https://github.com/kiegroup/kie-issues/issues/536",
+      description: "ahttps://github.com/apache/incubator-kie-issues/issues/536",
     });
     // Can't resize this column as it's named as "Expression Name"
     // await resizing.reset(

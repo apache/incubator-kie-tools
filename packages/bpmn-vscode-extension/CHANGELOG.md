@@ -20,14 +20,14 @@
 
 # 0.28.0 (alpha)
 
-- [kie-issues#102](https://github.com/kiegroup/kie-issues/issues/102) - BPMN Editor: Zooming in/out does not update the toolbox for correct size by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1470
-- [kie-issues#139](https://github.com/kiegroup/kie-issues/issues/139) - BPMN Editor breaking if `bpmn2` file lacks `id` by @pefernan in https://github.com/apache/incubator-kie-tools/pull/1523
-- [kie-issues#117](https://github.com/kiegroup/kie-issues/issues/117) - BPMN Editor: Enable auto population of DMN fields in Business Rule Task by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1524
+- [kie-issues#102](ahttps://github.com/apache/incubator-kie-issues/issues/102) - BPMN Editor: Zooming in/out does not update the toolbox for correct size by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1470
+- [kie-issues#139](ahttps://github.com/apache/incubator-kie-issues/issues/139) - BPMN Editor breaking if `bpmn2` file lacks `id` by @pefernan in https://github.com/apache/incubator-kie-tools/pull/1523
+- [kie-issues#117](ahttps://github.com/apache/incubator-kie-issues/issues/117) - BPMN Editor: Enable auto population of DMN fields in Business Rule Task by @inodeman in https://github.com/apache/incubator-kie-tools/pull/1524
 - [KOGITO-8946](https://issues.redhat.com/browse/KOGITO-8946) - Missing structureref type for service task in VSCode BPMN editor by @hasys in https://github.com/apache/incubator-kie-tools/pull/1542
 
 # 0.26.0 (alpha)
 
-- [kie-issues#6](https://github.com/kiegroup/kie-issues/issues/6) - Bump `gwt` version to `2.10.0` version in `stunner-editors` module
+- [kie-issues#6](ahttps://github.com/apache/incubator-kie-issues/issues/6) - Bump `gwt` version to `2.10.0` version in `stunner-editors` module
 - [KOGITO-6974](https://issues.redhat.com/browse/KOGITO-6974) - Stunner Editors - Line control points are enabled in view only mode, but they should not
 
 # 0.25.0 (alpha)

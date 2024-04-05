@@ -56,10 +56,10 @@ export function BpmnPage() {
       new EnvelopeMapping({
         type: "bpmn",
         filePathGlob: "**/*.bpmn?(2)",
-        resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
+        resourcesPathPrefix: "https://apache.github.io/incubator-kie-kogito-online/editors/latest/bpmn",
         envelopeContent: {
           type: EnvelopeContentType.PATH,
-          path: "https://kiegroup.github.io/kogito-online/bpmn-envelope.html",
+          path: "https://apache.github.io/incubator-kie-kogito-online/bpmn-envelope.html",
         },
       }),
     ]);
