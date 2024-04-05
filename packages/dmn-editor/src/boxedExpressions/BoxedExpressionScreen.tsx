@@ -414,7 +414,6 @@ function drgElementToBoxedExpression(
     return expressionHolder.encapsulatedLogic
       ? {
           __$$element: "functionDefinition",
-          "@_label": expressionHolder["@_name"],
           ...expressionHolder.encapsulatedLogic,
         }
       : {
