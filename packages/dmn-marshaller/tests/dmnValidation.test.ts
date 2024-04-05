@@ -38,6 +38,7 @@ const dmnTestingModels = [
   FULL_1_5_DIRECTORY + "DateToDateTimeFunction.dmn",
   FULL_1_5_DIRECTORY + "ForLoopDatesEvaluate.dmn",
   FULL_1_5_DIRECTORY + "ListReplaceEvaluate.dmn",
+  FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
   FULL_1_5_DIRECTORY + "NegationOfDurationEvaluate.dmn",
   FULL_1_5_DIRECTORY + "TypeConstraintsChecks.dmn",
   FULL_1_x_MULTIPLE_DIRECTORY + "Financial.dmn",
@@ -51,13 +52,26 @@ const dmnTestingModels = [
 const dmnTestingImportedModels = [
   {
     imported: FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
-    importing: FULL_1_5_DIRECTORY + "Importing_EmptyNamed_Model.dmn",
+    importer: FULL_1_5_DIRECTORY + "Importing_EmptyNamed_Model.dmn",
+  },
+  {
+    imported: FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
+    importer: FULL_1_5_DIRECTORY + "Importing_Named_Model.dmn",
+  },
+  {
+    imported: FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
+    importer: FULL_1_5_DIRECTORY + "Importing_OverridingEmptyNamed_Model.dmn",
   },
 ];
 
 describe("validation", () => {
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
+  }
+  for (const file of dmnTestingImportedModels) {
+    file.imported = path.join(dmnTestingModelsPath, file.imported);
+    file.importer = path.join(dmnTestingModelsPath, file.importer);
+    testImportedFile(file);
   }
 });
 
@@ -75,15 +89,15 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
 
 function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string; importer: string }) {
   test(
-    normalizedFsPathRelativeToTheFiles.imported.substring(
-      normalizedFsPathRelativeToTheFiles.imported.lastIndexOf("/") + 1
+    normalizedFsPathRelativeToTheFiles.importer.substring(
+      normalizedFsPathRelativeToTheFiles.importer.lastIndexOf("/") + 1
     ),
     () => {
       const imported = parseXML(normalizedFsPathRelativeToTheFiles.imported);
       const importer = parseXML(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, imported.marshalledXML, importer.marshalledXML);
+        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, importer.marshalledXML, imported.marshalledXML);
       } catch (error) {
         fail("An error occured");
       }

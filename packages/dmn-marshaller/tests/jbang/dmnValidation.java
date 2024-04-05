@@ -3,30 +3,46 @@
 
 import java.io.StringReader;
 import java.util.List;
+import java.util.stream.Stream;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.validation.DMNValidator;
+import org.kie.dmn.validation.DMNValidator.Validation;
 import org.kie.dmn.validation.DMNValidatorFactory;
 
+/**
+ * JBang script that performs a DMN file xml (in string format) validation against KIE DMN Validator 
+ * (https://github.com/apache/incubator-kie-drools/tree/main/kie-dmn/kie-dmn-validation).
+ * The script can manage one or two (in case of imported model) DMN Files.
+ */
 class dmnValidation {
 
     public static void main(String... args) throws Exception {
-        int exitCode = validate(args[0]);
+        int exitCode = validate(args);
         System.exit(exitCode);
     }
 
-    public static int validate(String xml) throws Exception {
-        DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
-        // System.out.println("===");
-        // System.out.println(xml.trim());
-        // System.out.println("===");
+    public static int validate(String... args) throws Exception {
+        if (args.length > 2 || args.length <= 0) {
+            throw new IllegalArgumentException("Validation requires 1 or 2 xmls");
+        }
+        StringReader[] models = Stream.of(args).map(StringReader::new).toArray(StringReader[]::new);
 
-        List<DMNMessage> messages = dmnValidator.validate(new StringReader(xml));
-        messages.forEach(message -> System.out.println("MESSAGE: " + message.getText()));
+        DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
+
+        final List<DMNMessage> messages = dmnValidator
+            .validateUsing(Validation.VALIDATE_SCHEMA,
+                           Validation.VALIDATE_MODEL,
+                           Validation.VALIDATE_COMPILATION)
+            .theseModels(models);
+
         if (messages.size() == 0) {
-            //System.out.println("MESSAGE: IS FINE!!!");
             return 0;
         } else {
+            System.out.println("=== DMN VALIDATION FAILED ===");
+            messages.forEach(message -> System.out.println(message.getText()));
+            System.out.println("=============================");
             return 1;
         }
     }
