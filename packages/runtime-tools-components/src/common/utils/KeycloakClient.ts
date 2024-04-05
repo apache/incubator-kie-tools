@@ -74,8 +74,8 @@ export const checkAuthServerHealth = () => {
   });
 };
 
-export const getKeycloakClient = (): Keycloak.KeycloakInstance => {
-  return Keycloak({
+export const getKeycloakClient = (): Keycloak => {
+  return new Keycloak({
     realm: window["KOGITO_CONSOLES_KEYCLOAK_REALM"],
     url: window["KOGITO_CONSOLES_KEYCLOAK_URL"],
     clientId: window["KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID"],
@@ -112,7 +112,7 @@ export const loadSecurityContext = (onloadSuccess: () => void, onLoadFailure: ()
         .then(() => {
           return initializeKeycloak(onloadSuccess);
         })
-        .catch((error) => {
+        .catch((_error) => {
           onLoadFailure();
         });
     }
