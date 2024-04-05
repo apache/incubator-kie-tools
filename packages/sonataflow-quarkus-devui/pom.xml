@@ -71,7 +71,7 @@
     <java.module.name>org.kie.kogito.quarkus.swf.dev.ui</java.module.name>
     <version.flatten.plugin>1.3.0</version.flatten.plugin>
     <quarkus.platform.version>3.2.10.Final</quarkus.platform.version>
-    <version.org.kie.kogito>999-20240331-SNAPSHOT</version.org.kie.kogito>
+    <version.org.kie.kogito>999-20240407-SNAPSHOT</version.org.kie.kogito>
   </properties>
 
   <modules>
