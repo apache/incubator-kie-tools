@@ -19,7 +19,7 @@
 
 const jbang = require("@jbangdev/jbang");
 
-export function executeJbangScript(scriptName: string, ...args: string[]) {
+export function executeJbangScript(scriptPath: string, ...args: string[]) {
   jbang.exec("--java 17", "properties@jbangdev", "java.version");
-  jbang.exec(scriptName, "'" + args[0] + "'"); //Temporary
+  jbang.exec(scriptPath, args.map((arg) => "'" + arg + "'").join(" "));
 }

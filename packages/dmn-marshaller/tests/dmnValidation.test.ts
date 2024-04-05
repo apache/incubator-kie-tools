@@ -48,6 +48,13 @@ const dmnTestingModels = [
   FULL_1_x_DIRECTORY + "testWithExtensionElements.dmn",
 ];
 
+const dmnTestingImportedModels = [
+  {
+    imported: FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
+    importing: FULL_1_5_DIRECTORY + "Importing_EmptyNamed_Model.dmn",
+  },
+];
+
 describe("validation", () => {
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
@@ -55,18 +62,38 @@ describe("validation", () => {
 });
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
+  test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf("/") + 1), () => {
+    const processedDMN = parseXML(normalizedFsPathRelativeToTheFile);
+
+    try {
+      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, processedDMN.marshalledXML);
+    } catch (error) {
+      fail("An error occured");
+    }
+  });
+}
+
+function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string; importer: string }) {
   test(
-    normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf("/") + 1),
-    async () => {
-      const xml_original = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
-      const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
-      const xml_marshalled = builder.build(parser.parse());
+    normalizedFsPathRelativeToTheFiles.imported.substring(
+      normalizedFsPathRelativeToTheFiles.imported.lastIndexOf("/") + 1
+    ),
+    () => {
+      const imported = parseXML(normalizedFsPathRelativeToTheFiles.imported);
+      const importer = parseXML(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, xml_marshalled);
+        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, imported.marshalledXML, importer.marshalledXML);
       } catch (error) {
         fail("An error occured");
       }
     }
   );
+}
+
+function parseXML(normalizedFsPathRelativeToTheFile: string): { originalXML: string; marshalledXML: string } {
+  const originalXML = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
+  const { parser, builder } = getMarshaller(originalXML, { upgradeTo: "latest" });
+  const marshalledXML = builder.build(parser.parse());
+  return { originalXML: originalXML, marshalledXML: marshalledXML };
 }

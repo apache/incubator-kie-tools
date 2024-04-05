@@ -38,7 +38,7 @@ export const FULL_1_x_DIRECTORY = ".." + path.sep + VALID_MODELS_DIRECTORY + pat
 export const FULL_1_x_MULTIPLE_DIRECTORY = FULL_1_x_DIRECTORY + MULTIPLE_MODELS_DIRECTORY + path.sep;
 
 /* jbang scripts */
-export const JBANG_SCRIPTS_DIRECTORY = "." + path.sep + "tests" + path.sep + "jbang" + path.sep;
+export const JBANG_SCRIPTS_DIRECTORY = "tests" + path.sep + "jbang" + path.sep;
 export const JBANG_DMN_VALIDATION_SCRIPT_PATH = JBANG_SCRIPTS_DIRECTORY + "dmnValidation.java";
 
 /* XSD Schemas */
