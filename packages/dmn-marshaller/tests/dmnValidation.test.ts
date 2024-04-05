@@ -27,9 +27,13 @@ import {
   FULL_1_x_DIRECTORY,
   FULL_1_x_MULTIPLE_DIRECTORY,
   JBANG_DMN_VALIDATION_SCRIPT_PATH,
-  LOCAL_MODELS_OTHER_DIRECTORY,
-  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH,
 } from "./testConstants";
+
+/**
+ * This test suite validates the xml produced by the marshalle relying on KIE DMN Validator
+ * (https://github.com/apache/incubator-kie-drools/tree/main/kie-dmn/kie-dmn-validation).
+ * A JBang script is used to actually call the KIE DMN Validator Java code.
+ */
 
 const dmnTestingModelsPath = require.resolve("@kie-tools/dmn-testing-models");
 

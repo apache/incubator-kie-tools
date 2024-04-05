@@ -12,9 +12,10 @@ import org.kie.dmn.validation.DMNValidator.Validation;
 import org.kie.dmn.validation.DMNValidatorFactory;
 
 /**
- * JBang script that performs a DMN file xml (in string format) validation against KIE DMN Validator 
+ * JBang script that performs DMN files' XML (in string format) validation relying on KIE DMN Validator
  * (https://github.com/apache/incubator-kie-drools/tree/main/kie-dmn/kie-dmn-validation).
  * The script can manage one or two (in case of imported model) DMN Files.
+ * The XSD SCHEMA, DMN COMPLIANCE and DMN COMPILATION are validated.
  */
 class dmnValidation {
 
