@@ -296,31 +296,6 @@ export function ContextExpression(
     [contextExpression]
   );
 
-  const addVariable = useCallback(
-    (
-      args: {
-        beforeIndex: number;
-      },
-      newContextEntries: DMN15__tContextEntry[],
-      prev: BoxedContext,
-      newVariable: DMN15__tContextEntry
-    ) => {
-      const parentIndex = args.beforeIndex - 1;
-      let parentId = contextExpression.parentElementId;
-      if (parentIndex >= 0 && parentIndex < newContextEntries.length) {
-        parentId = newContextEntries[parentIndex].variable?.["@_id"] ?? "";
-      }
-
-      let childId: undefined | string;
-      if (args.beforeIndex < newContextEntries.length) {
-        childId = newContextEntries[args.beforeIndex].variable?.["@_id"];
-      } else {
-        childId = prev.contextEntry?.find((e) => !e.variable)?.["@_id"] ?? "";
-      }
-    },
-    [contextExpression.parentElementId]
-  );
-
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
       setExpression((prev: BoxedContext) => {
@@ -331,10 +306,7 @@ export function ContextExpression(
         for (let i = 0; i < args.rowsCount; i++) {
           const name = getNextAvailablePrefixedName(names, "ContextEntry");
           names.push(name);
-
-          const defaultContextEntry = getDefaultContextEntry(name);
-          addVariable(args, newContextEntries, prev, defaultContextEntry);
-          newEntries.push(defaultContextEntry);
+          newEntries.push(getDefaultContextEntry(name));
         }
 
         for (const newEntry of newEntries) {
@@ -350,7 +322,7 @@ export function ContextExpression(
         return ret;
       });
     },
-    [addVariable, getDefaultContextEntry, setExpression]
+    [getDefaultContextEntry, setExpression]
   );
 
   const onRowDeleted = useCallback(
