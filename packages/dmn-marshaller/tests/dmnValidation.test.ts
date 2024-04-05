@@ -84,7 +84,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
     const processedDMN = parseXML(normalizedFsPathRelativeToTheFile);
 
     try {
-      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, processedDMN.marshalledXML);
+      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH);
     } catch (error) {
       fail("An error occured");
     }
@@ -101,7 +101,7 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       const importer = parseXML(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, importer.marshalledXML, imported.marshalledXML);
+        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH);
       } catch (error) {
         fail("An error occured");
       }
