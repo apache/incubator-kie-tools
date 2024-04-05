@@ -28,7 +28,10 @@ class dmnValidation {
         if (args.length > 2 || args.length <= 0) {
             throw new IllegalArgumentException("Validation requires 1 or 2 xmls");
         }
-        StringReader[] models = Stream.of(args).map(StringReader::new).toArray(StringReader[]::new);
+        StringReader[] models = Stream.of(args)
+                                      .map(arg -> removeSurroundingDoubleQuotes(arg))
+                                      .map(StringReader::new)
+                                      .toArray(StringReader[]::new);
 
         DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
 
@@ -46,5 +49,15 @@ class dmnValidation {
             System.out.println("=============================");
             return 1;
         }
+    }
+
+    private static String removeSurroundingDoubleQuotes(String xml) {
+        if (xml.startsWith("\"") && xml.endsWith("\"")) {
+            return xml.substring(1, xml.length() - 1);
+        } 
+        return xml;
+        // Pattern pattern = Pattern.compile("^\"|\"$");
+        // Matcher matcher = pattern.matcher(xml);
+        // return matcher.replaceAll("");
     }
 }

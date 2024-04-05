@@ -86,7 +86,10 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
     try {
       executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, processedDMN.marshalledXML);
     } catch (error) {
-      fail("An error occured");
+      const fileName = normalizedFsPathRelativeToTheFile.substring(
+        normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
+      );
+      fail("Validation of " + fileName + " failed! Please scroll up to DMN VALIDATION ERROR message to see the reason");
     }
   });
 }
@@ -103,7 +106,13 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       try {
         executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, importer.marshalledXML, imported.marshalledXML);
       } catch (error) {
-        fail("An error occured");
+        const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
+          normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
+        );
+
+        fail(
+          "Validation of " + fileName + " failed! Please scroll up to DMN VALIDATION ERROR message to see the reason"
+        );
       }
     }
   );
