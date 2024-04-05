@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,22 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
-import {
-  TaskFormContext,
-  TaskFormGatewayApi,
-  TaskFormGatewayApiImpl,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 
-export const TaskFormContextProvider: React.FC = ({ children }) => {
-  const appContext = useDevUIAppContext();
+package org.jbpm.quarkus.devui.runtime.dataindex.processes;
 
-  return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
-      {children}
-    </TaskFormContext.Provider>
-  );
-};
+import java.util.List;
 
-export default TaskFormContextProvider;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class ProcessInstancesData {
+
+    @JsonProperty("ProcessInstances")
+    private List<ProcessInstance> instances;
+
+    public ProcessInstancesData() {
+    }
+
+    public ProcessInstancesData(final List<ProcessInstance> instances) {
+        this.instances = instances;
+    }
+
+    public List<ProcessInstance> getProcessInstances() {
+        return instances;
+    }
+
+    public void setProcessInstances(final List<ProcessInstance> processInstancesList) {
+        this.instances = processInstancesList;
+    }
+}
