@@ -112,6 +112,16 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags = 'daily-dev'
         SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
+        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__registry = 'quay.io'
+        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__account = 'kie-tools'
+        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__name = 'runtime-tools-task-console-webapp-image'
+        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__buildTags = 'daily-dev'
+
+        RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__registry = 'quay.io'
+        RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__account = 'kie-tools'
+        RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__name = 'runtime-tools-management-console-webapp-image'
+        RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__buildTags = 'daily-dev'
+
         BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
