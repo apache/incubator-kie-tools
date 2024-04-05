@@ -42,7 +42,7 @@ The task details page also contains a _View details_ button, to view more detail
 To start a Keycloak Server you can use Docker and just run the following command:
 
 ```
-docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e KEYCLOAK_IMPORT=/tmp/kogito-realm.json -v ./dev/config/kogito-realm.json:/tmp/kogito-realm.json -p 8280:8080 quay.io/keycloak/keycloak:13.0.1
+docker run -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e KEYCLOAK_IMPORT=/tmp/kogito-realm.json -v ./dev/config/kogito-realm.json:/tmp/kogito-realm.json -p 8280:8080 quay.io/keycloak/keycloak:legacy
 ```
 
 You should be able to access your Keycloak Server at [localhost:8280/auth](http://localhost:8280)
