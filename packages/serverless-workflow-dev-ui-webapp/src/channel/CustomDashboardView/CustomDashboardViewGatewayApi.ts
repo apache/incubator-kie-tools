@@ -19,7 +19,7 @@
 
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { getCustomDashboardContent } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
+import { getCustomDashboardContent } from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi";
 
 export interface CustomDashboardViewGatewayApi {
   getCustomDashboardContent(name: string): Promise<string>;

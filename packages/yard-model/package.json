@@ -27,9 +27,6 @@
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
-  "dependencies": {
-    "@kie-tools-core/notifications": "workspace:*"
-  },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",

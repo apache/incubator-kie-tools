@@ -19,10 +19,10 @@
 import {
   startWorkflowRest,
   getCustomWorkflowSchemaFromApi,
-} from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi/apis";
+} from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi/apis";
 import { WorkflowFormGatewayApi, WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImpl";
 
-jest.mock("@kie-tools/runtime-tools-gateway-api/dist/gatewayApi/apis", () => ({
+jest.mock("@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi/apis", () => ({
   startWorkflowRest: jest.fn(),
   getCustomWorkflowSchemaFromApi: jest.fn(),
 }));

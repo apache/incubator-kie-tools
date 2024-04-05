@@ -20,10 +20,10 @@
 import React, { useCallback } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { WorkflowListContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowListContainer";
-import { CloudEventPageSource } from "@kie-tools/runtime-tools-webapp-components/dist/CloudEventForm";
+import { WorkflowListContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowListContainer";
+import { CloudEventPageSource } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
 import { useHistory } from "react-router";
-import { WorkflowListState } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { WorkflowListState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { routes } from "../../navigation/Routes";
 
 const PAGE_TITLE = "Workflow Instances";

@@ -31,10 +31,8 @@
     "install:mvnw:win32": "pnpm powershell \"mvn wrapper:wrapper\"",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
-  "dependencies": {
-    "@kie-tools/dev-deployment-upload-service": "workspace:*"
-  },
   "devDependencies": {
+    "@kie-tools/dev-deployment-upload-service": "workspace:*",
     "@kie-tools/image-builder": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
