@@ -72,7 +72,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
 }) => {
   const [expressionWrapper, setExpressionWrapper] = useState<{
     source: "gwt" | "react";
-    expression: BoxedExpression;
+    expression: BoxedExpression | undefined;
     widthsById: Map<string, number[]>;
   }>({ source: "gwt", ...gwtExpressionToDmnExpression(gwtExpression) });
 
@@ -93,10 +93,14 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   }, [expressionWrapper]);
 
   const beeGwtService: BeeGwtService = {
-    getDefaultExpressionDefinition(logicType, dataType) {
-      return gwtExpressionToDmnExpression(
+    getDefaultExpressionDefinition(logicType, dataType, isRoot) {
+      const defaultExpression = gwtExpressionToDmnExpression(
         window.beeApiWrapper?.getDefaultExpressionDefinition(gwtLogicType(logicType), dataType)
       );
+      if (isRoot === false) {
+        defaultExpression.expression["@_label"] = undefined;
+      }
+      return defaultExpression;
     },
     openDataTypePage(): void {
       window.beeApiWrapper?.openDataTypePage();
@@ -173,7 +177,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
 
     updateExpression({
       drgElementIndex,
-      expression: expressionWrapper.expression,
+      expression: expressionWrapper.expression!,
       definitions: modelWhenRendered.current!.definitions,
     });
   }, [expressionHolderId, expressionWrapper.expression]);
@@ -193,7 +197,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
       scrollableParentRef={emptyRef}
       beeGwtService={beeGwtService}
       expressionHolderId={expressionHolderId}
-      expressionHolderName={expressionWrapper.expression["@_label"] || ""}
+      expressionHolderName={expressionWrapper.expression?.["@_label"] || ""}
       expressionHolderTypeRef={expressionWrapper.expression?.["@_typeRef"] || DmnBuiltInDataType.Undefined}
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}

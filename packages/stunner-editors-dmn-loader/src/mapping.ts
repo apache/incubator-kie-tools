@@ -32,7 +32,7 @@ export function gwtExpressionToDmnExpression(gwtExpression: GwtExpressionDefinit
 
 export function dmnExpressionToGwtExpression(
   widthsById: Map<string, number[]>,
-  expression: BoxedExpression
+  expression: BoxedExpression | undefined
 ): GwtExpressionDefinition {
   return beeToGwt(widthsById, expression);
 }

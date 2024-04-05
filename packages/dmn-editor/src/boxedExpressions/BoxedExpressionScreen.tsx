@@ -388,7 +388,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             expressionHolderName={drgElement?.variable?.["@_name"] || drgElement?.["@_name"] || ""}
             expressionHolderTypeRef={
               drgElement?.variable?.["@_typeRef"] ||
-              expression?.boxedExpression["@_typeRef"] ||
+              expression?.boxedExpression?.["@_typeRef"] ||
               DmnBuiltInDataType.Undefined
             }
             expression={expression?.boxedExpression}
@@ -409,11 +409,12 @@ function drgElementToBoxedExpression(
   expressionHolder:
     | (DMN15__tDecision & { __$$element: "decision" })
     | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" })
-): BoxedExpression {
+): BoxedExpression | undefined {
   if (expressionHolder.__$$element === "businessKnowledgeModel") {
     return expressionHolder.encapsulatedLogic
       ? {
           __$$element: "functionDefinition",
+          "@_label": expressionHolder["@_name"],
           ...expressionHolder.encapsulatedLogic,
         }
       : {
@@ -422,10 +423,11 @@ function drgElementToBoxedExpression(
           "@_kind": "FEEL",
           expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
           formalParameter: [],
+          "@_label": expressionHolder["@_name"],
           "@_typeRef": expressionHolder.variable?.["@_typeRef"],
         };
   } else if (expressionHolder.__$$element === "decision") {
-    return expressionHolder.expression!;
+    return expressionHolder.expression;
   } else {
     throw new Error(
       `Unknown __$$element of expressionHolder that has an expression '${(expressionHolder as any).__$$element}'.`
