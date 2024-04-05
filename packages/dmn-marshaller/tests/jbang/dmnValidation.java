@@ -29,9 +29,9 @@ class dmnValidation {
             throw new IllegalArgumentException("Validation requires 1 or 2 xmls");
         }
 
-        System.out.println("============== XML ================================")
+        System.out.println("============== XML ================================");
         System.out.println(args[0]);
-        System.out.println("============== END ================================")
+        System.out.println("============== END ================================");
 
 
         StringReader[] models = Stream.of(args)
