@@ -151,6 +151,7 @@ func (o *openshiftBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.SonataFlowBuild, workflow *operatorapi.SonataFlow) *buildv1.BuildConfig {
 	optimizationPol := buildv1.ImageOptimizationSkipLayers
 	dockerFile := platform.GetCustomizedBuilderDockerfile(o.builderConfigMap.Data[defaultBuilderResourceName], *o.platform)
+	forcePull := kubeutil.GetImageTag(platform.GetFromImageTagDockerfile(dockerFile)) == "latest"
 	return &buildv1.BuildConfig{
 		ObjectMeta: metav1.ObjectMeta{Namespace: build.Namespace, Name: build.Name},
 		Spec: buildv1.BuildConfigSpec{
@@ -168,6 +169,7 @@ func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.Sonat
 						ImageOptimizationPolicy: &optimizationPol,
 						BuildArgs:               build.Spec.BuildArgs,
 						Env:                     build.Spec.Envs,
+						ForcePull:               forcePull,
 					},
 				},
 				Output: buildv1.BuildOutput{

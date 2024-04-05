@@ -37,6 +37,7 @@ func TestGetImagePullPolicy(t *testing.T) {
 		{"Long name with tag", args{"gcr.io/knative-releases/knative.dev/eventing/cmd/event_display:1.2"}, ""},
 		{"Empty tag", args{""}, ""},
 		{"Messy tag", args{":"}, ""},
+		{"Sha tag", args{"ubuntu@sha256:3235326357dfb65f1781dbc4df3b834546d8bf914e82cce58e6e6b676e23ce8f"}, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

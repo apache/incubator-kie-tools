@@ -131,3 +131,36 @@ func Test_openshiftbuilder_externalCMs(t *testing.T) {
 
 	assert.Len(t, bc.Spec.Source.ConfigMaps, 1)
 }
+
+func Test_openshiftbuilder_forcePull(t *testing.T) {
+	// Setup
+	ns := t.Name()
+	workflow := test.GetBaseSonataFlow(ns)
+	platform := test.GetBasePlatformInReadyPhase(t.Name())
+	config := test.GetSonataFlowBuilderConfig(ns)
+	namespacedName := types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}
+	client := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, platform, config).Build()
+	buildClient := buildfake.NewSimpleClientset().BuildV1()
+	managerContext := buildManagerContext{
+		ctx:              context.TODO(),
+		client:           client,
+		platform:         platform,
+		builderConfigMap: config,
+	}
+
+	buildManager := newOpenShiftBuilderManagerWithClient(managerContext, buildClient)
+	// End Setup
+
+	// Schedule a build
+	kogitoBuildManager := NewSonataFlowBuildManager(context.TODO(), client)
+	kbuild, err := kogitoBuildManager.GetOrCreateBuild(workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, kbuild)
+	assert.NoError(t, buildManager.Schedule(kbuild))
+
+	bc := &buildv1.BuildConfig{}
+	assert.NoError(t, client.Get(context.TODO(), namespacedName, bc))
+
+	// verify if we set force pull to BC
+	assert.True(t, bc.Spec.Strategy.DockerStrategy.ForcePull)
+}

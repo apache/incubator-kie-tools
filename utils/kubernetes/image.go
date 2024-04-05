@@ -23,6 +23,7 @@ import (
 // GetImagePullPolicy gets the default corev1.PullPolicy depending on the image tag specified.
 // It follows the conventions of docker client and OpenShift. If no tag specified, it assumes latest.
 // Returns PullAlways if latest tag, empty otherwise to let the cluster figure it out.
+// See: https://kubernetes.io/docs/concepts/containers/images/#updating-images
 func GetImagePullPolicy(imageTag string) corev1.PullPolicy {
 	if len(imageTag) == 0 {
 		return ""
@@ -31,9 +32,20 @@ func GetImagePullPolicy(imageTag string) corev1.PullPolicy {
 	if idx < 0 {
 		return corev1.PullAlways
 	}
-	tag := imageTag[idx+1:]
-	if tag == "latest" {
+	if GetImageTag(imageTag) == "latest" {
 		return corev1.PullAlways
 	}
 	return ""
+}
+
+// GetImageTag gets the tag after `:` in an image tag or empty if not found.
+func GetImageTag(imageTag string) string {
+	if len(imageTag) == 0 {
+		return ""
+	}
+	idx := strings.LastIndex(imageTag, ":")
+	if idx < 0 {
+		return ""
+	}
+	return imageTag[idx+1:]
 }

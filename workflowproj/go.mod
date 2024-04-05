@@ -2,6 +2,8 @@ module github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj
 
 go 1.21
 
+toolchain go1.21.6
+
 // Internal dependencies
 replace github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0 => ../api
 
