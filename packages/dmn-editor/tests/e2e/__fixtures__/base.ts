@@ -33,6 +33,7 @@ import { InputDataPropertiesPanel } from "./propertiesPanel/inputDataPropertiesP
 import { GroupPropertiesPanel } from "./propertiesPanel/groupPropertiesPanel";
 import { DiagramPropertiesPanel } from "./propertiesPanel/diagramPropertiesPanel";
 import { MultipleNodesPropertiesPanel } from "./propertiesPanel/multipleNodesPropertiesPanel";
+import { Overlays } from "./overlays";
 
 type DmnEditorFixtures = {
   diagram: Diagram;
@@ -41,6 +42,7 @@ type DmnEditorFixtures = {
   jsonModel: JsonModel;
   nodes: Nodes;
   palette: Palette;
+  overlays: Overlays;
   bkmPropertiesPanel: BkmPropertiesPanel;
   decisionPropertiesPanel: DecisionPropertiesPanel;
   decisionServicePropertiesPanel: DecisionServicePropertiesPanel;
@@ -70,6 +72,9 @@ export const test = base.extend<DmnEditorFixtures>({
   },
   palette: async ({ page, diagram, nodes }, use) => {
     await use(new Palette(page, diagram, nodes));
+  },
+  overlays: async ({ page }, use) => {
+    await use(new Overlays(page));
   },
   bkmPropertiesPanel: async ({ diagram, page }, use) => {
     await use(new BkmPropertiesPanel(diagram, page));

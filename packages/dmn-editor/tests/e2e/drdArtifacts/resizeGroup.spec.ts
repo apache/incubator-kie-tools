@@ -25,15 +25,39 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Group", () => {
-  test("should resize Group node", async ({ palette, nodes, groupPropertiesPanel }) => {
-    await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 300, y: 300 } });
+  test.beforeEach(async ({ overlays, palette }) => {
+    await overlays.turnOffSnapping();
+    await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
+  });
 
+  test("should increase Group node size", async ({ nodes, groupPropertiesPanel }) => {
     await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: 50, yOffset: 50 });
 
     await groupPropertiesPanel.open();
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
     const { width, height } = await groupPropertiesPanel.getShape();
-    expect(height).toEqual("360");
-    expect(width).toEqual("360");
+    expect(height).toEqual("370");
+    expect(width).toEqual("370");
+  });
+
+  test("should decrease Group node size", async ({ nodes, groupPropertiesPanel }) => {
+    await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: 100, yOffset: 100 });
+    await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: -20, yOffset: -20 });
+
+    await groupPropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    const { width, height } = await groupPropertiesPanel.getShape();
+    expect(height).toEqual("400");
+    expect(width).toEqual("400");
+  });
+
+  test("should not decrease below minimal Group node size", async ({ nodes, groupPropertiesPanel }) => {
+    await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: -50, yOffset: -50 });
+
+    await groupPropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    const { width, height } = await groupPropertiesPanel.getShape();
+    expect(height).toEqual("270");
+    expect(width).toEqual("280");
   });
 });

@@ -25,9 +25,12 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Decision Service", () => {
-  test("should resize Decision Service node", async ({ palette, nodes, decisionServicePropertiesPanel }) => {
+  test.beforeEach(async ({ overlays, palette }) => {
+    await overlays.turnOffSnapping();
     await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+  });
 
+  test("should increase Decision Service node size", async ({ nodes, decisionServicePropertiesPanel }) => {
     await nodes.resize({
       nodeName: DefaultNodeName.DECISION_SERVICE,
       position: NodePosition.TOP,
@@ -38,7 +41,46 @@ test.describe("Resize node - Decision Service", () => {
     await decisionServicePropertiesPanel.open();
     await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
     const { width, height } = await decisionServicePropertiesPanel.getShape();
-    expect(width).toEqual("360");
-    expect(height).toEqual("360");
+    expect(width).toEqual("370");
+    expect(height).toEqual("370");
+  });
+
+  test("should decrease Decision Service node size", async ({ nodes, decisionServicePropertiesPanel }) => {
+    await nodes.resize({
+      nodeName: DefaultNodeName.DECISION_SERVICE,
+      position: NodePosition.TOP,
+      xOffset: 100,
+      yOffset: 100,
+    });
+    await nodes.resize({
+      nodeName: DefaultNodeName.DECISION_SERVICE,
+      position: NodePosition.TOP,
+      xOffset: -20,
+      yOffset: -20,
+    });
+
+    await decisionServicePropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+    const { width, height } = await decisionServicePropertiesPanel.getShape();
+    expect(width).toEqual("400");
+    expect(height).toEqual("400");
+  });
+
+  test("should not decrease below minimal Decision Service node size", async ({
+    nodes,
+    decisionServicePropertiesPanel,
+  }) => {
+    await nodes.resize({
+      nodeName: DefaultNodeName.DECISION_SERVICE,
+      position: NodePosition.TOP,
+      xOffset: -50,
+      yOffset: -50,
+    });
+
+    await decisionServicePropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+    const { width, height } = await decisionServicePropertiesPanel.getShape();
+    expect(width).toEqual("280");
+    expect(height).toEqual("280");
   });
 });

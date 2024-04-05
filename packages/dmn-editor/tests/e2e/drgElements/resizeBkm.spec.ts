@@ -25,15 +25,39 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - BKM", () => {
-  test("should resize BKM node", async ({ palette, nodes, bkmPropertiesPanel }) => {
+  test.beforeEach(async ({ overlays, palette }) => {
+    await overlays.turnOffSnapping();
     await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
+  });
 
+  test("should increase BKM node size", async ({ nodes, bkmPropertiesPanel }) => {
     await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: 50, yOffset: 50 });
 
     await bkmPropertiesPanel.open();
     await nodes.select({ name: DefaultNodeName.BKM });
     const { width, height } = await bkmPropertiesPanel.getShape();
-    expect(width).toEqual("200");
-    expect(height).toEqual("120");
+    expect(width).toEqual("210");
+    expect(height).toEqual("130");
+  });
+
+  test("should decrease BKM node size", async ({ nodes, bkmPropertiesPanel }) => {
+    await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: 100, yOffset: 100 });
+    await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: -20, yOffset: -20 });
+
+    await bkmPropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.BKM });
+    const { width, height } = await bkmPropertiesPanel.getShape();
+    expect(width).toEqual("240");
+    expect(height).toEqual("160");
+  });
+
+  test("should not decrease below minimal BKM node size", async ({ nodes, bkmPropertiesPanel }) => {
+    await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: -50, yOffset: -50 });
+
+    await bkmPropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.BKM });
+    const { width, height } = await bkmPropertiesPanel.getShape();
+    expect(width).toEqual("160");
+    expect(height).toEqual("80");
   });
 });

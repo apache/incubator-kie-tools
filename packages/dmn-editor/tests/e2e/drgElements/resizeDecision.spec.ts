@@ -25,15 +25,39 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Decision", () => {
-  test("should resize Decision node", async ({ palette, nodes, decisionPropertiesPanel }) => {
+  test.beforeEach(async ({ overlays, palette }) => {
+    await overlays.turnOffSnapping();
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+  });
 
+  test("should increase Decision node size", async ({ nodes, decisionPropertiesPanel }) => {
     await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 50, yOffset: 50 });
 
     await decisionPropertiesPanel.open();
     await nodes.select({ name: DefaultNodeName.DECISION });
     const { width, height } = await decisionPropertiesPanel.getShape();
-    expect(width).toEqual("200");
-    expect(height).toEqual("120");
+    expect(width).toEqual("210");
+    expect(height).toEqual("130");
+  });
+
+  test("should decrease Decision node size", async ({ nodes, decisionPropertiesPanel }) => {
+    await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 100, yOffset: 100 });
+    await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: -20, yOffset: -20 });
+
+    await decisionPropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    const { width, height } = await decisionPropertiesPanel.getShape();
+    expect(width).toEqual("240");
+    expect(height).toEqual("160");
+  });
+
+  test("should not decrease below minimal Decision node size", async ({ nodes, decisionPropertiesPanel }) => {
+    await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: -50, yOffset: -50 });
+
+    await decisionPropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    const { width, height } = await decisionPropertiesPanel.getShape();
+    expect(width).toEqual("160");
+    expect(height).toEqual("80");
   });
 });

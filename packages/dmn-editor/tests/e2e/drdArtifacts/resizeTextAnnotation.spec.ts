@@ -25,9 +25,12 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Text Annotation", () => {
-  test("should resize Text Annotation node", async ({ palette, nodes, textAnnotationPropertiesPanel }) => {
+  test.beforeEach(async ({ overlays, palette }) => {
+    await overlays.turnOffSnapping();
     await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+  });
 
+  test("should increase Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
     await nodes.resize({
       nodeName: DefaultNodeName.TEXT_ANNOTATION,
       position: NodePosition.TOP,
@@ -38,7 +41,46 @@ test.describe("Resize node - Text Annotation", () => {
     await textAnnotationPropertiesPanel.open();
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     const { width, height } = await textAnnotationPropertiesPanel.getShape();
-    expect(height).toEqual("240");
-    expect(width).toEqual("240");
+    expect(height).toEqual("250");
+    expect(width).toEqual("250");
+  });
+
+  test("should decrease Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
+    await nodes.resize({
+      nodeName: DefaultNodeName.TEXT_ANNOTATION,
+      position: NodePosition.TOP,
+      xOffset: 100,
+      yOffset: 100,
+    });
+    await nodes.resize({
+      nodeName: DefaultNodeName.TEXT_ANNOTATION,
+      position: NodePosition.TOP,
+      xOffset: -20,
+      yOffset: -20,
+    });
+
+    await textAnnotationPropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+    const { width, height } = await textAnnotationPropertiesPanel.getShape();
+    expect(height).toEqual("280");
+    expect(width).toEqual("280");
+  });
+
+  test("should not decrease below minimal Text Annotation node size", async ({
+    nodes,
+    textAnnotationPropertiesPanel,
+  }) => {
+    await nodes.resize({
+      nodeName: DefaultNodeName.TEXT_ANNOTATION,
+      position: NodePosition.TOP,
+      xOffset: -50,
+      yOffset: -50,
+    });
+
+    await textAnnotationPropertiesPanel.open();
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+    const { width, height } = await textAnnotationPropertiesPanel.getShape();
+    expect(height).toEqual("150");
+    expect(width).toEqual("200");
   });
 });
