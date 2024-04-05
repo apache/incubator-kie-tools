@@ -20,39 +20,27 @@
 import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import {
+  FULL_1_5_DIRECTORY,
+  FULL_1_x_DIRECTORY,
+  LOCAL_MODELS_1_4_DIRECTORY_FULL_PATH,
+  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH,
+} from "./testConstants";
 
-/* Local Directories */
-const LOCAL_MODELS_DIRECTORY = "tests-data--manual";
-const LOCAL_MODELS_1_4_DIRECTORY = "dmn-1_4--examples";
-const LOCAL_MODELS_OTHER_DIRECTORY = "other";
-
-/* dmn-testing-models module Directories */
-const VALID_MODELS_DIRECTORY = "valid_models";
-const DMN_1_5_DIRECTORY = "DMNv1_5";
-const DMN_1_x_DIRECTORY = "DMNv1_X";
 const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
 
 const files = [
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "attachment.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "empty13.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "sample12.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "list.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "list2.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "external.dmn",
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep + "weird.dmn",
-  ".." +
-    path.sep +
-    LOCAL_MODELS_DIRECTORY +
-    path.sep +
-    LOCAL_MODELS_1_4_DIRECTORY +
-    path.sep +
-    "Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
+  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "attachment.dmn",
+  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "empty13.dmn",
+  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "sample12.dmn",
+  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "list.dmn",
+  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "list2.dmn",
+  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "external.dmn",
+  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "weird.dmn",
+  LOCAL_MODELS_1_4_DIRECTORY_FULL_PATH + "Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];
 
-const testing_models_paths = [
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY,
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY,
-];
+const testing_models_paths = [FULL_1_5_DIRECTORY, FULL_1_x_DIRECTORY];
 
 describe("idempotency", () => {
   for (const file of files) {

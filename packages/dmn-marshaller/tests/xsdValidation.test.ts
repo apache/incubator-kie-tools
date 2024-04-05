@@ -21,20 +21,11 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import * as validator from "xsd-schema-validator";
+import { DMN_1_5_XSD, FULL_1_5_DIRECTORY, FULL_1_x_DIRECTORY } from "./testConstants";
 
-/* dmn-testing-models module Directories */
-const VALID_MODELS_DIRECTORY = "valid_models";
-const DMN_1_5_DIRECTORY = "DMNv1_5";
-const DMN_1_x_DIRECTORY = "DMNv1_X";
 const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
 
-/* XSD DMN Schema */
-const DMN_1_5_XSD = "../src/schemas/dmn-1_5/DMN15.xsd";
-
-const testing_models_paths = [
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY,
-  ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY,
-];
+const testing_models_paths = [FULL_1_5_DIRECTORY, FULL_1_x_DIRECTORY];
 
 describe("validation", () => {
   for (const models_paths of testing_models_paths) {

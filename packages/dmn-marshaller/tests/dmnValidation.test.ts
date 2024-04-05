@@ -21,41 +21,36 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
+import { executeJbangScript } from "./jbang/jbangManager";
+import {
+  FULL_1_5_DIRECTORY,
+  FULL_1_x_DIRECTORY,
+  FULL_1_x_MULTIPLE_DIRECTORY,
+  JBANG_DMN_VALIDATION_SCRIPT_PATH,
+  LOCAL_MODELS_OTHER_DIRECTORY,
+  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH,
+} from "./testConstants";
 
-const jbang = require("@jbangdev/jbang");
+const dmnTestingModelsPath = require.resolve("@kie-tools/dmn-testing-models");
 
-/* dmn-testing-models module Directories */
-const DMN_1_5_DIRECTORY = "DMNv1_5";
-const DMN_1_x_DIRECTORY = "DMNv1_x";
-const VALID_MODELS_DIRECTORY = "valid_models";
-const MULTIPLE_MODELS_DIRECTORY = "multiple";
-const FULL_1_5_DIRECTORY = ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep;
-const FULL_1_x_DIRECTORY = ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY + path.sep;
-
-const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
-
-const files = [
+const dmnTestingModels = [
   FULL_1_5_DIRECTORY + "AllowedValuesChecksInsideCollection.dmn",
   FULL_1_5_DIRECTORY + "DateToDateTimeFunction.dmn",
   FULL_1_5_DIRECTORY + "ForLoopDatesEvaluate.dmn",
   FULL_1_5_DIRECTORY + "ListReplaceEvaluate.dmn",
   FULL_1_5_DIRECTORY + "NegationOfDurationEvaluate.dmn",
   FULL_1_5_DIRECTORY + "TypeConstraintsChecks.dmn",
-  FULL_1_x_DIRECTORY + MULTIPLE_MODELS_DIRECTORY + path.sep + "Financial.dmn",
-  FULL_1_x_DIRECTORY + MULTIPLE_MODELS_DIRECTORY + path.sep + "stdlib.dmn",
+  FULL_1_x_MULTIPLE_DIRECTORY + "Financial.dmn",
+  FULL_1_x_MULTIPLE_DIRECTORY + "stdlib.dmn",
   FULL_1_x_DIRECTORY + "allTypes.dmn",
-  //FULL_1_x_DIRECTORY + "dtevent.dmn",
-  //FULL_1_x_DIRECTORY + "habitability.dmn",
   FULL_1_x_DIRECTORY + "loan.dmn",
   FULL_1_x_DIRECTORY + "OneOfEachType.dmn",
   FULL_1_x_DIRECTORY + "testWithExtensionElements.dmn",
 ];
 
-const testing_models_paths = [".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY];
-
 describe("validation", () => {
-  for (const file of files) {
-    testFile(path.join(dmnTestingModels, file));
+  for (const file of dmnTestingModels) {
+    testFile(path.join(dmnTestingModelsPath, file));
   }
 });
 
@@ -68,8 +63,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const xml_marshalled = builder.build(parser.parse());
 
       try {
-        jbang.exec("--java 17", "properties@jbangdev", "java.version");
-        jbang.exec("./tests/jbang_scripts/dmnValidation.java", "'" + xml_marshalled + "'");
+        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, xml_marshalled);
       } catch (error) {
         fail("An error occured");
       }
