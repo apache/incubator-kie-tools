@@ -1270,7 +1270,10 @@ function DmnDiagramEmptyState({
                   updateExpression({
                     definitions: state.dmn.model.definitions,
                     drgElementIndex,
-                    expression: defaultExpression,
+                    expression: {
+                      ...defaultExpression,
+                      "@_label": "New Decision",
+                    },
                   });
 
                   updateExpressionWidths({
