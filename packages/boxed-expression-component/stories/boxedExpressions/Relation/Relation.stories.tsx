@@ -19,12 +19,11 @@
 
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
+import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../../src/api";
-import { RELATION_EXPRESSION_DEFAULT_VALUE } from "../../../src/expressions/RelationExpression";
-import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
+import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
+import { RELATION_EXPRESSION_DEFAULT_VALUE } from "../../../src/expressions/RelationExpression/RelationExpression";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -33,105 +32,106 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Relation,
-      columns: [
+    expression: {
+      __$$element: "relation",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      column: [
         {
-          id: generateUuid(),
-          name: "column-1",
-          dataType: DmnBuiltInDataType.Undefined,
-          width: 100,
+          "@_id": generateUuid(),
+          "@_name": "column-1",
         },
       ],
-      rows: [
+      row: [
         {
-          id: generateUuid(),
-          cells: [
+          "@_id": generateUuid(),
+          expression: [
             {
-              id: generateUuid(),
-              content: RELATION_EXPRESSION_DEFAULT_VALUE,
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: RELATION_EXPRESSION_DEFAULT_VALUE },
             },
           ],
         },
       ],
     },
-    isResetSupportedOnRootExpression: false,
+    isResetSupportedOnRootExpression: true,
   },
 };
 
 export const People: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...Base.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "People",
-      dataType: "tPeople" as DmnBuiltInDataType,
-      logicType: ExpressionDefinitionLogicType.Relation,
-      columns: [
+    expression: {
+      __$$element: "relation",
+      "@_id": generateUuid(),
+      "@_label": "People",
+      "@_typeRef": "tPeople",
+      column: [
         {
-          id: generateUuid(),
-          name: "Name",
-          dataType: DmnBuiltInDataType.String,
-          width: 100,
+          "@_id": generateUuid(),
+          "@_name": "Name",
+          "@_typeRef": DmnBuiltInDataType.String,
         },
         {
-          id: generateUuid(),
-          name: "Age",
-          dataType: DmnBuiltInDataType.Number,
-          width: 100,
+          "@_id": generateUuid(),
+          "@_name": "Age",
+          "@_typeRef": DmnBuiltInDataType.Number,
         },
         {
-          id: generateUuid(),
-          name: "Country",
-          dataType: DmnBuiltInDataType.String,
-          width: 100,
+          "@_id": generateUuid(),
+          "@_name": "Country",
+          "@_typeRef": DmnBuiltInDataType.String,
         },
       ],
-      rows: [
+      row: [
         {
-          id: generateUuid(),
-          cells: [
+          "@_id": generateUuid(),
+          expression: [
             {
-              id: generateUuid(),
-              content: '"Luiz"',
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: '"Luiz"' },
             },
             {
-              id: generateUuid(),
-              content: "30",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "30" },
             },
             {
-              id: generateUuid(),
-              content: '"Brazil"',
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: '"Brazil"' },
             },
           ],
         },
         {
-          id: generateUuid(),
-          cells: [
+          "@_id": generateUuid(),
+          expression: [
             {
-              id: generateUuid(),
-              content: '"Tiago"',
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: '"Tiago"' },
             },
             {
-              id: generateUuid(),
-              content: "29",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "29" },
             },
             {
-              id: generateUuid(),
-              content: '"USA"',
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: '"USA"' },
             },
           ],
         },
@@ -141,102 +141,105 @@ export const People: Story = {
 };
 
 export const Bigger: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...Base.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Relation,
-      columns: [
+    expression: {
+      __$$element: "relation",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      column: [
         {
-          id: generateUuid(),
-          name: "column-1",
-          dataType: DmnBuiltInDataType.Undefined,
-          width: 100,
+          "@_id": generateUuid(),
+          "@_name": "column-1",
         },
         {
-          id: generateUuid(),
-          name: "column-2",
-          dataType: DmnBuiltInDataType.Undefined,
-          width: 100,
+          "@_id": generateUuid(),
+          "@_name": "column-2",
         },
         {
-          id: generateUuid(),
-          name: "column-3",
-          dataType: DmnBuiltInDataType.Undefined,
-          width: 100,
+          "@_id": generateUuid(),
+          "@_name": "column-3",
         },
         {
-          id: generateUuid(),
-          name: "column-4",
-          dataType: DmnBuiltInDataType.Undefined,
-          width: 100,
+          "@_id": generateUuid(),
+          "@_name": "column-4",
         },
       ],
-      rows: [
+      row: [
         {
-          id: generateUuid(),
-          cells: [
+          "@_id": generateUuid(),
+          expression: [
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
           ],
         },
         {
-          id: generateUuid(),
-          cells: [
+          "@_id": generateUuid(),
+          expression: [
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
           ],
         },
         {
-          id: generateUuid(),
-          cells: [
+          "@_id": generateUuid(),
+          expression: [
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
             {
-              id: generateUuid(),
-              content: "",
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: "" },
             },
           ],
         },
@@ -247,47 +250,37 @@ export const Bigger: Story = {
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Nested: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Context,
-      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      result: {
-        logicType: ExpressionDefinitionLogicType.Undefined,
-        dataType: DmnBuiltInDataType.Undefined,
-        id: generateUuid(),
-      },
-      contextEntries: [
+    expression: {
+      __$$element: "context",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      contextEntry: [
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "ContextEntry-1",
           },
-          entryExpression: {
-            id: generateUuid(),
-            logicType: ExpressionDefinitionLogicType.Relation,
-            dataType: DmnBuiltInDataType.Undefined,
-            columns: [
+          expression: {
+            __$$element: "relation",
+            "@_id": generateUuid(),
+            column: [
               {
-                id: generateUuid(),
-                name: "column-1",
-                dataType: DmnBuiltInDataType.Undefined,
-                width: 100,
+                "@_id": generateUuid(),
+                "@_name": "column-1",
               },
             ],
-            rows: [
+            row: [
               {
-                id: generateUuid(),
-                cells: [
+                "@_id": generateUuid(),
+                expression: [
                   {
-                    id: generateUuid(),
-                    content: RELATION_EXPRESSION_DEFAULT_VALUE,
+                    __$$element: "literalExpression",
+                    "@_id": generateUuid(),
+                    text: { __$$text: RELATION_EXPRESSION_DEFAULT_VALUE },
                   },
                 ],
               },

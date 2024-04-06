@@ -132,6 +132,8 @@ export function BeeTableBody<R extends object>({
       shouldRenderRowIndexColumn,
       resizerStopBehavior,
       shouldShowRowsInlineControls,
+      onDataCellClick,
+      onDataCellKeyUp,
       onRowAdded,
       lastColumnMinWidth,
     ]

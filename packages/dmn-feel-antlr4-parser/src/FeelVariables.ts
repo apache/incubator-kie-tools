@@ -19,7 +19,7 @@
 
 import { FeelVariablesParser } from "./parser/FeelVariablesParser";
 import { DmnDefinitions, VariablesRepository } from "./parser/VariablesRepository";
-import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 export class FeelVariables {
   private readonly _parser: FeelVariablesParser;
@@ -28,16 +28,6 @@ export class FeelVariables {
   constructor(dmnDefinitions: DmnDefinitions, externalDefinitions: Map<string, DmnLatestModel>) {
     this._repository = new VariablesRepository(dmnDefinitions, externalDefinitions);
     this._parser = new FeelVariablesParser(this._repository);
-  }
-
-  static fromModelXml(xml: string): FeelVariables {
-    const def = this.getDefinitions(xml);
-    return new FeelVariables(def, new Map<string, DmnLatestModel>());
-  }
-
-  static getDefinitions(xml: string) {
-    const marshaller = getMarshaller(xml, { upgradeTo: "latest" });
-    return marshaller.parser.parse().definitions;
   }
 
   get parser(): FeelVariablesParser {

@@ -374,9 +374,12 @@ export const DecisionNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
           drgElement.variable ??= { "@_name": decision["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
+          if (drgElement.expression) {
+            drgElement.expression["@_typeRef"] = newTypeRef;
+          }
         });
       },
       [decision, dmnEditorStoreApi, index]
@@ -525,9 +528,12 @@ export const BkmNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel;
           drgElement.variable ??= { "@_name": bkm["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
+          if (drgElement.encapsulatedLogic) {
+            drgElement.encapsulatedLogic["@_typeRef"] = newTypeRef;
+          }
         });
       },
       [bkm, dmnEditorStoreApi, index]

@@ -20,22 +20,16 @@
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
+import { BeeTableProps, BoxedExpression } from "../../api";
+import { BoxedExpressionEditorContextProvider } from "../../BoxedExpressionEditorContext";
 import {
-  BeeTableProps,
-  DmnBuiltInDataType,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  generateUuid,
-} from "../../api";
-import { BoxedExpressionEditorContextProvider } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionRoot.css";
-import {
-  boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
+  boxedExpressionEditorDictionaries,
   boxedExpressionEditorI18nDefaults,
 } from "../../i18n";
 import { ResizingWidthsContextProvider } from "../../resizing/ResizingWidthsContext";
 import { BeeTable } from "./BeeTable";
+import "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionRoot.css";
 
 export function StandaloneBeeTable<R extends object>(
   props: BeeTableProps<R> & { scrollableParentRef: React.RefObject<HTMLElement> }
@@ -44,16 +38,20 @@ export function StandaloneBeeTable<R extends object>(
     return [];
   }, []);
 
-  const setExpression = useCallback(() => {
+  const onExpressionChange = useCallback(() => {
     // Empty on purpose.
   }, []);
 
-  const expression = useMemo<ExpressionDefinition>(() => {
-    return {
-      id: generateUuid(),
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Undefined,
-    };
+  const onWidthsChange = useCallback(() => {
+    // Empty on purpose.
+  }, []);
+
+  const expression = useMemo<BoxedExpression>(() => {
+    return undefined!;
+  }, []);
+
+  const widthsById = useMemo(() => {
+    return new Map<string, number[]>();
   }, []);
 
   return (
@@ -69,9 +67,13 @@ export function StandaloneBeeTable<R extends object>(
             <BoxedExpressionEditorContextProvider
               scrollableParentRef={props.scrollableParentRef}
               dataTypes={dataTypes}
-              decisionNodeId={""}
-              expressionDefinition={expression}
-              setExpressionDefinition={setExpression}
+              expressionHolderId={""}
+              expressionHolderName={""}
+              expressionHolderTypeRef={""}
+              expression={expression}
+              onExpressionChange={onExpressionChange}
+              onWidthsChange={onWidthsChange}
+              widthsById={widthsById}
             >
               <ResizingWidthsContextProvider>
                 <BeeTable {...props} />
