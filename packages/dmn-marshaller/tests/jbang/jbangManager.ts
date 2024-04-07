@@ -31,8 +31,7 @@ export function executeJbangScript(scriptPath: string, ...args: string[]) {
         (arg) =>
           quoteChar +
           (isWindowsPath
-            ? //eslint-disable-next-line
-              arg.trim().replace("/>(\n|\t|s/)*</g", "><").replace("/\n|\t|s/g", " ").replace("/s+/g", " ")
+            ? arg.trim().replace("/>(\n|\t|\\s/)*</g", "><").replace("/\n|\t|\\s/g", " ").replace("/\\s+/g", " ")
             : arg) +
           quoteChar
       )
