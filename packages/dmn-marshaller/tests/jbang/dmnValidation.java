@@ -41,11 +41,10 @@ class dmnValidation {
 
         DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
 
-        final List<DMNMessage> messages = dmnValidator
-            .validateUsing(Validation.VALIDATE_SCHEMA,
-                           Validation.VALIDATE_MODEL,
-                           Validation.VALIDATE_COMPILATION)
-            .theseModels(models);
+        final List<DMNMessage> messages = dmnValidator.validateUsing(Validation.VALIDATE_SCHEMA,
+                                                                     Validation.VALIDATE_MODEL,
+                                                                     Validation.VALIDATE_COMPILATION)
+                                                      .theseModels(models);
 
         if (messages.size() == 0) {
             return 0;

@@ -109,7 +109,6 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
           normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
         );
-
         fail(
           "Validation of " + fileName + " failed! Please scroll up to DMN VALIDATION ERROR message to see the reason"
         );
