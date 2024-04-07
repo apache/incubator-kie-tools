@@ -22,5 +22,5 @@ const jbang = require("@jbangdev/jbang");
 export function executeJbangScript(scriptPath: string, ...args: string[]) {
   const quoteChar = path.sep === "/" ? "'" : '"';
   jbang.exec("--java 17", "properties@jbangdev", "java.version");
-  jbang.exec(scriptPath, args.map((arg) => quoteChar + arg.trim().replace("\n", "") + quoteChar).join(" "));
+  jbang.exec(scriptPath, args.map((arg) => quoteChar + arg.trim().replace("\t", "") + quoteChar).join(" "));
 }
