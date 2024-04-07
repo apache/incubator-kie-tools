@@ -163,10 +163,12 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
     return { width: resizingWidth?.value, minWidth };
   }, [minWidth, resizingWidth?.value]);
 
-  const debuggingHandleClassNames = `
-    ${minWidth === resizingWidth?.value ? "min" : ""} 
-    ${(resizingWidth?.value ?? 0) < (minWidth ?? 0) ? "error" : ""}
-  `;
+  // COMMENTED OUT FOR DEBUGGING PURPOSES.
+  const debuggingHandleClassNames = "";
+  // `
+  //   ${minWidth === resizingWidth?.value ? "min" : ""}
+  //   ${(resizingWidth?.value ?? 0) < (minWidth ?? 0) ? "error" : ""}
+  // `;
 
   return (
     <>
@@ -198,7 +200,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           axis={"x"}
           handle={
             <div className="pf-c-drawer" onDoubleClick={onDoubleClick} data-testid={"resizer-handle"}>
-              <div className={`pf-c-drawer__splitter pf-m-vertical `}>
+              <div className={`pf-c-drawer__splitter pf-m-vertical ${debuggingHandleClassNames}`}>
                 <div className={`pf-c-drawer__splitter-handle`} />
               </div>
             </div>

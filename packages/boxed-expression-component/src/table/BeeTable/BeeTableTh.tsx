@@ -27,7 +27,7 @@ import {
   useBeeTableSelectableCell,
   useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { InsertRowColumnsDirection } from "../../api";
 
 export interface BeeTableThProps<R extends object> {

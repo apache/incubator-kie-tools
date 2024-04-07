@@ -19,8 +19,8 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { generateUuid } from "../api";
-import { useBoxedExpressionEditor } from "../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { NavigationKeysUtils } from "../keysUtils";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
+import { NavigationKeysUtils } from "../keysUtils/keyUtils";
 
 export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<HTMLDivElement | null>): {
   xPos: number;
@@ -105,14 +105,15 @@ export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<H
       }
     }
 
-    document.addEventListener("keydown", handleEscPressed);
+    const elem = scrollableParentRef?.current;
+    elem?.addEventListener("keydown", handleEscPressed);
     return () => {
-      document.removeEventListener("keydown", handleEscPressed);
+      elem?.removeEventListener("keydown", handleEscPressed);
     };
-  }, [setCurrentlyOpenContextMenu]);
+  }, [scrollableParentRef, setCurrentlyOpenContextMenu]);
 
   useEffect(() => {
-    const elem = domEventTargetRef.current;
+    const elem = domEventTargetRef?.current;
 
     if (currentlyOpenContextMenu && isOpen) {
       document.addEventListener("click", hide);

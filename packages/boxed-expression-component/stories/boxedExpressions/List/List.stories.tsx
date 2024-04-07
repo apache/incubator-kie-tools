@@ -17,13 +17,11 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
+import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../../src/api";
-import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
+import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -32,65 +30,54 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.List,
-      items: [
-        {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Undefined,
-          dataType: DmnBuiltInDataType.Undefined,
-        },
-      ],
+    expression: {
+      __$$element: "list",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      expression: [undefined!],
     },
-    isResetSupportedOnRootExpression: false,
+    isResetSupportedOnRootExpression: true,
   },
 };
 
 export const AgeGroups: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Age group",
-      dataType: DmnBuiltInDataType.Number,
-      logicType: ExpressionDefinitionLogicType.List,
-      items: [
+    expression: {
+      __$$element: "list",
+      "@_id": generateUuid(),
+      "@_label": "Age group",
+      "@_typeRef": DmnBuiltInDataType.Number,
+      expression: [
         {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Literal,
-          dataType: DmnBuiltInDataType.Undefined,
-          content: `[18..30)`,
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+          text: { __$$text: `[18..30)` },
         },
         {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Literal,
-          dataType: DmnBuiltInDataType.Undefined,
-          content: `[30..50)`,
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+          text: { __$$text: `[30..50)` },
         },
         {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Literal,
-          dataType: DmnBuiltInDataType.Undefined,
-          content: `[50..70)`,
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+          text: { __$$text: `[50..70)` },
         },
         {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Literal,
-          dataType: DmnBuiltInDataType.Undefined,
-          content: `>= 70`,
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+          text: { __$$text: `>= 70` },
         },
       ],
     },
@@ -99,56 +86,26 @@ export const AgeGroups: Story = {
 };
 
 export const Nested: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.List,
-      items: [
+    expression: {
+      __$$element: "list",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      expression: [
         {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Literal,
-          dataType: DmnBuiltInDataType.Undefined,
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
         },
         {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.List,
-          dataType: DmnBuiltInDataType.Undefined,
-          items: [
+          __$$element: "list",
+          "@_id": generateUuid(),
+          expression: [
             {
-              id: generateUuid(),
-              logicType: ExpressionDefinitionLogicType.Literal,
-              dataType: DmnBuiltInDataType.Undefined,
-            },
-          ],
-        },
-        {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Context,
-          dataType: DmnBuiltInDataType.Undefined,
-          entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-          result: {
-            logicType: ExpressionDefinitionLogicType.Undefined,
-            dataType: DmnBuiltInDataType.Undefined,
-            id: generateUuid(),
-          },
-          contextEntries: [
-            {
-              entryInfo: {
-                id: generateUuid(),
-                name: "ContextEntry-1",
-                dataType: DmnBuiltInDataType.Undefined,
-              },
-              entryExpression: {
-                id: generateUuid(),
-                name: "ContextEntry-1",
-                dataType: DmnBuiltInDataType.Undefined,
-                logicType: ExpressionDefinitionLogicType.Undefined,
-              },
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
             },
           ],
         },
