@@ -24,7 +24,6 @@ export function executeJbangScript(scriptPath: string, ...args: string[]) {
   const isWindowsPath = path.sep !== "/";
   const quoteChar = isWindowsPath ? '"' : "'";
   jbang.exec("--java 17", "properties@jbangdev", "java.version");
-  //eslint-disable-next-line
   jbang.exec(
     scriptPath,
     args
@@ -32,7 +31,8 @@ export function executeJbangScript(scriptPath: string, ...args: string[]) {
         (arg) =>
           quoteChar +
           (isWindowsPath
-            ? arg.trim().replace("/>(\n|\t|s/)*<", "><").replace("/\n|\t|s/", " ").replace("/s+/", " ")
+            ? //eslint-disable-next-line
+              arg.trim().replace("/>(\n|\t|s/)*</g", "><").replace("/\n|\t|s/g", " ").replace("/s+/g", " ")
             : arg) +
           quoteChar
       )
