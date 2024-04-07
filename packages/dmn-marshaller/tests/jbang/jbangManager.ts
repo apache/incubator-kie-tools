@@ -22,7 +22,7 @@ const jbang = require("@jbangdev/jbang");
 export function executeJbangScript(scriptPath: string, ...args: string[]) {
   /* Windows requires a double quotes to wrap the argument and a single line argument, while POSIX can be multiline and wrapped by quotes */
   const isWindowsPath = path.sep !== "/";
-  const quoteChar = isWindowsPath ? "" : "'";
+  const quoteChar = isWindowsPath ? '"' : "'";
   jbang.exec("--java 17", "properties@jbangdev", "java.version");
   jbang.exec(
     scriptPath,
@@ -32,10 +32,11 @@ export function executeJbangScript(scriptPath: string, ...args: string[]) {
           quoteChar +
           (isWindowsPath //.replace(/>(\n|\t|\s/)*</g, "><")
             ? arg
-            : //.trim()
-              //.replace(/\n|\t|\s/g, " ")
-              //.replace(/\s+/g, " ")
-              arg) +
+            : arg
+                .trim()
+                .replace(/\n|\t|\s/g, " ")
+                .replace(/\s+/g, " ")
+                .replace(/"/, '\\"')) +
           quoteChar
       )
       .join(" ")
