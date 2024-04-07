@@ -30,8 +30,11 @@ export function executeJbangScript(scriptPath: string, ...args: string[]) {
       .map(
         (arg) =>
           quoteChar +
-          (isWindowsPath
-            ? arg.trim().replace("/>(\n|\t|\\s/)*</g", "><").replace("/\n|\t|\\s/g", "").replace("/\\s+/g", "")
+          (isWindowsPath //.replace(/>(\n|\t|\s/)*</g, "><")
+            ? arg
+                .trim()
+                .replace(/\n|\t|\s/g, "")
+                .replace(/\s+/g, "")
             : arg) +
           quoteChar
       )
