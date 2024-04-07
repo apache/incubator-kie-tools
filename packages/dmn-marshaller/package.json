@@ -28,12 +28,9 @@
     "build:codegen:dmn15": "xml-parser-ts-codegen ./src/schemas/dmn-1_5/DMN15.xsd definitions",
     "build:codegen:kie10": "xml-parser-ts-codegen ./src/schemas/kie-1_0/KIE.xsd ComponentsWidthsExtension",
     "build:dev": "rimraf dist && pnpm build:codegen && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && rimraf dist &&  pnpm build:codegen && tsc -p tsconfig.json && pnpm test",
+    "build:prod": "pnpm lint && rimraf dist && pnpm build:codegen && tsc -p tsconfig.json && pnpm test",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"run-script-os\"",
-    "test:darwin:linux": "jest --silent --verbose --passWithNoTests",
-    "test:win32": "pnpm powershell \"jest --silent --verbose --passWithNoTests\""
+    "test": "rimraf dist-tests && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools/xml-parser-ts": "workspace:*"
@@ -55,7 +52,6 @@
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6",
     "ts-jest": "^26.5.6",
     "typescript": "^4.6.2",
     "xsd-schema-validator": "^0.9.0"

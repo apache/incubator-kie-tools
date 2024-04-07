@@ -1,6 +1,7 @@
 //REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
 //DEPS org.kie:kie-dmn-validation:${kie-dmn-validation.version:999-20240407-SNAPSHOT}
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.List;
 import java.util.stream.Stream;
@@ -29,15 +30,13 @@ class dmnValidation {
             throw new IllegalArgumentException("Validation requires 1 or 2 xmls");
         }
 
-        System.out.println("============== XML ================================");
+        System.out.println("============== XML PATH ============================");
         System.out.println(args[0]);
-        System.out.println("============== END ================================");
+        System.out.println("============== END =================================");
 
-
-        StringReader[] models = Stream.of(args)
-                                      //.map(arg -> removeSurroundingDoubleQuotes(arg))
-                                      .map(StringReader::new)
-                                      .toArray(StringReader[]::new);
+        File[] models = Stream.of(args)
+                                      .map(File::new)
+                                      .toArray(File[]::new);
 
         DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
 
@@ -47,6 +46,7 @@ class dmnValidation {
                                                       .theseModels(models);
 
         if (messages.size() == 0) {
+            System.out.println("=== NO ERRORS :) ===");
             return 0;
         } else {
             System.out.println("=== DMN VALIDATION FAILED ===");
@@ -54,12 +54,5 @@ class dmnValidation {
             System.out.println("=============================");
             return 1;
         }
-    }
-
-    private static String removeSurroundingDoubleQuotes(String xml) {
-        if (xml.startsWith("\"") && xml.endsWith("\"")) {
-            return xml.substring(1, xml.length() - 1);
-        } 
-        return xml;
     }
 }

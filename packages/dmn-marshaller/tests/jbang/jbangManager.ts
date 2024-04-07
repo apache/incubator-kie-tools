@@ -24,21 +24,5 @@ export function executeJbangScript(scriptPath: string, ...args: string[]) {
   const isWindowsPath = path.sep !== "/";
   const quoteChar = isWindowsPath ? '"' : "'";
   jbang.exec("--java 17", "properties@jbangdev", "java.version");
-  jbang.exec(
-    scriptPath,
-    args
-      .map(
-        (arg) =>
-          quoteChar +
-          (isWindowsPath //.replace(/>(\n|\t|\s/)*</g, "><")
-            ? arg
-            : arg
-                .trim()
-                .replace(/\n|\t|\s/g, " ")
-                .replace(/\s+/g, " ")
-                .replace(/"/g, '\\"')) +
-          quoteChar
-      )
-      .join(" ")
-  );
+  jbang.exec(scriptPath, args.map((arg) => quoteChar + arg + quoteChar).join(" "));
 }

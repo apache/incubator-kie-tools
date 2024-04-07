@@ -46,11 +46,17 @@ const dmnTestingModels = [
   FULL_1_5_DIRECTORY + "NegationOfDurationEvaluate.dmn",
   FULL_1_5_DIRECTORY + "TypeConstraintsChecks.dmn",
   FULL_1_x_MULTIPLE_DIRECTORY + "Financial.dmn",
+  //FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
   FULL_1_x_MULTIPLE_DIRECTORY + "stdlib.dmn",
   FULL_1_x_DIRECTORY + "allTypes.dmn",
+  //FULL_1_x_DIRECTORY + "dtevent.dmn",
+  //FULL_1_x_DIRECTORY + "habitability.dmn",
   FULL_1_x_DIRECTORY + "loan.dmn",
+  //FULL_1_x_DIRECTORY + "LoanEligibility.dmn",
   FULL_1_x_DIRECTORY + "OneOfEachType.dmn",
+  //FULL_1_x_DIRECTORY + "Prequalification.dmn",
   FULL_1_x_DIRECTORY + "testWithExtensionElements.dmn",
+  //FULL_1_x_DIRECTORY + "Traffic Violation Simple.dmn",
 ];
 
 const dmnTestingImportedModels = [
@@ -66,6 +72,10 @@ const dmnTestingImportedModels = [
     imported: FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
     importer: FULL_1_5_DIRECTORY + "Importing_OverridingEmptyNamed_Model.dmn",
   },
+  // {
+  //   imported: FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
+  //   importer: FULL_1_x_MULTIPLE_DIRECTORY + "Traffic Violation With Import.dmn",
+  // },
 ];
 
 describe("validation", () => {
@@ -84,7 +94,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
     const processedDMN = parseXML(normalizedFsPathRelativeToTheFile);
 
     try {
-      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, processedDMN.marshalledXML);
+      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, processedDMN.marshalledXMLFilePath);
     } catch (error) {
       const fileName = normalizedFsPathRelativeToTheFile.substring(
         normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
@@ -104,7 +114,11 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       const importer = parseXML(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, importer.marshalledXML, imported.marshalledXML);
+        executeJbangScript(
+          JBANG_DMN_VALIDATION_SCRIPT_PATH,
+          importer.marshalledXMLFilePath,
+          imported.marshalledXMLFilePath
+        );
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
           normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
@@ -117,9 +131,18 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
   );
 }
 
-function parseXML(normalizedFsPathRelativeToTheFile: string): { originalXML: string; marshalledXML: string } {
+function parseXML(normalizedFsPathRelativeToTheFile: string): {
+  originalXML: string;
+  marshalledXML: string;
+  marshalledXMLFilePath: string;
+} {
   const originalXML = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
   const { parser, builder } = getMarshaller(originalXML, { upgradeTo: "latest" });
   const marshalledXML = builder.build(parser.parse());
-  return { originalXML: originalXML, marshalledXML: marshalledXML };
+  const fileName = normalizedFsPathRelativeToTheFile.substring(
+    normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
+  );
+  const filetowrite = __dirname + path.sep + ".." + path.sep + "dist-tests" + path.sep + fileName;
+  fs.writeFileSync(filetowrite, marshalledXML);
+  return { originalXML: originalXML, marshalledXML: marshalledXML, marshalledXMLFilePath: filetowrite };
 }
