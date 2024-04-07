@@ -36,7 +36,7 @@ export function executeJbangScript(scriptPath: string, ...args: string[]) {
                 .trim()
                 .replace(/\n|\t|\s/g, " ")
                 .replace(/\s+/g, " ")
-                .replace(/"/, '\\"')) +
+                .replace(/"/g, '\\"')) +
           quoteChar
       )
       .join(" ")
