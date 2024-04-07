@@ -1,5 +1,5 @@
 //REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
-//DEPS org.kie:kie-dmn-validation:${kie-dmn-validation.version:999-20240331-SNAPSHOT}
+//DEPS org.kie:kie-dmn-validation:${kie-dmn-validation.version:999-20240407-SNAPSHOT}
 
 import java.io.StringReader;
 import java.util.List;
@@ -35,7 +35,7 @@ class dmnValidation {
 
 
         StringReader[] models = Stream.of(args)
-                                      .map(arg -> removeSurroundingDoubleQuotes(arg))
+                                      //.map(arg -> removeSurroundingDoubleQuotes(arg))
                                       .map(StringReader::new)
                                       .toArray(StringReader[]::new);
 
@@ -62,8 +62,5 @@ class dmnValidation {
             return xml.substring(1, xml.length() - 1);
         } 
         return xml;
-        // Pattern pattern = Pattern.compile("^\"|\"$");
-        // Matcher matcher = pattern.matcher(xml);
-        // return matcher.replaceAll("");
     }
 }
