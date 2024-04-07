@@ -46,11 +46,17 @@ const dmnTestingModels = [
   FULL_1_5_DIRECTORY + "NegationOfDurationEvaluate.dmn",
   FULL_1_5_DIRECTORY + "TypeConstraintsChecks.dmn",
   FULL_1_x_MULTIPLE_DIRECTORY + "Financial.dmn",
+  FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
   FULL_1_x_MULTIPLE_DIRECTORY + "stdlib.dmn",
   FULL_1_x_DIRECTORY + "allTypes.dmn",
+  FULL_1_x_DIRECTORY + "dtevent.dmn",
+  FULL_1_x_DIRECTORY + "habitability.dmn",
   FULL_1_x_DIRECTORY + "loan.dmn",
+  FULL_1_x_DIRECTORY + "LoanEligibility.dmn",
   FULL_1_x_DIRECTORY + "OneOfEachType.dmn",
+  FULL_1_x_DIRECTORY + "Prequalification.dmn",
   FULL_1_x_DIRECTORY + "testWithExtensionElements.dmn",
+  FULL_1_x_DIRECTORY + "Traffic Violation Simple.dmn",
 ];
 
 const dmnTestingImportedModels = [
@@ -65,6 +71,10 @@ const dmnTestingImportedModels = [
   {
     imported: FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
     importer: FULL_1_5_DIRECTORY + "Importing_OverridingEmptyNamed_Model.dmn",
+  },
+  {
+    imported: FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
+    importer: FULL_1_x_MULTIPLE_DIRECTORY + "Traffic Violation With Import.dmn",
   },
 ];
 
