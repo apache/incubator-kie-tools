@@ -40,14 +40,14 @@ import {
 const dmnTestingModelsPath = require.resolve("@kie-tools/dmn-testing-models");
 
 const dmnTestingModels = [
-  FULL_1_5_DIRECTORY + "AllowedValuesChecksInsideCollection.dmn",
-  FULL_1_5_DIRECTORY + "DateToDateTimeFunction.dmn",
-  FULL_1_5_DIRECTORY + "ForLoopDatesEvaluate.dmn",
-  FULL_1_5_DIRECTORY + "ListReplaceEvaluate.dmn",
-  FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
-  FULL_1_5_DIRECTORY + "NegationOfDurationEvaluate.dmn",
-  FULL_1_5_DIRECTORY + "TypeConstraintsChecks.dmn",
-  FULL_1_x_MULTIPLE_DIRECTORY + "Financial.dmn",
+  "../valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn",
+  "../valid_models/DMNv1_5/DateToDateTimeFunction.dmn",
+  "../valid_models/DMNv1_5/ForLoopDatesEvaluate.dmn",
+  "../valid_models/DMNv1_5/ListReplaceEvaluate.dmn",
+  "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+  "../valid_models/DMNv1_5/NegationOfDurationEvaluate.dmn",
+  "../valid_models/DMNv1_5/TypeConstraintsChecks.dmn",
+  "../valid_models/DMNv1_5/Financial.dmn",
   //FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
   FULL_1_x_MULTIPLE_DIRECTORY + "stdlib.dmn",
   FULL_1_x_DIRECTORY + "allTypes.dmn",
