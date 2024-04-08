@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { test, expect } from "../__fixtures__/base";
+import { test, expect } from "./__fixtures__/base";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
