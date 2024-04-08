@@ -20,27 +20,21 @@
 import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import {
-  FULL_1_5_DIRECTORY,
-  FULL_1_x_DIRECTORY,
-  LOCAL_MODELS_1_4_DIRECTORY_FULL_PATH,
-  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH,
-} from "./testConstants";
 
 const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
 
 const files = [
-  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "attachment.dmn",
-  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "empty13.dmn",
-  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "sample12.dmn",
-  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "list.dmn",
-  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "list2.dmn",
-  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "external.dmn",
-  LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH + "weird.dmn",
-  LOCAL_MODELS_1_4_DIRECTORY_FULL_PATH + "Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
+  "../tests-data--manual/other/attachment.dmn",
+  "../tests-data--manual/other/empty13.dmn",
+  "../tests-data--manual/other/sample12.dmn",
+  "../tests-data--manual/other/list.dmn",
+  "../tests-data--manual/other/list2.dmn",
+  "../tests-data--manual/other/external.dmn",
+  "../tests-data--manual/other/weird.dmn",
+  "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];
 
-const testing_models_paths = [FULL_1_5_DIRECTORY, FULL_1_x_DIRECTORY];
+const testing_models_paths = ["../valid_models/DMNv1_5/", "../valid_models/DMNv1_x/"];
 
 describe("idempotency", () => {
   for (const file of files) {

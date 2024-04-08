@@ -22,14 +22,7 @@ import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
 import { executeJBangScript } from "./jbang/jbangManager";
-import {
-  DIST_TESTS_DIRECTORY,
-  FULL_1_5_DIRECTORY,
-  FULL_1_x_DIRECTORY,
-  FULL_1_x_MULTIPLE_DIRECTORY,
-  JBANG_DMN_VALIDATION_SCRIPT_PATH,
-  LOCAL_PARSER_XML_GENERATED_DIRECTORY,
-} from "./testConstants";
+import { JBANG_DMN_VALIDATION_SCRIPT_PATH } from "./testConstants";
 
 /**
  * This test suite validates the xml produced by the marshaller relying on KIE DMN Validator
@@ -47,32 +40,32 @@ const dmnTestingModels = [
   "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
   "../valid_models/DMNv1_5/NegationOfDurationEvaluate.dmn",
   "../valid_models/DMNv1_5/TypeConstraintsChecks.dmn",
-  "../valid_models/DMNv1_5/Financial.dmn",
+  "../valid_models/DMNv1_x/multiple/Financial.dmn",
   //FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
-  FULL_1_x_MULTIPLE_DIRECTORY + "stdlib.dmn",
-  FULL_1_x_DIRECTORY + "allTypes.dmn",
+  "../valid_models/DMNv1_x/multiple/stdlib.dmn",
+  "../valid_models/DMNv1_x/allTypes.dmn",
   //FULL_1_x_DIRECTORY + "dtevent.dmn",
   //FULL_1_x_DIRECTORY + "habitability.dmn",
-  FULL_1_x_DIRECTORY + "loan.dmn",
+  "../valid_models/DMNv1_x/loan.dmn",
   //FULL_1_x_DIRECTORY + "LoanEligibility.dmn",
-  FULL_1_x_DIRECTORY + "OneOfEachType.dmn",
+  "../valid_models/DMNv1_x/OneOfEachType.dmn",
   //FULL_1_x_DIRECTORY + "Prequalification.dmn",
-  FULL_1_x_DIRECTORY + "testWithExtensionElements.dmn",
+  "../valid_models/DMNv1_x/testWithExtensionElements.dmn",
   //FULL_1_x_DIRECTORY + "Traffic Violation Simple.dmn",
 ];
 
 const dmnTestingImportedModels = [
   {
-    imported: FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
-    importer: FULL_1_5_DIRECTORY + "Importing_EmptyNamed_Model.dmn",
+    imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+    importer: "../valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn",
   },
   {
-    imported: FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
-    importer: FULL_1_5_DIRECTORY + "Importing_Named_Model.dmn",
+    imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+    importer: "../valid_models/DMNv1_5/Importing_Named_Model.dmn",
   },
   {
-    imported: FULL_1_5_DIRECTORY + "Imported_Model_Unamed.dmn",
-    importer: FULL_1_5_DIRECTORY + "Importing_OverridingEmptyNamed_Model.dmn",
+    imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+    importer: "../valid_models/DMNv1_5/Importing_OverridingEmptyNamed_Model.dmn",
   },
   // {
   //   imported: FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
@@ -80,7 +73,7 @@ const dmnTestingImportedModels = [
   // },
 ];
 
-const marshalledXMLDirectory = path.join(__dirname, "..", DIST_TESTS_DIRECTORY, LOCAL_PARSER_XML_GENERATED_DIRECTORY);
+const marshalledXMLDirectory = path.join(__dirname, "../dist-tests/marshalled-dmn-file");
 
 describe("validation", () => {
   beforeAll(() => {

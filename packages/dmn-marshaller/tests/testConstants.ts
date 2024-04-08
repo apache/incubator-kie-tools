@@ -19,18 +19,6 @@
 
 import * as path from "path";
 
-/* Local Directories */
-export const DIST_TESTS_DIRECTORY = "dist-tests";
-export const LOCAL_TYPE_SAFETY_TESTS_DIRECTORY = "dmn-marshaller-type-safety-tests";
-export const LOCAL_PARSER_XML_GENERATED_DIRECTORY = "marshalled-dmn-files";
-export const LOCAL_MODELS_DIRECTORY = "tests-data--manual";
-export const LOCAL_MODELS_1_4_DIRECTORY = "dmn-1_4--examples";
-export const LOCAL_MODELS_OTHER_DIRECTORY = "other";
-export const LOCAL_MODELS_1_4_DIRECTORY_FULL_PATH =
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_1_4_DIRECTORY + path.sep;
-export const LOCAL_MODELS_OTHER_DIRECTORY_FULL_PATH =
-  ".." + path.sep + LOCAL_MODELS_DIRECTORY + path.sep + LOCAL_MODELS_OTHER_DIRECTORY + path.sep;
-
 /* dmn-testing-models module Directories */
 export const DMN_1_5_DIRECTORY = "DMNv1_5";
 export const DMN_1_x_DIRECTORY = "DMNv1_x";
@@ -38,12 +26,7 @@ export const VALID_MODELS_DIRECTORY = "valid_models";
 export const MULTIPLE_MODELS_DIRECTORY = "multiple";
 export const FULL_1_5_DIRECTORY = ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_5_DIRECTORY + path.sep;
 export const FULL_1_x_DIRECTORY = ".." + path.sep + VALID_MODELS_DIRECTORY + path.sep + DMN_1_x_DIRECTORY + path.sep;
-export const FULL_1_x_MULTIPLE_DIRECTORY = FULL_1_x_DIRECTORY + MULTIPLE_MODELS_DIRECTORY + path.sep;
 
 /* jbang scripts */
 export const JBANG_SCRIPTS_DIRECTORY = "tests" + path.sep + "jbang" + path.sep;
 export const JBANG_DMN_VALIDATION_SCRIPT_PATH = JBANG_SCRIPTS_DIRECTORY + "dmnValidation.java";
-
-/* XSD Schemas */
-export const XSD_SCHEMAS_DIRECTORY = ".." + path.sep + "src" + path.sep + "schemas" + path.sep;
-export const DMN_1_5_XSD = XSD_SCHEMAS_DIRECTORY + "dmn-1_5" + path.sep + "DMN15.xsd";
