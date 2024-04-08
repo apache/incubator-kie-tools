@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/quarkus-examples-maven-parent": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "run-script-os": "^1.1.6"
   },

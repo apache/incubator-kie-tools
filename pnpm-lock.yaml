@@ -258,6 +258,9 @@ importers:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -270,6 +273,9 @@ importers:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -282,6 +288,9 @@ importers:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -435,6 +444,24 @@ importers:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  examples/quarkus-examples-maven-parent:
+    devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../../packages/maven-base
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../../packages/maven-config-setup-helper
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -447,6 +474,9 @@ importers:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
+      "@kie-tools/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env

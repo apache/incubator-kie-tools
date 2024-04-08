@@ -18,7 +18,7 @@ digraph G {
   "@kie-tools-examples/commit-message-validation-service" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/root-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/drools-dmn-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
-  "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/quarkus-examples-maven-parent" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/drools-process-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/drools-xls-decision-table-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/ping-pong-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -26,6 +26,7 @@ digraph G {
   "@kie-tools-examples/ping-pong-view-angular" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/ping-pong-view-react" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/pmml-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools/maven-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/sonataflow-greeting-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/todo-list-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -61,6 +62,7 @@ digraph G {
   "@kie-tools/image-builder" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-assembler" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-client" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-component-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-component-echarts" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -114,7 +116,6 @@ digraph G {
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/maven-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -192,17 +193,15 @@ digraph G {
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
   "kie-tools-examples-base64png-editor-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/commit-message-validation-service" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/drools-dmn-quarkus-example" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/drools-dmn-quarkus-example" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/drools-process-quarkus-example" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/drools-process-quarkus-example" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/drools-xls-decision-table-quarkus-example" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/drools-xls-decision-table-quarkus-example" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/drools-dmn-quarkus-example" -> "@kie-tools/quarkus-examples-maven-parent" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/drools-process-quarkus-example" -> "@kie-tools/quarkus-examples-maven-parent" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/drools-xls-decision-table-quarkus-example" -> "@kie-tools/quarkus-examples-maven-parent" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/ping-pong-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-angular" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-react" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
-  "@kie-tools-examples/pmml-quarkus-example" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/pmml-quarkus-example" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/pmml-quarkus-example" -> "@kie-tools/quarkus-examples-maven-parent" [ style = "dashed", color = "orange" ];
+  "@kie-tools/quarkus-examples-maven-parent" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
+  "@kie-tools-examples/sonataflow-greeting-quarkus-example" -> "@kie-tools/quarkus-examples-maven-parent" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/sonataflow-greeting-quarkus-example" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/todo-list-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "kie-tools-examples-todo-list-view-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "orange" ];
