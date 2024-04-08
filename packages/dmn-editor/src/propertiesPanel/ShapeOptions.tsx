@@ -370,7 +370,7 @@ export function ShapeOptions({
                     >
                       <TextInput
                         aria-label={"Height"}
-                        data-testid={"node-shape-height-input-box"}
+                        data-testid={"properties-panel-node-shape-height-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? boundHeight : undefined}
