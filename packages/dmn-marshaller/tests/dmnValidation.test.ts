@@ -142,7 +142,7 @@ function parseXML(normalizedFsPathRelativeToTheFile: string): {
   const fileName = normalizedFsPathRelativeToTheFile.substring(
     normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
   );
-  const filetowrite = __dirname + path.sep + ".." + path.sep + "dist-tests" + path.sep + fileName;
+  const filetowrite = __dirname + path.sep + ".." + path.sep + "dist" + path.sep + fileName;
   fs.writeFileSync(filetowrite, marshalledXML);
   return { originalXML: originalXML, marshalledXML: marshalledXML, marshalledXMLFilePath: filetowrite };
 }
