@@ -16,6 +16,7 @@
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
+    "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/import-java-classes-component": "workspace:*",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.39.0",

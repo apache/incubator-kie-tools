@@ -22,7 +22,7 @@ export const DEFAULT_MIN_WIDTH = 100;
 export const BEE_TABLE_ROW_INDEX_COLUMN_WIDTH = 60;
 
 // CONTEXT
-export const CONTEXT_ENTRY_INFO_MIN_WIDTH = 120;
+export const CONTEXT_ENTRY_VARIABLE_MIN_WIDTH = 120;
 export const CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH = 210;
 export const CONTEXT_EXPRESSION_EXTRA_WIDTH = 2; // 2px for borders of context entry expression // It's a mistery why to this cell is counting the borders.
 

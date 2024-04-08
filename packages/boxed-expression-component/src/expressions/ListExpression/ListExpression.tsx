@@ -18,8 +18,8 @@
  */
 
 import * as React from "react";
-import * as ReactTable from "react-table";
 import { useCallback, useMemo } from "react";
+import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
   BeeTableContextMenuAllowedOperationsConditions,
@@ -27,39 +27,35 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  ContextExpressionDefinitionEntry,
   DmnBuiltInDataType,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  generateUuid,
   InsertRowColumnsDirection,
-  ListExpressionDefinition,
+  BoxedList,
+  BoxedExpression,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
 import { LIST_EXPRESSION_EXTRA_WIDTH, LIST_EXPRESSION_ITEM_MIN_WIDTH } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
-import "./ListExpression.css";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
+import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { findAllIdsDeep } from "../../ids/ids";
+import "./ListExpression.css";
 
-export type ROWTYPE = ContextExpressionDefinitionEntry;
+export type ROWTYPE = DMN15__tContextEntry;
 
 export function ListExpression(
-  listExpression: ListExpressionDefinition & {
+  listExpression: BoxedList & {
     isNested: boolean;
     parentElementId: string;
   }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { decisionNodeId, variables } = useBoxedExpressionEditor();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
+  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -69,7 +65,7 @@ export function ListExpression(
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
         return {
-          nestedExpressions: listExpression.items,
+          nestedExpressions: listExpression.expression ?? [],
           fixedColumnActualWidth: 0,
           fixedColumnResizingWidth: { value: 0, isPivoting: false },
           fixedColumnMinWidth: 0,
@@ -77,8 +73,9 @@ export function ListExpression(
           extraWidth: LIST_EXPRESSION_EXTRA_WIDTH,
           expression: listExpression,
           flexibleColumnIndex: 1,
+          widthsById: widthsById,
         };
-      }, [listExpression])
+      }, [listExpression, widthsById])
     );
 
   /// //////////////////////////////////////////////////////
@@ -109,97 +106,122 @@ export function ListExpression(
   );
 
   const beeTableRows = useMemo(() => {
-    return listExpression.items.map((item) => ({
-      entryInfo: undefined as any,
-      entryExpression: item,
+    const rows = (listExpression.expression ?? []).map((item) => ({
+      expression: item,
     }));
-  }, [listExpression.items]);
+
+    if (rows.length === 0) {
+      rows.push({
+        expression: undefined!,
+      });
+    }
+
+    return rows;
+  }, [listExpression.expression]);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: decisionNodeId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
-        label: listExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        dataType: listExpression.dataType,
+        accessor: expressionHolderId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
+        label: listExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
+        dataType: listExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         minWidth: LIST_EXPRESSION_ITEM_MIN_WIDTH,
         width: undefined,
       },
     ],
-    [decisionNodeId, listExpression.dataType, listExpression.name]
+    [expressionHolderId, listExpression]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
-    return row.original.entryExpression.id;
+    return row.id;
   }, []);
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     (): { [p: string]: ({ rowIndex, data, columnIndex }: BeeTableCellProps<ROWTYPE>) => JSX.Element } => ({
-      [decisionNodeId]: (props) => <ListItemCell parentElementId={listExpression.parentElementId} {...props} />,
+      [expressionHolderId]: (props) => (
+        <ListItemCell parentElementId={listExpression.parentElementId} listExpression={listExpression} {...props} />
+      ),
     }),
-    [decisionNodeId, listExpression.parentElementId]
+    [expressionHolderId, listExpression]
   );
 
-  const getDefaultListItem = useCallback((dataType: DmnBuiltInDataType): ExpressionDefinition => {
-    return {
-      id: generateUuid(),
-      logicType: ExpressionDefinitionLogicType.Undefined,
-      dataType: dataType,
-    };
-  }, []);
-
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: ListExpressionDefinition) => {
-        const newItems = [...prev.items];
-        const newListItems = [];
+    (args: { beforeIndex: number; rowsCount: number }) => {
+      setExpression((prev: BoxedList) => {
+        const newItems = [...(prev.expression ?? [])];
+        const newListItems: BoxedExpression[] = [];
 
         for (let i = 0; i < args.rowsCount; i++) {
-          const newItem = getDefaultListItem(prev.dataType);
-          newListItems.push(newItem);
-          variables?.repository.addVariableToContext(newItem.id, newItem.id, listExpression.parentElementId);
+          newListItems.push(undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         }
 
         for (const newEntry of newListItems) {
-          let index = args.beforeIndex;
-          newItems.splice(index, 0, newEntry);
-          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
-            index++;
-          }
+          newItems.splice(args.beforeIndex, 0, newEntry);
         }
 
-        return { ...prev, items: newItems };
-      });
-    },
-    [getDefaultListItem, listExpression.parentElementId, setExpression, variables?.repository]
-  );
-
-  const onRowDeleted = useCallback(
-    (args: { rowIndex: number }) => {
-      setExpression((prev: ListExpressionDefinition) => {
-        const newItems = [...(prev.items ?? [])];
-        newItems.splice(args.rowIndex, 1);
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedList = {
           ...prev,
-          items: newItems,
+          expression: newItems,
         };
+
+        return ret;
       });
     },
     [setExpression]
   );
 
-  const onRowReset = useCallback(
+  const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: ListExpressionDefinition) => {
-        const newItems = [...(prev.items ?? [])];
-        newItems.splice(args.rowIndex, 1, getDefaultListItem(prev.dataType));
-        return {
+      let oldExpression: BoxedExpression | undefined;
+      setExpression((prev: BoxedList) => {
+        const newItems = [...(prev.expression ?? [])];
+        oldExpression = newItems[args.rowIndex];
+        newItems.splice(args.rowIndex, 1);
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedList = {
           ...prev,
-          items: newItems,
+          expression: newItems,
         };
+
+        return ret;
+      });
+
+      setWidthsById(({ newMap }) => {
+        for (const id of findAllIdsDeep(oldExpression)) {
+          newMap.delete(id);
+        }
       });
     },
-    [getDefaultListItem, setExpression]
+    [setExpression, setWidthsById]
+  );
+
+  const onRowReset = useCallback(
+    (args: { rowIndex: number }) => {
+      let oldExpression: BoxedExpression | undefined;
+      setExpression((prev: BoxedList) => {
+        const newItems = [...(prev.expression ?? [])];
+        oldExpression = newItems[args.rowIndex];
+        newItems.splice(args.rowIndex, 1, undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedList = {
+          ...prev,
+          expression: newItems,
+        };
+
+        return ret;
+      });
+
+      setWidthsById(({ newMap }) => {
+        for (const id of findAllIdsDeep(oldExpression)) {
+          newMap.delete(id);
+        }
+      });
+    },
+    [setExpression, setWidthsById]
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
@@ -207,12 +229,17 @@ export function ListExpression(
   }, [listExpression.isNested]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev) => ({
-        ...prev,
-        name,
-        dataType,
-      }));
+    ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
+      setExpression((prev: BoxedList) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedList = {
+          ...prev,
+          "@_label": name,
+          "@_typeRef": typeRef,
+        };
+
+        return ret;
+      });
     },
     [setExpression]
   );
@@ -241,11 +268,11 @@ export function ListExpression(
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
-      <div className={`${listExpression.id} list-expression`}>
+      <div className={`${listExpression["@_id"]} list-expression`}>
         <BeeTable<ROWTYPE>
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
-          tableId={listExpression.id}
+          tableId={listExpression["@_id"]}
           headerVisibility={beeTableHeaderVisibility}
           cellComponentByColumnAccessor={cellComponentByColumnAccessor}
           columns={beeTableColumns}
