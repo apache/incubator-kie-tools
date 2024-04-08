@@ -77,7 +77,7 @@ export abstract class PropertiesPanelBase {
   public async setFont(args: { newFont: string }) {
     await this.panel().getByTitle("Expand / collapse Font").click();
 
-    await this.panel().getByTestId("node-font-style-selector").click();
+    await this.panel().getByTestId("properties-panel-node-font-style").click();
     await this.panel().getByText(args.newFont).click();
 
     await this.diagram.resetFocus();
@@ -86,7 +86,7 @@ export abstract class PropertiesPanelBase {
   public async getFont() {
     await this.panel().getByTitle("Expand / collapse Font").click();
 
-    const font = await this.panel().getByTestId("node-font-style-selector").textContent();
+    const font = await this.panel().getByTestId("properties-panel-node-font-style").textContent();
 
     await this.panel().getByTitle("Expand / collapse Font").click();
 

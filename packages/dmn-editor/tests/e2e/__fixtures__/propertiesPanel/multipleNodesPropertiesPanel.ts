@@ -53,7 +53,7 @@ export class MultipleNodesPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setMultipleNodesFont(args: { newFont: string }) {
-    await this.panel().getByTestId("node-font-style-selector").click();
+    await this.panel().getByTestId("properties-panel-node-font-style").click();
     await this.panel().getByText(args.newFont).click();
 
     await this.diagram.resetFocus();
