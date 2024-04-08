@@ -1,5 +1,6 @@
+///usr/bin/env jbang "$0" "$@" ; exit $?
 //REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
-//DEPS org.kie:kie-dmn-validation:${kie-dmn-validation.version:999-20240407-SNAPSHOT}
+//DEPS org.kie:kie-dmn-validation:${kie-dmn-validation.version:LATEST}
 
 import java.io.File;
 import java.util.List;

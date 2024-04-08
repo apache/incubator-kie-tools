@@ -24,5 +24,9 @@ export function executeJbangScript(scriptPath: string, ...args: string[]) {
   const isWindowsPath = path.sep !== "/";
   const quoteChar = isWindowsPath ? '"' : "'";
   jbang.exec("--java 17", "properties@jbangdev", "java.version");
-  jbang.exec(scriptPath, args.map((arg) => quoteChar + arg + quoteChar).join(" "));
+  jbang.exec(
+    "-Dkie-dmn-validation.version=999-20240407-SNAPSHOT",
+    scriptPath,
+    args.map((arg) => quoteChar + arg + quoteChar).join(" ")
+  );
 }
