@@ -18,7 +18,6 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DEFAULT_DRD_NAME } from "../__fixtures__/diagram";
 import { EdgeType } from "../__fixtures__/edges";
 import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
@@ -37,13 +36,22 @@ test.describe("Add node - BKM", () => {
         await expect(diagram.get()).toHaveScreenshot("add-bkm-node-from-palette.png");
 
         // JSON model assertions
-        expect(await jsonModel.drgElements.getBkm({ name: DefaultNodeName.BKM, drdName: DEFAULT_DRD_NAME })).toEqual({
-          name: DefaultNodeName.BKM,
+        const bkm = await jsonModel.drgElements.getBkm({ drgElementIndex: 0, drdIndex: 0 });
+        expect(bkm).toEqual({
+          __$$element: "businessKnowledgeModel",
+          "@_id": bkm["@_id"],
+          "@_name": DefaultNodeName.BKM,
           variable: {
-            name: DefaultNodeName.BKM,
-            typeRef: DataType.Undefined,
+            "@_id": bkm.variable?.["@_id"],
+            "@_name": DefaultNodeName.BKM,
+            "@_typeRef": DataType.Undefined,
           },
-          bounds: { x: 0, y: 0, width: 160, height: 80 },
+        });
+        expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({
+          "@_x": 0,
+          "@_y": 0,
+          "@_width": 160,
+          "@_height": 80,
         });
       });
     });

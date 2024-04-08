@@ -22,7 +22,7 @@ import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { DmnEditorWrapper } from "../../dmnEditorStoriesWrapper";
+import { DmnEditorWrapper, StorybookDmnEditorProps } from "../../dmnEditorStoriesWrapper";
 import { DmnEditor, DmnEditorProps } from "../../../src/DmnEditor";
 
 export const generateEmptyDmn15 = () => `<?xml version="1.0" encoding="UTF-8"?>

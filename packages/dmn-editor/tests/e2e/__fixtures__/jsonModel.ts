@@ -19,7 +19,8 @@
 
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { Page } from "@playwright/test";
-import { DrgElements } from "./jsonModel/drgElements";
+import { DrgElement } from "./jsonModel/drgElement";
+import { Drd } from "./jsonModel/drd";
 
 export enum DataType {
   Undefined = "<Undefined>",
@@ -38,9 +39,11 @@ export enum DataType {
 export const STORYBOOK__DMN_EDITOR_MODEL = "div[data-testid='storybook--dmn-editor-model']";
 
 export class JsonModel {
-  public drgElements: DrgElements;
+  public drgElements: DrgElement;
+  public drd: Drd;
 
   constructor(public page: Page, public baseURL?: string) {
-    this.drgElements = new DrgElements(page);
+    this.drgElements = new DrgElement(page);
+    this.drd = new Drd(page, this.drgElements);
   }
 }

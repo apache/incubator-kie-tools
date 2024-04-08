@@ -18,7 +18,6 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DEFAULT_DRD_NAME } from "../__fixtures__/diagram";
 import { EdgeType } from "../__fixtures__/edges";
 import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
@@ -37,15 +36,22 @@ test.describe("Add node - Decision", () => {
         await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-palette.png");
 
         // JSON model assertions
-        expect(
-          await jsonModel.drgElements.getDecision({ name: DefaultNodeName.DECISION, drdName: DEFAULT_DRD_NAME })
-        ).toEqual({
-          name: DefaultNodeName.DECISION,
+        const decision = await jsonModel.drgElements.getDecision({ drgElementIndex: 0, drdIndex: 0 });
+        expect(decision).toEqual({
+          __$$element: "decision",
+          "@_id": decision["@_id"],
+          "@_name": DefaultNodeName.DECISION,
           variable: {
-            name: DefaultNodeName.DECISION,
-            typeRef: DataType.Undefined,
+            "@_id": decision.variable?.["@_id"],
+            "@_name": DefaultNodeName.DECISION,
+            "@_typeRef": DataType.Undefined,
           },
-          bounds: { x: 0, y: 0, width: 160, height: 80 },
+        });
+        expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({
+          "@_x": 0,
+          "@_y": 0,
+          "@_width": 160,
+          "@_height": 80,
         });
       });
     });
@@ -75,25 +81,35 @@ test.describe("Add node - Decision", () => {
         await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-input-data-node.png");
 
         // JSON model assertions
-        expect(
-          await jsonModel.drgElements.getInputData({ name: DefaultNodeName.INPUT_DATA, drdName: DEFAULT_DRD_NAME })
-        ).toEqual({
-          name: DefaultNodeName.INPUT_DATA,
+        const inputData = await jsonModel.drgElements.getInputData({ drgElementIndex: 0, drdIndex: 0 });
+        expect(inputData).toEqual({
+          __$$element: "inputData",
+          "@_id": inputData["@_id"],
+          "@_name": DefaultNodeName.INPUT_DATA,
           variable: {
-            name: DefaultNodeName.INPUT_DATA,
-            typeRef: DataType.Undefined,
+            "@_id": inputData.variable?.["@_id"],
+            "@_name": DefaultNodeName.INPUT_DATA,
+            "@_typeRef": DataType.Undefined,
           },
-          bounds: { x: 0, y: 0, width: 160, height: 80 },
         });
-        expect(
-          await jsonModel.drgElements.getDecision({ name: DefaultNodeName.DECISION, drdName: DEFAULT_DRD_NAME })
-        ).toEqual({
-          name: DefaultNodeName.DECISION,
+        const decision = await jsonModel.drgElements.getDecision({ drgElementIndex: 1, drdIndex: 0 });
+        expect(decision).toEqual({
+          __$$element: "decision",
+          "@_id": decision["@_id"],
+          "@_name": DefaultNodeName.DECISION,
+          informationRequirement: [
+            {
+              "@_id": decision.informationRequirement?.[0]["@_id"],
+              requiredInput: {
+                "@_href": "#" + inputData["@_id"],
+              },
+            },
+          ],
           variable: {
-            name: DefaultNodeName.DECISION,
-            typeRef: DataType.Undefined,
+            "@_id": decision.variable?.["@_id"],
+            "@_name": DefaultNodeName.DECISION,
+            "@_typeRef": DataType.Undefined,
           },
-          bounds: { x: 400, y: 400, width: 160, height: 80 },
         });
       });
 

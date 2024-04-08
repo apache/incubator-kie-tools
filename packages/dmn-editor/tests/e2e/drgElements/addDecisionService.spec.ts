@@ -18,7 +18,6 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DEFAULT_DRD_NAME } from "../__fixtures__/diagram";
 import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
@@ -36,20 +35,25 @@ test.describe("Add node - Decision Service", () => {
         await expect(diagram.get()).toHaveScreenshot("add-decision-service-node-from-palette.png");
 
         // JSON model assertions
-        expect(
-          await jsonModel.drgElements.getDecisionService({
-            name: DefaultNodeName.DECISION_SERVICE,
-            drdName: DEFAULT_DRD_NAME,
-          })
-        ).toEqual({
+        // JSON model assertions
+        const decisionService = await jsonModel.drgElements.getDecisionService({ drgElementIndex: 0, drdIndex: 0 });
+        expect(decisionService).toEqual({
+          __$$element: "decisionService",
+          "@_id": decisionService["@_id"],
+          "@_name": DefaultNodeName.DECISION_SERVICE,
           inputData: [],
           inputDecision: [],
-          name: DefaultNodeName.DECISION_SERVICE,
           variable: {
-            name: DefaultNodeName.DECISION_SERVICE,
-            typeRef: DataType.Undefined,
+            "@_id": decisionService.variable?.["@_id"],
+            "@_name": DefaultNodeName.DECISION_SERVICE,
+            "@_typeRef": DataType.Undefined,
           },
-          bounds: { x: 0, y: 0, width: 320, height: 320 },
+        });
+        expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({
+          "@_x": 0,
+          "@_y": 0,
+          "@_width": 320,
+          "@_height": 320,
         });
       });
     });
