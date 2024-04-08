@@ -97,7 +97,7 @@ export abstract class PropertiesPanelBase {
     await this.panel().getByTitle("Expand / collapse Shape").click();
 
     const width = await this.panel().getByTestId("properties-panel-node-shape-width-input").inputValue();
-    const height = await this.panel().getByTestId("node-shape-height-input-box").inputValue();
+    const height = await this.panel().getByTestId("properties-panel-node-shape-height-input").inputValue();
 
     await this.panel().getByTitle("Expand / collapse Shape").click();
 
