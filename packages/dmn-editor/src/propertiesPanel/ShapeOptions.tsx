@@ -344,7 +344,7 @@ export function ShapeOptions({
                     >
                       <TextInput
                         aria-label={"Width"}
-                        data-testid={"node-shape-width-input-box"}
+                        data-testid={"properties-panel-node-shape-width-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? boundWidth : undefined}
