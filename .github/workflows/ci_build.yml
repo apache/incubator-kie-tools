@@ -16,7 +16,6 @@ env:
 
 jobs:
   run:
-    environment: ci
     if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
@@ -97,12 +96,13 @@ jobs:
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: >-
-          pnpm 
-          -F='!@kie-tools/serverless-logic-web-tools-swf-dev-mode-image' 
+          pnpm
+          -F='!@kie-tools/serverless-logic-web-tools-swf-dev-mode-image'
           -F='!@kie-tools/dev-deployment-base-image'
+          -F='!@kie-tools/dev-deployment-kogito-quarkus-blank-app-image'
           -F='!@kie-tools/dev-deployment-dmn-form-webapp-image'
-          -F='!@kie-tools/serverless-logic-web-tools-base-builder-image' 
-          -F='!@kie-tools/dashbuilder-viewer-image' 
+          -F='!@kie-tools/serverless-logic-web-tools-base-builder-image'
+          -F='!@kie-tools/dashbuilder-viewer-image'
           -r --workspace-concurrency=1 build:prod
 
       - name: "FULL → Build → serverless-logic-web-tools-swf-dev-mode-image"
@@ -122,7 +122,7 @@ jobs:
           echo "Build @kie-tools/serverless-logic-web-tools-swf-dev-mode-image"
           pnpm -F @kie-tools/serverless-logic-web-tools-swf-dev-mode-image... --workspace-concurrency=1 build:prod
 
-      - name: "FULL → Build → dev-deployment-base-image"
+      - name: "FULL → Build → dev-deployment-base-image and dev-deployment-kogito-quarkus-blank-app"
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
         env:
           KIE_TOOLS_BUILD__runTests: "true"
@@ -137,7 +137,7 @@ jobs:
             podman system prune --all --force
           fi
           echo "Build @kie-tools/dev-deployment-base-image"
-          pnpm -F @kie-tools/dev-deployment-base-image... --workspace-concurrency=1 build:prod
+          pnpm -F @kie-tools/dev-deployment-base-image... -F @kie-tools/dev-deployment-kogito-quarkus-blank-app... --workspace-concurrency=1 build:prod
 
       - name: "FULL → Build → dev-deployment-dmn-form-webapp-image"
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'

@@ -23,8 +23,8 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { useDmnEditorStore } from "../../store/Store";
-import { OnCreateDataType, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
+import { useDmnEditorStore } from "../../store/StoreContext";
+import { OnCreateDataType, OnToggle, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useResolvedTypeRef } from "../../dataTypes/useResolvedTypeRef";
 
@@ -38,20 +38,23 @@ export function DataTypeNodePanel(props: {
   shape: DMNDI15__DMNShape | undefined;
   onChange: OnTypeRefChange;
   onCreate?: OnCreateDataType;
-  namespace: string | undefined;
+  onToggle?: OnToggle;
+  dmnObjectNamespace: string | undefined;
 }) {
-  const diagram = useDmnEditorStore((s) => s.diagram);
+  const enableDataTypesToolbarOnNodes = useDmnEditorStore((s) => s.diagram.overlays.enableDataTypesToolbarOnNodes);
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
   const resolvedTypeRef = useResolvedTypeRef(
     props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
-    props.namespace
+    props.dmnObjectNamespace
   );
+
+  const isExternalNode = !!props.dmnObjectNamespace;
 
   return (
     <>
-      {props.isVisible && diagram.overlays.enableDataTypesToolbarOnNodes && (
+      {props.isVisible && enableDataTypesToolbarOnNodes && (
         <div
           className={"kie-dmn-editor--data-type-node-panel"}
           // Do not allow any events to go to the node itself...
@@ -61,14 +64,16 @@ export function DataTypeNodePanel(props: {
           onDoubleClick={stopPropagation}
           onMouseLeave={stopPropagation}
         >
-          <div>
+          <div style={{ background: isExternalNode ? "rgb(240, 240, 240)" : undefined }}>
             <TypeRefSelector
               zoom={0.8}
               heightRef={dmnEditorRootElementRef}
               typeRef={resolvedTypeRef}
               onChange={props.onChange}
               onCreate={props.onCreate}
+              onToggle={props.onToggle}
               menuAppendTo={"parent"}
+              isDisabled={isExternalNode}
             />
           </div>
         </div>

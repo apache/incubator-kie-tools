@@ -20,6 +20,8 @@
 
 package org.uberfire.client.views.pfly.modal;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
@@ -42,8 +44,6 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 /**
  * A modal dialog that floats above the workbench. Each instance can only be shown once.
  */
@@ -51,6 +51,10 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class Bs3Modal extends Modal {
 
     private final ModalBody body = GWT.create(ModalBody.class);
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
+    }
 
     /**
      * Used for enforcing the "only show one time" rule.

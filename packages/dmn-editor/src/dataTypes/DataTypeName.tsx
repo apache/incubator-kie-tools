@@ -23,12 +23,13 @@ import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/d
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
 import { TypeRefLabel } from "./TypeRefLabel";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameItemDefinition } from "../mutations/renameItemDefinition";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { UniqueNameIndex } from "../Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { State } from "../store/Store";
 
 export function DataTypeName({
   isReadonly,
@@ -37,7 +38,7 @@ export function DataTypeName({
   editMode,
   relativeToNamespace,
   shouldCommitOnBlur,
-  allUniqueNames,
+  onGetAllUniqueNames,
   enableAutoFocusing,
 }: {
   isReadonly: boolean;
@@ -46,7 +47,7 @@ export function DataTypeName({
   isActive: boolean;
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;
-  allUniqueNames: UniqueNameIndex;
+  onGetAllUniqueNames: (s: State) => UniqueNameIndex;
   enableAutoFocusing?: boolean;
 }) {
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
@@ -54,9 +55,11 @@ export function DataTypeName({
   );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { allDataTypesById, importsByNamespace } = useDmnEditorDerivedStore();
-
-  const dataType = allDataTypesById.get(itemDefinition["@_id"]!);
+  const { externalModelsByNamespace } = useExternalModels();
+  const dataType = useDmnEditorStore((s) =>
+    s.computed(s).getDataTypes(externalModelsByNamespace).allDataTypesById.get(itemDefinition["@_id"]!)
+  );
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
 
   const feelQNameToDisplay = buildFeelQNameFromNamespace({
     namedElement: itemDefinition,
@@ -76,11 +79,11 @@ export function DataTypeName({
           definitions: state.dmn.model.definitions,
           newName,
           itemDefinitionId: itemDefinition["@_id"]!,
-          allDataTypesById,
+          allDataTypesById: state.computed(state).getDataTypes(externalModelsByNamespace).allDataTypesById,
         });
       });
     },
-    [allDataTypesById, dmnEditorStoreApi, isReadonly, itemDefinition]
+    [dmnEditorStoreApi, externalModelsByNamespace, isReadonly, itemDefinition]
   );
 
   const _shouldCommitOnBlur = shouldCommitOnBlur ?? true; // Defaults to true
@@ -95,7 +98,8 @@ export function DataTypeName({
           shouldCommitOnBlur={_shouldCommitOnBlur}
           name={feelQNameToDisplay.full}
           onRenamed={onRenamed}
-          allUniqueNames={allUniqueNames}
+          allUniqueNames={onGetAllUniqueNames}
+          enableAutoFocusing={enableAutoFocusing}
         />
       )}
       {editMode === "double-click" && (
@@ -112,6 +116,7 @@ export function DataTypeName({
           {/* Using this component here is not ideal, as we're not dealing with Node names, but it works well enough */}
           <EditableNodeLabel
             truncate={true}
+            enableAutoFocusing={enableAutoFocusing}
             grow={true}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
@@ -126,7 +131,7 @@ export function DataTypeName({
               localPart: itemDefinition["@_name"],
               prefix: feelQNameToDisplay.prefix,
             }}
-            allUniqueNames={allUniqueNames}
+            onGetAllUniqueNames={onGetAllUniqueNames}
           />
           {!isEditingLabel && (
             <TypeRefLabel

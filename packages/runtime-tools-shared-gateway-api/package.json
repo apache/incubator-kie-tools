@@ -1,0 +1,37 @@
+{
+  "name": "@kie-tools/runtime-tools-shared-gateway-api",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm test",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "test": "echo 'Not implemented'"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.2"
+  }
+}

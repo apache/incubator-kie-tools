@@ -40,7 +40,7 @@ pipeline {
 
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry = 'quay.io'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account = 'kie-tools'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'dev-deployment-base-image'
+        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'dev-deployment-kogito-quarkus-blank-app-image'
         DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags = "latest ${params.TAG}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"

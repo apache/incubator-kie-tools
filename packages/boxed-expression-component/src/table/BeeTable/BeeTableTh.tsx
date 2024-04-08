@@ -27,7 +27,7 @@ import {
   useBeeTableSelectableCell,
   useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { InsertRowColumnsDirection } from "../../api";
 
 export interface BeeTableThProps<R extends object> {
@@ -42,6 +42,7 @@ export interface BeeTableThProps<R extends object> {
   className: string;
   thProps: Partial<ReactTable.TableHeaderProps>;
   onClick?: React.MouseEventHandler;
+  onHeaderKeyUp?: React.KeyboardEventHandler;
   isLastLevelColumn: boolean;
   rowIndex: number;
   rowSpan: number;
@@ -68,6 +69,7 @@ export function BeeTableTh<R extends object>({
   className,
   thProps,
   onClick,
+  onHeaderKeyUp,
   columnIndex,
   columnKey,
   rowIndex,
@@ -92,7 +94,8 @@ export function BeeTableTh<R extends object>({
         beforeIndex: hoverInfo.part === "left" ? columnIndex - 1 : columnIndex,
         groupType: groupType,
         columnsCount: 1,
-        insertDirection: InsertRowColumnsDirection.AboveOrRight,
+        insertDirection:
+          hoverInfo.part === "left" ? InsertRowColumnsDirection.BelowOrLeft : InsertRowColumnsDirection.AboveOrRight,
         currentIndex: columnIndex,
       });
 
@@ -189,6 +192,7 @@ export function BeeTableTh<R extends object>({
         onMouseDown={onMouseDown}
         onDoubleClick={onDoubleClick}
         onClick={onClick}
+        onKeyUp={onHeaderKeyUp}
         className={`${className} ${cssClasses}`}
         tabIndex={-1}
       >

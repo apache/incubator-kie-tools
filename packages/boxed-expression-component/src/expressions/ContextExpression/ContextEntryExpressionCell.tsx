@@ -17,68 +17,75 @@
  * under the License.
  */
 
-import "./ContextEntryExpressionCell.css";
 import * as React from "react";
-import {
-  ContextExpressionDefinition,
-  ContextExpressionDefinitionEntry,
-  ExpressionDefinitionLogicType,
-} from "../../api";
+import { useCallback } from "react";
+import { BeeTableCellProps, BoxedContext } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
-  useBoxedExpressionEditor,
+  OnSetExpression,
   useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { useCallback, useEffect } from "react";
+} from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
-import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
+import { ROWTYPE } from "./ContextExpression";
+import "./ContextEntryExpressionCell.css";
 
-export interface ContextEntryExpressionCellProps {
-  // This name ('data') can't change, as this is used on "cellComponentByColumnAccessor".
-  data: readonly ContextExpressionDefinitionEntry[];
-  rowIndex: number;
-  columnIndex: number;
-}
-
-export const ContextEntryExpressionCell: React.FunctionComponent<ContextEntryExpressionCellProps> = ({
-  data: contextEntries,
+export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellProps<ROWTYPE>> = ({
+  data,
   rowIndex,
   columnIndex,
 }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
+  const { variable, expression, index } = data[rowIndex];
 
-  const { beeGwtService } = useBoxedExpressionEditor();
+  // TODO: MERGE - VERIFY
+  // const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
-  useEffect(() => {
-    if (isActive) {
-      beeGwtService?.selectObject(contextEntries[rowIndex].entryExpression.id);
-    }
-  }, [beeGwtService, isActive, rowIndex, contextEntries]);
+  // const { beeGwtService } = useBoxedExpressionEditor();
 
-  const onSetExpression = useCallback(
+  // useEffect(() => {
+  //   if (isActive) {
+  //     beeGwtService?.selectObject(contextEntries[rowIndex].entryExpression.id);
+  //   }
+  // }, [beeGwtService, isActive, rowIndex, contextEntries]);
+
+  const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
-        const contextEntries = [...(prev.contextEntries ?? [])];
-        contextEntries[rowIndex].entryExpression = getNewExpression(
-          contextEntries[rowIndex]?.entryExpression ?? { logicType: ExpressionDefinitionLogicType.Undefined }
-        );
-        return { ...prev, contextEntries };
+      setExpression((prev: BoxedContext) => {
+        const newContextEntries = [...(prev.contextEntry ?? [])];
+        const newExpression = getNewExpression(newContextEntries[index]?.expression ?? undefined);
+        newContextEntries[index] = {
+          ...newContextEntries[index],
+          expression: newExpression!, // SPEC DISCREPANCY: Accepting undefined expression
+          variable: {
+            "@_name": newExpression?.["@_label"] ?? newContextEntries[index].variable!["@_name"],
+            "@_typeRef": newExpression?.["@_typeRef"] ?? newContextEntries[index].variable!["@_typeRef"],
+          },
+        };
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
+          ...prev,
+          contextEntry: newContextEntries,
+        };
+
+        return ret;
       });
     },
-    [rowIndex, setExpression]
+    [index, setExpression]
   );
 
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
       <ExpressionContainer
-        expression={contextEntries[rowIndex]?.entryExpression}
+        expression={expression}
         isResetSupported={true}
         isNested={true}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
-        parentElementId={contextEntries[rowIndex].entryInfo.id}
+        parentElementId={variable["@_id"]}
+        parentElementTypeRef={variable["@_typeRef"]}
+        parentElementName={variable["@_name"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

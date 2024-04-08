@@ -7,15 +7,15 @@
   ~ to you under the Apache License, Version 2.0 (the
   ~ "License"); you may not use this file except in compliance
   ~ with the License.  You may obtain a copy of the License at
-  ~ 
+  ~
   ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~ 
+  ~
   ~ Unless required by applicable law or agreed to in writing,
   ~ software distributed under the License is distributed on an
   ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
   ~ KIND, either express or implied.  See the License for the
   ~ specific language governing permissions and limitations
-  ~ under the License.      
+  ~ under the License.
 -->
 <project
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
@@ -27,15 +27,46 @@
   <artifactId>dev-deployment-kogito-quarkus-blank-app</artifactId>
   <version>${revision}</version>
 
+  <repositories>
+    <repository>
+      <!-- Duplicating the Maven Central repository here (as it is already coming from Super POM) makes the build much faster,
+           as the Maven Central is now treated as the first (default) repository (because it is before the Apache Nexus one).
+           Artifacts with release (fixed) versions are being downloaded primarily from there. Without the central being the
+           first repository the Apache Nexus would be contacted first and since it is quite slow it slows down the build.
+           We use Apache repo only to download our SNAPSHOTs. -->
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>apache-public-repository-group</id>
+      <name>Apache Public Repository Group</name>
+      <url>https://repository.apache.org/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+
   <properties>
-    <compiler-plugin.version>3.8.1</compiler-plugin.version>
+    <compiler-plugin.version>3.12.1</compiler-plugin.version>
     <maven.compiler.parameters>true</maven.compiler.parameters>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-    <version.junit>4.13.1</version.junit>
+    <surefire-plugin.version>3.2.5</surefire-plugin.version>
+    <version.junit>4.13.2</version.junit>
+    <quarkus.analytics.disabled>true</quarkus.analytics.disabled>
   </properties>
 
   <dependencyManagement>
@@ -48,18 +79,16 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>io.quarkus.platform</groupId>
-        <artifactId>quarkus-kogito-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-kie-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-with-drools-quarkus</artifactId>
+        <version>${version.org.kie.kogito}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -90,8 +119,8 @@
       <artifactId>kie-dmn-openapi</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.kie.kogito</groupId>

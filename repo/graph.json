@@ -114,6 +114,11 @@
       { "id": "@kie-tools/uniforms-patternfly-codegen" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
+      { "id": "@kie-tools/jbpm-quarkus-devui" },
+      { "id": "@kie-tools/maven-base" },
+      { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
+      { "id": "@kie-tools/runtime-tools-process-webapp-components" },
+      { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools-core/k8s-yaml-to-apiserver-requests" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
@@ -129,9 +134,15 @@
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
       { "id": "@kie-tools/runtime-tools-components" },
-      { "id": "@kie-tools/runtime-tools-gateway-api" },
-      { "id": "@kie-tools/runtime-tools-enveloped-components" },
-      { "id": "@kie-tools/runtime-tools-webapp-components" },
+      { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-management-console-webapp" },
+      { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-process-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
+      { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -150,9 +161,12 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
+      { "id": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" },
+      { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
+      { "id": "@kie-tools/sonataflow-quarkus-devui" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -280,8 +294,8 @@
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools-core/vscode-java-code-completion", "weight": 1 },
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/dmn-language-service", "weight": 1 },
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
-      { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/stunner-editors-dmn-loader", "weight": 1 },
       { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/stunner-editors-dmn-loader", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
         "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
@@ -312,6 +326,7 @@
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/playwright-base", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/storybook-base", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/storybook-base", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/storybook-base", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools-core/monaco-editor", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/monaco-editor", "target": "@kie-tools/root-env", "weight": 1 },
@@ -704,6 +719,34 @@
         "weight": 1
       },
       { "source": "@kie-tools/import-java-classes-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/maven-base", "weight": 1 },
+      {
+        "source": "@kie-tools/jbpm-quarkus-devui",
+        "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "weight": 1
+      },
+      { "source": "@kie-tools/maven-base", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/maven-base", "target": "@kie-tools/root-env", "weight": 1 },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-webapp-components",
+        "target": "@kie-tools/runtime-tools-process-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-webapp-components",
+        "target": "@kie-tools/runtime-tools-components",
+        "weight": 1
+      },
       { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests", "target": "@kie-tools/tsconfig", "weight": 1 },
@@ -768,8 +811,6 @@
       { "source": "pmml-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools/pmml-editor", "weight": 1 },
       { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/editor", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-components",
         "target": "@kie-tools/json-yaml-language-service",
@@ -777,27 +818,96 @@
       },
       {
         "source": "@kie-tools/runtime-tools-components",
-        "target": "@kie-tools/runtime-tools-gateway-api",
+        "target": "@kie-tools/runtime-tools-shared-gateway-api",
         "weight": 1
       },
       { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/webpack-base", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
-        "source": "@kie-tools/runtime-tools-enveloped-components",
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-enveloped-components",
+        "target": "@kie-tools/runtime-tools-process-gateway-api",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-enveloped-components",
+        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-gateway-api",
+        "target": "@kie-tools/runtime-tools-shared-gateway-api",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
         "target": "@kie-tools/runtime-tools-components",
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-tools-enveloped-components",
+        "source": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-swf-enveloped-components",
+        "target": "@kie-tools/dashbuilder-client",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-swf-enveloped-components",
+        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-swf-enveloped-components",
+        "target": "@kie-tools/runtime-tools-swf-gateway-api",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-swf-enveloped-components",
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
       {
-        "source": "@kie-tools/runtime-tools-webapp-components",
-        "target": "@kie-tools/runtime-tools-enveloped-components",
+        "source": "@kie-tools/runtime-tools-swf-gateway-api",
+        "target": "@kie-tools/runtime-tools-shared-gateway-api",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-swf-webapp-components",
+        "target": "@kie-tools/runtime-tools-swf-enveloped-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
@@ -809,7 +919,12 @@
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
-        "target": "@kie-tools/runtime-tools-webapp-components",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-logic-web-tools",
+        "target": "@kie-tools/runtime-tools-swf-webapp-components",
         "weight": 1
       },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/text-editor", "weight": 1 },
@@ -856,6 +971,7 @@
         "weight": 1
       },
       { "source": "@kie-tools/yard-language-service", "target": "@kie-tools/json-yaml-language-service", "weight": 1 },
+      { "source": "@kie-tools/yard-validator", "target": "@kie-tools-core/notifications", "weight": 1 },
       { "source": "@kie-tools/yard-validator", "target": "@kie-tools/yard-validator-worker", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-base-builder-image",
@@ -873,7 +989,16 @@
         "weight": 1
       },
       { "source": "sonataflow-deployment-webapp", "target": "@kie-tools-core/react-hooks", "weight": 1 },
-      { "source": "sonataflow-deployment-webapp", "target": "@kie-tools/runtime-tools-webapp-components", "weight": 1 },
+      {
+        "source": "sonataflow-deployment-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "sonataflow-deployment-webapp",
+        "target": "@kie-tools/runtime-tools-swf-webapp-components",
+        "weight": 1
+      },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
         "target": "@kie-tools/maven-config-setup-helper",
@@ -916,6 +1041,26 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
+        "target": "@kie-tools/dashbuilder-client",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-swf-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "target": "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/serverless-workflow-jq-expressions",
         "target": "@kie-tools/serverless-workflow-service-catalog",
         "weight": 1
@@ -934,6 +1079,12 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
+      { "source": "@kie-tools/sonataflow-quarkus-devui", "target": "@kie-tools/maven-base", "weight": 1 },
+      {
+        "source": "@kie-tools/sonataflow-quarkus-devui",
+        "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
+        "weight": 1
+      },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",
@@ -952,9 +1103,10 @@
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/yard-validator-worker", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/yard-validator-worker", "target": "@kie-tools/yard-model", "weight": 1 },
-      { "source": "@kie-tools/yard-model", "target": "@kie-tools-core/notifications", "weight": 1 },
       { "source": "@kie-tools/yard-model", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/yard-model", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools/yard-editor", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 }
@@ -1036,6 +1188,7 @@
     ["@kie-tools/image-builder", "packages/image-builder"],
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
+    ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],
     ["@kie-tools/json-yaml-language-service", "packages/json-yaml-language-service"],
     ["@kie-tools-core/k8s-yaml-to-apiserver-requests", "packages/k8s-yaml-to-apiserver-requests"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
@@ -1049,6 +1202,7 @@
     ["@kie-tools/kie-sandbox-image", "packages/kie-sandbox-image"],
     ["@kie-tools/kn-plugin-workflow", "packages/kn-plugin-workflow"],
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],
+    ["@kie-tools/maven-base", "packages/maven-base"],
     ["@kie-tools/maven-config-setup-helper", "packages/maven-config-setup-helper"],
     ["@kie-tools-core/monaco-editor", "packages/monaco-editor"],
     ["@kie-tools-core/notifications", "packages/notifications"],
@@ -1062,9 +1216,18 @@
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
     ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
-    ["@kie-tools/runtime-tools-enveloped-components", "packages/runtime-tools-enveloped-components"],
-    ["@kie-tools/runtime-tools-gateway-api", "packages/runtime-tools-gateway-api"],
-    ["@kie-tools/runtime-tools-webapp-components", "packages/runtime-tools-webapp-components"],
+    ["@kie-tools/runtime-tools-management-console-webapp", "packages/runtime-tools-management-console-webapp"],
+    ["@kie-tools/runtime-tools-process-dev-ui-webapp", "packages/runtime-tools-process-dev-ui-webapp"],
+    ["@kie-tools/runtime-tools-process-enveloped-components", "packages/runtime-tools-process-enveloped-components"],
+    ["@kie-tools/runtime-tools-process-gateway-api", "packages/runtime-tools-process-gateway-api"],
+    ["@kie-tools/runtime-tools-process-webapp-components", "packages/runtime-tools-process-webapp-components"],
+    ["@kie-tools/runtime-tools-shared-enveloped-components", "packages/runtime-tools-shared-enveloped-components"],
+    ["@kie-tools/runtime-tools-shared-gateway-api", "packages/runtime-tools-shared-gateway-api"],
+    ["@kie-tools/runtime-tools-shared-webapp-components", "packages/runtime-tools-shared-webapp-components"],
+    ["@kie-tools/runtime-tools-swf-enveloped-components", "packages/runtime-tools-swf-enveloped-components"],
+    ["@kie-tools/runtime-tools-swf-gateway-api", "packages/runtime-tools-swf-gateway-api"],
+    ["@kie-tools/runtime-tools-swf-webapp-components", "packages/runtime-tools-swf-webapp-components"],
+    ["@kie-tools/runtime-tools-task-console-webapp", "packages/runtime-tools-task-console-webapp"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
     ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],
@@ -1097,6 +1260,11 @@
       "packages/serverless-logic-web-tools-swf-dev-mode-image-env"
     ],
     ["@kie-tools/serverless-workflow-combined-editor", "packages/serverless-workflow-combined-editor"],
+    [
+      "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp",
+      "packages/serverless-workflow-dev-ui-monitoring-webapp"
+    ],
+    ["@kie-tools/serverless-workflow-dev-ui-webapp", "packages/serverless-workflow-dev-ui-webapp"],
     ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
     ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],
     ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
@@ -1107,6 +1275,7 @@
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
     ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
     ["sonataflow-deployment-webapp", "packages/sonataflow-deployment-webapp"],
+    ["@kie-tools/sonataflow-quarkus-devui", "packages/sonataflow-quarkus-devui"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],

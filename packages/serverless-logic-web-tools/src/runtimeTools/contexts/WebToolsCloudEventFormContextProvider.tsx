@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowForm";
+import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
 import { useSettings } from "../../settings/SettingsContext";
 import { useEnv } from "../../env/EnvContext";
 

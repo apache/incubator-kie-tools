@@ -55,7 +55,7 @@ pipeline {
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
-                    hemlUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
+                    helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
                 }
             }
         }

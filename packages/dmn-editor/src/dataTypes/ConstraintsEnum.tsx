@@ -168,6 +168,7 @@ export function ConstraintsEnum({
       {!(isDisabled || isReadonly) && (
         <>
           <Button
+            title={"Add enum value"}
             onClick={() => onAdd()}
             variant={ButtonVariant.link}
             icon={<PlusCircleIcon />}
@@ -234,16 +235,15 @@ function EnumElement({
         onKeyDown,
       })}
 
-      {!isDisabled && (
-        <Button
-          ref={removeButtonRef}
-          style={{ opacity: hovered ? "100%" : "0" }}
-          className={"kie-dmn-editor--documentation-link--row-remove"}
-          variant={"plain"}
-          icon={<TimesIcon />}
-          onClick={() => !isDisabled && onRemove()}
-        />
-      )}
+      <Button
+        title={"Remove enum value"}
+        ref={removeButtonRef}
+        style={{ opacity: hovered ? "100%" : "0" }}
+        className={"kie-dmn-editor--documentation-link--row-remove"}
+        variant={"plain"}
+        icon={<TimesIcon />}
+        onClick={() => onRemove()}
+      />
       {hovered && <Tooltip content={"Remove"} reference={removeButtonRef} />}
     </div>
   );

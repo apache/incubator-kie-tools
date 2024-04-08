@@ -575,130 +575,11 @@ function getMetaProperties(
   ct: XptcComplexType,
   metaTypeName: string
 ): { anonymousTypes: XptcMetaType[]; needsExtensionType: boolean; metaProperties: XptcMetaTypeProperty[] } {
-  const metaProperties: XptcMetaTypeProperty[] = [];
+  /** Accumulates all properties of this complex type (ct). Attributes and elements. */
+  let ctMetaProperties: XptcMetaTypeProperty[] = [];
+
+  /** Accumulates all anonymous types instantiated on this complex type's hierarchy */
   const anonymousTypes: XptcMetaType[] = [];
-
-  for (const a of ct.attributes) {
-    const attributeType = getTsTypeFromLocalRef(
-      __XSDS,
-      __NAMED_TYPES_BY_TS_NAME,
-      ct.declaredAtRelativeLocation,
-      a.localTypeRef
-    );
-
-    metaProperties.push({
-      declaredAt: ct.declaredAtRelativeLocation,
-      fromType: metaTypeName,
-      name: `@_${a.name}`,
-      elem: undefined,
-      metaType: { name: getMetaTypeName(attributeType), xsdType: attributeType.annotation },
-      isArray: false,
-      isOptional: a.isOptional,
-    });
-  }
-
-  for (const e of ct.elements) {
-    if (e.kind === "ofRef") {
-      const referencedElement = getXptcElementFromLocalElementRef(
-        __XSDS,
-        __GLOBAL_ELEMENTS,
-        ct.declaredAtRelativeLocation,
-        e.ref
-      );
-
-      if (!referencedElement) {
-        throw new Error(`Can't find reference to element '${e.ref}'`);
-      }
-
-      const tsType = referencedElement.type
-        ? getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, referencedElement.type)
-        : {
-            name: getTsNameFromNamedType(
-              ct.declaredAtRelativeLocation,
-              getAnonymousMetaTypeName(referencedElement.name, "GLOBAL")
-            ),
-            annotation: "Anonymous type from element " + referencedElement.name,
-          };
-
-      metaProperties.push({
-        declaredAt: referencedElement?.declaredAtRelativeLocation,
-        fromType: ct.isAnonymous ? "" : metaTypeName,
-        name: referencedElement.name,
-        elem: referencedElement,
-        metaType: { name: getMetaTypeName(tsType), xsdType: tsType.annotation },
-        typeBody: () =>
-          getTypeBodyForElementRef(
-            __RELATIVE_LOCATION,
-            __META_TYPE_MAPPING,
-            __GLOBAL_ELEMENTS,
-            __SUBSTITUTIONS,
-            __XSDS,
-            __NAMED_TYPES_BY_TS_NAME,
-            ct,
-            referencedElement
-          ),
-        isArray: e.isArray,
-        isOptional: e.isOptional,
-      });
-    } else if (e.kind === "ofNamedType") {
-      const tsType = getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, e.typeName);
-      metaProperties.push({
-        declaredAt: ct.declaredAtRelativeLocation,
-        fromType: metaTypeName,
-        name: e.name,
-        elem: undefined, // REALLY?
-        metaType: { name: getMetaTypeName(tsType), xsdType: tsType.annotation },
-        typeBody: getTsTypeBody(tsType),
-        isArray: e.isArray,
-        isOptional: e.isOptional,
-      });
-    } else if (e.kind === "ofAnonymousType") {
-      const anonymousTypeName = getAnonymousMetaTypeName(e.name, metaTypeName);
-      const mp = getMetaProperties(
-        __RELATIVE_LOCATION,
-        __META_TYPE_MAPPING,
-        __GLOBAL_ELEMENTS,
-        __SUBSTITUTIONS,
-        __XSDS,
-        __NAMED_TYPES_BY_TS_NAME,
-        e.anonymousType,
-        anonymousTypeName
-      );
-      anonymousTypes.push({ name: anonymousTypeName, properties: mp.metaProperties });
-      anonymousTypes.push(...mp.anonymousTypes);
-      __META_TYPE_MAPPING.set(anonymousTypeName, {
-        name: anonymousTypeName,
-        properties: mp.metaProperties,
-      });
-      metaProperties.push({
-        declaredAt: ct.declaredAtRelativeLocation,
-        fromType: metaTypeName,
-        name: e.name,
-        elem: undefined, // REALLY?
-        metaType: { name: anonymousTypeName, xsdType: "Anonymous type..." },
-        isArray: e.isArray,
-        isOptional: e.isOptional,
-      });
-    } else {
-      throw new Error(`Unknown kind of XptcComplexType '${e}'`);
-    }
-  }
-
-  if (ct.isSimpleContent && ct.childOf) {
-    const t = getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, ct.childOf);
-    metaProperties.push({
-      declaredAt: ct.declaredAtRelativeLocation,
-      fromType: metaTypeName,
-      name: `__$$text`,
-      elem: undefined,
-      metaType: {
-        name: t.name,
-        xsdType: t.annotation,
-      },
-      isArray: false,
-      isOptional: false,
-    });
-  }
 
   const immediateParentType = ct.childOf
     ? getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, ct.childOf)
@@ -709,6 +590,7 @@ function getMetaProperties(
   let needsExtensionType = ct.needsExtensionType;
 
   while (curParentCt) {
+    const curParentCtMetaProperties: XptcMetaTypeProperty[] = [];
     if (curParentCt?.type === "complex") {
       const curParentCtMetaTypeName = getTsNameFromNamedType(
         curParentCt.declaredAtRelativeLocation,
@@ -730,7 +612,7 @@ function getMetaProperties(
           throw new Error(`Can't resolve local type ref ${a.localTypeRef}`);
         }
 
-        metaProperties.push({
+        curParentCtMetaProperties.push({
           declaredAt: curParentCt.declaredAtRelativeLocation,
           fromType: curParentCtMetaTypeName,
           elem: undefined,
@@ -760,7 +642,7 @@ function getMetaProperties(
             name: anonymousTypeName,
             properties: mp.metaProperties,
           });
-          metaProperties.push({
+          curParentCtMetaProperties.push({
             elem: undefined, // REALLY?
             declaredAt: curParentCt.declaredAtRelativeLocation,
             fromType: curParentCtMetaTypeName,
@@ -777,7 +659,7 @@ function getMetaProperties(
             e.typeName
           );
 
-          metaProperties.push({
+          curParentCtMetaProperties.push({
             declaredAt: curParentCt.declaredAtRelativeLocation,
             fromType: curParentCtMetaTypeName,
             elem: undefined, // REALLY?
@@ -814,7 +696,7 @@ function getMetaProperties(
                 annotation: "Anonymous type from element " + referencedElement.name,
               };
 
-          metaProperties.push({
+          curParentCtMetaProperties.push({
             declaredAt: referencedElement?.declaredAtRelativeLocation,
             fromType: ct.isAnonymous ? "" : curParentCtMetaTypeName,
             name: referencedElement.name,
@@ -847,6 +729,10 @@ function getMetaProperties(
             curParentCt.childOf
           )
         : undefined;
+
+      // Make sure the inheritance order is respected. Elements should be listed always from the most generic to the most specific type.
+      // Since we're iterating upwards in the hierarchy, we need to invert prepend the array with the props we find on each step of the hierarchy.
+      ctMetaProperties = [...curParentCtMetaProperties, ...ctMetaProperties];
       curParentCt = nextParentType ? __NAMED_TYPES_BY_TS_NAME.get(nextParentType.name) : undefined;
     } else if (curParentCt?.type === "simple") {
       throw new Error("Can't have a non-complex type as parent of another.");
@@ -855,14 +741,138 @@ function getMetaProperties(
     }
   }
 
-  if (!(ct.type === "complex" && !ct.isAnonymous && ct.isAbstract)) {
-    __META_TYPE_MAPPING.set(metaTypeName, {
-      name: metaTypeName,
-      properties: [...metaProperties.reduce((acc, p) => acc.set(p.name, p), new Map()).values()], // Removing duplicates.
+  // Own properties are parsed later to ensure xsd:sequence order.
+
+  for (const a of ct.attributes) {
+    const attributeType = getTsTypeFromLocalRef(
+      __XSDS,
+      __NAMED_TYPES_BY_TS_NAME,
+      ct.declaredAtRelativeLocation,
+      a.localTypeRef
+    );
+
+    ctMetaProperties.push({
+      declaredAt: ct.declaredAtRelativeLocation,
+      fromType: metaTypeName,
+      name: `@_${a.name}`,
+      elem: undefined,
+      metaType: { name: getMetaTypeName(attributeType), xsdType: attributeType.annotation },
+      isArray: false,
+      isOptional: a.isOptional,
     });
   }
 
-  return { metaProperties, needsExtensionType, anonymousTypes };
+  for (const e of ct.elements) {
+    if (e.kind === "ofRef") {
+      const referencedElement = getXptcElementFromLocalElementRef(
+        __XSDS,
+        __GLOBAL_ELEMENTS,
+        ct.declaredAtRelativeLocation,
+        e.ref
+      );
+
+      if (!referencedElement) {
+        throw new Error(`Can't find reference to element '${e.ref}'`);
+      }
+
+      const tsType = referencedElement.type
+        ? getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, referencedElement.type)
+        : {
+            name: getTsNameFromNamedType(
+              ct.declaredAtRelativeLocation,
+              getAnonymousMetaTypeName(referencedElement.name, "GLOBAL")
+            ),
+            annotation: "Anonymous type from element " + referencedElement.name,
+          };
+
+      ctMetaProperties.push({
+        declaredAt: referencedElement?.declaredAtRelativeLocation,
+        fromType: ct.isAnonymous ? "" : metaTypeName,
+        name: referencedElement.name,
+        elem: referencedElement,
+        metaType: { name: getMetaTypeName(tsType), xsdType: tsType.annotation },
+        typeBody: () =>
+          getTypeBodyForElementRef(
+            __RELATIVE_LOCATION,
+            __META_TYPE_MAPPING,
+            __GLOBAL_ELEMENTS,
+            __SUBSTITUTIONS,
+            __XSDS,
+            __NAMED_TYPES_BY_TS_NAME,
+            ct,
+            referencedElement
+          ),
+        isArray: e.isArray,
+        isOptional: e.isOptional,
+      });
+    } else if (e.kind === "ofNamedType") {
+      const tsType = getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, e.typeName);
+      ctMetaProperties.push({
+        declaredAt: ct.declaredAtRelativeLocation,
+        fromType: metaTypeName,
+        name: e.name,
+        elem: undefined, // REALLY?
+        metaType: { name: getMetaTypeName(tsType), xsdType: tsType.annotation },
+        typeBody: getTsTypeBody(tsType),
+        isArray: e.isArray,
+        isOptional: e.isOptional,
+      });
+    } else if (e.kind === "ofAnonymousType") {
+      const anonymousTypeName = getAnonymousMetaTypeName(e.name, metaTypeName);
+      const mp = getMetaProperties(
+        __RELATIVE_LOCATION,
+        __META_TYPE_MAPPING,
+        __GLOBAL_ELEMENTS,
+        __SUBSTITUTIONS,
+        __XSDS,
+        __NAMED_TYPES_BY_TS_NAME,
+        e.anonymousType,
+        anonymousTypeName
+      );
+      anonymousTypes.push({ name: anonymousTypeName, properties: mp.metaProperties });
+      anonymousTypes.push(...mp.anonymousTypes);
+      __META_TYPE_MAPPING.set(anonymousTypeName, {
+        name: anonymousTypeName,
+        properties: mp.metaProperties,
+      });
+      ctMetaProperties.push({
+        declaredAt: ct.declaredAtRelativeLocation,
+        fromType: metaTypeName,
+        name: e.name,
+        elem: undefined, // REALLY?
+        metaType: { name: anonymousTypeName, xsdType: "Anonymous type..." },
+        isArray: e.isArray,
+        isOptional: e.isOptional,
+      });
+    } else {
+      throw new Error(`Unknown kind of XptcComplexType '${e}'`);
+    }
+  }
+
+  if (ct.isSimpleContent && ct.childOf) {
+    const t = getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, ct.childOf);
+    ctMetaProperties.push({
+      declaredAt: ct.declaredAtRelativeLocation,
+      fromType: metaTypeName,
+      name: `__$$text`,
+      elem: undefined,
+      metaType: {
+        name: t.name,
+        xsdType: t.annotation,
+      },
+      isArray: false,
+      isOptional: false,
+    });
+  }
+
+  if (!(ct.type === "complex" && !ct.isAnonymous && ct.isAbstract)) {
+    __META_TYPE_MAPPING.set(metaTypeName, {
+      name: metaTypeName,
+      properties: [...ctMetaProperties.reduce((acc, p) => acc.set(p.name, p), new Map()).values()], // Removing duplicates.
+    });
+  }
+
+  return { metaProperties: ctMetaProperties, needsExtensionType, anonymousTypes };
 }
 
 function getAnonymousMetaTypeName(elementName: string, metaTypeName: string) {

@@ -54,14 +54,13 @@
     <version.org.webjars.npm.js-yaml>4.1.0</version.org.webjars.npm.js-yaml>
     <version.org.webjars.bower.d3geoprojection>2.5.1</version.org.webjars.bower.d3geoprojection>
     <version.org.webjars.npm.marked>4.3.0</version.org.webjars.npm.marked>
-    <version.org.webjars.npm.jsonata>1.8.0</version.org.webjars.npm.jsonata>
+    <version.org.webjars.npm.jsonata>1.8.7</version.org.webjars.npm.jsonata>
     <version.javax.validation>1.0.0.GA</version.javax.validation>
 
     <!-- Resolved artifacts -->
-    <version.org.junit>4.13.1</version.org.junit>
+    <version.org.junit>4.13.2</version.org.junit>
     <version.org.assertj>3.14.0</version.org.assertj>
     <version.org.mockito>3.6.0</version.org.mockito>
-    <version.org.kie>7.59.0.Final</version.org.kie>
     <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
     <version.commons-io>2.7</version.commons-io>
@@ -78,7 +77,7 @@
     <version.io.netty>4.1.59.Final</version.io.netty>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
-    <version.org.freemarker>2.3.30</version.org.freemarker>
+    <version.org.freemarker>2.3.32</version.org.freemarker>
     <version.jakarta.activation-api>1.2.2</version.jakarta.activation-api>
     <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
     <version.com.google.jsinterop.annotations>2.0.0</version.com.google.jsinterop.annotations>
@@ -100,10 +99,10 @@
     <version.surefire.plugin>2.22.2</version.surefire.plugin>
     <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
     <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
-    <version.surefire.plugin>2.22.2</version.surefire.plugin>
+    <version.surefire.plugin>3.2.5</version.surefire.plugin>
     <version.enforcer.plugin>3.0.0-M3</version.enforcer.plugin>
     <version.clean.plugin>3.1.0</version.clean.plugin>
-    <version.compiler.plugin>3.8.1</version.compiler.plugin>
+    <version.compiler.plugin>3.12.1</version.compiler.plugin>
     <version.resources.plugin>3.2.0</version.resources.plugin>
     <version.war.plugin>3.2.3</version.war.plugin>
     <version.checkstyle.plugin>3.1.1</version.checkstyle.plugin>
@@ -112,6 +111,7 @@
     <version.site.plugin>3.8.2</version.site.plugin>
     <version.antrun.plugin>1.8</version.antrun.plugin>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
+    <version.org.maven.dependency.plugin>3.1.2</version.org.maven.dependency.plugin>
     <checkstyle.header.extensions>java</checkstyle.header.extensions>
     <checkstyle.header.template
     ><![CDATA[
@@ -135,7 +135,6 @@
 \*\/$
 ]]>
     </checkstyle.header.template>
-    <version.org.maven.dependency.plugin>3.1.2</version.org.maven.dependency.plugin>
 
     <!-- Properties from DROOLS-WB parent POM -->
     <!-- TODO: Enable these flags after fixing all checkstyle issues -->
@@ -151,17 +150,6 @@
         <version>${version.org.javassist}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-commons</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-commons</artifactId>
-        <version>${version.org.kie}</version>
-        <classifier>sources</classifier>
-      </dependency>
       <!-- TESTING -->
       <dependency>
         <groupId>org.assertj</groupId>

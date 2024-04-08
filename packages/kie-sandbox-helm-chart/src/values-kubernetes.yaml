@@ -1,0 +1,25 @@
+# KIE Sandbox application
+kie_sandbox:
+  env:
+    - name: "KIE_SANDBOX_EXTENDED_SERVICES_URL"
+      value: "http://extended-services.{{ .Values.global.kubernetesClusterDomain }}"
+    - name: "KIE_SANDBOX_CORS_PROXY_URL"
+      value: "http://cors-proxy.{{ .Values.global.kubernetesClusterDomain }}"
+
+  ingress:
+    enabled: true
+
+# Cors Proxy component
+cors_proxy:
+  ingress:
+    enabled: true
+
+# Extended Services component
+extended_services:
+  ingress:
+    enabled: true
+
+global:
+  ingressSource: "kubernetes"
+  kubernetesIngressClass: nginx
+  kubernetesClusterDomain: k8s-example.com

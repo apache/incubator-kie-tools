@@ -17,13 +17,12 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
+import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../../src/api";
-import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
+import { DmnBuiltInDataType, generateUuid } from "../../../src/api";
+import { CONTEXT_ENTRY_VARIABLE_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -32,193 +31,165 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Base: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Context,
-      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      result: {
-        logicType: ExpressionDefinitionLogicType.Undefined,
-        dataType: DmnBuiltInDataType.Undefined,
-        id: generateUuid(),
-      },
-      contextEntries: [
+    expression: {
+      __$$element: "context",
+      "@_id": "_35255561-88FA-4A78-9C3F-61855213EE0F",
+      "@_label": "Expression Name",
+      "@_typeRef": DmnBuiltInDataType.Undefined,
+      contextEntry: [
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "ContextEntry-1",
+            "@_typeRef": DmnBuiltInDataType.Undefined,
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
-            logicType: ExpressionDefinitionLogicType.Undefined,
-          },
+          expression: undefined!,
         },
       ],
     },
-    isResetSupportedOnRootExpression: false,
+    isResetSupportedOnRootExpression: true,
+    widthsById: { "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH] },
   },
 };
 
 export const InstallmentCalculation: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Installment calculation",
-      dataType: DmnBuiltInDataType.Number,
-      logicType: ExpressionDefinitionLogicType.Context,
-      contextEntries: [
+    expression: {
+      __$$element: "context",
+      "@_id": generateUuid(),
+      "@_label": "Installment calculation",
+      "@_typeRef": DmnBuiltInDataType.Number,
+      contextEntry: [
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "Fee",
-            dataType: DmnBuiltInDataType.Number,
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "Fee",
+            "@_typeRef": DmnBuiltInDataType.Number,
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Fee",
-            dataType: DmnBuiltInDataType.Number,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            content: "25",
+          expression: {
+            __$$element: "literalExpression",
+            "@_id": generateUuid(),
+            "@_label": "Fee",
+            "@_typeRef": DmnBuiltInDataType.Number,
+            text: { __$$text: "25" },
           },
         },
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "Repayments",
-            dataType: DmnBuiltInDataType.Number,
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "Repayments",
+            "@_typeRef": DmnBuiltInDataType.Number,
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Repayments",
-            dataType: DmnBuiltInDataType.Number,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            content: `(Amount*Rate/12) /\n(1-(1+Rate/12)**-Term)`,
+          expression: {
+            __$$element: "literalExpression",
+            "@_id": generateUuid(),
+            "@_label": "Repayments",
+            "@_typeRef": DmnBuiltInDataType.Number,
+            text: { __$$text: `(Amount*Rate/12) /\n(1-(1+Rate/12)**-Term)` },
+          },
+        },
+        {
+          // The result expression is a ContextEntry without variable
+          expression: {
+            __$$element: "literalExpression",
+            "@_id": generateUuid(),
+            "@_label": "Result Expression",
+            "@_typeRef": DmnBuiltInDataType.Number,
+            text: { __$$text: "Fee + Repayments" },
           },
         },
       ],
-      result: {
-        id: generateUuid(),
-        name: "Result Expression",
-        dataType: DmnBuiltInDataType.Number,
-        logicType: ExpressionDefinitionLogicType.Literal,
-        content: "Fee + Repayments",
-      },
     },
     isResetSupportedOnRootExpression: false,
   },
 };
 
 export const Customer: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Customer",
-      dataType: "tCustomer" as DmnBuiltInDataType,
-      logicType: ExpressionDefinitionLogicType.Context,
-      contextEntries: [
+    expression: {
+      __$$element: "context",
+      "@_id": generateUuid(),
+      "@_label": "Customer",
+      "@_typeRef": "tCustomer",
+      contextEntry: [
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "Name",
-            dataType: DmnBuiltInDataType.Number,
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "Name",
+            "@_typeRef": DmnBuiltInDataType.Number,
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Name",
-            dataType: DmnBuiltInDataType.Number,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            content: "Luiz",
+          expression: {
+            __$$element: "literalExpression",
+            "@_id": generateUuid(),
+            "@_label": "Name",
+            "@_typeRef": DmnBuiltInDataType.Number,
+            text: { __$$text: "Luiz" },
           },
         },
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "Age",
-            dataType: DmnBuiltInDataType.Number,
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "Age",
+            "@_typeRef": DmnBuiltInDataType.Number,
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Age",
-            dataType: DmnBuiltInDataType.Number,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            content: "30",
+          expression: {
+            __$$element: "literalExpression",
+            "@_id": generateUuid(),
+            "@_label": "Age",
+            "@_typeRef": DmnBuiltInDataType.Number,
+            text: { __$$text: "30" },
           },
         },
       ],
-      result: {
-        logicType: ExpressionDefinitionLogicType.Undefined,
-        dataType: DmnBuiltInDataType.Undefined,
-        id: generateUuid(),
-      },
     },
     isResetSupportedOnRootExpression: false,
   },
 };
 
 export const Nested: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(),
-  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
   args: {
     ...EmptyExpression.args,
-    expressionDefinition: {
-      id: generateUuid(),
-      name: "Expression Name",
-      dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Context,
-      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      result: {
-        logicType: ExpressionDefinitionLogicType.Undefined,
-        dataType: DmnBuiltInDataType.Undefined,
-        id: generateUuid(),
-      },
-      contextEntries: [
+    expression: {
+      __$$element: "context",
+      "@_id": "_35255561-88FA-4A78-9C3F-61855213EE0F",
+      "@_label": "Expression Name",
+      contextEntry: [
         {
-          entryInfo: {
-            id: generateUuid(),
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "ContextEntry-1",
           },
-          entryExpression: {
-            id: generateUuid(),
-            name: "Expression Name",
-            dataType: DmnBuiltInDataType.Undefined,
-            logicType: ExpressionDefinitionLogicType.Context,
-            entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-            result: {
-              logicType: ExpressionDefinitionLogicType.Undefined,
-              dataType: DmnBuiltInDataType.Undefined,
-              id: generateUuid(),
-            },
-            contextEntries: [
+          expression: {
+            __$$element: "context",
+            "@_id": "_5D97B484-8003-4323-AADB-AA4C6F3ECA73",
+            "@_label": "Expression Name",
+            contextEntry: [
               {
-                entryInfo: {
-                  id: generateUuid(),
-                  name: "ContextEntry-1",
-                  dataType: DmnBuiltInDataType.Undefined,
+                variable: {
+                  "@_id": generateUuid(),
+                  "@_name": "ContextEntry-1",
                 },
-                entryExpression: {
-                  id: generateUuid(),
-                  name: "ContextEntry-1",
-                  dataType: DmnBuiltInDataType.Undefined,
-                  logicType: ExpressionDefinitionLogicType.Undefined,
+                expression: {
+                  __$$element: "literalExpression",
+                  "@_id": generateUuid(),
+                  "@_label": "ContextEntry-1",
+                  text: { __$$text: "" },
                 },
               },
             ],
@@ -227,5 +198,9 @@ export const Nested: Story = {
       ],
     },
     isResetSupportedOnRootExpression: false,
+    widthsById: {
+      "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH],
+      "_5D97B484-8003-4323-AADB-AA4C6F3ECA73": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH],
+    },
   },
 };

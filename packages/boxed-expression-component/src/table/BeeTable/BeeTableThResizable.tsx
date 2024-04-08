@@ -21,8 +21,7 @@ import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popov
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as ReactTable from "react-table";
-import { ExpressionDefinition } from "../../api";
-import { ExpressionDefinitionHeaderMenu } from "../../expressions/ExpressionDefinitionHeaderMenu";
+import { ExpressionVariableMenu, OnExpressionVariableUpdated } from "../../expressionVariable/ExpressionVariableMenu";
 import { Resizer } from "../../resizing/Resizer";
 import { useBeeTableResizableCell } from "../../resizing/BeeTableResizableColumnsContext";
 import { BeeTableTh, getHoverInfo, HoverInfo } from "./BeeTableTh";
@@ -33,7 +32,7 @@ import {
   isParentColumn,
   useFillingResizingWidth,
 } from "../../resizing/FillingColumnResizingWidth";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 
 export interface BeeTableThResizableProps<R extends object> {
   onColumnAdded?: (args: { beforeIndex: number; groupType: string | undefined }) => void;
@@ -45,8 +44,9 @@ export interface BeeTableThResizableProps<R extends object> {
   isEditableHeader: boolean;
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getColumnLabel: (groupType: string | undefined) => string | undefined;
-  onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
-  onHeaderClick?: (columnKey: string) => () => void;
+  onExpressionHeaderUpdated: OnExpressionVariableUpdated;
+  onHeaderClick?: (columnKey: string) => void;
+  onHeaderKeyUp?: (columnKey: string) => void;
   reactTableInstance: ReactTable.TableInstance<R>;
   headerCellInfo: React.ReactElement;
   shouldShowColumnsInlineControls: boolean;
@@ -68,6 +68,7 @@ export function BeeTableThResizable<R extends object>({
   getColumnKey,
   onExpressionHeaderUpdated,
   onHeaderClick,
+  onHeaderKeyUp,
   headerCellInfo,
   onColumnAdded,
   resizerStopBehavior,
@@ -91,9 +92,13 @@ export function BeeTableThResizable<R extends object>({
     return cssClasses.join(" ");
   }, [columnKey, column.dataType, column.groupType]);
 
-  const onClick = useMemo(() => {
+  const onClick = useCallback(() => {
     return onHeaderClick?.(columnKey);
   }, [columnKey, onHeaderClick]);
+
+  const onKeyUp = useCallback(() => {
+    return onHeaderKeyUp?.(columnKey);
+  }, [columnKey, onHeaderKeyUp]);
 
   const { resizingWidth, setResizingWidth } = useBeeTableResizableCell(
     columnIndex,
@@ -187,6 +192,7 @@ export function BeeTableThResizable<R extends object>({
         },
       }}
       onClick={onClick}
+      onHeaderKeyUp={onKeyUp}
       columnKey={columnKey}
       columnIndex={columnIndex}
       rowIndex={rowIndex}
@@ -199,15 +205,15 @@ export function BeeTableThResizable<R extends object>({
     >
       <div className="header-cell" data-ouia-component-type="expression-column-header" ref={headerCellRef}>
         {column.dataType && isEditableHeader ? (
-          <ExpressionDefinitionHeaderMenu
+          <ExpressionVariableMenu
             position={PopoverPosition.bottom}
             selectedExpressionName={column.label}
             selectedDataType={column.dataType}
-            onExpressionHeaderUpdated={onExpressionHeaderUpdated}
+            onVariableUpdated={onExpressionHeaderUpdated}
             appendTo={getAppendToElement}
           >
             {headerCellInfo}
-          </ExpressionDefinitionHeaderMenu>
+          </ExpressionVariableMenu>
         ) : (
           headerCellInfo
         )}

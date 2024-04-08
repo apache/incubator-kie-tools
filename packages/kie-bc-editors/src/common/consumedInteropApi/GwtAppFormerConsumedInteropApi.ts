@@ -35,6 +35,7 @@ export interface GwtEditor {
   getPreview(): Promise<string | undefined>;
   validate(): Promise<Notification[]>;
   selectStateByName(name: string | null): Promise<void>;
+  applyTheme(name: string | null): Promise<void>;
 }
 
 export class GwtAppFormerConsumedInteropApi {

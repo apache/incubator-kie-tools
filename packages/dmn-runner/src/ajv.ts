@@ -50,7 +50,7 @@ import {
  * ajv: 'date-time'
  * dmn: 'date and time'
  */
-enum DmnAjvSchemaFormat {
+export enum DmnAjvSchemaFormat {
   DATE = "date",
   TIME = "time",
   DATE_TIME = "date-time",

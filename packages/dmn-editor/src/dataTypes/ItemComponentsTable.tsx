@@ -26,7 +26,7 @@ import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { TypeRefSelector } from "./TypeRefSelector";
 import {
   Dropdown,
@@ -44,7 +44,7 @@ import { DataTypeName } from "./DataTypeName";
 import { isStruct, canHaveConstraints, getNewItemDefinition } from "./DataTypeSpec";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { UniqueNameIndex } from "../Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import {
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
   DmnEditorDataTypesClipboard,
@@ -59,7 +59,6 @@ import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { resolveTypeRef } from "./resolveTypeRef";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
@@ -91,9 +90,12 @@ export function ItemComponentsTable({
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-  const { expandedItemComponentIds } = useDmnEditorStore((s) => s.dataTypesEditor);
-  const { allTopLevelDataTypesByFeelName, importsByNamespace } = useDmnEditorDerivedStore();
   const { externalModelsByNamespace } = useExternalModels();
+  const expandedItemComponentIds = useDmnEditorStore((s) => s.dataTypesEditor.expandedItemComponentIds);
+  const allTopLevelDataTypesByFeelName = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
+  );
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
@@ -152,6 +154,7 @@ export function ItemComponentsTable({
             {`Properties in '${parent.itemDefinition["@_name"]}'`}
             {!isReadonly && (
               <Button
+                title={"Add item component (at the top)"}
                 variant={ButtonVariant.link}
                 onClick={() =>
                   addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
@@ -314,6 +317,7 @@ export function ItemComponentsTable({
                           >
                             {isStruct(dt.itemDefinition) && (
                               <Button
+                                title={"Expand / collapse item component"}
                                 variant={ButtonVariant.link}
                                 style={{ padding: "0 8px 0 0" }}
                                 onClick={(e) =>
@@ -338,6 +342,7 @@ export function ItemComponentsTable({
                           <div style={{ width: `${addItemComponentButtonWidthInPxs}px` }}>
                             {!isReadonly && isStruct(dt.itemDefinition) && (
                               <Button
+                                title={"Add item component"}
                                 variant={ButtonVariant.link}
                                 style={{ padding: "0 8px 0 0" }}
                                 onClick={() => {
@@ -361,7 +366,7 @@ export function ItemComponentsTable({
                               isActive={false}
                               itemDefinition={dt.itemDefinition}
                               isReadonly={dt.namespace !== thisDmnsNamespace}
-                              allUniqueNames={allUniqueNamesAtLevel}
+                              onGetAllUniqueNames={() => allUniqueNamesAtLevel}
                             />
                           </div>
                         </div>

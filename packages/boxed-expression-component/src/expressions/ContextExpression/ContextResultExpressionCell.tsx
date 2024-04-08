@@ -19,41 +19,74 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { ContextExpressionDefinition } from "../../api";
+import { BoxedContext } from "../../api";
 import {
-  useBoxedExpressionEditorDispatch,
   NestedExpressionDispatchContextProvider,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+  OnSetExpression,
+  useBoxedExpressionEditorDispatch,
+} from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
+import { solveResultAndEntriesIndex } from "./ContextExpression";
 
 export function ContextResultExpressionCell(props: {
-  contextExpression: ContextExpressionDefinition & {
-    parentElementId: string;
-  };
+  contextExpression: BoxedContext;
   rowIndex: number;
   columnIndex: number;
 }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
+  const { resultIndex } = solveResultAndEntriesIndex({
+    contextEntries: props.contextExpression.contextEntry ?? [],
+    rowIndex: props.rowIndex,
+  });
+
+  const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
-      setExpression((prev: ContextExpressionDefinition) => ({
-        ...prev,
-        result: getNewExpression(prev.result),
-      }));
+      setExpression((prev: BoxedContext) => {
+        const newContextEntries = [...(prev.contextEntry ?? [])];
+
+        const newExpression = getNewExpression(newContextEntries[resultIndex]?.expression);
+
+        if (resultIndex <= -1) {
+          newContextEntries.push({
+            expression: newExpression!, // SPEC DISCREPANCY:
+          });
+        } else if (newExpression) {
+          newContextEntries.splice(resultIndex, 1, {
+            ...newContextEntries[resultIndex],
+            expression: newExpression,
+          });
+        } else {
+          newContextEntries.splice(resultIndex, 1);
+        }
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
+          ...prev,
+          contextEntry: newContextEntries,
+          "@_label": newExpression?.["@_label"] ?? prev["@_label"],
+          "@_typeRef": newExpression?.["@_typeRef"] ?? prev["@_typeRef"],
+        };
+
+        return ret;
+      });
     },
-    [setExpression]
+    [resultIndex, setExpression]
   );
+
+  const resultEntry = resultIndex <= -1 ? undefined : props.contextExpression.contextEntry?.[resultIndex];
 
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
       <ExpressionContainer
-        expression={props.contextExpression.result}
+        expression={resultEntry?.expression}
         isResetSupported={true}
         isNested={true}
-        rowIndex={props.rowIndex}
+        rowIndex={resultIndex}
         columnIndex={props.columnIndex}
-        parentElementId={props.contextExpression.parentElementId}
+        parentElementId={props.contextExpression["@_id"]}
+        parentElementTypeRef={props.contextExpression["@_typeRef"]}
+        parentElementName={props.contextExpression["@_label"]}
       />
     </NestedExpressionDispatchContextProvider>
   );

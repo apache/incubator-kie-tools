@@ -53,13 +53,58 @@ export const handleStyle: React.CSSProperties = {
   transform: "unset",
 };
 
-export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: NodeType[]; edgeTypes: EdgeType[] }) {
+export function OutgoingStuffNodePanel(props: {
+  isVisible: boolean;
+  nodeTypes: NodeType[];
+  edgeTypes: EdgeType[];
+  nodeHref: string;
+}) {
   const style: React.CSSProperties = React.useMemo(
     () => ({
       visibility: props.isVisible ? undefined : "hidden",
     }),
     [props.isVisible]
   );
+
+  const getEdgeActionTitle = React.useCallback((edgeType: string): string => {
+    switch (edgeType) {
+      case EDGE_TYPES.informationRequirement: {
+        return "Add Information Requirement edge";
+      }
+      case EDGE_TYPES.knowledgeRequirement: {
+        return "Add Knowledge Requirement edge";
+      }
+      case EDGE_TYPES.authorityRequirement: {
+        return "Add Authority Requirement edge";
+      }
+      case EDGE_TYPES.association: {
+        return "Add Association edge";
+      }
+      default: {
+        throw new Error("Add Unknown edge type");
+      }
+    }
+  }, []);
+
+  const getNodeActionTitle = React.useCallback((nodeType: string): string => {
+    switch (nodeType) {
+      case NODE_TYPES.decision: {
+        return "Add Decision node";
+      }
+      case NODE_TYPES.bkm: {
+        return "Add BKM node";
+      }
+      case NODE_TYPES.knowledgeSource: {
+        return "Add Knowledge Source node";
+      }
+      case NODE_TYPES.textAnnotation: {
+        return "Add Text Annotation node";
+      }
+      default: {
+        throw new Error("Add Unknown node type");
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -74,6 +119,8 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
+                title={getEdgeActionTitle(edgeType)}
+                data-testid={`${props.nodeHref}-add-${edgeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
@@ -111,15 +158,19 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                 type={"source"}
                 style={handleStyle}
                 position={RF.Position.Top}
+                title={getNodeActionTitle(nodeType)}
+                data-testid={`${props.nodeHref}-add-${nodeType}`}
               >
                 <svg
                   className={"kie-dmn-editor--round-svg-container"}
                   viewBox={`0 0 ${nodeSvgViewboxSize} ${nodeSvgViewboxSize}`}
                   style={{ padding: `${svgViewboxPadding}px` }}
                 >
-                  {nodeType === NODE_TYPES.inputData && <InputDataNodeSvg {...nodeSvgProps} />}
-                  {nodeType === NODE_TYPES.decision && <DecisionNodeSvg {...nodeSvgProps} />}
-                  {nodeType === NODE_TYPES.bkm && <BkmNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.inputData && <InputDataNodeSvg {...nodeSvgProps} isCollection={false} />}
+                  {nodeType === NODE_TYPES.decision && (
+                    <DecisionNodeSvg {...nodeSvgProps} isCollection={false} hasHiddenRequirements={false} />
+                  )}
+                  {nodeType === NODE_TYPES.bkm && <BkmNodeSvg {...nodeSvgProps} hasHiddenRequirements={false} />}
                   {nodeType === NODE_TYPES.decisionService && (
                     <DecisionServiceNodeSvg
                       {...nodeSvgProps}
@@ -129,7 +180,9 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                       isReadonly={true}
                     />
                   )}
-                  {nodeType === NODE_TYPES.knowledgeSource && <KnowledgeSourceNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.knowledgeSource && (
+                    <KnowledgeSourceNodeSvg {...nodeSvgProps} hasHiddenRequirements={false} />
+                  )}
                   {nodeType === NODE_TYPES.textAnnotation && <TextAnnotationNodeSvg {...nodeSvgProps} />}
                   {nodeType === NODE_TYPES.group && <GroupNodeSvg {...nodeSvgProps} />}
                 </svg>

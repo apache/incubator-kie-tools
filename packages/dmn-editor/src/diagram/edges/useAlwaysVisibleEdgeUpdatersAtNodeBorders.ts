@@ -28,10 +28,20 @@ const HOVERED_RADIUS = 10;
 
 export function useAlwaysVisibleEdgeUpdatersAtNodeBorders(
   interactionPathRef: React.RefObject<SVGPathElement>,
-  sourceNode: RF.Node,
-  targetNode: RF.Node,
+  source: string,
+  target: string,
   snappedWaypoints: DC__Point[]
 ) {
+  const sourceNodeX = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.positionAbsolute?.x : undefined));
+  const sourceNodeY = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.positionAbsolute?.y : undefined));
+  const sourceNodeWidth = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.width : undefined));
+  const sourceNodeHeight = RF.useStore((s) => (source ? s.nodeInternals.get(source)?.height : undefined));
+
+  const targetNodeX = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.positionAbsolute?.x : undefined));
+  const targetNodeY = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.positionAbsolute?.y : undefined));
+  const targetNodeWidth = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.width : undefined));
+  const targetNodeHeight = RF.useStore((s) => (target ? s.nodeInternals.get(target)?.height : undefined));
+
   useLayoutEffect(() => {
     const edgeSvgGroup = interactionPathRef.current!.parentElement;
 
@@ -56,19 +66,19 @@ export function useAlwaysVisibleEdgeUpdatersAtNodeBorders(
       edgeUpdaterTarget?.removeEventListener("mouseleave", onLeave);
       edgeUpdaterTarget?.removeEventListener("mouseenter", onEnter);
     };
-  }, [interactionPathRef, sourceNode, targetNode, snappedWaypoints]);
+  }, [interactionPathRef]);
 
   useLayoutEffect(() => {
     const edgeSvgGroup = interactionPathRef.current!.parentElement;
 
     // Get fake scaled bounds to give the Edge Updaters some distance of the node.
     const scaledSourceNode = scaleFromCenter(HOVERED_RADIUS, {
-      position: sourceNode.positionAbsolute,
-      dimensions: sourceNode,
+      position: { x: sourceNodeX ?? 0, y: sourceNodeY ?? 0 },
+      dimensions: { width: sourceNodeWidth, height: sourceNodeHeight },
     });
     const scaledTargetNode = scaleFromCenter(HOVERED_RADIUS, {
-      position: targetNode.positionAbsolute,
-      dimensions: targetNode,
+      position: { x: targetNodeX ?? 0, y: targetNodeY ?? 0 },
+      dimensions: { width: targetNodeWidth, height: targetNodeHeight },
     });
 
     // Get the intersection point between the edge and the nodes. The Edge Updater must be visible at all times!
@@ -106,5 +116,16 @@ export function useAlwaysVisibleEdgeUpdatersAtNodeBorders(
     edgeUpdaterTarget.setAttribute("cx", "" + targetPoint!["@_x"]);
     edgeUpdaterTarget.setAttribute("cy", "" + targetPoint!["@_y"]);
     edgeUpdaterTarget.setAttribute("r", `${RADIUS}`);
-  }, [interactionPathRef, sourceNode, targetNode, snappedWaypoints]);
+  }, [
+    interactionPathRef,
+    snappedWaypoints,
+    sourceNodeHeight,
+    sourceNodeWidth,
+    sourceNodeX,
+    sourceNodeY,
+    targetNodeHeight,
+    targetNodeWidth,
+    targetNodeX,
+    targetNodeY,
+  ]);
 }

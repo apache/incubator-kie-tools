@@ -19,6 +19,7 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal:9.3
 
 ARG DDUS_FILESERVER_IP=""
 ARG DDUS_VERSION="0.0.0"
+ARG DDUS_FILESERVER_PORT=8090
 
 EXPOSE 8091
 
@@ -29,8 +30,8 @@ ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH="/"
 
 RUN microdnf install -y tar gzip findutils
 
-RUN curl ${DDUS_FILESERVER_IP}:8090/apache/incubator-kie-tools/releases/download/${DDUS_VERSION}/getDevDeploymentUploadService.sh | sed 's/localhost:8090/${DDUS_FILESERVER_IP}:8090/; s/https:\/\/github.com/http:\/\/${DDUS_FILESERVER_IP}:8090/' | bash
+RUN curl ${DDUS_FILESERVER_IP}:${DDUS_FILESERVER_PORT}/apache/incubator-kie-tools/releases/download/${DDUS_VERSION}/getDevDeploymentUploadService.sh | sed 's/localhost:${DDUS_FILESERVER_PORT}/${DDUS_FILESERVER_IP}:${DDUS_FILESERVER_PORT}/; s/https:\/\/github.com/http:\/\/${DDUS_FILESERVER_IP}:${DDUS_FILESERVER_PORT}/' | bash
 
 CMD dev-deployment-upload-service \
-  && find /tmp/unzip-at | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/" \
+  && find /tmp/unzip-at | sort -k1 | sed -e "s/[^-][^\/]*\// |/g" -e "s/|\([^ ]\)/|-\1/" \
   && echo 'Done!'

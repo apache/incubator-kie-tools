@@ -62,7 +62,7 @@ export class Dependencies {
 
   public readonly openRepoInExternalEditor = {
     buttonContainerOnRepoHome: () => {
-      return document.querySelector("#repository-details-container .pagehead-actions") as HTMLElement | null;
+      return document.querySelector(".pagehead-actions") as HTMLElement | null;
     },
     buttonContainerOnRepoFilesList: () => {
       return document.querySelector(".d-flex.gap-2")?.parentElement as HTMLElement | null;
@@ -73,6 +73,9 @@ export class Dependencies {
   };
 
   public readonly all = {
+    octiconMarkGitHub: () => {
+      return document.querySelector(".octicon-mark-github") as HTMLElement | null;
+    },
     notificationIndicator: () => {
       return (document.querySelector(".notification-indicator") ??
         document.querySelector(".AppHeader-search")) as HTMLElement | null;
@@ -89,8 +92,14 @@ export class Dependencies {
     edit__githubTextAreaWithFileContents: () => {
       return document.getElementById("kie-tools__initial-content") as HTMLTextAreaElement | null;
     },
-    pr__mutationObserverTarget: () => {
+    pr__filesMutationObserverTarget: () => {
       return document.getElementById("files") as HTMLElement | null;
+    },
+    pr__commitsMutationObserverTarget: () => {
+      return document.getElementById("commits_bucket") as HTMLElement | null;
+    },
+    pr__homeMutationObserverTarget: () => {
+      return document.querySelector(".pull-discussion-timeline") as HTMLElement | null;
     },
     pr__openWithExternalEditorLinkContainer: (container: HTMLElement) => {
       return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;

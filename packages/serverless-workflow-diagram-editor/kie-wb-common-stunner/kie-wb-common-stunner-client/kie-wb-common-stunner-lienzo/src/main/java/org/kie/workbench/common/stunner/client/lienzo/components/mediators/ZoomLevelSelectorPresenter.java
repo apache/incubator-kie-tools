@@ -185,6 +185,7 @@ public class ZoomLevelSelectorPresenter {
             zoomLevelInit = false;
         } else {
             cancelHide();
+            selector.applyTheme();
             floatingView.show();
             reposition();
         }

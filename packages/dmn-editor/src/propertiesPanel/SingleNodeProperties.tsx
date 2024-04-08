@@ -30,8 +30,7 @@ import { DecisionServiceProperties } from "./DecisionServiceProperties";
 import { KnowledgeSourceProperties } from "./KnowledgeSourceProperties";
 import { TextAnnotationProperties } from "./TextAnnotationProperties";
 import { useMemo } from "react";
-import { useDmnEditorStoreApi } from "../store/Store";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import {
   DMN15__tBusinessKnowledgeModel,
@@ -49,22 +48,31 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { UnknownProperties } from "./UnknownProperties";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./SingleNodeProperties.css";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { nodesById } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
+  const node = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodesById.get(nodeId));
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
+  const nodeIds = useMemo(() => (node?.id ? [node.id] : []), [node?.id]);
 
-  const node = useMemo(() => {
-    return nodesById.get(nodeId);
-  }, [nodeId, nodesById]);
+  const Icon = useMemo(() => {
+    if (node?.data?.dmnObject === undefined) {
+      throw new Error("Icon can't be defined without a DMN object");
+    }
+    const nodeType = getNodeTypeFromDmnObject(node.data.dmnObject);
+    if (nodeType === undefined) {
+      throw new Error("Can't determine node icon with undefined node type");
+    }
+    return NodeIcon({ nodeType, isAlternativeInputDataShape });
+  }, [isAlternativeInputDataShape, node?.data.dmnObject]);
 
   if (!node) {
     return <>Node not found: {nodeId}</>;
   }
-
-  const Icon = NodeIcon(getNodeTypeFromDmnObject(node!.data!.dmnObject!));
 
   return (
     <Form>
@@ -101,6 +109,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
             })()}
             action={
               <Button
+                title={"Close"}
                 variant={ButtonVariant.plain}
                 onClick={() => {
                   dmnEditorStoreApi.setState((state) => {
@@ -180,10 +189,10 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
           </>
         )}
 
-        <FontOptions startExpanded={false} nodeIds={[node.id]} />
+        <FontOptions startExpanded={false} nodeIds={nodeIds} />
         <ShapeOptions
           startExpanded={false}
-          nodeIds={[node.id]}
+          nodeIds={nodeIds}
           isDimensioningEnabled={true}
           isPositioningEnabled={true}
         />

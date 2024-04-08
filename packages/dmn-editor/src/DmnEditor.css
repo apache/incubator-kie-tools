@@ -50,6 +50,7 @@
   top: 0;
   left: 0;
   overflow: visible;
+  z-index: 10000; /* Makes the data type node panel appear correctly, on top of the node */
 }
 .kie-dmn-editor--node:focus {
   outline: none;
@@ -67,6 +68,10 @@
   height: 100%;
   pointer-events: none;
   z-index: 1;
+}
+.kie-dmn-editor--input-data-node {
+  width: 100%;
+  height: 100%;
 }
 .kie-dmn-editor--text-annotation-node {
   text-align: left;
@@ -150,6 +155,25 @@
   text-decoration: underline;
 }
 /* (end) external node */
+
+/* (begin) alternative input node */
+.kie-dmn-editor--selected-alternative-input-data-node:before {
+  content: "";
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 6px;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: var(--selected-alternative-input-data-node-shape--height);
+  backdrop-filter: blur(8px);
+}
+.kie-dmn-editor--selected-alternative-input-data-node:before {
+  border: 1px dashed #006ba4;
+  background-color: rgb(161 222 255 / 20%); /* Very slightly blue hue */
+}
+/* (end) alternative input node */
 
 /* (begin) textAnnotation, and unknown nodes */
 .react-flow__node-node_unknown.selected:before,
@@ -235,6 +259,10 @@
 .kie-dmn-editor--drd-list button:active {
   filter: brightness(90%);
 }
+.kie-dmn-editor--drd-properties--input-data-node-shape button {
+  height: 36px;
+}
+
 .kie-dmn-editor--palette {
   width: 42px;
   background: #fff;
@@ -318,17 +346,48 @@
 }
 /* (end) version popover */
 
-/* (begin) overlays panel toggle */
-.kie-dmn-editor--overlay-panel-popover .pf-c-popover__body {
-  padding: 0;
-}
-.kie-dmn-editor--overlays-panel-toggle {
-  margin-right: 16px;
+/* (begin) autolayout panel toggle */
+.kie-dmn-editor--autolayout-panel-toggle {
   width: 42px;
   background: #fff;
   border-radius: 40px;
   border: 1px solid black;
 }
+.kie-dmn-editor--autolayout-panel-toggle:not(:last-child) {
+  margin-right: 16px;
+}
+
+.kie-dmn-editor--autolayout-panel-toggle:hover {
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--autolayout-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--autolayout-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--autolayout-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+/* (end) autolayout panel toggle */
+
+/* (begin) overlays panel toggle */
+.kie-dmn-editor--overlays-panel-toggle {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--overlays-panel-toggle:not(:last-child) {
+  margin-right: 16px;
+}
+
 .kie-dmn-editor--overlays-panel-toggle:hover {
   box-shadow: -4px 4px 2px 0px rgb(127 127 127);
 }
@@ -395,7 +454,8 @@
   left: 58px;
   overflow: auto;
   box-shadow: 0px 5px 10px 0px lightgray;
-  background: white;
+  background: rgb(255, 255, 255, 90%);
+  backdrop-filter: blur(4px);
   width: 400px;
 }
 .kie-dmn-editor--external-nodes-panel-toggle {
@@ -557,13 +617,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead::before {
   border: 0;
 }
-.kie-dmn-editor--data-type-node-panel > div:hover {
-  backdrop-filter: brightness(95%);
-}
-.kie-dmn-editor--data-type-node-panel > div:active {
-  backdrop-filter: brightness(90%);
-}
-/*    edit button on decision and bkm nodes */
+/* edit button on decision and bkm nodes */
 .kie-dmn-editor--edit-expression-node-panel {
   position: absolute;
   padding: 4px 8px;
@@ -700,14 +754,13 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
 }
 .kie-dmn-editor--external-nodes-list-item {
   border-radius: 999px;
-  background: white;
 }
 .kie-dmn-editor--external-nodes-list-item:hover {
-  filter: brightness(95%);
+  background-color: rgba(0, 0, 0, 0.1);
   cursor: grab;
 }
 .kie-dmn-editor--external-nodes-list-item:active {
-  filter: brightness(90%);
+  background-color: rgba(0, 0, 0, 0.15);
   cursor: grabbing;
 }
 /* (end) external nodes */
@@ -903,7 +956,9 @@ th {
   fill: rgba(0, 107, 164, 0.1) !important;
 }
 
-.react-flow__node.selected:not(.react-flow__node-node_unknown) > .kie-dmn-editor--node-shape > * {
+.react-flow__node.selected:not(.react-flow__node-node_unknown):not(.react-flow__node-node_textAnnotation)
+  > .kie-dmn-editor--node-shape
+  > * {
   stroke: #006ba4 !important;
 }
 

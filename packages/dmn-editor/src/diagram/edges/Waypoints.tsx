@@ -20,7 +20,7 @@
 import * as React from "react";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { deleteEdgeWaypoint } from "../../mutations/deleteEdgeWaypoint";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import { useEffect } from "react";
@@ -79,7 +79,7 @@ export function Waypoint({
     const selection = select(circleRef.current);
     const dragHandler = drag<SVGCircleElement, unknown>()
       .on("start", () => {
-        setState((state) => dispatch.diagram.setEdgeStatus(state, edgeId, { draggingWaypoint: true }));
+        setState((state) => state.dispatch(state).diagram.setEdgeStatus(edgeId, { draggingWaypoint: true }));
       })
       .on("drag", (e) => {
         setState((state) => {
@@ -94,14 +94,14 @@ export function Waypoint({
       })
       .on("end", (e) => {
         onDragStop(e.sourceEvent);
-        setState((state) => dispatch.diagram.setEdgeStatus(state, edgeId, { draggingWaypoint: false }));
+        setState((state) => state.dispatch(state).diagram.setEdgeStatus(edgeId, { draggingWaypoint: false }));
       });
 
     selection.call(dragHandler);
     return () => {
       selection.on(".drag", null);
     };
-  }, [diagram.drdIndex, diagram.snapGrid, dispatch.diagram, edgeId, edgeIndex, index, onDragStop, setState]);
+  }, [diagram.drdIndex, diagram.snapGrid, edgeId, edgeIndex, index, onDragStop, setState]);
 
   return (
     <circle

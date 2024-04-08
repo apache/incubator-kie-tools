@@ -14,8 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
 pipeline {
-    agent any
+    agent {
+        label util.avoidFaultyNodes()
+    }
 
     options {
         timeout(time: 600, unit: 'MINUTES')

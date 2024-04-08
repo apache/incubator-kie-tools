@@ -30,7 +30,7 @@ import {
 import { buildFeelQName, parseFeelQName } from "../feel/parseFeelQName";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { DMN15__tContext } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { DMN15_SPEC } from "../Dmn15Spec";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 
 export function renameImport({
   definitions,

@@ -29,7 +29,7 @@ import {
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMarker";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
-import { getBoundsCenterPoint } from "../diagram/maths/DmnMaths";
+import { getDmnBoundsCenterPoint } from "../diagram/maths/DmnMaths";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { NodeNature, nodeNatures } from "./NodeNature";
@@ -43,13 +43,13 @@ export function addConnectedNode({
   drdIndex,
   sourceNode,
   newNode,
-  edge,
+  edgeType,
 }: {
   definitions: DMN15__tDefinitions;
   drdIndex: number;
   sourceNode: { type: NodeType; href: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
-  edge: EdgeType;
+  edgeType: EdgeType;
 }) {
   const newDmnObjectId = generateUuid();
   const newDmnObjectHref = buildXmlHref({ id: newDmnObjectId });
@@ -57,7 +57,7 @@ export function addConnectedNode({
   const nature = nodeNatures[newNode.type];
 
   if (nature === NodeNature.DRG_ELEMENT) {
-    const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge);
+    const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edgeType);
 
     definitions.drgElement ??= [];
     const variableBase = {
@@ -146,7 +146,7 @@ export function addConnectedNode({
       })
     );
   } else {
-    throw new Error(`Unknown node usage '${nature}'.`);
+    throw new Error(`DMN MUTATION: Unknown node usage '${nature}'.`);
   }
 
   const newShapeId = generateUuid();
@@ -171,7 +171,7 @@ export function addConnectedNode({
     "@_dmnElementRef": newEdgeId,
     "@_sourceElement": sourceNode.shapeId,
     "@_targetElement": newShapeId,
-    "di:waypoint": [getBoundsCenterPoint(sourceNode.bounds), getBoundsCenterPoint(newNode.bounds)],
+    "di:waypoint": [getDmnBoundsCenterPoint(sourceNode.bounds), getDmnBoundsCenterPoint(newNode.bounds)],
   });
 
   repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });

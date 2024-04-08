@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Elements, Meta, MetaTypeDef } from ".";
+import { Elements, Meta, MetaType } from ".";
 import { buildXmlQName, parseXmlQName } from "./qNames";
 
 export type XmlParserTsIdRandomizerUpdater = (args: { newId: string }) => void;
@@ -26,7 +26,7 @@ export type XmlParserTsIdRandomizerMatcher<M extends Meta> = (args: {
   parentJson: any;
   attr: string;
   metaTypeName: keyof M;
-  metaType: Record<string, MetaTypeDef>;
+  metaType: MetaType;
 }) => [string, XmlParserTsIdRandomizerUpdater] | undefined;
 
 export class XmlParserTsIdRandomizer<M extends Meta> {
@@ -51,10 +51,12 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     type,
     attr,
     __$$element,
+    arrayIndex,
   }: {
     json: any | undefined;
     type: X;
     attr: keyof M[X];
+    arrayIndex?: number;
     __$$element?: string;
     parentJson?: any;
   }): XmlParserTsIdRandomizer<M> {
@@ -62,19 +64,16 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     const resolvedRootMetaPropTypeName = this.args.elements[__$$element ?? json?.__$$element] ?? rootMetaProp.type;
 
     // Array
-    if (rootMetaProp.isArray) {
-      for (const j of (json ?? []) as any[]) {
-        const resolvedMetaTypeName = this.args.elements[__$$element ?? j.__$$element] ?? resolvedRootMetaPropTypeName;
-        const resolvedMetaType = this.args.meta[resolvedMetaTypeName];
-
-        for (const metaPropName in resolvedMetaType) {
-          this.ack({
-            json: j[metaPropName],
-            parentJson: j,
-            attr: metaPropName,
-            type: resolvedMetaTypeName,
-          });
-        }
+    // Arrays and arrays element will have the same `rootMetaProp`, but array elements will have an array index associated with it
+    if (rootMetaProp.isArray && arrayIndex === undefined) {
+      for (let index = 0; index < json.length; index++) {
+        this.ack({
+          json: json[index],
+          parentJson: json,
+          attr: attr,
+          type: type,
+          arrayIndex: index,
+        });
       }
     }
 
@@ -93,9 +92,13 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
       }
     }
 
-    // Leaf
+    // Primitive
     else {
       console.debug(`ID RANDOMIZER: ack: ${String(type)}.${String(attr)}: ${json} --> ${rootMetaProp.xsdType}`);
+
+      // When dealing with primitive array elements, `arrayIndex` will not be undefined
+      // the `parentJson` will be the array itself. So we use it to access the correct position.
+      const accessor = arrayIndex ?? attr;
 
       // ID, IDREF
       if (rootMetaProp.xsdType === "xsd:ID" || rootMetaProp.xsdType === "xsd:IDREF") {
@@ -104,33 +107,29 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
         // In other words `parentJson` is an undentified object.
         // The second condition of this if statement allows attributing an id to an xsd:ID property
         // that previously wasn't defined.
-        if (json !== undefined || (json === undefined && rootMetaProp.xsdType === "xsd:ID")) {
-          const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
-            console.debug(
-              `ID RANDOMIZER: [ID,IDREF] Updating id from ${parentJson[attr]} to ${newId} @ (${String(type)}.${String(
-                attr
-              )}: ${json})`
-            );
-            return (parentJson[attr] = newId);
-          };
-          this.updaters.set(json, [...(this.updaters.get(json) ?? []), u]);
-        }
+        const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
+          console.debug(
+            `ID RANDOMIZER: [ID,IDREF] Updating id from ${parentJson[accessor]} to ${newId} @ (${String(type)}.${String(
+              attr
+            )}: ${json})`
+          );
+          return (parentJson[accessor] = newId);
+        };
+        this.updaters.set(json, [...(this.updaters.get(json) ?? []), u]);
       }
 
       // QName
       else if (rootMetaProp.xsdType === "xsd:QName") {
-        if (json !== undefined) {
-          const qname = parseXmlQName(json);
-          const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
-            console.debug(
-              `ID RANDOMIZER: [QName] Updating id from ${qname.localPart} to ${newId} @ (${String(type)}.${String(
-                attr
-              )}: ${json})`
-            );
-            return (parentJson[attr] = buildXmlQName({ ...qname, localPart: newId }));
-          };
-          this.updaters.set(qname.localPart, [...(this.updaters.get(qname.localPart) ?? []), u]);
-        }
+        const qname = parseXmlQName(json);
+        const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
+          console.debug(
+            `ID RANDOMIZER: [QName] Updating id from ${qname.localPart} to ${newId} @ (${String(type)}.${String(
+              attr
+            )}: ${json})`
+          );
+          return (parentJson[accessor] = buildXmlQName({ ...qname, localPart: newId }));
+        };
+        this.updaters.set(qname.localPart, [...(this.updaters.get(qname.localPart) ?? []), u]);
       }
 
       // Custom matchers
@@ -154,21 +153,16 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     return this;
   }
 
-  public randomize(args?: { skipAlreadyAttributedIds?: boolean }): void {
+  public randomize(): Map<string, string> {
+    const newIdsByOriginalId = new Map<string, string>();
+
     for (const [id, us] of this.updaters) {
-      // Generates new unique id's for all properties of type xsd:ID that were undefined.
-      if (id === undefined) {
-        for (const u of us) {
-          u({ newId: this.args.newIdGenerator() });
-        }
-      }
-      // Generates a new id an updates all references to the old one with the same value.
-      else if (!args?.skipAlreadyAttributedIds) {
-        const newId = this.args.newIdGenerator();
-        for (const u of us) {
-          u({ newId });
-        }
+      const newId = this.args.newIdGenerator();
+      newIdsByOriginalId.set(id, newId);
+      for (const u of us) {
+        u({ newId });
       }
     }
+    return newIdsByOriginalId;
   }
 }

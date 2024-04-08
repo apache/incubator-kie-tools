@@ -73,7 +73,7 @@ export const commonLabels = (args: { resourceName: string; createdBy: string }) 
 
 export const runtimeLabels = () => ({
   [OpenShiftLabelNames.RUNTIME]: "quarkus",
-  [OpenShiftLabelNames.VERSION]: "openjdk-11-el7",
+  [OpenShiftLabelNames.VERSION]: "openjdk-17-el7",
 });
 
 export enum DeploymentState {

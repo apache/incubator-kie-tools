@@ -21,6 +21,7 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import java.util.IdentityHashMap;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -43,7 +44,6 @@ import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.Position;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.client.util.Layouts.setToFillParent;
 import static org.uberfire.client.util.Layouts.widthOrHeight;
 import static org.uberfire.plugin.PluginUtil.toInteger;
@@ -276,6 +276,10 @@ public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanel
         //browser has added the new DIVs to the HTML tree. This does occasionally
         //add slight flicker when adding a new Panel.
         scheduleResize(splitPanel);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Override

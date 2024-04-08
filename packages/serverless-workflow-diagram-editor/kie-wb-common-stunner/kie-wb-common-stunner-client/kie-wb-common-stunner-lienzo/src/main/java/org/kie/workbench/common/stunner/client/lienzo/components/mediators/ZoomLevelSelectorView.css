@@ -23,7 +23,128 @@
   text-overflow: ellipsis;
 }
 
+.zoom-selector-button-text-dark {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+}
+
 .zoom-selector-menu {
   max-height: 250px;
   overflow-y: auto;
+}
+
+.zoom-selector-menu-dark {
+  background-color: black;
+}
+
+button.btn.dropdown-toggle.btn-default-dark {
+  color: #fff;
+  background: black;
+  border-color: #343a40;
+}
+
+button.btn.dropdown-toggle.btn-default-dark:focus {
+  color: #fff;
+  background: black;
+  border-color: #343a40;
+}
+
+button.btn.dropdown-toggle.btn-default-dark:hover {
+  color: #fff;
+  background: black;
+  border-color: #616e78;
+}
+
+.dropdown-menu-dark.open {
+  color: #fff;
+  background: black;
+  border-color: #343a40;
+}
+
+.dropdown-menu-dark > li > a {
+  color: #fff;
+}
+
+.dropdown-menu-dark > li > a:hover {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #343a40;
+}
+
+.zoom-button {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+
+.zoom-button:hover {
+  color: #212529;
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+}
+
+.zoom-button:focus,
+.zoom-button.focus {
+  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
+}
+
+.zoom-button.disabled,
+.zoom-button:disabled {
+  color: #a8a8a8;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+
+.zoom-button:not(:disabled):not(.disabled):active,
+.zoom-button:not(:disabled):not(.disabled).active,
+.show > .zoom-button.dropdown-toggle {
+  color: #212529;
+  background-color: #dae0e5;
+  border-color: #d3d9df;
+}
+
+.zoom-button:not(:disabled):not(.disabled):active:focus,
+.zoom-button:not(:disabled):not(.disabled).active:focus,
+.show > .zoom-button.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
+}
+
+.zoom-button-dark {
+  color: #fff;
+  background-color: #1f1f1f;
+  border-color: #343a40;
+}
+
+.zoom-button-dark:hover {
+  color: #fff;
+  background-color: #000000;
+  border-color: #1d2124;
+}
+
+.zoom-button-dark:focus,
+.zoom-button-dark.focus {
+  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
+}
+
+.zoom-button-dark.disabled,
+.zoom-button-dark:disabled {
+  color: #909090;
+  background-color: #343a40;
+  border-color: #343a40;
+}
+
+.zoom-button-dark:not(:disabled):not(.disabled):active,
+.zoom-button-dark:not(:disabled):not(.disabled).active,
+.show > .zoom-button-dark.dropdown-toggle {
+  color: #fff;
+  background-color: #1d2124;
+  border-color: #171a1d;
+}
+
+.zoom-button-dark:not(:disabled):not(.disabled):active:focus,
+.zoom-button-dark:not(:disabled):not(.disabled).active:focus,
+.show > .zoom-button-dark.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
 }

@@ -21,15 +21,29 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 
 const buildEnv = require("@kie-tools/root-env/env");
 
+const version = require("../package.json").version;
+
 module.exports = composeEnv([buildEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadPath: {
-      default: `apache/incubator-kie-tools/releases/download/${buildEnv.env.root.version}`,
+      default: `apache/incubator-kie-tools/releases/download/${version}`,
       description: "Download path for the Dev Deployment Upload Service binary package.",
     },
     DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadHost: {
       default: `https://github.com`,
       description: "Download host for the Dev Deployment Upload Service binary package.",
+    },
+    DEV_DEPLOYMENT_UPLOAD_SERVICE__devFileServerPort: {
+      default: 2340,
+      description: "",
+    },
+    DEV_DEPLOYMENT_UPLOAD_SERVICE__devBuildTimeInstallPort: {
+      default: 2341,
+      description: "",
+    },
+    DEV_DEPLOYMENT_UPLOAD_SERVICE__devRunTimeInstallPort: {
+      default: 2342,
+      description: "",
     },
   }),
   get env() {
@@ -38,6 +52,11 @@ module.exports = composeEnv([buildEnv], {
         url: {
           path: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadPath),
           host: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__downloadHost),
+        },
+        dev: {
+          fileServerPort: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__devFileServerPort),
+          buildTimePort: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__devBuildTimeInstallPort),
+          runtTimePort: getOrDefault(this.vars.DEV_DEPLOYMENT_UPLOAD_SERVICE__devRunTimeInstallPort),
         },
       },
     };

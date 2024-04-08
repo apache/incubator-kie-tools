@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useGitHubApi } from "./GitHubContext";
+import { getGitHubApiBaseUrl, useGitHubApi } from "./GitHubContext";
 import { Octokit } from "@octokit/rest";
 import { useGlobals } from "./GlobalContext";
 import { useChromeExtensionI18n } from "../../i18n";
@@ -100,7 +100,7 @@ export function KogitoMenu() {
               <a
                 target={"blank"}
                 className="Header-link mr-0 mr-lg-3 py-2 py-lg-0"
-                href="https://github.com/settings/tokens"
+                href={window.location.origin + "/settings/tokens"}
               >
                 {i18n.common.menu.createToken}
               </a>
@@ -176,7 +176,7 @@ async function tokenIsValid(token?: string) {
     return false;
   }
 
-  const testOctokit = new Octokit({ auth: token });
+  const testOctokit = new Octokit({ auth: token, baseUrl: getGitHubApiBaseUrl(window.location.origin) });
   return await testOctokit.emojis
     .get({})
     .then(() => true)

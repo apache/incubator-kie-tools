@@ -19,14 +19,14 @@
 
 package org.uberfire.client.workbench.widgets.common;
 
+import java.util.Objects;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Shows simple text-only error messages in a modal popup dialog that sits above the workbench.
@@ -57,6 +57,10 @@ public class ErrorPopupPresenter {
                                       afterShow),
                          checkNotNull("afterClose",
                                       afterClose));
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     /**

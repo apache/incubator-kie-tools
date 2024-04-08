@@ -17,50 +17,69 @@
  * under the License.
  */
 
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import * as React from "react";
-import { useCallback, useState } from "react";
-import { DiagramNodesPanel, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { buildXmlHref } from "../xml/xmlHrefs";
-import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Unpacked } from "../tsExt/tsExt";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import * as React from "react";
+import { useCallback, useMemo, useState } from "react";
+import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
+import { DiagramLhsPanel } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
+import { Unpacked } from "../tsExt/tsExt";
+import { buildXmlHref } from "../xml/xmlHrefs";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE = "kie-dmn-editor--drg-node";
 
 export function DrgNodesPanel() {
-  const thisDmn = useDmnEditorStore((s) => s.dmn);
-  const { dmnShapesByHref } = useDmnEditorDerivedStore();
+  const thisDmnsDrgElements = useDmnEditorStore((s) => s.dmn.model.definitions.drgElement ?? []);
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+  const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexedDrd().dmnShapesByHref);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const [filter, setFilter] = useState("");
 
-  const namespace = ""; // That's the default namespace.
+  const namespaceForHref = ""; // That's the default namespace.
 
   const onDragStart = useCallback((event: React.DragEvent, drgElement: Unpacked<DMN15__tDefinitions["drgElement"]>) => {
     event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE, JSON.stringify(drgElement));
     event.dataTransfer.effectAllowed = "move";
   }, []);
 
-  const nodes = thisDmn.model.definitions.drgElement
-    ?.filter((drgElement) => drgElement["@_name"].toLowerCase().includes(filter.toLowerCase()))
+  const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn = useMemo(
+    () =>
+      computeContainingDecisionServiceHrefsByDecisionHrefs({
+        drgElements: thisDmnsDrgElements,
+        drgElementsNamespace: thisDmnsNamespace,
+        thisDmnsNamespace: thisDmnsNamespace,
+      }),
+    [thisDmnsDrgElements, thisDmnsNamespace]
+  );
+
+  const nodes = thisDmnsDrgElements
+    .filter((drgElement) => drgElement["@_name"].toLowerCase().includes(filter.toLowerCase()))
     .map((drgElement) => {
-      const dmnObjectHref = buildXmlHref({ namespace, id: drgElement["@_id"]! });
-      const isAlreadyIncluded = dmnShapesByHref.has(dmnObjectHref);
+      const dmnObjectHref = buildXmlHref({ namespace: namespaceForHref, id: drgElement["@_id"]! });
+      const canBeIncluded =
+        !dmnShapesByHref.has(dmnObjectHref) &&
+        (containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn.get(dmnObjectHref) ?? []).every(
+          (dsHref) => !dmnShapesByHref.has(dsHref)
+        );
 
       return (
         <div
           key={drgElement["@_id"]}
           className={"kie-dmn-editor--external-nodes-list-item"}
-          draggable={!isAlreadyIncluded}
-          style={{ opacity: isAlreadyIncluded ? "0.4" : undefined }}
+          draggable={canBeIncluded}
+          style={{
+            opacity: canBeIncluded ? undefined : 0.4,
+            userSelect: "none",
+          }}
           onDragStart={(event) => onDragStart(event, drgElement)}
         >
           <Flex
@@ -71,8 +90,8 @@ export function DrgNodesPanel() {
             <DmnObjectListItem
               dmnObjectHref={dmnObjectHref}
               dmnObject={drgElement}
-              namespace={namespace}
-              relativeToNamespace={namespace}
+              namespace={namespaceForHref}
+              relativeToNamespace={namespaceForHref}
             />
           </Flex>
         </div>
@@ -87,16 +106,19 @@ export function DrgNodesPanel() {
             <Text component="h3">DRG Nodes</Text>
           </TextContent>
           <Button
+            title={"Close"}
             variant={ButtonVariant.plain}
             onClick={() =>
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.openNodesPanel = DiagramNodesPanel.NONE;
+                state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
               })
             }
           >
             <TimesIcon />
           </Button>
         </Flex>
+
+        <Divider style={{ marginBottom: "12px" }} />
 
         <SearchInput
           style={{ marginBottom: "12px", height: "36px" }}

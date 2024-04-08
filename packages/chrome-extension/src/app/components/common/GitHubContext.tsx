@@ -53,6 +53,17 @@ export function getCookie(name: string) {
   }
 }
 
+export function getGitHubApiBaseUrl(baseUrl: string) {
+  if (baseUrl.startsWith("https://")) {
+    return "https://api." + baseUrl.slice(8);
+  } else if (baseUrl.startsWith("http://")) {
+    return "http://api." + baseUrl.slice(7);
+  } else {
+    console.error(`Unsupported protocol for GitHub API base URL: ${baseUrl}`);
+    return;
+  }
+}
+
 let octokitInstance: Octokit;
 
 export const GitHubContextProvider: React.FC<{}> = (props) => {
@@ -70,10 +81,10 @@ export const GitHubContextProvider: React.FC<{}> = (props) => {
 
   useEffect(() => {
     if (token) {
-      octokitInstance = new Octokit({ auth: token });
+      octokitInstance = new Octokit({ auth: token, baseUrl: getGitHubApiBaseUrl(window.location.origin) });
       console.debug("Token found");
     } else {
-      octokitInstance = new Octokit();
+      octokitInstance = new Octokit({ baseUrl: getGitHubApiBaseUrl(window.location.origin) });
       console.debug("Token not found.");
     }
     setReady(true);

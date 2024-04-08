@@ -25,7 +25,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { routes } from "../routes";
 import { BasePage } from "./BasePage";
 

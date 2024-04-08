@@ -21,6 +21,7 @@
 package org.uberfire.client.mvp;
 
 import java.util.List;
+import java.util.Objects;
 
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
@@ -32,8 +33,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A Workbench-centric abstraction over the browser's history mechanism. Allows the application to initiate navigation
@@ -91,6 +90,10 @@ public interface PlaceManager {
         if (callbacks != null) {
             callbacks.forEach(Command::execute);
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     List<Command> getOnOpenCallbacks(PlaceRequest place);

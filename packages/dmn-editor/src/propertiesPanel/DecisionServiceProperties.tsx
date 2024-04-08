@@ -28,16 +28,16 @@ import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { useMemo } from "react";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
+import { useCallback, useMemo } from "react";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -56,7 +56,10 @@ export function DecisionServiceProperties({
   const { setState } = useDmnEditorStoreApi();
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
-  const { externalDmnsByNamespace, allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
+  const externalDmnsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
+  );
 
   const allDrgElementsByHref = useMemo(() => {
     const ret: AllKnownDrgElementsByHref = new Map();
@@ -107,7 +110,7 @@ export function DecisionServiceProperties({
               });
             });
           }}
-          allUniqueNames={allFeelVariableUniqueNames}
+          allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>
 

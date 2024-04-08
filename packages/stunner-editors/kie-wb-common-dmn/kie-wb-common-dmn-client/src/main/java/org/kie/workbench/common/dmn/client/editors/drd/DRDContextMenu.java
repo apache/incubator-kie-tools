@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLBodyElement;
 import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramTuple;
@@ -71,7 +72,12 @@ public class DRDContextMenu {
         contextMenuElement.style.position = "absolute";
         contextMenuElement.style.left = x + "px";
         contextMenuElement.style.top = y + "px";
-        DomGlobal.document.body.appendChild(contextMenuElement);
+        getDocumentBody().appendChild(contextMenuElement);
+    }
+
+    /* Indirection required by unit tests */
+    protected HTMLBodyElement getDocumentBody() {
+        return DomGlobal.document.body;
     }
 
     public void show(final Collection<Node<? extends Definition<?>, Edge>> selectedNodes) {

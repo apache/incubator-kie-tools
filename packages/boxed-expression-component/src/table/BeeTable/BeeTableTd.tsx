@@ -31,7 +31,7 @@ import {
   useBeeTableSelectableCell,
   useBeeTableSelectableCellRef,
 } from "../../selection/BeeTableSelectionContext";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { InsertRowColumnsDirection } from "../../api";
 
 export interface BeeTableTdProps<R extends object> {
@@ -46,6 +46,8 @@ export interface BeeTableTdProps<R extends object> {
   column: ReactTable.ColumnInstance<R>;
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
+  onDataCellClick?: (columnID: string) => void;
+  onDataCellKeyUp?: (columnID: string) => void;
 }
 
 export type HoverInfo =
@@ -67,6 +69,8 @@ export function BeeTableTd<R extends object>({
   resizerStopBehavior,
   onRowAdded,
   lastColumnMinWidth,
+  onDataCellClick,
+  onDataCellKeyUp,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -210,11 +214,21 @@ export function BeeTableTd<R extends object>({
     [column.isWidthConstant, hoverInfo.isHovered, isActive, isResizing, resizingWidth?.isPivoting]
   );
 
+  const onClick = useCallback(() => {
+    return onDataCellClick?.(column.id);
+  }, [column.id, onDataCellClick]);
+
+  const onKeyUp = useCallback(() => {
+    return onDataCellKeyUp?.(column.id);
+  }, [column.id, onDataCellKeyUp]);
+
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <td
         onMouseDown={onMouseDown}
         onDoubleClick={onDoubleClick}
+        onClick={onClick}
+        onKeyUp={onKeyUp}
         ref={tdRef}
         tabIndex={-1}
         className={`${cssClass} ${cssClasses}`}

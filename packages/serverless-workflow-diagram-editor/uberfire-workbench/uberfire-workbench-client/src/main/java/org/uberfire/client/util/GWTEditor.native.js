@@ -1,4 +1,5 @@
 goog.exportProperty(GWTEditor.prototype, "onOpen", GWTEditor.prototype.onOpen);
+goog.exportProperty(GWTEditor.prototype, "applyTheme", GWTEditor.prototype.applyTheme);
 goog.exportProperty(GWTEditor.prototype, "setContent", GWTEditor.prototype.setContent);
 goog.exportProperty(GWTEditor.prototype, "selectStateByName", GWTEditor.prototype.selectStateByName);
 goog.exportProperty(GWTEditor.prototype, "getContent", GWTEditor.prototype.getContent);

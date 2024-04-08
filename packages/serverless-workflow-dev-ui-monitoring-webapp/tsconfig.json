@@ -1,0 +1,9 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "declarationDir": "./dist",
+    "outDir": "dist"
+  },
+  "include": ["src/", "./config/declare.d.ts"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.stories.tsx", "src/**/__mocks__", "src/**/tests"]
+}

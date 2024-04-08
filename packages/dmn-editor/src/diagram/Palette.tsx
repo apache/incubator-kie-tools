@@ -22,13 +22,15 @@ import * as React from "react";
 import { useCallback } from "react";
 import { NodeType } from "./connections/graphStructure";
 import { NODE_TYPES } from "./nodes/NodeTypes";
-import { DiagramNodesPanel, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DiagramLhsPanel } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds } from "./maths/DmnMaths";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { ExternalNodesPanel } from "../externalNodes/ExternalNodesPanel";
 import { MigrationIcon } from "@patternfly/react-icons/dist/js/icons/migration-icon";
 import {
+  AlternativeInputDataIcon,
   BkmIcon,
   DecisionIcon,
   DecisionServiceIcon,
@@ -45,6 +47,7 @@ import { DrgNodesPanel } from "./DrgNodesPanel";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useDmnEditor } from "../DmnEditorContext";
+import { getDrdId } from "./drd/drdId";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -59,6 +62,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const thisDmn = useDmnEditorStore((s) => s.dmn.model);
   const rfStoreApi = RF.useStoreApi();
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -83,7 +87,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
         },
       });
 
-      state.dispatch.diagram.setNodeStatus(state, newNodeId, { selected: true });
+      state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
     });
   }, [diagram.drdIndex, dmnEditorStoreApi, rfStoreApi]);
 
@@ -101,9 +105,10 @@ export function Palette({ pulse }: { pulse: boolean }) {
           <div ref={drdSelectorPopoverRef} style={{ position: "absolute", left: "56px", height: "100%", zIndex: -1 }} />
           <InlineFeelNameInput
             validate={() => true}
-            allUniqueNames={new Map()}
+            allUniqueNames={() => new Map()}
             name={drd?.["@_name"] ?? ""}
-            id={diagram.drdIndex + ""}
+            prefix={`${diagram.drdIndex + 1}.`}
+            id={getDrdId({ drdIndex: diagram.drdIndex })}
             onRenamed={(newName) => {
               dmnEditorStoreApi.setState((state) => {
                 const drd = addOrGetDrd({ definitions: state.dmn.model.definitions, drdIndex: diagram.drdIndex });
@@ -117,13 +122,13 @@ export function Palette({ pulse }: { pulse: boolean }) {
           />
           <Popover
             className={"kie-dmn-editor--drd-selector-popover"}
-            key={`${diagram.drdSelector.isOpen}`}
+            key={DiagramLhsPanel.DRD_SELECTOR}
             aria-label={"DRD Selector Popover"}
-            isVisible={diagram.drdSelector.isOpen}
+            isVisible={diagram.openLhsPanel === DiagramLhsPanel.DRD_SELECTOR}
             reference={() => drdSelectorPopoverRef.current!}
             shouldClose={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.drdSelector.isOpen = false;
+                state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
               });
             }}
             position={"bottom-start"}
@@ -131,10 +136,13 @@ export function Palette({ pulse }: { pulse: boolean }) {
             bodyContent={<DrdSelectorPanel />}
           />
           <button
-            title="DRD selector"
+            title={"Select or edit DRD"}
             onClick={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.drdSelector.isOpen = !state.diagram.drdSelector.isOpen;
+                state.diagram.openLhsPanel =
+                  state.diagram.openLhsPanel === DiagramLhsPanel.DRD_SELECTOR
+                    ? DiagramLhsPanel.NONE
+                    : DiagramLhsPanel.DRD_SELECTOR;
               });
             }}
           >
@@ -146,15 +154,15 @@ export function Palette({ pulse }: { pulse: boolean }) {
         <div ref={nodesPalletePopoverRef} style={{ position: "absolute", left: 0, height: 0, zIndex: -1 }} />
         <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
           <div
-            title="Input Data"
+            title={"Input Data"}
             className={"kie-dmn-editor--palette-button dndnode input-data"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
             draggable={true}
           >
-            <InputDataIcon />
+            {isAlternativeInputDataShape ? <AlternativeInputDataIcon /> : <InputDataIcon />}
           </div>
           <div
-            title="Decision"
+            title={"Decision"}
             className={"kie-dmn-editor--palette-button dndnode decision"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decision)}
             draggable={true}
@@ -162,7 +170,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             <DecisionIcon />
           </div>
           <div
-            title="Business Knowledge Model"
+            title={"Business Knowledge Model"}
             className={"kie-dmn-editor--palette-button dndnode bkm"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.bkm)}
             draggable={true}
@@ -170,7 +178,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             <BkmIcon />
           </div>
           <div
-            title="Knowledge Source"
+            title={"Knowledge Source"}
             className={"kie-dmn-editor--palette-button dndnode knowledge-source"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.knowledgeSource)}
             draggable={true}
@@ -178,7 +186,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             <KnowledgeSourceIcon />
           </div>
           <div
-            title="Decision Service"
+            title={"Decision Service"}
             className={"kie-dmn-editor--palette-button dndnode decision-service"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decisionService)}
             draggable={true}
@@ -189,7 +197,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
         <br />
         <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
           <div
-            title="Group"
+            title={"Group"}
             className={"kie-dmn-editor--palette-button dndnode group"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.group)}
             draggable={true}
@@ -198,7 +206,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             <GroupIcon />
           </div>
           <div
-            title="Text Annotation"
+            title={"Text Annotation"}
             className={"kie-dmn-editor--palette-button dndnode text-annotation"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.textAnnotation)}
             draggable={true}
@@ -208,22 +216,22 @@ export function Palette({ pulse }: { pulse: boolean }) {
         </aside>
         <br />
         <aside className={"kie-dmn-editor--drg-panel-toggle"}>
-          {diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES && (
+          {diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES && (
             <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
               <DrgNodesPanel />
             </div>
           )}
           <button
-            title="DRG nodes"
+            title={"DRG nodes"}
             className={`kie-dmn-editor--drg-panel-toggle-button ${
-              diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES ? "active" : ""
+              diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES ? "active" : ""
             }`}
             onClick={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.openNodesPanel =
-                  state.diagram.openNodesPanel === DiagramNodesPanel.DRG_NODES
-                    ? DiagramNodesPanel.NONE
-                    : DiagramNodesPanel.DRG_NODES;
+                state.diagram.openLhsPanel =
+                  state.diagram.openLhsPanel === DiagramLhsPanel.DRG_NODES
+                    ? DiagramLhsPanel.NONE
+                    : DiagramLhsPanel.DRG_NODES;
               });
             }}
           >
@@ -232,23 +240,23 @@ export function Palette({ pulse }: { pulse: boolean }) {
         </aside>
         <br />
         <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
-          {diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES && (
+          {diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES && (
             <div className={"kie-dmn-editor--palette-nodes-popover"} style={{ maxHeight }}>
               <ExternalNodesPanel />
             </div>
           )}
 
           <button
-            title="External nodes"
+            title={"External nodes"}
             className={`kie-dmn-editor--external-nodes-panel-toggle-button ${
-              diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES ? "active" : ""
+              diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES ? "active" : ""
             }`}
             onClick={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.openNodesPanel =
-                  state.diagram.openNodesPanel === DiagramNodesPanel.EXTERNAL_NODES
-                    ? DiagramNodesPanel.NONE
-                    : DiagramNodesPanel.EXTERNAL_NODES;
+                state.diagram.openLhsPanel =
+                  state.diagram.openLhsPanel === DiagramLhsPanel.EXTERNAL_NODES
+                    ? DiagramLhsPanel.NONE
+                    : DiagramLhsPanel.EXTERNAL_NODES;
               });
             }}
           >

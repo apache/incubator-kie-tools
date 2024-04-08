@@ -265,8 +265,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns `n` with rounding mode ceiling. If `n` is null the result is null.",
         parameters: [["n", `\`number\``]],
         examples: ["ceiling( 1.5 ) = 2", "ceiling( -1.5 ) = -1"],
-      } /*
-      {   === DMN 1.4 ===
+      },
+      {
         label: "ceiling(n, scale)",
         insertText: "ceiling($1, $2)",
         description:
@@ -276,7 +276,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["scale", `\`number\``],
         ],
         examples: ["ceiling( -1.56, 1 ) = -1.5"],
-      }, */,
+      },
       {
         label: "code(value)",
         insertText: "code($1)",
@@ -324,6 +324,59 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["match", `string`],
         ],
         examples: ['contains( "foobar", "of" ) = false', 'contains( "foobar", "fo" ) = true'],
+      },
+      {
+        label: "context(entries)",
+        insertText: "context($1)",
+        description:
+          "Returns a new `context` that includes all specified entries. If a `context` item contains additional entries beyond the required `key` and `value` entries, the additional entries are ignored. If a `context` item is missing the required `key` and `value` entries, the final result is null.",
+        parameters: [["entries", `\`list\` of \`context\``]],
+        examples: [
+          'context( [{key:"a", value:1}, {key:"b", value:2}] ) = { a:1, b:2 }',
+          'context([ {key:"a", value:1}, {key:"b", value:2, something: "else"}] ) = {a:1, b:2}',
+          'context( [{key:"a", value:1}, {key:"b"}] ) = null',
+        ],
+      },
+      {
+        label: "context merge(contexts)",
+        insertText: "context merge($1)",
+        description:
+          "Returns a new `context` that includes all entries from the given `contexts`; if some of the keys are equal, the entries are overridden. The entries are overridden in the same order as specified by the supplied parameter, with new entries added as the last entry in the new context.",
+        parameters: [["contexts", `\`list\` of \`context\``]],
+        examples: ["context merge( [{x:1}, {y:2}] ) = {x:1, y:2}", "context merge( [{x:1, y:0}, {y:2}] ) = {x:1, y:2}"],
+      },
+      {
+        label: "context put(context, key, value)",
+        insertText: "context put($1, $2, $3)",
+        description:
+          "Returns a new `context` that includes the new entry, or overrides the existing value if an entry for the same key already exists in the supplied `context` parameter. A new entry is added as the last entry of the new context. If overriding an existing entry, the order of the keys maintains the same order as in the original context.",
+        parameters: [
+          ["context", `\`context\``],
+          ["key", `\`string\``],
+          ["value", `\`Any\` type`],
+        ],
+        examples: [
+          'context put( {x:1}, "y", 2 ) = {x:1, y:2}',
+          'context put( {x:1, y:0}, "y", 2 ) = {x:1, y:2}',
+          'context put( {x:1, y:0, z:0} , "y", 2) = {x:1, y:2, z:0}',
+        ],
+      },
+      {
+        label: "context put(context, keys, value)",
+        insertText: "context put($1, $2, $3)",
+        description:
+          "Returns the composite of nested invocations to `context put()` for each item in keys hierarchy in `context`.",
+        parameters: [
+          ["context", `\`context\``],
+          ["keys", `\`list\` of \`string\``],
+          ["value", `\`Any\` type`],
+        ],
+        examples: [
+          'context put( {x:1}, ["y"], 2 ) = context put( {x:1}, "y", 2) ',
+          'context put( {x:1}, ["y"], 2 ) = {x:1, y:2}',
+          'context put( {x:1, y: {a: 0} }, ["y", "a"], 2 ) = {x:1, y: {a: 2} }',
+          `context put( {x:1, y: {a: 0} }, [], 2 ) = null`,
+        ],
       },
       {
         label: "count(list)",
@@ -600,8 +653,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns `n` with rounding mode flooring. If `n` is null the result is null.",
         parameters: [["n", `\`number\``]],
         examples: ["floor(1.5) = 1"],
-      } /*
-      {   === DMN 1.4 ===
+      },
+      {
         label: "floor(n, scale)",
         insertText: "floor($1, $2)",
         description:
@@ -611,7 +664,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["scale", `\`number\``],
         ],
         examples: ["floor( -1.56, 1 ) = -1.6"],
-      }, */,
+      },
       {
         label: "get entries(m)",
         insertText: "get entries($1)",
@@ -722,6 +775,29 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["element", `Any type`],
         ],
         examples: ["list contains( [1,2,3], 2 ) = true"],
+      },
+      {
+        label: "list replace(list, position, newItem)",
+        insertText: "list replace($1, $2, $3)",
+        description: "Returns new list with `newItem` replaced at `position`.",
+        parameters: [
+          ["list", `\`list\``],
+          ["position", `\`number\``],
+          ["newItem", `Any type`],
+        ],
+        examples: ["list replace( [2, 4, 7, 8], 3, 6) = [2, 4, 6, 8]"],
+      },
+      {
+        label: "list replace(list, match, newItem)",
+        insertText: "list replace($1, $2, $3)",
+        description:
+          "Returns new list with `newItem` replaced at all positions where the `match` function returned `true`",
+        parameters: [
+          ["list", `\`list\``],
+          ["match", `boolean function(item, newItem)`],
+          ["newItem", `Any type`],
+        ],
+        examples: ["list replace( [2, 4, 7, 8], function(item, newItem) item < newItem, 5) = [5, 5, 7, 8]"],
       },
       {
         label: "log(number)",
@@ -1086,6 +1162,19 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         examples: ["product( [2, 3, 4] ) = 24", "product( [] ) = null", "product( 2, 3, 4 ) = 24"],
       },
       {
+        label: "range(from)",
+        insertText: "range($1)",
+        description: "Convert from a range `string` to a `range`.",
+        parameters: [["from", `range \`string\``]],
+        examples: [
+          'range( "[18..21)" ) is [18..21)',
+          'range( "[2..)" ) is >=2',
+          'range( "(..2)" ) is <2',
+          'range( "" ) is null',
+          'range( "[..]" ) is null',
+        ],
+      },
+      {
         label: "remove(list, position)",
         insertText: "remove($1, $2)",
         description: "Creates a list with the removed element excluded from the specified `position`.",
@@ -1130,6 +1219,70 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns a reversed `list`",
         parameters: [["list", `\`list\``]],
         examples: ["reverse( [1,2,3] ) = [3,2,1]"],
+      },
+      {
+        label: "round down(n, scale)",
+        insertText: "round down($1, $2)",
+        description:
+          "Returns `n` with given `scale` and rounding mode round down. If at least one of `n` or `scale` is null, the result is null.",
+        parameters: [
+          ["n", `\`number\``],
+          ["scale", `\`number\``],
+        ],
+        examples: [
+          "round down( 5.5, 0 ) = 5",
+          "round down( -5.5, 0 ) = -5",
+          "round down( 1.121, 2 ) = 1.12",
+          "round down( -1.126, 2 ) = -1.12",
+        ],
+      },
+      {
+        label: "round half down(n, scale)",
+        insertText: "round half down($1, $2)",
+        description:
+          "Returns `n` with given `scale` and rounding mode round half down. If at least one of `n` or `scale` is null, the result is null.",
+        parameters: [
+          ["n", `\`number\``],
+          ["scale", `\`number\``],
+        ],
+        examples: [
+          "round half down( 5.5, 0 ) = 5",
+          "round half down( -5.5, 0 ) = -5",
+          "round half down( 1.121, 2 ) = 1.12",
+          "round half down( -1.126, 2 ) = -1.13",
+        ],
+      },
+      {
+        label: "round half up(n, scale)",
+        insertText: "round half up($1, $2)",
+        description:
+          "Returns `n` with given `scale` and rounding mode round half up. If at least one of `n` or `scale` is null, the result is null.",
+        parameters: [
+          ["n", `\`number\``],
+          ["scale", `\`number\``],
+        ],
+        examples: [
+          "round half up( 5.5, 0 ) = 6",
+          "round half up( -5.5, 0 ) = -6",
+          "round half up( 1.121, 2 ) = 1.12",
+          "round half up( -1.126, 2 ) = -1.13",
+        ],
+      },
+      {
+        label: "round up(n, scale)",
+        insertText: "round up($1, $2)",
+        description:
+          "Returns `n` with given `scale` and rounding mode round up. If at least one of `n` or `scale` is null, the result is null.",
+        parameters: [
+          ["n", `\`number\``],
+          ["scale", `\`number\``],
+        ],
+        examples: [
+          "round up( 5.5, 0 ) = 6",
+          "round up( -5.5, 0 ) = -6",
+          "round up( 1.121, 2 ) = 1.13",
+          "round up( -1.126, 2 ) = -1.13",
+        ],
       },
       {
         label: "sort(list)",
@@ -1262,6 +1415,36 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Provides a string representation of the specified parameter",
         parameters: [["from", `Not null value`]],
         examples: ['string( 1.1 ) = "1.1"', "string( null ) = null"],
+      },
+      {
+        label: "string join(list)",
+        insertText: "string join($1)",
+        description:
+          "Returns a string which is composed by joining all the string elements from the `list` parameter. Null elements in the `list` parameter are ignored. If `list` is empty, the result is the empty string.",
+        parameters: [["list", `\`list\` of \`string\``]],
+        examples: [
+          'string join( ["a","b","c"] ) = "abc"',
+          'string join( ["a",null,"c"] ) = "ac"',
+          'string join([]) = ""',
+        ],
+      },
+      {
+        label: "string join(list, delimiter)",
+        insertText: "string join($1, $2)",
+        description:
+          "Returns a string which is composed by joining all the string elements from the `list` parameter, separated by the `delimiter`. The `delimiter` can be an empty string. Null elements in the `list` parameter are ignored. If `list` is empty, the result is the empty string. If `delimiter` is null, the string elements are joined without a separator.",
+        parameters: [
+          ["list", `\`list\` of \`string\``],
+          ["delimiter", `\`string\``],
+        ],
+        examples: [
+          'string join(["a","b","c"], "_and_") = "a_and_b_and_c"',
+          'string join(["a","b","c"], "") = "abc"',
+          'string join(["a","b","c"], null) = "abc"',
+          'string join(["a"], "X") = "a"',
+          'string join(["a",null,"c"], "X") = "aXc"',
+          'string join([], "X") = ""',
+        ],
       },
       {
         label: "sublist(list, start position)",

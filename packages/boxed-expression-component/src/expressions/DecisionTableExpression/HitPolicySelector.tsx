@@ -17,36 +17,33 @@
  * under the License.
  */
 
-import "./HitPolicySelector.css";
-import {
-  DecisionTableExpressionDefinitionBuiltInAggregation,
-  DecisionTableExpressionDefinitionHitPolicy,
-} from "../../api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp/MenuItemWithHelp";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
+import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { DMN15__tHitPolicy } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import "./HitPolicySelector.css";
 
 export interface HitPolicySelectorProps {
   /** Pre-selected hit policy */
-  selectedHitPolicy: DecisionTableExpressionDefinitionHitPolicy;
+  selectedHitPolicy: DMN15__tHitPolicy;
   /** Pre-selected built-in aggregator */
-  selectedBuiltInAggregator: DecisionTableExpressionDefinitionBuiltInAggregation;
+  selectedBuiltInAggregator: string;
   /** Callback invoked when hit policy selection changes */
-  onHitPolicySelected: (hitPolicy: DecisionTableExpressionDefinitionHitPolicy) => void;
+  onHitPolicySelected: (hitPolicy: string) => void;
   /** Callback invoked when built-in aggregator selection changes */
-  onBuiltInAggregatorSelected: (builtInAggregator: DecisionTableExpressionDefinitionBuiltInAggregation) => void;
+  onBuiltInAggregatorSelected: (builtInAggregator: string) => void;
 }
 
-export const HIT_POLICIES_THAT_SUPPORT_AGGREGATION = [DecisionTableExpressionDefinitionHitPolicy.Collect];
+export const HIT_POLICIES_THAT_SUPPORT_AGGREGATION = ["COLLECT"];
 
 export function HitPolicySelector({
   onBuiltInAggregatorSelected,
@@ -63,21 +60,21 @@ export function HitPolicySelector({
   );
 
   const hitPolicyHelp = useCallback(
-    (hitPolicyKey: DecisionTableExpressionDefinitionHitPolicy) => {
+    (hitPolicyKey: string) => {
       switch (hitPolicyKey) {
-        case DecisionTableExpressionDefinitionHitPolicy.Unique:
+        case "UNIQUE":
           return i18n.hitPolicyHelp.unique;
-        case DecisionTableExpressionDefinitionHitPolicy.First:
+        case "FIRST":
           return i18n.hitPolicyHelp.first;
-        case DecisionTableExpressionDefinitionHitPolicy.Priority:
+        case "PRIORITY":
           return i18n.hitPolicyHelp.priority;
-        case DecisionTableExpressionDefinitionHitPolicy.Any:
+        case "ANY":
           return i18n.hitPolicyHelp.any;
-        case DecisionTableExpressionDefinitionHitPolicy.Collect:
+        case "COLLECT":
           return i18n.hitPolicyHelp.collect;
-        case DecisionTableExpressionDefinitionHitPolicy.RuleOrder:
+        case "RULE ORDER":
           return i18n.hitPolicyHelp.ruleOrder;
-        case DecisionTableExpressionDefinitionHitPolicy.OutputOrder:
+        case "OUTPUT ORDER":
           return i18n.hitPolicyHelp.outputOrder;
         default:
           return i18n.hitPolicyHelp.unique;
@@ -95,15 +92,15 @@ export function HitPolicySelector({
   );
 
   const aggregatorHelp = useCallback(
-    (aggregatorKey: DecisionTableExpressionDefinitionBuiltInAggregation) => {
+    (aggregatorKey: string) => {
       switch (aggregatorKey) {
-        case DecisionTableExpressionDefinitionBuiltInAggregation.SUM:
+        case "+":
           return i18n.builtInAggregatorHelp.sum;
-        case DecisionTableExpressionDefinitionBuiltInAggregation.COUNT:
+        case "#":
           return i18n.builtInAggregatorHelp.count;
-        case DecisionTableExpressionDefinitionBuiltInAggregation.MIN:
+        case "<":
           return i18n.builtInAggregatorHelp.min;
-        case DecisionTableExpressionDefinitionBuiltInAggregation.MAX:
+        case ">":
           return i18n.builtInAggregatorHelp.max;
         default:
           return i18n.builtInAggregatorHelp.none;
@@ -121,8 +118,7 @@ export function HitPolicySelector({
   const hitPolicySelectionCallback = useCallback(
     (event: React.MouseEvent, itemId: string) => {
       event.stopPropagation();
-      const updatedHitPolicy = itemId as DecisionTableExpressionDefinitionHitPolicy;
-      onHitPolicySelected(updatedHitPolicy);
+      onHitPolicySelected(itemId);
     },
     [onHitPolicySelected]
   );
@@ -130,7 +126,7 @@ export function HitPolicySelector({
   const builtInAggregatorSelectionCallback = useCallback(
     (event: React.MouseEvent, itemId: string | number) => {
       event.stopPropagation();
-      onBuiltInAggregatorSelected(itemId as DecisionTableExpressionDefinitionBuiltInAggregation);
+      onBuiltInAggregatorSelected(itemId as string);
     },
     [onBuiltInAggregatorSelected]
   );
@@ -162,22 +158,26 @@ export function HitPolicySelector({
               <MenuGroup className="menu-with-help" label="Hit policy">
                 <MenuList>
                   <>
-                    {_.map(Object.entries(DecisionTableExpressionDefinitionHitPolicy), ([hitPolicyKey, hitPolicy]) => (
-                      <MenuItemWithHelp
-                        key={hitPolicyKey}
-                        menuItemKey={hitPolicy}
-                        menuItemHelp={hitPolicyHelp(hitPolicy)}
-                        setVisibleHelp={toggleVisibleHelpHitPolicy}
-                        visibleHelp={visibleHelpHitPolicy}
-                      />
-                    ))}
+                    {["UNIQUE", "FIRST", "PRIORITY", "ANY", "COLLECT", "RULE ORDER", "OUTPUT ORDER"].map(
+                      (hitPolicy) => {
+                        return (
+                          <MenuItemWithHelp
+                            key={hitPolicy}
+                            menuItemKey={hitPolicy}
+                            menuItemHelp={hitPolicyHelp(hitPolicy)}
+                            setVisibleHelp={toggleVisibleHelpHitPolicy}
+                            visibleHelp={visibleHelpHitPolicy}
+                          />
+                        );
+                      }
+                    )}
                   </>
                 </MenuList>
               </MenuGroup>
             </Menu>
           </div>
 
-          {selectedHitPolicy === DecisionTableExpressionDefinitionHitPolicy.Collect && (
+          {selectedHitPolicy === "COLLECT" && (
             <>
               <Divider isVertical={true} />
               <div className="hit-policy-aggregator-section">
@@ -185,19 +185,22 @@ export function HitPolicySelector({
                   <MenuGroup className="menu-with-help" label="Aggregator function">
                     <MenuList>
                       <>
-                        {_.map(
-                          Object.entries(DecisionTableExpressionDefinitionBuiltInAggregation),
-                          ([aggregatorKey, aggregator]) => (
-                            <MenuItemWithHelp
-                              key={aggregatorKey}
-                              menuItemKey={aggregator}
-                              menuItemCustomText={aggregatorKey}
-                              menuItemHelp={aggregatorHelp(aggregator)}
-                              setVisibleHelp={toggleVisibleHelpAggregatorFunction}
-                              visibleHelp={visibleHelpAggregatorFunction}
-                            />
-                          )
-                        )}
+                        {[
+                          ["<None>", "?"],
+                          ["SUM", "+"],
+                          ["COUNT", "#"],
+                          ["MIN", "<"],
+                          ["MAX", ">"],
+                        ].map((agg) => (
+                          <MenuItemWithHelp
+                            key={agg[0]}
+                            menuItemKey={agg[1]}
+                            menuItemCustomText={agg[0]}
+                            menuItemHelp={aggregatorHelp(agg[1])}
+                            setVisibleHelp={toggleVisibleHelpAggregatorFunction}
+                            visibleHelp={visibleHelpAggregatorFunction}
+                          />
+                        ))}
                       </>
                     </MenuList>
                   </MenuGroup>

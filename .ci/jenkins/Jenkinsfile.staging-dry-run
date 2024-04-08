@@ -14,15 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+@Library('jenkins-pipeline-shared-libraries')_
+
 pipeline {
     agent {
         docker {
             image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            label util.avoidFaultyNodes()
         }
     }
 
     options {
-        timeout(time: 360, unit: 'MINUTES')
+        timeout(time: 600, unit: 'MINUTES')
     }
 
     stages {

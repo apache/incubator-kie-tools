@@ -17,14 +17,25 @@
  * under the License.
  */
 
-import { createContext, useContext } from "react";
-import * as RF from "reactflow";
-import { StoreApi, UseBoundStore, create } from "zustand";
-import { WithImmer, immer } from "zustand/middleware/immer";
-import { useStoreWithEqualityFn } from "zustand/traditional";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { enableMapSet } from "immer";
+import * as RF from "reactflow";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+import { ExternalModelsIndex } from "../DmnEditor";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { normalize } from "../normalization/normalize";
+import { ComputedStateCache } from "./ComputedStateCache";
+import { computeAllFeelVariableUniqueNames } from "./computed/computeAllFeelVariableUniqueNames";
+import { computeDataTypes } from "./computed/computeDataTypes";
+import { computeDiagramData } from "./computed/computeDiagramData";
+import { computeExternalModelsByType } from "./computed/computeExternalModelsByType";
+import { computeImportsByNamespace } from "./computed/computeImportsByNamespace";
+import { computeIndexedDrd } from "./computed/computeIndexes";
+import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
+
+enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
 export interface DmnEditorDiagramNodeStatus {
   selected: boolean;
@@ -46,8 +57,9 @@ export interface SnapGrid {
   y: number;
 }
 
-export enum DiagramNodesPanel {
+export enum DiagramLhsPanel {
   NONE = "NONE",
+  DRD_SELECTOR = "DRD_SELECTOR",
   DRG_NODES = "DRG_NODES",
   EXTERNAL_NODES = "EXTERNAL_NODES",
 }
@@ -55,7 +67,8 @@ export enum DiagramNodesPanel {
 export type DropTargetNode = undefined | RF.Node<DmnDiagramNodeData>;
 
 export interface State {
-  dispatch: Dispatch;
+  dispatch: (s: State) => Dispatch;
+  computed: (s: State) => Computed;
   dmn: { model: DmnLatestModel };
   focus: {
     consumableId: string | undefined;
@@ -86,16 +99,12 @@ export interface State {
     overlaysPanel: {
       isOpen: boolean;
     };
-    openNodesPanel: DiagramNodesPanel;
-    drdSelector: {
-      isOpen: boolean;
-    };
+    openLhsPanel: DiagramLhsPanel;
     overlays: {
       enableNodeHierarchyHighlight: boolean;
       enableExecutionHitsHighlights: boolean;
-      enableCustomNodeStyles: boolean;
       enableDataTypesToolbarOnNodes: boolean;
-      enableStyles: boolean;
+      enableCustomNodeStyles: boolean;
     };
     snapGrid: SnapGrid;
     _selectedNodes: Array<string>;
@@ -104,26 +113,46 @@ export interface State {
     resizingNodes: Array<string>;
     draggingWaypoints: Array<string>;
     movingDividerLines: Array<string>;
-    editingStyle: boolean;
+    isEditingStyle: boolean;
   };
 }
+
+// Read this to understand why we need computed as part of the store.
+// https://github.com/pmndrs/zustand/issues/132#issuecomment-1120467721
+export type Computed = {
+  isDiagramEditingInProgress(): boolean;
+
+  importsByNamespace(): Map<string, DMN15__tImport>;
+
+  indexedDrd(): ReturnType<typeof computeIndexedDrd>;
+
+  getDiagramData(e: ExternalModelsIndex | undefined): ReturnType<typeof computeDiagramData>;
+
+  isAlternativeInputDataShape(): boolean;
+
+  isDropTargetNodeValidForSelection(e: ExternalModelsIndex | undefined): boolean;
+
+  getExternalModelTypesByNamespace: (
+    e: ExternalModelsIndex | undefined
+  ) => ReturnType<typeof computeExternalModelsByType>;
+
+  getDataTypes(e: ExternalModelsIndex | undefined): ReturnType<typeof computeDataTypes>;
+
+  getAllFeelVariableUniqueNames(): ReturnType<typeof computeAllFeelVariableUniqueNames>;
+};
 
 export type Dispatch = {
   dmn: {
     reset: (model: State["dmn"]["model"]) => void;
   };
   boxedExpressionEditor: {
-    open: (state: State, id: string) => void;
-    close: (state: State) => void;
+    open: (id: string) => void;
+    close: () => void;
   };
   diagram: {
-    setNodeStatus: (state: State, nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
-    setEdgeStatus: (state: State, edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
-    setDividerLineStatus: (
-      state: State,
-      decisionServiceId: string,
-      status: Partial<DmnEditorDiagramDividerLineStatus>
-    ) => void;
+    setNodeStatus: (nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
+    setEdgeStatus: (edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
+    setDividerLineStatus: (decisionServiceId: string, status: Partial<DmnEditorDiagramDividerLineStatus>) => void;
   };
 };
 
@@ -133,37 +162,7 @@ export enum DmnEditorTab {
   INCLUDED_MODELS,
 }
 
-export const NODE_LAYERS = {
-  GROUP_NODE: 0,
-  NODES: 1000, // We need a difference > 1000 here, since ReactFlow will add 1000 to the z-index when a node is selected.
-  DECISION_SERVICE_NODE: 2000, // We need a difference > 1000 here, since ReactFlow will add 1000 to the z-index when a node is selected.
-  NESTED_NODES: 4000,
-};
-
-type ExtractState = StoreApi<State> extends { getState: () => infer T } ? T : never;
-
-export function useDmnEditorStore<StateSlice = ExtractState>(
-  selector: (state: State) => StateSlice,
-  equalityFn?: (a: StateSlice, b: StateSlice) => boolean
-) {
-  const store = useContext(DmnEditorStoreApiContext);
-
-  if (store === null) {
-    throw new Error("Can't use DMN Editor Store outside of the DmnEditor component.");
-  }
-
-  return useStoreWithEqualityFn(store, selector, equalityFn);
-}
-
-export function useDmnEditorStoreApi() {
-  return useContext(DmnEditorStoreApiContext);
-}
-
-export const DmnEditorStoreApiContext = createContext<StoreApiType>({} as any);
-
-export type StoreApiType = UseBoundStore<WithImmer<StoreApi<State>>>;
-
-export const defaultStaticState = () => ({
+export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed"> => ({
   boxedExpressionEditor: {
     activeDrgElementId: undefined,
     selectedObjectId: undefined,
@@ -173,6 +172,13 @@ export const defaultStaticState = () => ({
   },
   navigation: {
     tab: DmnEditorTab.EDITOR,
+  },
+  focus: {
+    consumableId: undefined,
+  },
+  dataTypesEditor: {
+    activeItemDefinitionId: undefined,
+    expandedItemComponentIds: [],
   },
   diagram: {
     drdIndex: 0,
@@ -186,126 +192,200 @@ export const defaultStaticState = () => ({
     overlaysPanel: {
       isOpen: false,
     },
-
-    openNodesPanel: DiagramNodesPanel.NONE,
-    drdSelector: {
-      isOpen: false,
-    },
+    openLhsPanel: DiagramLhsPanel.NONE,
     overlays: {
       enableNodeHierarchyHighlight: false,
       enableExecutionHitsHighlights: false,
-      enableCustomNodeStyles: false,
+      enableCustomNodeStyles: true,
       enableDataTypesToolbarOnNodes: true,
-      enableStyles: true,
     },
-    snapGrid: { isEnabled: true, x: 20, y: 20 },
+    snapGrid: {
+      isEnabled: true,
+      x: 20,
+      y: 20,
+    },
     _selectedNodes: [],
     _selectedEdges: [],
     draggingNodes: [],
     resizingNodes: [],
     draggingWaypoints: [],
     movingDividerLines: [],
-    editingStyle: false,
+    isEditingStyle: false,
   },
 });
 
-export function createDmnEditorStore(model: State["dmn"]["model"]) {
+export function createDmnEditorStore(model: State["dmn"]["model"], computedCache: ComputedStateCache<Computed>) {
   return create(
-    immer<State>((set, get) => ({
+    immer<State>(() => ({
       dmn: {
         model: normalize(model),
       },
-      focus: {
-        consumableId: undefined,
-      },
-      dataTypesEditor: {
-        activeItemDefinitionId: undefined,
-        expandedItemComponentIds: [],
-      },
       ...defaultStaticState(),
-      dispatch: {
-        dmn: {
-          reset: (model) => {
-            set((state) => {
-              state.diagram._selectedNodes = [];
-              state.diagram.draggingNodes = [];
-              state.diagram.resizingNodes = [];
-              state.navigation.tab = DmnEditorTab.EDITOR;
-              state.boxedExpressionEditor.activeDrgElementId = undefined;
-              state.boxedExpressionEditor.selectedObjectId = undefined;
-            });
+      dispatch(s: State) {
+        return {
+          dmn: {
+            reset: () => {
+              s.diagram._selectedNodes = [];
+              s.diagram.draggingNodes = [];
+              s.diagram.resizingNodes = [];
+              s.navigation.tab = DmnEditorTab.EDITOR;
+              s.boxedExpressionEditor.activeDrgElementId = undefined;
+              s.boxedExpressionEditor.selectedObjectId = undefined;
+            },
           },
-        },
-        boxedExpressionEditor: {
-          open: (state, id) => {
-            state.boxedExpressionEditor.activeDrgElementId = id;
-            state.boxedExpressionEditor.selectedObjectId = undefined;
-            state.boxedExpressionEditor.propertiesPanel.isOpen = state.diagram.propertiesPanel.isOpen;
+          boxedExpressionEditor: {
+            open: (id) => {
+              s.boxedExpressionEditor.activeDrgElementId = id;
+              s.boxedExpressionEditor.selectedObjectId = undefined;
+              s.boxedExpressionEditor.propertiesPanel.isOpen = s.diagram.propertiesPanel.isOpen;
+            },
+            close: () => {
+              s.diagram.propertiesPanel.isOpen = s.boxedExpressionEditor.propertiesPanel.isOpen;
+              s.boxedExpressionEditor.activeDrgElementId = undefined;
+              s.boxedExpressionEditor.selectedObjectId = undefined;
+            },
           },
-          close: (state) => {
-            state.diagram.propertiesPanel.isOpen = state.boxedExpressionEditor.propertiesPanel.isOpen;
-            state.boxedExpressionEditor.activeDrgElementId = undefined;
-            state.boxedExpressionEditor.selectedObjectId = undefined;
+          diagram: {
+            setNodeStatus: (nodeId, newStatus) => {
+              //selected
+              if (newStatus.selected !== undefined) {
+                if (newStatus.selected) {
+                  s.diagram._selectedNodes.push(nodeId);
+                } else {
+                  s.diagram._selectedNodes = s.diagram._selectedNodes.filter((s) => s !== nodeId);
+                }
+              }
+              //dragging
+              if (newStatus.dragging !== undefined) {
+                if (newStatus.dragging) {
+                  s.diagram.draggingNodes.push(nodeId);
+                } else {
+                  s.diagram.draggingNodes = s.diagram.draggingNodes.filter((s) => s !== nodeId);
+                }
+              }
+              // resizing
+              if (newStatus.resizing !== undefined) {
+                if (newStatus.resizing) {
+                  s.diagram.resizingNodes.push(nodeId);
+                } else {
+                  s.diagram.resizingNodes = s.diagram.resizingNodes.filter((s) => s !== nodeId);
+                }
+              }
+            },
+            setEdgeStatus: (edgeId, newStatus) => {
+              //selected
+              if (newStatus.selected !== undefined) {
+                if (newStatus.selected) {
+                  s.diagram._selectedEdges.push(edgeId);
+                } else {
+                  s.diagram._selectedEdges = s.diagram._selectedEdges.filter((s) => s !== edgeId);
+                }
+              }
+              //dragging
+              if (newStatus.draggingWaypoint !== undefined) {
+                if (newStatus.draggingWaypoint) {
+                  s.diagram.draggingWaypoints.push(edgeId);
+                } else {
+                  s.diagram.draggingWaypoints = s.diagram.draggingWaypoints.filter((s) => s !== edgeId);
+                }
+              }
+            },
+            setDividerLineStatus: (decisionServiceId, newStatus) => {
+              //dragging
+              if (newStatus.moving !== undefined) {
+                if (newStatus.moving) {
+                  s.diagram.movingDividerLines.push(decisionServiceId);
+                } else {
+                  s.diagram.movingDividerLines = s.diagram.movingDividerLines.filter((s) => s !== decisionServiceId);
+                }
+              }
+            },
           },
-        },
-        diagram: {
-          setNodeStatus: (prev, nodeId, newStatus) => {
-            //selected
-            if (newStatus.selected !== undefined) {
-              if (newStatus.selected) {
-                prev.diagram._selectedNodes.push(nodeId);
-              } else {
-                prev.diagram._selectedNodes = prev.diagram._selectedNodes.filter((s) => s !== nodeId);
-              }
-            }
-            //dragging
-            if (newStatus.dragging !== undefined) {
-              if (newStatus.dragging) {
-                prev.diagram.draggingNodes.push(nodeId);
-              } else {
-                prev.diagram.draggingNodes = prev.diagram.draggingNodes.filter((s) => s !== nodeId);
-              }
-            }
-            // resizing
-            if (newStatus.resizing !== undefined) {
-              if (newStatus.resizing) {
-                prev.diagram.resizingNodes.push(nodeId);
-              } else {
-                prev.diagram.resizingNodes = prev.diagram.resizingNodes.filter((s) => s !== nodeId);
-              }
-            }
+        };
+      },
+      computed(s: State) {
+        return {
+          isDiagramEditingInProgress: () => {
+            return computedCache.cached(
+              "isDiagramEditingInProgress",
+              (
+                draggingNodesCount: number,
+                resizingNodesCount: number,
+                draggingWaypointsCount: number,
+                movingDividerLinesCount: number,
+                isisEditingStyle: boolean
+              ) =>
+                draggingNodesCount > 0 ||
+                resizingNodesCount > 0 ||
+                draggingWaypointsCount > 0 ||
+                movingDividerLinesCount > 0 ||
+                isisEditingStyle,
+              [
+                s.diagram.draggingNodes.length,
+                s.diagram.resizingNodes.length,
+                s.diagram.draggingWaypoints.length,
+                s.diagram.movingDividerLines.length,
+                s.diagram.isEditingStyle,
+              ]
+            );
           },
-          setEdgeStatus: (prev, edgeId, newStatus) => {
-            //selected
-            if (newStatus.selected !== undefined) {
-              if (newStatus.selected) {
-                prev.diagram._selectedEdges.push(edgeId);
-              } else {
-                prev.diagram._selectedEdges = prev.diagram._selectedEdges.filter((s) => s !== edgeId);
-              }
-            }
-            //dragging
-            if (newStatus.draggingWaypoint !== undefined) {
-              if (newStatus.draggingWaypoint) {
-                prev.diagram.draggingWaypoints.push(edgeId);
-              } else {
-                prev.diagram.draggingWaypoints = prev.diagram.draggingWaypoints.filter((s) => s !== edgeId);
-              }
-            }
+
+          indexedDrd: () => {
+            return computedCache.cached("indexedDrd", computeIndexedDrd, [
+              s.dmn.model.definitions["@_namespace"],
+              s.dmn.model.definitions,
+              s.diagram.drdIndex,
+            ]);
           },
-          setDividerLineStatus: (prev, decisionServiceId, newStatus) => {
-            //dragging
-            if (newStatus.moving !== undefined) {
-              if (newStatus.moving) {
-                prev.diagram.movingDividerLines.push(decisionServiceId);
-              } else {
-                prev.diagram.movingDividerLines = prev.diagram.movingDividerLines.filter(
-                  (s) => s !== decisionServiceId
-                );
-              }
-            }
+
+          importsByNamespace: () => {
+            return computedCache.cached("importsByNamespace", computeImportsByNamespace, [
+              s.dmn.model.definitions.import,
+            ]);
           },
-        },
+
+          isAlternativeInputDataShape: () =>
+            computedCache.cached(
+              "isAlternativeInputDataShape",
+              (drdIndex, dmnDiagram) => dmnDiagram?.[drdIndex]["@_useAlternativeInputDataShape"] ?? false,
+              [s.diagram.drdIndex, s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]] as const
+            ),
+
+          isDropTargetNodeValidForSelection: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
+            computedCache.cached("isDropTargetNodeValidForSelection", computeIsDropTargetNodeValidForSelection, [
+              s.diagram.dropTargetNode,
+              s.computed(s).getDiagramData(externalModelsByNamespace),
+            ]),
+
+          getDataTypes: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
+            computedCache.cached("getDataTypes", computeDataTypes, [
+              s.dmn.model.definitions["@_namespace"],
+              s.dmn.model.definitions.itemDefinition,
+              s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace),
+              s.computed(s).importsByNamespace(),
+            ]),
+
+          getAllFeelVariableUniqueNames: () =>
+            computedCache.cached("getAllFeelVariableUniqueNames", computeAllFeelVariableUniqueNames, [
+              s.dmn.model.definitions.drgElement,
+              s.dmn.model.definitions.import,
+            ]),
+
+          getExternalModelTypesByNamespace: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
+            computedCache.cached("getExternalModelTypesByNamespace", computeExternalModelsByType, [
+              s.dmn.model.definitions.import,
+              externalModelsByNamespace,
+            ]),
+
+          getDiagramData: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
+            computedCache.cached("getDiagramData", computeDiagramData, [
+              s.diagram,
+              s.dmn.model.definitions,
+              s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace),
+              s.computed(s).indexedDrd(),
+              s.computed(s).isAlternativeInputDataShape(),
+            ]),
+        };
       },
     }))
   );

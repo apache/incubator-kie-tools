@@ -23,6 +23,7 @@ package org.uberfire.client.workbench;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -68,7 +69,6 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.CustomPanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 /**
@@ -264,6 +264,10 @@ public class PanelManagerImpl implements PanelManager {
 
         //Select newly inserted part
         selectPlaceEvent.fire(new SelectPlaceEvent(place));
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Override

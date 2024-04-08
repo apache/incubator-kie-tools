@@ -23,11 +23,11 @@ import {
   FormNotification,
   Notification,
 } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
-import { WorkflowFormDriver } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api/WorkflowFormDriver";
-import CustomWorkflowForm from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/envelope/components/CustomWorkflowForm/CustomWorkflowForm";
-import WorkflowForm from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/envelope/components/WorkflowForm/WorkflowForm";
-import WorkflowResult from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/envelope/components/WorkflowResult/WorkflowResult";
-import { WorkflowDefinition, WorkflowResponse } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { WorkflowFormDriver } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowForm/api/WorkflowFormDriver";
+import CustomWorkflowForm from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowForm/envelope/components/CustomWorkflowForm/CustomWorkflowForm";
+import WorkflowForm from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowForm/envelope/components/WorkflowForm/WorkflowForm";
+import WorkflowResult from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowForm/envelope/components/WorkflowResult/WorkflowResult";
+import { WorkflowDefinition, WorkflowResponse } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";

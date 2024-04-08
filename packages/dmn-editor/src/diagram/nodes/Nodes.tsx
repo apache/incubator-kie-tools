@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
@@ -28,21 +29,34 @@ import {
   DMN15__tTextAnnotation,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
+import { drag } from "d3-drag";
+import { select } from "d3-selection";
 import * as React from "react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as RF from "reactflow";
+import { OnCreateDataType, OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
+import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
 import { renameDrgElement, renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
-import { DmnEditorTab, DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { updateDecisionServiceDividerLine } from "../../mutations/updateDecisionServiceDividerLine";
+import { DmnEditorTab, SnapGrid, State } from "../../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
+import { Unpacked } from "../../tsExt/tsExt";
 import { snapShapeDimensions } from "../SnapGrid";
-import { DECISION_SERVICE_COLLAPSED_DIMENSIONS } from "./DefaultSizes";
 import { PositionalNodeHandles } from "../connections/PositionalNodeHandles";
 import { NodeType, containment, outgoingStructure } from "../connections/graphStructure";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
+import { DmnDiagramEdgeData } from "../edges/Edges";
+import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
+import { useIsHovered } from "../useIsHovered";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
+import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "./DefaultSizes";
 import { EditExpressionNodePanel } from "./EditExpressionNodePanel";
 import { EditableNodeLabel, OnEditableNodeLabelChange, useEditableNodeLabel } from "./EditableNodeLabel";
 import { InfoNodePanel } from "./InfoNodePanel";
+import { getNodeLabelPosition, useNodeStyle } from "./NodeStyle";
 import {
+  AlternativeInputDataNodeSvg,
   BkmNodeSvg,
   DecisionNodeSvg,
   DecisionServiceNodeSvg,
@@ -54,20 +68,9 @@ import {
 } from "./NodeSvgs";
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
-import { useIsHovered } from "../useIsHovered";
-import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
-import { DmnDiagramEdgeData } from "../edges/Edges";
-import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import { Unpacked } from "../../tsExt/tsExt";
-import { OnCreateDataType, OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
-import { MIN_NODE_SIZES } from "./DefaultSizes";
-import { select } from "d3-selection";
-import { drag } from "d3-drag";
-import { updateDecisionServiceDividerLine } from "../../mutations/updateDecisionServiceDividerLine";
-import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { getNodeLabelPosition, useNodeStyle } from "./NodeStyle";
+import { propsHaveSameValuesDeep } from "../memoization/memoization";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -86,6 +89,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObject: T;
   shape: DMNDI15__DMNShape & { index: number };
   index: number;
+  hasHiddenRequirements: boolean;
   /**
    * We don't use Reactflow's parenting mechanism because it is
    * too opinionated on how it deletes nodes/edges that are
@@ -103,23 +107,35 @@ export const InputDataNode = React.memo(
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tInputData & { __$$element: "inputData" }>>) => {
+    const renderCount = useRef<number>(0);
+    renderCount.current++;
+
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
+
+    const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+    const enableCustomNodeStyles = useDmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
+    const isHovered = useIsHovered(ref);
     const isResizing = useNodeResizing(id);
-
-    const diagram = useDmnEditorStore((s) => s.diagram);
-    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      inputData["@_id"]
+    const shouldActLikeHovered = useDmnEditorStore(
+      (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
+    const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
+
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
+    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const className = useNodeClassName(isValidConnectionTarget, id);
+    const nodeDimensions = useNodeDimensions({
+      nodeType: type as typeof NODE_TYPES.inputData,
+      snapGrid,
+      shape,
+      isAlternativeInputDataShape,
+    });
 
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
@@ -141,105 +157,211 @@ export const InputDataNode = React.memo(
       [dmnEditorStoreApi, index, inputData]
     );
 
-    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+    const getAllFeelVariableUniqueNames = useCallback((s: State) => s.computed(s).getAllFeelVariableUniqueNames(), []);
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, inputData["@_name"]);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
-      isEnabled: diagram.overlays.enableStyles,
+      isEnabled: enableCustomNodeStyles,
     });
+
+    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
+
+    const { externalModelsByNamespace } = useExternalModels();
+
+    const isCollection = useDmnEditorStore((s) => {
+      const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = s
+        .computed(s)
+        .getDataTypes(externalModelsByNamespace);
+
+      return (
+        allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(inputData.variable?.["@_typeRef"] ?? "") ?? "")
+          ?.itemDefinition?.["@_isCollection"] ?? false
+      );
+    });
+
+    const [alternativeEditableNodeHeight, setAlternativeEditableNodeHeight] = React.useState<number>(0);
+    const alternativeSvgStyle = useMemo(() => {
+      // This is used to modify a css from a :before element.
+      // The --height is a css var which is used by the kie-dmn-editor--selected-alternative-input-data-node class.
+      return isAlternativeInputDataShape
+        ? ({
+            display: "flex",
+            flexDirection: "column",
+            outline: "none",
+            "--selected-alternative-input-data-node-shape--height": `${
+              nodeDimensions.height + 20 + (isEditingLabel ? 20 : alternativeEditableNodeHeight ?? 0)
+            }px`,
+          } as any)
+        : undefined;
+      // The dependecy should be "nodeDimension" to trigger an adjustment on width changes as well.
+    }, [isAlternativeInputDataShape, nodeDimensions, isEditingLabel, alternativeEditableNodeHeight]);
+
+    const selectedAlternativeClass = useMemo(
+      () => (isAlternativeInputDataShape && selected ? "kie-dmn-editor--selected-alternative-input-data-node" : ""),
+      [isAlternativeInputDataShape, selected]
+    );
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
-          <InputDataNodeSvg
-            {...nodeDimensions}
-            x={0}
-            y={0}
-            strokeWidth={shapeStyle.strokeWidth}
-            fillColor={shapeStyle.fillColor}
-            strokeColor={shapeStyle.strokeColor}
-          />
+        <svg
+          className={`kie-dmn-editor--node-shape ${additionalClasses} ${
+            isAlternativeInputDataShape ? "alternative" : ""
+          } ${selected ? "selected" : ""}`}
+        >
+          {isAlternativeInputDataShape ? (
+            <AlternativeInputDataNodeSvg
+              isCollection={isCollection}
+              {...nodeDimensions}
+              x={0}
+              y={0}
+              strokeWidth={shapeStyle.strokeWidth}
+              fillColor={shapeStyle.fillColor}
+              strokeColor={shapeStyle.strokeColor}
+              isIcon={false}
+            />
+          ) : (
+            <InputDataNodeSvg
+              isCollection={isCollection}
+              {...nodeDimensions}
+              x={0}
+              y={0}
+              strokeWidth={shapeStyle.strokeWidth}
+              fillColor={shapeStyle.fillColor}
+              strokeColor={shapeStyle.strokeColor}
+            />
+          )}
         </svg>
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
-          ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className} ${
-            dmnObjectQName.prefix ? "external" : ""
-          }`}
-          tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          style={alternativeSvgStyle}
+          className={`kie-dmn-editor--input-data-node ${selectedAlternativeClass}`}
+          ref={ref}
+          tabIndex={-1}
+          data-nodehref={id}
+          data-nodelabel={inputData["@_name"]}
         >
-          <InfoNodePanel isVisible={!isTargeted && isHovered} />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
+          <div className={`kie-dmn-editor--node ${additionalClasses}`}>
+            <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
-          <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && isHovered}
-            nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
-            edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
-          />
-          <EditableNodeLabel
-            namedElement={inputData}
-            namedElementQName={dmnObjectQName}
-            isEditing={isEditingLabel}
-            setEditing={setEditingLabel}
-            position={getNodeLabelPosition(type as NodeType)}
-            value={inputData["@_label"] ?? inputData["@_name"]}
-            onChange={setName}
-            allUniqueNames={allFeelVariableUniqueNames}
-            shouldCommitOnBlur={true}
-            fontCssProperties={fontCssProperties}
-          />
-          {isHovered && (
-            <NodeResizerHandle
-              nodeType={type as NodeType}
-              snapGrid={diagram.snapGrid}
-              nodeId={id}
-              nodeShapeIndex={shape.index}
+            <OutgoingStuffNodePanel
+              nodeHref={id}
+              isVisible={!isTargeted && shouldActLikeHovered}
+              nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
+              edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
+            />
+            {!isAlternativeInputDataShape && (
+              <EditableNodeLabel
+                id={id}
+                namedElement={inputData}
+                namedElementQName={dmnObjectQName}
+                isEditing={isEditingLabel}
+                setEditing={setEditingLabel}
+                position={getNodeLabelPosition({
+                  nodeType: type as typeof NODE_TYPES.inputData,
+                  isAlternativeInputDataShape,
+                })}
+                value={inputData["@_label"] ?? inputData["@_name"]}
+                onChange={setName}
+                onGetAllUniqueNames={getAllFeelVariableUniqueNames}
+                shouldCommitOnBlur={true}
+                fontCssProperties={fontCssProperties}
+              />
+            )}
+            {shouldActLikeHovered && (
+              <NodeResizerHandle
+                nodeType={type as typeof NODE_TYPES.inputData}
+                snapGrid={snapGrid}
+                nodeId={id}
+                nodeShapeIndex={shape.index}
+                isAlternativeInputDataShape={isAlternativeInputDataShape}
+              />
+            )}
+            <DataTypeNodePanel
+              isVisible={!isTargeted && shouldActLikeHovered}
+              variable={inputData.variable}
+              dmnObjectNamespace={dmnObjectNamespace}
+              shape={shape}
+              onCreate={onCreateDataType}
+              onChange={onTypeRefChange}
+              onToggle={setDataTypePanelExpanded}
+            />
+          </div>
+          {/* Creates a div element with the node size to push down the <EditableNodeLabel /> */}
+          {isAlternativeInputDataShape && <div style={{ height: nodeDimensions.height, flexShrink: 0 }} />}
+          {isAlternativeInputDataShape && (
+            <EditableNodeLabel
+              id={id}
+              namedElement={inputData}
+              namedElementQName={dmnObjectQName}
+              isEditing={isEditingLabel}
+              setEditing={setEditingLabel}
+              position={getNodeLabelPosition({ nodeType: type as NodeType, isAlternativeInputDataShape })}
+              value={inputData["@_label"] ?? inputData["@_name"]}
+              onChange={setName}
+              onGetAllUniqueNames={getAllFeelVariableUniqueNames}
+              shouldCommitOnBlur={true}
+              // Keeps the text on top of the selected layer
+              fontCssProperties={{ ...fontCssProperties, zIndex: 2000 }}
+              setLabelHeight={setAlternativeEditableNodeHeight}
             />
           )}
-          <DataTypeNodePanel
-            isVisible={!isTargeted && isHovered}
-            variable={inputData.variable}
-            namespace={dmnObjectNamespace}
-            shape={shape}
-            onCreate={onCreateDataType}
-            onChange={onTypeRefChange}
-          />
         </div>
       </>
     );
-  }
+  },
+  propsHaveSameValuesDeep
 );
 
 export const DecisionNode = React.memo(
   ({
-    data: { parentRfNode, dmnObject: decision, shape, index, dmnObjectQName, dmnObjectNamespace },
+    data: {
+      parentRfNode,
+      dmnObject: decision,
+      shape,
+      index,
+      dmnObjectQName,
+      dmnObjectNamespace,
+      hasHiddenRequirements,
+    },
     selected,
     dragging,
     zIndex,
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision & { __$$element: "decision" }>>) => {
+    const renderCount = useRef<number>(0);
+    renderCount.current++;
+
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
+
+    const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+    const enableCustomNodeStyles = useDmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
+    const isHovered = useIsHovered(ref);
     const isResizing = useNodeResizing(id);
-
-    const diagram = useDmnEditorStore((s) => s.diagram);
-    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      decision["@_id"]
+    const shouldActLikeHovered = useDmnEditorStore(
+      (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
+    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const className = useNodeClassName(isValidConnectionTarget, id);
+    const nodeDimensions = useNodeDimensions({
+      nodeType: type as typeof NODE_TYPES.decision,
+      snapGrid,
+      shape,
+    });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -252,34 +374,54 @@ export const DecisionNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
           drgElement.variable ??= { "@_name": decision["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
+          if (drgElement.expression) {
+            drgElement.expression["@_typeRef"] = newTypeRef;
+          }
         });
       },
       [decision, dmnEditorStoreApi, index]
     );
 
-    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+    const getAllFeelVariableUniqueNames = useCallback((s: State) => s.computed(s).getAllFeelVariableUniqueNames(), []);
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, decision["@_name"]);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
-      isEnabled: diagram.overlays.enableStyles,
+      isEnabled: enableCustomNodeStyles,
+    });
+
+    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
+
+    const { externalModelsByNamespace } = useExternalModels();
+
+    const isCollection = useDmnEditorStore((s) => {
+      const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = s
+        .computed(s)
+        .getDataTypes(externalModelsByNamespace);
+
+      return (
+        allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(decision.variable?.["@_typeRef"] ?? "") ?? "")
+          ?.itemDefinition?.["@_isCollection"] ?? false
+      );
     });
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
           <DecisionNodeSvg
+            isCollection={isCollection}
             {...nodeDimensions}
             x={0}
             y={0}
             strokeWidth={parentRfNode ? 3 : shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenRequirements={hasHiddenRequirements}
           />
         </svg>
 
@@ -287,81 +429,93 @@ export const DecisionNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className} ${
-            dmnObjectQName.prefix ? "external" : ""
-          }`}
+          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${additionalClasses}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-nodehref={id}
+          data-nodelabel={decision["@_name"]}
         >
-          <InfoNodePanel isVisible={!isTargeted && isHovered} />
-
-          {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={decision["@_id"]!} />}
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
+          <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
+          {!isExternal && (
+            <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={decision["@_id"]!} />
+          )}
           <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && isHovered}
+            nodeHref={id}
+            isVisible={!isTargeted && shouldActLikeHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.decision].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.decision].edges}
           />
           <EditableNodeLabel
+            id={id}
             namedElement={decision}
             namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
-            position={getNodeLabelPosition(type as NodeType)}
+            position={getNodeLabelPosition({ nodeType: type as typeof NODE_TYPES.decision })}
             value={decision["@_label"] ?? decision["@_name"]}
             onChange={setName}
-            allUniqueNames={allFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
-          {isHovered && (
+          {shouldActLikeHovered && (
             <NodeResizerHandle
-              nodeType={type as NodeType}
-              snapGrid={diagram.snapGrid}
+              nodeType={type as typeof NODE_TYPES.decision}
+              snapGrid={snapGrid}
               nodeId={id}
               nodeShapeIndex={shape.index}
             />
           )}
           <DataTypeNodePanel
-            isVisible={!isTargeted && isHovered}
+            isVisible={!isTargeted && shouldActLikeHovered}
             variable={decision.variable}
-            namespace={dmnObjectNamespace}
+            dmnObjectNamespace={dmnObjectNamespace}
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
+            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
     );
-  }
+  },
+  propsHaveSameValuesDeep
 );
 
 export const BkmNode = React.memo(
   ({
-    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace },
+    data: { dmnObject: bkm, shape, index, dmnObjectQName, dmnObjectNamespace, hasHiddenRequirements },
     selected,
     dragging,
     zIndex,
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" }>>) => {
+    const renderCount = useRef<number>(0);
+    renderCount.current++;
+
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
+
+    const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+    const enableCustomNodeStyles = useDmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
+    const isHovered = useIsHovered(ref);
     const isResizing = useNodeResizing(id);
-
-    const diagram = useDmnEditorStore((s) => s.diagram);
-    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      bkm["@_id"]
+    const shouldActLikeHovered = useDmnEditorStore(
+      (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
+    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const className = useNodeClassName(isValidConnectionTarget, id);
+    const nodeDimensions = useNodeDimensions({ nodeType: type as typeof NODE_TYPES.bkm, snapGrid, shape });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -374,27 +528,32 @@ export const BkmNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tInputData;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel;
           drgElement.variable ??= { "@_name": bkm["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
+          if (drgElement.encapsulatedLogic) {
+            drgElement.encapsulatedLogic["@_typeRef"] = newTypeRef;
+          }
         });
       },
       [bkm, dmnEditorStoreApi, index]
     );
 
-    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+    const getAllFeelVariableUniqueNames = useCallback((s: State) => s.computed(s).getAllFeelVariableUniqueNames(), []);
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, bkm["@_name"]);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
-      isEnabled: diagram.overlays.enableStyles,
+      isEnabled: enableCustomNodeStyles,
     });
+
+    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
           <BkmNodeSvg
             {...nodeDimensions}
             x={0}
@@ -402,6 +561,7 @@ export const BkmNode = React.memo(
             strokeWidth={shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenRequirements={hasHiddenRequirements}
           />
         </svg>
 
@@ -409,81 +569,95 @@ export const BkmNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${className} ${
-            dmnObjectQName.prefix ? "external" : ""
-          }`}
+          className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${additionalClasses}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-nodehref={id}
+          data-nodelabel={bkm["@_name"]}
         >
-          <InfoNodePanel isVisible={!isTargeted && isHovered} />
-
-          {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={bkm["@_id"]!} />}
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
+          <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
+          {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={bkm["@_id"]!} />}
           <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && isHovered}
+            nodeHref={id}
+            isVisible={!isTargeted && shouldActLikeHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.bkm].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.bkm].edges}
           />
           <EditableNodeLabel
+            id={id}
             namedElement={bkm}
             namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
-            position={getNodeLabelPosition(type as NodeType)}
+            position={getNodeLabelPosition({ nodeType: type as typeof NODE_TYPES.bkm })}
             value={bkm["@_label"] ?? bkm["@_name"]}
             onChange={setName}
-            allUniqueNames={allFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
-          {isHovered && (
+          {shouldActLikeHovered && (
             <NodeResizerHandle
-              nodeType={type as NodeType}
-              snapGrid={diagram.snapGrid}
+              nodeType={type as typeof NODE_TYPES.bkm}
+              snapGrid={snapGrid}
               nodeId={id}
               nodeShapeIndex={shape.index}
             />
           )}
           <DataTypeNodePanel
-            isVisible={!isTargeted && isHovered}
+            isVisible={!isTargeted && shouldActLikeHovered}
             variable={bkm.variable}
-            namespace={dmnObjectNamespace}
+            dmnObjectNamespace={dmnObjectNamespace}
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
+            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
     );
-  }
+  },
+  propsHaveSameValuesDeep
 );
 
 export const KnowledgeSourceNode = React.memo(
   ({
-    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName },
+    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName, hasHiddenRequirements },
     selected,
     dragging,
     zIndex,
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tKnowledgeSource & { __$$element: "knowledgeSource" }>>) => {
+    const renderCount = useRef<number>(0);
+    renderCount.current++;
+
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
+
+    const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+    const enableCustomNodeStyles = useDmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
+    const isHovered = useIsHovered(ref);
     const isResizing = useNodeResizing(id);
-
-    const diagram = useDmnEditorStore((s) => s.diagram);
-    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      knowledgeSource["@_id"]
+    const shouldActLikeHovered = useDmnEditorStore(
+      (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
+
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const className = useNodeClassName(isValidConnectionTarget, id);
+    const nodeDimensions = useNodeDimensions({
+      nodeType: type as typeof NODE_TYPES.knowledgeSource,
+      snapGrid,
+      shape,
+    });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -493,17 +667,19 @@ export const KnowledgeSourceNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
-    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+    const getAllFeelVariableUniqueNames = useCallback((s: State) => s.computed(s).getAllFeelVariableUniqueNames(), []);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
-      isEnabled: diagram.overlays.enableStyles,
+      isEnabled: enableCustomNodeStyles,
     });
+
+    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
           <KnowledgeSourceNodeSvg
             {...nodeDimensions}
             x={0}
@@ -511,6 +687,7 @@ export const KnowledgeSourceNode = React.memo(
             strokeWidth={shapeStyle.strokeWidth}
             fillColor={shapeStyle.fillColor}
             strokeColor={shapeStyle.strokeColor}
+            hasHiddenRequirements={hasHiddenRequirements}
           />
         </svg>
 
@@ -518,36 +695,40 @@ export const KnowledgeSourceNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${className} ${
-            dmnObjectQName.prefix ? "external" : ""
-          }`}
+          className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${additionalClasses}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-nodehref={id}
+          data-nodelabel={knowledgeSource["@_name"]}
         >
-          <InfoNodePanel isVisible={!isTargeted && isHovered} />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
+          <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && isHovered}
+            nodeHref={id}
+            isVisible={!isTargeted && shouldActLikeHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].edges}
           />
           <EditableNodeLabel
+            id={id}
             namedElement={knowledgeSource}
             namedElementQName={dmnObjectQName}
-            position={getNodeLabelPosition(type as NodeType)}
+            position={getNodeLabelPosition({ nodeType: type as typeof NODE_TYPES.knowledgeSource })}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
             onChange={setName}
             skipValidation={true}
-            allUniqueNames={allFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
-          {isHovered && (
+          {shouldActLikeHovered && (
             <NodeResizerHandle
-              nodeType={type as NodeType}
-              snapGrid={diagram.snapGrid}
+              nodeType={type as typeof NODE_TYPES.knowledgeSource}
+              snapGrid={snapGrid}
               nodeId={id}
               nodeShapeIndex={shape.index}
             />
@@ -555,7 +736,8 @@ export const KnowledgeSourceNode = React.memo(
         </div>
       </>
     );
-  }
+  },
+  propsHaveSameValuesDeep
 );
 
 export const TextAnnotationNode = React.memo(
@@ -567,23 +749,32 @@ export const TextAnnotationNode = React.memo(
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation & { __$$element: "textAnnotation" }>>) => {
+    const renderCount = useRef<number>(0);
+    renderCount.current++;
+
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
+
+    const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+    const enableCustomNodeStyles = useDmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
+    const isHovered = useIsHovered(ref);
     const isResizing = useNodeResizing(id);
-
-    const diagram = useDmnEditorStore((s) => s.diagram);
-    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      textAnnotation["@_id"]
+    const shouldActLikeHovered = useDmnEditorStore(
+      (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
+
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const className = useNodeClassName(isValidConnectionTarget, id);
+    const nodeDimensions = useNodeDimensions({
+      nodeType: type as typeof NODE_TYPES.textAnnotation,
+      snapGrid,
+      shape,
+    });
     const setText = useCallback(
       (newText: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -593,17 +784,19 @@ export const TextAnnotationNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
-    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+    const getAllFeelVariableUniqueNames = useCallback((s: State) => s.computed(s).getAllFeelVariableUniqueNames(), []);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
-      isEnabled: diagram.overlays.enableStyles,
+      isEnabled: enableCustomNodeStyles,
     });
+
+    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
           <TextAnnotationNodeSvg
             {...nodeDimensions}
             x={0}
@@ -618,37 +811,40 @@ export const TextAnnotationNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${className} ${
-            dmnObjectQName.prefix ? "external" : ""
-          }`}
+          className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${additionalClasses}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-nodehref={id}
+          data-nodelabel={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
         >
-          <InfoNodePanel isVisible={!isTargeted && isHovered} />
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
+          <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
           <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && isHovered}
+            nodeHref={id}
+            isVisible={!isTargeted && shouldActLikeHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.textAnnotation].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.textAnnotation].edges}
           />
           <EditableNodeLabel
-            id={textAnnotation["@_id"]}
+            id={id}
             namedElement={undefined}
             namedElementQName={undefined}
-            position={getNodeLabelPosition(type as NodeType)}
+            position={getNodeLabelPosition({ nodeType: type as typeof NODE_TYPES.textAnnotation })}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
             onChange={setText}
             skipValidation={true}
-            allUniqueNames={allFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
-          {isHovered && (
+          {shouldActLikeHovered && (
             <NodeResizerHandle
-              nodeType={type as NodeType}
-              snapGrid={diagram.snapGrid}
+              nodeType={type as typeof NODE_TYPES.textAnnotation}
+              snapGrid={snapGrid}
               nodeId={id}
               nodeShapeIndex={shape.index}
             />
@@ -656,7 +852,8 @@ export const TextAnnotationNode = React.memo(
         </div>
       </>
     );
-  }
+  },
+  propsHaveSameValuesDeep
 );
 
 export const DecisionServiceNode = React.memo(
@@ -668,24 +865,35 @@ export const DecisionServiceNode = React.memo(
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecisionService & { __$$element: "decisionService" }>>) => {
+    const renderCount = useRef<number>(0);
+    renderCount.current++;
+
     const ref = useRef<SVGRectElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
 
+    const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+    const enableCustomNodeStyles = useDmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
+    const isHovered = useIsHovered(ref);
     const isResizing = useNodeResizing(id);
-
-    const diagram = useDmnEditorStore((s) => s.diagram);
-    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      decisionService["@_id"]
+    const shouldActLikeHovered = useDmnEditorStore(
+      (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
+    const isDropTarget = useDmnEditorStore((s) => s.diagram.dropTargetNode?.id === id);
+
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
+    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
+
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const className = useNodeClassName(isValidConnectionTarget, id);
 
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
+    const nodeDimensions = useNodeDimensions({
+      nodeType: type as typeof NODE_TYPES.decisionService,
+      snapGrid,
+      shape,
+    });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -725,12 +933,11 @@ export const DecisionServiceNode = React.memo(
       [decisionService, dmnEditorStoreApi, index]
     );
 
-    const { allFeelVariableUniqueNames, dmnShapesByHref } = useDmnEditorDerivedStore();
+    const getAllFeelVariableUniqueNames = useCallback((s: State) => s.computed(s).getAllFeelVariableUniqueNames(), []);
 
     const dividerLineRef = useRef<SVGPathElement>(null);
 
-    // External Decision Service nodes are always collapsed.
-    const isCollapsed = isExternal || shape["@_isCollapsed"];
+    const isCollapsed = shape["@_isCollapsed"] ?? false;
 
     const onCreateDataType = useDataTypeCreationCallbackForNodes(index, decisionService["@_name"]);
 
@@ -743,25 +950,25 @@ export const DecisionServiceNode = React.memo(
       const dragHandler = drag<SVGCircleElement, unknown>()
         .on("start", () => {
           dmnEditorStoreApi.setState((state) =>
-            state.dispatch.diagram.setDividerLineStatus(state, id, { moving: true })
+            state.dispatch(state).diagram.setDividerLineStatus(id, { moving: true })
           );
         })
         .on("drag", (e) => {
           dmnEditorStoreApi.setState((state) => {
             updateDecisionServiceDividerLine({
               definitions: state.dmn.model.definitions,
-              drdIndex: diagram.drdIndex,
-              dmnShapesByHref,
+              drdIndex: state.diagram.drdIndex,
+              dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
               drgElementIndex: index,
               shapeIndex: shape.index,
               localYPosition: e.y,
-              snapGrid: diagram.snapGrid,
+              snapGrid: state.diagram.snapGrid,
             });
           });
         })
         .on("end", (e) => {
           dmnEditorStoreApi.setState((state) =>
-            state.dispatch.diagram.setDividerLineStatus(state, id, { moving: false })
+            state.dispatch(state).diagram.setDividerLineStatus(id, { moving: false })
           );
         });
 
@@ -769,26 +976,19 @@ export const DecisionServiceNode = React.memo(
       return () => {
         selection.on(".drag", null);
       };
-    }, [
-      decisionService,
-      diagram.drdIndex,
-      diagram.snapGrid,
-      dmnEditorStoreApi,
-      dmnShapesByHref,
-      id,
-      index,
-      shape.index,
-    ]);
+    }, [decisionService, dmnEditorStoreApi, id, index, shape.index]);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
-      isEnabled: diagram.overlays.enableStyles,
+      isEnabled: enableCustomNodeStyles,
     });
+
+    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
           <DecisionServiceNodeSvg
             dividerLineRef={dividerLineRef}
             ref={ref}
@@ -800,7 +1000,7 @@ export const DecisionServiceNode = React.memo(
             strokeColor={shapeStyle.strokeColor}
             isReadonly={false}
             isCollapsed={isCollapsed}
-            showSectionLabels={diagram.dropTargetNode?.id === id}
+            showSectionLabels={isDropTarget}
             dividerLineLocalY={getDecisionServiceDividerLineLocalY(shape)}
           />
         </svg>
@@ -808,36 +1008,39 @@ export const DecisionServiceNode = React.memo(
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
-          className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className} ${
-            dmnObjectQName.prefix ? "external" : ""
-          }`}
+          className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${additionalClasses}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-nodehref={id}
+          data-nodelabel={decisionService["@_name"]}
         >
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <InfoNodePanel isVisible={!isTargeted && selected && !dragging} />
-
           <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && selected && !dragging}
+            nodeHref={id}
+            isVisible={!isTargeted && selected && !dragging}
             nodeTypes={outgoingStructure[NODE_TYPES.decisionService].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.decisionService].edges}
           />
           <EditableNodeLabel
+            id={id}
             namedElement={decisionService}
             namedElementQName={dmnObjectQName}
-            position={getNodeLabelPosition(type as NodeType)}
+            position={getNodeLabelPosition({ nodeType: type as typeof NODE_TYPES.decisionService })}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
-            allUniqueNames={allFeelVariableUniqueNames}
+            onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
           {selected && !dragging && !isCollapsed && (
             <NodeResizerHandle
-              nodeType={type as NodeType}
-              snapGrid={diagram.snapGrid}
+              nodeType={type as typeof NODE_TYPES.decisionService}
+              snapGrid={snapGrid}
               nodeId={id}
               nodeShapeIndex={shape.index}
             />
@@ -846,15 +1049,17 @@ export const DecisionServiceNode = React.memo(
           <DataTypeNodePanel
             isVisible={!isTargeted && selected && !dragging}
             variable={decisionService.variable}
-            namespace={dmnObjectNamespace}
+            dmnObjectNamespace={dmnObjectNamespace}
             shape={shape}
             onCreate={onCreateDataType}
             onChange={onTypeRefChange}
+            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
     );
-  }
+  },
+  propsHaveSameValuesDeep
 );
 
 export const GroupNode = React.memo(
@@ -866,22 +1071,30 @@ export const GroupNode = React.memo(
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tGroup & { __$$element: "group" }>>) => {
+    const renderCount = useRef<number>(0);
+    renderCount.current++;
+
     const ref = useRef<SVGRectElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
+
+    const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+    const enableCustomNodeStyles = useDmnEditorStore((s) => s.diagram.overlays.enableCustomNodeStyles);
+    const isHovered = useIsHovered(ref);
     const isResizing = useNodeResizing(id);
-
-    const diagram = useDmnEditorStore((s) => s.diagram);
-    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
-
+    const shouldActLikeHovered = useDmnEditorStore(
+      (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
+    );
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const reactFlow = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(
-      group["@_id"]
-    );
-    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const className = useNodeClassName(isValidConnectionTarget, id);
+    const nodeDimensions = useNodeDimensions({
+      nodeType: type as typeof NODE_TYPES.group,
+      snapGrid,
+      shape,
+    });
     const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -900,6 +1113,7 @@ export const GroupNode = React.memo(
               bounds: n.data.shape["dc:Bounds"]!,
               container: shape["dc:Bounds"]!,
               snapGrid: state.diagram.snapGrid,
+              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
               containerMinSizes: MIN_NODE_SIZES[NODE_TYPES.group],
               boundsMinSizes: MIN_NODE_SIZES[n.type as NodeType],
             }).isInside
@@ -916,17 +1130,17 @@ export const GroupNode = React.memo(
       };
     }, [dmnEditorStoreApi, reactFlow, shape]);
 
-    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
-
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
       nodeType: type as NodeType,
-      isEnabled: diagram.overlays.enableStyles,
+      isEnabled: enableCustomNodeStyles,
     });
+
+    const additionalClasses = `${className} ${dmnObjectQName.prefix ? "external" : ""}`;
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${additionalClasses}`}>
           <GroupNodeSvg
             ref={ref}
             {...nodeDimensions}
@@ -939,36 +1153,39 @@ export const GroupNode = React.memo(
         </svg>
 
         <div
-          className={`kie-dmn-editor--node kie-dmn-editor--group-node ${className} ${
-            dmnObjectQName.prefix ? "external" : ""
-          }`}
+          className={`kie-dmn-editor--node kie-dmn-editor--group-node ${additionalClasses}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
+          data-nodehref={id}
+          data-nodelabel={group["@_name"]}
         >
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
           <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && selected && !dragging}
+            nodeHref={id}
+            isVisible={!isTargeted && selected && !dragging}
             nodeTypes={outgoingStructure[NODE_TYPES.group].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.group].edges}
           />
           <EditableNodeLabel
-            id={group["@_id"]}
+            id={id}
             namedElement={undefined}
             namedElementQName={undefined}
-            position={getNodeLabelPosition(type as NodeType)}
+            position={getNodeLabelPosition({ nodeType: type as typeof NODE_TYPES.group })}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={group["@_label"] ?? group["@_name"]}
             onChange={setName}
             skipValidation={true}
-            allUniqueNames={allFeelVariableUniqueNames}
+            onGetAllUniqueNames={useCallback(() => new Map(), [])}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
           {selected && !dragging && (
             <NodeResizerHandle
-              nodeType={type as NodeType}
-              snapGrid={diagram.snapGrid}
+              nodeType={type as typeof NODE_TYPES.group}
+              snapGrid={snapGrid}
               nodeId={id}
               nodeShapeIndex={shape.index}
             />
@@ -976,7 +1193,8 @@ export const GroupNode = React.memo(
         </div>
       </>
     );
-  }
+  },
+  propsHaveSameValuesDeep
 );
 
 export const UnknownNode = React.memo(
@@ -988,16 +1206,26 @@ export const UnknownNode = React.memo(
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<null>>) => {
+    const renderCount = useRef<number>(0);
+    renderCount.current++;
+
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
+
+    const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+    const isHovered = useIsHovered(ref);
     const isResizing = useNodeResizing(id);
+    const shouldActLikeHovered = useDmnEditorStore(
+      (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
+    );
 
-    const diagram = useDmnEditorStore((s) => s.diagram);
-    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
-
-    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape, isExternal);
+    const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
+    const className = useNodeClassName(isValidConnectionTarget, id);
+    const nodeDimensions = useNodeDimensions({
+      nodeType: type as typeof NODE_TYPES.unknown,
+      snapGrid,
+      shape,
+    });
 
     return (
       <>
@@ -1007,25 +1235,33 @@ export const UnknownNode = React.memo(
 
         <RF.Handle key={"unknown"} id={"unknown"} type={"source"} style={{ opacity: 0 }} position={RF.Position.Top} />
 
-        <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--unknown-node ${className}`} tabIndex={-1}>
-          <InfoNodePanel isVisible={!isTargeted && isHovered} />
+        <div
+          ref={ref}
+          className={`kie-dmn-editor--node kie-dmn-editor--unknown-node ${className}`}
+          tabIndex={-1}
+          data-nodehref={id}
+        >
+          {/* {`render count: ${renderCount.current}`}
+          <br /> */}
+          <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
           <EditableNodeLabel
+            id={id}
             namedElement={undefined}
             namedElementQName={undefined}
-            position={getNodeLabelPosition(type as NodeType)}
+            position={getNodeLabelPosition({ nodeType: type as typeof NODE_TYPES.unknown })}
             isEditing={false}
             setEditing={() => {}}
             value={`? `}
             onChange={() => {}}
             skipValidation={false}
-            allUniqueNames={new Map()}
+            onGetAllUniqueNames={useCallback(() => new Map(), [])}
             shouldCommitOnBlur={true}
           />
           {selected && !dragging && (
             <NodeResizerHandle
-              nodeType={type as NodeType}
-              snapGrid={diagram.snapGrid}
+              nodeType={type as typeof NODE_TYPES.unknown}
+              snapGrid={snapGrid}
               nodeId={id}
               nodeShapeIndex={shape.index}
             />
@@ -1033,7 +1269,8 @@ export const UnknownNode = React.memo(
         </div>
       </>
     );
-  }
+  },
+  propsHaveSameValuesDeep
 );
 
 ///
@@ -1053,13 +1290,25 @@ const resizerControlStyle = {
   border: "none",
 };
 
-export function NodeResizerHandle(props: {
+type NodeResizeHandleProps = {
   snapGrid: SnapGrid;
   nodeId: string;
-  nodeType: NodeType;
   nodeShapeIndex: number;
-}) {
-  const minSize = MIN_NODE_SIZES[props.nodeType](props.snapGrid);
+} & (
+  | { nodeType: Extract<NodeType, typeof NODE_TYPES.inputData>; isAlternativeInputDataShape: boolean }
+  | { nodeType: Exclude<NodeType, typeof NODE_TYPES.inputData> }
+);
+
+export function NodeResizerHandle(props: NodeResizeHandleProps) {
+  const minSize =
+    props.nodeType === NODE_TYPES.inputData
+      ? MIN_NODE_SIZES[props.nodeType]({
+          snapGrid: props.snapGrid,
+          isAlternativeInputDataShape: props.isAlternativeInputDataShape,
+        })
+      : MIN_NODE_SIZES[props.nodeType]({
+          snapGrid: props.snapGrid,
+        });
   return (
     <RF.NodeResizeControl style={resizerControlStyle} minWidth={minSize["@_width"]} minHeight={minSize["@_height"]}>
       <div
@@ -1078,112 +1327,127 @@ export function NodeResizerHandle(props: {
 }
 
 function useNodeResizing(id: string): boolean {
-  const node = RF.useStore((s) => s.nodeInternals.get(id));
-  if (!node) {
-    throw new Error("Can't use nodeInternals of non-existent node " + id);
-  }
-
-  return node.resizing ?? false;
+  return RF.useStore((s) => s.nodeInternals.get(id)?.resizing ?? false);
 }
-function useNodeDimensions(
-  type: NodeType,
-  snapGrid: SnapGrid,
-  id: string,
-  shape: DMNDI15__DMNShape,
-  isExternal: boolean
-): RF.Dimensions {
-  const node = RF.useStore((s) => s.nodeInternals.get(id));
-  if (!node) {
-    throw new Error("Can't use nodeInternals of non-existent node " + id);
-  }
 
-  if (type === NODE_TYPES.decisionService && (isExternal || shape["@_isCollapsed"])) {
-    return DECISION_SERVICE_COLLAPSED_DIMENSIONS;
-  }
+type NodeDimensionsArgs = {
+  snapGrid: SnapGrid;
+  shape: DMNDI15__DMNShape;
+} & (
+  | { nodeType: Extract<NodeType, typeof NODE_TYPES.inputData>; isAlternativeInputDataShape: boolean }
+  | { nodeType: Exclude<NodeType, typeof NODE_TYPES.inputData> }
+);
 
-  const minSizes = MIN_NODE_SIZES[node.type as NodeType](snapGrid);
+function useNodeDimensions(args: NodeDimensionsArgs): RF.Dimensions {
+  const { nodeType, snapGrid, shape } = args;
+  const isAlternativeInputDataShape = nodeType === NODE_TYPES.inputData ? args.isAlternativeInputDataShape : false;
 
-  return {
-    width: node.width ?? snapShapeDimensions(snapGrid, shape, minSizes).width,
-    height: node.height ?? snapShapeDimensions(snapGrid, shape, minSizes).height,
-  };
+  return useMemo(() => {
+    if (nodeType === NODE_TYPES.decisionService && shape["@_isCollapsed"]) {
+      return DECISION_SERVICE_COLLAPSED_DIMENSIONS;
+    }
+
+    const minSizes =
+      nodeType === NODE_TYPES.inputData
+        ? MIN_NODE_SIZES[nodeType]({
+            snapGrid,
+            isAlternativeInputDataShape,
+          })
+        : MIN_NODE_SIZES[nodeType]({
+            snapGrid,
+          });
+
+    return {
+      width: snapShapeDimensions(snapGrid, shape, minSizes).width,
+      height: snapShapeDimensions(snapGrid, shape, minSizes).height,
+    };
+  }, [isAlternativeInputDataShape, shape, snapGrid, nodeType]);
 }
 
 function useHoveredNodeAlwaysOnTop(
   ref: React.RefObject<HTMLDivElement | SVGElement>,
-  layer: number,
-  isHovered: boolean,
+  zIndex: number,
+  shouldActLikeHovered: boolean,
   dragging: boolean,
   selected: boolean,
   isEditing: boolean
 ) {
-  useEffect(() => {
-    setTimeout(() => {
-      if (selected && !isEditing) {
-        ref.current?.focus();
-      }
-      if (ref.current) {
-        ref.current.parentElement!.style.zIndex = `${isHovered || dragging ? layer + 1000 + 1 : layer}`;
-      }
-    }, 0);
-  }, [dragging, isHovered, ref, selected, layer, isEditing]);
+  useLayoutEffect(() => {
+    const r = ref.current;
+
+    if (selected && !isEditing) {
+      r?.focus();
+    }
+
+    if (r) {
+      r.parentElement!.style.zIndex = `${
+        shouldActLikeHovered || dragging ? zIndex + NODE_LAYERS.NESTED_NODES + 1 : zIndex
+      }`;
+    }
+  }, [dragging, shouldActLikeHovered, ref, zIndex, selected, isEditing]);
 }
 
 export function useConnection(nodeId: string) {
   const connectionNodeId = RF.useStore((s) => s.connectionNodeId);
-  const connectionHandleId = RF.useStore((s) => s.connectionHandleId);
   const connectionHandleType = RF.useStore((s) => s.connectionHandleType);
-  const edgeIdBeingUpdated = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
-  const { edgesById } = useDmnEditorDerivedStore();
 
-  const edge = edgeIdBeingUpdated ? edgesById.get(edgeIdBeingUpdated) : null;
   const source = connectionNodeId;
   const target = nodeId;
-  const sourceHandle = connectionHandleId ?? edge?.type ?? null;
 
-  const connection = {
-    source: connectionHandleType === "source" ? source : target,
-    target: connectionHandleType === "source" ? target : source,
-    sourceHandle,
-    targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
-  };
+  const edgeIdBeingUpdated = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
+  const sourceHandle = RF.useStore(
+    (s) => s.connectionHandleId ?? s.edges.find((e) => e.id === edgeIdBeingUpdated)?.type ?? null
+  );
+
+  const connection = useMemo(
+    () => ({
+      source: connectionHandleType === "source" ? source : target,
+      target: connectionHandleType === "source" ? target : source,
+      sourceHandle,
+      targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
+    }),
+    [connectionHandleType, source, sourceHandle, target]
+  );
 
   return connection;
 }
 
-export function useConnectionTargetStatus(nodeId: string, isHovered: boolean) {
-  const connectionNodeId = RF.useStore((s) => s.connectionNodeId);
-  const isValidConnection = RF.useStore((s) => s.isValidConnection);
+export function useConnectionTargetStatus(nodeId: string, shouldActLikeHovered: boolean) {
+  const isTargeted = RF.useStore((s) => !!s.connectionNodeId && s.connectionNodeId !== nodeId && shouldActLikeHovered);
   const connection = useConnection(nodeId);
+  const isValidConnectionTarget = RF.useStore((s) => s.isValidConnection?.(connection) ?? false);
 
-  return {
-    isTargeted: !!connectionNodeId && connectionNodeId !== nodeId && isHovered,
-    isValidConnectionTarget: isValidConnection?.(connection) ?? false,
-    isConnecting: !!connectionNodeId,
-  };
+  return useMemo(
+    () => ({
+      isTargeted,
+      isValidConnectionTarget,
+    }),
+    [isTargeted, isValidConnectionTarget]
+  );
 }
 
-export function useNodeClassName(
-  dropTargetNode: DropTargetNode,
-  isConnecting: boolean,
-  isValidConnectionTarget: boolean,
-  nodeId: string
-) {
-  const { isDropTargetNodeValidForSelection } = useDmnEditorDerivedStore();
-  const connectionNodeId = RF.useStore((s) => s.connectionNodeId);
+export function useNodeClassName(isValidConnectionTarget: boolean, nodeId: string) {
+  const isDropTarget = useDmnEditorStore(
+    (s) => s.diagram.dropTargetNode?.id === nodeId && containment.get(s.diagram.dropTargetNode?.type as NodeType)
+  );
+  const { externalModelsByNamespace } = useExternalModels();
+  const isDropTargetNodeValidForSelection = useDmnEditorStore((s) =>
+    s.computed(s).isDropTargetNodeValidForSelection(externalModelsByNamespace)
+  );
+  const isConnectionNodeId = RF.useStore((s) => s.connectionNodeId === nodeId);
   const connection = useConnection(nodeId);
   const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connection.sourceHandle);
   const isNodeConnection = !!Object.values(NODE_TYPES).find((s) => s === connection.sourceHandle);
 
-  if (isNodeConnection && isConnecting && connectionNodeId !== nodeId) {
+  if (isNodeConnection && !isConnectionNodeId) {
     return "dimmed";
   }
 
-  if (isEdgeConnection && isConnecting && (!isValidConnectionTarget || connectionNodeId === nodeId)) {
+  if (isEdgeConnection && (!isValidConnectionTarget || isConnectionNodeId)) {
     return "dimmed";
   }
 
-  if (dropTargetNode?.id === nodeId && containment.get(dropTargetNode.type as NodeType)) {
+  if (isDropTarget) {
     return isDropTargetNodeValidForSelection ? "drop-target" : "drop-target-invalid";
   }
 

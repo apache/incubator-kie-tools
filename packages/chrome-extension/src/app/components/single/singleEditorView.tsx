@@ -57,7 +57,6 @@ export async function renderSingleEditorReadonlyApp(
     args.logger.log(`Doesn't look like the GitHub page is ready yet.`);
     return;
   }
-
   const openFileExtension = extractOpenFileExtension(window.location.href);
   const openFilePath = extractOpenFilePath(window.location.href);
   if (!openFileExtension) {

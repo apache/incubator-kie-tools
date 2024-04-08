@@ -28,12 +28,9 @@ import {
   BeeTableOperationConfig,
   BeeTableProps,
   DmnBuiltInDataType,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  FeelFunctionExpressionDefinition,
-  FunctionExpressionDefinition,
-  FunctionExpressionDefinitionKind,
-  generateUuid,
+  BoxedExpression,
+  BoxedFunction,
+  BoxedFunctionKind,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -46,33 +43,45 @@ import {
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
   NestedExpressionDispatchContextProvider,
+  OnSetExpression,
   useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+} from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
+import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { findAllIdsDeep } from "../../ids/ids";
 
-export type FEEL_ROWTYPE = { functionExpression: FunctionExpressionDefinition };
+export type FEEL_ROWTYPE = { functionExpression: BoxedFunction };
+
+export type BoxedFunctionFeel = DMN15__tFunctionDefinition & {
+  "@_kind": "FEEL";
+  __$$element: "functionDefinition";
+};
 
 export function FeelFunctionExpression({
+  isNested,
+  parentElementId,
   functionExpression,
 }: {
-  functionExpression: FeelFunctionExpressionDefinition & { isNested: boolean; parentElementId: string };
+  functionExpression: BoxedFunctionFeel;
+  isNested: boolean;
+  parentElementId: string;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { decisionNodeId } = useBoxedExpressionEditor();
-  const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
-  const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameters);
-  const parametersId = useMemo(() => `${functionExpression.id}-parameters`, [functionExpression.id]);
+  const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
+  const parametersId = useMemo(() => `${functionExpression["@_id"]}-parameters`, [functionExpression]);
 
   const beeTableColumns = useMemo<ReactTable.Column<FEEL_ROWTYPE>[]>(() => {
     return [
       {
-        label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        dataType: functionExpression.dataType,
+        accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        label: functionExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
+        dataType: functionExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
@@ -87,19 +96,24 @@ export function FeelFunctionExpression({
         ],
       },
     ];
-  }, [decisionNodeId, functionExpression.dataType, functionExpression.name, parametersColumnHeader, parametersId]);
+  }, [expressionHolderId, functionExpression, parametersColumnHeader, parametersId]);
 
   const headerVisibility = useMemo(() => {
-    return functionExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
-  }, [functionExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<FEEL_ROWTYPE>[]) => {
-      setExpression((prev) => ({
-        ...prev,
-        name,
-        dataType,
-      }));
+    ([{ name, typeRef }]: BeeTableColumnUpdate<FEEL_ROWTYPE>[]) => {
+      setExpression((prev: BoxedFunctionFeel) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunctionFeel = {
+          ...prev,
+          "@_label": name,
+          "@_typeRef": typeRef,
+        };
+
+        return ret;
+      });
     },
     [setExpression]
   );
@@ -121,32 +135,31 @@ export function FeelFunctionExpression({
     return [{ functionExpression }];
   }, [functionExpression]);
 
-  const controllerCell = useFunctionExpressionControllerCell(FunctionExpressionDefinitionKind.Feel);
+  const controllerCell = useFunctionExpressionControllerCell(BoxedFunctionKind.Feel);
 
   const cellComponentByColumnAccessor: BeeTableProps<FEEL_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
     return {
-      [`${parametersId}`]: (props) => (
-        <FeelFunctionImplementationCell {...props} parentElementId={functionExpression.parentElementId} />
-      ),
+      // TODO: MERGE - VERIFY instead of parametersId, use parameters
+      [`${parametersId}`]: (props) => <FeelFunctionImplementationCell {...props} parentElementId={parentElementId} />,
     };
-  }, [functionExpression.parentElementId, parametersId]);
+  }, [parentElementId, parametersId]);
 
   const getRowKey = useCallback((r: ReactTable.Row<FEEL_ROWTYPE>) => {
-    return r.original.functionExpression.id;
+    return r.id;
   }, []);
 
   const onRowReset = useCallback(() => {
-    setExpression((prev) => {
-      return {
-        ...prev,
-        expression: {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Undefined,
-          dataType: DmnBuiltInDataType.Undefined,
-        },
-      };
+    let oldExpression: BoxedExpression | undefined;
+    setExpression((prev: BoxedFunctionFeel) => {
+      oldExpression = prev.expression;
+      return undefined!; // SPEC DISCREPANCY
     });
-  }, [setExpression]);
+    setWidthsById(({ newMap }) => {
+      for (const id of findAllIdsDeep(oldExpression)) {
+        newMap.delete(id);
+      }
+    });
+  }, [setExpression, setWidthsById]);
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -156,7 +169,7 @@ export function FeelFunctionExpression({
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
         return {
-          nestedExpressions: [functionExpression.expression],
+          nestedExpressions: [functionExpression.expression ?? undefined!],
           fixedColumnActualWidth: 0,
           fixedColumnResizingWidth: { value: 0, isPivoting: false },
           fixedColumnMinWidth: 0,
@@ -164,8 +177,9 @@ export function FeelFunctionExpression({
           extraWidth: FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH,
           expression: functionExpression,
           flexibleColumnIndex: 1,
+          widthsById: widthsById,
         };
-      }, [functionExpression])
+      }, [functionExpression, widthsById])
     );
 
   const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
@@ -183,8 +197,8 @@ export function FeelFunctionExpression({
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
-      <div className={`function-expression ${functionExpression.id}`}>
-        <BeeTable
+      <div className={`function-expression ${functionExpression["@_id"]}`}>
+        <BeeTable<FEEL_ROWTYPE>
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           operationConfig={beeTableOperationConfig}
@@ -213,16 +227,21 @@ export function FeelFunctionImplementationCell({
   columnIndex,
   parentElementId,
 }: BeeTableCellProps<FEEL_ROWTYPE> & { parentElementId: string }) {
-  const functionExpression = data[rowIndex].functionExpression as FeelFunctionExpressionDefinition;
+  const functionExpression = data[rowIndex].functionExpression;
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
-  const onSetExpression = useCallback(
-    ({ getNewExpression }: { getNewExpression: (prev: ExpressionDefinition) => ExpressionDefinition }) => {
-      setExpression((prev: FeelFunctionExpressionDefinition) => ({
-        ...prev,
-        expression: getNewExpression(prev.expression),
-      }));
+  const onSetExpression = useCallback<OnSetExpression>(
+    ({ getNewExpression }: { getNewExpression: (prev: BoxedExpression) => BoxedExpression }) => {
+      setExpression((prev: BoxedFunctionFeel) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedFunctionFeel = {
+          ...prev,
+          expression: getNewExpression(prev.expression ?? undefined!),
+        };
+
+        return ret;
+      });
     },
     [setExpression]
   );
@@ -230,12 +249,14 @@ export function FeelFunctionImplementationCell({
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
       <ExpressionContainer
-        expression={functionExpression.expression}
+        expression={functionExpression.expression ?? undefined!}
         isResetSupported={true}
         isNested={true}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
         parentElementId={parentElementId}
+        parentElementTypeRef={functionExpression["@_typeRef"]}
+        parentElementName={"Return"}
       />
     </NestedExpressionDispatchContextProvider>
   );

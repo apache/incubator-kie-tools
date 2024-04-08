@@ -30,23 +30,26 @@ import {
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { getPositionalHandlePosition } from "../maths/Maths";
 import { DecisionNodeSvg, BkmNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/NodeSvgs";
-import { getNodeCenterPoint, pointsToPath } from "../maths/DmnMaths";
+import { pointsToPath } from "../maths/DmnMaths";
+import { getBoundsCenterPoint } from "../maths/Maths";
 import { NodeType, getDefaultEdgeTypeBetween } from "./graphStructure";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DEFAULT_NODE_SIZES } from "../nodes/DefaultSizes";
-import { useDmnEditorStore } from "../../store/Store";
+import { useDmnEditorStore } from "../../store/StoreContext";
 import { useKieEdgePath } from "../edges/useKieEdgePath";
 import { PositionalNodeHandleId } from "./PositionalNodeHandles";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
-  const diagram = useDmnEditorStore((s) => s.diagram);
-
-  const edgeId = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
-  const { edgesById } = useDmnEditorDerivedStore();
-  const edge = edgeId ? edgesById.get(edgeId) : undefined;
-  const kieEdgePath = useKieEdgePath(edge?.source, edge?.target, edge?.data);
-
+  const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
+  const { externalModelsByNamespace } = useExternalModels();
+  const edgeBeingUpdated = useDmnEditorStore((s) =>
+    s.diagram.edgeIdBeingUpdated
+      ? s.computed(s).getDiagramData(externalModelsByNamespace).edgesById.get(s.diagram.edgeIdBeingUpdated)
+      : undefined
+  );
+  const kieEdgePath = useKieEdgePath(edgeBeingUpdated?.source, edgeBeingUpdated?.target, edgeBeingUpdated?.data);
+  const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   // This works because nodes are configured with:
   // - Source handles with ids matching EDGE_TYPES or NODE_TYPES
   // - Target handles with ids matching TargetHandleId
@@ -57,16 +60,21 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
     (k) => (PositionalNodeHandleId as any)[k] === fromHandle?.id
   );
 
-  const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);
+  const { "@_x": fromX, "@_y": fromY } = getBoundsCenterPoint({
+    x: fromNode?.positionAbsolute?.x,
+    y: fromNode?.positionAbsolute?.y,
+    width: fromNode?.width,
+    height: fromNode?.height,
+  });
 
   const connectionLinePath =
-    edge && kieEdgePath.points
+    edgeBeingUpdated && kieEdgePath.points
       ? isUpdatingFromSourceHandle
         ? pointsToPath([{ "@_x": toX, "@_y": toY }, ...kieEdgePath.points.slice(1)]) // First point is being dragged
         : pointsToPath([...kieEdgePath.points.slice(0, -1), { "@_x": toX, "@_y": toY }]) // Last point is being dragged
       : `M${fromX},${fromY} L${toX},${toY}`;
 
-  const handleId = isUpdatingFromSourceHandle ? edge?.type : fromHandle?.id;
+  const handleId = isUpdatingFromSourceHandle ? edgeBeingUpdated?.type : edgeBeingUpdated?.type ?? fromHandle?.id;
 
   // Edges
   if (handleId === EDGE_TYPES.informationRequirement) {
@@ -81,22 +89,22 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
   // Nodes
   else {
     const nodeType = handleId as NodeType;
-    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(diagram.snapGrid, { "@_x": toX, "@_y": toY });
+    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(snapGrid, { "@_x": toX, "@_y": toY });
 
-    const defaultSize = DEFAULT_NODE_SIZES[nodeType](diagram.snapGrid);
+    const defaultSize = DEFAULT_NODE_SIZES[nodeType]({ snapGrid, isAlternativeInputDataShape });
     const [toXauto, toYauto] = getPositionalHandlePosition(
       { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
       { x: fromX, y: fromY, width: 1, height: 1 }
     );
 
-    const edge = getDefaultEdgeTypeBetween(fromNode?.type as NodeType, handleId as NodeType);
-    if (!edge) {
+    const edgeType = getDefaultEdgeTypeBetween(fromNode?.type as NodeType, handleId as NodeType);
+    if (!edgeType) {
       throw new Error(`Invalid structure: ${fromNode?.type} --(any)--> ${handleId}`);
     }
 
     const path = `M${fromX},${fromY} L${toXauto},${toYauto}`;
 
-    const edgeSvg = switchExpression(edge, {
+    const edgeSvg = switchExpression(edgeType, {
       [EDGE_TYPES.informationRequirement]: <InformationRequirementPath d={path} />,
       [EDGE_TYPES.knowledgeRequirement]: <KnowledgeRequirementPath d={path} />,
       [EDGE_TYPES.authorityRequirement]: <AuthorityRequirementPath d={path} centerToConnectionPoint={false} />,
@@ -112,6 +120,8 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
             y={toYsnapped}
             width={defaultSize["@_width"]}
             height={defaultSize["@_height"]}
+            isCollection={false}
+            hasHiddenRequirements={false}
           />
         </g>
       );
@@ -119,7 +129,13 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
       return (
         <g className={"pulse"}>
           {edgeSvg}
-          <BkmNodeSvg x={toXsnapped} y={toYsnapped} width={defaultSize["@_width"]} height={defaultSize["@_height"]} />
+          <BkmNodeSvg
+            x={toXsnapped}
+            y={toYsnapped}
+            width={defaultSize["@_width"]}
+            height={defaultSize["@_height"]}
+            hasHiddenRequirements={false}
+          />
         </g>
       );
     } else if (nodeType === NODE_TYPES.knowledgeSource) {
@@ -131,6 +147,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
             y={toYsnapped}
             width={defaultSize["@_width"]}
             height={defaultSize["@_height"]}
+            hasHiddenRequirements={false}
           />
         </g>
       );
