@@ -87,6 +87,7 @@ export interface State {
     tab: DmnEditorTab;
   };
   diagram: {
+    /** This state is marked as unsafe because it can contain a value that is not compatible with the length of the DRD array. */
     drdIndex: number;
     edgeIdBeingUpdated: string | undefined;
     dropTargetNode: DropTargetNode;
@@ -346,7 +347,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
           isAlternativeInputDataShape: () =>
             computedCache.cached(
               "isAlternativeInputDataShape",
-              (drdIndex, dmnDiagram) => dmnDiagram?.[drdIndex]["@_useAlternativeInputDataShape"] ?? false,
+              (drdIndex, dmnDiagram) => dmnDiagram?.[drdIndex]?.["@_useAlternativeInputDataShape"] ?? false,
               [s.diagram.drdIndex, s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]] as const
             ),
 
