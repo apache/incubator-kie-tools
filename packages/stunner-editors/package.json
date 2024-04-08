@@ -32,12 +32,10 @@
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
-  "dependencies": {
-    "@kie-tools/stunner-editors-dmn-loader": "workspace:*"
-  },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/stunner-editors-dmn-loader": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
     "symlink-dir": "^5.0.1"

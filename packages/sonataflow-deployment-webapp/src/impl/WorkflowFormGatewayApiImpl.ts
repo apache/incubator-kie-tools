@@ -17,11 +17,11 @@
  * under the License.
  */
 import { OpenAPI } from "openapi-types";
-import { WorkflowResponse } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { WorkflowResponse } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import {
   startWorkflowRest,
   getCustomWorkflowSchemaFromApi,
-} from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi/apis";
+} from "@kie-tools/runtime-tools-swf-gateway-api/dist/gatewayApi/apis";
 
 export interface WorkflowFormGatewayApi {
   setBusinessKey(bk: string): void;

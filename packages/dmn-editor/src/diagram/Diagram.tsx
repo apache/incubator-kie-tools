@@ -20,7 +20,7 @@
 import * as RF from "reactflow";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DC__Bounds,
   DC__Dimension,
@@ -48,7 +48,7 @@ import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtua
 import { useDmnEditor } from "../DmnEditorContext";
 import { AutolayoutButton } from "../autolayout/AutolayoutButton";
 import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
-import { getDefaultExpressionDefinitionByLogicType } from "../boxedExpressions/getDefaultExpressionDefinitionByLogicType";
+import { getDefaultBoxedExpression } from "../boxedExpressions/getDefaultBoxedExpression";
 import {
   DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
   DmnEditorDiagramClipboard,
@@ -125,6 +125,7 @@ import {
   addExistingDecisionServiceToDrd,
   getDecisionServicePropertiesRelativeToThisDmn,
 } from "../mutations/addExistingDecisionServiceToDrd";
+import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -1256,19 +1257,29 @@ function DmnDiagramEmptyState({
                   });
 
                   const drgElementIndex = (state.dmn.model.definitions.drgElement ?? []).length - 1;
-                  const drgElement = state.dmn.model.definitions.drgElement?.[drgElementIndex];
+
+                  const defaultWidthsById = new Map<string, number[]>();
+                  const defaultExpression = getDefaultBoxedExpression({
+                    logicType: "decisionTable",
+                    allTopLevelDataTypesByFeelName: new Map(),
+                    typeRef: DmnBuiltInDataType.Undefined,
+                    getDefaultColumnWidth,
+                    widthsById: defaultWidthsById,
+                  });
 
                   updateExpression({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
                     drgElementIndex,
-                    expression: getDefaultExpressionDefinitionByLogicType({
-                      expressionHolderName: drgElement?.["@_name"],
-                      logicType: ExpressionDefinitionLogicType.DecisionTable,
-                      allTopLevelDataTypesByFeelName: new Map(),
-                      typeRef: DmnBuiltInDataType.Undefined,
-                      getDefaultColumnWidth,
-                    }),
+                    expression: {
+                      ...defaultExpression,
+                      "@_label": "New Decision",
+                    },
+                  });
+
+                  updateExpressionWidths({
+                    definitions: state.dmn.model.definitions,
+                    drdIndex: state.diagram.drdIndex,
+                    widthsById: defaultWidthsById,
                   });
 
                   state.dispatch(state).boxedExpressionEditor.open(parseXmlHref(decisionNodeHref).id);

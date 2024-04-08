@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDefinitionList";
+import { WorkflowDefinitionListContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 import { useSettings } from "../../settings/SettingsContext";
 
 export function WebToolsWorkflowDefinitionListContextProvider(props: React.PropsWithChildren<{}>) {

@@ -18,13 +18,13 @@
  */
 
 import React, { useCallback } from "react";
-import { WorkflowDefinitionListContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDefinitionListContainer";
+import { WorkflowDefinitionListContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionListContainer";
 import { Card } from "@patternfly/react-core/dist/esm/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useHistory } from "react-router";
 import { routes } from "../../navigation/Routes";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 
 const PAGE_TITLE = "Workflow Definitions";
 

@@ -34,4 +34,15 @@ public class ErrorPage implements IsElement {
     @Inject
     @DataField
     private HTMLDivElement content;
+
+    @Inject
+    @DataField
+    private HTMLDivElement body;
+
+    private static final String BODY_LIGHT_CSS = "blank-slate-pf";
+    private static final String BODY_DARK_CSS = "blank-slate-pf blank-slate-pf-dark";
+
+    public void setDarkTheme(boolean isDark) {
+        body.className = isDark ? BODY_DARK_CSS : BODY_LIGHT_CSS;
+    }
 }

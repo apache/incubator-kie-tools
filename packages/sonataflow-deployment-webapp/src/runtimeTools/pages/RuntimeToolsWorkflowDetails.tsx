@@ -24,9 +24,9 @@ import { ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dis
 import {
   WorkflowDetailsGatewayApi,
   useWorkflowDetailsGatewayApi,
-} from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetails";
-import { WorkflowDetailsContainer } from "@kie-tools/runtime-tools-webapp-components/dist/WorkflowDetailsContainer";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+} from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails";
+import { WorkflowDetailsContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetailsContainer";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";

@@ -25,9 +25,8 @@ import ApolloClient from "apollo-client";
 import DevUIRoutes from "../DevUIRoutes/DevUIRoutes";
 import DevUILayout from "../DevUILayout/DevUILayout";
 import ReactDOM from "react-dom";
-import { CustomLabels } from "../../../api/CustomLabels";
-import { DiagramPreviewSize } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/api";
-import { ServerUnavailablePage } from "@kie-tools/runtime-tools-webapp-components/dist/ServerUnavailablePage";
+import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
+import { ServerUnavailablePage } from "@kie-tools/runtime-tools-shared-webapp-components/dist/ServerUnavailablePage";
 
 interface IOwnProps {
   isWorkflowEnabled: boolean;

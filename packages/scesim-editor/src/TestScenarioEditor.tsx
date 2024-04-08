@@ -34,21 +34,14 @@ import {
 
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
-import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
-import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
@@ -62,6 +55,7 @@ import { useTestScenarioEditorI18n } from "./i18n";
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
+import TestScenarioCreationPanel from "./creation/TestScenarioCreationPanel";
 
 /* Constants */
 
@@ -103,14 +97,16 @@ export type TestScenarioAlert = {
 
 export type TestScenarioDataObject = {
   id: string;
-  name: string;
-  customBadgeContent?: string;
   children?: TestScenarioDataObject[];
+  customBadgeContent?: string;
+  isSimpleTypeFact?: boolean;
+  name: string;
 };
 
 export type TestScenarioEditorRef = {
   /* TODO Convert these to Promises */
   getContent(): string;
+  getDiagramSvg: () => Promise<string | undefined>;
   setContent(pathRelativeToTheWorkspaceRoot: string, content: string): void;
 };
 
@@ -125,111 +121,11 @@ export type TestScenarioSettings = {
   ruleFlowGroup?: string;
 };
 
-/* Sub-Components */
-
-function TestScenarioCreationPanel({
-  onCreateScesimButtonClicked,
-}: {
-  onCreateScesimButtonClicked: (
-    assetType: string,
-    isStatelessSessionRule: boolean,
-    isTestSkipped: boolean,
-    kieSessionRule: string,
-    ruleFlowGroup: string
-  ) => void;
-}) {
-  const assetsOption = [
-    { value: "", label: "Select a type", disabled: true },
-    { value: TestScenarioType[TestScenarioType.DMN], label: "Decision (DMN)", disabled: false },
-    { value: TestScenarioType[TestScenarioType.RULE], label: "Rule (DRL)", disabled: false },
-  ];
-
-  const [assetType, setAssetType] = React.useState("");
-  const [kieSessionRule, setKieSessionRule] = React.useState("");
-  const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
-  const [isTestSkipped, setTestSkipped] = React.useState(false);
-  const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
-
-  return (
-    <EmptyState>
-      <EmptyStateIcon icon={CubesIcon} />
-      <Title headingLevel={"h6"} size={"md"}>
-        Create a new Test Scenario
-      </Title>
-      <Form isHorizontal className="kie-scesim-editor--creation-form">
-        <FormGroup label="Asset type" isRequired>
-          <FormSelect
-            value={assetType}
-            id="asset-type-select"
-            name="asset-type-select"
-            onChange={(value: string) => setAssetType(value)}
-          >
-            {assetsOption.map((option, index) => (
-              <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
-            ))}
-          </FormSelect>
-        </FormGroup>
-        {assetType === TestScenarioType[TestScenarioType.DMN] && (
-          <FormGroup label="Select DMN" isRequired>
-            <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
-              <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
-            </FormSelect>
-          </FormGroup>
-        )}
-        {assetType === TestScenarioType[TestScenarioType.RULE] && (
-          <>
-            <FormGroup label={"KIE Session"}>
-              <TextInput
-                placeholder={"<Optional>"}
-                onChange={(value) => setKieSessionRule(value)}
-                type="text"
-                value={kieSessionRule}
-              />
-            </FormGroup>
-            <FormGroup label={"Group"}>
-              <TextInput
-                placeholder={"<Optional>"}
-                onChange={(value) => setRuleFlowGroup(value)}
-                type="text"
-                value={ruleFlowGroup}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Checkbox
-                id="stateless-session-checkbox"
-                isChecked={isStatelessSessionRule}
-                label="Stateless Session"
-                onChange={(value) => {
-                  setStatelessSessionRule(value);
-                }}
-              />
-            </FormGroup>
-          </>
-        )}
-        <FormGroup>
-          <Checkbox
-            id="test-skipped-checkbox"
-            isChecked={isTestSkipped}
-            label="Skip this file during the test"
-            onChange={(value: boolean) => {
-              setTestSkipped(value);
-            }}
-          />
-        </FormGroup>
-      </Form>
-      <Button
-        variant="primary"
-        icon={<AddIcon />}
-        isDisabled={assetType == ""}
-        onClick={() =>
-          onCreateScesimButtonClicked(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
-        }
-      >
-        Create
-      </Button>
-    </EmptyState>
-  );
-}
+export type TestScenarioSelectedColumnMetaData = {
+  factMapping: SceSim__FactMappingType;
+  index: number;
+  isBackground: boolean;
+};
 
 function TestScenarioMainPanel({
   fileName,
@@ -245,16 +141,18 @@ function TestScenarioMainPanel({
   const { i18n } = useTestScenarioEditorI18n();
 
   const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
+  const [dataObjects, setDataObjects] = useState<TestScenarioDataObject[]>([]);
+  const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
+  const [selectedColumnMetadata, setSelectedColumnMetaData] = useState<TestScenarioSelectedColumnMetaData | null>(null);
   const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
   const onTabChanged = useCallback((_event, tab) => {
+    setSelectedColumnMetaData(null);
     setTab(tab);
   }, []);
-
-  const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
 
   const closeDockPanel = useCallback(() => {
     setDockPanel((prev) => {
@@ -266,8 +164,14 @@ function TestScenarioMainPanel({
     setDockPanel({ isOpen: true, selected: selected });
   }, []);
 
+  useEffect(() => {
+    setDockPanel({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
+    setSelectedColumnMetaData(null);
+    setTab(TestScenarioEditorTab.EDITOR);
+  }, [fileName]);
+
   /** This is TEMPORARY */
-  const dataObjectsFromScesim = useMemo(() => {
+  useEffect(() => {
     /* To create the Data Object arrays we need an external source, in details: */
     /* DMN Data: Retrieving DMN type from linked DMN file */
     /* Java classes: Retrieving Java classes info from the user projects */
@@ -278,8 +182,7 @@ function TestScenarioMainPanel({
        That makes sense for previously created scesim files */
 
     const factsMappings: SceSim__FactMappingType[] =
-      scesimModel!.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]!["factMappings"]!["FactMapping"] ??
-      [];
+      scesimModel.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping ?? [];
 
     const dataObjects: TestScenarioDataObject[] = [];
 
@@ -289,43 +192,54 @@ function TestScenarioMainPanel({
       if (factsMappings[i].className!.__$$text === "java.lang.Void") {
         continue;
       }
-      const dataObject = dataObjects.find((value) => value.id === factsMappings[i]["factAlias"].__$$text);
+      const factID = factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text;
+      const dataObject = dataObjects.find((value) => value.id === factID);
+      const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length == 1;
+      const propertyID = isSimpleTypeFact //POTENTIAL BUG
+        ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
+        : factsMappings[i]
+            .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
+            .join(".");
+      const propertyName = isSimpleTypeFact
+        ? "value"
+        : factsMappings[i].expressionElements!.ExpressionElement!.slice(-1)[0].step.__$$text;
       if (dataObject) {
-        if (!dataObject.children?.some((value) => value.id === factsMappings[i]["expressionAlias"]?.__$$text)) {
+        if (!dataObject.children?.some((value) => value.id === propertyID)) {
           dataObject.children!.push({
-            id: factsMappings[i]["expressionAlias"]!.__$$text,
-            name: factsMappings[i]["expressionAlias"]!.__$$text,
-            customBadgeContent: factsMappings[i]["className"].__$$text,
+            id: propertyID,
+            customBadgeContent: factsMappings[i].className.__$$text,
+            isSimpleTypeFact: isSimpleTypeFact,
+            name: propertyName,
           });
         }
       } else {
         dataObjects.push({
-          id: factsMappings[i]["factAlias"].__$$text,
-          name: factsMappings[i]["factAlias"].__$$text,
-          customBadgeContent: factsMappings[i]["factIdentifier"]!["className"]!.__$$text,
+          id: factID,
+          name: factsMappings[i].factAlias!.__$$text,
+          customBadgeContent: factsMappings[i].factIdentifier!.className!.__$$text,
           children: [
             {
-              id: factsMappings[i]["expressionAlias"]!.__$$text,
-              name: factsMappings[i]["expressionAlias"]!.__$$text,
-              customBadgeContent: factsMappings[i]["className"].__$$text,
+              id: propertyID,
+              name: propertyName,
+              customBadgeContent: factsMappings[i].className.__$$text,
             },
           ],
         });
       }
     }
 
-    return dataObjects;
-  }, [scesimModel]);
+    setDataObjects(dataObjects);
+  }, [scesimModel.ScenarioSimulationModel.settings.type]);
 
   /** It determines the Alert State */
   useEffect(() => {
-    const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"]!.__$$text;
+    const assetType = scesimModel.ScenarioSimulationModel.settings.type!.__$$text;
 
     let alertEnabled = false;
     let alertMessage = "";
     let alertVariant: "default" | "danger" | "warning" | "info" | "success" = "danger";
 
-    if (dataObjectsFromScesim.length > 0) {
+    if (dataObjects.length > 0) {
       alertMessage =
         assetType === TestScenarioType[TestScenarioType.DMN]
           ? i18n.alerts.dmnDataRetrievedFromScesim
@@ -341,7 +255,7 @@ function TestScenarioMainPanel({
     }
 
     setAlert({ enabled: alertEnabled, message: alertMessage, variant: alertVariant });
-  }, [dataObjectsFromScesim, i18n, scesimModel.ScenarioSimulationModel]);
+  }, [dataObjects, i18n, scesimModel.ScenarioSimulationModel.settings.type]);
 
   return (
     <>
@@ -350,10 +264,12 @@ function TestScenarioMainPanel({
           <DrawerContent
             panelContent={
               <TestScenarioDrawerPanel
-                dataObjects={dataObjectsFromScesim}
+                dataObjects={dataObjects}
                 fileName={fileName}
                 onDrawerClose={closeDockPanel}
                 onUpdateSettingField={updateSettingField}
+                scesimModel={scesimModel}
+                selectedColumnMetaData={selectedColumnMetadata}
                 selectedDock={dockPanel.selected}
                 testScenarioSettings={{
                   assetType: scesimModel.ScenarioSimulationModel.settings!.type!.__$$text,
@@ -364,6 +280,8 @@ function TestScenarioMainPanel({
                   kieSessionRule: scesimModel.ScenarioSimulationModel.settings!.dmoSession?.__$$text,
                   ruleFlowGroup: scesimModel.ScenarioSimulationModel.settings!.ruleFlowGroup?.__$$text,
                 }}
+                updateSelectedColumnMetaData={setSelectedColumnMetaData}
+                updateTestScenarioModel={updateTestScenarioModel}
               />
             }
           >
@@ -399,6 +317,7 @@ function TestScenarioMainPanel({
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.simulation}
                         scrollableParentRef={scenarioTableScrollableElementRef}
+                        updateSelectedColumnMetaData={setSelectedColumnMetaData}
                         updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
@@ -427,6 +346,7 @@ function TestScenarioMainPanel({
                         assetType={scesimModel.ScenarioSimulationModel.settings.type!.__$$text}
                         tableData={scesimModel.ScenarioSimulationModel.background}
                         scrollableParentRef={backgroundTableScrollableElementRef}
+                        updateSelectedColumnMetaData={setSelectedColumnMetaData}
                         updateTestScenarioModel={updateTestScenarioModel}
                       />
                     </div>
@@ -504,6 +424,7 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
     forwardRef,
     () => ({
       getContent: () => marshaller.builder.build(scesimModel),
+      getDiagramSvg: async () => undefined,
       setContent: (normalizedPosixPathRelativeToTheWorkspaceRoot, content) => {
         console.debug("SCESIM setContent called");
         console.debug("=== FILE CONTENT ===");

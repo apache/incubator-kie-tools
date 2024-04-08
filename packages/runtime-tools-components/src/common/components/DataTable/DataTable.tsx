@@ -28,6 +28,7 @@ import {
   ICell,
   sortable,
   ISortBy,
+  SortByDirection,
 } from "@patternfly/react-table/dist/js/components/Table";
 import isEmpty from "lodash/isEmpty";
 import filter from "lodash/filter";
@@ -56,7 +57,7 @@ interface IOwnProps {
   LoadingComponent?: React.ReactNode;
   ErrorComponent?: React.ReactNode;
   sortBy?: ISortBy;
-  onSorting?: (index: number, direction: string) => void;
+  onSorting?: (index: number, direction: SortByDirection) => void;
 }
 
 const getCellData = (dataObj: Record<string, any>, path: string): string => {
@@ -67,7 +68,7 @@ const getCellData = (dataObj: Record<string, any>, path: string): string => {
   }
 };
 
-const getColumns = (data: any[], columns: DataTableColumn[]) => {
+const getColumns = (data: any[] | undefined, columns: DataTableColumn[]) => {
   if (data) {
     return columns
       ? filter(columns, (column) => !isEmpty(column.path)).map((column) => {
@@ -138,7 +139,7 @@ export const DataTable: React.FC<IOwnProps & OUIAProps> = ({
 
   useEffect(() => {
     if (isLoading) {
-      const cols = getColumns([], columns);
+      const cols = getColumns(undefined, columns);
       const row = [
         {
           cells: [
@@ -159,7 +160,7 @@ export const DataTable: React.FC<IOwnProps & OUIAProps> = ({
       setColumnList(cols);
       setRows(row);
     } else if (isEmpty(data)) {
-      const cols = getColumns([], columns);
+      const cols = getColumns(undefined, columns);
       const row = [
         {
           cells: [
@@ -186,7 +187,7 @@ export const DataTable: React.FC<IOwnProps & OUIAProps> = ({
     }
   }, [data, isLoading]);
 
-  const onSort = (event: any, index: number, direction: any) => {
+  const onSort = (event: any, index: number, direction: SortByDirection) => {
     if (isFunction(onSorting)) {
       onSorting(index, direction);
     }

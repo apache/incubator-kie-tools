@@ -18,17 +18,23 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { TestScenarioEditor, TestScenarioEditorRef } from "../../src/TestScenarioEditor";
 
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Dropdown, DropdownToggle, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+
+import { LOAN_PRE_QUALIFICATION, TRAFFIC_VIOLATION } from "./ExternalDmnModels";
+import { IS_OLD_ENOUGH_RULE, TRAFFIC_VIOLATION_DMN } from "./ExternalScesimModels";
 
 import "./DevWebApp.css";
 
 export function DevWebApp() {
   const ref = useRef<TestScenarioEditorRef>(null);
+  const [isExampleDropdownOpen, setExampleDropdownIsOpen] = useState(false);
 
   useEffect(() => {
     /* Simulating a call from "Foundation" code */
@@ -77,6 +83,46 @@ export function DevWebApp() {
     }
   }, []);
 
+  const onOpenStaticScesimExample = useCallback((fileName: string, content: string) => {
+    ref.current?.setContent(fileName, content);
+  }, []);
+
+  const dropdownExamplesItems = [
+    <DropdownItem
+      key="TrafficViolationTest.scesim"
+      component="button"
+      onClick={() => onOpenStaticScesimExample("TrafficViolationTest.scesim", TRAFFIC_VIOLATION_DMN)}
+    >
+      DMN-Based: TrafficViolationTest
+    </DropdownItem>,
+    <DropdownItem
+      key="AreTheyOldEnoughTest.scesim"
+      component="button"
+      onClick={() => onOpenStaticScesimExample("AreTheyOldEnoughTest.scesim", IS_OLD_ENOUGH_RULE)}
+    >
+      Rule-Based: AreTheyOldEnoughTest
+    </DropdownItem>,
+  ];
+
+  const onExampleDropdownToggle = useCallback((isOpen: boolean) => {
+    setExampleDropdownIsOpen(isOpen);
+  }, []);
+
+  const onExampleDropdownSelect = useCallback(() => {
+    setExampleDropdownIsOpen(false);
+    const element = document.getElementById("toggle-basic");
+    element?.focus();
+  }, []);
+
+  // const onRequestExternalModelByPath = useCallback<Promise<string[]>>(async (path) => {
+  //   return availableModelsByPath[path] ?? null;
+  // }, []);
+
+  // const onRequestExternalModelsAvailableToInclude =
+  //   useCallback<DmnEditor.OnRequestExternalModelsAvailableToInclude>(async () => {
+  //     return Object.keys(availableModelsByPath);
+  //   }, []);
+
   return (
     <>
       <Page onDragOver={onDragOver} onDrop={onDrop}>
@@ -89,12 +135,30 @@ export function DevWebApp() {
               <h5>(Drag & drop a file anywhere to open it)</h5>
             </FlexItem>
             <FlexItem shrink={{ default: "shrink" }}>
-              &nbsp; &nbsp; | &nbsp; &nbsp;
-              <button onClick={reset}>Reset</button>
               &nbsp; &nbsp;
-              <button onClick={copyAsXml}>Copy as XML</button>
+              <Dropdown
+                className="dev-webapp--example-dropdown"
+                onSelect={onExampleDropdownSelect}
+                toggle={
+                  <DropdownToggle id="toggle-basic" onToggle={onExampleDropdownToggle}>
+                    Examples
+                  </DropdownToggle>
+                }
+                isOpen={isExampleDropdownOpen}
+                dropdownItems={dropdownExamplesItems}
+              />
               &nbsp; &nbsp;
-              <button onClick={downloadAsXml}>Download as XML</button>
+              <Button onClick={reset} variant="tertiary">
+                Reset
+              </Button>
+              &nbsp; &nbsp;
+              <Button onClick={copyAsXml} variant="tertiary">
+                Copy as XML
+              </Button>
+              &nbsp; &nbsp;
+              <Button onClick={downloadAsXml} variant="tertiary">
+                Download as XML
+              </Button>
             </FlexItem>
           </Flex>
           <a ref={downloadRef} />

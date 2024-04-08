@@ -53,6 +53,7 @@ import org.kie.workbench.common.stunner.core.client.command.ClearAllCommand;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -64,6 +65,9 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.SWDomainInitializer;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
+import org.kie.workbench.common.stunner.sw.client.theme.ColorTheme;
+import org.kie.workbench.common.stunner.sw.client.theme.DarkMode;
+import org.kie.workbench.common.stunner.sw.client.theme.LightMode;
 import org.kie.workbench.common.stunner.sw.marshall.DocType;
 import org.kie.workbench.common.stunner.sw.marshall.Message;
 import org.kie.workbench.common.stunner.sw.marshall.ParseResult;
@@ -79,7 +83,6 @@ import org.uberfire.workbench.model.bridge.Notification;
 public class DiagramEditor {
 
     public static final String EDITOR_ID = "SWDiagramEditor";
-    public static final String BACKGROUND_COLOR = "#f2f2f2";
 
     static String ID_SEARCH_PATTERN_JSON = "(?:\\\"|\\')(?<id>[^\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\"|\\')" +
             "?(?<value>true|false|[0-9a-zA-Z\\+\\-\\,\\.\\$]*)";
@@ -95,6 +98,9 @@ public class DiagramEditor {
     private final Event<TogglePreviewEvent> togglePreviewEvent;
     private final DiagramApi diagramApi;
     private DocType currentDocType = DocType.JSON;
+    private String currentPath;
+    private String currentValue;
+    ColorTheme themeToBeApplied = null;
 
     @Inject
     private TranslationService translationService;
@@ -120,6 +126,9 @@ public class DiagramEditor {
     public void onStartup(final PlaceRequest place) {
         domainInitializer.initialize();
         stunnerEditor.setReadOnly(true);
+
+        // Set default theme on startup
+        StunnerTheme.setTheme(LightMode.getInstance());
     }
 
     @SuppressWarnings("all")
@@ -149,6 +158,48 @@ public class DiagramEditor {
         return diagramService.transform(stunnerEditor.getDiagram(), DocType.JSON);
     }
 
+    public final Promise<Void> applyTheme(String theme) {
+        if (null != theme && !theme.isEmpty() &&
+                !theme.equals(((ColorTheme) StunnerTheme.getTheme()).getName())) {
+
+            themeToBeApplied = getTheme(theme);
+
+            // Do not apply theme if there are errors, keep it to apply when the diagram is valid
+            if (!stunnerEditor.hasErrors()) {
+                setTheme();
+                reloadEditorContent();
+            }
+        }
+        return null;
+    }
+
+    private ColorTheme getTheme(final String theme) {
+        if (theme.equals(DarkMode.NAME)) {
+            return DarkMode.getInstance();
+        } else {
+            return LightMode.getInstance();
+        }
+    }
+
+    private void setTheme() {
+        StunnerTheme.setTheme(themeToBeApplied);
+        setCanvasBackgroundColor();
+        themeToBeApplied = null;
+    }
+
+    void reloadEditorContent() {
+        if (null != stunnerEditor.getSession()) {
+            Promise.resolve(setContent(currentPath, currentValue));
+        }
+    }
+
+    void setCanvasBackgroundColor() {
+        if (null != stunnerEditor.getSession()) {
+            ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
+                    .setBackgroundColor(((ColorTheme) StunnerTheme.getTheme()).getCanvasBackgroundColor());
+        }
+    }
+
     public Promise<Void> setContent(final String path, final String value) {
         if (value == null || value.trim().isEmpty()) {
             return setContent(path, "{}", DocType.JSON);
@@ -160,6 +211,9 @@ public class DiagramEditor {
     }
 
     private Promise<Void> setContent(final String path, final String value, final DocType docType) {
+        this.currentPath = path;
+        this.currentValue = value;
+
         this.currentDocType = docType;
         TogglePreviewEvent event = new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE);
         togglePreviewEvent.fire(event);
@@ -189,6 +243,11 @@ public class DiagramEditor {
                                      new ServiceCallback<ParseResult>() {
                                          @Override
                                          public void onSuccess(final ParseResult parseResult) {
+                                             // Apply theme if pending due to errors
+                                             if (null != themeToBeApplied) {
+                                                 setTheme();
+                                             }
+
                                              stunnerEditor
                                                      .close()
                                                      .open(parseResult.getDiagram(),
@@ -214,8 +273,7 @@ public class DiagramEditor {
 
                                                                @Override
                                                                public void afterCanvasInitialized() {
-                                                                   ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
-                                                                           .setBackgroundColor(BACKGROUND_COLOR);
+                                                                   setCanvasBackgroundColor();
                                                                }
                                                            });
                                          }
@@ -243,6 +301,11 @@ public class DiagramEditor {
 
                                          @Override
                                          public void onSuccess(final ParseResult parseResult) {
+                                             // Apply theme if pending due to errors
+                                             if (null != themeToBeApplied) {
+                                                 setTheme();
+                                             }
+
                                              renderDiagram = parseResult.getDiagram();
                                              updateDiagram(parseResult.getDiagram());
                                              if (parseResult.getMessages().length > 0) {

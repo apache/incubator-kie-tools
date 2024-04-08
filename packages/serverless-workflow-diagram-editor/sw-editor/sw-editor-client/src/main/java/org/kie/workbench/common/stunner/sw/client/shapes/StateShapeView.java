@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -30,7 +30,9 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextLineBreakTruncateWrapper;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.sw.client.theme.ColorTheme;
 
 import static com.ait.lienzo.shared.core.types.TextAlign.CENTER;
 import static com.ait.lienzo.shared.core.types.TextBaseLine.MIDDLE;
@@ -81,7 +83,7 @@ public class StateShapeView
                 .setX(LABEL_POSITION_X)
                 // Y is set based on the size of the Text widget after it is initialized, see calculateTitleCenterY()
                 .setStrokeWidth(0)
-                .setFillColor("#383B3D")
+                .setFillColor(((ColorTheme) StunnerTheme.getTheme()).getShapeTextColor())
                 .setFontFamily("Open Sans")
                 .setTextAlign(CENTER)
                 .setTextBaseLine(MIDDLE)
@@ -97,7 +99,7 @@ public class StateShapeView
         addChild(icon);
 
         backgroundCircle = newCircle(STATE_SHAPE_ICON_RADIUS)
-                .setStrokeColor("#d5d5d5");
+                .setStrokeColor(((ColorTheme) StunnerTheme.getTheme()).getBackgroundIconCircleStrokeColor());
         icon.add(backgroundCircle);
 
         iconImage = newGroup();
@@ -105,7 +107,7 @@ public class StateShapeView
     }
 
     public void setIconPicture(Picture picture) {
-        backgroundCircle.setFillColor("#FFF");
+        backgroundCircle.setFillColor(((ColorTheme) StunnerTheme.getTheme()).getBackgroundIconCircleFillColor());
 
         picture.setX(-STATE_SHAPE_ICON_RADIUS); // PathClipper is a circle with center at [0.0], we need to compensate radius
         picture.setY(-STATE_SHAPE_ICON_RADIUS); // on both X and Y axis.
@@ -123,9 +125,9 @@ public class StateShapeView
                               .setScale(0.35)
                               .setX(-11)
                               .setY(-11)
-                              .setFillColor("#fff")
-                              .setStrokeColor("#fff")
-                              .setStrokeWidth(2.00));
+                              .setFillColor(((ColorTheme) StunnerTheme.getTheme()).getIconPictureFillColor())
+                              .setStrokeColor(((ColorTheme) StunnerTheme.getTheme()).getIconPictureStrokeColor())
+                              .setStrokeWidth(1.00));
     }
 
     public String getIconBackgroundColor() {
