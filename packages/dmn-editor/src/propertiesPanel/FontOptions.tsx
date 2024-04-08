@@ -373,7 +373,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
               </ToggleGroup>
             </div>
             <br />
-            <div data-testid="node-font-style-selector">
+            <div data-testid="properties-panel-node-font-style">
               <Select
                 toggleRef={toggleRef}
                 variant={SelectVariant.single}
