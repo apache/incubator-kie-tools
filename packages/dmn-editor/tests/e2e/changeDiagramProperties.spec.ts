@@ -57,4 +57,30 @@ test.describe("Change Properties - Diagram", () => {
 
     expect(await diagramPropertiesPanel.getNamespace()).toBe("NAMESPACE");
   });
+
+  test("should regenerate Diagram ID & Namespace", async ({ diagramPropertiesPanel }) => {
+    const originalId = await diagramPropertiesPanel.getId();
+    const originalNamespace = await diagramPropertiesPanel.getNamespace();
+
+    await diagramPropertiesPanel.resetIdAndNamespace({ cancel: false });
+
+    const newId = await diagramPropertiesPanel.getId();
+    const newNamespace = await diagramPropertiesPanel.getNamespace();
+
+    expect(originalId).not.toEqual(newId);
+    expect(originalNamespace).not.toEqual(newNamespace);
+  });
+
+  test("should cancel regenerate Diagram ID & Namespace operation", async ({ diagramPropertiesPanel }) => {
+    const originalId = await diagramPropertiesPanel.getId();
+    const originalNamespace = await diagramPropertiesPanel.getNamespace();
+
+    await diagramPropertiesPanel.resetIdAndNamespace({ cancel: true });
+
+    const newId = await diagramPropertiesPanel.getId();
+    const newNamespace = await diagramPropertiesPanel.getNamespace();
+
+    expect(originalId).toEqual(newId);
+    expect(originalNamespace).toEqual(newNamespace);
+  });
 });

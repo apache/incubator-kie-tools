@@ -72,4 +72,13 @@ export class DiagramPropertiesPanel extends PropertiesPanelBase {
   public async getNamespace() {
     return await this.panel().getByPlaceholder("Enter a diagram Namespace...").locator("input").inputValue();
   }
+
+  public async resetIdAndNamespace(args: { cancel: boolean }) {
+    await this.panel().getByTitle("Re-generate ID & Namespace").click();
+    if (args.cancel) {
+      await this.page.locator("footer").getByText("Cancel").click();
+    } else {
+      await this.page.getByText("Yes, re-generate ID and Namespace").click();
+    }
+  }
 }
