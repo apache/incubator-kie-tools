@@ -22,7 +22,6 @@ import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
 import { executeJBangScript } from "./jbang/jbangManager";
-import { JBANG_DMN_VALIDATION_SCRIPT_PATH } from "./testConstants";
 
 /**
  * This test suite validates the xml produced by the marshaller relying on KIE DMN Validator
@@ -74,6 +73,7 @@ const dmnTestingImportedModels = [
 ];
 
 const marshalledXMLDirectory = path.join(__dirname, "../dist-tests/marshalled-dmn-file");
+const jbangDmnValidationScriptPath = path.join(__dirname, "./jbang/dmnValidation.java");
 
 describe("validation", () => {
   beforeAll(() => {
@@ -98,7 +98,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
     const marshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
     try {
-      executeJBangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, marshalledXMLFilePath);
+      executeJBangScript(jbangDmnValidationScriptPath, marshalledXMLFilePath);
     } catch (error) {
       const fileName = normalizedFsPathRelativeToTheFile.substring(
         normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
@@ -118,11 +118,7 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       const importerMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJBangScript(
-          JBANG_DMN_VALIDATION_SCRIPT_PATH,
-          importedMarshalledXMLFilePath,
-          importerMarshalledXMLFilePath
-        );
+        executeJBangScript(jbangDmnValidationScriptPath, importedMarshalledXMLFilePath, importerMarshalledXMLFilePath);
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
           normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
