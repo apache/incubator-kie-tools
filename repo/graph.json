@@ -23,7 +23,7 @@
       { "id": "@kie-tools-core/vscode-java-code-completion" },
       { "id": "@kie-tools-examples/commit-message-validation-service" },
       { "id": "@kie-tools-examples/drools-dmn-quarkus-example" },
-      { "id": "@kie-tools/quarkus-examples-maven-parent" },
+      { "id": "@kie-tools-examples/quarkus-examples-maven-parent" },
       { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools-examples/drools-process-quarkus-example" },
       { "id": "@kie-tools-examples/drools-xls-decision-table-quarkus-example" },
@@ -245,20 +245,20 @@
       },
       {
         "source": "@kie-tools-examples/drools-dmn-quarkus-example",
-        "target": "@kie-tools/quarkus-examples-maven-parent",
+        "target": "@kie-tools-examples/quarkus-examples-maven-parent",
         "weight": 1
       },
-      { "source": "@kie-tools/quarkus-examples-maven-parent", "target": "@kie-tools/maven-base", "weight": 1 },
+      { "source": "@kie-tools-examples/quarkus-examples-maven-parent", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools/maven-base", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
       { "source": "@kie-tools/maven-base", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools-examples/drools-process-quarkus-example",
-        "target": "@kie-tools/quarkus-examples-maven-parent",
+        "target": "@kie-tools-examples/quarkus-examples-maven-parent",
         "weight": 1
       },
       {
         "source": "@kie-tools-examples/drools-xls-decision-table-quarkus-example",
-        "target": "@kie-tools/quarkus-examples-maven-parent",
+        "target": "@kie-tools-examples/quarkus-examples-maven-parent",
         "weight": 1
       },
       { "source": "@kie-tools-examples/ping-pong-view", "target": "@kie-tools-core/envelope", "weight": 1 },
@@ -277,12 +277,12 @@
       },
       {
         "source": "@kie-tools-examples/pmml-quarkus-example",
-        "target": "@kie-tools/quarkus-examples-maven-parent",
+        "target": "@kie-tools-examples/quarkus-examples-maven-parent",
         "weight": 1
       },
       {
         "source": "@kie-tools-examples/sonataflow-greeting-quarkus-example",
-        "target": "@kie-tools/quarkus-examples-maven-parent",
+        "target": "@kie-tools-examples/quarkus-examples-maven-parent",
         "weight": 1
       },
       {
@@ -1165,7 +1165,7 @@
     ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
     ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],
     ["@kie-tools-examples/pmml-quarkus-example", "examples/pmml-quarkus-example"],
-    ["@kie-tools/quarkus-examples-maven-parent", "examples/quarkus-examples-maven-parent"],
+    ["@kie-tools-examples/quarkus-examples-maven-parent", "examples/quarkus-examples-maven-parent"],
     ["@kie-tools-examples/sonataflow-greeting-quarkus-example", "examples/sonataflow-greeting-quarkus-example"],
     ["@kie-tools-examples/todo-list-view", "examples/todo-list-view"],
     ["kie-tools-examples-todo-list-view-vscode-extension", "examples/todo-list-view-vscode-extension"],

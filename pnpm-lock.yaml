@@ -255,12 +255,12 @@ importers:
 
   examples/drools-dmn-quarkus-example:
     devDependencies:
+      "@kie-tools-examples/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
-      "@kie-tools/quarkus-examples-maven-parent":
-        specifier: workspace:*
-        version: link:../quarkus-examples-maven-parent
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -270,12 +270,12 @@ importers:
 
   examples/drools-process-quarkus-example:
     devDependencies:
+      "@kie-tools-examples/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
-      "@kie-tools/quarkus-examples-maven-parent":
-        specifier: workspace:*
-        version: link:../quarkus-examples-maven-parent
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -285,12 +285,12 @@ importers:
 
   examples/drools-xls-decision-table-quarkus-example:
     devDependencies:
+      "@kie-tools-examples/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
-      "@kie-tools/quarkus-examples-maven-parent":
-        specifier: workspace:*
-        version: link:../quarkus-examples-maven-parent
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -441,12 +441,12 @@ importers:
 
   examples/pmml-quarkus-example:
     devDependencies:
+      "@kie-tools-examples/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
-      "@kie-tools/quarkus-examples-maven-parent":
-        specifier: workspace:*
-        version: link:../quarkus-examples-maven-parent
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
@@ -471,12 +471,12 @@ importers:
 
   examples/sonataflow-greeting-quarkus-example:
     devDependencies:
+      "@kie-tools-examples/quarkus-examples-maven-parent":
+        specifier: workspace:*
+        version: link:../quarkus-examples-maven-parent
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../../packages/maven-config-setup-helper
-      "@kie-tools/quarkus-examples-maven-parent":
-        specifier: workspace:*
-        version: link:../quarkus-examples-maven-parent
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../../packages/root-env
