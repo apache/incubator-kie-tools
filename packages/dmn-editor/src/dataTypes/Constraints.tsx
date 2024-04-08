@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useCallback, useRef, useState, useLayoutEffect } from "react";
+import { useMemo, useCallback } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";

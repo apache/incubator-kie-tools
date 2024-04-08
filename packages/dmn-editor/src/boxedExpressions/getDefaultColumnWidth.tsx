@@ -19,15 +19,19 @@
 
 import { getTextWidth } from "@kie-tools/boxed-expression-component/dist/resizing/WidthsToFitData";
 import { DEFAULT_MIN_WIDTH } from "@kie-tools/boxed-expression-component/dist/resizing/WidthConstants";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function getDefaultColumnWidth({ name, typeRef }: { name: string; typeRef: string | undefined }): number {
   return (
-    8 * 2 + // Copied from ContextEntry info `getWidthToFit`
-    2 + // Copied from ContextEntry info `getWidthToFit`
+    8 * 2 + // Copied from ContextEntry variable `getWidthToFit`
+    2 + // Copied from ContextEntry variable `getWidthToFit`
     Math.max(
       DEFAULT_MIN_WIDTH,
       getTextWidth(name, "700 11.2px Menlo, monospace"),
-      getTextWidth(`(${typeRef ?? ""})`, "700 11.6667px RedHatText, Overpass, overpass, helvetica, arial, sans-serif")
+      getTextWidth(
+        `(${typeRef ?? DmnBuiltInDataType.Undefined})`,
+        "700 11.6667px RedHatText, Overpass, overpass, helvetica, arial, sans-serif"
+      )
     )
   );
 }
