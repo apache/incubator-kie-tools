@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { config as baseConfig } from "@kie-tools/storybook-base/main";
+import { config as baseConfig } from "@kie-tools/storybook-base/dist/config/baseConfig";
 
 const config = {
   ...baseConfig,
