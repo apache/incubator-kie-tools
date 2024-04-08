@@ -20,6 +20,9 @@
 import * as path from "path";
 
 /* Local Directories */
+export const DIST_TESTS_DIRECTORY = "dist-tests";
+export const LOCAL_TYPE_SAFETY_TESTS_DIRECTORY = "dmn-marshaller-type-safety-tests";
+export const LOCAL_PARSER_XML_GENERATED_DIRECTORY = "marshalled-dmn-files";
 export const LOCAL_MODELS_DIRECTORY = "tests-data--manual";
 export const LOCAL_MODELS_1_4_DIRECTORY = "dmn-1_4--examples";
 export const LOCAL_MODELS_OTHER_DIRECTORY = "other";

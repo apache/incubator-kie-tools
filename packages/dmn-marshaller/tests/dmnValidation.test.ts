@@ -23,14 +23,16 @@ import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
 import { executeJbangScript } from "./jbang/jbangManager";
 import {
+  DIST_TESTS_DIRECTORY,
   FULL_1_5_DIRECTORY,
   FULL_1_x_DIRECTORY,
   FULL_1_x_MULTIPLE_DIRECTORY,
   JBANG_DMN_VALIDATION_SCRIPT_PATH,
+  LOCAL_PARSER_XML_GENERATED_DIRECTORY,
 } from "./testConstants";
 
 /**
- * This test suite validates the xml produced by the marshalle relying on KIE DMN Validator
+ * This test suite validates the xml produced by the marshaller relying on KIE DMN Validator
  * (https://github.com/apache/incubator-kie-drools/tree/main/kie-dmn/kie-dmn-validation).
  * A JBang script is used to actually call the KIE DMN Validator Java code.
  */
@@ -78,7 +80,16 @@ const dmnTestingImportedModels = [
   // },
 ];
 
+const marshalledXMLDirectory = path.join(__dirname, "..", DIST_TESTS_DIRECTORY, LOCAL_PARSER_XML_GENERATED_DIRECTORY);
+
 describe("validation", () => {
+  beforeAll(() => {
+    if (fs.existsSync(marshalledXMLDirectory)) {
+      fs.rmSync(marshalledXMLDirectory, { recursive: true });
+    }
+    fs.mkdirSync(marshalledXMLDirectory, { recursive: true });
+  });
+
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
   }
@@ -91,10 +102,10 @@ describe("validation", () => {
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
   test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1), () => {
-    const processedDMN = parseXML(normalizedFsPathRelativeToTheFile);
+    const marshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
     try {
-      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, processedDMN.marshalledXMLFilePath);
+      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, marshalledXMLFilePath);
     } catch (error) {
       const fileName = normalizedFsPathRelativeToTheFile.substring(
         normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
@@ -110,14 +121,14 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
     ),
     () => {
-      const imported = parseXML(normalizedFsPathRelativeToTheFiles.imported);
-      const importer = parseXML(normalizedFsPathRelativeToTheFiles.importer);
+      const importedMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
+      const importerMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
         executeJbangScript(
           JBANG_DMN_VALIDATION_SCRIPT_PATH,
-          importer.marshalledXMLFilePath,
-          imported.marshalledXMLFilePath
+          importedMarshalledXMLFilePath,
+          importerMarshalledXMLFilePath
         );
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
@@ -131,18 +142,14 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
   );
 }
 
-function parseXML(normalizedFsPathRelativeToTheFile: string): {
-  originalXML: string;
-  marshalledXML: string;
-  marshalledXMLFilePath: string;
-} {
+function parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile: string): string {
   const originalXML = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
   const { parser, builder } = getMarshaller(originalXML, { upgradeTo: "latest" });
   const marshalledXML = builder.build(parser.parse());
   const fileName = normalizedFsPathRelativeToTheFile.substring(
     normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
   );
-  const filetowrite = __dirname + path.sep + ".." + path.sep + "dist" + path.sep + fileName;
-  fs.writeFileSync(filetowrite, marshalledXML);
-  return { originalXML: originalXML, marshalledXML: marshalledXML, marshalledXMLFilePath: filetowrite };
+  const marshalledXMLFilePath = marshalledXMLDirectory + path.sep + fileName;
+  fs.writeFileSync(marshalledXMLFilePath, marshalledXML, "utf-8");
+  return marshalledXMLFilePath;
 }

@@ -25,13 +25,9 @@ class dmnValidation {
     }
 
     public static int validate(String... args) throws Exception {
-        if (args.length > 2 || args.length <= 0) {
-            throw new IllegalArgumentException("Validation requires 1 or 2 DMN file paths");
+        if (args.length < 1) {
+            throw new IllegalArgumentException("Validation requires at least one DMN file path");
         }
-
-        System.out.println("============== XML PATH ============================");
-        System.out.println(args[0]);
-        System.out.println("============== END =================================");
 
         File[] models = Stream.of(args)
                               .map(File::new)

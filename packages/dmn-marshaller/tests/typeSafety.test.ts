@@ -21,6 +21,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as child_process from "child_process";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DIST_TESTS_DIRECTORY, LOCAL_TYPE_SAFETY_TESTS_DIRECTORY } from "./testConstants";
 
 const files = [
   "../tests-data--manual/other/attachment.dmn",
@@ -35,7 +36,7 @@ const files = [
   // "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];
 
-const tmpDir = path.join(__dirname, "..", "dist-tests", "dmn-marshaller-type-safety-tests");
+const tmpDir = path.join(__dirname, "..", DIST_TESTS_DIRECTORY, LOCAL_TYPE_SAFETY_TESTS_DIRECTORY);
 
 describe("type safety", () => {
   beforeAll(() => {
