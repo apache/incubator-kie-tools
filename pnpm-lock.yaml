@@ -761,12 +761,18 @@ importers:
       "@kie-tools/dmn-feel-antlr4-parser":
         specifier: workspace:*
         version: link:../dmn-feel-antlr4-parser
+      "@kie-tools/dmn-marshaller":
+        specifier: workspace:*
+        version: link:../dmn-marshaller
       "@kie-tools/feel-input-component":
         specifier: workspace:*
         version: link:../feel-input-component
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      "@kie-tools/xml-parser-ts":
+        specifier: workspace:*
+        version: link:../xml-parser-ts
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
@@ -10748,6 +10754,9 @@ importers:
 
   packages/sonataflow-quarkus-devui:
     devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -10877,6 +10886,9 @@ importers:
       "@kie-tools/dmn-feel-antlr4-parser":
         specifier: workspace:*
         version: link:../dmn-feel-antlr4-parser
+      "@kie-tools/dmn-marshaller":
+        specifier: workspace:*
+        version: link:../dmn-marshaller
       "@kie-tools/import-java-classes-component":
         specifier: workspace:*
         version: link:../import-java-classes-component
@@ -12286,6 +12298,9 @@ importers:
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
+      "@types/uuid":
+        specifier: ^8.3.0
+        version: 8.3.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -12307,6 +12322,9 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
 
   packages/xml-parser-ts-codegen:
     dependencies:

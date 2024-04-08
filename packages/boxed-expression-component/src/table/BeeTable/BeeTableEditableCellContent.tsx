@@ -21,9 +21,9 @@ import * as Monaco from "@kie-tools-core/monaco-editor";
 import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { NavigationKeysUtils } from "../../keysUtils";
+import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import "./BeeTableEditableCellContent.css";
-import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 const CELL_LINE_HEIGHT = 20;
 
@@ -51,7 +51,6 @@ export interface BeeTableEditableCellContentProps {
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onFeelTabKeyDown?: (args: { isShiftPressed: boolean }) => void;
   onFeelEnterKeyDown?: (args: { isShiftPressed: boolean }) => void;
-  variables?: FeelVariables;
   expressionId?: string;
 }
 
@@ -64,7 +63,6 @@ export function BeeTableEditableCellContent({
   setEditing,
   onFeelTabKeyDown,
   onFeelEnterKeyDown,
-  variables,
   expressionId,
 }: BeeTableEditableCellContentProps) {
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
@@ -76,6 +74,17 @@ export function BeeTableEditableCellContent({
   const mode = useMemo(() => {
     return isEditing && !isReadOnly ? Mode.Edit : Mode.Read;
   }, [isEditing, isReadOnly]);
+
+  // FIXME: Tiago --> Temporary fix for the Boxed Expression Editor to work well. Ideally this wouldn't bee here, as the BeeTable should be decoupled from the DMN Editor's Boxed Expression Editor use-case.
+  const { onRequestFeelVariables } = useBoxedExpressionEditor();
+
+  const feelVariables = useMemo(() => {
+    if (mode === Mode.Edit) {
+      return onRequestFeelVariables?.();
+    } else {
+      return undefined;
+    }
+  }, [mode, onRequestFeelVariables]);
 
   useEffect(() => {
     setPreviousValue((prev) => (isEditing ? prev : value));
@@ -121,7 +130,11 @@ export function BeeTableEditableCellContent({
         } else if (feelInputRef.current?.isSuggestionWidgetOpen()) {
           // Do nothing;
         } else {
-          updateValue(newValue);
+          // This line below is commented on because it causes an issue with WebKit (Safari) based browsers,
+          // making the text boxes no longer work. Also, it is not necessary because the newValue is saved
+          // in the onBlur event, called by the BeeTableSelectionContext
+          // updateValue(newValue);
+
           setEditing(false);
           onFeelEnterKeyDown?.({ isShiftPressed: e.shiftKey });
         }
@@ -205,7 +218,7 @@ export function BeeTableEditableCellContent({
           onPreviewChanged={setPreview}
           options={MONACO_OPTIONS}
           onBlur={onFeelBlur}
-          feelVariables={variables}
+          feelVariables={feelVariables}
           expressionId={expressionId}
         />
       </div>

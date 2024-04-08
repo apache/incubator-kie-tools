@@ -25,7 +25,7 @@ import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/Editab
 import { TypeRefLabel } from "./TypeRefLabel";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameItemDefinition } from "../mutations/renameItemDefinition";
-import { UniqueNameIndex } from "../Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";

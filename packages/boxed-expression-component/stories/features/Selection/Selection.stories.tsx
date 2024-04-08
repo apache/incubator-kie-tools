@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import * as Empty from "../../misc/Empty/EmptyExpression.stories";
 import * as Literal from "../../boxedExpressions/Literal/Literal.stories";
 import * as Relation from "../../boxedExpressions/Relation/Relation.stories";
 import * as DecisionTable from "../../boxedExpressions/DecisionTable/DecisionTable.stories";
-import { DecisionTableExpressionDefinition, generateUuid } from "../../../src/api";
+import { BoxedDecisionTable, generateUuid } from "../../../src/api";
+import { BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -33,7 +33,7 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   includeStories: /^[A-Z]/,
 };
 export default meta;
-type Story = StoryObj<BoxedExpressionEditorProps>;
+type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
 export const CanDrive: Story = {
   ...Literal.CanDrive,
@@ -63,32 +63,32 @@ export const Discount: Story = {
   ...DecisionTable.Discount,
   args: {
     ...DecisionTable.Discount.args!,
-    expressionDefinition: {
-      ...(DecisionTable.Discount.args!.expressionDefinition as DecisionTableExpressionDefinition),
-      rules: [
+    expression: {
+      ...(DecisionTable.Discount.args!.expression! as BoxedDecisionTable),
+      rule: [
         {
-          id: generateUuid(),
-          inputEntries: [{ id: generateUuid(), content: "-" }],
-          outputEntries: [{ id: generateUuid(), content: "" }],
-          annotationEntries: [""],
+          "@_id": generateUuid(),
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: "-" } }],
+          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: "" } }],
+          annotationEntry: [{ text: { __$$text: "" } }],
         },
         {
-          id: generateUuid(),
-          inputEntries: [{ id: generateUuid(), content: "-" }],
-          outputEntries: [{ id: generateUuid(), content: "" }],
-          annotationEntries: [""],
+          "@_id": generateUuid(),
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: "-" } }],
+          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: "" } }],
+          annotationEntry: [{ text: { __$$text: "" } }],
         },
         {
-          id: generateUuid(),
-          inputEntries: [{ id: generateUuid(), content: "-" }],
-          outputEntries: [{ id: generateUuid(), content: "" }],
-          annotationEntries: [""],
+          "@_id": generateUuid(),
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: "-" } }],
+          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: "" } }],
+          annotationEntry: [{ text: { __$$text: "" } }],
         },
         {
-          id: generateUuid(),
-          inputEntries: [{ id: generateUuid(), content: "-" }],
-          outputEntries: [{ id: generateUuid(), content: "" }],
-          annotationEntries: [""],
+          "@_id": generateUuid(),
+          inputEntry: [{ "@_id": generateUuid(), text: { __$$text: "-" } }],
+          outputEntry: [{ "@_id": generateUuid(), text: { __$$text: "" } }],
+          annotationEntry: [{ text: { __$$text: "" } }],
         },
       ],
     },

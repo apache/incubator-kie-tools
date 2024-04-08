@@ -30,11 +30,11 @@ export interface TaskFormGatewayApi {
 }
 
 export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
-  constructor(private readonly user: User) {}
+  constructor(private readonly getCurrentUser: () => User) {}
 
   doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(this.user)}`;
+      const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(this.getCurrentUser())}`;
       axios
         .post(endpoint, payload, {
           headers: {
@@ -55,7 +55,7 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
 
   getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>> {
     return new Promise<Record<string, any>>((resolve, reject) => {
-      const endpoint = getTaskSchemaEndPoint(userTask, this.user);
+      const endpoint = getTaskSchemaEndPoint(userTask, this.getCurrentUser());
       axios
         .get(endpoint, {
           headers: {
