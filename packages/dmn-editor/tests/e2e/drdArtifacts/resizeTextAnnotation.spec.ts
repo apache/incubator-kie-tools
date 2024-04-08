@@ -25,62 +25,185 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Text Annotation", () => {
-  test.beforeEach(async ({ overlays, palette }) => {
-    await overlays.turnOffSnapping();
-    await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+  test.describe("Resize with snapping turned off", () => {
+    test.beforeEach(async ({ overlays, palette }) => {
+      await overlays.turnOffSnapping();
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should increase Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: 50,
+        yOffset: 50,
+      });
+
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("250");
+      expect(width).toEqual("250");
+    });
+
+    test("should decrease Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: 100,
+        yOffset: 100,
+      });
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: -20,
+        yOffset: -20,
+      });
+
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("280");
+      expect(width).toEqual("280");
+    });
+
+    test("should not decrease below minimal Text Annotation node size", async ({
+      nodes,
+      textAnnotationPropertiesPanel,
+    }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: -50,
+        yOffset: -50,
+      });
+
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("150");
+      expect(width).toEqual("200");
+    });
   });
 
-  test("should increase Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
-    await nodes.resize({
-      nodeName: DefaultNodeName.TEXT_ANNOTATION,
-      position: NodePosition.TOP,
-      xOffset: 50,
-      yOffset: 50,
+  test.describe("Resize with snapping turned on", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
     });
 
-    await textAnnotationPropertiesPanel.open();
-    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
-    const { width, height } = await textAnnotationPropertiesPanel.getShape();
-    expect(height).toEqual("250");
-    expect(width).toEqual("250");
+    test("should increase Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: 50,
+        yOffset: 50,
+      });
+
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("240");
+      expect(width).toEqual("240");
+    });
+
+    test("should decrease Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: 100,
+        yOffset: 100,
+      });
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: -20,
+        yOffset: -20,
+      });
+
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("280");
+      expect(width).toEqual("280");
+    });
+
+    test("should not decrease below minimal Text Annotation node size", async ({
+      nodes,
+      textAnnotationPropertiesPanel,
+    }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: -50,
+        yOffset: -50,
+      });
+
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("140");
+      expect(width).toEqual("200");
+    });
   });
 
-  test("should decrease Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
-    await nodes.resize({
-      nodeName: DefaultNodeName.TEXT_ANNOTATION,
-      position: NodePosition.TOP,
-      xOffset: 100,
-      yOffset: 100,
-    });
-    await nodes.resize({
-      nodeName: DefaultNodeName.TEXT_ANNOTATION,
-      position: NodePosition.TOP,
-      xOffset: -20,
-      yOffset: -20,
+  test.describe("Resize with non default snapping", () => {
+    test.beforeEach(async ({ overlays, palette }) => {
+      await overlays.setSnapping({ horizontal: "50", vertical: "50" });
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
     });
 
-    await textAnnotationPropertiesPanel.open();
-    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
-    const { width, height } = await textAnnotationPropertiesPanel.getShape();
-    expect(height).toEqual("280");
-    expect(width).toEqual("280");
-  });
+    test("should increase Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: 50,
+        yOffset: 50,
+      });
 
-  test("should not decrease below minimal Text Annotation node size", async ({
-    nodes,
-    textAnnotationPropertiesPanel,
-  }) => {
-    await nodes.resize({
-      nodeName: DefaultNodeName.TEXT_ANNOTATION,
-      position: NodePosition.TOP,
-      xOffset: -50,
-      yOffset: -50,
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("250");
+      expect(width).toEqual("250");
     });
 
-    await textAnnotationPropertiesPanel.open();
-    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
-    const { width, height } = await textAnnotationPropertiesPanel.getShape();
-    expect(height).toEqual("150");
-    expect(width).toEqual("200");
+    test("should decrease Text Annotation node size", async ({ nodes, textAnnotationPropertiesPanel }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: 100,
+        yOffset: 100,
+      });
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: -20,
+        yOffset: -20,
+      });
+
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("250");
+      expect(width).toEqual("250");
+    });
+
+    test("should not decrease below minimal Text Annotation node size", async ({
+      nodes,
+      textAnnotationPropertiesPanel,
+    }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: -50,
+        yOffset: -50,
+      });
+
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("150");
+      expect(width).toEqual("200");
+    });
   });
 });

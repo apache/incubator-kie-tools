@@ -27,4 +27,11 @@ export class Overlays {
     await this.page.getByLabel("Snapping").uncheck({ force: true });
     await this.page.getByTitle("Overlays").click();
   }
+
+  public async setSnapping(args: { horizontal: string; vertical: string }) {
+    await this.page.getByTitle("Overlays").click();
+    await this.page.getByTestId("horizontal-snapping-control").locator("input").fill(args.horizontal);
+    await this.page.getByTestId("vertical-snapping-control").locator("input").fill(args.vertical);
+    await this.page.getByTitle("Overlays").click();
+  }
 }

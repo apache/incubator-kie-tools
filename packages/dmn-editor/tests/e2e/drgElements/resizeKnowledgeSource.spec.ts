@@ -25,42 +25,125 @@ test.beforeEach(async ({ editor }) => {
 });
 
 test.describe("Resize node - Knowledge Source", () => {
-  test.beforeEach(async ({ overlays, palette }) => {
-    await overlays.turnOffSnapping();
-    await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+  test.describe("Resize with snapping turned off", () => {
+    test.beforeEach(async ({ overlays, palette }) => {
+      await overlays.turnOffSnapping();
+      await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should increase Knowledge Source node size", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 50, yOffset: 50 });
+
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(width).toEqual("210");
+      expect(height).toEqual("130");
+    });
+
+    test("should decrease Knowledge Source node size", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 100, yOffset: 100 });
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: -20, yOffset: -20 });
+
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(width).toEqual("240");
+      expect(height).toEqual("160");
+    });
+
+    test("should not decrease below minimal Knowledge Source node size", async ({
+      nodes,
+      knowledgeSourcePropertiesPanel,
+    }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: -50, yOffset: -50 });
+
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(width).toEqual("160");
+      expect(height).toEqual("80");
+    });
   });
 
-  test("should increase Knowledge Source node size", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
-    await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 50, yOffset: 50 });
+  test.describe("Resize with snapping turned on", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+    });
 
-    await knowledgeSourcePropertiesPanel.open();
-    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
-    const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
-    expect(width).toEqual("210");
-    expect(height).toEqual("130");
+    test("should increase Knowledge Source node size", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 50, yOffset: 50 });
+
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(width).toEqual("200");
+      expect(height).toEqual("120");
+    });
+
+    test("should decrease Knowledge Source node size", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 100, yOffset: 100 });
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: -20, yOffset: -20 });
+
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(width).toEqual("240");
+      expect(height).toEqual("160");
+    });
+
+    test("should not decrease below minimal Knowledge Source node size", async ({
+      nodes,
+      knowledgeSourcePropertiesPanel,
+    }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: -50, yOffset: -50 });
+
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(width).toEqual("160");
+      expect(height).toEqual("80");
+    });
   });
 
-  test("should decrease Knowledge Source node size", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
-    await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 100, yOffset: 100 });
-    await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: -20, yOffset: -20 });
+  test.describe("Resize with non default snapping", () => {
+    test.beforeEach(async ({ overlays, palette }) => {
+      await overlays.setSnapping({ horizontal: "50", vertical: "50" });
+      await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+    });
 
-    await knowledgeSourcePropertiesPanel.open();
-    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
-    const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
-    expect(width).toEqual("240");
-    expect(height).toEqual("160");
-  });
+    test("should increase Knowledge Source node size", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 50, yOffset: 50 });
 
-  test("should not decrease below minimal Knowledge Source node size", async ({
-    nodes,
-    knowledgeSourcePropertiesPanel,
-  }) => {
-    await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: -50, yOffset: -50 });
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(width).toEqual("250");
+      expect(height).toEqual("150");
+    });
 
-    await knowledgeSourcePropertiesPanel.open();
-    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
-    const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
-    expect(width).toEqual("160");
-    expect(height).toEqual("80");
+    test("should decrease Knowledge Source node size", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 100, yOffset: 100 });
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: -20, yOffset: -20 });
+
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(width).toEqual("250");
+      expect(height).toEqual("150");
+    });
+
+    test("should not decrease below minimal Knowledge Source node size", async ({
+      nodes,
+      knowledgeSourcePropertiesPanel,
+    }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: -50, yOffset: -50 });
+
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(width).toEqual("200");
+      expect(height).toEqual("100");
+    });
   });
 });
