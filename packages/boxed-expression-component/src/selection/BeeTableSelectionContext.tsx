@@ -21,7 +21,7 @@ import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { assertUnreachable } from "../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { ResizingWidth, useResizingWidthsDispatch } from "../resizing/ResizingWidthsContext";
-import { useBoxedExpressionEditor } from "../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
 
 export const SELECTION_MIN_ACTIVE_DEPTH = -1;
 export const SELECTION_MIN_MAX_DEPTH = 0;

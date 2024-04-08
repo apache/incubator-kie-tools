@@ -29,7 +29,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { DMN15_SPEC } from "../Dmn15Spec";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 
 export function DmnObjectListItem({
   dmnObject,

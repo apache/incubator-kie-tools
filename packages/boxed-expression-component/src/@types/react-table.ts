@@ -18,7 +18,6 @@
  */
 
 import * as React from "react";
-import { DmnBuiltInDataType } from "../api";
 
 // Extending react-table definitions with missing and custom properties
 declare module "react-table" {
@@ -39,7 +38,7 @@ declare module "react-table" {
   }
 
   export interface ColumnInterface<D extends object> {
-    /** Used by react-table to hold the original id chosen for the column, independently from applied operations */
+    /** Used by react-table to hold the original id chosen for the column, independently of applied operations */
     originalId?: string;
     /** Column identifier */
     accessor: string;
@@ -54,11 +53,9 @@ declare module "react-table" {
     /** It makes this column header inline editable (with double-click) */
     isInlineEditable?: boolean;
     /** Column data type */
-    dataType: DmnBuiltInDataType;
+    dataType: string;
     /** It tells whether column is of type counter or not */
     isRowIndexColumn: boolean;
-
-    //
 
     cellDelegate?: (id: string) => React.ReactNode;
 

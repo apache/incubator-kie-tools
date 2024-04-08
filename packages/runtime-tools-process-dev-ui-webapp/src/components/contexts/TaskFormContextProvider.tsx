@@ -20,6 +20,7 @@ import React from "react";
 import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
 import {
   TaskFormContext,
+  TaskFormGatewayApi,
   TaskFormGatewayApiImpl,
 } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 
@@ -27,7 +28,7 @@ export const TaskFormContextProvider: React.FC = ({ children }) => {
   const appContext = useDevUIAppContext();
 
   return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(appContext.getCurrentUser())}>
+    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
       {children}
     </TaskFormContext.Provider>
   );
