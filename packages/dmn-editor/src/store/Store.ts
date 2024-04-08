@@ -87,7 +87,6 @@ export interface State {
     tab: DmnEditorTab;
   };
   diagram: {
-    /** This state is marked as unsafe because it can contain a value that is not compatible with the length of the DRD array. */
     drdIndex: number;
     edgeIdBeingUpdated: string | undefined;
     dropTargetNode: DropTargetNode;

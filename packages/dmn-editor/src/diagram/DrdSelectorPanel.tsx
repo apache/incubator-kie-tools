@@ -105,7 +105,6 @@ export function DrdSelectorPanel() {
         {(drds.length <= 0 && (
           <>
             <EmptyState>
-              {/* <EmptyStateIcon icon={CubesIcon} /> */}
               <Title size={"md"} headingLevel={"h4"}>
                 {"You're on the default DRD"}
               </Title>
