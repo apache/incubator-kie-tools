@@ -18,14 +18,15 @@
  */
 import * as path from "path";
 const jbang = require("@jbangdev/jbang");
+const buildEnv = require("../../env");
 
-export function executeJbangScript(scriptPath: string, ...args: string[]) {
+export function executeJBangScript(scriptPath: string, ...args: string[]) {
   /* Windows requires double quotes to wrap the argument, while in POSIX it must be wrapped by single quotes */
   const isWindowsPath = path.sep !== "/";
   const quoteChar = isWindowsPath ? '"' : "'";
   jbang.exec("--java 17", "properties@jbangdev", "java.version");
   jbang.exec(
-    "-Dkie-dmn-validation.version=999-20240407-SNAPSHOT",
+    "-Dkogito-runtime.version=" + buildEnv.env.kogitoRuntime.version,
     scriptPath,
     args.map((arg) => quoteChar + arg + quoteChar).join(" ")
   );

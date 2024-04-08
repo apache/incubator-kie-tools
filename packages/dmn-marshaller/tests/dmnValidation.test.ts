@@ -21,7 +21,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
-import { executeJbangScript } from "./jbang/jbangManager";
+import { executeJBangScript } from "./jbang/jbangManager";
 import {
   DIST_TESTS_DIRECTORY,
   FULL_1_5_DIRECTORY,
@@ -105,7 +105,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
     const marshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
     try {
-      executeJbangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, marshalledXMLFilePath);
+      executeJBangScript(JBANG_DMN_VALIDATION_SCRIPT_PATH, marshalledXMLFilePath);
     } catch (error) {
       const fileName = normalizedFsPathRelativeToTheFile.substring(
         normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
@@ -125,7 +125,7 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       const importerMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJbangScript(
+        executeJBangScript(
           JBANG_DMN_VALIDATION_SCRIPT_PATH,
           importedMarshalledXMLFilePath,
           importerMarshalledXMLFilePath
@@ -134,9 +134,7 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
           normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
         );
-        fail(
-          "Validation of " + fileName + " failed! Please scroll up to DMN VALIDATION ERROR message to see the reason"
-        );
+        fail("Validation of " + error + " failed! Please scroll up to DMN VALIDATION ERROR message to see the reason");
       }
     }
   );

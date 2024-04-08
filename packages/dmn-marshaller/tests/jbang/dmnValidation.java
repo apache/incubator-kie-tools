@@ -1,6 +1,6 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
-//DEPS org.kie:kie-dmn-validation:${kie-dmn-validation.version:LATEST}
+//DEPS org.kie:kie-dmn-validation:${kogito-runtime.version:LATEST}
 
 import java.io.File;
 import java.util.List;
@@ -42,9 +42,13 @@ class dmnValidation {
                                                       .theseModels(models);
 
         if (messages.size() == 0) {
+            System.out.println("=== DMN FILES SUCCESSFULLY VALIDATED! ===");
+            Stream.of(models).forEach(model -> System.out.println(model.getName()));
+            System.out.println("=========================================");
             return 0;
         } else {
             System.out.println("=== DMN VALIDATION FAILED ===");
+            Stream.of(models).forEach(model -> System.out.println(model.getName()));
             messages.forEach(message -> System.out.println(message.getText()));
             System.out.println("=============================");
             return 1;
