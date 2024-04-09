@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/runtime-tools-management-console-webapp-image",
+  "name": "@kie-tools/kogito-management-console",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -24,8 +24,8 @@
     "copy:webapp-assets:linux:darwin": "cp -R ../runtime-tools-management-console-webapp/dist ./dist-dev/runtime-tools-management-console-webapp",
     "copy:webapp-assets:win32": "pnpm powershell \"Copy-Item -R ../runtime-tools-management-console-webapp/dist ./dist-dev/runtime-tools-management-console-webapp\"",
     "env-json:schema:generate": "ts-json-schema-generator --tsconfig ./node_modules/@kie-tools/runtime-tools-management-console-webapp/tsconfig.json --path ./node_modules/@kie-tools/runtime-tools-management-console-webapp/src/env/EnvJson.ts --type EnvJson --id EnvJson --out ./dist-dev/EnvJson.schema.json",
-    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env runtimeToolsManagementConsoleWebappImage.registry)\" -a \"$(build-env runtimeToolsManagementConsoleWebappImage.account)\" -n \"$(build-env runtimeToolsManagementConsoleWebappImage.name)\" -t \"$(build-env runtimeToolsManagementConsoleWebappImage.tags)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env runtimeToolsManagementConsoleWebappImage.port)\"",
-    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env runtimeToolsManagementConsoleWebappImage.registry)\" -a \"$(build-env runtimeToolsManagementConsoleWebappImage.account)\" -n \"$(build-env runtimeToolsManagementConsoleWebappImage.name)\" -t \"$(build-env runtimeToolsManagementConsoleWebappImage.tags)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env runtimeToolsManagementConsoleWebappImage.port)\" -e podman"
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env kogitoTaskConsole.registry)\" -a \"$(build-env kogitoTaskConsole.account)\" -n \"$(build-env kogitoTaskConsole.name)\" -t \"$(build-env kogitoTaskConsole.tags)\" --build-arg KOGITO_TASK_CONSOLE_PORT=\"$(build-env kogitoTaskConsole.port)\"",
+    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env kogitoTaskConsole.registry)\" -a \"$(build-env kogitoTaskConsole.account)\" -n \"$(build-env kogitoTaskConsole.name)\" -t \"$(build-env kogitoTaskConsole.tags)\" --build-arg KOGITO_TASK_CONSOLE_PORT=\"$(build-env kogitoTaskConsole.port)\" -e podman"
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",

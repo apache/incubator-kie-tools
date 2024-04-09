@@ -1,4 +1,4 @@
-# runtime-tools-managment-console-webapp-image
+# kogito-managment-console
 
 This package contains the `Containerfile/Dockerfile` and scripts to build a container image for Management Console. It also generated a JSON Schema for the `env.json` file, enabling it to be validated.
 
@@ -17,10 +17,10 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - (Optional) The image name and tags can be customized by setting the following environment variables:
 
   ```bash
-  export RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__registry=<registry>
-  export RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__account=<account>
-  export RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__name=<image-name>
-  export RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__buildTags=<image-tags>
+  export KOGITO_MANAGEMENT_CONSOLE__registry=<registry>
+  export KOGITO_MANAGEMENT_CONSOLE__account=<account>
+  export KOGITO_MANAGEMENT_CONSOLE__name=<image-name>
+  export KOGITO_MANAGEMENT_CONSOLE__buildTags=<image-tags>
   ```
 
   > Default values can be found [here](./env/index.js).
@@ -67,7 +67,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    |                          Name                          |                          Description                          |                                           Default                                            |
    | :----------------------------------------------------: | :-----------------------------------------------------------: | :------------------------------------------------------------------------------------------: |
-   |   `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE`   | Env Mode: "PROD" or "DEV". PROD enables Keycloak integration. | See [ defaultEnvJson.ts ](../runtime-tools-managment-console-webapp/build/defaultEnvJson.js) |
+   |   `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE`   | Env Mode: "PROD" or "DEV". PROD enables Keycloak integration. |                                            "PROD"                                            |
    |   `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_NAME`   |                 Management Console app name.                  | See [ defaultEnvJson.ts ](../runtime-tools-managment-console-webapp/build/defaultEnvJson.js) |
    | `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION`  |                Management Console app version.                | See [ defaultEnvJson.ts ](../runtime-tools-managment-console-webapp/build/defaultEnvJson.js) |
    | `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT` |        The URL that points to the Data Index service.         | See [ defaultEnvJson.ts ](../runtime-tools-managment-console-webapp/build/defaultEnvJson.js) |
@@ -102,4 +102,4 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
 The port used internally on the container can be changed:
 
-When building, set the `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__port` environment variable to any port you want, and the Containerfile will be built using that port.
+When building, set the `KOGITO_MANAGEMENT_CONSOLE__port` environment variable to any port you want, and the Containerfile will be built using that port.

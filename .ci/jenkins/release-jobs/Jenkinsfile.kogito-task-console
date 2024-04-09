@@ -38,14 +38,14 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__registry = 'quay.io'
-        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__account = 'kie-tools'
-        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__name = 'runtime-tools-task-console-webapp-image'
-        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__buildTags = "latest ${params.TAG}"
+        KOGITO_TASK_CONSOLE__registry = 'quay.io'
+        KOGITO_TASK_CONSOLE__account = 'kie-tools'
+        KOGITO_TASK_CONSOLE__name = 'kogito-task-console'
+        KOGITO_TASK_CONSOLE__buildTags = "latest ${params.TAG}"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/runtime-tools-task-console-webapp-image...'
+        PNPM_FILTER_STRING = '-F @kie-tools/kogito-task-console...'
     }
 
     stages {
@@ -118,16 +118,16 @@ pipeline {
             }
         }
 
-        stage('Push runtime-tools-task-console-webapp-image to quay.io') {
+        stage('Push kogito-task-console to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__registry}/${env.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__account}",
-                        "${env.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__name}",
-                        "${env.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__buildTags}",
+                        "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
+                        "${env.KOGITO_TASK_CONSOLE__name}",
+                        "${env.KOGITO_TASK_CONSOLE__buildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
                 }

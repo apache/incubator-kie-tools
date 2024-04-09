@@ -21,35 +21,35 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__registry: {
+    KOGITO_TASK_CONSOLE__registry: {
       default: "quay.io",
       description: "The image registry.",
     },
-    RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__account: {
+    KOGITO_TASK_CONSOLE__account: {
       default: "kie-tools",
       description: "The image registry account.",
     },
-    RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__name: {
-      default: "runtime-tools-management-console-webapp-image",
+    KOGITO_TASK_CONSOLE__name: {
+      default: "kogito-task-console",
       description: "The image name.",
     },
-    RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__buildTags: {
+    KOGITO_TASK_CONSOLE__buildTags: {
       default: "daily-dev",
       description: "The image tag.",
     },
-    RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__port: {
+    KOGITO_TASK_CONSOLE__port: {
       default: 8080,
       description: "The default container port.",
     },
   }),
   get env() {
     return {
-      runtimeToolsManagementConsoleWebappImage: {
-        registry: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__registry),
-        account: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__account),
-        name: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__name),
-        tags: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__buildTags),
-        port: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGMENT_CONSOLE_WEBAPP_IMAGE__port),
+      kogitoTaskConsole: {
+        registry: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__registry),
+        account: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__account),
+        name: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__name),
+        tags: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__buildTags),
+        port: getOrDefault(this.vars.KOGITO_TASK_CONSOLE__port),
         version: require("../package.json").version,
       },
     };

@@ -5852,6 +5852,54 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  packages/kogito-management-console:
+    devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
+      "@kie-tools/image-env-to-json":
+        specifier: workspace:*
+        version: link:../image-env-to-json
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/runtime-tools-management-console-webapp":
+        specifier: workspace:*
+        version: link:../runtime-tools-management-console-webapp
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      ts-json-schema-generator:
+        specifier: ^1.1.2
+        version: 1.1.2
+
+  packages/kogito-task-console:
+    devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
+      "@kie-tools/image-env-to-json":
+        specifier: workspace:*
+        version: link:../image-env-to-json
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/runtime-tools-task-console-webapp":
+        specifier: workspace:*
+        version: link:../runtime-tools-task-console-webapp
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      ts-json-schema-generator:
+        specifier: ^1.1.2
+        version: 1.1.2
+
   packages/kubernetes-bridge:
     dependencies:
       "@kie-tools/cors-proxy-api":
@@ -7194,30 +7242,6 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
-
-  packages/runtime-tools-management-console-webapp-image:
-    devDependencies:
-      "@kie-tools/image-builder":
-        specifier: workspace:*
-        version: link:../image-builder
-      "@kie-tools/image-env-to-json":
-        specifier: workspace:*
-        version: link:../image-env-to-json
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/runtime-tools-management-console-webapp":
-        specifier: workspace:*
-        version: link:../runtime-tools-management-console-webapp
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
-      ts-json-schema-generator:
-        specifier: ^1.1.2
-        version: 1.1.2
 
   packages/runtime-tools-process-dev-ui-webapp:
     dependencies:
@@ -11028,6 +11052,30 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+
+  packages/task-console-image:
+    devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
+      "@kie-tools/image-env-to-json":
+        specifier: workspace:*
+        version: link:../image-env-to-json
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/runtime-tools-task-console-webapp":
+        specifier: workspace:*
+        version: link:../runtime-tools-task-console-webapp
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      ts-json-schema-generator:
+        specifier: ^1.1.2
+        version: 1.1.2
 
   packages/text-editor:
     dependencies:
@@ -26560,7 +26608,7 @@ packages:
       { integrity: sha512-Bt3QVovFSua4QmHa65EHUmh2xS0XJ3rgTEUPH998f4OW4VVJke3BuS16f+kM0ZLOGdvIrzrPRqwihuv5BAjtrA== }
     dependencies:
       "@jsdevtools/ono": 7.1.3
-      "@types/json-schema": 7.0.11
+      "@types/json-schema": 7.0.15
       call-me-maybe: 1.0.2
       js-yaml: 4.1.0
     dev: false
@@ -29077,7 +29125,7 @@ packages:
     dependencies:
       "@types/http-cache-semantics": 4.0.4
       "@types/keyv": 3.1.4
-      "@types/node": 20.12.4
+      "@types/node": 18.19.29
       "@types/responselike": 1.0.3
     dev: true
 
@@ -29462,7 +29510,7 @@ packages:
       { integrity: sha512-kUEPnMKrqbtpCq/KTaGFFKAcz6Ethm2EjCoKIDaCmfRBWLbFuTcOJfTlorwbnboXBzahqWLgUp1BQeKHiJzPUQ== }
     dependencies:
       "@types/estree": 1.0.1
-      "@types/json-schema": 7.0.11
+      "@types/json-schema": 7.0.15
     dev: true
 
   /@types/eslint@8.56.7:
@@ -29703,7 +29751,6 @@ packages:
   /@types/json-schema@7.0.15:
     resolution:
       { integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA== }
-    dev: true
 
   /@types/json-stable-stringify@1.0.34:
     resolution:
@@ -29738,7 +29785,7 @@ packages:
     resolution:
       { integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg== }
     dependencies:
-      "@types/node": 20.12.4
+      "@types/node": 18.19.29
     dev: true
 
   /@types/leaflet@0.7.35:
@@ -29839,13 +29886,6 @@ packages:
   /@types/node@18.19.29:
     resolution:
       { integrity: sha512-5pAX7ggTmWZdhUrhRWLPf+5oM7F80bcKVCBbr0zwEkTNzTJL2CWQjznpFgHYy6GrzkYi2Yjy7DHKoynFxqPV8g== }
-    dependencies:
-      undici-types: 5.26.5
-    dev: true
-
-  /@types/node@20.12.4:
-    resolution:
-      { integrity: sha512-E+Fa9z3wSQpzgYQdYmme5X3OTuejnnTx88A6p6vkkJosR3KBz+HpE3kqNm98VE6cfLFcISx7zW7MsJkH6KwbTw== }
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -30033,7 +30073,7 @@ packages:
     resolution:
       { integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw== }
     dependencies:
-      "@types/node": 20.12.4
+      "@types/node": 18.19.29
     dev: true
 
   /@types/retry@0.12.1:
@@ -30419,7 +30459,7 @@ packages:
       eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
       "@eslint-community/eslint-utils": 4.4.0(eslint@8.52.0)
-      "@types/json-schema": 7.0.11
+      "@types/json-schema": 7.0.15
       "@types/semver": 7.5.2
       "@typescript-eslint/scope-manager": 5.62.0
       "@typescript-eslint/types": 5.62.0
@@ -49913,7 +49953,7 @@ packages:
       { integrity: sha512-L0jRsrPpjdckP3oPug3/VxNKt2trR8TcabrM6FOAAlvC/9Phcmm+cuAgTlxBqdBR1WJx7Naj9WHw+aOmheSVbw== }
     engines: { node: ">= 12.13.0" }
     dependencies:
-      "@types/json-schema": 7.0.11
+      "@types/json-schema": 7.0.15
       ajv: 8.12.0
       ajv-formats: 2.1.1(ajv@8.12.0)
       ajv-keywords: 5.1.0(ajv@8.12.0)

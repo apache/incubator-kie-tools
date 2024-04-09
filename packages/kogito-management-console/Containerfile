@@ -17,7 +17,9 @@
 
 FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.3
 
-ARG RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE_PORT=8080
+ARG KOGITO_MANAGEMENT_CONSOLE_PORT=8080
+
+ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE="PROD"
 
 COPY entrypoint.sh dist-dev/image-env-to-json-standalone dist-dev/EnvJson.schema.json /tmp/
 
@@ -26,8 +28,8 @@ RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.57-5.el9.
   && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
   && sed -i -e "/#ServerName www.example.com:80/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' /etc/httpd/conf/httpd.conf \
-  && sed -i "s/Listen 80/Listen ${RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE_PORT}/g" /etc/httpd/conf/httpd.conf \
-  && sed -i "s/#ServerName www.example.com:80/ServerName 127.0.0.1:${RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE_PORT}/g" /etc/httpd/conf/httpd.conf \
+  && sed -i "s/Listen 80/Listen ${KOGITO_MANAGEMENT_CONSOLE_PORT}/g" /etc/httpd/conf/httpd.conf \
+  && sed -i "s/#ServerName www.example.com:80/ServerName 127.0.0.1:${KOGITO_MANAGEMENT_CONSOLE_PORT}/g" /etc/httpd/conf/httpd.conf \
   && sed -i '$ a ServerTokens Prod' /etc/httpd/conf/httpd.conf \
   && sed -i '$ a ServerSignature Off' /etc/httpd/conf/httpd.conf \
   && sed -i -e '/<Directory "\/var\/www\/html">/a    RewriteEngine on\n    RewriteCond %{REQUEST_FILENAME} -f [OR]\n    RewriteCond %{REQUEST_FILENAME} -d\n    RewriteRule ^ - [L]\n    RewriteRule ^ index.html [L]' /etc/httpd/conf/httpd.conf \
@@ -42,7 +44,7 @@ COPY dist-dev/runtime-tools-management-console-webapp /management-console/app
 
 RUN if [ -f /management-console/app/env.json ]; then chmod a+w /management-console/app/env.json; fi
 
-EXPOSE ${RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE_PORT}
+EXPOSE ${KOGITO_MANAGEMENT_CONSOLE_PORT}
 
 USER 1000
 

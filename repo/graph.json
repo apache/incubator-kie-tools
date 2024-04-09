@@ -131,20 +131,20 @@
       { "id": "@kie-tools-core/kubernetes-bridge" },
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
+      { "id": "@kie-tools/kogito-management-console" },
+      { "id": "@kie-tools/runtime-tools-management-console-webapp" },
+      { "id": "@kie-tools/kogito-task-console" },
+      { "id": "@kie-tools/runtime-tools-task-console-webapp" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
       { "id": "@kie-tools/runtime-tools-components" },
       { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
-      { "id": "@kie-tools/runtime-tools-management-console-webapp" },
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
-      { "id": "@kie-tools/runtime-tools-management-console-webapp-image" },
       { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
-      { "id": "@kie-tools/runtime-tools-task-console-webapp" },
-      { "id": "@kie-tools/runtime-tools-task-console-webapp-image" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -808,6 +808,45 @@
       { "source": "@kie-tools-core/kubernetes-bridge", "target": "@kie-tools/cors-proxy-api", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
       { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-builder", "weight": 1 },
+      { "source": "@kie-tools/kogito-management-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
+      {
+        "source": "@kie-tools/kogito-management-console",
+        "target": "@kie-tools/runtime-tools-management-console-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-builder", "weight": 1 },
+      { "source": "@kie-tools/kogito-task-console", "target": "@kie-tools/image-env-to-json", "weight": 1 },
+      {
+        "source": "@kie-tools/kogito-task-console",
+        "target": "@kie-tools/runtime-tools-task-console-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-task-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/dmn-runner", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
@@ -828,16 +867,6 @@
       { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/runtime-tools-shared-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
-        "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
         "target": "@kie-tools/runtime-tools-process-gateway-api",
         "weight": 1
@@ -845,21 +874,6 @@
       {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
         "target": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp-image",
-        "target": "@kie-tools/image-builder",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp-image",
-        "target": "@kie-tools/image-env-to-json",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-management-console-webapp-image",
-        "target": "@kie-tools/runtime-tools-management-console-webapp",
         "weight": 1
       },
       {
@@ -915,36 +929,6 @@
       {
         "source": "@kie-tools/runtime-tools-swf-webapp-components",
         "target": "@kie-tools/runtime-tools-swf-enveloped-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools-core/react-hooks",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp-image",
-        "target": "@kie-tools/image-builder",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp-image",
-        "target": "@kie-tools/image-env-to-json",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-task-console-webapp-image",
-        "target": "@kie-tools/runtime-tools-task-console-webapp",
         "weight": 1
       },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
@@ -1238,6 +1222,8 @@
     ["@kie-tools/kie-sandbox-helm-chart", "packages/kie-sandbox-helm-chart"],
     ["@kie-tools/kie-sandbox-image", "packages/kie-sandbox-image"],
     ["@kie-tools/kn-plugin-workflow", "packages/kn-plugin-workflow"],
+    ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
+    ["@kie-tools/kogito-task-console", "packages/kogito-task-console"],
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],
     ["@kie-tools/maven-base", "packages/maven-base"],
     ["@kie-tools/maven-config-setup-helper", "packages/maven-config-setup-helper"],
@@ -1254,10 +1240,6 @@
     ["@kie-tools/root-env", "packages/root-env"],
     ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
     ["@kie-tools/runtime-tools-management-console-webapp", "packages/runtime-tools-management-console-webapp"],
-    [
-      "@kie-tools/runtime-tools-management-console-webapp-image",
-      "packages/runtime-tools-management-console-webapp-image"
-    ],
     ["@kie-tools/runtime-tools-process-dev-ui-webapp", "packages/runtime-tools-process-dev-ui-webapp"],
     ["@kie-tools/runtime-tools-process-enveloped-components", "packages/runtime-tools-process-enveloped-components"],
     ["@kie-tools/runtime-tools-process-gateway-api", "packages/runtime-tools-process-gateway-api"],
@@ -1269,7 +1251,6 @@
     ["@kie-tools/runtime-tools-swf-gateway-api", "packages/runtime-tools-swf-gateway-api"],
     ["@kie-tools/runtime-tools-swf-webapp-components", "packages/runtime-tools-swf-webapp-components"],
     ["@kie-tools/runtime-tools-task-console-webapp", "packages/runtime-tools-task-console-webapp"],
-    ["@kie-tools/runtime-tools-task-console-webapp-image", "packages/runtime-tools-task-console-webapp-image"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
     ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],

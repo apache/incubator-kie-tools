@@ -107,15 +107,15 @@ pipeline {
         KIE_SANDBOX_HELM_CHART__name = 'kie-sandbox-helm-chart'
         KIE_SANDBOX_HELM_CHART__tag = "${params.TAG}-prerelease"
 
-        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__registry = 'quay.io'
-        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__account = 'kie-tools'
-        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__name = 'runtime-tools-task-console-webapp-image'
-        RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__buildTags = "${params.TAG}-prerelease"
+        KOGITO_TASK_CONSOLE__registry = 'quay.io'
+        KOGITO_TASK_CONSOLE__account = 'kie-tools'
+        KOGITO_TASK_CONSOLE__name = 'kogito-task-console'
+        KOGITO_TASK_CONSOLE__buildTags = "${params.TAG}-prerelease"
 
-        RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__registry = 'quay.io'
-        RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__account = 'kie-tools'
-        RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__name = 'runtime-tools-management-console-webapp-image'
-        RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__buildTags = "${params.TAG}-prerelease"
+        KOGITO_MANAGEMENT_CONSOLE__registry = 'quay.io'
+        KOGITO_MANAGEMENT_CONSOLE__account = 'kie-tools'
+        KOGITO_MANAGEMENT_CONSOLE__name = 'kogito-management-console'
+        KOGITO_MANAGEMENT_CONSOLE__buildTags = "${params.TAG}-prerelease"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
@@ -735,44 +735,44 @@ pipeline {
             }
         }
 
-        stage('Build (runtime-tools-task-console-webapp-image)') {
+        stage('Build (kogito-task-console)') {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildRuntimeToolsTaskConsoleWebappImage()
+                        buildKogitoTaskConsole()
                     }
                 }
             }
         }
 
-        stage('STAGING: Push runtime-tools-task-console-webapp-image to quay.io') {
+        stage('STAGING: Push kogito-task-console to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
             steps {
                 script {
-                    pushRuntimeToolsTaskConsoleWebappImageToQuay()
+                    pushKogitoTaskConsoleToQuay()
                 }
             }
         }
 
-        stage('Build (runtime-tools-management-console-webapp-image)') {
+        stage('Build (kogito-management-console)') {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildRuntimeToolsTaskConsoleWebappImage()
+                        buildKogitoManagementConsole()
                     }
                 }
             }
         }
 
-        stage('STAGING: Push runtime-tools-management-console-webapp-image to quay.io') {
+        stage('STAGING: Push kogito-management-console to quay.io') {
             when {
                 expression { !params.DRY_RUN }
             }
             steps {
                 script {
-                    pushRuntimeToolsTaskConsoleWebappImageToQuay()
+                    pushKogitoManagementConsoleToQuay()
                 }
             }
         }
@@ -819,8 +819,8 @@ def buildPartial() {
     -F='!@kie-tools/dev-deployment-kogito-quarkus-blank-app-image' \
     -F='!@kie-tools/serverless-logic-web-tools-base-builder-image' \
     -F='!@kie-tools/dashbuilder-viewer-image' \
-    -F='!@kie-tools/runtime-tools-task-console-webapp-image' \
-    -F='!@kie-tools/runtime-tools-management-console-webapp-image' \
+    -F='!@kie-tools/kogito-task-console' \
+    -F='!@kie-tools/kogito-management-console' \
     -r --workspace-concurrency=1 build:prod
     """.trim()
 }
@@ -1064,38 +1064,38 @@ def pushServerlessLogicWebToolsBaseBuilderImageToQuay() {
     )
 }
 
-def buildRuntimeToolsTaskConsoleWebappImage() {
+def buildKogitoTaskConsole() {
     sh '''#!/bin/bash -el
     export KIE_TOOLS_BUILD__runTests=true
     export KIE_TOOLS_BUILD__buildContainerImages=true
-    echo "Build @kie-tools/runtime-tools-task-console-webapp-image"
-    pnpm -F @kie-tools/runtime-tools-task-console-webapp-image... --workspace-concurrency=1 build:prod
+    echo "Build @kie-tools/kogito-task-console"
+    pnpm -F @kie-tools/kogito-task-console... --workspace-concurrency=1 build:prod
     '''.trim()
 }
 
-def pushRuntimeToolsTaskConsoleWebappImageToQuay() {
+def pushKogitoTaskConsoleToQuay() {
     dockerUtils.pushImageToRegistry(
-        "${env.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__registry}/${env.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__account}",
-        "${env.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__name}",
-        "${env.RUNTIME_TOOLS_TASK_CONSOLE_WEBAPP_IMAGE__buildTags}",
+        "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
+        "${env.KOGITO_TASK_CONSOLE__name}",
+        "${env.KOGITO_TASK_CONSOLE__buildTags}",
         "${pipelineVars.quayPushCredentialsId}"
     )
 }
 
-def buildRuntimeToolsManagementConsoleWebappImage() {
+def buildKogitoManagementConsole() {
     sh '''#!/bin/bash -el
     export KIE_TOOLS_BUILD__runTests=true
     export KIE_TOOLS_BUILD__buildContainerImages=true
-    echo "Build @kie-tools/runtime-tools-management-console-webapp-image"
-    pnpm -F @kie-tools/runtime-tools-management-console-webapp-image... --workspace-concurrency=1 build:prod
+    echo "Build @kie-tools/kogito-management-console"
+    pnpm -F @kie-tools/kogito-management-console... --workspace-concurrency=1 build:prod
     '''.trim()
 }
 
-def pushRuntimeToolsManagementConsoleWebappImageToQuay() {
+def pushKogitoManagementConsoleToQuay() {
     dockerUtils.pushImageToRegistry(
-        "${env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__registry}/${env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__account}",
-        "${env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__name}",
-        "${env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP_IMAGE__buildTags}",
+        "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
+        "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
+        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTags}",
         "${pipelineVars.quayPushCredentialsId}"
     )
 }
