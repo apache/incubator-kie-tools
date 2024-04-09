@@ -24,4 +24,5 @@ setup(`
     -Drevision=${buildEnv.env.mavenBase.version}
     -Dquarkus.platform.version=${buildEnv.env.quarkusPlatform.version}
     -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
+    -Dversion.org.drools=${buildEnv.env.drools.version}
 `);
