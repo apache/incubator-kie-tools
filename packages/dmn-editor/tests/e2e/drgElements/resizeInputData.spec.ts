@@ -137,4 +137,25 @@ test.describe("Resize node - Input Data", () => {
       expect(height).toEqual("100");
     });
   });
+
+  test.describe("Resize on top of other node - Input Data", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 250, y: 150 } });
+      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize Input Data on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.INPUT_DATA, xOffset: 200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-input-data-on-top-of-decision.png");
+    });
+
+    test("should resize back Input Data that is on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.INPUT_DATA, xOffset: 200, yOffset: 0 });
+      await diagram.resetFocus();
+      await nodes.resize({ nodeName: DefaultNodeName.INPUT_DATA, xOffset: -200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-back-input-data-on-top-of-decision.png");
+    });
+  });
 });

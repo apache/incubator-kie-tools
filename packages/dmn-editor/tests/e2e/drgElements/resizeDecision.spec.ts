@@ -135,4 +135,29 @@ test.describe("Resize node - Decision", () => {
       expect(height).toEqual("100");
     });
   });
+
+  test.describe("Resize on top of other node - Decision", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({
+        type: NodeType.DECISION,
+        targetPosition: { x: 250, y: 150 },
+        thenRenameTo: "Decision2",
+      });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize Decision on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-decision-on-top-of-decision.png");
+    });
+
+    test("should resize back Decision that is on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 200, yOffset: 0 });
+      await diagram.resetFocus();
+      await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: -200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-back-decision-on-top-of-decision.png");
+    });
+  });
 });

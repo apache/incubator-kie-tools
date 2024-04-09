@@ -206,4 +206,40 @@ test.describe("Resize node - Text Annotation", () => {
       expect(width).toEqual("200");
     });
   });
+
+  test.describe("Resize on top of other node - Text Annotation", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 450, y: 150 } });
+    });
+
+    test("should resize Text Annotation on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: 200,
+        yOffset: 0,
+      });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-text-annotation-on-top-of-decision.png");
+    });
+
+    test("should resize back Text Annotation that is on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: 200,
+        yOffset: 0,
+      });
+      await diagram.resetFocus();
+      await nodes.resize({
+        nodeName: DefaultNodeName.TEXT_ANNOTATION,
+        position: NodePosition.TOP,
+        xOffset: -200,
+        yOffset: 0,
+      });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-back-text-annotation-on-top-of-decision.png");
+    });
+  });
 });

@@ -137,4 +137,25 @@ test.describe("Resize node - BKM", () => {
       expect(height).toEqual("100");
     });
   });
+
+  test.describe("Resize on top of other node - BKM", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 250, y: 150 } });
+      await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize BKM on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: 200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-bkm-on-top-of-decision.png");
+    });
+
+    test("should resize back BKM that is on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: 200, yOffset: 0 });
+      await diagram.resetFocus();
+      await nodes.resize({ nodeName: DefaultNodeName.BKM, xOffset: -200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-back-bkm-on-top-of-decision.png");
+    });
+  });
 });

@@ -34,6 +34,7 @@ export class Palette {
     if (args.thenRenameTo) {
       await this.nodes.rename({ current: nodeName, new: args.thenRenameTo });
     }
+    await this.diagram.resetFocus();
   }
 
   private getNewNodeProperties(type: NodeType) {

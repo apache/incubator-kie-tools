@@ -206,4 +206,40 @@ test.describe("Resize node - Decision Service", () => {
       expect(height).toEqual("300");
     });
   });
+
+  test.describe("Resize on top of other node - Decision Service", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 450, y: 150 } });
+    });
+
+    test("should resize Decision Service on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.DECISION_SERVICE,
+        position: NodePosition.TOP,
+        xOffset: 200,
+        yOffset: 0,
+      });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-decision-service-on-top-of-decision.png");
+    });
+
+    test("should resize back Decision Service that is on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({
+        nodeName: DefaultNodeName.DECISION_SERVICE,
+        position: NodePosition.TOP,
+        xOffset: 200,
+        yOffset: 0,
+      });
+      await diagram.resetFocus();
+      await nodes.resize({
+        nodeName: DefaultNodeName.DECISION_SERVICE,
+        position: NodePosition.TOP,
+        xOffset: -200,
+        yOffset: 0,
+      });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-back-decision-service-on-top-of-decision.png");
+    });
+  });
 });

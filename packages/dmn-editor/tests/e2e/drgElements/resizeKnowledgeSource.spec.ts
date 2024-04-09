@@ -146,4 +146,25 @@ test.describe("Resize node - Knowledge Source", () => {
       expect(height).toEqual("100");
     });
   });
+
+  test.describe("Resize on top of other node - Knowledge Source", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 250, y: 150 } });
+      await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize Knowledge Source on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-knowledge-source-on-top-of-decision.png");
+    });
+
+    test("should resize back Knowledge Source that is on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: 200, yOffset: 0 });
+      await diagram.resetFocus();
+      await nodes.resize({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, xOffset: -200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-back-knowledge-source-on-top-of-decision.png");
+    });
+  });
 });

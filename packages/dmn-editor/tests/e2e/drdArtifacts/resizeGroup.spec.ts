@@ -137,4 +137,25 @@ test.describe("Resize node - Group", () => {
       expect(width).toEqual("300");
     });
   });
+
+  test.describe("Resize on top of other node - Group", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 450, y: 150 } });
+    });
+
+    test("should resize Group on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: 200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-group-on-top-of-decision.png");
+    });
+
+    test("should resize back Group that is on top of Decision node", async ({ nodes, diagram }) => {
+      await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: 200, yOffset: 0 });
+      await diagram.resetFocus();
+      await nodes.resize({ nodeName: DefaultNodeName.GROUP, position: NodePosition.TOP, xOffset: -200, yOffset: 0 });
+
+      await expect(diagram.get()).toHaveScreenshot("resize-back-group-on-top-of-decision.png");
+    });
+  });
 });
