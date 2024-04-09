@@ -21,7 +21,11 @@ import * as React from "react";
 import { useCallback } from "react";
 import { BoxedInvocation, BeeTableCellProps } from "../../api";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
-import { OnSetExpression, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import {
+  NestedExpressionDispatchContextProvider,
+  OnSetExpression,
+  useBoxedExpressionEditorDispatch,
+} from "../../BoxedExpressionEditorContext";
 import { ROWTYPE } from "./InvocationExpression";
 import "../ContextExpression/ContextEntryExpressionCell.css";
 

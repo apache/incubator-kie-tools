@@ -22,11 +22,10 @@ import { useMemo } from "react";
 import { DescriptionField, TextInputField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DMN15__tDecisionTable } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { useDmnEditorStore } from "../../store/Store";
-import { DecisionTableExpressionDefinitionBuiltInAggregation } from "@kie-tools/boxed-expression-component/dist/api";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { useDmnEditorStore } from "../../store/StoreContext";
 
 type DecisionTableRoot = Pick<
   DMN15__tDecisionTable,
@@ -53,11 +52,7 @@ export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpre
       </FormGroup>
       <TextInputField title={"Hit Policy"} isReadonly={true} initialValue={cell["@_hitPolicy"] ?? ""} />
       {cell["@_hitPolicy"] === "COLLECT" && (
-        <TextInputField
-          title={"Aggregation"}
-          isReadonly={true}
-          initialValue={cell["@_aggregation"] ?? DecisionTableExpressionDefinitionBuiltInAggregation["<None>"]}
-        />
+        <TextInputField title={"Aggregation"} isReadonly={true} initialValue={cell["@_aggregation"] ?? "<None>"} />
       )}
       <TextInputField
         title={"Output Label"}

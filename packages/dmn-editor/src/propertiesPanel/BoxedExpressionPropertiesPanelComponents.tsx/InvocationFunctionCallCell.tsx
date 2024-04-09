@@ -21,7 +21,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { TextInputField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { useDmnEditorStore } from "../../store/Store";
+import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 

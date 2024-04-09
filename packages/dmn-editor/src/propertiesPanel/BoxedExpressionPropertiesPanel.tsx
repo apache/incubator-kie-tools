@@ -24,9 +24,7 @@ import {
   DrawerHead,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { useMemo } from "react";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import { generateBoxedExpressionIndex } from "../boxedExpressions/boxedExpressionIndex";
@@ -51,23 +49,28 @@ import {
   BoxedExpressionPropertiesPanelComponent,
   getBoxedExpressionPropertiesPanelComponent,
 } from "./BoxedExpressionPropertiesPanelComponents.tsx/getBoxedExpressionPropertiesPanelComponent";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function BoxedExpressionPropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
-  const { nodesById } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const shouldDisplayDecisionOrBkmProps = useMemo(
     () => selectedObjectId === undefined || (selectedObjectId && selectedObjectId === activeDrgElementId),
     [activeDrgElementId, selectedObjectId]
   );
 
-  const node = useMemo(
-    () => (activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined),
-    [activeDrgElementId, nodesById]
-  );
+  const node = useMemo(() => {
+    const nodesById = dmnEditorStoreApi
+      .getState()
+      .computed(dmnEditorStoreApi.getState())
+      .getDiagramData(externalModelsByNamespace).nodesById;
+    return activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined;
+  }, [activeDrgElementId, dmnEditorStoreApi, externalModelsByNamespace]);
   const isReadonly = !!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace;
 
   const boxedExpressionIndex = useMemo(() => {

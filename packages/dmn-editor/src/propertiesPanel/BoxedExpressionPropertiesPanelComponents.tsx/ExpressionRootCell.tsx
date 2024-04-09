@@ -21,11 +21,11 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { useDmnEditorStore } from "../../store/Store";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { useDmnEditorStore } from "../../store/StoreContext";
 
 type ExpressionRoot = Pick<AllExpressionsWithoutTypes, "description" | "@_typeRef">;
 

@@ -22,18 +22,19 @@ import { useMemo } from "react";
 import { DescriptionField, ExpressionLanguageField, TypeRefField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DMN15__tDecisionTable, DMN15__tUnaryTests } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { useDmnEditorStore } from "../../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { Constraints } from "../../dataTypes/Constraints";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 
 export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadonly: boolean }) {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
-  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
   const { dmnEditorRootElementRef } = useDmnEditor();
 
   const selectedObjectInfos = useMemo(
@@ -49,6 +50,10 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         root?.expressionPath[root.expressionPath.length - 1]?.type === "decisionTable" &&
         cellPath.type === "decisionTable"
       ) {
+        const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = dmnEditorStoreApi
+          .getState()
+          .computed(dmnEditorStoreApi.getState())
+          .getDataTypes(externalModelsByNamespace);
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
             (root?.cell as DMN15__tDecisionTable)?.input?.[cellPath.column ?? 0].inputExpression["@_typeRef"] ?? ""
@@ -56,12 +61,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
     }
-  }, [
-    allDataTypesById,
-    allTopLevelItemDefinitionUniqueNames,
-    props.boxedExpressionIndex,
-    selectedObjectInfos?.expressionPath,
-  ]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace, props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]);
 
   const updater = useBoxedExpressionUpdater<DMN15__tUnaryTests>(selectedObjectInfos?.expressionPath ?? []);
 

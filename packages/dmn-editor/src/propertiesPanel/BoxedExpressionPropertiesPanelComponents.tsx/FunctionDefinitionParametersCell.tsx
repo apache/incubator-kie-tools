@@ -18,10 +18,9 @@
  */
 
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { DescriptionField, NameField, TypeRefField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { useDmnEditorStore } from "../../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
@@ -34,7 +33,9 @@ import {
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Constraints } from "../../dataTypes/Constraints";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { State } from "../../store/Store";
 
 export function FunctionDefinitionParameterCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -51,6 +52,8 @@ export function FunctionDefinitionParameterCell(props: {
 
   const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInformationItem[], [selectedObjectInfos?.cell]);
   const [isParameterExpanded, setParameterExpaded] = useState<boolean[]>([]);
+
+  const getAllUniqueNames = useCallback((s: State) => new Map(), []);
 
   return (
     <>
@@ -85,7 +88,7 @@ export function FunctionDefinitionParameterCell(props: {
                 isReadonly={props.isReadonly}
                 id={parameter["@_id"] ?? ""}
                 name={parameter["@_name"] ?? ""}
-                allUniqueNames={new Map()}
+                getAllUniqueNames={getAllUniqueNames}
                 onChange={(newName: string) => {
                   updater((dmnObject) => {
                     dmnObject.formalParameter ??= [];
@@ -131,13 +134,18 @@ function FunctionDefinitionParameterTypeRef(props: {
   isReadonly: boolean;
   onTypeRefChange: (newTypeRef: string) => void;
 }) {
-  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { externalModelsByNamespace } = useExternalModels();
   const { dmnEditorRootElementRef } = useDmnEditor();
 
   const itemDefinition = useMemo(() => {
+    const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = dmnEditorStoreApi
+      .getState()
+      .computed(dmnEditorStoreApi.getState())
+      .getDataTypes(externalModelsByNamespace);
     return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(props.parameter?.["@_typeRef"] ?? "") ?? "")
       ?.itemDefinition;
-  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, props.parameter]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace, props.parameter]);
 
   return (
     <>

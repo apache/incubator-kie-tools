@@ -18,11 +18,12 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { BeeTableCellUpdate } from ".";
 import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import * as ReactTable from "react-table";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 
 export function BeeTableDefaultCell<R extends object>({
   cellProps,

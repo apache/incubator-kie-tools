@@ -56,9 +56,9 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   // Selecting the Expression container should reset the selectObject
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject(expression.id);
+      beeGwtService?.selectObject(expression?.["@_id"]);
     }
-  }, [beeGwtService, isActive, expression.id]);
+  }, [beeGwtService, isActive, expression]);
 
   const expressionTypeRef = expression?.["@_typeRef"];
 

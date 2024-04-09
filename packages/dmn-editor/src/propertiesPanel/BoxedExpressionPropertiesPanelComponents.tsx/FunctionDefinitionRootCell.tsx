@@ -21,11 +21,11 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, TextInputField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { useDmnEditorStore } from "../../store/Store";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { useDmnEditorStore } from "../../store/StoreContext";
 
 type FunctionDefinitionRoot = Pick<DMN15__tFunctionDefinition, "@_kind" | "@_typeRef" | "description">;
 

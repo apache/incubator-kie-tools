@@ -18,26 +18,28 @@
  */
 
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "./Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { useDmnEditorStore } from "../../store/Store";
 import { DMN15__tInputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { Constraints } from "../../dataTypes/Constraints";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { State } from "../../store/Store";
 
 export function DecisionTableInputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadonly: boolean;
 }) {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
-  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
   const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
@@ -51,12 +53,18 @@ export function DecisionTableInputHeaderCell(props: {
   const inputValues = useMemo(() => cell.inputValues, [cell.inputValues]);
 
   const inputExpressionItemDefinition = useMemo(() => {
+    const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = dmnEditorStoreApi
+      .getState()
+      .computed(dmnEditorStoreApi.getState())
+      .getDataTypes(externalModelsByNamespace);
     return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(inputExpression?.["@_typeRef"] ?? "") ?? "")
       ?.itemDefinition;
-  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, inputExpression]);
+  }, [dmnEditorStoreApi, externalModelsByNamespace, inputExpression]);
 
   const [isInputExpressionExpanded, setInputExpressionExpanded] = useState(true);
   const [isInputValuesExpanded, setInputValuesExpanded] = useState(false);
+
+  const getAllUniqueNames = useCallback((s: State) => new Map(), []);
 
   return (
     <>
@@ -90,7 +98,7 @@ export function DecisionTableInputHeaderCell(props: {
               id={inputExpression["@_id"] ?? ""}
               isReadonly={props.isReadonly}
               name={inputExpression?.text?.__$$text ?? ""}
-              allUniqueNames={new Map()}
+              getAllUniqueNames={getAllUniqueNames}
               onChange={(newName) =>
                 updater((dmnObject) => {
                   dmnObject.inputExpression ??= {};

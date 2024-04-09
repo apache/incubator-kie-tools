@@ -21,11 +21,12 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InlineFeelNameInput } from "../../feel/InlineFeelNameInput";
-import { UniqueNameIndex } from "../../Dmn15Spec";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { ExpressionPath } from "../../boxedExpressions/boxedExpressionIndex";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TypeRefSelector } from "../../dataTypes/TypeRefSelector";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { State } from "../../store/Store";
 
 export function ContentField(props: {
   initialValue: string;
@@ -58,7 +59,7 @@ export function NameField(props: {
   id: string;
   name: string;
   isReadonly: boolean;
-  allUniqueNames: UniqueNameIndex;
+  getAllUniqueNames: (s: State) => UniqueNameIndex;
   onChange: (newName: string) => void;
 }) {
   return (
@@ -72,7 +73,7 @@ export function NameField(props: {
         shouldCommitOnBlur={true}
         className={"pf-c-form-control"}
         onRenamed={props.onChange}
-        allUniqueNames={props.allUniqueNames}
+        allUniqueNames={props.getAllUniqueNames}
       />
     </FormGroup>
   );

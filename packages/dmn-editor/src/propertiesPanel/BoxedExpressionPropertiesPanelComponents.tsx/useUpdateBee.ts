@@ -23,21 +23,25 @@ import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { buildXmlHref } from "../../xml/xmlHrefs";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 
 export function useBoxedExpressionUpdater<T extends AllExpressionsWithoutTypes>(
   expressionPath: ExpressionPath[] | undefined
 ) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
-  const { nodesById } = useDmnEditorDerivedStore();
-  const node = useMemo(
-    () => (activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined),
-    [activeDrgElementId, nodesById]
-  );
+  const { externalModelsByNamespace } = useExternalModels();
+
+  const node = useMemo(() => {
+    const nodesById = dmnEditorStoreApi
+      .getState()
+      .computed(dmnEditorStoreApi.getState())
+      .getDiagramData(externalModelsByNamespace).nodesById;
+    return activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined;
+  }, [activeDrgElementId, dmnEditorStoreApi, externalModelsByNamespace]);
 
   return useCallback(
     (consumer: (dmnObject: T) => void) => {

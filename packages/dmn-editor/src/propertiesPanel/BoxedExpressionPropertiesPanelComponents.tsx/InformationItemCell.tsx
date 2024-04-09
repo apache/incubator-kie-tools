@@ -18,17 +18,18 @@
  */
 
 import * as React from "react";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { DescriptionField, NameField, TypeRefField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { useDmnEditorStore } from "../../store/Store";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { Constraints } from "../../dataTypes/Constraints";
+import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { State } from "../../store/Store";
 
 export function InformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -37,8 +38,9 @@ export function InformationItemCell(props: {
   onTypeRefChange: (newTypeRef: string) => void;
   onDescriptionChange: (newDescription: string) => void;
 }) {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
-  const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
+  const { externalModelsByNamespace } = useExternalModels();
   const { dmnEditorRootElementRef } = useDmnEditor();
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
@@ -48,9 +50,15 @@ export function InformationItemCell(props: {
   const cell = useMemo(() => selectedObjectInfos?.cell as DMN15__tInformationItem, [selectedObjectInfos?.cell]);
 
   const itemDefinition = useMemo(() => {
+    const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = dmnEditorStoreApi
+      .getState()
+      .computed(dmnEditorStoreApi.getState())
+      .getDataTypes(externalModelsByNamespace);
     return allDataTypesById.get(allTopLevelItemDefinitionUniqueNames.get(cell?.["@_typeRef"] ?? "") ?? "")
       ?.itemDefinition;
-  }, [allDataTypesById, allTopLevelItemDefinitionUniqueNames, cell]);
+  }, [cell, dmnEditorStoreApi, externalModelsByNamespace]);
+
+  const getAllUniqueNames = useCallback((s: State) => new Map(), []);
 
   return (
     <>
@@ -63,7 +71,7 @@ export function InformationItemCell(props: {
         isReadonly={props.isReadonly}
         id={cell["@_id"] ?? ""}
         name={cell["@_name"] ?? ""}
-        allUniqueNames={new Map()}
+        getAllUniqueNames={getAllUniqueNames}
         onChange={props.onNameChange}
       />
       <TypeRefField
