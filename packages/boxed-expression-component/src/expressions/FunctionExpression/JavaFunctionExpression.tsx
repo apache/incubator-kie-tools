@@ -53,6 +53,7 @@ import {
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./JavaFunctionExpression.css";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export type JAVA_ROWTYPE = {
   value: string;
@@ -133,7 +134,7 @@ export function JavaFunctionExpression({
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: parametersId as any,
+            accessor: "parameters" as any,
             label: "parameters",
             isRowIndexColumn: false,
             dataType: undefined as any,
@@ -406,6 +407,21 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
   const label = useMemo(() => {
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
+
+  const { isActive } = useBeeTableSelectableCellRef(
+    props.rowIndex,
+    props.columnIndex,
+    undefined,
+    useCallback(() => label, [label])
+  );
+
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject("");
+    }
+  }, [beeGwtService, isActive]);
 
   const getParameterLabelHelp = useCallback((): React.ReactNode => {
     if (props.rowIndex === 0) {

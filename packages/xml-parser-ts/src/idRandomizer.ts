@@ -60,8 +60,13 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     __$$element?: string;
     parentJson?: any;
   }): XmlParserTsIdRandomizer<M> {
+    if (json === undefined) {
+      console.debug(`ID RANDOMIZER: ack: ${String(type)}.${String(attr)}: ${json}. skip.`);
+      return this;
+    }
+
     const rootMetaProp = this.args.meta[type][attr];
-    const resolvedRootMetaPropTypeName = this.args.elements[__$$element ?? json?.__$$element] ?? rootMetaProp.type;
+    const resolvedRootMetaPropTypeName = this.args.elements[__$$element ?? json.__$$element] ?? rootMetaProp.type;
 
     // Array
     // Arrays and arrays element will have the same `rootMetaProp`, but array elements will have an array index associated with it
@@ -79,16 +84,14 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
 
     // Object
     else if (this.args.meta[resolvedRootMetaPropTypeName]) {
-      if (json !== undefined) {
-        const resolvedMetaType = this.args.meta[resolvedRootMetaPropTypeName];
-        for (const metaPropName in resolvedMetaType) {
-          this.ack({
-            json: json[metaPropName],
-            parentJson: json,
-            attr: metaPropName,
-            type: resolvedRootMetaPropTypeName,
-          });
-        }
+      const resolvedMetaType = this.args.meta[resolvedRootMetaPropTypeName];
+      for (const metaPropName in resolvedMetaType) {
+        this.ack({
+          json: json[metaPropName],
+          parentJson: json,
+          attr: metaPropName,
+          type: resolvedRootMetaPropTypeName,
+        });
       }
     }
 
