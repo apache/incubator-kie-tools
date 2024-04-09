@@ -32,7 +32,7 @@ beforeEach(async () => {
 });
 
 test(TEST_NAME, async () => {
-  // TODO create PR in kiegroup
+  // TODO create PR in Apache KIE
   const PR_WEB_PAGE = "https://github.com/tomasdavidorg/chrome-extension-pr-test/pull/3/files";
 
   // open PR and check that source is opened

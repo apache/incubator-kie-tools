@@ -67,7 +67,7 @@ import {
 import "./DecisionTableExpression.css";
 import { Unpacked } from "../../tsExt/tsExt";
 
-type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+type ROWTYPE = any; // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
 
 enum DecisionTableColumnType {
   InputClause = "input",
@@ -357,8 +357,8 @@ export function DecisionTableExpression(
 
     const outputGroup = {
       groupType: DecisionTableColumnType.OutputClause,
-      id: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
-      accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+      id: expressionHolderId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
+      accessor: "decision-table-expression" as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
       label: decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
       dataType: decisionTableExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
       cssClasses: "decision-table--output",
@@ -1055,7 +1055,7 @@ export function DecisionTableExpression(
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
-        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/kiegroup/kie-issues/issues/181
+        // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/apache/incubator-kie-issues/issues/181
       />
     </div>
   );

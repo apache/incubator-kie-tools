@@ -86,7 +86,7 @@ function TestScenarioTable({
     OTHER = "other",
   }
 
-  type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+  type ROWTYPE = any; // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
 
   const { i18n } = useTestScenarioEditorI18n();
 

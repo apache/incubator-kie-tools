@@ -28,7 +28,7 @@ export const LOAN_PRE_QUALIFICATION = `<?xml version="1.0" encoding="UTF-8" ?>
     xmlns:included1="https://kie.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1"
     expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" 
     typeLanguage="http://www.omg.org/spec/DMN/20211108/FEEL/"
-    namespace="https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" 
+    namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" 
     id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92" 
     name="loan_pre_qualification">
   <dmn:extensionElements />
@@ -771,7 +771,7 @@ else &quot;Insufficient&quot;</dmn:text>
 `;
 
 export const TRAFFIC_VIOLATION = `<?xml version='1.0' encoding='UTF-8'?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_1C792953-80DB-4B32-99EB-25FBE32BAF9E" name="Traffic Violation" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF">
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_1C792953-80DB-4B32-99EB-25FBE32BAF9E" name="Traffic Violation" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF">
   <dmn:extensionElements/>
   <dmn:itemDefinition id="_63824D3F-9173-446D-A940-6A7F0FA056BB" name="tDriver" isCollection="false">
     <dmn:itemComponent id="_9DAB5DAA-3B44-4F6D-87F2-95125FB2FEE4" name="Name" isCollection="false">

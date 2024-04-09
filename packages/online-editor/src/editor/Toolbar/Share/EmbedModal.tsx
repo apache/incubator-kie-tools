@@ -44,13 +44,25 @@ interface StandaloneConfigs {
 const editorStandaloneClassMapping = new Map<SupportedStandaloneEditorFileExtensions, StandaloneConfigs>([
   [
     "bpmn",
-    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" },
+    {
+      libraryName: "BpmnEditor",
+      scriptUrl: "https://apache.github.io/incubator-kie-kogito-online/standalone/bpmn/index.js",
+    },
   ],
   [
     "bpmn2",
-    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" },
+    {
+      libraryName: "BpmnEditor",
+      scriptUrl: "https://apache.github.io/incubator-kie-kogito-online/standalone/bpmn/index.js",
+    },
   ],
-  ["dmn", { libraryName: "DmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js" }],
+  [
+    "dmn",
+    {
+      libraryName: "DmnEditor",
+      scriptUrl: "https://apache.github.io/incubator-kie-kogito-online/standalone/dmn/index.js",
+    },
+  ],
 ]);
 
 enum ContentSource {
