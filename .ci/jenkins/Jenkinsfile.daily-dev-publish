@@ -228,26 +228,13 @@ pipeline {
             }
         }
 
-        stage('Push kogito-task-console to quay.io') {
+        stage('Push dev-deployment-dmn-form-webapp-image to quay.io') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
-                        "${env.KOGITO_TASK_CONSOLE__name}",
-                        "${env.KOGITO_TASK_CONSOLE__buildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
-                    )
-                }
-            }
-        }
-
-        stage('Push kogito-management-console to quay.io') {
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
-                        "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
-                        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTags}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
                 }
@@ -420,13 +407,26 @@ pipeline {
             }
         }
 
+        stage('Push kogito-task-console to quay.io') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
+                        "${env.KOGITO_TASK_CONSOLE__name}",
+                        "${env.KOGITO_TASK_CONSOLE__buildTags}",
+                        "${pipelineVars.quayPushCredentialsId}"
+                    )
+                }
+            }
+        }
+
         stage('Push kogito-management-console to quay.io') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry}/${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account}",
-                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name}",
-                        "${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTags}",
+                        "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
+                        "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
+                        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTags}",
                         "${pipelineVars.quayPushCredentialsId}"
                     )
                 }
