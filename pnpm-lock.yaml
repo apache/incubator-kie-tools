@@ -3924,12 +3924,18 @@ importers:
       "@vscode/vsce":
         specifier: ^2.22.0
         version: 2.22.0
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      stream-browserify:
+        specifier: 3.0.0
+        version: 3.0.0
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -12047,6 +12053,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
       os-browserify:
         specifier: ^0.3.0
         version: 0.3.0
