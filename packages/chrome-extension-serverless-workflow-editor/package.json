@@ -51,6 +51,7 @@
     "monaco-editor": "^0.39.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-yaml": "^4.0.4",
+    "process": "^0.11.10",
     "rimraf": "^3.0.2",
     "start-server-and-test": "^1.12.1",
     "ts-jest": "^26.5.6",

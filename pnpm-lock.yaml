@@ -1034,6 +1034,9 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -1216,6 +1219,9 @@ importers:
       jest-when:
         specifier: ^3.5.0
         version: 3.5.0(jest@26.6.3)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -1330,6 +1336,9 @@ importers:
       monaco-yaml:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -3930,6 +3939,9 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -5482,6 +5494,9 @@ importers:
       mocha-multi-reporters:
         specifier: ^1.5.1
         version: 1.5.1(mocha@9.2.0)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -5615,6 +5630,9 @@ importers:
       minimatch:
         specifier: ^3.0.5
         version: 3.0.5
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       raw-loader:
         specifier: ^4.0.2
         version: 4.0.2(webpack@5.88.2)
@@ -6739,6 +6757,9 @@ importers:
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.88.2)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7161,6 +7182,9 @@ importers:
       start-server-and-test:
         specifier: ^1.12.1
         version: 1.12.1
+      stream-http:
+        specifier: ^3.2.0
+        version: 3.2.0
       style-loader:
         specifier: ^2.0.0
         version: 2.0.0(webpack@5.88.2)
@@ -8680,6 +8704,9 @@ importers:
       html-webpack-plugin:
         specifier: ^5.3.2
         version: 5.5.3(webpack@5.88.2)
+      https-browserify:
+        specifier: ^1.0.0
+        version: 1.0.0
       identity-obj-proxy:
         specifier: ^3.0.0
         version: 3.0.0
@@ -8701,6 +8728,9 @@ importers:
       sass-loader:
         specifier: ^12.3.0
         version: 12.4.0(webpack@5.88.2)
+      stream-http:
+        specifier: ^3.2.0
+        version: 3.2.0
       style-loader:
         specifier: ^2.0.0
         version: 2.0.0(webpack@5.88.2)
@@ -9220,6 +9250,9 @@ importers:
       node-polyfill-webpack-plugin:
         specifier: ^2.0.1
         version: 2.0.1(webpack@5.88.2)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -10193,6 +10226,9 @@ importers:
       monaco-editor:
         specifier: ^0.39.0
         version: 0.39.0
+      monaco-editor-webpack-plugin:
+        specifier: ^7.0.1
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       monaco-yaml:
         specifier: ^4.0.4
         version: 4.0.4(monaco-editor@0.39.0)
@@ -10522,6 +10558,9 @@ importers:
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
         version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -11885,6 +11924,9 @@ importers:
       mocha-multi-reporters:
         specifier: ^1.5.1
         version: 1.5.1(mocha@9.2.0)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -12817,6 +12859,9 @@ importers:
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
         version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2

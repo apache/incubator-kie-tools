@@ -60,6 +60,7 @@
     "jest-when": "^3.5.0",
     "minimatch": "^3.0.5",
     "monaco-editor": "^0.39.0",
+    "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-yaml": "^4.0.4",
     "raw-loader": "^4.0.2",
     "react": "^17.0.2",
