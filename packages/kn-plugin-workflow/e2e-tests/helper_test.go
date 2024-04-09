@@ -31,34 +31,11 @@ import (
 	"strings"
 	"syscall"
 	"testing"
-	"time"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 )
-
-// let's pre-fetch kogito-quarkus-serverless-workflow-devui-deployment before running the tests
-func init() {
-    started := time.Now()
-    fmt.Println("🚀 Starting dependency pre-fetch...")
-    defer func(started time.Time) {
-        takes := time.Since(started)
-        fmt.Printf("✅ Dependency fetch completed in %.2f seconds.\n", takes.Seconds())
-    }(started)
-
-    args := []string{
-        "dependency:get",
-        "-Dartifact=org.kie.kogito:kogito-quarkus-serverless-workflow-devui-deployment:999-20240218-SNAPSHOT",
-        "-DremoteRepositories=https://repository.apache.org/content/repositories/snapshots",
-    }
-
-	cmd := exec.Command("mvn", args...)
-    output, err := cmd.CombinedOutput()
-    if err != nil {
-        fmt.Printf("❌ Failed to execute command: %v\nOutput:\n%s", err, string(output))
-    }
-}
 
 // ExecuteCommand executes a command with the given arguments and returns an error if the command fails.
 func ExecuteCommand(command string, args ...string) error {

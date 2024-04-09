@@ -39,11 +39,11 @@ var KogitoBomDependency = Dependency{
 // KogitoDependencies defines the set of dependencies to be added to the pom.xml
 // of created and converted Quarkus projects.
 var KogitoDependencies = []Dependency{
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-addons-quarkus-knative-eventing"},
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-addons-quarkus-source-files"},
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-quarkus-serverless-workflow-devui"},
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-addons-quarkus-data-index-inmemory"},
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-quarkus-serverless-workflow"},
+	{GroupId: "org.kie", ArtifactId: "kie-addons-quarkus-knative-eventing"},
+	{GroupId: "org.kie", ArtifactId: "kie-addons-quarkus-source-files"},
+	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus-devui"},
+	{GroupId: "org.kie", ArtifactId: "kogito-addons-quarkus-data-index-inmemory"},
+	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus"},
 }
 
 const (
@@ -53,10 +53,10 @@ const (
 	QuarkusContainerImageJib                    = "quarkus-container-image-jib"
 	SmallryeHealth                              = "smallrye-health"
 	QuarkusContainerImageDocker                 = "quarkus-container-image-docker"
-	KogitoQuarkusServerlessWorkflowExtension    = "kogito-quarkus-serverless-workflow"
-	KogitoAddonsQuarkusKnativeEventingExtension = "kogito-addons-quarkus-knative-eventing"
-	KogitoQuarkusServerlessWorkflowDevUi        = "kogito-quarkus-serverless-workflow-devui"
-	KogitoAddonsQuarkusSourceFiles              = "kogito-addons-quarkus-source-files"
+	KogitoQuarkusServerlessWorkflowExtension    = "sonataflow-quarkus"
+	KogitoAddonsQuarkusKnativeEventingExtension = "kie-addons-quarkus-knative-eventing"
+	KogitoQuarkusServerlessWorkflowDevUi        = "sonataflow-quarkus-devui"
+	KogitoAddonsQuarkusSourceFiles              = "kie-addons-quarkus-source-files"
 	KogitoDataIndexInMemory                     = "kogito-addons-quarkus-data-index-inmemory"
 
 	JavaVersion       = 11
