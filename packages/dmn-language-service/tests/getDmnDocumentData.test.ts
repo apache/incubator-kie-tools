@@ -26,7 +26,7 @@ it("get decisions", () => {
   const dmnLs = new DmnLanguageService({ getModelXml: asyncGetModelXmlForTestFixtures });
 
   expect(dmnLs.getDmnDocumentData(decisions())).toEqual(
-    new DmnDocumentData("https://kiegroup.org/dmn/_57B8BED3-0077-4154-8435-30E57EA6F02E", "My Model Name", [
+    new DmnDocumentData("https://kie.apache.org/dmn/_57B8BED3-0077-4154-8435-30E57EA6F02E", "My Model Name", [
       new DmnDecision("Decision-1"),
       new DmnDecision("Decision-2"),
       new DmnDecision("Decision-3"),

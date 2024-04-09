@@ -23,7 +23,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
   <modelVersion>4.0.0</modelVersion>
-  <groupId>io.github.kiegroup.kie.tools</groupId>
+  <groupId>org.apache.kie</groupId>
   <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
   <version>${revision}</version>
   <packaging>pom</packaging>

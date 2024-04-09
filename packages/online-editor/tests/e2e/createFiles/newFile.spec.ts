@@ -56,6 +56,6 @@ test.describe("New file", () => {
   });
 
   test.describe("Editor", () => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/546");
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/546");
   });
 });

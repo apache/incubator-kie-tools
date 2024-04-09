@@ -42,7 +42,7 @@ public abstract class DMNModelInstrumentedBase implements DMNDefinition {
         FEEL("feel", org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_FEEL),
         DMN("dmn", org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMN),
         KIE("kie", org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_KIE),
-        DEFAULT(QName.DEFAULT_NS_PREFIX, "https://kiegroup.org/dmn/"),
+        DEFAULT(QName.DEFAULT_NS_PREFIX, "https://kie.apache.org/dmn/"),
         DMNDI("dmndi", org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DMNDI),
         DI("di", org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DI),
         DC("dc", org.kie.dmn.model.v1_2.KieDMNModelInstrumentedBase.URI_DC);

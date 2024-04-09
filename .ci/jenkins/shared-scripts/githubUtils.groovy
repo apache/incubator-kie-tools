@@ -106,7 +106,7 @@ def checkoutRepo(String url, String branch, String credentialsId) {
 def squashedMerge(String author, String branch, String url) {
     sh """#!/bin/bash -el
     git config --global user.email "kietoolsbot@gmail.com"
-    git config --global user.name "Apache KIE Tools Bot (kiegroup)"
+    git config --global user.name "Apache KIE Tools Bot"
     git remote add ${author} ${url}
     git fetch ${author} ${branch}
     git merge --squash ${author}/${branch}
