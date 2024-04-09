@@ -35,7 +35,7 @@ const files = [
   // "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];
 
-const tmpDir = path.join(__dirname, "../dist-tests/dmn-marshaller-type-safety-tests");
+const tmpDir = path.join(__dirname, "..", "dist-tests", "dmn-marshaller-type-safety-tests");
 
 describe("type safety", () => {
   beforeAll(() => {
