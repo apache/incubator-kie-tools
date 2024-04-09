@@ -43,7 +43,7 @@ const customConfig = defineConfig({
     },
     {
       command: "pnpm test:e2e:start:extended-services",
-      url: `http://${buildEnv.extendedServices.host}:${buildEnv.extendedServices.port}/ping`,
+      url: `http://localhost:${buildEnv.extendedServices.port}/ping`,
       reuseExistingServer: !process.env.CI || true,
       stdout: "pipe",
     },
