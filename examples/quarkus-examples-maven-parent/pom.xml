@@ -50,9 +50,9 @@
     <quarkus.platform.version>${quarkus.platform.version}</quarkus.platform.version>
     <kogito.bom.group-id>org.kie.kogito</kogito.bom.group-id>
     <kogito.bom.artifact-id>kogito-bom</kogito.bom.artifact-id>
-    <kogito.bom.version>999-SNAPSHOT</kogito.bom.version>
+    <kogito.bom.version>${version.org.kie.kogito}</kogito.bom.version>
     <version.org.kie.kogito>${version.org.kie.kogito}</version.org.kie.kogito>
-    <version.org.drools>999-SNAPSHOT</version.org.drools>
+    <version.org.drools>${version.org.drools}</version.org.drools>
     <version.failsafe.plugin>3.0.0-M7</version.failsafe.plugin>
   </properties>
 

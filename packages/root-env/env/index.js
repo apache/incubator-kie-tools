@@ -58,6 +58,10 @@ module.exports = composeEnv([], {
       default: "999-20240331-SNAPSHOT",
       description: "Kogito version to be used on dependency declaration.",
     },
+    DROOLS_version: {
+      default: "999-20240331-SNAPSHOT",
+      description: "Drools version to be used on dependency declaration.",
+    },
   }),
   get env() {
     return {
@@ -83,6 +87,9 @@ module.exports = composeEnv([], {
       },
       kogitoRuntime: {
         version: getOrDefault(this.vars.KOGITO_RUNTIME_version),
+      },
+      drools: {
+        version: getOrDefault(this.vars.DROOLS_version),
       },
       quarkusPlatform: {
         version: getOrDefault(this.vars.QUARKUS_PLATFORM_version),
