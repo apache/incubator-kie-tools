@@ -58,7 +58,25 @@ test.describe("Change Properties - Group", () => {
     expect(await groupPropertiesPanel.getFont()).toBe("Verdana");
   });
 
-  test.skip("should change the Group node shape - background color", async ({ nodes, groupPropertiesPanel }) => {
-    // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
+  test("should change the Group node shape - fill color", async ({ nodes, groupPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    await groupPropertiesPanel.setFillColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(nodes.get({ name: DefaultNodeName.GROUP }).locator("..").locator("rect").nth(0)).toHaveAttribute(
+      "fill",
+      "rgba(241, 34, 0, 0.1)"
+    );
+  });
+
+  test("should change the Group node shape - stroke color", async ({ nodes, groupPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    await groupPropertiesPanel.setStrokeColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(nodes.get({ name: DefaultNodeName.GROUP }).locator("..").locator("rect").nth(0)).toHaveAttribute(
+      "stroke",
+      "rgba(241, 34, 0, 1)"
+    );
   });
 });

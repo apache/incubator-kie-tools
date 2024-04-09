@@ -84,10 +84,25 @@ test.describe("Change Properties - Input Data", () => {
     expect(await inputDataPropertiesPanel.getFont()).toBe("Verdana");
   });
 
-  test.skip("should change the Input Data node shape - background color", async ({
-    nodes,
-    inputDataPropertiesPanel,
-  }) => {
-    // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
+  test("should change the Input Data node shape - fill color", async ({ nodes, inputDataPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    await inputDataPropertiesPanel.setFillColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA }).locator("..").locator("rect").nth(0)).toHaveAttribute(
+      "fill",
+      "rgba(241, 34, 0, 0.9)"
+    );
+  });
+
+  test("should change the Input Data node shape - stroke color", async ({ nodes, inputDataPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    await inputDataPropertiesPanel.setStrokeColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA }).locator("..").locator("rect").nth(0)).toHaveAttribute(
+      "stroke",
+      "rgba(241, 34, 0, 1)"
+    );
   });
 });

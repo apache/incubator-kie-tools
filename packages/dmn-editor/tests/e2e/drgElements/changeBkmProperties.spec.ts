@@ -83,7 +83,25 @@ test.describe("Change Properties - BKM", () => {
     expect(await bkmPropertiesPanel.getFont()).toBe("Verdana");
   });
 
-  test.skip("should change the BKM node shape - background color", async ({ nodes, bkmPropertiesPanel }) => {
-    // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
+  test("should change the BKM node shape - fill color", async ({ nodes, bkmPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.BKM });
+    await bkmPropertiesPanel.setFillColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(nodes.get({ name: DefaultNodeName.BKM }).locator("..").locator("polygon").nth(0)).toHaveAttribute(
+      "fill",
+      "rgba(241, 34, 0, 0.9)"
+    );
+  });
+
+  test("should change the BKM node shape - stroke color", async ({ nodes, bkmPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.BKM });
+    await bkmPropertiesPanel.setStrokeColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(nodes.get({ name: DefaultNodeName.BKM }).locator("..").locator("polygon").nth(0)).toHaveAttribute(
+      "stroke",
+      "rgba(241, 34, 0, 1)"
+    );
   });
 });

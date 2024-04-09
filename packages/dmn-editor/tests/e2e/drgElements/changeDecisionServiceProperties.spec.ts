@@ -93,10 +93,29 @@ test.describe("Change Properties - Decision Service", () => {
     expect(await decisionServicePropertiesPanel.getFont()).toBe("Verdana");
   });
 
-  test.skip("should change the Decision Service node shape - background color", async ({
+  test("should change the Decision Service node shape - fill color", async ({
     nodes,
     decisionServicePropertiesPanel,
   }) => {
-    // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
+    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+    await decisionServicePropertiesPanel.setFillColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(
+      nodes.get({ name: DefaultNodeName.DECISION_SERVICE }).locator("..").locator("rect").nth(0)
+    ).toHaveAttribute("fill", "rgba(241, 34, 0, 0.1)");
+  });
+
+  test("should change the Decision Service node shape - stroke color", async ({
+    nodes,
+    decisionServicePropertiesPanel,
+  }) => {
+    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+    await decisionServicePropertiesPanel.setStrokeColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(
+      nodes.get({ name: DefaultNodeName.DECISION_SERVICE }).locator("..").locator("rect").nth(0)
+    ).toHaveAttribute("stroke", "rgba(241, 34, 0, 1)");
   });
 });

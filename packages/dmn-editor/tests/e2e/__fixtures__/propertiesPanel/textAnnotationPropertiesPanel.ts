@@ -62,4 +62,16 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
   public async getText() {
     return await this.panel().getByPlaceholder("Enter text...").inputValue();
   }
+
+  public async setFillColor(args: { color: string }) {
+    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+    await this.panel().getByTestId("color-picker-shape-fill").fill(args.color);
+    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+  }
+
+  public async setStrokeColor(args: { color: string }) {
+    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+    await this.panel().getByTestId("color-picker-shape-stroke").fill(args.color);
+    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+  }
 }

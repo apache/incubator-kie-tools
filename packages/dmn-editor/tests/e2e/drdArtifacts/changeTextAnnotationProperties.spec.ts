@@ -69,11 +69,12 @@ test.describe("Change Properties - Text Annotation", () => {
     expect(await textAnnotationPropertiesPanel.getFont()).toBe("Verdana");
   });
 
-  test("should change the Text Annotation node shape - fill color", async ({ nodes, page }) => {
+  test("should change the Text Annotation node shape - fill color", async ({
+    nodes,
+    textAnnotationPropertiesPanel,
+  }) => {
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
-
-    await page.getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await page.getByTestId("color-picker-shape-fill").fill("#f12200");
+    await textAnnotationPropertiesPanel.setFillColor({ color: "#f12200" });
 
     // It's necessary to pick the parent element ".." to have access to the SVG.
     await expect(
@@ -81,11 +82,12 @@ test.describe("Change Properties - Text Annotation", () => {
     ).toHaveAttribute("fill", "rgba(241, 34, 0, 0.1)");
   });
 
-  test("should change the Text Annotation node shape - stroke color", async ({ nodes, page }) => {
+  test("should change the Text Annotation node shape - stroke color", async ({
+    nodes,
+    textAnnotationPropertiesPanel,
+  }) => {
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
-
-    await page.getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await page.getByTestId("color-picker-shape-stroke").fill("#f12200");
+    await textAnnotationPropertiesPanel.setStrokeColor({ color: "#f12200" });
 
     // It's necessary to pick the parent element ".." to have access to the SVG.
     await expect(

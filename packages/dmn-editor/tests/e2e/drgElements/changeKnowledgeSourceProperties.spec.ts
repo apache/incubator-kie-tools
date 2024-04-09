@@ -97,10 +97,29 @@ test.describe("Change Properties - Knowledge Source", () => {
     expect(await knowledgeSourcePropertiesPanel.getFont()).toBe("Verdana");
   });
 
-  test.skip("should change the Knowledge Source node shape - background color", async ({
+  test("should change the Knowledge Source node shape - fill color", async ({
     nodes,
     knowledgeSourcePropertiesPanel,
   }) => {
-    // blocked https://github.com/microsoft/playwright/issues/19929#issuecomment-1377035969
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    await knowledgeSourcePropertiesPanel.setFillColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(
+      nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE }).locator("..").locator("path").nth(0)
+    ).toHaveAttribute("fill", "rgba(241, 34, 0, 0.9)");
+  });
+
+  test("should change the Knowledge Source node shape - stroke color", async ({
+    nodes,
+    knowledgeSourcePropertiesPanel,
+  }) => {
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    await knowledgeSourcePropertiesPanel.setStrokeColor({ color: "#f12200" });
+
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    await expect(
+      nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE }).locator("..").locator("path").nth(0)
+    ).toHaveAttribute("stroke", "rgba(241, 34, 0, 1)");
   });
 });
