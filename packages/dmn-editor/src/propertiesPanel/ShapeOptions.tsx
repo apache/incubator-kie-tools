@@ -276,6 +276,7 @@ export function ShapeOptions({
                   className={"kie-dmn-editor--shape-options-toggle-button"}
                   text={
                     <ColorPicker
+                      name="shape-fill"
                       icon={
                         <div
                           style={{
@@ -305,6 +306,7 @@ export function ShapeOptions({
                   className={"kie-dmn-editor--shape-options-toggle-button"}
                   text={
                     <ColorPicker
+                      name="shape-stroke"
                       colorDisplay={
                         <div
                           style={{

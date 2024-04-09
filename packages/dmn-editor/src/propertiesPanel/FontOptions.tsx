@@ -363,6 +363,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   onClick={() => colorPickerRef.current?.click()}
                   text={
                     <ColorPicker
+                      name={"font"}
                       icon={<p>A</p>}
                       colorPickerRef={colorPickerRef}
                       color={fontColor}
