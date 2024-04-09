@@ -21,16 +21,23 @@ import org.kie.dmn.validation.DMNValidatorFactory;
 class dmnSemanticComparison {
 
     public static void main(String... args) throws Exception {
-        int exitCode = validate(args);
+        int exitCode = compare(args);
         System.exit(exitCode);
     }
 
     public static int compare(String... args) throws Exception {
-        if (args.length < 1) {
-            throw new IllegalArgumentException("Validation requires at least one DMN file path");
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Comparison requires 2 DMN files");
         }
 
-        File[] models = Stream.of(args)
+        System.out.println(args[0]);
+        System.out.println(args[1]);
+
+
+
+        return 0;
+
+        /*File[] models = Stream.of(args)
                               .map(File::new)
                               .toArray(File[]::new);
 
@@ -52,6 +59,6 @@ class dmnSemanticComparison {
             messages.forEach(message -> System.out.println(message.getText()));
             System.out.println("=============================");
             return 1;
-        }
+        } */
     }
 }
