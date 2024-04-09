@@ -117,6 +117,7 @@
     "@types/react-dom": "^17.0.5",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
+    "@types/testing-library__jest-dom": "^5.9.1",
     "@types/uuid": "^8.3.0",
     "copy-webpack-plugin": "^11.0.0",
     "cypress": "^13.5.1",

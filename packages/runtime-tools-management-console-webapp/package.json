@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
     "@graphql-codegen/add": "^3.2.3",
     "@graphql-codegen/cli": "^2.16.5",
     "@graphql-codegen/introspection": "^2.2.3",
