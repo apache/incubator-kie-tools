@@ -24,8 +24,8 @@
     "matches": [
       "https://*.github.com/*",
       "http://*.github.com/*",
-      "https://kiegroup.github.io/*",
-      "http://kiegroup.github.io/*"
+      "https://apache.github.io/incubator-kie*",
+      "http://apache.github.io/incubator-kie*"
     ]
   }
 }

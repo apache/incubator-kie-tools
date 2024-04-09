@@ -30,7 +30,7 @@ env:
 jobs:
   extended_services:
     env:
-      EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online"
+      EXTENDED_SERVICES__kieSandboxUrl: "https://apache.github.io/incubator-kie-kogito-online"
 
     runs-on: ${{ matrix.os }}
     strategy:

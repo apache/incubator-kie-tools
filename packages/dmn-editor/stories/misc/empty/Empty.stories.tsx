@@ -29,7 +29,7 @@ export const generateEmptyDmn15 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
   xmlns="${dmn15ns.get("")}"
   expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
-  namespace="https://kie.org/dmn/${generateUuid()}"
+  namespace="https://kie.apache.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
   name="DMN${generateUuid()}">
 </definitions>`;

@@ -140,7 +140,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        accessor: expressionHolderId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
         label: literalExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         isRowIndexColumn: false,
         dataType: literalExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
