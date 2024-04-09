@@ -35,9 +35,8 @@
   <name>Kie-Tools Example :: PMML - Quarkus</name>
   <dependencies>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-predictions</artifactId>
-      <version>${version.org.kie.kogito}</version>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-quarkus-predictions</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -95,7 +94,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${version.surefire.plugin}</version>
         <configuration>
           <systemPropertyVariables>
             <indexfile.directory>target/test-classes</indexfile.directory>

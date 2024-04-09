@@ -38,12 +38,10 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-with-drools-quarkus</artifactId>
-      <version>${version.org.drools}</version>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-process-management</artifactId>
-      <version>${version.org.kie.kogito}</version>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-process-management</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -80,11 +78,6 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-quarkus-processes</artifactId>
-        <version>${version.org.kie.kogito}</version>
     </dependency>
   </dependencies>
   <build>
@@ -133,7 +126,6 @@
         <plugins>
           <plugin>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>${version.surefire.plugin}</version>
             <configuration>
               <systemPropertyVariables>
                 <enable.resource.kafka>true</enable.resource.kafka>
