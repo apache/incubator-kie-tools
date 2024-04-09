@@ -29,26 +29,26 @@ import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import { generateBoxedExpressionIndex } from "../boxedExpressions/boxedExpressionIndex";
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { RelationInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/RelationInformationItemCell";
-import { DecisionTableInputHeaderCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableInputHeaderCell";
-import { DecisionTableOutputHeaderCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableOutputHeaderCell";
-import { LiteralExpressionContentCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/LiteralExpressionContentCell";
-import { ExpressionRootCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/ExpressionRootCell";
-import { DecisionTableInputRule } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableInputRuleCell";
+import { RelationInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents/RelationInformationItemCell";
+import { DecisionTableInputHeaderCell } from "./BoxedExpressionPropertiesPanelComponents/DecisionTableInputHeaderCell";
+import { DecisionTableOutputHeaderCell } from "./BoxedExpressionPropertiesPanelComponents/DecisionTableOutputHeaderCell";
+import { LiteralExpressionContentCell } from "./BoxedExpressionPropertiesPanelComponents/LiteralExpressionContentCell";
+import { ExpressionRootCell } from "./BoxedExpressionPropertiesPanelComponents/ExpressionRootCell";
+import { DecisionTableInputRule } from "./BoxedExpressionPropertiesPanelComponents/DecisionTableInputRuleCell";
 import { AllExpressions } from "../dataTypes/DataTypeSpec";
-import { DecisionTableRootCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableRootCell";
-import { InvocationFunctionCallCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/InvocationFunctionCallCell";
-import { FunctionDefinitionParameterCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/FunctionDefinitionParametersCell";
-import { FunctionDefinitionRootCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/FunctionDefinitionRootCell";
-import { NoneCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/NoneCell";
-import { DecisionTableOutputRuleCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/DecisionTableOutputRuleCell";
-import { ContextInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/ContextInformationItemCell";
-import { InvocationInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/InvocationInformationItemCell";
-import { SelectExpressionCell } from "./BoxedExpressionPropertiesPanelComponents.tsx/SelectExpressionCell";
+import { DecisionTableRootCell } from "./BoxedExpressionPropertiesPanelComponents/DecisionTableRootCell";
+import { InvocationFunctionCallCell } from "./BoxedExpressionPropertiesPanelComponents/InvocationFunctionCallCell";
+import { FunctionDefinitionParameterCell } from "./BoxedExpressionPropertiesPanelComponents/FunctionDefinitionParametersCell";
+import { FunctionDefinitionRootCell } from "./BoxedExpressionPropertiesPanelComponents/FunctionDefinitionRootCell";
+import { NoneCell } from "./BoxedExpressionPropertiesPanelComponents/NoneCell";
+import { DecisionTableOutputRuleCell } from "./BoxedExpressionPropertiesPanelComponents/DecisionTableOutputRuleCell";
+import { ContextInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents/ContextInformationItemCell";
+import { InvocationInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents/InvocationInformationItemCell";
+import { SelectExpressionCell } from "./BoxedExpressionPropertiesPanelComponents/SelectExpressionCell";
 import {
   BoxedExpressionPropertiesPanelComponent,
   getBoxedExpressionPropertiesPanelComponent,
-} from "./BoxedExpressionPropertiesPanelComponents.tsx/getBoxedExpressionPropertiesPanelComponent";
+} from "./BoxedExpressionPropertiesPanelComponents/getBoxedExpressionPropertiesPanelComponent";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 

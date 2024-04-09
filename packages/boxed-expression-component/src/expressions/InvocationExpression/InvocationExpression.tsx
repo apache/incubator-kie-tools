@@ -31,7 +31,6 @@ import {
   getNextAvailablePrefixedName,
   BoxedInvocation,
   BoxedExpression,
-  BoxedFunction,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
@@ -172,12 +171,6 @@ export function InvocationExpression(
     }));
   }, [invocationExpression.binding]);
 
-  const invokedFunctionId = useMemo(
-    // TODO: MERGE - previous was invocationExpression.invokedFunction.id
-    () => invocationExpression["@_id"],
-    [invocationExpression]
-  );
-
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
@@ -228,15 +221,11 @@ export function InvocationExpression(
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
       for (const u of columnUpdates) {
-        // TODO: MERGE - VERIFY
-        if (u.column.originalId === invokedFunctionId) {
-          setExpression((prev: BoxedFunction) => ({
+        if (u.column.originalId === id) {
+          setExpression((prev: BoxedInvocation) => ({
             ...prev,
-            // TODO: MERGE - VERIFY
-            // invokedFunction: {
-            //   id: prev.invokedFunction.id,
-            //   name: u.name,
-            // },
+            "@_id": prev["@_id"],
+            name: u.name,
           }));
         } else if (u.column.originalId === "functionName") {
           setExpression((prev: BoxedInvocation) => {
@@ -267,7 +256,7 @@ export function InvocationExpression(
         }
       }
     },
-    [setExpression, invokedFunctionId]
+    [setExpression, id]
   );
 
   const headerVisibility = useMemo(

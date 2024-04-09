@@ -18,34 +18,32 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { BoxedInvocation, BeeTableCellProps } from "../../api";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import {
   NestedExpressionDispatchContextProvider,
   OnSetExpression,
+  useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../../BoxedExpressionEditorContext";
 import { ROWTYPE } from "./InvocationExpression";
 import "../ContextExpression/ContextEntryExpressionCell.css";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export const ArgumentEntryExpressionCell: React.FunctionComponent<
   BeeTableCellProps<ROWTYPE> & { parentElementId: string }
 > = ({ data, rowIndex, columnIndex, parentElementId }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
-
   const { expression, variable, index } = data[rowIndex];
+  const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
+  const { beeGwtService } = useBoxedExpressionEditor();
 
-  // TODO: MERGE - VERIFY
-  // const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
-
-  // const { beeGwtService } = useBoxedExpressionEditor();
-
-  // useEffect(() => {
-  //   if (isActive) {
-  //     beeGwtService?.selectObject(argumentEntries[rowIndex].entryExpression.id);
-  //   }
-  // }, [argumentEntries, beeGwtService, isActive, rowIndex]);
+  useEffect(() => {
+    if (isActive) {
+      beeGwtService?.selectObject((expression as BoxedInvocation).binding?.[columnIndex].expression?.["@_id"]);
+    }
+  }, [beeGwtService, columnIndex, expression, isActive]);
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
