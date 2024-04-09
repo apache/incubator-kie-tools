@@ -71,7 +71,7 @@ module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageE
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesExposedPort: {
-      default: extendedServicesImageEnv.env.extendedServicesImage.host,
+      default: extendedServicesImageEnv.env.extendedServicesImage.port,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageRegistry: {
