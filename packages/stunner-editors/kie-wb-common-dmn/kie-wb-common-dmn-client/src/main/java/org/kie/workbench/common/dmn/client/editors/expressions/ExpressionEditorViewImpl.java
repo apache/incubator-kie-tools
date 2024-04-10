@@ -375,7 +375,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                         concat(retrieveDefaultDataTypeProps(), retrieveCustomDataTypeProps()).toArray(DataTypeProps[]::new),
                         hasExpression.isClearSupported(),
                         buildPmmlDocuments(),
-                        item);
+                        item,
+                        true);
             }
 
             @Override

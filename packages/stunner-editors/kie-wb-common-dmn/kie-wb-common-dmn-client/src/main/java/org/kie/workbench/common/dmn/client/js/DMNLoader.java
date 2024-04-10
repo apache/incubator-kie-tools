@@ -35,9 +35,10 @@ public class DMNLoader {
      * @param expressionProps expression to render
      * @param isClearSupportedOnRootExpression tells if the root expression should have the clear button or not (e.g. functions wrapped in BKM nodes should not)
      * @param pmmlDocuments PMML parameters
+     * @param hideDmn14BoxedExpressions hide the DMN 1.4 expressions, due to compatibility reasons
      */
     @JsMethod(namespace = "__KIE__DMN_LOADER__")
-    public static native void renderBoxedExpressionEditor(final String selector, final String expressionHolderId, final ExpressionProps expressionProps, final DataTypeProps[] dataTypes, final Boolean isClearSupportedOnRootExpression, final PMMLParam[] pmmlDocuments, final String xml);
+    public static native void renderBoxedExpressionEditor(final String selector, final String expressionHolderId, final ExpressionProps expressionProps, final DataTypeProps[] dataTypes, final Boolean isClearSupportedOnRootExpression, final PMMLParam[] pmmlDocuments, final String xml, final Boolean hideDmn14BoxedExpressions);
 
     /**
      * Method used to unmount the boxed-expression-component (TS/React world) from the DMN Editor (Java/GWT world)

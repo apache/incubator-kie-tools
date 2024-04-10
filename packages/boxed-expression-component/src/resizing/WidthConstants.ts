@@ -65,3 +65,7 @@ export const JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH = 210;
 export const JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH = 140;
 
 export const JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH = BEE_TABLE_ROW_INDEX_COLUMN_WIDTH;
+
+export const CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH = 80;
+export const CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH = 210;
+export const CONDITIONAL_EXPRESSION_EXTRA_WIDTH = 2; // 2px for borders of context entry expression // It's a mistery why to this cell is counting the borders.

@@ -53,6 +53,7 @@ import {
 import { findAllIdsDeep, mutateExpressionRandomizingIds } from "../../ids/ids";
 import "./ExpressionDefinitionLogicTypeSelector.css";
 import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
+import { ConditionalExpression } from "../ConditionalExpression/ConditionalExpression";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -66,6 +67,7 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   isResetSupported: boolean;
   isNested: boolean;
   parentElementId: string;
+  hideDmn14BoxedExpressions?: boolean;
 }
 
 export function ExpressionDefinitionLogicTypeSelector({
@@ -76,6 +78,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   isResetSupported,
   isNested,
   parentElementId,
+  hideDmn14BoxedExpressions,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
   const nonSelectableLogicTypes = useMemo<Set<BoxedExpression["__$$element"] | undefined>>(
     () => (isNested ? new Set([undefined]) : new Set([undefined, "functionDefinition"])),
@@ -91,10 +94,10 @@ export function ExpressionDefinitionLogicTypeSelector({
       "list",
       "invocation",
       ...(isNested ? (["functionDefinition"] as const) : []),
+      ...(!hideDmn14BoxedExpressions ? (["conditional"] as const) : []),
       // "for",
       // "every",
       // "some",
-      // "conditional",
       // "filter",
     ],
     [isNested]
@@ -124,10 +127,11 @@ export function ExpressionDefinitionLogicTypeSelector({
         return <InvocationExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case "functionDefinition":
         return <FunctionExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
+      case "conditional":
+        return <ConditionalExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case "for":
       case "every":
       case "some":
-      case "conditional":
       case "filter":
         return <></>;
       default:
@@ -220,10 +224,17 @@ export function ExpressionDefinitionLogicTypeSelector({
         );
       case "list":
         return <ListIcon />;
+      case "conditional":
+        return (
+          <span>
+            <b>
+              <i>{"if"}</i>
+            </b>
+          </span>
+        );
       case "for":
       case "every":
       case "some":
-      case "conditional":
       case "filter":
         return <></>;
       default:
@@ -315,6 +326,8 @@ export function ExpressionDefinitionLogicTypeSelector({
         return "A boxed invocation expression in DMN is a boxed expression that invokes a business knowledge model. A boxed invocation expression contains the name of the business knowledge model to be invoked and a list of parameter bindings.";
       case "list":
         return "A boxed list expression in DMN represents a FEEL list of items. You use boxed lists to define lists of relevant items for a particular node in a decision.";
+      case "conditional":
+        return 'A boxed conditional offers a visual representation of an if statement using three rows. The expression in the "if" part MUST resolve to a boolean.';
       default:
         return "";
     }

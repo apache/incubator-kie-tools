@@ -49,7 +49,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { beeGwtService, expressionHolderId } = useBoxedExpressionEditor();
+  const { beeGwtService, expressionHolderId, hideDmn14BoxedExpressions } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
@@ -112,6 +112,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         isResetSupported={isResetSupported}
         isNested={isNested}
         parentElementId={parentElementId ?? expressionHolderId}
+        hideDmn14BoxedExpressions={hideDmn14BoxedExpressions}
       />
     </div>
   );
