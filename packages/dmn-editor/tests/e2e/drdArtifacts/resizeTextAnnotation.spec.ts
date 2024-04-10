@@ -282,5 +282,20 @@ test.describe("Resize node - Text Annotation", () => {
       expect(height).toEqual("60");
       expect(width).toEqual("200");
     });
+
+    test("should reset Text Annotation node size", async ({ diagram, nodes, textAnnotationPropertiesPanel }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION, position: NodePosition.TOP });
+      await textAnnotationPropertiesPanel.setShape({ width: "300", height: "300" });
+      await textAnnotationPropertiesPanel.resetShape();
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION, position: NodePosition.TOP });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(width).toEqual("200");
+      expect(height).toEqual("60");
+    });
   });
 });

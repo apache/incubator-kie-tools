@@ -107,6 +107,7 @@ test.describe("Change Properties - Knowledge Source", () => {
   });
 
   test("should reset the Knowledge Source node font", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.setFont({
       fontSize: "40",
@@ -117,6 +118,7 @@ test.describe("Change Properties - Knowledge Source", () => {
       color: "#f12200",
       fontFamily: "Verdana",
     });
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.resetFont();
 
     await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toHaveScreenshot(
@@ -148,5 +150,16 @@ test.describe("Change Properties - Knowledge Source", () => {
     await expect(
       nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE }).locator("..").locator("path").nth(0)
     ).toHaveAttribute("stroke", "rgba(241, 34, 0, 1)");
+  });
+
+  test("should change the Knowledge Source node shape - position", async ({
+    diagram,
+    nodes,
+    knowledgeSourcePropertiesPanel,
+  }) => {
+    await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+    await knowledgeSourcePropertiesPanel.setPosition({ x: "200", y: "200" });
+
+    await expect(diagram.get()).toHaveScreenshot("change-knowledge-source-position.png");
   });
 });

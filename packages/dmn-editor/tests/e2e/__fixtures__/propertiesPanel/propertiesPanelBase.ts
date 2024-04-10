@@ -111,7 +111,9 @@ export abstract class PropertiesPanelBase {
     await this.diagram.resetFocus();
   }
 
-  public async resetFont() {}
+  public async resetFont() {
+    await this.panel().getByTitle("Reset font").click();
+  }
 
   public async getFont() {
     await this.panel().getByTitle("Expand / collapse Font").click();
@@ -132,6 +134,13 @@ export abstract class PropertiesPanelBase {
     await this.panel().getByTitle("Expand / collapse Shape").click();
   }
 
+  public async setPosition(args: { x: string; y: string }) {
+    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+    await this.panel().getByPlaceholder("Enter X value...").fill(args.x);
+    await this.panel().getByPlaceholder("Enter Y value...").fill(args.y);
+    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+  }
+
   public async getShape() {
     await this.panel().getByTitle("Expand / collapse Shape").click();
 
@@ -141,5 +150,9 @@ export abstract class PropertiesPanelBase {
     await this.panel().getByTitle("Expand / collapse Shape").click();
 
     return { width: width, height: height };
+  }
+
+  public async resetShape() {
+    await this.panel().getByTitle("Reset shape").click();
   }
 }

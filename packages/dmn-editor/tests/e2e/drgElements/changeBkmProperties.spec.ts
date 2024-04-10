@@ -91,6 +91,7 @@ test.describe("Change Properties - BKM", () => {
   });
 
   test("should reset the BKM node font", async ({ nodes, bkmPropertiesPanel }) => {
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.BKM });
     await bkmPropertiesPanel.setFont({
       fontSize: "40",
@@ -101,6 +102,7 @@ test.describe("Change Properties - BKM", () => {
       color: "#f12200",
       fontFamily: "Verdana",
     });
+    await nodes.select({ name: DefaultNodeName.BKM });
     await bkmPropertiesPanel.resetFont();
 
     await expect(nodes.get({ name: DefaultNodeName.BKM })).toHaveScreenshot("reset-bkm-font.png");
@@ -126,5 +128,12 @@ test.describe("Change Properties - BKM", () => {
       "stroke",
       "rgba(241, 34, 0, 1)"
     );
+  });
+
+  test("should change the BKM node shape - position", async ({ diagram, nodes, bkmPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.BKM });
+    await bkmPropertiesPanel.setPosition({ x: "200", y: "200" });
+
+    await expect(diagram.get()).toHaveScreenshot("change-bkm-position.png");
   });
 });

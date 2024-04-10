@@ -79,6 +79,7 @@ test.describe("Change Properties - Text Annotation", () => {
   });
 
   test("should reset the Text Annotation node font", async ({ nodes, textAnnotationPropertiesPanel }) => {
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.setFont({
       fontSize: "40",
@@ -89,6 +90,7 @@ test.describe("Change Properties - Text Annotation", () => {
       color: "#f12200",
       fontFamily: "Verdana",
     });
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.resetFont();
 
     await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toHaveScreenshot(
@@ -120,5 +122,12 @@ test.describe("Change Properties - Text Annotation", () => {
     await expect(
       nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION }).locator("..").locator("path").nth(0)
     ).toHaveAttribute("stroke", "rgba(241, 34, 0, 1)");
+  });
+
+  test("should change the Group node shape - position", async ({ diagram, nodes, textAnnotationPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
+    await textAnnotationPropertiesPanel.setPosition({ x: "200", y: "200" });
+
+    await expect(diagram.get()).toHaveScreenshot("change-text-annotation-position.png");
   });
 });

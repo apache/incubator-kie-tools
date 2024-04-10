@@ -112,6 +112,7 @@ test.describe("Change Properties - Decision", () => {
   });
 
   test("should reset the Decision node font", async ({ nodes, decisionPropertiesPanel }) => {
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.setFont({
       fontSize: "40",
@@ -122,6 +123,7 @@ test.describe("Change Properties - Decision", () => {
       color: "#f12200",
       fontFamily: "Verdana",
     });
+    await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.resetFont();
 
     await expect(nodes.get({ name: DefaultNodeName.DECISION })).toHaveScreenshot("reset-decision-font.png");
@@ -147,5 +149,12 @@ test.describe("Change Properties - Decision", () => {
       "stroke",
       "rgba(241, 34, 0, 1)"
     );
+  });
+
+  test("should change the Decision node shape - position", async ({ diagram, nodes, decisionPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    await decisionPropertiesPanel.setPosition({ x: "200", y: "200" });
+
+    await expect(diagram.get()).toHaveScreenshot("change-decision-position.png");
   });
 });

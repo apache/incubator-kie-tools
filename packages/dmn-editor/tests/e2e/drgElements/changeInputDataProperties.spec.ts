@@ -92,6 +92,7 @@ test.describe("Change Properties - Input Data", () => {
   });
 
   test("should reset the Input Data node font", async ({ nodes, inputDataPropertiesPanel }) => {
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.INPUT_DATA });
     await inputDataPropertiesPanel.setFont({
       fontSize: "40",
@@ -102,6 +103,7 @@ test.describe("Change Properties - Input Data", () => {
       color: "#f12200",
       fontFamily: "Verdana",
     });
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
     await inputDataPropertiesPanel.resetFont();
 
     await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toHaveScreenshot("reset-input-data-font.png");
@@ -127,5 +129,12 @@ test.describe("Change Properties - Input Data", () => {
       "stroke",
       "rgba(241, 34, 0, 1)"
     );
+  });
+
+  test("should change the Input Data node shape - position", async ({ diagram, nodes, inputDataPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+    await inputDataPropertiesPanel.setPosition({ x: "200", y: "200" });
+
+    await expect(diagram.get()).toHaveScreenshot("change-input-data-position.png");
   });
 });

@@ -194,5 +194,20 @@ test.describe("Resize node - Input Data", () => {
       expect(height).toEqual("80");
       expect(width).toEqual("160");
     });
+
+    test("should reset Input Data node size", async ({ diagram, nodes, inputDataPropertiesPanel }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
+      await inputDataPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+      await inputDataPropertiesPanel.setShape({ width: "300", height: "300" });
+      await inputDataPropertiesPanel.resetShape();
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+      const { width, height } = await inputDataPropertiesPanel.getShape();
+      expect(height).toEqual("80");
+      expect(width).toEqual("160");
+    });
   });
 });

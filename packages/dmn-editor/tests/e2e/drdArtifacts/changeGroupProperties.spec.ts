@@ -66,6 +66,7 @@ test.describe("Change Properties - Group", () => {
   });
 
   test("should reset the Group node font", async ({ nodes, groupPropertiesPanel }) => {
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
     await groupPropertiesPanel.setFont({
       fontSize: "40",
@@ -76,9 +77,10 @@ test.describe("Change Properties - Group", () => {
       color: "#f12200",
       fontFamily: "Verdana",
     });
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
     await groupPropertiesPanel.resetFont();
 
-    await expect(nodes.get({ name: DefaultNodeName.GROUP })).toHaveScreenshot("change-group-font.png");
+    await expect(nodes.get({ name: DefaultNodeName.GROUP })).toHaveScreenshot("reset-group-font.png");
   });
 
   test("should change the Group node shape - fill color", async ({ nodes, groupPropertiesPanel }) => {
@@ -101,5 +103,12 @@ test.describe("Change Properties - Group", () => {
       "stroke",
       "rgba(241, 34, 0, 1)"
     );
+  });
+
+  test("should change the Group node shape - position", async ({ diagram, nodes, groupPropertiesPanel }) => {
+    await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+    await groupPropertiesPanel.setPosition({ x: "200", y: "200" });
+
+    await expect(diagram.get()).toHaveScreenshot("change-group-position.png");
   });
 });

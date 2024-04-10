@@ -389,8 +389,9 @@ export function ShapeOptions({
                   buttonId={"shape-style-toggle-group-bound-height"}
                 />
               </Tooltip>
-              <Tooltip content={"Reset"}>
+              <Tooltip content={"Reset shape"}>
                 <ToggleGroupItem
+                  title={"Reset shape"}
                   onClick={onReset}
                   className={"kie-dmn-editor--shape-options-toggle-button"}
                   text={<UndoAltIcon />}
@@ -421,7 +422,7 @@ export function ShapeOptions({
                     isDisabled={false}
                     value={boundPositionX}
                     onChange={onChangePositionX}
-                    placeholder={"Enter a value..."}
+                    placeholder={"Enter X value..."}
                   />
                 </div>
                 <div style={{ gridArea: "position-x-label" }}>
@@ -435,7 +436,7 @@ export function ShapeOptions({
                     isDisabled={false}
                     value={boundPositionY}
                     onChange={onChangePositionY}
-                    placeholder={"Enter a value..."}
+                    placeholder={"Enter Y value..."}
                   />
                 </div>
                 <div style={{ gridArea: "position-y-label" }}>

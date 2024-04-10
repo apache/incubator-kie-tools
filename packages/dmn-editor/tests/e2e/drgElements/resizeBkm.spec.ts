@@ -190,5 +190,20 @@ test.describe("Resize node - BKM", () => {
       expect(height).toEqual("80");
       expect(width).toEqual("160");
     });
+
+    test("should reset BKM node size", async ({ diagram, nodes, bkmPropertiesPanel }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
+      await bkmPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.BKM });
+      await bkmPropertiesPanel.setShape({ width: "300", height: "300" });
+      await bkmPropertiesPanel.resetShape();
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.BKM });
+      const { width, height } = await bkmPropertiesPanel.getShape();
+      expect(height).toEqual("80");
+      expect(width).toEqual("160");
+    });
   });
 });

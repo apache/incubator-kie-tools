@@ -207,5 +207,20 @@ test.describe("Resize node - Knowledge Source", () => {
       expect(height).toEqual("80");
       expect(width).toEqual("160");
     });
+
+    test("should reset Knowledge Source node size", async ({ diagram, nodes, knowledgeSourcePropertiesPanel }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      await knowledgeSourcePropertiesPanel.setShape({ width: "300", height: "300" });
+      await knowledgeSourcePropertiesPanel.resetShape();
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(height).toEqual("80");
+      expect(width).toEqual("160");
+    });
   });
 });

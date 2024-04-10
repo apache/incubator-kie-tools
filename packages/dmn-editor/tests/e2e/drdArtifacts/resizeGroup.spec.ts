@@ -190,5 +190,19 @@ test.describe("Resize node - Group", () => {
       expect(height).toEqual("200");
       expect(width).toEqual("280");
     });
+
+    test("should reset Group node size", async ({ nodes, groupPropertiesPanel }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
+      await groupPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+      await groupPropertiesPanel.setShape({ width: "325", height: "325" });
+
+      await groupPropertiesPanel.resetShape();
+
+      await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+      const { width, height } = await groupPropertiesPanel.getShape();
+      expect(width).toEqual("280");
+      expect(height).toEqual("200");
+    });
   });
 });

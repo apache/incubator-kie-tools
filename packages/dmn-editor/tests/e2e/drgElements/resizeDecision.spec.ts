@@ -194,5 +194,20 @@ test.describe("Resize node - Decision", () => {
       expect(height).toEqual("80");
       expect(width).toEqual("160");
     });
+
+    test("should reset Decision node size", async ({ diagram, nodes, decisionPropertiesPanel }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
+      await decisionPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.DECISION });
+      await decisionPropertiesPanel.setShape({ width: "300", height: "300" });
+      await decisionPropertiesPanel.resetShape();
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.DECISION });
+      const { width, height } = await decisionPropertiesPanel.getShape();
+      expect(height).toEqual("80");
+      expect(width).toEqual("160");
+    });
   });
 });
