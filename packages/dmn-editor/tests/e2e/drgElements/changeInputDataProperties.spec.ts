@@ -76,12 +76,35 @@ test.describe("Change Properties - Input Data", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Input Data node font - family", async ({ nodes, inputDataPropertiesPanel }) => {
+  test("should change the Input Data node font", async ({ nodes, inputDataPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.INPUT_DATA });
-    await inputDataPropertiesPanel.setFont({ newFont: "Verdana" });
+    await inputDataPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
 
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toHaveScreenshot("change-input-data-font.png");
+  });
+
+  test("should reset the Input Data node font", async ({ nodes, inputDataPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.INPUT_DATA });
-    expect(await inputDataPropertiesPanel.getFont()).toBe("Verdana");
+    await inputDataPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
+    await inputDataPropertiesPanel.resetFont();
+
+    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toHaveScreenshot("reset-input-data-font.png");
   });
 
   test("should change the Input Data node shape - fill color", async ({ nodes, inputDataPropertiesPanel }) => {

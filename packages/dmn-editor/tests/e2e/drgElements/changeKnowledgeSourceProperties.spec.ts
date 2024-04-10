@@ -89,12 +89,39 @@ test.describe("Change Properties - Knowledge Source", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Knowledge Source node font - family", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+  test("should change the Knowledge Source node font", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
-    await knowledgeSourcePropertiesPanel.setFont({ newFont: "Verdana" });
+    await knowledgeSourcePropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
 
+    await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toHaveScreenshot(
+      "change-knowledge-source-font.png"
+    );
+  });
+
+  test("should reset the Knowledge Source node font", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
-    expect(await knowledgeSourcePropertiesPanel.getFont()).toBe("Verdana");
+    await knowledgeSourcePropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
+    await knowledgeSourcePropertiesPanel.resetFont();
+
+    await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toHaveScreenshot(
+      "reset-knowledge-source-font.png"
+    );
   });
 
   test("should change the Knowledge Source node shape - fill color", async ({

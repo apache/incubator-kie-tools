@@ -61,12 +61,39 @@ test.describe("Change Properties - Text Annotation", () => {
     expect(await textAnnotationPropertiesPanel.getDescription()).toBe("New Text Annotation Description");
   });
 
-  test("should change the Text Annotation node font - family", async ({ nodes, textAnnotationPropertiesPanel }) => {
+  test("should change the Text Annotation node font", async ({ nodes, textAnnotationPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
-    await textAnnotationPropertiesPanel.setFont({ newFont: "Verdana" });
+    await textAnnotationPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
 
+    await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toHaveScreenshot(
+      "change-text-annotation-font.png"
+    );
+  });
+
+  test("should reset the Text Annotation node font", async ({ nodes, textAnnotationPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
-    expect(await textAnnotationPropertiesPanel.getFont()).toBe("Verdana");
+    await textAnnotationPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
+    await textAnnotationPropertiesPanel.resetFont();
+
+    await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toHaveScreenshot(
+      "reset-text-annotation-font.png"
+    );
   });
 
   test("should change the Text Annotation node shape - fill color", async ({

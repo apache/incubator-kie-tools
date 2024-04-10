@@ -96,12 +96,35 @@ test.describe("Change Properties - Decision", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Decision node font - family", async ({ nodes, decisionPropertiesPanel }) => {
+  test("should change the Decision node font", async ({ nodes, decisionPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.DECISION });
-    await decisionPropertiesPanel.setFont({ newFont: "Verdana" });
+    await decisionPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
 
+    await expect(nodes.get({ name: DefaultNodeName.DECISION })).toHaveScreenshot("change-decision-font.png");
+  });
+
+  test("should reset the Decision node font", async ({ nodes, decisionPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.DECISION });
-    expect(await decisionPropertiesPanel.getFont()).toBe("Verdana");
+    await decisionPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
+    await decisionPropertiesPanel.resetFont();
+
+    await expect(nodes.get({ name: DefaultNodeName.DECISION })).toHaveScreenshot("reset-decision-font.png");
   });
 
   test("should change the Decision node shape - fill color", async ({ nodes, decisionPropertiesPanel }) => {

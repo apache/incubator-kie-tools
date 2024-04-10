@@ -74,14 +74,44 @@ export abstract class PropertiesPanelBase {
     return await this.panel().locator(".kie-dmn-editor--documentation-link--row-title").locator("a").all();
   }
 
-  public async setFont(args: { newFont: string }) {
+  public async setFont(args: {
+    fontSize?: string;
+    bold?: boolean;
+    italic?: boolean;
+    underline?: boolean;
+    striketrough?: boolean;
+    color?: string;
+    fontFamily?: string;
+  }) {
     await this.panel().getByTitle("Expand / collapse Font").click();
 
-    await this.panel().getByTestId("properties-panel-node-font-style").click();
-    await this.panel().getByText(args.newFont).click();
+    if (args.fontSize) {
+      await this.panel().getByLabel("Font size").locator("input").fill(args.fontSize);
+    }
+    if (args.bold) {
+      await this.panel().getByLabel("Toggle font bold").click();
+    }
+    if (args.italic) {
+      await this.panel().getByLabel("Toggle font italic").click();
+    }
+    if (args.underline) {
+      await this.panel().getByLabel("Toggle font underline").click();
+    }
+    if (args.striketrough) {
+      await this.panel().getByLabel("Toggle font strike through").click();
+    }
+    if (args.color) {
+      await this.panel().getByTestId("color-picker-font").fill(args.color);
+    }
+    if (args.fontFamily) {
+      await this.panel().getByTestId("properties-panel-node-font-style").click();
+      await this.panel().getByText(args.fontFamily).click();
+    }
 
     await this.diagram.resetFocus();
   }
+
+  public async resetFont() {}
 
   public async getFont() {
     await this.panel().getByTitle("Expand / collapse Font").click();

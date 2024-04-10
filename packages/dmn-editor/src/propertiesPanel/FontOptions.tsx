@@ -358,7 +358,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                 <ToggleGroupItem
                   key={FontStyleToggleOptions.FONT_COLOR}
                   className={"kie-dmn-editor--font-options-toggle-group-item-color-picker"}
-                  aria-label={"Toggle font strike through"}
+                  aria-label={"Font color"}
                   buttonId={FontStyleToggleOptions.FONT_COLOR}
                   onClick={() => colorPickerRef.current?.click()}
                   text={

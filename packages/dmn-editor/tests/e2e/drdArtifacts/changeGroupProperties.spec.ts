@@ -50,12 +50,35 @@ test.describe("Change Properties - Group", () => {
     expect(await groupPropertiesPanel.getDescription()).toBe("New Group Description");
   });
 
-  test("should change the Group node font - family", async ({ nodes, groupPropertiesPanel }) => {
+  test("should change the Group node font", async ({ nodes, groupPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
-    await groupPropertiesPanel.setFont({ newFont: "Verdana" });
+    await groupPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
 
+    await expect(nodes.get({ name: DefaultNodeName.GROUP })).toHaveScreenshot("change-group-font.png");
+  });
+
+  test("should reset the Group node font", async ({ nodes, groupPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
-    expect(await groupPropertiesPanel.getFont()).toBe("Verdana");
+    await groupPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
+    await groupPropertiesPanel.resetFont();
+
+    await expect(nodes.get({ name: DefaultNodeName.GROUP })).toHaveScreenshot("change-group-font.png");
   });
 
   test("should change the Group node shape - fill color", async ({ nodes, groupPropertiesPanel }) => {

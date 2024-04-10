@@ -75,12 +75,35 @@ test.describe("Change Properties - BKM", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the BKM node font - family", async ({ nodes, bkmPropertiesPanel }) => {
+  test("should change the BKM node font", async ({ nodes, bkmPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.BKM });
-    await bkmPropertiesPanel.setFont({ newFont: "Verdana" });
+    await bkmPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
 
+    await expect(nodes.get({ name: DefaultNodeName.BKM })).toHaveScreenshot("change-bkm-font.png");
+  });
+
+  test("should reset the BKM node font", async ({ nodes, bkmPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.BKM });
-    expect(await bkmPropertiesPanel.getFont()).toBe("Verdana");
+    await bkmPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
+    });
+    await bkmPropertiesPanel.resetFont();
+
+    await expect(nodes.get({ name: DefaultNodeName.BKM })).toHaveScreenshot("reset-bkm-font.png");
   });
 
   test("should change the BKM node shape - fill color", async ({ nodes, bkmPropertiesPanel }) => {
