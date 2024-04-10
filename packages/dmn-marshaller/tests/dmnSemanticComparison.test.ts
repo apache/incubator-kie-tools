@@ -86,11 +86,11 @@ describe("validation", () => {
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
   }
-  // for (const file of dmnTestingImportedModels) {
-  //   file.imported = path.join(dmnTestingModelsPath, file.imported);
-  //   file.importer = path.join(dmnTestingModelsPath, file.importer);
-  //   testImportedFile(file);
-  // }
+  for (const file of dmnTestingImportedModels) {
+    file.imported = path.join(dmnTestingModelsPath, file.imported);
+    file.importer = path.join(dmnTestingModelsPath, file.importer);
+    testImportedFile(file);
+  }
 });
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {

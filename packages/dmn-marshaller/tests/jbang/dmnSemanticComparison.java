@@ -38,31 +38,30 @@ class dmnSemanticComparison {
         System.exit(exitCode);
     }
 
+    /**
+     * For models without an Imported model, the args array holds the Original model and the parsed one (2 elements)
+     * In case of Imported models, the following logic is applied: The odd index elements refer to the original
+     * DMN file, while the even ones relate to the parsed DMN file. Example:
+     * - originalModel
+     * - originalModelImport1
+     * - originalModelImport2
+     * - parsedModel
+     * - parsedModelImport1
+     * - parsedModelImport2
+     * ....
+     */
     public static int compare(String... args) throws Exception {
         if (args.length < 2) {
             throw new IllegalArgumentException("Comparison requires more than 2 DMN files");
         }
-
-        /* For models without an Imported model, the args array holds the Original model and the parsed one (2 elements)
-           In case of Imported models, the following logic is applied: The odd index elements refer to the original
-           DMN file, while the even ones relate to the parsed DMN file. Example:
-           - originalModel
-           - originalModelImport1
-           - originalModelImport2
-           - parsedModel
-           - parsedModelImport1
-           - parsedModelImport2
-           ....
-        */
-
 
         List<File> models = Stream.of(args)
                 .map(File::new)
                 .collect(Collectors.toList());
         boolean areImportedModelsPresent = models.size() > 2;
 
-        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(models.subList(0, models.size() - 1));
-        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(models.subList(models.size() - 1, models.size()));
+        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(models.subList(0, models.size() / 2));
+        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(models.subList(models.size() / 2, models.size()));
 
         System.out.println("========== SEMANTIC COMPARISON ==========");
         System.out.println("Evaluating DMN file: " + models.get(0).getName());
@@ -71,29 +70,41 @@ class dmnSemanticComparison {
     }
 
     static DMNModel instantiateDMNRuntimeAndReturnDMNModel(List<File> dmnFiles) throws Exception {
-        dmnFiles.forEach(file -> System.out.println(file.getName()));
-
-        //if (dmnFiles.size() == 1) {
+        if (dmnFiles.size() == 1) {
             Resource modelResource = ResourceFactory.newReaderResource(new FileReader(dmnFiles.get(0)), "UTF-8");
             DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
                     .buildConfiguration()
                     .fromResources(Collections.singletonList(modelResource))
                     .getOrElseThrow(RuntimeException::new);
             return dmnRuntime.getModels().get(0);
-        /*} else { /*  TODO Understand how to manage the imported model case
+        } else {
             List<Resource> resources = new ArrayList<>();
+            String importerFileSourcePath = dmnFiles.get(0).getCanonicalPath();
+
             for (File file : dmnFiles) {
-                Resource readerResource = ResourceFactory.newReaderResource(new FileReader(dmnFiles.get(0)), "UTF-8");
-                //readerResource.setSourcePath(r.getURI());
+                Resource readerResource = ResourceFactory.newReaderResource(new FileReader(file), "UTF-8");
+                readerResource.setSourcePath(file.getCanonicalPath());
                 resources.add(readerResource);
             }
+
             DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
-                    //.setRelativeImportResolver((x, y, locationURI) -> rbk.readerByKey(locationURI))
                     .buildConfiguration()
                     .fromResources(resources)
                     .getOrElseThrow(RuntimeException::new);
-            return dmnRuntime.getModels().get(0); */
-        //}
+            DMNModel importerModel = null;
+
+            for (DMNModel m : dmnRuntime.getModels()) {
+                if (m.getResource().getSourcePath().equals(importerFileSourcePath)) {
+                    importerModel = m;
+                    break;
+                }
+            }
+
+            if (importerModel == null) {
+                throw new IllegalStateException("Was not able to identify importer model: " + importerFileSourcePath);
+            }
+            return importerModel;
+        }
     }
 
     /**
