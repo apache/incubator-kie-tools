@@ -24,16 +24,16 @@
 
 # 0.28.0 (alpha)
 
-- [KOGITO-8543](https://issues.redhat.com/browse/KOGITO-8543) - Support Samples Dashboard Repository by @jesuino in https://github.com/kiegroup/kie-tools/pull/1445
-- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/kiegroup/kie-tools/pull/1485
-- [KOGITO-8721](https://issues.redhat.com/browse/KOGITO-8721) - Improve Dashbuilder Fetch response error message by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1487
-- [KOGITO-8731](https://issues.redhat.com/browse/KOGITO-8731) - Make filter enabled by default when a \"filter\" is added to the YAML by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1496
-- [KOGITO-8765](https://issues.redhat.com/browse/KOGITO-8765) - Include index.css in the final bundle by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1503
-- [KOGITO-8810](https://issues.redhat.com/browse/KOGITO-8810) - Improve Dashbuilder Error Message by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1519
-- [KOGITO-8824](https://issues.redhat.com/browse/KOGITO-8824) - [Dashbuilder] Support \"accumulate\" flag in data sets by @jesuino in https://github.com/kiegroup/kie-tools/pull/1517
-- [KOGITO-9016](https://issues.redhat.com/browse/KOGITO-9016) - Fix Dashbuilder CSV Parser for empty fields by @jesuino in https://github.com/kiegroup/kie-tools/pull/1566
-- [KOGITO-9076](https://issues.redhat.com/browse/KOGITO-9076) - Retrieve Dashbuilder DataSet Columns information for CSV and Metrics by @jesuino in https://github.com/kiegroup/kie-tools/pull/1592
-- [KOGITO-8888](https://issues.redhat.com/browse/KOGITO-8888) - Show a message in dashbuilder page when displayer configuration is invalid by @kumaradityaraj in https://github.com/kiegroup/kie-tools/pull/1569
+- [KOGITO-8543](https://issues.redhat.com/browse/KOGITO-8543) - Support Samples Dashboard Repository by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1445
+- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/apache/incubator-kie-tools/pull/1485
+- [KOGITO-8721](https://issues.redhat.com/browse/KOGITO-8721) - Improve Dashbuilder Fetch response error message by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1487
+- [KOGITO-8731](https://issues.redhat.com/browse/KOGITO-8731) - Make filter enabled by default when a \"filter\" is added to the YAML by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1496
+- [KOGITO-8765](https://issues.redhat.com/browse/KOGITO-8765) - Include index.css in the final bundle by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1503
+- [KOGITO-8810](https://issues.redhat.com/browse/KOGITO-8810) - Improve Dashbuilder Error Message by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1519
+- [KOGITO-8824](https://issues.redhat.com/browse/KOGITO-8824) - [Dashbuilder] Support \"accumulate\" flag in data sets by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1517
+- [KOGITO-9016](https://issues.redhat.com/browse/KOGITO-9016) - Fix Dashbuilder CSV Parser for empty fields by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1566
+- [KOGITO-9076](https://issues.redhat.com/browse/KOGITO-9076) - Retrieve Dashbuilder DataSet Columns information for CSV and Metrics by @jesuino in https://github.com/apache/incubator-kie-tools/pull/1592
+- [KOGITO-8888](https://issues.redhat.com/browse/KOGITO-8888) - Show a message in dashbuilder page when displayer configuration is invalid by @kumaradityaraj in https://github.com/apache/incubator-kie-tools/pull/1569
 
 # 0.27.0 (alpha)
 

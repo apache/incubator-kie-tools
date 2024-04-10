@@ -5,13 +5,13 @@
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",

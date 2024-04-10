@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/kiegroup/kie-tools",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kie-tools.git"
+    "url": "https://github.com/apache/incubator-kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kie-tools/issues"
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
     "build:prod": "run-script-os",

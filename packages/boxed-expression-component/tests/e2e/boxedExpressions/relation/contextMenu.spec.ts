@@ -29,10 +29,10 @@ test.describe("Relation context menu", () => {
     });
 
     test("shouldn't render column context menu", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/420");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/420",
+        description: "https://github.com/apache/incubator-kie-issues/issues/420",
       });
 
       await expect(page.getByRole("heading", { name: "ROWS" })).toBeAttached();
@@ -52,10 +52,10 @@ test.describe("Relation context menu", () => {
     });
 
     test("should open row context menu and insert multiples rows above", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/420");
       test.info().annotations.push({
         type: TestAnnotations.AFFECTED_BY,
-        description: "https://github.com/kiegroup/kie-issues/issues/420",
+        description: "https://github.com/apache/incubator-kie-issues/issues/420",
       });
 
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
@@ -65,10 +65,10 @@ test.describe("Relation context menu", () => {
     });
 
     test("should open row context menu and insert multiples rows below", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/420");
       test.info().annotations.push({
         type: TestAnnotations.AFFECTED_BY,
-        description: "https://github.com/kiegroup/kie-issues/issues/420",
+        description: "https://github.com/apache/incubator-kie-issues/issues/420",
       });
 
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
@@ -103,10 +103,10 @@ test.describe("Relation context menu", () => {
     });
 
     test("shouldn't render row context menu", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/420");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/420",
+        description: "https://github.com/apache/incubator-kie-issues/issues/420",
       });
 
       await expect(page.getByRole("heading", { name: "COLUMNS" })).toBeAttached();
@@ -125,10 +125,10 @@ test.describe("Relation context menu", () => {
     });
 
     test("should open column context menu and insert multiples columns on right", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/420");
       test.info().annotations.push({
         type: TestAnnotations.AFFECTED_BY,
-        description: "https://github.com/kiegroup/kie-issues/issues/420",
+        description: "https://github.com/apache/incubator-kie-issues/issues/420",
       });
 
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
@@ -139,10 +139,10 @@ test.describe("Relation context menu", () => {
     });
 
     test("should open column context menu and insert multiples columns on left", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/420");
       test.info().annotations.push({
         type: TestAnnotations.AFFECTED_BY,
-        description: "https://github.com/kiegroup/kie-issues/issues/420",
+        description: "https://github.com/apache/incubator-kie-issues/issues/420",
       });
 
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
@@ -171,10 +171,10 @@ test.describe("Relation context menu", () => {
     page,
     monaco,
   }) => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/421");
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/421");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
-      description: "https://github.com/kiegroup/kie-issues/issues/421",
+      description: "https://github.com/apache/incubator-kie-issues/issues/421",
     });
 
     await stories.openRelation();

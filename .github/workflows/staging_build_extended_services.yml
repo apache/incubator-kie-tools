@@ -62,7 +62,7 @@ jobs:
       - name: "Build Extended Services"
         working-directory: ${{ github.workspace }}/kie-tools
         env:
-          EXTENDED_SERVICES__kieSandboxUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
+          EXTENDED_SERVICES__kieSandboxUrl: "https://apache.github.io/incubator-kie-kogito-online-staging/${{ inputs.tag }}-prerelease"
         run: >-
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 

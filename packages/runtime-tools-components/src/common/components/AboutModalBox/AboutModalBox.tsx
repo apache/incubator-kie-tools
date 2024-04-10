@@ -56,8 +56,12 @@ const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({ isOpenProp, handleModa
           <TextListItem component="dd">{process.env.KOGITO_APP_VERSION}</TextListItem>
           <TextListItem component="dt">License information: </TextListItem>
           <TextListItem component="dd">
-            <a href="https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE" target="_blank" rel="noreferrer">
-              https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE
+            <a
+              href="https://github.com/apache/incubator-kie-kogito-runtimes/blob/main/LICENSE"
+              target="_blank"
+              rel="noreferrer"
+            >
+              https://github.com/apache/incubator-kie-kogito-runtimes/blob/main/LICENSE
             </a>
           </TextListItem>
           <TextListItem component="dt">Report a bug: </TextListItem>

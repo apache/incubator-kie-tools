@@ -122,7 +122,7 @@ export function ListExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: expressionHolderId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        accessor: expressionHolderId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
         label: listExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         dataType: listExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         isRowIndexColumn: false,
