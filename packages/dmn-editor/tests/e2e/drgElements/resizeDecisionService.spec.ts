@@ -242,4 +242,45 @@ test.describe("Resize node - Decision Service", () => {
       await expect(diagram.get()).toHaveScreenshot("resize-back-decision-service-on-top-of-decision.png");
     });
   });
+
+  test.describe("Resize in properties panel", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize Decision Service node in properties panel", async ({
+      diagram,
+      nodes,
+      decisionServicePropertiesPanel,
+    }) => {
+      await decisionServicePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      await decisionServicePropertiesPanel.setShape({ width: "325", height: "325" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      const { width, height } = await decisionServicePropertiesPanel.getShape();
+      expect(height).toEqual("325");
+      expect(width).toEqual("325");
+    });
+
+    test("should not resize Decision Service node below minimal size", async ({
+      diagram,
+      nodes,
+      decisionServicePropertiesPanel,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
+      await decisionServicePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      await decisionServicePropertiesPanel.setShape({ width: "50", height: "50" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
+      const { width, height } = await decisionServicePropertiesPanel.getShape();
+      expect(height).toEqual("280");
+      expect(width).toEqual("280");
+    });
+  });
 });

@@ -158,4 +158,41 @@ test.describe("Resize node - Input Data", () => {
       await expect(diagram.get()).toHaveScreenshot("resize-back-input-data-on-top-of-decision.png");
     });
   });
+
+  test.describe("Resize in properties panel", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize Input Data node in properties panel", async ({ diagram, nodes, inputDataPropertiesPanel }) => {
+      await inputDataPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+      await inputDataPropertiesPanel.setShape({ width: "225", height: "225" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+      const { width, height } = await inputDataPropertiesPanel.getShape();
+      expect(height).toEqual("225");
+      expect(width).toEqual("225");
+    });
+
+    test("should not resize Input Data node below minimal size", async ({
+      diagram,
+      nodes,
+      inputDataPropertiesPanel,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
+      await inputDataPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+      await inputDataPropertiesPanel.setShape({ width: "50", height: "50" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.INPUT_DATA });
+      const { width, height } = await inputDataPropertiesPanel.getShape();
+      expect(height).toEqual("80");
+      expect(width).toEqual("160");
+    });
+  });
 });

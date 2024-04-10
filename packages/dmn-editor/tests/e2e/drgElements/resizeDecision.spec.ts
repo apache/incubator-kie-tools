@@ -62,6 +62,7 @@ test.describe("Resize node - Decision", () => {
       expect(height).toEqual("80");
     });
   });
+
   test.describe("Resize with snapping turned on", () => {
     test.beforeEach(async ({ palette }) => {
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
@@ -98,6 +99,7 @@ test.describe("Resize node - Decision", () => {
       expect(height).toEqual("80");
     });
   });
+
   test.describe("Resize with non default snapping", () => {
     test.beforeEach(async ({ overlays, palette }) => {
       await overlays.setSnapping({ horizontal: "50", vertical: "50" });
@@ -158,6 +160,39 @@ test.describe("Resize node - Decision", () => {
       await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: -200, yOffset: 0 });
 
       await expect(diagram.get()).toHaveScreenshot("resize-back-decision-on-top-of-decision.png");
+    });
+  });
+
+  test.describe("Resize in properties panel", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize Decision node in properties panel", async ({ diagram, nodes, decisionPropertiesPanel }) => {
+      await decisionPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.DECISION });
+      await decisionPropertiesPanel.setShape({ width: "225", height: "225" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.DECISION });
+      const { width, height } = await decisionPropertiesPanel.getShape();
+      expect(height).toEqual("225");
+      expect(width).toEqual("225");
+    });
+
+    test("should not resize Decision node below minimal size", async ({ diagram, nodes, decisionPropertiesPanel }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
+      await decisionPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.DECISION });
+      await decisionPropertiesPanel.setShape({ width: "50", height: "50" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.DECISION });
+      const { width, height } = await decisionPropertiesPanel.getShape();
+      expect(height).toEqual("80");
+      expect(width).toEqual("160");
     });
   });
 });

@@ -242,4 +242,45 @@ test.describe("Resize node - Text Annotation", () => {
       await expect(diagram.get()).toHaveScreenshot("resize-back-text-annotation-on-top-of-decision.png");
     });
   });
+
+  test.describe("Resize in properties panel", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize Text Annotation node in properties panel", async ({
+      diagram,
+      nodes,
+      textAnnotationPropertiesPanel,
+    }) => {
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION, position: NodePosition.TOP });
+      await textAnnotationPropertiesPanel.setShape({ width: "325", height: "325" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION, position: NodePosition.TOP });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("325");
+      expect(width).toEqual("325");
+    });
+
+    test("should not resize Text Annotation node below minimal size", async ({
+      diagram,
+      nodes,
+      textAnnotationPropertiesPanel,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
+      await textAnnotationPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION, position: NodePosition.TOP });
+      await textAnnotationPropertiesPanel.setShape({ width: "50", height: "50" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION, position: NodePosition.TOP });
+      const { width, height } = await textAnnotationPropertiesPanel.getShape();
+      expect(height).toEqual("60");
+      expect(width).toEqual("200");
+    });
+  });
 });

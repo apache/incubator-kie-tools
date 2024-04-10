@@ -167,4 +167,45 @@ test.describe("Resize node - Knowledge Source", () => {
       await expect(diagram.get()).toHaveScreenshot("resize-back-knowledge-source-on-top-of-decision.png");
     });
   });
+
+  test.describe("Resize in properties panel", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize Knowledge Source node in properties panel", async ({
+      diagram,
+      nodes,
+      knowledgeSourcePropertiesPanel,
+    }) => {
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      await knowledgeSourcePropertiesPanel.setShape({ width: "225", height: "225" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(height).toEqual("225");
+      expect(width).toEqual("225");
+    });
+
+    test("should not resize Knowledge Source node below minimal size", async ({
+      diagram,
+      nodes,
+      knowledgeSourcePropertiesPanel,
+    }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
+      await knowledgeSourcePropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      await knowledgeSourcePropertiesPanel.setShape({ width: "50", height: "50" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
+      const { width, height } = await knowledgeSourcePropertiesPanel.getShape();
+      expect(height).toEqual("80");
+      expect(width).toEqual("160");
+    });
+  });
 });

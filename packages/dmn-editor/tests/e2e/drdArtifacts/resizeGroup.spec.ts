@@ -158,4 +158,37 @@ test.describe("Resize node - Group", () => {
       await expect(diagram.get()).toHaveScreenshot("resize-back-group-on-top-of-decision.png");
     });
   });
+
+  test.describe("Resize in properties panel", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.GROUP, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize Group node", async ({ diagram, nodes, groupPropertiesPanel }) => {
+      await groupPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+      await groupPropertiesPanel.setShape({ width: "325", height: "325" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+      const { width, height } = await groupPropertiesPanel.getShape();
+      expect(height).toEqual("325");
+      expect(width).toEqual("325");
+    });
+
+    test("should not resize below minimal Group node size", async ({ diagram, nodes, groupPropertiesPanel }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
+      await groupPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+      await groupPropertiesPanel.setShape({ width: "100", height: "100" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
+      const { width, height } = await groupPropertiesPanel.getShape();
+      expect(height).toEqual("200");
+      expect(width).toEqual("280");
+    });
+  });
 });

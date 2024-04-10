@@ -158,4 +158,37 @@ test.describe("Resize node - BKM", () => {
       await expect(diagram.get()).toHaveScreenshot("resize-back-bkm-on-top-of-decision.png");
     });
   });
+
+  test.describe("Resize in properties panel", () => {
+    test.beforeEach(async ({ palette }) => {
+      await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
+    });
+
+    test("should resize BKM node in properties panel", async ({ diagram, nodes, bkmPropertiesPanel }) => {
+      await bkmPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.BKM });
+      await bkmPropertiesPanel.setShape({ width: "225", height: "225" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.BKM });
+      const { width, height } = await bkmPropertiesPanel.getShape();
+      expect(height).toEqual("225");
+      expect(width).toEqual("225");
+    });
+
+    test("should not resize BKM node below minimal size", async ({ diagram, nodes, bkmPropertiesPanel }) => {
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
+      await bkmPropertiesPanel.open();
+      await nodes.select({ name: DefaultNodeName.BKM });
+      await bkmPropertiesPanel.setShape({ width: "50", height: "50" });
+
+      await diagram.resetFocus();
+
+      await nodes.select({ name: DefaultNodeName.BKM });
+      const { width, height } = await bkmPropertiesPanel.getShape();
+      expect(height).toEqual("80");
+      expect(width).toEqual("160");
+    });
+  });
 });

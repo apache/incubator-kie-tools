@@ -93,6 +93,15 @@ export abstract class PropertiesPanelBase {
     return font;
   }
 
+  public async setShape(args: { width: string; height: string }) {
+    await this.panel().getByTitle("Expand / collapse Shape").click();
+
+    await this.panel().getByTestId("properties-panel-node-shape-width-input").fill(args.width);
+    await this.panel().getByTestId("properties-panel-node-shape-height-input").fill(args.height);
+
+    await this.panel().getByTitle("Expand / collapse Shape").click();
+  }
+
   public async getShape() {
     await this.panel().getByTitle("Expand / collapse Shape").click();
 
