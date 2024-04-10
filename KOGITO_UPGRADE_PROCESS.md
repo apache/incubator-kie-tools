@@ -7,6 +7,7 @@ The upgrade should be applied soon after a new Kogito version is released.
 At the writing time, it's still not planned to use pure SNAPSHOT versions, but TAGGED and TIMESTAMPED SNAPSHOT versions only.
 It's mandatory to always upgrade the Kogito versions in case a new TAGGED version is released, to keep the codebase consistent when releasing kie-tools.
 The approach with TIMESTAMPED SNAPSHOT may vary depending on the team's plans. These versions are automatically released weekly.
+It's important to always apply the same TAG or TIMESTAMPED SNAPSHOT version in the whole repository.
 
 # Prerequisites
 
@@ -69,7 +70,7 @@ You can find an example of the Quarkus upgrade in [this PR](https://github.com/a
 
 # Upgrading Kogito
 
-The Quarkus version is present in the following file categories:
+The Kogito version is present in the following file categories:
 
 - `install.js` files
 - `root-env/env/index.js` file
@@ -77,8 +78,8 @@ The Quarkus version is present in the following file categories:
 
 The best (and fastest) way to catch all the Kogito versions is to perform a search a grep (or the IDE integrated search) and replace it with the new version. So, as a key, you can use:
 
-- The version number (eg. `10.0.0` or `10.1.0-20240404-SNAPSHOT`);
-- Images references (eg. `main-2024-04-04` format in case of Snapshot version)
+- The version number: `X.Y.Z` or `X.Y.Z-YYYYMMDD-SNAPSHOT` format (eg. `10.0.0` or `10.1.0-20240424-SNAPSHOT`);
+- Images references: `main-YYYY-MM-DD` or `X.Y.Z-YYYYMMDD` format (eg. `main-2024-04-24` or `10.1.0-20240424` in case of snapshot version)
 
 Of course, a new Kogito version may lead to incompatibilities in the code and with other dependencies. In such a case, an investigation and evetually a fix is required to complete the process.
 
