@@ -139,7 +139,6 @@ export function FeelFunctionExpression({
 
   const cellComponentByColumnAccessor: BeeTableProps<FEEL_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
     return {
-      // TODO: MERGE - VERIFY instead of parametersId, use parameters
       [`${parametersId}`]: (props) => <FeelFunctionImplementationCell {...props} parentElementId={parentElementId} />,
     };
   }, [parentElementId, parametersId]);

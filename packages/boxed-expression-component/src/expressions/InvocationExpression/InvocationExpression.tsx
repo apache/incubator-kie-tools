@@ -171,6 +171,8 @@ export function InvocationExpression(
     }));
   }, [invocationExpression.binding]);
 
+  const invocationId = invocationExpression.expression?.["@_id"];
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
@@ -181,7 +183,7 @@ export function InvocationExpression(
         width: undefined,
         columns: [
           {
-            accessor: "functionName" as keyof ROWTYPE,
+            accessor: invocationId as any, // "functionName" as keyof ROWTYPE,
             label:
               invocationExpression.expression?.__$$element === "literalExpression"
                 ? invocationExpression.expression.text?.__$$text ?? "Function name"
@@ -215,7 +217,7 @@ export function InvocationExpression(
         ],
       },
     ],
-    [expressionHolderId, invocationExpression, parametersWidth, setParametersWidth]
+    [expressionHolderId, invocationExpression, parametersWidth, invocationId, setParametersWidth]
   );
 
   const onColumnUpdates = useCallback(
@@ -227,7 +229,7 @@ export function InvocationExpression(
             "@_id": prev["@_id"],
             name: u.name,
           }));
-        } else if (u.column.originalId === "functionName") {
+        } else if (u.column.originalId === invocationId) {
           setExpression((prev: BoxedInvocation) => {
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const ret: BoxedInvocation = {
@@ -256,7 +258,7 @@ export function InvocationExpression(
         }
       }
     },
-    [setExpression, id]
+    [setExpression, id, invocationId]
   );
 
   const headerVisibility = useMemo(

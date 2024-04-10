@@ -41,7 +41,7 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
 
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject((expression as BoxedInvocation).binding?.[columnIndex].expression?.["@_id"]);
+      expression ? beeGwtService?.selectObject(expression["@_id"]) : "";
     }
   }, [beeGwtService, columnIndex, expression, isActive]);
 
