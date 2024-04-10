@@ -56,6 +56,7 @@ You can find an example of the Java / Maven versions upgrade in [this PR](https:
 The Quarkus version is present in the following file categories:
 
 - `install.js` files
+- `root-env/env/index.js` file
 - go test files
 
 The best (and fastest) way to catch all the Quarkus versions is to perform a search a grep (or the IDE integrated search) and replace it with the new version. So, as a key, you can use:
@@ -71,6 +72,7 @@ You can find an example of the Quarkus upgrade in [this PR](https://github.com/a
 The Quarkus version is present in the following file categories:
 
 - `install.js` files
+- `root-env/env/index.js` file
 - `package.json` files (eg. jit-executor reference in `extended-service`)
 
 The best (and fastest) way to catch all the Kogito versions is to perform a search a grep (or the IDE integrated search) and replace it with the new version. So, as a key, you can use:
