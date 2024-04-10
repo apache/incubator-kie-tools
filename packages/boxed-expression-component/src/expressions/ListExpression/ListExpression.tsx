@@ -43,6 +43,7 @@ import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { findAllIdsDeep } from "../../ids/ids";
+import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import "./ListExpression.css";
 
 export type ROWTYPE = DMN15__tContextEntry;
@@ -64,12 +65,19 @@ export function ListExpression(
   const { nestedExpressionContainerValue, onColumnResizingWidthChange } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
+        const nestedExpressions = listExpression.expression ?? [];
+
+        const maxNestedExpressionTotalMinWidth = Math.max(
+          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(e, widthsById)),
+          LIST_EXPRESSION_ITEM_MIN_WIDTH
+        );
+
         return {
-          nestedExpressions: listExpression.expression ?? [],
+          nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: 0,
           fixedColumnResizingWidth: { value: 0, isPivoting: false },
           fixedColumnMinWidth: 0,
-          nestedExpressionMinWidth: LIST_EXPRESSION_ITEM_MIN_WIDTH,
+          nestedExpressionMinWidth: maxNestedExpressionTotalMinWidth,
           extraWidth: LIST_EXPRESSION_EXTRA_WIDTH,
           expression: listExpression,
           flexibleColumnIndex: 1,

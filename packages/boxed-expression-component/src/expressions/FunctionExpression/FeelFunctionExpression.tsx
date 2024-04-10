@@ -37,8 +37,8 @@ import { useNestedExpressionContainerWithNestedExpressions } from "../../resizin
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
-  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
@@ -52,6 +52,7 @@ import { useFunctionExpressionControllerCell, useFunctionExpressionParametersCol
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { findAllIdsDeep } from "../../ids/ids";
+import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 
 export type FEEL_ROWTYPE = { functionExpression: BoxedFunction };
 
@@ -166,12 +167,17 @@ export function FeelFunctionExpression({
   const { nestedExpressionContainerValue, onColumnResizingWidthChange } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
+        const maxNestedExpressionTotalMinWidth = Math.max(
+          getExpressionTotalMinWidth(functionExpression.expression, widthsById),
+          FEEL_FUNCTION_EXPRESSION_MIN_WIDTH
+        );
+
         return {
           nestedExpressions: [functionExpression.expression ?? undefined!],
           fixedColumnActualWidth: 0,
           fixedColumnResizingWidth: { value: 0, isPivoting: false },
           fixedColumnMinWidth: 0,
-          nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          nestedExpressionMinWidth: maxNestedExpressionTotalMinWidth,
           extraWidth: FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH,
           expression: functionExpression,
           flexibleColumnIndex: 1,

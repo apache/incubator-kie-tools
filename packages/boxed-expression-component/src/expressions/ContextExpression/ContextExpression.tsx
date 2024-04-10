@@ -39,6 +39,7 @@ import { ResizerStopBehavior, ResizingWidth } from "../../resizing/ResizingWidth
 import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+  CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
@@ -54,7 +55,6 @@ import { findAllIdsDeep } from "../../ids/ids";
 import "./ContextExpression.css";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
-const CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX = 0;
 
 export type ROWTYPE = ExpressionWithVariable & { index: number };
 
@@ -73,7 +73,7 @@ export function ContextExpression(
   const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
   const getEntryVariableWidth = useCallback(
-    (widths: number[]) => widths?.[CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX] ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+    (widths: number[]) => widths?.[CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX] ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
     []
   );
 
@@ -87,10 +87,10 @@ export function ContextExpression(
           typeof newWidthAction === "function" ? newWidthAction(getEntryVariableWidth(prev)) : newWidthAction;
 
         if (newWidth) {
-          const minSize = CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX + 1;
+          const minSize = CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX + 1;
           const newValues = [...prev];
           newValues.push(...Array(Math.max(0, minSize - newValues.length)));
-          newValues.splice(CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX, 1, newWidth);
+          newValues.splice(CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX, 1, newWidth);
           newMap.set(id, newValues);
         }
       });
@@ -122,25 +122,25 @@ export function ContextExpression(
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
-        const entriesWidths = (contextExpression.contextEntry ?? []).map((e) =>
-          getExpressionTotalMinWidth(0, e.expression, widthsById)
+        const nestedExpressions = (contextExpression.contextEntry ?? []).map((e) => e.expression);
+
+        const maxNestedExpressionTotalMinWidth = Math.max(
+          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(e, widthsById)),
+          CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
         );
 
-        const resultWidth = getExpressionTotalMinWidth(0, resultExpression, widthsById);
-        const maxNestedExpressionMinWidth = Math.max(...entriesWidths, resultWidth, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
-
         return {
-          nestedExpressions: (contextExpression.contextEntry ?? []).map((e) => e.expression),
+          nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: entryVariableWidth,
           fixedColumnResizingWidth: entryVariableResizingWidth,
           fixedColumnMinWidth: CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
-          nestedExpressionMinWidth: maxNestedExpressionMinWidth,
+          nestedExpressionMinWidth: maxNestedExpressionTotalMinWidth,
           extraWidth: CONTEXT_EXPRESSION_EXTRA_WIDTH,
           expression: contextExpression,
           flexibleColumnIndex: 2,
           widthsById: widthsById,
         };
-      }, [contextExpression, entryVariableResizingWidth, entryVariableWidth, resultExpression, widthsById])
+      }, [contextExpression, entryVariableResizingWidth, entryVariableWidth, widthsById])
     );
 
   /// //////////////////////////////////////////////////////

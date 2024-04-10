@@ -41,6 +41,7 @@ import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
   JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX,
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
@@ -64,8 +65,6 @@ export type BoxedFunctionJava = DMN15__tFunctionDefinition & {
   "@_kind"?: "Java";
   __$$element: "functionDefinition";
 };
-
-const JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX = 2; // 0 is the rowIndex column, 1 is the label column.
 
 export function JavaFunctionExpression({
   functionExpression,
@@ -93,7 +92,7 @@ export function JavaFunctionExpression({
   const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
   const getClassAndMethodNamesWidth = useCallback((widths: number[]) => {
-    return widths[JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX] ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH;
+    return widths[JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX] ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH;
   }, []);
 
   const classAndMethodNamesWidth = useMemo(
@@ -109,10 +108,10 @@ export function JavaFunctionExpression({
           typeof newWidthAction === "function" ? newWidthAction(getClassAndMethodNamesWidth(prev)) : newWidthAction;
 
         if (newWidth) {
-          const minSize = JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX + 1;
+          const minSize = JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX + 1;
           const newValues = [...prev];
           newValues.push(...Array(Math.max(0, minSize - newValues.length)));
-          newValues.splice(JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX, 1, newWidth);
+          newValues.splice(JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX, 1, newWidth);
           newMap.set(id, newValues);
         }
       });

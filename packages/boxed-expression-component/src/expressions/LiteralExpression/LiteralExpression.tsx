@@ -28,7 +28,11 @@ import {
   BoxedLiteral,
 } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
-import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
+import {
+  LITERAL_EXPRESSION_EXTRA_WIDTH,
+  LITERAL_EXPRESSION_MIN_WIDTH,
+  LITERAL_EXPRESSION_WIDTH_INDEX,
+} from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
@@ -58,7 +62,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
   );
 
   const width = useMemo(() => {
-    return widthsById.get(id)?.[0] ?? LITERAL_EXPRESSION_MIN_WIDTH;
+    return widthsById.get(id)?.[LITERAL_EXPRESSION_WIDTH_INDEX] ?? LITERAL_EXPRESSION_MIN_WIDTH;
   }, [id, widthsById]);
 
   const { containerCellCoordinates } = useBeeTableCoordinates();
@@ -84,7 +88,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
     (newWidthAction: React.SetStateAction<number | undefined>) => {
       setWidthsById(({ newMap }) => {
         const prev = newMap.get(id) ?? [];
-        const prevWidth = prev[0];
+        const prevWidth = prev[LITERAL_EXPRESSION_WIDTH_INDEX];
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(prevWidth) : newWidthAction;
         newMap.set(id, [newWidth ?? LITERAL_EXPRESSION_MIN_WIDTH]);
       });

@@ -130,16 +130,17 @@ export function ConditionalExpression(
           conditionalExpression.else.expression,
         ];
 
-        const entriesWidths = nestedExpressions.map((e) => getExpressionTotalMinWidth(0, e, widthsById));
-
-        const maxNestedExpressionMinWidth = Math.max(...entriesWidths, CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH);
+        const maxNestedExpressionTotalMinWidth = Math.max(
+          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(e, widthsById)),
+          CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH
+        );
 
         return {
           nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH,
           fixedColumnResizingWidth: { value: CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH, isPivoting: false },
           fixedColumnMinWidth: CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH,
-          nestedExpressionMinWidth: maxNestedExpressionMinWidth,
+          nestedExpressionMinWidth: maxNestedExpressionTotalMinWidth,
           extraWidth: CONDITIONAL_EXPRESSION_EXTRA_WIDTH,
           expression: conditionalExpression,
           flexibleColumnIndex: 2,
