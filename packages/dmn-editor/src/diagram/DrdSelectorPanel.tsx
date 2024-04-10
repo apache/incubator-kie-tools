@@ -30,6 +30,9 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Form, FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { AlternativeInputDataIcon, InputDataIcon } from "../icons/Icons";
+import { EmptyState, EmptyStateBody } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { useCallback } from "react";
 
 export function DrdSelectorPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -37,11 +40,21 @@ export function DrdSelectorPanel() {
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const drdName = useDmnEditorStore(
     (s) =>
-      s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[s.diagram.drdIndex]["@_name"] ||
+      s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[s.diagram.drdIndex]?.["@_name"] ||
       getDefaultDrdName({ drdIndex: s.diagram.drdIndex })
   );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const drds = thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+
+  const removeDrd = useCallback(() => {
+    dmnEditorStoreApi.setState((s) => {
+      const nextDrds = s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"];
+      nextDrds?.splice(s.diagram.drdIndex, 1);
+      s.diagram.drdIndex = Math.max(0, Math.min(s.diagram.drdIndex, (nextDrds?.length ?? 0) - 1));
+    });
+  }, [dmnEditorStoreApi]);
 
   return (
     <>
@@ -89,28 +102,48 @@ export function DrdSelectorPanel() {
         <div style={{ gridArea: "divider-list" }}>
           <Divider style={{ marginBottom: "8px" }} />
         </div>
-        <div style={{ gridArea: "content-list" }} className={"kie-dmn-editor--drd-list"}>
-          {thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.map((drd, i) => (
-            <React.Fragment key={drd["@_id"]!}>
-              <button
-                className={i === diagram.drdIndex ? "active" : undefined}
-                onClick={() => {
-                  dmnEditorStoreApi.setState((state) => {
-                    state.diagram.drdIndex = i;
-                  });
-                }}
-              >
-                {`${i + 1}. ${drd["@_name"] || getDefaultDrdName({ drdIndex: i })}`}
-              </button>
-              <br />
-            </React.Fragment>
-          ))}
-        </div>
+        {(drds.length <= 0 && (
+          <>
+            <EmptyState>
+              <Title size={"md"} headingLevel={"h4"}>
+                {"You're on the default DRD"}
+              </Title>
+              <EmptyStateBody>
+                {"Adding nodes or making changes to the Diagram will automatically create a DRD for you."}
+              </EmptyStateBody>
+            </EmptyState>
+          </>
+        )) || (
+          <div style={{ gridArea: "content-list" }} className={"kie-dmn-editor--drd-list"}>
+            {drds.map((drd, i) => (
+              <React.Fragment key={drd["@_id"]!}>
+                <button
+                  className={i === diagram.drdIndex ? "active" : undefined}
+                  onClick={() => {
+                    dmnEditorStoreApi.setState((state) => {
+                      state.diagram.drdIndex = i;
+                    });
+                  }}
+                >
+                  {`${i + 1}. ${drd["@_name"] || getDefaultDrdName({ drdIndex: i })}`}
+                </button>
+                <br />
+              </React.Fragment>
+            ))}
+          </div>
+        )}
 
         <div style={{ gridArea: "header-properties" }}>
-          <Title headingLevel="h3" style={{ height: "36px" }}>
-            {drdName}
-          </Title>
+          <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+            <Title headingLevel="h3" style={{ height: "36px" }}>
+              {drdName}
+            </Title>
+            {drds.length > 0 && (
+              <Button variant={ButtonVariant.link} onClick={removeDrd} style={{ padding: 0 }}>
+                Remove
+              </Button>
+            )}
+          </Flex>
         </div>
         <div style={{ gridArea: "divider-properties" }}>
           <Divider style={{ marginBottom: "8px" }} />
@@ -129,12 +162,12 @@ export function DrdSelectorPanel() {
                     buttonId="classic-input-node-shape"
                     isSelected={isAlternativeInputDataShape === false}
                     onChange={() =>
-                      dmnEditorStoreApi.setState((state) => {
-                        state.dmn.model.definitions["dmndi:DMNDI"] ??= {};
-                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
-                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][state.diagram.drdIndex][
-                          "@_useAlternativeInputDataShape"
-                        ] = false;
+                      dmnEditorStoreApi.setState((s) => {
+                        const { diagram: drd } = addOrGetDrd({
+                          definitions: s.dmn.model.definitions,
+                          drdIndex: s.diagram.drdIndex,
+                        });
+                        drd["@_useAlternativeInputDataShape"] = false;
                       })
                     }
                   />
@@ -151,12 +184,12 @@ export function DrdSelectorPanel() {
                     buttonId="alternative-input-node-shape"
                     isSelected={isAlternativeInputDataShape === true}
                     onChange={() =>
-                      dmnEditorStoreApi.setState((state) => {
-                        state.dmn.model.definitions["dmndi:DMNDI"] ??= {};
-                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
-                        state.dmn.model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][state.diagram.drdIndex][
-                          "@_useAlternativeInputDataShape"
-                        ] = true;
+                      dmnEditorStoreApi.setState((s) => {
+                        const { diagram: drd } = addOrGetDrd({
+                          definitions: s.dmn.model.definitions,
+                          drdIndex: s.diagram.drdIndex,
+                        });
+                        drd["@_useAlternativeInputDataShape"] = true;
                       })
                     }
                   />

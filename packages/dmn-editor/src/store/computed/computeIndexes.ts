@@ -32,7 +32,8 @@ export function computeIndexedDrd(
   const dmnShapesByHref = new Map<string, DMNDI15__DMNShape & { index: number; dmnElementRefQName: XmlQName }>();
   const hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects = new Set<string>();
 
-  const diagramElements = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[drdIndex]["dmndi:DMNDiagramElement"] ?? [];
+  const diagramElements =
+    definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[drdIndex]?.["dmndi:DMNDiagramElement"] ?? [];
   for (let i = 0; i < diagramElements.length; i++) {
     const e = diagramElements[i];
     // DMNEdge
