@@ -17,12 +17,11 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN15_SPEC } from "../../../src/Dmn15Spec";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { DmnEditorWrapper } from "../../dmnEditorStoriesWrapper";
 import { DmnEditor, DmnEditorProps } from "../../../src/DmnEditor";
 
@@ -30,7 +29,7 @@ export const generateEmptyDmn15 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
   xmlns="${dmn15ns.get("")}"
   expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
-  namespace="https://kie.org/dmn/${generateUuid()}"
+  namespace="https://kie.apache.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
   name="DMN${generateUuid()}">
 </definitions>`;

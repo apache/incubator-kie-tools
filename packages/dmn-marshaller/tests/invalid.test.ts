@@ -44,7 +44,7 @@ describe("invalid", () => {
     try {
       getMarshaller(`
 <dmn:definitions
-    xmlns="https://kiegroup.org/dmn/_5BF56984-FDC7-441B-8307-FF06B0E5B17F"
+    xmlns="https://kie.apache.org/dmn/_5BF56984-FDC7-441B-8307-FF06B0E5B17F"
     xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/"
 ><invalid`);
 
@@ -59,7 +59,7 @@ describe("invalid", () => {
     try {
       const { parser } = getMarshaller(`
 <dmn:definitions
-    xmlns="https://kiegroup.org/dmn/_5BF56984-FDC7-441B-8307-FF06B0E5B17F"
+    xmlns="https://kie.apache.org/dmn/_5BF56984-FDC7-441B-8307-FF06B0E5B17F"
     xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/">
     invalid
 </dmn:definitions>`);

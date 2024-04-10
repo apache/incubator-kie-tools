@@ -195,7 +195,7 @@ export function GlobalDiagramProperties() {
               setRegenerateIdConfirmationModal(false);
               dmnEditorStoreApi.setState((state) => {
                 state.dmn.model.definitions["@_id"] = generateUuid();
-                state.dmn.model.definitions["@_namespace"] = `https://kie.org/dmn/${generateUuid()}`;
+                state.dmn.model.definitions["@_namespace"] = `https://kie.apache.org/dmn/${generateUuid()}`;
               });
             }}
           >

@@ -20,7 +20,7 @@
 import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
-test.describe("Bixed List context menu", () => {
+test.describe("Boxed List context menu", () => {
   test.describe("Rows control", () => {
     test.beforeEach(async ({ stories, page, monaco, boxedExpressionEditor }) => {
       await stories.openBoxedList();
@@ -95,10 +95,10 @@ test.describe("Bixed List context menu", () => {
     page,
     monaco,
   }) => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/421");
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/421");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
-      description: "https://github.com/kiegroup/kie-issues/issues/421",
+      description: "https://github.com/apache/incubator-kie-issues/issues/421",
     });
 
     await stories.openRelation();

@@ -17,16 +17,15 @@
  * under the License.
  */
 
-import * as _ from "lodash";
+import _ from "lodash";
 import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import { BeeTableHeaderVisibility, BeeTableProps, InsertRowColumnsDirection } from "../../api";
-import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { NavigationKeysUtils } from "../../keysUtils";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
+import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../resizing/WidthConstants";
-import "./BeeTable.css";
 import { BeeTableBody } from "./BeeTableBody";
 import {
   BeeTableResizableColumnsContextProvider,
@@ -43,6 +42,7 @@ import {
 } from "../../selection/BeeTableSelectionContext";
 import { BeeTableCellWidthsToFitDataContextProvider } from "../../resizing/BeeTableCellWidthToFitDataContext";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import "./BeeTable.css";
 
 const ROW_INDEX_COLUMN_ACCESOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
@@ -60,15 +60,6 @@ export function getColumnsAtLastLevel<R extends ReactTable.Column<any> | ReactTa
       ? getColumnsAtLastLevel(column.columns as R[], depth - 1) // recurse
       : (column.columns as R[]);
   });
-}
-
-export function areEqualColumns<R extends object>(
-  column: ReactTable.Column<R> | ReactTable.ColumnInstance<R> | undefined
-): (other: ReactTable.Column<R> | ReactTable.ColumnInstance<R>) => boolean {
-  const columnId = column?.originalId || column?.id || column?.accessor;
-  return (other: ReactTable.Column<R>) => {
-    return other.id === columnId || other.accessor === columnId;
-  };
 }
 
 export function BeeTableInternal<R extends object>({
@@ -107,7 +98,6 @@ export function BeeTableInternal<R extends object>({
   resizerStopBehavior,
   lastColumnMinWidth,
   rowWrapper,
-  variables,
 }: BeeTableProps<R>) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
@@ -132,7 +122,7 @@ export function BeeTableInternal<R extends object>({
               label:
                 headerVisibility === BeeTableHeaderVisibility.AllLevels
                   ? ROW_INDEX_SUB_COLUMN_ACCESSOR
-                  : (controllerCell as any), // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+                  : (controllerCell as any), // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
               accessor: ROW_INDEX_SUB_COLUMN_ACCESSOR as any,
               minWidth: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
               width: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
@@ -155,12 +145,12 @@ export function BeeTableInternal<R extends object>({
   >(
     (currentControllerCell, columns) => {
       const rowIndexColumn: ReactTable.Column<R> = {
-        label: currentControllerCell as any, //FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        label: currentControllerCell as any, //FIXME: https://github.com/apache/incubator-kie-issues/issues/169
         accessor: ROW_INDEX_COLUMN_ACCESOR as any,
         width: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
         minWidth: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
         isRowIndexColumn: true,
-        dataType: undefined as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        dataType: undefined as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
       };
 
       addRowIndexColumnsRecursively(rowIndexColumn, headerLevelCountForAppendingRowIndexColumn);
@@ -252,21 +242,12 @@ export function BeeTableInternal<R extends object>({
               setEditing={_setEditing(cellProps.rows.length, () => cellProps.allColumns.length)}
               navigateHorizontally={_navigateHorizontally(cellProps.rows.length, () => cellProps.allColumns.length)}
               navigateVertically={_navigateVertically(cellProps.rows.length, () => cellProps.allColumns.length)}
-              variables={variables}
             />
           );
         }
       },
     }),
-    [
-      cellComponentByColumnAccessor,
-      onCellUpdates,
-      isReadOnly,
-      _setEditing,
-      _navigateHorizontally,
-      _navigateVertically,
-      variables,
-    ]
+    [cellComponentByColumnAccessor, onCellUpdates, isReadOnly, _setEditing, _navigateHorizontally, _navigateVertically]
   );
 
   const reactTableInstance = ReactTable.useTable<R>(
@@ -291,7 +272,7 @@ export function BeeTableInternal<R extends object>({
         return getRowKey(row);
       } else {
         if (row.original) {
-          // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+          // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
           return (row.original as any).id;
         }
         return row.id;

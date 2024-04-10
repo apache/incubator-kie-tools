@@ -19,7 +19,7 @@
 
 import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { XmlQName, parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import { KIE_DMN_UNKNOWN_NAMESPACE } from "../../Dmn15Spec";
+import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { buildXmlHref } from "../../xml/xmlHrefs";
 import { State } from "../Store";
 

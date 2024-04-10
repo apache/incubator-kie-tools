@@ -19,21 +19,22 @@
 
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
-import * as _ from "lodash";
+import _ from "lodash";
 import * as React from "react";
 import { useCallback } from "react";
-import { useBoxedExpressionEditor } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { FunctionExpressionDefinitionKind } from "../../api";
-import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp/MenuItemWithHelp";
+import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
+import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
+import { DMN15__tFunctionKind } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { BoxedFunctionKind } from "../../api";
 
 export interface FunctionKindSelectorProps {
   /** Pre-selected function kind */
-  selectedFunctionKind: FunctionExpressionDefinitionKind;
+  selectedFunctionKind: DMN15__tFunctionKind;
   /** Callback invoked when function kind selection changes */
-  onFunctionKindSelect: (functionKind: FunctionExpressionDefinitionKind) => void;
+  onFunctionKindSelect: (functionKind: DMN15__tFunctionKind) => void;
 }
 
 export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorProps> = ({
@@ -44,25 +45,23 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
 
   const functionKindSelectionCallback = useCallback(
     (hide: () => void) => (event?: React.MouseEvent, itemId?: string | number) => {
-      onFunctionKindSelect(itemId as FunctionExpressionDefinitionKind);
+      onFunctionKindSelect(itemId as DMN15__tFunctionKind);
       setVisibleHelp("");
       hide();
       setTimeout(() => {
-        onFunctionKindSelect(itemId as FunctionExpressionDefinitionKind);
+        onFunctionKindSelect(itemId as DMN15__tFunctionKind);
       }, 0);
     },
     [onFunctionKindSelect]
   );
 
-  const functionKindHelp = useCallback((functionKind: FunctionExpressionDefinitionKind) => {
+  const functionKindHelp = useCallback((functionKind: DMN15__tFunctionKind) => {
     switch (functionKind) {
-      case FunctionExpressionDefinitionKind.Feel:
+      case "FEEL":
         return "Define function as a 'Friendly Enough Expression Language (FEEL)' expression. This is the default.";
-
-      case FunctionExpressionDefinitionKind.Java:
+      case "Java":
         return "Define the full qualified java class name and a public static method signature to invoke.\nThe method signature consists of the name of the method, followed by an argument list of the argument types.";
-
-      case FunctionExpressionDefinitionKind.Pmml:
+      case "PMML":
         return "Define 'Predictive Model Markup Language (PMML)' model to invoke.\nEditor parses and offers you all your PMML models from the workspace.";
       default:
         return "Not supported";
@@ -85,7 +84,7 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
         <Menu onSelect={functionKindSelectionCallback(hide)} selected={selectedFunctionKind}>
           <MenuGroup className="menu-with-help">
             <MenuList>
-              {_.map(Object.entries(FunctionExpressionDefinitionKind), ([functionKindKey, functionKind]) => (
+              {_.map(Object.entries(BoxedFunctionKind), ([functionKindKey, functionKind]) => (
                 <MenuItemWithHelp
                   key={functionKindKey}
                   menuItemKey={functionKind}

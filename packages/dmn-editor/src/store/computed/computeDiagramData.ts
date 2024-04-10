@@ -20,7 +20,7 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as RF from "reactflow";
-import { KIE_DMN_UNKNOWN_NAMESPACE } from "../../Dmn15Spec";
+import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { snapShapeDimensions, snapShapePosition } from "../../diagram/SnapGrid";
 import { EdgeType, NodeType } from "../../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../../diagram/edges/EdgeTypes";

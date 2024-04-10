@@ -43,6 +43,14 @@ export function renameDrgElement({
     drgElement.variable!["@_name"] = trimmedNewName;
   }
 
+  if (drgElement.__$$element === "decision" && drgElement.expression) {
+    drgElement.expression["@_label"] = trimmedNewName;
+  }
+
+  if (drgElement.__$$element === "businessKnowledgeModel" && drgElement.encapsulatedLogic) {
+    drgElement.encapsulatedLogic["@_label"] = trimmedNewName;
+  }
+
   // FIXME: Daniel --> Here we need to update all FEEL expression that were using this node's name as a variable.
 }
 

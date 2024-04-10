@@ -34,7 +34,7 @@ export const OpenShiftIntegrationQuickStart: QuickStart = {
 
     conclusion: `**Found an issue?**
 
-If you find an issue or any misleading information, please feel free to report it [here](https://github.com/kiegroup/kogito-docs/issues/new). We really appreciate it!`,
+If you find an issue or any misleading information, please feel free to report it [here](https://github.com/apache/incubator-kie-kogito-docs/issues/new). We really appreciate it!`,
 
     tasks: [
       {

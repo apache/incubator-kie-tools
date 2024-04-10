@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmn:definitions xmlns="https://kiegroup.org/dmn/_5BF56984-FDC7-441B-8307-FF06B0E5B17F"
+<dmn:definitions xmlns="https://kie.apache.org/dmn/_5BF56984-FDC7-441B-8307-FF06B0E5B17F"
     xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/"
     xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/"
     xmlns:kie="https://www.drools.org/kie/dmn/1.2"
@@ -9,7 +9,7 @@
     id="_07E105FE-8CD2-4993-9D9A-2D9DE61DC574"
     name="empty"
     typeLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/"
-    namespace="https://kiegroup.org/dmn/_5BF56984-FDC7-441B-8307-FF06B0E5B17F">
+    namespace="https://kie.apache.org/dmn/_5BF56984-FDC7-441B-8307-FF06B0E5B17F">
     <dmn:extensionElements />
     <dmndi:DMNDI>
         <dmndi:DMNDiagram id="_467EFA8A-84FA-40C0-810C-D4466495C129" name="DRG">

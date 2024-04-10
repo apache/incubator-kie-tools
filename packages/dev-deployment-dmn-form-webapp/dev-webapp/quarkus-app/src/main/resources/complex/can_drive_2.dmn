@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_E9B20B8C-BBC0-4DD9-8B06-67BF1BF818EF" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kiegroup.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D" id="_F6614D4C-0263-4BB6-8030-BCE87829766F" name="CD-2" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_E9B20B8C-BBC0-4DD9-8B06-67BF1BF818EF">
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_E9B20B8C-BBC0-4DD9-8B06-67BF1BF818EF" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D" id="_F6614D4C-0263-4BB6-8030-BCE87829766F" name="CD-2" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_E9B20B8C-BBC0-4DD9-8B06-67BF1BF818EF">
   <dmn:extensionElements/>
-  <dmn:import id="_E9CA6366-09BC-4E02-A9B9-13DECC6CEF96" name="CD" namespace="https://kiegroup.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D" locationURI="can_drive.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:import id="_E9CA6366-09BC-4E02-A9B9-13DECC6CEF96" name="CD" namespace="https://kie.apache.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D" locationURI="can_drive.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
   <dmn:itemDefinition id="_CC2E083E-98D7-45A3-8D59-F5F319FBD7B4" name="MyType" isCollection="false">
     <dmn:typeRef>number</dmn:typeRef>
   </dmn:itemDefinition>
@@ -24,7 +24,7 @@
       <dmn:requiredInput href="#_D6813966-32AF-4A14-86B7-6D219EBA4CE5"/>
     </dmn:informationRequirement>
     <dmn:knowledgeRequirement id="_78B47102-7F96-45CD-8B24-E3D0216BB2D8">
-      <dmn:requiredKnowledge href="https://kiegroup.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D#_E5A40246-C71B-4C8E-8F8F-4623CF02B4B8"/>
+      <dmn:requiredKnowledge href="https://kie.apache.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D#_E5A40246-C71B-4C8E-8F8F-4623CF02B4B8"/>
     </dmn:knowledgeRequirement>
     <dmn:invocation id="_972C977E-9BCA-430E-843F-2C31ACD7DF05">
       <dmn:literalExpression id="_72FC5356-A2B4-4E35-B15C-319A695DBAD4">
@@ -49,7 +49,7 @@
       <dmn:requiredInput href="#_2421FF23-E30C-4C4E-9D08-ABC80078AC61"/>
     </dmn:informationRequirement>
     <dmn:knowledgeRequirement id="_24061A82-D3CA-49DA-8D47-BD8C1CCF5E76">
-      <dmn:requiredKnowledge href="https://kiegroup.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D#_E1E67210-EACB-420C-9F4D-9C9B0E1A4056"/>
+      <dmn:requiredKnowledge href="https://kie.apache.org/dmn/_A6EAEE01-EA53-48EB-8CEC-99269030513D#_E1E67210-EACB-420C-9F4D-9C9B0E1A4056"/>
     </dmn:knowledgeRequirement>
     <dmn:invocation id="_30D97AF5-FF35-4B4D-9599-E4FCEA75D2C3">
       <dmn:literalExpression id="_21A94282-504C-47A4-8835-452A35EC9D90">

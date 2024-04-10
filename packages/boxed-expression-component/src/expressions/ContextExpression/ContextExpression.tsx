@@ -26,13 +26,11 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  ContextExpressionDefinition,
-  ContextExpressionDefinitionEntry,
+  BoxedContext,
+  BoxedExpression,
   DmnBuiltInDataType,
-  ExpressionDefinitionLogicType,
   generateUuid,
   getNextAvailablePrefixedName,
-  InsertRowColumnsDirection,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -40,61 +38,75 @@ import { NestedExpressionContainerContext } from "../../resizing/NestedExpressio
 import { ResizerStopBehavior, ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
-  CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import {
-  useBoxedExpressionEditor,
-  useBoxedExpressionEditorDispatch,
-} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
-import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
+import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
-import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
-import "./ContextExpression.css";
+import { ExpressionVariableCell, ExpressionWithVariable } from "../../expressionVariable/ExpressionVariableCell";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
+import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { findAllIdsDeep } from "../../ids/ids";
+import "./ContextExpression.css";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
+const CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX = 0;
 
-type ROWTYPE = ContextExpressionDefinitionEntry;
+export type ROWTYPE = ExpressionWithVariable & { index: number };
 
 export function ContextExpression(
-  contextExpression: ContextExpressionDefinition & {
+  contextExpression: BoxedContext & {
     isNested: boolean;
     parentElementId: string;
   }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { decisionNodeId } = useBoxedExpressionEditor();
-  const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { variables } = useBoxedExpressionEditor();
+  const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
+  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
 
-  const entryInfoWidth = useMemo(
-    () => contextExpression.entryInfoWidth ?? CONTEXT_ENTRY_INFO_MIN_WIDTH,
-    [contextExpression.entryInfoWidth]
+  const id = contextExpression["@_id"]!;
+
+  const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
+
+  const getEntryVariableWidth = useCallback(
+    (widths: number[]) => widths?.[CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX] ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+    []
   );
 
-  const setEntryInfoWidth = useCallback(
+  const entryVariableWidth = useMemo(() => getEntryVariableWidth(widths), [getEntryVariableWidth, widths]);
+
+  const setEntryVariableWidth = useCallback(
     (newWidthAction: React.SetStateAction<number | undefined>) => {
-      setExpression((prev: ContextExpressionDefinition) => {
-        const newWidth = typeof newWidthAction === "function" ? newWidthAction(prev.entryInfoWidth) : newWidthAction;
-        return { ...prev, entryInfoWidth: newWidth };
+      setWidthsById(({ newMap }) => {
+        const prev = newMap.get(id) ?? [];
+        const newWidth =
+          typeof newWidthAction === "function" ? newWidthAction(getEntryVariableWidth(prev)) : newWidthAction;
+
+        if (newWidth) {
+          const minSize = CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX + 1;
+          const newValues = [...prev];
+          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.splice(CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX, 1, newWidth);
+          newMap.set(id, newValues);
+        }
       });
     },
-    [setExpression]
+    [getEntryVariableWidth, id, setWidthsById]
   );
 
-  const [entryInfoResizingWidth, setEntryInfoResizingWidth] = useState<ResizingWidth>({
-    value: entryInfoWidth,
+  const [entryVariableResizingWidth, setEntryVariableResizingWidth] = useState<ResizingWidth>({
+    value: entryVariableWidth,
     isPivoting: false,
   });
 
   const onColumnResizingWidthChange1 = useCallback((args: Map<number, ResizingWidth | undefined>) => {
     const newResizingWidth = args.get(1);
     if (newResizingWidth) {
-      setEntryInfoResizingWidth(newResizingWidth);
+      setEntryVariableResizingWidth(newResizingWidth);
     }
   }, []);
 
@@ -102,30 +114,33 @@ export function ContextExpression(
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
 
+  const resultExpression = useMemo(
+    () => contextExpression.contextEntry?.find((e) => !e.variable)?.expression,
+    [contextExpression.contextEntry]
+  );
+
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
-        const entriesWidths = contextExpression.contextEntries.map((e) =>
-          getExpressionTotalMinWidth(0, e.entryExpression)
+        const entriesWidths = (contextExpression.contextEntry ?? []).map((e) =>
+          getExpressionTotalMinWidth(0, e.expression, widthsById)
         );
-        const resultWidth = getExpressionTotalMinWidth(0, contextExpression.result);
 
+        const resultWidth = getExpressionTotalMinWidth(0, resultExpression, widthsById);
         const maxNestedExpressionMinWidth = Math.max(...entriesWidths, resultWidth, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
 
         return {
-          nestedExpressions: [
-            ...contextExpression.contextEntries.map((e) => e.entryExpression),
-            contextExpression.result,
-          ],
-          fixedColumnActualWidth: entryInfoWidth,
-          fixedColumnResizingWidth: entryInfoResizingWidth,
-          fixedColumnMinWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+          nestedExpressions: (contextExpression.contextEntry ?? []).map((e) => e.expression),
+          fixedColumnActualWidth: entryVariableWidth,
+          fixedColumnResizingWidth: entryVariableResizingWidth,
+          fixedColumnMinWidth: CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
           nestedExpressionMinWidth: maxNestedExpressionMinWidth,
           extraWidth: CONTEXT_EXPRESSION_EXTRA_WIDTH,
           expression: contextExpression,
           flexibleColumnIndex: 2,
+          widthsById: widthsById,
         };
-      }, [contextExpression, entryInfoResizingWidth, entryInfoWidth])
+      }, [contextExpression, entryVariableResizingWidth, entryVariableWidth, resultExpression, widthsById])
     );
 
   /// //////////////////////////////////////////////////////
@@ -141,25 +156,25 @@ export function ContextExpression(
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        label: contextExpression.name ?? DEFAULT_EXPRESSION_NAME,
+        accessor: expressionHolderId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
+        label: contextExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         isRowIndexColumn: false,
-        dataType: contextExpression.dataType,
+        dataType: contextExpression["@_typeRef"] ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
         width: undefined,
         columns: [
           {
-            accessor: "entryInfo",
-            label: "entryInfo",
+            accessor: "variable",
+            label: "variable",
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
             isWidthPinned: true,
-            minWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-            width: entryInfoWidth,
-            setWidth: setEntryInfoWidth,
+            minWidth: CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+            width: entryVariableWidth,
+            setWidth: setEntryVariableWidth,
           },
           {
-            accessor: "entryExpression",
-            label: "entryExpression",
+            accessor: "expression",
+            label: "expression",
             dataType: DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
             minWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
@@ -168,15 +183,20 @@ export function ContextExpression(
         ],
       },
     ];
-  }, [decisionNodeId, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
+  }, [contextExpression, entryVariableWidth, expressionHolderId, setEntryVariableWidth]);
 
   const onColumnUpdates = useCallback(
-    ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev) => ({
-        ...prev,
-        name,
-        dataType,
-      }));
+    ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
+      setExpression((prev: BoxedContext) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
+          ...prev,
+          "@_label": name,
+          "@_typeRef": typeRef,
+        };
+
+        return ret;
+      });
     },
     [setExpression]
   );
@@ -185,30 +205,35 @@ export function ContextExpression(
     return contextExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
   }, [contextExpression.isNested]);
 
-  const updateEntry = useCallback(
-    (rowIndex: number, newEntry: ContextExpressionDefinitionEntry) => {
-      setExpression((prev: ContextExpressionDefinition) => {
-        const contextEntries = [...prev.contextEntries];
+  const updateVariable = useCallback(
+    (index: number, { expression, variable }: ExpressionWithVariable) => {
+      setExpression((prev: BoxedContext) => {
+        const contextEntries = [...(prev.contextEntry ?? [])];
 
-        variables?.repository.updateVariableType(newEntry.entryInfo.id, newEntry.entryInfo.dataType);
-        variables?.repository.renameVariable(newEntry.entryInfo.id, newEntry.entryInfo.name);
-        contextEntries[rowIndex] = newEntry;
-        return { ...prev, contextEntries };
+        contextEntries[index] = {
+          ...contextEntries[index],
+          expression: expression ?? undefined!, // SPEC DISCREPANCY
+          variable: variable,
+        };
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
+          ...prev,
+          contextEntry: contextEntries,
+        };
+
+        return ret;
       });
     },
-    [setExpression, variables?.repository]
+    [setExpression]
   );
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
     return {
-      entryInfo: (props) => {
-        return <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />;
-      },
-      entryExpression: (props) => {
-        return <ContextEntryExpressionCell {...props} />;
-      },
+      variable: (props) => <ExpressionVariableCell {...props} onExpressionWithVariableUpdated={updateVariable} />,
+      expression: (props) => <ContextEntryExpressionCell {...props} />,
     };
-  }, [updateEntry]);
+  }, [updateVariable]);
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     return [
@@ -235,7 +260,7 @@ export function ContextExpression(
   }, [i18n]);
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
-    return row.original.entryInfo.id;
+    return row.id;
   }, []);
 
   const beeTableAdditionalRow = useMemo(() => {
@@ -244,144 +269,145 @@ export function ContextExpression(
       <ContextResultExpressionCell
         key={"context-result-expression"}
         contextExpression={contextExpression}
-        rowIndex={contextExpression.contextEntries.length}
+        rowIndex={contextExpression.contextEntry?.length ?? 1}
         columnIndex={2}
       />,
     ];
   }, [contextExpression]);
 
   const getDefaultContextEntry = useCallback(
-    (name?: string): ContextExpressionDefinitionEntry => {
+    (name?: string): DMN15__tContextEntry => {
+      const variableName =
+        name ||
+        getNextAvailablePrefixedName(
+          (contextExpression.contextEntry ?? []).map((e) => e.variable?.["@_name"] ?? ""),
+          "ContextEntry"
+        );
       return {
-        entryInfo: {
-          id: generateUuid(),
-          dataType: CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
-          name:
-            name ||
-            getNextAvailablePrefixedName(
-              contextExpression.contextEntries.map((e) => e.entryInfo.name),
-              "ContextEntry"
-            ),
-        },
-        entryExpression: {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Undefined,
-          dataType: CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
+        "@_id": generateUuid(),
+        expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+        variable: {
+          "@_name": variableName,
+          "@_typeRef": DmnBuiltInDataType.Undefined,
+          description: { __$$text: "" },
         },
       };
     },
     [contextExpression]
   );
 
-  const addVariable = useCallback(
-    (
-      args: {
-        beforeIndex: number;
-      },
-      newContextEntries: ContextExpressionDefinitionEntry[],
-      prev: ContextExpressionDefinition,
-      newVariable: ContextExpressionDefinitionEntry
-    ) => {
-      const parentIndex = args.beforeIndex - 1;
-      let parentId = contextExpression.parentElementId;
-      if (parentIndex >= 0 && parentIndex < newContextEntries.length) {
-        parentId = newContextEntries[parentIndex].entryInfo.id;
-      }
-
-      let childId: undefined | string;
-      if (args.beforeIndex < newContextEntries.length) {
-        childId = newContextEntries[args.beforeIndex].entryInfo.id;
-      } else {
-        childId = prev.result.id;
-      }
-
-      variables?.repository.addVariableToContext(
-        newVariable.entryInfo.id,
-        newVariable.entryInfo.name,
-        parentId,
-        childId
-      );
-    },
-    [contextExpression.parentElementId, variables?.repository]
-  );
-
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number; rowsCount: number; insertDirection: InsertRowColumnsDirection }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
-        const newContextEntries = [...(prev.contextEntries ?? [])];
+    (args: { beforeIndex: number; rowsCount: number }) => {
+      setExpression((prev: BoxedContext) => {
+        const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const newEntries = [];
-        const names = contextExpression.contextEntries.map((e) => e.entryInfo.name);
+        const names = newContextEntries.map((e) => e.variable?.["@_name"] ?? "").filter((e) => e !== "");
         for (let i = 0; i < args.rowsCount; i++) {
           const name = getNextAvailablePrefixedName(names, "ContextEntry");
           names.push(name);
-
-          const defaultContextEntry = getDefaultContextEntry(name);
-          addVariable(args, newContextEntries, prev, defaultContextEntry);
-          newEntries.push(defaultContextEntry);
+          newEntries.push(getDefaultContextEntry(name));
         }
 
         for (const newEntry of newEntries) {
-          let index = args.beforeIndex;
-          newContextEntries.splice(index, 0, newEntry);
-          if (args.insertDirection === InsertRowColumnsDirection.AboveOrRight) {
-            index++;
-          }
+          newContextEntries.splice(args.beforeIndex, 0, newEntry);
         }
 
-        return {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
           ...prev,
-          contextEntries: newContextEntries,
+          contextEntry: newContextEntries,
         };
+
+        return ret;
       });
     },
-    [addVariable, contextExpression.contextEntries, getDefaultContextEntry, setExpression]
+    [getDefaultContextEntry, setExpression]
   );
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
-        const newContextEntries = [...(prev.contextEntries ?? [])];
+      let oldExpression: BoxedExpression | undefined;
 
-        variables?.repository.removeVariable(prev.contextEntries[args.rowIndex].entryInfo.id);
+      setExpression((prev: BoxedContext) => {
+        const newContextEntries = [...(prev.contextEntry ?? [])];
 
-        newContextEntries.splice(args.rowIndex, 1);
-        return {
-          ...prev,
+        const { isResultOperation: isDeletingResult, entryIndex } = solveResultAndEntriesIndex({
           contextEntries: newContextEntries,
+          rowIndex: args.rowIndex,
+        });
+
+        if (isDeletingResult) {
+          throw new Error("It's not possible to delete the <result> row");
+        } else {
+          oldExpression = newContextEntries[entryIndex]?.expression;
+          newContextEntries.splice(entryIndex, 1);
+        }
+
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
+          ...prev,
+          contextEntry: newContextEntries,
         };
+
+        return ret;
+      });
+
+      setWidthsById(({ newMap }) => {
+        for (const id of findAllIdsDeep(oldExpression)) {
+          newMap.delete(id);
+        }
       });
     },
-    [setExpression, variables?.repository]
+    [setExpression, setWidthsById]
   );
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: ContextExpressionDefinition) => {
-        // That's the additionalRow, meaning the contextExpression result.
-        if (args.rowIndex === prev.contextEntries.length) {
-          return {
-            ...prev,
-            result: {
-              ...getDefaultContextEntry().entryExpression,
-            },
-          };
+      let oldExpression: BoxedExpression | undefined;
+
+      setExpression((prev: BoxedContext) => {
+        const newContextEntries = [...(prev.contextEntry ?? [])];
+
+        const {
+          isResultOperation: isResettingResult,
+          hasResultEntry: hasResultExpression,
+          resultIndex,
+          entryIndex,
+        } = solveResultAndEntriesIndex({
+          contextEntries: newContextEntries,
+          rowIndex: args.rowIndex,
+        });
+
+        if (isResettingResult) {
+          if (hasResultExpression) {
+            oldExpression = newContextEntries[resultIndex]?.expression;
+            newContextEntries.splice(resultIndex, 1);
+          } else {
+            // ignore
+          }
+        } else {
+          oldExpression = newContextEntries[entryIndex]?.expression;
+          const defaultContextEntry = getDefaultContextEntry(newContextEntries[entryIndex]?.variable?.["@_name"]);
+          newContextEntries.splice(entryIndex, 1, defaultContextEntry);
         }
 
-        // That's a normal context entry
-        else {
-          const newContextEntries = [...(prev.contextEntries ?? [])];
-          newContextEntries.splice(args.rowIndex, 1, {
-            ...getDefaultContextEntry(newContextEntries[args.rowIndex].entryInfo.name),
-          });
-          return {
-            ...prev,
-            contextEntries: newContextEntries,
-          };
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedContext = {
+          ...prev,
+          contextEntry: newContextEntries,
+        };
+
+        return ret;
+      });
+
+      setWidthsById(({ newMap }) => {
+        for (const id of findAllIdsDeep(oldExpression)) {
+          newMap.delete(id);
         }
       });
     },
-    [getDefaultContextEntry, setExpression]
+    [getDefaultContextEntry, setExpression, setWidthsById]
   );
 
   const allowedOperations = useCallback(
@@ -393,6 +419,13 @@ export function ContextExpression(
       const columnIndex = conditions.selection.selectionStart.columnIndex;
       const rowIndex = conditions.selection.selectionStart.rowIndex;
 
+      const contextEntries = contextExpression.contextEntry ?? [];
+
+      const { isResultOperation, hasResultEntry } = solveResultAndEntriesIndex({ contextEntries, rowIndex });
+
+      const canDeleteEntry =
+        !isResultOperation && (hasResultEntry ? contextEntries.length > 2 : contextEntries.length > 1);
+
       return [
         BeeTableOperation.SelectionCopy,
         ...(columnIndex > 1
@@ -401,30 +434,40 @@ export function ContextExpression(
         ...(conditions.selection.selectionStart.rowIndex >= 0
           ? [
               BeeTableOperation.RowInsertAbove,
-              ...(rowIndex !== contextExpression.contextEntries.length ? [BeeTableOperation.RowInsertBelow] : []), // do not insert below <result>
-              ...(rowIndex !== contextExpression.contextEntries.length ? [BeeTableOperation.RowInsertN] : []), // Because we can't insert multiple lines below <result>
-              ...(contextExpression.contextEntries.length > 1 && rowIndex !== contextExpression.contextEntries.length
-                ? [BeeTableOperation.RowDelete]
-                : []), // do not delete <result>
+              ...(!isResultOperation ? [BeeTableOperation.RowInsertBelow] : []),
+              ...(!isResultOperation ? [BeeTableOperation.RowInsertN] : []),
+              ...(canDeleteEntry ? [BeeTableOperation.RowDelete] : []),
               BeeTableOperation.RowReset,
             ]
           : []),
       ];
     },
-    [contextExpression.contextEntries.length]
+    [contextExpression.contextEntry]
   );
+
+  const beeTableRows = useMemo<ROWTYPE[]>(() => {
+    return (contextExpression.contextEntry ?? []).flatMap((contextEntry, i) =>
+      !contextEntry.variable
+        ? []
+        : {
+            ...contextEntry,
+            variable: contextEntry.variable,
+            index: i,
+          }
+    );
+  }, [contextExpression.contextEntry]);
 
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
-      <div className={`context-expression ${contextExpression.id}`}>
-        <BeeTable
+      <div className={`context-expression ${id}`}>
+        <BeeTable<ROWTYPE>
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
-          tableId={contextExpression.id}
+          tableId={id}
           headerLevelCountForAppendingRowIndexColumn={1}
           headerVisibility={headerVisibility}
           cellComponentByColumnAccessor={cellComponentByColumnAccessor}
           columns={beeTableColumns}
-          rows={contextExpression.contextEntries}
+          rows={beeTableRows}
           onColumnUpdates={onColumnUpdates}
           operationConfig={beeTableOperationConfig}
           allowedOperations={allowedOperations}
@@ -437,11 +480,36 @@ export function ContextExpression(
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={true}
           shouldShowColumnsInlineControls={false}
-          variables={variables}
         />
       </div>
     </NestedExpressionContainerContext.Provider>
   );
+}
+
+export function solveResultAndEntriesIndex({
+  contextEntries,
+  rowIndex,
+}: {
+  contextEntries: DMN15__tContextEntry[];
+  rowIndex: number;
+}) {
+  const resultIndex = contextEntries.findIndex((e) => !e.variable);
+
+  const hasResultEntry = resultIndex > -1;
+
+  const isResultOperation =
+    rowIndex === Math.max(1, hasResultEntry ? contextEntries.length - 1 : contextEntries.length);
+
+  const entryIndex = Math.min(
+    contextEntries.length - 1,
+    resultIndex === -1
+      ? rowIndex //
+      : resultIndex < rowIndex
+      ? rowIndex + 1
+      : rowIndex
+  );
+
+  return { isResultOperation, hasResultEntry, resultIndex, entryIndex };
 }
 
 export function ContextResultInfoCell() {
@@ -466,7 +534,7 @@ export function ContextResultInfoCell() {
 
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject(""); // FIXME: Tiago --> This should actually be the id of the parent expression, as the <result> of a context follows its parent's data type.
+      beeGwtService?.selectObject("");
     }
   }, [beeGwtService, isActive]);
 

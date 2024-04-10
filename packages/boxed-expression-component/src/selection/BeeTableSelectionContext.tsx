@@ -21,7 +21,7 @@ import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { assertUnreachable } from "../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { ResizingWidth, useResizingWidthsDispatch } from "../resizing/ResizingWidthsContext";
-import { useBoxedExpressionEditor } from "../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
+import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
 
 export const SELECTION_MIN_ACTIVE_DEPTH = -1;
 export const SELECTION_MIN_MAX_DEPTH = 0;
@@ -158,7 +158,7 @@ const NEUTRAL_CELL_STATUS = {
   isSelected: false,
 };
 
-const CELL_EMPTY_VALUE = ""; // This value needs to be parameterized, perhaps. Not all values are strings. See https://github.com/kiegroup/kie-issues/issues/170.
+const CELL_EMPTY_VALUE = ""; // This value needs to be parameterized, perhaps. Not all values are strings. See https://github.com/apache/incubator-kie-issues/issues/170.
 
 export function BeeTableCoordinatesContextProvider({
   children,
@@ -616,7 +616,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
           for (let c = startColumn; c <= endColumn; c++) {
             clipboardMatrix[r - startRow][c - startColumn] = [...(refs.current?.get(r)?.get(c) ?? [])]
               ?.flatMap((ref) => (ref.getValue ? [ref.getValue()] : []))
-              .join(""); // FIXME: What to do? Only one ref should be yielding the content. See https://github.com/kiegroup/kie-issues/issues/170
+              .join(""); // FIXME: What to do? Only one ref should be yielding the content. See https://github.com/apache/incubator-kie-issues/issues/170
           }
         }
 
@@ -642,7 +642,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
                 ref.setValue?.(CELL_EMPTY_VALUE);
                 return cellValue;
               })
-              .join(""); // What to do? Only one ref should be yielding the content. See https://github.com/kiegroup/kie-issues/issues/170
+              .join(""); // What to do? Only one ref should be yielding the content. See https://github.com/apache/incubator-kie-issues/issues/170
           }
         }
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_3CB391B5-9A6F-4CB4-9DF9-14F7E91BAD37" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kiegroup.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" xmlns:included2="https://kiegroup.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4" id="_F024B699-6AF0-4864-96A3-7CF596D1374C" name="Routing" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_3CB391B5-9A6F-4CB4-9DF9-14F7E91BAD37">
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_3CB391B5-9A6F-4CB4-9DF9-14F7E91BAD37" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" xmlns:included2="https://kie.apache.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4" id="_F024B699-6AF0-4864-96A3-7CF596D1374C" name="Routing" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_3CB391B5-9A6F-4CB4-9DF9-14F7E91BAD37">
   <dmn:extensionElements/>
-  <dmn:import id="_1B215524-8F30-497F-A51A-4170F979B410" name="t" namespace="https://kiegroup.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" locationURI="Types.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
-  <dmn:import id="_44CCD751-79E8-4CDB-A11D-DEEFCC665D69" name="f" namespace="https://kiegroup.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4" locationURI="Functions.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:import id="_1B215524-8F30-497F-A51A-4170F979B410" name="t" namespace="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" locationURI="Types.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:import id="_44CCD751-79E8-4CDB-A11D-DEEFCC665D69" name="f" namespace="https://kie.apache.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4" locationURI="Functions.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
   <dmn:decisionService id="_B99935EF-B400-4DDF-AB08-837BBEB5F9C6" name="Routing Decision Service">
     <dmn:extensionElements/>
     <dmn:variable id="_ABE4EA20-26DF-4A0B-B5AF-727888C3ED01" name="Routing Decision Service" typeRef="t.Routing"/>
@@ -715,7 +715,7 @@
       <dmn:requiredInput href="#_8654B3A2-4F10-48B8-8644-9166E5A7B4BF"/>
     </dmn:informationRequirement>
     <dmn:knowledgeRequirement id="_2EBD8636-1078-491A-9D9C-0826F6DB36F2">
-      <dmn:requiredKnowledge href="https://kiegroup.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4#_DAA2F03D-EFA9-4BA9-AEB1-109AC3F4F1AC"/>
+      <dmn:requiredKnowledge href="https://kie.apache.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4#_DAA2F03D-EFA9-4BA9-AEB1-109AC3F4F1AC"/>
     </dmn:knowledgeRequirement>
     <dmn:invocation id="_EF51A747-D5E1-414E-9DD5-964362FB2AEC">
       <dmn:literalExpression id="_99D8F2CD-01CF-499B-9D51-410C59865F15">
@@ -762,7 +762,7 @@
       <dmn:requiredInput href="#_AA1B99D1-5928-461E-85D2-B54F28750A84"/>
     </dmn:informationRequirement>
     <dmn:knowledgeRequirement id="_3AD5F99A-06E4-430D-972F-0EC3C8E204B2">
-      <dmn:requiredKnowledge href="https://kiegroup.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4#_121D1636-282B-45B5-ACDA-8C73CBF17CE1"/>
+      <dmn:requiredKnowledge href="https://kie.apache.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4#_121D1636-282B-45B5-ACDA-8C73CBF17CE1"/>
     </dmn:knowledgeRequirement>
     <dmn:invocation id="_1E880009-77B2-4309-AE2A-8964E05636B1">
       <dmn:literalExpression id="_0B151359-63F6-4DAB-BC88-53F34446F9C7">

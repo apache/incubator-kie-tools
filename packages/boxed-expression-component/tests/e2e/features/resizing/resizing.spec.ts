@@ -64,10 +64,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column", async ({ page, resizing }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/179");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/179");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/179",
+        description: "https://github.com/apache/incubator-kie-issues/issues/179",
       });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
@@ -84,10 +84,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column and reset", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       // Requires a nested expression to save the header width
@@ -109,10 +109,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change decision name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
@@ -176,10 +176,10 @@ test.describe("Resizing", () => {
       resizing,
       browserName,
     }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).click();
@@ -212,10 +212,10 @@ test.describe("Resizing", () => {
     });
 
     test("check resize on nested stories", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/180",
+        description: "https://github.com/apache/incubator-kie-issues/issues/180",
       });
 
       await page.getByText("Select expression").first().click();
@@ -248,7 +248,7 @@ test.describe("Resizing", () => {
     test("should resize input column and add new columns", async ({ page, resizing }) => {
       const inputHeader = page.getByRole("columnheader", { name: "input-1 (<Undefined>)" });
       const outputHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
-      const annotationsHeader = page.getByRole("columnheader", { name: "annotation-1" });
+      const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
 
       await resizing.resizeCell(inputHeader, { x: 0, y: 0 }, { x: 50, y: 0 });
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 150);
@@ -277,7 +277,7 @@ test.describe("Resizing", () => {
 
       const inputHeader = page.getByRole("columnheader", { name: "Installment Calculation (<Undefined>)" });
       const outputHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
-      const annotationsHeader = page.getByRole("columnheader", { name: "annotation-1" });
+      const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
 
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await outputHeader.boundingBox()).toHaveProperty("width", 100);
@@ -295,7 +295,7 @@ test.describe("Resizing", () => {
     test("should resize output column and add new columns", async ({ page, resizing }) => {
       const inputHeader = page.getByRole("columnheader", { name: "input-1 (<Undefined>)" });
       const outputHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
-      const annotationsHeader = page.getByRole("columnheader", { name: "annotation-1" });
+      const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
 
       await resizing.resizeCell(outputHeader, { x: 0, y: 0 }, { x: 50, y: 0 });
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 100);
@@ -326,7 +326,7 @@ test.describe("Resizing", () => {
 
       const inputHeader = page.getByRole("columnheader", { name: "input-1 (<Undefined>)" });
       const outputHeader = page.getByRole("columnheader", { name: "Installment Calculation (<Undefined>)" });
-      const annotationsHeader = page.getByRole("columnheader", { name: "annotation-1" });
+      const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
 
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await outputHeader.boundingBox()).toHaveProperty("width", 100);
@@ -359,7 +359,7 @@ test.describe("Resizing", () => {
       const output1 = page.getByRole("columnheader", { name: "output-1 (<Undefined>)" });
       const output2 = page.getByRole("columnheader", { name: "output-2 (<Undefined>)" });
       const inputHeader = page.getByRole("columnheader", { name: "input-1 (<Undefined>)" });
-      const annotationsHeader = page.getByRole("columnheader", { name: "annotation-1" });
+      const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
 
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await header.boundingBox()).toHaveProperty("width", 200);
@@ -374,8 +374,8 @@ test.describe("Resizing", () => {
         expect(await output2.boundingBox()).toHaveProperty("width", 163);
       } else {
         expect(await header.boundingBox()).toHaveProperty("width", 315);
-        expect(await output1.boundingBox()).toHaveProperty("width", 158);
-        expect(await output2.boundingBox()).toHaveProperty("width", 157);
+        expect(await output1.boundingBox()).toHaveProperty("width", 157);
+        expect(await output2.boundingBox()).toHaveProperty("width", 158);
       }
       expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 240);
     });
@@ -383,7 +383,7 @@ test.describe("Resizing", () => {
     test("should add new output columns and resize to fit", async ({ page, resizing, browserName }) => {
       const inputHeader = page.getByRole("columnheader", { name: "input-1 (<Undefined>)" });
       const outputHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
-      const annotationsHeader = page.getByRole("columnheader", { name: "annotation-1" });
+      const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
 
       await outputHeader.hover({ position: { x: 0, y: 0 } });
       await outputHeader.locator("svg").click();
@@ -415,7 +415,7 @@ test.describe("Resizing", () => {
     test("should resize annotation column and reset", async ({ page, resizing, browserName }) => {
       const inputHeader = page.getByRole("columnheader", { name: "input-1 (<Undefined>)" });
       const outputHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
-      const annotationsHeader = page.getByRole("columnheader", { name: "annotation-1" });
+      const annotationsHeader = page.getByRole("columnheader", { name: "Annotations", exact: true });
 
       await resizing.resizeCell(annotationsHeader, { x: 0, y: 0 }, { x: 50, y: 0 });
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 100);
@@ -426,14 +426,14 @@ test.describe("Resizing", () => {
       expect(await inputHeader.boundingBox()).toHaveProperty("width", 100);
       expect(await outputHeader.boundingBox()).toHaveProperty("width", 100);
       if (browserName === "webkit") {
-        expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 106);
+        expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 103);
       } else {
-        expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 102);
+        expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 100);
       }
     });
 
     test("should change annotations column name and reset size", async ({ page, resizing, browserName }) => {
-      await page.getByRole("columnheader", { name: "annotation-1" }).click();
+      await page.getByRole("columnheader", { name: "Annotations", exact: true }).click();
       await page.keyboard.type("Relevant information");
       await page.keyboard.press("Enter");
 
@@ -543,10 +543,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column", async ({ page, resizing }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/179");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/179");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/179",
+        description: "https://github.com/apache/incubator-kie-issues/issues/179",
       });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
@@ -560,10 +560,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize the header column and reset", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       // Requires a nested expression to save the header width
@@ -585,10 +585,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change the decision name column and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
@@ -613,10 +613,10 @@ test.describe("Resizing", () => {
     });
 
     test("should create function parameters and resize to fit", async ({ page, resizing }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/535");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/535");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/535",
+        description: "https://github.com/apache/incubator-kie-issues/issues/535",
       });
 
       await page.getByText("Edit parameters").click();
@@ -649,10 +649,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column", async ({ page, resizing }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/179");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/179");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/179",
+        description: "https://github.com/apache/incubator-kie-issues/issues/179",
       });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
@@ -669,10 +669,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column and reset", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       // Requires a nested expression to save the header width
@@ -712,10 +712,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change decision name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "Expression Name" }).click();
@@ -745,10 +745,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change function name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "FUNCTION" }).click();
@@ -776,10 +776,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change parameter name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).click();
@@ -813,10 +813,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column", async ({ page, resizing }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/179");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/179");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/179",
+        description: "https://github.com/apache/incubator-kie-issues/issues/179",
       });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
@@ -826,10 +826,10 @@ test.describe("Resizing", () => {
     });
 
     test("should resize header column and reset", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       // Requires a nested expression to save the header width
@@ -847,10 +847,10 @@ test.describe("Resizing", () => {
     });
 
     test("should change list decision name and resize to fit", async ({ page, resizing, browserName }) => {
-      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.skip(browserName === "webkit", "https://github.com/apache/incubator-kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/438",
+        description: "https://github.com/apache/incubator-kie-issues/issues/438",
       });
 
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
