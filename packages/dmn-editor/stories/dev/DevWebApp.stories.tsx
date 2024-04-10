@@ -243,7 +243,7 @@ export const WebApp: Story = {
       "You're using the DMN Dev webapp, so there's only two simple external models that can be included.",
     externalContextName: "Dev webapp",
     externalModelsByNamespace: {},
-    issueTrackerHref: "https://github.com/kiegroup/kie-issues/issues/new",
+    issueTrackerHref: "https://github.com/apache/incubator-kie-issues/issues/new",
     validationMessages: {},
   },
 };

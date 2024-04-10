@@ -2,8 +2,9 @@ Release workflow (post 0.13.0)
 
 Make sure an associated tag to the release is created on:
 
-- https://github.com/kiegroup/kie-samples
-- https://github.com/kiegroup/kie-sandbox-quarkus-accelerator
+- https://github.com/kiegroup/kie-samples @ {version}
+- https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator @ {version}
+- https://github.com/kiegroup/serverless-logic-sandbox-deployment @ quarkus-accelerator-${version}
 
 ---
 

@@ -182,7 +182,7 @@ public class DMNModelInstrumentedBaseTest {
         assertEquals("http://www.omg.org/spec/DMN/20180521/FEEL/", namespaces.get(0).getUri());
         assertEquals("http://www.omg.org/spec/DMN/20180521/MODEL/", namespaces.get(1).getUri());
         assertEquals("http://www.drools.org/kie/dmn/1.2", namespaces.get(2).getUri());
-        assertEquals("https://kiegroup.org/dmn/", namespaces.get(3).getUri());
+        assertEquals("https://kie.apache.org/dmn/", namespaces.get(3).getUri());
         assertEquals("http://www.omg.org/spec/DMN/20180521/DMNDI/", namespaces.get(4).getUri());
         assertEquals("http://www.omg.org/spec/DMN/20180521/DI/", namespaces.get(5).getUri());
         assertEquals("http://www.omg.org/spec/DMN/20180521/DC/", namespaces.get(6).getUri());

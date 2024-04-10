@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_62DDE5A4-A35A-4AE9-A474-65947ACB2A26" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kiegroup.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" xmlns:included2="https://kiegroup.org/dmn/_3CB391B5-9A6F-4CB4-9DF9-14F7E91BAD37" xmlns:included3="https://kiegroup.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB21" id="_C1078415-32C8-415A-A6DF-70C673ACBD38" name="Adjudication" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_62DDE5A4-A35A-4AE9-A474-65947ACB2A26">
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_62DDE5A4-A35A-4AE9-A474-65947ACB2A26" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" xmlns:included2="https://kie.apache.org/dmn/_3CB391B5-9A6F-4CB4-9DF9-14F7E91BAD37" xmlns:included3="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB21" id="_C1078415-32C8-415A-A6DF-70C673ACBD38" name="Adjudication" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_62DDE5A4-A35A-4AE9-A474-65947ACB2A26">
   <dmn:extensionElements/>
-  <dmn:import id="_64A9CFED-04CE-4CD2-9558-B44B5FEE535F" name="t" namespace="https://kiegroup.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" locationURI="Types.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
-  <dmn:import id="_89B3B830-4F6F-4761-983B-B88FDD453526" name="r" namespace="https://kiegroup.org/dmn/_3CB391B5-9A6F-4CB4-9DF9-14F7E91BAD37" locationURI="Routing.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
-  <dmn:import id="_8E933599-0351-46ED-B0C4-D07AF0F86489" name="s" namespace="https://kiegroup.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB21" locationURI="Strategy.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:import id="_64A9CFED-04CE-4CD2-9558-B44B5FEE535F" name="t" namespace="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" locationURI="Types.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:import id="_89B3B830-4F6F-4761-983B-B88FDD453526" name="r" namespace="https://kie.apache.org/dmn/_3CB391B5-9A6F-4CB4-9DF9-14F7E91BAD37" locationURI="Routing.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+  <dmn:import id="_8E933599-0351-46ED-B0C4-D07AF0F86489" name="s" namespace="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB21" locationURI="Strategy.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
   <dmn:decision id="_D44B7987-4491-4885-9454-31455BDBFBBD" name="Adjudication">
     <dmn:extensionElements/>
     <dmn:question>Should this application that has been referred for adjudication be accepted?</dmn:question>
@@ -22,7 +22,7 @@
       <dmn:requiredInput href="#_D790D37E-FAC3-4EB9-8E59-3A1EB335A024"/>
     </dmn:informationRequirement>
     <dmn:knowledgeRequirement id="_C027EDA3-14A5-4A3B-B8BE-588A6411D5F1">
-      <dmn:requiredKnowledge href="https://kiegroup.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB21#_CEF352D4-155E-4CBF-9B84-37ED4C5B7429"/>
+      <dmn:requiredKnowledge href="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB21#_CEF352D4-155E-4CBF-9B84-37ED4C5B7429"/>
     </dmn:knowledgeRequirement>
     <dmn:context id="_68B5E83B-4336-48CB-9FA8-71644BCFA2CA">
       <dmn:contextEntry>

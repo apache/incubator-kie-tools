@@ -111,7 +111,7 @@ export function BoxedExpressionEditorContextProvider({
         dataTypes,
         pmmlDocuments,
 
-        //state // FIXME: Move to a separate context (https://github.com/kiegroup/kie-issues/issues/168)
+        //state // FIXME: Move to a separate context (https://github.com/apache/incubator-kie-issues/issues/168)
         currentlyOpenContextMenu,
         setCurrentlyOpenContextMenu,
         onRequestFeelVariables,

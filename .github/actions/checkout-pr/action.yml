@@ -33,7 +33,7 @@ runs:
       run: |
         echo "STEP: Setup global Git user (kie-tools-bot)"
         git config --global user.email "kietoolsbot@gmail.com"
-        git config --global user.name "Apache KIE Tools Bot (kiegroup)"
+        git config --global user.name "Apache KIE Tools Bot"
 
     - name: "Merge PR changes (squashed)"
       id: merge_changes

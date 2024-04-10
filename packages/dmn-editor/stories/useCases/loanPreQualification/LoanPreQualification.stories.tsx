@@ -26,15 +26,15 @@ import { DmnEditor, DmnEditorProps } from "../../../src/DmnEditor";
 export const loanPreQualificationDmn = `<?xml version="1.0" encoding="UTF-8" ?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" 
     xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-    xmlns:kie="https://kie.org/dmn/extensions/1.0"
+    xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
     xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" 
     xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
     xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" 
-    xmlns:included0="https://kie.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" 
-    xmlns:included1="https://kie.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1"
+    xmlns:included0="https://kie.apache.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" 
+    xmlns:included1="https://kie.apache.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1"
     expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" 
     typeLanguage="http://www.omg.org/spec/DMN/20211108/FEEL/"
-    namespace="https://kiegroup.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" 
+    namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" 
     id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92" 
     name="loan_pre_qualification">
   <dmn:extensionElements />
@@ -770,8 +770,8 @@ else &quot;Insufficient&quot;</dmn:text>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
-  <dmn:import id="_E4562608-B14C-4845-A4C3-6C1A1FBC0219" name="sumBkm" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" />
-  <dmn:import id="_C726A824-9349-4CF8-91FA-F969250C8421" name="sumDiffDs" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1" />
+  <dmn:import id="_E4562608-B14C-4845-A4C3-6C1A1FBC0219" name="sumBkm" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.apache.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" />
+  <dmn:import id="_C726A824-9349-4CF8-91FA-F969250C8421" name="sumDiffDs" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.apache.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1" />
   <dmn:import id="_87CDD600-7564-CF87-547E-A8B876CD0812" name="testTreePmml" importType="https://www.dmg.org/PMML-4_2" namespace="https://kie.org/pmml#dev-webapp/available-models-to-include/testTree.pmml" />
 </dmn:definitions>
 `;
