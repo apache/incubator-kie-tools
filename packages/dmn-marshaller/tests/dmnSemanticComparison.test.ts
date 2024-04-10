@@ -88,7 +88,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const fileName = normalizedFsPathRelativeToTheFile.substring(
         normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
       );
-      fail("Comparison of " + fileName + " failed! Please scroll up to DMN VALIDATION ERROR message to see the reason");
+      fail("Comparison of " + fileName + " failed! Please scroll up to catch the error root cause");
     }
   });
 }

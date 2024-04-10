@@ -8,22 +8,20 @@
 
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.NamedElement;
 import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
-import org.kie.dmn.core.internal.utils.DynamicDMNContextBuilder;
 import org.kie.internal.io.ResourceFactory;
 
 /**
@@ -58,64 +56,67 @@ class dmnSemanticComparison {
                 .fromResources(Collections.singletonList(modelResource1)).getOrElseThrow(RuntimeException::new);
         DMNModel parsedModel = dmnRuntime1.getModels().get(0);
 
-        compareDMNModels(originalModel, parsedModel);
+        System.out.println("========== SEMANTIC COMPARISON ==========");
+        System.out.println("Evaluating DMN file: " + models[0].getName());
 
-        //System.out.println(args[0]);
-        //System.out.println(args[1]);
-
-
-
-        return 0;
-
-        /*File[] models = Stream.of(args)
-                              .map(File::new)
-                              .toArray(File[]::new);
-
-        DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
-
-        final List<DMNMessage> messages = dmnValidator.validateUsing(Validation.VALIDATE_SCHEMA,
-                                                                     Validation.VALIDATE_MODEL,
-                                                                     Validation.VALIDATE_COMPILATION)
-                                                      .theseModels(models);
-
-        if (messages.size() == 0) {
-            System.out.println("=== DMN FILES SUCCESSFULLY VALIDATED! ===");
-            Stream.of(models).forEach(model -> System.out.println(model.getName()));
-            System.out.println("=========================================");
-            return 0;
-        } else {
-            System.out.println("=== DMN VALIDATION FAILED ===");
-            Stream.of(models).forEach(model -> System.out.println(model.getName()));
-            messages.forEach(message -> System.out.println(message.getText()));
-            System.out.println("=============================");
-            return 1;
-        } */
+        return compareDMNModels(originalModel, parsedModel);
     }
 
-    private static void compareDMNModels(DMNModel originalModel, DMNModel parsedModel) {
-
+    /** 
+     * This function compares two DMN models and returns a list of any missing elements between them. 
+     * The function checks both the original model and the parsed model to ensure that all elements are present in both models. 
+     * If any missing elements are found, the function returns a list of error messages describing the missing elements
+     */
+    static int compareDMNModels(DMNModel originalModel, DMNModel parsedModel) {
         Definitions originalModelDefinitions = originalModel.getDefinitions();
         Definitions parsedModelDefinitions = parsedModel.getDefinitions();
 
-        checkElements(originalModelDefinitions.getDecisionService(), parsedModelDefinitions.getDecisionService());
-        checkElements(originalModelDefinitions.getBusinessContextElement(), parsedModelDefinitions.getBusinessContextElement());
-        checkElements(originalModelDefinitions.getDrgElement(), parsedModelDefinitions.getDrgElement());
-        checkElements(originalModelDefinitions.getImport(), parsedModelDefinitions.getImport());
-        checkElements(originalModelDefinitions.getItemDefinition(), parsedModelDefinitions.getItemDefinition());
+        List<String> missingElementsMessages = new ArrayList<String>();
+
+        /* Check if the ORIGINAL model elements are present in the PARSED model */
+        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getDecisionService(), parsedModelDefinitions.getDecisionService()));
+        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getBusinessContextElement(), parsedModelDefinitions.getBusinessContextElement()));
+        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getDrgElement(), parsedModelDefinitions.getDrgElement()));
+        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getImport(), parsedModelDefinitions.getImport()));
+        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getItemDefinition(), parsedModelDefinitions.getItemDefinition()));
+
+        /* Check if the PARSED model elements are present in the ORIGINAL model */
+        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getDecisionService(), originalModelDefinitions.getDecisionService()));
+        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getBusinessContextElement(), originalModelDefinitions.getBusinessContextElement()));
+        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getDrgElement(), originalModelDefinitions.getDrgElement()));
+        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getImport(), originalModelDefinitions.getImport()));
+        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getItemDefinition(), originalModelDefinitions.getItemDefinition()));
+
+        if (missingElementsMessages.isEmpty()) {
+            System.out.println("RESULT: Original and Parsed files are semantically the same!");
+            return 0;
+        } else {
+            System.out.println("ERROR: Original and Parsed files are NOT semantically the same!");
+            missingElementsMessages.forEach(message -> System.out.println(message));
+            return 1;
+        }
     }
 
+    /**
+     * It's a generic method that checks if all elements in a Collection of type T are present in another Collection of the same type.
+     * It takes two parameters:
+     * @param target A Collection of type T that represents the target collection to search for missing elements
+     * @param source A Collection of type T that represents the source collection containing the elements to check.
+     * @return
+     */
     static <T extends NamedElement> List<String> checkElements(Collection<T> target, Collection<T> source) {
-        return source.map(sourceElement -> {
-            boolean isAbsent = checkIfAbsent(target, sourceElement);
-            return isAbsent ? "sourceElement " + sourceElement.getName() + "is missing!!!" : true;
-            System.out.println(isAbsent);
-        }).collect(Collectors.toList());
+        return source.stream().filter(sourceElement -> checkIfAbsent(target, sourceElement))
+                              .map(sourceElement -> "Missing element: " + sourceElement.getName())
+                              .collect(Collectors.toList());
     }
 
+    /**
+     * This method checks if a given element is absent in a collection of elements based on its name. It takes two parameters:
+     * @param target A collection of elements to search through.
+     * @param source The element to search for.
+     * @return This method returns a boolean value indicating whether or not the element is absent from the collection.
+     */    
     static <T extends NamedElement> boolean checkIfAbsent(Collection<T> target, T source) {
-        return target.stream().noneMatch(namedElement -> {
-            System.out.println(namedElement.getName() + " - " + source.getName());
-            return Objects.equals(namedElement.getName(), source.getName());
-        });
+        return target.stream().noneMatch(namedElement -> Objects.equals(namedElement.getName(), source.getName()));
     }
 }

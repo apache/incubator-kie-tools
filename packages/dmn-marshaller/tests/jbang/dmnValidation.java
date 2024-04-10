@@ -42,15 +42,14 @@ class dmnValidation {
                                                       .theseModels(models);
 
         if (messages.size() == 0) {
-            System.out.println("=== DMN FILES SUCCESSFULLY VALIDATED! ===");
+            System.out.println("RESULT: Following files have been successfully validated!");
             Stream.of(models).forEach(model -> System.out.println(model.getName()));
-            System.out.println("=========================================");
             return 0;
         } else {
-            System.out.println("=== DMN VALIDATION FAILED ===");
+            System.out.println("ERROR: Validation failed for the following files");
             Stream.of(models).forEach(model -> System.out.println(model.getName()));
+            System.out.println("Validation Errors:");
             messages.forEach(message -> System.out.println(message.getText()));
-            System.out.println("=============================");
             return 1;
         }
     }
