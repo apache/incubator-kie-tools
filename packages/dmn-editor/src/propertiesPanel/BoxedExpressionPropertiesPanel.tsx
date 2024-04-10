@@ -64,25 +64,25 @@ export function BoxedExpressionPropertiesPanel() {
     [activeDrgElementId, selectedObjectId]
   );
 
-  const node = useMemo(() => {
-    const nodesById = dmnEditorStoreApi
-      .getState()
-      .computed(dmnEditorStoreApi.getState())
-      .getDiagramData(externalModelsByNamespace).nodesById;
-    return activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined;
-  }, [activeDrgElementId, dmnEditorStoreApi, externalModelsByNamespace]);
+  const node = useDmnEditorStore((s) =>
+    s
+      .computed(s)
+      .getDiagramData(externalModelsByNamespace)
+      .nodesById.get(buildXmlHref({ id: activeDrgElementId ?? "" }))
+  );
+
   const isReadonly = !!node?.data.dmnObjectNamespace && node.data.dmnObjectNamespace !== thisDmnsNamespace;
 
   const boxedExpressionIndex = useMemo(() => {
-    if (!node?.data.dmnObject) {
-      return undefined;
+    if (node?.data.dmnObject === undefined) {
+      return;
     }
 
     let expression: AllExpressions | undefined;
-    if (node?.data.dmnObject.__$$element === "businessKnowledgeModel") {
+    if (node.data.dmnObject?.__$$element === "businessKnowledgeModel") {
       expression = { __$$element: "functionDefinition", ...node.data.dmnObject.encapsulatedLogic };
     }
-    if (node?.data.dmnObject.__$$element === "decision") {
+    if (node.data.dmnObject?.__$$element === "decision") {
       expression = node.data.dmnObject.expression;
     }
 
