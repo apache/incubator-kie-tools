@@ -53,6 +53,25 @@ const dmnTestingModels = [
   //FULL_1_x_DIRECTORY + "Traffic Violation Simple.dmn",
 ];
 
+const dmnTestingImportedModels = [
+  {
+    imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+    importer: "../valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn",
+  },
+  {
+    imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+    importer: "../valid_models/DMNv1_5/Importing_Named_Model.dmn",
+  },
+  {
+    imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+    importer: "../valid_models/DMNv1_5/Importing_OverridingEmptyNamed_Model.dmn",
+  },
+  // {
+  //   imported: FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
+  //   importer: FULL_1_x_MULTIPLE_DIRECTORY + "Traffic Violation With Import.dmn",
+  // },
+];
+
 const marshalledXMLDirectory = path.join(__dirname, "../dist-tests/dmnSemanticComparison-test-files");
 const jbangDmnSemanticComparisonScriptPath = path.join(__dirname, "./jbang/dmnSemanticComparison.java");
 
@@ -93,27 +112,32 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
   });
 }
 
-/*
-  function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string; importer: string }) {
-    test(
-      normalizedFsPathRelativeToTheFiles.importer.substring(
-        normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
-      ),
-      () => {
-        const importedMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
-        const importerMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
-  
-        try {
-          executeJBangScript(jbangDmnSemanticComparisonScriptPath, importedMarshalledXMLFilePath, importerMarshalledXMLFilePath);
-        } catch (error) {
-          const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
-            normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
-          );
-          fail("Validation of " + error + " failed! Please scroll up to DMN VALIDATION ERROR message to see the reason");
-        }
+function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string; importer: string }) {
+  test(
+    normalizedFsPathRelativeToTheFiles.importer.substring(
+      normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
+    ),
+    () => {
+      const importedMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
+      const importerMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
+
+      try {
+        executeJBangScript(
+          jbangDmnSemanticComparisonScriptPath,
+          importerMarshalledXMLFilePath,
+          importedMarshalledXMLFilePath,
+          normalizedFsPathRelativeToTheFiles.importer,
+          normalizedFsPathRelativeToTheFiles.imported
+        );
+      } catch (error) {
+        const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
+          normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
+        );
+        fail("Comparison of " + fileName + " failed! Please scroll up to catch the error root cause");
       }
-    );
-  } */
+    }
+  );
+}
 
 function parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile: string): string {
   const originalXML = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
