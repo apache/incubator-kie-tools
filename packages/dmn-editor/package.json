@@ -74,6 +74,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@playwright/test": "^1.38.1",
     "@storybook/addon-links": "^7.3.2",
+    "@storybook/addon-webpack5-compiler-babel": "^3.0.3",
     "@storybook/blocks": "^7.3.2",
     "@storybook/manager-api": "^7.3.2",
     "@storybook/preview-api": "^7.3.2",

@@ -18,10 +18,13 @@
  */
 
 import type { StorybookConfig } from "@storybook/react-webpack5";
+import * as webpack from "webpack";
+import merge from "webpack-merge";
 
-export const baseConfig: (webpackEnv: { transpileOnly: boolean; sourceMaps: boolean }) => StorybookConfig = (
-  webpackEnv
-) => {
+export const baseConfig: (
+  webpackEnv: { transpileOnly: boolean; sourceMaps: boolean },
+  common: webpack.Configuration
+) => StorybookConfig = (webpackEnv, common) => {
   console.log("Storybook base :: Webpack env :: transpileOnly: " + webpackEnv.transpileOnly);
   console.log("Storybook base :: Webpack env :: sourceMap: " + webpackEnv.sourceMaps);
 
@@ -50,30 +53,10 @@ export const baseConfig: (webpackEnv: { transpileOnly: boolean; sourceMaps: bool
       "@storybook/addon-outline",
       "@storybook/addon-toolbars",
       "@storybook/addon-viewport",
+      "@storybook/addon-webpack5-compiler-babel",
     ],
     webpackFinal: async (config) => {
-      if (process.env.STORYBOOK_BASE_WRAPPER_INTERNAL__liveReload) {
-        config.module?.rules?.push({
-          test: /\.tsx?$/,
-          use: [
-            {
-              loader: require.resolve("ts-loader"),
-              options: {
-                transpileOnly: webpackEnv.transpileOnly,
-                compilerOptions: {
-                  importsNotUsedAsValues: "preserve",
-                  sourceMap: webpackEnv.sourceMaps,
-                },
-              },
-            },
-            {
-              loader: require.resolve("@kie-tools-core/webpack-base/multi-package-live-reload-loader.js"),
-            },
-          ],
-        });
-      }
-
-      return config;
+      return merge(config, common);
     },
   };
 };
