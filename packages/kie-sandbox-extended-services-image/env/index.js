@@ -22,7 +22,7 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/extended-services-java/env")], {
   vars: varsWithName({
     KIE_SANDBOX_EXTENDED_SERVICES__builderImage: {
-      default: "registry.access.redhat.com/ubi9/openjdk-17:1.18",
+      default: "registry.access.redhat.com/ubi9/openjdk-17:1.19",
       description: "The image used in the FROM import.",
     },
     KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: {
