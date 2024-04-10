@@ -32,6 +32,8 @@ public class DefaultTheme implements StunnerColorTheme {
     // Transition text box
     static final String EDGE_TEXT_FILL_COLOR = "white";
     static final String EDGE_TEXT_STROKE_COLOR = "white";
+    //Canvas
+    static final String CANVAS_BACKGROUND_COLOR = "white";
 
     private DefaultTheme() {
     }
@@ -77,6 +79,21 @@ public class DefaultTheme implements StunnerColorTheme {
     @Override
     public String getEdgeTextStrokeColor() {
         return EDGE_TEXT_STROKE_COLOR;
+    }
+
+    @Override
+    public String getScrollbarColor() {
+        return null;
+    }
+
+    @Override
+    public String getCanvasBackgroundColor() {
+        return null;
+    }
+
+    @Override
+    public String getScrollbarBackgroundColor() {
+        return CANVAS_BACKGROUND_COLOR;
     }
 
     @Override

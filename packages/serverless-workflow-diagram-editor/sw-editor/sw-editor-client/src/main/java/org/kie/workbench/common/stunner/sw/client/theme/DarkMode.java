@@ -73,6 +73,9 @@ public class DarkMode implements ColorTheme {
     private static final String TRANSITION_BOX_COLOR = "gray";
     private static final String ERROR_TRANSITION_BOX_COLOR = "#9F3A3A";
     private static final String EVENT_CONDITION_TRANSITION_BOX_COLOR = "#C97330";
+    // Canvas Scrollbars
+    private static final String SCROLLBAR_COLOR = "#4F4F4F";
+    private static final String SCROLLBAR_BACKGROUND_COLOR = "#000";
 
     private DarkMode() {
     }
@@ -273,6 +276,16 @@ public class DarkMode implements ColorTheme {
     @Override
     public String getEdgeTextStrokeColor() {
         return EDGE_TEXT_STROKE_COLOR;
+    }
+
+    @Override
+    public String getScrollbarColor() {
+        return SCROLLBAR_COLOR;
+    }
+
+    @Override
+    public String getScrollbarBackgroundColor() {
+        return SCROLLBAR_BACKGROUND_COLOR;
     }
 
     @Override

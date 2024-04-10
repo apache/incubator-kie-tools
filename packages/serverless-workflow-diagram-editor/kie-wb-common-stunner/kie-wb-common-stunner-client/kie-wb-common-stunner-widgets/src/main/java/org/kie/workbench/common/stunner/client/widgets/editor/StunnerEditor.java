@@ -25,6 +25,7 @@ import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
@@ -331,10 +332,10 @@ public class StunnerEditor {
     }
 
     public void clearAlerts() {
-            hasErrors = false;
-            if (null != alertsControl) {
-                alertsControl.clear();
-            }
+        hasErrors = false;
+        if (null != alertsControl) {
+            alertsControl.clear();
+        }
     }
 
     private String buildErrorMessage(ClientRuntimeError error, Throwable throwable, String errorTitle) {
@@ -349,6 +350,25 @@ public class StunnerEditor {
             message += error.toString();
         }
         return message;
+    }
+
+    public void setScrollbarColors() {
+        if (null != getSession()) {
+            LienzoCanvas canvas = (LienzoCanvas) getSession().getCanvasHandler().getCanvas();
+            LienzoPanel panel = (LienzoPanel) canvas.getView().getPanel();
+            LienzoBoundsPanel lienzoPanel = panel.getView();
+
+            ((ScrollablePanel) lienzoPanel).setScrollbarColors(StunnerTheme.getTheme().getScrollbarColor(),
+                                                               StunnerTheme.getTheme().getScrollbarBackgroundColor());
+        }
+    }
+
+    public void setCanvasBackgroundColor() {
+        if (null != getSession()) {
+            LienzoCanvas canvas = (LienzoCanvas) getSession().getCanvasHandler().getCanvas();
+
+            canvas.setBackgroundColor(StunnerTheme.getTheme().getCanvasBackgroundColor());
+        }
     }
 
     @PreDestroy
