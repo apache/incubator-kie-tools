@@ -39,7 +39,7 @@ import (
 
 // ExecuteCommand executes a command with the given arguments and returns an error if the command fails.
 func ExecuteCommand(command string, args ...string) error {
-	cmd := exec.Command("MAVEN_ARGS=\"-B\""+command, args...)
+	cmd := exec.Command(command, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -179,7 +179,6 @@ func AddSnapshotRepositoryDeclarationToPom(t *testing.T, projectDir string) {
 
 	file, err := os.Open(pomFilePath)
 	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
-	defer file.Close()
 
 	content, err := io.ReadAll(file)
 	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
