@@ -80,10 +80,14 @@ class dmnSemanticComparison {
         } else {
             List<Resource> resources = new ArrayList<>();
             String importerFileSourcePath = dmnFiles.get(0).getCanonicalPath();
+            System.out.println("DEBUG - IMPORTED FILE SOURCE PATH");
+            System.out.println(importerFileSourcePath);
 
             for (File file : dmnFiles) {
                 Resource readerResource = ResourceFactory.newReaderResource(new FileReader(file), "UTF-8");
                 readerResource.setSourcePath(file.getCanonicalPath());
+                System.out.println("DEBUG - ADDED CANONICAL FILE SOURCE PATH");
+                System.out.println(file.getCanonicalPath());
                 resources.add(readerResource);
             }
 
@@ -94,6 +98,9 @@ class dmnSemanticComparison {
             DMNModel importerModel = null;
 
             for (DMNModel m : dmnRuntime.getModels()) {
+                System.out.println("DEBUG - CHECkING CANONICAL FILE SOURCE PATH");
+                System.out.println("DEBUG - SEARCHING: " + importerFileSourcePath);
+                System.out.println("DEBUG - FOUND: " + m.getResource().getSourcePath());
                 if (m.getResource().getSourcePath().equals(importerFileSourcePath)) {
                     importerModel = m;
                     break;
