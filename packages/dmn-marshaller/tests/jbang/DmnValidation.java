@@ -81,7 +81,7 @@ class DmnValidation extends DmnParserJBangScript {
         return this.validate(models);
     }
 
-    public static int validate(List<File> models) {
+    private int validate(List<File> models) {
         DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
 
         final List<DMNMessage> messages = dmnValidator.validateUsing(Validation.VALIDATE_SCHEMA,

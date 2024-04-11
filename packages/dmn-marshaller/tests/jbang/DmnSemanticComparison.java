@@ -1,10 +1,31 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
+//SOURCES ./DmnParserJBangScript.java
 //DEPS org.kie:kie-dmn-api:${kogito-runtime.version:LATEST}
 //DEPS org.kie:kie-dmn-core:${kogito-runtime.version:LATEST}
 //DEPS org.kie:kie-dmn-model:${kogito-runtime.version:LATEST}
 //DEPS org.kie:kie-api:${kogito-runtime.version:LATEST}
 //DEPS org.kie:kie-internal:${kogito-runtime.version:LATEST}
+
+package jbang;
 
 import java.io.File;
 import java.io.FileReader;
@@ -15,6 +36,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNContext;
@@ -31,45 +59,62 @@ import org.kie.internal.io.ResourceFactory;
  * The script can manage one or two (in case of imported model) DMN file paths.
  * The XSD SCHEMA, DMN COMPLIANCE and DMN COMPILATION are validated.
  */
-class dmnSemanticComparison {
+class DmnSemanticComparison extends DmnParserJBangScript {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DmnSemanticComparison.class);
+
+    @Option(names = {"-o", "--originalDmnFilePath"}, description = "Path of original DMN file to be compared", required = true)
+    private String originalDmnFilePath;
+
+    @Option(names = {"-g", "--generatedDmnFilePath"} , description = "Path of generated DMN file to be compared", required = true)
+    private String generatedDmnFilePath;
+
+    @Option(names = {"-io", "--importedOriginalDmnFilesPaths"} , description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
+    private String[] importedOriginalDmnFilesPath;
+
+    @Option(names = {"-ig", "--importedGeneratedDmnFilesPaths"} , description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
+    private String[] importedGeneratedDmnFilesPath;
 
     public static void main(String... args) throws Exception {
-        int exitCode = compare(args);
+        int exitCode = new CommandLine(new DmnSemanticComparison()).execute(args);
         System.exit(exitCode);
     }
 
-    /**
-     * For models without an Imported model, the args array holds the Original model and the parsed one (2 elements)
-     * In case of Imported models, the following logic is applied: The odd index elements refer to the original
-     * DMN file, while the even ones relate to the parsed DMN file. Example:
-     * - originalModel
-     * - originalModelImport1
-     * - originalModelImport2
-     * - parsedModel
-     * - parsedModelImport1
-     * - parsedModelImport2
-     * ....
-     */
-    public static int compare(String... args) throws Exception {
-        if (args.length < 2) {
-            throw new IllegalArgumentException("Comparison requires more than 2 DMN files");
-        }
+    @Override
+    public Integer call() throws Exception {
+        File originalDMNFile = new File(originalDmnFilePath);
+        File generatedDmnFile = new File(generatedDmnFilePath);
 
+
+        /*List<File> models = new ArrayList<>();
+        models.add(new File(dmnFilePath));
+
+        if (importedDmnFilesPath != null && importedDmnFilesPath.length > 0) {
+            models.addAll(Stream.of(importedDmnFilesPath)
+                    .map(File::new)
+                    .collect(Collectors.toList()));
+        }*/
+        return this.compare(originalDMNFile, generatedDmnFile);
+    }
+
+     private int compare(File originalDMNFile, File generatedDmnFile) throws Exception {
+
+/*
         List<File> models = Stream.of(args)
                 .map(File::new)
                 .collect(Collectors.toList());
-        boolean areImportedModelsPresent = models.size() > 2;
+        boolean areImportedModelsPresent = models.size() > 2;*/
 
-        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(models.subList(0, models.size() / 2));
-        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(models.subList(models.size() / 2, models.size()));
+        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(List.of(originalDMNFile));
+        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(List.of(generatedDmnFile));
 
-        System.out.println("========== SEMANTIC COMPARISON ==========");
-        System.out.println("Evaluating DMN file: " + models.get(0).getName());
+        LOGGER.info("========== SEMANTIC COMPARISON ==========");
+        LOGGER.info("Evaluating DMN file: " + originalModel.getName());
 
         return compareDMNModels(originalModel, parsedModel);
     }
 
-    static DMNModel instantiateDMNRuntimeAndReturnDMNModel(List<File> dmnFiles) throws Exception {
+    private DMNModel instantiateDMNRuntimeAndReturnDMNModel(List<File> dmnFiles) throws Exception {
         if (dmnFiles.size() == 1) {
             Resource modelResource = ResourceFactory.newReaderResource(new FileReader(dmnFiles.get(0)), "UTF-8");
             DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
@@ -119,7 +164,7 @@ class dmnSemanticComparison {
      * The function checks both the original model and the parsed model to ensure that all elements are present in both models.
      * If any missing elements are found, the function returns a list of error messages describing the missing elements
      */
-    static int compareDMNModels(DMNModel originalModel, DMNModel parsedModel) {
+    private int compareDMNModels(DMNModel originalModel, DMNModel parsedModel) {
         Definitions originalModelDefinitions = originalModel.getDefinitions();
         Definitions parsedModelDefinitions = parsedModel.getDefinitions();
 
@@ -140,11 +185,11 @@ class dmnSemanticComparison {
         missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getItemDefinition(), originalModelDefinitions.getItemDefinition()));
 
         if (missingElementsMessages.isEmpty()) {
-            System.out.println("RESULT: Original and Parsed files are semantically the same!");
+            LOGGER.info("RESULT: Original and Parsed files are semantically the same!");
             return 0;
         } else {
-            System.out.println("ERROR: Original and Parsed files are NOT semantically the same!");
-            missingElementsMessages.forEach(message -> System.out.println(message));
+            LOGGER.error("ERROR: Original and Parsed files are NOT semantically the same!");
+            missingElementsMessages.forEach(message -> LOGGER.error(message));
             return 1;
         }
     }

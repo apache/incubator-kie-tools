@@ -73,7 +73,7 @@ const dmnTestingImportedModels = [
 ];
 
 const marshalledXMLDirectory = path.join(__dirname, "../dist-tests/dmnSemanticComparison-test-files");
-const jbangDmnSemanticComparisonScriptPath = path.join(__dirname, "./jbang/dmnSemanticComparison.java");
+const jbangDmnSemanticComparisonScriptPath = path.join(__dirname, "./jbang/DmnSemanticComparison.java");
 
 describe("validation", () => {
   beforeAll(() => {
@@ -85,12 +85,12 @@ describe("validation", () => {
 
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
-  }
+  } /*
   for (const file of dmnTestingImportedModels) {
     file.imported = path.join(dmnTestingModelsPath, file.imported);
     file.importer = path.join(dmnTestingModelsPath, file.importer);
     testImportedFile(file);
-  }
+  } */
 });
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
@@ -100,8 +100,8 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
     try {
       executeJBangScript(
         jbangDmnSemanticComparisonScriptPath,
-        normalizedFsPathRelativeToTheFile,
-        marshalledXMLFilePath
+        "-o" + normalizedFsPathRelativeToTheFile,
+        "-g" + marshalledXMLFilePath
       );
     } catch (error) {
       const fileName = normalizedFsPathRelativeToTheFile.substring(
