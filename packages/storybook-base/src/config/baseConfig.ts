@@ -19,12 +19,12 @@
 
 import type { StorybookConfig } from "@storybook/react-webpack5";
 import * as webpack from "webpack";
-import merge from "webpack-merge";
 import * as path from "path";
+import merge from "webpack-merge";
 
 export const baseConfig: (
   webpackEnv: { transpileOnly: boolean; sourceMaps: boolean },
-  common: webpack.Configuration
+  commonConfig: webpack.Configuration
 ) => StorybookConfig = (webpackEnv, common) => {
   console.log("Storybook base :: Webpack env :: transpileOnly: " + webpackEnv.transpileOnly);
   console.log("Storybook base :: Webpack env :: sourceMap: " + webpackEnv.sourceMaps);

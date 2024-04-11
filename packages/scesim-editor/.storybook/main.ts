@@ -26,7 +26,7 @@ import { env } from "../env";
 const buildEnv: any = env; // build-env is not typed
 
 const config = {
-  ...baseConfig(buildEnv.webpack.dev, common({ dev: true })),
+  ...baseConfig(buildEnv.webpack.dev, common(buildEnv.webpack.dev)),
 };
 
 export default config;
