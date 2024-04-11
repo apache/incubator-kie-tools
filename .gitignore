@@ -271,3 +271,6 @@ fabric.properties
 packages/bpmn-marshaller/**/ts-gen
 packages/dmn-marshaller/**/ts-gen
 packages/scesim-marshaller/**/ts-gen
+
+# devbox
+.devbox
