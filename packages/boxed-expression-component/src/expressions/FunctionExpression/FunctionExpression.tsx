@@ -39,10 +39,7 @@ export function FunctionExpression({
   isNested,
   parentElementId,
   ...boxedFunction
-}: {
-  isNested: boolean;
-  parentElementId: string;
-} & BoxedFunction) {
+}: BoxedFunction & { isNested: boolean; parentElementId: string }) {
   switch (boxedFunction["@_kind"]) {
     case "Java":
       return (

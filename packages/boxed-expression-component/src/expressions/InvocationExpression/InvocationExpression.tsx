@@ -58,12 +58,11 @@ export type ROWTYPE = ExpressionWithVariable & { index: number };
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME = "p-1";
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
-export function InvocationExpression(
-  invocationExpression: BoxedInvocation & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
+export function InvocationExpression({
+  isNested,
+  parentElementId,
+  ...invocationExpression
+}: BoxedInvocation & { isNested: boolean; parentElementId: string }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
@@ -238,9 +237,8 @@ export function InvocationExpression(
   );
 
   const headerVisibility = useMemo(
-    () =>
-      invocationExpression.isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels,
-    [invocationExpression.isNested]
+    () => (isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels),
+    [isNested]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
@@ -270,11 +268,9 @@ export function InvocationExpression(
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
       parameter: (props) => <ExpressionVariableCell {...props} onExpressionWithVariableUpdated={updateParameter} />,
-      expression: (props) => (
-        <ArgumentEntryExpressionCell {...props} parentElementId={invocationExpression.parentElementId} />
-      ),
+      expression: (props) => <ArgumentEntryExpressionCell {...props} parentElementId={parentElementId} />,
     }),
-    [invocationExpression.parentElementId, updateParameter]
+    [parentElementId, updateParameter]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {

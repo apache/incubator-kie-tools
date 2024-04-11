@@ -44,7 +44,7 @@ import "./LiteralExpression.css";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
-export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: boolean }) {
+export function LiteralExpression({ isNested, ...literalExpression }: BoxedLiteral & { isNested: boolean }) {
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
 
@@ -56,7 +56,11 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
 
   const setValue = useCallback(
     (value: string) => {
-      setExpression(() => ({ ...literalExpression, text: { __$$text: value } }));
+      setExpression((prev: BoxedLiteral) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: BoxedLiteral = { ...literalExpression, text: { __$$text: value } };
+        return ret;
+      });
     },
     [literalExpression, setExpression]
   );
@@ -121,7 +125,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
   const beeTableRef = useRef<BeeTableRef>(null);
 
   useEffect(() => {
-    if (isPivoting || !literalExpression.isNested) {
+    if (isPivoting || !isNested) {
       return;
     }
 
@@ -137,7 +141,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
         ],
       ])
     );
-  }, [isPivoting, literalExpression.isNested, minWidth, nestedExpressionContainer.resizingWidth.value]);
+  }, [isPivoting, isNested, minWidth, nestedExpressionContainer.resizingWidth.value]);
 
   /// //////////////////////////////////////////////////////
 
@@ -160,8 +164,8 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
   }, [expressionHolderId, literalExpression.text, id]);
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return literalExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
-  }, [literalExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.id;

@@ -99,9 +99,11 @@ function createAnnotationEntry(): Unpacked<DMN15__tDecisionRule["annotationEntry
   };
 }
 
-export function DecisionTableExpression(
-  decisionTableExpression: BoxedDecisionTable & { isNested: boolean; parentElementId: string }
-) {
+export function DecisionTableExpression({
+  isNested,
+  parentElementId,
+  ...decisionTableExpression
+}: BoxedDecisionTable & { isNested: boolean; parentElementId: string }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
@@ -309,7 +311,7 @@ export function DecisionTableExpression(
   useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
     isPivoting,
-    decisionTableExpression.isNested,
+    isNested,
     BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
     columns,
     columnResizingWidths,
@@ -977,8 +979,8 @@ export function DecisionTableExpression(
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return decisionTableExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
-  }, [decisionTableExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const allowedOperations = useCallback(
     (conditions: BeeTableContextMenuAllowedOperationsConditions) => {

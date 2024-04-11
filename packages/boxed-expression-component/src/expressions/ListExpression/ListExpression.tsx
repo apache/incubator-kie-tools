@@ -43,17 +43,15 @@ import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { findAllIdsDeep } from "../../ids/ids";
-import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import "./ListExpression.css";
 
 export type ROWTYPE = DMN15__tContextEntry;
 
-export function ListExpression(
-  listExpression: BoxedList & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
+export function ListExpression({
+  isNested,
+  parentElementId,
+  ...listExpression
+}: BoxedList & { isNested: boolean; parentElementId: string }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
@@ -143,10 +141,10 @@ export function ListExpression(
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     (): { [p: string]: ({ rowIndex, data, columnIndex }: BeeTableCellProps<ROWTYPE>) => JSX.Element } => ({
       [expressionHolderId]: (props) => (
-        <ListItemCell parentElementId={listExpression.parentElementId} listExpression={listExpression} {...props} />
+        <ListItemCell parentElementId={parentElementId} listExpression={listExpression} {...props} />
       ),
     }),
-    [expressionHolderId, listExpression]
+    [expressionHolderId, listExpression, parentElementId]
   );
 
   const onRowAdded = useCallback(
@@ -228,8 +226,8 @@ export function ListExpression(
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return listExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
-  }, [listExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {

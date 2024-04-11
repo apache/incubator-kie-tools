@@ -42,7 +42,6 @@ import {
   CONDITIONAL_EXPRESSION_EXTRA_WIDTH,
   CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH,
 } from "../../resizing/WidthConstants";
-import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 
 export type ROWTYPE = ConditionalClause;
 
@@ -51,12 +50,11 @@ export type ConditionalClause = {
   label: string;
 };
 
-export function ConditionalExpression(
-  conditionalExpression: BoxedConditional & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
+export function ConditionalExpression({
+  isNested,
+  parentElementId,
+  ...conditionalExpression
+}: BoxedConditional & { isNested: boolean; parentElementId: string }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -75,10 +73,10 @@ export function ConditionalExpression(
         return <BeeTableReadOnlyCell value={props.data[props.rowIndex].label} />;
       },
       part: (props) => {
-        return <ConditionalExpressionCell {...props} parentElementId={conditionalExpression.parentElementId} />;
+        return <ConditionalExpressionCell {...props} parentElementId={parentElementId} />;
       },
     };
-  }, [conditionalExpression.parentElementId]);
+  }, [parentElementId]);
   const id = conditionalExpression["@_id"]!;
 
   const tableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
@@ -116,8 +114,8 @@ export function ConditionalExpression(
   }, [conditionalExpression, expressionHolderId]);
 
   const headerVisibility = useMemo(() => {
-    return conditionalExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
-  }, [conditionalExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
+  }, [isNested]);
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////

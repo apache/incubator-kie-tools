@@ -52,7 +52,6 @@ import { useFunctionExpressionControllerCell, useFunctionExpressionParametersCol
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { findAllIdsDeep } from "../../ids/ids";
-import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 
 export type FEEL_ROWTYPE = { functionExpression: BoxedFunction };
 

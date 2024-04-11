@@ -58,12 +58,11 @@ const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
 export type ROWTYPE = ExpressionWithVariable & { index: number };
 
-export function ContextExpression(
-  contextExpression: BoxedContext & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
+export function ContextExpression({
+  isNested,
+  parentElementId,
+  ...contextExpression
+}: BoxedContext & { isNested: boolean; parentElementId: string }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
@@ -196,8 +195,8 @@ export function ContextExpression(
   );
 
   const headerVisibility = useMemo(() => {
-    return contextExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
-  }, [contextExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
+  }, [isNested]);
 
   const updateVariable = useCallback(
     (index: number, { expression, variable }: ExpressionWithVariable) => {

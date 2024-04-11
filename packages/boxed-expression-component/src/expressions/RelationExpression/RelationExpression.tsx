@@ -51,12 +51,11 @@ type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
 export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
-export function RelationExpression(
-  relationExpression: BoxedRelation & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
+export function RelationExpression({
+  isNested,
+  parentElementId,
+  ...relationExpression
+}: BoxedRelation & { isNested: boolean; parentElementId: string }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { widthsById, expressionHolderId } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
@@ -149,7 +148,7 @@ export function RelationExpression(
   useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
     isPivoting,
-    relationExpression.isNested,
+    isNested,
     BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
     columns,
     columnResizingWidths,
@@ -441,8 +440,8 @@ export function RelationExpression(
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return relationExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
-  }, [relationExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const allowedOperations = useCallback(
     (conditions: BeeTableContextMenuAllowedOperationsConditions) => {

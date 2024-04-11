@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
-import { BoxedContext, BoxedExpression, DmnBuiltInDataType, generateUuid } from "../../api";
+import { BoxedExpression, DmnBuiltInDataType, generateUuid } from "../../api";
 import { findAllIdsDeep } from "../../ids/ids";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
