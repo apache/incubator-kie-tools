@@ -170,7 +170,7 @@ export function getExpressionTotalMinWidth(
     const width =
       currentWidth +
       (getWidthAt(CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]) ??
-        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) +
+        CONTEXT_ENTRY_VARIABLE_MIN_WIDTH) +
       CONTEXT_EXPRESSION_EXTRA_WIDTH;
     const contextEntriesMaxWidth = (expression.contextEntry ?? []).reduce(
       (maxWidth, currentExpression) =>
@@ -182,7 +182,7 @@ export function getExpressionTotalMinWidth(
     const width =
       currentWidth +
       (getWidthAt(INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]) ??
-        INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH) +
+        INVOCATION_PARAMETER_MIN_WIDTH) +
       INVOCATION_EXTRA_WIDTH;
     return (expression.binding ?? []).reduce(
       (maxWidth, currentExpression) =>
