@@ -27,6 +27,7 @@ package jbang;
 
 import java.util.concurrent.Callable;
 
+/** Parent Script class for all JBang script used in this package */
 abstract class DmnParserJBangScript implements Callable<Integer> {
 
 }

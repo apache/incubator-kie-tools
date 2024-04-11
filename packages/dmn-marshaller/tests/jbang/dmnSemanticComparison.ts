@@ -21,12 +21,12 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
-import { executeJBangScript } from "./jbang/jbangManager";
+import { executeJBangScript } from "./jbangManager";
 
 /**
- * This test suite validates the xml produced by the marshaller relying on KIE DMN Validator
- * (https://github.com/apache/incubator-kie-drools/tree/main/kie-dmn/kie-dmn-validation).
- * A JBang script is used to actually call the KIE DMN Validator Java code.
+ * This test suite compares the xml generated (parsed and built) by the dmn-parser with the original xml.
+ * The original xml and the generated one are passed and compered to the KIE DMN Core backend API.
+ * A JBang script is used to actually call the KIE DMN Core backend API.
  */
 
 const dmnTestingModelsPath = require.resolve("@kie-tools/dmn-testing-models");
@@ -72,17 +72,13 @@ const dmnTestingImportedModels = [
   // },
 ];
 
-const marshalledXMLDirectory = path.join(__dirname, "../dist-tests/dmnSemanticComparison-test-files");
-const jbangDmnSemanticComparisonScriptPath = path.join(__dirname, "./jbang/DmnSemanticComparison.java");
+export const dmnSemanticComparisonGeneratedFilesDirectory = path.join(
+  __dirname,
+  "../dist-tests/dmnSemanticComparison-generated-files"
+);
+const scriptPath = path.join(__dirname, "./DmnSemanticComparison.java");
 
-describe("validation", () => {
-  beforeAll(() => {
-    if (fs.existsSync(marshalledXMLDirectory)) {
-      fs.rmSync(marshalledXMLDirectory, { recursive: true });
-    }
-    fs.mkdirSync(marshalledXMLDirectory, { recursive: true });
-  });
-
+export function executeSemanticComparisonTests() {
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
   }
@@ -91,41 +87,42 @@ describe("validation", () => {
     file.importer = path.join(dmnTestingModelsPath, file.importer);
     testImportedFile(file);
   }
-});
+}
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
-  test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1), () => {
-    const marshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
+  test(
+    "DMN Semantic Comparison: " +
+      normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1),
+    () => {
+      const generatedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
-    try {
-      executeJBangScript(
-        jbangDmnSemanticComparisonScriptPath,
-        "-o" + normalizedFsPathRelativeToTheFile,
-        "-g" + marshalledXMLFilePath
-      );
-    } catch (error) {
-      const fileName = normalizedFsPathRelativeToTheFile.substring(
-        normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
-      );
-      fail("Comparison of " + fileName + " failed! Please scroll up to catch the error root cause");
+      try {
+        executeJBangScript(scriptPath, "-o" + normalizedFsPathRelativeToTheFile, "-g" + generatedXMLFilePath);
+      } catch (error) {
+        const fileName = normalizedFsPathRelativeToTheFile.substring(
+          normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
+        );
+        fail("Comparison of " + fileName + " failed! Please scroll up to catch the error root cause");
+      }
     }
-  });
+  );
 }
 
 function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string; importer: string }) {
   test(
-    normalizedFsPathRelativeToTheFiles.importer.substring(
-      normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
-    ),
+    "DMN Semantic Comparison: " +
+      normalizedFsPathRelativeToTheFiles.importer.substring(
+        normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
+      ),
     () => {
-      const importedMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
-      const importerMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
+      const importedGeneratedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
+      const importerGeneratedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
         executeJBangScript(
-          jbangDmnSemanticComparisonScriptPath,
-          "-g" + importerMarshalledXMLFilePath,
-          "-j" + importedMarshalledXMLFilePath,
+          scriptPath,
+          "-g" + importerGeneratedXMLFilePath,
+          "-j" + importedGeneratedXMLFilePath,
           "-o" + normalizedFsPathRelativeToTheFiles.importer,
           "-i" + normalizedFsPathRelativeToTheFiles.imported
         );
@@ -142,11 +139,11 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
 function parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile: string): string {
   const originalXML = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
   const { parser, builder } = getMarshaller(originalXML, { upgradeTo: "latest" });
-  const marshalledXML = builder.build(parser.parse());
+  const generatedXML = builder.build(parser.parse());
   const fileName = normalizedFsPathRelativeToTheFile.substring(
     normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
   );
-  const marshalledXMLFilePath = marshalledXMLDirectory + path.sep + fileName;
-  fs.writeFileSync(marshalledXMLFilePath, marshalledXML, "utf-8");
-  return marshalledXMLFilePath;
+  const generatedXMLFilePath = dmnSemanticComparisonGeneratedFilesDirectory + path.sep + fileName;
+  fs.writeFileSync(generatedXMLFilePath, generatedXML, "utf-8");
+  return generatedXMLFilePath;
 }

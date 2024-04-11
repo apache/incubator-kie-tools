@@ -21,10 +21,10 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
-import { executeJBangScript } from "./jbang/jbangManager";
+import { executeJBangScript } from "./jbangManager";
 
 /**
- * This test suite validates the xml produced by the marshaller relying on KIE DMN Validator
+ * This test suite validates the xml produced (parsed and built) by the marshaller relying on KIE DMN Validator
  * (https://github.com/apache/incubator-kie-drools/tree/main/kie-dmn/kie-dmn-validation).
  * A JBang script is used to actually call the KIE DMN Validator Java code.
  */
@@ -71,18 +71,10 @@ const dmnTestingImportedModels = [
   //   importer: FULL_1_x_MULTIPLE_DIRECTORY + "Traffic Violation With Import.dmn",
   // },
 ];
+export const dmnValidationGeneratedFilesDirectory = path.join(__dirname, "../dist-tests/dmnValidation-generated-files");
+const scriptPath = path.join(__dirname, "./DmnValidation.java");
 
-const marshalledXMLDirectory = path.join(__dirname, "../dist-tests/dmnValidation-test-files");
-const jbangDmnValidationScriptPath = path.join(__dirname, "./jbang/DmnValidation.java");
-
-describe("validation", () => {
-  beforeAll(() => {
-    if (fs.existsSync(marshalledXMLDirectory)) {
-      fs.rmSync(marshalledXMLDirectory, { recursive: true });
-    }
-    fs.mkdirSync(marshalledXMLDirectory, { recursive: true });
-  });
-
+export function executeValidationTests() {
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
   }
@@ -91,38 +83,39 @@ describe("validation", () => {
     file.importer = path.join(dmnTestingModelsPath, file.importer);
     testImportedFile(file);
   }
-});
+}
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
-  test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1), () => {
-    const marshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
+  test(
+    "DMN Validation: " +
+      normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1),
+    () => {
+      const generatedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
-    try {
-      executeJBangScript(jbangDmnValidationScriptPath, "-d" + marshalledXMLFilePath);
-    } catch (error) {
-      const fileName = normalizedFsPathRelativeToTheFile.substring(
-        normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
-      );
-      fail("Validation of " + fileName + " failed! Please scroll up the logs to see the reason.");
+      try {
+        executeJBangScript(scriptPath, "-d" + generatedXMLFilePath);
+      } catch (error) {
+        const fileName = normalizedFsPathRelativeToTheFile.substring(
+          normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
+        );
+        fail("Validation of " + fileName + " failed! Please scroll up the logs to see the reason.");
+      }
     }
-  });
+  );
 }
 
 function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string; importer: string }) {
   test(
-    normalizedFsPathRelativeToTheFiles.importer.substring(
-      normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
-    ),
+    "DMN Validation: " +
+      normalizedFsPathRelativeToTheFiles.importer.substring(
+        normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
+      ),
     () => {
-      const importedMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
-      const importerMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
+      const importedGeneratedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
+      const importerGeneratedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJBangScript(
-          jbangDmnValidationScriptPath,
-          "-d" + importedMarshalledXMLFilePath,
-          "-i" + importerMarshalledXMLFilePath
-        );
+        executeJBangScript(scriptPath, "-d" + importedGeneratedXMLFilePath, "-i" + importerGeneratedXMLFilePath);
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
           normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
@@ -136,11 +129,11 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
 function parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile: string): string {
   const originalXML = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
   const { parser, builder } = getMarshaller(originalXML, { upgradeTo: "latest" });
-  const marshalledXML = builder.build(parser.parse());
+  const generatedXML = builder.build(parser.parse());
   const fileName = normalizedFsPathRelativeToTheFile.substring(
     normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
   );
-  const marshalledXMLFilePath = marshalledXMLDirectory + path.sep + fileName;
-  fs.writeFileSync(marshalledXMLFilePath, marshalledXML, "utf-8");
-  return marshalledXMLFilePath;
+  const generatedXMLFilePath = dmnValidationGeneratedFilesDirectory + path.sep + fileName;
+  fs.writeFileSync(generatedXMLFilePath, generatedXML, "utf-8");
+  return generatedXMLFilePath;
 }

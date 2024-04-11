@@ -17,8 +17,8 @@
  * under the License.
  */
 import * as path from "path";
-const jbang = require("@jbangdev/jbang");
 const buildEnv = require("../../env");
+const jbang = require("@jbangdev/jbang");
 
 export function executeJBangScript(scriptPath: string, ...args: string[]) {
   /* Windows requires double quotes to wrap the argument, while in POSIX it must be wrapped by single quotes */
