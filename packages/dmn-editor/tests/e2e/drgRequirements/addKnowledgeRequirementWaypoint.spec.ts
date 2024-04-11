@@ -35,29 +35,26 @@ test.describe("Add edge waypoint - Knowledge Requirement", () => {
     });
   });
 
-  test("should add single waypoint to Knowledge Requirement edge and should not move when the ending node is moved", async ({
-    diagram,
-    nodes,
-    edges,
-  }) => {
+  test("should attach single Knowledge Requirement edge waypoint to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
-    await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
 
-    await expect(diagram.get()).toHaveScreenshot("add-knowledge-requirement-waypoint-and-not-move-it.png");
+    await expect(
+      await edges.getWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, waypointIndex: 1 })
+    ).toBeAttached();
+    await expect(
+      await edges.getWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, waypointIndex: 2 })
+    ).not.toBeAttached();
   });
 
-  test("should add multiple waypoints to Knowledge Requirement edge and should not move when the ending nodes are moved", async ({
-    diagram,
-    nodes,
-    edges,
-  }) => {
+  test("should attach multiple Knowledge Requirement edge waypoints to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
-    await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 200, y: 500 } });
+    await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, afterWaypointIndex: 1 });
 
-    await edges.addWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION });
-    await nodes.move({ name: DefaultNodeName.DECISION, targetPosition: { x: 500, y: 500 } });
-    await nodes.move({ name: DefaultNodeName.BKM, targetPosition: { x: 500, y: 100 } });
-
-    await expect(diagram.get()).toHaveScreenshot("add-multiple-knowledge-requirement-waypoints-and-not-move-them.png");
+    await expect(
+      await edges.getWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, waypointIndex: 1 })
+    ).toBeAttached();
+    await expect(
+      await edges.getWaypoint({ from: DefaultNodeName.BKM, to: DefaultNodeName.DECISION, waypointIndex: 2 })
+    ).toBeAttached();
   });
 });

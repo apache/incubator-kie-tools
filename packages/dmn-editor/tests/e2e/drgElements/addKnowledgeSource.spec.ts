@@ -28,11 +28,25 @@ test.beforeEach(async ({ editor }) => {
 test.describe("Add node - Knowledge Source", () => {
   test.describe("Add to the DRG", () => {
     test.describe("add from the palette", () => {
-      test("should add Knowledge Source node from palette", async ({ palette, nodes, diagram }) => {
+      test("should add Knowledge Source node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-knowledge-source-node-from-palette.png");
+
+        // JSON model assertions
+        const knowledgeSource = await jsonModel.drgElements.getKnowledgeSource({ drgElementIndex: 0, drdIndex: 0 });
+        expect(knowledgeSource).toEqual({
+          __$$element: "knowledgeSource",
+          "@_id": knowledgeSource["@_id"],
+          "@_name": DefaultNodeName.KNOWLEDGE_SOURCE,
+        });
+        expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({
+          "@_x": 0,
+          "@_y": 0,
+          "@_width": 160,
+          "@_height": 80,
+        });
       });
     });
 
