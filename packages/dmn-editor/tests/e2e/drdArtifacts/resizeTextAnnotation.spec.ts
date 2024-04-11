@@ -208,9 +208,11 @@ test.describe("Resize node - Text Annotation", () => {
   });
 
   test.describe("Resize on top of other node - Text Annotation", () => {
-    test.beforeEach(async ({ palette }) => {
+    test.beforeEach(async ({ diagram, palette }) => {
       await palette.dragNewNode({ type: NodeType.TEXT_ANNOTATION, targetPosition: { x: 100, y: 100 } });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 450, y: 150 } });
+      await diagram.resetFocus();
     });
 
     test("should resize Text Annotation on top of Decision node", async ({ nodes, diagram }) => {

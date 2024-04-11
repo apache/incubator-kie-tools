@@ -76,7 +76,7 @@ test.describe("Change Properties - Input Data", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Input Data node font", async ({ nodes, inputDataPropertiesPanel }) => {
+  test.only("should change the Input Data node font", async ({ nodes, inputDataPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.INPUT_DATA });
     await inputDataPropertiesPanel.setFont({
       fontSize: "40",

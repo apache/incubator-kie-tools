@@ -139,9 +139,11 @@ test.describe("Resize node - Input Data", () => {
   });
 
   test.describe("Resize on top of other node - Input Data", () => {
-    test.beforeEach(async ({ palette }) => {
+    test.beforeEach(async ({ diagram, palette }) => {
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 250, y: 150 } });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
+      await diagram.resetFocus();
     });
 
     test("should resize Input Data on top of Decision node", async ({ nodes, diagram }) => {

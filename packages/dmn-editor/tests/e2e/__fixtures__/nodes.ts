@@ -91,7 +91,7 @@ export class Nodes {
     targetPosition: { x: number; y: number };
     thenRenameTo?: string;
   }) {
-    await this.hover({ name: args.from, position: NodePosition.TOP });
+    await this.select({ name: args.from, position: NodePosition.TOP });
     const node = this.get({ name: args.from });
     const { addNodeTitle, nodeName } = this.getNewConnectedNodeProperties(args.type);
 

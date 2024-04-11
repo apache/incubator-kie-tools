@@ -148,9 +148,11 @@ test.describe("Resize node - Knowledge Source", () => {
   });
 
   test.describe("Resize on top of other node - Knowledge Source", () => {
-    test.beforeEach(async ({ palette }) => {
+    test.beforeEach(async ({ diagram, palette }) => {
       await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 250, y: 150 } });
+      await diagram.resetFocus();
       await palette.dragNewNode({ type: NodeType.KNOWLEDGE_SOURCE, targetPosition: { x: 100, y: 100 } });
+      await diagram.resetFocus();
     });
 
     test("should resize Knowledge Source on top of Decision node", async ({ nodes, diagram }) => {
