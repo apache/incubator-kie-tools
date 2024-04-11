@@ -73,6 +73,7 @@
     "apollo-server-express": "^3.13.0",
     "babel-jest": "^25.5.1",
     "concurrently": "^8.2.2",
+    "copy-webpack-plugin": "^11.0.0",
     "core-js": "3.6.5",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^5.0.1",
