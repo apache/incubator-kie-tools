@@ -19,11 +19,11 @@
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //SOURCES ./DmnParserJBangScript.java
-//DEPS org.kie:kie-dmn-api:${kogito-runtime.version:LATEST}
-//DEPS org.kie:kie-dmn-core:${kogito-runtime.version:LATEST}
-//DEPS org.kie:kie-dmn-model:${kogito-runtime.version:LATEST}
-//DEPS org.kie:kie-api:${kogito-runtime.version:LATEST}
-//DEPS org.kie:kie-internal:${kogito-runtime.version:LATEST}
+//DEPS org.kie:kie-dmn-api:${kogito-runtime.version}
+//DEPS org.kie:kie-dmn-core:${kogito-runtime.version}
+//DEPS org.kie:kie-dmn-model:${kogito-runtime.version}
+//DEPS org.kie:kie-api:${kogito-runtime.version}
+//DEPS org.kie:kie-internal:${kogito-runtime.version}
 
 package jbang;
 

@@ -22,6 +22,11 @@ import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import * as validator from "xsd-schema-validator";
 
+/**
+ * This test suite validates the xml produced (parsed and built) by the marshaller against DMN 1.5 XML Schema.
+ * The validation is performed by a 3rd party library (xsd-schema-validator)
+ */
+
 const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
 
 const testing_models_paths = ["../valid_models/DMNv1_5/", "../valid_models/DMNv1_x/"];
