@@ -40,7 +40,7 @@ import { DecisionTableRootCell } from "./BoxedExpressionPropertiesPanelComponent
 import { InvocationFunctionCallCell } from "./BoxedExpressionPropertiesPanelComponents/InvocationFunctionCallCell";
 import { FunctionDefinitionParameterCell } from "./BoxedExpressionPropertiesPanelComponents/FunctionDefinitionParametersCell";
 import { FunctionDefinitionRootCell } from "./BoxedExpressionPropertiesPanelComponents/FunctionDefinitionRootCell";
-import { NoneCell } from "./BoxedExpressionPropertiesPanelComponents/NoneCell";
+import { WithoutPropertiesCell } from "./BoxedExpressionPropertiesPanelComponents/WithoutPropertiesCell";
 import { DecisionTableOutputRuleCell } from "./BoxedExpressionPropertiesPanelComponents/DecisionTableOutputRuleCell";
 import { ContextInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents/ContextInformationItemCell";
 import { InvocationInformationItemCell } from "./BoxedExpressionPropertiesPanelComponents/InvocationInformationItemCell";
@@ -124,7 +124,7 @@ export function BoxedExpressionPropertiesPanel() {
                   {(((selectedObjectId === undefined || selectedObjectId === "") &&
                     boxedExpressionPropertiesPanelComponent === undefined) ||
                     boxedExpressionPropertiesPanelComponent?.component ===
-                      BoxedExpressionPropertiesPanelComponent.NONE) && <NoneCell />}
+                      BoxedExpressionPropertiesPanelComponent.NONE) && <WithoutPropertiesCell />}
                   {selectedObjectId !== "" && boxedExpressionPropertiesPanelComponent === undefined && (
                     <SelectExpressionCell selectedObjectId={selectedObjectId!} />
                   )}

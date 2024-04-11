@@ -18,14 +18,19 @@
  */
 
 import * as React from "react";
-import { Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import CubeIcon from "@patternfly/react-icons/dist/js/icons/cube-icon";
 
-export function NoneCell() {
+export function WithoutPropertiesCell() {
   return (
     <>
-      <Title headingLevel={"h2"}>{"Empty panel"}</Title>
-      <Text>{"The selected cell can't be edited using the properties panel."}</Text>
+      <EmptyState>
+        <EmptyStateIcon icon={CubeIcon} />
+        <TextContent>
+          <Text component={"h2"}>No properties to display</Text>
+        </TextContent>
+      </EmptyState>
     </>
   );
 }
