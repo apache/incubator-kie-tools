@@ -157,7 +157,7 @@ After that, you're ready to start developing the Editors individually.
 
 #### Installing
 
-- [Install Nix](https://nixos.org/download/).
+- [Install Nix](https://nixos.org/download/) using the multi-user installation.
 - Enable nix-command and flakes:
   - Open the Nix config:
     - `sudo nano /etc/nix/nix.conf`
@@ -166,7 +166,7 @@ After that, you're ready to start developing the Editors individually.
 - Test your installation by running the Hello World Nix package:
   - Open a new shell;
   - Run the hello world Nix package:
-    - `nix run 'nixpkgs#hello`
+    - `nix run 'nixpkgs#hello'`
     - You should see `Hello, world!` printed on your terminal.
 - Install [devbox](https://www.jetify.com/devbox/docs/installing_devbox/).
 

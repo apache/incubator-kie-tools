@@ -7,7 +7,7 @@
     "maven": "3.9.6",
     "kubernetes-helm": "3.13.3",
     "gnumake": "4.4.1",
-    "go": "1.21.5",
+    "go": "1.22.0",
     "chromium": {
       "version": "123.0.6312.86",
       "platforms": ["x86_64-linux", "aarch64-linux"]
