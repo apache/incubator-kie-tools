@@ -22,4 +22,6 @@ import { KieToolsTheme } from "@kie-tools/storybook-base/dist/config/theme";
 
 addons.setConfig({
   theme: KieToolsTheme,
+  // Shortcuts conflicts with the cell behavior
+  enableShortcuts: false,
 });
