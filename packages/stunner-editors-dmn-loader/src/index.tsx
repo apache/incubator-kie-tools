@@ -222,8 +222,7 @@ const renderBoxedExpressionEditor = (
   dataTypes: DmnDataType[],
   isResetSupportedOnRootExpression: boolean,
   pmmlDocuments: PmmlDocument[],
-  dmnXml: string,
-  hideDmn14BoxedExpressions: boolean
+  dmnXml: string
 ) => {
   const boxedExpressionEditorRootNode = document.querySelector(selector);
   ReactDOM.render(
@@ -235,7 +234,7 @@ const renderBoxedExpressionEditor = (
       pmmlDocuments={pmmlDocuments}
       boxedExpressionEditorRootNode={boxedExpressionEditorRootNode}
       dmnXml={dmnXml}
-      hideDmn14BoxedExpressions={hideDmn14BoxedExpressions}
+      hideDmn14BoxedExpressions={true}
     />,
     boxedExpressionEditorRootNode
   );
