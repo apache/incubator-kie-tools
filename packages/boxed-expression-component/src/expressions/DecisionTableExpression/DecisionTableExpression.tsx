@@ -102,8 +102,12 @@ function createAnnotationEntry(): Unpacked<DMN15__tDecisionRule["annotationEntry
 export function DecisionTableExpression({
   isNested,
   parentElementId,
-  ...decisionTableExpression
-}: BoxedDecisionTable & { isNested: boolean; parentElementId: string }) {
+  expression: decisionTableExpression,
+}: {
+  expression: BoxedDecisionTable;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();

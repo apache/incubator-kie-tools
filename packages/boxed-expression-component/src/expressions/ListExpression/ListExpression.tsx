@@ -50,8 +50,12 @@ export type ROWTYPE = DMN15__tContextEntry;
 export function ListExpression({
   isNested,
   parentElementId,
-  ...listExpression
-}: BoxedList & { isNested: boolean; parentElementId: string }) {
+  expression: listExpression,
+}: {
+  expression: BoxedList;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();

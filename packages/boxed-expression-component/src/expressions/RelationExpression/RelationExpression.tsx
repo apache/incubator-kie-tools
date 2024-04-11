@@ -54,8 +54,12 @@ export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 export function RelationExpression({
   isNested,
   parentElementId,
-  ...relationExpression
-}: BoxedRelation & { isNested: boolean; parentElementId: string }) {
+  expression: relationExpression,
+}: {
+  expression: BoxedRelation;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { widthsById, expressionHolderId } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();

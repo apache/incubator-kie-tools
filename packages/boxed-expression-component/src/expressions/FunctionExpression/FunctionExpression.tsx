@@ -38,8 +38,12 @@ import "./FunctionExpression.css";
 export function FunctionExpression({
   isNested,
   parentElementId,
-  ...boxedFunction
-}: BoxedFunction & { isNested: boolean; parentElementId: string }) {
+  expression: boxedFunction,
+}: {
+  expression: BoxedFunction;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   switch (boxedFunction["@_kind"]) {
     case "Java":
       return (

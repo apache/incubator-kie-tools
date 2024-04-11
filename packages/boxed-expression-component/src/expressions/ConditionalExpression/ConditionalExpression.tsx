@@ -53,8 +53,12 @@ export type ConditionalClause = {
 export function ConditionalExpression({
   isNested,
   parentElementId,
-  ...conditionalExpression
-}: BoxedConditional & { isNested: boolean; parentElementId: string }) {
+  expression: conditionalExpression,
+}: {
+  expression: BoxedConditional;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();

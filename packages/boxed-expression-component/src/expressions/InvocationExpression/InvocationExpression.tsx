@@ -61,8 +61,12 @@ export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataT
 export function InvocationExpression({
   isNested,
   parentElementId,
-  ...invocationExpression
-}: BoxedInvocation & { isNested: boolean; parentElementId: string }) {
+  expression: invocationExpression,
+}: {
+  expression: BoxedInvocation;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();

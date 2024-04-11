@@ -114,21 +114,23 @@ export function ExpressionDefinitionLogicTypeSelector({
     }
     switch (logicType) {
       case "literalExpression":
-        return <LiteralExpression {...expression} isNested={isNested} />;
+        return <LiteralExpression expression={expression} isNested={isNested} />;
       case "relation":
-        return <RelationExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
+        return <RelationExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "context":
-        return <ContextExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
+        return <ContextExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "decisionTable":
-        return <DecisionTableExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
+        return (
+          <DecisionTableExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />
+        );
       case "list":
-        return <ListExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
+        return <ListExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "invocation":
-        return <InvocationExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
+        return <InvocationExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "functionDefinition":
-        return <FunctionExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
+        return <FunctionExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "conditional":
-        return <ConditionalExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
+        return <ConditionalExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "for":
       case "every":
       case "some":

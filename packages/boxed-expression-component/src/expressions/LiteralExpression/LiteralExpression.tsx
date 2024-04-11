@@ -44,7 +44,13 @@ import "./LiteralExpression.css";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
-export function LiteralExpression({ isNested, ...literalExpression }: BoxedLiteral & { isNested: boolean }) {
+export function LiteralExpression({
+  isNested,
+  expression: literalExpression,
+}: {
+  expression: BoxedLiteral;
+  isNested: boolean;
+}) {
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
 
