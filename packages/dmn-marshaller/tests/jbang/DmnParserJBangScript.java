@@ -19,7 +19,7 @@
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
-//DEPS ch.qos.logback:logback-classic:1.5.4
+//DEPS ch.qos.logback:logback-classic:1.2.13
 //DEPS info.picocli:picocli:4.7.5
 //DEPS org.slf4j:slf4j-simple:2.0.12
 

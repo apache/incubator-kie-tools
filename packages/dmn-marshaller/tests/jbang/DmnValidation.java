@@ -48,7 +48,7 @@ import org.kie.dmn.validation.DMNValidatorFactory;
  * The script can manage one or two (in case of imported model) DMN file paths.
  * The XSD SCHEMA, DMN COMPLIANCE and DMN COMPILATION are validated.
  */
-@Command(name = "DmnValidation", mixinStandardHelpOptions = true, version = "DmnValidation 0.1", description = "It validates given DMN files")
+@Command(name = "DmnSemanticComparison", mixinStandardHelpOptions = true, version = "DmnSemanticComparison 0.1", description = "It validates given DMN files")
 class DmnValidation extends DmnParserJBangScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DmnValidation.class);
@@ -70,7 +70,7 @@ class DmnValidation extends DmnParserJBangScript {
         models.add(new File(dmnFilePath));
 
         LOGGER.info("========== DMN VALIDATION ==========");
-        LOGGER.info("Validating DMN files: " + dmnFilePath);
+        LOGGER.info("Validating DMN file: " + dmnFilePath);
 
         if (importedDmnFilesPath != null && importedDmnFilesPath.length > 0) {
             models.addAll(Stream.of(importedDmnFilesPath)
@@ -91,7 +91,7 @@ class DmnValidation extends DmnParserJBangScript {
 
         if (messages.size() == 0) {
             LOGGER.info("RESULT: Following files have been successfully validated!");
-            models.forEach(model -> System.out.println(model.getName()));
+            models.forEach(model -> LOGGER.info("- " model.getName()));
             return 0;
         } else {
             LOGGER.error("ERROR: Validation failed for the following files");
