@@ -54,6 +54,7 @@
     "@types/testing-library__react": "^9.1.2",
     "copy-webpack-plugin": "^11.0.0",
     "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
     "rimraf": "^3.0.2",
     "simpl-schema": "^1.12.0",
     "ts-jest": "^26.5.6",
