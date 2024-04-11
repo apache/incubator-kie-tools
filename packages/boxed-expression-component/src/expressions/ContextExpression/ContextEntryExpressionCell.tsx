@@ -43,7 +43,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellPro
 
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject((expression as BoxedContext).contextEntry?.[columnIndex]["@_id"]);
+      beeGwtService?.selectObject((expression as BoxedContext)?.contextEntry?.[columnIndex]?.["@_id"]);
     }
   }, [beeGwtService, columnIndex, expression, isActive]);
 

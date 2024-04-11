@@ -418,7 +418,7 @@ export function DecisionTableExpression(
           (tableRow: ROWTYPE, column, columnIndex) => {
             tableRow[column.accessor] = {
               id: (ruleRow[columnIndex] as DMN15__tUnaryTests & DMN15__tLiteralExpression)?.["@_id"] ?? "",
-              content: ruleRow[columnIndex].text?.__$$text ?? "",
+              content: ruleRow[columnIndex]?.text?.__$$text ?? "",
             };
             return tableRow;
           },

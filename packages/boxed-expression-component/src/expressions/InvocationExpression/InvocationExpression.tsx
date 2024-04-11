@@ -171,7 +171,10 @@ export function InvocationExpression(
     }));
   }, [invocationExpression.binding]);
 
-  const invocationId = invocationExpression.expression?.["@_id"];
+  const invocationId = useMemo(
+    () => invocationExpression.expression?.["@_id"] ?? "functionName",
+    [invocationExpression.expression]
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
@@ -183,7 +186,7 @@ export function InvocationExpression(
         width: undefined,
         columns: [
           {
-            accessor: invocationId as any, // "functionName" as keyof ROWTYPE,
+            accessor: invocationId as keyof ROWTYPE,
             label:
               invocationExpression.expression?.__$$element === "literalExpression"
                 ? invocationExpression.expression.text?.__$$text ?? "Function name"
@@ -235,6 +238,7 @@ export function InvocationExpression(
             const ret: BoxedInvocation = {
               ...prev,
               expression: {
+                ...prev.expression,
                 __$$element: "literalExpression",
                 text: {
                   __$$text: u.name,
