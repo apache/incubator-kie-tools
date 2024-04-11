@@ -18,21 +18,25 @@
  */
 
 import * as React from "react";
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useCallback, useState, useRef, useMemo, useEffect } from "react";
 import { useArgs } from "@storybook/preview-api";
 import { DmnEditor, DmnEditorProps, DmnEditorRef, EvaluationResults, ValidationMessages } from "../src/DmnEditor";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { diff } from "deep-object-diff";
+import { generateEmptyDmn15 } from "./misc/empty/Empty.stories";
 
 export const evaluationResults: EvaluationResults = {};
 export const validationMessages: ValidationMessages = {};
 
-export function DmnEditorWrapper(props?: Partial<DmnEditorProps>) {
-  const [args, updateArgs] = useArgs<DmnEditorProps>();
+export type StorybookDmnEditorProps = DmnEditorProps & { xml: string };
+
+export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
+  const [args, updateArgs] = useArgs<StorybookDmnEditorProps>();
   const argsCopy = useRef(args);
   const ref = useRef<DmnEditorRef>(null);
   const [modelArgs, setModelArgs] = useState<DmnLatestModel>(args.model);
   const model = useMemo(() => props?.model ?? modelArgs, [modelArgs, props?.model]);
+  const [modelChanged, setModelChange] = useState<boolean>(false);
 
   const onModelChange = useMemo(
     () => (props?.onModelChange ? props.onModelChange : setModelArgs),
@@ -41,7 +45,11 @@ export function DmnEditorWrapper(props?: Partial<DmnEditorProps>) {
 
   useEffect(() => {
     if (Object.keys(diff(argsCopy.current.model, model)).length !== 0) {
-      updateArgs({ ...argsCopy.current, model: model });
+      updateArgs({
+        ...argsCopy.current,
+        model: model,
+        xml: getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" }).builder.build(model),
+      });
     }
   }, [updateArgs, model]);
 
@@ -56,25 +64,37 @@ export function DmnEditorWrapper(props?: Partial<DmnEditorProps>) {
     onModelChange(args.model);
   }, [args, model, onModelChange]);
 
+  const onModelDebounceStateChanged = useCallback((changed: boolean) => {
+    setModelChange(changed);
+  }, []);
+
   return (
-    <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
-      <DmnEditor
-        ref={ref}
-        model={model}
-        originalVersion={props?.originalVersion ?? args.originalVersion}
-        onModelChange={onModelChange}
-        onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
-        onRequestExternalModelsAvailableToInclude={
-          props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
-        }
-        externalModelsByNamespace={props?.externalModelsByNamespace ?? args.externalModelsByNamespace}
-        externalContextName={props?.externalContextName ?? args.externalContextName}
-        externalContextDescription={props?.externalContextDescription ?? args.externalContextDescription}
-        validationMessages={props?.validationMessages ?? args.validationMessages}
-        evaluationResults={props?.evaluationResults ?? args.evaluationResults}
-        issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
-        onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
-      />
-    </div>
+    <>
+      {modelChanged && (
+        <div data-testid={"storybook--dmn-editor-model"} style={{ display: "none" }}>
+          {JSON.stringify(model)}
+        </div>
+      )}
+      <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
+        <DmnEditor
+          ref={ref}
+          model={model}
+          originalVersion={props?.originalVersion ?? args.originalVersion}
+          onModelChange={onModelChange}
+          onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
+          onRequestExternalModelsAvailableToInclude={
+            props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
+          }
+          externalModelsByNamespace={props?.externalModelsByNamespace ?? args.externalModelsByNamespace}
+          externalContextName={props?.externalContextName ?? args.externalContextName}
+          externalContextDescription={props?.externalContextDescription ?? args.externalContextDescription}
+          validationMessages={props?.validationMessages ?? args.validationMessages}
+          evaluationResults={props?.evaluationResults ?? args.evaluationResults}
+          issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
+          onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
+          onModelDebounceStateChanged={onModelDebounceStateChanged}
+        />
+      </div>
+    </>
   );
 }

@@ -19,6 +19,7 @@
 
 import { test, expect } from "../__fixtures__/base";
 import { EdgeType } from "../__fixtures__/edges";
+import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
@@ -28,11 +29,30 @@ test.beforeEach(async ({ editor }) => {
 test.describe("Add node - BKM", () => {
   test.describe("Add to the DRG", () => {
     test.describe("add from the palette", () => {
-      test("should add new BKM node from palette", async ({ palette, nodes, diagram }) => {
+      test("should add new BKM node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.BKM })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-bkm-node-from-palette.png");
+
+        // JSON model assertions
+        const bkm = await jsonModel.drgElements.getBkm({ drgElementIndex: 0, drdIndex: 0 });
+        expect(bkm).toEqual({
+          __$$element: "businessKnowledgeModel",
+          "@_id": bkm["@_id"],
+          "@_name": DefaultNodeName.BKM,
+          variable: {
+            "@_id": bkm.variable?.["@_id"],
+            "@_name": DefaultNodeName.BKM,
+            "@_typeRef": DataType.Undefined,
+          },
+        });
+        expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({
+          "@_x": 0,
+          "@_y": 0,
+          "@_width": 160,
+          "@_height": 80,
+        });
       });
     });
 
