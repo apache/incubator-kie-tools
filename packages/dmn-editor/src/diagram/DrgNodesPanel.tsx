@@ -32,6 +32,9 @@ import { Unpacked } from "../tsExt/tsExt";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE = "kie-dmn-editor--drg-node";
 
@@ -100,37 +103,52 @@ export function DrgNodesPanel() {
 
   return (
     <>
-      <div className="kie-dmn-editor--sticky-top-glass-header" style={{ padding: "12px" }}>
-        <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-          <TextContent>
-            <Text component="h3">DRG Nodes</Text>
-          </TextContent>
-          <Button
-            title={"Close"}
-            variant={ButtonVariant.plain}
-            onClick={() =>
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
-              })
-            }
-          >
-            <TimesIcon />
-          </Button>
-        </Flex>
+      {(nodes.length <= 0 && (
+        <>
+          <EmptyState>
+            <EmptyStateIcon icon={CubesIcon} />
+            <Title size={"md"} headingLevel={"h4"}>
+              No DRG nodes yet
+            </Title>
+            <EmptyStateBody>Use the Palette on the left-hand-side to drag new nodes into the Diagram.</EmptyStateBody>
+          </EmptyState>
+        </>
+      )) || (
+        <>
+          <div className="kie-dmn-editor--sticky-top-glass-header" style={{ padding: "12px" }}>
+            <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+              <TextContent>
+                <Text component="h3">DRG Nodes</Text>
+              </TextContent>
+              <Button
+                title={"Close"}
+                variant={ButtonVariant.plain}
+                onClick={() =>
+                  dmnEditorStoreApi.setState((state) => {
+                    state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
+                  })
+                }
+              >
+                <TimesIcon />
+              </Button>
+            </Flex>
 
-        <Divider style={{ marginBottom: "12px" }} />
+            <Divider style={{ marginBottom: "12px" }} />
 
-        <SearchInput
-          style={{ marginBottom: "12px", height: "36px" }}
-          onKeyDown={(e) => e.stopPropagation()}
-          autoFocus={true}
-          placeholder="Filter..."
-          value={filter}
-          onChange={(_event, value) => setFilter(value)}
-          onClear={() => setFilter("")}
-        />
-      </div>
-      <div style={{ padding: "12px" }}>{nodes}</div>
+            <SearchInput
+              style={{ marginBottom: "12px", height: "36px" }}
+              onKeyDown={(e) => e.stopPropagation()}
+              autoFocus={true}
+              placeholder="Filter..."
+              value={filter}
+              onChange={(_event, value) => setFilter(value)}
+              onClear={() => setFilter("")}
+            />
+          </div>
+
+          <div style={{ padding: "12px" }}>{nodes}</div>
+        </>
+      )}
     </>
   );
 }
