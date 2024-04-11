@@ -103,7 +103,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const fileName = normalizedFsPathRelativeToTheFile.substring(
         normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
       );
-      fail("Validation of " + fileName + " failed! Please scroll up to DMN VALIDATION ERROR message to see the reason");
+      fail("Validation of " + fileName + " failed! Please scroll up the logs to see the reason.");
     }
   });
 }
@@ -127,9 +127,7 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
           normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
         );
-        fail(
-          "Validation of " + fileName + " failed! Please scroll up to DMN VALIDATION ERROR message to see the reason"
-        );
+        fail("Validation of " + fileName + " failed! Please scroll up the logs to see the reason.");
       }
     }
   );

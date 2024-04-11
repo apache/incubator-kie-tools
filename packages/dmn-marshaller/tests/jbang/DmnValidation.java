@@ -1,14 +1,31 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
-//DEPS ch.qos.logback:logback-classic:1.2.9
-//DEPS info.picocli:picocli:4.7.5
+//SOURCES ./DmnParserJBangScript.java
 //DEPS org.kie:kie-dmn-validation:${kogito-runtime.version:LATEST}
-//DEPS org.slf4j:slf4j-simple:2.0.12
+
+package jbang;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,7 +49,7 @@ import org.kie.dmn.validation.DMNValidatorFactory;
  * The XSD SCHEMA, DMN COMPLIANCE and DMN COMPILATION are validated.
  */
 @Command(name = "DmnValidation", mixinStandardHelpOptions = true, version = "DmnValidation 0.1", description = "It validates given DMN files")
-class DmnValidation implements Callable<Integer> {
+class DmnValidation extends DmnParserJBangScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DmnValidation.class);
 
@@ -70,14 +87,14 @@ class DmnValidation implements Callable<Integer> {
                                                       .theseModels(models.toArray(File[]::new));
 
         if (messages.size() == 0) {
-            System.out.println("RESULT: Following files have been successfully validated!");
+            LOGGER.info("RESULT: Following files have been successfully validated!");
             models.forEach(model -> System.out.println(model.getName()));
             return 0;
         } else {
-            System.out.println("ERROR: Validation failed for the following files");
-            models.forEach(model -> System.out.println(model.getName()));
-            System.out.println("Validation Errors:");
-            messages.forEach(message -> System.out.println(message.getText()));
+            LOGGER.error("ERROR: Validation failed for the following files");
+            models.forEach(model -> LOGGER.error(model.getName()));
+            LOGGER.error("Validation Errors:");
+            messages.forEach(message -> LOGGER.error(message.getText()));
             return 1;
         }
     }
