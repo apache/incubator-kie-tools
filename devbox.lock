@@ -1,6 +1,42 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "chromium@123.0.6312.86": {
+      "last_modified": "2024-03-27T09:47:59Z",
+      "resolved": "github:NixOS/nixpkgs/2230a20f2b5a14f2db3d7f13a2dc3c22517e790b#chromium",
+      "source": "devbox-search",
+      "version": "123.0.6312.86",
+      "systems": {
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/iz9fn9hday6lalg3hg6j5jjf5735zrdn-chromium-123.0.6312.86",
+              "default": true
+            },
+            {
+              "name": "sandbox",
+              "path": "/nix/store/fp06rl6h9vdjd9zb85bvpdnf3r5ir357-chromium-123.0.6312.86-sandbox"
+            }
+          ],
+          "store_path": "/nix/store/iz9fn9hday6lalg3hg6j5jjf5735zrdn-chromium-123.0.6312.86"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/dy36c0szphmvmczyz1w0bvlffa37531a-chromium-123.0.6312.86",
+              "default": true
+            },
+            {
+              "name": "sandbox",
+              "path": "/nix/store/zi8h1rfrpx9nh3x4kabs2d709cgmgyr2-chromium-123.0.6312.86-sandbox"
+            }
+          ],
+          "store_path": "/nix/store/dy36c0szphmvmczyz1w0bvlffa37531a-chromium-123.0.6312.86"
+        }
+      }
+    },
     "gnumake@4.4.1": {
       "last_modified": "2024-03-22T11:26:23Z",
       "resolved": "github:NixOS/nixpkgs/a3ed7406349a9335cb4c2a71369b697cecd9d351#gnumake",
