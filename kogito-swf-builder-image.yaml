@@ -17,7 +17,7 @@
 # under the License.
 #
   - name: builder
-    from: "registry.access.redhat.com/ubi8/openjdk-17:1.18"
+    from: "registry.access.redhat.com/ubi8/openjdk-17:1.19"
     version: "999-SNAPSHOT"
     modules:
       repositories:
@@ -34,7 +34,7 @@
         - name: org.kie.kogito.swf.common.build
 
   - name: "quay.io/kiegroup/kogito-swf-builder"
-    from: "registry.access.redhat.com/ubi8/openjdk-17:1.18"
+    from: "registry.access.redhat.com/ubi8/openjdk-17:1.19"
     version: "999-SNAPSHOT"
     description: "Kogito Serverless Workflow base builder with Quarkus extensions libraries preinstalled"
 

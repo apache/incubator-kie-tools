@@ -53,7 +53,7 @@ SUPPORTING_SERVICES_IMAGES = {"kogito-data-index-ephemeral",
                               "kogito-management-console", "kogito-task-console"
                               }
 
-SWF_BUILDER_IMAGES = {"kogito-swf-builder", "kogito-swf-devmode"}
+SWF_BUILDER_IMAGES = {"kogito-swf-builder", "kogito-swf-devmode", "kogito-base-builder"}
 
 
 def yaml_loader():

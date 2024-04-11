@@ -48,6 +48,27 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
+      name: kogito-base-builder
+      annotations:
+        openshift.io/display-name: Kogito base builder
+        openshift.io/provider-display-name: KIE Group.
+    spec:
+      tags:
+        - name: '999-SNAPSHOT'
+          annotations:
+            description: Kogito base builder
+            iconClass: icon-jbpm
+            tags: kogito,jdk,maven
+            supports: quarkus
+            version: '999-SNAPSHOT'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-base-builder:999-SNAPSHOT
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
       name: kogito-data-index-ephemeral
       annotations:
         openshift.io/display-name: Runtime image for the Kogito Data Index Service for ephemeral PostgreSQL persistence provider

@@ -20,7 +20,7 @@ schema_version: 1
 
 name: "quay.io/kiegroup/kogito-task-console"
 version: "999-SNAPSHOT"
-from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.18"
+from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.19"
 description: "Runtime image for Kogito Task Console"
 
 labels:
