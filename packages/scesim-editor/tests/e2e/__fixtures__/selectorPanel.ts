@@ -17,17 +17,16 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { Page } from "@playwright/test";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
-});
+export class SelectorPanel {
+  constructor(public page: Page) {}
+
+  public async open() {
+    await this.page.getByRole("button").first().click();
+  }
+
+  public async close() {
+    await this.page.getByLabel("Close drawer panel").click();
+  }
+}

@@ -17,17 +17,18 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { test, expect } from "../../__fixtures__/base";
+import { AssetType } from "../../__fixtures__/editor";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
+test.describe("Empty editor", () => {
+  test("should render editor correctly", async ({ editor, testScenarioTable, backgroundTable }) => {
+    await editor.openEmpty();
+    await expect(editor.get()).toHaveScreenshot("create-a-new-test-scenario.png");
+
+    await editor.createTestScenario(AssetType.DECISION);
+    await expect(testScenarioTable.get()).toHaveScreenshot("empty-test-scenario-table.png");
+
+    await editor.switchToBackgroundTable();
+    await expect(backgroundTable.get()).toHaveScreenshot("empty-background-table.png");
+  });
 });

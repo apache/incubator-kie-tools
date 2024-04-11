@@ -17,17 +17,11 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { test, expect } from "../__fixtures__/base";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
+test.describe("Check traffic violation test case", () => {
+  test("should render traffic violation test correctly", async ({ useCases, testScenarioTable }) => {
+    await useCases.openTrafficViolationTest();
+    await expect(testScenarioTable.get()).toHaveScreenshot("traffic-violation-test.png");
+  });
 });

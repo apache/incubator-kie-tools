@@ -17,17 +17,9 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
-
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
-});
+.section-body {
+  --pf-c-page__main-section--PaddingTop: 0px;
+  --pf-c-page__main-section--PaddingRight: 0px;
+  --pf-c-page__main-section--PaddingBottom: 0px;
+  --pf-c-page__main-section--PaddingLeft: 0px;
+}

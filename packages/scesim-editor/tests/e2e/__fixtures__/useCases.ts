@@ -17,17 +17,28 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { Page } from "@playwright/test";
+import { SelectorPanel } from "./selectorPanel";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
-});
+export class UseCases {
+  constructor(public page: Page, public selectorPanel: SelectorPanel, public baseURL?: string) {
+    this.page = page;
+    this.baseURL = baseURL;
+  }
+
+  public getIframeURL(iframeId: string) {
+    return `iframe.html?id=${iframeId}&viewMode=story`;
+  }
+
+  public async openTrafficViolationTest() {
+    await this.page.goto(
+      `${this.baseURL}/${this.getIframeURL(`use-cases-traffic-violation--traffic-violation`)}` ?? ""
+    );
+    await this.selectorPanel.close();
+  }
+
+  public async openAreTheyOldEnoughTest() {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`use-cases-is-old-enough--is-old-enough`)}` ?? "");
+    await this.selectorPanel.close();
+  }
+}
