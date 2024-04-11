@@ -94,6 +94,18 @@ pipeline {
                 }
             }
         }
+
+        stage('Update kogito version') {
+            when {
+                expression { params.UPDATE_KOGITO_VERSION != '' }
+            }
+            steps {
+                script {
+                    runPythonCommand("python scripts/manage-kogito-version.py --bump-to ${params.UPDATE_KOGITO_VERSION} --confirm")
+                }
+            }
+        }
+
         // Commented as we cannot fully rely on Quarkus platform
         // Should be uncommmented once https://issues.redhat.com/browse/KOGITO-9120 is implemented
         // stage('Setup Quarkus platform') {

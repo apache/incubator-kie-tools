@@ -202,6 +202,8 @@ void createBuildAndTestStageClosure(String image) {
             buildParams.add(string(name: 'TESTS_KOGITO_EXAMPLES_URI', value: params.EXAMPLES_URI))
             buildParams.add(string(name: 'TESTS_KOGITO_EXAMPLES_REF', value: params.EXAMPLES_REF))
 
+            buildParams.add(booleanParam(name: 'UPDATE_KOGITO_VERSION', value: getProjectVersion()))
+
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE', value: true))
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', value: isDeployImageInOpenshiftRegistry()))
             buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_CREDENTIALS', value: getDeployImageRegistryCredentials()))
