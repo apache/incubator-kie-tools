@@ -167,17 +167,14 @@ export function FeelFunctionExpression({
   const { nestedExpressionContainerValue, onColumnResizingWidthChange } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
-        const maxNestedExpressionTotalMinWidth = Math.max(
-          getExpressionTotalMinWidth(functionExpression.expression, widthsById),
-          FEEL_FUNCTION_EXPRESSION_MIN_WIDTH
-        );
+        const nestedExpressions = [functionExpression.expression ?? undefined!];
 
         return {
-          nestedExpressions: [functionExpression.expression ?? undefined!],
+          nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: 0,
           fixedColumnResizingWidth: { value: 0, isPivoting: false },
           fixedColumnMinWidth: 0,
-          nestedExpressionMinWidth: maxNestedExpressionTotalMinWidth,
+          nestedExpressionMinWidth: FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
           extraWidth: FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH,
           expression: functionExpression,
           flexibleColumnIndex: 1,

@@ -35,7 +35,7 @@ import {
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
-import { ResizerStopBehavior, ResizingWidth } from "../../resizing/ResizingWidthsContext";
+import { ResizerStopBehavior, ResizingWidth, useResizingWidths } from "../../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
@@ -49,7 +49,7 @@ import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/Expre
 import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ExpressionVariableCell, ExpressionWithVariable } from "../../expressionVariable/ExpressionVariableCell";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
-import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
+import { getExpressionMinWidth, getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./ContextExpression.css";
@@ -113,19 +113,13 @@ export function ContextExpression(
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
-
-  const resultExpression = useMemo(
-    () => contextExpression.contextEntry?.find((e) => !e.variable)?.expression,
-    [contextExpression.contextEntry]
-  );
-
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
         const nestedExpressions = (contextExpression.contextEntry ?? []).map((e) => e.expression);
 
         const maxNestedExpressionTotalMinWidth = Math.max(
-          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(e, widthsById)),
+          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(0, e, widthsById)),
           CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
         );
 

@@ -23,8 +23,6 @@ import {
   BeeTableOperationConfig,
   BeeTableProps,
   BoxedConditional,
-  BoxedContext,
-  BoxedList,
   DmnBuiltInDataType,
 } from "../../api";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
@@ -121,6 +119,10 @@ export function ConditionalExpression(
     return conditionalExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
   }, [conditionalExpression.isNested]);
 
+  /// //////////////////////////////////////////////////////
+  /// ///////////// RESIZING WIDTHS ////////////////////////
+  /// //////////////////////////////////////////////////////
+
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
@@ -130,17 +132,12 @@ export function ConditionalExpression(
           conditionalExpression.else.expression,
         ];
 
-        const maxNestedExpressionTotalMinWidth = Math.max(
-          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(e, widthsById)),
-          CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH
-        );
-
         return {
           nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH,
           fixedColumnResizingWidth: { value: CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH, isPivoting: false },
           fixedColumnMinWidth: CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH,
-          nestedExpressionMinWidth: maxNestedExpressionTotalMinWidth,
+          nestedExpressionMinWidth: CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
           extraWidth: CONDITIONAL_EXPRESSION_EXTRA_WIDTH,
           expression: conditionalExpression,
           flexibleColumnIndex: 2,
@@ -148,6 +145,8 @@ export function ConditionalExpression(
         };
       }, [conditionalExpression, widthsById])
     );
+
+  /// //////////////////////////////////////////////////////
 
   const allowedOperations = useCallback(() => {
     return [BeeTableOperation.SelectionCopy, BeeTableOperation.RowReset];

@@ -67,17 +67,12 @@ export function ListExpression(
       useMemo(() => {
         const nestedExpressions = listExpression.expression ?? [];
 
-        const maxNestedExpressionTotalMinWidth = Math.max(
-          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(e, widthsById)),
-          LIST_EXPRESSION_ITEM_MIN_WIDTH
-        );
-
         return {
           nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: 0,
           fixedColumnResizingWidth: { value: 0, isPivoting: false },
           fixedColumnMinWidth: 0,
-          nestedExpressionMinWidth: maxNestedExpressionTotalMinWidth,
+          nestedExpressionMinWidth: LIST_EXPRESSION_ITEM_MIN_WIDTH,
           extraWidth: LIST_EXPRESSION_EXTRA_WIDTH,
           expression: listExpression,
           flexibleColumnIndex: 1,

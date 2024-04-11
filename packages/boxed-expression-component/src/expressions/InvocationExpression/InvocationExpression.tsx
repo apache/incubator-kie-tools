@@ -119,7 +119,7 @@ export function InvocationExpression(
         const nestedExpressions = (invocationExpression.binding ?? []).map((b) => b.expression ?? undefined!);
 
         const maxNestedExpressionTotalMinWidth = Math.max(
-          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(e, widthsById)),
+          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(0, e, widthsById)),
           INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH
         );
 

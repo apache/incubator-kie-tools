@@ -152,87 +152,48 @@ export function getExpressionMinWidth(expression?: BoxedExpression): number {
 }
 
 /**
- * This function goes recursively through all `expression`'s nested expressions and sums either the fixed column or
+ * This function goes recursively through all `expression`'s nested expressions and sums either `entryInfoWidth` or
  * default minimal width, returned by `getExpressionMinWidth`, if it is the last nested expression in the chain.
  *
  * This function returns maximal sum found in all `expression`'s nested expressions.
  */
 export function getExpressionTotalMinWidth(
+  currentWidth: number,
   expression: BoxedExpression | undefined,
   widthsById: Map<string, number[]>
 ): number {
   if (!expression) {
-    return DEFAULT_MIN_WIDTH;
+    return 0;
   }
 
-  // Context + Invocation
   if (expression.__$$element === "context") {
-    const extraWidth =
-      (getWidthAt(CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]!) ??
-        CONTEXT_ENTRY_VARIABLE_MIN_WIDTH) + CONTEXT_EXPRESSION_EXTRA_WIDTH;
-
-    return (
-      extraWidth +
-      (expression.contextEntry ?? []).reduce(
-        (maxWidth, currentExpression) =>
-          Math.max(maxWidth, getExpressionTotalMinWidth(currentExpression.expression, widthsById)),
-        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
-      )
+    const width =
+      currentWidth +
+      (getWidthAt(CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]) ??
+        CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH) +
+      CONTEXT_EXPRESSION_EXTRA_WIDTH;
+    const contextEntriesMaxWidth = (expression.contextEntry ?? []).reduce(
+      (maxWidth, currentExpression) =>
+        Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.expression, widthsById)),
+      width
     );
+    return contextEntriesMaxWidth;
   } else if (expression.__$$element === "invocation") {
-    const extraWidth =
-      (getWidthAt(INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]!) ??
-        INVOCATION_PARAMETER_MIN_WIDTH) + INVOCATION_EXTRA_WIDTH;
-
-    return (
-      extraWidth +
-      (expression.binding ?? []).reduce(
-        (maxWidth, currentExpression) =>
-          Math.max(maxWidth, getExpressionTotalMinWidth(currentExpression.expression, widthsById)),
-        INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH
-      )
-    );
-  }
-
-  // Conditional
-  else if (expression.__$$element === "conditional") {
-    const extraWidth = CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH + CONDITIONAL_EXPRESSION_EXTRA_WIDTH;
-    return (
-      extraWidth +
-      [expression.if.expression, expression.then.expression, expression.else.expression].reduce(
-        (maxWidth, currentExpression) => Math.max(maxWidth, getExpressionTotalMinWidth(currentExpression, widthsById)),
-        CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH
-      )
-    );
-  }
-
-  // FEEL Function
-  else if (expression.__$$element === "functionDefinition" && expression["@_kind"] === "FEEL") {
-    const extraWidth = FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH;
-    return (
-      extraWidth +
-      [expression.expression].reduce(
-        (maxWidth, currentExpression) => Math.max(maxWidth, getExpressionTotalMinWidth(currentExpression, widthsById)),
-        FEEL_FUNCTION_EXPRESSION_MIN_WIDTH
-      )
-    );
-  }
-
-  // List
-  else if (expression.__$$element === "list") {
-    const extraWidth = LIST_EXPRESSION_EXTRA_WIDTH;
-    return (
-      extraWidth +
-      (expression.expression ?? []).reduce(
-        (maxWidth, currentExpression) => Math.max(maxWidth, getExpressionTotalMinWidth(currentExpression, widthsById)),
-        LIST_EXPRESSION_ITEM_MIN_WIDTH
-      )
+    const width =
+      currentWidth +
+      (getWidthAt(INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]) ??
+        INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH) +
+      INVOCATION_EXTRA_WIDTH;
+    return (expression.binding ?? []).reduce(
+      (maxWidth, currentExpression) =>
+        Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.expression, widthsById)),
+      width
     );
   }
 
   // Expression without nested expressions
   else {
-    return getExpressionMinWidth(expression);
+    return currentWidth + getExpressionMinWidth(expression);
   }
 }
 
