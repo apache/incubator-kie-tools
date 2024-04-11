@@ -101,7 +101,7 @@ class dmnSemanticComparison {
                 System.out.println("DEBUG - CHECkING CANONICAL FILE SOURCE PATH");
                 System.out.println("DEBUG - SEARCHING: " + importerFileSourcePath);
                 System.out.println("DEBUG - FOUND: " + m.getResource().getSourcePath());
-                if (m.getResource().getSourcePath().equals(importerFileSourcePath)) {
+                if (m.getResource().getSourcePath().equals(importerFileSourcePath.replace("\\", "/"))) {
                     importerModel = m;
                     break;
                 }

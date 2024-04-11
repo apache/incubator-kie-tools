@@ -73,7 +73,7 @@ const dmnTestingImportedModels = [
 ];
 
 const marshalledXMLDirectory = path.join(__dirname, "../dist-tests/dmnValidation-test-files");
-const jbangDmnValidationScriptPath = path.join(__dirname, "./jbang/dmnValidation.java");
+const jbangDmnValidationScriptPath = path.join(__dirname, "./jbang/DmnValidation.java");
 
 describe("validation", () => {
   beforeAll(() => {
@@ -98,7 +98,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
     const marshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
     try {
-      executeJBangScript(jbangDmnValidationScriptPath, marshalledXMLFilePath);
+      executeJBangScript(jbangDmnValidationScriptPath, "-d" + marshalledXMLFilePath);
     } catch (error) {
       const fileName = normalizedFsPathRelativeToTheFile.substring(
         normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
@@ -118,7 +118,11 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       const importerMarshalledXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJBangScript(jbangDmnValidationScriptPath, importedMarshalledXMLFilePath, importerMarshalledXMLFilePath);
+        executeJBangScript(
+          jbangDmnValidationScriptPath,
+          "-d" + importedMarshalledXMLFilePath,
+          "-i" + importerMarshalledXMLFilePath
+        );
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
           normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
