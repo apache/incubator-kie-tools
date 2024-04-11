@@ -348,7 +348,7 @@ void setupWeeklyDeployJob(JobType jobType) {
         QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
     ])
 
-    jobParams.env.put('IMAGES_LIST', 'kogito-swf-builder,kogito-swf-devmode')
+    jobParams.env.put('IMAGES_LIST', 'kogito-swf-builder,kogito-swf-devmode,kogito-base-builder')
 
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
