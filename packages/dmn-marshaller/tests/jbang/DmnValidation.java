@@ -91,7 +91,7 @@ class DmnValidation extends DmnParserJBangScript {
 
         if (messages.size() == 0) {
             LOGGER.info("RESULT: Following files have been successfully validated!");
-            models.forEach(model -> LOGGER.info("- " model.getName()));
+            models.forEach(model -> LOGGER.info(model.getName()));
             return 0;
         } else {
             LOGGER.error("ERROR: Validation failed for the following files");
