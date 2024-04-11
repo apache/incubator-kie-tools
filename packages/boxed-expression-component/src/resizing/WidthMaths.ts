@@ -21,8 +21,12 @@ import { BoxedExpression, BoxedFunctionKind } from "../api/BoxedExpression";
 import { ResizingWidth } from "./ResizingWidthsContext";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+  CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+  CONDITIONAL_EXPRESSION_EXTRA_WIDTH,
+  CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH,
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+  CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
   DECISION_TABLE_INPUT_MIN_WIDTH,
@@ -32,14 +36,17 @@ import {
   FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
   INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
   INVOCATION_EXTRA_WIDTH,
+  INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX,
   INVOCATION_PARAMETER_MIN_WIDTH,
   JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX,
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
   LIST_EXPRESSION_EXTRA_WIDTH,
   LIST_EXPRESSION_ITEM_MIN_WIDTH,
   LITERAL_EXPRESSION_EXTRA_WIDTH,
   LITERAL_EXPRESSION_MIN_WIDTH,
+  LITERAL_EXPRESSION_WIDTH_INDEX,
   PMML_FUNCTION_EXPRESSION_EXTRA_WIDTH,
   PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
@@ -49,11 +56,15 @@ import {
 export function getExpressionMinWidth(expression?: BoxedExpression): number {
   if (!expression || !expression.__$$element) {
     return DEFAULT_MIN_WIDTH;
-  } else if (expression.__$$element === "literalExpression") {
-    return LITERAL_EXPRESSION_MIN_WIDTH + LITERAL_EXPRESSION_EXTRA_WIDTH;
+  }
 
-    // Context + Invocation
-  } else if (expression.__$$element === "context") {
+  // Literal
+  else if (expression.__$$element === "literalExpression") {
+    return LITERAL_EXPRESSION_MIN_WIDTH + LITERAL_EXPRESSION_EXTRA_WIDTH;
+  }
+
+  // Context + Invocation
+  else if (expression.__$$element === "context") {
     const result = expression.contextEntry?.find((e) => !e.variable);
     const nestedExpressions = [...(expression.contextEntry ?? []).map((e) => e.expression), result?.expression];
     return (
@@ -68,9 +79,10 @@ export function getExpressionMinWidth(expression?: BoxedExpression): number {
       Math.max(INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
       INVOCATION_EXTRA_WIDTH
     );
+  }
 
-    // Function
-  } else if (expression.__$$element === "functionDefinition") {
+  // Function
+  else if (expression.__$$element === "functionDefinition") {
     if (expression["@_kind"] === BoxedFunctionKind.Feel) {
       return (
         Math.max(
@@ -93,9 +105,10 @@ export function getExpressionMinWidth(expression?: BoxedExpression): number {
     } else {
       throw new Error("Should never get here");
     }
+  }
 
-    // Relation + DecisionTable
-  } else if (expression.__$$element === "relation") {
+  // Relation + DecisionTable
+  else if (expression.__$$element === "relation") {
     return (
       BEE_TABLE_ROW_INDEX_COLUMN_WIDTH + //
       (expression.column?.length ?? 0) * RELATION_EXPRESSION_COLUMN_MIN_WIDTH
@@ -119,23 +132,28 @@ export function getExpressionMinWidth(expression?: BoxedExpression): number {
     );
   }
 
+  // Conditional
+  else if (expression.__$$element === "conditional") {
+    const nestedExpressions = [expression.if.expression, expression.then.expression, expression.else.expression];
+    return (
+      CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH +
+      Math.max(
+        CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+        ...nestedExpressions.map((e) => getExpressionMinWidth(e))
+      ) +
+      CONDITIONAL_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
   // Others
   else {
     throw new Error("Shouldn't ever reach this point");
   }
 }
 
-export function getWidth(id: string | undefined, widthsById: Map<string, number[]>) {
-  const widths = widthsById.get(id ?? "");
-  if (widths && widths.length > 0) {
-    return widths[0];
-  } else {
-    return undefined;
-  }
-}
-
 /**
- * This function goes recursively through all `expression`'s nested expressions and sums either `entryInfoWidth` or default minimal width, returned by `getExpressionMinWidth`, if it is the last nested expression in the chain.
+ * This function goes recursively through all `expression`'s nested expressions and sums either `fixed column width` or
+ * default minimal width, returned by `getExpressionMinWidth`, if it is the last nested expression in the chain.
  *
  * This function returns maximal sum found in all `expression`'s nested expressions.
  */
@@ -149,29 +167,34 @@ export function getExpressionTotalMinWidth(
   }
 
   if (expression.__$$element === "context") {
-    const width = currentWidth + (getWidth(expression["@_id"], widthsById) ?? 0);
-    const contextEntriesMaxWidth = (expression.contextEntry ?? []).reduce((maxWidth, currentExpression) => {
-      return Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.expression, widthsById));
-    }, width);
-    const result = expression.contextEntry?.find((e) => !e.variable);
-    const resultWidth = result ? getExpressionTotalMinWidth(width, result.expression, widthsById) : 0;
-    return Math.max(contextEntriesMaxWidth, resultWidth);
+    const width =
+      currentWidth +
+      (getWidthAt(CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]) ??
+        CONTEXT_ENTRY_VARIABLE_MIN_WIDTH) +
+      CONTEXT_EXPRESSION_EXTRA_WIDTH;
+    const contextEntriesMaxWidth = (expression.contextEntry ?? []).reduce(
+      (maxWidth, currentExpression) =>
+        Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.expression, widthsById)),
+      width
+    );
+    return contextEntriesMaxWidth;
   } else if (expression.__$$element === "invocation") {
-    const width = currentWidth + (getWidth(expression["@_id"], widthsById) ?? 0);
-    return (expression.binding ?? []).reduce((maxWidth, currentExpression) => {
-      return Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.expression, widthsById));
-    }, width);
-  } else {
-    // it is an expression without entryInfoWidth
+    const width =
+      currentWidth +
+      (getWidthAt(INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]) ??
+        INVOCATION_PARAMETER_MIN_WIDTH) +
+      INVOCATION_EXTRA_WIDTH;
+    return (expression.binding ?? []).reduce(
+      (maxWidth, currentExpression) =>
+        Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.expression, widthsById)),
+      width
+    );
+  }
+
+  // Expression without fixed column
+  else {
     return currentWidth + getExpressionMinWidth(expression);
   }
-}
-
-function getWidthAt(index: number, widths?: number[]): number | undefined {
-  if (!widths || widths.length <= index) {
-    return undefined;
-  }
-  return widths[index];
 }
 
 export function getExpressionResizingWidth(
@@ -188,8 +211,9 @@ export function getExpressionResizingWidth(
   // Literal
   if (expression.__$$element === "literalExpression") {
     return (
-      (resizingWidth ?? getWidth(expression["@_id"], widthsById) ?? LITERAL_EXPRESSION_MIN_WIDTH) +
-      LITERAL_EXPRESSION_EXTRA_WIDTH
+      (resizingWidth ??
+        getWidthAt(LITERAL_EXPRESSION_WIDTH_INDEX, widthsById, expression["@_id"]!) ??
+        LITERAL_EXPRESSION_MIN_WIDTH) + LITERAL_EXPRESSION_EXTRA_WIDTH
     );
   }
 
@@ -197,21 +221,22 @@ export function getExpressionResizingWidth(
   else if (expression.__$$element === "relation") {
     const columns = expression.column ?? [];
 
-    const expressionWidth = widthsById.get(expression["@_id"]!);
-
     return (
       resizingWidth ??
       columns.reduce((acc, c, currentIndex) => {
-        return acc + (getWidthAt(currentIndex + 1, expressionWidth) ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
+        return (
+          acc + (getWidthAt(currentIndex + 1, widthsById, expression["@_id"]!) ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH)
+        );
       }, BEE_TABLE_ROW_INDEX_COLUMN_WIDTH)
     );
   } else if (expression.__$$element === "decisionTable") {
     const columns = [...(expression.input ?? []), ...(expression.output ?? []), ...(expression.annotation ?? [])];
-    const expressionWidth = widthsById.get(expression["@_id"]!);
     return (
       resizingWidth ??
       columns.reduce((acc, c, currentIndex) => {
-        return acc + (getWidthAt(currentIndex + 1, expressionWidth) ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH);
+        return (
+          acc + (getWidthAt(currentIndex + 1, widthsById, expression["@_id"]!) ?? RELATION_EXPRESSION_COLUMN_MIN_WIDTH)
+        );
       }, BEE_TABLE_ROW_INDEX_COLUMN_WIDTH)
     );
   }
@@ -222,7 +247,8 @@ export function getExpressionResizingWidth(
     const nestedExpressions = [...(expression.contextEntry ?? []).map((e) => e.expression), result?.expression];
     return (
       resizingWidth ??
-      (getWidth(expression["@_id"], widthsById) ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH) +
+      (getWidthAt(CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]!) ??
+        CONTEXT_ENTRY_VARIABLE_MIN_WIDTH) +
         Math.max(
           CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
           ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
@@ -233,7 +259,8 @@ export function getExpressionResizingWidth(
     const nestedExpressions = (expression.binding ?? []).map((e) => e.expression);
     return (
       resizingWidth ??
-      (getWidth(expression["@_id"], widthsById) ?? INVOCATION_PARAMETER_MIN_WIDTH) +
+      (getWidthAt(INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]!) ??
+        INVOCATION_PARAMETER_MIN_WIDTH) +
         Math.max(
           INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
           ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
@@ -258,7 +285,8 @@ export function getExpressionResizingWidth(
       return (
         resizingWidth ??
         JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH +
-          (getWidthAt(2, widthsById.get(expression["@_id"]!)) ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
+          (getWidthAt(JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX, widthsById, expression["@_id"]!) ??
+            JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH) +
           JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH
       );
     } else if (expression["@_kind"] === BoxedFunctionKind.Pmml) {
@@ -286,8 +314,34 @@ export function getExpressionResizingWidth(
     );
   }
 
+  // Conditional
+  else if (expression.__$$element === "conditional") {
+    const nestedExpressions = [expression.if.expression, expression.then.expression, expression.else.expression];
+    return (
+      resizingWidth ??
+      CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH +
+        Math.max(
+          CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+          ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
+        ) +
+        CONDITIONAL_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
   // Others
   else {
-    return resizingWidth ?? DEFAULT_MIN_WIDTH;
+    throw new Error(`Can't determine resizing width for expression of unknown type '${expression.__$$element}'`);
   }
+}
+
+function getWidthAt(
+  index: number,
+  widthsById: Map<string, number[]>,
+  expressionId: string | undefined
+): number | undefined {
+  const widths = widthsById.get(expressionId!);
+  if (!widths || widths.length <= index) {
+    return undefined;
+  }
+  return widths[index];
 }

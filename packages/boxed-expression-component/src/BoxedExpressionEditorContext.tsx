@@ -41,6 +41,7 @@ export interface BoxedExpressionEditorContextType {
 
   onRequestFeelVariables?: OnRequestFeelVariables;
   widthsById: Map<string, number[]>;
+  hideDmn14BoxedExpressions?: boolean;
 }
 
 export interface BoxedExpressionEditorDispatchContextType {
@@ -75,6 +76,7 @@ export function BoxedExpressionEditorContextProvider({
   scrollableParentRef,
   onRequestFeelVariables,
   widthsById,
+  hideDmn14BoxedExpressions,
 }: React.PropsWithChildren<BoxedExpressionEditorProps>) {
   const [currentlyOpenContextMenu, setCurrentlyOpenContextMenu] = useState<string | undefined>(undefined);
 
@@ -116,6 +118,7 @@ export function BoxedExpressionEditorContextProvider({
         setCurrentlyOpenContextMenu,
         onRequestFeelVariables,
         widthsById,
+        hideDmn14BoxedExpressions,
       }}
     >
       <BoxedExpressionEditorDispatchContext.Provider value={dispatch}>
