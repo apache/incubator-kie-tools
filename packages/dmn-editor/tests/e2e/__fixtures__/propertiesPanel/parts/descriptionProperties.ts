@@ -17,17 +17,20 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
-import { Diagram } from "../diagram";
+import { Locator } from "@playwright/test";
+import { Diagram } from "../../diagram";
 
-export abstract class PropertiesPanelBase {
-  constructor(public diagram: Diagram, public page: Page) {}
+export class DescriptionProperties {
+  constructor(public panel: Locator, public diagram: Diagram) {}
 
-  public panel() {
-    return this.page.getByTestId("properties-panel-container");
+  public async setDescription(args: { newDescription: string }) {
+    await this.panel.getByPlaceholder("Enter a description...").fill(args.newDescription);
+
+    // commit changes by click to the diagram
+    await this.diagram.resetFocus();
   }
 
-  public async open() {
-    await this.page.getByTitle("Properties panel").click();
+  public async getDescription() {
+    return await this.panel.getByPlaceholder("Enter a description...").inputValue();
   }
 }

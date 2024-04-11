@@ -17,18 +17,112 @@
  * under the License.
  */
 
+import { Page } from "@playwright/test";
+import { Diagram } from "../diagram";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
+import { ShapeProperties } from "./parts/shapeProperties";
+import { FontProperties } from "./parts/fontProperties";
+import { DocumentationProperties } from "./parts/documentationProperties";
+import { DescriptionProperties } from "./parts/descriptionProperties";
+import { DataTypeProperties } from "./parts/dataTypeProperties";
+import { DataType } from "../jsonModel";
+import { NameProperties } from "./parts/nameProperties";
 
 export class BkmPropertiesPanel extends PropertiesPanelBase {
+  private nameProperties: NameProperties;
+  private dataTypeProperties: DataTypeProperties;
+  private descriptionProperties: DescriptionProperties;
+  private documentationProperties: DocumentationProperties;
+  private fontProperties: FontProperties;
+  private shapeProperties: ShapeProperties;
+
+  constructor(public diagram: Diagram, public page: Page) {
+    super(diagram, page);
+    this.nameProperties = new NameProperties(this.panel(), page);
+    this.dataTypeProperties = new DataTypeProperties(this.panel(), page);
+    this.descriptionProperties = new DescriptionProperties(this.panel(), diagram);
+    this.documentationProperties = new DocumentationProperties(this.panel(), page);
+    this.fontProperties = new FontProperties(this.panel(), diagram);
+    this.shapeProperties = new ShapeProperties(this.panel());
+  }
+
+  public async setName(args: { newName: string }) {
+    await this.nameProperties.setName({ newName: args.newName });
+  }
+
+  public async getName() {
+    return await this.nameProperties.getName();
+  }
+
+  public async setDataType(args: { newDataType: DataType }) {
+    await this.dataTypeProperties.setDataType({ newDataType: args.newDataType });
+  }
+
+  public async setDescription(args: { newDescription: string }) {
+    await this.descriptionProperties.setDescription({ newDescription: args.newDescription });
+  }
+
+  public async getDescription() {
+    return await this.descriptionProperties.getDescription();
+  }
+
+  public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
+    await this.documentationProperties.addDocumentationLink({ linkText: args.linkText, linkHref: args.linkHref });
+  }
+
+  public async getDocumentationLinks() {
+    return await this.documentationProperties.getDocumentationLinks();
+  }
+
+  public async setFont(args: {
+    fontSize?: string;
+    bold?: boolean;
+    italic?: boolean;
+    underline?: boolean;
+    striketrough?: boolean;
+    color?: string;
+    fontFamily?: string;
+  }) {
+    await this.fontProperties.setFont({
+      fontSize: args.fontSize,
+      bold: args.bold,
+      italic: args.italic,
+      underline: args.underline,
+      striketrough: args.striketrough,
+      color: args.color,
+      fontFamily: args.fontFamily,
+    });
+  }
+
+  public async resetFont() {
+    await this.fontProperties.resetFont();
+  }
+
+  public async getFont() {
+    return await this.fontProperties.getFont();
+  }
+
+  public async setShape(args: { width: string; height: string }) {
+    await this.shapeProperties.setShape({ width: args.width, height: args.height });
+  }
+
+  public async setPosition(args: { x: string; y: string }) {
+    await this.shapeProperties.setPosition({ x: args.x, y: args.y });
+  }
+
+  public async getShape() {
+    return await this.shapeProperties.getShape();
+  }
+
+  public async resetShape() {
+    await this.shapeProperties.resetShape();
+  }
+
   public async setFillColor(args: { color: string }) {
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await this.panel().getByTestId("color-picker-shape-fill").fill(args.color);
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+    await this.shapeProperties.setFillColor({ color: args.color });
   }
 
   public async setStrokeColor(args: { color: string }) {
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await this.panel().getByTestId("color-picker-shape-stroke").fill(args.color);
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+    await this.shapeProperties.setStrokeColor({ color: args.color });
   }
 }

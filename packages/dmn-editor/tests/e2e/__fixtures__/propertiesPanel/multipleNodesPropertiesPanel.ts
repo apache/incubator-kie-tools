@@ -17,57 +17,59 @@
  * under the License.
  */
 
-import { DataType } from "../jsonModel";
+import { Page } from "@playwright/test";
+import { Diagram } from "../diagram";
+import { ShapeProperties } from "./parts/shapeProperties";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
+import { FontProperties } from "./parts/fontProperties";
 
 export class MultipleNodesPropertiesPanel extends PropertiesPanelBase {
-  public async setName(args: { newName: string }) {
-    throw new Error("Not supported operation for multiple selected nodes");
+  private fontProperties: FontProperties;
+  private shapeProperties: ShapeProperties;
+
+  constructor(public diagram: Diagram, public page: Page) {
+    super(diagram, page);
+    this.fontProperties = new FontProperties(this.panel(), diagram);
+    this.shapeProperties = new ShapeProperties(this.panel());
   }
 
-  public async getName() {
-    throw new Error("Not supported operation for multiple selected nodes");
-    return "";
+  public async setFont(args: {
+    fontSize?: string;
+    bold?: boolean;
+    italic?: boolean;
+    underline?: boolean;
+    striketrough?: boolean;
+    color?: string;
+    fontFamily?: string;
+  }) {
+    await this.fontProperties.setFont({
+      fontSize: args.fontSize,
+      bold: args.bold,
+      italic: args.italic,
+      underline: args.underline,
+      striketrough: args.striketrough,
+      color: args.color,
+      fontFamily: args.fontFamily,
+    });
   }
 
-  public async setDataType(args: { newDataType: DataType }) {
-    throw new Error("Not supported operation for multiple selected nodes");
+  public async resetFont() {
+    await this.fontProperties.resetFont();
   }
 
-  public async setDescription(args: { newDescription: string }) {
-    throw new Error("Not supported operation for multiple selected nodes");
+  public async getFont() {
+    return await this.fontProperties.getFont();
   }
 
-  public async getDescription() {
-    throw new Error("Not supported operation for multiple selected nodes");
-    return "";
-  }
-
-  public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
-    throw new Error("Not supported operation for multiple selected nodes");
-  }
-
-  public async getDocumentationLinks() {
-    throw new Error("Not supported operation for multiple selected nodes");
-    return [];
-  }
-
-  public async setMultipleNodesFont(args: { newFont: string }) {
-    await this.panel().getByTestId("properties-panel-node-font-style").click();
-    await this.panel().getByText(args.newFont).click();
-
-    await this.diagram.resetFocus();
+  public async resetShape() {
+    await this.shapeProperties.resetShape();
   }
 
   public async setFillColor(args: { color: string }) {
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await this.panel().getByTestId("color-picker-shape-fill").fill(args.color);
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+    await this.shapeProperties.setFillColor({ color: args.color });
   }
 
   public async setStrokeColor(args: { color: string }) {
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await this.panel().getByTestId("color-picker-shape-stroke").fill(args.color);
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+    await this.shapeProperties.setStrokeColor({ color: args.color });
   }
 }

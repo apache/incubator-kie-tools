@@ -17,30 +17,23 @@
  * under the License.
  */
 
-import { DataType } from "../jsonModel";
+import { Page } from "@playwright/test";
+import { Diagram } from "../diagram";
+import { ShapeProperties } from "./parts/shapeProperties";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
+import { FontProperties } from "./parts/fontProperties";
+import { DescriptionProperties } from "./parts/descriptionProperties";
 
 export class TextAnnotationProperties extends PropertiesPanelBase {
-  public async setName(args: { newName: string }) {
-    throw new Error("Not supported operation for Text Annotation");
-  }
+  private descriptionProperties: DescriptionProperties;
+  private fontProperties: FontProperties;
+  private shapeProperties: ShapeProperties;
 
-  public async getName() {
-    throw new Error("Not supported operation for Text Annotation");
-    return "";
-  }
-
-  public async setDataType(args: { newDataType: DataType }) {
-    throw new Error("Not supported operation for Text Annotation");
-  }
-
-  public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
-    throw new Error("Not supported operation for Text Annotation");
-  }
-
-  public async getDocumentationLinks() {
-    throw new Error("Not supported operation for Text Annotation");
-    return [];
+  constructor(public diagram: Diagram, public page: Page) {
+    super(diagram, page);
+    this.descriptionProperties = new DescriptionProperties(this.panel(), diagram);
+    this.fontProperties = new FontProperties(this.panel(), diagram);
+    this.shapeProperties = new ShapeProperties(this.panel());
   }
 
   public async setFormat(args: { newFormat: string }) {
@@ -63,15 +56,63 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
     return await this.panel().getByPlaceholder("Enter text...").inputValue();
   }
 
+  public async setDescription(args: { newDescription: string }) {
+    await this.descriptionProperties.setDescription({ newDescription: args.newDescription });
+  }
+
+  public async getDescription() {
+    return await this.descriptionProperties.getDescription();
+  }
+
+  public async setFont(args: {
+    fontSize?: string;
+    bold?: boolean;
+    italic?: boolean;
+    underline?: boolean;
+    striketrough?: boolean;
+    color?: string;
+    fontFamily?: string;
+  }) {
+    await this.fontProperties.setFont({
+      fontSize: args.fontSize,
+      bold: args.bold,
+      italic: args.italic,
+      underline: args.underline,
+      striketrough: args.striketrough,
+      color: args.color,
+      fontFamily: args.fontFamily,
+    });
+  }
+
+  public async resetFont() {
+    await this.fontProperties.resetFont();
+  }
+
+  public async getFont() {
+    return await this.fontProperties.getFont();
+  }
+
+  public async setShape(args: { width: string; height: string }) {
+    await this.shapeProperties.setShape({ width: args.width, height: args.height });
+  }
+
+  public async setPosition(args: { x: string; y: string }) {
+    await this.shapeProperties.setPosition({ x: args.x, y: args.y });
+  }
+
+  public async getShape() {
+    return await this.shapeProperties.getShape();
+  }
+
+  public async resetShape() {
+    await this.shapeProperties.resetShape();
+  }
+
   public async setFillColor(args: { color: string }) {
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await this.panel().getByTestId("color-picker-shape-fill").fill(args.color);
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+    await this.shapeProperties.setFillColor({ color: args.color });
   }
 
   public async setStrokeColor(args: { color: string }) {
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await this.panel().getByTestId("color-picker-shape-stroke").fill(args.color);
-    await this.panel().getByRole("button", { name: "Expand / collapse Shape" }).click();
+    await this.shapeProperties.setStrokeColor({ color: args.color });
   }
 }

@@ -72,7 +72,7 @@ test.describe("Move edge waypoint - Knowledge Requirement", () => {
   });
 
   test.describe("Add Multiple Waypoints", () => {
-    test.only("Knowledge Requirement edge waypoints should not move when the ending nodes are moved", async ({
+    test("Knowledge Requirement edge waypoints should not move when the ending nodes are moved", async ({
       diagram,
       nodes,
       edges,
@@ -85,7 +85,7 @@ test.describe("Move edge waypoint - Knowledge Requirement", () => {
       await expect(diagram.get()).toHaveScreenshot("move-knowledge-requirement-starting-and-ending-waypoint.png");
     });
 
-    test.only("Knowledge Requirement edge ending nodes should not move when the waypoints are moved", async ({
+    test("Knowledge Requirement edge ending nodes should not move when the waypoints are moved", async ({
       diagram,
       edges,
       browserName,

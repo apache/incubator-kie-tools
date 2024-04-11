@@ -17,27 +17,36 @@
  * under the License.
  */
 
+import { Page } from "@playwright/test";
+import { Diagram } from "../diagram";
 import { PropertiesPanelBase } from "./propertiesPanelBase";
+import { DescriptionProperties } from "./parts/descriptionProperties";
+import { NameProperties } from "./parts/nameProperties";
 
 export class DiagramPropertiesPanel extends PropertiesPanelBase {
-  public async setDiagramName(args: { newName: string }) {
-    await this.panel().getByPlaceholder("Enter a name...").fill(args.newName);
-    await this.page.keyboard.press("Enter");
+  private nameProperties: NameProperties;
+  private descriptionProperties: DescriptionProperties;
+
+  constructor(public diagram: Diagram, public page: Page) {
+    super(diagram, page);
+    this.nameProperties = new NameProperties(this.panel(), page);
+    this.descriptionProperties = new DescriptionProperties(this.panel(), diagram);
   }
 
-  public async getDiagramName() {
-    return await this.panel().getByPlaceholder("Enter a name...").inputValue();
+  public async setDescription(args: { newDescription: string }) {
+    await this.descriptionProperties.setDescription({ newDescription: args.newDescription });
   }
 
-  public async setDiagramDescription(args: { newDescription: string }) {
-    await this.panel().getByPlaceholder("Enter a description...").fill(args.newDescription);
-
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+  public async getDescription() {
+    return await this.descriptionProperties.getDescription();
   }
 
-  public async getDiagramDescription() {
-    return await this.panel().getByPlaceholder("Enter a description...").inputValue();
+  public async setName(args: { newName: string }) {
+    await this.nameProperties.setName({ newName: args.newName });
+  }
+
+  public async getName() {
+    return await this.nameProperties.getName();
   }
 
   public async setExpressionLanguage(args: { expressionlangugae: string }) {

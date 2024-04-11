@@ -33,13 +33,16 @@ test.describe("Change Properties - Multiple Nodes", () => {
 
     await multipleNodesPropertiesPanel.open();
     await nodes.selectMultiple({ names: [DefaultNodeName.INPUT_DATA, DefaultNodeName.DECISION] });
-    await multipleNodesPropertiesPanel.setMultipleNodesFont({
-      newFont: "Verdana",
+    await multipleNodesPropertiesPanel.setFont({
+      fontSize: "40",
+      bold: true,
+      italic: true,
+      underline: true,
+      striketrough: true,
+      color: "#f12200",
+      fontFamily: "Verdana",
     });
 
-    await nodes.select({ name: DefaultNodeName.INPUT_DATA });
-    expect(await multipleNodesPropertiesPanel.getFont()).toBe("Verdana");
-    await nodes.select({ name: DefaultNodeName.DECISION });
-    expect(await multipleNodesPropertiesPanel.getFont()).toBe("Verdana");
+    await expect(diagram.get()).toHaveScreenshot("change-multiple-nodes-font.png");
   });
 });

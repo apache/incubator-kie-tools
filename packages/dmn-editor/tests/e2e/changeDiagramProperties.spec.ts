@@ -29,15 +29,15 @@ test.describe("Change Properties - Diagram", () => {
   });
 
   test("should change the Diagram name", async ({ diagramPropertiesPanel }) => {
-    await diagramPropertiesPanel.setDiagramName({ newName: "New Diagram Name" });
+    await diagramPropertiesPanel.setName({ newName: "New Diagram Name" });
 
-    expect(await diagramPropertiesPanel.getDiagramName()).toBe("New Diagram Name");
+    expect(await diagramPropertiesPanel.getName()).toBe("New Diagram Name");
   });
 
   test("should change the Diagram description", async ({ diagramPropertiesPanel }) => {
-    await diagramPropertiesPanel.setDiagramDescription({ newDescription: "New Diagram Description" });
+    await diagramPropertiesPanel.setDescription({ newDescription: "New Diagram Description" });
 
-    expect(await diagramPropertiesPanel.getDiagramDescription()).toBe("New Diagram Description");
+    expect(await diagramPropertiesPanel.getDescription()).toBe("New Diagram Description");
   });
 
   test("should change the Diagram expression language", async ({ diagramPropertiesPanel }) => {

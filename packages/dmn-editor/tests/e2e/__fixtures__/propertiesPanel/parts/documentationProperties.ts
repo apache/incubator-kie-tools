@@ -17,17 +17,25 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
-import { Diagram } from "../diagram";
+import { Locator, Page } from "@playwright/test";
 
-export abstract class PropertiesPanelBase {
-  constructor(public diagram: Diagram, public page: Page) {}
+export class DocumentationProperties {
+  constructor(public panel: Locator, public page: Page) {}
 
-  public panel() {
-    return this.page.getByTestId("properties-panel-container");
+  public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
+    await this.panel.getByTitle("Add documentation link").click();
+    await this.panel
+      .locator(".kie-dmn-editor--documentation-link--row")
+      .getByPlaceholder("Enter a title...")
+      .fill(args.linkText);
+    await this.panel
+      .locator(".kie-dmn-editor--documentation-link--row")
+      .getByPlaceholder("http://")
+      .fill(args.linkHref);
+    await this.page.keyboard.press("Enter");
   }
 
-  public async open() {
-    await this.page.getByTitle("Properties panel").click();
+  public async getDocumentationLinks() {
+    return await this.panel.locator(".kie-dmn-editor--documentation-link--row-title").locator("a").all();
   }
 }
