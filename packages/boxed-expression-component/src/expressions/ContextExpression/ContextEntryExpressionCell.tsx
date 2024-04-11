@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect } from "react";
-import { BeeTableCellProps, BoxedContext } from "../../api";
+import { BeeTableCellProps, BoxedContext, BoxedExpression } from "../../api";
 import {
   NestedExpressionDispatchContextProvider,
   OnSetExpression,
@@ -43,7 +43,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellPro
 
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject((expression as BoxedContext)?.contextEntry?.[columnIndex]?.["@_id"]);
+      beeGwtService?.selectObject((expression as BoxedExpression)?.["@_id"]);
     }
   }, [beeGwtService, columnIndex, expression, isActive]);
 
@@ -56,6 +56,7 @@ export const ContextEntryExpressionCell: React.FunctionComponent<BeeTableCellPro
           ...newContextEntries[index],
           expression: newExpression!, // SPEC DISCREPANCY: Accepting undefined expression
           variable: {
+            ...newContextEntries[index].variable,
             "@_name": newExpression?.["@_label"] ?? newContextEntries[index].variable!["@_name"],
             "@_typeRef": newExpression?.["@_typeRef"] ?? newContextEntries[index].variable!["@_typeRef"],
           },

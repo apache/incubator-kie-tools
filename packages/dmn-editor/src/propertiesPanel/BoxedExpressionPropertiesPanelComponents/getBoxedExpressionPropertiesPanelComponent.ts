@@ -20,20 +20,20 @@
 import { ExpressionPath } from "../../boxedExpressions/boxedExpressionIndex";
 
 export enum BoxedExpressionPropertiesPanelComponent {
-  CONTEXT_INFORMATION_ITEM_CELL,
-  DECISION_TABLE_INPUT_HEADER,
-  DECISION_TABLE_INPUT_RULE,
-  DECISION_TABLE_OUTPUT_HEADER,
-  DECISION_TABLE_OUTPUT_RULE,
-  DECISION_TABLE_ROOT,
-  EXPRESSION_ROOT,
-  FUNCTION_DEFINITION_PARAMETERS,
-  FUNCTION_DEFINITION_ROOT,
-  INVOCATION_FUNCTION_CALL,
-  INVOCATION_INFORMATION_ITEM_CELL,
-  LITERAL_EXPRESSION_CONTENT,
-  RELATION_INFORMATION_ITEM_CELL,
-  NONE,
+  CONTEXT_INFORMATION_ITEM_CELL = "context-information-item-cell",
+  DECISION_TABLE_INPUT_HEADER = "decision-table-input-header",
+  DECISION_TABLE_INPUT_RULE = "decision-table-input-rule",
+  DECISION_TABLE_OUTPUT_HEADER = "decision-table-output-header",
+  DECISION_TABLE_OUTPUT_RULE = "decision-table-output-rule",
+  DECISION_TABLE_ROOT = "decision-table-root",
+  EXPRESSION_ROOT = "expression-root",
+  FUNCTION_DEFINITION_PARAMETERS = "function-definition-parameters",
+  FUNCTION_DEFINITION_ROOT = "function-definition-root",
+  INVOCATION_FUNCTION_CALL = "invocation-function-call",
+  INVOCATION_INFORMATION_ITEM_CELL = "invocation-information-item-cell",
+  LITERAL_EXPRESSION_CONTENT = "literal-expression-content",
+  RELATION_INFORMATION_ITEM_CELL = "relation-information-item-cell",
+  WITHOUT_PROPERTIES_CELL = "without-properties-cell",
 }
 
 export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: ExpressionPath): {
@@ -181,5 +181,5 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
       return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Some" };
     }
   }
-  return { component: BoxedExpressionPropertiesPanelComponent.NONE, title: "" };
+  return { component: BoxedExpressionPropertiesPanelComponent.WITHOUT_PROPERTIES_CELL, title: "" };
 }

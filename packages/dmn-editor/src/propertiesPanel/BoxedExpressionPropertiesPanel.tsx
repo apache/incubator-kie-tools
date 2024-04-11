@@ -124,7 +124,7 @@ export function BoxedExpressionPropertiesPanel() {
                   {(((selectedObjectId === undefined || selectedObjectId === "") &&
                     boxedExpressionPropertiesPanelComponent === undefined) ||
                     boxedExpressionPropertiesPanelComponent?.component ===
-                      BoxedExpressionPropertiesPanelComponent.NONE) && <WithoutPropertiesCell />}
+                      BoxedExpressionPropertiesPanelComponent.WITHOUT_PROPERTIES_CELL) && <WithoutPropertiesCell />}
                   {selectedObjectId !== "" && boxedExpressionPropertiesPanelComponent === undefined && (
                     <SelectExpressionCell selectedObjectId={selectedObjectId!} />
                   )}

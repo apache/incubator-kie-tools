@@ -286,8 +286,6 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
           },
         });
 
-        console.log(defaultWidthsById);
-
         return {
           expression: defaultExpression,
           widthsById: defaultWidthsById,

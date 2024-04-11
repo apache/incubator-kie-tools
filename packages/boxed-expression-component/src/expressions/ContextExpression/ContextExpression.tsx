@@ -287,6 +287,7 @@ export function ContextExpression(
         "@_id": generateUuid(),
         expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         variable: {
+          "@_id": generateUuid(),
           "@_name": variableName,
           "@_typeRef": DmnBuiltInDataType.Undefined,
           description: { __$$text: "" },
@@ -535,7 +536,6 @@ export function ContextResultInfoCell(props: { parentElementId: string }) {
   // Selecting the context result cell should be the parent data type
   useEffect(() => {
     if (isActive) {
-      // TODO: MERGE - VERIFY it was empty string
       beeGwtService?.selectObject(props.parentElementId);
     }
   }, [beeGwtService, isActive, props.parentElementId]);

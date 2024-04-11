@@ -362,7 +362,7 @@ export function generateBoxedExpressionIndex(
           re["@_id"] &&
             map.set(re["@_id"], {
               expressionPath: [...parentExpressionPath, { type: "relation", row, column, root: expression["@_id"]! }],
-              cell: r,
+              cell: re,
             });
         })
       );
