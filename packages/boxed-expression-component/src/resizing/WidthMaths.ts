@@ -152,7 +152,7 @@ export function getExpressionMinWidth(expression?: BoxedExpression): number {
 }
 
 /**
- * This function goes recursively through all `expression`'s nested expressions and sums either `entryInfoWidth` or
+ * This function goes recursively through all `expression`'s nested expressions and sums either `fixed column width` or
  * default minimal width, returned by `getExpressionMinWidth`, if it is the last nested expression in the chain.
  *
  * This function returns maximal sum found in all `expression`'s nested expressions.
@@ -191,7 +191,7 @@ export function getExpressionTotalMinWidth(
     );
   }
 
-  // Expression without nested expressions
+  // Expression without fixed column
   else {
     return currentWidth + getExpressionMinWidth(expression);
   }
@@ -330,8 +330,7 @@ export function getExpressionResizingWidth(
 
   // Others
   else {
-    throw new Error(`Resize unknown for expression of type ${expression.__$$element}`);
-    //return resizingWidth ?? DEFAULT_MIN_WIDTH;
+    throw new Error(`Can't determine resizing width for expression of unknown type '${expression.__$$element}'`);
   }
 }
 
