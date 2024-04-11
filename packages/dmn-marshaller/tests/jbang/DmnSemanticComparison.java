@@ -69,10 +69,10 @@ class DmnSemanticComparison extends DmnParserJBangScript {
     @Option(names = {"-g", "--generatedDmnFilePath"} , description = "Path of generated DMN file to be compared", required = true)
     private String generatedDmnFilePath;
 
-    @Option(names = {"-io", "--importedOriginalDmnFilesPaths"} , description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
+    @Option(names = {"-i", "--importedOriginalDmnFilesPaths"} , description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
     private String[] importedOriginalDmnFilesPath;
 
-    @Option(names = {"-ig", "--importedGeneratedDmnFilesPaths"} , description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
+    @Option(names = {"-j", "--importedGeneratedDmnFilesPaths"} , description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
     private String[] importedGeneratedDmnFilesPath;
 
     public static void main(String... args) throws Exception {
@@ -82,31 +82,27 @@ class DmnSemanticComparison extends DmnParserJBangScript {
 
     @Override
     public Integer call() throws Exception {
-        File originalDMNFile = new File(originalDmnFilePath);
-        File generatedDmnFile = new File(generatedDmnFilePath);
+        List<File> originalDMNFiles = new ArrayList<>();
+        originalDMNFiles.add(new File(originalDmnFilePath));
+        if (importedOriginalDmnFilesPath != null && importedOriginalDmnFilesPath.length > 0) {
+            originalDMNFiles.addAll(Stream.of(importedOriginalDmnFilesPath)
+                            .map(File::new)
+                            .collect(Collectors.toList()));
+        }
 
-
-        /*List<File> models = new ArrayList<>();
-        models.add(new File(dmnFilePath));
-
-        if (importedDmnFilesPath != null && importedDmnFilesPath.length > 0) {
-            models.addAll(Stream.of(importedDmnFilesPath)
-                    .map(File::new)
-                    .collect(Collectors.toList()));
-        }*/
-        return this.compare(originalDMNFile, generatedDmnFile);
+        List<File> generatedDmnFiles = new ArrayList<>();
+        generatedDmnFiles.add(new File(generatedDmnFilePath));
+        if (importedGeneratedDmnFilesPath != null && importedGeneratedDmnFilesPath.length > 0) {
+            generatedDmnFiles.addAll(Stream.of(importedGeneratedDmnFilesPath)
+                                           .map(File::new)
+                                           .collect(Collectors.toList()));
+        }
+        return this.compare(originalDMNFiles, generatedDmnFiles);
     }
 
-     private int compare(File originalDMNFile, File generatedDmnFile) throws Exception {
-
-/*
-        List<File> models = Stream.of(args)
-                .map(File::new)
-                .collect(Collectors.toList());
-        boolean areImportedModelsPresent = models.size() > 2;*/
-
-        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(List.of(originalDMNFile));
-        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(List.of(generatedDmnFile));
+     private int compare(List<File> originalDMNFiles, List<File> generatedDmnFiles) throws Exception {
+        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(originalDMNFiles);
+        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(generatedDmnFiles);
 
         LOGGER.info("========== SEMANTIC COMPARISON ==========");
         LOGGER.info("Evaluating DMN file: " + originalModel.getName());
@@ -125,14 +121,10 @@ class DmnSemanticComparison extends DmnParserJBangScript {
         } else {
             List<Resource> resources = new ArrayList<>();
             String importerFileSourcePath = dmnFiles.get(0).getCanonicalPath();
-            System.out.println("DEBUG - IMPORTED FILE SOURCE PATH");
-            System.out.println(importerFileSourcePath);
 
             for (File file : dmnFiles) {
                 Resource readerResource = ResourceFactory.newReaderResource(new FileReader(file), "UTF-8");
                 readerResource.setSourcePath(file.getCanonicalPath());
-                System.out.println("DEBUG - ADDED CANONICAL FILE SOURCE PATH");
-                System.out.println(file.getCanonicalPath());
                 resources.add(readerResource);
             }
 
@@ -143,9 +135,6 @@ class DmnSemanticComparison extends DmnParserJBangScript {
             DMNModel importerModel = null;
 
             for (DMNModel m : dmnRuntime.getModels()) {
-                System.out.println("DEBUG - CHECkING CANONICAL FILE SOURCE PATH");
-                System.out.println("DEBUG - SEARCHING: " + importerFileSourcePath);
-                System.out.println("DEBUG - FOUND: " + m.getResource().getSourcePath());
                 if (m.getResource().getSourcePath().equals(importerFileSourcePath.replace("\\", "/"))) {
                     importerModel = m;
                     break;

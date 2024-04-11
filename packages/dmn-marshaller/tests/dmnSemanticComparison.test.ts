@@ -85,12 +85,12 @@ describe("validation", () => {
 
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
-  } /*
+  }
   for (const file of dmnTestingImportedModels) {
     file.imported = path.join(dmnTestingModelsPath, file.imported);
     file.importer = path.join(dmnTestingModelsPath, file.importer);
     testImportedFile(file);
-  } */
+  }
 });
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
@@ -124,10 +124,10 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       try {
         executeJBangScript(
           jbangDmnSemanticComparisonScriptPath,
-          importerMarshalledXMLFilePath,
-          importedMarshalledXMLFilePath,
-          normalizedFsPathRelativeToTheFiles.importer,
-          normalizedFsPathRelativeToTheFiles.imported
+          "-g" + importerMarshalledXMLFilePath,
+          "-j" + importedMarshalledXMLFilePath,
+          "-o" + normalizedFsPathRelativeToTheFiles.importer,
+          "-i" + normalizedFsPathRelativeToTheFiles.imported
         );
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
