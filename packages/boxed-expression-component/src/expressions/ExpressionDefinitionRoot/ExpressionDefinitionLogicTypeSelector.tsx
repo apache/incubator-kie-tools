@@ -100,7 +100,7 @@ export function ExpressionDefinitionLogicTypeSelector({
       // "some",
       // "filter",
     ],
-    [isNested]
+    [hideDmn14BoxedExpressions, isNested]
   );
 
   const { i18n } = useBoxedExpressionEditorI18n();
