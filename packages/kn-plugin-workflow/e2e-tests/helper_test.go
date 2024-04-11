@@ -183,6 +183,9 @@ func AddSnapshotRepositoryDeclarationToPom(t *testing.T, projectDir string) {
 	content, err := io.ReadAll(file)
 	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
 
+	err = file.Close()
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+
 	xml := string(content)
 	insertPosition := strings.Index(xml, "</profiles>") + len("</profiles>")
 
