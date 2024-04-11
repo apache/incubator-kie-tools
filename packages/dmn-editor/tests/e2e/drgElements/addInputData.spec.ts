@@ -18,6 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
+import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor }) => {
@@ -27,11 +28,30 @@ test.beforeEach(async ({ editor }) => {
 test.describe("Add node - Input Data", () => {
   test.describe("Add to the DRG", () => {
     test.describe("add from the palette", () => {
-      test("should add Input Data node from palette", async ({ palette, nodes, diagram }) => {
+      test("should add Input Data node from palette", async ({ jsonModel, palette, nodes, diagram }) => {
         await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
 
         expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toBeAttached();
         await expect(diagram.get()).toHaveScreenshot("add-input-data-node-from-palette.png");
+
+        // JSON model assertions
+        const inputData = await jsonModel.drgElements.getInputData({ drgElementIndex: 0, drdIndex: 0 });
+        expect(inputData).toEqual({
+          __$$element: "inputData",
+          "@_id": inputData["@_id"],
+          "@_name": DefaultNodeName.INPUT_DATA,
+          variable: {
+            "@_id": inputData.variable?.["@_id"],
+            "@_name": DefaultNodeName.INPUT_DATA,
+            "@_typeRef": DataType.Undefined,
+          },
+        });
+        expect(await jsonModel.drd.getDrgElementBoundsOnDrd({ drgElementIndex: 0, drdIndex: 0 })).toEqual({
+          "@_x": 0,
+          "@_y": 0,
+          "@_width": 160,
+          "@_height": 80,
+        });
       });
     });
   });

@@ -19,11 +19,20 @@
 
 import { Page } from "@playwright/test";
 
+export const DEFAULT_DRD_NAME = "Default DRD";
+export const UNNAMED_DRD_NAME = "Unnamed DRD";
+const VIEWPORT_OFFSET_X = 100;
+const VIEWPORT_OFFSET_Y = 100;
+
 export class Diagram {
   constructor(public page: Page) {}
 
   public get() {
     return this.page.getByTestId("kie-dmn-editor--diagram-container");
+  }
+
+  public async dblclick(position: { x: number; y: number }) {
+    return this.get().dblclick({ position: { x: position.x + VIEWPORT_OFFSET_X, y: position.y + VIEWPORT_OFFSET_Y } });
   }
 
   public async resetFocus() {
@@ -35,5 +44,11 @@ export class Diagram {
     await this.page.mouse.down();
     await this.page.mouse.move(args.endPosition.x, args.endPosition.y);
     await this.page.mouse.up();
+  }
+
+  public async selectAlternativeInputDataShape() {
+    await this.get().getByTitle("Select or edit DRD").click();
+    await this.page.getByLabel("Tweak the shape of the input data node").getByText("Alternative").click();
+    await this.get().getByTitle("Select or edit DRD").click();
   }
 }
