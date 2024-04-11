@@ -1,42 +1,6 @@
 {
   "lockfile_version": "1",
   "packages": {
-    "chromium@123.0.6312.86": {
-      "last_modified": "2024-03-27T09:47:59Z",
-      "resolved": "github:NixOS/nixpkgs/2230a20f2b5a14f2db3d7f13a2dc3c22517e790b#chromium",
-      "source": "devbox-search",
-      "version": "123.0.6312.86",
-      "systems": {
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/iz9fn9hday6lalg3hg6j5jjf5735zrdn-chromium-123.0.6312.86",
-              "default": true
-            },
-            {
-              "name": "sandbox",
-              "path": "/nix/store/fp06rl6h9vdjd9zb85bvpdnf3r5ir357-chromium-123.0.6312.86-sandbox"
-            }
-          ],
-          "store_path": "/nix/store/iz9fn9hday6lalg3hg6j5jjf5735zrdn-chromium-123.0.6312.86"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/dy36c0szphmvmczyz1w0bvlffa37531a-chromium-123.0.6312.86",
-              "default": true
-            },
-            {
-              "name": "sandbox",
-              "path": "/nix/store/zi8h1rfrpx9nh3x4kabs2d709cgmgyr2-chromium-123.0.6312.86-sandbox"
-            }
-          ],
-          "store_path": "/nix/store/dy36c0szphmvmczyz1w0bvlffa37531a-chromium-123.0.6312.86"
-        }
-      }
-    },
     "gnumake@4.4.1": {
       "last_modified": "2024-03-22T11:26:23Z",
       "resolved": "github:NixOS/nixpkgs/a3ed7406349a9335cb4c2a71369b697cecd9d351#gnumake",
@@ -129,51 +93,51 @@
         }
       }
     },
-    "go@1.22.0": {
-      "last_modified": "2024-02-24T23:06:34Z",
-      "resolved": "github:NixOS/nixpkgs/9a9dae8f6319600fa9aebde37f340975cab4b8c0#go_1_22",
+    "go@1.21.5": {
+      "last_modified": "2024-01-14T03:55:27Z",
+      "resolved": "github:NixOS/nixpkgs/dd5621df6dcb90122b50da5ec31c411a0de3e538#go",
       "source": "devbox-search",
-      "version": "1.22.0",
+      "version": "1.21.5",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/sbg2nmns0b8invf6ws8yid0gdak18w4d-go-1.22.0",
+              "path": "/nix/store/z6p2j8shdwi74kbm86jwdh03vxq91l0q-go-1.21.5",
               "default": true
             }
           ],
-          "store_path": "/nix/store/sbg2nmns0b8invf6ws8yid0gdak18w4d-go-1.22.0"
+          "store_path": "/nix/store/z6p2j8shdwi74kbm86jwdh03vxq91l0q-go-1.21.5"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/48bhxp3lncnmss2i3f44k3r7wgcm0ijk-go-1.22.0",
+              "path": "/nix/store/1p00q366rk2j7w9lnflrl7xaks7wfq5d-go-1.21.5",
               "default": true
             }
           ],
-          "store_path": "/nix/store/48bhxp3lncnmss2i3f44k3r7wgcm0ijk-go-1.22.0"
+          "store_path": "/nix/store/1p00q366rk2j7w9lnflrl7xaks7wfq5d-go-1.21.5"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/3xay4cky9vhc2ir4prv53n5gbgal0nlj-go-1.22.0",
+              "path": "/nix/store/brv7d6mlrclkzywf1vaf35wqhq4c0c82-go-1.21.5",
               "default": true
             }
           ],
-          "store_path": "/nix/store/3xay4cky9vhc2ir4prv53n5gbgal0nlj-go-1.22.0"
+          "store_path": "/nix/store/brv7d6mlrclkzywf1vaf35wqhq4c0c82-go-1.21.5"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/8yw3g52r95h7cv09lcrran92n212997b-go-1.22.0",
+              "path": "/nix/store/rccpgf2bnh58hhh4908p78i1rln9gzvp-go-1.21.5",
               "default": true
             }
           ],
-          "store_path": "/nix/store/8yw3g52r95h7cv09lcrran92n212997b-go-1.22.0"
+          "store_path": "/nix/store/rccpgf2bnh58hhh4908p78i1rln9gzvp-go-1.21.5"
         }
       }
     },
