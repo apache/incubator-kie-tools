@@ -17,17 +17,26 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import * as React from "react";
+import { useEffect, useRef } from "react";
+import { TestScenarioEditor, TestScenarioEditorRef } from "../src/TestScenarioEditor";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
-});
+export interface SceSimEditorWrapperProps {
+  pathRelativeToTheWorkspaceRoot: string;
+  content: string;
+}
+
+export function SceSimEditorWrapper(props: SceSimEditorWrapperProps) {
+  const ref = useRef<TestScenarioEditorRef>(null);
+
+  useEffect(() => {
+    /* Simulating a call from "Foundation" code */
+    ref.current?.setContent(props.pathRelativeToTheWorkspaceRoot, props.content);
+  }, [ref, props.content, props.pathRelativeToTheWorkspaceRoot]);
+
+  return (
+    <div>
+      <TestScenarioEditor ref={ref} />
+    </div>
+  );
+}

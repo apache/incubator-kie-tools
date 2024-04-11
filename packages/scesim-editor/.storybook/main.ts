@@ -17,17 +17,15 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { baseConfig } from "@kie-tools/storybook-base/dist/config/baseConfig";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
-});
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { env } from "../env";
+const buildEnv: any = env; // build-env is not typed
+
+const config = {
+  ...baseConfig(buildEnv.webpack.dev),
+};
+
+export default config;

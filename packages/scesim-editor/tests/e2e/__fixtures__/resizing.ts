@@ -17,17 +17,13 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { Page, Locator } from "@playwright/test";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      scesimEditor: {
-        storybook: {
-          port: "9902",
-        },
-      },
-    };
-  },
-});
+export class Resizing {
+  constructor(public page: Page) {}
+
+  public async reset(target: Locator) {
+    await target.hover();
+    await target.getByTestId("resizer-handle").dblclick();
+  }
+}
