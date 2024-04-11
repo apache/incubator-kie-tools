@@ -52,16 +52,9 @@
     <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
   </scm>
 
-  <developers>
-    <developer>
-      <name>All developers are listed in the KIE GitHub organization</name>
-      <url>https://github.com/orgs/kiegroup/people</url>
-    </developer>
-  </developers>
-
   <issueManagement>
-    <system>jira</system>
-    <url>https://issues.redhat.com/browse/KOGITO</url>
+    <system>github-issues</system>
+    <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
 
   <repositories>

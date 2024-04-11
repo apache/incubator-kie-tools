@@ -22,10 +22,10 @@ export const sumBkm = `<definitions
   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" 
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
-  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
   expressionLanguage="https://www.omg.org/spec/DMN/20211108/FEEL/"
   typeLanguage="http://www.omg.org/spec/DMN/20211108/FEEL/"
-  namespace="https://kie.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" 
+  namespace="https://kie.apache.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" 
   id="_0E6F4D88-B955-404B-A31A-72BB7E1E6A77" 
   name="Sum BKM">
 <businessKnowledgeModel name="Sum BKM" id="_3646600D-035F-47B9-8DC6-3FABE844234F">
@@ -60,10 +60,10 @@ export const sumDiffDs = `<definitions
   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
-  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
   expressionLanguage="https://www.omg.org/spec/DMN/20211108/FEEL/" 
   typeLanguage="http://www.omg.org/spec/DMN/20211108/FEEL/"
-  namespace="https://kie.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1" 
+  namespace="https://kie.apache.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1" 
   id="_F360CECB-5DF2-4546-A7A9-E5ECF0F5A872" 
   name="Sum and Diff DS">
 <decisionService name="Sum and Diff DS" id="_721B7634-7227-42B4-AAA4-17DE60A7A967">

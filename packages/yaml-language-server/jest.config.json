@@ -28,8 +28,7 @@
                 "node": "current"
               }
             }
-          ],
-          "@babel/react"
+          ]
         ]
       }
     ],

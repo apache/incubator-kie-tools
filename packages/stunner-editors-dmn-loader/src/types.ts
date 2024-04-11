@@ -251,9 +251,9 @@ export interface InvocationExpressionDefinition<T extends GwtExpressionDefinitio
   /** Function to be invoked */
   invokedFunction: InvocationFunction;
   /** Collection of arguments used to invoke the function */
-  bindingEntries: ContextExpressionDefinitionEntry<T>[]; // Please rename to `argumentEntries` as part of https://github.com/kiegroup/kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
+  bindingEntries: ContextExpressionDefinitionEntry<T>[]; // Please rename to `argumentEntries` as part of https://github.com/apache/incubator-kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
   /** Entry info width */
-  entryInfoWidth?: number; // Please rename to `parametersInfoColumnWidth` as part of https://github.com/kiegroup/kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
+  entryInfoWidth?: number; // Please rename to `parametersInfoColumnWidth` as part of https://github.com/apache/incubator-kie-issues/issues/169. Make sure to update other places that untypedly reference it too!
 }
 
 export interface InvocationFunction {

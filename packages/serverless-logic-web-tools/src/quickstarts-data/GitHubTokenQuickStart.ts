@@ -36,7 +36,7 @@ This document describes how you can configure the integration and synchronize yo
 
     conclusion: `**Found an issue?**
 
-If you find an issue or any misleading information, please feel free to report it [here](https://github.com/kiegroup/kogito-docs/issues/new). We really appreciate it!`,
+If you find an issue or any misleading information, please feel free to report it [here](https://github.com/apache/incubator-kie-kogito-docs/issues/new). We really appreciate it!`,
 
     tasks: [
       {
@@ -112,7 +112,7 @@ If you find an issue or any misleading information, please feel free to report i
               <li>
                 <p>Your GitHub token is configured in the Serverless Logic Web Tools.</p>
                 <div class="paragraph">
-                  <p>For more information, see <a href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-github-integration.html#proc-setting-github-token-serverless-logic-web-tools">Setting your GitHub token in Serverless Logic Web Tools</a>. </p>
+                  <p>For more information, see <a href="https://apache.github.io/incubator-kie-kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-github-integration.html#proc-setting-github-token-serverless-logic-web-tools">Setting your GitHub token in Serverless Logic Web Tools</a>. </p>
                 </div>
               </li>
             </ul>
@@ -192,7 +192,7 @@ If you find an issue or any misleading information, please feel free to report i
               <li>
                 <p>Your GitHub token is configured in the Serverless Logic Web Tools.</p>
                 <div class="paragraph">
-                  <p>For more information, see <a href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-github-integration.html#proc-setting-github-token-serverless-logic-web-tools">Setting your GitHub token in Serverless Logic Web Tools</a>. </p>
+                  <p>For more information, see <a href="https://apache.github.io/incubator-kie-kogito-docs/serverlessworkflow/latest/tooling/serverless-logic-web-tools/serverless-logic-web-tools-github-integration.html#proc-setting-github-token-serverless-logic-web-tools">Setting your GitHub token in Serverless Logic Web Tools</a>. </p>
                 </div>
               </li>
               <li>

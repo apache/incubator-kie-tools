@@ -101,4 +101,4 @@ export const allDmnImportNamespaces = new Set([
   dmn15ns.get("")!,
 ]);
 
-export const KIE_DMN_UNKNOWN_NAMESPACE = "https://kie.org/dmn/unknown";
+export const KIE_DMN_UNKNOWN_NAMESPACE = "https://kie.apache.org/dmn/unknown";

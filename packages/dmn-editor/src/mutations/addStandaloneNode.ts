@@ -92,10 +92,6 @@ export function addStandaloneNode({
           __$$element: "knowledgeSource",
           "@_name": "New Knowledge Source",
           "@_id": newNodeId,
-          variable: {
-            "@_name": "New Knowledge Source",
-            ...variableBase,
-          },
         },
       })
     );

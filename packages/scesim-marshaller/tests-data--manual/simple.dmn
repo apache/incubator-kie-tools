@@ -17,16 +17,16 @@
   ~ specific language governing permissions and limitations
   ~ under the License.      
 -->
-<semantic:definitions xmlns="https://github.com/kiegroup/kie-dmn/itemdef"
+<semantic:definitions xmlns="https://kie.apache.org/dmn/itemdef"
                       xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
                       xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
                       xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
                       xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
-                      xmlns:kie="https://github.com/kiegroup/kie-dmn/itemdef"
+                      xmlns:kie="https://kie.apache.org/dmn/itemdef"
                       xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"
                       id="_simple-item-def"
                       name="simple-item-def"
-                      namespace="https://github.com/kiegroup/kie-dmn/itemdef">
+                      namespace="https://kie.apache.org/dmn/itemdef">
    <semantic:itemDefinition name="tSalary" id="_tSalary">
       <semantic:typeRef>number</semantic:typeRef>
    </semantic:itemDefinition>

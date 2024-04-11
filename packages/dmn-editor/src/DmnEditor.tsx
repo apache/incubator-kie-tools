@@ -152,12 +152,17 @@ export type DmnEditorProps = {
    * If undefined, the relative paths will be displayed.
    */
   onRequestToResolvePath?: OnRequestToResolvePath;
+  /**
+   * Notifies the caller when the DMN Editor performs a new edit after the debounce time.
+   */
+  onModelDebounceStateChanged?: (changed: boolean) => void;
 };
 
 export const DmnEditorInternal = ({
   model,
   originalVersion,
   onModelChange,
+  onModelDebounceStateChanged,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
   const boxedExpressionEditorActiveDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
@@ -255,6 +260,7 @@ export const DmnEditorInternal = ({
     if (isDiagramEditingInProgress) {
       return;
     }
+    onModelDebounceStateChanged?.(false);
 
     const timeout = setTimeout(() => {
       // Ignore changes made outside... If the controller of the component
@@ -263,6 +269,7 @@ export const DmnEditorInternal = ({
         return;
       }
 
+      onModelDebounceStateChanged?.(true);
       console.debug("DMN EDITOR: Model changed!");
       onModelChange?.(dmn.model);
     }, ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS);

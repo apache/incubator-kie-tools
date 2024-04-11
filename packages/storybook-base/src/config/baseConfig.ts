@@ -20,6 +20,7 @@
 import type { StorybookConfig } from "@storybook/react-webpack5";
 import * as webpack from "webpack";
 import merge from "webpack-merge";
+import * as path from "path";
 
 export const baseConfig: (
   webpackEnv: { transpileOnly: boolean; sourceMaps: boolean },
@@ -27,7 +28,7 @@ export const baseConfig: (
 ) => StorybookConfig = (webpackEnv, common) => {
   console.log("Storybook base :: Webpack env :: transpileOnly: " + webpackEnv.transpileOnly);
   console.log("Storybook base :: Webpack env :: sourceMap: " + webpackEnv.sourceMaps);
-
+  console.log(require.resolve("@storybook/addon-controls"));
   return {
     typescript: {
       check: true,
@@ -45,15 +46,17 @@ export const baseConfig: (
       defaultName: "Overview",
     },
     addons: [
-      "@storybook/addon-controls",
-      "@storybook/addon-docs",
-      "@storybook/addon-highlight",
-      "@storybook/addon-links",
-      "@storybook/addon-measure",
-      "@storybook/addon-outline",
-      "@storybook/addon-toolbars",
-      "@storybook/addon-viewport",
-      "@storybook/addon-webpack5-compiler-babel",
+      // Do not use addon package names directly,
+      // due to the way `pnpm` structures node_modules directories,
+      // we need to require them here, so that only `storybook-base` needs to declare them.
+      path.dirname(require.resolve("@storybook/addon-controls/package.json")),
+      path.dirname(require.resolve("@storybook/addon-docs/package.json")),
+      path.dirname(require.resolve("@storybook/addon-highlight/package.json")),
+      path.dirname(require.resolve("@storybook/addon-links/package.json")),
+      path.dirname(require.resolve("@storybook/addon-measure/package.json")),
+      path.dirname(require.resolve("@storybook/addon-outline/package.json")),
+      path.dirname(require.resolve("@storybook/addon-toolbars/package.json")),
+      path.dirname(require.resolve("@storybook/addon-viewport/package.json")),
     ],
     webpackFinal: async (config) => {
       return merge(config, common);

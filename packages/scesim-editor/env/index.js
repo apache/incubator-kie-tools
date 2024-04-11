@@ -19,13 +19,13 @@
 
 const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
   vars: varsWithName({}),
   get env() {
     return {
       scesimEditor: {
-        dev: {
-          port: 9004,
+        storybook: {
+          port: "9902",
         },
       },
     };

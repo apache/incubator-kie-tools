@@ -21,13 +21,14 @@ package quarkus
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
+
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 type BuildCmdConfig struct {
@@ -79,7 +80,7 @@ func NewBuildCommand() *cobra.Command {
 	# Build from the local directory, passing separately image options
 	{{.Name}} build --image-registry docker.io --image-repository myuser --image-name myworkflow --image-tag 1.0
 
-	# Build using Jib instead of Docker. (Read more: https://kiegroup.github.io/kogito-docs/serverlessworkflow/main/cloud/build-workflow-image-with-quarkus-cli.html)
+	# Build using Jib instead of Docker. (Read more: https://apache.github.io/incubator-kie-kogito-docs/serverlessworkflow/main/cloud/build-workflow-image-with-quarkus-cli.html)
 	# Docker is still required to save the image if the push flag is not used
 	{{.Name}} build --jib
 	

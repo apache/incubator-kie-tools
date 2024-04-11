@@ -39,23 +39,23 @@
 
 # 0.28.0 (alpha)
 
-- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/kiegroup/kie-tools/pull/1485
-- [KOGITO-8716](https://issues.redhat.com/browse/KOGITO-8716) - [SWF Viewer] Backward orthogonal Lines should not overlap states by @handreyrc in https://github.com/kiegroup/kie-tools/pull/1476
-- [KOGITO-8714](https://issues.redhat.com/browse/KOGITO-8714) - SWF Viewer - display stateDataFilter parameter with icon by @hasys in https://github.com/kiegroup/kie-tools/pull/1474
-- [KOGITO-8677](https://issues.redhat.com/browse/KOGITO-8677) - SWF Diagram Editor - i18n by @hasys in https://github.com/kiegroup/kie-tools/pull/1501
-- [KOGITO-8802](https://issues.redhat.com/browse/KOGITO-8802) - SWF Diagram Editor - depiction of actionMode parameter by @hasys in https://github.com/kiegroup/kie-tools/pull/1511
-- [KOGITO-8783](https://issues.redhat.com/browse/KOGITO-8783) - [SWF Editor] Create empty workflow on code lens by @Sara4994 in https://github.com/kiegroup/kie-tools/pull/1513
-- [KOGITO-8335](https://issues.redhat.com/browse/KOGITO-8335) - [SWF Editor] Provide feedback when operationId is missing from Open API spec by @bxf12315 in https://github.com/kiegroup/kie-tools/pull/1458
-- [KOGITO-8624](https://issues.redhat.com/browse/KOGITO-8624) - Provide autocomplete support for JQ expressions by @AjayJagan in https://github.com/kiegroup/kie-tools/pull/1472
-- [KOGITO-8793](https://issues.redhat.com/browse/KOGITO-8793) - BoudingBox values of states with tooltip boxes are wrong by @hasys in https://github.com/kiegroup/kie-tools/pull/1515
-- [KOGITO-8696](https://issues.redhat.com/browse/KOGITO-8696) - [SWF Editor] Add support to Camel routes in Service Catalog by @Sara4994 in https://github.com/kiegroup/kie-tools/pull/1467
-- [KOGITO-8844](https://issues.redhat.com/browse/KOGITO-8844) - SWF Viewer - Preserve background color of a node in stunner diagram by @hasys in https://github.com/kiegroup/kie-tools/pull/1532
-- [KOGITO-8197](https://issues.redhat.com/browse/KOGITO-8197) - SWF Editor - States example export is broken by @hasys in https://github.com/kiegroup/kie-tools/pull/1537
-- [KOGITO-8907](https://issues.redhat.com/browse/KOGITO-8907) - [SWF Editor] Highlight selected node after setContent in VS Code extension by @paulovmr in https://github.com/kiegroup/kie-tools/pull/1536
-- [KOGITO-8316](https://issues.redhat.com/browse/KOGITO-8316) - SWF Viewer - Parallel state requires more details by @hasys in https://github.com/kiegroup/kie-tools/pull/1541
-- [KOGITO-7999](https://issues.redhat.com/browse/KOGITO-7999) - Stunner - Editor API Canvas/Session/Domain Definitions exposed in JS by @handreyrc in https://github.com/kiegroup/kie-tools/pull/1366
-- [KOGITO-6864](https://issues.redhat.com/browse/KOGITO-6864) - [SWF Diagram Editor] Support for YAML workflow declaration by @treblereel in https://github.com/kiegroup/kie-tools/pull/1444
-- [KOGITO-8938](https://issues.redhat.com/browse/KOGITO-8938) - SWF Viewer - show missing parameters info in Callback State icons by @hasys in https://github.com/kiegroup/kie-tools/pull/1560
+- [KOGITO-8730](https://issues.redhat.com/browse/KOGITO-8730) - Show code lenses on VS Code web by @caponetto in https://github.com/apache/incubator-kie-tools/pull/1485
+- [KOGITO-8716](https://issues.redhat.com/browse/KOGITO-8716) - [SWF Viewer] Backward orthogonal Lines should not overlap states by @handreyrc in https://github.com/apache/incubator-kie-tools/pull/1476
+- [KOGITO-8714](https://issues.redhat.com/browse/KOGITO-8714) - SWF Viewer - display stateDataFilter parameter with icon by @hasys in https://github.com/apache/incubator-kie-tools/pull/1474
+- [KOGITO-8677](https://issues.redhat.com/browse/KOGITO-8677) - SWF Diagram Editor - i18n by @hasys in https://github.com/apache/incubator-kie-tools/pull/1501
+- [KOGITO-8802](https://issues.redhat.com/browse/KOGITO-8802) - SWF Diagram Editor - depiction of actionMode parameter by @hasys in https://github.com/apache/incubator-kie-tools/pull/1511
+- [KOGITO-8783](https://issues.redhat.com/browse/KOGITO-8783) - [SWF Editor] Create empty workflow on code lens by @Sara4994 in https://github.com/apache/incubator-kie-tools/pull/1513
+- [KOGITO-8335](https://issues.redhat.com/browse/KOGITO-8335) - [SWF Editor] Provide feedback when operationId is missing from Open API spec by @bxf12315 in https://github.com/apache/incubator-kie-tools/pull/1458
+- [KOGITO-8624](https://issues.redhat.com/browse/KOGITO-8624) - Provide autocomplete support for JQ expressions by @AjayJagan in https://github.com/apache/incubator-kie-tools/pull/1472
+- [KOGITO-8793](https://issues.redhat.com/browse/KOGITO-8793) - BoudingBox values of states with tooltip boxes are wrong by @hasys in https://github.com/apache/incubator-kie-tools/pull/1515
+- [KOGITO-8696](https://issues.redhat.com/browse/KOGITO-8696) - [SWF Editor] Add support to Camel routes in Service Catalog by @Sara4994 in https://github.com/apache/incubator-kie-tools/pull/1467
+- [KOGITO-8844](https://issues.redhat.com/browse/KOGITO-8844) - SWF Viewer - Preserve background color of a node in stunner diagram by @hasys in https://github.com/apache/incubator-kie-tools/pull/1532
+- [KOGITO-8197](https://issues.redhat.com/browse/KOGITO-8197) - SWF Editor - States example export is broken by @hasys in https://github.com/apache/incubator-kie-tools/pull/1537
+- [KOGITO-8907](https://issues.redhat.com/browse/KOGITO-8907) - [SWF Editor] Highlight selected node after setContent in VS Code extension by @paulovmr in https://github.com/apache/incubator-kie-tools/pull/1536
+- [KOGITO-8316](https://issues.redhat.com/browse/KOGITO-8316) - SWF Viewer - Parallel state requires more details by @hasys in https://github.com/apache/incubator-kie-tools/pull/1541
+- [KOGITO-7999](https://issues.redhat.com/browse/KOGITO-7999) - Stunner - Editor API Canvas/Session/Domain Definitions exposed in JS by @handreyrc in https://github.com/apache/incubator-kie-tools/pull/1366
+- [KOGITO-6864](https://issues.redhat.com/browse/KOGITO-6864) - [SWF Diagram Editor] Support for YAML workflow declaration by @treblereel in https://github.com/apache/incubator-kie-tools/pull/1444
+- [KOGITO-8938](https://issues.redhat.com/browse/KOGITO-8938) - SWF Viewer - show missing parameters info in Callback State icons by @hasys in https://github.com/apache/incubator-kie-tools/pull/1560
 
 # 0.27.0 (alpha)
 

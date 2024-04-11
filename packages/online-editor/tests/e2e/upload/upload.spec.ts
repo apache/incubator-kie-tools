@@ -52,6 +52,6 @@ test.describe("Upload", () => {
   });
 
   test.describe("Editor", () => {
-    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/549");
+    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/549");
   });
 });
