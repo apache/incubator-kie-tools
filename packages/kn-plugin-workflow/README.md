@@ -11,7 +11,7 @@ All the commands in this section should be performed in the monorepo root.
 ### Prerequisites
 
 - Node `>= 18.14.0` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
-- pnpm `8.7.0` _(To install, follow these instructions: https://pnpm.io/installation)_
+- pnpm `8.7.6` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Go `1.21.5` _(To install, follow these instructions: https://go.dev/doc/install)_
 
 #### Prerequisites for running end-to-end tests
