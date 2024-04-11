@@ -69,6 +69,9 @@ class DmnValidation extends DmnParserJBangScript {
         List<File> models = new ArrayList<>();
         models.add(new File(dmnFilePath));
 
+        LOGGER.info("========== DMN VALIDATION ==========");
+        LOGGER.info("Validating DMN files: " + dmnFilePath);
+
         if (importedDmnFilesPath != null && importedDmnFilesPath.length > 0) {
             models.addAll(Stream.of(importedDmnFilesPath)
                                 .map(File::new)
