@@ -30,7 +30,7 @@
     "build:dev": "rimraf dist && pnpm build:codegen && tsc -p tsconfig.json",
     "build:prod": "pnpm lint && rimraf dist && pnpm build:codegen && tsc -p tsconfig.json && pnpm test",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "test": "rimraf dist-tests && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "test": "rimraf dist-tests && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose  --runInBand --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools/xml-parser-ts": "workspace:*"
