@@ -30,14 +30,17 @@
 
 set -e
 
+# shellcheck source=/dev/null
 source "${KOGITO_HOME}"/launch/logging.sh
 
 log_info "--> checking if .mvn/jvm.config exists."
 if [ -f ".mvn/jvm.config" ]; then
   log_info "---> .mvn/jvm.config exists."
-  export JAVA_OPTIONS=$(cat .mvn/jvm.config)
+  JAVA_OPTIONS=$(cat .mvn/jvm.config)
+  export JAVA_OPTIONS
 else
   log_info "---> .mvn/jvm.config does not exists, memory will be calculated based on container limits."
 fi
 
-export MAVEN_OPTS="${JAVA_OPTIONS} $(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/java-default-options) $(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/debug-options)"
+MAVEN_OPTS="${JAVA_OPTIONS} $("${JBOSS_CONTAINER_JAVA_JVM_MODULE}"/java-default-options) $("${JBOSS_CONTAINER_JAVA_JVM_MODULE}"/debug-options)"
+export MAVEN_OPTS

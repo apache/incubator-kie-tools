@@ -10,11 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install xmllint
         run: |
-          sudo apt-get update
-          sudo apt-get install libxml2-utils --fix-missing
+          sudo apt-get update &&\
+          sudo apt-get -y install --no-install-recommends --fix-missing \
+          libxml2-utils
       - name: Cache bats binaries
         uses: actions/cache@v1
         with:
@@ -25,7 +26,7 @@ jobs:
       - name: run bats
         run: |
           ./scripts/run-bats.sh
-          
+
   validate_kogito_imagestream:
     concurrency:
       group: ${{ github.repository.name }}_validate_kogito_imagestream-${{ github.head_ref }}
@@ -33,14 +34,14 @@ jobs:
     name: Validate Kogito imagestreams
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Download openshift-validator-tool
         run: |
           wget https://github.com/jboss-container-images/jboss-kie-modules/raw/main/tools/openshift-template-validator/openshift-template-validator-linux-amd64
       - name: Add execution permission to openshift-validator-tool
         run: |
           chmod +x openshift-template-validator-linux-amd64
-          mv openshift-template-validator-linux-amd64 ${HOME} 	
+          mv openshift-template-validator-linux-amd64 ${HOME}
       - name: validate kogito imagestream
         run: |
           ${HOME}/openshift-template-validator-linux-amd64 validate -f kogito-imagestream.yaml
@@ -53,11 +54,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Shellcheck
-        run: sudo apt install shellcheck
+        run: |
+          sudo apt-get update &&\
+          sudo apt-get -y install --no-install-recommends \
+          shellcheck
       - name: Check configure scripts
         run: |
           # Ignore SC2034 since we have many var which are unused in the script but can be used while deployment at runtime by setting env. For eg: ${KOGITO_QUARKUS_JVM_PROPS}
           # Ignore SC1090 since the source files in our case didn't need to be checked
-          shellcheck -e SC2034 -e SC1090 modules/**/configure modules/**/*.sh
+          shopt -s globstar nullglob
+          shellcheck -e SC2034 -e SC1090 -S warning modules/**/configure modules/**/*.sh

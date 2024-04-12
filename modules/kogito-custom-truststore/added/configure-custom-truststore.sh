@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -20,6 +20,7 @@
 set -e
 
 # imports
+# shellcheck source=/dev/null
 source "${KOGITO_HOME}"/launch/logging.sh
 
 function prepareEnv() {

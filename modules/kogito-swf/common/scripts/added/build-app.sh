@@ -20,12 +20,13 @@
 
 set -e
 
-script_dir_path="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+script_dir_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 resources_path="$1"
 if [ -n "${resources_path}" ]; then
     resources_path="$(realpath "${resources_path}")"
 fi
 
+# shellcheck source=/dev/null
 source "${script_dir_path}"/logging.sh
 
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then

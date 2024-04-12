@@ -20,12 +20,13 @@
 
 set -e
 
-script_dir_path="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+script_dir_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # extensions to be added, comma separated.
 extensions="$1"
 # parameter passed which will trigger or not the jvm/maven configuration.
 ignore_jvm_settings=${2:-false}
 
+# shellcheck source=/dev/null
 source "${script_dir_path}"/logging.sh
 
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
