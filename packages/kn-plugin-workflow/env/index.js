@@ -39,12 +39,12 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     KN_PLUGIN_WORKFLOW__devModeImage: {
       name: "KN_PLUGIN_WORKFLOW__devModeImage",
-      default: "quay.io/kiegroup/kogito-swf-devmode-nightly:main-2024-04-05",
+      default: "quay.io/kiegroup/kogito-swf-devmode-nightly:main-2024-04-11",
       description: "SonataFlow dev mode image (used on cli run)",
     },
     KN_PLUGIN_WORKFLOW__kogitoVersion: {
       name: "KN_PLUGIN_WORKFLOW__kogitoVersion",
-      default: "999-20240407-SNAPSHOT",
+      default: "999-20240411-SNAPSHOT",
       description: "Kogito version to be used when creating and converting to Quarkus Projects",
     },
   }),

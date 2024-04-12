@@ -26,7 +26,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Quarkus platform version",
     },
     SERVERLESS_LOGIC_WEB_TOOLS__kogitoVersion: {
-      default: "999-20240407-SNAPSHOT",
+      default: "999-20240411-SNAPSHOT",
       description: "Kogito version",
     },
   }),
