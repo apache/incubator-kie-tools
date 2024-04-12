@@ -233,7 +233,7 @@ func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
-	build := common.ExecCommand("mvn", "package",
+	build := common.ExecCommand("mvn", "-B", "package",
 		skipTestsConfig,
 		"-Dquarkus.kubernetes.deployment-target=knative",
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
