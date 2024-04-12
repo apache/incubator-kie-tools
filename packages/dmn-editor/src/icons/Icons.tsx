@@ -107,7 +107,7 @@ export function AlternativeInputDataIcon(props: {
         isIcon={true}
         width={80}
         height={100}
-        strokeWidth={8}
+        strokeWidth={10}
         transform={props.transform ?? "translate(80, 60)"}
         isCollection={false}
       />

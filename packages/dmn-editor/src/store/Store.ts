@@ -346,7 +346,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"], computedCache
           isAlternativeInputDataShape: () =>
             computedCache.cached(
               "isAlternativeInputDataShape",
-              (drdIndex, dmnDiagram) => dmnDiagram?.[drdIndex]["@_useAlternativeInputDataShape"] ?? false,
+              (drdIndex, dmnDiagram) => dmnDiagram?.[drdIndex]?.["@_useAlternativeInputDataShape"] ?? false,
               [s.diagram.drdIndex, s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]] as const
             ),
 

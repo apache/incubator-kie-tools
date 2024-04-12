@@ -105,6 +105,7 @@ export function Waypoint({
 
   return (
     <circle
+      data-waypointindex={index}
       ref={circleRef}
       className={"kie-dmn-editor--diagram-edge-waypoint"}
       cx={point["@_x"]}

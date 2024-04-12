@@ -29,7 +29,7 @@ module.exports = {
   testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transformIgnorePatterns: [],
   transform: {
-    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
+    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }]] }],
     "^.+\\.tsx?$": "ts-jest",
   },
 };
