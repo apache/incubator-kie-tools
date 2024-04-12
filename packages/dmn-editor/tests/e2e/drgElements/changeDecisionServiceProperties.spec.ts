@@ -83,7 +83,7 @@ test.describe("Change Properties - Decision Service", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Decision Service node font", async ({ nodes, decisionServicePropertiesPanel }) => {
+  test("should change the Decision Service node font", async ({ diagram, nodes, decisionServicePropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
     await decisionServicePropertiesPanel.setFont({
       fontSize: "40",
@@ -95,9 +95,7 @@ test.describe("Change Properties - Decision Service", () => {
       fontFamily: "Verdana",
     });
 
-    await expect(nodes.get({ name: DefaultNodeName.DECISION_SERVICE })).toHaveScreenshot(
-      "change-decision-service-font.png"
-    );
+    await expect(diagram.get()).toHaveScreenshot("change-decision-service-font.png");
   });
 
   test("should reset the Decision Service node font", async ({ nodes, decisionServicePropertiesPanel }) => {

@@ -75,7 +75,7 @@ test.describe("Change Properties - BKM", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the BKM node font", async ({ nodes, bkmPropertiesPanel }) => {
+  test("should change the BKM node font", async ({ diagram, nodes, bkmPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.BKM });
     await bkmPropertiesPanel.setFont({
       fontSize: "40",
@@ -87,7 +87,7 @@ test.describe("Change Properties - BKM", () => {
       fontFamily: "Verdana",
     });
 
-    await expect(nodes.get({ name: DefaultNodeName.BKM })).toHaveScreenshot("change-bkm-font.png");
+    await expect(diagram.get()).toHaveScreenshot("change-bkm-font.png");
   });
 
   test("should reset the BKM node font", async ({ nodes, bkmPropertiesPanel }) => {

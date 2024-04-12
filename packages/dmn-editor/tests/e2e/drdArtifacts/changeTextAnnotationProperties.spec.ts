@@ -61,7 +61,7 @@ test.describe("Change Properties - Text Annotation", () => {
     expect(await textAnnotationPropertiesPanel.getDescription()).toBe("New Text Annotation Description");
   });
 
-  test("should change the Text Annotation node font", async ({ nodes, textAnnotationPropertiesPanel }) => {
+  test("should change the Text Annotation node font", async ({ diagram, nodes, textAnnotationPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.setFont({
       fontSize: "40",
@@ -73,9 +73,7 @@ test.describe("Change Properties - Text Annotation", () => {
       fontFamily: "Verdana",
     });
 
-    await expect(nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION })).toHaveScreenshot(
-      "change-text-annotation-font.png"
-    );
+    await expect(diagram.get()).toHaveScreenshot("change-text-annotation-font.png");
   });
 
   test("should reset the Text Annotation node font", async ({ nodes, textAnnotationPropertiesPanel }) => {

@@ -50,7 +50,7 @@ test.describe("Change Properties - Group", () => {
     expect(await groupPropertiesPanel.getDescription()).toBe("New Group Description");
   });
 
-  test("should change the Group node font", async ({ nodes, groupPropertiesPanel }) => {
+  test("should change the Group node font", async ({ diagram, nodes, groupPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
     await groupPropertiesPanel.setFont({
       fontSize: "40",
@@ -62,7 +62,7 @@ test.describe("Change Properties - Group", () => {
       fontFamily: "Verdana",
     });
 
-    await expect(nodes.get({ name: DefaultNodeName.GROUP })).toHaveScreenshot("change-group-font.png");
+    await expect(diagram.get()).toHaveScreenshot("change-group-font.png");
   });
 
   test("should reset the Group node font", async ({ nodes, groupPropertiesPanel }) => {

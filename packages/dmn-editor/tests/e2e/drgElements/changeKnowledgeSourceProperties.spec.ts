@@ -89,7 +89,7 @@ test.describe("Change Properties - Knowledge Source", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Knowledge Source node font", async ({ nodes, knowledgeSourcePropertiesPanel }) => {
+  test("should change the Knowledge Source node font", async ({ diagram, nodes, knowledgeSourcePropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.setFont({
       fontSize: "40",
@@ -101,9 +101,7 @@ test.describe("Change Properties - Knowledge Source", () => {
       fontFamily: "Verdana",
     });
 
-    await expect(nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE })).toHaveScreenshot(
-      "change-knowledge-source-font.png"
-    );
+    await expect(diagram.get()).toHaveScreenshot("change-knowledge-source-font.png");
   });
 
   test("should reset the Knowledge Source node font", async ({ nodes, knowledgeSourcePropertiesPanel }) => {

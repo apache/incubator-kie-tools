@@ -76,7 +76,7 @@ test.describe("Change Properties - Input Data", () => {
     expect(links[0]).toHaveAttribute("href", "http://link.test.com/");
   });
 
-  test("should change the Input Data node font", async ({ nodes, inputDataPropertiesPanel }) => {
+  test("should change the Input Data node font", async ({ diagram, nodes, inputDataPropertiesPanel }) => {
     await nodes.select({ name: DefaultNodeName.INPUT_DATA });
     await inputDataPropertiesPanel.setFont({
       fontSize: "40",
@@ -88,7 +88,7 @@ test.describe("Change Properties - Input Data", () => {
       fontFamily: "Verdana",
     });
 
-    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA })).toHaveScreenshot("change-input-data-font.png");
+    await expect(diagram.get()).toHaveScreenshot("change-input-data-font.png");
   });
 
   test("should reset the Input Data node font", async ({ nodes, inputDataPropertiesPanel }) => {
