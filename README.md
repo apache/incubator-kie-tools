@@ -20,6 +20,8 @@ This repository contains tooling applications and libraries for KIE projects.
 
 ## Build from source
 
+> **💡 Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools above, read more in [here](./NIX_DEV_ENV.md).
+
 To start building the Apache KIE Tools project, you're going to need:
 
 - Node `18` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
@@ -30,8 +32,6 @@ To start building the Apache KIE Tools project, you're going to need:
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
 
 > **ℹ️ NOTE:** Some packages will require that `make` is available as well.
-
-> **💡 Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools above, read more in [here](./NIX_DEV_ENV.md).
 
 After installing the tools above, you'll need to download the dependencies and link the packages locally. Simply run:
 
