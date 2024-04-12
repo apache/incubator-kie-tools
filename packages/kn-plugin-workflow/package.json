@@ -40,7 +40,7 @@
     "install": "go mod tidy",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "setup:env": "cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env quarkusPlatform.version) PLUGIN_VERSION=$(build-env knPluginWorkflow.version) DEV_MODE_IMAGE=$(build-env knPluginWorkflow.devModeImage) KOGITO_VERSION=$(build-env kogitoRuntime.version)",
-    "setup:env:win32": "pnpm powershell \"cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env quarkusPlatform.versionn) DEV_MODE_IMAGE=$(build-env knPluginWorkflow.devModeImage) KOGITO_VERSION=$(build-env kogitoRuntime.version) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)\"",
+    "setup:env:win32": "pnpm powershell \"cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env quarkusPlatform.version) DEV_MODE_IMAGE=$(build-env knPluginWorkflow.devModeImage) KOGITO_VERSION=$(build-env kogitoRuntime.version) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"pnpm go:test\" \"pnpm go:test:report\"",
     "test:e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm go:test:e2e\" \"pnpm go:test:e2e:report\"",
     "test:e2e:logs": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm go:test:e2e:logs\" \"pnpm go:test:e2e:report\"",
