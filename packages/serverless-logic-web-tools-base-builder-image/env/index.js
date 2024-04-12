@@ -32,7 +32,7 @@ module.exports = composeEnv(
         description: "",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {
-        default: "main-2024-04-11",
+        default: "999-20240411",
         description: "",
       },
     }),
