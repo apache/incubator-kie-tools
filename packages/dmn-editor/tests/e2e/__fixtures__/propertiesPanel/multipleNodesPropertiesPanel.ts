@@ -58,10 +58,10 @@ export class MultipleNodesPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setFillColor(args: { color: string }) {
-    await this.shapeProperties.setFillColor({ color: args.color });
+    await this.shapeProperties.setFillColor({ ...args });
   }
 
   public async setStrokeColor(args: { color: string }) {
-    await this.shapeProperties.setStrokeColor({ color: args.color });
+    await this.shapeProperties.setStrokeColor({ ...args });
   }
 }

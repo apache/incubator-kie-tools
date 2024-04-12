@@ -57,7 +57,7 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
   }
 
   public async setDescription(args: { newDescription: string }) {
-    await this.descriptionProperties.setDescription({ newDescription: args.newDescription });
+    await this.descriptionProperties.setDescription({ ...args });
   }
 
   public async getDescription() {
@@ -85,11 +85,11 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
   }
 
   public async setShape(args: { width: string; height: string }) {
-    await this.shapeProperties.setShape({ width: args.width, height: args.height });
+    await this.shapeProperties.setShape({ ...args });
   }
 
   public async setPosition(args: { x: string; y: string }) {
-    await this.shapeProperties.setPosition({ x: args.x, y: args.y });
+    await this.shapeProperties.setPosition({ ...args });
   }
 
   public async getShape() {
@@ -101,10 +101,10 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
   }
 
   public async setFillColor(args: { color: string }) {
-    await this.shapeProperties.setFillColor({ color: args.color });
+    await this.shapeProperties.setFillColor({ ...args });
   }
 
   public async setStrokeColor(args: { color: string }) {
-    await this.shapeProperties.setStrokeColor({ color: args.color });
+    await this.shapeProperties.setStrokeColor({ ...args });
   }
 }

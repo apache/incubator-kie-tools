@@ -34,7 +34,7 @@ export class DiagramPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setDescription(args: { newDescription: string }) {
-    await this.descriptionProperties.setDescription({ newDescription: args.newDescription });
+    await this.descriptionProperties.setDescription({ ...args });
   }
 
   public async getDescription() {
@@ -42,7 +42,7 @@ export class DiagramPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setName(args: { newName: string }) {
-    await this.nameProperties.setName({ newName: args.newName });
+    await this.nameProperties.setName({ ...args });
   }
 
   public async getName() {
