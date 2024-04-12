@@ -83,15 +83,7 @@ export class BkmPropertiesPanel extends PropertiesPanelBase {
     color?: string;
     fontFamily?: string;
   }) {
-    await this.fontProperties.setFont({
-      fontSize: args.fontSize,
-      bold: args.bold,
-      italic: args.italic,
-      underline: args.underline,
-      striketrough: args.striketrough,
-      color: args.color,
-      fontFamily: args.fontFamily,
-    });
+    await this.fontProperties.setFont({ ...args });
   }
 
   public async resetFont() {
