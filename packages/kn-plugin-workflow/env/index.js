@@ -32,20 +32,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "io.quarkus.platform",
       description: "Quarkus group to be used when creating the SonataFlow project",
     },
-    KN_PLUGIN_WORKFLOW__quarkusVersion: {
-      name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
-      default: "3.2.10.Final",
-      description: "Quarkus version to be used when creating the SonataFlow project",
-    },
     KN_PLUGIN_WORKFLOW__devModeImage: {
       name: "KN_PLUGIN_WORKFLOW__devModeImage",
       default: "quay.io/kiegroup/kogito-swf-devmode-nightly:999-20240411",
       description: "SonataFlow dev mode image (used on cli run)",
-    },
-    KN_PLUGIN_WORKFLOW__kogitoVersion: {
-      name: "KN_PLUGIN_WORKFLOW__kogitoVersion",
-      default: "999-20240411-SNAPSHOT",
-      description: "Kogito version to be used when creating and converting to Quarkus Projects",
     },
   }),
   get env() {
@@ -53,9 +43,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       knPluginWorkflow: {
         version: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__version),
         quarkusPlatformGroupId: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId),
-        quarkusVersion: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusVersion),
         devModeImage: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__devModeImage),
-        kogitoVersion: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__kogitoVersion),
       },
     };
   },
