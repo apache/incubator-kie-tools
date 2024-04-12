@@ -1,0 +1,1 @@
+docker run -it --rm --ipc=host --mount type=bind,source="$(pwd)"/tests,target=/app/tests/ --mount type=bind,source="$(pwd)"/dist-e2e-tests,target=/app/dist-e2e-tests --network host playwright-docker /bin/bash

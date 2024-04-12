@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "commonjs",
+    "baseUrl": ".",
+    "paths": {
+      "@kie-tools/playwright-base/*": ["./playwright-base/*"]
+    }
+  },
+  "include": ["tests"]
+}

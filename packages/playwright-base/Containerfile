@@ -1,0 +1,17 @@
+FROM mcr.microsoft.com/playwright:v1.38.1-jammy
+
+# adds args/envs for the config.ts
+# requires to bind mount the test folder to /app/tests/
+# requires to bind mount the dist-e2e/
+
+WORKDIR /app
+
+COPY package.docker.json package.json
+COPY playwright.docker.config.ts playwright.config.ts
+COPY projectNames.ts projectNames.ts
+COPY annotations.ts annotations.ts
+COPY tsconfig.docker.json tsconfig.json
+
+RUN npm install
+RUN npx playwright install-deps
+
