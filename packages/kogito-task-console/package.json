@@ -1,0 +1,39 @@
+{
+  "private": true,
+  "name": "@kie-tools/kogito-task-console",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "build:prod": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "cleanup": "rimraf dist-dev && mkdir dist-dev",
+    "copy:assets": "pnpm copy:webapp-assets && pnpm copy:image-env-to-json",
+    "copy:image-env-to-json": "run-script-os",
+    "copy:image-env-to-json:linux:darwin": "cp ../image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/",
+    "copy:image-env-to-json:win32": "pnpm powershell \"Copy-Item ../image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/\"",
+    "copy:webapp-assets": "run-script-os",
+    "copy:webapp-assets:linux:darwin": "cp -R ../runtime-tools-task-console-webapp/dist ./dist-dev/runtime-tools-task-console-webapp",
+    "copy:webapp-assets:win32": "pnpm powershell \"Copy-Item -R ../runtime-tools-task-console-webapp/dist ./dist-dev/runtime-tools-task-console-webapp\"",
+    "env-json:schema:generate": "ts-json-schema-generator --tsconfig ./node_modules/@kie-tools/runtime-tools-task-console-webapp/tsconfig.json --path ./node_modules/@kie-tools/runtime-tools-task-console-webapp/src/env/EnvJson.ts --type EnvJson --id EnvJson --out ./dist-dev/EnvJson.schema.json",
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env kogitoTaskConsole.registry)\" -a \"$(build-env kogitoTaskConsole.account)\" -n \"$(build-env kogitoTaskConsole.name)\" -t \"$(build-env kogitoTaskConsole.tags)\" --build-arg KOGITO_TASK_CONSOLE_PORT=\"$(build-env kogitoTaskConsole.port)\"",
+    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env kogitoTaskConsole.registry)\" -a \"$(build-env kogitoTaskConsole.account)\" -n \"$(build-env kogitoTaskConsole.name)\" -t \"$(build-env kogitoTaskConsole.tags)\" --build-arg KOGITO_TASK_CONSOLE_PORT=\"$(build-env kogitoTaskConsole.port)\" -e podman"
+  },
+  "devDependencies": {
+    "@kie-tools/image-builder": "workspace:*",
+    "@kie-tools/image-env-to-json": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/runtime-tools-task-console-webapp": "workspace:*",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "ts-json-schema-generator": "^1.1.2"
+  }
+}
