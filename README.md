@@ -31,24 +31,19 @@ To start building the Apache KIE Tools project, you're going to need:
 
 > **ℹ️ NOTE:** Some packages will require that `make` is available as well.
 
-> **ℹ️ NOTE:** \*nix users will also need:
->
-> - `lib-gtk-3-dev`
-> - `appindicator3-0.1` (`libayatana-appindicator3-dev` or `libappindicator-gtk3-devel` and `gir1.2-appindicator3-0.1`)
-
-> **ℹ️ NOTE:** Users of Fedora or RHEL will need to add a repository:
->
-> `sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm`
+> **💡 Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools above, read more in [here](./NIX_DEV_ENV.md).
 
 After installing the tools above, you'll need to download the dependencies and link the packages locally. Simply run:
 
 - `pnpm bootstrap`
 
+  > **ℹ️ NOTE:** If you plan on running Playwright tests, set the `PLAYWRIGHT_BASE__installDeps` environment variable to `true` before running the command above: `PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap`. This will install all Playwright dependencies (such as browsers engines and OS specific libraries).
+
 To install only the dependencies that are relevant to the package called `[pkg-name]`.
 
 - `pnpm bootstrap -F [pkg-name]...`
 
-  > **⚠️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
+  > **ℹ️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
 
 After dependencies are installed, you'll be able to build. To do so, you'll have two choices - `dev`, or `prod`.
 
@@ -57,7 +52,7 @@ Note that it is recommended that you specify which package you want to build, so
 - `pnpm -F [pkg-name]... build:dev` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
 - `pnpm -F [pkg-name]... build:prod` - The default command to build production-ready packages. Use that to make sure your changes are correct.
 
-> **⚠️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
+> **ℹ️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
 
 > **ℹ️ NOTE:** If you want to build _everything_, run `pnpm -r build:dev` or `pnpm -r build:prod`. It's going to take a while, though :)
 
@@ -152,59 +147,3 @@ After that, you're ready to start developing the Editors individually.
 
   - Located at `packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-testing`.
   - Run `mvn clean gwt:run` to start.
-
-## Nix-based development environment shell
-
-#### Installing
-
-- [Install Nix](https://nixos.org/download/) using the multi-user installation.
-- Enable nix-command and flakes:
-  - Open the Nix config:
-    - `sudo nano /etc/nix/nix.conf`
-  - Add the following at the bottom of the file:
-    - `experimental-features = nix-command flakes`
-- Test your installation by running the Hello World Nix package:
-  - Open a new shell;
-  - Run the hello world Nix package:
-    - `nix run 'nixpkgs#hello'`
-    - You should see `Hello, world!` printed on your terminal.
-- Install [devbox](https://www.jetify.com/devbox/docs/installing_devbox/).
-
-#### Running
-
-- Start the development environment:
-  - `devbox shell`
-- To exit the devbox shell, terminate it with `exit` or _Ctrl+D_.
-
----
-
-#### Starting the shell automatically when navigating into directory
-
-- [Install direnv](https://direnv.net/#basic-installation)
-- Make sure the directory has a `.envrc` file;
-  - If not, create one with `devbox generate direnv`.
-- `cd` into the directory;
-- Run `direnv allow` to allow direnv to exectue.
-
-#### Make VSCode use the devbox shell automatically
-
-- Install the [devbox VSCode extension](vscode:extension/jetify-com.devbox);
-- Install the [direnv VSCode extension](vscode:extension/mkhl.direnv);
-- Open your Devbox project in VSCode. Direnv extension should show a prompt notification to reload your environment.
-
----
-
-#### Adding new packages
-
-- Search for them in [nixhub.io](https://www.nixhub.io/) or via `devbox search <package_name>`;
-  <blockquote>
-  If you can't find it there, it may have a different name or belong to a package set.
-
-  Try searching for the package name in [search.nixos.org](https://search.nixos.org/), and then finding the equivalent package in [nixhub.io](https://www.nixhub.io/).
-  </blockquote>
-
-- Copy and run the `devbox add <package_name>@<version>` command.
-
-#### Upgrading packages
-
-- Run `devbox add <package_name>@<new_version>` and it should update both `devbox.json` and `devbox.lock`.
