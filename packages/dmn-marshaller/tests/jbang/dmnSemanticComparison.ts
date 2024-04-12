@@ -112,7 +112,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
         const fileName = normalizedFsPathRelativeToTheFile.substring(
           normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
         );
-        fail("Comparison of " + fileName + " failed! Please scroll up to catch the error root cause");
+        fail(error.cause);
       }
     }
   );
@@ -141,7 +141,7 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
           normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
         );
-        fail("Comparison of " + fileName + " failed! Please scroll up to catch the error root cause");
+        fail(error.cause);
       }
     }
   );

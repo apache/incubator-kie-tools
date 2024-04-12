@@ -184,7 +184,7 @@ class DmnSemanticComparison extends DmnParserJBangScript {
         Definitions originalModelDefinitions = originalModel.getDefinitions();
         Definitions parsedModelDefinitions = parsedModel.getDefinitions();
 
-        List<String> missingElementsMessages = new ArrayList<String>();
+        List<String> missingElementsMessages = new ArrayList<>();
 
         /* Check if the ORIGINAL model elements are present in the PARSED model */
         missingElementsMessages.addAll(checkElements(originalModelDefinitions.getDecisionService(), parsedModelDefinitions.getDecisionService()));
@@ -206,7 +206,11 @@ class DmnSemanticComparison extends DmnParserJBangScript {
         } else {
             LOGGER.error("ERROR: Original and Parsed files are NOT semantically the same!");
             missingElementsMessages.forEach(message -> LOGGER.error(message));
-            return 1;
+            throw new AssertionError("ERROR: Original and Parsed files are NOT semantically the same!"
+                    + "\n"
+                    + "DMN Model Name: " + originalModel.getName()
+                    + "\n"
+                    + String.join("\n", missingElementsMessages));
         }
     }
 
