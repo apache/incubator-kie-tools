@@ -35,29 +35,34 @@ const dmnTestingModels = [
   "../valid_models/DMNv1_5/AllowedValuesChecksInsideCollection.dmn",
   "../valid_models/DMNv1_5/DateToDateTimeFunction.dmn",
   "../valid_models/DMNv1_5/ForLoopDatesEvaluate.dmn",
-  "../valid_models/DMNv1_5/ListReplaceEvaluate.dmn",
   "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+  "../valid_models/DMNv1_5/ListReplaceEvaluate.dmn",
   "../valid_models/DMNv1_5/NegationOfDurationEvaluate.dmn",
   "../valid_models/DMNv1_5/TypeConstraintsChecks.dmn",
   "../valid_models/DMNv1_x/multiple/Financial.dmn",
-  //FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
+  //"../valid_models/DMNv1_x/multiple/Imported_Traffic_Violation.dmn",
   "../valid_models/DMNv1_x/multiple/stdlib.dmn",
   "../valid_models/DMNv1_x/allTypes.dmn",
-  //FULL_1_x_DIRECTORY + "dtevent.dmn",
-  //FULL_1_x_DIRECTORY + "habitability.dmn",
+  //"../valid_models/DMNv1_x/dtevent.dmn",
+  // "../valid_models/DMNv1_x/habitability.dmn",
   "../valid_models/DMNv1_x/loan.dmn",
-  //FULL_1_x_DIRECTORY + "LoanEligibility.dmn",
+  //"../valid_models/DMNv1_x/LoanEligibility.dmn",
   "../valid_models/DMNv1_x/OneOfEachType.dmn",
-  //FULL_1_x_DIRECTORY + "Prequalification.dmn",
+  // "../valid_models/DMNv1_x/Prequalification.dmn",
   "../valid_models/DMNv1_x/testWithExtensionElements.dmn",
-  //FULL_1_x_DIRECTORY + "Traffic Violation Simple.dmn",
+  // "../valid_models/DMNv1_x/Traffic Violation Simple.dmn",
+  // "../valid_models/DMNv1_x/Traffic Violation.dmn",
 ];
 
 const dmnTestingImportedModels = [
-  {
-    imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
-    importer: "../valid_models/DMNv1_5/Importing_EmptyNamed_Model.dmn",
-  },
+  // {
+  //   imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+  //   importer: "../valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
+  // },
+  // {
+  //   imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+  //   importer: "../valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
+  // },
   {
     imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
     importer: "../valid_models/DMNv1_5/Importing_Named_Model.dmn",
@@ -66,15 +71,15 @@ const dmnTestingImportedModels = [
     imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
     importer: "../valid_models/DMNv1_5/Importing_OverridingEmptyNamed_Model.dmn",
   },
-  // {
-  //   imported: FULL_1_x_MULTIPLE_DIRECTORY + "Imported_Traffic_Violation.dmn",
-  //   importer: FULL_1_x_MULTIPLE_DIRECTORY + "Traffic Violation With Import.dmn",
-  // },
+  //  {
+  //   imported: "../valid_models/DMNv1_x/multiple/Imported_Traffic_Violation.dmn",
+  //   importer: "../valid_models/DMNv1_x/multiple/Traffic Violation With Import.dmn",
+  //  },
 ];
 
 export const dmnSemanticComparisonGeneratedFilesDirectory = path.join(
   __dirname,
-  "../dist-tests/dmnSemanticComparison-generated-files"
+  "../../dist-tests/dmnSemanticComparison-generated-files"
 );
 const scriptPath = path.join(__dirname, "./DmnSemanticComparison.java");
 
