@@ -56,10 +56,6 @@ export function addStandaloneNode({
             "@_name": "New BKM",
             ...variableBase,
           },
-          encapsulatedLogic: {
-            "@_id": generateUuid(),
-            "@_typeRef": DmnBuiltInDataType.Undefined,
-          },
         },
         [NODE_TYPES.decision]: {
           __$$element: "decision",
