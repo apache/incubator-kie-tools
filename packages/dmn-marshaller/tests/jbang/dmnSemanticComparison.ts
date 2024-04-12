@@ -40,29 +40,29 @@ const dmnTestingModels = [
   "../valid_models/DMNv1_5/NegationOfDurationEvaluate.dmn",
   "../valid_models/DMNv1_5/TypeConstraintsChecks.dmn",
   "../valid_models/DMNv1_x/multiple/Financial.dmn",
-  //"../valid_models/DMNv1_x/multiple/Imported_Traffic_Violation.dmn",
+  "../valid_models/DMNv1_x/multiple/Imported_Traffic_Violation.dmn",
   "../valid_models/DMNv1_x/multiple/stdlib.dmn",
   "../valid_models/DMNv1_x/allTypes.dmn",
-  //"../valid_models/DMNv1_x/dtevent.dmn",
-  // "../valid_models/DMNv1_x/habitability.dmn",
+  "../valid_models/DMNv1_x/dtevent.dmn",
+  "../valid_models/DMNv1_x/habitability.dmn",
   "../valid_models/DMNv1_x/loan.dmn",
-  //"../valid_models/DMNv1_x/LoanEligibility.dmn",
+  "../valid_models/DMNv1_x/LoanEligibility.dmn",
   "../valid_models/DMNv1_x/OneOfEachType.dmn",
-  // "../valid_models/DMNv1_x/Prequalification.dmn",
+  "../valid_models/DMNv1_x/Prequalification.dmn",
   "../valid_models/DMNv1_x/testWithExtensionElements.dmn",
-  // "../valid_models/DMNv1_x/Traffic Violation Simple.dmn",
-  // "../valid_models/DMNv1_x/Traffic Violation.dmn",
+  "../valid_models/DMNv1_x/Traffic Violation Simple.dmn",
+  "../valid_models/DMNv1_x/Traffic Violation.dmn",
 ];
 
 const dmnTestingImportedModels = [
-  // {
-  //   imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
-  //   importer: "../valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
-  // },
-  // {
-  //   imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
-  //   importer: "../valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
-  // },
+  {
+    imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+    importer: "../valid_models/DMNv1_5/Importing_EmptyNamed_Model_With_Href_Namespace.dmn",
+  },
+  {
+    imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
+    importer: "../valid_models/DMNv1_5/Importing_EmptyNamed_Model_Without_Href_Namespace.dmn",
+  },
   {
     imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
     importer: "../valid_models/DMNv1_5/Importing_Named_Model.dmn",
@@ -71,10 +71,10 @@ const dmnTestingImportedModels = [
     imported: "../valid_models/DMNv1_5/Imported_Model_Unamed.dmn",
     importer: "../valid_models/DMNv1_5/Importing_OverridingEmptyNamed_Model.dmn",
   },
-  //  {
-  //   imported: "../valid_models/DMNv1_x/multiple/Imported_Traffic_Violation.dmn",
-  //   importer: "../valid_models/DMNv1_x/multiple/Traffic Violation With Import.dmn",
-  //  },
+  {
+    imported: "../valid_models/DMNv1_x/multiple/Imported_Traffic_Violation.dmn",
+    importer: "../valid_models/DMNv1_x/multiple/Traffic Violation With Import.dmn",
+  },
 ];
 
 export const dmnSemanticComparisonGeneratedFilesDirectory = path.join(
