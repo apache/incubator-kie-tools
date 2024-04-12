@@ -61,6 +61,8 @@ export interface BoxedExpressionEditorProps {
   scrollableParentRef: React.RefObject<HTMLElement>;
   /** Parsed variables used for syntax coloring and auto-complete */
   onRequestFeelVariables?: OnRequestFeelVariables;
+  /** Hide DMN 1.4 boxed expressions */
+  hideDmn14BoxedExpressions?: boolean;
 }
 
 export function BoxedExpressionEditor({
@@ -77,6 +79,7 @@ export function BoxedExpressionEditor({
   onRequestFeelVariables,
   widthsById,
   onWidthsChange,
+  hideDmn14BoxedExpressions,
 }: BoxedExpressionEditorProps) {
   return (
     <I18nDictionariesProvider
@@ -98,6 +101,7 @@ export function BoxedExpressionEditor({
         pmmlDocuments={pmmlDocuments}
         onRequestFeelVariables={onRequestFeelVariables}
         widthsById={widthsById}
+        hideDmn14BoxedExpressions={hideDmn14BoxedExpressions}
       >
         <ExpressionDefinitionRoot
           expressionHolderId={expressionHolderId}

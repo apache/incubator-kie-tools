@@ -35,7 +35,7 @@ pipeline {
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
-        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"dev_deployment_base_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_upload_service":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false","kie_sandbox_helm_chart":"true"}')
+        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"dev_deployment_base_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_upload_service":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false", "chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false","kie_sandbox_helm_chart":"true", "kogito-task-console":"false", "kogito-management-console":"false"}')
     }
 
     environment {
@@ -52,6 +52,8 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT = 'SKIPPED'
         SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT = 'SKIPPED'
         DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = 'SKIPPED'
+        KOGITO_TASK_CONSOLE_JOB_RESULT = 'SKIPPED'
+        KOGITO_MANAGEMENT_CONSOLE_JOB_RESULT = 'SKIPPED'
     }
 
     stages {
@@ -89,6 +91,8 @@ pipeline {
                     env.DASHBUILDER_VIEWER_IMAGE = runners.dashbuilder_viewer_image
                     env.KN_PLUGIN_WORKFLOW = runners.kn_plugin_workflow
                     env.KIE_SANDBOX_HELM_CHART = runners.kie_sandbox_helm_chart
+                    env.KOGITO_TASK_CONSOLE = runners.KOGITO_TASK_CONSOLE
+                    env.KOGITO_MANAGEMENT_CONSOLE = runners.KOGITO_MANAGEMENT_CONSOLE
                 }
             }
         }
@@ -117,6 +121,8 @@ pipeline {
                 echo "dashbuilder_viewer_image: ${env.DASHBUILDER_VIEWER_IMAGE}"
                 echo "kn_plugin_workflow: ${env.KN_PLUGIN_WORKFLOW}"
                 echo "kie_sandbox_helm_chart: ${env.KIE_SANDBOX_HELM_CHART}"
+                echo "KOGITO_TASK_CONSOLE": ${env.KOGITO_TASK_CONSOLE}"
+                echo "KOGITO_MANAGEMENT_CONSOLE": ${env.KOGITO_MANAGEMENT_CONSOLE}"
                 """.trim()
             }
         }
@@ -525,6 +531,44 @@ pipeline {
                     env.KIE_SANDBOX_HELM_CHART_JOB_RESULT = build(
                         wait: true,
                         job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox-helm-chart',
+                        parameters: [
+                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+                            string(name: 'TAG', value: "${params.TAG}")
+                        ]
+                    ).result
+                }
+            }
+        }
+
+        stage('Kogito Task Console Image') {
+            when {
+                expression { env.KOGITO_TASK_CONSOLE == 'true' }
+            }
+            steps {
+                script {
+                    env.KOGITO_TASK_CONSOLE_JOB_RESULT = build(
+                        wait: true,
+                        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-task-console',
+                        parameters: [
+                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+                            string(name: 'TAG', value: "${params.TAG}")
+                        ]
+                    ).result
+                }
+            }
+        }
+
+        stage('Kogito Management Console Image') {
+            when {
+                expression { env.KOGITO_MANAGEMENT_CONSOLE == 'true' }
+            }
+            steps {
+                script {
+                    env.KOGITO_MANAGEMENT_CONSOLE_JOB_RESULT = build(
+                        wait: true,
+                        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-management-console',
                         parameters: [
                             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
                             string(name: 'BASE_REF', value: "${params.BASE_REF}"),

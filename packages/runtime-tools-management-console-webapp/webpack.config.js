@@ -18,19 +18,19 @@
  */
 
 const path = require("path");
-const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const { env: buildEnv } = require("./env");
+const { defaultEnvJson } = require("./build/defaultEnvJson");
 
 const BG_IMAGES_DIRNAME = "bgimages";
 
 module.exports = async (env) => {
-  const dataIndexURL = buildEnv.runtimeToolsManagementConsoleWebapp.kogitoDataIndexUrl;
   return merge(common(env), {
     entry: {
-      app: path.resolve(__dirname, "src", "index.tsx"),
+      index: path.resolve(__dirname, "src", "index.tsx"),
     },
     devServer: {
       static: {
@@ -58,14 +58,19 @@ module.exports = async (env) => {
       },
     },
     plugins: [
-      new webpack.EnvironmentPlugin({
-        KOGITO_ENV_MODE: env.dev ? "DEV" : "PROD",
-        KOGITO_DATAINDEX_HTTP_URL: dataIndexURL,
-      }),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, "src", "index.html"),
-        favicon: "src/favicon.ico",
-        chunks: ["app"],
+        template: "./src/index.html",
+        inject: false,
+        minify: false,
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: "./src/static/env.json",
+            to: "./env.json",
+            transform: () => JSON.stringify(defaultEnvJson, null, 2),
+          },
+        ],
       }),
     ],
     module: {

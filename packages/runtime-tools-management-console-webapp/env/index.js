@@ -25,6 +25,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "http://localhost:4000/graphql",
       description: "URL for the Data Index service",
     },
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__kogitoEnvMode: {
+      default: "DEV",
+      description: "DEV or PROD. PROD enables Keycloak integration",
+    },
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__host: {
       default: "localhost",
       description: "Webpack server hostname",
@@ -38,6 +42,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       runtimeToolsManagementConsoleWebapp: {
         kogitoDataIndexUrl: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__kogitoDataIndexUrl),
+        kogitoEnvMode: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__kogitoEnvMode),
         host: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__host),
         port: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__port),
       },

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Table,
   TableHeader,
@@ -108,13 +108,9 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
     { title: "Last update" },
   ];
 
-  const checkNotEmpty = (): boolean => {
-    if (jobs && jobs.length > 0 && !isLoading) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  const checkNotEmpty = useCallback(() => {
+    return jobs && jobs.length > 0 && !isLoading;
+  }, [jobs, isLoading]);
 
   columns.map((column) => {
     column["props"] = { className: "pf-u-text-align-center" };
@@ -183,7 +179,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
     return { tempRows, jobType };
   };
 
-  const onSelect = (event, isSelected, rowId, rowData): void => {
+  const onSelect = (_event, isSelected, rowId, _rowData): void => {
     if (!checkNotEmpty()) {
       return;
     }
@@ -296,11 +292,11 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
       return [
         {
           title: "Reschedule",
-          onClick: (event, rowId, rowData, extra) => handleJobReschedule(rowData.rowKey),
+          onClick: (_event, _rowId, rowData, _extra) => handleJobReschedule(rowData.rowKey),
         },
         {
           title: "Cancel",
-          onClick: (event, rowId, rowData, extra) => handleCancelAction(rowData.rowKey),
+          onClick: (_event, _rowId, rowData, _extra) => handleCancelAction(rowData.rowKey),
         },
       ];
     } else {
@@ -354,8 +350,8 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
     <Table
       cells={columns}
       rows={rows}
-      onSelect={onSelect}
-      actionResolver={actionResolver}
+      onSelect={checkNotEmpty() ? onSelect : undefined}
+      actionResolver={checkNotEmpty() ? actionResolver : undefined}
       sortBy={sortBy}
       onSort={onSort}
       aria-label="Jobs management Table"
