@@ -63,46 +63,47 @@ class DmnSemanticComparison extends DmnParserJBangScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DmnSemanticComparison.class);
 
+    @Option(names = {"-c", "--command"}, description = "Command to execute (no_imports) or (with_imports)", required = true)
+    private String command;
+
     @Option(names = {"-o", "--originalDmnFilePath"}, description = "Path of original DMN file to be compared", required = true)
-    private String originalDmnFilePath;
+    private String originalDmnPath;
 
-    @Option(names = {"-g", "--generatedDmnFilePath"} , description = "Path of generated DMN file to be compared", required = true)
-    private String generatedDmnFilePath;
+    @Option(names = {"-g", "--generatedDmnFilePath"}, description = "Path of generated DMN file to be compared", required = true)
+    private String generatedDmnPath;
 
-    @Option(names = {"-i", "--importedOriginalDmnFilesPaths"} , description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
-    private String[] importedOriginalDmnFilesPath;
+    @Option(names = {"-i", "--importedOriginalDmnFilesPaths"}, description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
+    private String[] importedOriginalDmnPaths;
 
-    @Option(names = {"-j", "--importedGeneratedDmnFilesPaths"} , description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
-    private String[] importedGeneratedDmnFilesPath;
+    @Option(names = {"-j", "--importedGeneratedDmnFilesPaths"}, description = "Paths of the DMN files imported by the DMN file to validate", required = false, split = ",")
+    private String[] importedGeneratedDmnPaths;
 
-    public static void main(String... args) throws Exception {
+    public static void main(String... args) {
         int exitCode = new CommandLine(new DmnSemanticComparison()).execute(args);
         System.exit(exitCode);
     }
 
     @Override
-    public Integer call() throws Exception {
-        List<File> originalDMNFiles = new ArrayList<>();
-        originalDMNFiles.add(new File(originalDmnFilePath));
-        if (importedOriginalDmnFilesPath != null && importedOriginalDmnFilesPath.length > 0) {
-            originalDMNFiles.addAll(Stream.of(importedOriginalDmnFilesPath)
-                            .map(File::new)
-                            .collect(Collectors.toList()));
+    public Integer call() {
+        try {
+            switch (command) {
+                case "no_imports":
+                    return compareDMNModelsNoImports();
+                case "with_imports":
+                    return compareDMNModelsWithImports();
+                default:
+                    LOGGER.error("Unknown command {}", command);
+                    return 1;
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to execute {}", command, e);
+            return 100;
         }
-
-        List<File> generatedDmnFiles = new ArrayList<>();
-        generatedDmnFiles.add(new File(generatedDmnFilePath));
-        if (importedGeneratedDmnFilesPath != null && importedGeneratedDmnFilesPath.length > 0) {
-            generatedDmnFiles.addAll(Stream.of(importedGeneratedDmnFilesPath)
-                                           .map(File::new)
-                                           .collect(Collectors.toList()));
-        }
-        return this.compare(originalDMNFiles, generatedDmnFiles);
     }
 
-     private int compare(List<File> originalDMNFiles, List<File> generatedDmnFiles) throws Exception {
-        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(originalDMNFiles);
-        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(generatedDmnFiles);
+    private int compareDMNModelsNoImports() throws Exception {
+        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(new File(originalDmnPath));
+        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(new File(generatedDmnPath));
 
         LOGGER.info("========== SEMANTIC COMPARISON ==========");
         LOGGER.info("Evaluating DMN file: " + originalModel.getName());
@@ -110,42 +111,68 @@ class DmnSemanticComparison extends DmnParserJBangScript {
         return compareDMNModels(originalModel, parsedModel);
     }
 
-    private DMNModel instantiateDMNRuntimeAndReturnDMNModel(List<File> dmnFiles) throws Exception {
-        if (dmnFiles.size() == 1) {
-            Resource modelResource = ResourceFactory.newReaderResource(new FileReader(dmnFiles.get(0)), "UTF-8");
-            DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
-                    .buildConfiguration()
-                    .fromResources(Collections.singletonList(modelResource))
-                    .getOrElseThrow(RuntimeException::new);
-            return dmnRuntime.getModels().get(0);
-        } else {
-            List<Resource> resources = new ArrayList<>();
-            String importerFileSourcePath = dmnFiles.get(0).getCanonicalPath();
-
-            for (File file : dmnFiles) {
-                Resource readerResource = ResourceFactory.newReaderResource(new FileReader(file), "UTF-8");
-                readerResource.setSourcePath(file.getCanonicalPath());
-                resources.add(readerResource);
-            }
-
-            DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
-                    .buildConfiguration()
-                    .fromResources(resources)
-                    .getOrElseThrow(RuntimeException::new);
-            DMNModel importerModel = null;
-
-            for (DMNModel m : dmnRuntime.getModels()) {
-                if (m.getResource().getSourcePath().equals(importerFileSourcePath.replace("\\", "/"))) {
-                    importerModel = m;
-                    break;
-                }
-            }
-
-            if (importerModel == null) {
-                throw new IllegalStateException("Was not able to identify importer model: " + importerFileSourcePath);
-            }
-            return importerModel;
+    private int compareDMNModelsWithImports() throws Exception {
+        if (importedOriginalDmnPaths == null || importedOriginalDmnPaths.length == 0 || importedGeneratedDmnPaths == null ||
+                importedGeneratedDmnPaths.length == 0 || importedOriginalDmnPaths.length != importedGeneratedDmnPaths.length) {
+            throw new IllegalArgumentException("Imported DMN paths are missing or wrong");
         }
+
+        List<File> importedOriginalDmnFiles = Stream.of(importedOriginalDmnPaths)
+                .map(File::new)
+                .collect(Collectors.toList());
+        List<File> importedGeneratedDmnFiles = Stream.of(importedGeneratedDmnPaths)
+                .map(File::new)
+                .collect(Collectors.toList());
+
+
+        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(new File(originalDmnPath), importedOriginalDmnFiles);
+        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(new File(generatedDmnPath), importedGeneratedDmnFiles);
+
+        LOGGER.info("========== SEMANTIC COMPARISON ==========");
+        LOGGER.info("Evaluating DMN file: " + originalModel.getName());
+
+        return compareDMNModels(originalModel, parsedModel);
+    }
+
+    private DMNModel instantiateDMNRuntimeAndReturnDMNModel(File dmnFile) throws Exception {
+        Resource modelResource = ResourceFactory.newReaderResource(new FileReader(dmnFile), "UTF-8");
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                .buildConfiguration()
+                .fromResources(Collections.singletonList(modelResource))
+                .getOrElseThrow(RuntimeException::new);
+        return dmnRuntime.getModels().get(0);
+    }
+
+    private DMNModel instantiateDMNRuntimeAndReturnDMNModel(File importerDmnFile, List<File> importedDmnFiles) throws Exception {
+        List<Resource> resources = new ArrayList<>();
+        String importerFileSourcePath = importerDmnFile.getCanonicalPath();
+        List<File> allDMNFiles = new ArrayList(importedDmnFiles);
+        allDMNFiles.add(importerDmnFile);
+
+        for (File file : allDMNFiles) {
+            Resource readerResource = ResourceFactory.newReaderResource(new FileReader(file), "UTF-8");
+            readerResource.setSourcePath(file.getCanonicalPath());
+            resources.add(readerResource);
+        }
+
+        DMNRuntime dmnRuntime = DMNRuntimeBuilder.fromDefaults()
+                .buildConfiguration()
+                .fromResources(resources)
+                .getOrElseThrow(RuntimeException::new);
+        DMNModel importerModel = null;
+
+        for (DMNModel m : dmnRuntime.getModels()) {
+            if (m.getResource().getSourcePath().equals(importerFileSourcePath.replace("\\", "/"))) {
+                importerModel = m;
+                break;
+            }
+        }
+
+        if (importerModel == null) {
+            throw new IllegalStateException("Was not able to identify importer model: " + importerFileSourcePath);
+        }
+
+        return importerModel;
     }
 
     /**
