@@ -57,6 +57,7 @@ export const baseConfig: (
       path.dirname(require.resolve("@storybook/addon-outline/package.json")),
       path.dirname(require.resolve("@storybook/addon-toolbars/package.json")),
       path.dirname(require.resolve("@storybook/addon-viewport/package.json")),
+      path.dirname(require.resolve("@storybook/addon-webpack5-compiler-babel/package.json")),
     ],
     webpackFinal: async (config) => {
       return merge(config, common);

@@ -24,7 +24,7 @@ import { ContentField, DescriptionField, ExpressionLanguageField, NameField, Typ
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tOutputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedDecisionTable, DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -62,6 +62,14 @@ export function DecisionTableOutputHeaderCell(props: {
       ?.itemDefinition;
   }, [cell, dmnEditorStoreApi, externalModelsByNamespace]);
 
+  const root = useMemo(
+    () =>
+      props.boxedExpressionIndex?.get(
+        selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 1]?.root ?? ""
+      )?.cell as BoxedDecisionTable | undefined,
+    [props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]
+  );
+
   const [isDefaultOutputEntryExpanded, setDefaultOutputEntryExpanded] = useState(false);
   const [isOutputValuesExpanded, setOutputValuesExpanded] = useState(false);
 
@@ -74,6 +82,13 @@ export function DecisionTableOutputHeaderCell(props: {
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
+      <NameField
+        alternativeFieldName={"Decision Name"}
+        isReadonly={true}
+        id={root?.["@_id"] ?? ""}
+        name={root?.["@_label"] ?? ""}
+        getAllUniqueNames={getAllUniqueNames}
+      />
       <NameField
         isReadonly={props.isReadonly}
         id={cell?.["@_id"] ?? ""}

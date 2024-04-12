@@ -56,14 +56,15 @@ export function ExpressionLanguageField(props: {
 }
 
 export function NameField(props: {
+  alternativeFieldName?: string;
   id: string;
   name: string;
   isReadonly: boolean;
   getAllUniqueNames: (s: State) => UniqueNameIndex;
-  onChange: (newName: string) => void;
+  onChange?: (newName: string) => void;
 }) {
   return (
-    <FormGroup label="Name">
+    <FormGroup label={props.alternativeFieldName ? props.alternativeFieldName : "Name"}>
       <InlineFeelNameInput
         enableAutoFocusing={false}
         isPlain={false}
@@ -72,7 +73,7 @@ export function NameField(props: {
         isReadonly={props.isReadonly}
         shouldCommitOnBlur={true}
         className={"pf-c-form-control"}
-        onRenamed={props.onChange}
+        onRenamed={(newName) => props.onChange?.(newName)}
         allUniqueNames={props.getAllUniqueNames}
       />
     </FormGroup>
