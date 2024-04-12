@@ -101,12 +101,12 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const generatedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
       try {
-        executeJBangScript(scriptPath, "-d" + generatedXMLFilePath);
+        executeJBangScript(scriptPath, "-c" + "no_imports", "-d" + generatedXMLFilePath);
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFile.substring(
           normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
         );
-        fail("Validation of " + fileName + " failed! Please scroll up the logs to see the reason.");
+        fail(error.cause);
       }
     }
   );
@@ -123,12 +123,17 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       const importerGeneratedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeJBangScript(scriptPath, "-d" + importedGeneratedXMLFilePath, "-i" + importerGeneratedXMLFilePath);
+        executeJBangScript(
+          scriptPath,
+          "-c" + "with_imports",
+          "-d" + importedGeneratedXMLFilePath,
+          "-i" + importerGeneratedXMLFilePath
+        );
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
           normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
         );
-        fail("Validation of " + fileName + " failed! Please scroll up the logs to see the reason.");
+        fail(error.cause);
       }
     }
   );

@@ -124,7 +124,6 @@ class DmnSemanticComparison extends DmnParserJBangScript {
                 .map(File::new)
                 .collect(Collectors.toList());
 
-
         DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(new File(originalDmnPath), importedOriginalDmnFiles);
         DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(new File(generatedDmnPath), importedGeneratedDmnFiles);
 
@@ -171,7 +170,6 @@ class DmnSemanticComparison extends DmnParserJBangScript {
         if (importerModel == null) {
             throw new IllegalStateException("Was not able to identify importer model: " + importerFileSourcePath);
         }
-
         return importerModel;
     }
 

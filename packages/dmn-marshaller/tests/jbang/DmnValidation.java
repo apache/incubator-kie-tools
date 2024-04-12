@@ -53,6 +53,9 @@ class DmnValidation extends DmnParserJBangScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DmnValidation.class);
 
+    @Option(names = {"-c", "--command"}, description = "Command to execute (no_imports) or (with_imports)", required = true)
+    private String command;
+
     @Option(names = {"-d", "--dmnFilePath"}, description = "Path of DMN file to be validated", required = true)
     private String dmnFilePath;
 
@@ -66,39 +69,66 @@ class DmnValidation extends DmnParserJBangScript {
 
     @Override
     public Integer call() {
-        List<File> models = new ArrayList<>();
-        models.add(new File(dmnFilePath));
-
-        LOGGER.info("========== DMN VALIDATION ==========");
-        LOGGER.info("Validating DMN file: " + dmnFilePath);
-
-        if (importedDmnFilesPath != null && importedDmnFilesPath.length > 0) {
-            models.addAll(Stream.of(importedDmnFilesPath)
-                                .map(File::new)
-                                .collect(Collectors.toList()));
+        try {
+            switch (command) {
+                case "no_imports":
+                    return validateDMNModelsNoImports();
+                case "with_imports":
+                    return validateDMNModelsWithImports();
+                default:
+                    LOGGER.error("Unknown command {}", command);
+                    return 1;
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to execute {}", command, e);
+            return 100;
         }
-
-        return this.validate(models);
     }
 
-    private int validate(List<File> models) {
+    private int validateDMNModelsNoImports() {
+        File dmnFile = new File(dmnFilePath);
         DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
-
         final List<DMNMessage> messages = dmnValidator.validateUsing(Validation.VALIDATE_SCHEMA,
-                                                                     Validation.VALIDATE_MODEL,
-                                                                     Validation.VALIDATE_COMPILATION)
-                                                      .theseModels(models.toArray(File[]::new));
+                        Validation.VALIDATE_MODEL,
+                        Validation.VALIDATE_COMPILATION)
+                .theseModels(dmnFile);
+        return assessDMNMessageResults(messages, dmnFile.getName());
+    }
 
-        if (messages.size() == 0) {
+    private int validateDMNModelsWithImports() {
+        if (importedDmnFilesPath == null || importedDmnFilesPath.length == 0) {
+            throw new IllegalArgumentException("Imported DMN paths are missing");
+        }
+
+        File dmnFile = new File(dmnFilePath);
+        List<File> models = new ArrayList<>();
+        models.add(dmnFile);
+        models.addAll(Stream.of(importedDmnFilesPath)
+                .map(File::new)
+                .collect(Collectors.toList()));
+        DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
+        List<DMNMessage> messages = dmnValidator.validateUsing(
+                        Validation.VALIDATE_SCHEMA,
+                        Validation.VALIDATE_MODEL,
+                        Validation.VALIDATE_COMPILATION)
+                .theseModels(models.toArray(File[]::new));
+        return assessDMNMessageResults(messages, dmnFile.getName());
+    }
+
+    private int assessDMNMessageResults(List<DMNMessage> dmnMessageResults, String dmnFileName) {
+        if (dmnMessageResults.size() == 0) {
             LOGGER.info("RESULT: Following files have been successfully validated!");
-            models.forEach(model -> LOGGER.info(model.getName()));
             return 0;
         } else {
-            LOGGER.error("ERROR: Validation failed for the following files");
-            models.forEach(model -> LOGGER.error(model.getName()));
+            LOGGER.error("ERROR: DMN Validation failed for the DMN file " + dmnFileName);
             LOGGER.error("Validation Errors:");
-            messages.forEach(message -> LOGGER.error(message.getText()));
-            return 1;
+            List<String> messages = dmnMessageResults.stream().map(DMNMessage::getText).collect(Collectors.toList());
+            messages.forEach(LOGGER::error);
+            throw new AssertionError("ERROR: DMN Validation failed!"
+                    + "\n"
+                    + "DMN File Name: " + dmnFileName
+                    + "\n"
+                    + String.join("\n", messages));
         }
     }
 }
