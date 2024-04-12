@@ -75,6 +75,30 @@ export function DecisionTableOutputHeaderCell(props: {
 
   const getAllUniqueNames = useCallback((s: State) => new Map(), []);
 
+  const alternativeFieldName = useMemo(() => {
+    if (selectedObjectInfos?.expressionPath.length === 1) {
+      return "Decision Name";
+    }
+    const parentType = selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 2].type;
+    switch (parentType) {
+      case "context":
+        return "Entry Name";
+      case "functionDefinition":
+        return "Function Name";
+      case "invocation":
+        return "Parameter Name";
+      case "list":
+        return "Item Name";
+      case "conditional":
+      case "every":
+      case "filter":
+      case "for":
+      case "some":
+      default:
+        return "Expression Name";
+    }
+  }, [selectedObjectInfos?.expressionPath]);
+
   return (
     <>
       <FormGroup label="ID">
@@ -82,14 +106,17 @@ export function DecisionTableOutputHeaderCell(props: {
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
+      {root?.output.length === 1 && (
+        <NameField
+          alternativeFieldName={alternativeFieldName}
+          isReadonly={true}
+          id={root?.["@_id"] ?? ""}
+          name={root?.["@_label"] ?? ""}
+          getAllUniqueNames={getAllUniqueNames}
+        />
+      )}
       <NameField
-        alternativeFieldName={"Decision Name"}
-        isReadonly={true}
-        id={root?.["@_id"] ?? ""}
-        name={root?.["@_label"] ?? ""}
-        getAllUniqueNames={getAllUniqueNames}
-      />
-      <NameField
+        alternativeFieldName={root?.output.length === 1 ? "Column Name" : undefined}
         isReadonly={props.isReadonly}
         id={cell?.["@_id"] ?? ""}
         name={cell?.["@_name"] ?? ""}
