@@ -27,7 +27,7 @@ import {
 /**
  * This tests suite manages all the JBang script-based tests. This is necessary to guarantee the sequential
  * execution of the JBang script. Running JBang scripts in parallel may lead to issues with JBang caching during the
- * dependencies dowmload.
+ * dependencies download.
  */
 
 const generatedFilesDirectories = [dmnValidationGeneratedFilesDirectory, dmnSemanticComparisonGeneratedFilesDirectory];
