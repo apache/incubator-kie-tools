@@ -1,0 +1,40 @@
+{
+  "private": true,
+  "name": "@kie-tools/kogito-swf-devmode",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "pnpm build:prod",
+    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:build\"",
+    "copy-assets": "run-script-os",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/kogito-swf-common/resources build && cp -R resources/ build",
+    "image:build": "run-script-os",
+    "image:build:linux:darwin": "cd ./build && pnpm setup:env  make -C ./build",
+    "setup:env": "cross-env SWF_IMAGE_REGISTRY=$(build-env kogitoSwfDevMode.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoSwfDevMode.account) SWF_IMAGE_NAME=$(build-env kogitoSwfDevMode.name) SWF_IMAGE_TAG=$(build-env kogitoSwfDevMode.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version)"
+  },
+  "dependencies": {
+    "@kie-tools/kogito-swf-common": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "cross-env": "^7.0.3",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "python",
+      "cekit",
+      "make"
+    ]
+  }
+}
