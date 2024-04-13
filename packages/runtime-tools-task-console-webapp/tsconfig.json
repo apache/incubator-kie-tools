@@ -10,8 +10,8 @@
     "target": "es6",
     "allowJs": true,
     "noImplicitAny": false,
-    "noImplicitThis": true,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "esModuleInterop": true
   },
   "include": ["src"],
   "preserveSymlinks": true

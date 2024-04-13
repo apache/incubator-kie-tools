@@ -40,6 +40,7 @@ import {
   INVOCATION_PARAMETER_MIN_WIDTH,
   INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
   INVOCATION_EXTRA_WIDTH,
+  INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX,
 } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
@@ -58,14 +59,15 @@ export type ROWTYPE = ExpressionWithVariable & { index: number };
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME = "p-1";
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
-export const INVOCATION_PARAMETER_INFO_WIDTH_INDEX = 0;
-
-export function InvocationExpression(
-  invocationExpression: BoxedInvocation & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
+export function InvocationExpression({
+  isNested,
+  parentElementId,
+  expression: invocationExpression,
+}: {
+  expression: BoxedInvocation;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
@@ -75,7 +77,7 @@ export function InvocationExpression(
   const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
   const getParametersWidth = useCallback((widths: number[]) => {
-    return widths?.[INVOCATION_PARAMETER_INFO_WIDTH_INDEX] ?? INVOCATION_PARAMETER_MIN_WIDTH;
+    return widths?.[INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX] ?? INVOCATION_PARAMETER_MIN_WIDTH;
   }, []);
 
   const parametersWidth = useMemo(() => getParametersWidth(widths), [getParametersWidth, widths]);
@@ -88,10 +90,10 @@ export function InvocationExpression(
           typeof newWidthAction === "function" ? newWidthAction(getParametersWidth(prev)) : newWidthAction;
 
         if (newWidth) {
-          const minSize = INVOCATION_PARAMETER_INFO_WIDTH_INDEX + 1;
+          const minSize = INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX + 1;
           const newValues = [...prev];
           newValues.push(...Array(Math.max(0, minSize - newValues.length)));
-          newValues.splice(INVOCATION_PARAMETER_INFO_WIDTH_INDEX, 1, newWidth);
+          newValues.splice(INVOCATION_PARAMETER_INFO_COLUMN_WIDTH_INDEX, 1, newWidth);
           newMap.set(id, newValues);
         }
       });
@@ -132,19 +134,19 @@ export function InvocationExpression(
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
-        const bindingWidths =
-          invocationExpression.binding?.map((e) => getExpressionTotalMinWidth(0, e.expression!, widthsById)) ?? [];
+        const nestedExpressions = (invocationExpression.binding ?? []).map((b) => b.expression ?? undefined!);
 
-        const maxNestedExpressionWidth = Math.max(...bindingWidths, INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH);
-
-        const nestedExpressions = (invocationExpression.binding ?? []).map((b) => b.expression!);
+        const maxNestedExpressionTotalMinWidth = Math.max(
+          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(0, e, widthsById)),
+          INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH
+        );
 
         return {
-          nestedExpressions: nestedExpressions ?? [],
+          nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: parametersWidth,
           fixedColumnResizingWidth: parametersResizingWidth,
           fixedColumnMinWidth: INVOCATION_PARAMETER_MIN_WIDTH,
-          nestedExpressionMinWidth: maxNestedExpressionWidth,
+          nestedExpressionMinWidth: maxNestedExpressionTotalMinWidth,
           extraWidth: INVOCATION_EXTRA_WIDTH,
           expression: invocationExpression,
           flexibleColumnIndex: 2,
@@ -266,9 +268,8 @@ export function InvocationExpression(
   );
 
   const headerVisibility = useMemo(
-    () =>
-      invocationExpression.isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels,
-    [invocationExpression.isNested]
+    () => (isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels),
+    [isNested]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
@@ -298,11 +299,9 @@ export function InvocationExpression(
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
       parameter: (props) => <ExpressionVariableCell {...props} onExpressionWithVariableUpdated={updateParameter} />,
-      expression: (props) => (
-        <ArgumentEntryExpressionCell {...props} parentElementId={invocationExpression.parentElementId} />
-      ),
+      expression: (props) => <ArgumentEntryExpressionCell {...props} parentElementId={parentElementId} />,
     }),
-    [invocationExpression.parentElementId, updateParameter]
+    [parentElementId, updateParameter]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {

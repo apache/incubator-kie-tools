@@ -37,8 +37,8 @@ import { useNestedExpressionContainerWithNestedExpressions } from "../../resizin
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
-  CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
   FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH,
+  FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import {
@@ -170,12 +170,14 @@ export function FeelFunctionExpression({
   const { nestedExpressionContainerValue, onColumnResizingWidthChange } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
+        const nestedExpressions = [functionExpression.expression ?? undefined!];
+
         return {
-          nestedExpressions: [functionExpression.expression ?? undefined!],
+          nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: 0,
           fixedColumnResizingWidth: { value: 0, isPivoting: false },
           fixedColumnMinWidth: 0,
-          nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          nestedExpressionMinWidth: FEEL_FUNCTION_EXPRESSION_MIN_WIDTH,
           extraWidth: FEEL_FUNCTION_EXPRESSION_EXTRA_WIDTH,
           expression: functionExpression,
           flexibleColumnIndex: 1,

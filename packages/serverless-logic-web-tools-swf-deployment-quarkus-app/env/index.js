@@ -17,29 +17,14 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({
-    SERVERLESS_LOGIC_WEB_TOOLS__quarkusPlatformVersion: {
-      default: "3.2.10.Final",
-      description: "Quarkus platform version",
-    },
-    SERVERLESS_LOGIC_WEB_TOOLS__kogitoVersion: {
-      default: "999-20240331-SNAPSHOT",
-      description: "Kogito version",
-    },
-  }),
+  vars: varsWithName({}),
   get env() {
     return {
       swfDeploymentQuarkusApp: {
         version: require("../package.json").version,
-        quarkusPlatform: {
-          version: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__quarkusPlatformVersion),
-        },
-        kogito: {
-          version: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kogitoVersion),
-        },
       },
     };
   },
