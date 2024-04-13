@@ -262,7 +262,7 @@ export function ContextExpression({
 
   const beeTableAdditionalRow = useMemo(() => {
     return [
-      <ContextResultInfoCell key={"context-result-info"} parentElementId={contextExpression.parentElementId} />,
+      <ContextResultInfoCell key={"context-result-info"} parentElementId={parentElementId} />,
       <ContextResultExpressionCell
         key={"context-result-expression"}
         contextExpression={contextExpression}
@@ -270,7 +270,7 @@ export function ContextExpression({
         columnIndex={2}
       />,
     ];
-  }, [contextExpression]);
+  }, [contextExpression, parentElementId]);
 
   const getDefaultContextEntry = useCallback(
     (name?: string): DMN15__tContextEntry => {
