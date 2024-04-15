@@ -67,7 +67,7 @@ public class ScenarioSimulationKogitoDMNMarshallerService {
                     dmnVersion = "1.5";
                 }
 
-                errorCallback.error("Test scenario supports up to DMN version 1.2. The provided DMN file version is ", e);
+                errorCallback.error("Test scenario supports up to DMN version 1.2. The provided DMN file version is " + dmnVersion, e);
             }
         };
     }
