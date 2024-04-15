@@ -50,6 +50,8 @@ public interface ScenarioSimulationEditorConstants
 
     String currentlyNotAvailable();
 
+    String supportedDmnVersions();
+
     String invalidDefinitionDisabled();
 
     String testTools();
