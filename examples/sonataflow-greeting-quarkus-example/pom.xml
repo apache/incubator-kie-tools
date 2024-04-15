@@ -27,10 +27,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache.kie.examples</groupId>
-    <artifactId>quarkus-examples-maven-parent</artifactId>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
     <version>${revision}</version>
-    <relativePath>../quarkus-examples-maven-parent/pom.xml</relativePath>
+    <relativePath>../../packages/maven-base/pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.kie.sonataflow.examples</groupId>
