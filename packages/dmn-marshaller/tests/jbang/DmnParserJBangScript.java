@@ -22,6 +22,7 @@
 //DEPS ch.qos.logback:logback-classic:1.2.13
 //DEPS info.picocli:picocli:4.7.5
 //DEPS org.slf4j:slf4j-simple:2.0.12
+//JAVA 17
 
 package jbang;
 

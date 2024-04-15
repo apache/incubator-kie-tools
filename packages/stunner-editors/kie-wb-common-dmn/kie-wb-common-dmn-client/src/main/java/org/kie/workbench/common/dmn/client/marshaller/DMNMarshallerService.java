@@ -29,10 +29,12 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.xml.namespace.QName;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import jsinterop.base.Js;
+import org.jboss.errai.common.client.logging.util.Console;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
@@ -44,6 +46,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.drds.DRGDiagramUtils;
 import org.kie.workbench.common.dmn.client.marshaller.common.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.marshaller.marshall.DMNMarshaller;
 import org.kie.workbench.common.dmn.client.marshaller.unmarshall.DMNUnmarshaller;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.callbacks.DMN12MarshallCallback;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.callbacks.DMN12UnmarshallCallback;
@@ -52,6 +55,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JSIName;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JsUtils;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.ConfirmationDialog;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -70,6 +74,8 @@ import org.uberfire.client.promise.Promises;
 public class DMNMarshallerService {
 
     private static final Logger LOGGER = Logger.getLogger(DMNMarshallerService.class.getName());
+
+    private final ConfirmationDialog confirmationDialog;
 
     private final DMNUnmarshaller dmnUnmarshaller;
 
@@ -118,6 +124,9 @@ public class DMNMarshallerService {
         try {
             final DMN12UnmarshallCallback jsCallback = dmn12 -> {
                 final JSITDefinitions definitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
+                GWT.log(definitions.getNamespace());
+                Console.info(definitions.getNamespace());
+
                 dmnUnmarshaller.unmarshall(getMetadata(), definitions).then(graph -> {
                     final String fileName = getMetadata().getPath().getFileName();
                     onDiagramLoad(dmnDiagramFactory.build(fileName, getMetadata(), graph));

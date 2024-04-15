@@ -43,7 +43,8 @@ import org.kie.dmn.validation.DMNValidator.Validation;
 import org.kie.dmn.validation.DMNValidatorFactory;
 
 /**
- * JBang script that performs DMN files' XML (in string format) validation relying on KIE DMN Validator
+ * JBang script that performs DMN files' XML (in string format) validation
+ * relying on KIE DMN Validator
  * (https://github.com/apache/incubator-kie-drools/tree/main/kie-dmn/kie-dmn-validation).
  * The script can manage one or two (in case of imported model) DMN file paths.
  * The XSD SCHEMA, DMN COMPLIANCE and DMN COMPILATION are validated.
@@ -73,8 +74,12 @@ class DmnValidation extends DmnParserJBangScript {
             switch (command) {
                 case "no_imports":
                     return validateDMNModelsNoImports();
-                case "with_imports":
+                case "with_imports": {
+                    if (importedDmnFilesPath == null || importedDmnFilesPath.length == 0) {
+                        throw new IllegalArgumentException("Imported DMN paths are missing");
+                    }
                     return validateDMNModelsWithImports();
+                }
                 default:
                     LOGGER.error("Unknown command {}", command);
                     return 1;
@@ -89,17 +94,13 @@ class DmnValidation extends DmnParserJBangScript {
         File dmnFile = new File(dmnFilePath);
         DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
         final List<DMNMessage> messages = dmnValidator.validateUsing(Validation.VALIDATE_SCHEMA,
-                        Validation.VALIDATE_MODEL,
-                        Validation.VALIDATE_COMPILATION)
+                Validation.VALIDATE_MODEL,
+                Validation.VALIDATE_COMPILATION)
                 .theseModels(dmnFile);
         return assessDMNMessageResults(messages, dmnFile.getName());
     }
 
     private int validateDMNModelsWithImports() {
-        if (importedDmnFilesPath == null || importedDmnFilesPath.length == 0) {
-            throw new IllegalArgumentException("Imported DMN paths are missing");
-        }
-
         File dmnFile = new File(dmnFilePath);
         List<File> models = new ArrayList<>();
         models.add(dmnFile);
@@ -108,9 +109,9 @@ class DmnValidation extends DmnParserJBangScript {
                 .collect(Collectors.toList()));
         DMNValidator dmnValidator = DMNValidatorFactory.newValidator(List.of(new ExtendedDMNProfile()));
         List<DMNMessage> messages = dmnValidator.validateUsing(
-                        Validation.VALIDATE_SCHEMA,
-                        Validation.VALIDATE_MODEL,
-                        Validation.VALIDATE_COMPILATION)
+                Validation.VALIDATE_SCHEMA,
+                Validation.VALIDATE_MODEL,
+                Validation.VALIDATE_COMPILATION)
                 .theseModels(models.toArray(File[]::new));
         return assessDMNMessageResults(messages, dmnFile.getName());
     }
@@ -124,11 +125,10 @@ class DmnValidation extends DmnParserJBangScript {
             LOGGER.error("Validation Errors:");
             List<String> messages = dmnMessageResults.stream().map(DMNMessage::getText).collect(Collectors.toList());
             messages.forEach(LOGGER::error);
-            throw new AssertionError("ERROR: DMN Validation failed!"
-                    + "\n"
-                    + "DMN File Name: " + dmnFileName
-                    + "\n"
-                    + String.join("\n", messages));
+            System.err.println("ERROR: DMN Validation failed!");
+            System.err.println("DMN File Name: " + dmnFileName);
+            messages.forEach(System.err::println);
+            return 1;
         }
     }
 }

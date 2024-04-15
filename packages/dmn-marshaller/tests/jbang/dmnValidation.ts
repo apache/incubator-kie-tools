@@ -101,7 +101,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const generatedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
       try {
-        executeJBangScript(scriptPath, "-c" + "no_imports", "-d" + generatedXMLFilePath);
+        executeJBangScript(scriptPath, "--command=no_imports", "--dmnFilePath=" + generatedXMLFilePath);
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFile.substring(
           normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
@@ -125,9 +125,9 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       try {
         executeJBangScript(
           scriptPath,
-          "-c" + "with_imports",
-          "-d" + importedGeneratedXMLFilePath,
-          "-i" + importerGeneratedXMLFilePath
+          "--command=with_imports",
+          "--dmnFilePath=" + importedGeneratedXMLFilePath,
+          "--importedDmnFilesPaths=" + importerGeneratedXMLFilePath
         );
       } catch (error) {
         const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(

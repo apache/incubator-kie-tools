@@ -54,7 +54,8 @@ import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.internal.io.ResourceFactory;
 
 /**
- * JBang script that performs DMN files' XML (in string format) validation relying on KIE DMN Validator
+ * JBang script that performs DMN files' XML (in string format) validation
+ * relying on KIE DMN Validator
  * (https://github.com/apache/incubator-kie-drools/tree/main/kie-dmn/kie-dmn-validation).
  * The script can manage one or two (in case of imported model) DMN file paths.
  * The XSD SCHEMA, DMN COMPLIANCE and DMN COMPILATION are validated.
@@ -89,8 +90,15 @@ class DmnSemanticComparison extends DmnParserJBangScript {
             switch (command) {
                 case "no_imports":
                     return compareDMNModelsNoImports();
-                case "with_imports":
+                case "with_imports": {
+                    if (importedOriginalDmnPaths == null || importedOriginalDmnPaths.length == 0
+                            || importedGeneratedDmnPaths == null ||
+                            importedGeneratedDmnPaths.length == 0
+                            || importedOriginalDmnPaths.length != importedGeneratedDmnPaths.length) {
+                        throw new IllegalArgumentException("Imported DMN paths are missing or wrong");
+                    }
                     return compareDMNModelsWithImports();
+                }
                 default:
                     LOGGER.error("Unknown command {}", command);
                     return 1;
@@ -112,11 +120,6 @@ class DmnSemanticComparison extends DmnParserJBangScript {
     }
 
     private int compareDMNModelsWithImports() throws Exception {
-        if (importedOriginalDmnPaths == null || importedOriginalDmnPaths.length == 0 || importedGeneratedDmnPaths == null ||
-                importedGeneratedDmnPaths.length == 0 || importedOriginalDmnPaths.length != importedGeneratedDmnPaths.length) {
-            throw new IllegalArgumentException("Imported DMN paths are missing or wrong");
-        }
-
         List<File> importedOriginalDmnFiles = Stream.of(importedOriginalDmnPaths)
                 .map(File::new)
                 .collect(Collectors.toList());
@@ -124,8 +127,10 @@ class DmnSemanticComparison extends DmnParserJBangScript {
                 .map(File::new)
                 .collect(Collectors.toList());
 
-        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(new File(originalDmnPath), importedOriginalDmnFiles);
-        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(new File(generatedDmnPath), importedGeneratedDmnFiles);
+        DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(new File(originalDmnPath),
+                importedOriginalDmnFiles);
+        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(new File(generatedDmnPath),
+                importedGeneratedDmnFiles);
 
         LOGGER.info("========== SEMANTIC COMPARISON ==========");
         LOGGER.info("Evaluating DMN file: " + originalModel.getName());
@@ -142,7 +147,8 @@ class DmnSemanticComparison extends DmnParserJBangScript {
         return dmnRuntime.getModels().get(0);
     }
 
-    private DMNModel instantiateDMNRuntimeAndReturnDMNModel(File importerDmnFile, List<File> importedDmnFiles) throws Exception {
+    private DMNModel instantiateDMNRuntimeAndReturnDMNModel(File importerDmnFile, List<File> importedDmnFiles)
+            throws Exception {
         List<Resource> resources = new ArrayList<>();
         String importerFileSourcePath = importerDmnFile.getCanonicalPath();
         List<File> allDMNFiles = new ArrayList(importedDmnFiles);
@@ -174,9 +180,12 @@ class DmnSemanticComparison extends DmnParserJBangScript {
     }
 
     /**
-     * This function compares two DMN models and returns a list of any missing elements between them.
-     * The function checks both the original model and the parsed model to ensure that all elements are present in both models.
-     * If any missing elements are found, the function returns a list of error messages describing the missing elements
+     * This function compares two DMN models and returns a list of any missing
+     * elements between them.
+     * The function checks both the original model and the parsed model to ensure
+     * that all elements are present in both models.
+     * If any missing elements are found, the function returns a list of error
+     * messages describing the missing elements
      */
     private int compareDMNModels(DMNModel originalModel, DMNModel parsedModel) {
         Definitions originalModelDefinitions = originalModel.getDefinitions();
@@ -185,18 +194,28 @@ class DmnSemanticComparison extends DmnParserJBangScript {
         List<String> missingElementsMessages = new ArrayList<>();
 
         /* Check if the ORIGINAL model elements are present in the PARSED model */
-        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getDecisionService(), parsedModelDefinitions.getDecisionService()));
-        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getBusinessContextElement(), parsedModelDefinitions.getBusinessContextElement()));
-        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getDrgElement(), parsedModelDefinitions.getDrgElement()));
-        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getImport(), parsedModelDefinitions.getImport()));
-        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getItemDefinition(), parsedModelDefinitions.getItemDefinition()));
+        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getDecisionService(),
+                parsedModelDefinitions.getDecisionService()));
+        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getBusinessContextElement(),
+                parsedModelDefinitions.getBusinessContextElement()));
+        missingElementsMessages.addAll(
+                checkElements(originalModelDefinitions.getDrgElement(), parsedModelDefinitions.getDrgElement()));
+        missingElementsMessages
+                .addAll(checkElements(originalModelDefinitions.getImport(), parsedModelDefinitions.getImport()));
+        missingElementsMessages.addAll(checkElements(originalModelDefinitions.getItemDefinition(),
+                parsedModelDefinitions.getItemDefinition()));
 
         /* Check if the PARSED model elements are present in the ORIGINAL model */
-        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getDecisionService(), originalModelDefinitions.getDecisionService()));
-        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getBusinessContextElement(), originalModelDefinitions.getBusinessContextElement()));
-        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getDrgElement(), originalModelDefinitions.getDrgElement()));
-        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getImport(), originalModelDefinitions.getImport()));
-        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getItemDefinition(), originalModelDefinitions.getItemDefinition()));
+        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getDecisionService(),
+                originalModelDefinitions.getDecisionService()));
+        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getBusinessContextElement(),
+                originalModelDefinitions.getBusinessContextElement()));
+        missingElementsMessages.addAll(
+                checkElements(parsedModelDefinitions.getDrgElement(), originalModelDefinitions.getDrgElement()));
+        missingElementsMessages
+                .addAll(checkElements(parsedModelDefinitions.getImport(), originalModelDefinitions.getImport()));
+        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getItemDefinition(),
+                originalModelDefinitions.getItemDefinition()));
 
         if (missingElementsMessages.isEmpty()) {
             LOGGER.info("RESULT: Original and Parsed files are semantically the same!");
@@ -204,20 +223,22 @@ class DmnSemanticComparison extends DmnParserJBangScript {
         } else {
             LOGGER.error("ERROR: Original and Parsed files are NOT semantically the same!");
             missingElementsMessages.forEach(message -> LOGGER.error(message));
-            throw new AssertionError("ERROR: Original and Parsed files are NOT semantically the same!"
-                    + "\n"
-                    + "DMN Model Name: " + originalModel.getName()
-                    + "\n"
-                    + String.join("\n", missingElementsMessages));
+            System.err.println("ERROR: Original and Parsed files are NOT semantically the same!");
+            System.err.println("DMN File Name: " + originalModel.getName());
+            missingElementsMessages.forEach(System.err::println);
+            return 1;
         }
     }
 
     /**
-     * It's a generic method that checks if all elements in a Collection of type T are present in another Collection of the same type.
+     * It's a generic method that checks if all elements in a Collection of type T
+     * are present in another Collection of the same type.
      * It takes two parameters:
      *
-     * @param target A Collection of type T that represents the target collection to search for missing elements
-     * @param source A Collection of type T that represents the source collection containing the elements to check.
+     * @param target A Collection of type T that represents the target collection to
+     *               search for missing elements
+     * @param source A Collection of type T that represents the source collection
+     *               containing the elements to check.
      * @return
      */
     static <T extends NamedElement> List<String> checkElements(Collection<T> target, Collection<T> source) {
@@ -227,11 +248,13 @@ class DmnSemanticComparison extends DmnParserJBangScript {
     }
 
     /**
-     * This method checks if a given element is absent in a collection of elements based on its name. It takes two parameters:
+     * This method checks if a given element is absent in a collection of elements
+     * based on its name. It takes two parameters:
      *
      * @param target A collection of elements to search through.
      * @param source The element to search for.
-     * @return This method returns a boolean value indicating whether or not the element is absent from the collection.
+     * @return This method returns a boolean value indicating whether or not the
+     *         element is absent from the collection.
      */
     static <T extends NamedElement> boolean checkIfAbsent(Collection<T> target, T source) {
         return target.stream().noneMatch(namedElement -> Objects.equals(namedElement.getName(), source.getName()));
