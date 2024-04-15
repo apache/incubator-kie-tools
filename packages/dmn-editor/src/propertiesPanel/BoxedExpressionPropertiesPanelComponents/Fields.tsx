@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InlineFeelNameInput } from "../../feel/InlineFeelNameInput";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -109,7 +109,8 @@ export function TextInputField(props: {
 }) {
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
-  const [textInputValue, setTextInputValue] = useState("");
+  const [textInputValue, setTextInputValue] = useState(props.initialValue);
+  const textInputValueRef = React.useRef(props.initialValue);
   const [isEditing, setEditing] = useState(false);
 
   useEffect(() => {
@@ -124,6 +125,18 @@ export function TextInputField(props: {
     }
   }, [props.expressionPath, isEditing]);
 
+  // Handle special case where the component is umounted and the onBlur is not called
+  useEffect(() => {
+    return () => {
+      if (isEditing) {
+        if (props.initialValue === textInputValueRef.current) {
+          return;
+        }
+        props.onChange?.(textInputValueRef.current, expressionPath);
+      }
+    };
+  }, [expressionPath, isEditing, props]);
+
   return (
     <FormGroup label={props.title}>
       <TextInput
@@ -133,6 +146,7 @@ export function TextInputField(props: {
         value={textInputValue}
         onChange={(newContent) => {
           setTextInputValue(newContent);
+          textInputValueRef.current = newContent;
           setEditing(true);
         }}
         onBlur={() => {
@@ -160,7 +174,8 @@ export function TextAreaField(props: {
 }) {
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
-  const [textAreaValue, setTextAreaValue] = useState("");
+  const [textAreaValue, setTextAreaValue] = useState(props.initialValue);
+  const textAreaValueRef = React.useRef(props.initialValue);
   const [isEditing, setEditing] = useState(false);
 
   useEffect(() => {
@@ -175,6 +190,18 @@ export function TextAreaField(props: {
     }
   }, [props.expressionPath, isEditing]);
 
+  // Handle special case where the component is umounted and the onBlur is not called
+  useEffect(() => {
+    return () => {
+      if (isEditing) {
+        if (props.initialValue === textAreaValueRef.current) {
+          return;
+        }
+        props.onChange(textAreaValueRef.current, expressionPath);
+      }
+    };
+  }, [expressionPath, isEditing, props]);
+
   return (
     <FormGroup label={props.title}>
       <TextArea
@@ -184,6 +211,7 @@ export function TextAreaField(props: {
         value={textAreaValue}
         onChange={(newContent) => {
           setTextAreaValue(newContent);
+          textAreaValueRef.current = newContent;
           setEditing(true);
         }}
         onBlur={() => {
