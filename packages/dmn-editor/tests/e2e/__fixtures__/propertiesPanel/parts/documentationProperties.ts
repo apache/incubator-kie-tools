@@ -30,7 +30,7 @@ export class DocumentationProperties {
       .fill(args.linkText);
     await this.panel
       .locator(".kie-dmn-editor--documentation-link--row")
-      .getByPlaceholder("http://")
+      .getByPlaceholder("https://")
       .fill(args.linkHref);
     await this.page.keyboard.press("Enter");
   }
