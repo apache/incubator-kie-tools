@@ -103,9 +103,6 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       try {
         executeJBangScript(scriptPath, "--command=no_imports", "--dmnFilePath=" + generatedXMLFilePath);
       } catch (error) {
-        const fileName = normalizedFsPathRelativeToTheFile.substring(
-          normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
-        );
         fail(error.cause);
       }
     }
@@ -130,9 +127,6 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
           "--importedDmnFilesPaths=" + importerGeneratedXMLFilePath
         );
       } catch (error) {
-        const fileName = normalizedFsPathRelativeToTheFiles.importer.substring(
-          normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
-        );
         fail(error.cause);
       }
     }
