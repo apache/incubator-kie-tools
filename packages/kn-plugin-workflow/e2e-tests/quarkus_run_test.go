@@ -109,7 +109,7 @@ func RunQuarkusRunTest(t *testing.T, cfgTestInputPrepareQuarkusCreateRun CfgTest
 	// Check if the project is successfully run and accessible within a specified time limit.
 	readyCheckURL := fmt.Sprintf("http://localhost:%s/q/health/ready", getRunQuarkusProjectPort(t, test))
 	pollInterval := 5 * time.Second
-	timeout := 4 * time.Minute
+	timeout := 10 * time.Minute
 	ready := make(chan bool)
 	t.Logf("Checking if project is ready at %s", readyCheckURL)
 	go common.PollReadyCheckURL(readyCheckURL, pollInterval, ready)

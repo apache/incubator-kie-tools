@@ -149,7 +149,6 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 	require.NoErrorf(t, err, "Error reading workflow template: %v", err)
 	expectedFileContent := string(workflowFileData)
 	VerifyFileContent(t, workflowFilePath, expectedFileContent)
-
 	return projectName
 }
 

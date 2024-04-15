@@ -123,7 +123,9 @@ func RunQuarkusBuildTest(t *testing.T, cfgTestInputQuarkusCreate CfgTestInputQua
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
 
 	// Run `quarkus build` command
-	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusBuildCmdCfgToArgs(test.input)...)
+	args := transformQuarkusBuildCmdCfgToArgs(test.input);
+	AddSnapshotRepositoryDeclarationToPom(t, projectDir)
+	_, err = ExecuteKnWorkflowQuarkus(args...)
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
 
 	require.FileExists(t, filepath.Join("target", "kubernetes", "knative.yml"))

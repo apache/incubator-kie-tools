@@ -59,6 +59,8 @@ export interface BoxedExpressionEditorWrapperProps {
   boxedExpressionEditorRootNode: Element | null;
   /** The DMN XML */
   dmnXml: string;
+  /** A boolean used to hide DMN 1.4 expressions. */
+  hideDmn14BoxedExpressions?: boolean;
 }
 
 const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEditorWrapperProps> = ({
@@ -69,6 +71,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   pmmlDocuments,
   boxedExpressionEditorRootNode,
   dmnXml,
+  hideDmn14BoxedExpressions,
 }) => {
   const [expressionWrapper, setExpressionWrapper] = useState<{
     source: "gwt" | "react";
@@ -207,6 +210,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
       onExpressionChange={setExpressionNotifyingUserAction}
       widthsById={expressionWrapper.widthsById}
       onWidthsChange={setWidthsByIdNotifyingUserAction}
+      hideDmn14BoxedExpressions={hideDmn14BoxedExpressions}
     />
   );
 };
@@ -230,6 +234,7 @@ const renderBoxedExpressionEditor = (
       pmmlDocuments={pmmlDocuments}
       boxedExpressionEditorRootNode={boxedExpressionEditorRootNode}
       dmnXml={dmnXml}
+      hideDmn14BoxedExpressions={true}
     />,
     boxedExpressionEditorRootNode
   );

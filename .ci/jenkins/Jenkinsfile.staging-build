@@ -107,6 +107,16 @@ pipeline {
         KIE_SANDBOX_HELM_CHART__name = 'kie-sandbox-helm-chart'
         KIE_SANDBOX_HELM_CHART__tag = "${params.TAG}-prerelease"
 
+        KOGITO_TASK_CONSOLE__registry = 'quay.io'
+        KOGITO_TASK_CONSOLE__account = 'kie-tools'
+        KOGITO_TASK_CONSOLE__name = 'kogito-task-console'
+        KOGITO_TASK_CONSOLE__buildTags = "${params.TAG}-prerelease"
+
+        KOGITO_MANAGEMENT_CONSOLE__registry = 'quay.io'
+        KOGITO_MANAGEMENT_CONSOLE__account = 'kie-tools'
+        KOGITO_MANAGEMENT_CONSOLE__name = 'kogito-management-console'
+        KOGITO_MANAGEMENT_CONSOLE__buildTags = "${params.TAG}-prerelease"
+
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 
@@ -724,6 +734,48 @@ pipeline {
                 }
             }
         }
+
+        stage('Build (kogito-task-console)') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildKogitoTaskConsole()
+                    }
+                }
+            }
+        }
+
+        stage('STAGING: Push kogito-task-console to quay.io') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    pushKogitoTaskConsoleToQuay()
+                }
+            }
+        }
+
+        stage('Build (kogito-management-console)') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildKogitoManagementConsole()
+                    }
+                }
+            }
+        }
+
+        stage('STAGING: Push kogito-management-console to quay.io') {
+            when {
+                expression { !params.DRY_RUN }
+            }
+            steps {
+                script {
+                    pushKogitoManagementConsoleToQuay()
+                }
+            }
+        }
     }
 
     post {
@@ -767,6 +819,8 @@ def buildPartial() {
     -F='!@kie-tools/dev-deployment-kogito-quarkus-blank-app-image' \
     -F='!@kie-tools/serverless-logic-web-tools-base-builder-image' \
     -F='!@kie-tools/dashbuilder-viewer-image' \
+    -F='!@kie-tools/kogito-task-console' \
+    -F='!@kie-tools/kogito-management-console' \
     -r --workspace-concurrency=1 build:prod
     """.trim()
 }
@@ -1006,6 +1060,42 @@ def pushServerlessLogicWebToolsBaseBuilderImageToQuay() {
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry}/${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount}",
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName}",
         "${env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags}",
+        "${pipelineVars.quayPushCredentialsId}"
+    )
+}
+
+def buildKogitoTaskConsole() {
+    sh '''#!/bin/bash -el
+    export KIE_TOOLS_BUILD__runTests=true
+    export KIE_TOOLS_BUILD__buildContainerImages=true
+    echo "Build @kie-tools/kogito-task-console"
+    pnpm -F @kie-tools/kogito-task-console... --workspace-concurrency=1 build:prod
+    '''.trim()
+}
+
+def pushKogitoTaskConsoleToQuay() {
+    dockerUtils.pushImageToRegistry(
+        "${env.KOGITO_TASK_CONSOLE__registry}/${env.KOGITO_TASK_CONSOLE__account}",
+        "${env.KOGITO_TASK_CONSOLE__name}",
+        "${env.KOGITO_TASK_CONSOLE__buildTags}",
+        "${pipelineVars.quayPushCredentialsId}"
+    )
+}
+
+def buildKogitoManagementConsole() {
+    sh '''#!/bin/bash -el
+    export KIE_TOOLS_BUILD__runTests=true
+    export KIE_TOOLS_BUILD__buildContainerImages=true
+    echo "Build @kie-tools/kogito-management-console"
+    pnpm -F @kie-tools/kogito-management-console... --workspace-concurrency=1 build:prod
+    '''.trim()
+}
+
+def pushKogitoManagementConsoleToQuay() {
+    dockerUtils.pushImageToRegistry(
+        "${env.KOGITO_MANAGEMENT_CONSOLE__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}",
+        "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
+        "${env.KOGITO_MANAGEMENT_CONSOLE__buildTags}",
         "${pipelineVars.quayPushCredentialsId}"
     )
 }
