@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import jsinterop.base.Js;
 import org.drools.workbench.scenariosimulation.kogito.marshaller.mapper.JsUtils;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.model.KogitoDMNModel;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -67,7 +68,7 @@ public class ScenarioSimulationKogitoDMNMarshallerService {
                     dmnVersion = "1.5";
                 }
 
-                errorCallback.error("Test scenario supports up to DMN version 1.2. The provided DMN file version is " + dmnVersion, e);
+                errorCallback.error(ScenarioSimulationEditorConstants.INSTANCE.unSupportedDmnVersion(dmnVersion), e);
             }
         };
     }

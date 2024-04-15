@@ -52,6 +52,8 @@ public interface ScenarioSimulationEditorConstants
 
     String supportedDmnVersions();
 
+    String unSupportedDmnVersion(String dmnVersion);
+
     String invalidDefinitionDisabled();
 
     String testTools();
