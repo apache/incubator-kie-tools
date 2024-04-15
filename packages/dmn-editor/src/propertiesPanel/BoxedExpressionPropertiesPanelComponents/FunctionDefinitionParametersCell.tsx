@@ -80,7 +80,11 @@ export function FunctionDefinitionParameterCell(props: {
                 return newExpanded;
               })
             }
-            title={`Parameter ${parameter["@_name"]}`}
+            title={
+              <p>
+                Parameter <b>{parameter["@_name"]}</b>
+              </p>
+            }
           />
           {isParameterExpanded[i] && (
             <>
