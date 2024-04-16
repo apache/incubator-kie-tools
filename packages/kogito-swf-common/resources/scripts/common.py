@@ -32,16 +32,16 @@ def retrieve_version():
     """
     return get_project_versions_module_data()['version']
 
-def get_all_images():
+def get_all_images(source_folder = None):
     """
     Retrieve all images in current dir
     """
-    return glob.glob('./*-image.yaml')
+    root_folder = "." if source_folder is None else source_folder
+    return glob.glob("{}/*-image.yaml".format(root_folder))
 
 def get_project_versions_module_data():
     """
     Get a specific field value from project versions module file
-    :param field_name: Field to search for
     """
     try:
         project_versions_module_file = os.path.join(PROJECT_VERSIONS_MODULE)
@@ -51,33 +51,49 @@ def get_project_versions_module_data():
     except TypeError:
         raise
 
-def get_all_module_dirs():
+def get_all_module_dirs(source_folder = None):
     """
     Retrieve the module directories
+    :param source_folder: folder where resources are stored
     """
+
+    root_folder = "." if source_folder is None else source_folder
+    modules_dir = "{}/{}".format(root_folder, MODULES_DIR)
+
     modules = []
 
     # r=>root, d=>directories, f=>files
-    for r, d, f in os.walk(MODULES_DIR):
+    for r, d, f in os.walk(modules_dir):
         for item in f:
             if MODULE_FILENAME == item:
                 modules.append(os.path.dirname(os.path.join(r, item)))
 
     return modules
 
-
-def update_kogito_modules_version(target_version):
+def update_image_and_modules_version(target_version, source_folder = None):
     """
     Update every Kogito module.yaml to the given version.
     :param target_version: version used to update all Kogito module.yaml files
+    :param source_folder: folder where resources are stored
     """
-    modules = get_all_module_dirs()
+    print("Images and Modules version will be updated to {0}".format(target_version))
+    update_images_version(target_version, source_folder)
+    update_modules_version(target_version, source_folder)
+
+
+def update_modules_version(target_version, source_folder = None):
+    """
+    Update every Kogito module.yaml to the given version.
+    :param target_version: version used to update all Kogito module.yaml files
+    :param source_folder: folder where resources are stored
+    """
+    modules = get_all_module_dirs(source_folder)
 
     for module_dir in modules:
-        update_kogito_module_version(module_dir, target_version)
+        update_module_version(module_dir, target_version)
 
 
-def update_kogito_module_version(module_dir, target_version):
+def update_module_version(module_dir, target_version):
     """
     Set Kogito module.yaml to given version.
     :param module_dir: directory where cekit modules are hold
@@ -95,6 +111,33 @@ def update_kogito_module_version(module_dir, target_version):
 
     except TypeError:
         raise
+
+def update_images_version(target_version, source_folder = None):
+    """
+    Update image.yml files version tag.
+    :param target_version: version used to update
+    :param source_folder: folder where resources are stored
+    """
+    for image_filename in get_all_images(source_folder):
+        update_image_version_tag_in_yaml_file(target_version, image_filename)
+
+
+def update_image_version_tag_in_yaml_file(target_version, yaml_file):
+    """
+    Update root version tag in yaml file.
+    :param target_version: version to set
+    :param yaml_file: yaml file to update
+    """
+    print("Updating Image main file version from file {0} to version {1}".format(yaml_file, target_version))
+    try:
+        with open(yaml_file) as image:
+            data = yaml_loader().load(image)
+            update_field_in_dict(data, 'version', target_version)
+
+        with open(yaml_file, 'w') as image:
+            yaml_loader().dump(data, image)
+    except TypeError as err:
+        print("Unexpected error:", err)
 
 def update_kogito_platform_version(kogito_platform_version):
     """

@@ -17,7 +17,13 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
-const { setupImageModules } = require("@kie-tools/kogito-swf-common/index.js");
+const { execSync } = require("child_process");
 
-setupImageModules(`${__dirname}/resources`, buildEnv.env.kogitoSwfBuilder.version);
+module.exports = {
+  setupImageModules: (resourcesDir, imageVersion) => {
+    execSync(
+      `python ./node_modules/@kie-tools/kogito-swf-common/resources/scripts/versions_manager.py --bump-to ${imageVersion} --source-folder ${resourcesDir}`,
+      { stdio: "inherit" }
+    );
+  },
+};

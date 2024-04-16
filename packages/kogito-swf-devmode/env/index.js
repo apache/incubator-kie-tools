@@ -38,7 +38,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image tag.",
     },
     KOGITO_SWF_DEVMODE_IMAGE__runTests: {
-      default: false,
+      default: true,
       description: "Run tests after build",
     },
   }),

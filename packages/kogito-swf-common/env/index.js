@@ -17,7 +17,15 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
-const { setupImageModules } = require("@kie-tools/kogito-swf-common/index.js");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-setupImageModules(`${__dirname}/resources`, buildEnv.env.kogitoSwfBuilder.version);
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {
+      kogitoSwfCommon: {
+        version: require("../package.json").version,
+      },
+    };
+  },
+});

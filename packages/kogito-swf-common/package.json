@@ -11,5 +11,11 @@
   },
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "install": "node install.js"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*"
   }
 }

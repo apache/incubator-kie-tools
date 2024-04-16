@@ -63,6 +63,7 @@ ifneq ($(SWF_IMAGE_TAG), $(CURRENT_IMAGE_VERSION))
 	${BUILD_ENGINE} tag ${SWF_FULL_IMAGE_NAME}:${CURRENT_IMAGE_VERSION} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
 endif
 
+# Trigger the image tests
 .PHONY test-image: _test_image
 _test_image:
 ifeq ($(SWF_TEST_IMAGE),true)
@@ -71,4 +72,4 @@ ifeq ($(SWF_TEST_IMAGE),true)
 	tests/shell/run.sh ${SWF_IMAGE_NAME} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
 endif
 
-.PHONY build: fix_platform_versions _cekit_build _tag_image _test_image
+.PHONY build: fix_platform_versions _cekit_build _tag_image
