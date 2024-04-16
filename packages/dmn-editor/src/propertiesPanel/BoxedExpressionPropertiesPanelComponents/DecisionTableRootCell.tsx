@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DescriptionField, TextInputField } from "./Fields";
+import { DescriptionField, TextField, TextFieldType } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DMN15__tDecisionTable } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
@@ -50,11 +50,22 @@ export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpre
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
-      <TextInputField title={"Hit Policy"} isReadonly={true} initialValue={cell["@_hitPolicy"] ?? ""} />
+      <TextField
+        type={TextFieldType.TEXT_INPUT}
+        title={"Hit Policy"}
+        isReadonly={true}
+        initialValue={cell["@_hitPolicy"] ?? ""}
+      />
       {cell["@_hitPolicy"] === "COLLECT" && (
-        <TextInputField title={"Aggregation"} isReadonly={true} initialValue={cell["@_aggregation"] ?? "<None>"} />
+        <TextField
+          type={TextFieldType.TEXT_INPUT}
+          title={"Aggregation"}
+          isReadonly={true}
+          initialValue={cell["@_aggregation"] ?? "<None>"}
+        />
       )}
-      <TextInputField
+      <TextField
+        type={TextFieldType.TEXT_INPUT}
         title={"Output Label"}
         placeholder={"Enter a output label..."}
         isReadonly={props.isReadonly}

@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DescriptionField, TextInputField } from "./Fields";
+import { DescriptionField, TextField, TextFieldType } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -50,7 +50,7 @@ export function FunctionDefinitionRootCell(props: {
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
-      <TextInputField title={"Kind"} isReadonly={true} initialValue={cell["@_kind"] ?? ""} />
+      <TextField type={TextFieldType.TEXT_INPUT} title={"Kind"} isReadonly={true} initialValue={cell["@_kind"] ?? ""} />
       <DescriptionField
         isReadonly={props.isReadonly}
         initialValue={cell.description?.__$$text ?? ""}

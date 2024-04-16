@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { TextInputField } from "./Fields";
+import { TextField, TextFieldType } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useUpdateBee";
@@ -41,7 +41,8 @@ export function InvocationFunctionCallCell(props: {
 
   return (
     <>
-      <TextInputField
+      <TextField
+        type={TextFieldType.TEXT_INPUT}
         title={"Function to be called"}
         placeholder="Enter the function name..."
         isReadonly={props.isReadonly}

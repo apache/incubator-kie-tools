@@ -34,7 +34,7 @@ export function ContentField(props: {
   expressionPath: ExpressionPath[];
   isReadonly: boolean;
 }) {
-  return <TextAreaField {...props} title="Content" placeholder="Enter the content..." />;
+  return <TextField {...props} type={TextFieldType.TEXT_AREA} title="Content" placeholder="Enter the content..." />;
 }
 
 export function DescriptionField(props: {
@@ -43,7 +43,9 @@ export function DescriptionField(props: {
   expressionPath: ExpressionPath[];
   isReadonly: boolean;
 }) {
-  return <TextAreaField {...props} title="Description" placeholder="Enter a description..." />;
+  return (
+    <TextField {...props} type={TextFieldType.TEXT_AREA} title="Description" placeholder="Enter a description..." />
+  );
 }
 
 export function ExpressionLanguageField(props: {
@@ -52,7 +54,14 @@ export function ExpressionLanguageField(props: {
   expressionPath?: ExpressionPath[];
   isReadonly: boolean;
 }) {
-  return <TextInputField {...props} title="Expression Language" placeholder="Enter the expression language..." />;
+  return (
+    <TextField
+      {...props}
+      type={TextFieldType.TEXT_INPUT}
+      title="Expression Language"
+      placeholder="Enter the expression language..."
+    />
+  );
 }
 
 export function NameField(props: {
@@ -99,132 +108,99 @@ export function TypeRefField(props: {
   );
 }
 
-export function TextInputField(props: {
+export enum TextFieldType {
+  TEXT_AREA = "text-area",
+  TEXT_INPUT = "text-input",
+}
+
+export function TextField({
+  onChange,
+  ...props
+}: {
   initialValue: string;
   onChange?: (newTextValue: string, expressionPath?: ExpressionPath[]) => void;
   expressionPath?: ExpressionPath[];
   isReadonly: boolean;
   title: string;
   placeholder?: string;
+  type: TextFieldType;
 }) {
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
-  const [textInputValue, setTextInputValue] = useState(props.initialValue);
-  const textInputValueRef = React.useRef(props.initialValue);
-  const [isEditing, setEditing] = useState(false);
+  const [value, setValue] = useState(props.initialValue);
+  const valueRef = React.useRef(props.initialValue);
+  const isEditing = React.useRef(false);
+  // const [isEditing, setEditing] = useState(false);
 
   useEffect(() => {
-    if (!isEditing) {
-      setTextInputValue(props.initialValue);
-    }
-  }, [props.initialValue, isEditing]);
-
-  useEffect(() => {
-    if (!isEditing) {
+    if (isEditing.current === false) {
+      setValue(props.initialValue);
       setExpressionPath(props.expressionPath);
+      valueRef.current = props.initialValue;
     }
-  }, [props.expressionPath, isEditing]);
+  }, [props.initialValue, props.expressionPath]);
 
   // Handle special case where the component is umounted and the onBlur is not called
   useEffect(() => {
     return () => {
-      if (isEditing) {
-        if (props.initialValue === textInputValueRef.current) {
+      if (isEditing.current === true) {
+        if (props.initialValue === valueRef.current) {
           return;
         }
-        props.onChange?.(textInputValueRef.current, expressionPath);
+        onChange?.(valueRef.current, expressionPath);
+        isEditing.current = false;
       }
     };
-  }, [expressionPath, isEditing, props]);
+  }, [expressionPath, onChange, props.initialValue]);
 
   return (
     <FormGroup label={props.title}>
-      <TextInput
-        aria-label={"Content"}
-        type={"text"}
-        isDisabled={props.isReadonly}
-        value={textInputValue}
-        onChange={(newContent) => {
-          setTextInputValue(newContent);
-          textInputValueRef.current = newContent;
-          setEditing(true);
-        }}
-        onBlur={() => {
-          if (props.initialValue === textInputValue) {
-            return;
-          }
-          props.onChange?.(textInputValue, expressionPath);
-          setEditing(false);
-        }}
-        placeholder={props.placeholder ?? "Enter the expression content..."}
-        style={{ resize: "vertical", minHeight: "40px" }}
-        rows={6}
-      />
-    </FormGroup>
-  );
-}
-
-export function TextAreaField(props: {
-  initialValue: string;
-  onChange: (newTextValue: string, expressionPath: ExpressionPath[]) => void;
-  expressionPath: ExpressionPath[];
-  isReadonly: boolean;
-  title: string;
-  placeholder?: string;
-}) {
-  // used to save the expression path value until the flush operation
-  const [expressionPath, setExpressionPath] = useState(props.expressionPath);
-  const [textAreaValue, setTextAreaValue] = useState(props.initialValue);
-  const textAreaValueRef = React.useRef(props.initialValue);
-  const [isEditing, setEditing] = useState(false);
-
-  useEffect(() => {
-    if (!isEditing) {
-      setTextAreaValue(props.initialValue);
-    }
-  }, [props.initialValue, isEditing]);
-
-  useEffect(() => {
-    if (!isEditing) {
-      setExpressionPath(props.expressionPath);
-    }
-  }, [props.expressionPath, isEditing]);
-
-  // Handle special case where the component is umounted and the onBlur is not called
-  useEffect(() => {
-    return () => {
-      if (isEditing) {
-        if (props.initialValue === textAreaValueRef.current) {
-          return;
-        }
-        props.onChange(textAreaValueRef.current, expressionPath);
-      }
-    };
-  }, [expressionPath, isEditing, props]);
-
-  return (
-    <FormGroup label={props.title}>
-      <TextArea
-        aria-label={"Content"}
-        type={"text"}
-        isDisabled={props.isReadonly}
-        value={textAreaValue}
-        onChange={(newContent) => {
-          setTextAreaValue(newContent);
-          textAreaValueRef.current = newContent;
-          setEditing(true);
-        }}
-        onBlur={() => {
-          if (props.initialValue === textAreaValue) {
-            return;
-          }
-          props.onChange(textAreaValue, expressionPath);
-          setEditing(false);
-        }}
-        placeholder={props.placeholder ?? "Enter the expression content..."}
-        style={{ resize: "vertical", minHeight: "40px" }}
-        rows={6}
-      />
+      {props.type === TextFieldType.TEXT_AREA && (
+        <TextArea
+          aria-label={"Content"}
+          type={"text"}
+          isDisabled={props.isReadonly}
+          value={value}
+          onChange={(newContent) => {
+            setValue(newContent);
+            valueRef.current = newContent;
+            isEditing.current = true;
+          }}
+          onBlur={() => {
+            if (props.initialValue === value) {
+              return;
+            }
+            onChange?.(value, expressionPath);
+            isEditing.current = false;
+          }}
+          placeholder={props.placeholder ?? "Enter the expression content..."}
+          style={{ resize: "vertical", minHeight: "40px" }}
+          rows={6}
+        />
+      )}
+      {props.type === TextFieldType.TEXT_INPUT && (
+        <TextInput
+          aria-label={"Content"}
+          type={"text"}
+          isDisabled={props.isReadonly}
+          value={value}
+          onChange={(newContent) => {
+            setValue(newContent);
+            valueRef.current = newContent;
+            isEditing.current = true;
+          }}
+          onBlur={() => {
+            if (props.initialValue === value) {
+              return;
+            }
+            onChange?.(value, expressionPath);
+            isEditing.current = false;
+          }}
+          placeholder={props.placeholder ?? "Enter the expression content..."}
+          style={{ resize: "vertical", minHeight: "40px" }}
+          rows={6}
+        />
+      )}
     </FormGroup>
   );
 }
