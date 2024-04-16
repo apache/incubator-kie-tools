@@ -46,7 +46,7 @@ public interface DMNClientServicesProxy {
     // ------------------------------------
 
     default void logWarning(final ClientRuntimeError error) {
-        warn(error.getMessage());
+        warn(error.getErrorMessage());
     }
 
     default void warn(final String message) {
