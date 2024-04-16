@@ -20,6 +20,10 @@ kind: SonataFlowPlatform
 metadata:
   name: sonataflow-platform
 spec:
+  properties:
+    flow:
+      - name: quarkus.log.level
+        value: INFO
   build:
     config:
       registry:

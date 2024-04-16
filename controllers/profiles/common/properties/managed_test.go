@@ -111,7 +111,7 @@ func (c *mockCatalogService) Query(ctx context.Context, uri discovery.ResourceUr
 
 func Test_appPropertyHandler_WithKogitoServiceUrl(t *testing.T) {
 	workflow := test.GetBaseSonataFlow("default")
-	props, err := ImmutableApplicationProperties(workflow, nil)
+	props, err := ApplicationManagedProperties(workflow, nil)
 	assert.NoError(t, err)
 	assert.Contains(t, props, constants.KogitoServiceURLProperty)
 	assert.Contains(t, props, "http://"+workflow.Name+"."+workflow.Namespace)
@@ -121,11 +121,11 @@ func Test_appPropertyHandler_WithUserPropertiesWithNoUserOverrides(t *testing.T)
 	//just add some user provided properties, no overrides.
 	userProperties := "property1=value1\nproperty2=value2"
 	workflow := test.GetBaseSonataFlow("default")
-	props, err := NewAppPropertyHandler(workflow, nil)
+	props, err := NewManagedPropertyHandler(workflow, nil)
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 6, len(generatedProps.Keys()))
+	assert.Equal(t, 7, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assert.Equal(t, "http://greeting.default", generatedProps.GetString("kogito.service.url", ""))
@@ -149,7 +149,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 	userProperties = userProperties + "broker2=${knative:brokers.v1.eventing.knative.dev/my-kn-broker2}\n"
 
 	workflow := test.GetBaseSonataFlow(defaultNamespace)
-	props, err := NewAppPropertyHandler(workflow, nil)
+	props, err := NewManagedPropertyHandler(workflow, nil)
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.
 		WithUserProperties(userProperties).
@@ -157,7 +157,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 		Build())
 	generatedProps.DisableExpansion = true
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 20, len(generatedProps.Keys()))
+	assert.Equal(t, 21, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assertHasProperty(t, generatedProps, "service1", myService1Address)
@@ -186,12 +186,6 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 	assertHasProperty(t, generatedProps, constants.KogitoUserTasksEventsEnabled, "false")
 }
 
-func assertHasProperty(t *testing.T, props *properties.Properties, expectedProperty string, expectedValue string) {
-	value, ok := props.Get(expectedProperty)
-	assert.True(t, ok, "Property %s, is not present as expected.", expectedProperty)
-	assert.Equal(t, expectedValue, value, "Expected value for property: %s, is: %s but current value is: %s", expectedProperty, expectedValue, value)
-}
-
 func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	//try to override kogito.service.url and quarkus.http.port
 	userProperties := "property1=value1\nproperty2=value2\nquarkus.http.port=9090\nkogito.service.url=http://myUrl.override.com\nquarkus.http.port=9090"
@@ -214,7 +208,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 
 	services.SetServiceUrlsInWorkflowStatus(platform, workflow)
 	assert.Nil(t, workflow.Status.Services)
-	props, err := NewAppPropertyHandler(workflow, platform)
+	props, err := NewManagedPropertyHandler(workflow, platform)
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
@@ -243,7 +237,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NotNil(t, workflow.Status.Services)
 	assert.NotNil(t, workflow.Status.Services.JobServiceRef)
 	assert.NotNil(t, workflow.Status.Services.DataIndexRef)
-	props, err = NewAppPropertyHandler(workflow, platform)
+	props, err = NewManagedPropertyHandler(workflow, platform)
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
@@ -270,7 +264,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NotNil(t, workflow.Status.Services)
 	assert.NotNil(t, workflow.Status.Services.JobServiceRef)
 	assert.Nil(t, workflow.Status.Services.DataIndexRef)
-	props, err = NewAppPropertyHandler(workflow, platform)
+	props, err = NewManagedPropertyHandler(workflow, platform)
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
@@ -290,7 +284,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	platform.Spec.Services.JobService.Enabled = nil
 	services.SetServiceUrlsInWorkflowStatus(platform, workflow)
 	assert.Nil(t, workflow.Status.Services)
-	props, err = NewAppPropertyHandler(workflow, platform)
+	props, err = NewManagedPropertyHandler(workflow, platform)
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
@@ -317,7 +311,7 @@ var _ = Describe("Platform properties", func() {
 			DescribeTable("only job services when the spec",
 				func(wf *operatorapi.SonataFlow, plfm *operatorapi.SonataFlowPlatform, expectedProperties *properties.Properties) {
 					services.SetServiceUrlsInWorkflowStatus(plfm, wf)
-					handler, err := NewAppPropertyHandler(wf, plfm)
+					handler, err := NewManagedPropertyHandler(wf, plfm)
 					Expect(err).NotTo(HaveOccurred())
 					p, err := properties.LoadString(handler.Build())
 					Expect(err).NotTo(HaveOccurred())
@@ -365,7 +359,7 @@ var _ = Describe("Platform properties", func() {
 			DescribeTable("only data index service when the spec",
 				func(wf *operatorapi.SonataFlow, plfm *operatorapi.SonataFlowPlatform, expectedProperties *properties.Properties) {
 					services.SetServiceUrlsInWorkflowStatus(plfm, wf)
-					handler, err := NewAppPropertyHandler(wf, plfm)
+					handler, err := NewManagedPropertyHandler(wf, plfm)
 					Expect(err).NotTo(HaveOccurred())
 					p, err := properties.LoadString(handler.Build())
 					Expect(err).NotTo(HaveOccurred())
@@ -412,7 +406,7 @@ var _ = Describe("Platform properties", func() {
 
 			DescribeTable("both Data Index and Job Services are available and", func(wf *operatorapi.SonataFlow, plfm *operatorapi.SonataFlowPlatform, expectedProperties *properties.Properties) {
 				services.SetServiceUrlsInWorkflowStatus(plfm, wf)
-				handler, err := NewAppPropertyHandler(wf, plfm)
+				handler, err := NewManagedPropertyHandler(wf, plfm)
 				Expect(err).NotTo(HaveOccurred())
 				p, err := properties.LoadString(handler.Build())
 				Expect(err).NotTo(HaveOccurred())

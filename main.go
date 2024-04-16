@@ -67,12 +67,14 @@ func main() {
 	var metricsAddr string
 	var enableLeaderElection bool
 	var probeAddr string
+	var controllerCfgPath string
 	klog.InitFlags(nil)
 	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
+	flag.StringVar(&controllerCfgPath, "controller-cfg-path", "", "The controller config file path.")
 	flag.Parse()
 
 	ctrl.SetLogger(klogr.New().WithName(controllers.ComponentName))
@@ -90,10 +92,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Set global assessors
 	utils.SetIsOpenShift(mgr.GetConfig())
+	utils.SetClient(mgr.GetClient())
 
 	// Fail fast, we can change this behavior in the future to read from defaults instead.
-	if _, err = cfg.InitializeControllersCfg(); err != nil {
+	if _, err = cfg.InitializeControllersCfgAt(controllerCfgPath); err != nil {
 		klog.V(log.E).ErrorS(err, "unable to read controllers configuration file")
 		os.Exit(1)
 	}

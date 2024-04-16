@@ -22,7 +22,7 @@ import (
 	cncfmodel "github.com/serverlessworkflow/sdk-go/v2/model"
 )
 
-// GenerateKnativeEventingWorkflowProperties returns the set of application properties required for the workflow to produce or consume
+// generateKnativeEventingWorkflowProperties returns the set of application properties required for the workflow to produce or consume
 // Knative Events.
 // Never nil.
 func generateKnativeEventingWorkflowProperties(workflow *operatorapi.SonataFlow) (*properties.Properties, error) {

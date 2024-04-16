@@ -65,6 +65,9 @@ func InitializeControllersCfg() (*ControllersCfg, error) {
 
 // InitializeControllersCfgAt same as InitializeControllersCfg receiving a path as input.
 func InitializeControllersCfgAt(configFilePath string) (*ControllersCfg, error) {
+	if len(configFilePath) == 0 {
+		configFilePath = defaultConfigMountPath
+	}
 	controllersCfg = nil
 	yamlFile, err := os.ReadFile(configFilePath)
 	if err != nil {

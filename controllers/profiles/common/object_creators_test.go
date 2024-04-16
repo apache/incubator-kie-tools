@@ -90,7 +90,6 @@ func Test_ensureWorkflowPropertiesConfigMapMutator_DollarReplacement(t *testing.
 	err := mutateVisitorFn(managedPropsCM)()
 	assert.NoError(t, err)
 	assert.NotContains(t, managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)], "mp.messaging.outgoing.kogito_outgoing_stream.url")
-	// assert.Contains(t, managedPropsCM.Data[workflowproj.GetManagedPropertiesFileName(workflow)], "${kubernetes:services.v1/event-listener}")
 }
 
 func TestMergePodSpec(t *testing.T) {

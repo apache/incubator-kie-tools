@@ -49,7 +49,7 @@ var (
 type serviceAppPropertyHandler struct {
 	userProperties           string
 	serviceHandler           PlatformServiceHandler
-	defaultMutableProperties *properties.Properties
+	defaultManagedProperties *properties.Properties
 }
 
 type ServiceAppPropertyHandler interface {
@@ -59,14 +59,14 @@ type ServiceAppPropertyHandler interface {
 
 // NewServiceAppPropertyHandler creates the default service configurations property handler
 // The set of properties is initialized with the operator provided immutable properties.
-// The set of defaultMutableProperties is initialized with the operator provided properties that the user might override.
+// The set of defaultManagedProperties is initialized with the operator provided properties that the user might override.
 func NewServiceAppPropertyHandler(serviceHandler PlatformServiceHandler) (ServiceAppPropertyHandler, error) {
 	handler := &serviceAppPropertyHandler{}
 	props, err := serviceHandler.GenerateServiceProperties()
 	if err != nil {
 		return nil, err
 	}
-	handler.defaultMutableProperties = props
+	handler.defaultManagedProperties = props
 	return handler, nil
 }
 
@@ -90,7 +90,7 @@ func (a *serviceAppPropertyHandler) Build() string {
 	props = utils.NewApplicationPropertiesBuilder().
 		WithInitialProperties(props).
 		WithImmutableProperties(properties.MustLoadString(immutableApplicationProperties)).
-		WithDefaultMutableProperties(a.defaultMutableProperties).
+		WithDefaultManagedProperties(a.defaultManagedProperties).
 		Build()
 	props.Sort()
 	return props.String()

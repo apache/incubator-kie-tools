@@ -26,7 +26,7 @@ import (
 type ApplicationPropertiesBuilder interface {
 	WithInitialProperties(initialProperties *properties.Properties) ApplicationPropertiesBuilder
 	WithImmutableProperties(immutableProperties *properties.Properties) ApplicationPropertiesBuilder
-	WithDefaultMutableProperties(defaultMutableProperties *properties.Properties) ApplicationPropertiesBuilder
+	WithDefaultManagedProperties(defaultManagedProperties *properties.Properties) ApplicationPropertiesBuilder
 	BuildAsString() string
 	Build() *properties.Properties
 }
@@ -34,7 +34,7 @@ type ApplicationPropertiesBuilder interface {
 type applicationPropertiesBuilder struct {
 	initialProperties        *properties.Properties
 	immutableProperties      *properties.Properties
-	defaultMutableProperties *properties.Properties
+	defaultManagedProperties *properties.Properties
 }
 
 func (a *applicationPropertiesBuilder) WithInitialProperties(initialProperties *properties.Properties) ApplicationPropertiesBuilder {
@@ -47,8 +47,8 @@ func (a *applicationPropertiesBuilder) WithImmutableProperties(immutableProperti
 	return a
 }
 
-func (a *applicationPropertiesBuilder) WithDefaultMutableProperties(defaultMutableProperties *properties.Properties) ApplicationPropertiesBuilder {
-	a.defaultMutableProperties = defaultMutableProperties
+func (a *applicationPropertiesBuilder) WithDefaultManagedProperties(defaultManagedProperties *properties.Properties) ApplicationPropertiesBuilder {
+	a.defaultManagedProperties = defaultManagedProperties
 	return a
 }
 
@@ -67,14 +67,14 @@ func (a *applicationPropertiesBuilder) Build() *properties.Properties {
 	// Property expansion means resolving ${} within the properties and environment context. Quarkus will do that in runtime.
 	props.DisableExpansion = true
 
-	if a.defaultMutableProperties != nil {
-		defaultMutableProps := a.defaultMutableProperties
-		for _, k := range defaultMutableProps.Keys() {
+	if a.defaultManagedProperties != nil {
+		defaultManagedProperties := a.defaultManagedProperties
+		for _, k := range defaultManagedProperties.Keys() {
 			if _, ok := props.Get(k); ok {
-				defaultMutableProps.Delete(k)
+				defaultManagedProperties.Delete(k)
 			}
 		}
-		props.Merge(defaultMutableProps)
+		props.Merge(defaultManagedProperties)
 	}
 
 	if a.immutableProperties != nil {

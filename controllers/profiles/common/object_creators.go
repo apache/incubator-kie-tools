@@ -69,7 +69,6 @@ const (
 	healthStartedFailureThreshold    = 5
 	healthStartedPeriodSeconds       = 15
 	healthStartedInitialDelaySeconds = 10
-	defaultSchemaName                = "default"
 )
 
 // DeploymentCreator is an objectCreator for a base Kubernetes Deployments for profiles that need to deploy the workflow on a vanilla deployment.
@@ -307,7 +306,7 @@ func UserPropsConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Object,
 
 // ManagedPropsConfigMapCreator creates an empty ConfigMap to hold the external application properties
 func ManagedPropsConfigMapCreator(workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) (client.Object, error) {
-	props, err := properties.ImmutableApplicationProperties(workflow, platform)
+	props, err := properties.ApplicationManagedProperties(workflow, platform)
 	if err != nil {
 		return nil, err
 	}

@@ -120,12 +120,11 @@ func ManagedPropertiesMutateVisitor(ctx context.Context, catalog discovery.Servi
 			if !hasKey {
 				userProperties = ""
 			}
-			// In the future, if this needs change, instead we can receive an AppPropertyHandler in this mutator
-			props, err := properties.NewAppPropertyHandler(workflow, plf)
+			propertyHandler, err := properties.NewManagedPropertyHandler(workflow, plf)
 			if err != nil {
 				return err
 			}
-			managedProps.Data[workflowproj.GetManagedPropertiesFileName(workflow)] = props.WithUserProperties(userProperties).
+			managedProps.Data[workflowproj.GetManagedPropertiesFileName(workflow)] = propertyHandler.WithUserProperties(userProperties).
 				WithServiceDiscovery(ctx, catalog).
 				Build()
 			return nil

@@ -423,7 +423,7 @@ spec:
               persistence:
                 description: Persistence defines the platform persistence configuration.
                   When this field is set, the configuration is used as the persistence
-                  for platform services and sonataflow instances that don't provide
+                  for platform services and SonataFlow instances that don't provide
                   one of their own.
                 maxProperties: 1
                 properties:
@@ -476,6 +476,78 @@ spec:
                     required:
                     - secretRef
                     type: object
+                type: object
+              properties:
+                description: "Properties defines the property set for a given actor
+                  in the current context. For example, the workflow managed properties.
+                  One can define here a set of properties for SonataFlow deployments
+                  that will be reused across every workflow deployment. \n These properties
+                  MAY NOT be propagated to a SonataFlowClusterPlatform since PropertyVarSource
+                  can only refer local context sources."
+                properties:
+                  flow:
+                    description: Properties that will be added to the SonataFlow managed
+                      configMaps in the current context.
+                    items:
+                      description: PropertyVar is the entry for a property set derived
+                        from the Kubernetes API EnvVar. Note that the name doesn't
+                        have to match C_IDENTIFIER.
+                      properties:
+                        name:
+                          description: The property name
+                          type: string
+                        value:
+                          description: Defaults to "".
+                          type: string
+                        valueFrom:
+                          description: Source for the property's value. Cannot be
+                            used if value is not empty.
+                          properties:
+                            configMapKeyRef:
+                              description: Selects a key of a ConfigMap.
+                              properties:
+                                key:
+                                  description: The key to select.
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Add other useful fields. apiVersion, kind,
+                                    uid?'
+                                  type: string
+                                optional:
+                                  description: Specify whether the ConfigMap or its
+                                    key must be defined
+                                  type: boolean
+                              required:
+                              - key
+                              type: object
+                              x-kubernetes-map-type: atomic
+                            secretKeyRef:
+                              description: Selects a key of a secret in the flow's
+                                namespace
+                              properties:
+                                key:
+                                  description: The key of the secret to select from.  Must
+                                    be a valid secret key.
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Add other useful fields. apiVersion, kind,
+                                    uid?'
+                                  type: string
+                                optional:
+                                  description: Specify whether the Secret or its key
+                                    must be defined
+                                  type: boolean
+                              required:
+                              - key
+                              type: object
+                              x-kubernetes-map-type: atomic
+                          type: object
+                      required:
+                      - name
+                      type: object
+                    type: array
                 type: object
               services:
                 description: 'Services attributes for deploying supporting applications

@@ -60,7 +60,7 @@ func NewObjectEnsurer(client client.Client, creator ObjectCreator) ObjectEnsurer
 	}
 }
 
-// NewObjectEnsurerWithPlatform see defaultObjectEnsurerWithPLatform
+// NewObjectEnsurerWithPlatform see defaultObjectEnsurerWithPlatform
 func NewObjectEnsurerWithPlatform(client client.Client, creator ObjectCreatorWithPlatform) ObjectEnsurerWithPlatform {
 	return &defaultObjectEnsurerWithPlatform{
 		c:       client,

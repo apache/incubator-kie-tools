@@ -158,7 +158,7 @@ run: manifests generate ## Run a controller from your host.
 
 .PHONY: debug
 debug: build-4-debug ## Run a controller from your host from binary
-	./bin/manager -v=2
+	./bin/manager -v=2 -controller-cfg-path=$(CURDIR)/config/manager/controllers_cfg.yaml
 
 # This is currently done directly into the CI
 # PLATFORMS defines the target platforms for the manager image be build to provide support to multiple

@@ -48,10 +48,17 @@ type SonataFlowPlatformSpec struct {
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Services"
 	Services *ServicesPlatformSpec `json:"services,omitempty"`
 	// Persistence defines the platform persistence configuration. When this field is set,
-	// the configuration is used as the persistence for platform services and sonataflow instances
+	// the configuration is used as the persistence for platform services and SonataFlow instances
 	// that don't provide one of their own.
 	// +optional
 	Persistence *PlatformPersistenceOptionsSpec `json:"persistence,omitempty"`
+	// Properties defines the property set for a given actor in the current context.
+	// For example, the workflow managed properties. One can define here a set of properties for SonataFlow deployments
+	// that will be reused across every workflow deployment.
+	//
+	// These properties MAY NOT be propagated to a SonataFlowClusterPlatform since PropertyVarSource can only refer local context sources.
+	// +optional
+	Properties *PropertyPlatformSpec `json:"properties,omitempty"`
 }
 
 // PlatformCluster is the kind of orchestration cluster the platform is installed into
