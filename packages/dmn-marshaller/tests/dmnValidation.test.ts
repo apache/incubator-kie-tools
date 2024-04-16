@@ -21,12 +21,15 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
-import { executeJBangScript } from "./jbangManager";
+import {
+  DmnBackendCompatibilityScript,
+  executeJBangScript,
+} from "@kie-tools/dmn-marshaller-backend-compatibility-tester";
 
 /**
- * This test suite compares the xml generated (parsed and built) by the dmn-parser with the original xml.
- * The original xml and the generated one are passed and compered to the KIE DMN Core backend API.
- * A JBang script is used to actually call the KIE DMN Core backend API.
+ * This test suite validates the xml produced (parsed and built) by the marshaller relying on KIE DMN Validator
+ * (https://github.com/apache/incubator-kie-drools/tree/main/kie-dmn/kie-dmn-validation).
+ * A JBang script is used to actually call the KIE DMN Validator Java code.
  */
 
 const dmnTestingModelsPath = require.resolve("@kie-tools/dmn-testing-models");
@@ -76,14 +79,20 @@ const dmnTestingImportedModels = [
     importer: "../valid_models/DMNv1_x/multiple/Traffic Violation With Import.dmn",
   },
 ];
+export const dmnValidationGeneratedFilesDirectory = path.join(__dirname, "../dist-tests/dmnValidation-generated-files");
 
-export const dmnSemanticComparisonGeneratedFilesDirectory = path.join(
-  __dirname,
-  "../../dist-tests/dmnSemanticComparison-generated-files"
-);
-const scriptPath = path.join(__dirname, "./DmnSemanticComparison.java");
+describe("JBang Scripts Test Suite", () => {
+  beforeAll(() => {
+    if (fs.existsSync(dmnValidationGeneratedFilesDirectory)) {
+      fs.rmSync(dmnValidationGeneratedFilesDirectory, { recursive: true });
+    }
+    fs.mkdirSync(dmnValidationGeneratedFilesDirectory, { recursive: true });
+  });
 
-export function executeSemanticComparisonTests() {
+  executeValidationTests();
+});
+
+export function executeValidationTests() {
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
   }
@@ -96,17 +105,16 @@ export function executeSemanticComparisonTests() {
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
   test(
-    "DMN Semantic Comparison: " +
+    "DMN Validation: " +
       normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1),
     () => {
       const generatedXMLFilePath = parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
       try {
         executeJBangScript(
-          scriptPath,
+          DmnBackendCompatibilityScript.DMN_VALIDATION,
           "--command=no_imports",
-          "--originalDmnFilePath=" + normalizedFsPathRelativeToTheFile,
-          "--generatedDmnFilePath=" + generatedXMLFilePath
+          "--dmnFilePath=" + generatedXMLFilePath
         );
       } catch (error) {
         fail(error.cause);
@@ -117,7 +125,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
 
 function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string; importer: string }) {
   test(
-    "DMN Semantic Comparison: " +
+    "DMN Validation: " +
       normalizedFsPathRelativeToTheFiles.importer.substring(
         normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
       ),
@@ -127,12 +135,10 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
 
       try {
         executeJBangScript(
-          scriptPath,
+          DmnBackendCompatibilityScript.DMN_VALIDATION,
           "--command=with_imports",
-          "--generatedDmnFilePath=" + importerGeneratedXMLFilePath,
-          "--importedGeneratedDmnFilesPaths=" + importedGeneratedXMLFilePath,
-          "--originalDmnFilePath=" + normalizedFsPathRelativeToTheFiles.importer,
-          "--importedOriginalDmnFilesPaths=" + normalizedFsPathRelativeToTheFiles.imported
+          "--dmnFilePath=" + importedGeneratedXMLFilePath,
+          "--importedDmnFilesPaths=" + importerGeneratedXMLFilePath
         );
       } catch (error) {
         fail(error.cause);
@@ -148,7 +154,7 @@ function parseXMLAndWriteInFile(normalizedFsPathRelativeToTheFile: string): stri
   const fileName = normalizedFsPathRelativeToTheFile.substring(
     normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1
   );
-  const generatedXMLFilePath = dmnSemanticComparisonGeneratedFilesDirectory + path.sep + fileName;
+  const generatedXMLFilePath = dmnValidationGeneratedFilesDirectory + path.sep + fileName;
   fs.writeFileSync(generatedXMLFilePath, generatedXML, "utf-8");
   return generatedXMLFilePath;
 }

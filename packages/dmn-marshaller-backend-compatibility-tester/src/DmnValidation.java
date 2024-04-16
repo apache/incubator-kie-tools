@@ -19,7 +19,6 @@
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
 //SOURCES ./DmnParserJBangScript.java
-//DEPS org.kie:kie-dmn-validation:${kogito-runtime.version}
 
 package jbang;
 

@@ -17,13 +17,27 @@
  * under the License.
  */
 import * as path from "path";
-const buildEnv = require("../../env");
+const buildEnv = require("../env");
 const jbang = require("@jbangdev/jbang");
 
-export function executeJBangScript(scriptPath: string, ...args: string[]) {
+export enum DmnBackendCompatibilityScript {
+  DMN_VALIDATION,
+  DMN_SEMANTIC_COMPARISON,
+}
+
+const dmnBackendCompatibilityScriptPaths = new Map([
+  [DmnBackendCompatibilityScript.DMN_VALIDATION, path.join(__dirname, "..", "src", "DmnValidation.java")],
+  [
+    DmnBackendCompatibilityScript.DMN_SEMANTIC_COMPARISON,
+    path.join(__dirname, "..", "src", "DmnSemanticComparison.java"),
+  ],
+]);
+
+export function executeJBangScript(script: DmnBackendCompatibilityScript, ...args: string[]) {
   /* Windows requires double quotes to wrap the argument, while in POSIX it must be wrapped by single quotes */
   const isWindowsPath = path.sep !== "/";
   const quoteChar = isWindowsPath ? '"' : "'";
+  const scriptPath = dmnBackendCompatibilityScriptPaths.get(script);
   jbang.exec("properties@jbangdev", "java.version");
   jbang.exec(
     "-Dkogito-runtime.version=" + buildEnv.env.kogitoRuntime.version,

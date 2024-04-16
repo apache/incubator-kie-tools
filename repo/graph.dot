@@ -91,6 +91,7 @@ digraph G {
   "@kie-tools/dmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/switch-expression-ts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/dmn-marshaller-backend-compatibility-tester" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-testing-models" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-runner" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/extended-services-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -306,8 +307,12 @@ digraph G {
   "@kie-tools/dmn-feel-antlr4-parser" -> "@kie-tools/dmn-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/dmn-feel-antlr4-parser" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools-core/switch-expression-ts" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dmn-marshaller" -> "@kie-tools/dmn-marshaller-backend-compatibility-tester" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-marshaller" -> "@kie-tools/dmn-testing-models" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dmn-marshaller-backend-compatibility-tester" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dmn-marshaller-backend-compatibility-tester" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dmn-marshaller-backend-compatibility-tester" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools/extended-services-api" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];

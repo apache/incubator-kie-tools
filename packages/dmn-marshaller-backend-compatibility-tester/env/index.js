@@ -17,18 +17,11 @@
  * under the License.
  */
 
-///usr/bin/env jbang "$0" "$@" ; exit $?
-//REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
-//DEPS ch.qos.logback:logback-classic:1.2.13
-//DEPS info.picocli:picocli:4.7.5
-//DEPS org.slf4j:slf4j-simple:2.0.12
-//JAVA 17
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-package jbang;
-
-import java.util.concurrent.Callable;
-
-/** Parent Script class for all JBang script used in this package */
-abstract class DmnParserJBangScript implements Callable<Integer> {
-
-}
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {};
+  },
+});
