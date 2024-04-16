@@ -18,7 +18,9 @@
  */
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//SOURCES ./DmnParserJBangScript.java
+//SOURCES ./DmnMarshallerBackendCompatibilityTesterScript.java
+/* Please do not declare new dependencies here, but in the above Parent class to preserve 
+ *  the dependencies fetching mechanism */
 
 package jbang;
 
@@ -55,7 +57,7 @@ import org.kie.internal.io.ResourceFactory;
  * The script can manage one or two (in case of imported model) DMN file paths.
  * The XSD SCHEMA, DMN COMPLIANCE and DMN COMPILATION are validated.
  */
-class DmnSemanticComparison extends DmnParserJBangScript {
+class DmnSemanticComparison extends DmnMarshallerBackendCompatibilityTesterScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DmnSemanticComparison.class);
 

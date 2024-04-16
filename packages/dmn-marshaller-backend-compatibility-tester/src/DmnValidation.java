@@ -18,7 +18,9 @@
  */
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//SOURCES ./DmnParserJBangScript.java
+//SOURCES ./DmnMarshallerBackendCompatibilityTesterScript.java
+/* Please do not declare new dependencies here, but in the above Parent class to preserve 
+ *  the dependencies fetching mechanism */
 
 package jbang;
 
@@ -49,7 +51,7 @@ import org.kie.dmn.validation.DMNValidatorFactory;
  * The XSD SCHEMA, DMN COMPLIANCE and DMN COMPILATION are validated.
  */
 @Command(name = "DmnSemanticComparison", mixinStandardHelpOptions = true, version = "DmnSemanticComparison 0.1", description = "It validates given DMN files")
-class DmnValidation extends DmnParserJBangScript {
+class DmnValidation extends DmnMarshallerBackendCompatibilityTesterScript {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DmnValidation.class);
 

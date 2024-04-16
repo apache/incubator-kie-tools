@@ -18,6 +18,7 @@
  */
 
 ///usr/bin/env jbang "$0" "$@" ; exit $?
+//JAVA 17
 //REPOS mavencentral,apache=https://repository.apache.org/content/groups/public/
 //DEPS ch.qos.logback:logback-classic:1.2.13
 //DEPS info.picocli:picocli:4.7.5
@@ -28,14 +29,18 @@
 //DEPS org.kie:kie-dmn-core:${kogito-runtime.version}
 //DEPS org.kie:kie-dmn-model:${kogito-runtime.version}
 //DEPS org.kie:kie-dmn-validation:${kogito-runtime.version}
-//JAVA 17
 
 package jbang;
 
 import java.util.concurrent.Callable;
 
-/** Parent Script class for all JBang script used in this package */
-abstract class DmnParserJBangScript implements Callable<Integer> {
+/* Parent Script class for all JBang script used in this package
+ * This class serves to pre-fetch all dependencies declared in this class (in the above DEPS scripts).
+ * To pre-fetch the dependency, just call this jbang script with no args and the required dependency's versions 
+ * (eg. jbang -Dkogito-runtime.version=x.y.z ./src/DmnMarshallerBackendCompatibilityTesterScript.java)
+ * To make it work, all dependencies used by all JBang scripts (aka this class implementations), MUST be declared here.
+ */
+abstract class DmnMarshallerBackendCompatibilityTesterScript implements Callable<Integer> {
 
     public static void main(String... args) {
         System.exit(0);

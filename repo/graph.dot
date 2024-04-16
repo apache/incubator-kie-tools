@@ -310,7 +310,6 @@ digraph G {
   "@kie-tools/dmn-marshaller" -> "@kie-tools/dmn-marshaller-backend-compatibility-tester" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-marshaller" -> "@kie-tools/dmn-testing-models" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
-  "@kie-tools/dmn-marshaller-backend-compatibility-tester" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-marshaller-backend-compatibility-tester" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-marshaller-backend-compatibility-tester" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];

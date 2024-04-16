@@ -3833,15 +3833,6 @@ importers:
         specifier: 0.2.0
         version: 0.2.0
     devDependencies:
-      "@babel/core":
-        specifier: ^7.16.0
-        version: 7.23.9
-      "@babel/preset-env":
-        specifier: ^7.16.0
-        version: 7.23.9(@babel/core@7.23.9)
-      "@kie-tools/eslint":
-        specifier: workspace:*
-        version: link:../eslint
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env

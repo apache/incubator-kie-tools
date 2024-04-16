@@ -19,26 +19,14 @@
     "src"
   ],
   "scripts": {
-    "build:codegen": "pnpm build:codegen:dmn10 && pnpm build:codegen:dmn11 && pnpm build:codegen:dmn12 && pnpm build:codegen:dmn13 && pnpm build:codegen:dmn14 && pnpm build:codegen:dmn15 && pnpm build:codegen:kie10",
-    "build:codegen:dmn10": "xml-parser-ts-codegen ./src/schemas/dmn-1_0/dmn3.xsd Definitions",
-    "build:codegen:dmn11": "xml-parser-ts-codegen ./src/schemas/dmn-1_1/dmn.xsd definitions",
-    "build:codegen:dmn12": "xml-parser-ts-codegen ./src/schemas/dmn-1_2/DMN12.xsd definitions",
-    "build:codegen:dmn13": "xml-parser-ts-codegen ./src/schemas/dmn-1_3/DMN13.xsd definitions",
-    "build:codegen:dmn14": "xml-parser-ts-codegen ./src/schemas/dmn-1_4/DMN14.xsd definitions",
-    "build:codegen:dmn15": "xml-parser-ts-codegen ./src/schemas/dmn-1_5/DMN15.xsd definitions",
-    "build:codegen:kie10": "xml-parser-ts-codegen ./src/schemas/kie-1_0/KIE.xsd ComponentsWidthsExtension",
-    "build:dev": "rimraf dist && tsc -p tsconfig.json && jbang -Dkogito-runtime.version=999-20240411-SNAPSHOT ./src/DMNParserJBangScript.java ",
+    "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm prefetch",
     "build:prod": "pnpm build:dev",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "test": "rimraf dist-tests && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "prefetch": "jbang -Dkogito-runtime.version=$(build-env kogitoRuntime.version) ./src/DmnMarshallerBackendCompatibilityTesterScript.java"
   },
   "dependencies": {
     "@jbangdev/jbang": "0.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
-    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "rimraf": "^3.0.2",
