@@ -78,6 +78,8 @@ public class ScenarioSimulationKogitoCreationPopupViewTest {
     @Mock
     private HTMLDivElement infoRuleIconDivElementMock;
     @Mock
+    private HTMLDivElement infoDMNIconDivElementMock;
+    @Mock
     private HTMLLabelElement sourceTypeLabelElementMock;
     @Mock
     private HTMLLabelElement dmnAssetsLabelElementMock;
@@ -100,6 +102,7 @@ public class ScenarioSimulationKogitoCreationPopupViewTest {
                 sourceTypeLabelElement = sourceTypeLabelElementMock;
                 modal = modalMock;
                 infoRuleIconDivElement = infoRuleIconDivElementMock;
+                infoDMNIconDivElement = infoDMNIconDivElementMock;
                 selectedPath = "";
             }
         });
@@ -122,6 +125,7 @@ public class ScenarioSimulationKogitoCreationPopupViewTest {
         verify(dmnAssetsDivElementMock, times(1)).setAttribute(eq(ConstantHolder.HIDDEN), eq(""));
         verify(dmnAssetsDivElementMock, times(1)).appendChild(eq(dmnAssetsLabelElementMock));
         verify(infoRuleIconDivElementMock, times(1)).setAttribute(eq("title"), eq(ScenarioSimulationEditorConstants.INSTANCE.currentlyNotAvailable()));
+        verify(infoDMNIconDivElementMock, times(1)).setAttribute(eq("title"), eq(ScenarioSimulationEditorConstants.INSTANCE.supportedDmnVersions()));
         verify(scenarioSimulationCreationPopupViewSpy, times(1)).initializeDropdown();
     }
 
