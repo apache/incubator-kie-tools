@@ -33,6 +33,8 @@ SWF_IMAGE_REGISTRY_ACCOUNT 	?= 'kie-tools'
 SWF_IMAGE_TAG 				?= $(CURRENT_IMAGE_VERSION) # Setting a default value if SWF_IMAGE_TAG env is not present
 SWF_FULL_IMAGE_NAME 		:= $(SWF_IMAGE_REGISTRY)/$(SWF_IMAGE_REGISTRY_ACCOUNT)/$(SWF_IMAGE_NAME)
 SWF_IMAGE_FILENAME			:= ${SWF_IMAGE_NAME}-image.yaml
+SWF_TEST_IMAGE				?= true
+SWF_TEST_OPTIONS			?=
 
 # Check if there are Quarkus and Kogito version envs
 _check_versions:
@@ -57,8 +59,16 @@ _cekit_build:
 
 # Tagging the generated image if SWF_IMAGE_TAG doesn't match the CURRENT_IMAGE_VERSION
 _tag_image:
- ifneq ($(SWF_IMAGE_TAG), $(CURRENT_IMAGE_VERSION))
+ifneq ($(SWF_IMAGE_TAG), $(CURRENT_IMAGE_VERSION))
 	${BUILD_ENGINE} tag ${SWF_FULL_IMAGE_NAME}:${CURRENT_IMAGE_VERSION} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
- endif
+endif
 
-.PHONY build: fix_platform_versions _cekit_build _tag_image
+.PHONY test-image: _test_image
+_test_image:
+ifeq ($(SWF_TEST_IMAGE),true)
+	echo test options ${SWF_TEST_OPTIONS}
+	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} test behave ${SWF_TEST_OPTIONS}
+	tests/shell/run.sh ${SWF_IMAGE_NAME} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
+endif
+
+.PHONY build: fix_platform_versions _cekit_build _tag_image _test_image
