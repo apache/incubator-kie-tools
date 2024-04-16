@@ -41,14 +41,14 @@ export function IteratorExpressionCell({
               return {
                 ...prev,
                 return: {
-                  expression: getNewExpression(),
+                  expression: getNewExpression(prev.return.expression),
                 },
               };
             } else {
               return {
                 ...prev,
                 satisfies: {
-                  expression: getNewExpression(),
+                  expression: getNewExpression(prev.satisfies.expression),
                 },
               };
             }
@@ -60,7 +60,7 @@ export function IteratorExpressionCell({
 
   const currentExpression = useMemo(() => {
     if (typeof iteratorClause.child !== "string") {
-      return iteratorClause.child?.expression as any;
+      return iteratorClause.child?.expression;
     }
   }, [iteratorClause.child]);
 

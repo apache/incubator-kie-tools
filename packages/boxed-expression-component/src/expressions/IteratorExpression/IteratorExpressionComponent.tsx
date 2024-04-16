@@ -125,13 +125,27 @@ export function IteratorExpressionComponent({
   const getIterableRowLabel = useCallback(
     (rowNumber: number) => {
       if (rowNumber === 0) {
-        return expression.__$$element;
+        if (expression.__$$element === "for") {
+          return "for";
+        } else if (expression.__$$element === "some") {
+          return "some";
+        } else if (expression.__$$element === "every") {
+          return "every";
+        } else {
+          throw new Error("Unknown IteratorExpression element");
+        }
       } else if (rowNumber === 1) {
         return "in";
-      } else {
+      } else if (rowNumber === 2) {
         if (expression.__$$element === "for") {
           return "return";
-        } else return "satisfies";
+        } else if (expression.__$$element === "some" || expression.__$$element === "every") {
+          return "satisfies";
+        } else {
+          throw new Error("Unknown IteratorExpression element");
+        }
+      } else {
+        throw new Error("IteratorExpression can't have more than 3 rows.");
       }
     },
     [expression.__$$element]
@@ -191,10 +205,12 @@ export function IteratorExpressionComponent({
                 value={props.data[props.rowIndex].child as string}
                 onChange={(updatedValue) => {
                   setExpression((prev: BoxedIterator) => {
-                    return {
+                    // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+                    const ret: BoxedIterator = {
                       ...prev,
                       "@_iteratorVariable": updatedValue,
                     };
+                    return ret;
                   });
                 }}
                 setActiveCellEditing={(value) => {
@@ -203,7 +219,7 @@ export function IteratorExpressionComponent({
               />
             </div>
           );
-        } else {
+        } else if (props.rowIndex === 2 || props.rowIndex === 3) {
           return (
             <IteratorExpressionCell
               iteratorClause={props.data[props.rowIndex]}
@@ -211,6 +227,8 @@ export function IteratorExpressionComponent({
               parentElementId={parentElementId}
             />
           );
+        } else {
+          throw new Error("IteratorExpression can't have more than 3 rows.");
         }
       },
     };
@@ -272,21 +290,24 @@ export function IteratorExpressionComponent({
           return ret;
         } else if (args.rowIndex === 2) {
           if (prev.__$$element === "for") {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const ret: BoxedFor = {
               ...prev,
               return: { expression: undefined! }, // SPEC DISCREPANCY
             };
             return ret;
-          } else {
+          } else if (prev.__$$element === "some" || prev.__$$element === "every") {
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const iterator: BoxedIterator = {
               ...prev,
               satisfies: { expression: undefined! }, // SPEC DISCREPANCY
             };
             return iterator;
+          } else {
+            throw new Error("Nested expression type not supported in IteratorExpression.");
           }
         } else {
-          throw new Error("ConditionalExpression shouldn't have more than 3 rows.");
+          throw new Error("IteratorExpression shouldn't have more than 3 rows.");
         }
       });
     },

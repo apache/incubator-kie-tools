@@ -51,6 +51,9 @@ import {
   PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+  ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH,
+  ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+  ITERATOR_EXPRESSION_EXTRA_WIDTH,
 } from "./WidthConstants";
 
 export function getExpressionMinWidth(expression?: BoxedExpression): number {
@@ -333,12 +336,12 @@ export function getExpressionResizingWidth(
     const nestedExpressions = [expression.in.expression, expression.return.expression];
     return (
       resizingWidth ??
-      CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH +
+      ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH +
         Math.max(
-          CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+          ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
           ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
         ) +
-        CONDITIONAL_EXPRESSION_EXTRA_WIDTH
+        ITERATOR_EXPRESSION_EXTRA_WIDTH
     );
   }
 
@@ -347,12 +350,12 @@ export function getExpressionResizingWidth(
     const nestedExpressions = [expression.in.expression, expression.satisfies.expression];
     return (
       resizingWidth ??
-      CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH +
+      ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH +
         Math.max(
-          CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+          ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
           ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
         ) +
-        CONDITIONAL_EXPRESSION_EXTRA_WIDTH
+        ITERATOR_EXPRESSION_EXTRA_WIDTH
     );
   }
 
