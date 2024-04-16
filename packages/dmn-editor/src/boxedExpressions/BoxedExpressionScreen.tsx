@@ -427,7 +427,11 @@ function drgElementToBoxedExpression(
     return expressionHolder.expression
       ? {
           ...expressionHolder.expression,
-          "@_label": expressionHolder.expression["@_label"] ?? expressionHolder["@_name"],
+          "@_label":
+            expressionHolder.expression["@_label"] ??
+            expressionHolder?.variable?.["@_name"] ??
+            expressionHolder?.["@_name"],
+          "@_typeRef": expressionHolder.expression["@_typeRef"] ?? expressionHolder?.variable?.["@_typeRef"],
         }
       : undefined;
   } else {
