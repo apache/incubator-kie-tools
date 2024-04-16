@@ -424,7 +424,12 @@ function drgElementToBoxedExpression(
           "@_typeRef": expressionHolder.variable?.["@_typeRef"],
         };
   } else if (expressionHolder.__$$element === "decision") {
-    return expressionHolder.expression;
+    return expressionHolder.expression
+      ? {
+          ...expressionHolder.expression,
+          "@_label": expressionHolder.expression["@_label"] ?? expressionHolder["@_name"],
+        }
+      : undefined;
   } else {
     throw new Error(
       `Unknown __$$element of expressionHolder that has an expression '${(expressionHolder as any).__$$element}'.`
