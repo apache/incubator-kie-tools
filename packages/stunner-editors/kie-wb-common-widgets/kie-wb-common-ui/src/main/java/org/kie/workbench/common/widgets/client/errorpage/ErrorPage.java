@@ -48,11 +48,15 @@ public class ErrorPage extends Composite {
     private HTMLParagraphElement errorContent;
 
     public void setTitle(final String titleMessage) {
-        this.title.textContent = titleMessage;
+        if (titleMessage != null) {
+            this.title.textContent = titleMessage;
+        }
     }
 
     public void setContent(final String message) {
-        this.content.textContent = message;
+        if (message != null) {
+            this.content.textContent = message;
+        }
     }
 
     public void setErrorContent(final String errorMessage) {

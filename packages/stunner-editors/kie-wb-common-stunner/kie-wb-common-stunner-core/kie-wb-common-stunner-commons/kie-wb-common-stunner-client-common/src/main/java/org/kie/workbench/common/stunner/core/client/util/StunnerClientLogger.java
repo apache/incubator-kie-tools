@@ -53,7 +53,7 @@ public class StunnerClientLogger {
     private static Logger LOGGER = Logger.getLogger(StunnerClientLogger.class.getName());
 
     public static String getErrorMessage(final ClientRuntimeError error) {
-        final String message = error.getMessage();
+        final String message = error.getErrorMessage();
         final Throwable t1 = error.getThrowable();
         final Throwable t2 = t1 != null ? t1.getCause() : null;
         if (null != t2) {

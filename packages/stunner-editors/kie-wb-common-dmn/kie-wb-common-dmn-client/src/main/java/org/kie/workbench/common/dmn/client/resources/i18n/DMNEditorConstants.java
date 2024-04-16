@@ -533,5 +533,8 @@ public class DMNEditorConstants {
     public static final String AutomaticLayout_DiagramDoesNotHaveLayout = "AutomaticLayout.DiagramDoesNotHaveLayout";
 
     @TranslationKey(defaultValue = "")
+    public static final String DMNMarshaller_UnsupportedMessageTitle = "DMNMarshaller.UnsupportedMessageTitle";
+
+    @TranslationKey(defaultValue = "")
     public static final String DMNMarshaller_UnsupportedMessage = "DMNMarshaller.UnsupportedMessage";
 }
