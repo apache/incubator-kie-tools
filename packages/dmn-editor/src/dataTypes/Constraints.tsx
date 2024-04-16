@@ -256,11 +256,16 @@ export function Constraints({
   editItemDefinition: EditItemDefinition;
 }) {
   const allowedValues = useMemo(() => itemDefinition?.allowedValues, [itemDefinition?.allowedValues]);
+  const typeConstraint = useMemo(() => itemDefinition?.typeConstraint, [itemDefinition?.typeConstraint]);
+
   const constraintValue = useMemo(
-    () => allowedValues?.text.__$$text ?? allowedValues?.text.__$$text,
-    [allowedValues?.text.__$$text]
+    () => typeConstraint?.text.__$$text ?? allowedValues?.text.__$$text,
+    [typeConstraint?.text.__$$text, allowedValues?.text.__$$text]
   );
-  const kieConstraintType = useMemo(() => allowedValues?.["@_kie:constraintType"], [allowedValues]);
+  const kieConstraintType = useMemo(
+    () => typeConstraint?.["@_kie:constraintType"] ?? allowedValues?.["@_kie:constraintType"],
+    [allowedValues, typeConstraint]
+  );
   const typeRef: DmnBuiltInDataType = useMemo(
     () => (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
     [itemDefinition?.typeRef?.__$$text]
@@ -334,29 +339,31 @@ export function Constraints({
   const onEnumChange = useCallback(
     (value?: string) => {
       editItemDefinition(itemDefinitionId!, (itemDefinition) => {
-        itemDefinition.allowedValues ??= { text: { __$$text: "" } };
-        itemDefinition.allowedValues.text.__$$text = value ?? "";
-        itemDefinition.allowedValues["@_id"] = itemDefinition.allowedValues?.["@_id"] ?? generateUuid();
+        itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
+        itemDefinition.typeConstraint.text.__$$text = value ?? "";
+        itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
       });
     },
     [editItemDefinition, itemDefinitionId]
   );
+
   const onExpressionChange = useCallback(
     (value?: string) => {
       editItemDefinition(itemDefinitionId!, (itemDefinition) => {
-        itemDefinition.allowedValues ??= { text: { __$$text: "" } };
-        itemDefinition.allowedValues.text.__$$text = value ?? "";
-        itemDefinition.allowedValues["@_id"] = itemDefinition.allowedValues?.["@_id"] ?? generateUuid();
+        itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
+        itemDefinition.typeConstraint.text.__$$text = value ?? "";
+        itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
       });
     },
     [editItemDefinition, itemDefinitionId]
   );
+
   const onRangeChange = useCallback(
     (value?: string) => {
       editItemDefinition(itemDefinitionId!, (itemDefinition) => {
-        itemDefinition.allowedValues ??= { text: { __$$text: "" } };
-        itemDefinition.allowedValues.text.__$$text = value ?? "";
-        itemDefinition.allowedValues["@_id"] = itemDefinition.allowedValues?.["@_id"] ?? generateUuid();
+        itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
+        itemDefinition.typeConstraint.text.__$$text = value ?? "";
+        itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
       });
     },
     [editItemDefinition, itemDefinitionId]
@@ -370,15 +377,15 @@ export function Constraints({
       const selection = event.currentTarget.id as ConstraintsType;
       if (selection === ConstraintsType.NONE) {
         editItemDefinition(itemDefinitionId!, (itemDefinition) => {
-          itemDefinition.allowedValues = undefined;
+          itemDefinition.typeConstraint = undefined;
         });
         return;
       }
 
       editItemDefinition(itemDefinitionId!, (itemDefinition) => {
-        itemDefinition.allowedValues ??= { text: { __$$text: "" } };
-        const previousKieContraintType = itemDefinition.allowedValues["@_kie:constraintType"];
-        itemDefinition.allowedValues["@_kie:constraintType"] = enumToKieConstraintType(selection);
+        itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
+        const previousKieContraintType = itemDefinition.typeConstraint["@_kie:constraintType"];
+        itemDefinition.typeConstraint["@_kie:constraintType"] = enumToKieConstraintType(selection);
 
         if (selection === ConstraintsType.EXPRESSION) {
           return;
@@ -388,7 +395,7 @@ export function Constraints({
           previousKieContraintType === "expression" &&
           selection === ConstraintsType.ENUMERATION &&
           isEnum(
-            itemDefinition.allowedValues.text.__$$text,
+            itemDefinition.typeConstraint.text.__$$text,
             constraintTypeHelper(
               (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
             ).check
@@ -401,7 +408,7 @@ export function Constraints({
           previousKieContraintType === "expression" &&
           selection === ConstraintsType.RANGE &&
           isRange(
-            itemDefinition.allowedValues.text.__$$text,
+            itemDefinition.typeConstraint.text.__$$text,
             constraintTypeHelper(
               (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
             ).check
@@ -410,7 +417,7 @@ export function Constraints({
           return;
         }
 
-        itemDefinition.allowedValues.text.__$$text = "";
+        itemDefinition.typeConstraint.text.__$$text = "";
       });
     },
     [editItemDefinition, enumToKieConstraintType, itemDefinitionId]
