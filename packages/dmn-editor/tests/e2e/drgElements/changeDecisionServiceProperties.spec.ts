@@ -125,10 +125,9 @@ test.describe("Change Properties - Decision Service", () => {
     await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
     await decisionServicePropertiesPanel.setFillColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(
-      nodes.get({ name: DefaultNodeName.DECISION_SERVICE }).locator("..").locator("rect").nth(0)
-    ).toHaveAttribute("fill", "rgba(241, 34, 0, 0.1)");
+    expect(await nodes.getRectAttribute({ nodeName: DefaultNodeName.DECISION_SERVICE, attribute: "fill" })).toEqual(
+      "rgba(241, 34, 0, 0.1)"
+    );
   });
 
   test("should change the Decision Service node shape - stroke color", async ({
@@ -138,10 +137,9 @@ test.describe("Change Properties - Decision Service", () => {
     await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
     await decisionServicePropertiesPanel.setStrokeColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(
-      nodes.get({ name: DefaultNodeName.DECISION_SERVICE }).locator("..").locator("rect").nth(0)
-    ).toHaveAttribute("stroke", "rgba(241, 34, 0, 1)");
+    expect(await nodes.getRectAttribute({ nodeName: DefaultNodeName.DECISION_SERVICE, attribute: "stroke" })).toEqual(
+      "rgba(241, 34, 0, 1)"
+    );
   });
 
   test("should change the Decision Service node shape - position", async ({

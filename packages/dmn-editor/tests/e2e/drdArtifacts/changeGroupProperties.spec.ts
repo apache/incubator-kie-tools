@@ -87,9 +87,7 @@ test.describe("Change Properties - Group", () => {
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
     await groupPropertiesPanel.setFillColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(nodes.get({ name: DefaultNodeName.GROUP }).locator("..").locator("rect").nth(0)).toHaveAttribute(
-      "fill",
+    expect(await nodes.getRectAttribute({ nodeName: DefaultNodeName.GROUP, attribute: "fill" })).toEqual(
       "rgba(241, 34, 0, 0.1)"
     );
   });
@@ -98,9 +96,7 @@ test.describe("Change Properties - Group", () => {
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
     await groupPropertiesPanel.setStrokeColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(nodes.get({ name: DefaultNodeName.GROUP }).locator("..").locator("rect").nth(0)).toHaveAttribute(
-      "stroke",
+    expect(await nodes.getRectAttribute({ nodeName: DefaultNodeName.GROUP, attribute: "stroke" })).toEqual(
       "rgba(241, 34, 0, 1)"
     );
   });

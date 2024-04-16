@@ -133,9 +133,7 @@ test.describe("Change Properties - Decision", () => {
     await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.setFillColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(nodes.get({ name: DefaultNodeName.DECISION }).locator("..").locator("rect").nth(0)).toHaveAttribute(
-      "fill",
+    expect(await nodes.getRectAttribute({ nodeName: DefaultNodeName.DECISION, attribute: "fill" })).toEqual(
       "rgba(241, 34, 0, 0.9)"
     );
   });
@@ -144,9 +142,7 @@ test.describe("Change Properties - Decision", () => {
     await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.setStrokeColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(nodes.get({ name: DefaultNodeName.DECISION }).locator("..").locator("rect").nth(0)).toHaveAttribute(
-      "stroke",
+    expect(await nodes.getRectAttribute({ nodeName: DefaultNodeName.DECISION, attribute: "stroke" })).toEqual(
       "rgba(241, 34, 0, 1)"
     );
   });

@@ -113,9 +113,7 @@ test.describe("Change Properties - Input Data", () => {
     await nodes.select({ name: DefaultNodeName.INPUT_DATA });
     await inputDataPropertiesPanel.setFillColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA }).locator("..").locator("rect").nth(0)).toHaveAttribute(
-      "fill",
+    expect(await nodes.getRectAttribute({ nodeName: DefaultNodeName.INPUT_DATA, attribute: "fill" })).toEqual(
       "rgba(241, 34, 0, 0.9)"
     );
   });
@@ -124,9 +122,7 @@ test.describe("Change Properties - Input Data", () => {
     await nodes.select({ name: DefaultNodeName.INPUT_DATA });
     await inputDataPropertiesPanel.setStrokeColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(nodes.get({ name: DefaultNodeName.INPUT_DATA }).locator("..").locator("rect").nth(0)).toHaveAttribute(
-      "stroke",
+    expect(await nodes.getRectAttribute({ nodeName: DefaultNodeName.INPUT_DATA, attribute: "stroke" })).toEqual(
       "rgba(241, 34, 0, 1)"
     );
   });

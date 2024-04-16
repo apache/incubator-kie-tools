@@ -102,6 +102,21 @@ export class Nodes {
     }
   }
 
+  public async getRectAttribute(args: { nodeName: string; attribute: "fill" | "stroke" }) {
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    return await this.get({ name: args.nodeName }).locator("..").locator("rect").nth(0).getAttribute(args.attribute);
+  }
+
+  public async getPathAttribute(args: { nodeName: string; attribute: "fill" | "stroke" }) {
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    return await this.get({ name: args.nodeName }).locator("..").locator("path").nth(0).getAttribute(args.attribute);
+  }
+
+  public async getPolygonAttribute(args: { nodeName: string; attribute: "fill" | "stroke" }) {
+    // It's necessary to pick the parent element ".." to have access to the SVG.
+    return await this.get({ name: args.nodeName }).locator("..").locator("polygon").nth(0).getAttribute(args.attribute);
+  }
+
   public async hover(args: { name: string; position?: NodePosition }) {
     const node = this.get({ name: args.name });
 

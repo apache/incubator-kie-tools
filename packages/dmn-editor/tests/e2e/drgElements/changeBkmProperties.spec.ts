@@ -112,9 +112,7 @@ test.describe("Change Properties - BKM", () => {
     await nodes.select({ name: DefaultNodeName.BKM });
     await bkmPropertiesPanel.setFillColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(nodes.get({ name: DefaultNodeName.BKM }).locator("..").locator("polygon").nth(0)).toHaveAttribute(
-      "fill",
+    expect(await nodes.getPolygonAttribute({ nodeName: DefaultNodeName.BKM, attribute: "fill" })).toEqual(
       "rgba(241, 34, 0, 0.9)"
     );
   });
@@ -123,9 +121,7 @@ test.describe("Change Properties - BKM", () => {
     await nodes.select({ name: DefaultNodeName.BKM });
     await bkmPropertiesPanel.setStrokeColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(nodes.get({ name: DefaultNodeName.BKM }).locator("..").locator("polygon").nth(0)).toHaveAttribute(
-      "stroke",
+    expect(await nodes.getPolygonAttribute({ nodeName: DefaultNodeName.BKM, attribute: "stroke" })).toEqual(
       "rgba(241, 34, 0, 1)"
     );
   });

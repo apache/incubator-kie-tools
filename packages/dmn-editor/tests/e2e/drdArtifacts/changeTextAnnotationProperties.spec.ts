@@ -103,10 +103,9 @@ test.describe("Change Properties - Text Annotation", () => {
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.setFillColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(
-      nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION }).locator("..").locator("path").nth(0)
-    ).toHaveAttribute("fill", "rgba(241, 34, 0, 0.1)");
+    expect(await nodes.getPathAttribute({ nodeName: DefaultNodeName.TEXT_ANNOTATION, attribute: "fill" })).toEqual(
+      "rgba(241, 34, 0, 0.1)"
+    );
   });
 
   test("should change the Text Annotation node shape - stroke color", async ({
@@ -116,10 +115,9 @@ test.describe("Change Properties - Text Annotation", () => {
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.setStrokeColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(
-      nodes.get({ name: DefaultNodeName.TEXT_ANNOTATION }).locator("..").locator("path").nth(0)
-    ).toHaveAttribute("stroke", "rgba(241, 34, 0, 1)");
+    expect(await nodes.getPathAttribute({ nodeName: DefaultNodeName.TEXT_ANNOTATION, attribute: "stroke" })).toEqual(
+      "rgba(241, 34, 0, 1)"
+    );
   });
 
   test("should change the Group node shape - position", async ({ diagram, nodes, textAnnotationPropertiesPanel }) => {

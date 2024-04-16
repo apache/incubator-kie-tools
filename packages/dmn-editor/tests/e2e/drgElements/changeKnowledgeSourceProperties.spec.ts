@@ -131,10 +131,9 @@ test.describe("Change Properties - Knowledge Source", () => {
     await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.setFillColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(
-      nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE }).locator("..").locator("path").nth(0)
-    ).toHaveAttribute("fill", "rgba(241, 34, 0, 0.9)");
+    expect(await nodes.getPathAttribute({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, attribute: "fill" })).toEqual(
+      "rgba(241, 34, 0, 0.9)"
+    );
   });
 
   test("should change the Knowledge Source node shape - stroke color", async ({
@@ -144,10 +143,9 @@ test.describe("Change Properties - Knowledge Source", () => {
     await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
     await knowledgeSourcePropertiesPanel.setStrokeColor({ color: "#f12200" });
 
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    await expect(
-      nodes.get({ name: DefaultNodeName.KNOWLEDGE_SOURCE }).locator("..").locator("path").nth(0)
-    ).toHaveAttribute("stroke", "rgba(241, 34, 0, 1)");
+    expect(await nodes.getPathAttribute({ nodeName: DefaultNodeName.KNOWLEDGE_SOURCE, attribute: "stroke" })).toEqual(
+      "rgba(241, 34, 0, 1)"
+    );
   });
 
   test("should change the Knowledge Source node shape - position", async ({
