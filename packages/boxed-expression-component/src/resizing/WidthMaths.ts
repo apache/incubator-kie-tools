@@ -328,6 +328,34 @@ export function getExpressionResizingWidth(
     );
   }
 
+  // For
+  else if (expression.__$$element === "for") {
+    const nestedExpressions = [expression.in.expression, expression.return.expression];
+    return (
+      resizingWidth ??
+      CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH +
+        Math.max(
+          CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+          ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
+        ) +
+        CONDITIONAL_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
+  // Every and Some
+  else if (expression.__$$element === "every" || expression.__$$element === "some") {
+    const nestedExpressions = [expression.in.expression, expression.satisfies.expression];
+    return (
+      resizingWidth ??
+      CONDITIONAL_EXPRESSION_LABEL_COLUMN_WIDTH +
+        Math.max(
+          CONDITIONAL_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+          ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
+        ) +
+        CONDITIONAL_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
   // Others
   else {
     throw new Error(`Can't determine resizing width for expression of unknown type '${expression.__$$element}'`);

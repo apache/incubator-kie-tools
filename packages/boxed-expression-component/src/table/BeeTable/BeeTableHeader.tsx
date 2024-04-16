@@ -81,7 +81,7 @@ export interface BeeTableHeaderProps<R extends object> {
 
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
-  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveCellEditing: (isEditing: boolean) => void;
 }
 
 export function BeeTableHeader<R extends object>({
@@ -99,7 +99,7 @@ export function BeeTableHeader<R extends object>({
   shouldShowRowsInlineControls,
   resizerStopBehavior,
   lastColumnMinWidth,
-  setEditing,
+  setActiveCellEditing,
 }: BeeTableHeaderProps<R>) {
   const getColumnLabel: (groupType: string) => string | undefined = useCallback(
     (groupType) => {
@@ -235,7 +235,7 @@ export function BeeTableHeader<R extends object>({
                     column.headerCellElement
                   ) : column.isInlineEditable ? (
                     <InlineEditableTextInput
-                      setEditing={setEditing}
+                      setActiveCellEditing={setActiveCellEditing}
                       columnIndex={columnIndex}
                       rowIndex={rowIndex}
                       value={column.label}
@@ -275,7 +275,7 @@ export function BeeTableHeader<R extends object>({
       getColumnLabel,
       onColumnAdded,
       lastColumnMinWidth,
-      setEditing,
+      setActiveCellEditing,
       onExpressionHeaderUpdated,
     ]
   );
