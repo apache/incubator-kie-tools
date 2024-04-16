@@ -444,6 +444,11 @@ export function Constraints({
                 isDisabled={isReadonly}
               />
               <ToggleGroupItem
+                // The default ToggleGroupItem zIndex is bigger than the
+                // the Monaco suggestion zIndex. This causes the button
+                // to be on top of the Monaco suggestion. The 10
+                // is an arbirtrary value, which solves the issue.
+                style={{ zIndex: 10 }}
                 text={ConstraintsType.EXPRESSION}
                 buttonId={ConstraintsType.EXPRESSION}
                 isSelected={selectedConstraint === ConstraintsType.EXPRESSION}
