@@ -20,7 +20,10 @@
 import * as React from "react";
 import { useMemo, useCallback } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
-import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DMN15__tItemDefinition,
+  DMN15__tUnaryTests,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ConstraintsEnum, isEnum } from "./ConstraintsEnum";
 import { ConstraintsRange, isRange } from "./ConstraintsRange";
@@ -246,38 +249,32 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
   };
 };
 
-export function Constraints({
-  isReadonly,
+export function useConstraint({
+  constraint,
   itemDefinition,
-  editItemDefinition,
 }: {
-  isReadonly: boolean;
+  constraint: DMN15__tUnaryTests | undefined;
   itemDefinition: DMN15__tItemDefinition;
-  editItemDefinition: EditItemDefinition;
 }) {
-  const allowedValues = useMemo(() => itemDefinition?.allowedValues, [itemDefinition?.allowedValues]);
-  const typeConstraint = useMemo(() => itemDefinition?.typeConstraint, [itemDefinition?.typeConstraint]);
+  const constraintValue = useMemo(() => constraint?.text.__$$text, [constraint?.text.__$$text]);
 
-  const constraintValue = useMemo(
-    () => typeConstraint?.text.__$$text ?? allowedValues?.text.__$$text,
-    [typeConstraint?.text.__$$text, allowedValues?.text.__$$text]
-  );
-  const kieConstraintType = useMemo(
-    () => typeConstraint?.["@_kie:constraintType"] ?? allowedValues?.["@_kie:constraintType"],
-    [allowedValues, typeConstraint]
-  );
+  const kieConstraintType = useMemo(() => constraint?.["@_kie:constraintType"], [constraint]);
+
   const typeRef: DmnBuiltInDataType = useMemo(
     () => (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
     [itemDefinition?.typeRef?.__$$text]
   );
+
   const isConstraintEnum = useMemo(
     () => isEnum(constraintValue, constraintTypeHelper(typeRef).check),
     [constraintValue, typeRef]
   );
+
   const isConstraintRange = useMemo(
     () => isRange(constraintValue, constraintTypeHelper(typeRef).check),
     [constraintValue, typeRef]
   );
+
   const itemDefinitionId = useMemo(() => itemDefinition["@_id"], [itemDefinition]);
 
   const enumToKieConstraintType: (selection: ConstraintsType) => KIE__tConstraintType | undefined = useCallback(
@@ -336,29 +333,157 @@ export function Constraints({
     kieConstraintType,
   ]);
 
-  const onEnumChange = useCallback(
+  return useMemo(() => {
+    return {
+      constraintValue,
+      typeRef,
+      isConstraintEnum,
+      isConstraintRange,
+      isConstraintEnabled,
+      itemDefinitionId,
+      selectedConstraint,
+      enumToKieConstraintType,
+    };
+  }, [
+    constraintValue,
+    isConstraintEnabled,
+    isConstraintEnum,
+    isConstraintRange,
+    itemDefinitionId,
+    selectedConstraint,
+    typeRef,
+    enumToKieConstraintType,
+  ]);
+}
+
+export function AllowedValuesConstraints({
+  isReadonly,
+  itemDefinition,
+  editItemDefinition,
+}: {
+  isReadonly: boolean;
+  itemDefinition: DMN15__tItemDefinition;
+  editItemDefinition: EditItemDefinition;
+}) {
+  const allowedValues = useMemo(() => itemDefinition?.allowedValues, [itemDefinition?.allowedValues]);
+
+  const {
+    constraintValue,
+    typeRef,
+    isConstraintEnum,
+    isConstraintRange,
+    isConstraintEnabled,
+    itemDefinitionId,
+    selectedConstraint,
+    enumToKieConstraintType,
+  } = useConstraint({ constraint: allowedValues, itemDefinition });
+
+  const onConstraintChange = useCallback(
     (value?: string) => {
       editItemDefinition(itemDefinitionId!, (itemDefinition) => {
-        itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
-        itemDefinition.typeConstraint.text.__$$text = value ?? "";
-        itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
+        itemDefinition.allowedValues ??= { text: { __$$text: "" } };
+        itemDefinition.allowedValues.text.__$$text = value ?? "";
+        itemDefinition.allowedValues["@_id"] = itemDefinition.allowedValues?.["@_id"] ?? generateUuid();
+        return;
       });
     },
     [editItemDefinition, itemDefinitionId]
   );
 
-  const onExpressionChange = useCallback(
-    (value?: string) => {
+  const onToggleGroupChange = useCallback(
+    (newSelection: boolean, event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>) => {
+      if (!newSelection) {
+        return;
+      }
+      const selection = event.currentTarget.id as ConstraintsType;
+      if (selection === ConstraintsType.NONE) {
+        editItemDefinition(itemDefinitionId!, (itemDefinition) => {
+          itemDefinition.allowedValues = undefined;
+        });
+        return;
+      }
+
       editItemDefinition(itemDefinitionId!, (itemDefinition) => {
-        itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
-        itemDefinition.typeConstraint.text.__$$text = value ?? "";
-        itemDefinition.typeConstraint["@_id"] = itemDefinition.typeConstraint?.["@_id"] ?? generateUuid();
+        itemDefinition.allowedValues ??= { text: { __$$text: "" } };
+        const previousKieContraintType = itemDefinition.allowedValues["@_kie:constraintType"];
+        itemDefinition.allowedValues["@_kie:constraintType"] = enumToKieConstraintType(selection);
+
+        if (selection === ConstraintsType.EXPRESSION) {
+          return;
+        }
+
+        if (
+          previousKieContraintType === "expression" &&
+          selection === ConstraintsType.ENUMERATION &&
+          isEnum(
+            itemDefinition.allowedValues.text.__$$text,
+            constraintTypeHelper(
+              (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
+            ).check
+          )
+        ) {
+          return;
+        }
+
+        if (
+          previousKieContraintType === "expression" &&
+          selection === ConstraintsType.RANGE &&
+          isRange(
+            itemDefinition.allowedValues.text.__$$text,
+            constraintTypeHelper(
+              (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined
+            ).check
+          )
+        ) {
+          return;
+        }
+
+        itemDefinition.allowedValues.text.__$$text = "";
+        return;
       });
     },
-    [editItemDefinition, itemDefinitionId]
+    [editItemDefinition, enumToKieConstraintType, itemDefinitionId]
   );
 
-  const onRangeChange = useCallback(
+  return (
+    <Constraints
+      isReadonly={isReadonly}
+      itemDefinition={itemDefinition}
+      constraintValue={constraintValue}
+      typeRef={typeRef}
+      isConstraintEnum={isConstraintEnum}
+      isConstraintRange={isConstraintRange}
+      isConstraintEnabled={isConstraintEnabled}
+      selectedConstraint={selectedConstraint}
+      onToggleGroupChange={onToggleGroupChange}
+      onConstraintChange={onConstraintChange}
+    />
+  );
+}
+
+export function TypeConstraintConstraints({
+  isReadonly,
+  itemDefinition,
+  editItemDefinition,
+}: {
+  isReadonly: boolean;
+  itemDefinition: DMN15__tItemDefinition;
+  editItemDefinition: EditItemDefinition;
+}) {
+  const typeConstraint = useMemo(() => itemDefinition?.typeConstraint, [itemDefinition?.typeConstraint]);
+
+  const {
+    constraintValue,
+    typeRef,
+    isConstraintEnum,
+    isConstraintRange,
+    isConstraintEnabled,
+    itemDefinitionId,
+    selectedConstraint,
+    enumToKieConstraintType,
+  } = useConstraint({ constraint: typeConstraint, itemDefinition });
+
+  const onConstraintChange = useCallback(
     (value?: string) => {
       editItemDefinition(itemDefinitionId!, (itemDefinition) => {
         itemDefinition.typeConstraint ??= { text: { __$$text: "" } };
@@ -370,7 +495,7 @@ export function Constraints({
   );
 
   const onToggleGroupChange = useCallback(
-    (newSelection, event) => {
+    (newSelection: boolean, event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>) => {
       if (!newSelection) {
         return;
       }
@@ -423,6 +548,52 @@ export function Constraints({
     [editItemDefinition, enumToKieConstraintType, itemDefinitionId]
   );
 
+  return (
+    <Constraints
+      isReadonly={isReadonly}
+      itemDefinition={itemDefinition}
+      constraintValue={constraintValue}
+      typeRef={typeRef}
+      isConstraintEnum={isConstraintEnum}
+      isConstraintRange={isConstraintRange}
+      isConstraintEnabled={isConstraintEnabled}
+      selectedConstraint={selectedConstraint}
+      onToggleGroupChange={onToggleGroupChange}
+      onConstraintChange={onConstraintChange}
+    />
+  );
+}
+
+export function Constraints({
+  isReadonly,
+  itemDefinition,
+  constraintValue,
+  typeRef,
+  isConstraintEnum,
+  isConstraintRange,
+  isConstraintEnabled,
+  selectedConstraint,
+  onToggleGroupChange,
+  onConstraintChange,
+}: {
+  isReadonly: boolean;
+  itemDefinition: DMN15__tItemDefinition;
+  constraintValue: string | undefined;
+  typeRef: DmnBuiltInDataType;
+  isConstraintEnum: string[] | undefined;
+  isConstraintRange: [string, string] | undefined;
+  isConstraintEnabled: {
+    enumeration: boolean;
+    range: boolean;
+    expression: boolean;
+  };
+  selectedConstraint: ConstraintsType;
+  onToggleGroupChange: (
+    selected: boolean,
+    event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>
+  ) => void;
+  onConstraintChange: (value?: string) => void;
+}) {
   return (
     <>
       {!canHaveConstraints(itemDefinition) ? (
@@ -479,7 +650,7 @@ export function Constraints({
                 typeHelper={constraintTypeHelper(typeRef)}
                 value={isConstraintEnum ? constraintValue : undefined}
                 expressionValue={constraintValue}
-                onSave={onEnumChange}
+                onSave={onConstraintChange}
                 isDisabled={!isConstraintEnabled.enumeration}
               />
             )}
@@ -490,7 +661,7 @@ export function Constraints({
                 type={typeRef}
                 typeHelper={constraintTypeHelper(typeRef)}
                 value={isConstraintRange ? constraintValue : undefined}
-                onSave={onRangeChange}
+                onSave={onConstraintChange}
                 isDisabled={!isConstraintEnabled.range}
               />
             )}
@@ -500,7 +671,7 @@ export function Constraints({
                 type={typeRef}
                 value={constraintValue}
                 savedValue={constraintValue}
-                onSave={onExpressionChange}
+                onSave={onConstraintChange}
                 isDisabled={false}
               />
             )}

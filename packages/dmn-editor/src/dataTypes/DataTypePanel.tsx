@@ -45,7 +45,7 @@ import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
-import { Constraints } from "./Constraints";
+import { AllowedValuesConstraints, TypeConstraintConstraints } from "./Constraints";
 import { original } from "immer";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
@@ -94,8 +94,21 @@ export function DataTypePanel({
 
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
         itemDefinition["@_isCollection"] = isChecked;
-        itemDefinition.typeConstraint = undefined;
-        itemDefinition.allowedValues = undefined;
+        if (isChecked === true) {
+          itemDefinition.allowedValues = itemDefinition.typeConstraint
+            ? {
+                ...itemDefinition.typeConstraint,
+              }
+            : undefined;
+
+          itemDefinition.typeConstraint = undefined;
+        } else {
+          itemDefinition.typeConstraint = itemDefinition.allowedValues
+            ? {
+                ...itemDefinition.allowedValues,
+              }
+            : undefined;
+        }
       });
     },
     [dataType.itemDefinition, editItemDefinition, isReadonly]
@@ -346,14 +359,41 @@ export function DataTypePanel({
 
             <br />
             <br />
-            <Title size={"md"} headingLevel="h4">
-              Constraints
-            </Title>
-            <Constraints
-              isReadonly={isReadonly}
-              itemDefinition={dataType.itemDefinition}
-              editItemDefinition={editItemDefinition}
-            />
+
+            {dataType.itemDefinition["@_isCollection"] === true ? (
+              <>
+                <Title size={"md"} headingLevel="h4">
+                  Collection constraint
+                </Title>
+                <TypeConstraintConstraints
+                  isReadonly={isReadonly}
+                  itemDefinition={dataType.itemDefinition}
+                  editItemDefinition={editItemDefinition}
+                />
+                <br />
+                <br />
+                <br />
+                <Title size={"md"} headingLevel="h4">
+                  Collection item constraint
+                </Title>
+                <AllowedValuesConstraints
+                  isReadonly={isReadonly}
+                  itemDefinition={dataType.itemDefinition}
+                  editItemDefinition={editItemDefinition}
+                />
+              </>
+            ) : (
+              <>
+                <Title size={"md"} headingLevel="h4">
+                  Constraints
+                </Title>
+                <TypeConstraintConstraints
+                  isReadonly={isReadonly}
+                  itemDefinition={dataType.itemDefinition}
+                  editItemDefinition={editItemDefinition}
+                />
+              </>
+            )}
           </>
         )}
         {isStruct(dataType.itemDefinition) && (
