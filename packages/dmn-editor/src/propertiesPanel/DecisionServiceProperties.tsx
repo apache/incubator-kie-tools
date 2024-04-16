@@ -118,6 +118,7 @@ export function DecisionServiceProperties({
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
+          isDisabled={isReadonly}
           onChange={(newTypeRef) => {
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService;
