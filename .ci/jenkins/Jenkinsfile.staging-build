@@ -662,6 +662,16 @@ pipeline {
                 }
             }
         }
+
+        stage('STAGING: Build and Deploy (jbpm-quarkus-devui and sonataflow-quarkus-devui)') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildAndDeployDevUiJavaPackages()
+                    }
+                }
+            }
+        }
     }
 
     post {
@@ -698,7 +708,6 @@ def build() {
     export SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef=${params.RELEASE_VERSION}
     export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${params.RELEASE_VERSION} (staging) @ ${params.COMMIT_SHA}"
     export SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl=https://staging-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud
-
     pnpm -r --workspace-concurrency=1 build:prod
     """.trim()
 }
@@ -1109,6 +1118,41 @@ def buildImage(String packageName) {
     """.trim()
 }
 
+def buildDevUiJavaPackages() {
+    sh """#!/bin/bash -el
+    pnpm update-version-to ${params.TAG}-SNAPSHOT --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui...
+    pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... build:prod
+    """.trim()
+}
+
+def deployDevUiJavaArtifacts() {
+    withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+        configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+            sh """#!/bin/bash -el
+            pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec mvn jar:test-jar jar:jar source:jar-no-fork deploy:deploy -s ${MAVEN_SETTINGS_FILE} -Dapache.snapshot.repository.username=${REPOSITORY_USER} -Dapache.snapshot.repository.password=${REPOSITORY_TOKEN} -DaltDeploymentRepository=${MAVEN_DEPLOY_TARGET_ID}::${MAVEN_DEPLOY_REPOSITORY}
+            """.trim()
+        }
+    }
+}
+
+def buildAndDeployDevUiJavaPackages() {
+    withCredentials([usernamePassword(credentialsId: "${pipelineVars.mavenDeployRepositoryCredentialsId}", usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+        configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
+            sh """#!/bin/bash -el
+            export KIE_TOOLS_BUILD__runEndToEndTests=false
+            export KIE_TOOLS_BUILD__runTests=false
+            export KIE_TOOLS_BUILD__runLinters=false
+            export KIE_TOOLS_BUILD__mavenDeploySkip=false
+            pnpm update-version-to ${params.RELEASE_VERSION}-SNAPSHOT --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui....
+            pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
+            pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.username=${REPOSITORY_USER} >> .mvn/maven.config'
+            pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Dapache.repository.password=${REPOSITORY_TOKEN} >> .mvn/maven.config'
+            pnpm --filter-prod jbpm-quarkus-devui... --filter-prod sonataflow-quarkus-devui... build:prod
+            """.trim()
+        }
+    }
+}
+
 def loadLocalSharedScripts() {
     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
@@ -1117,4 +1161,5 @@ def loadLocalSharedScripts() {
     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
     helmUtils = load '.ci/jenkins/shared-scripts/helmUtils.groovy'
     zipUtils = load '.ci/jenkins/shared-scripts/zipUtils.groovy'
+    mvnUtils = load '.ci/jenkins/shared-scripts/mavenUtils.groovy'
 }
