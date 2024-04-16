@@ -3828,11 +3828,10 @@ importers:
         version: 0.9.0
 
   packages/dmn-marshaller-backend-compatibility-tester:
-    dependencies:
+    devDependencies:
       "@jbangdev/jbang":
         specifier: 0.2.0
         version: 0.2.0
-    devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -22768,7 +22767,7 @@ packages:
     requiresBuild: true
     dependencies:
       shelljs: 0.8.5
-    dev: false
+    dev: true
 
   /@jest/console@26.6.2:
     resolution:
@@ -40238,7 +40237,7 @@ packages:
     resolution:
       { integrity: sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA== }
     engines: { node: ">= 0.10" }
-    dev: false
+    dev: true
 
   /interpret@2.2.0:
     resolution:
@@ -48284,7 +48283,7 @@ packages:
     engines: { node: ">= 0.10" }
     dependencies:
       resolve: 1.22.8
-    dev: false
+    dev: true
 
   /rechoir@0.7.0:
     resolution:
@@ -49502,7 +49501,7 @@ packages:
       glob: 7.2.3
       interpret: 1.4.0
       rechoir: 0.6.2
-    dev: false
+    dev: true
 
   /shellwords@0.1.1:
     resolution:
