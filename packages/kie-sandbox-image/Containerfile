@@ -17,17 +17,19 @@
 
 FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.3
 
+ARG KIE_SANDBOX_DEFAULT_PORT=8080
+
 COPY entrypoint.sh dist-dev/image-env-to-json-standalone dist-dev/EnvJson.schema.json /tmp/
 
 RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.57-5.el9.x86_64 \
   && microdnf --disableplugin=subscription-manager clean all \
   && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
-  && sed -i -e 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf \
-  && sed -i -e 's/#ServerName www.example.com:80/ServerName 127.0.0.1:8080/' /etc/httpd/conf/httpd.conf \
-  && sed -i -e "/ServerName 127.0.0.1:8080/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
-  && sed -i -e 's/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' /etc/httpd/conf/httpd.conf \
-  && sed -i '$ a ServerTokens Prod' /etc/httpd/conf/httpd.conf \
-  && sed -i '$ a ServerSignature Off' /etc/httpd/conf/httpd.conf \
+  && sed -i "s/Listen 80/Listen $KIE_SANDBOX_DEFAULT_PORT/g" /etc/httpd/conf/httpd.conf \
+  && sed -i "s/#ServerName www.example.com:80/ServerName 127.0.0.1:$KIE_SANDBOX_DEFAULT_PORT/g" /etc/httpd/conf/httpd.conf \
+  && sed -i -e "/ServerName 127.0.0.1:$KIE_SANDBOX_DEFAULT_PORT/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
+  && sed -i -e "s/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/" /etc/httpd/conf/httpd.conf \
+  && sed -i "$ a ServerTokens Prod" /etc/httpd/conf/httpd.conf \
+  && sed -i "$ a ServerSignature Off" /etc/httpd/conf/httpd.conf \
   && mkdir /kie-sandbox \
   && mv -t /kie-sandbox /tmp/entrypoint.sh /tmp/image-env-to-json-standalone /tmp/EnvJson.schema.json \
   && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html /kie-sandbox \
@@ -38,7 +40,7 @@ COPY dist-dev/online-editor /kie-sandbox/app
 
 RUN if [ -f /kie-sandbox/app/env.json ]; then chmod a+w /kie-sandbox/app/env.json; fi
 
-EXPOSE 8080
+EXPOSE $KIE_SANDBOX_DEFAULT_PORT
 
 USER 1000
 
