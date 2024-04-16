@@ -52,10 +52,10 @@ export class FontProperties {
       await this.panel.getByLabel("Toggle font strike through").click();
     }
     if (args.color) {
-      await this.panel.getByTestId("color-picker-font").fill(args.color);
+      await this.panel.getByTestId("kie-tools--dmn-editor--color-picker-font").fill(args.color);
     }
     if (args.fontFamily) {
-      await this.panel.getByTestId("properties-panel-node-font-style").click();
+      await this.panel.getByTestId("kie-tools--dmn-editor--properties-panel-node-font-style").click();
       await this.panel.getByText(args.fontFamily).click();
     }
 
@@ -69,7 +69,7 @@ export class FontProperties {
   public async getFont() {
     await this.panel.getByTitle("Expand / collapse Font").click();
 
-    const font = await this.panel.getByTestId("properties-panel-node-font-style").textContent();
+    const font = await this.panel.getByTestId("kie-tools--dmn-editor--properties-panel-node-font-style").textContent();
 
     await this.panel.getByTitle("Expand / collapse Font").click();
 

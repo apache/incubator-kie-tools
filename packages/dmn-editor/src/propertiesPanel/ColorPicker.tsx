@@ -58,7 +58,7 @@ export function ColorPicker(props: {
             }
           }}
           name={props.name}
-          data-testid={`color-picker-${props.name}`}
+          data-testid={`kie-tools--dmn-editor--color-picker-${props.name}`}
           aria-label={"Color picker"}
           type={"color"}
           disabled={false}

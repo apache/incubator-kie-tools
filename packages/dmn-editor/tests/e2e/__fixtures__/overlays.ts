@@ -30,8 +30,14 @@ export class Overlays {
 
   public async setSnapping(args: { horizontal: string; vertical: string }) {
     await this.page.getByTitle("Overlays").click();
-    await this.page.getByTestId("horizontal-snapping-control").locator("input").fill(args.horizontal);
-    await this.page.getByTestId("vertical-snapping-control").locator("input").fill(args.vertical);
+    await this.page
+      .getByTestId("kie-tools--dmn-editor--horizontal-snapping-control")
+      .locator("input")
+      .fill(args.horizontal);
+    await this.page
+      .getByTestId("kie-tools--dmn-editor--vertical-snapping-control")
+      .locator("input")
+      .fill(args.vertical);
     await this.page.getByTitle("Overlays").click();
   }
 }

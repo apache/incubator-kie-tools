@@ -1321,7 +1321,7 @@ export function NodeResizerHandle(props: NodeResizeHandleProps) {
   return (
     <RF.NodeResizeControl style={resizerControlStyle} minWidth={minSize["@_width"]} minHeight={minSize["@_height"]}>
       <div
-        data-testid={`${props.nodeName}-resize-handle`}
+        data-testid={`kie-tools--dmn-editor--${props.nodeName}-resize-handle`}
         style={{
           position: "absolute",
           top: "-10px",

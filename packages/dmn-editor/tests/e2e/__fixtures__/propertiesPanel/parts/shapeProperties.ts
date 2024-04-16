@@ -25,8 +25,8 @@ export class ShapeProperties {
   public async setShape(args: { width: string; height: string }) {
     await this.panel.getByTitle("Expand / collapse Shape").click();
 
-    await this.panel.getByTestId("properties-panel-node-shape-width-input").fill(args.width);
-    await this.panel.getByTestId("properties-panel-node-shape-height-input").fill(args.height);
+    await this.panel.getByTestId("kie-tools--dmn-editor--properties-panel-node-shape-width-input").fill(args.width);
+    await this.panel.getByTestId("kie-tools--dmn-editor--properties-panel-node-shape-height-input").fill(args.height);
 
     await this.panel.getByTitle("Expand / collapse Shape").click();
   }
@@ -41,8 +41,12 @@ export class ShapeProperties {
   public async getShape() {
     await this.panel.getByTitle("Expand / collapse Shape").click();
 
-    const width = await this.panel.getByTestId("properties-panel-node-shape-width-input").inputValue();
-    const height = await this.panel.getByTestId("properties-panel-node-shape-height-input").inputValue();
+    const width = await this.panel
+      .getByTestId("kie-tools--dmn-editor--properties-panel-node-shape-width-input")
+      .inputValue();
+    const height = await this.panel
+      .getByTestId("kie-tools--dmn-editor--properties-panel-node-shape-height-input")
+      .inputValue();
 
     await this.panel.getByTitle("Expand / collapse Shape").click();
 
@@ -55,13 +59,13 @@ export class ShapeProperties {
 
   public async setFillColor(args: { color: string }) {
     await this.panel.getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await this.panel.getByTestId("color-picker-shape-fill").fill(args.color);
+    await this.panel.getByTestId("kie-tools--dmn-editor--color-picker-shape-fill").fill(args.color);
     await this.panel.getByRole("button", { name: "Expand / collapse Shape" }).click();
   }
 
   public async setStrokeColor(args: { color: string }) {
     await this.panel.getByRole("button", { name: "Expand / collapse Shape" }).click();
-    await this.panel.getByTestId("color-picker-shape-stroke").fill(args.color);
+    await this.panel.getByTestId("kie-tools--dmn-editor--color-picker-shape-stroke").fill(args.color);
     await this.panel.getByRole("button", { name: "Expand / collapse Shape" }).click();
   }
 }

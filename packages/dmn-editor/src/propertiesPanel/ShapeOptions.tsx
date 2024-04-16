@@ -346,7 +346,7 @@ export function ShapeOptions({
                     >
                       <TextInput
                         aria-label={"Width"}
-                        data-testid={"properties-panel-node-shape-width-input"}
+                        data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-width-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? boundWidth : undefined}
@@ -372,7 +372,7 @@ export function ShapeOptions({
                     >
                       <TextInput
                         aria-label={"Height"}
-                        data-testid={"properties-panel-node-shape-height-input"}
+                        data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-height-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? boundHeight : undefined}

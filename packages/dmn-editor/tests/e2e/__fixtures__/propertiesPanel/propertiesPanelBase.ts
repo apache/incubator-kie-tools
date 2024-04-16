@@ -24,7 +24,7 @@ export abstract class PropertiesPanelBase {
   constructor(public diagram: Diagram, public page: Page) {}
 
   public panel() {
-    return this.page.getByTestId("properties-panel-container");
+    return this.page.getByTestId("kie-tools--dmn-editor--properties-panel-container");
   }
 
   public async open() {
