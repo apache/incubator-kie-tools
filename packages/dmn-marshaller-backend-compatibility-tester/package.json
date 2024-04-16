@@ -19,9 +19,8 @@
     "src"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm prefetch",
-    "build:prod": "pnpm build:dev",
-    "prefetch": "jbang -Dkogito-runtime.version=$(build-env kogitoRuntime.version) ./src/DmnMarshallerBackendCompatibilityTesterScript.java"
+    "build:dev": "rimraf dist && tsc -p tsconfig.json && jbang -Dkogito-runtime.version=$(build-env kogitoRuntime.version) ./src/DmnMarshallerBackendCompatibilityTesterScript.java",
+    "build:prod": "pnpm build:dev"
   },
   "devDependencies": {
     "@jbangdev/jbang": "0.2.0",
