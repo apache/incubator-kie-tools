@@ -108,8 +108,9 @@ export function BeeTableTh<R extends object>({
 
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
+  // FIXME: The BeeTable shouldn't know about DMN or GWT
+  // The following useEffect shouldn't be placed here.
   const { beeGwtService } = useBoxedExpressionEditor();
-
   useEffect(() => {
     if (isActive) {
       if (column.isRowIndexColumn || groupType === "annotation") {

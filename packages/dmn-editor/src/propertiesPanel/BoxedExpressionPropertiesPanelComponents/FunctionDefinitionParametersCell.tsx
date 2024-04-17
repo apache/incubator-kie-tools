@@ -90,7 +90,7 @@ export function FunctionDefinitionParameterCell(props: {
             <>
               <NameField
                 isReadonly={props.isReadonly}
-                id={parameter["@_id"] ?? ""}
+                id={parameter["@_id"]!}
                 name={parameter["@_name"] ?? ""}
                 getAllUniqueNames={getAllUniqueNames}
                 onChange={(newName: string) => {

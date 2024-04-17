@@ -69,7 +69,7 @@ export function InformationItemCell(props: {
       </FormGroup>
       <NameField
         isReadonly={props.isReadonly}
-        id={cell["@_id"] ?? ""}
+        id={cell["@_id"]!}
         name={cell["@_name"] ?? ""}
         getAllUniqueNames={getAllUniqueNames}
         onChange={props.onNameChange}

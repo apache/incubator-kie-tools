@@ -95,7 +95,7 @@ export function DecisionTableInputHeaderCell(props: {
         {isInputExpressionExpanded && (
           <>
             <NameField
-              id={inputExpression["@_id"] ?? ""}
+              id={inputExpression["@_id"]!}
               isReadonly={props.isReadonly}
               name={inputExpression?.text?.__$$text ?? ""}
               getAllUniqueNames={getAllUniqueNames}

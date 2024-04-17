@@ -37,6 +37,16 @@ export function normalize(model: State["dmn"]["model"]) {
       type: "DMN15__tDefinitions",
       attr: "dmndi:DMNDI",
     })
+    .ack({
+      json: model.definitions.import,
+      type: "DMN15__tDefinitions",
+      attr: "import",
+    })
+    .ack({
+      json: model.definitions.itemDefinition,
+      type: "DMN15__tDefinitions",
+      attr: "itemDefinition",
+    })
     .randomize({ skipAlreadyAttributedIds: true });
 
   return model;

@@ -128,10 +128,12 @@ export function TextField({
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
   const [value, setValue] = useState(props.initialValue);
+
+  // Uses refs to prevent `useEffect` to run multiple times
   const valueRef = React.useRef(props.initialValue);
   const isEditing = React.useRef(false);
-  // const [isEditing, setEditing] = useState(false);
 
+  // Updates the value and expression path with the props value
   useEffect(() => {
     if (isEditing.current === false) {
       setValue(props.initialValue);

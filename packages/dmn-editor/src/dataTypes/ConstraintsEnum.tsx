@@ -175,7 +175,7 @@ export function ConstraintsEnum({
             style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
           >
             Add value
-          </Button>{" "}
+          </Button>
         </>
       )}
       {!renderOnPropertiesPanel && (

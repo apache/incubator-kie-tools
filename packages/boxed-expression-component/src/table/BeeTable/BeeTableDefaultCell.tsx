@@ -68,6 +68,8 @@ export function BeeTableDefaultCell<R extends object>({
     getValue
   );
 
+  // FIXME: The BeeTable shouldn't know about DMN or GWT
+  // The following useEffect shouldn't be placed here.
   const { beeGwtService } = useBoxedExpressionEditor();
   useEffect(() => {
     if (isActive) {

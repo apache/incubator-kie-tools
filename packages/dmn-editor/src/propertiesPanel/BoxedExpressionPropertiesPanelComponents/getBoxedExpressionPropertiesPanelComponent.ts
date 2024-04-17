@@ -56,7 +56,6 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
         title: "Boxed Context Variable",
       };
     }
-    // selectedObjectPath.column === "expression" is handled by the nested expression
   }
 
   if (selectedObjectPath.type === "decisionTable") {

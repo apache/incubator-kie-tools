@@ -110,7 +110,7 @@ export function DecisionTableOutputHeaderCell(props: {
         <NameField
           alternativeFieldName={alternativeFieldName}
           isReadonly={true}
-          id={root?.["@_id"] ?? ""}
+          id={root["@_id"]!}
           name={root?.["@_label"] ?? ""}
           getAllUniqueNames={getAllUniqueNames}
         />
@@ -118,7 +118,7 @@ export function DecisionTableOutputHeaderCell(props: {
       <NameField
         alternativeFieldName={root?.output.length === 1 ? "Column Name" : undefined}
         isReadonly={props.isReadonly}
-        id={cell?.["@_id"] ?? ""}
+        id={cell["@_id"]!}
         name={cell?.["@_name"] ?? ""}
         getAllUniqueNames={getAllUniqueNames}
         onChange={(newName) =>

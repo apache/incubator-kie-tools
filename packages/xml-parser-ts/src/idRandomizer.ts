@@ -156,7 +156,7 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     return this;
   }
 
-  public randomize(args?: { skipAlreadyAttributedIds?: boolean }): Map<string, string> {
+  public randomize(args?: { skipAlreadyAttributedIds: boolean }): Map<string, string> {
     const newIdsByOriginalId = new Map<string, string>();
 
     for (const [id, us] of this.updaters) {
@@ -169,7 +169,7 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
         }
       }
       // Generates a new id an updates all references to the old one with the same value.
-      else if (!args?.skipAlreadyAttributedIds) {
+      else if (args?.skipAlreadyAttributedIds === false) {
         const newId = this.args.newIdGenerator();
         newIdsByOriginalId.set(id, newId);
         for (const u of us) {
