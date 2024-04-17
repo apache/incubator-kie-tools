@@ -369,6 +369,7 @@ export function DataTypePanel({
                   isReadonly={isReadonly}
                   itemDefinition={dataType.itemDefinition}
                   editItemDefinition={editItemDefinition}
+                  defaultsToAllowedValues={false}
                 />
                 <br />
                 <br />
@@ -391,6 +392,7 @@ export function DataTypePanel({
                   isReadonly={isReadonly}
                   itemDefinition={dataType.itemDefinition}
                   editItemDefinition={editItemDefinition}
+                  defaultsToAllowedValues={true}
                 />
               </>
             )}

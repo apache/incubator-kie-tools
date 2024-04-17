@@ -465,12 +465,20 @@ export function TypeConstraintConstraints({
   isReadonly,
   itemDefinition,
   editItemDefinition,
+  defaultsToAllowedValues,
 }: {
   isReadonly: boolean;
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
+  defaultsToAllowedValues: boolean;
 }) {
-  const typeConstraint = useMemo(() => itemDefinition?.typeConstraint, [itemDefinition?.typeConstraint]);
+  const typeConstraint = useMemo(
+    () =>
+      defaultsToAllowedValues
+        ? itemDefinition?.typeConstraint ?? itemDefinition?.allowedValues
+        : itemDefinition?.typeConstraint,
+    [defaultsToAllowedValues, itemDefinition?.allowedValues, itemDefinition?.typeConstraint]
+  );
 
   const {
     constraintValue,
