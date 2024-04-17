@@ -72,7 +72,7 @@ RUN bash -c 'source $HOME/.nvm/nvm.sh && \
 
 # PNPM setup
 RUN bash -c 'source $HOME/.nvm/nvm.sh && \
-             npm install -g pnpm@8.7.6'
+             npm install -g pnpm@8.7.0'
 
 # Maven setup
 RUN wget https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz -P /tmp && \
