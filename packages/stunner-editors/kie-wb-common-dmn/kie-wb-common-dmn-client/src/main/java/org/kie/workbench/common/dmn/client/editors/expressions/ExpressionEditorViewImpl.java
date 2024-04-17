@@ -380,7 +380,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
             @Override
             public void onError(final ClientRuntimeError error) {
-                LOGGER.log(Level.SEVERE, error.getMessage(), error.getThrowable());
+                LOGGER.log(Level.SEVERE, error.getErrorMessage(), error.getThrowable());
             }
         });
     }

@@ -62,7 +62,7 @@ module.exports = composeEnv(
         description: "CORS Proxy URL.",
       },
       ONLINE_EDITOR__extendedServicesUrl: {
-        default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
+        default: `http://${extendedServicesEnv.env.extendedServices.host}:${extendedServicesEnv.env.extendedServices.port}`,
         description: "Extended Services URL.",
       },
       ONLINE_EDITOR__requireCustomCommitMessage: {

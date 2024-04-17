@@ -14,13 +14,16 @@ Enable the image to be built:
 $ export KIE_TOOLS_BUILD__buildContainerImages=true
 ```
 
-The image name and tags can be customized by setting the following environment variables:
+The image name, tags and port can be customized by setting the following environment variables:
 
 ```bash
 $ export CORS_PROXY_IMAGE__imageRegistry=<registry>
 $ export CORS_PROXY_IMAGE__imageAccount=<account>
 $ export CORS_PROXY_IMAGE__imageName=<image-name>
 $ export CORS_PROXY_IMAGE__imageBuildTags=<image-tags>
+$ export CORS_PROXY_IMAGE__imagePort=<port>
+$ export CORS_PROXY_IMAGE__imageOrigin=<origin>
+$ export CORS_PROXY_IMAGE__imageVerbose=<verbose>
 ```
 
 Default values can be found [here](./env/index.js).
@@ -58,23 +61,3 @@ $ podman run -p 8080:8080 -i --rm quay.io/kie-tools/cors-proxy-image:latest
 ```
 
 The service will be up at http://localhost:8080
-
-### Container configuration
-
-It's possible to configure certain parameters of the container using the following env variables:
-
-- _CORS_PROXY_ORIGIN_: Sets the value of the 'Access-Control-Allow-Origin' header, defaults to `*`
-- _CORS_PROXY_VERBOSE_: Allows the proxy to run in verbose mode... useful to trace requests on development environments. Defaults to `false`
-
-For example setting an `.env` file like:
-
-```bash
-CORS_PROXY_ORIGIN=*
-CORS_PROXY_VERBOSE=false
-```
-
-or by passing the variables as arguments like
-
-```bash
-$ docker run -p 8080:8080 -e CORS_PROXY_ORIGIN=* -e CORS_PROXY_VERBOSE=false -i --rm quay.io/kie-tools/cors-proxy-image:latest
-```

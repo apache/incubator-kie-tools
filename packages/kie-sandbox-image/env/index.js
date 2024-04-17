@@ -37,6 +37,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "latest",
       description: "",
     },
+    KIE_SANDBOX__imagePort: {
+      default: "8080",
+      description: "",
+    },
   }),
   get env() {
     return {
@@ -46,6 +50,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           account: getOrDefault(this.vars.KIE_SANDBOX__imageAccount),
           name: getOrDefault(this.vars.KIE_SANDBOX__imageName),
           buildTags: getOrDefault(this.vars.KIE_SANDBOX__imageBuildTags),
+          port: getOrDefault(this.vars.KIE_SANDBOX__imagePort),
         },
       },
     };
