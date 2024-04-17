@@ -33,8 +33,9 @@
   },
   "engines": {
     "node": ">=18",
-    "pnpm": "8.7.6"
+    "pnpm": "8.7.0"
   },
+  "packageManager": "pnpm@8.7.0",
   "pnpm": {
     "packageExtensions": {
       "monaco-editor-webpack-plugin": {
