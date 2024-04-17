@@ -169,7 +169,7 @@ public class DMNClientServicesProxyImplTest {
 
             @Override
             public void onError(final ClientRuntimeError error) {
-                fail(error.getMessage());
+                fail(error.getErrorMessage());
             }
         };
     }

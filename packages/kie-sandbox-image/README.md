@@ -21,6 +21,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
   export KIE_SANDBOX__imageAccount=<account>
   export KIE_SANDBOX__imageName=<image-name>
   export KIE_SANDBOX__imageBuildTags=<image-tags>
+  export KIE_SANDBOX__imagePort=<port>
   ```
 
   > Default values can be found [here](./env/index.js).

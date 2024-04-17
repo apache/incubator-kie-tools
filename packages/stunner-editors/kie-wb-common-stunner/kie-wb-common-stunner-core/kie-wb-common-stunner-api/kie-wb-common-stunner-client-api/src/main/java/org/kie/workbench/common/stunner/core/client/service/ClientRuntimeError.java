@@ -24,22 +24,38 @@ package org.kie.workbench.common.stunner.core.client.service;
  */
 public class ClientRuntimeError {
 
-    private String message;
-    private Throwable throwable;
+    private final String errorTitle;
+    private final String errorContent;
+    private final String errorMessage;
+    private final Throwable throwable;
 
-    public ClientRuntimeError(final String message) {
-        this(message,
+    public ClientRuntimeError(final String errorMessage) {
+        this(null, null, errorMessage,
              null);
     }
 
     public ClientRuntimeError(final Throwable e) {
         this(null,
+                null,
+             null,
              e);
     }
 
-    public ClientRuntimeError(final String message,
+    public ClientRuntimeError(final String errorMessage,
                               final Throwable e) {
-        this.message = message;
+        this(null,
+                null,
+                errorMessage,
+                e);
+    }
+
+    public ClientRuntimeError(final String errorTitle,
+                              final String errorContent,
+                              final String errorMessage,
+                              final Throwable e) {
+        this.errorTitle = errorTitle;
+        this.errorContent = errorContent;
+        this.errorMessage = errorMessage;
         this.throwable = e;
     }
 
@@ -47,17 +63,25 @@ public class ClientRuntimeError {
         return throwable;
     }
 
-    public String getMessage() {
-        if (null != message && message.trim().length() > 0) {
-            return message;
+    public String getErrorMessage() {
+        if (null != errorMessage && !errorMessage.trim().isEmpty()) {
+            return errorMessage;
         }
         Throwable root = getRootCause();
         return root.toString();
     }
 
+    public String getErrorTitle() {
+        return errorTitle;
+    }
+
+    public String getErrorContent() {
+        return errorContent;
+    }
+
     public String getCause() {
         Throwable root = getRootCause();
-        if (root == null || getMessage().equals(root.toString())) {
+        if (root == null || getErrorMessage().equals(root.toString())) {
             return null;
         } else {
             return root.getMessage();
@@ -77,6 +101,6 @@ public class ClientRuntimeError {
 
     public String toString() {
         String cause = getCause();
-        return getMessage() + (cause != null ? " (cause: " + cause + ")" : "");
+        return getErrorMessage() + (cause != null ? " (cause: " + cause + ")" : "");
     }
 }

@@ -426,7 +426,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
 
     protected void showError(final ClientRuntimeError error) {
         final String message = error.getThrowable() != null ?
-                error.getThrowable().getMessage() : error.getMessage();
+                error.getThrowable().getMessage() : error.getErrorMessage();
         log(Level.SEVERE,
             message);
     }
