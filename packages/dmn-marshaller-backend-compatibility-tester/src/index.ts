@@ -38,23 +38,17 @@ const dmnBackendCompatibilityScriptPaths = new Map([
   ],
 ]);
 
-executeJBangScript(DmnBackendCompatibilityScript.PARENT_SCRIPT, "");
-
 export function executeJBangScript(script: DmnBackendCompatibilityScript, ...args: string[]) {
   /* Windows requires double quotes to wrap the argument, while in POSIX it must be wrapped by single quotes */
   const isWindowsPath = path.sep !== "/";
   const quoteChar = isWindowsPath ? '"' : "'";
   const scriptPath = dmnBackendCompatibilityScriptPaths.get(script);
+
+  const jbangArgs = [] as string[];
+  jbangArgs.push("-Dkogito-runtime.version=" + buildEnv.env.kogitoRuntime.version);
+  jbangArgs.push(scriptPath!);
+  args?.forEach((arg) => jbangArgs.push(quoteChar + arg + quoteChar));
+
   jbang.exec("properties@jbangdev", "java.version");
-  jbang.exec(
-    "-Dkogito-runtime.version=" + buildEnv.env.kogitoRuntime.version,
-    scriptPath,
-    args.map((arg) => quoteChar + arg + quoteChar).join(" ")
-  );
+  jbang.exec(jbangArgs.join(" "));
 }
-
-export function prefetch() {
-  new Error("asd");
-}
-
-//module.exports.prefetch = prefetch;

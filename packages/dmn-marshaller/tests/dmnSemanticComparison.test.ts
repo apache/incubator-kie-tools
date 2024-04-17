@@ -85,7 +85,7 @@ export const dmnSemanticComparisonGeneratedFilesDirectory = path.join(
   "../../dist-tests/dmnSemanticComparison-generated-files"
 );
 
-describe("JBang Scripts Test Suite", () => {
+describe("DMN Semantic Comparison", () => {
   beforeAll(() => {
     if (fs.existsSync(dmnSemanticComparisonGeneratedFilesDirectory)) {
       fs.rmSync(dmnSemanticComparisonGeneratedFilesDirectory, { recursive: true });
@@ -93,10 +93,6 @@ describe("JBang Scripts Test Suite", () => {
     fs.mkdirSync(dmnSemanticComparisonGeneratedFilesDirectory, { recursive: true });
   });
 
-  executeSemanticComparisonTests();
-});
-
-export function executeSemanticComparisonTests() {
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
   }
@@ -105,7 +101,7 @@ export function executeSemanticComparisonTests() {
     file.importer = path.join(dmnTestingModelsPath, file.importer);
     testImportedFile(file);
   }
-}
+});
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
   test(

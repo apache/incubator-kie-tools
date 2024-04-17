@@ -81,7 +81,7 @@ const dmnTestingImportedModels = [
 ];
 export const dmnValidationGeneratedFilesDirectory = path.join(__dirname, "../dist-tests/dmnValidation-generated-files");
 
-describe("JBang Scripts Test Suite", () => {
+describe("DMN Validation", () => {
   beforeAll(() => {
     if (fs.existsSync(dmnValidationGeneratedFilesDirectory)) {
       fs.rmSync(dmnValidationGeneratedFilesDirectory, { recursive: true });
@@ -89,10 +89,6 @@ describe("JBang Scripts Test Suite", () => {
     fs.mkdirSync(dmnValidationGeneratedFilesDirectory, { recursive: true });
   });
 
-  executeValidationTests();
-});
-
-export function executeValidationTests() {
   for (const file of dmnTestingModels) {
     testFile(path.join(dmnTestingModelsPath, file));
   }
@@ -101,7 +97,7 @@ export function executeValidationTests() {
     file.importer = path.join(dmnTestingModelsPath, file.importer);
     testImportedFile(file);
   }
-}
+});
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
   test(

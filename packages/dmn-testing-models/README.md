@@ -19,4 +19,3 @@ To make them available for testing purpose:
 3. cd dmn-testing-models
 4. `pnpm install` (this creates the required mvn configuration)
 5. `pnpm build:dev` or `pnpm build:prod` (they behave the same way - this executes `mvn clean generate-resources`)
-6.
