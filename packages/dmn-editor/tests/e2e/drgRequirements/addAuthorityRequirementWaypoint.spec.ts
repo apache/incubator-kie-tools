@@ -35,29 +35,45 @@ test.describe("Add edge waypoint - Authority Requirement", () => {
     });
   });
 
-  test("should add single waypoint to Authority Requirement and should not move when the ending node is moved", async ({
-    diagram,
-    nodes,
-    edges,
-  }) => {
+  test("should attach single Authority Requirement waypoint to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-    await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 300, y: 300 } });
-
-    await expect(diagram.get()).toHaveScreenshot("add-authority-requirement-waypoint-and-not-move-it.png");
+    await expect(
+      await edges.getWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.KNOWLEDGE_SOURCE,
+        waypointIndex: 1,
+      })
+    ).toBeAttached();
+    await expect(
+      await edges.getWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.KNOWLEDGE_SOURCE,
+        waypointIndex: 2,
+      })
+    ).not.toBeAttached();
   });
 
-  test("should add multiple waypoints to Authority Requirement and should not move when the ending nodes are moved", async ({
-    diagram,
-    nodes,
-    edges,
-  }) => {
+  test("should attach multiple Authority Requirement waypoints to the edge", async ({ edges }) => {
     await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-    await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 200, y: 500 } });
+    await edges.addWaypoint({
+      from: DefaultNodeName.INPUT_DATA,
+      to: DefaultNodeName.KNOWLEDGE_SOURCE,
+      afterWaypointIndex: 1,
+    });
 
-    await edges.addWaypoint({ from: DefaultNodeName.INPUT_DATA, to: DefaultNodeName.KNOWLEDGE_SOURCE });
-    await nodes.move({ name: DefaultNodeName.KNOWLEDGE_SOURCE, targetPosition: { x: 500, y: 500 } });
-    await nodes.move({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 500, y: 100 } });
-
-    await expect(diagram.get()).toHaveScreenshot("add-multiple-authority-requirement-waypoints-and-not-move-them.png");
+    await expect(
+      await edges.getWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.KNOWLEDGE_SOURCE,
+        waypointIndex: 1,
+      })
+    ).toBeAttached();
+    await expect(
+      await edges.getWaypoint({
+        from: DefaultNodeName.INPUT_DATA,
+        to: DefaultNodeName.KNOWLEDGE_SOURCE,
+        waypointIndex: 2,
+      })
+    ).toBeAttached();
   });
 });

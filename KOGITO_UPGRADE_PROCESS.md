@@ -79,7 +79,7 @@ The Kogito version is present in the following file categories:
 The best (and fastest) way to catch all the Kogito versions is to perform a search a grep (or the IDE integrated search) and replace it with the new version. So, as a key, you can use:
 
 - The version number: `X.Y.Z` or `X.Y.Z-YYYYMMDD-SNAPSHOT` format (eg. `10.0.0` or `10.1.0-20240424-SNAPSHOT`);
-- Images references: `main-YYYY-MM-DD` or `X.Y.Z-YYYYMMDD` format (eg. `main-2024-04-24` or `10.1.0-20240424` in case of snapshot version)
+- Images references: `main-YYYY-MM-DD` (Daily builds) or `X.Y.Z-YYYYMMDD` (Weekly builds) format (eg. `main-2024-04-24` or `10.1.0-20240424` in case of snapshot version)
 
 Of course, a new Kogito version may lead to incompatibilities in the code and with other dependencies. In such a case, an investigation and evetually a fix is required to complete the process.
 
@@ -93,7 +93,7 @@ You need to update the `pom.xml` file of the `0.0.0` branch with the same versio
 To test the `kie-sandbox-quarkus-accelerator` module with the updated version, please follow these steps:
 
 - Create a PR with the updated version in the `pom.xml` file;
-- In kie-tools, `temporarily change gitRepositoryUrl` key in `packages/online-editor/build/defaultEnvJson.ts` to point to your fork's PR (the one created in the above step)
+- In kie-tools, `temporarily change gitRepositoryUrl` (fork link) and `gitRepositoryGitRef` (branch name) keys in `packages/online-editor/build/defaultEnvJson.ts` to point to your fork's PR (the one created in the above step)
 - Run `pnpm -F @kie-tools/cors-proxy... build:dev` and `pnpm -F @kie-tools/cors-proxy start`;
 - Run `pnpm -F @kie-tools/online-editor... build:dev` and `pnpm -F @kie-tools/online-editor start` to test it.
 

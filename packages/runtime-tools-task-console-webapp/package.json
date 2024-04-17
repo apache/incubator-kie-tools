@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/runtime-tools-task-console-webapp",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "license": "Apache-2.0",
   "author": "",
   "keywords": [],
@@ -17,7 +17,7 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "dev": "concurrently 'pnpm  start' 'pnpm run dev:server'",
-    "dev:server": "nodemon ./server/app.js",
+    "dev:server": "nodemon ./dev/server/app.js",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
@@ -25,6 +25,7 @@
   "dependencies": {
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools/runtime-tools-components": "workspace:*",
     "@kie-tools/runtime-tools-process-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-process-gateway-api": "workspace:*",

@@ -26,9 +26,8 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
-      <version>8.22.0-SNAPSHOT</version>
+      <version>999-20240414-SNAPSHOT</version>
     </dependency>
   </dependencies>
-
 
 </project>

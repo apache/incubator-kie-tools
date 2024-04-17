@@ -18,7 +18,7 @@
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "dev": "concurrently 'pnpm  start' 'pnpm run dev:server'",
     "dev:rest-server": "nodemon ./server/restServer.js",
-    "dev:server": "nodemon ./server/app.js",
+    "dev:server": "nodemon ./dev/server/app.js",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
@@ -73,6 +73,7 @@
     "apollo-server-express": "^3.13.0",
     "babel-jest": "^25.5.1",
     "concurrently": "^8.2.2",
+    "copy-webpack-plugin": "^11.0.0",
     "core-js": "3.6.5",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^5.0.1",

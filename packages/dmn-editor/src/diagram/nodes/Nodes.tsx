@@ -239,7 +239,7 @@ export const InputDataNode = React.memo(
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
           style={alternativeSvgStyle}
-          className={`kie-dmn-editor--input-data-node ${selectedAlternativeClass}`}
+          className={`kie-dmn-editor--input-data-node ${additionalClasses} ${selectedAlternativeClass}`}
           ref={ref}
           tabIndex={-1}
           data-nodehref={id}
@@ -247,7 +247,7 @@ export const InputDataNode = React.memo(
         >
           {/* {`render count: ${renderCount.current}`}
           <br /> */}
-          <div className={`kie-dmn-editor--node ${additionalClasses}`}>
+          <div className={"kie-dmn-editor--node"}>
             <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
 
             <OutgoingStuffNodePanel
