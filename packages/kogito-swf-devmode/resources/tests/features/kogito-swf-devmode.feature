@@ -1,4 +1,4 @@
-@quay.io/kie-tools/kogito-swf-devmode
+@quay.io/kiegroup/kogito-swf-devmode
 Feature: Serverless Workflow devmode images
 
   Scenario: Verify if container starts in devmode by default

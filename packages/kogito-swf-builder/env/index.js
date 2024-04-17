@@ -26,7 +26,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image registry.",
     },
     KOGITO_SWF_BUILDER_IMAGE__account: {
-      default: "kie-tools",
+      default: "kiegroup",
       description: "The image registry account.",
     },
     KOGITO_SWF_BUILDER_IMAGE__name: {
@@ -34,7 +34,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image name.",
     },
     KOGITO_SWF_BUILDER_IMAGE__buildTag: {
-      default: "daily-dev",
+      default: "latest",
       description: "The image tag.",
     },
   }),

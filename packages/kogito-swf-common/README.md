@@ -24,8 +24,11 @@ To build and tests the images the package provides a convenient `Makefile` that 
 
 - `SWF_IMAGE_NAME`: (required) Specifies the image name to build. It should match the image descriptor.
 - `SWF_IMAGE_REGISTRY`: Image registry to use, defaults to 'quay.io'
-- `SWF_IMAGE_REGISTRY_ACCOUNT`: Image registry account to use, defaults to 'kie-tools'
+- `SWF_IMAGE_REGISTRY_ACCOUNT`: Image registry account to use, defaults to 'kiegroup'
 - `SWF_IMAGE_TAG`: Custom tag for the image. If not provided it will use the version in the image descriptor.
+
+- `QUARKUS_PLATFORM_VERSION`: (required) Quarkus platform version to use inside the image.
+- `KOGITO_VERSION`: (required) Kogito platform version to use inside the image.
 
 - `CEKIT_BUILD_OPTIONS`: extra build options, please refer to [docs.cekit.io](https://docs.cekit.io/en/latest/index.html)
 - `BUILD_ENGINE`: (docker/podman) engine used to build the image, defaults to docker

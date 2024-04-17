@@ -33,7 +33,7 @@
       - name: org.kie.kogito.swf.builder.build-config
       - name: org.kie.kogito.swf.common.build
 
-- name: "quay.io/kie-tools/kogito-swf-builder"
+- name: "quay.io/kiegroup/kogito-swf-builder"
   from: "registry.access.redhat.com/ubi8/openjdk-17:1.18"
   version: "0.0.0"
   description: "Sonataflow base builder with Quarkus extensions libraries preinstalled"

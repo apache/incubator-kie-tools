@@ -29,27 +29,32 @@ CURRENT_IMAGE_VERSION 		:= $(shell python scripts/retrieve_version.py)
 # SWF Image creation envs
 SWF_IMAGE_NAME				?= # Image name
 SWF_IMAGE_REGISTRY 			?= 'quay.io'
-SWF_IMAGE_REGISTRY_ACCOUNT 	?= 'kie-tools'
+SWF_IMAGE_REGISTRY_ACCOUNT 	?= 'kiegroup'
 SWF_IMAGE_TAG 				?= $(CURRENT_IMAGE_VERSION) # Setting a default value if SWF_IMAGE_TAG env is not present
 SWF_FULL_IMAGE_NAME 		:= $(SWF_IMAGE_REGISTRY)/$(SWF_IMAGE_REGISTRY_ACCOUNT)/$(SWF_IMAGE_NAME)
 SWF_IMAGE_FILENAME			:= ${SWF_IMAGE_NAME}-image.yaml
 
+_check_swf_image_name:
+ifndef SWF_IMAGE_NAME
+ $(error Cannot build image, please provide a valid image name using the SWF_IMAGE_NAME env)
+endif
+
 # Check if there are Quarkus and Kogito version envs
 _check_versions:
-ifdef QUARKUS_PLATFORM_VERSION
- VERSIONS_MANAGER_ARGS := --quarkus-version ${QUARKUS_PLATFORM_VERSION}
+ifndef QUARKUS_PLATFORM_VERSION
+ $(error Cannot build image, please provide a valid Quarkus version using the QUARKUS_PLATFORM_VERSION env)
 endif
-ifdef KOGITO_VERSION
- VERSIONS_MANAGER_ARGS :=  ${VERSIONS_MANAGER_ARGS} --kogito-version ${KOGITO_VERSION}
+ifndef KOGITO_VERSION
+ $(error Cannot build image, please provide a valid Kogito version using the KOGITO_VERSION env)
 endif
 
 # Upgrade Quarkus & Kogito versions in the images and modules
 _run_version_manager:
-ifdef VERSIONS_MANAGER_ARGS
-	python scripts/versions_manager.py ${VERSIONS_MANAGER_ARGS}
+ifneq ($(QUARKUS_PLATFORM_VERSION)$(KOGITO_VERSION),)
+	python scripts/versions_manager.py --quarkus-version ${QUARKUS_PLATFORM_VERSION} --kogito-version ${KOGITO_VERSION}
 endif
 
-fix_platform_versions: _check_versions _run_version_manager
+_fix_platform_versions: _check_versions _run_version_manager
 
 # Building the SWF image with Cekit
 _cekit_build:
@@ -62,9 +67,9 @@ ifneq ($(SWF_IMAGE_TAG), $(CURRENT_IMAGE_VERSION))
 endif
 
 # Trigger the image tests
-.PHONY test-image: _test_image
+.PHONY test-image: _check_swf_image_name _test_image
 _test_image:
 	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} test behave
 	tests/shell/run.sh ${SWF_IMAGE_NAME} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
 
-.PHONY build: fix_platform_versions _cekit_build _tag_image
+.PHONY build: _check_swf_image_name _fix_platform_versions _cekit_build _tag_image

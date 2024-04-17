@@ -62,6 +62,6 @@ image along with the modules and scripts provided in `@kie-tools/kogito-swf-comm
 |                 Name                 |                    Description                     |       Default        |
 | :----------------------------------: | :------------------------------------------------: | :------------------: |
 | `KOGITO_SWF_BUILDER_IMAGE__registry` | Registry where the generated image will be pushed. |      "quay.io"       |
-| `KOGITO_SWF_BUILDER_IMAGE__account`  |        Account where image will be stored.         |     "kie-tools"      |
+| `KOGITO_SWF_BUILDER_IMAGE__account`  |        Account where image will be stored.         |      "kiegroup"      |
 |   `KOGITO_SWF_BUILDER_IMAGE__name`   |              SWF Builder Image name.               | "kogito-swf-builder" |
-| `KOGITO_SWF_BUILDER_IMAGE__buildTag` |                    Tag to use .                    |     "daily-dev"      |
+| `KOGITO_SWF_BUILDER_IMAGE__buildTag` |                    Tag to use .                    |       "latest"       |

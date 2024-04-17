@@ -1,4 +1,4 @@
-@quay.io/kie-tools/kogito-swf-builder
+@quay.io/kiegroup/kogito-swf-builder
 Feature: Serverless Workflow builder images
   Scenario: Verify if Kogito user is correctly configured
     When container is started with command sh

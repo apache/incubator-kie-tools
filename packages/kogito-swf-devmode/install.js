@@ -18,6 +18,14 @@
  */
 
 const buildEnv = require("./env");
-const { setupImageModules } = require("@kie-tools/kogito-swf-common/index.js");
 
-setupImageModules(`${__dirname}/resources`, buildEnv.env.kogitoSwfDevMode.version);
+const { execSync } = require("child_process");
+
+function setupImageModules() {
+  execSync(
+    `python ./node_modules/@kie-tools/kogito-swf-common/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfDevMode.version} --source-folder ./resources`,
+    { stdio: "inherit" }
+  );
+}
+
+setupImageModules();
