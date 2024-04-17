@@ -252,9 +252,13 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
 export function useConstraint({
   constraint,
   itemDefinition,
+  isEnumDisabled,
+  isRangeDisabled,
 }: {
   constraint: DMN15__tUnaryTests | undefined;
   itemDefinition: DMN15__tItemDefinition;
+  isEnumDisabled: boolean;
+  isRangeDisabled: boolean;
 }) {
   const constraintValue = useMemo(() => constraint?.text.__$$text, [constraint?.text.__$$text]);
 
@@ -266,13 +270,13 @@ export function useConstraint({
   );
 
   const isConstraintEnum = useMemo(
-    () => isEnum(constraintValue, constraintTypeHelper(typeRef).check),
-    [constraintValue, typeRef]
+    () => (isEnumDisabled ? undefined : isEnum(constraintValue, constraintTypeHelper(typeRef).check)),
+    [constraintValue, isEnumDisabled, typeRef]
   );
 
   const isConstraintRange = useMemo(
-    () => isRange(constraintValue, constraintTypeHelper(typeRef).check),
-    [constraintValue, typeRef]
+    () => (isRangeDisabled ? undefined : isRange(constraintValue, constraintTypeHelper(typeRef).check)),
+    [constraintValue, isRangeDisabled, typeRef]
   );
 
   const itemDefinitionId = useMemo(() => itemDefinition["@_id"], [itemDefinition]);
@@ -297,11 +301,12 @@ export function useConstraint({
   const isConstraintEnabled = useMemo(() => {
     const enabledConstraints = constrainableBuiltInFeelTypes.get(typeRef);
     return {
-      enumeration: (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.ENUMERATION)!),
-      range: (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.RANGE)!),
+      enumeration:
+        !isEnumDisabled && (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.ENUMERATION)!),
+      range: !isRangeDisabled && (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.RANGE)!),
       expression: (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.EXPRESSION)!),
     };
-  }, [enumToKieConstraintType, typeRef]);
+  }, [enumToKieConstraintType, isEnumDisabled, isRangeDisabled, typeRef]);
 
   const selectedConstraint = useMemo<ConstraintsType>(() => {
     if (isConstraintEnabled.enumeration && kieConstraintType === "enumeration") {
@@ -356,14 +361,18 @@ export function useConstraint({
   ]);
 }
 
-export function AllowedValuesConstraints({
+export function ConstraintsFromAllowedValuesAttribute({
   isReadonly,
   itemDefinition,
   editItemDefinition,
+  isEnumDisabled,
+  isRangeDisabled,
 }: {
   isReadonly: boolean;
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
+  isEnumDisabled?: boolean;
+  isRangeDisabled?: boolean;
 }) {
   const allowedValues = useMemo(() => itemDefinition?.allowedValues, [itemDefinition?.allowedValues]);
 
@@ -376,7 +385,12 @@ export function AllowedValuesConstraints({
     itemDefinitionId,
     selectedConstraint,
     enumToKieConstraintType,
-  } = useConstraint({ constraint: allowedValues, itemDefinition });
+  } = useConstraint({
+    constraint: allowedValues,
+    itemDefinition,
+    isEnumDisabled: isEnumDisabled ?? false,
+    isRangeDisabled: isRangeDisabled ?? false,
+  });
 
   const onConstraintChange = useCallback(
     (value?: string) => {
@@ -461,16 +475,20 @@ export function AllowedValuesConstraints({
   );
 }
 
-export function TypeConstraintConstraints({
+export function ConstraintsFromTypeConstraintAttribute({
   isReadonly,
   itemDefinition,
   editItemDefinition,
   defaultsToAllowedValues,
+  isEnumDisabled,
+  isRangeDisabled,
 }: {
   isReadonly: boolean;
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
   defaultsToAllowedValues: boolean;
+  isEnumDisabled?: boolean;
+  isRangeDisabled?: boolean;
 }) {
   const typeConstraint = useMemo(
     () =>
@@ -489,7 +507,12 @@ export function TypeConstraintConstraints({
     itemDefinitionId,
     selectedConstraint,
     enumToKieConstraintType,
-  } = useConstraint({ constraint: typeConstraint, itemDefinition });
+  } = useConstraint({
+    constraint: typeConstraint,
+    itemDefinition,
+    isEnumDisabled: isEnumDisabled ?? false,
+    isRangeDisabled: isRangeDisabled ?? false,
+  });
 
   const onConstraintChange = useCallback(
     (value?: string) => {

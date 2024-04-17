@@ -45,12 +45,13 @@ import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
-import { AllowedValuesConstraints, TypeConstraintConstraints } from "./Constraints";
+import { ConstraintsFromAllowedValuesAttribute, ConstraintsFromTypeConstraintAttribute } from "./Constraints";
 import { original } from "immer";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "./useResolvedTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 
 export function DataTypePanel({
   isReadonly,
@@ -365,19 +366,29 @@ export function DataTypePanel({
                 <Title size={"md"} headingLevel="h4">
                   Collection constraint
                 </Title>
-                <TypeConstraintConstraints
+                <ConstraintsFromTypeConstraintAttribute
                   isReadonly={isReadonly}
                   itemDefinition={dataType.itemDefinition}
                   editItemDefinition={editItemDefinition}
                   defaultsToAllowedValues={false}
+                  isEnumDisabled={true}
+                  isRangeDisabled={true}
                 />
-                <br />
                 <br />
                 <br />
                 <Title size={"md"} headingLevel="h4">
                   Collection item constraint
                 </Title>
-                <AllowedValuesConstraints
+                <Alert variant="warning" isInline isPlain title="Deprecated">
+                  <p>
+                    Creating constraints for the collection items directly on the collection itself is deprecated since
+                    DMN 1.5 and will possibly be removed in future versions. To prepare your DMN model for future
+                    updates, please create a dedicated Data Type for the items of this list and add constraints there.
+                  </p>
+                </Alert>
+                <br />
+
+                <ConstraintsFromAllowedValuesAttribute
                   isReadonly={isReadonly}
                   itemDefinition={dataType.itemDefinition}
                   editItemDefinition={editItemDefinition}
@@ -388,7 +399,7 @@ export function DataTypePanel({
                 <Title size={"md"} headingLevel="h4">
                   Constraints
                 </Title>
-                <TypeConstraintConstraints
+                <ConstraintsFromTypeConstraintAttribute
                   isReadonly={isReadonly}
                   itemDefinition={dataType.itemDefinition}
                   editItemDefinition={editItemDefinition}
