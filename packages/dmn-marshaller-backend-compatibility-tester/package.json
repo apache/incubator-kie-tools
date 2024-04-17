@@ -19,7 +19,7 @@
     "src"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm -c exec \"jbang -Dkogito-runtime.version=$(build-env kogitoRuntime.version) ./src/DmnMarshallerBackendCompatibilityTesterScript.java\"",
+    "build:dev": "rimraf dist && tsc -p tsconfig.json && node dist/index.js",
     "build:prod": "pnpm build:dev"
   },
   "devDependencies": {

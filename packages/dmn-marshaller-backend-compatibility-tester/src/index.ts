@@ -21,17 +21,24 @@ const buildEnv = require("../env");
 const jbang = require("@jbangdev/jbang");
 
 export enum DmnBackendCompatibilityScript {
+  PARENT_SCRIPT,
   DMN_VALIDATION,
   DMN_SEMANTIC_COMPARISON,
 }
 
 const dmnBackendCompatibilityScriptPaths = new Map([
+  [
+    DmnBackendCompatibilityScript.PARENT_SCRIPT,
+    path.join(__dirname, "..", "src", "DmnMarshallerBackendCompatibilityTesterScript.java"),
+  ],
   [DmnBackendCompatibilityScript.DMN_VALIDATION, path.join(__dirname, "..", "src", "DmnValidation.java")],
   [
     DmnBackendCompatibilityScript.DMN_SEMANTIC_COMPARISON,
     path.join(__dirname, "..", "src", "DmnSemanticComparison.java"),
   ],
 ]);
+
+executeJBangScript(DmnBackendCompatibilityScript.PARENT_SCRIPT, "");
 
 export function executeJBangScript(script: DmnBackendCompatibilityScript, ...args: string[]) {
   /* Windows requires double quotes to wrap the argument, while in POSIX it must be wrapped by single quotes */
@@ -45,3 +52,9 @@ export function executeJBangScript(script: DmnBackendCompatibilityScript, ...arg
     args.map((arg) => quoteChar + arg + quoteChar).join(" ")
   );
 }
+
+export function prefetch() {
+  new Error("asd");
+}
+
+//module.exports.prefetch = prefetch;
