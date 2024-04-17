@@ -18,7 +18,7 @@
  */
 
 import { XmlParserTsIdRandomizer } from "../src/idRandomizer";
-import { v4 as uuid } from "uuid";
+import { generateUuid, uuidRegExp } from "./uuid";
 
 export const elements = {
   root: "root",
@@ -54,13 +54,6 @@ export const meta = {
     luckyIds: { type: "string", isArray: true, fromType: "person", xsdType: "xsd:ID" },
   },
 } as const;
-
-/**
- * Generates a UUID with a format similar to _6EFDBCB4-F4AF-4E9A-9A66-2A9F24185674
- */
-const generateUuid = () => {
-  return `_${uuid()}`.toLocaleUpperCase();
-};
 
 function getXmlParserTsIdRandomizer() {
   return new XmlParserTsIdRandomizer({
@@ -108,7 +101,10 @@ describe("getOriginalIds", () => {
       })
       .getOriginalIds();
 
-    expect(originalIds).toEqual(new Set());
+    expect(Array.from(originalIds)).toHaveLength(1);
+    originalIds.forEach((orignalId) => {
+      expect(orignalId).toMatch(uuidRegExp);
+    });
   });
 
   test("array of objects", () => {
@@ -150,7 +146,10 @@ describe("getOriginalIds", () => {
       })
       .getOriginalIds();
 
-    expect(originalIds).toEqual(new Set());
+    expect(Array.from(originalIds)).toHaveLength(2);
+    originalIds.forEach((orignalId) => {
+      expect(orignalId).toMatch(uuidRegExp);
+    });
   });
 
   test("complete example - nested objects", () => {
