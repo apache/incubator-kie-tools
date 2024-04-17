@@ -19,9 +19,9 @@
     "src"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm fetch",
+    "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm prefetch",
     "build:prod": "pnpm build:dev",
-    "fetch": "node dist/dependenciesFetch.js"
+    "prefetch": "node dist/dependenciesFetch.js"
   },
   "devDependencies": {
     "@jbangdev/jbang": "0.2.0",

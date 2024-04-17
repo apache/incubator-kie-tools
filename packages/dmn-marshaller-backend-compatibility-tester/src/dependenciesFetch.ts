@@ -22,7 +22,7 @@ import { executeJBangScript, DmnBackendCompatibilityScript } from ".";
 /**
  * This file can be called to perform the JBang dependency prefetch.
  * To call it in a package.json script, use:
- * `node dist/prefetch.js` command.
+ * `node dist/dependenciesFetch.js` command.
  */
 
 executeJBangScript(DmnBackendCompatibilityScript.PARENT_SCRIPT);
