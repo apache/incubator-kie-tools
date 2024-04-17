@@ -23,7 +23,7 @@ import { DescriptionField, NameField, TypeRefField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
-import { useBoxedExpressionUpdater } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import {

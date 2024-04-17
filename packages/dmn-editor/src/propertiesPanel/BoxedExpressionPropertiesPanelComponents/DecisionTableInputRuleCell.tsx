@@ -23,7 +23,7 @@ import { DescriptionField, ExpressionLanguageField, TypeRefField } from "./Field
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DMN15__tDecisionTable, DMN15__tUnaryTests } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
-import { useBoxedExpressionUpdater } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Constraints } from "../../dataTypes/Constraints";

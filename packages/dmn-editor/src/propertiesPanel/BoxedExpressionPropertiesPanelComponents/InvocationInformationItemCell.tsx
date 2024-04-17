@@ -25,7 +25,7 @@ import {
   DMN15__tInvocation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useDmnEditorStore } from "../../store/StoreContext";
-import { useBoxedExpressionUpdater } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { InformationItemCell } from "./InformationItemCell";
 
 export function InvocationInformationItemCell(props: {

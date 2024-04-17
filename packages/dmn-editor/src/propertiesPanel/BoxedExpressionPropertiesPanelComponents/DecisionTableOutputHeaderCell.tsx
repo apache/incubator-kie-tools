@@ -26,7 +26,7 @@ import { DMN15__tOutputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { BoxedDecisionTable, DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
-import { useBoxedExpressionUpdater } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Constraints } from "../../dataTypes/Constraints";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";

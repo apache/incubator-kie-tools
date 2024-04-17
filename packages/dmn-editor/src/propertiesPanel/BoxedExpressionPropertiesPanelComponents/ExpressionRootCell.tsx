@@ -22,7 +22,7 @@ import { useMemo } from "react";
 import { DescriptionField } from "./Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
-import { useBoxedExpressionUpdater } from "./useUpdateBee";
+import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/StoreContext";
