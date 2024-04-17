@@ -17,5 +17,13 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "python",
+      "cekit",
+      "make",
+      "s2i"
+    ]
   }
 }

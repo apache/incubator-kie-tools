@@ -6,8 +6,6 @@
 - Install VSCode Red Hat's Java plugin
 - Install VSCode JBang plugin
 
-You can then edit the files in `kogito-swf-builder` and `kogito-swf-devmode` with intellisense.
-
 The `run.sh` should be used to run the tests since it must set a few env vars. To run from your terminal, try:
 
 ```shell

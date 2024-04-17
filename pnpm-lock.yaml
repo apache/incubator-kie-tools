@@ -5940,11 +5940,10 @@ importers:
         version: 1.1.2
 
   packages/kogito-swf-builder:
-    dependencies:
+    devDependencies:
       "@kie-tools/kogito-swf-common":
         specifier: workspace:*
         version: link:../kogito-swf-common
-    devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -5965,11 +5964,10 @@ importers:
         version: link:../root-env
 
   packages/kogito-swf-devmode:
-    dependencies:
+    devDependencies:
       "@kie-tools/kogito-swf-common":
         specifier: workspace:*
         version: link:../kogito-swf-common
-    devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env

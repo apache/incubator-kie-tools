@@ -21,7 +21,7 @@
 CEKIT_BUILD_OPTIONS 		?=
 CEKIT_CMD 					:= cekit -v ${CEKIT_BUILD_OPTIONS}
 BUILD_ENGINE 				?= docker
-BUILD_ENGINE_TLS_OPTIONS 	?=
+BUILD_ENGINE_OPTIONS 	 	?=
 
 # Resolving the current image version from the kogito.project.versions module. Cekit will use it to tag the image.
 CURRENT_IMAGE_VERSION 		:= $(shell python scripts/retrieve_version.py)
@@ -33,8 +33,6 @@ SWF_IMAGE_REGISTRY_ACCOUNT 	?= 'kie-tools'
 SWF_IMAGE_TAG 				?= $(CURRENT_IMAGE_VERSION) # Setting a default value if SWF_IMAGE_TAG env is not present
 SWF_FULL_IMAGE_NAME 		:= $(SWF_IMAGE_REGISTRY)/$(SWF_IMAGE_REGISTRY_ACCOUNT)/$(SWF_IMAGE_NAME)
 SWF_IMAGE_FILENAME			:= ${SWF_IMAGE_NAME}-image.yaml
-SWF_TEST_IMAGE				?= true
-SWF_TEST_OPTIONS			?=
 
 # Check if there are Quarkus and Kogito version envs
 _check_versions:
@@ -55,7 +53,7 @@ fix_platform_versions: _check_versions _run_version_manager
 
 # Building the SWF image with Cekit
 _cekit_build:
-	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} build ${CEKIT_BUILD_OPTIONS} ${BUILD_ENGINE}
+	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} build ${CEKIT_BUILD_OPTIONS} ${BUILD_ENGINE} ${BUILD_ENGINE_OPTIONS}
 
 # Tagging the generated image if SWF_IMAGE_TAG doesn't match the CURRENT_IMAGE_VERSION
 _tag_image:
@@ -66,10 +64,7 @@ endif
 # Trigger the image tests
 .PHONY test-image: _test_image
 _test_image:
-ifeq ($(SWF_TEST_IMAGE),true)
-	echo test options ${SWF_TEST_OPTIONS}
-	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} test behave ${SWF_TEST_OPTIONS}
+	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} test behave
 	tests/shell/run.sh ${SWF_IMAGE_NAME} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
-endif
 
 .PHONY build: fix_platform_versions _cekit_build _tag_image

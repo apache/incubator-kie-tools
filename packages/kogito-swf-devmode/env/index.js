@@ -37,10 +37,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "daily-dev",
       description: "The image tag.",
     },
-    KOGITO_SWF_DEVMODE_IMAGE__runTests: {
-      default: true,
-      description: "Run tests after build",
-    },
   }),
   get env() {
     return {
@@ -49,7 +45,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         account: getOrDefault(this.vars.KOGITO_SWF_DEVMODE_IMAGE__account),
         name: getOrDefault(this.vars.KOGITO_SWF_DEVMODE_IMAGE__name),
         tag: getOrDefault(this.vars.KOGITO_SWF_DEVMODE_IMAGE__buildTag),
-        tests: getOrDefault(this.vars.KOGITO_SWF_DEVMODE_IMAGE__runTests),
         version: require("../package.json").version,
       },
     };

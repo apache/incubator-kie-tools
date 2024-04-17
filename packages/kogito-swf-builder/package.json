@@ -14,20 +14,19 @@
   },
   "scripts": {
     "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:build\"",
-    "build:prod": "pnpm build:prod && pnpm image:test",
+    "build:prod": "pnpm build:dev && pnpm image:test",
     "copy-assets": "run-script-os",
     "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/kogito-swf-common/resources build && cp -R resources/* build",
     "image:build": "run-script-os",
     "image:build:linux:darwin": "pnpm setup:env make -C ./build build",
     "image:test": "run-script-os",
-    "image:test:linux:darwin": "pnpm setup:env make -C ./build test-image",
+    "image:test:darwin:win32": "echo \"pnpm image:test not supported\"",
+    "image:test:linux": "pnpm setup:env make -C ./build test-image",
     "install": "node install.js",
-    "setup:env": "cross-env SWF_IMAGE_REGISTRY=$(build-env kogitoSwfBuilder.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoSwfBuilder.account) SWF_IMAGE_NAME=$(build-env kogitoSwfBuilder.name) SWF_IMAGE_TAG=$(build-env kogitoSwfBuilder.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version) SWF_TEST_IMAGE=$(build-env kogitoSwfBuilder.runTests)"
-  },
-  "dependencies": {
-    "@kie-tools/kogito-swf-common": "workspace:*"
+    "setup:env": "cross-env SWF_IMAGE_REGISTRY=$(build-env kogitoSwfBuilder.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoSwfBuilder.account) SWF_IMAGE_NAME=$(build-env kogitoSwfBuilder.name) SWF_IMAGE_TAG=$(build-env kogitoSwfBuilder.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version)"
   },
   "devDependencies": {
+    "@kie-tools/kogito-swf-common": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
