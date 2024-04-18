@@ -288,3 +288,6 @@ packages/scesim-marshaller/**/ts-gen
 
 __pycache__
 packages/python-venv/venv
+
+# devbox
+.devbox
