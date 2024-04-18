@@ -77,25 +77,25 @@ export function DecisionTableOutputHeaderCell(props: {
 
   const alternativeFieldName = useMemo(() => {
     if (selectedObjectInfos?.expressionPath.length === 1) {
-      return "Decision Name";
+      return "Decision";
     }
     const parentType = selectedObjectInfos?.expressionPath[selectedObjectInfos?.expressionPath.length - 2].type;
     switch (parentType) {
       case "context":
-        return "Entry Name";
+        return "Entry";
       case "functionDefinition":
-        return "Function Name";
+        return "Function";
       case "invocation":
-        return "Parameter Name";
+        return "Parameter";
       case "list":
-        return "Item Name";
+        return "Item";
       case "conditional":
       case "every":
       case "filter":
       case "for":
       case "some":
       default:
-        return "Expression Name";
+        return "Expression";
     }
   }, [selectedObjectInfos?.expressionPath]);
 
@@ -107,13 +107,21 @@ export function DecisionTableOutputHeaderCell(props: {
         </ClipboardCopy>
       </FormGroup>
       {root?.output.length === 1 && (
-        <NameField
-          alternativeFieldName={alternativeFieldName}
-          isReadonly={true}
-          id={root["@_id"]!}
-          name={root?.["@_label"] ?? ""}
-          getAllUniqueNames={getAllUniqueNames}
-        />
+        <>
+          <NameField
+            alternativeFieldName={`${alternativeFieldName} Name`}
+            isReadonly={true}
+            id={root["@_id"]!}
+            name={root?.["@_label"] ?? ""}
+            getAllUniqueNames={getAllUniqueNames}
+          />
+          <TypeRefField
+            alternativeFieldName={`${alternativeFieldName} Type`}
+            isReadonly={true}
+            dmnEditorRootElementRef={dmnEditorRootElementRef}
+            typeRef={root?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+          />
+        </>
       )}
       <NameField
         alternativeFieldName={root?.output.length === 1 ? "Column Name" : undefined}
@@ -128,6 +136,7 @@ export function DecisionTableOutputHeaderCell(props: {
         }
       />
       <TypeRefField
+        alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
         isReadonly={props.isReadonly}
         dmnEditorRootElementRef={dmnEditorRootElementRef}
         typeRef={cell?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}

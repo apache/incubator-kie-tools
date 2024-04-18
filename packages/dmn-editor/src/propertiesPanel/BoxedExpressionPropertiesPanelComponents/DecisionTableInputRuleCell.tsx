@@ -57,7 +57,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
             (root?.cell as DMN15__tDecisionTable)?.input?.[cellPath.column ?? 0].inputExpression["@_typeRef"] ?? ""
-          ) ?? "";
+          ) ?? DmnBuiltInDataType.Undefined;
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
     }
@@ -80,7 +80,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
             title={"Input header type"}
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
-            typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef ?? DmnBuiltInDataType.Undefined}
+            typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef}
           />
         </>
       )}

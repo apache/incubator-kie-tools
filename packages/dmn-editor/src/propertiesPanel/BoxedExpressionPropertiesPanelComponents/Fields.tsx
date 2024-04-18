@@ -90,6 +90,7 @@ export function NameField(props: {
 }
 
 export function TypeRefField(props: {
+  alternativeFieldName?: string;
   title?: string;
   typeRef: string;
   isReadonly: boolean;
@@ -97,7 +98,7 @@ export function TypeRefField(props: {
   onChange?: (newTypeRef: string) => void;
 }) {
   return (
-    <FormGroup label={props.title ?? "Type"}>
+    <FormGroup label={props.alternativeFieldName ? props.alternativeFieldName : "Type"}>
       <TypeRefSelector
         heightRef={props.dmnEditorRootElementRef}
         typeRef={props.typeRef}

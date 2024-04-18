@@ -62,7 +62,7 @@ export function DecisionTableOutputRuleCell(props: {
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
             (root?.cell as DMN15__tDecisionTable)?.output?.[cellPath.column ?? 0]["@_typeRef"] ?? ""
-          ) ?? "";
+          ) ?? DmnBuiltInDataType.Undefined;
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
     }
@@ -85,7 +85,7 @@ export function DecisionTableOutputRuleCell(props: {
             title={"Output header type"}
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
-            typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef ?? DmnBuiltInDataType.Undefined}
+            typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef}
           />
         </>
       )}

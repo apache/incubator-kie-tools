@@ -51,6 +51,7 @@ import {
 } from "./BoxedExpressionPropertiesPanelComponents/getBoxedExpressionPropertiesPanelComponent";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { drgElementToBoxedExpression } from "../boxedExpressions/BoxedExpressionScreen";
 
 export function BoxedExpressionPropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -78,15 +79,14 @@ export function BoxedExpressionPropertiesPanel() {
       return;
     }
 
-    let expression: AllExpressions | undefined;
-    if (node.data.dmnObject?.__$$element === "businessKnowledgeModel") {
-      expression = { __$$element: "functionDefinition", ...node.data.dmnObject.encapsulatedLogic };
+    if (
+      node.data.dmnObject?.__$$element === "businessKnowledgeModel" ||
+      node.data.dmnObject?.__$$element === "decision"
+    ) {
+      const expression = drgElementToBoxedExpression(node.data.dmnObject);
+      return expression ? generateBoxedExpressionIndex(expression, new Map(), []) : undefined;
     }
-    if (node.data.dmnObject?.__$$element === "decision") {
-      expression = node.data.dmnObject.expression;
-    }
-
-    return expression ? generateBoxedExpressionIndex(expression, new Map(), []) : undefined;
+    return;
   }, [node?.data.dmnObject]);
 
   const boxedExpressionPropertiesPanelComponent = useMemo(() => {

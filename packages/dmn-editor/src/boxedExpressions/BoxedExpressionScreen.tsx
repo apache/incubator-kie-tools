@@ -383,10 +383,10 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             pmmlDocuments={pmmlDocuments}
             isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
             expressionHolderId={activeDrgElementId!}
-            expressionHolderName={drgElement?.variable?.["@_name"] || drgElement?.["@_name"] || ""}
+            expressionHolderName={drgElement?.variable?.["@_name"] ?? drgElement?.["@_name"] ?? ""}
             expressionHolderTypeRef={
-              drgElement?.variable?.["@_typeRef"] ||
-              expression?.boxedExpression?.["@_typeRef"] ||
+              drgElement?.variable?.["@_typeRef"] ??
+              expression?.boxedExpression?.["@_typeRef"] ??
               DmnBuiltInDataType.Undefined
             }
             expression={expression?.boxedExpression}
@@ -403,7 +403,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   );
 }
 
-function drgElementToBoxedExpression(
+export function drgElementToBoxedExpression(
   expressionHolder:
     | (DMN15__tDecision & { __$$element: "decision" })
     | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" })
