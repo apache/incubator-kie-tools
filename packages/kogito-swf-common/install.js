@@ -23,9 +23,14 @@ const buildEnv = require("./env");
 const path = require("path");
 const pythonVenvDir = path.dirname(require.resolve("@kie-tools/python-venv/package.json"));
 
+const activateCmd =
+  process.platform === "win32"
+    ? `${pythonVenvDir}\\venv\\Scripts\\Activate.bat`
+    : `. ${pythonVenvDir}/venv/bin/activate`;
+
 function setupModuleVersions() {
   execSync(
-    `. ${pythonVenvDir}/venv/bin/activate && 
+    `${activateCmd} && \
      python ./resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfCommon.version} --source-folder ./resources`,
     { stdio: "inherit" }
   );

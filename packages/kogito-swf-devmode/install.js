@@ -24,9 +24,14 @@ const path = require("path");
 const pythonVenvDir = path.dirname(require.resolve("@kie-tools/python-venv/package.json"));
 const kogitoSwfCommonDir = path.dirname(require.resolve("@kie-tools/kogito-swf-common/package.json"));
 
+const activateCmd =
+  process.platform === "win32"
+    ? `${pythonVenvDir}\\venv\\Scripts\\Activate.bat`
+    : `. ${pythonVenvDir}/venv/bin/activate`;
+
 function setupModuleVersions() {
   execSync(
-    `. ${pythonVenvDir}/venv/bin/activate && 
+    `${activateCmd} && \
      python ${kogitoSwfCommonDir}/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfDevMode.version} --source-folder ./resources`,
     { stdio: "inherit" }
   );
