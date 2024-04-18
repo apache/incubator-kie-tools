@@ -102,19 +102,26 @@ export class Nodes {
     }
   }
 
+  private getParentElement(args: { nodeName: string }) {
+    return this.get({ name: args.nodeName }).locator("..");
+  }
+
   public async getRectAttribute(args: { nodeName: string; attribute: "fill" | "stroke" }) {
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    return await this.get({ name: args.nodeName }).locator("..").locator("rect").nth(0).getAttribute(args.attribute);
+    // It's necessary to pick the parent element to have access to the SVG.
+    return await this.getParentElement({ nodeName: args.nodeName }).locator("rect").nth(0).getAttribute(args.attribute);
   }
 
   public async getPathAttribute(args: { nodeName: string; attribute: "fill" | "stroke" }) {
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    return await this.get({ name: args.nodeName }).locator("..").locator("path").nth(0).getAttribute(args.attribute);
+    // It's necessary to pick the parent element to have access to the SVG.
+    return await this.getParentElement({ nodeName: args.nodeName }).locator("path").nth(0).getAttribute(args.attribute);
   }
 
   public async getPolygonAttribute(args: { nodeName: string; attribute: "fill" | "stroke" }) {
-    // It's necessary to pick the parent element ".." to have access to the SVG.
-    return await this.get({ name: args.nodeName }).locator("..").locator("polygon").nth(0).getAttribute(args.attribute);
+    // It's necessary to pick the parent element to have access to the SVG.
+    return await this.getParentElement({ nodeName: args.nodeName })
+      .locator("polygon")
+      .nth(0)
+      .getAttribute(args.attribute);
   }
 
   public async hover(args: { name: string; position?: NodePosition }) {
