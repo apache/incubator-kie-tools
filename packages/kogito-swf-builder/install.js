@@ -26,7 +26,7 @@ const kogitoSwfCommonDir = path.dirname(require.resolve("@kie-tools/kogito-swf-c
 
 function setupModuleVersions() {
   execSync(
-    `source ${pythonVenvDir}/venv/bin/activate && 
+    `. ${pythonVenvDir}/venv/bin/activate && 
      python ${kogitoSwfCommonDir}/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfBuilder.version} --source-folder ./resources`,
     { stdio: "inherit" }
   );

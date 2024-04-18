@@ -25,7 +25,7 @@ const pythonVenvDir = path.dirname(require.resolve("@kie-tools/python-venv/packa
 
 function setupModuleVersions() {
   execSync(
-    `source ${pythonVenvDir}/venv/bin/activate && 
+    `. ${pythonVenvDir}/venv/bin/activate && 
      python ./resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfCommon.version} --source-folder ./resources`,
     { stdio: "inherit" }
   );
