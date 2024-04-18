@@ -428,10 +428,10 @@ export function drgElementToBoxedExpression(
       ? {
           ...expressionHolder.expression,
           "@_label":
-            expressionHolder.expression["@_label"] ??
             expressionHolder?.variable?.["@_name"] ??
+            expressionHolder.expression["@_label"] ??
             expressionHolder?.["@_name"],
-          "@_typeRef": expressionHolder.expression["@_typeRef"] ?? expressionHolder?.variable?.["@_typeRef"],
+          "@_typeRef": expressionHolder?.variable?.["@_typeRef"] ?? expressionHolder.expression["@_typeRef"],
         }
       : undefined;
   } else {
