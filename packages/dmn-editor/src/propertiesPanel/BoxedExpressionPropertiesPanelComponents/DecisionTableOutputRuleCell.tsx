@@ -82,7 +82,7 @@ export function DecisionTableOutputRuleCell(props: {
       {headerType && (
         <>
           <TypeRefField
-            title={"Output header type"}
+            alternativeFieldName={"Output header type"}
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef}

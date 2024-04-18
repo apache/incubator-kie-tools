@@ -77,7 +77,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
       {headerType && (
         <>
           <TypeRefField
-            title={"Input header type"}
+            alternativeFieldName={"Input header type"}
             isReadonly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={headerType.itemDefinition?.["@_name"] ?? headerType.typeRef}

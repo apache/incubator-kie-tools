@@ -91,7 +91,6 @@ export function NameField(props: {
 
 export function TypeRefField(props: {
   alternativeFieldName?: string;
-  title?: string;
   typeRef: string;
   isReadonly: boolean;
   dmnEditorRootElementRef: React.RefObject<HTMLElement>;
