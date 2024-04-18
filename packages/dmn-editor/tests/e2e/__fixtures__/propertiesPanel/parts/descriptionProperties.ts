@@ -18,16 +18,13 @@
  */
 
 import { Locator } from "@playwright/test";
-import { Diagram } from "../../diagram";
 
 export class DescriptionProperties {
-  constructor(public panel: Locator, public diagram: Diagram) {}
+  constructor(public panel: Locator) {}
 
   public async setDescription(args: { newDescription: string }) {
     await this.panel.getByPlaceholder("Enter a description...").fill(args.newDescription);
-
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel.getByPlaceholder("Enter a description...").press("Tab");
   }
 
   public async getDescription() {

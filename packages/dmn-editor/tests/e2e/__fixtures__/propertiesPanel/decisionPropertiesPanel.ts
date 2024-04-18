@@ -40,9 +40,9 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
     super(diagram, page);
     this.nameProperties = new NameProperties(this.panel(), page);
     this.dataTypeProperties = new DataTypeProperties(this.panel(), page);
-    this.descriptionProperties = new DescriptionProperties(this.panel(), diagram);
+    this.descriptionProperties = new DescriptionProperties(this.panel());
     this.documentationProperties = new DocumentationProperties(this.panel(), page);
-    this.fontProperties = new FontProperties(this.panel(), diagram);
+    this.fontProperties = new FontProperties(this.panel());
     this.shapeProperties = new ShapeProperties(this.panel());
   }
 
@@ -76,8 +76,7 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
 
   public async setQuestion(args: { newQuestion: string }) {
     await this.panel().getByPlaceholder("Enter a question...").fill(args.newQuestion);
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel().getByPlaceholder("Enter a question...").press("Tab");
   }
 
   public async getQuestion() {
@@ -86,8 +85,7 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
 
   public async setAllowedAnswers(args: { newAllowedAnswers: string }) {
     await this.panel().getByPlaceholder("Enter allowed answers...").fill(args.newAllowedAnswers);
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel().getByPlaceholder("Enter allowed answers...").press("Tab");
   }
 
   public async getAllowedAnswers() {

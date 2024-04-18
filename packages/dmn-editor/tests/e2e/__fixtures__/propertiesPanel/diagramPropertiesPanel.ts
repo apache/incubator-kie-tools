@@ -30,7 +30,7 @@ export class DiagramPropertiesPanel extends PropertiesPanelBase {
   constructor(public diagram: Diagram, public page: Page) {
     super(diagram, page);
     this.nameProperties = new NameProperties(this.panel(), page);
-    this.descriptionProperties = new DescriptionProperties(this.panel(), diagram);
+    this.descriptionProperties = new DescriptionProperties(this.panel());
   }
 
   public async setDescription(args: { newDescription: string }) {
@@ -51,9 +51,7 @@ export class DiagramPropertiesPanel extends PropertiesPanelBase {
 
   public async setExpressionLanguage(args: { expressionlangugae: string }) {
     await this.panel().getByPlaceholder("Enter an expression language...").fill(args.expressionlangugae);
-
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel().getByPlaceholder("Enter an expression language...").press("Tab");
   }
 
   public async getExpressionLanguage() {
@@ -62,9 +60,7 @@ export class DiagramPropertiesPanel extends PropertiesPanelBase {
 
   public async setId(args: { id: string }) {
     await this.panel().getByPlaceholder("Enter a diagram ID...").locator("input").fill(args.id);
-
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel().getByPlaceholder("Enter a diagram ID...").locator("input").press("Tab");
   }
 
   public async getId() {
@@ -73,9 +69,7 @@ export class DiagramPropertiesPanel extends PropertiesPanelBase {
 
   public async setNamespace(args: { namespace: string }) {
     await this.panel().getByPlaceholder("Enter a diagram Namespace...").locator("input").fill(args.namespace);
-
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel().getByPlaceholder("Enter a diagram Namespace...").locator("input").press("Tab");
   }
 
   public async getNamespace() {

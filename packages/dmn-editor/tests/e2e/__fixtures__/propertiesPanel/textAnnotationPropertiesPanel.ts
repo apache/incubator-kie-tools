@@ -31,15 +31,14 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
 
   constructor(public diagram: Diagram, public page: Page) {
     super(diagram, page);
-    this.descriptionProperties = new DescriptionProperties(this.panel(), diagram);
-    this.fontProperties = new FontProperties(this.panel(), diagram);
+    this.descriptionProperties = new DescriptionProperties(this.panel());
+    this.fontProperties = new FontProperties(this.panel());
     this.shapeProperties = new ShapeProperties(this.panel());
   }
 
   public async setFormat(args: { newFormat: string }) {
     await this.panel().getByPlaceholder("Enter a text format...").fill(args.newFormat);
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel().getByPlaceholder("Enter a text format...").press("Tab");
   }
 
   public async getFormat() {
@@ -48,8 +47,7 @@ export class TextAnnotationProperties extends PropertiesPanelBase {
 
   public async setText(args: { newText: string }) {
     await this.panel().getByPlaceholder("Enter text...").fill(args.newText);
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel().getByPlaceholder("Enter text...").press("Tab");
   }
 
   public async getText() {

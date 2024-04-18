@@ -37,9 +37,9 @@ export class KnowledgeSourcePropertiesPanel extends PropertiesPanelBase {
   constructor(public diagram: Diagram, public page: Page) {
     super(diagram, page);
     this.nameProperties = new NameProperties(this.panel(), page);
-    this.descriptionProperties = new DescriptionProperties(this.panel(), diagram);
+    this.descriptionProperties = new DescriptionProperties(this.panel());
     this.documentationProperties = new DocumentationProperties(this.panel(), page);
-    this.fontProperties = new FontProperties(this.panel(), diagram);
+    this.fontProperties = new FontProperties(this.panel());
     this.shapeProperties = new ShapeProperties(this.panel());
   }
 
@@ -73,8 +73,7 @@ export class KnowledgeSourcePropertiesPanel extends PropertiesPanelBase {
 
   public async setSourceType(args: { newSourceType: string }) {
     await this.panel().getByPlaceholder("Enter source type...").fill(args.newSourceType);
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel().getByPlaceholder("Enter source type...").press("Tab");
   }
 
   public async getSourceType() {
@@ -83,8 +82,7 @@ export class KnowledgeSourcePropertiesPanel extends PropertiesPanelBase {
 
   public async setLocationURI(args: { newLocationURI: string }) {
     await this.panel().getByPlaceholder("Enter location URI...").fill(args.newLocationURI);
-    // commit changes by click to the diagram
-    await this.diagram.resetFocus();
+    await this.panel().getByPlaceholder("Enter location URI...").press("Tab");
   }
 
   public async getLocationURI() {

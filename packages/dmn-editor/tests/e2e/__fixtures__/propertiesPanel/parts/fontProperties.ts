@@ -18,10 +18,9 @@
  */
 
 import { Locator } from "@playwright/test";
-import { Diagram } from "../../diagram";
 
 export class FontProperties {
-  constructor(public panel: Locator, public diagram: Diagram) {}
+  constructor(public panel: Locator) {}
 
   public async setFont(args: {
     fontSize?: string;
@@ -55,11 +54,10 @@ export class FontProperties {
       await this.panel.getByTestId("kie-tools--dmn-editor--color-picker-font").fill(args.color);
     }
     if (args.fontFamily) {
-      await this.panel.getByTestId("kie-tools--dmn-editor--properties-panel-node-font-style").click();
+      await this.panel.getByTestId("kie-tools--dmn-editor--properties-panel-node-font-style").click(); //open
       await this.panel.getByText(args.fontFamily).click();
+      await this.panel.getByTestId("kie-tools--dmn-editor--properties-panel-node-font-style").click(); //close
     }
-
-    await this.diagram.resetFocus();
   }
 
   public async resetFont() {
