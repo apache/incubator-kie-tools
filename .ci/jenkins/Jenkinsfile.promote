@@ -366,6 +366,8 @@ String getNewImageTag() {
 
 String[] getImages() {
     String images = getOldImageNames() ?: env.IMAGES_LIST ?: runPythonCommand("make list | tr '\\n' ','", true).trim()
+    // Temporary removal of kogito-swf-* images that have been moved to kie-tools for the Apache 10 release
+    images = images.replace("kogito-swf-builder,", "").replace("kogito-swf-devmode,", "")
     return images.split(',')
 }
 
