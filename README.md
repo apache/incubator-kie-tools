@@ -20,6 +20,8 @@ This repository contains tooling applications and libraries for KIE projects.
 
 ## Build from source
 
+> **💡 Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools above, read more in [here](./NIX_DEV_ENV.md).
+
 To start building the Apache KIE Tools project, you're going to need:
 
 - Node `18` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
@@ -31,24 +33,17 @@ To start building the Apache KIE Tools project, you're going to need:
 
 > **ℹ️ NOTE:** Some packages will require that `make` is available as well.
 
-> **ℹ️ NOTE:** \*nix users will also need:
->
-> - `lib-gtk-3-dev`
-> - `appindicator3-0.1` (`libayatana-appindicator3-dev` or `libappindicator-gtk3-devel` and `gir1.2-appindicator3-0.1`)
-
-> **ℹ️ NOTE:** Users of Fedora or RHEL will need to add a repository:
->
-> `sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm`
-
 After installing the tools above, you'll need to download the dependencies and link the packages locally. Simply run:
 
 - `pnpm bootstrap`
+
+  > **ℹ️ NOTE:** If you plan on running Playwright tests, set the `PLAYWRIGHT_BASE__installDeps` environment variable to `true` before running the command above: `PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap`. This will install all Playwright dependencies (such as browsers engines and OS specific libraries).
 
 To install only the dependencies that are relevant to the package called `[pkg-name]`.
 
 - `pnpm bootstrap -F [pkg-name]...`
 
-  > **⚠️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
+  > **ℹ️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
 
 After dependencies are installed, you'll be able to build. To do so, you'll have two choices - `dev`, or `prod`.
 
@@ -57,7 +52,7 @@ Note that it is recommended that you specify which package you want to build, so
 - `pnpm -F [pkg-name]... build:dev` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
 - `pnpm -F [pkg-name]... build:prod` - The default command to build production-ready packages. Use that to make sure your changes are correct.
 
-> **⚠️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
+> **ℹ️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
 
 > **ℹ️ NOTE:** If you want to build _everything_, run `pnpm -r build:dev` or `pnpm -r build:prod`. It's going to take a while, though :)
 
