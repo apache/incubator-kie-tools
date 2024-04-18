@@ -32,7 +32,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Constraints } from "../../dataTypes/Constraints";
+import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
@@ -161,11 +161,12 @@ function FunctionDefinitionParameterTypeRef(props: {
       />
       {itemDefinition && (
         <FormGroup label="Constraint">
-          <Constraints
+          <ConstraintsFromTypeConstraintAttribute
             isReadonly={true}
             itemDefinition={itemDefinition}
             editItemDefinition={() => {}}
             renderOnPropertiesPanel={true}
+            defaultsToAllowedValues={true}
           />
         </FormGroup>
       )}

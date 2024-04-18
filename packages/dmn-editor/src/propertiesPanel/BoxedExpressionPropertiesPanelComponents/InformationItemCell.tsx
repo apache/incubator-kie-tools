@@ -27,7 +27,7 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
-import { Constraints } from "../../dataTypes/Constraints";
+import { Constraints, ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
 
@@ -82,11 +82,12 @@ export function InformationItemCell(props: {
       />
       {itemDefinition && (
         <FormGroup label="Constraint">
-          <Constraints
+          <ConstraintsFromTypeConstraintAttribute
             isReadonly={true}
             itemDefinition={itemDefinition}
             editItemDefinition={() => {}}
             renderOnPropertiesPanel={true}
+            defaultsToAllowedValues={true}
           />
         </FormGroup>
       )}

@@ -26,7 +26,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContex
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Constraints } from "../../dataTypes/Constraints";
+import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
@@ -87,11 +87,12 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
       {headerType?.itemDefinition && (
         <>
           <FormGroup label="Constraint">
-            <Constraints
+            <ConstraintsFromTypeConstraintAttribute
               isReadonly={true}
               itemDefinition={headerType.itemDefinition}
               editItemDefinition={() => {}}
               renderOnPropertiesPanel={true}
+              defaultsToAllowedValues={true}
             />
           </FormGroup>
         </>

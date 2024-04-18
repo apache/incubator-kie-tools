@@ -28,7 +28,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
-import { Constraints } from "../../dataTypes/Constraints";
+import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
@@ -122,11 +122,12 @@ export function DecisionTableInputHeaderCell(props: {
             />
             {inputExpressionItemDefinition && (
               <FormGroup label="Constraint">
-                <Constraints
+                <ConstraintsFromTypeConstraintAttribute
                   isReadonly={true}
                   itemDefinition={inputExpressionItemDefinition}
                   editItemDefinition={() => {}}
                   renderOnPropertiesPanel={true}
+                  defaultsToAllowedValues={true}
                 />
               </FormGroup>
             )}

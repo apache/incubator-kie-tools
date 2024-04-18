@@ -373,7 +373,7 @@ export function ConstraintsFromAllowedValuesAttribute({
   isReadonly: boolean;
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
-  renderOnPropertiesPanel: boolean;
+  renderOnPropertiesPanel?: boolean;
   isEnumDisabled?: boolean;
   isRangeDisabled?: boolean;
 }) {
@@ -491,7 +491,7 @@ export function ConstraintsFromTypeConstraintAttribute({
   isReadonly: boolean;
   itemDefinition: DMN15__tItemDefinition;
   editItemDefinition: EditItemDefinition;
-  renderOnPropertiesPanel: boolean;
+  renderOnPropertiesPanel?: boolean;
   defaultsToAllowedValues: boolean;
   isEnumDisabled?: boolean;
   isRangeDisabled?: boolean;
@@ -627,7 +627,7 @@ export function Constraints({
     expression: boolean;
   };
   selectedConstraint: ConstraintsType;
-  renderOnPropertiesPanel: boolean;
+  renderOnPropertiesPanel?: boolean;
   onToggleGroupChange: (
     selected: boolean,
     event: React.KeyboardEvent<Element> | MouseEvent | React.MouseEvent<any, MouseEvent>

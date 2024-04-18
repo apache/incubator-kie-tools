@@ -28,7 +28,7 @@ import {
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Constraints } from "../../dataTypes/Constraints";
+import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
@@ -92,11 +92,12 @@ export function DecisionTableOutputRuleCell(props: {
       {headerType?.itemDefinition && (
         <>
           <FormGroup label="Constraint">
-            <Constraints
+            <ConstraintsFromTypeConstraintAttribute
               isReadonly={true}
               itemDefinition={headerType.itemDefinition}
               editItemDefinition={() => {}}
               renderOnPropertiesPanel={true}
+              defaultsToAllowedValues={true}
             />
           </FormGroup>
         </>
