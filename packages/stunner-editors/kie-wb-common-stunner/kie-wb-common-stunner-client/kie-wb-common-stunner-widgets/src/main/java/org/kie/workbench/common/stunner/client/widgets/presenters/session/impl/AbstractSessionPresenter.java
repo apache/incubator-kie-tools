@@ -302,10 +302,10 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     private void showError(final ClientRuntimeError error) {
         if (isDisplayErrors()) {
-            getView().showError(error.getMessage());
+            getView().showError(error.getErrorMessage());
         }
 
-        log(error.getMessage(), error.getThrowable());
+        log(error.getErrorMessage(), error.getThrowable());
     }
 
     @SuppressWarnings("unchecked")

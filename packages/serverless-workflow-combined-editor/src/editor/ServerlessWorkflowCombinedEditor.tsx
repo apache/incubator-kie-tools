@@ -68,6 +68,7 @@ import { ServerlessWorkflowCombinedEditorChannelApi, SwfPreviewOptions } from ".
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
 import { UseSwfTextEditorChannelApiArgs, useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
 import { colorNodes } from "./helpers/ColorNodes";
+import "./styles.scss";
 
 interface Props {
   locale: string;
@@ -469,7 +470,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       ) : previewOptions?.editorMode === "text" ? (
         renderTextEditor()
       ) : (
-        <Drawer isExpanded={true} isInline={true}>
+        <Drawer isExpanded={true} isInline={true} className={getThemeStyle(theme!)}>
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={previewOptions?.defaultWidth ?? "50%"}>
@@ -484,5 +485,16 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     </div>
   );
 };
+
+function getThemeStyle(theme: EditorTheme) {
+  switch (theme) {
+    case EditorTheme.DARK: {
+      return "dark";
+    }
+    default: {
+      return "";
+    }
+  }
+}
 
 export const ServerlessWorkflowCombinedEditor = forwardRef(RefForwardingServerlessWorkflowCombinedEditor);

@@ -29,6 +29,9 @@ import { CutIcon } from "@patternfly/react-icons/dist/js/icons/cut-icon";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
+import { RebootingIcon } from "@patternfly/react-icons/dist/js/icons/rebooting-icon";
+import { ResourcesAlmostEmptyIcon } from "@patternfly/react-icons/dist/js/icons/resources-almost-empty-icon";
+import { ResourcesFullIcon } from "@patternfly/react-icons/dist/js/icons/resources-full-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BoxedExpression } from "../../api";
@@ -47,13 +50,14 @@ import { LiteralExpression } from "../LiteralExpression/LiteralExpression";
 import { RelationExpression } from "../RelationExpression/RelationExpression";
 import {
   BoxedExpressionClipboard,
-  DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE,
   buildClipboardFromExpression,
+  DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE,
 } from "../../clipboard/clipboard";
 import { findAllIdsDeep, mutateExpressionRandomizingIds } from "../../ids/ids";
 import "./ExpressionDefinitionLogicTypeSelector.css";
 import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { ConditionalExpression } from "../ConditionalExpression/ConditionalExpression";
+import { IteratorExpressionComponent } from "../IteratorExpression/IteratorExpressionComponent";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -95,9 +99,9 @@ export function ExpressionDefinitionLogicTypeSelector({
       "invocation",
       ...(isNested ? (["functionDefinition"] as const) : []),
       ...(!hideDmn14BoxedExpressions ? (["conditional"] as const) : []),
-      // "for",
-      // "every",
-      // "some",
+      "for",
+      "every",
+      "some",
       // "filter",
     ],
     [hideDmn14BoxedExpressions, isNested]
@@ -134,6 +138,9 @@ export function ExpressionDefinitionLogicTypeSelector({
       case "for":
       case "every":
       case "some":
+        return (
+          <IteratorExpressionComponent expression={expression} isNested={isNested} parentElementId={parentElementId} />
+        );
       case "filter":
         return <></>;
       default:
@@ -235,8 +242,11 @@ export function ExpressionDefinitionLogicTypeSelector({
           </span>
         );
       case "for":
+        return <RebootingIcon />;
       case "every":
+        return <ResourcesFullIcon />;
       case "some":
+        return <ResourcesAlmostEmptyIcon />;
       case "filter":
         return <></>;
       default:
@@ -330,6 +340,25 @@ export function ExpressionDefinitionLogicTypeSelector({
         return "A boxed list expression in DMN represents a FEEL list of items. You use boxed lists to define lists of relevant items for a particular node in a decision.";
       case "conditional":
         return 'A boxed conditional offers a visual representation of an if statement using three rows. The expression in the "if" part MUST resolve to a boolean.';
+      case "for":
+        return (
+          "A boxed iterator offers a visual representation of an iterator statement. " +
+          'For the for loop, the right part of the "for" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection.' +
+          " The last row contains the expression that will process each element of the collection."
+        );
+
+      case "every":
+        return (
+          "A boxed iterator offers a visual representation of an iterator statement. " +
+          'For the "every" loop, the right part of the "every" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection.' +
+          "The last line is an expression that will be evaluated on each item. The expression defined in the satisfies MUST resolve to a boolean."
+        );
+      case "some":
+        return (
+          "A boxed iterator offers a visual representation of an iterator statement. " +
+          'For the "some" loop, the right part of the "some" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. ' +
+          "The last line is an expression that will be evaluated on each item. The expression defined in the satisfies MUST resolve to a boolean."
+        );
       default:
         return "";
     }

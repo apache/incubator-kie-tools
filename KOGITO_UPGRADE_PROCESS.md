@@ -93,7 +93,7 @@ You need to update the `pom.xml` file of the `0.0.0` branch with the same versio
 To test the `kie-sandbox-quarkus-accelerator` module with the updated version, please follow these steps:
 
 - Create a PR with the updated version in the `pom.xml` file;
-- In kie-tools, `temporarily change gitRepositoryUrl` key in `packages/online-editor/build/defaultEnvJson.ts` to point to your fork's PR (the one created in the above step)
+- In kie-tools, `temporarily change gitRepositoryUrl` (fork link) and `gitRepositoryGitRef` (branch name) keys in `packages/online-editor/build/defaultEnvJson.ts` to point to your fork's PR (the one created in the above step)
 - Run `pnpm -F @kie-tools/cors-proxy... build:dev` and `pnpm -F @kie-tools/cors-proxy start`;
 - Run `pnpm -F @kie-tools/online-editor... build:dev` and `pnpm -F @kie-tools/online-editor start` to test it.
 

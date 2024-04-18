@@ -21,8 +21,8 @@
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "run-script-os",
-    "start:darwin:linux": "pnpm build:dev && cross-env CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js",
-    "start:win32": "pnpm build:dev && pnpm powershell \"cross-env CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js\"",
+    "start:darwin:linux": "pnpm build:dev && cross-env CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ORIGIN=$(build-env corsProxy.dev.oring) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js",
+    "start:win32": "pnpm build:dev && pnpm powershell \"cross-env CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ORIGIN=$(build-env corsProxy.dev.oring) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {

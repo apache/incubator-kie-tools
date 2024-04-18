@@ -4258,8 +4258,8 @@ importers:
   packages/extended-services:
     dependencies:
       "@kie-tools/jitexecutor-native":
-        specifier: 999.0.0-20240411-SNAPSHOT
-        version: 999.0.0-20240411-SNAPSHOT
+        specifier: 999.0.0-20240417-SNAPSHOT
+        version: 999.0.0-20240417-SNAPSHOT
     devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
@@ -9647,6 +9647,9 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -23140,9 +23143,9 @@ packages:
       { integrity: sha512-dxmfwq2F+yxawuGrVVRGmTeZHTqRHa79Vp4FX2KEXHAA9AgK1aaVz8mxZxXYFs2ycfp30NjWvhZCOIRbIKTjAQ== }
     dev: false
 
-  /@kie-tools/jitexecutor-native@999.0.0-20240411-SNAPSHOT:
+  /@kie-tools/jitexecutor-native@999.0.0-20240417-SNAPSHOT:
     resolution:
-      { integrity: sha512-8dDdH7yAo3HM4Rh1cmelrrcsIZR+NGkxpiNQYEge+yriIiU/j0GzD3Pu6blLqpYXuT3U/mlyKRcI+qP56GnlSw== }
+      { integrity: sha512-SkRpqYfS24Y+C6rzH0MUozIYvBJvfZkHtCQ+coAxyu9G3aO4ksQLdd33bwWP/27yjjzI75yDmlL6RXG5/LBkkw== }
     dev: false
 
   /@koa/cors@3.4.3:

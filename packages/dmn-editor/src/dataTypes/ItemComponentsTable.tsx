@@ -269,13 +269,22 @@ export function ItemComponentsTable({
                 level * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
 
               const constraintLabel = () => {
-                if (dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "enumeration") {
+                if (
+                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "enumeration" ||
+                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "enumeration"
+                ) {
                   return <>Enumeration</>;
                 }
-                if (dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "expression") {
+                if (
+                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "expression" ||
+                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "expression"
+                ) {
                   return <>Expression</>;
                 }
-                if (dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "range") {
+                if (
+                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "range" ||
+                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "range"
+                ) {
                   return <>Range</>;
                 }
 
@@ -380,9 +389,11 @@ export function ItemComponentsTable({
                               if (isChecked) {
                                 itemDefinition.typeRef = undefined;
                                 itemDefinition.itemComponent = [];
+                                itemDefinition.typeConstraint = undefined;
                                 itemDefinition.allowedValues = undefined;
                               } else {
                                 itemDefinition.typeRef = { __$$text: DmnBuiltInDataType.Any };
+                                itemDefinition.typeConstraint = undefined;
                                 itemDefinition.allowedValues = undefined;
                               }
                             });
@@ -406,6 +417,7 @@ export function ItemComponentsTable({
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                                 itemDefinition.typeRef = { __$$text: newDataType };
                                 if (itemDefinition.typeRef?.__$$text !== newDataType) {
+                                  itemDefinition.typeConstraint = undefined;
                                   itemDefinition.allowedValues = undefined;
                                 }
                               });
@@ -420,6 +432,7 @@ export function ItemComponentsTable({
                           onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               itemDefinition["@_isCollection"] = isChecked;
+                              itemDefinition.typeConstraint = undefined;
                               itemDefinition.allowedValues = undefined;
                             });
                           }}
