@@ -38,7 +38,8 @@
   "kieTools": {
     "requiredPreinstalledCliCommands": [
       "python",
-      "make"
+      "make",
+      "s2i"
     ]
   }
 }

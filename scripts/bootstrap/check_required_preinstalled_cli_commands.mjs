@@ -33,6 +33,7 @@ const argsByCommand = new Map([
   ["helm", ["version"]],
   ["python", ["--version"]],
   ["pip", ["--version"]],
+  ["s2i", ["version"]],
 ]);
 
 async function main() {
