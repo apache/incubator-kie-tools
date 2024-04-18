@@ -21,7 +21,10 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
-import { executeDMNValidationScript } from "@kie-tools/dmn-marshaller-backend-compatibility-tester";
+import {
+  checkDMNValidation,
+  checkDMNValidationWithImports,
+} from "@kie-tools/dmn-marshaller-backend-compatibility-tester";
 
 /**
  * This test suite validates the xml produced (parsed and built) by the marshaller relying on KIE DMN Validator
@@ -104,7 +107,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const generatedXMLFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
       try {
-        executeDMNValidationScript("--command=no_imports", "--dmnFilePath=" + generatedXMLFilePath);
+        checkDMNValidation(generatedXMLFilePath);
       } catch (error) {
         fail(error.cause);
       }
@@ -123,11 +126,10 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       const importerGeneratedXMLFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeDMNValidationScript(
-          "--command=with_imports",
-          "--dmnFilePath=" + importedGeneratedXMLFilePath,
-          "--importedDmnFilesPaths=" + importerGeneratedXMLFilePath
-        );
+        checkDMNValidationWithImports({
+          dmnFilePath: importedGeneratedXMLFilePath,
+          importedDmnFilesPaths: [importerGeneratedXMLFilePath],
+        });
       } catch (error) {
         fail(error.cause);
       }

@@ -31,6 +31,6 @@ The entry point of this module is the `index.js` file that exports:
 To execute a specific JBang script present in this module you must:
 
 - Import the `"@kie-tools/dmn-marshaller-backend-compatibility-tester"` dependency;
-- Import the `executeDMNValidationScript` or `executeDMNSemanticComparisonScript` in your JS/TS file;
-- Execute one of the above scripts passing its required args: eg. `executeDMNSemanticComparisonScript(args...)`
+- Import the `executeDMNValidation` or `executeDMNSemanticComparison` in your JS/TS file;
+- Call one of the above function passing its required parameters.
 - For the precise args list, please check inside the Java Class Script of your interest and take note of all `@Option` annotated fields.

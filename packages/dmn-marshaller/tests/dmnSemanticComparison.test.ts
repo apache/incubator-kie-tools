@@ -21,7 +21,10 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
-import { executeDMNSemanticComparisonScript } from "@kie-tools/dmn-marshaller-backend-compatibility-tester";
+import {
+  checkSemanticComparison,
+  checkSemanticComparisonWithImports,
+} from "@kie-tools/dmn-marshaller-backend-compatibility-tester";
 
 /**
  * This test suite compares the xml generated (parsed and built) by the dmn-parser with the original xml.
@@ -108,11 +111,10 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const generatedXmlFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
       try {
-        executeDMNSemanticComparisonScript(
-          "--command=no_imports",
-          "--originalDmnFilePath=" + normalizedFsPathRelativeToTheFile,
-          "--generatedDmnFilePath=" + generatedXmlFilePath
-        );
+        checkSemanticComparison({
+          originalDmnFilePath: normalizedFsPathRelativeToTheFile,
+          generatedDmnFilePath: generatedXmlFilePath,
+        });
       } catch (error) {
         fail(error.cause);
       }
@@ -131,13 +133,12 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
       const importerGeneratedXMLFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        executeDMNSemanticComparisonScript(
-          "--command=with_imports",
-          "--generatedDmnFilePath=" + importerGeneratedXMLFilePath,
-          "--importedGeneratedDmnFilesPaths=" + importedGeneratedXMLFilePath,
-          "--originalDmnFilePath=" + normalizedFsPathRelativeToTheFiles.importer,
-          "--importedOriginalDmnFilesPaths=" + normalizedFsPathRelativeToTheFiles.imported
-        );
+        checkSemanticComparisonWithImports({
+          originalDmnFilePath: normalizedFsPathRelativeToTheFiles.importer,
+          generatedDmnFilePath: importerGeneratedXMLFilePath,
+          importedOriginalDmnFilesPaths: [normalizedFsPathRelativeToTheFiles.imported],
+          importedGeneratedDmnFilesPaths: [importedGeneratedXMLFilePath],
+        });
       } catch (error) {
         fail(error.cause);
       }

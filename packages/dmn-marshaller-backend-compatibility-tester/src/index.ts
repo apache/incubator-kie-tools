@@ -28,22 +28,61 @@ export function executeParentScript() {
   executeScript(parentScriptPath);
 }
 
-export function executeDMNValidationScript(...scriptArguments: string[]) {
-  executeScript(dmnValidationScriptPath, ...scriptArguments);
+export function checkDMNValidation(dmnFilePath: string) {
+  const command = "--command=no_imports";
+  const dmnFilePathCommand = "--dmnFilePath=" + dmnFilePath;
+  const importedDmnFilesPaths = "--importedDmnFilesPaths=";
+
+  executeScript(dmnValidationScriptPath, [command, dmnFilePathCommand]);
 }
 
-export function executeDMNSemanticComparisonScript(...scriptArguments: string[]) {
-  executeScript(dmnSemanticComparisonPath, ...scriptArguments);
+export function checkDMNValidationWithImports(data: { dmnFilePath: string; importedDmnFilesPaths: string[] }) {
+  const command = "--command=with_imports";
+  const dmnFilePath = "--dmnFilePath=" + data.dmnFilePath;
+  const importedDmnFilesPaths = "--importedDmnFilesPaths=" + data.importedDmnFilesPaths.join(",");
+
+  executeScript(dmnValidationScriptPath, [command, dmnFilePath, importedDmnFilesPaths]);
 }
 
-function executeScript(scriptPath: string, ...args: string[]) {
+export function checkSemanticComparison(data: { originalDmnFilePath: string; generatedDmnFilePath: string }) {
+  const command = "--command=no_imports";
+  const originalDmnFilePath = "--originalDmnFilePath=" + data.originalDmnFilePath;
+  const generatedDmnFilePath = "--generatedDmnFilePath=" + data.generatedDmnFilePath;
+
+  executeScript(dmnSemanticComparisonPath, [command, originalDmnFilePath, generatedDmnFilePath]);
+}
+
+export function checkSemanticComparisonWithImports(data: {
+  originalDmnFilePath: string;
+  generatedDmnFilePath: string;
+  importedOriginalDmnFilesPaths: string[];
+  importedGeneratedDmnFilesPaths: string[];
+}) {
+  const command = "--command=with_imports";
+  const originalDmnFilePath = "--originalDmnFilePath=" + data.originalDmnFilePath;
+  const generatedDmnFilePath = "--generatedDmnFilePath=" + data.generatedDmnFilePath;
+  const importedOriginalDmnFilesPaths =
+    "--importedOriginalDmnFilesPaths=" + data.importedOriginalDmnFilesPaths.join(",");
+  const importedGeneratedDmnFilesPaths =
+    "--importedGeneratedDmnFilesPaths=" + data.importedGeneratedDmnFilesPaths.join(",");
+
+  executeScript(dmnSemanticComparisonPath, [
+    command,
+    originalDmnFilePath,
+    generatedDmnFilePath,
+    importedOriginalDmnFilesPaths,
+    importedGeneratedDmnFilesPaths,
+  ]);
+}
+
+function executeScript(scriptPath: string, args?: string[]) {
   /* Windows requires double quotes to wrap the argument, while in POSIX it must be wrapped by single quotes */
   const isWindowsPath = path.sep !== "/";
   const quoteChar = isWindowsPath ? '"' : "'";
 
   const jbangArgs = [] as string[];
   jbangArgs.push("-Dkogito-runtime.version=" + buildEnv.env.kogitoRuntime.version);
-  jbangArgs.push(scriptPath!);
+  jbangArgs.push(scriptPath);
   args?.forEach((arg) => jbangArgs.push(quoteChar + arg + quoteChar));
 
   jbang.exec("properties@jbangdev", "java.version");
