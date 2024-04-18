@@ -23,7 +23,7 @@ const { execSync } = require("child_process");
 
 function setupImageModules() {
   execSync(
-    `python ./node_modules/@kie-tools/kogito-swf-common/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfDevMode.version} --source-folder ./resources`,
+    `python ../kogito-swf-common/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfDevMode.version} --source-folder ./resources`,
     { stdio: "inherit" }
   );
 }
