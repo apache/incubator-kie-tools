@@ -67,9 +67,14 @@ ifneq ($(SWF_IMAGE_TAG), $(CURRENT_IMAGE_VERSION))
 endif
 
 # Trigger the image tests
-.PHONY test-image: _check_swf_image_name _test_image
+.PHONY test-image: _check_swf_image_name bats _test_image
 _test_image:
 	${CEKIT_CMD} --descriptor ${SWF_IMAGE_FILENAME} test behave
 	tests/shell/run.sh ${SWF_IMAGE_NAME} ${SWF_FULL_IMAGE_NAME}:${SWF_IMAGE_TAG}
 
 .PHONY build: _check_swf_image_name _fix_platform_versions _cekit_build _tag_image
+
+# run bat tests locally
+.PHONY: bats
+bats:
+	./scripts/run-bats.sh
