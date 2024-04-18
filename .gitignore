@@ -285,3 +285,6 @@ packages/scesim-marshaller/**/ts-gen
 !packages/kogito-swf-common/test-resources/
 !packages/kogito-swf-builder/test-resources/
 !packages/kogito-swf-devmode/test-resources/
+
+__pycache__
+packages/python-venv/venv

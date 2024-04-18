@@ -16,14 +16,13 @@
     "install": "node install.js"
   },
   "devDependencies": {
+    "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [
       "python",
-      "cekit",
-      "make",
-      "s2i"
+      "make"
     ]
   }
 }

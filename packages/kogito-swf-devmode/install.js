@@ -17,15 +17,19 @@
  * under the License.
  */
 
-const buildEnv = require("./env");
-
 const { execSync } = require("child_process");
 
-function setupImageModules() {
+const buildEnv = require("./env");
+const path = require("path");
+const pythonVenvDir = path.dirname(require.resolve("@kie-tools/python-venv/package.json"));
+const kogitoSwfCommonDir = path.dirname(require.resolve("@kie-tools/kogito-swf-common/package.json"));
+
+function setupModuleVersions() {
   execSync(
-    `python ../kogito-swf-common/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfDevMode.version} --source-folder ./resources`,
+    `source ${pythonVenvDir}/venv/bin/activate && 
+     python ${kogitoSwfCommonDir}/resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfDevMode.version} --source-folder ./resources`,
     { stdio: "inherit" }
   );
 }
 
-setupImageModules();
+setupModuleVersions();

@@ -25,10 +25,11 @@
     "image:test:darwin:win32": "echo \"pnpm image:test not supported\"",
     "image:test:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
     "install": "node install.js",
-    "setup:env": "cross-env SWF_IMAGE_REGISTRY=$(build-env kogitoSwfBuilder.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoSwfBuilder.account) SWF_IMAGE_NAME=$(build-env kogitoSwfBuilder.name) SWF_IMAGE_TAG=$(build-env kogitoSwfBuilder.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version)"
+    "setup:env": "source ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env SWF_IMAGE_REGISTRY=$(build-env kogitoSwfBuilder.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoSwfBuilder.account) SWF_IMAGE_NAME=$(build-env kogitoSwfBuilder.name) SWF_IMAGE_TAG=$(build-env kogitoSwfBuilder.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version)"
   },
   "devDependencies": {
     "@kie-tools/kogito-swf-common": "workspace:*",
+    "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
@@ -37,9 +38,7 @@
   "kieTools": {
     "requiredPreinstalledCliCommands": [
       "python",
-      "cekit",
-      "make",
-      "s2i"
+      "make"
     ]
   }
 }

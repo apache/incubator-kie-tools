@@ -5944,6 +5944,9 @@ importers:
       "@kie-tools/kogito-swf-common":
         specifier: workspace:*
         version: link:../kogito-swf-common
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -5959,6 +5962,9 @@ importers:
 
   packages/kogito-swf-common:
     devDependencies:
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -5968,6 +5974,9 @@ importers:
       "@kie-tools/kogito-swf-common":
         specifier: workspace:*
         version: link:../kogito-swf-common
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -6907,6 +6916,8 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
+
+  packages/python-venv: {}
 
   packages/react-hooks:
     dependencies:
