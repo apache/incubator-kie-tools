@@ -40,6 +40,8 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { DragAndDrop, Draggable } from "../draggable/Draggable";
+import { Card, CardBody, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -197,16 +199,11 @@ export function DecisionServiceProperties({
         />
       </FormGroup>
 
-      <p>
-        {decisionService["@_name"]}(
-        {decisionService.inputDecision?.map((ide, i) => (
-          <p key={i}>{ide["@_href"]},</p>
-        ))}
-        {decisionService.inputData?.map((ida, i) => (
-          <p key={i}>{ida["@_href"]},</p>
-        ))}
-        )
-      </p>
+      <DecisionServiceEquivalentFunction
+        decisionService={decisionService}
+        decisionServiceNamespace={namespace}
+        allDrgElementsByHref={allDrgElementsByHref}
+      />
 
       <DocumentationLinksFormGroup
         isReadonly={isReadonly}
@@ -363,5 +360,74 @@ export function DraggableDecisionServiceElementList({
         isDisabled={false}
       />
     </ul>
+  );
+}
+
+function DecisionServiceEquivalentFunction({
+  decisionService,
+  allDrgElementsByHref,
+  decisionServiceNamespace,
+}: {
+  decisionService: DMN15__tDecisionService;
+  allDrgElementsByHref: AllKnownDrgElementsByHref;
+  decisionServiceNamespace: string | undefined;
+}) {
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+
+  const getNodeNameByHref = useCallback(
+    (href: string) => {
+      const localHref = parseXmlHref(href);
+
+      // If the localHref has a namespace, then that's the one to use, as it can be that an external node is pointing to another external node in their perspective
+      // E.g., (This DMN) --includes--> (DMN A) --includes--> (DMN B)
+      // In this case, localHref will have DMN B's namespace, and we need to respect it. It `DMN B` in included in `This DMN`, then
+      // we can resolve it, otherwise, the dmnObject referenced by localHref won't be present on `dmnObjectsByHref`, and we'll only show the href.
+      // Now, if the localHref doesn't have a namespace, then it is local to the model where the Decision Service is declared, so we use `decisionServiceNamespace`.
+      // If none of that is true, then it means that the Decision Service is local to "This DMN", so the namespace is simply "".
+      const resolvedNamespace = localHref.namespace ?? decisionServiceNamespace ?? thisDmnsNamespace;
+
+      const potentialExternalHref = buildXmlHref({
+        namespace: resolvedNamespace,
+        id: localHref.id,
+      });
+
+      const dmnObject = allDrgElementsByHref.get(potentialExternalHref);
+
+      return dmnObject
+        ? buildFeelQNameFromNamespace({
+            namedElement: dmnObject,
+            importsByNamespace,
+            namespace: resolvedNamespace,
+            relativeToNamespace: thisDmnsNamespace,
+          }).full
+        : potentialExternalHref;
+    },
+    [allDrgElementsByHref, decisionServiceNamespace, importsByNamespace, thisDmnsNamespace]
+  );
+
+  const buildFunctionArgList = useCallback(
+    (inputDecisions?: DMN15__tDMNElementReference[], inputData?: DMN15__tDMNElementReference[]) => {
+      const inputDecisionNodeNames = inputDecisions?.map((ide) => getNodeNameByHref(ide["@_href"]));
+      const inputDataNodeNames = inputData?.map((ida) => getNodeNameByHref(ida["@_href"]));
+
+      return [...(inputDecisionNodeNames ?? []), ...(inputDataNodeNames ?? [])].reduce(
+        (acc, name) => (acc ? `${acc}, ${name}` : name),
+        ""
+      );
+    },
+    [getNodeNameByHref]
+  );
+
+  return (
+    <Card>
+      <CardTitle>Invoking this Decision Service</CardTitle>
+      <CardBody>
+        <i>
+          <b>{decisionService["@_name"]}</b>(
+          {buildFunctionArgList(decisionService.inputDecision, decisionService.inputData)})
+        </i>
+      </CardBody>
+    </Card>
   );
 }
