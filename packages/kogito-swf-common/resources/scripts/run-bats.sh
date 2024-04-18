@@ -29,5 +29,5 @@ else
     rm -rf bats-core
 fi
 
-echo "----> running bats on kogito-swf-builder"
+echo "----> running bats"
 ./bats/bin/bats modules/kogito-swf/common/scripts/tests/bats
