@@ -25,17 +25,17 @@ export class DocumentationProperties {
   public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
     await this.panel.getByTitle("Add documentation link").click();
     await this.panel
-      .locator(".kie-dmn-editor--documentation-link--row")
+      .getByTestId("kie-tools--dmn-editor--documentation-link--row")
       .getByPlaceholder("Enter a title...")
       .fill(args.linkText);
     await this.panel
-      .locator(".kie-dmn-editor--documentation-link--row")
+      .getByTestId("kie-tools--dmn-editor--documentation-link--row")
       .getByPlaceholder("https://")
       .fill(args.linkHref);
     await this.page.keyboard.press("Enter");
   }
 
   public async getDocumentationLinks() {
-    return await this.panel.locator(".kie-dmn-editor--documentation-link--row-title").locator("a").all();
+    return await this.panel.getByTestId("kie-tools--dmn-editor--documentation-link--row-title").all();
   }
 }
