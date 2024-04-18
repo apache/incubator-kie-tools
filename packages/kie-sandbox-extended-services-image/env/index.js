@@ -19,7 +19,9 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/extended-services-java/env")], {
+const extendedServicesJavaEnv = require("@kie-tools/extended-services-java/env");
+
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     KIE_SANDBOX_EXTENDED_SERVICES__builderImage: {
       default: "registry.access.redhat.com/ubi9/openjdk-17:1.18",
@@ -41,6 +43,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-t
       default: "latest",
       description: "",
     },
+    KIE_SANDBOX_EXTENDED_SERVICES__imagePort: {
+      default: extendedServicesJavaEnv.env.extendedServicesJava.port,
+      description: "",
+    },
   }),
   get env() {
     return {
@@ -50,6 +56,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-t
         account: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount),
         name: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageName),
         buildTags: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags),
+        port: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imagePort),
       },
     };
   },

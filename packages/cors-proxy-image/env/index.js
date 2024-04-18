@@ -19,6 +19,8 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
+const corsProxyEnv = require("@kie-tools/cors-proxy/env");
+
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     CORS_PROXY_IMAGE__imageRegistry: {
@@ -37,6 +39,18 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "latest",
       description: "",
     },
+    CORS_PROXY_IMAGE__imagePort: {
+      default: corsProxyEnv.env.corsProxy.dev.port,
+      description: "",
+    },
+    CORS_PROXY_IMAGE__imageOrigin: {
+      default: corsProxyEnv.env.corsProxy.dev.origin,
+      description: "",
+    },
+    CORS_PROXY_IMAGE__imageVerbose: {
+      default: false,
+      description: "",
+    },
   }),
   get env() {
     return {
@@ -46,6 +60,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           account: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageAccount),
           name: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageName),
           buildTags: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageBuildTags),
+          port: getOrDefault(this.vars.CORS_PROXY_IMAGE__imagePort),
+          origin: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageOrigin),
+          verbose: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageVerbose),
         },
       },
     };
