@@ -1,4 +1,3 @@
-@quay.io/kiegroup/kogito-swf-builder
 @quay.io/kiegroup/kogito-swf-devmode
 Feature: Serverless Workflow images common
 

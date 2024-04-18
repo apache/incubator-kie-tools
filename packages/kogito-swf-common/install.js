@@ -28,12 +28,8 @@ const activateCmd =
     ? `${pythonVenvDir}\\venv\\Scripts\\Activate.bat`
     : `. ${pythonVenvDir}/venv/bin/activate`;
 
-function setupModuleVersions() {
-  execSync(
-    `${activateCmd} && \
-     python ./resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfCommon.version} --source-folder ./resources`,
-    { stdio: "inherit" }
-  );
-}
-
-setupModuleVersions();
+execSync(
+  `${activateCmd} && \
+  python ./resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfCommon.version} --source-folder ./resources`,
+  { stdio: "inherit" }
+);
