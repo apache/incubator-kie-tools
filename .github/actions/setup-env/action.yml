@@ -138,6 +138,15 @@ runs:
         pnpm -r exec 'bash' '-c' 'echo -ntp >> .mvn/maven.config'
         pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
 
+    - name: "Install libbtrfs-dev (pre-req for s2i) (Ubuntu only)"
+      shell: bash
+      run: |
+        echo "STEP: Install libbtrfs-dev (Ubuntu only)"
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
+          sudo apt-get -y install libbtrfs-dev > /dev/null 2>&1
+        fi
+
     - name: "Setup s2i (source-to-image)"
       shell: bash
       run: |
