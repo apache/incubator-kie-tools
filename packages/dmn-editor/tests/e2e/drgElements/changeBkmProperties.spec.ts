@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
@@ -91,6 +92,10 @@ test.describe("Change Properties - BKM", () => {
   });
 
   test("should reset the BKM node font", async ({ nodes, bkmPropertiesPanel }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1076",
+    });
     test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.BKM });
     await bkmPropertiesPanel.setFont({

@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DataType } from "../__fixtures__/jsonModel";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
@@ -112,6 +113,10 @@ test.describe("Change Properties - Decision", () => {
   });
 
   test("should reset the Decision node font", async ({ nodes, decisionPropertiesPanel }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1076",
+    });
     test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.DECISION });
     await decisionPropertiesPanel.setFont({

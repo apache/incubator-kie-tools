@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
@@ -77,6 +78,10 @@ test.describe("Change Properties - Text Annotation", () => {
   });
 
   test("should reset the Text Annotation node font", async ({ nodes, textAnnotationPropertiesPanel }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1076",
+    });
     test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION });
     await textAnnotationPropertiesPanel.setFont({

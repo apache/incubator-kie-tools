@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
@@ -182,6 +183,10 @@ test.describe("Resize node - Decision", () => {
     });
 
     test("should not resize Decision node below minimal size", async ({ diagram, nodes, decisionPropertiesPanel }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1074",
+      });
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
       await decisionPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.DECISION });
@@ -196,6 +201,10 @@ test.describe("Resize node - Decision", () => {
     });
 
     test("should reset Decision node size", async ({ diagram, nodes, decisionPropertiesPanel }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1075",
+      });
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
       await decisionPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.DECISION });

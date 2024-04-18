@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 
@@ -178,6 +179,10 @@ test.describe("Resize node - Group", () => {
     });
 
     test("should not resize below minimal Group node size", async ({ diagram, nodes, groupPropertiesPanel }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1074",
+      });
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
       await groupPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
@@ -192,6 +197,10 @@ test.describe("Resize node - Group", () => {
     });
 
     test("should reset Group node size", async ({ nodes, groupPropertiesPanel }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1075",
+      });
       test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
       await groupPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });

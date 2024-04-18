@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 
@@ -66,6 +67,10 @@ test.describe("Change Properties - Group", () => {
   });
 
   test("should reset the Group node font", async ({ nodes, groupPropertiesPanel }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1076",
+    });
     test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1076");
     await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
     await groupPropertiesPanel.setFont({
