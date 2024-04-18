@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { executeJBangScript, DmnBackendCompatibilityScript } from ".";
+import { executeParentScript } from ".";
 
 /**
  * This file can be called to perform the JBang dependency prefetch.
@@ -25,4 +25,4 @@ import { executeJBangScript, DmnBackendCompatibilityScript } from ".";
  * `node dist/dependenciesFetch.js` command.
  */
 
-executeJBangScript(DmnBackendCompatibilityScript.PARENT_SCRIPT);
+executeParentScript();

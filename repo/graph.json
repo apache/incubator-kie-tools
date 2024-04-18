@@ -106,6 +106,7 @@
       { "id": "@kie-tools/dmn-marshaller-backend-compatibility-tester" },
       { "id": "@kie-tools/dmn-testing-models" },
       { "id": "@kie-tools-core/switch-expression-ts" },
+      { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools/dmn-runner" },
       { "id": "@kie-tools/extended-services-api" },
       { "id": "dmn-vscode-extension" },
@@ -117,7 +118,6 @@
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
-      { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
@@ -697,11 +697,12 @@
         "target": "@kie-tools/tsconfig",
         "weight": 1
       },
-      { "source": "@kie-tools/dmn-testing-models", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
-      { "source": "@kie-tools/dmn-testing-models", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/dmn-testing-models", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools-core/switch-expression-ts", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/switch-expression-ts", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/switch-expression-ts", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/maven-base", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/maven-base", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/extended-services-api", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
@@ -746,8 +747,6 @@
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "weight": 1
       },
-      { "source": "@kie-tools/maven-base", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
-      { "source": "@kie-tools/maven-base", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "target": "@kie-tools/runtime-tools-process-webapp-components",
@@ -1119,7 +1118,6 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
-      { "source": "@kie-tools/sonataflow-quarkus-devui", "target": "@kie-tools/maven-base", "weight": 1 },
       {
         "source": "@kie-tools/sonataflow-quarkus-devui",
         "target": "@kie-tools/serverless-workflow-dev-ui-webapp",

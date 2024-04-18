@@ -20,29 +20,26 @@ import * as path from "path";
 const buildEnv = require("../env");
 const jbang = require("@jbangdev/jbang");
 
-export enum DmnBackendCompatibilityScript {
-  PARENT_SCRIPT,
-  DMN_VALIDATION,
-  DMN_SEMANTIC_COMPARISON,
+const parentScriptPath = path.join(__dirname, "..", "src", "DmnMarshallerBackendCompatibilityTesterScript.java");
+const dmnValidationScriptPath = path.join(__dirname, "..", "src", "DmnValidation.java");
+const dmnSemanticComparisonPath = path.join(__dirname, "..", "src", "DmnSemanticComparison.java");
+
+export function executeParentScript() {
+  executeScript(parentScriptPath);
 }
 
-const dmnBackendCompatibilityScriptPaths = new Map([
-  [
-    DmnBackendCompatibilityScript.PARENT_SCRIPT,
-    path.join(__dirname, "..", "src", "DmnMarshallerBackendCompatibilityTesterScript.java"),
-  ],
-  [DmnBackendCompatibilityScript.DMN_VALIDATION, path.join(__dirname, "..", "src", "DmnValidation.java")],
-  [
-    DmnBackendCompatibilityScript.DMN_SEMANTIC_COMPARISON,
-    path.join(__dirname, "..", "src", "DmnSemanticComparison.java"),
-  ],
-]);
+export function executeDMNValidationScript(...scriptArguments: string[]) {
+  executeScript(dmnValidationScriptPath, ...scriptArguments);
+}
 
-export function executeJBangScript(script: DmnBackendCompatibilityScript, ...args: string[]) {
+export function executeDMNSemanticComparisonScript(...scriptArguments: string[]) {
+  executeScript(dmnSemanticComparisonPath, ...scriptArguments);
+}
+
+function executeScript(scriptPath: string, ...args: string[]) {
   /* Windows requires double quotes to wrap the argument, while in POSIX it must be wrapped by single quotes */
   const isWindowsPath = path.sep !== "/";
   const quoteChar = isWindowsPath ? '"' : "'";
-  const scriptPath = dmnBackendCompatibilityScriptPaths.get(script);
 
   const jbangArgs = [] as string[];
   jbangArgs.push("-Dkogito-runtime.version=" + buildEnv.env.kogitoRuntime.version);

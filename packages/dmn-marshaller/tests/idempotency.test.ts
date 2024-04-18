@@ -21,7 +21,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 
-const dmnTestingModels = require.resolve("@kie-tools/dmn-testing-models");
+const dmnTestingModels = path.dirname(require.resolve("@kie-tools/dmn-testing-models/package.json"));
 
 const files = [
   "../tests-data--manual/other/attachment.dmn",
@@ -34,40 +34,40 @@ const files = [
   "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];
 
-const testing_models_paths = ["../valid_models/DMNv1_5/", "../valid_models/DMNv1_x/"];
+const testing_models_paths = ["dist/valid_models/DMNv1_5/", "dist/valid_models/DMNv1_x/"];
 
 describe("idempotency", () => {
   for (const file of files) {
     testFile(path.join(__dirname, file));
   }
   for (const models_paths of testing_models_paths) {
-    const parent_path = path.join(dmnTestingModels, models_paths);
-    testDirectory(parent_path);
+    const parentPath = path.join(dmnTestingModels, models_paths);
+    testDirectory(parentPath);
   }
 });
 
 function testDirectory(normalizedFsPathRelativeToTheDirectory: string) {
   fs.readdirSync(normalizedFsPathRelativeToTheDirectory).forEach((file) => {
-    const child_path = path.join(normalizedFsPathRelativeToTheDirectory, file);
-    const stats = fs.statSync(child_path);
+    const childPath = path.join(normalizedFsPathRelativeToTheDirectory, file);
+    const stats = fs.statSync(childPath);
     if (stats.isFile()) {
-      testFile(child_path);
+      testFile(childPath);
     } else {
-      testDirectory(child_path);
+      testDirectory(childPath);
     }
   });
 }
 
 function testFile(normalizedFsPathRelativeToTheFile: string) {
   test(normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1), () => {
-    const xml_original = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
+    const xmlOriginal = fs.readFileSync(normalizedFsPathRelativeToTheFile, "utf-8");
 
-    const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
+    const { parser, builder } = getMarshaller(xmlOriginal, { upgradeTo: "latest" });
     const json = parser.parse();
 
-    const xml_firstPass = builder.build(json);
-    const xml_secondPass = builder.build(getMarshaller(xml_firstPass, { upgradeTo: "latest" }).parser.parse());
+    const xmlFirstPass = builder.build(json);
+    const xmlSecondPass = builder.build(getMarshaller(xmlFirstPass, { upgradeTo: "latest" }).parser.parse());
 
-    expect(xml_firstPass).toStrictEqual(xml_secondPass);
+    expect(xmlFirstPass).toStrictEqual(xmlSecondPass);
   });
 }

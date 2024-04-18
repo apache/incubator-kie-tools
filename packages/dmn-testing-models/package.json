@@ -12,19 +12,19 @@
   "bugs": {
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
-  "main": "dist/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "build:dev": "rimraf dist && copyfiles index.js dist/ && run-script-os",
-    "build:dev:linux:darwin": "mvn clean generate-resources",
-    "build:dev:win32": "pnpm powershell \"mvn clean generate-resources\"",
+    "build:dev:linux:darwin": "mvn clean verify",
+    "build:dev:win32": "pnpm powershell \"mvn clean verify\"",
     "build:prod": "pnpm build:dev",
     "install": "node install.js",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
+    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "copyfiles": "^2.4.1",
