@@ -105,6 +105,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler-plugin.version}</version>
         <configuration>
           <annotationProcessorPaths>
             <path>
@@ -117,6 +118,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
+        <version>${version.resources.plugin}</version>
         <executions>
           <execution>
             <id>copy-webapp</id>

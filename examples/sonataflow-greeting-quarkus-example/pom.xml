@@ -35,6 +35,7 @@
 
   <groupId>org.apache.kie.sonataflow.examples</groupId>
   <artifactId>sonataflow-greeting-quarkus-example</artifactId>
+  <version>${revision}</version>
 
   <name>KIE Tools Example :: SonataFlow Greeting :: Quarkus</name>
   <description>SonataFlow Example - Quarkus</description>
@@ -84,6 +85,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler-plugin.version}</version>
         <configuration>
           <release>${maven.compiler.release}</release>
         </configuration>
@@ -91,6 +93,7 @@
       <plugin>
         <groupId>${quarkus.platform.group-id}</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${quarkus-plugin.version}</version>
         <executions>
           <execution>
             <goals>
@@ -101,6 +104,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${version.failsafe.plugin}</version>
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
