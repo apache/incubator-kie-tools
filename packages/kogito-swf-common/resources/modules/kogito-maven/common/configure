@@ -25,7 +25,7 @@ SCRIPT_DIR=$(dirname "${0}")
 mvn_install_dir="/usr/share/maven"
 
 # Verify if mvn is installed
-if [ ! -d ${mvn_install_dir} ] && ! command -v mvn &> /dev/null ;
+if [ ! -d ${mvn_install_dir} ] && ! command -v mvn > /dev/null 2>&1 ;
 then
     echo "---> Maven not found, downloading and installing it"
     tar xzf "${SOURCES_DIR}"/apache-maven-"${MAVEN_VERSION}"-bin.tar.gz -C /usr/share

@@ -84,6 +84,7 @@ function prepareModule() {
 # $1 - module file
 # $2 - function name
 function executeModule() {
+  # shellcheck source=/dev/null
   source "$1"
   if [ -n "$(type -t "$2")" ]; then
     eval "$2"
@@ -93,6 +94,7 @@ function executeModule() {
 # Run through the list of scripts, executing the specified function for each.
 # $1 - function name
 function executeModules() {
+  # shellcheck disable=SC2048
   for module in ${CONFIGURE_SCRIPTS[*]}; do
     prepareModule
     executeModule "${module}" "${1}"
