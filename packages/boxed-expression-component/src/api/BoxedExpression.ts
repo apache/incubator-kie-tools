@@ -51,6 +51,8 @@ export enum BoxedFunctionKind {
   Pmml = "PMML",
 }
 
+export type BoxedIterator = BoxedFor | BoxedEvery | BoxedSome;
+
 export type BoxedExpression =
   | BoxedLiteral
   | BoxedRelation

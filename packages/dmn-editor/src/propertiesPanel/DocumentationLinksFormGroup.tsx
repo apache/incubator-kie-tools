@@ -333,7 +333,10 @@ function DocumentationLinksInput({
 
   return (
     <React.Fragment>
-      <div className={"kie-dmn-editor--documentation-link--row"}>
+      <div
+        className={"kie-dmn-editor--documentation-link--row"}
+        data-testid={"kie-tools--dmn-editor--documentation-link--row"}
+      >
         <Button
           title={"Expand / collapse documentation link"}
           variant={ButtonVariant.plain}
@@ -347,7 +350,7 @@ function DocumentationLinksInput({
             <>
               <div ref={urlTitleRef} className={"kie-dmn-editor--documentation-link--row-title"}>
                 {isUrl ? (
-                  <a href={url} target={"_blank"}>
+                  <a href={url} target={"_blank"} data-testid={"kie-tools--dmn-editor--documentation-link--row-title"}>
                     {title}
                   </a>
                 ) : (

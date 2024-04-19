@@ -50,6 +50,7 @@ export function OverlaysPanel() {
         </FormGroup>
         <FormGroup label="Horizontal">
           <Slider
+            data-testid={"kie-tools--dmn-editor--horizontal-snapping-control"}
             className={"kie-dmn-editor--snap-slider"}
             isDisabled={!diagram.snapGrid.isEnabled}
             value={diagram.snapGrid.x}
@@ -69,6 +70,7 @@ export function OverlaysPanel() {
         </FormGroup>
         <FormGroup label="Vertical">
           <Slider
+            data-testid={"kie-tools--dmn-editor--vertical-snapping-control"}
             className={"kie-dmn-editor--snap-slider"}
             isDisabled={!diagram.snapGrid.isEnabled}
             value={diagram.snapGrid.y}
