@@ -47,6 +47,7 @@ export function normalize(model: State["dmn"]["model"]) {
       type: "DMN15__tDefinitions",
       attr: "itemDefinition",
     })
+    .attribute()
     .randomize({ skipAlreadyAttributedIds: true });
 
   return model;

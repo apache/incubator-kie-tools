@@ -101,10 +101,7 @@ describe("getOriginalIds", () => {
       })
       .getOriginalIds();
 
-    expect(Array.from(originalIds)).toHaveLength(1);
-    originalIds.forEach((orignalId) => {
-      expect(orignalId).toMatch(uuidRegExp);
-    });
+    expect(originalIds).toEqual(new Set());
   });
 
   test("array of objects", () => {
@@ -146,7 +143,7 @@ describe("getOriginalIds", () => {
       })
       .getOriginalIds();
 
-    expect(Array.from(originalIds)).toHaveLength(2);
+    expect(originalIds).toEqual(new Set());
     originalIds.forEach((orignalId) => {
       expect(orignalId).toMatch(uuidRegExp);
     });

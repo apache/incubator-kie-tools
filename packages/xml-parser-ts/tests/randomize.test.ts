@@ -81,7 +81,8 @@ describe("randomize", () => {
           type: "person",
           attr: "address",
         })
-        .randomize();
+        .randomize()
+        .getRandomized();
 
       expect(newIdsMap).toEqual(new Map());
     });
@@ -96,7 +97,7 @@ describe("randomize", () => {
         attr: "address",
       };
 
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize();
+      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize().getRandomized();
 
       expect(newIdsMap).toEqual(new Map());
     });
@@ -108,7 +109,7 @@ describe("randomize", () => {
         attr: "address",
       };
 
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize();
+      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize().getRandomized();
       expect(newIdsMap).toEqual(new Map());
       Array.from(newIdsMap.values()).forEach((newId) => {
         expect(newId).toMatch(uuidRegExp);
@@ -125,7 +126,8 @@ describe("randomize", () => {
           type: "person",
           attr: "education",
         })
-        .randomize();
+        .randomize()
+        .getRandomized();
 
       expect(newIdsMap).toEqual(new Map());
     });
@@ -140,7 +142,8 @@ describe("randomize", () => {
           type: "person",
           attr: "luckyIds",
         })
-        .randomize();
+        .randomize()
+        .getRandomized();
 
       expect(newIdsMap).toEqual(new Map());
     });
@@ -152,7 +155,8 @@ describe("randomize", () => {
           type: "person",
           attr: "luckyIds",
         })
-        .randomize();
+        .randomize()
+        .getRandomized();
 
       expect(newIdsMap).toEqual(new Map());
     });
@@ -175,7 +179,8 @@ describe("randomize", () => {
           type: "root",
           attr: "nested",
         })
-        .randomize();
+        .randomize()
+        .getRandomized();
 
       expect(newIdsMap).toEqual(new Map());
     });
@@ -223,7 +228,8 @@ describe("randomize", () => {
           type: "root",
           attr: "nested",
         })
-        .randomize();
+        .randomize()
+        .getRandomized();
 
       expect(newIdsMap).toEqual(new Map());
     });
@@ -237,7 +243,10 @@ describe("randomize", () => {
         attr: "address",
       };
 
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize({ skipAlreadyAttributedIds: false });
+      const newIdsMap = getXmlParserTsIdRandomizer()
+        .ack(model)
+        .randomize({ skipAlreadyAttributedIds: false })
+        .getRandomized();
 
       expect(newIdsMap).toEqual(new Map());
     });
@@ -257,7 +266,7 @@ describe("randomize", () => {
         type: "person",
         attr: "address",
       };
-      const newIdsMap = xmlParser.ack(model).randomize({ skipAlreadyAttributedIds: false });
+      const newIdsMap = xmlParser.ack(model).randomize({ skipAlreadyAttributedIds: false }).getRandomized();
 
       expect(Array.from(newIdsMap.keys())).toEqual(ids);
       ids.forEach((id) => {
@@ -271,9 +280,12 @@ describe("randomize", () => {
         type: "person",
         attr: "address",
       };
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize({ skipAlreadyAttributedIds: false });
+      const newIdsMap = getXmlParserTsIdRandomizer()
+        .ack(model)
+        .randomize({ skipAlreadyAttributedIds: false })
+        .getRandomized();
 
-      expect(Array.from(newIdsMap.keys())).toHaveLength(1);
+      expect(newIdsMap).toEqual(new Map());
       Array.from(newIdsMap.values())?.forEach((newId) => {
         expect(newId).toMatch(uuidRegExp);
       });
@@ -288,7 +300,10 @@ describe("randomize", () => {
         attr: "education",
       };
 
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize({ skipAlreadyAttributedIds: false });
+      const newIdsMap = getXmlParserTsIdRandomizer()
+        .ack(model)
+        .randomize({ skipAlreadyAttributedIds: false })
+        .getRandomized();
 
       expect(Array.from(newIdsMap.keys())).toEqual(ids);
       ids.forEach((id) => {
@@ -305,7 +320,10 @@ describe("randomize", () => {
         attr: "luckyIds",
       };
 
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize({ skipAlreadyAttributedIds: false });
+      const newIdsMap = getXmlParserTsIdRandomizer()
+        .ack(model)
+        .randomize({ skipAlreadyAttributedIds: false })
+        .getRandomized();
 
       expect(Array.from(newIdsMap.keys())).toEqual(ids);
       ids.forEach((id) => {
@@ -319,9 +337,12 @@ describe("randomize", () => {
         type: "person",
         attr: "luckyIds",
       };
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize({ skipAlreadyAttributedIds: false });
+      const newIdsMap = getXmlParserTsIdRandomizer()
+        .ack(model)
+        .randomize({ skipAlreadyAttributedIds: false })
+        .getRandomized();
 
-      expect(Array.from(newIdsMap.keys())).toHaveLength(2);
+      expect(newIdsMap).toEqual(new Map());
       Array.from(newIdsMap.values()).forEach((newId) => {
         expect(newId).toMatch(uuidRegExp);
       });
@@ -345,7 +366,10 @@ describe("randomize", () => {
         attr: "nested",
       };
 
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize({ skipAlreadyAttributedIds: false });
+      const newIdsMap = getXmlParserTsIdRandomizer()
+        .ack(model)
+        .randomize({ skipAlreadyAttributedIds: false })
+        .getRandomized();
 
       expect(Array.from(newIdsMap.keys())).toEqual(ids);
       ids.forEach((id) => {
@@ -396,7 +420,10 @@ describe("randomize", () => {
         attr: "nested",
       };
 
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize({ skipAlreadyAttributedIds: false });
+      const newIdsMap = getXmlParserTsIdRandomizer()
+        .ack(model)
+        .randomize({ skipAlreadyAttributedIds: false })
+        .getRandomized();
 
       expect(Array.from(newIdsMap.keys())).toEqual(ids);
       ids.forEach((id) => {

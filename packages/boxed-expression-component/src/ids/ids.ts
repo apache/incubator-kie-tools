@@ -37,7 +37,7 @@ export function mutateExpressionRandomizingIds(expression: BoxedExpression | und
     return new Map();
   }
 
-  return getIdRandomizerForExpression(expression).randomize({ skipAlreadyAttributedIds: false });
+  return getIdRandomizerForExpression(expression).randomize({ skipAlreadyAttributedIds: false }).getRandomized();
 }
 
 function getNewBeeIdRandomizer() {
