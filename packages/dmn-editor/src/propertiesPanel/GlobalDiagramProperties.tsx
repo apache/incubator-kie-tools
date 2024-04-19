@@ -151,6 +151,7 @@ export function GlobalDiagramProperties() {
             <FormSection style={{ paddingLeft: "20px", marginTop: 0 }}>
               <FormGroup label="ID">
                 <ClipboardCopy
+                  placeholder="Enter a diagram ID..."
                   isReadOnly={false}
                   hoverTip="Copy"
                   clickTip="Copied"
@@ -166,6 +167,7 @@ export function GlobalDiagramProperties() {
 
               <FormGroup label="Namespace">
                 <ClipboardCopy
+                  placeholder="Enter a diagram Namespace..."
                   isReadOnly={false}
                   hoverTip="Copy"
                   clickTip="Copied"

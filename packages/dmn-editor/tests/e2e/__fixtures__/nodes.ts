@@ -91,7 +91,7 @@ export class Nodes {
     targetPosition: { x: number; y: number };
     thenRenameTo?: string;
   }) {
-    await this.hover({ name: args.from, position: NodePosition.TOP });
+    await this.select({ name: args.from, position: NodePosition.TOP });
     const node = this.get({ name: args.from });
     const { addNodeTitle, nodeName } = this.getNewConnectedNodeProperties(args.type);
 
@@ -100,6 +100,28 @@ export class Nodes {
     if (args.thenRenameTo) {
       await this.rename({ current: nodeName, new: args.thenRenameTo });
     }
+  }
+
+  private getParentElement(args: { nodeName: string }) {
+    return this.get({ name: args.nodeName }).locator("..");
+  }
+
+  public async getRectAttribute(args: { nodeName: string; attribute: "fill" | "stroke" }) {
+    // It's necessary to pick the parent element to have access to the SVG.
+    return await this.getParentElement({ nodeName: args.nodeName }).locator("rect").nth(0).getAttribute(args.attribute);
+  }
+
+  public async getPathAttribute(args: { nodeName: string; attribute: "fill" | "stroke" }) {
+    // It's necessary to pick the parent element to have access to the SVG.
+    return await this.getParentElement({ nodeName: args.nodeName }).locator("path").nth(0).getAttribute(args.attribute);
+  }
+
+  public async getPolygonAttribute(args: { nodeName: string; attribute: "fill" | "stroke" }) {
+    // It's necessary to pick the parent element to have access to the SVG.
+    return await this.getParentElement({ nodeName: args.nodeName })
+      .locator("polygon")
+      .nth(0)
+      .getAttribute(args.attribute);
   }
 
   public async hover(args: { name: string; position?: NodePosition }) {
@@ -122,6 +144,19 @@ export class Nodes {
   public async rename(args: { current: string; new: string }) {
     await this.get({ name: args.current }).getByRole("textbox").nth(0).fill(args.new);
     await this.diagram.get().press("Enter");
+  }
+
+  public async resize(args: { nodeName: string; position?: NodePosition; xOffset: number; yOffset: number }) {
+    await this.select({ name: args.nodeName, position: args.position ?? NodePosition.CENTER });
+
+    const resizeHandle = this.get({ name: args.nodeName }).getByTestId(
+      `kie-tools--dmn-editor--${args.nodeName}-resize-handle`
+    );
+    const { x, y, width, height } = (await resizeHandle.boundingBox()) ?? { x: 0, y: 0, width: 0, height: 0 };
+    await this.page.mouse.move(x + width / 2, y + height / 2);
+    await this.page.mouse.down();
+    await this.page.mouse.move(x + args.xOffset + width / 2, y + args.yOffset + height / 2);
+    await this.page.mouse.up();
   }
 
   public async select(args: { name: string; position?: NodePosition }) {
