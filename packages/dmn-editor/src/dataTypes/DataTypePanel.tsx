@@ -357,10 +357,8 @@ export function DataTypePanel({
               typeRef={resolvedTypeRef}
               onChange={changeTypeRef}
             />
-
             <br />
             <br />
-
             {dataType.itemDefinition["@_isCollection"] === true ? (
               <>
                 <Title size={"md"} headingLevel="h4">
@@ -371,8 +369,6 @@ export function DataTypePanel({
                   itemDefinition={dataType.itemDefinition}
                   editItemDefinition={editItemDefinition}
                   defaultsToAllowedValues={false}
-                  isEnumDisabled={true}
-                  isRangeDisabled={true}
                 />
                 <br />
                 <br />
