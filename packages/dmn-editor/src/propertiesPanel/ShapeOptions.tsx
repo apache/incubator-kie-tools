@@ -276,6 +276,7 @@ export function ShapeOptions({
                   className={"kie-dmn-editor--shape-options-toggle-button"}
                   text={
                     <ColorPicker
+                      name="shape-fill"
                       icon={
                         <div
                           style={{
@@ -305,6 +306,7 @@ export function ShapeOptions({
                   className={"kie-dmn-editor--shape-options-toggle-button"}
                   text={
                     <ColorPicker
+                      name="shape-stroke"
                       colorDisplay={
                         <div
                           style={{
@@ -344,6 +346,7 @@ export function ShapeOptions({
                     >
                       <TextInput
                         aria-label={"Width"}
+                        data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-width-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? boundWidth : undefined}
@@ -369,6 +372,7 @@ export function ShapeOptions({
                     >
                       <TextInput
                         aria-label={"Height"}
+                        data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-height-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? boundHeight : undefined}
@@ -385,8 +389,9 @@ export function ShapeOptions({
                   buttonId={"shape-style-toggle-group-bound-height"}
                 />
               </Tooltip>
-              <Tooltip content={"Reset"}>
+              <Tooltip content={"Reset shape"}>
                 <ToggleGroupItem
+                  title={"Reset shape"}
                   onClick={onReset}
                   className={"kie-dmn-editor--shape-options-toggle-button"}
                   text={<UndoAltIcon />}
@@ -417,7 +422,7 @@ export function ShapeOptions({
                     isDisabled={false}
                     value={boundPositionX}
                     onChange={onChangePositionX}
-                    placeholder={"Enter a value..."}
+                    placeholder={"Enter X value..."}
                   />
                 </div>
                 <div style={{ gridArea: "position-x-label" }}>
@@ -431,7 +436,7 @@ export function ShapeOptions({
                     isDisabled={false}
                     value={boundPositionY}
                     onChange={onChangePositionY}
-                    placeholder={"Enter a value..."}
+                    placeholder={"Enter Y value..."}
                   />
                 </div>
                 <div style={{ gridArea: "position-y-label" }}>

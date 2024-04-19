@@ -219,7 +219,7 @@ export function IteratorExpressionComponent({
               />
             </div>
           );
-        } else if (props.rowIndex === 2 || props.rowIndex === 3) {
+        } else if (props.rowIndex === 1 || props.rowIndex === 2) {
           return (
             <IteratorExpressionCell
               iteratorClause={props.data[props.rowIndex]}

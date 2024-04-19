@@ -23,7 +23,6 @@ import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { NumberInput } from "@patternfly/react-core/dist/js/components/NumberInput";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { PencilAltIcon } from "@patternfly/react-icons/dist/js/icons/pencil-alt-icon";
 import { UndoAltIcon } from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 import * as React from "react";
@@ -359,11 +358,12 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                 <ToggleGroupItem
                   key={FontStyleToggleOptions.FONT_COLOR}
                   className={"kie-dmn-editor--font-options-toggle-group-item-color-picker"}
-                  aria-label={"Toggle font strike through"}
+                  aria-label={"Font color"}
                   buttonId={FontStyleToggleOptions.FONT_COLOR}
                   onClick={() => colorPickerRef.current?.click()}
                   text={
                     <ColorPicker
+                      name={"font"}
                       icon={<p>A</p>}
                       colorPickerRef={colorPickerRef}
                       color={fontColor}
@@ -374,22 +374,24 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
               </ToggleGroup>
             </div>
             <br />
-            <Select
-              toggleRef={toggleRef}
-              variant={SelectVariant.single}
-              aria-label={"Select font style"}
-              isOpen={isFontFamilySelectOpen}
-              onSelect={onSelectFont}
-              onToggle={() => setFontFamilySelectOpen((prev) => !prev)}
-              selections={fontFamily ?? ""}
-              isDisabled={false}
-              maxHeight={inViewTimezoneSelect.maxHeight}
-              direction={inViewTimezoneSelect.direction}
-            >
-              {WEBSAFE_FONTS_LIST.map((fontName, index) => (
-                <SelectOption key={index} value={fontName} style={{ fontFamily: fontName }} />
-              ))}
-            </Select>
+            <div data-testid={"kie-tools--dmn-editor--properties-panel-node-font-style"}>
+              <Select
+                toggleRef={toggleRef}
+                variant={SelectVariant.single}
+                aria-label={"Select font style"}
+                isOpen={isFontFamilySelectOpen}
+                onSelect={onSelectFont}
+                onToggle={() => setFontFamilySelectOpen((prev) => !prev)}
+                selections={fontFamily ?? ""}
+                isDisabled={false}
+                maxHeight={inViewTimezoneSelect.maxHeight}
+                direction={inViewTimezoneSelect.direction}
+              >
+                {WEBSAFE_FONTS_LIST.map((fontName, index) => (
+                  <SelectOption key={index} value={fontName} style={{ fontFamily: fontName }} />
+                ))}
+              </Select>
+            </div>
           </div>
         </FormSection>
       )}
