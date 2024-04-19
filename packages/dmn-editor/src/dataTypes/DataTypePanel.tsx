@@ -109,6 +109,7 @@ export function DataTypePanel({
                 ...itemDefinition.allowedValues,
               }
             : undefined;
+          itemDefinition.allowedValues = undefined;
         }
       });
     },

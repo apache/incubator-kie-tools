@@ -30,7 +30,7 @@ import { ConstraintsRange, isRange } from "./ConstraintsRange";
 import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { EditItemDefinition } from "./DataTypes";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
-import { constrainableBuiltInFeelTypes, isCollection } from "./DataTypeSpec";
+import { constrainableBuiltInFeelTypes } from "./DataTypeSpec";
 import moment from "moment";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ConstraintDate } from "./ConstraintComponents/ConstraintDate";
@@ -252,15 +252,16 @@ export const constraintTypeHelper = (typeRef: DmnBuiltInDataType): TypeHelper =>
 export function useConstraint({
   constraint,
   itemDefinition,
-  isTypeConstraint,
+  isCollectionConstraintEnable,
 }: {
   constraint: DMN15__tUnaryTests | undefined;
   itemDefinition: DMN15__tItemDefinition;
-  isTypeConstraint: boolean;
+  isCollectionConstraintEnable: boolean;
 }) {
   const constraintValue = useMemo(() => constraint?.text.__$$text, [constraint?.text.__$$text]);
-
   const kieConstraintType = useMemo(() => constraint?.["@_kie:constraintType"], [constraint]);
+  const isCollection = useMemo(() => itemDefinition["@_isCollection"] ?? false, [itemDefinition]);
+  const itemDefinitionId = useMemo(() => itemDefinition["@_id"], [itemDefinition]);
 
   const typeRef: DmnBuiltInDataType = useMemo(
     () => (itemDefinition?.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
@@ -268,16 +269,20 @@ export function useConstraint({
   );
 
   const isConstraintEnum = useMemo(
-    () => (isCollection(itemDefinition) ? undefined : isEnum(constraintValue, constraintTypeHelper(typeRef).check)),
-    [constraintValue, itemDefinition, typeRef]
+    () =>
+      isCollection === true && isCollectionConstraintEnable === true // collection doesn't support enumeration constraint
+        ? undefined
+        : isEnum(constraintValue, constraintTypeHelper(typeRef).check),
+    [constraintValue, isCollectionConstraintEnable, isCollection, typeRef]
   );
 
   const isConstraintRange = useMemo(
-    () => (isCollection(itemDefinition) ? undefined : isRange(constraintValue, constraintTypeHelper(typeRef).check)),
-    [constraintValue, itemDefinition, typeRef]
+    () =>
+      isCollection === true && isCollectionConstraintEnable === true // collection doesn't support range constraint
+        ? undefined
+        : isRange(constraintValue, constraintTypeHelper(typeRef).check),
+    [constraintValue, isCollectionConstraintEnable, isCollection, typeRef]
   );
-
-  const itemDefinitionId = useMemo(() => itemDefinition["@_id"], [itemDefinition]);
 
   const enumToKieConstraintType: (selection: ConstraintsType) => KIE__tConstraintType | undefined = useCallback(
     (selection) => {
@@ -300,16 +305,16 @@ export function useConstraint({
     const enabledConstraints = constrainableBuiltInFeelTypes.get(typeRef);
     return {
       enumeration:
-        !(isCollection(itemDefinition) === true && isTypeConstraint === true) &&
+        !(isCollection === true && isCollectionConstraintEnable === true) &&
         (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.ENUMERATION)!),
       range:
-        !(isCollection(itemDefinition) === true && isTypeConstraint === true) &&
+        !(isCollection === true && isCollectionConstraintEnable === true) &&
         (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.RANGE)!),
       expression:
-        (isCollection(itemDefinition) === true && isTypeConstraint === true) ||
+        (isCollection === true && isCollectionConstraintEnable === true) ||
         (enabledConstraints ?? []).includes(enumToKieConstraintType(ConstraintsType.EXPRESSION)!),
     };
-  }, [enumToKieConstraintType, isTypeConstraint, itemDefinition, typeRef]);
+  }, [typeRef, isCollection, isCollectionConstraintEnable, enumToKieConstraintType]);
 
   const selectedConstraint = useMemo<ConstraintsType>(() => {
     if (isConstraintEnabled.enumeration && kieConstraintType === "enumeration") {
@@ -389,7 +394,7 @@ export function ConstraintsFromAllowedValuesAttribute({
   } = useConstraint({
     constraint: allowedValues,
     itemDefinition,
-    isTypeConstraint: false,
+    isCollectionConstraintEnable: false, // allowedValues doesn't support constraint to the collection itself
   });
 
   const onConstraintChange = useCallback(
@@ -506,7 +511,7 @@ export function ConstraintsFromTypeConstraintAttribute({
   } = useConstraint({
     constraint: typeConstraint,
     itemDefinition,
-    isTypeConstraint: true,
+    isCollectionConstraintEnable: true, // typeConstraint enables to add a constraint to the collection itself
   });
 
   const onConstraintChange = useCallback(
