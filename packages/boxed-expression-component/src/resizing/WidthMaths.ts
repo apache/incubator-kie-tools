@@ -148,6 +148,25 @@ export function getExpressionMinWidth(expression?: BoxedExpression): number {
     );
   }
 
+  // For
+  else if (expression.__$$element === "for") {
+    const nestedExpressions = [expression.in.expression, expression.return.expression];
+    return (
+      ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH +
+      Math.max(ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
+      ITERATOR_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
+  // Every/Some
+  else if (expression.__$$element === "every" || expression.__$$element === "some") {
+    const nestedExpressions = [expression.in.expression, expression.satisfies.expression];
+    return (
+      ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH +
+      Math.max(ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
+      ITERATOR_EXPRESSION_EXTRA_WIDTH
+    );
+  }
   // Others
   else {
     throw new Error("Shouldn't ever reach this point");
