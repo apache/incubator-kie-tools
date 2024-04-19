@@ -421,10 +421,12 @@ function DecisionServiceEquivalentFunction({
 
   return (
     <Alert variant={AlertVariant.info} isInline title="Invoking this Decision Service in FEEL">
-      {`${decisionService["@_name"]}(${buildFunctionArgList(
-        decisionService.inputDecision,
-        decisionService.inputData
-      )})`}
+      <p style={{ fontFamily: "monospace" }}>
+        {`${decisionService["@_name"]}(${buildFunctionArgList(
+          decisionService.inputDecision,
+          decisionService.inputData
+        )})`}
+      </p>
     </Alert>
   );
 }
