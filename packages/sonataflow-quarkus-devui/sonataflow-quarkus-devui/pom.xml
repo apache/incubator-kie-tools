@@ -128,7 +128,6 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-extension-maven-plugin</artifactId>
-        <version>${quarkus.platform.version}</version>
         <executions>
           <execution>
             <phase>compile</phase>
@@ -143,7 +142,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
         <configuration>
           <annotationProcessorPaths>
             <path>
