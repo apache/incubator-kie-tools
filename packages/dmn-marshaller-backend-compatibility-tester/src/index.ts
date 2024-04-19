@@ -28,15 +28,14 @@ export function executeParentScript() {
   executeScript(parentScriptPath);
 }
 
-export function checkDMNValidation(dmnFilePath: string) {
+export function checkDmnValidation(data: { dmnFilePath: string }) {
   const command = "--command=no_imports";
-  const dmnFilePathCommand = "--dmnFilePath=" + dmnFilePath;
-  const importedDmnFilesPaths = "--importedDmnFilesPaths=";
+  const dmnFilePath = "--dmnFilePath=" + data.dmnFilePath;
 
-  executeScript(dmnValidationScriptPath, [command, dmnFilePathCommand]);
+  executeScript(dmnValidationScriptPath, [command, dmnFilePath]);
 }
 
-export function checkDMNValidationWithImports(data: { dmnFilePath: string; importedDmnFilesPaths: string[] }) {
+export function checkDmnValidationWithImports(data: { dmnFilePath: string; importedDmnFilesPaths: string[] }) {
   const command = "--command=with_imports";
   const dmnFilePath = "--dmnFilePath=" + data.dmnFilePath;
   const importedDmnFilesPaths = "--importedDmnFilesPaths=" + data.importedDmnFilesPaths.join(",");
@@ -44,7 +43,7 @@ export function checkDMNValidationWithImports(data: { dmnFilePath: string; impor
   executeScript(dmnValidationScriptPath, [command, dmnFilePath, importedDmnFilesPaths]);
 }
 
-export function checkSemanticComparison(data: { originalDmnFilePath: string; generatedDmnFilePath: string }) {
+export function checkDmnSemanticComparison(data: { originalDmnFilePath: string; generatedDmnFilePath: string }) {
   const command = "--command=no_imports";
   const originalDmnFilePath = "--originalDmnFilePath=" + data.originalDmnFilePath;
   const generatedDmnFilePath = "--generatedDmnFilePath=" + data.generatedDmnFilePath;
@@ -52,7 +51,7 @@ export function checkSemanticComparison(data: { originalDmnFilePath: string; gen
   executeScript(dmnSemanticComparisonPath, [command, originalDmnFilePath, generatedDmnFilePath]);
 }
 
-export function checkSemanticComparisonWithImports(data: {
+export function checkDmnSemanticComparisonWithImports(data: {
   originalDmnFilePath: string;
   generatedDmnFilePath: string;
   importedOriginalDmnFilesPaths: string[];

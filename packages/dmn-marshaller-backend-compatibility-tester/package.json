@@ -24,8 +24,10 @@
     "build:prod": "pnpm build:dev",
     "prefetch": "node dist/dependenciesFetch.js"
   },
+  "dependencies": {
+    "@jbangdev/jbang": "0.2.0"
+  },
   "devDependencies": {
-    "@jbangdev/jbang": "0.2.0",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "rimraf": "^3.0.2",

@@ -22,8 +22,8 @@ import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
 import {
-  checkDMNValidation,
-  checkDMNValidationWithImports,
+  checkDmnValidation,
+  checkDmnValidationWithImports,
 } from "@kie-tools/dmn-marshaller-backend-compatibility-tester";
 
 /**
@@ -104,10 +104,10 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
     "DMN Validation: " +
       normalizedFsPathRelativeToTheFile.substring(normalizedFsPathRelativeToTheFile.lastIndexOf(path.sep) + 1),
     () => {
-      const generatedXMLFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFile);
+      const generatedXmlFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
       try {
-        checkDMNValidation(generatedXMLFilePath);
+        checkDmnValidation({ dmnFilePath: generatedXmlFilePath });
       } catch (error) {
         fail(error.cause);
       }
@@ -122,13 +122,13 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
         normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
       ),
     () => {
-      const importedGeneratedXMLFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
-      const importerGeneratedXMLFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
+      const importedGeneratedXmlFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
+      const importerGeneratedXmlFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        checkDMNValidationWithImports({
-          dmnFilePath: importedGeneratedXMLFilePath,
-          importedDmnFilesPaths: [importerGeneratedXMLFilePath],
+        checkDmnValidationWithImports({
+          dmnFilePath: importedGeneratedXmlFilePath,
+          importedDmnFilesPaths: [importerGeneratedXmlFilePath],
         });
       } catch (error) {
         fail(error.cause);

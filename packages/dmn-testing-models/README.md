@@ -10,11 +10,11 @@ The original `org.kie:kie-dmn-test-resources` also contains _invalid_ models, bu
 
 ### Usage
 
-The command `mvn clean generate-resources` downloads the jar and extract the models under `dist/`.
+The command `mvn clean verify` downloads the jar and extract the models under `dist/`.
 
 To make them available for testing purpose:
 
 1. set the `KOGITO_RUNTIME_version` in the terminal (if different from the default one)
 2. `pnpm bootstrap` on the root directory
 3. cd dmn-testing-models
-4. `pnpm build:dev` or `pnpm build:prod` (they behave the same way - this executes `mvn clean generate-resources`)
+4. `pnpm build:dev` or `pnpm build:prod` (they behave the same way - this executes `mvn clean verify`)

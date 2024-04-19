@@ -22,8 +22,8 @@ import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { fail } from "assert";
 import {
-  checkSemanticComparison,
-  checkSemanticComparisonWithImports,
+  checkDmnSemanticComparison,
+  checkDmnSemanticComparisonWithImports,
 } from "@kie-tools/dmn-marshaller-backend-compatibility-tester";
 
 /**
@@ -111,7 +111,7 @@ function testFile(normalizedFsPathRelativeToTheFile: string) {
       const generatedXmlFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFile);
 
       try {
-        checkSemanticComparison({
+        checkDmnSemanticComparison({
           originalDmnFilePath: normalizedFsPathRelativeToTheFile,
           generatedDmnFilePath: generatedXmlFilePath,
         });
@@ -129,15 +129,15 @@ function testImportedFile(normalizedFsPathRelativeToTheFiles: { imported: string
         normalizedFsPathRelativeToTheFiles.importer.lastIndexOf(path.sep) + 1
       ),
     () => {
-      const importedGeneratedXMLFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
-      const importerGeneratedXMLFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
+      const importedGeneratedXmlFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.imported);
+      const importerGeneratedXmlFilePath = parseXmlAndWriteInFile(normalizedFsPathRelativeToTheFiles.importer);
 
       try {
-        checkSemanticComparisonWithImports({
+        checkDmnSemanticComparisonWithImports({
           originalDmnFilePath: normalizedFsPathRelativeToTheFiles.importer,
-          generatedDmnFilePath: importerGeneratedXMLFilePath,
+          generatedDmnFilePath: importerGeneratedXmlFilePath,
           importedOriginalDmnFilesPaths: [normalizedFsPathRelativeToTheFiles.imported],
-          importedGeneratedDmnFilesPaths: [importedGeneratedXMLFilePath],
+          importedGeneratedDmnFilesPaths: [importedGeneratedXmlFilePath],
         });
       } catch (error) {
         fail(error.cause);
