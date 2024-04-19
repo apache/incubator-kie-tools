@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build:dev": "echo Nothing to do",
-    "build:prod": "echo Build is temporarily skipped because of https://github.com/apache/incubator-kie-issues/issues/1082",
+    "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-os",
     "build:prod:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "build:prod:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:podman:build\"",
     "build:prod:skipped": "pnpm cleanup && pnpm copy:assets && run-script-os",

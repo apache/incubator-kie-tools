@@ -66,6 +66,10 @@ public class ScenarioSimulationKogitoCreationPopupView extends AbstractScenarioP
     @DataField("info-rule-icon")
     protected HTMLDivElement infoRuleIconDivElement;
 
+    @Inject
+    @DataField("info-dmn-icon")
+    protected HTMLDivElement infoDMNIconDivElement;
+
     protected ScenarioSimulationModel.Type selectedType = null;
 
     protected String selectedPath = null;
@@ -90,6 +94,7 @@ public class ScenarioSimulationKogitoCreationPopupView extends AbstractScenarioP
         dmnAssetsLabelElement.textContent = ScenarioSimulationEditorConstants.INSTANCE.chooseValidDMNAsset();
         dmnAssetsDivElement.appendChild(dmnAssetsLabelElement);
         infoRuleIconDivElement.setAttribute("title", ScenarioSimulationEditorConstants.INSTANCE.currentlyNotAvailable());
+        infoDMNIconDivElement.setAttribute("title", ScenarioSimulationEditorConstants.INSTANCE.supportedDmnVersions());
         initializeDropdown();
     }
 

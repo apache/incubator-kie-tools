@@ -51,6 +51,9 @@ import {
   PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
   PMML_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
+  ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH,
+  ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+  ITERATOR_EXPRESSION_EXTRA_WIDTH,
 } from "./WidthConstants";
 
 export function getExpressionMinWidth(expression?: BoxedExpression): number {
@@ -145,6 +148,25 @@ export function getExpressionMinWidth(expression?: BoxedExpression): number {
     );
   }
 
+  // For
+  else if (expression.__$$element === "for") {
+    const nestedExpressions = [expression.in.expression, expression.return.expression];
+    return (
+      ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH +
+      Math.max(ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
+      ITERATOR_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
+  // Every/Some
+  else if (expression.__$$element === "every" || expression.__$$element === "some") {
+    const nestedExpressions = [expression.in.expression, expression.satisfies.expression];
+    return (
+      ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH +
+      Math.max(ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH, ...nestedExpressions.map((e) => getExpressionMinWidth(e))) +
+      ITERATOR_EXPRESSION_EXTRA_WIDTH
+    );
+  }
   // Others
   else {
     throw new Error("Shouldn't ever reach this point");
@@ -325,6 +347,34 @@ export function getExpressionResizingWidth(
           ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
         ) +
         CONDITIONAL_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
+  // For
+  else if (expression.__$$element === "for") {
+    const nestedExpressions = [expression.in.expression, expression.return.expression];
+    return (
+      resizingWidth ??
+      ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH +
+        Math.max(
+          ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+          ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
+        ) +
+        ITERATOR_EXPRESSION_EXTRA_WIDTH
+    );
+  }
+
+  // Every and Some
+  else if (expression.__$$element === "every" || expression.__$$element === "some") {
+    const nestedExpressions = [expression.in.expression, expression.satisfies.expression];
+    return (
+      resizingWidth ??
+      ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH +
+        Math.max(
+          ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
+          ...nestedExpressions.map((e) => getExpressionResizingWidth(e, resizingWidths, widthsById))
+        ) +
+        ITERATOR_EXPRESSION_EXTRA_WIDTH
     );
   }
 

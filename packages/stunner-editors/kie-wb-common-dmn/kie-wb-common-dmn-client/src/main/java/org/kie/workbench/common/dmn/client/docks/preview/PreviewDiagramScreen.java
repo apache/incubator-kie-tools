@@ -184,7 +184,7 @@ public class PreviewDiagramScreen extends AbstractActivity {
 
                                    @Override
                                    public void onError(final ClientRuntimeError error) {
-                                       LOGGER.log(Level.SEVERE, error.getMessage());
+                                       LOGGER.log(Level.SEVERE, error.getErrorMessage());
                                    }
                                });
         }
