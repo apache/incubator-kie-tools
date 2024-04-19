@@ -75,7 +75,7 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
     });
   }
 
-  // START - Remove from the input requirements outdated nodes
+  // START - Remove outdated requirements
   [...inputDatas].forEach((inputData) => {
     if (!requirements.has(inputData)) {
       inputDatas.delete(inputData);
@@ -89,7 +89,7 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
   });
   // END
 
-  // Update inputDecisions and inputDatas requirements with possible new nodes
+  // Update inputDecisions and inputDatas requirements with possible new hrefs
   requirements.forEach((type, href) => {
     if (type === "decisionIr") {
       inputDecisions.add(href);

@@ -40,8 +40,8 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { DragAndDrop, Draggable } from "../draggable/Draggable";
-import { Card, CardBody, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
+import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -420,14 +420,11 @@ function DecisionServiceEquivalentFunction({
   );
 
   return (
-    <Card>
-      <CardTitle>Invoking this Decision Service</CardTitle>
-      <CardBody>
-        <i>
-          <b>{decisionService["@_name"]}</b>(
-          {buildFunctionArgList(decisionService.inputDecision, decisionService.inputData)})
-        </i>
-      </CardBody>
-    </Card>
+    <Alert variant={AlertVariant.info} isInline title="Invoking this Decision Service in FEEL">
+      {`${decisionService["@_name"]}(${buildFunctionArgList(
+        decisionService.inputDecision,
+        decisionService.inputData
+      )})`}
+    </Alert>
   );
 }
