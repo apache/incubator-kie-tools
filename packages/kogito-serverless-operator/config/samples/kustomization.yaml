@@ -1,0 +1,7 @@
+## Append samples you want in your CSV to this file as resources ##
+resources:
+  - sonataflow.org_v1alpha08_sonataflow.yaml
+  - sonataflow.org_v1alpha08_sonataflowplatform.yaml
+  - sonataflow.org_v1alpha08_sonataflowbuild.yaml
+  - sonataflow.org_v1alpha08_sonataflowclusterplatform.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

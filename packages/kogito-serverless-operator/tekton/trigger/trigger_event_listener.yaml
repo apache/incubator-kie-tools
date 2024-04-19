@@ -1,0 +1,13 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: kogito-serverless-operator-webhook
+  namespace: sonataflow-operator-system
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: kogito-serverless-operator-trigger-webhook
+      bindings:
+        - ref: kogito-serverless-operator-trigger-binding
+      template:
+        ref: kogito-serverless-operator-trigger-template

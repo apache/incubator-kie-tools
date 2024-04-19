@@ -1,0 +1,63 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: kogito-serverless-operator-pipeline
+  namespace: sonataflow-operator-system
+spec:
+  params:
+    - description: name of the deployment to be patched
+      name: deployment-name
+      type: string
+    - description: url of the git repo for the code of deployment
+      name: git-url
+      type: string
+    - default: pipelines-1.9
+      description: revision to be used from repo of the code for deployment
+      name: git-revision
+      type: string
+    - description: image to be built from the code
+      name: IMAGE
+      type: string
+  tasks:
+    - name: fetch-repository
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: subdirectory
+          value: ""
+        - name: deleteExisting
+          value: "true"
+        - name: revision
+          value: $(params.git-revision)
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+    - name: build-image
+      params:
+        - name: IMAGE
+          value: $(params.IMAGE)
+        - name: TLSVERIFY
+          value: "false"
+      runAfter:
+        - fetch-repository
+      taskRef:
+        kind: ClusterTask
+        name: buildah
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: deploy-image
+      params:
+        - name: script
+          value: >
+            curl https://raw.githubusercontent.com/apache/incubator-kie-kogito-serverless-operator/main/operator.yaml | sed -E 's|image: quay.io/kiegroup/.*|image: image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/kogito-serverless-operator:latest|g' | kubectl apply -f -
+      runAfter:
+        - build-image
+      taskRef:
+        kind: Task
+        name: kubernetes-actions
+  workspaces:
+    - name: shared-workspace

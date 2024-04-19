@@ -4,10 +4,12 @@ go 1.21
 
 toolchain go1.21.6
 
-replace github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0 => github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0-20240126134605-2b5056d12bb9
+replace github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/api v0.0.0 => ./node_modules/@kie-tools/kogito-serverless-operator/api
+
+replace github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/workflowproj v0.0.0 => ./node_modules/@kie-tools/kogito-serverless-operator/workflowproj
 
 require (
-	github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0-20240122.0.20240219180504-5ebaf85efc66
+	github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/workflowproj v0.0.0
 	github.com/beevik/etree v1.2.0
 	github.com/docker/docker v24.0.9+incompatible
 	github.com/docker/go-connections v0.4.0
@@ -22,7 +24,7 @@ require (
 
 require (
 	github.com/Microsoft/go-winio v0.6.1 // indirect
-	github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0 // indirect
+	github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator/api v0.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect

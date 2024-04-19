@@ -1,0 +1,128 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+def changeAuthor = env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR
+def changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
+def changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
+
+testsFailed = false
+
+pipeline {
+    agent {
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+            label util.avoidFaultyNodes()
+        }
+    }
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+        timeout(time: 12, unit: 'HOURS') // We give a lot of time to timeout due to the lock on Openshift
+    }
+    environment {
+        OPENSHIFT_INTERNAL_REGISTRY = 'image-registry.openshift-image-registry.svc:5000'
+    }
+    stages {
+        stage('Setup pipeline') {
+            steps {
+                script {
+                    helper = load '.ci/jenkins/scripts/helper.groovy'
+                    helper.initPipeline()
+                }
+            }
+        }
+        stage('Initialize') {
+            steps {
+                script {
+                    clean()
+
+                    sh ' git config --global user.email "jenkins@kie.com" '
+                    sh ' git config --global user.name "kie user"'
+
+                    githubscm.checkoutIfExists('incubator-kie-kogito-serverless-operator', changeAuthor, changeBranch, 'apache', changeTarget, true, ['token' : 'GITHUB_TOKEN', 'usernamePassword' : 'user-kie-ci10'])
+                    
+                    sh "set +x && oc login --token=\$(oc whoami -t) --server=${OPENSHIFT_API} --insecure-skip-tls-verify"
+                }
+            }
+        }
+        stage('Build Operator') {
+            steps {
+                sh "make container-build BUILDER=${CONTAINER_ENGINE} IMG=${getBuiltImage()}"
+
+            }
+        }
+        stage('Push image to Openshift Registry') {
+            steps {
+                sh """
+                    set -x
+                    ${CONTAINER_ENGINE} login -u jenkins -p \$(oc whoami -t) --tls-verify=false ${OPENSHIFT_REGISTRY}
+                    ${CONTAINER_ENGINE} push --tls-verify=false ${getBuiltImage()}
+                """
+            }
+        }
+
+        stage('Run e2e tests') {
+            options {
+                lock("Sonataflow Operator OpenShift tests ${OPENSHIFT_API}")
+            }
+            stages {
+                stage('Running e2e tests') {
+                    options {
+                        timeout(time: 90, unit: 'MINUTES')
+                    }
+                    steps {
+                        script {
+                            try {
+                                sh """
+                                    export CLUSTER_PLATFORM=openshift
+                                    export OPERATOR_IMAGE_NAME=${getInternalImage()}
+                                    make test-e2e
+                                """
+                            } catch (err) {
+                                testsFailed = true
+                                sh "make undeploy || true"
+                                unstable("Error on e2e testing: ${err}")
+                            } finally {
+                                sh 'oc get pods -A'
+                            }
+                        }
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: 'test/logs/**/*.log', allowEmptyArchive: true
+                            junit testResults: 'test/logs/**/junit.xml', allowEmptyResults: true
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            script {
+                pullrequest.postComment(util.getMarkdownTestSummary('Openshift tests', '', "${BUILD_URL}", 'GITHUB'), 'GITHUB_TOKEN')
+            }
+        }
+        cleanup {
+            script {
+                clean()
+            }
+        }
+    }
+}
+
+void clean() {
+    helper.cleanGoPath()
+    util.cleanNode("${CONTAINER_ENGINE}")
+}
+
+String getBuiltImage() {
+    return "${OPENSHIFT_REGISTRY}/openshift/kogito-serverless-operator:${getTag()}"
+}
+
+String getInternalImage() {
+    return "image-registry.openshift-image-registry.svc:5000/openshift/kogito-serverless-operator:${getTag()}"
+}
+
+String getTag() {
+    return "pr-\$(echo \${GIT_COMMIT} | cut -c1-7)"
+}

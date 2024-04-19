@@ -1,0 +1,26 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  namespace: sonataflow-operator-system
+  generateName: kogito-serverless-operator-pipeline-run
+spec:
+  workspaces:
+    - name: shared-workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 500Mi
+  params:
+    - name: deployment-name
+      value: kogito-serverless-operator
+    - name: git-url
+      value: https://github.com/apache/incubator-kie-tools/packages/kogito-serverless-operator.git
+    - name: git-revision
+      value: "main"
+    - name: IMAGE
+      value: "image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/kogito-serverless-operator:latest"
+  pipelineRef:
+    name: kogito-serverless-operator-pipeline

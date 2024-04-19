@@ -5902,6 +5902,9 @@ importers:
 
   packages/kn-plugin-workflow:
     devDependencies:
+      "@kie-tools/kogito-serverless-operator":
+        specifier: workspace:*
+        version: link:../kogito-serverless-operator
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -5938,6 +5941,18 @@ importers:
       ts-json-schema-generator:
         specifier: ^1.1.2
         version: 1.1.2
+
+  packages/kogito-serverless-operator:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/kogito-task-console:
     devDependencies:

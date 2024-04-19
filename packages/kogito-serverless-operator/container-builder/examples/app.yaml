@@ -1,0 +1,28 @@
+# example deployment that can be used to run the built image
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonataflow-greetings
+  labels:
+    app: sonataflow-greetings
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonataflow-greetings
+  template:
+    metadata:
+      labels:
+        app: sonataflow-greetings
+    spec:
+      containers:
+        - name: sonataflow-greetings
+          # taken from kaniko logs
+          image: 10.107.131.33/greetings:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: QUARKUS_LAUNCH_DEVMODE
+              value: "true"
+            - name: QUARKUS_KOGITO_DEVSERVICES_ENABLED
+              value: "false"

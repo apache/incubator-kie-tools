@@ -1,0 +1,234 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+helper = null
+
+KIND_VERSION = "v0.20.0"
+kindClusterPlatform = 'kind'
+openshiftClusterPlatform = 'openshift'
+
+kindLogsFolder = "/tmp/kind-logs"
+
+pipeline {
+    agent {
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+            label util.avoidFaultyNodes()
+        }
+    }
+
+    options {
+        timeout(time: 3, unit: 'HOURS')
+        timestamps()
+    }
+
+    stages {
+        stage('Setup pipeline') {
+            steps {
+                script {
+                    helper = load '.ci/jenkins/scripts/helper.groovy'
+                    helper.initPipeline()
+                }
+            }
+        }
+        stage('Initialize') {
+            steps {
+                script {
+                    clean()
+
+                    helper.updateDisplayName()
+                    helper.checkoutRepo()
+
+                    assert getTestImage(): 'Please provide a Test image'
+                    container.pullImage(getTestImage()) // Verify image exists
+                }
+            }
+        }
+        stage('Setup cluster') {
+            steps {
+                script {
+                    setupCluster()
+                }
+            }
+        }
+        stage('Load image into Kind') {
+            when {
+                expression { 
+                    return getClusterName() == kindClusterPlatform 
+                }
+            }
+            steps {
+                script {
+                    kind.loadImage(getTestImage())
+                }
+            }
+        }
+        stage('Deploy the operator') {
+            when {
+                expression { 
+                    return getClusterName() == kindClusterPlatform 
+                }
+            }
+            steps {
+                script {
+                    sh "make deploy IMG=${getTestImage()}"
+                    sh "kubectl wait pod -A -l control-plane=sonataflow-operator --for condition=Ready --timeout=120s"
+                }
+            }
+        }
+        stage('Prepare for e2e tests') {
+            when {
+                expression { 
+                    return helper.shouldLaunchTests() && helper.isRelease() 
+                }
+            }
+            steps {
+                script {
+                    // Define specific tests images as those to override defaults
+                    // Because released builder and devmode images are not yet available
+                    String platformCRFilepath = getPlatformCRFilePath()
+                    String[] versionSplit = getOperatorVersion().split("\\.")
+                    String majorMinor = "${versionSplit[0]}.${versionSplit[1]}"
+                    def platformCR = readYaml(file: platformCRFilepath)
+
+                    platformCR.spec.devMode = platformCR.spec.devMode ?: [:]
+                    platformCR.spec.devMode.baseImage = "quay.io/kiegroup/kogito-swf-devmode-nightly:${majorMinor}"
+
+                    platformCR.spec.build = platformCR.spec.build ?: [:]
+                    platformCR.spec.build.config = platformCR.spec.build.config ?: [:]
+                    platformCR.spec.build.config.baseImage = "quay.io/kiegroup/kogito-swf-builder-nightly:${majorMinor}"
+                    writeYaml(file: platformCRFilepath, data: platformCR, overwrite: true)
+                }
+            }
+        }
+        stage('Run e2e tests') {
+            steps {
+                script {
+                    executeInCluster {
+                        try {
+                            sh """
+                                export CLUSTER_PLATFORM=${getClusterName()}
+                                export OPERATOR_IMAGE_NAME=${getTestImage()}
+                                make test-e2e
+                            """
+                        } catch (err) {
+                            kind.exportLogs(kindLogsFolder)
+                            sh 'make undeploy'
+                            deleteKindCluster()
+                            throw err
+                        }
+                        sh 'kubectl get pods -A'
+                        deleteKindCluster()
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                archiveArtifacts(artifacts: "**${kindLogsFolder}/**/*.*,**/e2e-test-report.xml")
+                junit '**/e2e-test-report.xml'
+            }
+        }
+        cleanup {
+            script {
+                clean()
+            }
+        }
+    }
+}
+
+void clean() {
+    helper.cleanGoPath()
+    util.cleanNode(containerEngine)
+}
+
+String getTestImage() {
+    return params.TEST_IMAGE_FULL_TAG
+}
+
+String getClusterName() {
+    return env.CLUSTER_NAME
+}
+
+String getOperatorVersion() {
+    return sh(script: 'source ./hack/env.sh > /dev/null && echo $(getOperatorVersion)', returnStdout: true).trim()
+}
+
+void setupCluster() {
+    switch (getClusterName()) {
+        case kindClusterPlatform:
+            echo 'Creating kind cluster'
+            createKindCluster()
+            break
+        case openshiftClusterPlatform:
+            echo 'Setting up Openshift'
+            setupOpenshift()
+            break
+        default:
+            error "Unknown cluster name ${getClusterName()}. Cannot prepare for it ..."
+    }
+}
+
+void createKindCluster() {
+    sh(script: "make KIND_VERSION=${KIND_VERSION} create-cluster", returnStdout: true)
+}
+
+void deleteKindCluster() {
+    sh(script: "make delete-cluster", returnStdout: true)
+}
+
+void setupOpenshift() {
+    // Login to Openshift
+    openshift.loginOpenshift()
+}
+
+void cleanupCluster() {
+    switch (getClusterName()) {
+        case kindClusterPlatform:
+            echo 'Deleting kind cluster'
+            deleteKindCluster()
+            break
+        case openshiftClusterPlatform:
+            echo 'Nothing to cleanup on openshift. All good !'
+            break
+        default:
+            error "Unknown cluster name ${getClusterName()}. Cannot cleanup ..."
+    }
+}
+
+void executeInCluster(Closure executeClosure) {
+    switch (getClusterName()) {
+        case kindClusterPlatform:
+            echo "Execute in kind"
+            executeClosure()
+            break
+        case openshiftClusterPlatform:
+            echo "Execute in openshift"
+            lock("Sonataflow Operator OpenShift tests ${getOpenshiftApi()}") {
+                executeClosure()
+            }
+            break
+        default:
+            error "Unknown cluster name ${getClusterName()}. Cannot execute anything ..."
+    }
+}
+
+void getPlatformCRFilePath() {
+    switch (getClusterName()) {
+        case kindClusterPlatform:
+            return 'test/testdata/sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml'
+        case openshiftClusterPlatform:
+            return 'test/testdata/sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml'
+        default:
+            error "Unknown cluster name ${getClusterName()}. Cannot execute anything ..."
+    }
+}
+
+// Special method to get the Openshift API in the lock because env is not accessible yet
+void getOpenshiftApi() {
+    withCredentials([string(credentialsId: env.OPENSHIFT_API_KEY, variable: 'OPENSHIFT_API')]) {
+        return env.OPENSHIFT_API
+    }
+}
