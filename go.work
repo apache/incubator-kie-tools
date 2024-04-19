@@ -18,7 +18,7 @@ replace (
 	github.com/serverlessworkflow/sdk-go/v2 => github.com/serverlessworkflow/sdk-go/v2 v2.2.5
 	golang.org/x/crypto => golang.org/x/crypto v0.17.0
 	// CVE-2023-40167 fix until third-party libs upgrade their side
-	golang.org/x/net => golang.org/x/net v0.17.0
+	golang.org/x/net => golang.org/x/net v0.23.0
 	k8s.io/api => k8s.io/api v0.27.6
 	k8s.io/apimachinery => k8s.io/apimachinery v0.27.6
 	k8s.io/client-go => k8s.io/client-go v0.27.6
