@@ -13,10 +13,10 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "run-script-os",
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then run-script-os",
     "build:dev:darwin:linux": "mvn clean compile -DskipTests",
     "build:dev:win32": "pnpm powershell \"mvn clean compile -DskipTests \"",
-    "build:prod": "pnpm lint && run-script-os",
+    "build:prod": "pnpm lint && run-script-if --bool \"$(build-env examples.build)\" --then run-script-os",
     "build:prod:darwin:linux": "mvn clean compile -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
     "build:prod:win32": "pnpm powershell \"mvn clean compile `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
     "install": "node install.js",
