@@ -45,6 +45,11 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
   definitions: DMN15__tDefinitions;
   decisionService: DMN15__tDecisionService;
 }) {
+  // Save previous values to preserve order
+  const inputDatas = new Set<string>([...(decisionService.inputData ?? [])].map((e) => e["@_href"])); // Using Set for uniqueness
+  const inputDecisions = new Set<string>([...(decisionService.inputDecision ?? [])].map((e) => e["@_href"])); // Using Set for uniqueness
+
+  // Reset the inputData and inputDecision entries
   decisionService.inputData = [];
   decisionService.inputDecision = [];
 
@@ -53,7 +58,8 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
     ...(decisionService.encapsulatedDecision ?? []).map((s) => s["@_href"]),
   ]);
 
-  const requirements = new Array<{ href: string; type: "decisionIr" | "inputDataIr" }>();
+  // Map all DS Input Data and Decision requirements to their href
+  const requirements = new Map<string, "decisionIr" | "inputDataIr">();
   for (let i = 0; i < definitions.drgElement!.length; i++) {
     const drgElement = definitions.drgElement![i];
     if (!hrefsToDecisionsInsideDecisionService.has(`#${drgElement["@_id"]}`) || drgElement.__$$element !== "decision") {
@@ -62,27 +68,37 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
 
     (drgElement.informationRequirement ?? []).flatMap((ir) => {
       if (ir.requiredDecision) {
-        requirements.push({ href: ir.requiredDecision["@_href"], type: "decisionIr" });
+        requirements.set(ir.requiredDecision["@_href"], "decisionIr");
       } else if (ir.requiredInput) {
-        requirements.push({ href: ir.requiredInput["@_href"], type: "inputDataIr" });
+        requirements.set(ir.requiredInput["@_href"], "inputDataIr");
       }
     });
   }
 
-  const inputDatas = new Set<string>(); // Using Set for uniqueness
-  const inputDecisions = new Set<string>(); // Using Set for uniqueness
-
-  const requirementsArray = [...requirements];
-  for (let i = 0; i < requirementsArray.length; i++) {
-    const r = requirementsArray[i];
-    if (r.type === "inputDataIr") {
-      inputDatas.add(r.href);
-    } else if (r.type === "decisionIr") {
-      inputDecisions.add(r.href);
-    } else {
-      throw new Error(`DMN MUTATION: Invalid type of element to be referenced by DecisionService: '${r.type}'`);
+  // START - Remove outdated requirements
+  [...inputDatas].forEach((inputData) => {
+    if (!requirements.has(inputData)) {
+      inputDatas.delete(inputData);
     }
-  }
+  });
+
+  [...inputDecisions].forEach((inputDecision) => {
+    if (!requirements.has(inputDecision)) {
+      inputDecisions.delete(inputDecision);
+    }
+  });
+  // END
+
+  // Update inputDecisions and inputDatas requirements with possible new hrefs
+  requirements.forEach((type, href) => {
+    if (type === "decisionIr") {
+      inputDecisions.add(href);
+    } else if (type === "inputDataIr") {
+      inputDatas.add(href);
+    } else {
+      throw new Error(`DMN MUTATION: Invalid type of element to be referenced by DecisionService: '${type}'`);
+    }
+  });
 
   decisionService.inputData = [...inputDatas].map((iHref) => ({ "@_href": iHref }));
   decisionService.inputDecision = [...inputDecisions].flatMap(
