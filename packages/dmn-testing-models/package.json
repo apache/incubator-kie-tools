@@ -1,0 +1,40 @@
+{
+  "private": true,
+  "name": "@kie-tools/dmn-testing-models",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && copyfiles index.js dist/ && run-script-os",
+    "build:dev:linux:darwin": "mvn clean verify",
+    "build:dev:win32": "pnpm powershell \"mvn clean verify\"",
+    "build:prod": "pnpm build:dev",
+    "install": "node install.js",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-base": "workspace:*",
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

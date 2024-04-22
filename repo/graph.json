@@ -103,7 +103,10 @@
       { "id": "@kie-tools/dmn-editor-envelope" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
       { "id": "@kie-tools/dmn-marshaller" },
+      { "id": "@kie-tools/dmn-marshaller-backend-compatibility-tester" },
+      { "id": "@kie-tools/dmn-testing-models" },
       { "id": "@kie-tools-core/switch-expression-ts" },
+      { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools/dmn-runner" },
       { "id": "@kie-tools/extended-services-api" },
       { "id": "dmn-vscode-extension" },
@@ -115,7 +118,6 @@
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
-      { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
@@ -296,7 +298,6 @@
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools-core/vscode-java-code-completion", "weight": 1 },
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/dmn-language-service", "weight": 1 },
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
-      { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
       { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/stunner-editors-dmn-loader", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
@@ -679,10 +680,29 @@
       { "source": "@kie-tools/dmn-editor-envelope", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/dmn-editor-envelope", "target": "@kie-tools/dmn-editor", "weight": 1 },
       { "source": "@kie-tools/dmn-feel-antlr4-parser", "target": "@kie-tools/dmn-marshaller", "weight": 1 },
+      {
+        "source": "@kie-tools/dmn-marshaller",
+        "target": "@kie-tools/dmn-marshaller-backend-compatibility-tester",
+        "weight": 1
+      },
+      { "source": "@kie-tools/dmn-marshaller", "target": "@kie-tools/dmn-testing-models", "weight": 1 },
       { "source": "@kie-tools/dmn-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
+      {
+        "source": "@kie-tools/dmn-marshaller-backend-compatibility-tester",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-marshaller-backend-compatibility-tester",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      { "source": "@kie-tools/dmn-testing-models", "target": "@kie-tools/maven-base", "weight": 1 },
       { "source": "@kie-tools-core/switch-expression-ts", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/switch-expression-ts", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/switch-expression-ts", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/maven-base", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/maven-base", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/extended-services-api", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
@@ -727,8 +747,6 @@
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "weight": 1
       },
-      { "source": "@kie-tools/maven-base", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
-      { "source": "@kie-tools/maven-base", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "target": "@kie-tools/runtime-tools-process-webapp-components",
@@ -1100,7 +1118,6 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
-      { "source": "@kie-tools/sonataflow-quarkus-devui", "target": "@kie-tools/maven-base", "weight": 1 },
       {
         "source": "@kie-tools/sonataflow-quarkus-devui",
         "target": "@kie-tools/serverless-workflow-dev-ui-webapp",
@@ -1191,7 +1208,9 @@
     ["@kie-tools/dmn-feel-antlr4-parser", "packages/dmn-feel-antlr4-parser"],
     ["@kie-tools/dmn-language-service", "packages/dmn-language-service"],
     ["@kie-tools/dmn-marshaller", "packages/dmn-marshaller"],
+    ["@kie-tools/dmn-marshaller-backend-compatibility-tester", "packages/dmn-marshaller-backend-compatibility-tester"],
     ["@kie-tools/dmn-runner", "packages/dmn-runner"],
+    ["@kie-tools/dmn-testing-models", "packages/dmn-testing-models"],
     ["dmn-vscode-extension", "packages/dmn-vscode-extension"],
     ["@kie-tools-core/editor", "packages/editor"],
     ["@kie-tools-core/envelope", "packages/envelope"],
