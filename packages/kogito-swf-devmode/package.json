@@ -23,7 +23,7 @@
     "image:build:linux:darwin": "pnpm setup:env make -C ./build build",
     "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"run-script-os\"",
     "image:test:darwin:win32": "echo \"pnpm image:test not supported\"",
-    "image:test:linux": "pnpm setup:env make -C ./build test-image",
+    "image:test:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
     "install": "node install.js",
     "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env SWF_IMAGE_REGISTRY=$(build-env kogitoSwfDevMode.registry) SWF_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoSwfDevMode.account) SWF_IMAGE_NAME=$(build-env kogitoSwfDevMode.name) SWF_IMAGE_TAG=$(build-env kogitoSwfDevMode.tag) QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) KOGITO_VERSION=$(build-env kogitoRuntime.version)"
   },
