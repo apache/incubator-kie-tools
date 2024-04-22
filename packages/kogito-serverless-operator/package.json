@@ -15,6 +15,7 @@
   "scripts": {
     "build:dev": "make build",
     "build:prod": "make build && pnpm test",
+    "install": "go mod tidy",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\""
   },
   "dependencies": {},
