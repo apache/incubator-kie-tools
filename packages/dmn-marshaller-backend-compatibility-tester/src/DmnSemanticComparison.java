@@ -108,12 +108,12 @@ class DmnSemanticComparison extends DmnMarshallerBackendCompatibilityTesterScrip
 
     private int compareDMNModelsNoImports() throws Exception {
         DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(new File(originalDmnPath));
-        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(new File(generatedDmnPath));
+        DMNModel generatedModel = instantiateDMNRuntimeAndReturnDMNModel(new File(generatedDmnPath));
 
         LOGGER.info("========== SEMANTIC COMPARISON ==========");
         LOGGER.info("Evaluating DMN file: " + originalModel.getName());
 
-        return compareDMNModels(originalModel, parsedModel);
+        return compareDMNModels(originalModel, generatedModel);
     }
 
     private int compareDMNModelsWithImports() throws Exception {
@@ -126,13 +126,13 @@ class DmnSemanticComparison extends DmnMarshallerBackendCompatibilityTesterScrip
 
         DMNModel originalModel = instantiateDMNRuntimeAndReturnDMNModel(new File(originalDmnPath),
                 importedOriginalDmnFiles);
-        DMNModel parsedModel = instantiateDMNRuntimeAndReturnDMNModel(new File(generatedDmnPath),
+        DMNModel generatedModel = instantiateDMNRuntimeAndReturnDMNModel(new File(generatedDmnPath),
                 importedGeneratedDmnFiles);
 
         LOGGER.info("========== SEMANTIC COMPARISON ==========");
         LOGGER.info("Evaluating DMN file: " + originalModel.getName());
 
-        return compareDMNModels(originalModel, parsedModel);
+        return compareDMNModels(originalModel, generatedModel);
     }
 
     private DMNModel instantiateDMNRuntimeAndReturnDMNModel(File dmnFile) throws Exception {
@@ -179,48 +179,48 @@ class DmnSemanticComparison extends DmnMarshallerBackendCompatibilityTesterScrip
     /**
      * This function compares two DMN models and returns a list of any missing
      * elements between them.
-     * The function checks both the original model and the parsed model to ensure
+     * The function checks both the original model and the generated model to ensure
      * that all elements are present in both models.
      * If any missing elements are found, the function returns a list of error
      * messages describing the missing elements
      */
-    private int compareDMNModels(DMNModel originalModel, DMNModel parsedModel) {
+    private int compareDMNModels(DMNModel originalModel, DMNModel generatedModel) {
         Definitions originalModelDefinitions = originalModel.getDefinitions();
-        Definitions parsedModelDefinitions = parsedModel.getDefinitions();
+        Definitions generatedModelDefinitions = generatedModel.getDefinitions();
 
         List<String> missingElementsMessages = new ArrayList<>();
 
-        /* Check if the ORIGINAL model elements are present in the PARSED model */
+        /* Check if the ORIGINAL model elements are present in the GENERATED model */
         missingElementsMessages.addAll(checkElements(originalModelDefinitions.getDecisionService(),
-                parsedModelDefinitions.getDecisionService()));
+                generatedModelDefinitions.getDecisionService()));
         missingElementsMessages.addAll(checkElements(originalModelDefinitions.getBusinessContextElement(),
-                parsedModelDefinitions.getBusinessContextElement()));
+                generatedModelDefinitions.getBusinessContextElement()));
         missingElementsMessages.addAll(
-                checkElements(originalModelDefinitions.getDrgElement(), parsedModelDefinitions.getDrgElement()));
+                checkElements(originalModelDefinitions.getDrgElement(), generatedModelDefinitions.getDrgElement()));
         missingElementsMessages
-                .addAll(checkElements(originalModelDefinitions.getImport(), parsedModelDefinitions.getImport()));
+                .addAll(checkElements(originalModelDefinitions.getImport(), generatedModelDefinitions.getImport()));
         missingElementsMessages.addAll(checkElements(originalModelDefinitions.getItemDefinition(),
-                parsedModelDefinitions.getItemDefinition()));
+                generatedModelDefinitions.getItemDefinition()));
 
-        /* Check if the PARSED model elements are present in the ORIGINAL model */
-        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getDecisionService(),
+        /* Check if the GENERATED model elements are present in the ORIGINAL model */
+        missingElementsMessages.addAll(checkElements(generatedModelDefinitions.getDecisionService(),
                 originalModelDefinitions.getDecisionService()));
-        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getBusinessContextElement(),
+        missingElementsMessages.addAll(checkElements(generatedModelDefinitions.getBusinessContextElement(),
                 originalModelDefinitions.getBusinessContextElement()));
         missingElementsMessages.addAll(
-                checkElements(parsedModelDefinitions.getDrgElement(), originalModelDefinitions.getDrgElement()));
+                checkElements(generatedModelDefinitions.getDrgElement(), originalModelDefinitions.getDrgElement()));
         missingElementsMessages
-                .addAll(checkElements(parsedModelDefinitions.getImport(), originalModelDefinitions.getImport()));
-        missingElementsMessages.addAll(checkElements(parsedModelDefinitions.getItemDefinition(),
+                .addAll(checkElements(generatedModelDefinitions.getImport(), originalModelDefinitions.getImport()));
+        missingElementsMessages.addAll(checkElements(generatedModelDefinitions.getItemDefinition(),
                 originalModelDefinitions.getItemDefinition()));
 
         if (missingElementsMessages.isEmpty()) {
-            LOGGER.info("RESULT: Original and Parsed files are semantically the same!");
+            LOGGER.info("RESULT: Original and Generated files are semantically the same!");
             return 0;
         } else {
-            LOGGER.error("ERROR: Original and Parsed files are NOT semantically the same!");
+            LOGGER.error("ERROR: Original and Generated files are NOT semantically the same!");
             missingElementsMessages.forEach(message -> LOGGER.error(message));
-            System.err.println("ERROR: Original and Parsed files are NOT semantically the same!");
+            System.err.println("ERROR: Original and Generated files are NOT semantically the same!");
             System.err.println("DMN File Name: " + originalModel.getName());
             missingElementsMessages.forEach(System.err::println);
             return 1;
