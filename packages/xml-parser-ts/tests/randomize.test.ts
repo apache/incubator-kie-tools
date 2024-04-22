@@ -55,14 +55,6 @@ const meta = {
   },
 } as const;
 
-type Meta = typeof meta;
-
-interface Model<X extends keyof Meta> {
-  json: any | undefined;
-  type: X;
-  attr: keyof Meta[X];
-}
-
 function getXmlParserTsIdRandomizer() {
   return new XmlParserTsIdRandomizer({
     meta: meta,
@@ -75,7 +67,7 @@ function getXmlParserTsIdRandomizer() {
 describe("randomize", () => {
   describe("skip already attributed ids", () => {
     test("undefined", () => {
-      const newIdsMap = getXmlParserTsIdRandomizer()
+      const randomizedIds = getXmlParserTsIdRandomizer()
         .ack({
           json: undefined,
           type: "person",
@@ -84,43 +76,42 @@ describe("randomize", () => {
         .randomize()
         .getRandomized();
 
-      expect(newIdsMap).toEqual(new Map());
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("object", () => {
       const ids = Array.from({ length: 1 }, () => generateUuid());
       const [addressId] = ids;
 
-      const model: Model<"person"> = {
-        json: { id: addressId, street: "test", number: 1, country: "Brazil" },
-        type: "person",
-        attr: "address",
-      };
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: { id: addressId, street: "test", number: 1, country: "Brazil" },
+          type: "person",
+          attr: "address",
+        })
+        .randomize()
+        .getRandomized();
 
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize().getRandomized();
-
-      expect(newIdsMap).toEqual(new Map());
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("object with undefined id", () => {
-      const model: Model<"person"> = {
-        json: { id: undefined, street: "test", number: 1, country: "Brazil" },
-        type: "person",
-        attr: "address",
-      };
-
-      const newIdsMap = getXmlParserTsIdRandomizer().ack(model).randomize().getRandomized();
-      expect(newIdsMap).toEqual(new Map());
-      Array.from(newIdsMap.values()).forEach((newId) => {
-        expect(newId).toMatch(uuidRegExp);
-      });
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: { id: undefined, street: "test", number: 1, country: "Brazil" },
+          type: "person",
+          attr: "address",
+        })
+        .randomize()
+        .getRandomized();
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("array of objects", () => {
       const ids = Array.from({ length: 1 }, () => generateUuid());
       const [educationId] = ids;
 
-      const newIdsMap = getXmlParserTsIdRandomizer()
+      const randomizedIds = getXmlParserTsIdRandomizer()
         .ack({
           json: [{ id: educationId, school: "MIT" }],
           type: "person",
@@ -129,14 +120,14 @@ describe("randomize", () => {
         .randomize()
         .getRandomized();
 
-      expect(newIdsMap).toEqual(new Map());
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("array of ids", () => {
       const ids = Array.from({ length: 3 }, () => generateUuid());
       const [lucky1, lucky2, lucky3] = ids;
 
-      const newIdsMap = getXmlParserTsIdRandomizer()
+      const randomizedIds = getXmlParserTsIdRandomizer()
         .ack({
           json: [lucky1, lucky2, lucky3],
           type: "person",
@@ -145,11 +136,11 @@ describe("randomize", () => {
         .randomize()
         .getRandomized();
 
-      expect(newIdsMap).toEqual(new Map());
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("array of undefined", () => {
-      const newIdsMap = getXmlParserTsIdRandomizer()
+      const randomizedIds = getXmlParserTsIdRandomizer()
         .ack({
           json: [undefined, undefined],
           type: "person",
@@ -158,14 +149,14 @@ describe("randomize", () => {
         .randomize()
         .getRandomized();
 
-      expect(newIdsMap).toEqual(new Map());
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("complete example - nested objects", () => {
       const ids = Array.from({ length: 7 }, () => generateUuid());
       const [rootId, personId, addressId, educationId, lucky1, lucky2, lucky3] = ids;
 
-      const newIdsMap = getXmlParserTsIdRandomizer()
+      const randomizedIds = getXmlParserTsIdRandomizer()
         .ack({
           json: {
             id: rootId,
@@ -182,7 +173,7 @@ describe("randomize", () => {
         .randomize()
         .getRandomized();
 
-      expect(newIdsMap).toEqual(new Map());
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("complete example - nested arrays", () => {
@@ -203,7 +194,7 @@ describe("randomize", () => {
         secondLucky3,
       ] = ids;
 
-      const newIdsMap = getXmlParserTsIdRandomizer()
+      const randomizedIds = getXmlParserTsIdRandomizer()
         .ack({
           json: {
             id: nestedId,
@@ -231,149 +222,177 @@ describe("randomize", () => {
         .randomize()
         .getRandomized();
 
-      expect(newIdsMap).toEqual(new Map());
+      expect(randomizedIds).toEqual(new Map());
+    });
+
+    test("complete example - missing ids", () => {
+      const ids = Array.from({ length: 10 }, () => generateUuid());
+      const [
+        nestedId,
+        firstPersonId,
+        firstAddressId,
+        firstLucky1,
+        firstLucky2,
+        secondPersonId,
+        secondEducation1Id,
+        secondEducation2Id,
+        secondLucky1,
+        secondLucky3,
+      ] = ids;
+
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: {
+            id: nestedId,
+            people: [
+              {
+                id: firstPersonId,
+                address: { id: firstAddressId, street: "foo", number: 1, country: "Brazil" },
+                education: [{ school: "MIT" }],
+                luckyIds: [firstLucky1, firstLucky2],
+              },
+              {
+                id: secondPersonId,
+                address: { street: "bar", number: 2, country: "US" },
+                education: [
+                  { id: secondEducation1Id, school: "MIT" },
+                  { id: secondEducation2Id, school: "Harvard" },
+                ],
+                luckyIds: [secondLucky1, undefined, secondLucky3],
+              },
+            ],
+          },
+          type: "root",
+          attr: "nested",
+        })
+        .randomize()
+        .getRandomized();
+
+      expect(randomizedIds).toEqual(new Map());
     });
   });
 
   describe("replace already attribute ids", () => {
     test("undefined", () => {
-      const model: Model<"person"> = {
-        json: undefined,
-        type: "person",
-        attr: "address",
-      };
-
-      const newIdsMap = getXmlParserTsIdRandomizer()
-        .ack(model)
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: undefined,
+          type: "person",
+          attr: "address",
+        })
         .randomize({ skipAlreadyAttributedIds: false })
         .getRandomized();
 
-      expect(newIdsMap).toEqual(new Map());
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("object", () => {
-      const xmlParser = new XmlParserTsIdRandomizer({
-        meta: meta,
-        elements: elements,
-        newIdGenerator: generateUuid,
-        matchers: [],
-      });
-
       const ids = Array.from({ length: 1 }, () => generateUuid());
       const [addressId] = ids;
-      const model: Model<"person"> = {
-        json: { id: addressId, street: "test", number: 1, country: "Brazil" },
-        type: "person",
-        attr: "address",
-      };
-      const newIdsMap = xmlParser.ack(model).randomize({ skipAlreadyAttributedIds: false }).getRandomized();
 
-      expect(Array.from(newIdsMap.keys())).toEqual(ids);
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: { id: addressId, street: "test", number: 1, country: "Brazil" },
+          type: "person",
+          attr: "address",
+        })
+        .randomize({ skipAlreadyAttributedIds: false })
+        .getRandomized();
+
+      expect(Array.from(randomizedIds.keys())).toEqual(ids);
       ids.forEach((id) => {
-        expect(newIdsMap.get(id)).toMatch(uuidRegExp);
+        expect(randomizedIds.get(id)).toMatch(uuidRegExp);
       });
     });
 
     test("object with undefined id", () => {
-      const model: Model<"person"> = {
-        json: { id: undefined, street: "test", number: 1, country: "Brazil" },
-        type: "person",
-        attr: "address",
-      };
-      const newIdsMap = getXmlParserTsIdRandomizer()
-        .ack(model)
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: { id: undefined, street: "test", number: 1, country: "Brazil" },
+          type: "person",
+          attr: "address",
+        })
         .randomize({ skipAlreadyAttributedIds: false })
         .getRandomized();
 
-      expect(newIdsMap).toEqual(new Map());
-      Array.from(newIdsMap.values())?.forEach((newId) => {
-        expect(newId).toMatch(uuidRegExp);
-      });
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("array of objects", () => {
       const ids = Array.from({ length: 1 }, () => generateUuid());
       const [educationId] = ids;
-      const model: Model<"person"> = {
-        json: [{ id: educationId, school: "MIT" }],
-        type: "person",
-        attr: "education",
-      };
 
-      const newIdsMap = getXmlParserTsIdRandomizer()
-        .ack(model)
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: [{ id: educationId, school: "MIT" }],
+          type: "person",
+          attr: "education",
+        })
         .randomize({ skipAlreadyAttributedIds: false })
         .getRandomized();
 
-      expect(Array.from(newIdsMap.keys())).toEqual(ids);
+      expect(Array.from(randomizedIds.keys())).toEqual(ids);
       ids.forEach((id) => {
-        expect(newIdsMap.get(id)).toMatch(uuidRegExp);
+        expect(randomizedIds.get(id)).toMatch(uuidRegExp);
       });
     });
 
     test("array of ids", () => {
       const ids = Array.from({ length: 3 }, () => generateUuid());
       const [lucky1, lucky2, lucky3] = ids;
-      const model: Model<"person"> = {
-        json: [lucky1, lucky2, lucky3],
-        type: "person",
-        attr: "luckyIds",
-      };
 
-      const newIdsMap = getXmlParserTsIdRandomizer()
-        .ack(model)
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: [lucky1, lucky2, lucky3],
+          type: "person",
+          attr: "luckyIds",
+        })
         .randomize({ skipAlreadyAttributedIds: false })
         .getRandomized();
 
-      expect(Array.from(newIdsMap.keys())).toEqual(ids);
+      expect(Array.from(randomizedIds.keys())).toEqual(ids);
       ids.forEach((id) => {
-        expect(newIdsMap.get(id)).toMatch(uuidRegExp);
+        expect(randomizedIds.get(id)).toMatch(uuidRegExp);
       });
     });
 
     test("array of undefined", () => {
-      const model: Model<"person"> = {
-        json: [undefined, undefined],
-        type: "person",
-        attr: "luckyIds",
-      };
-      const newIdsMap = getXmlParserTsIdRandomizer()
-        .ack(model)
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: [undefined, undefined],
+          type: "person",
+          attr: "luckyIds",
+        })
         .randomize({ skipAlreadyAttributedIds: false })
         .getRandomized();
 
-      expect(newIdsMap).toEqual(new Map());
-      Array.from(newIdsMap.values()).forEach((newId) => {
-        expect(newId).toMatch(uuidRegExp);
-      });
+      expect(randomizedIds).toEqual(new Map());
     });
 
     test("complete example - nested objects", () => {
       const ids = Array.from({ length: 7 }, () => generateUuid());
       const [rootId, personId, addressId, educationId, lucky1, lucky2, lucky3] = ids;
 
-      const model: Model<"root"> = {
-        json: {
-          id: rootId,
-          person: {
-            id: personId,
-            address: { id: addressId, street: "test", number: 1, country: "Brazil" },
-            education: [{ id: educationId, school: "MIT" }],
-            luckyIds: [lucky1, lucky2, lucky3],
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: {
+            id: rootId,
+            person: {
+              id: personId,
+              address: { id: addressId, street: "test", number: 1, country: "Brazil" },
+              education: [{ id: educationId, school: "MIT" }],
+              luckyIds: [lucky1, lucky2, lucky3],
+            },
           },
-        },
-        type: "root",
-        attr: "nested",
-      };
-
-      const newIdsMap = getXmlParserTsIdRandomizer()
-        .ack(model)
+          type: "root",
+          attr: "nested",
+        })
         .randomize({ skipAlreadyAttributedIds: false })
         .getRandomized();
 
-      expect(Array.from(newIdsMap.keys())).toEqual(ids);
+      expect(Array.from(randomizedIds.keys())).toEqual(ids);
       ids.forEach((id) => {
-        expect(newIdsMap.get(id)).toMatch(uuidRegExp);
+        expect(randomizedIds.get(id)).toMatch(uuidRegExp);
       });
     });
 
@@ -395,39 +414,86 @@ describe("randomize", () => {
         secondLucky3,
       ] = ids;
 
-      const model: Model<"root"> = {
-        json: {
-          id: nestedId,
-          people: [
-            {
-              id: firstPersonId,
-              address: { id: firstAddressId, street: "foo", number: 1, country: "Brazil" },
-              education: [{ id: firstEducationId, school: "MIT" }],
-              luckyIds: [firstLucky1, firstLucky2],
-            },
-            {
-              id: secondPersonId,
-              address: { id: secondAddressId, street: "bar", number: 2, country: "US" },
-              education: [
-                { id: secondEducation1Id, school: "MIT" },
-                { id: secondEducation2Id, school: "Harvard" },
-              ],
-              luckyIds: [secondLucky1, secondLucky2, secondLucky3],
-            },
-          ],
-        },
-        type: "root",
-        attr: "nested",
-      };
-
-      const newIdsMap = getXmlParserTsIdRandomizer()
-        .ack(model)
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: {
+            id: nestedId,
+            people: [
+              {
+                id: firstPersonId,
+                address: { id: firstAddressId, street: "foo", number: 1, country: "Brazil" },
+                education: [{ id: firstEducationId, school: "MIT" }],
+                luckyIds: [firstLucky1, firstLucky2],
+              },
+              {
+                id: secondPersonId,
+                address: { id: secondAddressId, street: "bar", number: 2, country: "US" },
+                education: [
+                  { id: secondEducation1Id, school: "MIT" },
+                  { id: secondEducation2Id, school: "Harvard" },
+                ],
+                luckyIds: [secondLucky1, secondLucky2, secondLucky3],
+              },
+            ],
+          },
+          type: "root",
+          attr: "nested",
+        })
         .randomize({ skipAlreadyAttributedIds: false })
         .getRandomized();
 
-      expect(Array.from(newIdsMap.keys())).toEqual(ids);
+      expect(Array.from(randomizedIds.keys())).toEqual(ids);
       ids.forEach((id) => {
-        expect(newIdsMap.get(id)).toMatch(uuidRegExp);
+        expect(randomizedIds.get(id)).toMatch(uuidRegExp);
+      });
+    });
+
+    test("complete example - missing ids", () => {
+      const ids = Array.from({ length: 10 }, () => generateUuid());
+      const [
+        nestedId,
+        firstPersonId,
+        firstAddressId,
+        firstLucky1,
+        firstLucky2,
+        secondPersonId,
+        secondEducation1Id,
+        secondEducation2Id,
+        secondLucky1,
+        secondLucky3,
+      ] = ids;
+
+      const randomizedIds = getXmlParserTsIdRandomizer()
+        .ack({
+          json: {
+            id: nestedId,
+            people: [
+              {
+                id: firstPersonId,
+                address: { id: firstAddressId, street: "foo", number: 1, country: "Brazil" },
+                education: [{ school: "MIT" }],
+                luckyIds: [firstLucky1, firstLucky2],
+              },
+              {
+                id: secondPersonId,
+                address: { street: "bar", number: 2, country: "US" },
+                education: [
+                  { id: secondEducation1Id, school: "MIT" },
+                  { id: secondEducation2Id, school: "Harvard" },
+                ],
+                luckyIds: [secondLucky1, undefined, secondLucky3],
+              },
+            ],
+          },
+          type: "root",
+          attr: "nested",
+        })
+        .randomize({ skipAlreadyAttributedIds: false })
+        .getRandomized();
+
+      expect(Array.from(randomizedIds.keys())).toEqual(ids);
+      ids.forEach((id) => {
+        expect(randomizedIds.get(id)).toMatch(uuidRegExp);
       });
     });
   });
