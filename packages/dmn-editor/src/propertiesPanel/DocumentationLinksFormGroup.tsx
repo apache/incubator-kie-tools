@@ -165,7 +165,7 @@ export function DocumentationLinksFormGroup({
   }, []);
 
   const draggableItem = useCallback(
-    (kieAttachment, index) => {
+    (kieAttachment: Namespaced<"kie", KIE__tAttachment>, index: number) => {
       return (
         <Draggable
           key={valuesUuid?.[index] ?? generateUuid()}
