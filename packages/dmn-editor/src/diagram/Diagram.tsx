@@ -1670,6 +1670,7 @@ export function KeyboardShortcuts(props: {}) {
           type: "KIE__tComponentsWidthsExtension",
           attr: "kie:ComponentWidths",
         })
+        .attribute()
         .randomize();
 
       dmnEditorStoreApi.setState((state) => {

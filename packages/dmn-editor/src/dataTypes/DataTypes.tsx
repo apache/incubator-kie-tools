@@ -154,6 +154,7 @@ export function DataTypes() {
           type: "DMN15__tDefinitions",
           attr: "itemDefinition",
         })
+        .attribute()
         .randomize();
 
       for (const itemDefinition of clipboard.itemDefinitions) {
