@@ -31,6 +31,7 @@ export enum BoxedExpressionPropertiesPanelComponent {
   FUNCTION_DEFINITION_ROOT = "function-definition-root",
   INVOCATION_FUNCTION_CALL = "invocation-function-call",
   INVOCATION_INFORMATION_ITEM_CELL = "invocation-information-item-cell",
+  ITERATOR_VARIABLE_CELL = "iterator-variable-cell",
   LITERAL_EXPRESSION_CONTENT = "literal-expression-content",
   RELATION_INFORMATION_ITEM_CELL = "relation-information-item-cell",
   WITHOUT_PROPERTIES_CELL = "without-properties-cell",
@@ -92,6 +93,12 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
     if (selectedObjectPath.row === undefined) {
       return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Every" };
     }
+    if (selectedObjectPath.row === "variable") {
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL,
+        title: "Boxed Every Variable",
+      };
+    }
   }
 
   if (selectedObjectPath.type === "filter") {
@@ -103,6 +110,9 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
   if (selectedObjectPath.type === "for") {
     if (selectedObjectPath.row === undefined) {
       return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed For" };
+    }
+    if (selectedObjectPath.row === "variable") {
+      return { component: BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL, title: "Boxed For Variable" };
     }
   }
 
@@ -178,6 +188,12 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
   if (selectedObjectPath.type === "some") {
     if (selectedObjectPath.row === undefined) {
       return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Some" };
+    }
+    if (selectedObjectPath.row === "variable") {
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL,
+        title: "Boxed Some Variable",
+      };
     }
   }
   return { component: BoxedExpressionPropertiesPanelComponent.WITHOUT_PROPERTIES_CELL, title: "" };

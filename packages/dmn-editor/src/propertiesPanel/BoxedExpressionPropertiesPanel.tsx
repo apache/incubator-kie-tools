@@ -52,6 +52,7 @@ import {
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { drgElementToBoxedExpression } from "../boxedExpressions/BoxedExpressionScreen";
+import { IteratorVariableCell } from "./BoxedExpressionPropertiesPanelComponents/IteratorVariableCell";
 
 export function BoxedExpressionPropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -180,6 +181,10 @@ export function BoxedExpressionPropertiesPanel() {
                       boxedExpressionIndex={boxedExpressionIndex}
                       isReadonly={isReadonly}
                     />
+                  )}
+                  {boxedExpressionPropertiesPanelComponent?.component ===
+                    BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL && (
+                    <IteratorVariableCell boxedExpressionIndex={boxedExpressionIndex} isReadonly={isReadonly} />
                   )}
                   {boxedExpressionPropertiesPanelComponent?.component ===
                     BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT && (

@@ -93,21 +93,11 @@ const pmmlDocuments = [
 const INITIAL_EXPRESSION: BoxedExpression | undefined = undefined;
 const INITIAL_WIDTHS_BY_ID: Record<string, number[]> = {};
 
-const beeGwtService: BeeGwtService = {
-  getDefaultExpressionDefinition(logicType, typeRef) {
-    return {
-      expression: getDefaultBoxedExpressionForDevWebapp(logicType, typeRef),
-      widthsById: new Map(),
-    };
-  },
-  openDataTypePage(): void {},
-  selectObject(): void {},
-};
-
 function App() {
   const [version, setVersion] = useState(-1);
   const [boxedExpression, setBoxedExpression] = useState<BoxedExpression | undefined>(INITIAL_EXPRESSION);
   const [widthsById, setWidthsById] = useState<Record<string, number[]>>(INITIAL_WIDTHS_BY_ID);
+  const [selectedObjectId, setSelectedObjectId] = useState<string>();
 
   useEffect(() => {
     setVersion((prev) => prev + 1);
@@ -117,6 +107,19 @@ function App() {
     setBoxedExpression(sample);
     setWidthsById(widthsById);
   }, []);
+
+  const beeGwtService: BeeGwtService = {
+    getDefaultExpressionDefinition(logicType, typeRef) {
+      return {
+        expression: getDefaultBoxedExpressionForDevWebapp(logicType, typeRef),
+        widthsById: new Map(),
+      };
+    },
+    openDataTypePage(): void {},
+    selectObject(uuid) {
+      setSelectedObjectId(uuid);
+    },
+  };
 
   return (
     <div>
@@ -139,25 +142,38 @@ function App() {
                 Affordability
               </Button>
             </FlexItem>
-            <FlexItem align={{ default: "alignRight" }}>
-              <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>
-                <Title headingLevel="h2">Updates count: {version}</Title>
-              </Tooltip>
-            </FlexItem>
           </Flex>
         </FlexItem>
-        <FlexItem>
-          <div>
-            {BoxedExpressionEditorStory({
-              expressionHolderId: "_00000000-0000-0000-0000-000000000000",
-              expression: boxedExpression,
-              onExpressionChange: setBoxedExpression,
-              widthsById: widthsById,
-              onWidthsChange: setWidthsById,
-              isResetSupportedOnRootExpression: true,
-            })}
-          </div>
-        </FlexItem>
+
+        <Flex>
+          <FlexItem>
+            <div>
+              {BoxedExpressionEditorStory({
+                expressionHolderId: "_00000000-0000-0000-0000-000000000000",
+                expression: boxedExpression,
+                onExpressionChange: setBoxedExpression,
+                widthsById: widthsById,
+                onWidthsChange: setWidthsById,
+                isResetSupportedOnRootExpression: true,
+                beeGwtService: beeGwtService,
+              })}
+            </div>
+          </FlexItem>
+          <FlexItem align={{ default: "alignRight" }} style={{ width: "320px" }}>
+            <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>
+              <div>
+                <Title headingLevel="h2">Updates count</Title>
+                <p>{version}</p>
+              </div>
+            </Tooltip>
+            <Tooltip content={""}>
+              <div>
+                <Title headingLevel="h2">Selected cell ID</Title>
+                <p>{selectedObjectId}</p>
+              </div>
+            </Tooltip>
+          </FlexItem>
+        </Flex>
       </Flex>
     </div>
   );
@@ -182,7 +198,6 @@ export const WebApp: Story = {
     expression: undefined, // Needs to be here to be displayed.
     widthsById: {}, // Needs to be here to be displayed.
     dataTypes: dataTypes,
-    beeGwtService: beeGwtService,
     pmmlDocuments: pmmlDocuments,
   },
 };

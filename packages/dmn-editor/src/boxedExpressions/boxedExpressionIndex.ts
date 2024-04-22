@@ -57,7 +57,7 @@ interface DecisionTablePath extends PathType {
 
 interface EveryExpressionPath extends PathType {
   type: "every";
-  row?: "in" | "statisfies";
+  row?: "variable" | "in" | "statisfies";
 }
 
 interface FilterExpressionPath extends PathType {
@@ -67,7 +67,7 @@ interface FilterExpressionPath extends PathType {
 
 interface ForExpressionPath extends PathType {
   type: "for";
-  row?: "in" | "return";
+  row?: "variable" | "in" | "return";
 }
 
 interface FunctionDefinitionExpressionPath extends PathType {
@@ -98,7 +98,7 @@ interface RelationExpressionPath extends PathType {
 
 interface SomeExpressionPath extends PathType {
   type: "some";
-  row?: "in" | "statisfies";
+  row?: "variable" | "in" | "statisfies";
 }
 
 export type ExpressionPath =
@@ -230,6 +230,11 @@ export function generateBoxedExpressionIndex(
           expressionPath: [...parentExpressionPath, { type: "every", root: expression["@_id"] }],
           cell: expression,
         });
+      expression["@_id"] &&
+        map.set(`${expression["@_id"]}-iteratorVariable`, {
+          expressionPath: [...parentExpressionPath, { type: "every", row: "variable", root: expression["@_id"] }],
+          cell: expression,
+        });
       generateBoxedExpressionIndex(expression.in.expression, map, [
         ...parentExpressionPath,
         { type: "every", row: "in", root: expression["@_id"]! },
@@ -258,6 +263,11 @@ export function generateBoxedExpressionIndex(
       expression["@_id"] &&
         map.set(expression["@_id"], {
           expressionPath: [...parentExpressionPath, { type: "for", root: expression["@_id"] }],
+          cell: expression,
+        });
+      expression["@_id"] &&
+        map.set(`${expression["@_id"]}-iteratorVariable`, {
+          expressionPath: [...parentExpressionPath, { type: "for", row: "variable", root: expression["@_id"] }],
           cell: expression,
         });
       generateBoxedExpressionIndex(expression.in.expression, map, [
@@ -373,6 +383,11 @@ export function generateBoxedExpressionIndex(
           expressionPath: [...parentExpressionPath, { type: "some", root: expression["@_id"] }],
           cell: expression,
         });
+      expression["@_id"] &&
+        map.set(`${expression["@_id"]}-iteratorVariable`, {
+          expressionPath: [...parentExpressionPath, { type: "some", row: "variable", root: expression["@_id"] }],
+          cell: expression,
+        });
       generateBoxedExpressionIndex(expression.in.expression, map, [
         ...parentExpressionPath,
         { type: "some", row: "in", root: expression["@_id"]! },
@@ -437,6 +452,9 @@ export function getDmnObjectByPath(
       if (path.row === undefined) {
         return expressionToEdit as DMN15__tQuantified;
       }
+      if (path.row === "variable") {
+        return expressionToEdit as DMN15__tQuantified;
+      }
       if (path.row === "in") {
         return (expressionToEdit as DMN15__tQuantified).in.expression;
       }
@@ -455,6 +473,9 @@ export function getDmnObjectByPath(
     if (path.type === "for") {
       // root
       if (path.row === undefined) {
+        return expressionToEdit as DMN15__tFor;
+      }
+      if (path.row === "variable") {
         return expressionToEdit as DMN15__tFor;
       }
       if (path.row === "in") {
@@ -509,6 +530,9 @@ export function getDmnObjectByPath(
     if (path.type === "some") {
       // root
       if (path.row === undefined) {
+        return expressionToEdit as DMN15__tQuantified;
+      }
+      if (path.row === "variable") {
         return expressionToEdit as DMN15__tQuantified;
       }
       if (path.row === "in") {
