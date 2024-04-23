@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.resources;
 
-import io.crysknife.ui.translation.client.annotation.TranslationKey;
+import org.kie.j2cl.tools.di.ui.translation.client.annotation.TranslationKey;
 
 public class StunnerClientCommonConstants {
 

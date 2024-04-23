@@ -167,26 +167,25 @@
     </dependency>
 
     <dependency>
-      <groupId>org.treblereel.j2cl.processors</groupId>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
       <artifactId>processors</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>io.crysknife.ui</groupId>
-      <artifactId>crysknife-ui-core</artifactId>
-      <version>${version.io.crysknife}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.crysknife</groupId>
-      <artifactId>crysknife-processor</artifactId>
+      <groupId>org.kie.j2cl.tools.di</groupId>
+      <artifactId>processor</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>io.crysknife.ui</groupId>
-      <artifactId>crysknife-ui-generator</artifactId>
+      <groupId>org.kie.j2cl.tools.di.ui</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.j2cl.tools.di.ui</groupId>
+      <artifactId>generator</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -269,7 +268,7 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>com.vertispan.j2cl</groupId>
+        <groupId>org.kie.j2cl.tools</groupId>
         <artifactId>j2cl-maven-plugin</artifactId>
         <executions>
           <execution>

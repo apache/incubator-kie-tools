@@ -23,11 +23,11 @@ package org.kie.workbench.common.stunner.core.client.api;
 import java.lang.annotation.Annotation;
 import java.util.function.Function;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.profile.AbstractProfileManager;
 import org.kie.workbench.common.stunner.core.profile.Profile;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;

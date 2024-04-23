@@ -21,9 +21,9 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
-import org.treblereel.gwt.json.mapper.annotation.JSONMapper;
-import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
-import org.treblereel.j2cl.processors.annotations.GWT3Export;
+import org.kie.j2cl.tools.json.mapper.annotation.JSONMapper;
+import org.kie.j2cl.tools.processors.annotations.GWT3Export;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YAMLMapper;
 
 @JSONMapper
 @YAMLMapper

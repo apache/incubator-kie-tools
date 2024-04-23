@@ -88,8 +88,8 @@
       <scope>test</scope>
     </dependency>
       <dependency>
-          <groupId>io.crysknife</groupId>
-          <artifactId>crysknife-core</artifactId>
+          <groupId>org.kie.j2cl.tools.di</groupId>
+          <artifactId>core</artifactId>
       </dependency>
 
   </dependencies>

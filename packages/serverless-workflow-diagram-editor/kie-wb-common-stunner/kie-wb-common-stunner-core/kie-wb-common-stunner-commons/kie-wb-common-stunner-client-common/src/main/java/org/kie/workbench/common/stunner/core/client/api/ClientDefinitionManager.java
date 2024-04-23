@@ -22,12 +22,12 @@ package org.kie.workbench.common.stunner.core.client.api;
 
 import java.util.Collection;
 
-import io.crysknife.annotation.CircularDependency;
-import io.crysknife.client.BeanManager;
-import io.crysknife.client.SyncBeanDef;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.annotation.CircularDependency;
+import org.kie.j2cl.tools.di.core.BeanManager;
+import org.kie.j2cl.tools.di.core.SyncBeanDef;
 import org.kie.workbench.common.stunner.core.api.AbstractDefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;

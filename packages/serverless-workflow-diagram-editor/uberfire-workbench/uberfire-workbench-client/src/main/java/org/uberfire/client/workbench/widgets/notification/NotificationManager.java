@@ -26,11 +26,11 @@ import java.util.Objects;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
-import io.crysknife.client.BeanManager;
-import io.crysknife.client.SyncBeanDef;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.BeanManager;
+import org.kie.j2cl.tools.di.core.SyncBeanDef;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;

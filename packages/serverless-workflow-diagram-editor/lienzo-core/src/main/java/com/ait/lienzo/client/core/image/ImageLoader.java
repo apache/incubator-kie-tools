@@ -21,7 +21,7 @@ import com.ait.lienzo.client.widget.RootPanel;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLImageElement;
 import elemental2.dom.Image;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 
 public abstract class ImageLoader {
 

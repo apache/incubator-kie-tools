@@ -23,14 +23,14 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
+import org.kie.j2cl.tools.processors.annotations.GWT3Export;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlPropertyOrder;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.json.FunctionRefJsonSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.json.SubFlowRefJsonSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.yaml.FunctionRefYamlSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.yaml.SubFlowRefYamlSerializer;
-import org.treblereel.gwt.yaml.api.annotation.YamlPropertyOrder;
-import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
-import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
-import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JsType
 @YamlPropertyOrder({"name", "id", "functionRef", "eventRef", "subFlowRef", "retryRef", "sleep", "retryableErrors", "nonRetryableErrors", "actionDataFilter", "condition"})

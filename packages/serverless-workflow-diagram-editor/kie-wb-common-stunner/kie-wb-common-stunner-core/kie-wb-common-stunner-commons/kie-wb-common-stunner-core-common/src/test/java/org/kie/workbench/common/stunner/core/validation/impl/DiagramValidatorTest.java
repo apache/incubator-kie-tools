@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.enterprise.inject.Instance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
