@@ -5990,6 +5990,9 @@ importers:
 
   packages/kogito-serverless-operator:
     devDependencies:
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
