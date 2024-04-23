@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 
@@ -272,6 +273,10 @@ test.describe("Resize node - Text Annotation", () => {
       nodes,
       textAnnotationPropertiesPanel,
     }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1074",
+      });
       await textAnnotationPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION, position: NodePosition.TOP });
       await textAnnotationPropertiesPanel.setShape({ width: "50", height: "50" });
@@ -285,6 +290,10 @@ test.describe("Resize node - Text Annotation", () => {
     });
 
     test("should reset Text Annotation node size", async ({ diagram, nodes, textAnnotationPropertiesPanel }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1075",
+      });
       await textAnnotationPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.TEXT_ANNOTATION, position: NodePosition.TOP });
       await textAnnotationPropertiesPanel.setShape({ width: "300", height: "300" });
