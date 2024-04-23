@@ -40,9 +40,9 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
     super(diagram, page);
     this.nameProperties = new NameProperties(this.panel(), page);
     this.dataTypeProperties = new DataTypeProperties(this.panel(), page);
-    this.descriptionProperties = new DescriptionProperties(this.panel(), diagram);
+    this.descriptionProperties = new DescriptionProperties(this.panel());
     this.documentationProperties = new DocumentationProperties(this.panel(), page);
-    this.fontProperties = new FontProperties(this.panel(), diagram);
+    this.fontProperties = new FontProperties(this.panel());
     this.shapeProperties = new ShapeProperties(this.panel());
   }
 
