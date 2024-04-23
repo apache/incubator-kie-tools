@@ -24,7 +24,7 @@
     "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
     "build:prod:win32": "pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
     "install": "node install.js",
-    "install:mvnw": "mvn wrapper:wrapper -f ./",
+    "install:mvnw": "mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper -f ./",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
