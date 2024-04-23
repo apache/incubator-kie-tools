@@ -46,15 +46,13 @@ test.describe("Change Properties - Multiple Nodes", () => {
     await expect(diagram.get()).toHaveScreenshot("change-multiple-nodes-font.png");
   });
 
-  test("should reset multiple nodes shape", async ({ nodes, page, palette, diagram, multipleNodesPropertiesPanel }) => {
+  test("should reset multiple nodes shape", async ({ nodes, palette, diagram, multipleNodesPropertiesPanel }) => {
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 100 } });
     await nodes.resize({ nodeName: DefaultNodeName.INPUT_DATA, xOffset: 50, yOffset: 50 });
     await diagram.resetFocus();
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 100 } });
     await nodes.resize({ nodeName: DefaultNodeName.DECISION, xOffset: 50, yOffset: 50 });
     await diagram.resetFocus();
-
-    await page.pause();
 
     await multipleNodesPropertiesPanel.open();
     await nodes.selectMultiple({ names: [DefaultNodeName.INPUT_DATA, DefaultNodeName.DECISION] });
