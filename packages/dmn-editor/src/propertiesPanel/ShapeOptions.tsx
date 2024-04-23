@@ -282,6 +282,38 @@ export function ShapeOptions({
     };
   }, [setShapeStyles, temporaryFillColor]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!width || !boundWidth) {
+        return;
+      }
+
+      if (width !== boundWidth) {
+        setWidth(boundWidth);
+      }
+    }, 0);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [boundWidth]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (!height || !boundHeight) {
+        return;
+      }
+
+      if (height !== boundHeight) {
+        setHeight(boundHeight);
+      }
+    }, 0);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [boundHeight]);
+
   const onReset = useCallback(() => {
     setShapeStyles((shapes, state) => {
       shapes.forEach((shape) => {
