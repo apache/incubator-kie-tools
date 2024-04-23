@@ -56,6 +56,7 @@ import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { useKeyboardShortcuts } from "./keyboardShortcuts/keyboardShortcuts";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -64,6 +65,21 @@ const SVG_PADDING = 20;
 export type DmnEditorRef = {
   reset: (mode: DmnLatestModel) => void;
   getDiagramSvg: () => Promise<string | undefined>;
+  getKeyboardShortcuts: () =>
+    | {
+        hideFromDrd: () => void;
+        toggleHierarchyHighlight: () => void;
+        togglePropertiesPanel: () => void;
+        createGroup: () => void;
+        selectAll: () => void;
+        paste: () => void;
+        copy: () => void;
+        cut: () => void;
+        cancelAction: () => void;
+        focusOnBounds: () => void;
+        resetPosition: () => void;
+      }
+    | undefined;
 };
 
 export type EvaluationResults = Record<string, any>;
@@ -170,14 +186,13 @@ export const DmnEditorInternal = ({
   const navigationTab = useDmnEditorStore((s) => s.navigation.tab);
   const dmn = useDmnEditorStore((s) => s.dmn);
   const isDiagramEditingInProgress = useDmnEditorStore((s) => s.computed(s).isDiagramEditingInProgress());
-
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
+  useKeyboardShortcuts();
 
   // Refs
-
   const diagramRef = useRef<DiagramRef>(null);
   const diagramContainerRef = useRef<HTMLDivElement>(null);
   const beeContainerRef = useRef<HTMLDivElement>(null);
@@ -231,6 +246,9 @@ export const DmnEditorInternal = ({
         );
 
         return new XMLSerializer().serializeToString(svg);
+      },
+      getKeyboardShortcuts: () => {
+        return dmnEditorStoreApi.getState().keyboardShortcuts;
       },
     }),
     [dmnEditorStoreApi, externalModelsByNamespace]

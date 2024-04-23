@@ -41,6 +41,7 @@ import {
   imperativePromiseHandle,
   PromiseImperativeHandle,
 } from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
+import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 
@@ -60,6 +61,7 @@ export type DmnEditorRootProps = {
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePosixPath: string;
+  keyboardShortcutsService: KeyboardShortcutsService | undefined;
 };
 
 export type DmnEditorRootState = {
@@ -270,6 +272,22 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       this.onRequestToResolvePathRelativeToTheOpenFile(normalizedPosixPathRelativeToTheOpenFile)
     );
   };
+
+  private componentDidMount() {
+    const keyboardShortcuts = this.dmnEditorRef.current?.getKeyboardShortcuts();
+    if (keyboardShortcuts === undefined) {
+      return;
+    }
+    Object(keyboardShortcuts)
+      .keys()
+      .forEach((keyboardShortcutMethodName: keyof typeof keyboardShortcuts) => {
+        this.props.keyboardShortcutsService?.registerKeyPress("", "", async () =>
+          keyboardShortcuts[keyboardShortcutMethodName]()
+        );
+      });
+  }
+
+  private componentDidUnmount() {}
 
   public render() {
     return (
