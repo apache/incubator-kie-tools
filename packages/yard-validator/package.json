@@ -16,13 +16,15 @@
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm copy:webworker",
     "build:prod": "pnpm lint && tsc -p tsconfig.json && pnpm copy:webworker",
-    "copy:webworker": "copyfiles -f node_modules/@kie-tools/yard-validator-worker/dist/yard-validator-worker.js dist"
+    "copy:webworker": "copyfiles -f node_modules/@kie-tools/yard-validator-worker/dist/yard-validator-worker.js dist",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools/yard-validator-worker": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "copyfiles": "^2.4.1",

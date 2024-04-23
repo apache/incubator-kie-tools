@@ -1143,6 +1143,7 @@
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/yard-validator-worker", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/yard-validator-worker", "target": "@kie-tools/yard-model", "weight": 1 },
+      { "source": "@kie-tools/yard-model", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/yard-model", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
       { "source": "@kie-tools/yard-model", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
