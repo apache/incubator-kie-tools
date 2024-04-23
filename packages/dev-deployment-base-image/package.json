@@ -13,8 +13,8 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm install:mvnw\" \"pnpm image:docker:build\"",
-    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm install:mvnw\" \"pnpm image:docker:build\"",
+    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
+    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
     "copy-assets": "rimraf dist-dev && pnpm copy-upload-service-assets",
     "copy-upload-service-assets": "run-script-os",
     "copy-upload-service-assets:linux:darwin": "mkdir -p ./dist-dev && cp -R ../dev-deployment-upload-service/dist/dev-deployment-upload-service-linux-amd64 ./dist-dev/dev-deployment-upload-service",
@@ -25,7 +25,7 @@
     "create-test-image:openshift": "kie-tools--image-builder openshift -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.tags)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentBaseImage.builderImage)\"",
     "image:docker:build": "kie-tools--image-builder build -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.tags)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentBaseImage.builderImage)\" --build-arg USER_ID_ARG=\"$(build-env devDeploymentBaseImage.userId)\" --build-arg HOME_PATH_ARG=\"$(build-env devDeploymentBaseImage.homePath)\"",
     "image:podman:build": "kie-tools--image-builder build -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.tags)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentBaseImage.builderImage)\" --build-arg USER_ID_ARG=\"$(build-env devDeploymentBaseImage.userId)\" --build-arg HOME_PATH_ARG=\"$(build-env devDeploymentBaseImage.homePath)\" -e podman",
-    "install": "node install.js",
+    "install": "node install.js && pnpm install:mvnw",
     "install:mvnw": "run-script-os",
     "install:mvnw:darwin:linux": "mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper",
     "install:mvnw:win32": "pnpm powershell \"mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper\"",

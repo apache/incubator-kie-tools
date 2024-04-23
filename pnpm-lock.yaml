@@ -12946,9 +12946,6 @@ importers:
         specifier: workspace:*
         version: link:../yard-validator-worker
     devDependencies:
-      "@kie-tools/maven-config-setup-helper":
-        specifier: workspace:*
-        version: link:../maven-config-setup-helper
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
