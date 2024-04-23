@@ -68,6 +68,9 @@ export function ShapeOptions({
   const boundPositionX = useMemo(() => +(shapeBound?.["@_x"]?.toFixed(2) ?? ""), [shapeBound]);
   const boundPositionY = useMemo(() => +(shapeBound?.["@_y"]?.toFixed(2) ?? ""), [shapeBound]);
 
+  const [width, setWidth] = useState<number>(boundWidth);
+  const [height, setHeight] = useState<number>(boundHeight);
+
   const fillColor = useMemo(() => {
     const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_red"]).toString(16);
     const g = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_green"] ?? DEFAULT_FILL_COLOR["@_green"]).toString(16);
@@ -110,6 +113,13 @@ export function ShapeOptions({
 
   const onChangeWidth = useCallback(
     (newWidth: string) => {
+      setWidth(+newWidth);
+    },
+    [setWidth]
+  );
+
+  const onBlurWidth = useCallback(
+    (event) => {
       setBounds((bounds, state) => {
         const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(nodeIds[0]);
         const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
@@ -117,32 +127,42 @@ export function ShapeOptions({
           isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
         });
 
-        if (parseFloat(newWidth) < minNodeSize["@_width"]) {
+        if (parseInt(event.target.value) < minNodeSize["@_width"]) {
           bounds["@_width"] = minNodeSize["@_width"];
+          setWidth(minNodeSize["@_width"]);
         } else {
-          bounds["@_width"] = +parseFloat(newWidth).toFixed(2);
+          bounds["@_width"] = parseInt(event.target.value);
         }
       });
     },
-    [externalModelsByNamespace, MIN_NODE_SIZES, nodeIds, setBounds]
+    [externalModelsByNamespace, MIN_NODE_SIZES, nodeIds, setBounds, setWidth]
   );
 
   const onChangeHeight = useCallback(
     (newHeight: string) => {
+      setHeight(+newHeight);
+    },
+    [setHeight]
+  );
+
+  const onBlurHeight = useCallback(
+    (event) => {
       setBounds((bounds, state) => {
         const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(nodeIds[0]);
         const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
           snapGrid: state.diagram.snapGrid,
           isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
         });
-        if (parseFloat(newHeight) < minNodeSize["@_height"]) {
+
+        if (parseInt(event.target.value) < minNodeSize["@_height"]) {
           bounds["@_height"] = minNodeSize["@_height"];
+          setHeight(minNodeSize["@_height"]);
         } else {
-          bounds["@_height"] = +parseFloat(newHeight).toFixed(2);
+          bounds["@_height"] = parseInt(event.target.value);
         }
       });
     },
-    [externalModelsByNamespace, MIN_NODE_SIZES, nodeIds, setBounds]
+    [externalModelsByNamespace, MIN_NODE_SIZES, nodeIds, setBounds, setHeight]
   );
 
   const onChangePositionX = useCallback(
@@ -394,8 +414,9 @@ export function ShapeOptions({
                         data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-width-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
-                        value={isDimensioningEnabled ? boundWidth : undefined}
+                        value={isDimensioningEnabled ? width : undefined}
                         placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
+                        onBlur={onBlurWidth}
                         onChange={onChangeWidth}
                         style={{ border: "none", backgroundColor: "transparent" }}
                       />
@@ -420,8 +441,9 @@ export function ShapeOptions({
                         data-testid={"kie-tools--dmn-editor--properties-panel-node-shape-height-input"}
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
-                        value={isDimensioningEnabled ? boundHeight : undefined}
+                        value={isDimensioningEnabled ? height : undefined}
                         placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
+                        onBlur={onBlurHeight}
                         onChange={onChangeHeight}
                         style={{ border: "none", backgroundColor: "transparent" }}
                       />
