@@ -124,7 +124,7 @@ export function ShapeOptions({
         }
       });
     },
-    [setBounds]
+    [externalModelsByNamespace, MIN_NODE_SIZES, nodeIds, setBounds]
   );
 
   const onChangeHeight = useCallback(
@@ -142,7 +142,7 @@ export function ShapeOptions({
         }
       });
     },
-    [setBounds]
+    [externalModelsByNamespace, MIN_NODE_SIZES, nodeIds, setBounds]
   );
 
   const onChangePositionX = useCallback(
@@ -287,7 +287,7 @@ export function ShapeOptions({
         }
       });
     });
-  }, [setShapeStyles]);
+  }, [externalModelsByNamespace, MIN_NODE_SIZES, setShapeStyles]);
 
   const strokeColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
   const fillColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
@@ -313,7 +313,7 @@ export function ShapeOptions({
         }
       />
       {isShapeSectionExpanded && (
-        <FormSection style={{ paddingLeft: "20px", marginTop: "0px" }}>
+        <FormSection style={{ paddingLeft: "20px", marginTop: "0px", marginBottom: "16px" }}>
           <FormGroup label={"Style"}>
             <ToggleGroup>
               <Tooltip content={"Fill color"}>
