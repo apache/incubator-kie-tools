@@ -114,7 +114,7 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 .PHONY: test
-test: manifests generate envtest vet fmt test-api ## Run tests.
+test: manifests generate envtest vet fmt test-api test-workflowproj test-container-builder ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $(shell go list ./... | grep -v /test/) -coverprofile cover.out
 
 .PHONY: test-api
@@ -145,7 +145,7 @@ test-workflowproj:
 ##@ Build
 
 .PHONY: build
-build: generate ## Build manager binary.
+build: generate-all ## Build manager binary.
 	CGO_ENABLED=0 go build -trimpath -ldflags=-buildid= -o bin/manager main.go
 
 .PHONY: build-4-debug
@@ -351,3 +351,12 @@ create-cluster: install-kind
 .PHONY: delete-cluster
 delete-cluster: install-kind
 	kind delete cluster && docker rm -f kind-registry
+
+.PHONY: load-docker-image
+load-docker-image: install-kind
+	kind load docker-image $(IMG)
+
+.PHONY: full-test-e2e
+full-test-e2e: create-cluster load-docker-image deploy
+	kubectl wait pod -A -l control-plane=sonataflow-operator --for condition=Ready
+	go test ./test/e2e/* -v -ginkgo.v -ginkgo.no-color -ginkgo.junit-report=./e2e-test-report.xml -timeout 60m
