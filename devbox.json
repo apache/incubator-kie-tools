@@ -17,7 +17,7 @@
     "DEVBOX_COREPACK_ENABLED": "true",
     "GOFLAGS": "-modcacherw",
     "GOPATH": "$DEVBOX_PROJECT_ROOT/.devbox/gopkgs",
-    "PATH": "$PATH:$DEVBOX_PROJECT_ROOT/.devbox/gopkgs/bin"
+    "PATH": "$DEVBOX_PROJECT_ROOT/.devbox/gopkgs/bin:$PATH"
   },
   "shell": {
     "init_hook": [". $VENV_DIR/bin/activate"],
