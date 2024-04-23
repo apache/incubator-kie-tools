@@ -58,6 +58,8 @@ import "./ExpressionDefinitionLogicTypeSelector.css";
 import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { ConditionalExpression } from "../ConditionalExpression/ConditionalExpression";
 import { IteratorExpressionComponent } from "../IteratorExpression/IteratorExpressionComponent";
+import { FilterExpressionComponent } from "../FilterExpression/FilterExpressionComponent";
+import FilterIcon from "@patternfly/react-icons/dist/esm/icons/filter-icon";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -102,7 +104,7 @@ export function ExpressionDefinitionLogicTypeSelector({
       "for",
       "every",
       "some",
-      // "filter",
+      "filter",
     ],
     [hideDmn14BoxedExpressions, isNested]
   );
@@ -142,7 +144,9 @@ export function ExpressionDefinitionLogicTypeSelector({
           <IteratorExpressionComponent expression={expression} isNested={isNested} parentElementId={parentElementId} />
         );
       case "filter":
-        return <></>;
+        return (
+          <FilterExpressionComponent expression={expression} isNested={isNested} parentElementId={parentElementId} />
+        );
       default:
         assertUnreachable(logicType);
     }
@@ -248,7 +252,7 @@ export function ExpressionDefinitionLogicTypeSelector({
       case "some":
         return <ResourcesAlmostEmptyIcon />;
       case "filter":
-        return <></>;
+        return <FilterIcon />;
       default:
         assertUnreachable(logicType);
     }
@@ -359,6 +363,12 @@ export function ExpressionDefinitionLogicTypeSelector({
           'For the "some" loop, the right part of the "some" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. ' +
           "The last line is an expression that will be evaluated on each item. The expression defined in the satisfies MUST resolve to a boolean."
         );
+      case "filter":
+        return (
+          "A boxed filter offers a visual representation of collection filtering. The top part is an expression that is the collection " +
+          "to be filtered. The bottom part, between the square brackets, holds the filter expression."
+        );
+
       default:
         return "";
     }
