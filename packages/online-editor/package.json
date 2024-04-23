@@ -24,7 +24,7 @@
     "test:e2e:open": "pnpm exec playwright show-report dist-e2e-tests/reports",
     "test:e2e:run": "ONLINE_EDITOR_DEV__https=false pnpm exec playwright test",
     "test:e2e:start:cors-proxy": "npm --prefix ./node_modules/@kie-tools/cors-proxy run start",
-    "test:e2e:start:extended-services": "npm --prefix ./node_modules/@kie-tools/extended-services-java run start"
+    "test:e2e:start:extended-services": "npm --prefix ./node_modules/@kie-tools/extended-services run start"
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
