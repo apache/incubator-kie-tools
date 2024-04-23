@@ -32,7 +32,7 @@ import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.tools.client.Timer;
 import jsinterop.annotations.JsProperty;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 
 public class Sprite extends Shape<Sprite> {
 

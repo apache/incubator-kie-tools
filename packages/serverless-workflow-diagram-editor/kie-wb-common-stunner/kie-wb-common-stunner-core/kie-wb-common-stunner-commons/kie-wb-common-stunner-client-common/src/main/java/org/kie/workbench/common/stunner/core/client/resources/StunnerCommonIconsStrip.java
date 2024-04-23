@@ -22,8 +22,8 @@ package org.kie.workbench.common.stunner.core.client.resources;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
 
 @Default
 @ApplicationScoped

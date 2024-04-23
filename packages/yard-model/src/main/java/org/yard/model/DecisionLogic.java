@@ -19,8 +19,8 @@
 package org.yard.model;
 
 
-import org.treblereel.gwt.yaml.api.annotation.YamlSubtype;
-import org.treblereel.gwt.yaml.api.annotation.YamlTypeInfo;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlSubtype;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeInfo;
 
 @YamlTypeInfo(
         key = "type",

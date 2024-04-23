@@ -22,8 +22,8 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import java.util.function.Consumer;
 
-import io.crysknife.client.ManagedInstance;
 import org.junit.Test;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
