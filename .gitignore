@@ -291,5 +291,16 @@ packages/bpmn-marshaller/**/ts-gen
 packages/dmn-marshaller/**/ts-gen
 packages/scesim-marshaller/**/ts-gen
 
+# kogito-sf-{builder|devmode}-image: excluding module build folders
+!packages/kogito-swf-common/resources/**/build
+!packages/kogito-swf-builder/resources/**/build
+!packages/kogito-swf-devmode/resources/**/build
+!packages/kogito-swf-common/test-resources/
+!packages/kogito-swf-builder/test-resources/
+!packages/kogito-swf-devmode/test-resources/
+
+__pycache__
+packages/python-venv/venv
+
 # devbox
 .devbox

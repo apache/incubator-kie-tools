@@ -127,6 +127,10 @@ digraph G {
   "@kie-tools/kogito-serverless-operator" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-management-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-management-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/kogito-swf-builder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/kogito-swf-common" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/python-venv" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/kogito-swf-devmode" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-task-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-task-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/kubernetes-bridge" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -394,6 +398,10 @@ digraph G {
   "@kie-tools/kogito-management-console" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-management-console" -> "@kie-tools/runtime-tools-management-console-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-serverless-operator" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/kogito-swf-builder" -> "@kie-tools/kogito-swf-common" [ style = "dashed", color = "black" ];
+  "@kie-tools/kogito-swf-common" -> "@kie-tools/python-venv" [ style = "dashed", color = "black" ];
+  "@kie-tools/kogito-swf-common" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/kogito-swf-devmode" -> "@kie-tools/kogito-swf-common" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-task-console" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-task-console" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kogito-task-console" -> "@kie-tools/runtime-tools-task-console-webapp" [ style = "dashed", color = "black" ];
