@@ -3868,6 +3868,12 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools/dmn-marshaller-backend-compatibility-tester":
+        specifier: workspace:*
+        version: link:../dmn-marshaller-backend-compatibility-tester
+      "@kie-tools/dmn-testing-models":
+        specifier: workspace:*
+        version: link:../dmn-testing-models
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
@@ -3904,6 +3910,25 @@ importers:
       ts-jest:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
+  packages/dmn-marshaller-backend-compatibility-tester:
+    dependencies:
+      "@jbangdev/jbang":
+        specifier: 0.2.0
+        version: 0.2.0
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
@@ -3998,6 +4023,27 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+
+  packages/dmn-testing-models:
+    devDependencies:
+      "@kie-tools/maven-base":
+        specifier: workspace:*
+        version: link:../maven-base
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/dmn-vscode-extension:
     dependencies:
@@ -22806,6 +22852,14 @@ packages:
     engines: { node: ">=8" }
     dev: true
 
+  /@jbangdev/jbang@0.2.0:
+    resolution:
+      { integrity: sha512-Ixo6/Y5sXKmNjYlf03xws79siAGEvrZPgNAlSCXK9DZ8xH7hkzdZ0AwE5QDSaMmOwy/yUrLhPhjojwg+WhyBMg== }
+    requiresBuild: true
+    dependencies:
+      shelljs: 0.8.5
+    dev: false
+
   /@jest/console@26.6.2:
     resolution:
       { integrity: sha512-IY1R2i2aLsLr7Id3S6p2BA82GNWryt4oSvEXLAKc+L2zdi89dSkE8xC1C+0kpATG4JhBJREnQOH7/zmccM2B0g== }
@@ -40270,6 +40324,12 @@ packages:
     engines: { node: ">=12" }
     dev: false
 
+  /interpret@1.4.0:
+    resolution:
+      { integrity: sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA== }
+    engines: { node: ">= 0.10" }
+    dev: false
+
   /interpret@2.2.0:
     resolution:
       { integrity: sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw== }
@@ -40422,13 +40482,6 @@ packages:
     hasBin: true
     dependencies:
       ci-info: 3.3.2
-    dev: true
-
-  /is-core-module@2.12.0:
-    resolution:
-      { integrity: sha512-RECHCBCd/viahWmwj6enj19sKbHfJrddi/6cBDsNTKbNq0f7VeaUkBo60BqzvPqo/W54ChS62Z5qyun7cfOMqQ== }
-    dependencies:
-      has: 1.0.3
     dev: true
 
   /is-core-module@2.13.1:
@@ -48309,12 +48362,20 @@ packages:
       tslib: 2.6.2
     dev: true
 
+  /rechoir@0.6.2:
+    resolution:
+      { integrity: sha512-HFM8rkZ+i3zrV+4LQjwQ0W+ez98pApMGM3HUrN04j3CqzPOzl9nmP15Y8YXNm8QHGv/eacOVEjqhmWpkRV0NAw== }
+    engines: { node: ">= 0.10" }
+    dependencies:
+      resolve: 1.22.8
+    dev: false
+
   /rechoir@0.7.0:
     resolution:
       { integrity: sha512-ADsDEH2bvbjltXEP+hTIAmeFekTFK0V2BTxMkok6qILyAJEXV0AFfoWcAq4yfll5VdIMd/RVXq0lR+wQi5ZU3Q== }
     engines: { node: ">= 0.10" }
     dependencies:
-      resolve: 1.22.1
+      resolve: 1.22.8
     dev: true
 
   /redent@3.0.0:
@@ -48726,7 +48787,7 @@ packages:
       { integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw== }
     hasBin: true
     dependencies:
-      is-core-module: 2.12.0
+      is-core-module: 2.13.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
@@ -49515,6 +49576,17 @@ packages:
     resolution:
       { integrity: sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA== }
     dev: true
+
+  /shelljs@0.8.5:
+    resolution:
+      { integrity: sha512-TiwcRcrkhHvbrZbnRcFYMLl30Dfov3HKqzp5tO5b4pt6G/SezKcYhmDg15zXVBswHmctSAQKznqNW2LO5tTDow== }
+    engines: { node: ">=4" }
+    hasBin: true
+    dependencies:
+      glob: 7.2.3
+      interpret: 1.4.0
+      rechoir: 0.6.2
+    dev: false
 
   /shellwords@0.1.1:
     resolution:

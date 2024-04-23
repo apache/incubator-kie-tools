@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import {
+  DMN15__tDMNElementReference,
   DMN15__tDecision,
   DMN15__tDecisionService,
   DMN15__tInputData,
@@ -38,6 +39,9 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { DragAndDrop, Draggable } from "../draggable/Draggable";
+import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
+import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -169,21 +173,37 @@ export function DecisionServiceProperties({
       </FormGroup>
 
       <Divider />
-
-      <FormGroup label="Input data">
-        <DecisionServiceElementList
-          decisionServiceNamespace={namespace}
-          elements={decisionService.inputData}
-          allDrgElementsByHref={allDrgElementsByHref}
-        />
-      </FormGroup>
       <FormGroup label="Input decisions">
-        <DecisionServiceElementList
+        <DraggableDecisionServiceElementList
           decisionServiceNamespace={namespace}
           elements={decisionService.inputDecision}
           allDrgElementsByHref={allDrgElementsByHref}
+          onChange={(newInputDecisions) => {
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).inputDecision =
+                newInputDecisions;
+            });
+          }}
         />
       </FormGroup>
+      <FormGroup label="Input data">
+        <DraggableDecisionServiceElementList
+          decisionServiceNamespace={namespace}
+          elements={decisionService.inputData}
+          allDrgElementsByHref={allDrgElementsByHref}
+          onChange={(newInputData) => {
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).inputData = newInputData;
+            });
+          }}
+        />
+      </FormGroup>
+
+      <DecisionServiceEquivalentFunction
+        decisionService={decisionService}
+        decisionServiceNamespace={namespace}
+        allDrgElementsByHref={allDrgElementsByHref}
+      />
 
       <DocumentationLinksFormGroup
         isReadonly={isReadonly}
@@ -214,7 +234,7 @@ export function DecisionServiceElementList({
   return (
     <ul>
       {(elements ?? []).length <= 0 && (
-        <li>
+        <li style={{ paddingLeft: "32px" }}>
           <small>
             <i>(Empty)</i>
           </small>
@@ -237,7 +257,7 @@ export function DecisionServiceElementList({
         });
 
         return (
-          <li key={potentialExternalHref}>
+          <li style={{ paddingLeft: "32px" }} key={potentialExternalHref}>
             <DmnObjectListItem
               dmnObjectHref={potentialExternalHref}
               dmnObject={allDrgElementsByHref.get(potentialExternalHref)}
@@ -248,5 +268,165 @@ export function DecisionServiceElementList({
         );
       })}
     </ul>
+  );
+}
+
+export function DraggableDecisionServiceElementList({
+  decisionServiceNamespace,
+  elements,
+  allDrgElementsByHref,
+  onChange,
+}: {
+  decisionServiceNamespace: string | undefined;
+  elements: DMN15__tDecisionService["outputDecision"];
+  allDrgElementsByHref: AllKnownDrgElementsByHref;
+  onChange: (hrefs: DMN15__tDMNElementReference[] | undefined) => void;
+}) {
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+  const [keys, setKeys] = React.useState(() => elements?.map((e) => e["@_href"]) ?? []);
+
+  const onDragEnd = useCallback(
+    (source: number, dest: number) => {
+      const reordened = [...(elements ?? [])];
+      const [removed] = reordened.splice(source, 1);
+      reordened.splice(dest, 0, removed);
+      onChange(reordened);
+    },
+    [elements, onChange]
+  );
+
+  const reorder = useCallback((source: number, dest: number) => {
+    setKeys((prev) => {
+      const reordenedUuid = [...prev];
+      const [removedUuid] = reordenedUuid.splice(source, 1);
+      reordenedUuid.splice(dest, 0, removedUuid);
+      return reordenedUuid;
+    });
+  }, []);
+
+  const draggableItem = useCallback(
+    (element: DMN15__tDMNElementReference, index: number) => {
+      const localHref = parseXmlHref(element["@_href"]);
+
+      // If the localHref has a namespace, then that's the one to use, as it can be that an external node is pointing to another external node in their perspective
+      // E.g., (This DMN) --includes--> (DMN A) --includes--> (DMN B)
+      // In this case, localHref will have DMN B's namespace, and we need to respect it. It `DMN B` in included in `This DMN`, then
+      // we can resolve it, otherwise, the dmnObject referenced by localHref won't be present on `dmnObjectsByHref`, and we'll only show the href.
+      // Now, if the localHref doesn't have a namespace, then it is local to the model where the Decision Service is declared, so we use `decisionServiceNamespace`.
+      // If none of that is true, then it means that the Decision Service is local to "This DMN", so the namespace is simply "".
+      const resolvedNamespace = localHref.namespace ?? decisionServiceNamespace ?? thisDmnsNamespace;
+
+      const potentialExternalHref = buildXmlHref({
+        namespace: resolvedNamespace,
+        id: localHref.id,
+      });
+
+      return (
+        <Draggable
+          key={keys[index]}
+          index={index}
+          handlerStyle={
+            keys[index] ? { paddingLeft: "16px", paddingRight: "16px" } : { paddingLeft: "16px", paddingRight: "16px" }
+          }
+        >
+          <li key={potentialExternalHref}>
+            <DmnObjectListItem
+              dmnObjectHref={potentialExternalHref}
+              dmnObject={allDrgElementsByHref.get(potentialExternalHref)}
+              relativeToNamespace={thisDmnsNamespace}
+              namespace={resolvedNamespace}
+            />
+          </li>
+        </Draggable>
+      );
+    },
+    [allDrgElementsByHref, decisionServiceNamespace, keys, thisDmnsNamespace]
+  );
+
+  return (
+    <ul>
+      {(elements ?? []).length <= 0 && (
+        <li style={{ paddingLeft: "32px" }}>
+          <small>
+            <i>(Empty)</i>
+          </small>
+        </li>
+      )}
+      <DragAndDrop
+        reorder={reorder}
+        onDragEnd={onDragEnd}
+        values={elements}
+        draggableItem={draggableItem}
+        isDisabled={false}
+      />
+    </ul>
+  );
+}
+
+function DecisionServiceEquivalentFunction({
+  decisionService,
+  allDrgElementsByHref,
+  decisionServiceNamespace,
+}: {
+  decisionService: DMN15__tDecisionService;
+  allDrgElementsByHref: AllKnownDrgElementsByHref;
+  decisionServiceNamespace: string | undefined;
+}) {
+  const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+
+  const getNodeNameByHref = useCallback(
+    (href: string) => {
+      const localHref = parseXmlHref(href);
+
+      // If the localHref has a namespace, then that's the one to use, as it can be that an external node is pointing to another external node in their perspective
+      // E.g., (This DMN) --includes--> (DMN A) --includes--> (DMN B)
+      // In this case, localHref will have DMN B's namespace, and we need to respect it. It `DMN B` in included in `This DMN`, then
+      // we can resolve it, otherwise, the dmnObject referenced by localHref won't be present on `dmnObjectsByHref`, and we'll only show the href.
+      // Now, if the localHref doesn't have a namespace, then it is local to the model where the Decision Service is declared, so we use `decisionServiceNamespace`.
+      // If none of that is true, then it means that the Decision Service is local to "This DMN", so the namespace is simply "".
+      const resolvedNamespace = localHref.namespace ?? decisionServiceNamespace ?? thisDmnsNamespace;
+
+      const potentialExternalHref = buildXmlHref({
+        namespace: resolvedNamespace,
+        id: localHref.id,
+      });
+
+      const dmnObject = allDrgElementsByHref.get(potentialExternalHref);
+
+      return dmnObject
+        ? buildFeelQNameFromNamespace({
+            namedElement: dmnObject,
+            importsByNamespace,
+            namespace: resolvedNamespace,
+            relativeToNamespace: thisDmnsNamespace,
+          }).full
+        : potentialExternalHref;
+    },
+    [allDrgElementsByHref, decisionServiceNamespace, importsByNamespace, thisDmnsNamespace]
+  );
+
+  const buildFunctionArgList = useCallback(
+    (inputDecisions?: DMN15__tDMNElementReference[], inputData?: DMN15__tDMNElementReference[]) => {
+      const inputDecisionNodeNames = inputDecisions?.map((ide) => getNodeNameByHref(ide["@_href"]));
+      const inputDataNodeNames = inputData?.map((ida) => getNodeNameByHref(ida["@_href"]));
+
+      return [...(inputDecisionNodeNames ?? []), ...(inputDataNodeNames ?? [])].reduce(
+        (acc, name) => (acc ? `${acc}, ${name}` : name),
+        ""
+      );
+    },
+    [getNodeNameByHref]
+  );
+
+  return (
+    <Alert variant={AlertVariant.info} isInline title="Invoking this Decision Service in FEEL">
+      <p style={{ fontFamily: "monospace" }}>
+        {`${decisionService["@_name"]}(${buildFunctionArgList(
+          decisionService.inputDecision,
+          decisionService.inputData
+        )})`}
+      </p>
+    </Alert>
   );
 }

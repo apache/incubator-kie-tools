@@ -28,9 +28,9 @@
     "build:codegen:dmn15": "xml-parser-ts-codegen ./src/schemas/dmn-1_5/DMN15.xsd definitions",
     "build:codegen:kie10": "xml-parser-ts-codegen ./src/schemas/kie-1_0/KIE.xsd ComponentsWidthsExtension",
     "build:dev": "rimraf dist && pnpm build:codegen && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && rimraf dist &&  pnpm build:codegen && tsc -p tsconfig.json && pnpm test",
+    "build:prod": "pnpm lint && rimraf dist && pnpm build:codegen && tsc -p tsconfig.json && pnpm test",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "test": "rimraf dist-tests && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools/xml-parser-ts": "workspace:*"
@@ -39,6 +39,8 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
+    "@kie-tools/dmn-marshaller-backend-compatibility-tester": "workspace:*",
+    "@kie-tools/dmn-testing-models": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
