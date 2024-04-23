@@ -34,6 +34,10 @@ import UndoAltIcon from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 import { ColorPicker } from "./ColorPicker";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import "./ShapeOptions.css";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
+import { NodeType } from "../diagram/connections/graphStructure";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
 const DEFAULT_FILL_COLOR = { "@_blue": 255, "@_green": 255, "@_red": 255 };
 const DEFAULT_STROKE_COLOR = { "@_blue": 0, "@_green": 0, "@_red": 0 };
@@ -50,6 +54,7 @@ export function ShapeOptions({
   isPositioningEnabled: boolean;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const shapes = useDmnEditorStore((s) =>
     nodeIds.map((nodeId) => s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId))
@@ -105,8 +110,18 @@ export function ShapeOptions({
 
   const onChangeWidth = useCallback(
     (newWidth: string) => {
-      setBounds((bounds) => {
-        bounds["@_width"] = +parseFloat(newWidth).toFixed(2);
+      setBounds((bounds, state) => {
+        const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(nodeIds[0]);
+        const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
+          snapGrid: state.diagram.snapGrid,
+          isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+        });
+
+        if (parseFloat(newWidth) < minNodeSize["@_width"]) {
+          bounds["@_width"] = minNodeSize["@_width"];
+        } else {
+          bounds["@_width"] = +parseFloat(newWidth).toFixed(2);
+        }
       });
     },
     [setBounds]
@@ -114,8 +129,17 @@ export function ShapeOptions({
 
   const onChangeHeight = useCallback(
     (newHeight: string) => {
-      setBounds((bounds) => {
-        bounds["@_height"] = +parseFloat(newHeight).toFixed(2);
+      setBounds((bounds, state) => {
+        const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(nodeIds[0]);
+        const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
+          snapGrid: state.diagram.snapGrid,
+          isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+        });
+        if (parseFloat(newHeight) < minNodeSize["@_height"]) {
+          bounds["@_height"] = minNodeSize["@_height"];
+        } else {
+          bounds["@_height"] = +parseFloat(newHeight).toFixed(2);
+        }
       });
     },
     [setBounds]
@@ -239,7 +263,7 @@ export function ShapeOptions({
   }, [setShapeStyles, temporaryFillColor]);
 
   const onReset = useCallback(() => {
-    setShapeStyles((shapes) => {
+    setShapeStyles((shapes, state) => {
       shapes.forEach((shape) => {
         shape!["di:Style"]!["dmndi:FillColor"] ??= DEFAULT_FILL_COLOR;
         shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = DEFAULT_FILL_COLOR["@_red"];
@@ -250,6 +274,17 @@ export function ShapeOptions({
         shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = DEFAULT_STROKE_COLOR["@_red"];
         shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = DEFAULT_STROKE_COLOR["@_green"];
         shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = DEFAULT_STROKE_COLOR["@_blue"];
+
+        for (const node of state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.values()) {
+          if (node.data.shape["@_id"] === shape["@_id"]) {
+            const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
+              snapGrid: state.diagram.snapGrid,
+              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+            });
+            shape["dc:Bounds"]!["@_width"] = minNodeSize["@_width"];
+            shape["dc:Bounds"]!["@_height"] = minNodeSize["@_height"];
+          }
+        }
       });
     });
   }, [setShapeStyles]);
@@ -266,6 +301,16 @@ export function ShapeOptions({
         isSectionExpanded={isShapeSectionExpanded}
         toogleSectionExpanded={() => setShapeSectionExpanded((prev) => !prev)}
         title={"Shape"}
+        action={
+          <Button
+            variant={ButtonVariant.plain}
+            onClick={() => onReset()}
+            style={{ paddingBottom: 0, paddingTop: 0 }}
+            title={"Reset shape"}
+          >
+            <UndoAltIcon />
+          </Button>
+        }
       />
       {isShapeSectionExpanded && (
         <FormSection style={{ paddingLeft: "20px", marginTop: "0px" }}>
@@ -352,7 +397,7 @@ export function ShapeOptions({
                         value={isDimensioningEnabled ? boundWidth : undefined}
                         placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
                         onChange={onChangeWidth}
-                        style={{ maxWidth: "80px", minWidth: "60px", border: "none", backgroundColor: "transparent" }}
+                        style={{ border: "none", backgroundColor: "transparent" }}
                       />
                       <div>
                         <ArrowsAltHIcon aria-label={"Width"} />
@@ -378,7 +423,7 @@ export function ShapeOptions({
                         value={isDimensioningEnabled ? boundHeight : undefined}
                         placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
                         onChange={onChangeHeight}
-                        style={{ maxWidth: "80px", minWidth: "60px", border: "none", backgroundColor: "transparent" }}
+                        style={{ border: "none", backgroundColor: "transparent" }}
                       />
                       <div>
                         <ArrowsAltVIcon aria-label={"Height"} />
@@ -387,16 +432,6 @@ export function ShapeOptions({
                   }
                   key={"bound-height"}
                   buttonId={"shape-style-toggle-group-bound-height"}
-                />
-              </Tooltip>
-              <Tooltip content={"Reset shape"}>
-                <ToggleGroupItem
-                  title={"Reset shape"}
-                  onClick={onReset}
-                  className={"kie-dmn-editor--shape-options-toggle-button"}
-                  text={<UndoAltIcon />}
-                  key={"reset"}
-                  buttonId={"shape-style-toggle-group-reset"}
                 />
               </Tooltip>
             </ToggleGroup>
