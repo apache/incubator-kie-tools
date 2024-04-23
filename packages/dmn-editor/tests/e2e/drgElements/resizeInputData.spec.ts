@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
@@ -185,11 +184,6 @@ test.describe("Resize node - Input Data", () => {
       nodes,
       inputDataPropertiesPanel,
     }) => {
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1074",
-      });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
       await inputDataPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.INPUT_DATA });
       await inputDataPropertiesPanel.setShape({ width: "50", height: "50" });
@@ -203,11 +197,6 @@ test.describe("Resize node - Input Data", () => {
     });
 
     test("should reset Input Data node size", async ({ diagram, nodes, inputDataPropertiesPanel }) => {
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1075",
-      });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
       await inputDataPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.INPUT_DATA });
       await inputDataPropertiesPanel.setShape({ width: "300", height: "300" });

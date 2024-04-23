@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodePosition, NodeType } from "../__fixtures__/nodes";
 
@@ -179,11 +178,6 @@ test.describe("Resize node - Group", () => {
     });
 
     test("should not resize below minimal Group node size", async ({ diagram, nodes, groupPropertiesPanel }) => {
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1074",
-      });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
       await groupPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
       await groupPropertiesPanel.setShape({ width: "100", height: "100" });
@@ -196,17 +190,13 @@ test.describe("Resize node - Group", () => {
       expect(width).toEqual("280");
     });
 
-    test("should reset Group node size", async ({ nodes, groupPropertiesPanel }) => {
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1075",
-      });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
+    test("should reset Group node size", async ({ diagram, nodes, groupPropertiesPanel }) => {
       await groupPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
       await groupPropertiesPanel.setShape({ width: "325", height: "325" });
 
       await groupPropertiesPanel.resetShape();
+      await diagram.resetFocus();
 
       await nodes.select({ name: DefaultNodeName.GROUP, position: NodePosition.TOP });
       const { width, height } = await groupPropertiesPanel.getShape();

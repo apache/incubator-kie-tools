@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
@@ -181,11 +180,6 @@ test.describe("Resize node - BKM", () => {
     });
 
     test("should not resize BKM node below minimal size", async ({ diagram, nodes, bkmPropertiesPanel }) => {
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1074",
-      });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
       await bkmPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.BKM });
       await bkmPropertiesPanel.setShape({ width: "50", height: "50" });
@@ -199,11 +193,6 @@ test.describe("Resize node - BKM", () => {
     });
 
     test("should reset BKM node size", async ({ diagram, nodes, bkmPropertiesPanel }) => {
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1075",
-      });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
       await bkmPropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.BKM });
       await bkmPropertiesPanel.setShape({ width: "300", height: "300" });

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../__fixtures__/nodes";
 
@@ -198,11 +197,6 @@ test.describe("Resize node - Knowledge Source", () => {
       nodes,
       knowledgeSourcePropertiesPanel,
     }) => {
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1074",
-      });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1074");
       await knowledgeSourcePropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
       await knowledgeSourcePropertiesPanel.setShape({ width: "50", height: "50" });
@@ -216,11 +210,6 @@ test.describe("Resize node - Knowledge Source", () => {
     });
 
     test("should reset Knowledge Source node size", async ({ diagram, nodes, knowledgeSourcePropertiesPanel }) => {
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1075",
-      });
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1075");
       await knowledgeSourcePropertiesPanel.open();
       await nodes.select({ name: DefaultNodeName.KNOWLEDGE_SOURCE });
       await knowledgeSourcePropertiesPanel.setShape({ width: "300", height: "300" });
