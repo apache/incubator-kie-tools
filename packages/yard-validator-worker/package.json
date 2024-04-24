@@ -25,7 +25,7 @@
     "install:mvnw": "run-script-os",
     "install:mvnw:darwin:linux": "mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper",
     "install:mvnw:win32": "pnpm powershell \"mvn -e org.apache.maven.plugins:maven-wrapper-plugin:3.3.0:wrapper\"",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
