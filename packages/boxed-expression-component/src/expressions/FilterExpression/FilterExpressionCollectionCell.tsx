@@ -50,9 +50,9 @@ export function FilterExpressionCollectionCell({
         } else {
           return {
             ...prev,
-            in: {
-              ...prev.in,
-              expression: getNewExpression(prev.in.expression),
+            match: {
+              ...prev.match,
+              expression: getNewExpression(prev.match.expression),
             },
           };
         }
