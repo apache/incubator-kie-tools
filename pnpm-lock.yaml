@@ -5990,6 +5990,9 @@ importers:
 
   packages/kogito-serverless-operator:
     devDependencies:
+      "@kie-tools/kogito-swf-builder":
+        specifier: workspace:*
+        version: link:../kogito-swf-builder
       "@kie-tools/python-venv":
         specifier: workspace:*
         version: link:../python-venv
