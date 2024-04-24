@@ -35,7 +35,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-13, windows-latest]
     steps:
       - name: "Support longpaths (Windows only)"
         if: runner.os == 'Windows'
