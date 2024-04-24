@@ -23,10 +23,10 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineedito
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
-import io.crysknife.client.IsElement;
 import jakarta.enterprise.event.Observes;
 import org.gwtproject.core.client.Scheduler;
 import org.gwtproject.touch.client.Point;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;

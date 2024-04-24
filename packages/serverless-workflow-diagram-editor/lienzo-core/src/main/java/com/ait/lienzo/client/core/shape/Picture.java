@@ -30,7 +30,7 @@ import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import jsinterop.annotations.JsProperty;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 
 /**
  * Image Support for Canvas

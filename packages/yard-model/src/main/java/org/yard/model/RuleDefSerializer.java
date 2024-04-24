@@ -19,14 +19,15 @@
 package org.yard.model;
 
 
-import org.treblereel.gwt.yaml.api.node.YamlMapping;
-import org.treblereel.gwt.yaml.api.node.YamlNode;
-import org.treblereel.gwt.yaml.api.node.YamlSequence;
-import org.treblereel.gwt.yaml.api.YAMLDeserializer;
-import org.treblereel.gwt.yaml.api.YAMLSerializer;
-import org.treblereel.gwt.yaml.api.exception.YAMLDeserializationException;
-import org.treblereel.gwt.yaml.api.internal.deser.YAMLDeserializationContext;
-import org.treblereel.gwt.yaml.api.internal.ser.YAMLSerializationContext;
+
+import org.kie.j2cl.tools.yaml.mapper.api.YAMLDeserializer;
+import org.kie.j2cl.tools.yaml.mapper.api.YAMLSerializer;
+import org.kie.j2cl.tools.yaml.mapper.api.exception.YAMLDeserializationException;
+import org.kie.j2cl.tools.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
+import org.kie.j2cl.tools.yaml.mapper.api.internal.ser.YAMLSerializationContext;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlMapping;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlNode;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlSequence;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,6 @@ import java.util.List;
 public class RuleDefSerializer
         implements YAMLSerializer<Object>, YAMLDeserializer<Object> {
 
-    private int rowNumber = 1;
     @Override
     public Object deserialize(YamlMapping yamlMapping,
                               String s,
@@ -47,10 +47,10 @@ public class RuleDefSerializer
                               YAMLDeserializationContext yamlDeserializationContext) {
         if (yamlNode instanceof YamlSequence) {
             final List<Comparable> items = getItems(yamlNode);
-            return new InlineRule(rowNumber++, items);
+            return new InlineRule(items);
 
         } else if (yamlNode instanceof YamlMapping) {
-            final WhenThenRule whenThenRule = new WhenThenRule(rowNumber++);
+            final WhenThenRule whenThenRule = new WhenThenRule();
             final YamlNode when = ((YamlMapping) yamlNode).getNode("when");
             final YamlNode then = ((YamlMapping) yamlNode).getNode("then");
             whenThenRule.setWhen(getItems(when));

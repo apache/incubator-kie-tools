@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views;
 
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 
 /**
  * Just a simple view that wraps any widget.

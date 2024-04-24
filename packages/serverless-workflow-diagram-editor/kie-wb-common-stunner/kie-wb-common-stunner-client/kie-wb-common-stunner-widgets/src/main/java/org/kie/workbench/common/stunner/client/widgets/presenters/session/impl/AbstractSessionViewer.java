@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;

@@ -23,11 +23,11 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
