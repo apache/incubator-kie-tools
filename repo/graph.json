@@ -22,19 +22,14 @@
       { "id": "@kie-tools-core/vscode-extension" },
       { "id": "@kie-tools-core/vscode-java-code-completion" },
       { "id": "@kie-tools-examples/commit-message-validation-service" },
-      { "id": "@kie-tools-examples/drools-dmn-quarkus-example" },
-      { "id": "@kie-tools/maven-base" },
-      { "id": "@kie-tools/maven-config-setup-helper" },
-      { "id": "@kie-tools-examples/drools-process-quarkus-example" },
       { "id": "@kie-tools-examples/drools-process-usertasks-quarkus-example" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
+      { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
-      { "id": "@kie-tools-examples/drools-xls-decision-table-quarkus-example" },
       { "id": "@kie-tools-examples/ping-pong-view" },
       { "id": "@kie-tools-core/envelope-bus" },
       { "id": "@kie-tools-examples/ping-pong-view-angular" },
       { "id": "@kie-tools-examples/ping-pong-view-react" },
-      { "id": "@kie-tools-examples/pmml-quarkus-example" },
       { "id": "@kie-tools-examples/sonataflow-greeting-quarkus-example" },
       { "id": "@kie-tools/sonataflow-quarkus-devui" },
       { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
@@ -67,6 +62,7 @@
       { "id": "bpmn-vscode-extension" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
       { "id": "@kie-tools/pmml-editor-marshaller" },
+      { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "chrome-extension-pack-kogito-kie-editors" },
       { "id": "@kie-tools/chrome-extension-test-helper" },
@@ -247,14 +243,6 @@
         "target": "@kie-tools/root-env",
         "weight": 1
       },
-      { "source": "@kie-tools-examples/drools-dmn-quarkus-example", "target": "@kie-tools/maven-base", "weight": 1 },
-      { "source": "@kie-tools/maven-base", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
-      { "source": "@kie-tools/maven-base", "target": "@kie-tools/root-env", "weight": 1 },
-      {
-        "source": "@kie-tools-examples/drools-process-quarkus-example",
-        "target": "@kie-tools/maven-base",
-        "weight": 1
-      },
       {
         "source": "@kie-tools-examples/drools-process-usertasks-quarkus-example",
         "target": "@kie-tools/jbpm-quarkus-devui",
@@ -266,6 +254,8 @@
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "weight": 1
       },
+      { "source": "@kie-tools/maven-base", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/maven-base", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "target": "@kie-tools/runtime-tools-process-webapp-components",
@@ -274,11 +264,6 @@
       {
         "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/drools-xls-decision-table-quarkus-example",
-        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       { "source": "@kie-tools-examples/ping-pong-view", "target": "@kie-tools-core/envelope", "weight": 1 },
@@ -295,7 +280,6 @@
         "target": "@kie-tools-examples/ping-pong-view",
         "weight": 1
       },
-      { "source": "@kie-tools-examples/pmml-quarkus-example", "target": "@kie-tools/maven-base", "weight": 1 },
       {
         "source": "@kie-tools-examples/sonataflow-greeting-quarkus-example",
         "target": "@kie-tools/sonataflow-quarkus-devui",
@@ -1184,20 +1168,13 @@
     ["@kie-tools-examples/base64png-editor-chrome-extension", "examples/base64png-editor-chrome-extension"],
     ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
     ["@kie-tools-examples/commit-message-validation-service", "examples/commit-message-validation-service"],
-    ["@kie-tools-examples/drools-dmn-quarkus-example", "examples/drools-dmn-quarkus-example"],
-    ["@kie-tools-examples/drools-process-quarkus-example", "examples/drools-process-quarkus-example"],
     [
       "@kie-tools-examples/drools-process-usertasks-quarkus-example",
       "examples/drools-process-usertasks-quarkus-example"
     ],
-    [
-      "@kie-tools-examples/drools-xls-decision-table-quarkus-example",
-      "examples/drools-xls-decision-table-quarkus-example"
-    ],
     ["@kie-tools-examples/ping-pong-view", "examples/ping-pong-view"],
     ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
     ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],
-    ["@kie-tools-examples/pmml-quarkus-example", "examples/pmml-quarkus-example"],
     ["@kie-tools-examples/sonataflow-greeting-quarkus-example", "examples/sonataflow-greeting-quarkus-example"],
     ["@kie-tools-examples/todo-list-view", "examples/todo-list-view"],
     ["kie-tools-examples-todo-list-view-vscode-extension", "examples/todo-list-view-vscode-extension"],
