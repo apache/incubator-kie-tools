@@ -23,7 +23,7 @@
     "image:build": "run-script-os",
     "image:build:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --bool \"$(build-env containerImages.build)\" --then \"make container-build\"",
     "image:build:win32": "echo 'Image build not supported on Windows'",
-    "install": "go mod tidy && ./hack/bump-version.sh $(pnpm build-env kogitoServerlessOperator.version)",
+    "install": "go mod tidy && ./hack/bump-version.sh $(pnpm build-env kogitoServerlessOperator.version) && pnpm format",
     "test": "run-script-os",
     "test:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\"",
     "test:e2e": "run-script-os",
