@@ -64,16 +64,16 @@ export function ShapeOptions({
   const boundPositionY = useMemo(() => +(shapeBound?.["@_y"]?.toFixed(2) ?? ""), [shapeBound]);
 
   const fillColor = useMemo(() => {
-    const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_red"]).toString(16);
+    const b = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_blue"] ?? DEFAULT_FILL_COLOR["@_blue"]).toString(16);
     const g = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_green"] ?? DEFAULT_FILL_COLOR["@_green"]).toString(16);
-    const r = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_red"] ?? DEFAULT_FILL_COLOR["@_blue"]).toString(16);
+    const r = (shapeStyles[0]?.["dmndi:FillColor"]?.["@_red"] ?? DEFAULT_FILL_COLOR["@_red"]).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
   }, [shapeStyles]);
 
   const strokeColor = useMemo(() => {
-    const b = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_blue"] ?? DEFAULT_STROKE_COLOR["@_red"]).toString(16);
+    const b = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_blue"] ?? DEFAULT_STROKE_COLOR["@_blue"]).toString(16);
     const g = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_green"] ?? DEFAULT_STROKE_COLOR["@_green"]).toString(16);
-    const r = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_red"] ?? DEFAULT_STROKE_COLOR["@_blue"]).toString(16);
+    const r = (shapeStyles[0]?.["dmndi:StrokeColor"]?.["@_red"] ?? DEFAULT_STROKE_COLOR["@_red"]).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
   }, [shapeStyles]);
 
@@ -190,7 +190,7 @@ export function ShapeOptions({
       setShapeStyles((shapes, state) => {
         shapes.forEach((shape) => {
           state.diagram.isEditingStyle = false;
-          shape!["di:Style"]!["dmndi:StrokeColor"] ??= DEFAULT_STROKE_COLOR;
+          shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
           shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = parseInt(temporaryStrokeColor.slice(0, 2), 16);
           shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = parseInt(temporaryStrokeColor.slice(2, 4), 16);
           shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = parseInt(temporaryStrokeColor.slice(4, 6), 16);
@@ -225,7 +225,7 @@ export function ShapeOptions({
       setShapeStyles((shapes, state) => {
         shapes.forEach((shape) => {
           state.diagram.isEditingStyle = false;
-          shape!["di:Style"]!["dmndi:FillColor"] ??= DEFAULT_FILL_COLOR;
+          shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
           shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = parseInt(temporaryFillColor.slice(0, 2), 16);
           shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = parseInt(temporaryFillColor.slice(2, 4), 16);
           shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = parseInt(temporaryFillColor.slice(4, 6), 16);
@@ -241,12 +241,12 @@ export function ShapeOptions({
   const onReset = useCallback(() => {
     setShapeStyles((shapes) => {
       shapes.forEach((shape) => {
-        shape!["di:Style"]!["dmndi:FillColor"] ??= DEFAULT_FILL_COLOR;
+        shape!["di:Style"]!["dmndi:FillColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
         shape!["di:Style"]!["dmndi:FillColor"]["@_red"] = DEFAULT_FILL_COLOR["@_red"];
         shape!["di:Style"]!["dmndi:FillColor"]["@_green"] = DEFAULT_FILL_COLOR["@_green"];
         shape!["di:Style"]!["dmndi:FillColor"]["@_blue"] = DEFAULT_FILL_COLOR["@_blue"];
 
-        shape!["di:Style"]!["dmndi:StrokeColor"] ??= DEFAULT_STROKE_COLOR;
+        shape!["di:Style"]!["dmndi:StrokeColor"] ??= { "@_red": 0, "@_green": 0, "@_blue": 0 };
         shape!["di:Style"]!["dmndi:StrokeColor"]["@_red"] = DEFAULT_STROKE_COLOR["@_red"];
         shape!["di:Style"]!["dmndi:StrokeColor"]["@_green"] = DEFAULT_STROKE_COLOR["@_green"];
         shape!["di:Style"]!["dmndi:StrokeColor"]["@_blue"] = DEFAULT_STROKE_COLOR["@_blue"];
