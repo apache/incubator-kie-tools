@@ -144,7 +144,7 @@ runs:
         echo "STEP: Install libbtrfs-dev (Ubuntu only)"
         cd ${{ inputs.working_dir }}
         if [ "${{ runner.os }}" == "Linux" ]; then
-          sudo apt-get -y install libbtrfs-dev libgpgme-dev libdevmapper-dev > /dev/null 2>&1
+          sudo apt-get -y install libbtrfs-dev libgpgme-dev libdevmapper-dev btrfs-progs > /dev/null 2>&1
         fi
 
     - name: "Setup s2i (source-to-image)"
