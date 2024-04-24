@@ -19,5 +19,4 @@
 package org.yard.model;
 
 public interface Rule {
-    int getRowNumber();
 }

@@ -25,12 +25,12 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import org.gwtproject.safehtml.shared.SafeUri;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureProvider;
 
 @Dependent

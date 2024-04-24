@@ -29,12 +29,11 @@ import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.json.stream.JsonParser;
+import org.kie.j2cl.tools.json.mapper.internal.deserializer.StringJsonDeserializer;
+import org.kie.j2cl.tools.json.mapper.internal.serializer.StringJsonSerializer;
 import org.kie.workbench.common.stunner.sw.definition.SubFlowRef;
 import org.kie.workbench.common.stunner.sw.definition.SubFlowRef_JsonDeserializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.SubFlowRef_JsonSerializerImpl;
-import org.treblereel.gwt.json.mapper.internal.deserializer.StringJsonDeserializer;
-import org.treblereel.gwt.json.mapper.internal.serializer.StringJsonSerializer;
-
 
 public class SubFlowRefJsonSerializer implements JsonbDeserializer<Object>, JsonbSerializer<Object> {
     private static final SubFlowRef_JsonSerializerImpl serializerSubFlowRef =

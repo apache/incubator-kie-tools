@@ -19,7 +19,7 @@
 
 package org.kie.workbench.common.stunner.core.client.shape;
 
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 
 public interface ImageStrip {
 

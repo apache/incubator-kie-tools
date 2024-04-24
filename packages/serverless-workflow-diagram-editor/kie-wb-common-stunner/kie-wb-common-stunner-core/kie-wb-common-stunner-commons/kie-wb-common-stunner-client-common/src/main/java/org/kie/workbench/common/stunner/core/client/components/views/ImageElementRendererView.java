@@ -20,8 +20,8 @@
 
 package org.kie.workbench.common.stunner.core.client.components.views;
 
-import io.crysknife.client.IsElement;
 import org.gwtproject.safehtml.shared.SafeUri;
+import org.kie.j2cl.tools.di.core.IsElement;
 
 public interface ImageElementRendererView extends IsElement {
 

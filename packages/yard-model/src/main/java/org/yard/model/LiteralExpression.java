@@ -19,7 +19,7 @@
 package org.yard.model;
 
 
-import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YAMLMapper;
 
 @YAMLMapper
 public class LiteralExpression implements DecisionLogic {
