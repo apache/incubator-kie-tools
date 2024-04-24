@@ -61,22 +61,25 @@ function addMissingImportNamespaces(definitions: DMN15__tDefinitions) {
     return;
   }
 
-  // Collect all declared namespaces under `xmlns` QName
-  const definedNamespaces = Object.keys(definitions)
-    .filter((keys: keyof DMN15__tDefinitions) => String(keys).includes("xmlns"))
-    .map((xmlnsKey: keyof DMN15__tDefinitions) => definitions[xmlnsKey]);
+  // Collect all declared namespaces
+  const definedNamespaces = new Set(
+    Object.keys(definitions)
+      .filter((keys: keyof DMN15__tDefinitions) => String(keys).startsWith("xmlns:"))
+      .map((xmlnsKey: keyof DMN15__tDefinitions) => definitions[xmlnsKey])
+  );
 
-  // Add missing import namespaces to `xmlns:included*` QName
+  // Add missing import namespace declarations as `xmlns:included*`
   let includedIndex = 0;
   for (let index = 0; index < definitions.import.length; index++) {
     const importedModelNamespace = definitions.import[index]["@_namespace"];
 
     // Check if namespace is already declared
-    if (definedNamespaces.findIndex((definedXmlns) => definedXmlns === importedModelNamespace) >= 0) {
+    if (definedNamespaces.has(importedModelNamespace)) {
+      // Ignore namespaces that are already declared
       continue;
     }
 
-    // Get next available `included*` QName
+    // Get next available `included*` namespace declaration name
     while (definitions[`@_xmlns:included${includedIndex}`]) {
       includedIndex++;
     }
