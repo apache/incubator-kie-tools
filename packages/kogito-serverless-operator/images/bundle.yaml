@@ -1,7 +1,7 @@
 schema_version: 1
 name: "sonataflow-operator-bundle"
 description: "SonataFlow Operator Bundle"
-version: 999.0.0-snapshot
+version: 0.0.0
 from: "scratch"
 
 labels:

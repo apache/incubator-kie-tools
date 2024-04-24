@@ -1,5 +1,5 @@
 - name: operator-builder
-  version: 999.0.0-snapshot
+  version: 0.0.0
   from: "golang:1.21.6"
   description: Builder Image for the Operator
 
@@ -15,7 +15,7 @@
       - name: org.apache.kie.sonataflow.operatorBuilder
 
 - name: sonataflow-operator
-  version: 999.0.0-snapshot
+  version: 0.0.0
   from: "registry.access.redhat.com/ubi9/ubi-micro:9.3-9"
   description: Runtime Image for the Operator
 

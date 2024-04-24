@@ -3,7 +3,7 @@
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
 # - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
-VERSION ?= 999.0.0-snapshot
+VERSION ?= 0.0.0
 REDUCED_VERSION ?= latest
 
 # CHANNELS define the bundle channels used in the bundle.

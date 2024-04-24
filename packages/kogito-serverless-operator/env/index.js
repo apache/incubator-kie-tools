@@ -45,6 +45,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         account: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__account),
         name: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__name),
         tag: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__buildTag),
+        version: require("../package.json").version,
       },
     };
   },
