@@ -53,8 +53,18 @@ sed -i "s|newName:.*|newName: ${imageTag}${imageSuffix}|g" config/manager/kustom
 
 # Update kogito-swf-* images
 find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
+find . -name "*.containerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
+find . -name "*.dockerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
+find . -name "Dockerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
+find . -name "*.go" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
 
 find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
+find . -name "*.containerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
+find . -name "*.dockerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
+find . -name "Dockerfile" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
+find . -name "*.go" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
+
+find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-serverless-operator.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-serverless-operator${imageSuffix}:${newMajorMinorVersion}|" {} +
 
 sed -i -r "s|OperatorVersion = .*|OperatorVersion = \"${new_version}\"|g" version/version.go
 
