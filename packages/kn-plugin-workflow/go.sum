@@ -43,6 +43,10 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
+github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0-20240126134605-2b5056d12bb9 h1:LrUW2+TRA8t0ttZTWjrDFW+gSWKaGWU2Led+RJiGUn8=
+github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0-20240126134605-2b5056d12bb9/go.mod h1:pve19HflUPuWGb8jzBaFqrZU8DWnRG2hpcRyo3w9shQ=
+github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0-20240122.0.20240219180504-5ebaf85efc66 h1:z7qKamBtG5Y2ZqWuW1O+MNBeOLndLoaYqW5ypDjcKZA=
+github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0-20240122.0.20240219180504-5ebaf85efc66/go.mod h1:Vw5jMxj6TmDe0TOrVkcVdlquOX1z8SP9rd+wzVMqmnY=
 github.com/beevik/etree v1.2.0 h1:l7WETslUG/T+xOPs47dtd6jov2Ii/8/OjCldk5fYfQw=
 github.com/beevik/etree v1.2.0/go.mod h1:aiPf89g/1k3AShMVAzriilpcE4R/Vuor90y83zVZWFc=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=

@@ -5948,9 +5948,6 @@ importers:
 
   packages/kn-plugin-workflow:
     devDependencies:
-      "@kie-tools/kogito-serverless-operator":
-        specifier: workspace:*
-        version: link:../kogito-serverless-operator
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
