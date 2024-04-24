@@ -5993,6 +5993,9 @@ importers:
       "@kie-tools/kogito-swf-builder":
         specifier: workspace:*
         version: link:../kogito-swf-builder
+      "@kie-tools/kogito-swf-devmode":
+        specifier: workspace:*
+        version: link:../kogito-swf-devmode
       "@kie-tools/python-venv":
         specifier: workspace:*
         version: link:../python-venv

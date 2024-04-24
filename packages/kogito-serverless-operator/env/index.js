@@ -17,11 +17,35 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    KOGITO_SERVERLESS_OPERATOR__registry: {
+      default: "quay.io",
+      description: "The image registry.",
+    },
+    KOGITO_SERVERLESS_OPERATOR__account: {
+      default: "kiegroup",
+      description: "The image registry account.",
+    },
+    KOGITO_SERVERLESS_OPERATOR__name: {
+      default: "kogito-serverless-operator-nightly",
+      description: "The image name.",
+    },
+    KOGITO_SERVERLESS_OPERATOR__buildTag: {
+      default: "latest",
+      description: "The image tag",
+    },
+  }),
   get env() {
-    return {};
+    return {
+      kogitoServerlessOperator: {
+        registry: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__registry),
+        account: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__account),
+        name: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__name),
+        tag: getOrDefault(this.vars.KOGITO_SERVERLESS_OPERATOR__buildTag),
+      },
+    };
   },
 });

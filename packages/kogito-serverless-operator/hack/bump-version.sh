@@ -31,7 +31,7 @@ if [ -z "${new_version}" ]; then
   exit 1
 fi
 
-imageSuffix=$(if [[ "${new_version}" == *snapshot ]]; then echo '-nightly'; else echo ''; fi)
+imageSuffix=$(if [[ "${new_version}" == '0.0.0' ]]; then echo '-nightly'; else echo ''; fi)
 
 oldMajorMinorVersion=${old_version%.*}
 newMajorMinorVersion=${new_version%.*}

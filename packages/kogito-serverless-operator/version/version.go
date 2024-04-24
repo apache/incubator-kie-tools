@@ -25,15 +25,14 @@ import (
 
 const (
 	// Current version
-	OperatorVersion = "999.0.0-snapshot"
+	OperatorVersion = "0.0.0"
 
 	// Should not be changed
-	snapshotSuffix = "snapshot"
-	latestVersion  = "999.0.0-snapshot"
+	latestVersion = "0.0.0"
 )
 
 func IsSnapshot() bool {
-	return strings.HasSuffix(OperatorVersion, snapshotSuffix)
+	return OperatorVersion == "0.0.0"
 }
 
 func IsLatestVersion() bool {
