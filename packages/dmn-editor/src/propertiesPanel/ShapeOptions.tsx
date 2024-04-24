@@ -68,6 +68,9 @@ export function ShapeOptions({
   const boundPositionX = useMemo(() => +(shapeBound?.["@_x"]?.toFixed(2) ?? ""), [shapeBound]);
   const boundPositionY = useMemo(() => +(shapeBound?.["@_y"]?.toFixed(2) ?? ""), [shapeBound]);
 
+  // this variable was introduced because of scenarios, when user switches between nodes without closing and reopening the properties panel
+  const [currentlyReShapedNodeId, setCurrentlyReShapedNodeId] = useState<string>(nodeIds[0]);
+
   const [width, setWidth] = useState<number>(boundWidth);
   const [height, setHeight] = useState<number>(boundHeight);
 
@@ -113,56 +116,60 @@ export function ShapeOptions({
 
   const onChangeWidth = useCallback(
     (newWidth: string) => {
+      setCurrentlyReShapedNodeId(nodeIds[0]);
       setWidth(+newWidth);
     },
-    [setWidth]
+    [nodeIds, setCurrentlyReShapedNodeId, setWidth]
   );
 
   const onBlurWidth = useCallback(
     (event) => {
-      setBounds((bounds, state) => {
-        const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(nodeIds[0]);
-        const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
-          snapGrid: state.diagram.snapGrid,
-          isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
-        });
+      if (currentlyReShapedNodeId === nodeIds[0]) {
+        setBounds((bounds, state) => {
+          const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(nodeIds[0]);
+          const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
+            snapGrid: state.diagram.snapGrid,
+            isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+          });
 
-        if (parseInt(event.target.value) < minNodeSize["@_width"]) {
-          bounds["@_width"] = minNodeSize["@_width"];
-          setWidth(minNodeSize["@_width"]);
-        } else {
-          bounds["@_width"] = parseInt(event.target.value);
-        }
-      });
+          if (parseInt(event.target.value) < minNodeSize["@_width"]) {
+            bounds["@_width"] = minNodeSize["@_width"];
+          } else {
+            bounds["@_width"] = parseInt(event.target.value);
+          }
+        });
+      }
     },
-    [externalModelsByNamespace, MIN_NODE_SIZES, nodeIds, setBounds, setWidth]
+    [currentlyReShapedNodeId, externalModelsByNamespace, nodeIds, setBounds]
   );
 
   const onChangeHeight = useCallback(
     (newHeight: string) => {
+      setCurrentlyReShapedNodeId(nodeIds[0]);
       setHeight(+newHeight);
     },
-    [setHeight]
+    [nodeIds, setCurrentlyReShapedNodeId, setHeight]
   );
 
   const onBlurHeight = useCallback(
     (event) => {
-      setBounds((bounds, state) => {
-        const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(nodeIds[0]);
-        const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
-          snapGrid: state.diagram.snapGrid,
-          isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
-        });
+      if (currentlyReShapedNodeId === nodeIds[0]) {
+        setBounds((bounds, state) => {
+          const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(nodeIds[0]);
+          const minNodeSize = MIN_NODE_SIZES[node?.type as NodeType]({
+            snapGrid: state.diagram.snapGrid,
+            isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+          });
 
-        if (parseInt(event.target.value) < minNodeSize["@_height"]) {
-          bounds["@_height"] = minNodeSize["@_height"];
-          setHeight(minNodeSize["@_height"]);
-        } else {
-          bounds["@_height"] = parseInt(event.target.value);
-        }
-      });
+          if (parseInt(event.target.value) < minNodeSize["@_height"]) {
+            bounds["@_height"] = minNodeSize["@_height"];
+          } else {
+            bounds["@_height"] = parseInt(event.target.value);
+          }
+        });
+      }
     },
-    [externalModelsByNamespace, MIN_NODE_SIZES, nodeIds, setBounds, setHeight]
+    [currentlyReShapedNodeId, externalModelsByNamespace, nodeIds, setBounds]
   );
 
   const onChangePositionX = useCallback(
@@ -284,35 +291,17 @@ export function ShapeOptions({
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (!width || !boundWidth) {
-        return;
-      }
-
-      if (width !== boundWidth) {
+      if (currentlyReShapedNodeId !== nodeIds[0]) {
         setWidth(boundWidth);
-      }
-    }, 0);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [boundWidth]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!height || !boundHeight) {
-        return;
-      }
-
-      if (height !== boundHeight) {
         setHeight(boundHeight);
+        setCurrentlyReShapedNodeId(nodeIds[0]);
       }
     }, 0);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [boundHeight]);
+  }, [boundWidth, boundHeight, currentlyReShapedNodeId, nodeIds]);
 
   const onReset = useCallback(() => {
     setShapeStyles((shapes, state) => {
@@ -339,7 +328,7 @@ export function ShapeOptions({
         }
       });
     });
-  }, [externalModelsByNamespace, MIN_NODE_SIZES, setShapeStyles]);
+  }, [externalModelsByNamespace, setShapeStyles]);
 
   const strokeColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
   const fillColorPickerRef = React.useRef<HTMLInputElement>(null) as React.MutableRefObject<HTMLInputElement>;
