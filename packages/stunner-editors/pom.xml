@@ -74,6 +74,19 @@
       </snapshots>
     </repository>
     <repository>
+      <id>apache-public-repository-group</id>
+      <name>Apache Public Repository Group</name>
+      <url>https://repository.apache.org/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
       <id>jboss</id>
       <name>JBoss Public Repo</name>
       <url>https://repository.jboss.org/nexus/content/groups/public</url>
