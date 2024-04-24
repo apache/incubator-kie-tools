@@ -573,7 +573,6 @@ digraph G {
   "@kie-tools/yard-editor" -> "@kie-tools/yard-validator" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
-  "@kie-tools/yard-model" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-model" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-model" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-validator" -> "@kie-tools-core/notifications" [ style = "solid", color = "blue" ];

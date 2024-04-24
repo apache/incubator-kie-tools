@@ -12915,9 +12915,6 @@ importers:
 
   packages/yard-model:
     devDependencies:
-      "@kie-tools/eslint":
-        specifier: workspace:*
-        version: link:../eslint
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -12973,9 +12970,6 @@ importers:
 
   packages/yard-validator-worker:
     devDependencies:
-      "@kie-tools/eslint":
-        specifier: workspace:*
-        version: link:../eslint
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
