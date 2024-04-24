@@ -1,6 +1,34 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "btrfs-progs@6.8": {
+      "last_modified": "2024-04-19T17:36:04-04:00",
+      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#btrfs-progs",
+      "source": "devbox-search",
+      "version": "6.8",
+      "systems": {
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/py5v4cya6xbvvxmnq3s9csa0fh4rpsjd-btrfs-progs-6.8",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/py5v4cya6xbvvxmnq3s9csa0fh4rpsjd-btrfs-progs-6.8"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/gh3nsgadpw0y63nwzay3sj5jglfqdazz-btrfs-progs-6.8",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/gh3nsgadpw0y63nwzay3sj5jglfqdazz-btrfs-progs-6.8"
+        }
+      }
+    },
     "gnumake@4.4.1": {
       "last_modified": "2024-03-22T11:26:23Z",
       "resolved": "github:NixOS/nixpkgs/a3ed7406349a9335cb4c2a71369b697cecd9d351#gnumake",
@@ -186,6 +214,70 @@
             }
           ],
           "store_path": "/nix/store/jv37f1mm61bspinaw9q2hq67vn9qydyk-kubernetes-helm-3.13.3"
+        }
+      }
+    },
+    "lvm2@2.03.23": {
+      "last_modified": "2024-04-19T17:36:04-04:00",
+      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#lvm2",
+      "source": "devbox-search",
+      "version": "2.03.23",
+      "systems": {
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/58j2kvlkr4dwy63ws4qvvi1v4n39xmfl-lvm2-2.03.23",
+              "default": true
+            },
+            {
+              "name": "bin",
+              "path": "/nix/store/m22zmazqv5n27vsanlwsf8p5d4gypyp1-lvm2-2.03.23-bin",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/zaf98vazs449xx4h0bv7cfm6ajnb7swl-lvm2-2.03.23-man",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/71cp0kfnc2lzwam140x9j0f4flinsvmi-lvm2-2.03.23-dev"
+            },
+            {
+              "name": "lib",
+              "path": "/nix/store/fhfwlqnhh4jj9mznpy4dliy4ib8h89qh-lvm2-2.03.23-lib"
+            }
+          ],
+          "store_path": "/nix/store/58j2kvlkr4dwy63ws4qvvi1v4n39xmfl-lvm2-2.03.23"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/dqhpwdhss6fyfdp9bp0ndxh2nji813f9-lvm2-2.03.23",
+              "default": true
+            },
+            {
+              "name": "bin",
+              "path": "/nix/store/8mz9jgs5fg1jjjig67pwk8cn977s2wx5-lvm2-2.03.23-bin",
+              "default": true
+            },
+            {
+              "name": "man",
+              "path": "/nix/store/s5a9hcxvmz77vwdqg8i6196cgmv90184-lvm2-2.03.23-man",
+              "default": true
+            },
+            {
+              "name": "dev",
+              "path": "/nix/store/sfx2dc4f07p9gz3flmyqn19wkzl6b7hz-lvm2-2.03.23-dev"
+            },
+            {
+              "name": "lib",
+              "path": "/nix/store/cmvd3n44c75zn2salc8w9sg7q23i9bq5-lvm2-2.03.23-lib"
+            }
+          ],
+          "store_path": "/nix/store/dqhpwdhss6fyfdp9bp0ndxh2nji813f9-lvm2-2.03.23"
         }
       }
     },

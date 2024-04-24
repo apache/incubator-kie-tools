@@ -7,7 +7,9 @@
     "kubernetes-helm": "3.13.3",
     "gnumake": "4.4.1",
     "go": "1.21.8",
-    "python": "3.12.2"
+    "python": "3.12.2",
+    "btrfs-progs": "6.8",
+    "lvm2": "2.03.23"
   },
   "env": {
     "PLAYWRIGHT_BROWSERS_PATH": "0",
