@@ -39,26 +39,16 @@ export function FilterExpressionCollectionCell({
   const onSetExpression = useCallback(
     ({ getNewExpression }) => {
       setExpression((prev: BoxedFilter) => {
-        if (rowIndex === 0) {
-          return {
-            ...prev,
-            in: {
-              ...prev.in,
-              expression: getNewExpression(prev.in.expression),
-            },
-          };
-        } else {
-          return {
-            ...prev,
-            match: {
-              ...prev.match,
-              expression: getNewExpression(prev.match.expression),
-            },
-          };
-        }
+        return {
+          ...prev,
+          in: {
+            ...prev.in,
+            expression: getNewExpression(prev.in.expression),
+          },
+        };
       });
     },
-    [rowIndex, setExpression]
+    [setExpression]
   );
 
   return (
