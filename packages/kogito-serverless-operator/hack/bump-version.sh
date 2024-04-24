@@ -44,23 +44,21 @@ fi
 
 echo "Set new version to ${new_version} (img_suffix = '${imageSuffix}', majorMinor = ${newMajorMinorVersion})"
 
-sed -i -e "s|^VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
-sed -i -e "s|^REDUCED_VERSION ?=.*|REDUCED_VERSION ?= ${newMajorMinorVersion}|g" Makefile
-sed -i -e "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
+sed -i "s|^VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
+sed -i "s|^REDUCED_VERSION ?=.*|REDUCED_VERSION ?= ${newMajorMinorVersion}|g" Makefile
+sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
 
-sed -i -e "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}${imageSuffix}|g" Makefile
-sed -i -e "s|newName:.*|newName: ${imageTag}${imageSuffix}|g" config/manager/kustomization.yaml
+sed -i "s|IMAGE_TAG_BASE ?=.*|IMAGE_TAG_BASE ?= ${imageTag}${imageSuffix}|g" Makefile
+sed -i "s|newName:.*|newName: ${imageTag}${imageSuffix}|g" config/manager/kustomization.yaml
 
 # Update kogito-swf-* images
-find . -name "*.yaml" -exec sed -i -e "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
-sed -i -e "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" Dockerfile
+find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-builder.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-builder${imageSuffix}:${newMajorMinorVersion}|" {} +
 
-find . -name "*.yaml" -exec sed -i -e "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
-sed -i -e "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" Dockerfile
+find . -name "*.yaml" -exec sed -i "s|quay.io/kiegroup/kogito-swf-devmode.*:${oldMajorMinorVersion}|quay.io/kiegroup/kogito-swf-devmode${imageSuffix}:${newMajorMinorVersion}|" {} +
 
-sed -i -e -r "s|OperatorVersion =.*|OperatorVersion = \"${new_version}\"|g" version/version.go
+sed -i -r "s|OperatorVersion = .*|OperatorVersion = \"${new_version}\"|g" version/version.go
 
-sed -i -e "s|containerImage:.*|containerImage: ${imageTag}${imageSuffix}:${newMajorMinorVersion}|g" $(getCsvFile)
+sed -i "s|containerImage:.*|containerImage: ${imageTag}${imageSuffix}:${newMajorMinorVersion}|g" $(getCsvFile)
 
 make generate-all
 make vet

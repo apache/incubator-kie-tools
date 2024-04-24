@@ -20,7 +20,7 @@
   "shell": {
     "init_hook": [
       ". $VENV_DIR/bin/activate",
-      "[[ $OSTYPE == 'darwin'* ]] && export PATH=$(echo $PATH | tr ':' '\n' | sed '\\|^/nix/store/|d' | paste -sd ':' -)"
+      "[[ $OSTYPE == 'darwin'* ]] && export PATH=$(echo $PATH | tr ':' '\n' | grep -vi 'xcode\\|clang\\|cctools' | paste -sd ':' -)"
     ],
     "scripts": {
       "versions": [
