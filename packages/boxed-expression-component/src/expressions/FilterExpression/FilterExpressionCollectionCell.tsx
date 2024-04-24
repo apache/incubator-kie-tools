@@ -51,8 +51,8 @@ export function FilterExpressionCollectionCell({
           return {
             ...prev,
             in: {
-              ...prev.match,
-              expression: getNewExpression(prev.match.expression),
+              ...prev.in,
+              expression: getNewExpression(prev.in.expression),
             },
           };
         }

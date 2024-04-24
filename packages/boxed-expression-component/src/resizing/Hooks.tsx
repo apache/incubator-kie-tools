@@ -85,6 +85,7 @@ export function useNestedExpressionResizingWidthValue(
     resizingWidths,
     widthsById,
     fixedColumnMinWidth,
+    nestedExpressionsExtraWidths,
   ]);
 }
 

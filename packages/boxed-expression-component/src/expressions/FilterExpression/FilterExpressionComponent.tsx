@@ -24,7 +24,6 @@ import {
   BeeTableOperationConfig,
   BeeTableProps,
   BoxedFilter,
-  BoxedList,
   DmnBuiltInDataType,
 } from "../../api";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
@@ -38,13 +37,12 @@ import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../.
 import { NestedExpressionContainerContext } from "../../resizing/NestedExpressionContainerContext";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import {
-  CONDITIONAL_EXPRESSION_EXTRA_WIDTH,
   FILTER_EXPRESSION_EXTRA_WIDTH,
   FILTER_EXPRESSION_MATCH_ROW_EXTRA_WIDTH,
   FILTER_EXPRESSION_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { FilterExpressionCollectionCell } from "./FilterExpressionCollectionCell";
-import { FeelFilterExpressionCell } from "./FeelFilterExpressionCell";
+import { FilterExpressionMatchCell } from "./FilterExpressionMatchCell";
 import "./FilterExpression.css";
 
 export type ROWTYPE = DMN15__tChildExpression;
@@ -138,7 +136,7 @@ export function FilterExpressionComponent({
 
   const beeTableAdditionalRow = useMemo(() => {
     return [
-      <FeelFilterExpressionCell
+      <FilterExpressionMatchCell
         key={0}
         rowIndex={1}
         parentElementId={parentElementId}

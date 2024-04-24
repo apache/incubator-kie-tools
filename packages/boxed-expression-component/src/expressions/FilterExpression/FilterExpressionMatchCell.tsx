@@ -40,7 +40,7 @@ import {
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { ResizingWidth } from "../../resizing/ResizingWidthsContext";
 
-export function FeelFilterExpressionCell({
+export function FilterExpressionMatchCell({
   rowIndex,
   data: items,
   columnIndex,
@@ -59,6 +59,7 @@ export function FeelFilterExpressionCell({
         const ret: BoxedFilter = {
           ...prev,
           match: {
+            ...prev.match,
             expression: newExpression!, // SPEC DISCREPANCY
           },
         };
