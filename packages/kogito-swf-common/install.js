@@ -30,6 +30,6 @@ const activateCmd =
 
 execSync(
   `${activateCmd} && \
-  python ./resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfCommon.version} --source-folder ./resources`,
+  python3 ./resources/scripts/versions_manager.py --bump-to ${buildEnv.env.kogitoSwfCommon.version} --source-folder ./resources`,
   { stdio: "inherit" }
 );

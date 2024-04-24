@@ -20,7 +20,7 @@
 
 #Script responsible to update the tests with 
 #Should be run from root directory of the repository
-#Sample usage:  python scripts/retrieve_version.py
+#Sample usage:  python3 scripts/retrieve_version.py
 
 import sys
 sys.dont_write_bytecode = True
