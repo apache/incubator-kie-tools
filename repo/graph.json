@@ -26,6 +26,9 @@
       { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools-examples/drools-process-quarkus-example" },
+      { "id": "@kie-tools-examples/drools-process-usertasks-quarkus-example" },
+      { "id": "@kie-tools/jbpm-quarkus-devui" },
+      { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
       { "id": "@kie-tools-examples/drools-xls-decision-table-quarkus-example" },
       { "id": "@kie-tools-examples/ping-pong-view" },
       { "id": "@kie-tools-core/envelope-bus" },
@@ -124,8 +127,6 @@
       { "id": "@kie-tools/uniforms-patternfly-codegen" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
-      { "id": "@kie-tools/jbpm-quarkus-devui" },
-      { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools-core/k8s-yaml-to-apiserver-requests" },
@@ -252,6 +253,27 @@
       {
         "source": "@kie-tools-examples/drools-process-quarkus-example",
         "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/drools-process-usertasks-quarkus-example",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/maven-base", "weight": 1 },
+      {
+        "source": "@kie-tools/jbpm-quarkus-devui",
+        "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
       {
@@ -783,22 +805,6 @@
         "weight": 1
       },
       { "source": "@kie-tools/import-java-classes-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
-      { "source": "@kie-tools/jbpm-quarkus-devui", "target": "@kie-tools/maven-base", "weight": 1 },
-      {
-        "source": "@kie-tools/jbpm-quarkus-devui",
-        "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
       {
         "source": "@kie-tools/runtime-tools-process-webapp-components",
         "target": "@kie-tools/runtime-tools-process-enveloped-components",
@@ -1180,6 +1186,10 @@
     ["@kie-tools-examples/commit-message-validation-service", "examples/commit-message-validation-service"],
     ["@kie-tools-examples/drools-dmn-quarkus-example", "examples/drools-dmn-quarkus-example"],
     ["@kie-tools-examples/drools-process-quarkus-example", "examples/drools-process-quarkus-example"],
+    [
+      "@kie-tools-examples/drools-process-usertasks-quarkus-example",
+      "examples/drools-process-usertasks-quarkus-example"
+    ],
     [
       "@kie-tools-examples/drools-xls-decision-table-quarkus-example",
       "examples/drools-xls-decision-table-quarkus-example"

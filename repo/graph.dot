@@ -20,6 +20,8 @@ digraph G {
   "@kie-tools-examples/drools-dmn-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/maven-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/drools-process-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools-examples/drools-process-usertasks-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/drools-xls-decision-table-quarkus-example" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/ping-pong-view" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/envelope" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -116,7 +118,6 @@ digraph G {
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/k8s-yaml-to-apiserver-requests" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -198,6 +199,7 @@ digraph G {
   "@kie-tools-examples/commit-message-validation-service" -> "@kie-tools/root-env" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/drools-dmn-quarkus-example" -> "@kie-tools/maven-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/drools-process-quarkus-example" -> "@kie-tools/maven-base" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/drools-process-usertasks-quarkus-example" -> "@kie-tools/jbpm-quarkus-devui" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/drools-xls-decision-table-quarkus-example" -> "@kie-tools/maven-base" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/ping-pong-view" -> "@kie-tools-core/envelope" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/ping-pong-view-angular" -> "@kie-tools-examples/ping-pong-view" [ style = "solid", color = "orange" ];
