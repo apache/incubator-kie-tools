@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { FeelInput } from "@kie-tools/feel-input-component/dist";
 import "./ConstraintsExpression.css";
@@ -41,7 +41,7 @@ export function ConstraintsExpression({
   isDisabled?: boolean;
 }) {
   const [preview, setPreview] = useState(value ?? "");
-  const [editingValue, setEditingValue] = useState(value);
+  const editingValue = useRef(value);
   const onFeelChange = useCallback(
     (_, content, preview) => {
       onSave?.(content.trim());
@@ -85,9 +85,9 @@ export function ConstraintsExpression({
             <p style={{ fontStyle: "italic" }}>{`<None>`}</p>
           ))}
         <FeelInput
-          value={isReadonly ? value : editingValue}
+          value={isReadonly ? editingValue.current : value}
           onChange={onFeelChange}
-          onPreviewChanged={setPreview}
+          onPreviewChanged={(newPreview: string) => setPreview(newPreview)}
           enabled={!isReadonly}
           options={monacoOptions as any}
         />
