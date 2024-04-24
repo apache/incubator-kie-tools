@@ -104,7 +104,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.treblereel.j2cl.processors</groupId>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
       <artifactId>processors</artifactId>
       <scope>provided</scope>
     </dependency>

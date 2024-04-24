@@ -28,9 +28,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import io.crysknife.client.SyncBeanDef;
-import io.crysknife.client.internal.BeanFactory;
-import io.crysknife.client.internal.QualifierUtil;
+import org.kie.j2cl.tools.di.core.SyncBeanDef;
+import org.kie.j2cl.tools.di.core.internal.BeanFactory;
+import org.kie.j2cl.tools.di.core.internal.QualifierUtil;
 
 public class MockIOCBeanDef<T, B extends T>
         implements

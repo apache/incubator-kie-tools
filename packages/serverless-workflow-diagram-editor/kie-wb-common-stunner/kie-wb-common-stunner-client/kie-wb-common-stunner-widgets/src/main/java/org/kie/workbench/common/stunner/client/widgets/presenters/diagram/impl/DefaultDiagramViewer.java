@@ -25,10 +25,10 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import elemental2.dom.CSSProperties;
-import io.crysknife.client.ManagedInstance;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Any;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;

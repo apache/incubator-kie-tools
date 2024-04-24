@@ -24,7 +24,6 @@ import java.lang.annotation.Annotation;
 import java.util.Objects;
 import java.util.function.Predicate;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
@@ -32,6 +31,7 @@ import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasDecoratorFactory;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;

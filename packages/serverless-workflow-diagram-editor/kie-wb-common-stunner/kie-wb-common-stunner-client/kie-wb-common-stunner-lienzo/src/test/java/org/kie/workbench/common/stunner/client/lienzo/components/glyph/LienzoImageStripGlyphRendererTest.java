@@ -28,11 +28,11 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.processors.common.resources.ImageResource;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStripGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStripRegistry;
 import org.mockito.Mock;
-import org.treblereel.j2cl.processors.common.resources.ImageResource;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;

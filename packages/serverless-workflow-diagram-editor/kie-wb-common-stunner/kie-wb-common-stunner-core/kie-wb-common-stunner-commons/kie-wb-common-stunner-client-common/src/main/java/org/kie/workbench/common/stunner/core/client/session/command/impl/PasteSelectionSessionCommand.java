@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import io.crysknife.client.ManagedInstance;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.event.Observes;
@@ -41,6 +40,7 @@ import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import org.appformer.client.stateControl.registry.Registry;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;

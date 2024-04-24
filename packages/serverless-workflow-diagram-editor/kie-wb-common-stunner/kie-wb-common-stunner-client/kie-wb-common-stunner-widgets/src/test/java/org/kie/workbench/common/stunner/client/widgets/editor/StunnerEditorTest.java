@@ -24,10 +24,10 @@ import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;

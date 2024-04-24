@@ -22,18 +22,13 @@ import java.util.List;
 
 public class WhenThenRule implements Rule {
 
-    private final int rowNumber;
     private List when;
     private Object then;
 
-    public WhenThenRule(int rowNumber) {
-        this.rowNumber = rowNumber;
+    public WhenThenRule() {
+
     }
 
-    @Override
-    public int getRowNumber() {
-        return rowNumber;
-    }
 
     public List getWhen() {
         return when;
