@@ -23,11 +23,11 @@ package org.kie.workbench.common.stunner.client.lienzo.components.alerts;
 import java.util.Objects;
 
 import elemental2.dom.HTMLElement;
-import io.crysknife.client.IsElement;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;

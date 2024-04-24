@@ -24,8 +24,8 @@ import java.util.Objects;
 
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
-import io.crysknife.client.IsElement;
 import org.gwtproject.timer.client.Timer;
+import org.kie.j2cl.tools.di.core.IsElement;
 
 /**
  * Floating view implementation for generic J2CL Widgets.

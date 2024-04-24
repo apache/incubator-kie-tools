@@ -22,11 +22,11 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.lang.annotation.Annotation;
 
-import io.crysknife.client.ManagedInstance;
 import org.appformer.client.stateControl.registry.Registry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;

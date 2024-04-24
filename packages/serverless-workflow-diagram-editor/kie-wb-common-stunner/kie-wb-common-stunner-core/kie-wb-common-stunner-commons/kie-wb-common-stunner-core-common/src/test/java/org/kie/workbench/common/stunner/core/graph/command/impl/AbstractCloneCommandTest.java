@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import io.crysknife.client.ManagedInstance;
+import org.kie.j2cl.tools.di.core.ManagedInstance;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;

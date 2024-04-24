@@ -26,7 +26,6 @@ import elemental2.core.JsArray;
 import elemental2.core.JsObject;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
-import io.crysknife.ui.common.client.injectors.StyleInjector;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
@@ -35,6 +34,7 @@ import jsinterop.base.JsPropertyMap;
 import org.gwtbootstrap3.client.shared.js.JQuery;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.gwtproject.core.client.Scheduler;
+import org.kie.j2cl.tools.processors.common.injectors.StyleInjector;
 
 import static org.gwtbootstrap3.client.shared.js.JQuery.$;
 

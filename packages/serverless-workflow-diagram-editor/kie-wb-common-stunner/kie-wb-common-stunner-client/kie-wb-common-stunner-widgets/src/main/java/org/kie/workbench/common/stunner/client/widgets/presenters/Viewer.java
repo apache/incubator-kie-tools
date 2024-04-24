@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters;
 
-import io.crysknife.client.IsElement;
+import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
 /**

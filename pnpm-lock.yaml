@@ -5985,6 +5985,57 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
 
+  packages/kogito-swf-builder:
+    devDependencies:
+      "@kie-tools/kogito-swf-common":
+        specifier: workspace:*
+        version: link:../kogito-swf-common
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/kogito-swf-common:
+    devDependencies:
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+
+  packages/kogito-swf-devmode:
+    devDependencies:
+      "@kie-tools/kogito-swf-common":
+        specifier: workspace:*
+        version: link:../kogito-swf-common
+      "@kie-tools/python-venv":
+        specifier: workspace:*
+        version: link:../python-venv
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   packages/kogito-task-console:
     devDependencies:
       "@kie-tools/image-builder":
@@ -6911,6 +6962,12 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
+
+  packages/python-venv:
+    devDependencies:
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
 
   packages/react-hooks:
     dependencies:
@@ -12946,9 +13003,9 @@ importers:
         specifier: workspace:*
         version: link:../yard-validator-worker
     devDependencies:
-      "@kie-tools/maven-config-setup-helper":
+      "@kie-tools/eslint":
         specifier: workspace:*
-        version: link:../maven-config-setup-helper
+        version: link:../eslint
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env

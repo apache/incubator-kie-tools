@@ -19,9 +19,9 @@
 package org.yard.model;
 
 
-import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
-import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
-import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.yard.model.RuleDefSerializer;
 
 import java.util.List;
